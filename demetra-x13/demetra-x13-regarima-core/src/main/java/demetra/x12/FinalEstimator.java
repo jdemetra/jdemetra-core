@@ -25,7 +25,7 @@ import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import static jdplus.math.linearfilters.FilterUtility.checkRoots;
 import jdplus.math.matrices.Matrix;
@@ -85,7 +85,7 @@ public class FinalEstimator implements IModelEstimator {
         double bmin = 999;
 
         SarimaModel m = desc.arima();
-        SarimaSpecification spec = m.specification();
+        SarimaOrders spec = m.specification();
         DoubleSeq pm = m.parameters();
         int start = 0, len = spec.getP();
         boolean dpr = checkRoots(pm.extract(start, len), 1 / cmod);// (m.RegularAR.Roots,

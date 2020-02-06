@@ -23,15 +23,15 @@ import demetra.design.Development;
  */
 @Development(status = Development.Status.Release)
 @lombok.Data
-public final class SarmaSpecification implements Cloneable {
+public final class SarmaOrders implements Cloneable {
 
     private final int period;
     private int p, q, bp, bq;
 
     @Override
-    public SarmaSpecification clone() {
+    public SarmaOrders clone() {
         try {
-            return (SarmaSpecification) super.clone();
+            return (SarmaOrders) super.clone();
         } catch (CloneNotSupportedException err) {
             return null;
         }

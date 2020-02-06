@@ -21,7 +21,7 @@ import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.outlier.CriticalValueComputer;
 import jdplus.regsarima.GlsSarimaProcessor;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
 import jdplus.stats.tests.LjungBox;
 import jdplus.stats.tests.StatisticalTest;
@@ -38,7 +38,7 @@ public class TramoUtility {
     
     public static final double MINCV = 2.0;
     
-    public int autlar(final int n, final SarimaSpecification spec) {
+    public int autlar(final int n, final SarimaOrders spec) {
         int d = spec.getD() + spec.getPeriod() * spec.getBd();
         int q = spec.getQ() + spec.getPeriod() * spec.getBq();
         int p = spec.getP() + spec.getPeriod() * spec.getBp();

@@ -31,7 +31,7 @@ import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.UnitRoots;
 import jdplus.regsarima.GlsSarimaProcessor;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -190,7 +190,7 @@ public class RegArimaUtility {
 
     public RegArimaModel<SarimaModel> airlineModel(DoubleSeq data, boolean mean, int ifreq, boolean seas) {
         // use airline model with mean
-        SarimaSpecification spec = seas ? SarimaSpecification.airline(ifreq) : SarimaSpecification.m011(ifreq);
+        SarimaOrders spec = seas ? SarimaOrders.airline(ifreq) : SarimaOrders.m011(ifreq);
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();

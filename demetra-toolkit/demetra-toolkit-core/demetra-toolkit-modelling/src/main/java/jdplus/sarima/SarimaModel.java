@@ -16,8 +16,8 @@
  */
 package jdplus.sarima;
 
-import demetra.arima.SarmaSpecification;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarmaOrders;
+import demetra.arima.SarimaOrders;
 import jdplus.arima.AbstractArimaModel;
 import jdplus.arima.StationaryTransformation;
 import jdplus.data.DataBlock;
@@ -58,7 +58,7 @@ public final class SarimaModel extends AbstractArimaModel {
         private double[] phi, bphi, th, bth;
         private boolean adjust = false;
 
-        private Builder(SarimaSpecification spec) {
+        private Builder(SarimaOrders spec) {
             s = spec.getPeriod();
             d = spec.getD();
             bd = spec.getBd();
@@ -68,7 +68,7 @@ public final class SarimaModel extends AbstractArimaModel {
             bth = (spec.getBq() > 0) ? new double[spec.getBq()] : E;
         }
 
-        private Builder(SarmaSpecification spec) {
+        private Builder(SarmaOrders spec) {
             s = spec.getPeriod();
             d = 0;
             bd = 0;
@@ -231,11 +231,11 @@ public final class SarimaModel extends AbstractArimaModel {
         }
     }
 
-    public static Builder builder(SarimaSpecification spec) {
+    public static Builder builder(SarimaOrders spec) {
         return new Builder(spec);
     }
 
-    public static Builder builder(SarmaSpecification spec) {
+    public static Builder builder(SarmaOrders spec) {
         return new Builder(spec);
     }
 
@@ -554,8 +554,8 @@ public final class SarimaModel extends AbstractArimaModel {
      *
      * @return
      */
-    public SarimaSpecification specification() {
-        SarimaSpecification spec = new SarimaSpecification(s);
+    public SarimaOrders specification() {
+        SarimaOrders spec = new SarimaOrders(s);
         spec.setD(d);
         spec.setBd(bd);
         spec.setP(phi.length);

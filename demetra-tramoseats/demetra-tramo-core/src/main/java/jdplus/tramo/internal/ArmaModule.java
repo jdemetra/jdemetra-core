@@ -24,8 +24,8 @@ import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
-import demetra.arima.SarmaSpecification;
+import demetra.arima.SarimaOrders;
+import demetra.arima.SarmaOrders;
 import demetra.data.DoubleSeq;
 
 /**
@@ -72,7 +72,7 @@ public class ArmaModule implements IArmaModule {
     }
 
     static boolean checkespa(final int freq, final int nz, final int inic, final int d, final int bd, final boolean seas) {
-        SarimaSpecification spec = checkmaxspec(freq, inic, d, bd, seas);
+        SarimaOrders spec = checkmaxspec(freq, inic, d, bd, seas);
         if (TramoUtility.autlar(nz, spec) < 0) {
             return false;
         }
@@ -82,9 +82,9 @@ public class ArmaModule implements IArmaModule {
         return TramoUtility.autlar(n, spec) >= 0;
     }
 
-    static SarimaSpecification calcmaxspec(final int freq, final int inic, final int d,
+    static SarimaOrders calcmaxspec(final int freq, final int inic, final int d,
             final int bd, final boolean seas) {
-        SarimaSpecification spec = new SarimaSpecification(freq);
+        SarimaOrders spec = new SarimaOrders(freq);
         spec.setD(d);
         if (seas) {
             spec.setBd(bd);
@@ -138,9 +138,9 @@ public class ArmaModule implements IArmaModule {
         }
     }
 
-    static SarimaSpecification checkmaxspec(final int freq, final int inic, final int d,
+    static SarimaOrders checkmaxspec(final int freq, final int inic, final int d,
             final int bd, final boolean seas) {
-        SarimaSpecification spec = new SarimaSpecification(freq);
+        SarimaOrders spec = new SarimaOrders(freq);
         spec.setD(d);
         if (seas) {
             spec.setBd(bd);
@@ -198,7 +198,7 @@ public class ArmaModule implements IArmaModule {
         this.seasonal=builder.seasonal;
     }
 
-    private ArmaModelSelector createModule(SarimaSpecification maxspec) {
+    private ArmaModelSelector createModule(SarimaOrders maxspec) {
         return ArmaModelSelector.builder()
                 .acceptWhiteNoise(wn)
                 .maxP(maxspec.getP())
@@ -212,7 +212,7 @@ public class ArmaModule implements IArmaModule {
     @Override
     public ProcessingResult process(RegArimaModelling context) {
         ModelDescription desc = context.getDescription();
-        SarimaSpecification curspec = desc.specification();
+        SarimaOrders curspec = desc.specification();
         int inic = comespa(curspec.getPeriod(), desc.regarima().getObservationsCount(),
                 maxInic(curspec.getPeriod()), curspec.getD(), curspec.getBd(), seasonal);
         if (inic == 0) {
@@ -224,35 +224,35 @@ public class ArmaModule implements IArmaModule {
                 return ProcessingResult.Unprocessed;
             }
         }
-        SarimaSpecification maxspec = calcmaxspec(desc.getAnnualFrequency(),
+        SarimaOrders maxspec = calcmaxspec(desc.getAnnualFrequency(),
                 inic, curspec.getD(), curspec.getBd(), seasonal);
         DoubleSeq res = RegArimaUtility.olsResiduals(desc.regarima());
         ArmaModelSelector impl = createModule(maxspec);
-        SarmaSpecification nspec = impl.process(res, desc.getAnnualFrequency(), maxspec.getD(), maxspec.getBd(), seasonal);
+        SarmaOrders nspec = impl.process(res, desc.getAnnualFrequency(), maxspec.getD(), maxspec.getBd(), seasonal);
         if (nspec.equals(curspec.doStationary())) {
             return ProcessingResult.Unchanged;
         }
-        curspec = SarimaSpecification.of(nspec, curspec.getD(), curspec.getBd());
+        curspec = SarimaOrders.of(nspec, curspec.getD(), curspec.getBd());
         desc.setSpecification(curspec);
         return ProcessingResult.Changed;
     }
 
-    public SarimaSpecification process(RegArimaModel<SarimaModel> regarima, boolean seas) {
-        SarimaSpecification curSpec = regarima.arima().specification();
+    public SarimaOrders process(RegArimaModel<SarimaModel> regarima, boolean seas) {
+        SarimaOrders curSpec = regarima.arima().specification();
         int inic = comespa(curSpec.getPeriod(), regarima.getObservationsCount(),  maxInic(curSpec.getPeriod()), curSpec.getD(), curSpec.getBd(), seas);
         if (inic == 0) {
             curSpec.setDefault(seas);
             return curSpec;
         }
-        SarimaSpecification maxspec = calcmaxspec(curSpec.getPeriod(), inic, curSpec.getD(), curSpec.getBd(), seas);
+        SarimaOrders maxspec = calcmaxspec(curSpec.getPeriod(), inic, curSpec.getD(), curSpec.getBd(), seas);
         DoubleSeq res = RegArimaUtility.olsResiduals(regarima);
         ArmaModelSelector impl = createModule(maxspec);
-        SarmaSpecification spec = impl.process(res, curSpec.getPeriod(), curSpec.getD(), curSpec.getBd(), curSpec.getPeriod() > 1);
+        SarmaOrders spec = impl.process(res, curSpec.getPeriod(), curSpec.getD(), curSpec.getBd(), curSpec.getPeriod() > 1);
         if (spec == null) {
             curSpec.setDefault(seas);
             return curSpec;
         } else {
-            return SarimaSpecification.of(spec, curSpec.getD(), curSpec.getBd());
+            return SarimaOrders.of(spec, curSpec.getD(), curSpec.getBd());
         }
     }
 }

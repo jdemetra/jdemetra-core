@@ -16,7 +16,7 @@
  */
 package jdplus.regsarima.ami;
 
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.TsPeriod;
@@ -41,7 +41,7 @@ public class FastOutliersDetectorTest {
     @Test
     public void testProd() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        SarimaSpecification spec = SarimaSpecification.airline(12);
+        SarimaOrders spec = SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
 
 //        long t0 = System.currentTimeMillis();
@@ -68,7 +68,7 @@ public class FastOutliersDetectorTest {
     @Test
     public void testProdWn() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        SarimaSpecification spec = new SarimaSpecification(12);
+        SarimaOrders spec = new SarimaOrders(12);
  //       spec.airline(true);
         spec.setBd(1);
         spec.setD(1);

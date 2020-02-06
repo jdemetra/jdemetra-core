@@ -16,7 +16,7 @@
  */
 package jdplus.regsarima.regular;
 
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.design.Development;
 import demetra.information.InformationSet;
 import demetra.timeseries.TsDomain;
@@ -77,7 +77,7 @@ public class RegArimaModelling {
      * Change the Arima specification and remove the current estimation
      * @param spec 
      */
-    public void setSpecification(SarimaSpecification spec){
+    public void setSpecification(SarimaOrders spec){
         description.setSpecification(spec);
         this.estimation=null;
     }

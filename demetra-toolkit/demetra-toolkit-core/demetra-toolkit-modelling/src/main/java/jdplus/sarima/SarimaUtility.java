@@ -16,7 +16,7 @@
  */
 package jdplus.sarima;
 
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.UnitRoots;
@@ -55,7 +55,7 @@ public class SarimaUtility {
      *
      * @return
      */
-    public BackFilter getDifferencingFilter(SarimaSpecification spec) {
+    public BackFilter getDifferencingFilter(SarimaOrders spec) {
         // search in the pre-specified filters
         if (spec.getD() == 0 && spec.getBd() == 0) {
             return BackFilter.ONE;
@@ -96,7 +96,7 @@ public class SarimaUtility {
      * @param spec
      * @return
      */
-    public UnitRoots getUnitRoots(SarimaSpecification spec) {
+    public UnitRoots getUnitRoots(SarimaOrders spec) {
         UnitRoots ur = new UnitRoots();
         if (spec.getPeriod() > 1) {
             for (int i = 0; i < spec.getBd(); ++i) {

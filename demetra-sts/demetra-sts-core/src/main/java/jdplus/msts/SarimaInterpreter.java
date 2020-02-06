@@ -7,7 +7,7 @@ package jdplus.msts;
 
 import demetra.data.DoubleSeqCursor;
 import jdplus.sarima.estimation.SarimaMapping;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 
 /**
  *
@@ -21,7 +21,7 @@ public final class SarimaInterpreter implements ParameterInterpreter {
     private final int np;
     private boolean fixed;
 
-    public SarimaInterpreter(final String name, final SarimaSpecification spec, final double[] p, final boolean fixed) {
+    public SarimaInterpreter(final String name, final SarimaOrders spec, final double[] p, final boolean fixed) {
         this.name = name;
         this.mapping = SarimaMapping.of(spec);
         this.values = p == null ? mapping.getDefaultParameters().toArray() : p;

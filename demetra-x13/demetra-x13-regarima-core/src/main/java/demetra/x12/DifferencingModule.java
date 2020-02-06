@@ -30,7 +30,7 @@ import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegArimaModelling;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.regarima.X13Exception;
 import demetra.data.DoubleSeq;
 import jdplus.sarima.SarimaModel;
@@ -110,7 +110,7 @@ public class DifferencingModule implements IDifferencingModule {
     }
 
     private double[] x;
-    private SarimaSpecification spec;
+    private SarimaOrders spec;
     private SarimaModel lastModel;
     private double rmax, rsmax, c_;
     private int iter;
@@ -443,7 +443,7 @@ public class DifferencingModule implements IDifferencingModule {
     public boolean process(DoubleSeq data, int period) {
         clear();
         x = data.toArray();
-        spec = new SarimaSpecification(period);
+        spec = new SarimaOrders(period);
         return calc();
     }
 
@@ -527,7 +527,7 @@ public class DifferencingModule implements IDifferencingModule {
         // compute regression model with mean
         //GlsSarimaMonitor monitor = new GlsSarimaMonitor();
         //monitor.setMinimizer(new ProxyMinimizer(new LevenbergMarquardtMethod()));
-        SarimaSpecification cspec = this.spec.clone();
+        SarimaOrders cspec = this.spec.clone();
         RegArimaModel<SarimaModel> model = RegArimaModel.<SarimaModel>builder()
                 .y(DoubleSeq.of(x))
                 .meanCorrection(true)
@@ -565,7 +565,7 @@ public class DifferencingModule implements IDifferencingModule {
         ModelDescription desc = context.getDescription();
         RegArimaEstimation<SarimaModel> estimation = context.getEstimation();
         int freq = desc.getAnnualFrequency();
-        SarimaSpecification curspec = desc.specification();
+        SarimaOrders curspec = desc.specification();
         try {
             // get residuals
             DoubleSeq res = RegArimaUtility.linearizedData(desc.regarima(), estimation.getConcentratedLikelihood());

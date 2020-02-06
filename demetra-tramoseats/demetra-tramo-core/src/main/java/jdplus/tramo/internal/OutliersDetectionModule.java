@@ -28,7 +28,7 @@ import jdplus.regarima.outlier.FastOutlierDetector;
 import jdplus.regarima.outlier.SingleOutlierDetector;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
@@ -243,7 +243,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         // int rslt = ml ? 1 : 0;
         int n = desc.getSeries().getValues().count(x -> Double.isFinite(x));
         // first, check if od is possible
-        SarimaSpecification spec = desc.specification();
+        SarimaOrders spec = desc.specification();
         int nparm = Math.max(spec.getD() + spec.getP() + spec.getPeriod()
                 * (spec.getBd() + spec.getBp()), spec.getQ()
                 + spec.getPeriod() * spec.getBq())

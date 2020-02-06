@@ -18,7 +18,7 @@ package demetra.descriptors.arima;
 
 import demetra.information.InformationMapping;
 import demetra.arima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 
 /**
  *

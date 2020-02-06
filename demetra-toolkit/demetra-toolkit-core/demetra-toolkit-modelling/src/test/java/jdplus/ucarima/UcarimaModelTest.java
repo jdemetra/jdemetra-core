@@ -6,7 +6,7 @@
 package jdplus.ucarima;
 
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -83,7 +83,7 @@ public class UcarimaModelTest {
     }
 
     public static UcarimaModel ucmAirline(int period, double th, double bth) {
-        SarimaSpecification spec=SarimaSpecification.airline(period);
+        SarimaOrders spec=SarimaOrders.airline(period);
         SarimaModel sarima = SarimaModel.builder(spec)
                 .theta(1, th)
                 .btheta(1, bth)
@@ -102,7 +102,7 @@ public class UcarimaModelTest {
     }
 
     public static UcarimaModel ucm3111(double[] phi, double th, double bth) {
-        SarimaSpecification spec=SarimaSpecification.airline(12);
+        SarimaOrders spec=SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec)
                 .phi(phi)
                 .theta(1, th)

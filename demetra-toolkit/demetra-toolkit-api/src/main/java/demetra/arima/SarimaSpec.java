@@ -14,10 +14,10 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.modelling.regarima;
+package demetra.arima;
 
 import demetra.design.Development;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.data.ParameterSpec;
 import demetra.util.Validatable;
 
@@ -154,8 +154,8 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
                 && getBp() == 0 && bd == 1 && getBq() == 1;
     }
 
-    public SarimaSpecification getSpecification(int period) {
-        SarimaSpecification spec = new SarimaSpecification(period);
+    public SarimaOrders getSpecification(int period) {
+        SarimaOrders spec = new SarimaOrders(period);
         spec.setP(getP());
         spec.setD(d);
         spec.setQ(getQ());

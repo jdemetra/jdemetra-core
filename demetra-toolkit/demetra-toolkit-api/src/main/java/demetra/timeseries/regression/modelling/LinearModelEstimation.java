@@ -14,17 +14,21 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.regression;
+package demetra.timeseries.regression.modelling;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.MissingValueEstimation;
 import demetra.design.Development;
+import demetra.information.InformationSet;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.PreadjustmentVariable;
+import demetra.timeseries.regression.Variable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -38,7 +42,7 @@ import lombok.NonNull;
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder")
-public final class RegArimaEstimation<M> {
+public final class LinearModelEstimation<M> {
 
     private final TsData originalSeries;
 
@@ -66,7 +70,7 @@ public final class RegArimaEstimation<M> {
     /**
      * Stochastic model
      */
-    private M arima;
+    private M stochasticComponent;
 
     /**
      * Regression estimation. The order correspond to the order of the variables
@@ -85,6 +89,8 @@ public final class RegArimaEstimation<M> {
     private Map<String, TsData> components = new HashMap<>();
 
     public TsData preadjustmentEffect(TsDomain domain, Predicate<ITsVariable> test) {
+        if (preadjustmentVariables == null || preadjustmentVariables.length ==0)
+            return null;
         double[] data = new double[domain.length()];
         DoubleSeq.Mutable Data = DoubleSeq.Mutable.of(data);
         for (PreadjustmentVariable var : preadjustmentVariables) {
@@ -100,6 +106,8 @@ public final class RegArimaEstimation<M> {
     }
 
     public TsData regressionEffect(@NonNull TsDomain domain, Predicate<Variable> predicate) {
+        if (variables == null || variables.length ==0)
+            return null;
         double[] data = new double[domain.length()];
         DoubleSeq.Mutable Data = DoubleSeq.Mutable.of(data);
         int cpos = meanCorrection ? 1 : 0;
@@ -116,31 +124,7 @@ public final class RegArimaEstimation<M> {
         }
         return TsData.ofInternal(domain.getStartPeriod(), data);
     }
-
-    public static enum Component {
-        Interpolated,
-        Transformed,
-        Linearized,
-        TradingDayseffect,
-        EasterEffect,
-        MovingHolidaysEffect,
-        OutliersEffect,
-        TrendOutliersEffect,
-        SeasonalOutliersEffect,
-        IrregularOutliersEffect,
-        PreadjustmentEffect,
-        TrendPreadjustmentEffect,
-        SeasonalPreadjustmentEffect,
-        IrregularPreadjustmentEffect,
-        RegressionEffect,
-        TrendRegressionEffect,
-        SeasonalRegressionEffect,
-        IrregularRegressionEffect,
-        DeterministicEffect,
-        TrendDeterministicEffect,
-        SeasonalDeterministicEffect,
-        IrregularDeterministicEffect,
-
-    }
+    
+    public InformationSet addtionalResults=new InformationSet();
 
 }

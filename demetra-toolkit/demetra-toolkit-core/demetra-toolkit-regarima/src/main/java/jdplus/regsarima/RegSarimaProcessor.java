@@ -16,7 +16,7 @@
  */
 package jdplus.regsarima;
 
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
@@ -146,7 +146,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         SarimaModel current = regs.arima();
         if (mapping == null)
             mapping=SarimaMapping.of(current.specification());
-        SarimaSpecification curSpec = current.specification();
+        SarimaOrders curSpec = current.specification();
         if (curSpec.getParametersCount() == 0 || (mapping != null && mapping.getDim() == 0)) {
             return RegArimaEstimation.<SarimaModel>builder()
                     .model(regs)
@@ -162,7 +162,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
                         .useDefaultIfFailed(true).build();
                 RegArmaModel<SarimaModel> dregs = regs.differencedModel();
                 SarimaModel starthr = initializer.initialize(dregs);
-                SarimaSpecification spec = starthr.specification();
+                SarimaOrders spec = starthr.specification();
                 mstart = starthr;
                 if (this.start == StartingPoint.Multiple) {
                     RegArimaEstimation<SarimaModel> mhr = estimate(regs, mapping, starthr, feps);
@@ -229,7 +229,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
      * @return
      */
     private RegArimaEstimation<SarimaModel> estimate(RegArimaModel<SarimaModel> regs, IArimaMapping<SarimaModel> mapping, SarimaModel start, double precision) {
-        SarimaSpecification curSpec = regs.arima().specification();
+        SarimaOrders curSpec = regs.arima().specification();
         if (curSpec.getParametersCount() == 0 || mapping.getDim() == 0) {
             return RegArimaEstimation.<SarimaModel>builder()
                     .model(regs)
@@ -247,7 +247,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
     private RegArimaEstimation<SarimaModel> tryUrpCancelling(RegArimaEstimation<SarimaModel> estimation, IArimaMapping<SarimaModel> mapping) {
         SarimaModel arima = estimation.getModel().arima();
-        SarimaSpecification spec = arima.specification();
+        SarimaOrders spec = arima.specification();
         if (spec.getP() == 0 || spec.getQ() == 0 || spec.getDifferenceOrder() == 0) {
             return estimation;
         }
@@ -286,7 +286,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
         // try the new model
         try {
-            SarimaModel narima = SarimaModel.builder(SarimaSpecification.stationary(spec))
+            SarimaModel narima = SarimaModel.builder(SarimaOrders.stationary(spec))
                     .parameters(parameters)
                     .build();
             RegArimaEstimation<SarimaModel> nrslts = optimize(estimation.getModel(), mapping, narima, eps, false);
@@ -302,7 +302,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
     private RegArimaEstimation<SarimaModel> tryUrmCancelling(RegArimaEstimation<SarimaModel> estimation, IArimaMapping<SarimaModel> mapping) {
         SarimaModel arima = estimation.getModel().arima();
-        SarimaSpecification spec = arima.specification();
+        SarimaOrders spec = arima.specification();
         if (spec.getP() == 0 || spec.getQ() == 0 || spec.getBd() == 0) {
             return estimation;
         }
@@ -345,7 +345,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
         // try the new model
         try {
-            SarimaModel narima = SarimaModel.builder(SarimaSpecification.stationary(spec))
+            SarimaModel narima = SarimaModel.builder(SarimaOrders.stationary(spec))
                     .parameters(parameters)
                     .build();
             RegArimaEstimation<SarimaModel> nrslts = optimize(estimation.getModel(), mapping, narima, eps, false);

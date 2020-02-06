@@ -19,7 +19,7 @@ package demetra.tramo;
 import demetra.design.Development;
 import demetra.design.LombokWorkaround;
 import demetra.modelling.TransformationType;
-import demetra.modelling.regarima.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.timeseries.regression.RegressionTestType;
 import demetra.timeseries.regression.TradingDaysType;
 import demetra.util.Validatable;

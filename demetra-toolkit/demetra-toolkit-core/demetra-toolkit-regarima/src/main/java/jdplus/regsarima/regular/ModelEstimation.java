@@ -16,7 +16,7 @@
  */
 package jdplus.regsarima.regular;
 
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.timeseries.regression.Variable;
@@ -162,7 +162,7 @@ public final class ModelEstimation {
         return originalSeries.getAnnualFrequency();
     }
 
-    public SarimaSpecification specification() {
+    public SarimaOrders specification() {
         return model.arima().specification();
     }
 

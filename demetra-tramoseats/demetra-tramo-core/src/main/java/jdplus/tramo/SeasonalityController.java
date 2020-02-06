@@ -11,7 +11,7 @@ import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.regsarima.regular.SeasonalFTest;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.stats.tests.StatisticalTest;
 import demetra.timeseries.TsData;
 import static jdplus.tramo.SeasonalityTests.MSHORT;
@@ -51,7 +51,7 @@ class SeasonalityController extends ModelController {
     private void computeSTests() {
         ModelEstimation refestimation = getReferenceModel().build();
         TsData lin = refestimation.linearizedSeries();
-        SarimaSpecification spec = refestimation.specification();
+        SarimaOrders spec = refestimation.specification();
 //        int del = spec.getD() + spec.getBD();
 //        del = Math.max(Math.min(2, del), 1);
         int del = 1;
@@ -108,10 +108,10 @@ class SeasonalityController extends ModelController {
         setReferenceModel(modelling);
         computeSTests();
         boolean seas = hasSeasonality(modelling, context);
-        SarimaSpecification spec = model.specification();
-        SarimaSpecification nspec = null;
+        SarimaOrders spec = model.specification();
+        SarimaOrders nspec = null;
         if (!seas && spec.isSeasonal()) {
-            nspec = SarimaSpecification.m011(spec.getPeriod());
+            nspec = SarimaOrders.m011(spec.getPeriod());
             nspec.setBq(1);
         } else if (!context.seasonal && seas) {
             context.seasonal = true;
@@ -119,7 +119,7 @@ class SeasonalityController extends ModelController {
         }
         if (!context.seasonal && (mstats.getSeasonalLjungBoxPvalue() < 0.05 || mstats.getLjungBoxPvalue() < 0.05)) {
             context.seasonal = true;
-            nspec = SarimaSpecification.m011(spec.getPeriod());
+            nspec = SarimaOrders.m011(spec.getPeriod());
             nspec.setBq(1);
         }
 

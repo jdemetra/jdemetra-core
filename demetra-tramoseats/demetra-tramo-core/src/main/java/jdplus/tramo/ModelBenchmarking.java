@@ -21,7 +21,7 @@ import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegArimaModelling;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 
 
 /**
@@ -39,7 +39,7 @@ class ModelBenchmarking extends ModelController {
 
         ModelEstimation current = modelling.build();
 
-        SarimaSpecification spec = current.specification();
+        SarimaOrders spec = current.specification();
         if (spec.isAirline(context.seasonal)) {
             return ProcessingResult.Unchanged;
         }

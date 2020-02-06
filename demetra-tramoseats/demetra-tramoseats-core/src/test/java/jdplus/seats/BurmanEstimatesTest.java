@@ -16,7 +16,7 @@
  */
 package jdplus.seats;
 
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.data.Data;
 import jdplus.sarima.SarimaModel;
 import jdplus.ucarima.ModelDecomposer;
@@ -50,7 +50,7 @@ public class BurmanEstimatesTest {
     }
     
     public static UcarimaModel ucmAirline(double th, double bth) {
-        SarimaSpecification spec = SarimaSpecification.airline(12);
+        SarimaOrders spec = SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec)
                 .theta(1, th)
                 .btheta(1, bth)

@@ -9,7 +9,7 @@ import jdplus.ssf.StationaryInitialization;
 import jdplus.ssf.StateComponent;
 import jdplus.arima.ssf.SsfArima;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixNorms;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class StationaryInitializationTest {
 
     @Test
     public void testArma() {
-        SarimaSpecification spec = new SarimaSpecification(12);
+        SarimaOrders spec = new SarimaOrders(12);
         spec.setP(3);
         spec.setQ(1);
         spec.setBp(1);
@@ -44,7 +44,7 @@ public class StationaryInitializationTest {
 
     //@Test
     public void stressTestArma() {
-        SarimaSpecification spec = new SarimaSpecification(12);
+        SarimaOrders spec = new SarimaOrders(12);
         spec.setP(3);
         spec.setQ(1);
         spec.setBp(1);

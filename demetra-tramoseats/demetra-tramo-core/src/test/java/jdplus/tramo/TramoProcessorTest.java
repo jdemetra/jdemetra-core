@@ -17,7 +17,7 @@
 package jdplus.tramo;
 
 import demetra.data.Data;
-import demetra.timeseries.regression.ModellingContext;
+import demetra.timeseries.regression.modelling.ModellingContext;
 import jdplus.regsarima.regular.ModelEstimation;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
@@ -92,7 +92,7 @@ public class TramoProcessorTest {
         TramoProcessor processor = TramoProcessor.of(TramoSpec.TR5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(datamissing));
-        jdplus.regsarima.regular.ModelEstimation rslt = processor.process(s, null);
+        jdplus.regsarima.regular.ModelEstimation rslt = processor.process(s);
         System.out.println("JD3 with missing");
         System.out.println(rslt.getStatistics().getLogLikelihood());
     }
@@ -111,7 +111,7 @@ public class TramoProcessorTest {
         TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(data));
-        ModelEstimation rslt = processor.process(s, null);
+        ModelEstimation rslt = processor.process(s);
         System.out.println("JD3");
         System.out.println(rslt.getStatistics().getAdjustedLogLikelihood());
     }
@@ -132,7 +132,7 @@ public class TramoProcessorTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            ModelEstimation rslt = processor.process(all[i]);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -181,7 +181,7 @@ public class TramoProcessorTest {
         IPreprocessor oprocessor = ospec.build(ocontext);
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            ModelEstimation rslt = processor.process(all[i]);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -210,7 +210,7 @@ public class TramoProcessorTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR0.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            ModelEstimation rslt = processor.process(all[i]);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -237,7 +237,7 @@ public class TramoProcessorTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR1.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            ModelEstimation rslt = processor.process(all[i]);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -264,7 +264,7 @@ public class TramoProcessorTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR2.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            ModelEstimation rslt = processor.process(all[i]);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -291,7 +291,7 @@ public class TramoProcessorTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR3.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            ModelEstimation rslt = processor.process(all[i]);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -318,7 +318,7 @@ public class TramoProcessorTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR4.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            ModelEstimation rslt = processor.process(all[i]);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -345,7 +345,7 @@ public class TramoProcessorTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR5.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            ModelEstimation rslt = processor.process(all[i]);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -387,7 +387,7 @@ public class TramoProcessorTest {
         TramoProcessor processor = TramoProcessor.of(nspec, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(data));
-        ModelEstimation rslt = processor.process(s, null);
+        ModelEstimation rslt = processor.process(s);
         System.out.println("JD3 wald");
         System.out.println(rslt.getStatistics().getAdjustedLogLikelihood());
     }
@@ -418,7 +418,7 @@ public class TramoProcessorTest {
             TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
             TsPeriod start = TsPeriod.monthly(1967, 1);
             TsData s = TsData.of(start, Doubles.of(data));
-            ModelEstimation rslt = processor.process(s, null);
+            ModelEstimation rslt = processor.process(s);
         }
         t1 = System.currentTimeMillis();
         System.out.println("JD3");

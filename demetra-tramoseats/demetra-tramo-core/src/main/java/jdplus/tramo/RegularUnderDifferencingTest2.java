@@ -20,7 +20,7 @@ import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegArimaModelling;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.stats.AutoCovariances;
 import demetra.data.DoubleSeq;
 
@@ -81,7 +81,7 @@ class RegularUnderDifferencingTest2 extends ModelController {
     private RegArimaModelling buildNewModel(RegArimaModelling modelling) {
         ModelDescription desc = modelling.getDescription();
         ModelDescription ndesc = ModelDescription.copyOf(desc);
-        SarimaSpecification spec = desc.specification();
+        SarimaOrders spec = desc.specification();
         if (spec.getD() == 2) {
             if (spec.getP() == 3) {
                 return null;

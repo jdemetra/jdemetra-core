@@ -10,7 +10,7 @@ import demetra.data.Data;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
 import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
@@ -49,7 +49,7 @@ public class OutliersDetectionModuleTest {
     @Test
     public void testProd() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        SarimaSpecification spec =  SarimaSpecification.airline(12);
+        SarimaOrders spec =  SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
 
         ExactOutliersDetector od = ExactOutliersDetector.builder()
@@ -72,7 +72,7 @@ public class OutliersDetectionModuleTest {
     @Ignore
     public void testProdWn() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        SarimaSpecification spec = new SarimaSpecification(12);
+        SarimaOrders spec = new SarimaOrders(12);
         spec.setBd(1);
         spec.setD(1);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
@@ -121,7 +121,7 @@ public class OutliersDetectionModuleTest {
         System.out.println("JD3");
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 200; ++i) {
-        SarimaSpecification spec =  SarimaSpecification.airline(12);
+        SarimaOrders spec =  SarimaOrders.airline(12);
             SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
             ExactOutliersDetector od = ExactOutliersDetector.builder()
                     .singleOutlierDetector(defaultOutlierDetector(12))

@@ -26,13 +26,13 @@ import demetra.design.Development;
  */
 @Development(status = Development.Status.Release)
 @lombok.Data
-public final class SarimaSpecification implements Cloneable {
+public final class SarimaOrders implements Cloneable {
 
     private final int period;
     private int p, d, q, bp, bd, bq;
 
-    public static SarimaSpecification stationary(SarimaSpecification spec) {
-        SarimaSpecification sspec = new SarimaSpecification(spec.getPeriod());
+    public static SarimaOrders stationary(SarimaOrders spec) {
+        SarimaOrders sspec = new SarimaOrders(spec.getPeriod());
         sspec.p = spec.p;
         sspec.q = spec.q;
         sspec.bp = spec.bp;
@@ -41,8 +41,8 @@ public final class SarimaSpecification implements Cloneable {
 
     }
 
-    public static SarimaSpecification of(SarmaSpecification sspec, int d, int bd) {
-        SarimaSpecification spec = new SarimaSpecification(sspec.getPeriod());
+    public static SarimaOrders of(SarmaOrders sspec, int d, int bd) {
+        SarimaOrders spec = new SarimaOrders(sspec.getPeriod());
         spec.p = sspec.getP();
         spec.d = d;
         spec.q = sspec.getQ();
@@ -59,8 +59,8 @@ public final class SarimaSpecification implements Cloneable {
      * @param period
      * @return
      */
-    public static SarimaSpecification airline(int period) {
-        SarimaSpecification spec = new SarimaSpecification(period);
+    public static SarimaOrders airline(int period) {
+        SarimaOrders spec = new SarimaOrders(period);
         spec.p = 0;
         spec.d = 1;
         spec.q = 1;
@@ -78,8 +78,8 @@ public final class SarimaSpecification implements Cloneable {
      * @param period
      * @return
      */
-    public static SarimaSpecification m011(int period) {
-        SarimaSpecification spec = new SarimaSpecification(period);
+    public static SarimaOrders m011(int period) {
+        SarimaOrders spec = new SarimaOrders(period);
         spec.p = 0;
         spec.d = 1;
         spec.q = 1;
@@ -104,9 +104,9 @@ public final class SarimaSpecification implements Cloneable {
     }
 
     @Override
-    public SarimaSpecification clone() {
+    public SarimaOrders clone() {
         try {
-            return (SarimaSpecification) super.clone();
+            return (SarimaOrders) super.clone();
         } catch (CloneNotSupportedException err) {
             throw new AssertionError();
         }
@@ -120,8 +120,8 @@ public final class SarimaSpecification implements Cloneable {
      *
      * @return
      */
-    public SarmaSpecification doStationary() {
-        SarmaSpecification arma = new SarmaSpecification(period);
+    public SarmaOrders doStationary() {
+        SarmaOrders arma = new SarmaOrders(period);
         arma.setP(p);
         arma.setQ(q);
         arma.setBp(bp);

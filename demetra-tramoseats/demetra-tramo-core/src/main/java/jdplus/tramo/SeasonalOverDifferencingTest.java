@@ -19,7 +19,7 @@ package jdplus.tramo;
 import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.regsarima.regular.SeasonalFTest;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.timeseries.TsData;
 
 /**
@@ -34,7 +34,7 @@ class SeasonalOverDifferencingTest {
     public int test(RegArimaModelling context) {
 
         SarimaModel arima = context.getDescription().arima();
-        SarimaSpecification spec = arima.specification();
+        SarimaOrders spec = arima.specification();
         if (spec.getPeriod() == 1) {
             return 0;
         }

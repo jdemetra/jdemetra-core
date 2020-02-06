@@ -26,7 +26,7 @@ import jdplus.regsarima.regular.IModelEstimator;
 import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.matrices.Matrix;
@@ -168,7 +168,7 @@ class FinalEstimator implements IModelEstimator {
         double cmod = .95;
 
         SarimaModel m = context.getDescription().getArimaComponent().getModel();
-        SarimaSpecification spec = m.specification();
+        SarimaOrders spec = m.specification();
 
         DoubleSeq pm = m.parameters();
 
@@ -242,7 +242,7 @@ class FinalEstimator implements IModelEstimator {
         if (nnsig == 0) {
             return 0;
         }
-        SarimaSpecification nspec = spec.clone();
+        SarimaOrders nspec = spec.clone();
         if (icpr > 0) {
             nspec.setP(nspec.getP() - 1);
         }
@@ -263,7 +263,7 @@ class FinalEstimator implements IModelEstimator {
     private boolean checkCommonRoots(RegArimaModelling context) {
         // simplify possible common roots on ar, ma
         SarimaModel arima = context.getDescription().getArimaComponent().getModel();
-        SarimaSpecification spec = arima.specification();
+        SarimaOrders spec = arima.specification();
         boolean changed = false;
         if (spec.getP() != 0 && spec.getQ() != 0) {
             Polynomial p = arima.getRegularAR(), q = arima.getRegularMA();
@@ -299,7 +299,7 @@ class FinalEstimator implements IModelEstimator {
 
         //quasi-unit roots of ar are changed in true unit roots
         SarimaModel m = context.getDescription().getArimaComponent().getModel();
-        SarimaSpecification nspec = m.specification();
+        SarimaOrders nspec = m.specification();
 
         boolean ok = true;
         if (nspec.getP() > 0 && nspec.getD() < MAXD) {

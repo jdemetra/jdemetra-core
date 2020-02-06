@@ -25,7 +25,7 @@ import jdplus.arima.estimation.IArimaMapping;
 import jdplus.sarima.estimation.SarimaFixedMapping;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import java.util.Arrays;
 import demetra.data.DoubleSeq;
 
@@ -274,7 +274,7 @@ public class SarimaComponent {
     }
 
     public SarimaModel getModel() {
-        SarimaSpecification spec = new SarimaSpecification(period);
+        SarimaOrders spec = new SarimaOrders(period);
         spec.setP(getP());
         spec.setD(d);
         spec.setQ(getQ());
@@ -318,8 +318,8 @@ public class SarimaComponent {
         return builder.build();
     }
 
-    public SarimaSpecification specification() {
-        SarimaSpecification spec = new SarimaSpecification(period);
+    public SarimaOrders specification() {
+        SarimaOrders spec = new SarimaOrders(period);
         spec.setP(getP());
         spec.setD(d);
         spec.setQ(getQ());
@@ -340,7 +340,7 @@ public class SarimaComponent {
                 && Parameter.isDefault(bphi) && Parameter.isDefault(btheta);
     }
 
-    public void setSpecification(SarimaSpecification spec) {
+    public void setSpecification(SarimaOrders spec) {
         setP(spec.getP());
         d = spec.getD();
         setQ(spec.getQ());
@@ -351,7 +351,7 @@ public class SarimaComponent {
     }
 
     public void setModel(SarimaModel value) {
-        SarimaSpecification spec = value.specification();
+        SarimaOrders spec = value.specification();
         setP(spec.getP());
         d = spec.getD();
         setQ(spec.getQ());

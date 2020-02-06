@@ -33,7 +33,7 @@ import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.tramo.TramoException;
 import java.util.Optional;
 import demetra.data.DoubleSeq;
@@ -51,7 +51,7 @@ public class DifferencingModule implements IDifferencingModule {
     public static final int MAXD = 2, MAXBD = 1;
 
     static boolean comespd(final int freq, final int nz, final boolean seas) {
-        SarimaSpecification spec = new SarimaSpecification(freq);
+        SarimaOrders spec = new SarimaOrders(freq);
         spec.setD(2);
         if (seas) {
             spec.setBd(1);
@@ -129,7 +129,7 @@ public class DifferencingModule implements IDifferencingModule {
     }
 
     private double[] y;
-    private SarimaSpecification spec;
+    private SarimaOrders spec;
     private SarimaModel lastModel;
     private double rmax, rsmax, c, din, tmean;
     private int iter;
@@ -432,7 +432,7 @@ public class DifferencingModule implements IDifferencingModule {
     public boolean process(DoubleSeq data, int period, int d, int bd, boolean seasonal) {
         clear();
         y = data.toArray();
-        spec = new SarimaSpecification(period);
+        spec = new SarimaOrders(period);
         spec.setD(d);
         if (seasonal) {
             spec.setBd(bd);
@@ -524,7 +524,7 @@ public class DifferencingModule implements IDifferencingModule {
                 DoubleSeq outs = RegArimaUtility.regressionEffect(desc.regarima(), estimation.getConcentratedLikelihood(), desc.findPosition(first.get().getVariable()), nvars);
                 res = res.op(outs, (a, b) -> a - b);
             }
-            SarimaSpecification curspec = desc.specification();
+            SarimaOrders curspec = desc.specification();
             // get residuals
             if (!process(res, freq, initial ? 0 : curspec.getD(), initial ? 0 : curspec.getBd(), seasonal)) {
                 return airline(context);

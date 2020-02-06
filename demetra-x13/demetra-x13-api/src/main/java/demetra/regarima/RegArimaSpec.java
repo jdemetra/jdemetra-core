@@ -16,7 +16,7 @@
  */
 package demetra.regarima;
 
-import demetra.modelling.regarima.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.design.Development;
 import demetra.design.LombokWorkaround;
 import demetra.modelling.RegressionTestSpec;

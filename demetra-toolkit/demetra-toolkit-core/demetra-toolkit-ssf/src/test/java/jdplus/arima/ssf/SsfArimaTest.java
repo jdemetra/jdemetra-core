@@ -19,7 +19,7 @@ package jdplus.arima.ssf;
 import jdplus.arima.ssf.SsfArima;
 import demetra.data.Data;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.implementations.TimeInvariantSsf;
@@ -40,7 +40,7 @@ public class SsfArimaTest {
     static final double[] data;
 
     static {
-        SarimaSpecification spec = SarimaSpecification.airline(12);
+        SarimaOrders spec = SarimaOrders.airline(12);
         arima = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).build();
         data = Data.PROD.clone();
     }

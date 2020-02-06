@@ -7,7 +7,7 @@ package jdplus.arima.estimation;
 
 import demetra.data.Data;
 import jdplus.data.DataBlock;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -27,7 +27,7 @@ public class ArmaFilterTest {
     private static final DoubleSeq data;
 
     static {
-        SarimaSpecification spec=SarimaSpecification.airline(12);
+        SarimaOrders spec=SarimaOrders.airline(12);
         airline = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.6).build();
         spec.setP(3);
         arima = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).phi(-.2, -.5, -.2).build();
@@ -181,7 +181,7 @@ public class ArmaFilterTest {
     private static ec.tstoolkit.arima.IArimaModel toLegacy(IArimaModel model) {
         if (model instanceof SarimaModel) {
             SarimaModel sarima = (SarimaModel) model;
-            SarimaSpecification spec = sarima.specification();
+            SarimaOrders spec = sarima.specification();
             ec.tstoolkit.sarima.SarimaSpecification lspec = new ec.tstoolkit.sarima.SarimaSpecification(spec.getPeriod());
             lspec.setP(spec.getP());
             lspec.setD(spec.getD());

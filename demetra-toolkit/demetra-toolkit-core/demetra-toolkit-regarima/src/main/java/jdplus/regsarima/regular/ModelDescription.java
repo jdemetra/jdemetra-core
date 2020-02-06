@@ -33,7 +33,7 @@ import jdplus.modelling.regression.Regression;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.ami.TransformedSeries;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.LengthOfPeriodType;
@@ -415,7 +415,7 @@ public final class ModelDescription {
         return arima;
     }
 
-    public SarimaSpecification specification() {
+    public SarimaOrders specification() {
         return arima.specification();
     }
 
@@ -427,8 +427,8 @@ public final class ModelDescription {
         return arima.defaultMapping();
     }
 
-    public void setSpecification(SarimaSpecification spec) {
-        SarimaSpecification oldSpec = arima.specification();
+    public void setSpecification(SarimaOrders spec) {
+        SarimaOrders oldSpec = arima.specification();
         arima.setSpecification(spec);
         if (transformedData != null && (oldSpec.getD() != spec.getD() || oldSpec.getBd() != spec.getBd())) {
             transformedData = null;
@@ -438,8 +438,8 @@ public final class ModelDescription {
 
     public void setAirline(boolean seas) {
         int period = getAnnualFrequency();
-        SarimaSpecification s = seas ? SarimaSpecification.airline(period)
-                : SarimaSpecification.m011(period);
+        SarimaOrders s = seas ? SarimaOrders.airline(period)
+                : SarimaOrders.m011(period);
         setSpecification(s);
     }
 
@@ -626,7 +626,7 @@ public final class ModelDescription {
             arima.setFreeParameters(DoubleSeq.of(max.getParameters()), ParameterType.Estimated);
         }
         return RegArimaEstimation.<SarimaModel>builder()
-                .model(model)
+                .model(rslt.getModel())
                 .concentratedLikelihood(rslt.getConcentratedLikelihood())
                 .max(max)
                 .llAdjustment(llCorrection)

@@ -12,7 +12,7 @@ import demetra.timeseries.TimeSeriesDomain;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
 import demetra.timeseries.regression.ITsVariable;
-import demetra.timeseries.regression.RegressionVariables;
+import demetra.timeseries.regression.modelling.RegressionVariables;
 import jdplus.math.matrices.Matrix;
 import nbbrd.service.ServiceProvider;
 

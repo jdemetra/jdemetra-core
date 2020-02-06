@@ -24,7 +24,7 @@ import jdplus.math.functions.ParamValidation;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import demetra.math.Complex;
 
@@ -52,7 +52,7 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
      * @param fixed Indicates the fixed parameters. The array must have the same 
      * length as the parameters (given by the specification) 
      */
-    public SarimaFixedMapping(SarimaSpecification spec, DoubleSeq p,
+    public SarimaFixedMapping(SarimaOrders spec, DoubleSeq p,
             boolean[] fixed) {
         mapper = SarimaMapping.of(spec);
         fixedItems = fixed.clone();
@@ -364,7 +364,7 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
 
     @Override
     public DoubleSeq getDefaultParameters() {
-        SarimaSpecification spec = mapper.getSpec();
+        SarimaOrders spec = mapper.getSpec();
         double[] p = new double[getDim()];
         int nar = spec.getP() + spec.getBp();
         int j = 0;
@@ -383,7 +383,7 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
 
     @Override
     public IArimaMapping<SarimaModel> stationaryMapping() {
-        return new SarimaFixedMapping(SarimaSpecification.stationary(mapper.getSpec()), DoubleSeq.of(parameters), this.fixedItems);
+        return new SarimaFixedMapping(SarimaOrders.stationary(mapper.getSpec()), DoubleSeq.of(parameters), this.fixedItems);
     }
     
 

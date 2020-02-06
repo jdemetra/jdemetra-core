@@ -1,15 +1,25 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2020 National Bank of Belgium
+ * 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ * 
+ * https://joinup.ec.europa.eu/software/page/eupl
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
-package demetra.timeseries.regression;
+package demetra.timeseries.regression.modelling;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Algorithm;
 import demetra.design.Development;
-import demetra.timeseries.regression.RegressionVariablesLoader;
 import demetra.timeseries.TimeSeriesDomain;
 import java.util.List;
 import java.util.function.Predicate;
@@ -18,6 +28,7 @@ import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.math.matrices.MatrixType;
+import demetra.timeseries.regression.ITsVariable;
 
 /**
  *

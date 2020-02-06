@@ -17,6 +17,7 @@
         <module>demetra-tramoseats-api</module>
         <module>demetra-tramo-core</module>
         <module>demetra-tramoseats-core</module>
+        <module>demetra-tramoseats-legacy</module>
     </modules>
   
     <properties>

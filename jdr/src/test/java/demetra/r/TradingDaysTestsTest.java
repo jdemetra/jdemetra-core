@@ -19,7 +19,7 @@ package demetra.r;
 import demetra.data.Data;
 import jdplus.data.DataBlockStorage;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.implementations.CompositeSsf;
 import jdplus.ssf.univariate.SsfData;
@@ -73,7 +73,7 @@ public class TradingDaysTestsTest {
     }
 
     public static UcarimaModel ucmAirline(double th, double bth) {
-        SarimaSpecification spec = SarimaSpecification.airline(12);
+        SarimaOrders spec = SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec)
                 .theta(1, th)
                 .btheta(1, bth)

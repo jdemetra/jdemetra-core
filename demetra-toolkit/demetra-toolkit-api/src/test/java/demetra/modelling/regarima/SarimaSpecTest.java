@@ -5,6 +5,7 @@
  */
 package demetra.modelling.regarima;
 
+import demetra.arima.SarimaSpec;
 import demetra.data.ParameterSpec;
 import org.junit.Test;
 import static org.junit.Assert.*;

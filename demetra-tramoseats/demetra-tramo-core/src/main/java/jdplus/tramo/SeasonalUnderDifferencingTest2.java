@@ -20,7 +20,7 @@ import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegArimaModelling;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 
 
 /**
@@ -38,7 +38,7 @@ class SeasonalUnderDifferencingTest2 extends ModelController {
         if (period == 1) {
             return ProcessingResult.Unprocessed;
         }
-        SarimaSpecification spec = desc.specification();
+        SarimaOrders spec = desc.specification();
         if (spec.getBd() == 1 || spec.getBq() == 1 || context.originalSeasonalityTest == 0) {
             return ProcessingResult.Unchanged;
         }
@@ -78,7 +78,7 @@ class SeasonalUnderDifferencingTest2 extends ModelController {
 //
     private RegArimaModelling buildNewModel(RegArimaModelling context) {
         ModelDescription ndesc = ModelDescription.copyOf(context.getDescription());
-        SarimaSpecification spec = ndesc.specification();
+        SarimaOrders spec = ndesc.specification();
         spec.setBp(0);
         spec.setBd(1);
         spec.setBq(1);

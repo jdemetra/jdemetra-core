@@ -22,7 +22,7 @@ import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import java.util.List;
@@ -42,7 +42,7 @@ public class OutliersDetectionModuleTest {
     @Test
     public void testProd() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        SarimaSpecification spec = SarimaSpecification.airline(12);
+        SarimaOrders spec = SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
 
 //        long t0 = System.currentTimeMillis();
@@ -69,7 +69,7 @@ public class OutliersDetectionModuleTest {
     @Test
     public void testProdWn() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        SarimaSpecification spec = new SarimaSpecification(12);
+        SarimaOrders spec = new SarimaOrders(12);
  //       spec.airline(true);
         spec.setBd(1);
         spec.setD(1);

@@ -107,8 +107,8 @@ public class SarimaModel {
      * Gets the underlying specification
      * @return
      */
-    public SarimaSpecification specification() {
-        SarimaSpecification spec = new SarimaSpecification(period);
+    public SarimaOrders specification() {
+        SarimaOrders spec = new SarimaOrders(period);
         spec.setD(d);
         spec.setBd(bd);
         spec.setP(phi.length);

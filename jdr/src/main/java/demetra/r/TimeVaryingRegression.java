@@ -14,7 +14,7 @@ import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.descriptors.arima.SarimaDescriptor;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.dk.SsfFunction;
@@ -122,7 +122,7 @@ public class TimeVaryingRegression {
 
     public Results regarima(TsData s, String td, String svar, double aicdiff) {
         int freq = s.getTsUnit().ratioOf(TsUnit.YEAR);
-        SarimaSpecification spec =  SarimaSpecification.airline(freq);
+        SarimaOrders spec =  SarimaOrders.airline(freq);
         DayClustering dc = days(td);
         Matrix mtd = generate(s.getDomain(), dc);
         Matrix nvar = generateVar(dc, svar);
@@ -201,7 +201,7 @@ public class TimeVaryingRegression {
                 .build();
     }
 
-    private SsfFunction<Airline, ISsf> buildFunction(SsfData data, SarimaSpecification spec, TDvarMapping mapping, Matrix mtd, Matrix nvar) {
+    private SsfFunction<Airline, ISsf> buildFunction(SsfData data, SarimaOrders spec, TDvarMapping mapping, Matrix mtd, Matrix nvar) {
         return SsfFunction.builder(data, mapping,
                 params
                 -> {
@@ -270,7 +270,7 @@ public class TimeVaryingRegression {
         private static final SarimaMapping airlineMapping;
 
         static {
-            SarimaSpecification spec = SarimaSpecification.airline(12);
+            SarimaOrders spec = SarimaOrders.airline(12);
             airlineMapping = SarimaMapping.of(spec);
         }
 
