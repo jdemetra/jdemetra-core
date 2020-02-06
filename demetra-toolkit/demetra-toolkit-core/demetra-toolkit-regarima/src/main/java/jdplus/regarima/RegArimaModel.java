@@ -30,11 +30,11 @@ import demetra.data.DoubleSeq;
 import jdplus.math.matrices.Matrix;
 
 /**
- *
- * @param <M>
+ * Description of a generic regarima model  
+ * @param <M> Type of the stochastic component
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Beta)
 @Immutable(lazy = true)
 public final class RegArimaModel<M extends IArimaModel> {
 

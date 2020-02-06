@@ -19,7 +19,6 @@ package demetra.x12;
 import demetra.regarima.RegArimaSpec;
 import demetra.data.Data;
 import demetra.regarima.OutlierSpec;
-import jdplus.regarima.regular.PreprocessingModel;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
@@ -28,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Ignore;
 import org.junit.Test;
 import demetra.data.Doubles;
+import jdplus.regsarima.regular.ModelEstimation;
 
 /**
  *
@@ -55,9 +55,9 @@ public class X12PreprocessorTest {
         X12Preprocessor processor = X12Preprocessor.of(RegArimaSpec.RG5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(datamissing));
-        PreprocessingModel rslt = processor.process(s, null);
+        ModelEstimation rslt = processor.process(s, null);
         System.out.println("New");
-        System.out.println(rslt.getEstimation().getConcentratedLikelihood().logLikelihood());
+        System.out.println(rslt.getConcentratedLikelihood().logLikelihood());
     }
 
     @Test
@@ -82,13 +82,13 @@ public class X12PreprocessorTest {
         X12Preprocessor processor = X12Preprocessor.of(spec, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(data));
-        PreprocessingModel rslt = processor.process(s, null);
+        ModelEstimation rslt = processor.process(s, null);
         RegArimaSpecification ospec = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.clone();
 //        ospec.getOutliers().setDefaultCriticalValue(3);
         IPreprocessor oprocessor = ospec.build();
         ec.tstoolkit.timeseries.simplets.TsData os = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
         ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(os, null);
-        assertEquals(rslt.getEstimation().statistics().getLogLikelihood(), orslt.estimation.getStatistics().logLikelihood, 1e-4);
+        assertEquals(rslt.getStatistics().getLogLikelihood(), orslt.estimation.getStatistics().logLikelihood, 1e-4);
     }
 
     public static void stressTestProd() {
@@ -107,7 +107,7 @@ public class X12PreprocessorTest {
             X12Preprocessor processor = X12Preprocessor.of(spec, null);
             TsPeriod start = TsPeriod.monthly(1967, 1);
             TsData s = TsData.of(start, Doubles.of(data));
-            PreprocessingModel rslt = processor.process(s, null);
+            ModelEstimation rslt = processor.process(s, null);
         }
         t1 = System.currentTimeMillis();
         System.out.println("new: " + (t1 - t0));

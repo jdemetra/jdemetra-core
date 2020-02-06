@@ -93,7 +93,7 @@ public class ArimaEstimation {
             rbuilder.addX(DoubleSeq.of(x));
         }
 
-        RegArimaEstimation<SarimaModel> rslt = monitor.process(rbuilder.build());
+        RegArimaEstimation<SarimaModel> rslt = monitor.process(rbuilder.build(), null);
         return new Results(rslt.getModel(), rslt.getConcentratedLikelihood(), rslt.statistics(),
                 rslt.getMax().asymptoticCovariance(), rslt.getMax().getScore());
     }

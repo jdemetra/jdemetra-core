@@ -24,7 +24,7 @@ import org.junit.runners.Suite;
  * @author Jean Palate
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({jdplus.regarima.outlier.CriticalValueComputerTest.class, jdplus.regarima.outlier.IRobustStandardDeviationComputerTest.class, jdplus.regarima.outlier.AbstractSingleOutlierDetectorTest.class, jdplus.regarima.outlier.FastOutlierDetectorTest.class})
+@Suite.SuiteClasses({jdplus.regarima.outlier.CriticalValueComputerTest.class, jdplus.regarima.outlier.IRobustStandardDeviationComputerTest.class, jdplus.regarima.outlier.FastOutlierDetectorTest.class})
 public class OutlierSuite {
     
 }

@@ -6,12 +6,11 @@
 package jdplus.tramo;
 
 import jdplus.regarima.RegArimaEstimation;
-import jdplus.regarima.regular.IModelEstimator;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.ModelEstimation;
-import jdplus.regarima.regular.PreprocessingModel;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.IModelEstimator;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.sarima.SarimaModel;
 
 /**
@@ -21,14 +20,14 @@ import jdplus.sarima.SarimaModel;
 abstract class ModelController {
 
     private IModelEstimator estimator;
-    private PreprocessingModel refmodel_;
+    private RegArimaModelling refmodelling;
 
-    PreprocessingModel getReferenceModel() {
-        return refmodel_;
+    RegArimaModelling getReferenceModel() {
+        return refmodelling;
     }
 
-    void setReferenceModel(PreprocessingModel model) {
-        refmodel_ = model;
+    void setReferenceModel(RegArimaModelling model) {
+        refmodelling = model;
     }
 
     IModelEstimator getEstimator() {
@@ -79,9 +78,4 @@ abstract class ModelController {
         //        to.information.copy(from.information);
     }
 
-    protected void transferInformation(PreprocessingModel from, RegArimaModelling to) {
-        to.set(from.getDescription(),from.getEstimation());
-        //        to.information.clear();
-        //        to.information.copy(from.information);
-    }
 }

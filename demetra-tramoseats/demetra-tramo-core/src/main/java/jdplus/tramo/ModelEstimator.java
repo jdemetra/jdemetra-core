@@ -6,8 +6,8 @@
 package jdplus.tramo;
 
 import demetra.design.Development;
-import jdplus.regarima.regular.IModelEstimator;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.IModelEstimator;
+import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.tramo.internal.OutliersDetectionModule;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;

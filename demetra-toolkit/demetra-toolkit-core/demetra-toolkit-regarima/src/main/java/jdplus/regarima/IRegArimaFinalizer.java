@@ -21,19 +21,19 @@ package jdplus.regarima;
 import jdplus.arima.IArimaModel;
 import demetra.design.Development;
 import jdplus.arima.estimation.IArimaMapping;
-import jdplus.regarima.RegArimaEstimation;
 
 /**
- *
+ * Defines the generic interface for the final estimation of a RegArima model
  * @author Jean Palate
  * @param <M>
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Beta)
 @FunctionalInterface
 public interface IRegArimaFinalizer<M extends IArimaModel>  {
     /**
      * 
      * @param regarima
+     * @param mapping
      * @return
      */
     RegArimaEstimation<M> finalize(RegArimaEstimation<M> regarima, IArimaMapping<M> mapping);

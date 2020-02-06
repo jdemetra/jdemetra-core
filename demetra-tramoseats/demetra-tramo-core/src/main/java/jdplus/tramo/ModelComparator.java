@@ -5,7 +5,7 @@
  */
 package jdplus.tramo;
 
-import jdplus.regarima.regular.PreprocessingModel;
+import jdplus.regsarima.regular.ModelEstimation;
 
 /**
  *
@@ -158,7 +158,7 @@ public class ModelComparator {
         this.ksk = builder.ksk;
     }
 
-    public int compare(PreprocessingModel m1, PreprocessingModel m2) {
+    public int compare(ModelEstimation m1, ModelEstimation m2) {
 
         if (m1 == m2) {
             return 0;

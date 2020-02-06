@@ -16,9 +16,9 @@
  */
 package jdplus.tramo;
 
-import jdplus.regarima.regular.TRegressionTest;
-import jdplus.regarima.regular.FRegressionTest;
-import jdplus.regarima.regular.IRegressionTest;
+import jdplus.regsarima.regular.TRegressionTest;
+import jdplus.regarima.FRegressionTest;
+import jdplus.regsarima.regular.IRegressionTest;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
@@ -26,10 +26,10 @@ import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
-import jdplus.regarima.regular.IRegressionModule;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.IRegressionModule;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.sarima.SarimaModel;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
@@ -154,7 +154,7 @@ public class DefaultRegressionTest implements IRegressionModule {
     }
 
     private ModelDescription createTestModel(RegArimaModelling current) {
-        ModelDescription model = new ModelDescription(current.getDescription());
+        ModelDescription model = ModelDescription.copyOf(current.getDescription());
         // add td, lp and easter
         if (td != null) {
             model.addVariable(new Variable(td, "td", false));
@@ -180,17 +180,16 @@ public class DefaultRegressionTest implements IRegressionModule {
         boolean changed = false;
         RegArimaModel<SarimaModel> regarima = tmpModel.regarima();
         IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(tmpModel.getArimaComponent().defaultMapping(), true, precision);
-        RegArimaEstimation<SarimaModel> rslt = processor.process(regarima);
+        RegArimaEstimation<SarimaModel> rslt = processor.process(regarima, currentModel.mapping());
         ConcentratedLikelihoodWithMissing ll = rslt.getConcentratedLikelihood();
 
-        int start = regarima.isMean() ? 1 : 0;
         int nhp = tmpModel.getArimaComponent().getFreeParametersCount();
         // td
         boolean usetd = false;
         if (td != null) {
             Variable variable = tmpModel.variable(td);
             if (variable != null && !variable.isPrespecified()) {
-                int pos = start + tmpModel.findPosition(variable.getVariable());
+                int pos = tmpModel.findPosition(variable.getVariable());
                 int dim = variable.getVariable().dim();
                 IRegressionTest test = dim == 1 ? wdTest : tdTest;
                 if (test.accept(ll, nhp, pos, dim, null)) {
@@ -203,7 +202,7 @@ public class DefaultRegressionTest implements IRegressionModule {
         if (lp != null) {
             Variable variable = tmpModel.variable(lp);
             if (variable != null && !variable.isPrespecified()) {
-                int pos = start + tmpModel.findPosition(variable.getVariable());
+                int pos = tmpModel.findPosition(variable.getVariable());
                 if (usetd && lpTest.accept(ll, nhp, pos, 1, null)) {
                     currentModel.addVariable(new Variable(lp, "lp", false));
                     changed = true;
@@ -214,7 +213,7 @@ public class DefaultRegressionTest implements IRegressionModule {
         if (easter != null) {
             Variable variable = tmpModel.variable(easter);
             if (variable != null && !variable.isPrespecified()) {
-                int pos = start + tmpModel.findPosition(variable.getVariable());
+                int pos = tmpModel.findPosition(variable.getVariable());
                 if (mhTest.accept(ll, nhp, pos, 1, null)) {
                     currentModel.addVariable(new Variable(easter, "easter", false));
                     changed = true;

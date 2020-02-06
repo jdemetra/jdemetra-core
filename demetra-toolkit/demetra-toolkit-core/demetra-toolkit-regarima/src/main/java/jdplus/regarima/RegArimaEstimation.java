@@ -28,15 +28,15 @@ import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.sarima.SarimaModel;
 import java.util.List;
 import java.util.function.Function;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
+import jdplus.likelihood.LogLikelihoodFunction.Point;
 
 /**
- *
+ * RegArimaEstimation. Main results
  * @param <M>
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Beta)
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder")
 public class RegArimaEstimation<M extends IArimaModel> {
@@ -58,9 +58,15 @@ public class RegArimaEstimation<M extends IArimaModel> {
      */
     private LogLikelihoodFunction.Point<RegArimaModel<M>, ConcentratedLikelihoodWithMissing> max;
 
-    
+    /**
+     * Adjustment of the likelihood when the initial observations have been 
+     * transformed before estimation (log...). 0 if unused.
+     */
     private double llAdjustment;
-    private int nparams;
+    
+    public int parametersCount(){
+        return max== null ? 0 : max.getParameters().length;
+    }
 
 
     /**
@@ -71,7 +77,7 @@ public class RegArimaEstimation<M extends IArimaModel> {
         return LikelihoodStatistics.statistics(concentratedLikelihood.logLikelihood(), model.getObservationsCount() - model.getMissingValuesCount())
                 .llAdjustment(llAdjustment)
                 .differencingOrder(model.arima().getNonStationaryArOrder())
-                .parametersCount(nparams + model.getVariablesCount() + 1)
+                .parametersCount(parametersCount() + model.getVariablesCount() + 1)
                 .ssq(concentratedLikelihood.ssq())
                 .build();
 
@@ -95,10 +101,11 @@ public class RegArimaEstimation<M extends IArimaModel> {
     }
 
     public static <M extends IArimaModel> RegArimaEstimation<M> of(RegArimaModel<M> model, int nparams) {
+        ConcentratedLikelihoodWithMissing ll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
         return RegArimaEstimation.<M>builder()
                 .model(model)
-                .concentratedLikelihood(ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model))
-                .nparams(nparams)
+                .concentratedLikelihood(ll)
+                .max(null)
                 .build();
     }
 
@@ -109,7 +116,7 @@ public class RegArimaEstimation<M extends IArimaModel> {
             return y;
         } else {
             double[] ay = y.toArray();
-            DoubleSeq missingEstimates = concentratedLikelihood.missingEstimates();
+            DoubleSeq missingEstimates = concentratedLikelihood.missingCorrections();
             DoubleSeqCursor reader = missingEstimates.cursor();
             for (int i = 0; i < missing.length; ++i) {
                 ay[missing[i]] = reader.getAndNext();

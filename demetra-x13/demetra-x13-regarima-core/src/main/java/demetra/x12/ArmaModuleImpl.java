@@ -16,12 +16,8 @@
  */
 package demetra.x12;
 
-import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
@@ -148,7 +144,7 @@ public class ArmaModuleImpl {
                     .y(data)
                     .arima(SarimaModel.builder(spec).setDefault().build())
                     .build();
-            RegArimaEstimation<SarimaModel> est = processor.process(model);
+            RegArimaEstimation<SarimaModel> est = processor.process(model, null);
             if (est != null) {
                 bic = est.statistics().getBIC2();
                 arima = est.getModel().arima();

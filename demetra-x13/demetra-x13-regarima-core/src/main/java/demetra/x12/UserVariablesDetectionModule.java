@@ -20,14 +20,14 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
-import jdplus.regarima.regular.IRegressionModule;
-import jdplus.regarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.IRegressionModule;
+import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regarima.regular.AICcComparator;
-import jdplus.regarima.regular.IModelComparator;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.ModelEstimation;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regarima.AICcComparator;
+import jdplus.regsarima.regular.IModelComparator;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.sarima.SarimaModel;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,10 +93,10 @@ public class UserVariablesDetectionModule implements IRegressionModule {
 
         // builds models with and without user variables 
         for (int i = 0; i < users.length; ++i) {
-            ModelDescription nudesc = new ModelDescription(description);
+            ModelDescription nudesc = ModelDescription.copyOf(description);
             final IUserTsVariable cur=users[i];
             boolean removed = nudesc.removeVariable(var->var.getVariable().equals(cur));
-            ModelDescription udesc = new ModelDescription(nudesc);
+            ModelDescription udesc = ModelDescription.copyOf(nudesc);
             nudesc.addVariable(new Variable(users[i], "user-"+(i+1), false));
 
             RegArimaEstimation<SarimaModel> nuest, uest;

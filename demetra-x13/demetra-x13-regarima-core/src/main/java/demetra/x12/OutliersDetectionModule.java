@@ -16,6 +16,7 @@
  */
 package demetra.x12;
 
+import jdplus.regsarima.ami.ExactOutliersDetector;
 import demetra.design.BuilderPattern;
 import demetra.timeseries.regression.Variable;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
@@ -26,14 +27,14 @@ import jdplus.modelling.regression.TransitoryChangeFactory;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.regarima.outlier.ExactSingleOutlierDetector;
 import jdplus.regarima.outlier.SingleOutlierDetector;
-import jdplus.regarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ModelDescription;
 import jdplus.sarima.SarimaModel;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import jdplus.regarima.regular.IOutliersDetectionModule;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.IOutliersDetectionModule;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.regarima.outlier.RobustStandardDeviationComputer;
 import internal.jdplus.arima.AnsleyFilter;
 import java.util.ArrayList;
@@ -163,10 +164,10 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         return sod;
     }
 
-    private OutliersDetectionModuleImpl make(ModelDescription desc, double cv) {
-        TsDomain domain = desc.getDomain();
+    private ExactOutliersDetector make(ModelDescription desc, double cv) {
+        TsDomain domain = desc.getEstimationDomain();
 
-        OutliersDetectionModuleImpl impl = OutliersDetectionModuleImpl.builder()
+        ExactOutliersDetector impl = ExactOutliersDetector.builder()
                 .singleOutlierDetector(factories(domain.getAnnualFrequency()))
                 .criticalValue(cv)
                 .maxOutliers(maxOutliers)
@@ -179,7 +180,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         impl.setBounds(start, end);
         String[] types = impl.outlierTypes();
         // remove missing values
-        int[] missing = desc.transformation().getMissing();
+        int[] missing = desc.getMissingInEstimationDomain();
         if (missing != null) {
             for (int i = 0; i < missing.length; ++i) {
                 for (int j = 0; j < types.length; ++j) {
@@ -204,9 +205,9 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
     public ProcessingResult process(RegArimaModelling context, double criticalValue) {
         try {
             ModelDescription model = context.getDescription();
-            TsDomain domain = model.getDomain();
-            OutliersDetectionModuleImpl impl = make(model, criticalValue);
-            boolean changed = impl.process(model.regarima());
+            TsDomain domain = model.getEstimationDomain();
+            ExactOutliersDetector impl = make(model, criticalValue);
+            boolean changed = impl.process(model.regarima(), model.mapping());
             if (!changed) {
                 return ProcessingResult.Unchanged;
             }
@@ -235,5 +236,6 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         }
         return -1;
     }
+
 
 }

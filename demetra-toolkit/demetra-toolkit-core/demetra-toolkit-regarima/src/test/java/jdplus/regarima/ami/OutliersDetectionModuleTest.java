@@ -27,6 +27,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
+import jdplus.sarima.estimation.SarimaMapping;
 
 /**
  *
@@ -58,7 +59,7 @@ public class OutliersDetectionModuleTest {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 100; ++i) {
             od.prepare(regarima.getObservationsCount());
-            od.process(regarima);
+            od.process(regarima, SarimaMapping.of(spec));
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
@@ -85,7 +86,7 @@ public class OutliersDetectionModuleTest {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 100; ++i) {
             od.prepare(regarima.getObservationsCount());
-            od.process(regarima);
+            od.process(regarima, SarimaMapping.of(spec));
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

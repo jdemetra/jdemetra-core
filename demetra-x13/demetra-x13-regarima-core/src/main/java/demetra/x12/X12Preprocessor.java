@@ -22,21 +22,21 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.math.Complex;
 import demetra.timeseries.regression.ModellingContext;
-import jdplus.regarima.regular.ILogLevelModule;
-import jdplus.regarima.regular.IRegressionModule;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.IModelBuilder;
-import jdplus.regarima.regular.IPreprocessor;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.PreprocessingModel;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.ILogLevelModule;
+import jdplus.regsarima.regular.IRegressionModule;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.IModelBuilder;
+import jdplus.regsarima.regular.IPreprocessor;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegArimaModelling;
 import demetra.timeseries.TsData;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import jdplus.regarima.regular.IArmaModule;
-import jdplus.regarima.regular.IDifferencingModule;
-import jdplus.regarima.regular.IOutliersDetectionModule;
-import jdplus.regarima.regular.ModelEstimation;
-import jdplus.regarima.regular.RegressionVariablesTest;
+import jdplus.regsarima.regular.IArmaModule;
+import jdplus.regsarima.regular.IDifferencingModule;
+import jdplus.regsarima.regular.IOutliersDetectionModule;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegressionVariablesTest;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
 import jdplus.regarima.RegArimaEstimation;
@@ -180,7 +180,7 @@ public class X12Preprocessor implements IPreprocessor {
 
     private double va0 = 0, curva = 0;
     private double pcr;
-    private PreprocessingModel reference;
+    private RegArimaModelling reference;
     private boolean needOutliers;
     private boolean needAutoModelling;
     private int loop, round;
@@ -214,15 +214,15 @@ public class X12Preprocessor implements IPreprocessor {
     }
 
     @Override
-    public PreprocessingModel process(TsData originalTs, RegArimaModelling context) {
+    public ModelEstimation process(TsData originalTs, RegArimaModelling context) {
         clear();
-        if (context == null) {
-            context = new RegArimaModelling();
-        }
-        ModelDescription desc = modelBuilder.build(originalTs, context.getLog());
-        if (desc == null) {
+         ModelDescription desc = modelBuilder.build(originalTs, null);
+         if (desc == null) {
             throw new X13Exception("Initialization failed");
         }
+      if (context == null) {
+            context = RegArimaModelling.of(desc);
+        }else
         context.setDescription(desc);
 
         // initialize some internal variables
@@ -235,7 +235,7 @@ public class X12Preprocessor implements IPreprocessor {
             needOutliers = true;
         }
 
-        PreprocessingModel rslt = calc(context);
+        ModelEstimation rslt = calc(context);
 //        if (rslt != null) {
 //            rslt.info_ = context.information;
 //            rslt.addProcessingInformation(context.processingLog);
@@ -243,7 +243,7 @@ public class X12Preprocessor implements IPreprocessor {
         return rslt;
     }
 
-    private PreprocessingModel calc(RegArimaModelling context) {
+    private ModelEstimation calc(RegArimaModelling context) {
         try {
 
             if (transformation != null) {
@@ -264,7 +264,7 @@ public class X12Preprocessor implements IPreprocessor {
                 if (context.needEstimation()) {
                     context.estimate(options.precision);
                 }
-                reference = context.build();
+                reference = RegArimaModelling.copyOf(context);
                 ModelController controller = new ModelController(.95);
                 boolean ok = controller.accept(context);
                 plbox0 = 1 - controller.getLjungBoxTest().getPValue();
@@ -411,7 +411,7 @@ public class X12Preprocessor implements IPreprocessor {
             rtval0 = rtval;
             rvr0 = rvr;
             plbox0 = plbox;
-            reference = context.build();
+            reference = RegArimaModelling.copyOf(context);
         }
 
         if (loop == 1) {
@@ -536,7 +536,7 @@ public class X12Preprocessor implements IPreprocessor {
         rtval0 = controller.getRTval();
         rvr0 = controller.getRvr();
         plbox0 = 1 - controller.getLjungBoxTest().getPValue();
-        reference = context.build();
+        reference = RegArimaModelling.copyOf(context);
 
     }
 

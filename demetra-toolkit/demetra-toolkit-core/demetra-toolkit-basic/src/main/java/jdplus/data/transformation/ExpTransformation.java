@@ -26,7 +26,8 @@ import demetra.design.Development;
 @Development(status = Development.Status.Alpha)
 public class ExpTransformation implements DataTransformation {
 
-    public static final ExpTransformation EXEMPLAR=new ExpTransformation();
+    public static final ExpTransformation EXEMPLAR = new ExpTransformation();
+
     /**
      *
      * @param data
@@ -58,18 +59,38 @@ public class ExpTransformation implements DataTransformation {
             x[i] = Math.exp(x[i]);
         }
         if (ljacobian != null) {
-        } else {
             double s = 0;
-            for (int i = ljacobian.start; i < ljacobian.end; ++i) {
-                s += x[i];
+            if (ljacobian.missing == null) {
+                for (int i = ljacobian.start; i < ljacobian.end; ++i) {
+                    if (Double.isFinite(x[i])) {
+                        s += x[i];
+                    }
+                }
+            } else {
+                int nmissing = ljacobian.missing.length;
+                int imissing = 0, ic = ljacobian.start;
+                while (imissing < nmissing && ljacobian.missing[imissing] < ic) {
+                    ++imissing;
+                }
+                while (imissing != nmissing && ic < ljacobian.end) {
+                    if (ic == ljacobian.missing[imissing]) {
+                        ++ic;
+                        ++imissing;
+                    } else {
+                        s += x[ic++];
+                    }
+                }
+                while (ic < ljacobian.end) {
+                    s += x[ic++];
+                }
             }
             ljacobian.value += s;
         }
         return DoubleSeq.of(x);
     }
-    
+
     @Override
-    public double transform(double x){
+    public double transform(double x) {
         return Math.exp(x);
     }
 }

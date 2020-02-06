@@ -52,7 +52,6 @@ public class FractionalAirlineProcessor implements FractionalAirlineAlgorithms.P
         OutlierDescriptor[] o = null;
         if (spec.getOutliers() != null) {
             GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
-                    .mapping(mapping)
                     .precision(1e-5)
                     .build();
             IOutlierFactory[] factories = factories(spec.getOutliers());
@@ -64,7 +63,7 @@ public class FractionalAirlineProcessor implements FractionalAirlineAlgorithms.P
             od.setCriticalValue(spec.getCriticalValue());
             RegArimaModel regarima = builder.build();
             od.prepare(regarima.getObservationsCount());
-            od.process(regarima);
+            od.process(regarima, mapping);
             int[][] io = od.getOutliers();
             o=new OutlierDescriptor[io.length];
             for (int i = 0; i < io.length; ++i) {
@@ -76,10 +75,9 @@ public class FractionalAirlineProcessor implements FractionalAirlineAlgorithms.P
             }
         }
         GlsArimaProcessor<ArimaModel> finalProcessor = GlsArimaProcessor.builder(ArimaModel.class)
-                .mapping(mapping)
                 .precision(1e-9)
                 .build();
-        RegArimaEstimation rslt = finalProcessor.process(builder.build());
+        RegArimaEstimation rslt = finalProcessor.process(builder.build(), mapping);
         
         demetra.modelling.regarima.RegArimaEstimation<FractionalAirline> re = jdplus.regarima.ApiUtility.toApi(rslt,s->toApi(spec, mapping, (ArimaModel)s));
         return new FractionalAirlineEstimation(re, o);

@@ -62,9 +62,28 @@ public class LogTransformation implements DataTransformation {
         }
         if (ljacobian != null) {
             double s = 0;
-            for (int i = ljacobian.start; i < ljacobian.end; ++i) {
-                if (Double.isFinite(x[i])) {
-                    s += x[i];
+            if (ljacobian.missing == null) {
+                for (int i = ljacobian.start; i < ljacobian.end; ++i) {
+                    if (Double.isFinite(x[i])) {
+                        s += x[i];
+                    }
+                }
+            }else{
+                int nmissing=ljacobian.missing.length;
+                int imissing=0, ic=ljacobian.start;
+                while (imissing<nmissing && ljacobian.missing[imissing]<ic){
+                    ++imissing;
+                }
+                while (imissing != nmissing && ic<ljacobian.end){
+                    if (ic == ljacobian.missing[imissing]){
+                        ++ic;
+                        ++imissing;
+                    }else{
+                         s += x[ic++];
+                    }
+                }
+                while (ic<ljacobian.end){
+                         s += x[ic++];
                 }
             }
             ljacobian.value -= s;

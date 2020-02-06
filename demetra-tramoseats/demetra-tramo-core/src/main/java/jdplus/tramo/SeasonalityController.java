@@ -6,11 +6,11 @@
 package jdplus.tramo;
 
 import demetra.design.Development;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.PreprocessingModel;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.RegArimaModelling;
-import jdplus.regarima.regular.SeasonalFTest;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.SeasonalFTest;
 import demetra.arima.SarimaSpecification;
 import jdplus.stats.tests.StatisticalTest;
 import demetra.timeseries.TsData;
@@ -49,14 +49,15 @@ class SeasonalityController extends ModelController {
     }
 
     private void computeSTests() {
-        TsData lin = getReferenceModel().linearizedSeries();
-        SarimaSpecification spec = getReferenceModel().getDescription().specification();
+        ModelEstimation refestimation = getReferenceModel().build();
+        TsData lin = refestimation.linearizedSeries();
+        SarimaSpecification spec = refestimation.specification();
 //        int del = spec.getD() + spec.getBD();
 //        del = Math.max(Math.min(2, del), 1);
         int del = 1;
         stests = new SeasonalityTests();
         stests.test(lin, del, true);
-        mstats = ModelStatistics.of(getReferenceModel());
+        mstats = ModelStatistics.of(refestimation);
     }
 
     private boolean hasSeasonality(RegArimaModelling modelling, TramoProcessor.Context context) {
@@ -103,11 +104,11 @@ class SeasonalityController extends ModelController {
      * @return
      */
     private ProcessingResult computeReferenceModel(RegArimaModelling modelling, TramoProcessor.Context context) {
-        PreprocessingModel model = modelling.build();
-        setReferenceModel(model);
+        ModelEstimation model = modelling.build();
+        setReferenceModel(modelling);
         computeSTests();
         boolean seas = hasSeasonality(modelling, context);
-        SarimaSpecification spec = model.getDescription().specification();
+        SarimaSpecification spec = model.specification();
         SarimaSpecification nspec = null;
         if (!seas && spec.isSeasonal()) {
             nspec = SarimaSpecification.m011(spec.getPeriod());
@@ -123,13 +124,12 @@ class SeasonalityController extends ModelController {
         }
 
         if (nspec != null) {
-            RegArimaModelling ncontext = new RegArimaModelling();
-            ModelDescription desc = new ModelDescription(modelling.getDescription());
+            ModelDescription desc = ModelDescription.copyOf(modelling.getDescription());
             desc.setSpecification(spec);
-            ncontext.setDescription(desc);
+            RegArimaModelling ncontext = RegArimaModelling.of(desc);
             if (estimate(ncontext, false)) {
                 transferInformation(ncontext, modelling);
-                setReferenceModel(modelling.build());
+                setReferenceModel(modelling);
                 return ProcessingResult.Changed;
             }
         }
@@ -138,9 +138,10 @@ class SeasonalityController extends ModelController {
 
     private ProcessingResult compareReferenceModels(RegArimaModelling context) {
         // compare with the previous reference model
-        PreprocessingModel refmodel = getReferenceModel();
+        RegArimaModelling referenceModel = getReferenceModel();
+        ModelEstimation refestimation = referenceModel.build();
         ModelComparator.Preference pref = ModelComparator.Preference.BIC;
-        if (!refmodel.getDescription().specification().equals(context.getDescription().specification())) {
+        if (!refestimation.specification().equals(context.getDescription().specification())) {
             SeasonalOverDifferencingTest overseas = new SeasonalOverDifferencingTest();
             switch (overseas.test(context)) {
                 case 1:
@@ -154,16 +155,14 @@ class SeasonalityController extends ModelController {
         ModelComparator cmp = ModelComparator.builder()
                 .preference(pref)
                 .build();
-        PreprocessingModel cur = context.build();
-        int icmp = cmp.compare(cur, refmodel);
-        if (icmp < 0) {
-            setReferenceModel(cur);
+        ModelEstimation cur = context.build();
+        int icmp = cmp.compare(cur, refestimation);
+        if (icmp <= 0) {
+            setReferenceModel(context);
             return ProcessingResult.Unchanged;
-        } else if (icmp > 0) {
-            this.transferInformation(refmodel, context);
-            return ProcessingResult.Changed;
         } else {
-            return ProcessingResult.Unchanged;
-        }
+            this.transferInformation(referenceModel, context);
+            return ProcessingResult.Changed;
+        } 
     }
 }

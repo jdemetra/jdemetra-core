@@ -38,9 +38,9 @@ import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.StockTradingDays;
 import demetra.timeseries.regression.TradingDaysType;
 import demetra.timeseries.regression.TransitoryChange;
-import jdplus.regarima.regular.IModelBuilder;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.SarimaComponent;
+import jdplus.regsarima.regular.IModelBuilder;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.SarimaComponent;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.LengthOfPeriodType;
@@ -56,6 +56,7 @@ import jdplus.modelling.regression.PeriodicOutlierFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
 import demetra.timeseries.regression.UserTradingDays;
 import demetra.modelling.regarima.SarimaSpec;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.tramo.CalendarSpec;
 import demetra.tramo.EasterSpec;
@@ -139,7 +140,8 @@ class TramoModelBuilder implements IModelBuilder {
     @Override
     public ModelDescription build(TsData series, InformationSet log) {
         TsData nseries = TsDataToolkit.select(series, spec.getTransform().getSpan());
-        ModelDescription cur = new ModelDescription(TsDataToolkit.select(nseries, spec.getEstimate().getSpan()));
+        TsDomain edom = nseries.getDomain().select(spec.getEstimate().getSpan());
+        ModelDescription cur = new ModelDescription(nseries, edom);
 
         initializeMissing(cur);
         initializeTransformation(cur, spec.getTransform());
@@ -211,7 +213,7 @@ class TramoModelBuilder implements IModelBuilder {
                     v = null;
             }
             if (v != null) {
-                String name = IOutlier.defaultName(code, pos, model.getDomain());
+                String name = IOutlier.defaultName(code, pos, model.getEstimationDomain());
                 double[] c = preadjustment.get(name);
                 if (c != null) {
                     model.addPreadjustmentVariable(new PreadjustmentVariable(v, name, c));

@@ -52,7 +52,7 @@ public class DefaultModelEstimator implements IModelEstimator {
     public boolean estimate(SeatsModel model) {
 
 	RegArimaEstimation<SarimaModel> estimation = processor.process(model
-		.asRegarima());
+		.asRegarima(), null);
 	if (estimation == null)
 	    return false;
 

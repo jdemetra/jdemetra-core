@@ -43,6 +43,8 @@ import java.util.stream.IntStream;
 @PrimitiveReplacementOf(generic = List.class, primitive = int.class)
 public final class IntList {
 
+    public static final int[] EMPTY = new int[0];
+
     private static final int DEFAULT_SIZE = 128;
     private int[] array;
     private int limit;
@@ -107,7 +109,7 @@ public final class IntList {
             }
             System.arraycopy(array, index, array, index + 1,
                     limit - index);
-            array[ index] = value;
+            array[index] = value;
             limit++;
         }
     }
@@ -123,7 +125,7 @@ public final class IntList {
         if (limit == array.length) {
             growArray(limit * 2);
         }
-        array[ limit++] = value;
+        array[limit++] = value;
         return true;
     }
 
@@ -210,7 +212,7 @@ public final class IntList {
         boolean rval = false;
 
         for (int j = 0; !rval && (j < limit); j++) {
-            if (array[ j] == o) {
+            if (array[j] == o) {
                 rval = true;
             }
         }
@@ -231,7 +233,7 @@ public final class IntList {
 
         if (this != c) {
             for (int j = 0; rval && (j < c.limit); j++) {
-                if (!contains(c.array[ j])) {
+                if (!contains(c.array[j])) {
                     rval = false;
                 }
             }
@@ -264,7 +266,7 @@ public final class IntList {
                 // assume match
                 rval = true;
                 for (int j = 0; rval && (j < limit); j++) {
-                    rval = array[ j] == other.array[ j];
+                    rval = array[j] == other.array[j];
                 }
             }
         }
@@ -285,7 +287,7 @@ public final class IntList {
         if (index >= limit) {
             throw new IndexOutOfBoundsException();
         }
-        return array[ index];
+        return array[index];
     }
 
     /**
@@ -312,7 +314,7 @@ public final class IntList {
         int hash = 0;
 
         for (int j = 0; j < limit; j++) {
-            hash = (31 * hash) + array[ j];
+            hash = (31 * hash) + array[j];
         }
         return hash;
     }
@@ -332,7 +334,7 @@ public final class IntList {
         int rval = 0;
 
         for (; rval < limit; rval++) {
-            if (o == array[ rval]) {
+            if (o == array[rval]) {
                 break;
             }
         }
@@ -366,7 +368,7 @@ public final class IntList {
         int rval = limit - 1;
 
         for (; rval >= 0; rval--) {
-            if (o == array[ rval]) {
+            if (o == array[rval]) {
                 break;
             }
         }
@@ -389,7 +391,7 @@ public final class IntList {
         if (index >= limit) {
             throw new IndexOutOfBoundsException();
         }
-        int rval = array[ index];
+        int rval = array[index];
 
         System.arraycopy(array, index + 1, array, index, limit - index);
         limit--;
@@ -433,7 +435,7 @@ public final class IntList {
         boolean rval = false;
 
         for (int j = 0; j < c.limit; j++) {
-            if (removeValue(c.array[ j])) {
+            if (removeValue(c.array[j])) {
                 rval = true;
             }
         }
@@ -453,7 +455,7 @@ public final class IntList {
         boolean rval = false;
 
         for (int j = 0; j < limit;) {
-            if (!c.contains(array[ j])) {
+            if (!c.contains(array[j])) {
                 remove(j);
                 rval = true;
             } else {
@@ -479,9 +481,9 @@ public final class IntList {
         if (index >= limit) {
             throw new IndexOutOfBoundsException();
         }
-        int rval = array[ index];
+        int rval = array[index];
 
-        array[ index] = element;
+        array[index] = element;
         return rval;
     }
 
@@ -503,6 +505,9 @@ public final class IntList {
      * sequence.
      */
     public int[] toArray() {
+        if (limit == 0) {
+            return EMPTY;
+        }
         int[] rval = new int[limit];
 
         System.arraycopy(array, 0, rval, 0, limit);
@@ -544,7 +549,7 @@ public final class IntList {
         System.arraycopy(array, 0, new_array, 0, limit);
         array = new_array;
     }
-    
+
     /**
      * Returns a sequential {@code Stream} with this collection as its source.
      *

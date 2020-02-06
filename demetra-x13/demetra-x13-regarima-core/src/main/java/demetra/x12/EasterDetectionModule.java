@@ -21,14 +21,14 @@ import demetra.design.Development;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
-import jdplus.regarima.regular.IRegressionModule;
-import jdplus.regarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.IRegressionModule;
+import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regarima.regular.AICcComparator;
-import jdplus.regarima.regular.IModelComparator;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.ModelEstimation;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regarima.AICcComparator;
+import jdplus.regsarima.regular.IModelComparator;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.sarima.SarimaModel;
 import demetra.timeseries.regression.IEasterVariable;
 import jdplus.arima.estimation.IArimaMapping;
@@ -91,12 +91,12 @@ public class EasterDetectionModule implements IRegressionModule {
         IArimaMapping<SarimaModel> mapping = description.getArimaComponent().defaultMapping();
         IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(mapping, true, eps);
 
-        ModelDescription refdesc = new ModelDescription(description);
+        ModelDescription refdesc = ModelDescription.copyOf(description);
         refdesc.remove("easter");
         RegArimaEstimation<SarimaModel> refest = refdesc.estimate(processor);
 
         for (int i = 0; i < n; ++i) {
-            ModelDescription curDesc = new ModelDescription(refdesc);
+            ModelDescription curDesc = ModelDescription.copyOf(refdesc);
             curDesc.addVariable(new Variable(easters[i], "easter", false));
             desc[i] = curDesc;
             est[i] = curDesc.estimate(processor);

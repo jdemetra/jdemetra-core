@@ -34,7 +34,7 @@ import jdplus.likelihood.LogLikelihoodFunction;
  * @author palatej
  */
 @lombok.experimental.UtilityClass
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Beta)
 public class ApiUtility {
 
     public <S extends IArimaModel, R> demetra.modelling.regarima.RegArimaEstimation<R> toApi(RegArimaEstimation<S> regarima, Function<S, R> fn) {
@@ -92,7 +92,7 @@ public class ApiUtility {
             int ndf = ll.degreesOfFreedom() - nhp;
             double sig2 = ll.ssq() / ndf;
             DoubleSeq mvar = ll.missingUnscaledVariances();
-            DoubleSeq mval = ll.missingEstimates();
+            DoubleSeq mval = ll.missingCorrections();
             for (int i = 0; i < missing.length; ++i) {
                 me[i] = new MissingValueEstimation(missing[i], mval.get(i), Math.sqrt(mvar.get(i) / sig2));
             }

@@ -35,6 +35,7 @@ import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixWindow;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +73,7 @@ public class Regression {
             // Basic
             FACTORIES.put(Constant.class, ConstantFactory.FACTORY);
             FACTORIES.put(LinearTrend.class, LinearTrendFactory.FACTORY);
-            
+
             // Outliers
             FACTORIES.put(AdditiveOutlier.class, AOFactory.FACTORY);
             FACTORIES.put(LevelShift.class, LSFactory.FACTORY);
@@ -117,15 +118,19 @@ public class Regression {
             for (int i = 0, j = 0; i < vars.length; ++i) {
                 ITsVariable v = vars[i];
                 RegressionVariableFactory factory = FACTORIES.get(v.getClass());
-                    factory.fill(v, start, wnd.hnext(v.dim()));
+                if (factory == null) {
+                    throw new TsException("Unknown variable");
+                }
+                factory.fill(v, start, wnd.hnext(v.dim()));
             }
         } else {
             for (int i = 0, j = 0; i < vars.length; ++i) {
                 ITsVariable v = vars[i];
                 RegressionVariableFactory factory = FACTORIES.get(v.getClass());
-                if (factory != null) {
-                    factory.fill(v, domain, wnd.hnext(v.dim()));
+                if (factory == null) {
+                    throw new TsException("Unknown variable");
                 }
+                factory.fill(v, domain, wnd.hnext(v.dim()));
             }
         }
         return M;

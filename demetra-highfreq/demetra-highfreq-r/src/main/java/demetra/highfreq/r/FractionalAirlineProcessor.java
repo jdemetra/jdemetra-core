@@ -82,8 +82,7 @@ public class FractionalAirlineProcessor{
         PeriodicAirlineMapping mapping = new PeriodicAirlineMapping(period, adjust, false);
 
         GlsArimaProcessor.Builder<ArimaModel> builder = GlsArimaProcessor.builder(ArimaModel.class);
-        builder.mapping(mapping)
-                .minimizer(LevenbergMarquardtMinimizer.builder())
+        builder.minimizer(LevenbergMarquardtMinimizer.builder())
                 .precision(1e-12)
                 .useMaximumLikelihood(true)
                 .useParallelProcessing(true)
@@ -95,7 +94,7 @@ public class FractionalAirlineProcessor{
                 .arima(arima)
                 .build();
         GlsArimaProcessor<ArimaModel> monitor = builder.build();
-        RegArimaEstimation<ArimaModel> rslt = monitor.process(regarima);
+        RegArimaEstimation<ArimaModel> rslt = monitor.process(regarima, mapping);
         arima = rslt.getModel().arima();
         double[] p = mapping.parametersOf(arima).toArray();
         UcarimaModel ucm = ucm(rslt.getModel().arima(), sn);

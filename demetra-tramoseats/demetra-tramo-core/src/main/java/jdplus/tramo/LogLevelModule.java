@@ -23,12 +23,12 @@ import demetra.modelling.TransformationType;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
-import jdplus.regarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.sarima.SarimaModel;
-import jdplus.regarima.regular.ILogLevelModule;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.ILogLevelModule;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.RegArimaModelling;
 import demetra.data.DoubleSeq;
 
 /**
@@ -173,7 +173,7 @@ public class LogLevelModule implements ILogLevelModule {
     
     public boolean process(RegArimaModel<SarimaModel> model) {
         IRegArimaProcessor processor = TramoUtility.processor(true, precision);
-        e = processor.process(model);
+        e = processor.process(model, null);
         if (e != null) {
             level = Math.log(e.getConcentratedLikelihood().ssq()
                     * e.getConcentratedLikelihood().factor());
@@ -195,7 +195,7 @@ public class LogLevelModule implements ILogLevelModule {
         RegArimaModel<SarimaModel> logModel = model.toBuilder()
                 .y(DoubleSeq.of(lx))
                 .build();
-        el = processor.process(logModel);
+        el = processor.process(logModel, null);
 
         if (el != null) {
             log = Math.log(el.getConcentratedLikelihood().ssq()
@@ -214,8 +214,8 @@ public class LogLevelModule implements ILogLevelModule {
         ModelDescription desc = context.getDescription();
         if (desc.isLogTransformation())
             return ProcessingResult.Unprocessed;
-        double[] data=desc.transformation().getData();
-        if (! process(DoubleSeq.of(data), desc.getAnnualFrequency(), seasonal))
+        DoubleSeq data=desc.getTransformedSeries().getValues();
+        if (! process(data, desc.getAnnualFrequency(), seasonal))
             return ProcessingResult.Failed;
         if (isChoosingLog()){
             desc.setLogTransformation(true);

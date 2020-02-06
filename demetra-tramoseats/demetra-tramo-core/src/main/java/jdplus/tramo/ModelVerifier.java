@@ -17,9 +17,8 @@
 
 package jdplus.tramo;
 
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.ModelEstimation;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.stats.tests.NiidTests;
 import demetra.data.DoubleSeq;
 import jdplus.regarima.RegArimaEstimation;
@@ -49,7 +48,7 @@ public class ModelVerifier {
                     .k(RegArimaUtility.defaultLjungBoxLength(period))
                     .ks(2)
                     .seasonal(period > 1)
-                    .hyperParametersCount(estimation.getNparams())
+                    .hyperParametersCount(estimation.parametersCount())
                     .build();
         //join test on normality
         if (niid.normalityTest().getValue() > NORMAL) {

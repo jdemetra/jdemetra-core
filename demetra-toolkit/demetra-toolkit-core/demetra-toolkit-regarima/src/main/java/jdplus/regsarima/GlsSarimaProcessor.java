@@ -131,16 +131,16 @@ public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
      * @return
      */
     @Override
-    public RegArimaEstimation<SarimaModel> process(RegArimaModel<SarimaModel> regs) {
+    public RegArimaEstimation<SarimaModel> process(RegArimaModel<SarimaModel> regs, IArimaMapping<SarimaModel> mapping) {
         RegArmaModel<SarimaModel> dmodel = regs.differencedModel();
         SarimaModel start = initializer.initialize(dmodel);
         // not used for the time being
-        return optimize(regs, start);
+        return optimize(regs, start, mapping);
     }
     
     @Override
-    public RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs) {
-        return optimize(regs, null);
+    public RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs, IArimaMapping<SarimaModel> mapping) {
+        return optimize(regs, null, mapping);
     }
     
     public LogLikelihoodFunction<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> llFunction(RegArimaModel<SarimaModel> regs) {
@@ -151,7 +151,7 @@ public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         return new LogLikelihoodFunction(rmapping, fn);
     }
     
-    private RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs, SarimaModel ststart) {
+    private RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs, SarimaModel ststart, IArimaMapping<SarimaModel> mapping) {
         RegArmaModel<SarimaModel> dmodel = regs.differencedModel();
         if (ststart == null) {
             ststart = dmodel.getArma();
@@ -170,7 +170,6 @@ public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
                 .model(nmodel)
                 .concentratedLikelihood(ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nmodel))
                 .max(new LogLikelihoodFunction.Point(llFunction(regs), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()))
-                .nparams(stationaryMapping.getDim())
                 .build();
     }
     

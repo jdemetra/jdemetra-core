@@ -114,8 +114,13 @@ public final class ConstTransformation implements DataTransformation {
             case Product:
                 X.mul(value);
                 if (ljacobian != null) {
-                    ljacobian.value += (ljacobian.end - ljacobian.start)
-                            * Math.log(value);
+                    int count;
+                    if (ljacobian.missing != null) {
+                        count = ljacobian.end - ljacobian.start - ljacobian.missing.length;
+                    } else {
+                        count = X.range(ljacobian.start, ljacobian.start).count(z -> Double.isFinite(z));
+                    }
+                    ljacobian.value += count * Math.log(value);
                 }
                 break;
             case Sum:
@@ -127,8 +132,13 @@ public final class ConstTransformation implements DataTransformation {
                 } else {
                     X.div(value);
                     if (ljacobian != null) {
-                        ljacobian.value -= (ljacobian.end - ljacobian.start)
-                                * Math.log(value);
+                        int count;
+                        if (ljacobian.missing != null) {
+                            count = ljacobian.end - ljacobian.start - ljacobian.missing.length;
+                        } else {
+                            count = X.range(ljacobian.start, ljacobian.start).count(z -> Double.isFinite(z));
+                        }
+                        ljacobian.value -= count * Math.log(value);
                     }
                 }
                 break;

@@ -25,14 +25,13 @@ import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regarima.regular.IDifferencingModule;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.ModelEstimation;
-import jdplus.regarima.regular.ProcessingResult;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.IDifferencingModule;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegArimaModelling;
 import demetra.arima.SarimaSpecification;
 import demetra.regarima.X13Exception;
-import demetra.x12.X12Utility;
 import demetra.data.DoubleSeq;
 import jdplus.sarima.SarimaModel;
 import jdplus.sarima.estimation.HannanRissanen;
@@ -348,7 +347,7 @@ public class DifferencingModule implements IDifferencingModule {
                     .y(data)
                     .arima(lastModel)
                     .build();
-            RegArimaEstimation<SarimaModel> rslt = processor.optimize(regarima);
+            RegArimaEstimation<SarimaModel> rslt = processor.optimize(regarima, null);
             if (rslt == null) {
                 throw new X13Exception("Non convergence in IDDIF");
             }
@@ -375,7 +374,7 @@ public class DifferencingModule implements IDifferencingModule {
             sar = lastModel.bphi(1);
             sma = lastModel.btheta(1);
         }
-        double din = 0;
+        double din;
         c_ -= 0.002;
         if (!mlused && ub2 >= 0.869) {
             din = .136;
@@ -528,14 +527,14 @@ public class DifferencingModule implements IDifferencingModule {
         // compute regression model with mean
         //GlsSarimaMonitor monitor = new GlsSarimaMonitor();
         //monitor.setMinimizer(new ProxyMinimizer(new LevenbergMarquardtMethod()));
-        SarimaSpecification spec = this.spec.clone();
+        SarimaSpecification cspec = this.spec.clone();
         RegArimaModel<SarimaModel> model = RegArimaModel.<SarimaModel>builder()
                 .y(DoubleSeq.of(x))
                 .meanCorrection(true)
-                .arima(SarimaModel.builder(spec).setDefault().build())
+                .arima(SarimaModel.builder(cspec).setDefault().build())
                 .build();
 
-        RegArimaEstimation<SarimaModel> est = X12Utility.processor(true, eps).process(model);
+        RegArimaEstimation<SarimaModel> est = X12Utility.processor(true, eps).process(model, null);
 
         if (est == null) {
             return false;

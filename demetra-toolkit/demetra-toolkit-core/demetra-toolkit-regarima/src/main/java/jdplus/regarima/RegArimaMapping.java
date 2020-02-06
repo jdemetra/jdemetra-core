@@ -21,12 +21,14 @@ import jdplus.data.DataBlock;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.ParamValidation;
 import demetra.data.DoubleSeq;
+import demetra.design.Development;
 
 /**
- *
+ * 
  * @author Jean Palate
  * @param <M>
  */
+@Development(status = Development.Status.Beta)
 public class RegArimaMapping<M extends IArimaModel> implements IParametricMapping<RegArimaModel<M>> {
 
     private final IParametricMapping<M> mapping;

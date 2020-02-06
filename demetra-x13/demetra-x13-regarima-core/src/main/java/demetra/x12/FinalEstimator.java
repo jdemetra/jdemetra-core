@@ -20,9 +20,9 @@ import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
 import jdplus.math.functions.IParametricMapping;
-import jdplus.regarima.regular.IModelEstimator;
-import jdplus.regarima.regular.ModelDescription;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.IModelEstimator;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
@@ -79,7 +79,7 @@ public class FinalEstimator implements IModelEstimator {
     private int test(RegArimaModelling context) {
         ModelDescription desc = context.getDescription();
         double cval = tsig;
-        int nz = desc.getDomain().getLength();
+        int nz = desc.getEstimationDomain().getLength();
         double cmin = nz <= 150 ? .15 : .1;
         double cmod = .95;
         double bmin = 999;

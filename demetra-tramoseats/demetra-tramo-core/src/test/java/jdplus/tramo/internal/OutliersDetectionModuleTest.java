@@ -16,6 +16,7 @@
  */
 package jdplus.tramo.internal;
 
+import jdplus.regsarima.ami.FastOutliersDetector;
 import demetra.data.Data;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
@@ -46,15 +47,15 @@ public class OutliersDetectionModuleTest {
 
 //        long t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 500; ++i) {
-        OutliersDetector od = OutliersDetector.builder()
-                .singleOutlierDetector(OutliersDetector.defaultOutlierDetector())
+        FastOutliersDetector od = FastOutliersDetector.builder()
+                .singleOutlierDetector(FastOutliersDetector.defaultOutlierDetector())
                 .criticalValue(3)
                 .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
                 .maximumLikelihood(true)
                 .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
         od.prepare(regarima.getObservationsCount());
-        od.process(regarima);
+        od.process(regarima, SarimaMapping.of(spec));
         int[][] outliers = od.getOutliers();
         for (int i = 0; i < outliers.length; ++i) {
             int[] cur = outliers[i];
@@ -76,14 +77,14 @@ public class OutliersDetectionModuleTest {
         System.out.println("WN");
 //        long t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 500; ++i) {
-        OutliersDetector od = OutliersDetector.builder()
-                .singleOutlierDetector(OutliersDetector.defaultOutlierDetector())
+        FastOutliersDetector od = FastOutliersDetector.builder()
+                .singleOutlierDetector(FastOutliersDetector.defaultOutlierDetector())
                 .criticalValue(3)
                  .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
                .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
         od.prepare(regarima.getObservationsCount());
-        od.process(regarima);
+        od.process(regarima, SarimaMapping.of(spec));
         int[][] outliers = od.getOutliers();
         for (int i = 0; i < outliers.length; ++i) {
             int[] cur = outliers[i];

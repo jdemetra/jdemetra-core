@@ -22,8 +22,8 @@ import demetra.design.Development;
 import demetra.math.Complex;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.polynomials.Polynomial;
-import jdplus.regarima.regular.IModelEstimator;
-import jdplus.regarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.IModelEstimator;
+import jdplus.regsarima.regular.RegArimaModelling;
 import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaSpecification;
@@ -163,37 +163,21 @@ class FinalEstimator implements IModelEstimator {
 //     */
     private int test(RegArimaModelling context) {
         double cval = tsig;
-        int nz = context.getDescription().getDomain().getLength();
+        int nz = context.getDescription().getEstimationDomain().getLength();
         double cmin = nz <= 150 ? .15 : .1;
         double cmod = .95;
 
         SarimaModel m = context.getDescription().getArimaComponent().getModel();
         SarimaSpecification spec = m.specification();
-//        if (spec.getParametersCount() == 1) {
-//            return 0;
-//        }
 
         DoubleSeq pm = m.parameters();
-//        int start = 0, len = spec.getP();
-//        boolean dpr = Utilities.checkRoots(pm.rextract(start, len), 1 / cmod);// (m.RegularAR.Roots,
-//        start += len;
-//        len = spec.getBP();
-//        boolean dps = Utilities.checkRoots(pm.rextract(start, len), 1 / cmod);// SeasonalAR.Roots,
-//        start += len;
-//        len = spec.getQ();
-//        boolean dqr = Utilities.checkRoots(pm.rextract(start, len), 1 / cmod);// RegularMA.Roots,
-//        start += len;
-//        len = spec.getBQ();
-//        boolean dqs = Utilities.checkRoots(pm.rextract(start, len), 1 / cmod);// SeasonalMA.Roots,
 
         int icpr = 0, icps = 0, icqr = 0, icqs = 0;
         double bmin = 99999;
         int k = -1;
-//        int nnsig = 0;
         double tmin = cval;
         DataBlock diag = context.getEstimation().getMax().asymptoticCovariance().diagonal();
         k += spec.getP();
-//        if (spec.getP() > 0 && dpr) {
         if (spec.getP() > 0) {
             double v = Math.abs(pm.get(k));
             double s = diag.get(k);
@@ -206,7 +190,6 @@ class FinalEstimator implements IModelEstimator {
             }
         }
         k += spec.getBp();
-//        if (spec.getBP() > 0 && dps) {
         if (spec.getBp() > 0) {
             double v = Math.abs(pm.get(k));
             double s = diag.get(k);
@@ -222,7 +205,6 @@ class FinalEstimator implements IModelEstimator {
             }
         }
         k += spec.getQ();
-//        if (spec.getQ() > 0 && dqr) {
         if (spec.getQ() > 0) {
             double v = Math.abs(pm.get(k));
             double s = diag.get(k);
@@ -240,7 +222,6 @@ class FinalEstimator implements IModelEstimator {
             }
         }
         k += spec.getBq();
-//        if (spec.getBQ() > 0 && dqs) {
         if (spec.getBq() > 0) {
             double v = Math.abs(pm.get(k));
             double s = diag.get(k);
