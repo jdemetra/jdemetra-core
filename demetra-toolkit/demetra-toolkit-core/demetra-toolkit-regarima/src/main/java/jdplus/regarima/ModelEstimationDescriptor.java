@@ -18,22 +18,22 @@ package jdplus.regarima;
 
 import demetra.information.InformationMapping;
 import demetra.information.InformationSet;
-import demetra.sa.ModellingDictionary;
+import demetra.modelling.ModellingDictionary;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.regression.modelling.LinearModelEstimation;
+import jdplus.regsarima.regular.ModelEstimation;
 
 /**
  *
  * @author palatej
  */
 @lombok.experimental.UtilityClass
-public class LinearModelEstimationDescriptor {
+public class ModelEstimationDescriptor {
 
-    private static final InformationMapping<LinearModelEstimation> MAPPING = new InformationMapping<>(LinearModelEstimation.class);
+    private static final InformationMapping<ModelEstimation> MAPPING = new InformationMapping<>(ModelEstimation.class);
 
-    public static InformationMapping<LinearModelEstimation> getMapping() {
+    public static InformationMapping<ModelEstimation> getMapping() {
         return MAPPING;
     }
 
@@ -77,50 +77,31 @@ public class LinearModelEstimationDescriptor {
         MAPPING.set(ModellingDictionary.Y, TsData.class, source -> source.getOriginalSeries());
 //        MAPPING.set(ModellingDictionary.Y + SeriesInfo.F_SUFFIX, source -> source.forecast(source.getForecastCount(), false));
 //        MAPPING.set(ModellingDictionary.Y + SeriesInfo.EF_SUFFIX, source -> source.getForecastError());
-//        MAPPING.set(ModellingDictionary.YC, source -> source.interpolatedSeries(false));
+        MAPPING.set(ModellingDictionary.YC, TsData.class, source -> source.interpolatedSeries(false));
 //        MAPPING.set(ModellingDictionary.YC + SeriesInfo.F_SUFFIX, source -> source.forecast(source.getForecastCount(), false));
 //        MAPPING.set(ModellingDictionary.YC + SeriesInfo.EF_SUFFIX, source -> source.getForecastError());
-//        MAPPING.set(ModellingDictionary.L, source -> source.linearizedSeries(false));
-//        MAPPING.set(ModellingDictionary.Y_LIN, source -> source.linearizedSeries(true));
+        MAPPING.set(ModellingDictionary.L, TsData.class, source -> source.backTransform(source.linearizedSeries(), true));
+        MAPPING.set(ModellingDictionary.Y_LIN, TsData.class, source -> source.linearizedSeries());
 //        MAPPING.set(ModellingDictionary.Y_LIN + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(source.domain(true).getLength(), true));
-//        MAPPING.set(ModellingDictionary.YCAL, source -> source.getYcal(false));
+//        MAPPING.set(ModellingDictionary.YCAL, TsData.class, source -> source.getYcal(false));
 //        MAPPING.set(ModellingDictionary.YCAL + SeriesInfo.F_SUFFIX, source -> source.getYcal(true));
-//        MAPPING.set(ModellingDictionary.DET, source -> source.getDet(false));
+        MAPPING.set(ModellingDictionary.DET, TsData.class, source -> source.getDerministicEffect(source.getEstimationDomain()));
 //        MAPPING.set(ModellingDictionary.DET + SeriesInfo.F_SUFFIX, source -> source.getDet(true));
 //        MAPPING.set(ModellingDictionary.L + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(source.getForecastCount()));
 //        MAPPING.set(ModellingDictionary.L + SeriesInfo.B_SUFFIX, source -> source.linearizedBackcast(source.description.getFrequency()));
-//        MAPPING.set(ModellingDictionary.CAL, source -> source.getCal(false));
+        MAPPING.set(ModellingDictionary.CAL, TsData.class, source -> source.getCalendareEffect(source.getEstimationDomain()));
 //        MAPPING.set(ModellingDictionary.CAL + SeriesInfo.F_SUFFIX, source -> source.getCal(true));
-//        MAPPING.set(ModellingDictionary.TDE, source -> source.getTde(false));
+        MAPPING.set(ModellingDictionary.TDE, TsData.class, source -> source.getTradingDaysEffect(source.getEstimationDomain()));
 //        MAPPING.set(ModellingDictionary.TDE + SeriesInfo.F_SUFFIX, source -> source.getTde(true));
-//        MAPPING.set(ModellingDictionary.MHE, source -> source.getMhe(false));
+        MAPPING.set(ModellingDictionary.MHE, TsData.class, source -> source.getMovingHolidayEffect(source.getEstimationDomain()));
 //        MAPPING.set(ModellingDictionary.MHE + SeriesInfo.F_SUFFIX, source -> source.getMhe(true));
-//        MAPPING.set(ModellingDictionary.EE, source -> source.getEe(false));
+        MAPPING.set(ModellingDictionary.EE, TsData.class, source -> source.getEasterEffect(source.getEstimationDomain()));
 //        MAPPING.set(ModellingDictionary.EE + SeriesInfo.F_SUFFIX, source -> source.getEe(true));
 //        MAPPING.set(ModellingDictionary.OMHE, source -> source.getOmhe(false));
 //        MAPPING.set(ModellingDictionary.OMHE + SeriesInfo.F_SUFFIX, source -> source.getOmhe(true));
-//        MAPPING.set(ModellingDictionary.OUT, source -> source.getOutlier(ComponentType.Undefined, false));
-//        MAPPING.set(ModellingDictionary.OUT + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Undefined, true));
-//        MAPPING.set(ModellingDictionary.OUT_I, source -> source.getOutlier(ComponentType.Irregular, false));
-//        MAPPING.set(ModellingDictionary.OUT_I + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Irregular, true));
-//        MAPPING.set(ModellingDictionary.OUT_T, source -> source.getOutlier(ComponentType.Trend, false));
-//        MAPPING.set(ModellingDictionary.OUT_T + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Trend, true));
-//        MAPPING.set(ModellingDictionary.OUT_S, source -> source.getOutlier(ComponentType.Seasonal, false));
-//        MAPPING.set(ModellingDictionary.OUT_S + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Seasonal, true));
-//        MAPPING.set(ModellingDictionary.REG, source -> source.getReg(false));
+        MAPPING.set(ModellingDictionary.OUT, TsData.class, source -> source.getOutliersEffect(source.getEstimationDomain()));
+//        MAPPING.set(ModellingDictionary.REG, TsData.class, source -> source.getReg(false));
 //        MAPPING.set(ModellingDictionary.REG + SeriesInfo.F_SUFFIX, source -> source.getReg(true));
-//        MAPPING.set(ModellingDictionary.REG_T, source -> source.getReg(ComponentType.Trend, false));
-//        MAPPING.set(ModellingDictionary.REG_T + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Trend, true));
-//        MAPPING.set(ModellingDictionary.REG_S, source -> source.getReg(ComponentType.Seasonal, false));
-//        MAPPING.set(ModellingDictionary.REG_S + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Seasonal, true));
-//        MAPPING.set(ModellingDictionary.REG_I, source -> source.getReg(ComponentType.Irregular, false));
-//        MAPPING.set(ModellingDictionary.REG_I + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Irregular, true));
-//        MAPPING.set(ModellingDictionary.REG_SA, source -> source.getReg(ComponentType.SeasonallyAdjusted, false));
-//        MAPPING.set(ModellingDictionary.REG_SA + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.SeasonallyAdjusted, true));
-//        MAPPING.set(ModellingDictionary.REG_Y, source -> source.getReg(ComponentType.Series, false));
-//        MAPPING.set(ModellingDictionary.REG_Y + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Series, true));
-//        MAPPING.set(ModellingDictionary.REG_U, source -> source.getReg(ComponentType.Undefined, false));
-//        MAPPING.set(ModellingDictionary.REG_U + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Undefined, true));
 //        MAPPING.set(FULLRES, source -> source.getFullResiduals());
 //        MAPPING.set(InformationSet.item(REGRESSION, LP), RegressionItem.class, source -> source.getRegressionItem(ILengthOfPeriodVariable.class, 0));
 //        MAPPING.set(InformationSet.item(REGRESSION, NTD), Integer.class, source -> {

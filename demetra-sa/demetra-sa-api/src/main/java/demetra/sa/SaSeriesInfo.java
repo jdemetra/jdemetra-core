@@ -26,7 +26,7 @@ import demetra.modelling.ComponentInformation;
 @Development(status = Development.Status.Beta)
 @lombok.Value
 @lombok.AllArgsConstructor
-public class SeriesInfo implements Comparable<SeriesInfo> {
+public class SaSeriesInfo implements Comparable<SaSeriesInfo> {
     
     private static final String EMPTY="";
 
@@ -59,12 +59,12 @@ public class SeriesInfo implements Comparable<SeriesInfo> {
      * @param name
      * @param type
      */
-    public SeriesInfo(String name, ComponentType type) {
+    public SaSeriesInfo(String name, ComponentType type) {
         this(name, type, ComponentInformation.Value, EMPTY);
     }
 
     @Override
-    public int compareTo(SeriesInfo o) {
+    public int compareTo(SaSeriesInfo o) {
         if (this == o) {
             return 0;
         }
@@ -130,17 +130,17 @@ public class SeriesInfo implements Comparable<SeriesInfo> {
         return builder.toString();
     }
 
-    public static SeriesInfo split(String code) {
+    public static SaSeriesInfo split(String code) {
         int len = code.length();
         if (hasSuffix(code, F_SUFFIX)) {
-            return new SeriesInfo(code.substring(0, len - 2), ComponentType.Undefined, ComponentInformation.Forecast, EMPTY);
+            return new SaSeriesInfo(code.substring(0, len - 2), ComponentType.Undefined, ComponentInformation.Forecast, EMPTY);
         } else if (hasSuffix(code, E_SUFFIX)) {
-            return new SeriesInfo(code.substring(0, len - 2), ComponentType.Undefined, ComponentInformation.Stdev, EMPTY);
+            return new SaSeriesInfo(code.substring(0, len - 2), ComponentType.Undefined, ComponentInformation.Stdev, EMPTY);
         }
         if (hasSuffix(code, EF_SUFFIX)) {
-            return new SeriesInfo(code.substring(0, len - 3), ComponentType.Undefined, ComponentInformation.StdevForecast, EMPTY);
+            return new SaSeriesInfo(code.substring(0, len - 3), ComponentType.Undefined, ComponentInformation.StdevForecast, EMPTY);
         } else {
-            return new SeriesInfo(code, ComponentType.Undefined);
+            return new SaSeriesInfo(code, ComponentType.Undefined);
         }
     }
     

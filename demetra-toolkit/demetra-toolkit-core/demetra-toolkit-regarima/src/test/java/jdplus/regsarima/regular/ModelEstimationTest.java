@@ -132,8 +132,8 @@ public class ModelEstimationTest {
         all.add(rslt.interpolatedSeries(false));
         all.add(rslt.linearizedSeries());
         // Test regression effects
-        TsData tde = rslt.regressionEffect(rslt.getEstimationDomain().drop(-50, -100), var -> var.isTradingDays());
-        TsData ee = rslt.regressionEffect(rslt.getEstimationDomain().drop(-50, -100), var -> var.isMovingHolidays());
+        TsData tde = rslt.regressionEffect2(rslt.getEstimationDomain().drop(-50, -100), var -> var.isTradingDays());
+        TsData ee = rslt.regressionEffect2(rslt.getEstimationDomain().drop(-50, -100), var -> var.isMovingHolidays());
         TsData rege = rslt.regressionEffect(rslt.getEstimationDomain().drop(-50, -100), var -> true);
         all.add(tde);
         all.add(ee);

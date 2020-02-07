@@ -24,6 +24,7 @@ import demetra.design.Development;
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
 public class SeriesInfo implements Comparable<SeriesInfo> {
+    
 
     /**
      * Name of the component
@@ -67,12 +68,18 @@ public class SeriesInfo implements Comparable<SeriesInfo> {
         } else {
 
             builder.append(" (");
-            if (componentInformation == ComponentInformation.Forecast) {
-                builder.append("forecasts)");
-            } else if (componentInformation == ComponentInformation.Stdev) {
-                builder.append("std error)");
-            } else if (componentInformation == ComponentInformation.StdevForecast) {
-                builder.append("forecast errors)");
+            if (null != componentInformation) switch (componentInformation) {
+                case Forecast:
+                    builder.append("forecasts)");
+                    break;
+                case Stdev:
+                    builder.append("std error)");
+                    break;
+                case StdevForecast:
+                    builder.append("forecast errors)");
+                    break;
+                default:
+                    break;
             }
             return builder.toString();
         }

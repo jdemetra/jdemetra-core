@@ -77,13 +77,13 @@ public class InterventionVariable implements ITsVariable{
                 throw new TsException(TsException.INVALID_DEFINITION);
             }
             return new InterventionVariable(name, delta, deltaSeasonal,
-                    Collections.unmodifiableList(sequences), coefficient);
+                    sequences.toArray(n->new Range[n]), coefficient);
         }
     }
     
     private String name;
     private double delta, deltaSeasonal;
-    private List<Range<LocalDateTime>> sequences;
+    private Range<LocalDateTime>[] sequences;
     private Double coefficient;
     
     @Override

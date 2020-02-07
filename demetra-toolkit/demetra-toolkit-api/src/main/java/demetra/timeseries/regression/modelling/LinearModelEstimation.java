@@ -86,7 +86,7 @@ public final class LinearModelEstimation<M> {
     private MissingValueEstimation[] missing;
     private int freeParametersCount;
 
-    private Map<String, TsData> components = new HashMap<>();
+    private InformationSet addtionalResults=new InformationSet();
 
     public TsData preadjustmentEffect(TsDomain domain, Predicate<ITsVariable> test) {
         if (preadjustmentVariables == null || preadjustmentVariables.length ==0)
@@ -125,6 +125,5 @@ public final class LinearModelEstimation<M> {
         return TsData.ofInternal(domain.getStartPeriod(), data);
     }
     
-    public InformationSet addtionalResults=new InformationSet();
 
 }

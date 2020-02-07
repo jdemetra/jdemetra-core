@@ -28,7 +28,12 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.regression.ICalendarVariable;
+import demetra.timeseries.regression.IEasterVariable;
+import demetra.timeseries.regression.IMovingHolidayVariable;
+import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.RamadanVariable;
 import java.util.function.Predicate;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
@@ -38,6 +43,7 @@ import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
+import jdplus.timeseries.simplets.Transformations;
 
 /**
  *
@@ -200,7 +206,7 @@ public final class ModelEstimation {
         return data;
     }
 
-    public TsData regressionEffect(TsDomain domain, Predicate<Variable> test) {
+    public TsData regressionEffect2(TsDomain domain, Predicate<Variable> test) {
         DataBlock all = DataBlock.make(domain.getLength());
         if (variables.length > 0) {
             DoubleSeqCursor cursor = concentratedLikelihood.coefficients().cursor();
@@ -209,6 +215,28 @@ public final class ModelEstimation {
             }
             for (int i = 0; i < variables.length; ++i) {
                 if (test.test(variables[i])) {
+                    Matrix m = Regression.matrix(domain, variables[i].getVariable());
+                    DataBlockIterator cols = m.columnsIterator();
+                    while (cols.hasNext()) {
+                        all.addAY(cursor.getAndNext(), cols.next());
+                    }
+                } else {
+                    cursor.skip(variables[i].getVariable().dim());
+                }
+            }
+        }
+        return TsData.ofInternal(domain.getStartPeriod(), all.getStorage());
+    }
+
+    public TsData regressionEffect(TsDomain domain, Predicate<ITsVariable> test) {
+        DataBlock all = DataBlock.make(domain.getLength());
+        if (variables.length > 0) {
+            DoubleSeqCursor cursor = concentratedLikelihood.coefficients().cursor();
+            if (model.isMean()) {
+                cursor.skip(1);
+            }
+            for (int i = 0; i < variables.length; ++i) {
+                if (test.test(variables[i].getVariable())) {
                     Matrix m = Regression.matrix(domain, variables[i].getVariable());
                     DataBlockIterator cols = m.columnsIterator();
                     while (cols.hasNext()) {
@@ -237,6 +265,19 @@ public final class ModelEstimation {
         return TsData.ofInternal(domain.getStartPeriod(), all.getStorage());
     }
 
+    public TsData deterministicEffect(TsDomain domain, Predicate<ITsVariable> test) {
+        return TsData.add(regressionEffect(domain, test), preadjustmentEffect(domain, test));
+    }
+
+    public TsData deterministicEffect(TsDomain domain, boolean prespecified, Predicate<ITsVariable> test) {
+        if (!prespecified) {
+            return regressionEffect2(domain, v -> !v.isPrespecified() && test.test(v.getVariable()));
+        } else {
+            return TsData.add(regressionEffect2(domain, v -> v.isPrespecified() && test.test(v.getVariable())),
+                     preadjustmentEffect(domain, test));
+        }
+    }
+
     public TsData linearizedSeries() {
         TsData interp = interpolatedSeries(true);
         if (variables.length == 0) {
@@ -258,4 +299,97 @@ public final class ModelEstimation {
         return TsData.ofInternal(interp.getStart(), rslt);
     }
 
+    public TsData backTransform(TsData s, boolean includeLp) {
+        if (logTransformation) {
+            s = s.exp();
+        }
+        if (includeLp && lpTransformation != LengthOfPeriodType.None) {
+            s = Transformations.lengthOfPeriod(lpTransformation).converse().transform(s, null);
+        }
+        return s;
+    }
+
+    /**
+     * tde
+     * @param domain
+     * @return 
+     */    
+    public TsData getTradingDaysEffect(TsDomain domain) {
+        TsData s = deterministicEffect(domain, v -> v instanceof ICalendarVariable);
+        return backTransform(s, true);
+    }
+
+    /**
+     * ee
+     * @param domain
+     * @return 
+     */
+    public TsData getEasterEffect(TsDomain domain) {
+        TsData s = deterministicEffect(domain, v -> v instanceof IEasterVariable);
+        return backTransform(s, false);
+    }
+
+    /**
+     * mhe
+     * @param domain
+     * @return 
+     */
+    public TsData getMovingHolidayEffect(TsDomain domain) {
+        TsData s = deterministicEffect(domain, v -> v instanceof IMovingHolidayVariable);
+        return backTransform(s, false);
+    }
+
+    /**
+     * rmde
+     * @param domain
+     * @return 
+     */
+    public TsData getRamadanEffect(TsDomain domain) {
+        throw new UnsupportedOperationException("Not supported yet.");
+//        TsData s = deterministicEffect(domain, v->v instanceof RamadanVariable);
+//        return backTransform(s, false);
+    }
+
+    /**
+     * out
+     * @param domain
+     * @return 
+     */
+    public TsData getOutliersEffect(TsDomain domain) {
+        TsData s = deterministicEffect(domain, v -> v instanceof IOutlier);
+        return backTransform(s, false);
+    }
+
+    /**
+     * 
+     * @param domain
+     * @param prespecified
+     * @return 
+     */
+    public TsData getOutliersEffect(TsDomain domain, boolean prespecified) {
+        TsData s = deterministicEffect(domain, prespecified, v -> v instanceof IOutlier);
+        return backTransform(s, false);
+    }
+    
+    /**
+     * cal
+     * @param domain
+     * @return 
+     */
+    public TsData getCalendareEffect(TsDomain domain){
+        TsData s = deterministicEffect(domain, v -> v instanceof ICalendarVariable || v instanceof IMovingHolidayVariable);
+        return backTransform(s, true);
+    }
+    
+    /**
+     * det
+     * @param domain
+     * @return 
+     */
+    public TsData getDerministicEffect(TsDomain domain){
+        TsData s = deterministicEffect(domain, v -> true);
+        return backTransform(s, true);
+    }
+
+  
 }
