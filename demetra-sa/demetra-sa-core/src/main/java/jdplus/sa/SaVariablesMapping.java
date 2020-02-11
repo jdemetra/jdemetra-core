@@ -1,22 +1,12 @@
 /*
- * Copyright 2020 National Bank of Belgium
- *
- * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
- * by the European Commission - subsequent versions of the EUPL (the "Licence");
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at:
- *
- * https://joinup.ec.europa.eu/software/page/eupl
- *
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the Licence is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
- * limitations under the Licence.
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
-package demetra.sa;
+package jdplus.sa;
 
 import demetra.data.Range;
+import demetra.sa.ComponentType;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.Constant;
 import demetra.timeseries.regression.ICalendarVariable;
@@ -34,7 +24,8 @@ import demetra.timeseries.regression.TransitoryChange;
 import demetra.timeseries.regression.TrigonometricVariables;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +34,7 @@ import java.util.Map;
  *
  * @author palatej
  */
-@lombok.experimental.UtilityClass
-public class SaVariables {
+public class SaVariablesMapping {
 
     @FunctionalInterface
     public static interface VariableMapping<V> {
@@ -52,10 +42,10 @@ public class SaVariables {
         ComponentType map(V variable);
     }
 
-    private final Map< Class<? extends ITsVariable>, VariableMapping> DEFAULTMAPPING
+    private static final Map< Class<? extends ITsVariable>, VariableMapping> DEFAULTMAPPING
             = new HashMap<>();
 
-    public <V extends ITsVariable> boolean register(Class<V> wclass, VariableMapping<V> factory) {
+    public static <V extends ITsVariable> boolean register(Class<V> wclass, VariableMapping<V> factory) {
         synchronized (DEFAULTMAPPING) {
             if (DEFAULTMAPPING.containsKey(wclass)) {
                 return false;
@@ -65,7 +55,7 @@ public class SaVariables {
         }
     }
 
-    private <V extends ITsVariable> boolean put(Class<V> wclass, VariableMapping<V> factory) {
+    private static <V extends ITsVariable> boolean put(Class<V> wclass, VariableMapping<V> factory) {
         synchronized (DEFAULTMAPPING) {
             if (DEFAULTMAPPING.containsKey(wclass)) {
                 return false;
@@ -75,7 +65,7 @@ public class SaVariables {
         }
     }
 
-    public <V extends ITsVariable> boolean unregister(Class<V> vclass) {
+    public static <V extends ITsVariable> boolean unregister(Class<V> vclass) {
         synchronized (DEFAULTMAPPING) {
             VariableMapping removed = DEFAULTMAPPING.remove(vclass);
             return removed != null;
@@ -108,15 +98,15 @@ public class SaVariables {
                 Range<LocalDateTime>[] sequences = var.getSequences();
                 int maxseq = 0;
                 for (int i = 0; i < sequences.length; ++i) {
-                    int len = (int) sequences[i].start().until(sequences[i].end(), ChronoUnit.DAYS)/365;
+                    int len = (int) sequences[i].start().until(sequences[i].end(), ChronoUnit.DAYS) / 365;
                     if (len > maxseq) {
                         maxseq = len;
                     }
                 }
                 if (maxseq > 0) {
-                    return var.getDeltaSeasonal()== 0 ? ComponentType.Trend : ComponentType.Undefined;
+                    return var.getDeltaSeasonal() == 0 ? ComponentType.Trend : ComponentType.Undefined;
                 }
-                if (var.getDeltaSeasonal()> 0) {
+                if (var.getDeltaSeasonal() > 0) {
                     return ComponentType.Seasonal;
                 }
                 if (var.getDelta() > .8) {
@@ -128,19 +118,52 @@ public class SaVariables {
             DEFAULTMAPPING.put(PeriodicDummies.class, v -> ComponentType.Seasonal);
             DEFAULTMAPPING.put(PeriodicContrasts.class, v -> ComponentType.Seasonal);
             DEFAULTMAPPING.put(TrigonometricVariables.class, v -> ComponentType.Seasonal);
-
         }
     }
-    
-    public ComponentType defaultMapping(ITsVariable var){
-        synchronized(DEFAULTMAPPING){
+
+    public ComponentType defaultMapping(ITsVariable var) {
+        synchronized (DEFAULTMAPPING) {
             VariableMapping m = DEFAULTMAPPING.get(var.getClass());
-            if (m == null)
+            if (m == null) {
                 return ComponentType.Undefined;
-            else
+            } else {
                 return m.map(var);
+            }
         }
     }
 
+    private final Map<ITsVariable, ComponentType> mapping = new HashMap<>();
+
+    public void addDefault(ITsVariable... vars) {
+        for (ITsVariable var : vars) {
+            mapping.put(var, defaultMapping(var));
+        }
+    }
+
+    public void put(ITsVariable var, ComponentType type) {
+            mapping.put(var, type);
+    }
     
+    public void clear(){
+        mapping.clear();
+    }
+    
+    public void remove(ITsVariable var){
+        mapping.remove(var);
+    }
+
+    public Map<ITsVariable, ComponentType> mapping() {
+        return Collections.unmodifiableMap(mapping);
+    }
+ 
+    public ITsVariable[] forComponentType(ComponentType type) {
+        List<ITsVariable> vars = new ArrayList();
+        mapping.forEach((var, vtype) -> {
+            if (type == vtype) {
+                vars.add(var);
+            }
+        });
+        return vars.toArray(n -> new ITsVariable[n]);
+    }
+
 }
