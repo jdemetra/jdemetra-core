@@ -18,12 +18,21 @@ package jdplus.seats;
 
 import demetra.design.Development;
 
-
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public class SeatsToolkit{
+@lombok.Value
+@lombok.Builder(builderClassName = "Builder")
+public class SeatsToolkit {
+
+    private IModelValidator modelValidator;
+
+    private IModelApproximator modelApproximator;
+
+    private IModelDecomposer modelDecomposer;
+
+    private IComponentsEstimator componentsEstimator;
 
 //    /**
 //     *
@@ -148,5 +157,4 @@ public class SeatsToolkit{
 //    public IModelBuilder getModelBuilder() {
 //        return modelBuilder;
 //    }
-
 }

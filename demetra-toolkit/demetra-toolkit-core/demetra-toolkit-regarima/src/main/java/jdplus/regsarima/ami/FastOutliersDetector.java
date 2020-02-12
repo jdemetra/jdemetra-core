@@ -235,7 +235,7 @@ public class FastOutliersDetector implements GenericOutliersDetection<SarimaMode
     private boolean estimateModel(IArimaMapping<SarimaModel> mapping) {
         // step 1 Initial values by OLS
         SarimaModel sarima = regarima.arima();
-        SarimaOrders spec = sarima.specification();
+        SarimaOrders spec = sarima.orders();
         RegArmaModel<SarimaModel> dm = regarima.differencedModel();
         LinearModel lm = dm.asLinearModel();
         if (rflag) {

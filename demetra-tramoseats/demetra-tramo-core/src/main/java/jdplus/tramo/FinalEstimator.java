@@ -23,7 +23,7 @@ import demetra.math.Complex;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.regsarima.regular.IModelEstimator;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
@@ -109,7 +109,7 @@ class FinalEstimator implements IModelEstimator {
     }
 
     @Override
-    public boolean estimate(RegArimaModelling context) {
+    public boolean estimate(RegSarimaModelling context) {
         int niter = 0;
         do {
             try {
@@ -161,14 +161,14 @@ class FinalEstimator implements IModelEstimator {
 //     * @param context
 //     * @return
 //     */
-    private int test(RegArimaModelling context) {
+    private int test(RegSarimaModelling context) {
         double cval = tsig;
         int nz = context.getDescription().getEstimationDomain().getLength();
         double cmin = nz <= 150 ? .15 : .1;
         double cmod = .95;
 
         SarimaModel m = context.getDescription().getArimaComponent().getModel();
-        SarimaOrders spec = m.specification();
+        SarimaOrders spec = m.orders();
 
         DoubleSeq pm = m.parameters();
 
@@ -260,10 +260,10 @@ class FinalEstimator implements IModelEstimator {
         return nnsig;
     }
 
-    private boolean checkCommonRoots(RegArimaModelling context) {
+    private boolean checkCommonRoots(RegSarimaModelling context) {
         // simplify possible common roots on ar, ma
         SarimaModel arima = context.getDescription().getArimaComponent().getModel();
-        SarimaOrders spec = arima.specification();
+        SarimaOrders spec = arima.orders();
         boolean changed = false;
         if (spec.getP() != 0 && spec.getQ() != 0) {
             Polynomial p = arima.getRegularAR(), q = arima.getRegularMA();
@@ -295,11 +295,11 @@ class FinalEstimator implements IModelEstimator {
         }
     }
 
-    private boolean checkUnitRoots(RegArimaModelling context) {
+    private boolean checkUnitRoots(RegSarimaModelling context) {
 
         //quasi-unit roots of ar are changed in true unit roots
         SarimaModel m = context.getDescription().getArimaComponent().getModel();
-        SarimaOrders nspec = m.specification();
+        SarimaOrders nspec = m.orders();
 
         boolean ok = true;
         if (nspec.getP() > 0 && nspec.getD() < MAXD) {

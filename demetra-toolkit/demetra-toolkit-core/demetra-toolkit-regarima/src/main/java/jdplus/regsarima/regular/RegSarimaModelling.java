@@ -19,7 +19,6 @@ package jdplus.regsarima.regular;
 import demetra.arima.SarimaOrders;
 import demetra.design.Development;
 import demetra.information.InformationSet;
-import demetra.timeseries.TsDomain;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regsarima.RegSarimaProcessor;
@@ -32,18 +31,18 @@ import jdplus.sarima.SarimaModel;
 @Development(status = Development.Status.Preliminary)
 @lombok.Getter
 @lombok.AllArgsConstructor(access=lombok.AccessLevel.PRIVATE)
-public class RegArimaModelling {
+public class RegSarimaModelling {
 
     private ModelDescription description;
     private RegArimaEstimation<SarimaModel> estimation;
     private final InformationSet log = new InformationSet();
     
-    public static RegArimaModelling of(ModelDescription desc){
-        return new RegArimaModelling(desc, null);
+    public static RegSarimaModelling of(ModelDescription desc){
+        return new RegSarimaModelling(desc, null);
     }
 
-    public static RegArimaModelling copyOf(RegArimaModelling modelling){
-        return new RegArimaModelling(ModelDescription.copyOf(modelling.description),
+    public static RegSarimaModelling copyOf(RegSarimaModelling modelling){
+        return new RegSarimaModelling(ModelDescription.copyOf(modelling.description),
         modelling.estimation);
     }
 

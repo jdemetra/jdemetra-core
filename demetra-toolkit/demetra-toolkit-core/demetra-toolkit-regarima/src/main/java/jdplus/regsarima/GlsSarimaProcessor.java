@@ -145,7 +145,7 @@ public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
     
     public LogLikelihoodFunction<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> llFunction(RegArimaModel<SarimaModel> regs) {
         IParametricMapping<RegArimaModel<SarimaModel>> rmapping = mapping == null
-                ? new RegArimaMapping<>(SarimaMapping.of(regs.arima().specification()), regs)
+                ? new RegArimaMapping<>(SarimaMapping.of(regs.arima().orders()), regs)
                 : new RegArimaMapping<>(mapping, regs);
         Function<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> fn = model -> ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
         return new LogLikelihoodFunction(rmapping, fn);
@@ -158,10 +158,10 @@ public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         }
         RegArmaProcessor processor = new RegArmaProcessor(ml, mt, fast);
         int ndf = dmodel.getY().length() - dmodel.getX().getColumnsCount();// - mapping.getDim();
-        IArimaMapping<SarimaModel> stationaryMapping = mapping == null ? SarimaMapping.of(ststart.specification()) : mapping.stationaryMapping();
+        IArimaMapping<SarimaModel> stationaryMapping = mapping == null ? SarimaMapping.of(ststart.orders()) : mapping.stationaryMapping();
         RegArmaEstimation<SarimaModel> rslt = processor.compute(dmodel, stationaryMapping.parametersOf(ststart), stationaryMapping, min, ndf);
         
-        SarimaModel arima = SarimaModel.builder(regs.arima().specification())
+        SarimaModel arima = SarimaModel.builder(regs.arima().orders())
                 .parameters(DoubleSeq.of(rslt.getParameters()))
                 .build();
         RegArimaModel<SarimaModel> nmodel = RegArimaModel.of(regs, arima);

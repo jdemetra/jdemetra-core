@@ -26,5 +26,5 @@ import demetra.design.Development;
  */
 @Development(status = Development.Status.Preliminary)
 public interface IModelEstimator {
-    boolean estimate(RegArimaModelling context);
+    boolean estimate(RegSarimaModelling context);
 }

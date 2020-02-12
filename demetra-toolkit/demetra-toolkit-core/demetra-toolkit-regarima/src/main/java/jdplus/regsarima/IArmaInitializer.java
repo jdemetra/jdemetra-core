@@ -37,11 +37,11 @@ public interface IArmaInitializer {
     SarimaModel initialize(RegArmaModel<SarimaModel> regarma);
 
     public static IArmaInitializer defaultInitializer(){
-        return regarma->SarimaModel.builder(regarma.getArma().specification()).setDefault(-.1, -.2).build();
+        return regarma->SarimaModel.builder(regarma.getArma().orders()).setDefault(-.1, -.2).build();
     }
     
     public static IArmaInitializer defaultInitializer(final double ar, final double ma){
-        return regarma->SarimaModel.builder(regarma.getArma().specification()).setDefault(ar, ma).build();
+        return regarma->SarimaModel.builder(regarma.getArma().orders()).setDefault(ar, ma).build();
     }
     
      

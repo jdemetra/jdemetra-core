@@ -111,7 +111,7 @@ public class ArmaModuleImpl {
     }
 
     public SarimaOrders process(RegArimaModel<SarimaModel> regarima, boolean seas) {
-        SarimaOrders curSpec = regarima.arima().specification();
+        SarimaOrders curSpec = regarima.arima().orders();
         DoubleSeq res = RegArimaUtility.olsResiduals(regarima);
         SarmaOrders nspec = select(res, curSpec.getPeriod(), curSpec.getD(), curSpec.getBd());
         if (nspec == null) {
@@ -172,7 +172,7 @@ public class ArmaModuleImpl {
          * @return
          */
         SarmaOrders getSpecification() {
-            return arima.specification().doStationary();
+            return arima.orders().doStationary();
         }
 
         static void mergeInto(RegArmaBic[] estimations, RegArmaBic[] models) {

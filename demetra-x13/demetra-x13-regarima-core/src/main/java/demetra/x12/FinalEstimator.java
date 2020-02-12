@@ -22,7 +22,7 @@ import demetra.design.Development;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.regsarima.regular.IModelEstimator;
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
@@ -47,7 +47,7 @@ public class FinalEstimator implements IModelEstimator {
     }
 
     @Override
-    public boolean estimate(RegArimaModelling context) {
+    public boolean estimate(RegSarimaModelling context) {
 
         int niter = 0;
         do {
@@ -76,7 +76,7 @@ public class FinalEstimator implements IModelEstimator {
         return false;
     }
 
-    private int test(RegArimaModelling context) {
+    private int test(RegSarimaModelling context) {
         ModelDescription desc = context.getDescription();
         double cval = tsig;
         int nz = desc.getEstimationDomain().getLength();
@@ -85,7 +85,7 @@ public class FinalEstimator implements IModelEstimator {
         double bmin = 999;
 
         SarimaModel m = desc.arima();
-        SarimaOrders spec = m.specification();
+        SarimaOrders spec = m.orders();
         DoubleSeq pm = m.parameters();
         int start = 0, len = spec.getP();
         boolean dpr = checkRoots(pm.extract(start, len), 1 / cmod);// (m.RegularAR.Roots,

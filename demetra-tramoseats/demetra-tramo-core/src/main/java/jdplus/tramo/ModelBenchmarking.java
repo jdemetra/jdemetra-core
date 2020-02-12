@@ -20,7 +20,7 @@ import demetra.design.Development;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.arima.SarimaOrders;
 
 
@@ -35,7 +35,7 @@ class ModelBenchmarking extends ModelController {
     }
 
     @Override
-    public ProcessingResult process(RegArimaModelling modelling, TramoProcessor.Context context) {
+    public ProcessingResult process(RegSarimaModelling modelling, TramoProcessor.Context context) {
 
         ModelEstimation current = modelling.build();
 
@@ -53,7 +53,7 @@ class ModelBenchmarking extends ModelController {
         ndesc.setAirline(context.seasonal);
         ndesc.setMean(context.seasonal ? modelling.getDescription().isMean() : true);
         ndesc.removeVariable(var->var.isOutlier(false));
-        RegArimaModelling nmodelling = RegArimaModelling.of(ndesc);
+        RegSarimaModelling nmodelling = RegSarimaModelling.of(ndesc);
 
         if (!estimate(nmodelling, true)) {
             return ProcessingResult.Failed;

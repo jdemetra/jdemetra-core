@@ -22,7 +22,7 @@ import jdplus.regarima.RegArimaUtility;
 import jdplus.regsarima.regular.IArmaModule;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import demetra.arima.SarmaOrders;
@@ -210,7 +210,7 @@ public class ArmaModule implements IArmaModule {
     }
 
     @Override
-    public ProcessingResult process(RegArimaModelling context) {
+    public ProcessingResult process(RegSarimaModelling context) {
         ModelDescription desc = context.getDescription();
         SarimaOrders curspec = desc.specification();
         int inic = comespa(curspec.getPeriod(), desc.regarima().getObservationsCount(),
@@ -238,7 +238,7 @@ public class ArmaModule implements IArmaModule {
     }
 
     public SarimaOrders process(RegArimaModel<SarimaModel> regarima, boolean seas) {
-        SarimaOrders curSpec = regarima.arima().specification();
+        SarimaOrders curSpec = regarima.arima().orders();
         int inic = comespa(curSpec.getPeriod(), regarima.getObservationsCount(),  maxInic(curSpec.getPeriod()), curSpec.getD(), curSpec.getBd(), seas);
         if (inic == 0) {
             curSpec.setDefault(seas);

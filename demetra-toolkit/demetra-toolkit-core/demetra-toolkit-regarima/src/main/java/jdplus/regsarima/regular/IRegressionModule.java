@@ -5,12 +5,12 @@
  */
 package jdplus.regsarima.regular;
 
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public interface IRegressionModule {
-    ProcessingResult test(RegArimaModelling context);
+    ProcessingResult test(RegSarimaModelling context);
 }

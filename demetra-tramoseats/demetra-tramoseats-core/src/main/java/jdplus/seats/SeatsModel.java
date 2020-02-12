@@ -16,7 +16,6 @@
  */
 package jdplus.seats;
 
-import jdplus.arima.IArimaModel;
 import demetra.sa.ComponentType;
 import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;

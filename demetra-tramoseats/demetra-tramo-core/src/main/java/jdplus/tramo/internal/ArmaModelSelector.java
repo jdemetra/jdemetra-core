@@ -119,7 +119,7 @@ public class ArmaModelSelector {
         }
 
         public SarmaOrders getSpecification() {
-            return arma == null ? null : arma.specification().doStationary();
+            return arma == null ? null : arma.orders().doStationary();
         }
 
     }
@@ -265,13 +265,13 @@ public class ArmaModelSelector {
             return null;
         }
         if (hrs.length == 1 || acceptwn) {
-            return hrs[0].arma.specification().doStationary();
+            return hrs[0].arma.orders().doStationary();
         }
         int idx = 0;
-        while (idx < hrs.length && hrs[idx].arma.specification().getParametersCount() == 0) {
+        while (idx < hrs.length && hrs[idx].arma.orders().getParametersCount() == 0) {
             ++idx;
         }
-        return hrs[idx].arma.specification().doStationary();
+        return hrs[idx].arma.orders().doStationary();
     }
 
     static void mergeInto(FastBIC[] candidates, FastBIC[] models) {
@@ -283,7 +283,7 @@ public class ArmaModelSelector {
         // insert the new specifications in the old one
         for (int i = 0, icur = 0; i < nmax && icur < gmod; ++i) {
             SarimaModel cur = candidates[i].getArma();
-            SarimaOrders curSpec = cur.specification();
+            SarimaOrders curSpec = cur.orders();
             double bic = candidates[i].getBIC();
             for (int j = icur; j < gmod; ++j) {
                 if (models[j] == null) {

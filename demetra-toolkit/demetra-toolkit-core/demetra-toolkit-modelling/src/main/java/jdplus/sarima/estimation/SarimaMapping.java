@@ -177,7 +177,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
      */
     public static SarimaModel stabilize(SarimaModel m) {
         DataBlock np = DataBlock.of(m.parameters());
-        SarimaOrders mspec = m.specification();
+        SarimaOrders mspec = m.orders();
         if (stabilize(true, mspec, np)) {
             return SarimaModel.builder(mspec).parameters(np).build();
         } else {

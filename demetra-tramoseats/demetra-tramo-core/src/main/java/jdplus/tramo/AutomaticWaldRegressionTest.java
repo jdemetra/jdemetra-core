@@ -28,7 +28,7 @@ import jdplus.regarima.RegArimaModel;
 import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.sarima.SarimaModel;
 import java.util.Optional;
@@ -143,7 +143,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
     }
 
     @Override
-    public ProcessingResult test(RegArimaModelling context) {
+    public ProcessingResult test(RegSarimaModelling context) {
 
         ModelDescription current = context.getDescription();
         IArimaMapping<SarimaModel> mapping = current.mapping();
@@ -206,7 +206,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
         return update(current, model, tdsel, regarima.getConcentratedLikelihood(), nhp);
     }
 
-    private ModelDescription createTestModel(RegArimaModelling context, ITradingDaysVariable td, ILengthOfPeriodVariable lp) {
+    private ModelDescription createTestModel(RegSarimaModelling context, ITradingDaysVariable td, ILengthOfPeriodVariable lp) {
         ModelDescription tmp = ModelDescription.copyOf(context.getDescription());
         tmp.setAirline(true);
         tmp.setMean(true);

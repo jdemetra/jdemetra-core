@@ -24,7 +24,7 @@ import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
 
 
@@ -43,7 +43,7 @@ public class MeanController  implements IRegressionModule{
         this.cval=cval;
     }
 
-    public ProcessingResult test(RegArimaModelling context) {
+    public ProcessingResult test(RegSarimaModelling context) {
         
         ModelDescription desc=context.getDescription();
         RegArimaEstimation<SarimaModel> est=context.getEstimation();

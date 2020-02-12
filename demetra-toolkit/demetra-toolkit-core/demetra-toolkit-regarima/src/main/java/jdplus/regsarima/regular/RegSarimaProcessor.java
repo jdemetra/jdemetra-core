@@ -27,8 +27,6 @@ import demetra.timeseries.TsData;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public interface IPreprocessor {
+public interface RegSarimaProcessor {
     ModelEstimation process(TsData originalTs);
-    
-    
 }

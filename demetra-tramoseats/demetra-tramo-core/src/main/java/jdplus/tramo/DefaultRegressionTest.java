@@ -29,7 +29,7 @@ import jdplus.regarima.RegArimaModel;
 import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.sarima.SarimaModel;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
@@ -153,7 +153,7 @@ public class DefaultRegressionTest implements IRegressionModule {
         precision=builder.precision;
     }
 
-    private ModelDescription createTestModel(RegArimaModelling current) {
+    private ModelDescription createTestModel(RegSarimaModelling current) {
         ModelDescription model = ModelDescription.copyOf(current.getDescription());
         // add td, lp and easter
         if (td != null) {
@@ -171,7 +171,7 @@ public class DefaultRegressionTest implements IRegressionModule {
     }
 
     @Override
-    public ProcessingResult test(final RegArimaModelling context) {
+    public ProcessingResult test(final RegSarimaModelling context) {
         if (td == null && lp == null && easter == null && meanTest == null)
             return ProcessingResult.Unprocessed;
         // estimate the model.

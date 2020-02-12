@@ -32,7 +32,7 @@ public class RegArimaDecomposer {
         this.mapping=mapping;
     }
     
-    public TsData deterministicEffect(TsDomain domain, ComponentType type){
+    public TsData deterministicEffect(TsDomain domain, ComponentType type, boolean transformed){
         final ITsVariable[] vars = mapping.forComponentType(type);
         TsData f = model.deterministicEffect(domain, v->{
             for (int i=0; i<vars.length; ++i)
@@ -40,6 +40,9 @@ public class RegArimaDecomposer {
                     return true;
             return false;
         });
-        return model.backTransform(f, type == ComponentType.CalendarEffect);
+        if (! transformed){
+            f=model.backTransform(f, type == ComponentType.CalendarEffect);
+        }
+        return f;
     }
 }

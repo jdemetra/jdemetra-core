@@ -29,7 +29,7 @@ import jdplus.regsarima.regular.IDifferencingModule;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.arima.SarimaOrders;
 import demetra.regarima.X13Exception;
 import demetra.data.DoubleSeq;
@@ -558,7 +558,7 @@ public class DifferencingModule implements IDifferencingModule {
     }
 
     @Override
-    public ProcessingResult process(RegArimaModelling context) {
+    public ProcessingResult process(RegSarimaModelling context) {
         if (context.needEstimation()) {
             context.estimate(eps);
         }
@@ -589,7 +589,7 @@ public class DifferencingModule implements IDifferencingModule {
         }
     }
 
-    private ProcessingResult airline(RegArimaModelling context) {
+    private ProcessingResult airline(RegSarimaModelling context) {
         ModelDescription desc = context.getDescription();
         boolean seasonal = desc.getAnnualFrequency() > 1;
         if (!desc.specification().isAirline(seasonal)) {

@@ -19,8 +19,9 @@ package jdplus.stats.tests;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import jdplus.dstats.Chi2;
-import jdplus.stats.DescriptiveStatistics;
 import demetra.data.DoubleSeq;
+import demetra.stats.StatException;
+import jdplus.stats.DescriptiveStatistics;
 
 /**
  *
@@ -28,27 +29,50 @@ import demetra.data.DoubleSeq;
  */
 @Development(status = Development.Status.Alpha)
 @BuilderPattern(StatisticalTest.class)
-public class BowmanShenton 
-{
-
+public class JarqueBera {
+    
+    private int nregs;
+    private boolean corrected;
+    
     private final DescriptiveStatistics stats;
+    
+    public JarqueBera(DoubleSeq data) {
+        this.stats = DescriptiveStatistics.of(data);
+    }
+    
+    public JarqueBera(DescriptiveStatistics stats) {
+        this.stats = stats;
+    }
 
     /**
-     * 
-     * @param data
+     *
+     * @param nregs
+     * @return Number of regression variables
      */
-    public BowmanShenton(DoubleSeq data)
-    {
-        stats=DescriptiveStatistics.of(data);
+    public JarqueBera regressionCount(int nregs) {
+        this.nregs = nregs;
+        return this;
     }
-
+    
+    public JarqueBera correctionForSample() {
+        corrected = true;
+        return this;
+    }
+    
+    
     public StatisticalTest build() {
-	int n = stats.getObservationsCount();
-	double m3 = stats.getSkewness();
-	double m4 = stats.getKurtosis() - 3.0;
-	double val = n / 6.0 * m3 * m3 + n / 24.0 * m4 * m4;
-	Chi2 chi = new Chi2(2);
+        double n = stats.getObservationsCount()-nregs;
+        if (n<4)
+            throw new StatException("Invalid test: not enough observations");
+        double s = stats.getSkewness();
+        double k = stats.getKurtosis() - 3.0;
+        if (corrected) {
+            s *= Math.sqrt(n * (n - 1)) / (n - 2);
+            k = (n - 1) / ((n - 2) * (n - 3)) * ((n + 1) * k + 6);
+        }
+        double val = n * (s * s / 6 + k * k / 24);
+        Chi2 chi = new Chi2(2);
         return new StatisticalTest(chi, val, TestType.Upper, true);
     }
-
+    
 }

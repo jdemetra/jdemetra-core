@@ -24,6 +24,6 @@ package jdplus.regsarima.regular;
  */
 public interface IArmaModule {
     
-    ProcessingResult process(RegArimaModelling context);
+    ProcessingResult process(RegSarimaModelling context);
     
 }

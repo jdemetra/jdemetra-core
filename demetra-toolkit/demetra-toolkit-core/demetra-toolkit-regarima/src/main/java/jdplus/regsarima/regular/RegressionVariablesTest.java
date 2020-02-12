@@ -108,7 +108,7 @@ public class RegressionVariablesTest {
         }
     }
     
-    public ProcessingResult process(RegArimaModelling context) {
+    public ProcessingResult process(RegSarimaModelling context) {
         
         ConcentratedLikelihoodWithMissing ll = context.getEstimation().getConcentratedLikelihood();
         ModelDescription desc = context.getDescription();

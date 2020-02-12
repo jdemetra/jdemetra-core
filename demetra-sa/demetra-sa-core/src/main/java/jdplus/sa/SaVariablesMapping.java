@@ -45,12 +45,19 @@ public class SaVariablesMapping {
     private static final Map< Class<? extends ITsVariable>, VariableMapping> DEFAULTMAPPING
             = new HashMap<>();
 
-    public static <V extends ITsVariable> boolean register(Class<V> wclass, VariableMapping<V> factory) {
+    /**
+     * Register a new type
+     * @param <V>
+     * @param wclass Should be an interface or a final class (not checked)
+     * @param mapping 
+     * @return 
+     */
+    public static <V extends ITsVariable> boolean register(Class<V> wclass, VariableMapping<V> mapping) {
         synchronized (DEFAULTMAPPING) {
             if (DEFAULTMAPPING.containsKey(wclass)) {
                 return false;
             }
-            DEFAULTMAPPING.put(wclass, factory);
+            DEFAULTMAPPING.put(wclass, mapping);
             return true;
         }
     }
@@ -121,15 +128,55 @@ public class SaVariablesMapping {
         }
     }
 
+    /**
+     * Gets the default mapping for a given variable.
+     * 
+     * We search first a mapping for the class of the actual object, then for 
+     * the direct interfaces and finally for indirect interfaces (ancestors of the 
+     * direct interfaces)
+     * 
+     * Parent classes are not considered (they should not be considered)
+     * 
+     * @param var
+     * @return 
+     */
     public ComponentType defaultMapping(ITsVariable var) {
         synchronized (DEFAULTMAPPING) {
             VariableMapping m = DEFAULTMAPPING.get(var.getClass());
-            if (m == null) {
-                return ComponentType.Undefined;
-            } else {
+            if (m != null) {
                 return m.map(var);
+            } else {
+                m = deepSearch(var.getClass());
+                if (m != null) {
+                    return m.map(var);
+                } else {
+                    return ComponentType.Undefined;
+                }
             }
         }
+    }
+
+    private VariableMapping deepSearch(final Class t) {
+        // root interface
+        if (t == ITsVariable.class) {
+            return null;
+        }
+        // search for direct interfaces (declaration order)
+        Class[] interfaces = t.getInterfaces();
+        for (int i = 0; i < interfaces.length; ++i) {
+            VariableMapping m = DEFAULTMAPPING.get(interfaces[i]);
+            if (m != null) {
+                return m;
+            }
+        }
+        // search for indirect interfaces
+        for (int i = 0; i < interfaces.length; ++i) {
+            VariableMapping m = deepSearch(interfaces[i]);
+            if (m != null) {
+                return m;
+            }
+        }
+        return null;
     }
 
     private final Map<ITsVariable, ComponentType> mapping = new HashMap<>();
@@ -141,21 +188,21 @@ public class SaVariablesMapping {
     }
 
     public void put(ITsVariable var, ComponentType type) {
-            mapping.put(var, type);
+        mapping.put(var, type);
     }
-    
-    public void clear(){
+
+    public void clear() {
         mapping.clear();
     }
-    
-    public void remove(ITsVariable var){
+
+    public void remove(ITsVariable var) {
         mapping.remove(var);
     }
 
     public Map<ITsVariable, ComponentType> mapping() {
         return Collections.unmodifiableMap(mapping);
     }
- 
+
     public ITsVariable[] forComponentType(ComponentType type) {
         List<ITsVariable> vars = new ArrayList();
         mapping.forEach((var, vtype) -> {

@@ -24,7 +24,7 @@ import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.ILogLevelModule;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.sarima.SarimaModel;
@@ -99,7 +99,7 @@ public class LogLevelModule implements ILogLevelModule {
     }
 
     @Override
-    public ProcessingResult process(RegArimaModelling context) {
+    public ProcessingResult process(RegSarimaModelling context) {
         clear();
         ModelDescription model = context.getDescription();
         if (model.getSeries().getValues().anyMatch(z -> z <= 0)) {

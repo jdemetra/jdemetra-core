@@ -351,7 +351,7 @@ public class SarimaComponent {
     }
 
     public void setModel(SarimaModel value) {
-        SarimaOrders spec = value.specification();
+        SarimaOrders spec = value.orders();
         setP(spec.getP());
         d = spec.getD();
         setQ(spec.getQ());

@@ -554,7 +554,7 @@ public final class SarimaModel extends AbstractArimaModel {
      *
      * @return
      */
-    public SarimaOrders specification() {
+    public SarimaOrders orders() {
         SarimaOrders spec = new SarimaOrders(s);
         spec.setD(d);
         spec.setBd(bd);

@@ -9,7 +9,7 @@ import demetra.design.Development;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.regular.SeasonalFTest;
 import demetra.arima.SarimaOrders;
 import jdplus.stats.tests.StatisticalTest;
@@ -37,7 +37,7 @@ class SeasonalityController extends ModelController {
     }
 
     @Override
-    ProcessingResult process(RegArimaModelling modelling, TramoProcessor.Context context) {
+    ProcessingResult process(RegSarimaModelling modelling, TramoProcessor.Context context) {
         ProcessingResult result;
         if (getReferenceModel() == null) {
             result = computeReferenceModel(modelling, context);
@@ -60,7 +60,7 @@ class SeasonalityController extends ModelController {
         mstats = ModelStatistics.of(refestimation);
     }
 
-    private boolean hasSeasonality(RegArimaModelling modelling, TramoProcessor.Context context) {
+    private boolean hasSeasonality(RegSarimaModelling modelling, TramoProcessor.Context context) {
         int period = modelling.getDescription().getAnnualFrequency();
         if (stests == null) {
             return false;
@@ -103,7 +103,7 @@ class SeasonalityController extends ModelController {
      * @param modelling
      * @return
      */
-    private ProcessingResult computeReferenceModel(RegArimaModelling modelling, TramoProcessor.Context context) {
+    private ProcessingResult computeReferenceModel(RegSarimaModelling modelling, TramoProcessor.Context context) {
         ModelEstimation model = modelling.build();
         setReferenceModel(modelling);
         computeSTests();
@@ -126,7 +126,7 @@ class SeasonalityController extends ModelController {
         if (nspec != null) {
             ModelDescription desc = ModelDescription.copyOf(modelling.getDescription());
             desc.setSpecification(spec);
-            RegArimaModelling ncontext = RegArimaModelling.of(desc);
+            RegSarimaModelling ncontext = RegSarimaModelling.of(desc);
             if (estimate(ncontext, false)) {
                 transferInformation(ncontext, modelling);
                 setReferenceModel(modelling);
@@ -136,9 +136,9 @@ class SeasonalityController extends ModelController {
         return ProcessingResult.Unchanged;
     }
 
-    private ProcessingResult compareReferenceModels(RegArimaModelling context) {
+    private ProcessingResult compareReferenceModels(RegSarimaModelling context) {
         // compare with the previous reference model
-        RegArimaModelling referenceModel = getReferenceModel();
+        RegSarimaModelling referenceModel = getReferenceModel();
         ModelEstimation refestimation = referenceModel.build();
         ModelComparator.Preference pref = ModelComparator.Preference.BIC;
         if (!refestimation.specification().equals(context.getDescription().specification())) {

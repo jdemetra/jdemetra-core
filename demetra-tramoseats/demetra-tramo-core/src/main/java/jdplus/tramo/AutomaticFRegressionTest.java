@@ -26,7 +26,7 @@ import jdplus.regarima.RegArimaEstimation;
 import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regarima.RegArimaUtility;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.ITradingDaysVariable;
@@ -134,7 +134,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
     }
 
     @Override
-    public ProcessingResult test(RegArimaModelling context) {
+    public ProcessingResult test(RegSarimaModelling context) {
 
         ModelDescription current = context.getDescription();
         IArimaMapping<SarimaModel> mapping = current.mapping();
@@ -190,7 +190,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         }
     }
 
-    private ModelDescription createTestModel(RegArimaModelling context, ITradingDaysVariable td, ILengthOfPeriodVariable lp) {
+    private ModelDescription createTestModel(RegSarimaModelling context, ITradingDaysVariable td, ILengthOfPeriodVariable lp) {
         ModelDescription tmp = ModelDescription.copyOf(context.getDescription());
         tmp.setAirline(true);
         tmp.setMean(true);

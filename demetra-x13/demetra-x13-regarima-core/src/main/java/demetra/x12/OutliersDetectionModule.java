@@ -34,7 +34,7 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import jdplus.regsarima.regular.IOutliersDetectionModule;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regarima.outlier.RobustStandardDeviationComputer;
 import internal.jdplus.arima.AnsleyFilter;
 import java.util.ArrayList;
@@ -202,7 +202,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
     }
 
     @Override
-    public ProcessingResult process(RegArimaModelling context, double criticalValue) {
+    public ProcessingResult process(RegSarimaModelling context, double criticalValue) {
         try {
             ModelDescription model = context.getDescription();
             TsDomain domain = model.getEstimationDomain();

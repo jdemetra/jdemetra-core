@@ -80,7 +80,7 @@ public final class ModelEstimation {
         return new ModelEstimation(builder, builder.estimate(processor));
     }
 
-    public static ModelEstimation of(RegArimaModelling regarima) {
+    public static ModelEstimation of(RegSarimaModelling regarima) {
         return new ModelEstimation(regarima.getDescription(), regarima.getEstimation());
     }
 
@@ -169,7 +169,7 @@ public final class ModelEstimation {
     }
 
     public SarimaOrders specification() {
-        return model.arima().specification();
+        return model.arima().orders();
     }
 
     public TsData interpolatedSeries(boolean bTransformed) {

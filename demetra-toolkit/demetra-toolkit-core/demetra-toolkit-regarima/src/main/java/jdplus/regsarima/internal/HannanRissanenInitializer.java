@@ -115,7 +115,7 @@ public class HannanRissanenInitializer implements IArmaInitializer {
     @Override
     public SarimaModel initialize(RegArmaModel<SarimaModel> regs) {
         SarimaModel sarima = regs.getArma();
-        SarimaOrders spec = sarima.specification();
+        SarimaOrders spec = sarima.orders();
         SarmaOrders dspec = spec.doStationary();
         try {
             if (spec.getParametersCount() == 0) {

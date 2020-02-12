@@ -46,7 +46,7 @@ public class DefaultModelApproximator implements IModelApproximator {
 
     @Override
     public boolean approximate(SeatsModel sm) {
-        SarimaOrders spec = sm.getCurrentModel().specification();
+        SarimaOrders spec = sm.getCurrentModel().orders();
         originalDifferencing = spec.getD() + spec.getBd();
         if (app_known(sm)) {
             return true;
@@ -75,7 +75,7 @@ public class DefaultModelApproximator implements IModelApproximator {
 //    }
     private boolean app_seas(SeatsModel sm) {
         SarimaModel cur = sm.getCurrentModel();
-        SarimaOrders spec = cur.specification();
+        SarimaOrders spec = cur.orders();
         boolean mean = sm.isMeanCorrection();
         int p = spec.getP(), d = spec.getD(), q = spec.getQ(),
                 bp = spec.getBp(), bd = spec.getBd(), bq = spec.getBq();
@@ -120,7 +120,7 @@ public class DefaultModelApproximator implements IModelApproximator {
 
     private boolean app_redp(SeatsModel sm) {
         SarimaModel cur = sm.getCurrentModel();
-        SarimaOrders spec = cur.specification();
+        SarimaOrders spec = cur.orders();
         if (spec.getP() == 0) {
             return false;
         }
@@ -151,7 +151,7 @@ public class DefaultModelApproximator implements IModelApproximator {
 
     private boolean app_redq(SeatsModel sm) {
         SarimaModel cur = sm.getCurrentModel();
-        SarimaOrders spec = cur.specification();
+        SarimaOrders spec = cur.orders();
         if (spec.getQ() == 1) {
             return false;
         }
@@ -161,7 +161,7 @@ public class DefaultModelApproximator implements IModelApproximator {
 
     private boolean app_last(SeatsModel sm) {
         SarimaModel cur = sm.getCurrentModel();
-        SarimaOrders spec = cur.specification();
+        SarimaOrders spec = cur.orders();
 
         spec.setBq(0);
         return estimateModel(sm, spec);
@@ -169,7 +169,7 @@ public class DefaultModelApproximator implements IModelApproximator {
 
     private boolean app_known(SeatsModel sm) {
         SarimaModel cur = sm.getCurrentModel();
-        SarimaOrders spec = cur.specification();
+        SarimaOrders spec = cur.orders();
         int p = spec.getP(), d = spec.getD(), q = spec.getQ(),
                 bp = spec.getBp(), bd = spec.getBd(), bq = spec.getBq();
         if (bp != 0 || bd != 1 || q > 1 || p != 0) {

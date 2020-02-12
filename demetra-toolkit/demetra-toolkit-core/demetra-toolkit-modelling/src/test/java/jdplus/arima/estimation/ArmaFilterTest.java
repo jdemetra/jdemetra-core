@@ -181,7 +181,7 @@ public class ArmaFilterTest {
     private static ec.tstoolkit.arima.IArimaModel toLegacy(IArimaModel model) {
         if (model instanceof SarimaModel) {
             SarimaModel sarima = (SarimaModel) model;
-            SarimaOrders spec = sarima.specification();
+            SarimaOrders spec = sarima.orders();
             ec.tstoolkit.sarima.SarimaSpecification lspec = new ec.tstoolkit.sarima.SarimaSpecification(spec.getPeriod());
             lspec.setP(spec.getP());
             lspec.setD(spec.getD());

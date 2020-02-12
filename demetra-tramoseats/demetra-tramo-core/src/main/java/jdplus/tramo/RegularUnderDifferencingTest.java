@@ -22,7 +22,7 @@ import demetra.math.Complex;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import jdplus.tramo.internal.DifferencingModule;
@@ -42,11 +42,11 @@ class RegularUnderDifferencingTest extends ModelController {
     }
 
     @Override
-    ProcessingResult process(RegArimaModelling modelling, TramoProcessor.Context context) {
+    ProcessingResult process(RegSarimaModelling modelling, TramoProcessor.Context context) {
         ModelDescription desc = modelling.getDescription();
         RegArimaEstimation<SarimaModel> estimation = modelling.getEstimation();
         SarimaModel cur = desc.arima();
-        SarimaOrders spec = cur.specification();
+        SarimaOrders spec = cur.orders();
         if (spec.getD() == DifferencingModule.MAXD || spec.getP() == 0 || !desc.isMean()) {
             return ProcessingResult.Unchanged;
         }
@@ -61,7 +61,7 @@ class RegularUnderDifferencingTest extends ModelController {
         ModelDescription ndesc=ModelDescription.copyOf(desc);
         ndesc.setSpecification(spec);
         ndesc.setMean(false);
-        RegArimaModelling ncontext = RegArimaModelling.of(ndesc);
+        RegSarimaModelling ncontext = RegSarimaModelling.of(ndesc);
         if (!estimate(ncontext, false)) {
             return ProcessingResult.Failed;
         }

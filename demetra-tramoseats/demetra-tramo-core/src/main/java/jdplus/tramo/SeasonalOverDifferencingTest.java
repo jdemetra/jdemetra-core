@@ -16,7 +16,7 @@
  */
 package jdplus.tramo;
 
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.regular.SeasonalFTest;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
@@ -31,10 +31,10 @@ class SeasonalOverDifferencingTest {
     private static final double THRESHOLD = -.7;
     private static final double SIGNIF = 0.01;
 
-    public int test(RegArimaModelling context) {
+    public int test(RegSarimaModelling context) {
 
         SarimaModel arima = context.getDescription().arima();
-        SarimaOrders spec = arima.specification();
+        SarimaOrders spec = arima.orders();
         if (spec.getPeriod() == 1) {
             return 0;
         }

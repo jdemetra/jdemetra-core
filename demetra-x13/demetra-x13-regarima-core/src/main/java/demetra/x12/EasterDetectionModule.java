@@ -28,7 +28,7 @@ import jdplus.regarima.AICcComparator;
 import jdplus.regsarima.regular.IModelComparator;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
 import demetra.timeseries.regression.IEasterVariable;
 import jdplus.arima.estimation.IArimaMapping;
@@ -82,7 +82,7 @@ public class EasterDetectionModule implements IRegressionModule {
     }
 
     @Override
-    public ProcessingResult test(RegArimaModelling context) {
+    public ProcessingResult test(RegSarimaModelling context) {
         ModelDescription description = context.getDescription();
         int n = easters.length;
         int icur = -1;

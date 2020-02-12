@@ -109,7 +109,7 @@ public class SeasonalFTest {
     private boolean computeStatistics() {
         try {
             int nvars = regarima.getVariablesCount();
-            int np = regarima.arima().specification().getParametersCount();
+            int np = regarima.arima().orders().getParametersCount();
             ftest = new JointTest(seasonalModel.getConcentratedLikelihood())
                     .variableSelection(nvars - nseas, nseas)
                     .hyperParametersCount(np)

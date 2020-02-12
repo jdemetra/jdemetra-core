@@ -26,5 +26,5 @@ import demetra.design.Development;
  */
 @Development(status = Development.Status.Preliminary)
 public interface IAmiController {
-    boolean accept(RegArimaModelling context);
+    boolean accept(RegSarimaModelling context);
 }

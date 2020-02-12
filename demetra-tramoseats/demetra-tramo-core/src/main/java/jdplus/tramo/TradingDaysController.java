@@ -12,7 +12,7 @@ import demetra.timeseries.regression.Variable;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import jdplus.modelling.regression.Regression;
@@ -37,7 +37,7 @@ class TradingDaysController extends ModelController {
     }
 
     @Override
-    ProcessingResult process(RegArimaModelling modelling, TramoProcessor.Context context) {
+    ProcessingResult process(RegSarimaModelling modelling, TramoProcessor.Context context) {
         // find td variables
         ModelDescription desc = modelling.getDescription();
         boolean hascal = desc.variables().anyMatch(var ->(!var.isPrespecified()) && var.isCalendar());
@@ -51,7 +51,7 @@ class TradingDaysController extends ModelController {
         ModelDescription nmodel = newModel(modelling);
         nmodel.removeVariable(var->var.isOutlier(false));
         // compute the corresponding airline model.
-        RegArimaModelling ncontext = RegArimaModelling.of(nmodel);
+        RegSarimaModelling ncontext = RegSarimaModelling.of(nmodel);
         if (!estimate(ncontext, true)) {
             return ProcessingResult.Failed;
         }
@@ -69,7 +69,7 @@ class TradingDaysController extends ModelController {
         }
     }
 
-    private boolean needProcessing(RegArimaModelling context) {
+    private boolean needProcessing(RegSarimaModelling context) {
         DoubleSeq res = context.getEstimation().getConcentratedLikelihood().e();
         LinearModel.Builder builder = LinearModel.builder();
         builder.y(res);
@@ -92,7 +92,7 @@ class TradingDaysController extends ModelController {
         return lsr.Ftest().getPValue()<ptd;
     }
 
-    private ModelDescription newModel(RegArimaModelling context) {
+    private ModelDescription newModel(RegSarimaModelling context) {
         ModelDescription ndesc = ModelDescription.copyOf(context.getDescription());
         ndesc.removeVariable(var -> var.isCalendar());
         ndesc.addVariable(new Variable(td, "td", false));
