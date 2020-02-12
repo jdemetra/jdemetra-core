@@ -17,12 +17,12 @@
 package demetra.tsprovider.util;
 
 import demetra.tsprovider.DataSource;
-import ioutil.IO;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+import nbbrd.io.function.IOFunction;
 
 /**
  *
@@ -50,7 +50,7 @@ public final class ResourceMap<T> {
         }
     }
 
-    public synchronized T computeIfAbsent(DataSource source, IO.Function<DataSource, T> loader) throws IOException {
+    public synchronized T computeIfAbsent(DataSource source, IOFunction<DataSource, T> loader) throws IOException {
         try {
             return map.computeIfAbsent(source, loader.asUnchecked());
         } catch (UncheckedIOException ex) {

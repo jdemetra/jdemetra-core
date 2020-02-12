@@ -16,21 +16,13 @@
  */
 package internal.sql;
 
-import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.TableAsCubeAccessor.AllSeriesCursor;
 import demetra.tsprovider.cube.TableAsCubeAccessor.AllSeriesWithDataCursor;
 import demetra.tsprovider.cube.TableAsCubeAccessor.ChildrenCursor;
 import demetra.tsprovider.cube.TableAsCubeAccessor.SeriesCursor;
 import demetra.tsprovider.cube.TableAsCubeAccessor.SeriesWithDataCursor;
-import demetra.tsprovider.cube.TableAsCubeAccessor.TableCursor;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  *
@@ -39,18 +31,20 @@ import java.util.stream.Stream;
 @lombok.experimental.UtilityClass
 public class SqlTableAsCubeUtil {
 
-    public final Collector<? super String, ?, String> LABEL_COLLECTOR = Collectors.joining(", ");
-
-    public AllSeriesCursor allSeriesCursor(ResultSet rs, AutoCloseable closeable, ResultSetFunc<String[]> toDimValues, ResultSetFunc<String> toLabel, CubeId ref) {
-        return new ResultSetAllSeriesCursor(rs, closeable, toDimValues, toLabel, ref);
+    public AllSeriesCursor allSeriesCursor(ResultSet rs, AutoCloseable closeable, ResultSetFunc<String[]> toDimValues, ResultSetFunc<String> toLabel) {
+        return new ResultSetAllSeriesCursor(rs, closeable, toDimValues, toLabel);
     }
 
-    public AllSeriesWithDataCursor<Date> allSeriesWithDataCursor(ResultSet rs, AutoCloseable closeable, ResultSetFunc<String[]> toDimValues, ResultSetFunc<Date> toPeriod, ResultSetFunc<Number> toValue, ResultSetFunc<String> toLabel, CubeId ref) {
-        return new ResultSetAllSeriesWithDataCursor(rs, closeable, toDimValues, toPeriod, toValue, toLabel, ref);
+    public AllSeriesWithDataCursor<Date> allSeriesWithDataCursor(ResultSet rs, AutoCloseable closeable, ResultSetFunc<String[]> toDimValues, ResultSetFunc<Date> toPeriod, ResultSetFunc<Number> toValue, ResultSetFunc<String> toLabel) {
+        return new ResultSetAllSeriesWithDataCursor(rs, closeable, toDimValues, toPeriod, toValue, toLabel);
     }
 
-    public SeriesWithDataCursor<Date> seriesWithDataCursor(ResultSet rs, AutoCloseable closeable, ResultSetFunc<Date> toPeriod, ResultSetFunc<Number> toValue, ResultSetFunc<String> toLabel, CubeId ref) {
-        return new ResultSetSeriesWithDataCursor(rs, closeable, toPeriod, toValue, toLabel, ref);
+    public SeriesCursor seriesCursor(ResultSet rs, AutoCloseable closeable, ResultSetFunc<String> toLabel) {
+        return new ResultSetSeriesCursor(rs, closeable, toLabel);
+    }
+
+    public SeriesWithDataCursor<Date> seriesWithDataCursor(ResultSet rs, AutoCloseable closeable, ResultSetFunc<Date> toPeriod, ResultSetFunc<Number> toValue, ResultSetFunc<String> toLabel) {
+        return new ResultSetSeriesWithDataCursor(rs, closeable, toPeriod, toValue, toLabel);
     }
 
     public ChildrenCursor childrenCursor(ResultSet rs, AutoCloseable closeable, ResultSetFunc<String> toChild) {
@@ -58,207 +52,149 @@ public class SqlTableAsCubeUtil {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    private static abstract class ResultSetTableCursor implements TableCursor {
+    @lombok.RequiredArgsConstructor
+    private static final class ResultSetAllSeriesCursor implements AllSeriesCursor {
 
         private final ResultSet rs;
+        @lombok.experimental.Delegate
         private final AutoCloseable closeable;
-        private boolean closed;
 
-        private ResultSetTableCursor(ResultSet rs, AutoCloseable closeable) {
-            this.rs = rs;
-            this.closeable = closeable;
-            this.closed = false;
-        }
+        private final ResultSetFunc<String[]> toDimValues;
+        private final ResultSetFunc<String> toLabel;
 
-        protected abstract void processRow(ResultSet rs) throws SQLException;
+        @lombok.Getter
+        private String[] dimValues = null;
 
-        @Override
-        public boolean isClosed() throws Exception {
-            // java.lang.AbstractMethodError if ResultSet#isClosed() is not implemented
-            // return rs.isClosed();
-            return closed;
-        }
+        @lombok.Getter
+        private String labelOrNull = null;
 
         @Override
         public boolean nextRow() throws Exception {
-            boolean result = rs.next();
-            if (result) {
-                processRow(rs);
+            if (rs.next()) {
+                dimValues = toDimValues.applyWithSql(rs);
+                labelOrNull = toLabel.applyWithSql(rs);
+                return true;
             }
-            return result;
-        }
-
-        @Override
-        public void close() throws Exception {
-            closed = true;
-            closeable.close();
+            return false;
         }
     }
 
-    private static abstract class ResultSetSeriesCursor extends ResultSetTableCursor implements SeriesCursor {
+    @lombok.RequiredArgsConstructor
+    private static final class ResultSetAllSeriesWithDataCursor implements AllSeriesWithDataCursor<Date> {
 
-        private ResultSetSeriesCursor(ResultSet rs, AutoCloseable closeable) {
-            super(rs, closeable);
-        }
-
-        @Override
-        public Map<String, String> getMetaData() throws Exception {
-            return Collections.emptyMap();
-        }
-    }
-
-    private static final class ResultSetAllSeriesCursor extends ResultSetSeriesCursor implements AllSeriesCursor {
-
-        private final ResultSetFunc<String[]> toDimValues;
-        private final ResultSetFunc<String> toLabel;
-        private final CubeId ref;
-        private String[] dimValues;
-        private String label;
-
-        private ResultSetAllSeriesCursor(ResultSet rs, AutoCloseable closeable, ResultSetFunc<String[]> toDimValues, ResultSetFunc<String> toLabel, CubeId ref) {
-            super(rs, closeable);
-            this.toDimValues = toDimValues;
-            this.toLabel = toLabel;
-            this.ref = ref;
-            this.dimValues = null;
-            this.label = null;
-        }
-
-        @Override
-        public String getLabel() throws Exception {
-            return label != null ? label : Stream.concat(ref.getDimensionValueStream(), Stream.of(dimValues)).collect(LABEL_COLLECTOR);
-        }
-
-        @Override
-        public String[] getDimValues() throws Exception {
-            return dimValues;
-        }
-
-        @Override
-        protected void processRow(ResultSet rs) throws SQLException {
-            dimValues = toDimValues.applyWithSql(rs);
-            label = toLabel.applyWithSql(rs);
-        }
-    }
-
-    private static final class ResultSetAllSeriesWithDataCursor extends ResultSetSeriesCursor implements AllSeriesWithDataCursor<Date> {
+        private final ResultSet rs;
+        @lombok.experimental.Delegate
+        private final AutoCloseable closeable;
 
         private final ResultSetFunc<String[]> toDimValues;
         private final ResultSetFunc<Date> toPeriod;
         private final ResultSetFunc<Number> toValue;
         private final ResultSetFunc<String> toLabel;
-        private final CubeId ref;
-        private String[] dimValues;
-        private java.util.Date period;
-        private Number value;
-        private String label;
 
-        private ResultSetAllSeriesWithDataCursor(ResultSet rs, AutoCloseable closeable, ResultSetFunc<String[]> toDimValues, ResultSetFunc<Date> toPeriod, ResultSetFunc<Number> toValue, ResultSetFunc<String> toLabel, CubeId ref) {
-            super(rs, closeable);
-            this.toDimValues = toDimValues;
-            this.toPeriod = toPeriod;
-            this.toValue = toValue;
-            this.toLabel = toLabel;
-            this.ref = ref;
-            this.dimValues = null;
-            this.period = null;
-            this.value = null;
-            this.label = null;
-        }
+        @lombok.Getter
+        private String[] dimValues = null;
+
+        @lombok.Getter
+        private java.util.Date periodOrNull = null;
+
+        @lombok.Getter
+        private Number valueOrNull = null;
+
+        @lombok.Getter
+        private String labelOrNull = null;
 
         @Override
-        public String getLabel() throws Exception {
-            return label != null ? label : Stream.concat(ref.getDimensionValueStream(), Stream.of(dimValues)).collect(LABEL_COLLECTOR);
-        }
-
-        @Override
-        public String[] getDimValues() throws Exception {
-            return dimValues;
-        }
-
-        @Override
-        public java.util.Date getPeriod() throws Exception {
-            return period;
-        }
-
-        @Override
-        public Number getValue() throws Exception {
-            return value;
-        }
-
-        @Override
-        protected void processRow(ResultSet rs) throws SQLException {
-            dimValues = toDimValues.applyWithSql(rs);
-            period = toPeriod.applyWithSql(rs);
-            value = period != null ? toValue.applyWithSql(rs) : null;
-            label = toLabel.applyWithSql(rs);
+        public boolean nextRow() throws Exception {
+            if (rs.next()) {
+                dimValues = toDimValues.applyWithSql(rs);
+                periodOrNull = toPeriod.applyWithSql(rs);
+                valueOrNull = periodOrNull != null ? toValue.applyWithSql(rs) : null;
+                labelOrNull = toLabel.applyWithSql(rs);
+                return true;
+            }
+            return false;
         }
     }
 
-    private static final class ResultSetSeriesWithDataCursor extends ResultSetSeriesCursor implements SeriesWithDataCursor<Date> {
+    @lombok.RequiredArgsConstructor
+    private static final class ResultSetSeriesCursor implements SeriesCursor {
+
+        private final ResultSet rs;
+        @lombok.experimental.Delegate
+        private final AutoCloseable closeable;
+
+        private final ResultSetFunc<String> toLabel;
+
+        @lombok.Getter
+        private String labelOrNull = null;
+
+        @Override
+        public boolean nextRow() throws Exception {
+            if (rs.next()) {
+                labelOrNull = toLabel.applyWithSql(rs);
+                return true;
+            }
+            return false;
+        }
+    }
+
+    @lombok.RequiredArgsConstructor
+    private static final class ResultSetSeriesWithDataCursor implements SeriesWithDataCursor<Date> {
+
+        private final ResultSet rs;
+        @lombok.experimental.Delegate
+        private final AutoCloseable closeable;
 
         private final ResultSetFunc<Date> toPeriod;
         private final ResultSetFunc<Number> toValue;
         private final ResultSetFunc<String> toLabel;
-        private final CubeId ref;
-        private java.util.Date period;
-        private Number value;
-        private String label;
 
-        private ResultSetSeriesWithDataCursor(ResultSet rs, AutoCloseable closeable, ResultSetFunc<Date> toPeriod, ResultSetFunc<Number> toValue, ResultSetFunc<String> toLabel, CubeId ref) {
-            super(rs, closeable);
-            this.toPeriod = toPeriod;
-            this.toValue = toValue;
-            this.toLabel = toLabel;
-            this.ref = ref;
-            this.period = null;
-            this.value = null;
-            this.label = null;
-        }
+        @lombok.Getter
+        private java.util.Date periodOrNull = null;
+
+        @lombok.Getter
+        private Number valueOrNull = null;
+
+        @lombok.Getter
+        private String labelOrNull = null;
 
         @Override
-        public String getLabel() throws Exception {
-            return label != null ? label : ref.getDimensionValueStream().collect(LABEL_COLLECTOR);
-        }
-
-        @Override
-        public java.util.Date getPeriod() throws Exception {
-            return period;
-        }
-
-        @Override
-        public Number getValue() throws Exception {
-            return value;
-        }
-
-        @Override
-        protected void processRow(ResultSet rs) throws SQLException {
-            period = toPeriod.applyWithSql(rs);
-            value = period != null ? toValue.applyWithSql(rs) : null;
-            label = toLabel.applyWithSql(rs);
+        public boolean nextRow() throws Exception {
+            if (rs.next()) {
+                periodOrNull = toPeriod.applyWithSql(rs);
+                valueOrNull = periodOrNull != null ? toValue.applyWithSql(rs) : null;
+                labelOrNull = toLabel.applyWithSql(rs);
+                return true;
+            }
+            return false;
         }
     }
 
-    private static final class ResultSetChildrenCursor extends ResultSetTableCursor implements ChildrenCursor {
+    @lombok.RequiredArgsConstructor
+    private static final class ResultSetChildrenCursor implements ChildrenCursor {
+
+        private final ResultSet rs;
+        @lombok.experimental.Delegate
+        private final AutoCloseable closeable;
 
         private final ResultSetFunc<String> toChild;
-        private String child;
 
-        private ResultSetChildrenCursor(ResultSet rs, AutoCloseable closeable, ResultSetFunc<String> toChild) {
-            super(rs, closeable);
-            this.toChild = toChild;
-            this.child = null;
-        }
+        @lombok.Getter
+        private String child = null;
 
         @Override
-        public String getChild() throws Exception {
-            return child;
+        public boolean nextRow() throws Exception {
+            if (rs.next()) {
+                child = toChild.applyWithSql(rs);
+                if (child == null) {
+                    child = NULL_VALUE;
+                }
+                return true;
+            }
+            return false;
         }
 
-        @Override
-        protected void processRow(ResultSet rs) throws SQLException {
-            child = toChild.applyWithSql(rs);
-        }
+        private static final String NULL_VALUE = "";
     }
     //</editor-fold>
 }

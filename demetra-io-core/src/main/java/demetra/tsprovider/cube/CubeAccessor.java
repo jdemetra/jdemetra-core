@@ -17,10 +17,9 @@
 package demetra.tsprovider.cube;
 
 import demetra.design.ThreadSafe;
-import demetra.tsprovider.cursor.TsCursor;
-import demetra.io.IteratorWithIO;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -39,16 +38,19 @@ public interface CubeAccessor extends Closeable {
     CubeId getRoot() throws IOException;
 
     @NonNull
-    TsCursor<CubeId> getAllSeries(@NonNull CubeId id) throws IOException;
+    Stream<CubeSeries> getAllSeries(@NonNull CubeId id) throws IOException;
 
     @NonNull
-    TsCursor<CubeId> getAllSeriesWithData(@NonNull CubeId id) throws IOException;
+    Stream<CubeSeriesWithData> getAllSeriesWithData(@NonNull CubeId id) throws IOException;
+
+    @Nullable
+    CubeSeries getSeries(@NonNull CubeId id) throws IOException;
+
+    @Nullable
+    CubeSeriesWithData getSeriesWithData(@NonNull CubeId id) throws IOException;
 
     @NonNull
-    TsCursor<CubeId> getSeriesWithData(@NonNull CubeId id) throws IOException;
-
-    @NonNull
-    IteratorWithIO<CubeId> getChildren(@NonNull CubeId id) throws IOException;
+    Stream<CubeId> getChildren(@NonNull CubeId id) throws IOException;
 
     @NonNull
     String getDisplayName() throws IOException;

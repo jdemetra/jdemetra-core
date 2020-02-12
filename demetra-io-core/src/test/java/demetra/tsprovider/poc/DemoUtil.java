@@ -27,7 +27,6 @@ import demetra.tsprovider.TsProviders;
 import demetra.tsprovider.util.MultiLineNameUtil;
 import demetra.timeseries.TsDomain;
 import demetra.util.TreeTraverser;
-import ioutil.IO;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Duration;
@@ -37,6 +36,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import nbbrd.io.function.IOFunction;
 
 /**
  *
@@ -134,7 +134,7 @@ class DemoUtil {
         CHILDREN {
             @Override
             Optional<Ts> getFirst(DataSourceProvider provider, DataSource dataSource) throws IOException {
-                IO.Function<Object, Iterable<? extends Object>> children = o -> {
+                IOFunction<Object, Iterable<? extends Object>> children = o -> {
                     return o instanceof DataSource
                             ? provider.children((DataSource) o)
                             : ((DataSet) o).getKind() == DataSet.Kind.COLLECTION ? provider.children((DataSet) o) : Collections.emptyList();

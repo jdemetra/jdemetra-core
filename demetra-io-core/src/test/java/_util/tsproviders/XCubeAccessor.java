@@ -17,12 +17,14 @@
 package _util.tsproviders;
 
 import demetra.io.ResourceWatcher;
-import demetra.io.IteratorWithIO;
 import demetra.tsprovider.cube.CubeAccessor;
 import demetra.tsprovider.cube.CubeId;
-import demetra.tsprovider.cursor.TsCursor;
+import demetra.tsprovider.cube.CubeSeries;
+import demetra.tsprovider.cube.CubeSeriesWithData;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.stream.Stream;
+import nbbrd.io.function.IORunnable;
 
 /**
  *
@@ -49,27 +51,35 @@ public final class XCubeAccessor implements CubeAccessor {
     }
 
     @Override
-    public TsCursor<CubeId> getAllSeries(CubeId id) throws IOException {
+    public Stream<CubeSeries> getAllSeries(CubeId id) throws IOException {
         Objects.requireNonNull(id);
-        return TsCursor.<CubeId>empty().onClose(resourceWatcher.watchAsCloseable("getAllSeries"));
+        return Stream.<CubeSeries>empty().onClose(IORunnable.unchecked(resourceWatcher.watchAsCloseable("getAllSeries")::close));
     }
 
     @Override
-    public TsCursor<CubeId> getAllSeriesWithData(CubeId id) throws IOException {
+    public Stream<CubeSeriesWithData> getAllSeriesWithData(CubeId id) throws IOException {
         Objects.requireNonNull(id);
-        return TsCursor.<CubeId>empty().onClose(resourceWatcher.watchAsCloseable("getAllSeriesWithData"));
+        return Stream.<CubeSeriesWithData>empty().onClose(IORunnable.unchecked(resourceWatcher.watchAsCloseable("getAllSeriesWithData")::close));
     }
 
     @Override
-    public TsCursor<CubeId> getSeriesWithData(CubeId id) throws IOException {
+    public CubeSeries getSeries(CubeId id) throws IOException {
         Objects.requireNonNull(id);
-        return TsCursor.<CubeId>empty().onClose(resourceWatcher.watchAsCloseable("getSeriesWithData"));
+        resourceWatcher.watchAsCloseable("getSeries").close();
+        return null;
     }
 
     @Override
-    public IteratorWithIO<CubeId> getChildren(CubeId id) throws IOException {
+    public CubeSeriesWithData getSeriesWithData(CubeId id) throws IOException {
         Objects.requireNonNull(id);
-        return IteratorWithIO.<CubeId>empty().onClose(resourceWatcher.watchAsCloseable("getChildren"));
+        resourceWatcher.watchAsCloseable("getSeriesWithData").close();
+        return null;
+    }
+
+    @Override
+    public Stream<CubeId> getChildren(CubeId id) throws IOException {
+        Objects.requireNonNull(id);
+        return Stream.<CubeId>empty().onClose(IORunnable.unchecked(resourceWatcher.watchAsCloseable("getChildren")::close));
     }
 
     @Override

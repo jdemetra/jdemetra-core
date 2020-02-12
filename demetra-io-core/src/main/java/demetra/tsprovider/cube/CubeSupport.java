@@ -22,22 +22,24 @@ import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.HasDataDisplayName;
 import demetra.tsprovider.HasDataHierarchy;
-import demetra.tsprovider.cursor.HasTsCursor;
 import demetra.tsprovider.util.IConfig;
 import demetra.tsprovider.util.IParam;
-import demetra.tsprovider.cursor.TsCursor;
-import demetra.io.IteratorWithIO;
+import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import internal.util.Strings;
-import ioutil.IO;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AllArgsConstructor;
+import demetra.tsprovider.stream.HasTsStream;
+import nbbrd.io.function.IOFunction;
 
 /**
  *
@@ -46,7 +48,7 @@ import lombok.AllArgsConstructor;
  */
 @ThreadSafe
 @lombok.AllArgsConstructor(staticName = "of")
-public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasDataDisplayName {
+public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasDataDisplayName {
 
     @ThreadSafe
     public interface Resource {
@@ -82,9 +84,11 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
             return Collections.singletonList(fake);
         }
 
-        try (IteratorWithIO<CubeId> children = acc.getChildren(parentId)) {
+        try (Stream<CubeId> children = acc.getChildren(parentId)) {
             DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
-            return toList(builder, children, resource.getIdParam(parentId));
+            return children.map(toDataSetFunc(builder, resource.getIdParam(parentId))).collect(Collectors.toList());
+        } catch (UncheckedIOException ex) {
+            throw ex.getCause();
         }
     }
 
@@ -101,27 +105,32 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
 
         CubeId parentId = idParam.get(parent);
 
-        try (IteratorWithIO<CubeId> children = acc.getChildren(parentId)) {
+        try (Stream<CubeId> children = acc.getChildren(parentId)) {
             DataSet.Builder builder = parent.toBuilder(parentId.getDepth() > 1 ? DataSet.Kind.COLLECTION : DataSet.Kind.SERIES);
-            return toList(builder, children, idParam);
+            return children.map(toDataSetFunc(builder, idParam)).collect(Collectors.toList());
+        } catch (UncheckedIOException ex) {
+            throw ex.getCause();
         }
     }
     //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="HasTsCursor">
+    //<editor-fold defaultstate="collapsed" desc="HasTsStream">
     @Override
-    public TsCursor<DataSet> getData(DataSource dataSource, TsInformationType type) throws IOException {
+    public Stream<DataSetTs> getData(DataSource dataSource, TsInformationType type) throws IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
         CubeAccessor acc = resource.getAccessor(dataSource);
         CubeId parentId = acc.getRoot();
 
-        TsCursor<CubeId> cursor = type.encompass(TsInformationType.Data) ? acc.getAllSeriesWithData(parentId) : acc.getAllSeries(parentId);
-        return cursor.map(toDataSetFunc(DataSet.builder(dataSource, DataSet.Kind.SERIES), resource.getIdParam(parentId)));
+        Function<CubeId, DataSet> toDataSet = toDataSetFunc(DataSet.builder(dataSource, DataSet.Kind.SERIES), resource.getIdParam(parentId));
+
+        return type.encompass(TsInformationType.Data)
+                ? acc.getAllSeriesWithData(parentId).map(getSeriesWithDataFunc(toDataSet, acc::getDisplayName))
+                : acc.getAllSeries(parentId).map(getSeriesFunc(toDataSet, acc::getDisplayName));
     }
 
     @Override
-    public TsCursor<DataSet> getData(DataSet dataSet, TsInformationType type) throws IOException {
+    public Stream<DataSetTs> getData(DataSet dataSet, TsInformationType type) throws IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSet);
 
         CubeAccessor acc = resource.getAccessor(dataSet.getDataSource());
@@ -129,10 +138,12 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
 
         CubeId id = idParam.get(dataSet);
 
-        TsCursor<CubeId> cursor = DataSet.Kind.COLLECTION.equals(dataSet.getKind())
-                ? type.encompass(TsInformationType.Data) ? acc.getAllSeriesWithData(id) : acc.getAllSeries(id)
-                : type.encompass(TsInformationType.Data) ? acc.getSeriesWithData(id) : TsCursor.singleton(id);
-        return cursor.map(toDataSetFunc(dataSet.toBuilder(DataSet.Kind.SERIES), idParam));
+        Function<CubeId, DataSet> toDataSet = toDataSetFunc(dataSet.toBuilder(DataSet.Kind.SERIES), idParam);
+
+        boolean collection = DataSet.Kind.COLLECTION.equals(dataSet.getKind());
+        return type.encompass(TsInformationType.Data)
+                ? (collection ? acc.getAllSeriesWithData(id) : ofNullable(acc.getSeriesWithData(id))).map(getSeriesWithDataFunc(toDataSet, acc::getDisplayName))
+                : (collection ? acc.getAllSeries(id) : ofNullable(acc.getSeries(id))).map(getSeriesFunc(toDataSet, acc::getDisplayName));
     }
     //</editor-fold>
 
@@ -186,14 +197,31 @@ public final class CubeSupport implements HasDataHierarchy, HasTsCursor, HasData
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    private static List<DataSet> toList(DataSet.Builder builder, IteratorWithIO<CubeId> values, IParam<DataSet, CubeId> idParam) throws IOException {
-        List<DataSet> result = new ArrayList<>();
-        values.map(toDataSetFunc(builder, idParam)).forEachRemaining(result::add);
-        return result;
+    private static <E> Stream<E> ofNullable(E e) {
+        return e == null ? Stream.empty() : Stream.of(e);
     }
 
-    private static IO.Function<CubeId, DataSet> toDataSetFunc(DataSet.Builder builder, IParam<DataSet, CubeId> dimValuesParam) {
+    private static Function<CubeId, DataSet> toDataSetFunc(DataSet.Builder builder, IParam<DataSet, CubeId> dimValuesParam) {
         return o -> builder.put(dimValuesParam, o).build();
+    }
+
+    private static String getNonNullLabel(String label, CubeId id, IOFunction<CubeId, String> toLabel) {
+        if (label != null) {
+            return label;
+        }
+        try {
+            return toLabel.applyWithIO(id);
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
+        }
+    }
+
+    private static Function<CubeSeriesWithData, DataSetTs> getSeriesWithDataFunc(Function<CubeId, DataSet> toDataSet, IOFunction<CubeId, String> toLabel) {
+        return ts -> new DataSetTs(toDataSet.apply(ts.getId()), getNonNullLabel(ts.getLabel(), ts.getId(), toLabel), ts.getMeta(), ts.getData());
+    }
+
+    private static Function<CubeSeries, DataSetTs> getSeriesFunc(Function<CubeId, DataSet> toDataSet, IOFunction<CubeId, String> toLabel) {
+        return ts -> new DataSetTs(toDataSet.apply(ts.getId()), getNonNullLabel(ts.getLabel(), ts.getId(), toLabel), ts.getMeta(), DataSetTs.DATA_NOT_REQUESTED);
     }
 
     @AllArgsConstructor

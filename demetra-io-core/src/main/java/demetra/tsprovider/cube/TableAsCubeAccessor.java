@@ -16,20 +16,20 @@
  */
 package demetra.tsprovider.cube;
 
-import demetra.tsprovider.cursor.TsCursor;
 import demetra.timeseries.util.TsDataBuilder;
-import demetra.io.IteratorWithIO;
-import demetra.timeseries.TsData;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import demetra.design.NotThreadSafe;
 import demetra.design.ThreadSafe;
+import java.util.Map;
+import java.util.stream.Stream;
+import nbbrd.io.AbstractIOIterator;
+import nbbrd.io.WrappedIOException;
+import nbbrd.io.function.IORunnable;
 
 /**
  *
@@ -41,7 +41,7 @@ import demetra.design.ThreadSafe;
 public final class TableAsCubeAccessor implements CubeAccessor {
 
     @ThreadSafe
-    public interface Resource<DATE> extends AutoCloseable {
+    public interface Resource<DATE> {
 
         @Nullable
         Exception testConnection();
@@ -54,6 +54,9 @@ public final class TableAsCubeAccessor implements CubeAccessor {
 
         @NonNull
         AllSeriesWithDataCursor<DATE> getAllSeriesWithDataCursor(@NonNull CubeId id) throws Exception;
+
+        @NonNull
+        SeriesCursor getSeriesCursor(@NonNull CubeId id) throws Exception;
 
         @NonNull
         SeriesWithDataCursor<DATE> getSeriesWithDataCursor(@NonNull CubeId id) throws Exception;
@@ -77,49 +80,43 @@ public final class TableAsCubeAccessor implements CubeAccessor {
     @NotThreadSafe
     public interface TableCursor extends AutoCloseable {
 
-        boolean isClosed() throws Exception;
-
         boolean nextRow() throws Exception;
     }
 
     @NotThreadSafe
-    public interface SeriesCursor extends TableCursor {
+    public interface WithLabel {
 
-        @NonNull
-        Map<String, String> getMetaData() throws Exception;
-
-        @NonNull
-        String getLabel() throws Exception;
+        @Nullable
+        String getLabelOrNull() throws Exception;
     }
 
     @NotThreadSafe
-    public interface AllSeriesCursor extends SeriesCursor {
+    public interface WithData<DATE> {
+
+        @Nullable
+        DATE getPeriodOrNull() throws Exception;
+
+        @Nullable
+        Number getValueOrNull() throws Exception;
+    }
+
+    @NotThreadSafe
+    public interface SeriesCursor extends TableCursor, WithLabel {
+    }
+
+    @NotThreadSafe
+    public interface SeriesWithDataCursor<DATE> extends SeriesCursor, WithData<DATE> {
+    }
+
+    @NotThreadSafe
+    public interface AllSeriesCursor extends TableCursor, WithLabel {
 
         @NonNull
         String[] getDimValues() throws Exception;
     }
 
     @NotThreadSafe
-    public interface AllSeriesWithDataCursor<DATE> extends SeriesCursor {
-
-        @NonNull
-        String[] getDimValues() throws Exception;
-
-        @Nullable
-        DATE getPeriod() throws Exception;
-
-        @Nullable
-        Number getValue() throws Exception;
-    }
-
-    @NotThreadSafe
-    public interface SeriesWithDataCursor<DATE> extends SeriesCursor {
-
-        @Nullable
-        DATE getPeriod() throws Exception;
-
-        @Nullable
-        Number getValue() throws Exception;
+    public interface AllSeriesWithDataCursor<DATE> extends AllSeriesCursor, WithData<DATE> {
     }
 
     @NotThreadSafe
@@ -135,7 +132,7 @@ public final class TableAsCubeAccessor implements CubeAccessor {
     @Override
     public IOException testConnection() {
         Exception result = resource.testConnection();
-        return result != null ? propagateIOException(result) : null;
+        return result != null ? WrappedIOException.wrap(result) : null;
     }
 
     @Override
@@ -143,47 +140,57 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         try {
             return resource.getRoot();
         } catch (Exception ex) {
-            throw propagateIOException(ex);
+            throw WrappedIOException.wrap(ex);
         }
     }
 
     @Override
-    public TsCursor<CubeId> getAllSeries(CubeId id) throws IOException {
+    public Stream<CubeSeries> getAllSeries(CubeId id) throws IOException {
         try {
             AllSeriesCursor cursor = resource.getAllSeriesCursor(id);
-            return new AllSeriesAdapter(id, cursor);
+            return new AllSeriesIterator(id, cursor).asStream();
         } catch (Exception ex) {
-            throw propagateIOException(ex);
+            throw WrappedIOException.wrap(ex);
         }
     }
 
     @Override
-    public TsCursor<CubeId> getAllSeriesWithData(CubeId id) throws IOException {
+    public Stream<CubeSeriesWithData> getAllSeriesWithData(CubeId id) throws IOException {
         try {
             AllSeriesWithDataCursor cursor = resource.getAllSeriesWithDataCursor(id);
-            return new AllSeriesWithDataAdapter(id, cursor, resource.newBuilder());
+            return new AllSeriesWithDataIterator(id, cursor, resource.newBuilder()).asStream();
         } catch (Exception ex) {
-            throw propagateIOException(ex);
+            throw WrappedIOException.wrap(ex);
         }
     }
 
     @Override
-    public TsCursor<CubeId> getSeriesWithData(CubeId id) throws IOException {
-        try {
-            SeriesWithDataCursor cursor = resource.getSeriesWithDataCursor(id);
-            return new SeriesWithDataAdapter(id, cursor, resource.newBuilder());
+    public CubeSeries getSeries(CubeId id) throws IOException {
+        try (SeriesCursor cursor = resource.getSeriesCursor(id)) {
+            AbstractIOIterator<CubeSeries> result = new SeriesIterator(id, cursor);
+            return result.hasNextWithIO() ? result.nextWithIO() : null;
         } catch (Exception ex) {
-            throw propagateIOException(ex);
+            throw WrappedIOException.wrap(ex);
         }
     }
 
     @Override
-    public IteratorWithIO<CubeId> getChildren(CubeId id) throws IOException {
+    public CubeSeriesWithData getSeriesWithData(CubeId id) throws IOException {
+        try (SeriesWithDataCursor cursor = resource.getSeriesWithDataCursor(id)) {
+            AbstractIOIterator<CubeSeriesWithData> result = new SeriesWithDataIterator(id, cursor, resource.newBuilder());
+            return result.hasNextWithIO() ? result.nextWithIO() : null;
+        } catch (Exception ex) {
+            throw WrappedIOException.wrap(ex);
+        }
+    }
+
+    @Override
+    public Stream<CubeId> getChildren(CubeId id) throws IOException {
         try {
             ChildrenCursor cursor = resource.getChildrenCursor(id);
-            return new ChildrenAdapter(id, cursor);
+            return new ChildrenIterator(id, cursor).asStream();
         } catch (Exception ex) {
-            throw propagateIOException(ex);
+            throw WrappedIOException.wrap(ex);
         }
     }
 
@@ -192,7 +199,7 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         try {
             return resource.getDisplayName();
         } catch (Exception ex) {
-            throw propagateIOException(ex);
+            throw WrappedIOException.wrap(ex);
         }
     }
 
@@ -201,7 +208,7 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         try {
             return resource.getDisplayName(id);
         } catch (Exception ex) {
-            throw propagateIOException(ex);
+            throw WrappedIOException.wrap(ex);
         }
     }
 
@@ -210,125 +217,79 @@ public final class TableAsCubeAccessor implements CubeAccessor {
         try {
             return resource.getDisplayNodeName(id);
         } catch (Exception ex) {
-            throw propagateIOException(ex);
+            throw WrappedIOException.wrap(ex);
         }
     }
 
     @Override
     public void close() throws IOException {
-        try {
-            resource.close();
-        } catch (Exception ex) {
-            throw propagateIOException(ex);
-        }
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    private static IOException propagateIOException(Exception ex) {
-        return ex instanceof IOException ? (IOException) ex : new IOException(ex);
-    }
+    private static final Map<String, String> NO_META = Collections.emptyMap();
 
-    private abstract static class TableAsCubeAdapter<T extends SeriesCursor> implements TsCursor<CubeId> {
+    private static abstract class AbstractTableIterator<T> extends AbstractIOIterator<T> {
 
-        protected final CubeId parentId;
-        protected final T cursor;
-
-        private TableAsCubeAdapter(CubeId parentId, T cursor) {
-            this.parentId = parentId;
-            this.cursor = cursor;
-        }
+        abstract protected TableCursor getTableCursor();
 
         @Override
-        public boolean isClosed() throws IOException {
+        public Stream<T> asStream() {
+            return super.asStream().onClose(IORunnable.unchecked(this::close));
+        }
+
+        private void close() throws IOException {
             try {
-                return cursor.isClosed();
+                getTableCursor().close();
             } catch (Exception ex) {
-                throw propagateIOException(ex);
-            }
-        }
-
-        @Override
-        public Map<String, String> getMetaData() throws IOException {
-            try {
-                return cursor.getMetaData();
-            } catch (Exception ex) {
-                throw propagateIOException(ex);
-            }
-        }
-
-        @Override
-        public Map<String, String> getSeriesMetaData() throws IOException {
-            return Collections.emptyMap();
-        }
-
-        @Override
-        public void close() throws IOException {
-            try {
-                cursor.close();
-            } catch (Exception ex) {
-                throw propagateIOException(ex);
+                throw WrappedIOException.wrap(ex);
             }
         }
     }
 
-    private static final class AllSeriesAdapter extends TableAsCubeAdapter<AllSeriesCursor> {
+    @lombok.RequiredArgsConstructor
+    private static final class AllSeriesIterator extends AbstractTableIterator<CubeSeries> {
 
-        private AllSeriesAdapter(CubeId parentId, AllSeriesCursor cursor) {
-            super(parentId, cursor);
-        }
+        private final CubeId parentId;
+        private final AllSeriesCursor cursor;
 
         @Override
-        public boolean nextSeries() throws IOException {
+        protected boolean moveNext() throws IOException {
             try {
                 return cursor.nextRow();
             } catch (Exception ex) {
-                throw propagateIOException(ex);
+                throw WrappedIOException.wrap(ex);
             }
         }
 
         @Override
-        public CubeId getSeriesId() throws IOException {
+        protected CubeSeries get() throws IOException {
             try {
-                return parentId.child(cursor.getDimValues());
+                return new CubeSeries(parentId.child(cursor.getDimValues()), cursor.getLabelOrNull(), NO_META);
             } catch (Exception ex) {
-                throw propagateIOException(ex);
+                throw WrappedIOException.wrap(ex);
             }
         }
 
         @Override
-        public String getSeriesLabel() throws IOException, IllegalStateException {
-            try {
-                return cursor.getLabel();
-            } catch (Exception ex) {
-                throw propagateIOException(ex);
-            }
-        }
-
-        @Override
-        public TsData getSeriesData() throws IOException {
-            throw new IOException("Not requested");
+        protected TableCursor getTableCursor() {
+            return cursor;
         }
     }
 
-    private static final class AllSeriesWithDataAdapter<DATE> extends TableAsCubeAdapter<AllSeriesWithDataCursor<DATE>> {
+    @lombok.RequiredArgsConstructor
+    private static final class AllSeriesWithDataIterator<DATE> extends AbstractTableIterator<CubeSeriesWithData> {
 
+        private final CubeId parentId;
+        private final AllSeriesWithDataCursor<DATE> cursor;
         private final TsDataBuilder<DATE> data;
-        private boolean first;
-        private boolean t0;
-        private String[] currentId;
-        private String currentLabel;
 
-        private AllSeriesWithDataAdapter(CubeId parentId, AllSeriesWithDataCursor<DATE> cursor, TsDataBuilder<DATE> data) {
-            super(parentId, cursor);
-            this.data = data;
-            this.first = true;
-            this.t0 = false;
-            this.currentId = null;
-            this.currentLabel = null;
-        }
+        private boolean first = true;
+        private boolean t0 = false;
+        private String[] currentId = null;
+        private String currentLabel = null;
 
         @Override
-        public boolean nextSeries() throws IOException {
+        protected boolean moveNext() throws IOException {
             try {
                 if (first) {
                     t0 = cursor.nextRow();
@@ -337,17 +298,17 @@ public final class TableAsCubeAccessor implements CubeAccessor {
                 while (t0) {
                     data.clear();
                     currentId = cursor.getDimValues();
-                    currentLabel = cursor.getLabel();
+                    currentLabel = cursor.getLabelOrNull();
                     boolean t1 = true;
                     while (t1) {
-                        DATE period = cursor.getPeriod();
+                        DATE period = cursor.getPeriodOrNull();
                         Number value = null;
                         boolean t2 = true;
                         while (t2) {
-                            value = cursor.getValue();
+                            value = cursor.getValueOrNull();
                             t0 = cursor.nextRow();
                             t1 = t0 && Arrays.equals(currentId, cursor.getDimValues());
-                            t2 = t1 && Objects.equals(period, cursor.getPeriod());
+                            t2 = t1 && Objects.equals(period, cursor.getPeriodOrNull());
                         }
                         data.add(period, value);
                     }
@@ -357,52 +318,79 @@ public final class TableAsCubeAccessor implements CubeAccessor {
                 currentLabel = null;
                 return false;
             } catch (Exception ex) {
-                throw propagateIOException(ex);
+                throw WrappedIOException.wrap(ex);
             }
         }
 
         @Override
-        public CubeId getSeriesId() throws IOException {
-            return parentId.child(currentId);
+        protected CubeSeriesWithData get() throws IOException {
+            return new CubeSeriesWithData(parentId.child(currentId), currentLabel, NO_META, data.build());
         }
 
         @Override
-        public String getSeriesLabel() throws IOException, IllegalStateException {
-            return currentLabel;
-        }
-
-        @Override
-        public TsData getSeriesData() throws IOException {
-            return data.build();
+        protected TableCursor getTableCursor() {
+            return cursor;
         }
     }
 
-    private static final class SeriesWithDataAdapter<DATE> extends TableAsCubeAdapter<SeriesWithDataCursor<DATE>> {
+    @lombok.RequiredArgsConstructor
+    private static final class SeriesIterator<DATE> extends AbstractTableIterator<CubeSeries> {
 
-        private final TsDataBuilder<DATE> data;
-        private String currentLabel;
+        private final CubeId parentId;
+        private final SeriesCursor cursor;
 
-        private SeriesWithDataAdapter(CubeId parentId, SeriesWithDataCursor<DATE> cursor, TsDataBuilder<DATE> data) {
-            super(parentId, cursor);
-            this.data = data;
-            this.currentLabel = null;
-        }
+        private String currentLabel = null;
 
         @Override
-        public boolean nextSeries() throws IOException {
+        protected boolean moveNext() throws IOException {
             try {
                 boolean t0 = cursor.nextRow();
                 if (t0) {
-                    currentLabel = cursor.getLabel();
-                    DATE latestPeriod = cursor.getPeriod();
+                    currentLabel = cursor.getLabelOrNull();
+                    return true;
+                }
+                currentLabel = null;
+                return false;
+            } catch (Exception ex) {
+                throw WrappedIOException.wrap(ex);
+            }
+        }
+
+        @Override
+        protected CubeSeries get() throws IOException {
+            return new CubeSeries(parentId, currentLabel, NO_META);
+        }
+
+        @Override
+        protected TableCursor getTableCursor() {
+            return cursor;
+        }
+    }
+
+    @lombok.RequiredArgsConstructor
+    private static final class SeriesWithDataIterator<DATE> extends AbstractTableIterator<CubeSeriesWithData> {
+
+        private final CubeId parentId;
+        private final SeriesWithDataCursor<DATE> cursor;
+        private final TsDataBuilder<DATE> data;
+
+        private String currentLabel = null;
+
+        @Override
+        protected boolean moveNext() throws IOException {
+            try {
+                boolean t0 = cursor.nextRow();
+                if (t0) {
+                    currentLabel = cursor.getLabelOrNull();
+                    DATE latestPeriod = cursor.getPeriodOrNull();
                     while (t0) {
                         DATE period = latestPeriod;
                         Number value = null;
                         boolean t1 = true;
                         while (t1) {
-                            value = cursor.getValue();
+                            value = cursor.getValueOrNull();
                             t0 = cursor.nextRow();
-                            t1 = t0 && Objects.equals(period, latestPeriod = cursor.getPeriod());
+                            t1 = t0 && Objects.equals(period, latestPeriod = cursor.getPeriodOrNull());
                         }
                         data.add(period, value);
                     }
@@ -411,64 +399,48 @@ public final class TableAsCubeAccessor implements CubeAccessor {
                 currentLabel = null;
                 return false;
             } catch (Exception ex) {
-                throw propagateIOException(ex);
+                throw WrappedIOException.wrap(ex);
             }
         }
 
         @Override
-        public CubeId getSeriesId() throws IOException {
-            return parentId;
+        protected CubeSeriesWithData get() throws IOException {
+            return new CubeSeriesWithData(parentId, currentLabel, NO_META, data.build());
         }
 
         @Override
-        public String getSeriesLabel() throws IOException, IllegalStateException {
-            return currentLabel;
-        }
-
-        @Override
-        public TsData getSeriesData() throws IOException {
-            return data.build();
+        protected TableCursor getTableCursor() {
+            return cursor;
         }
     }
 
-    private static final class ChildrenAdapter implements IteratorWithIO<CubeId> {
+    @lombok.RequiredArgsConstructor
+    private static final class ChildrenIterator extends AbstractTableIterator<CubeId> {
 
         private final CubeId parentId;
         private final ChildrenCursor cursor;
-        private boolean hasNext;
-
-        private ChildrenAdapter(CubeId parentId, ChildrenCursor cursor) throws Exception {
-            this.parentId = parentId;
-            this.cursor = cursor;
-            this.hasNext = cursor.nextRow();
-        }
 
         @Override
-        public boolean hasNext() throws IOException {
-            return hasNext;
-        }
-
-        @Override
-        public CubeId next() throws IOException, NoSuchElementException {
-            if (!hasNext) {
-                throw new NoSuchElementException();
-            }
+        protected boolean moveNext() throws IOException {
             try {
-                CubeId result = parentId.child(cursor.getChild());
-                hasNext = cursor.nextRow();
-                return result;
+                return cursor.nextRow();
             } catch (Exception ex) {
-                throw propagateIOException(ex);
+                throw WrappedIOException.wrap(ex);
             }
         }
 
         @Override
-        public void close() throws IOException {
+        protected CubeId get() throws IOException {
             try {
-                cursor.close();
+                return parentId.child(cursor.getChild());
             } catch (Exception ex) {
-                throw propagateIOException(ex);
+                throw WrappedIOException.wrap(ex);
             }
+        }
+
+        @Override
+        protected TableCursor getTableCursor() {
+            return cursor;
         }
     }
     //</editor-fold>
