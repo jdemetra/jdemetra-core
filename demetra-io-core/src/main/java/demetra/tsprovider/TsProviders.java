@@ -18,12 +18,12 @@ package demetra.tsprovider;
 
 import demetra.tsprovider.util.IConfig;
 import demetra.util.TreeTraverser;
-import ioutil.IO;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.function.Function;
+import nbbrd.io.function.IOFunction;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -47,7 +47,7 @@ public class TsProviders {
                 ? o -> o instanceof DataSource ? provider.getDisplayName((DataSource) o) : " " + provider.getDisplayNodeName((DataSet) o)
                 : o -> o instanceof DataSource ? provider.toMoniker((DataSource) o).getId() : " " + provider.toMoniker((DataSet) o).getId();
 
-        IO.Function<IConfig, Iterable<? extends IConfig>> children = o -> {
+        IOFunction<IConfig, Iterable<? extends IConfig>> children = o -> {
             return o instanceof DataSource
                     ? provider.children((DataSource) o)
                     : ((DataSet) o).getKind() == DataSet.Kind.COLLECTION ? provider.children((DataSet) o) : Collections.emptyList();

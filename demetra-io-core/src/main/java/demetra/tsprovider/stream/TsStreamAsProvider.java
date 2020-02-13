@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tsprovider.cursor;
+package demetra.tsprovider.stream;
 
 import demetra.design.ThreadSafe;
 import demetra.tsprovider.TsCollection;
@@ -27,7 +27,9 @@ import demetra.tsprovider.TsMoniker;
 import demetra.tsprovider.TsProvider;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Objects;
+import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -35,7 +37,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Philippe Charles
  */
 @ThreadSafe
-public final class TsCursorAsProvider implements TsProvider {
+public final class TsStreamAsProvider implements TsProvider {
 
     /**
      * Creates a new instance of TsFiller using cursors.
@@ -47,16 +49,16 @@ public final class TsCursorAsProvider implements TsProvider {
      * @return a non-null instance
      */
     @NonNull
-    public static TsCursorAsProvider of(@NonNull String providerName, @NonNull HasTsCursor hdc, @NonNull HasDataMoniker hdm, @NonNull Runnable cacheCleaner) {
-        return new TsCursorAsProvider(providerName, hdc, hdm, cacheCleaner);
+    public static TsStreamAsProvider of(@NonNull String providerName, @NonNull HasTsStream hdc, @NonNull HasDataMoniker hdm, @NonNull Runnable cacheCleaner) {
+        return new TsStreamAsProvider(providerName, hdc, hdm, cacheCleaner);
     }
 
     private final String providerName;
-    private final HasTsCursor htc;
+    private final HasTsStream htc;
     private final HasDataMoniker hdm;
     private final Runnable cacheCleaner;
 
-    private TsCursorAsProvider(String providerName, HasTsCursor htc, HasDataMoniker hdm, Runnable cacheCleaner) {
+    private TsStreamAsProvider(String providerName, HasTsStream htc, HasDataMoniker hdm, Runnable cacheCleaner) {
         this.providerName = Objects.requireNonNull(providerName, "providerName");
         this.htc = Objects.requireNonNull(htc, "HasTsCursor");
         this.hdm = Objects.requireNonNull(hdm, "HasDataMoniker");
@@ -162,49 +164,50 @@ public final class TsCursorAsProvider implements TsProvider {
     }
 
     private void fill(TsCollection.Builder info, DataSource dataSource) throws IOException {
-        try (TsCursor<DataSet> cursor = htc.getData(dataSource, info.getType())) {
-            fill(info, cursor);
+        try (Stream<DataSetTs> stream = htc.getData(dataSource, info.getType())) {
+            fill(info, stream);
+        } catch (UncheckedIOException ex) {
+            throw ex.getCause();
         }
     }
 
     private void fill(TsCollection.Builder info, DataSet dataSet) throws IOException {
-        try (TsCursor<DataSet> cursor = htc.getData(dataSet, info.getType())) {
-            fill(info, cursor);
+        try (Stream<DataSetTs> stream = htc.getData(dataSet, info.getType())) {
+            fill(info, stream);
+        } catch (UncheckedIOException ex) {
+            throw ex.getCause();
         }
     }
 
-    private void fill(Ts.Builder info, DataSet dataSet) throws IOException {
-        try (TsCursor<DataSet> cursor = htc.getData(dataSet, info.getType())) {
-            if (cursor.nextSeries()) {
-                info.name(cursor.getSeriesLabel());
-                fill(info, cursor);
-            } else {
-                throw new IOException("Missing time series");
-            }
+    private void fill(Ts.Builder builder, DataSet dataSet) throws IOException {
+        try (Stream<DataSetTs> stream = htc.getData(dataSet, builder.getType())) {
+            DataSetTs single = stream.findFirst().orElseThrow(() -> new IOException("Missing time series"));
+            fill(builder, single);
+        } catch (UncheckedIOException ex) {
+            throw ex.getCause();
         }
     }
 
-    private void fill(TsCollection.Builder info, TsCursor<DataSet> cursor) throws IOException {
-        if (info.getType().encompass(TsInformationType.MetaData)) {
-            info.meta(cursor.getMetaData());
+    private void fill(TsCollection.Builder builder, Stream<DataSetTs> cursor) {
+        if (builder.getType().encompass(TsInformationType.MetaData)) {
+            // is there relevant meta ?
         }
         Ts.Builder item = Ts.builder();
-        while (cursor.nextSeries()) {
-            item.name(cursor.getSeriesLabel())
-                    .moniker(hdm.toMoniker(cursor.getSeriesId()))
-                    .type(info.getType());
-            fill(item, cursor);
-            info.data(item.build());
-        }
+        cursor.forEach(tsInfo -> {
+            item.moniker(hdm.toMoniker(tsInfo.getId())).type(builder.getType());
+            fill(item, tsInfo);
+            builder.data(item.build());
+        });
     }
 
-    private void fill(Ts.Builder info, TsCursor<DataSet> cursor) throws IOException {
-        info.clearMeta();
-        if (info.getType().encompass(TsInformationType.MetaData)) {
-            info.meta(cursor.getSeriesMetaData());
+    private void fill(Ts.Builder builder, DataSetTs tsInfo) {
+        builder.clearMeta();
+        builder.name(tsInfo.getLabel());
+        if (builder.getType().encompass(TsInformationType.MetaData)) {
+            builder.meta(tsInfo.getMeta());
         }
-        if (info.getType().encompass(TsInformationType.Data)) {
-            info.data(cursor.getSeriesData());
+        if (builder.getType().encompass(TsInformationType.Data)) {
+            builder.data(tsInfo.getData());
         }
     }
 }

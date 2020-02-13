@@ -19,16 +19,17 @@ package _util.tsproviders;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.TsInformationType;
-import demetra.tsprovider.cursor.HasTsCursor;
-import demetra.tsprovider.cursor.TsCursor;
+import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import java.io.IOException;
+import java.util.stream.Stream;
+import demetra.tsprovider.stream.HasTsStream;
 
 /**
  *
  * @author Philippe Charles
  */
-public final class FailingTsCursorSupport implements HasTsCursor {
+public final class FailingTsCursorSupport implements HasTsStream {
 
     private final String providerName;
     private final String message;
@@ -39,13 +40,13 @@ public final class FailingTsCursorSupport implements HasTsCursor {
     }
 
     @Override
-    public TsCursor<DataSet> getData(DataSource dataSource, TsInformationType type) throws IllegalArgumentException, IOException {
+    public Stream<DataSetTs> getData(DataSource dataSource, TsInformationType type) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
         throw new IOException(message);
     }
 
     @Override
-    public TsCursor<DataSet> getData(DataSet dataSet, TsInformationType type) throws IllegalArgumentException, IOException {
+    public Stream<DataSetTs> getData(DataSet dataSet, TsInformationType type) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSet);
         throw new IOException(message);
     }

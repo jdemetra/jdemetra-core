@@ -55,7 +55,7 @@ public class BulkCubeAccessorTest {
                 return new BulkCubeAccessor(newSample(), o, cache);
             };
 
-            factory.apply(0).getSeriesWithData(INDUSTRY_BE).close();
+            factory.apply(0).getSeriesWithData(INDUSTRY_BE);
             assertThat(cache).isEmpty();
 
             factory.apply(0).getAllSeriesWithData(INDUSTRY).close();
@@ -64,7 +64,7 @@ public class BulkCubeAccessorTest {
             factory.apply(0).getAllSeriesWithData(SECTOR_REGION).close();
             assertThat(cache).isEmpty();
 
-            factory.apply(1).getSeriesWithData(INDUSTRY_BE).close();
+            factory.apply(1).getSeriesWithData(INDUSTRY_BE);
             assertThat(cache).isNotEmpty();
 
             factory.apply(1).getAllSeriesWithData(INDUSTRY).close();
@@ -73,7 +73,7 @@ public class BulkCubeAccessorTest {
             factory.apply(1).getAllSeriesWithData(SECTOR_REGION).close();
             assertThat(cache).isEmpty();
 
-            factory.apply(2).getSeriesWithData(INDUSTRY_BE).close();
+            factory.apply(2).getSeriesWithData(INDUSTRY_BE);
             assertThat(cache).isNotEmpty();
 
             factory.apply(2).getAllSeriesWithData(INDUSTRY).close();
@@ -89,7 +89,7 @@ public class BulkCubeAccessorTest {
         ResourceWatcher watcher = new ResourceWatcher();
         try (Cache<CubeId, Object> cache = CacheFactory.getTtlCacheByRef(Duration.ofHours(1))) {
             BulkCubeAccessor accessor = new BulkCubeAccessor(new XCubeAccessor(SECTOR_REGION, watcher), 1, cache);
-            accessor.getSeriesWithData(INDUSTRY_BE).close();
+            accessor.getSeriesWithData(INDUSTRY_BE);
             assertThat(cache).isNotEmpty();
             assertThat(watcher.isLeaking()).isFalse();
         }

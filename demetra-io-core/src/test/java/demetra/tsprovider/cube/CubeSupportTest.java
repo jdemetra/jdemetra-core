@@ -17,7 +17,6 @@
 package demetra.tsprovider.cube;
 
 import demetra.io.ResourceWatcher;
-import static _util.tsproviders.TsCursorUtil.readAllAndClose;
 import _util.tsproviders.XCubeAccessor;
 import _util.tsproviders.XCubeSupportResource;
 import demetra.tsprovider.DataSet;
@@ -27,8 +26,10 @@ import static demetra.tsprovider.cube.CubeIdTest.EMPTY;
 import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY;
 import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY_BE;
 import static demetra.tsprovider.cube.CubeIdTest.SECTOR_REGION;
+import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.util.IParam;
 import java.io.IOException;
+import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -85,5 +86,11 @@ public class CubeSupportTest {
             assertThat(o.get(DataSet.builder(dataSource, DataSet.Kind.COLLECTION).put("id", "industry").build())).isEqualTo(INDUSTRY);
             assertThat(o.get(DataSet.builder(dataSource, DataSet.Kind.SERIES).put("id", "industry.be").build())).isEqualTo(INDUSTRY_BE);
         });
+    }
+
+    private static long readAllAndClose(Stream<DataSetTs> cursor) throws IOException {
+        try (Stream<DataSetTs> closeable = cursor) {
+            return closeable.count();
+        }
     }
 }

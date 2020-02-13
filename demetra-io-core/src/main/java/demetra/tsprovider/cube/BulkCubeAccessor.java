@@ -17,8 +17,6 @@
 package demetra.tsprovider.cube;
 
 import demetra.design.ThreadSafe;
-import demetra.io.IteratorWithIO;
-import demetra.tsprovider.cursor.TsCursor;
 import java.io.IOException;
 import java.util.function.Supplier;
 import org.checkerframework.checker.index.qual.NonNegative;
@@ -26,7 +24,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import javax.cache.Cache;
 import lombok.AccessLevel;
 import demetra.tsprovider.util.CacheFactory;
-import ioutil.IO;
+import internal.tsprovider.cube.CachedStream;
+import java.util.stream.Stream;
+import nbbrd.io.Resource;
 
 /**
  *
@@ -57,15 +57,15 @@ public final class BulkCubeAccessor implements CubeAccessor {
     }
 
     @Override
-    public TsCursor<CubeId> getAllSeriesWithData(CubeId ref) throws IOException {
+    public Stream<CubeSeriesWithData> getAllSeriesWithData(CubeId ref) throws IOException {
         if (!ref.isSeries()) {
             int cacheLevel = getCacheLevel();
             if (ref.getLevel() == cacheLevel) {
-                return TsCursor.withCache(cache, ref, delegate::getAllSeriesWithData);
+                return CachedStream.getOrLoad(cache, ref, delegate::getAllSeriesWithData);
             } else {
                 CubeId ancestor = ref.getAncestor(cacheLevel);
                 if (ancestor != null) {
-                    return getAllSeriesWithData(ancestor).filter(ref::isAncestorOf);
+                    return getAllSeriesWithData(ancestor).filter(ts -> ref.isAncestorOf(ts.getId()));
                 }
             }
         }
@@ -73,12 +73,16 @@ public final class BulkCubeAccessor implements CubeAccessor {
     }
 
     @Override
-    public TsCursor<CubeId> getSeriesWithData(CubeId ref) throws IOException {
+    public CubeSeriesWithData getSeriesWithData(CubeId ref) throws IOException {
         if (ref.isSeries()) {
             int cacheLevel = getCacheLevel();
             CubeId ancestor = ref.getAncestor(cacheLevel);
             if (ancestor != null) {
-                return getAllSeriesWithData(ancestor).filter(ref::equals);
+                try (Stream<CubeSeriesWithData> stream = getAllSeriesWithData(ancestor)) {
+                    return stream.filter(ts -> ref.equals(ts.getId()))
+                            .findFirst()
+                            .orElse(null);
+                }
             }
         }
         return delegate.getSeriesWithData(ref);
@@ -95,12 +99,17 @@ public final class BulkCubeAccessor implements CubeAccessor {
     }
 
     @Override
-    public TsCursor<CubeId> getAllSeries(CubeId id) throws IOException {
+    public Stream<CubeSeries> getAllSeries(CubeId id) throws IOException {
         return delegate.getAllSeries(id);
     }
 
     @Override
-    public IteratorWithIO<CubeId> getChildren(CubeId id) throws IOException {
+    public CubeSeries getSeries(CubeId id) throws IOException {
+        return delegate.getSeries(id);
+    }
+
+    @Override
+    public Stream<CubeId> getChildren(CubeId id) throws IOException {
         return delegate.getChildren(id);
     }
 
@@ -121,6 +130,6 @@ public final class BulkCubeAccessor implements CubeAccessor {
 
     @Override
     public void close() throws IOException {
-        IO.closeBoth(cache, delegate);
+        Resource.closeBoth(cache, delegate);
     }
 }
