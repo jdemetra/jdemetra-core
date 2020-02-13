@@ -40,14 +40,24 @@ public class LjungBox {
     private final int n;
 
     public LjungBox(DoubleSeq sample) {
-        this.autoCorrelations = AutoCovariances.autoCorrelationFunction(sample, 0);
-        this.n = sample.length();
+        this(sample, false);
+    }
+
+    public LjungBox(DoubleSeq sample, boolean correctForMean) {
+        if (correctForMean) {
+            this.autoCorrelations = AutoCovariances.autoCorrelationFunction(sample, sample.average());
+            this.n = sample.length() - 1;
+        } else {
+            this.autoCorrelations = AutoCovariances.autoCorrelationFunction(sample, 0);
+            this.n = sample.length();
+        }
     }
 
     public LjungBox(IntToDoubleFunction autoCorrelations, int sampleSize) {
         this.autoCorrelations = autoCorrelations;
         this.n = sampleSize;
     }
+
     /**
      *
      * @param nhp
