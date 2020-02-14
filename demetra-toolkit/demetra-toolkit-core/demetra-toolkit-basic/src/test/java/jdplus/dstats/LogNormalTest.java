@@ -7,38 +7,26 @@ package jdplus.dstats;
 
 import demetra.stats.ProbabilityType;
 import java.util.Random;
-import org.assertj.core.api.Assertions;
-import org.junit.Test;
-import static org.assertj.core.api.Assertions.assertThat;
+import static jdplus.dstats.NormalTest.TOLERANCE;
 import jdplus.random.RandomNumberGenerator;
+import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
- * @author Laurent Jadoul
+ * @author Jean Palate <jean.palate@nbb.be>
  */
-public class NormalTest {
-
-    public static final double TOLERANCE = 0.05;
-
-    public NormalTest() {
-    }
-
-    @Test
-    public void testGetProbability() {
-        Normal n = new Normal(0, 100);
-        for (double i = -100; i < 100; i += .0001) {
-            assertThat(n.getProbability(i, ProbabilityType.Lower))
-                    .as("Value i = %s", i)
-                    .isNotNaN()
-                    .isGreaterThan(0d)
-                    .isLessThan(1d);
-        }
+public class LogNormalTest {
+    
+    public LogNormalTest() {
     }
 
     @Test
     public void testGetProbabilityInverse() {
         // Ne semble fonctionner que pour un Normal(0,1);
-        Normal n = new Normal(1, 3);
+        LogNormal n = new LogNormal(1, 1);
         for (double i = 0.001; i < 1; i += 0.001) {
             double y = n.getProbabilityInverse(i, ProbabilityType.Lower);
             double z = n.getProbability(y, ProbabilityType.Lower);
@@ -49,7 +37,7 @@ public class NormalTest {
     @Test
     public void testExpectation() {
         int iterations = 10000;
-        Normal n = new Normal(0, 1);
+        LogNormal n = new LogNormal(1, .5);
         RandomNumberGenerator rng = getRandomNumberGenerator();
 
         double sum = 0, avg;
@@ -63,7 +51,7 @@ public class NormalTest {
     @Test
     public void testVariance() {
         int iterations = 10000;
-        Normal n = new Normal();
+        LogNormal n = new LogNormal(1, .5 );
         RandomNumberGenerator rng = getRandomNumberGenerator();
         double[] values = new double[iterations];
         double sum = 0, avg;
@@ -81,7 +69,7 @@ public class NormalTest {
         variance = variance / iterations;
         assertThat(n.getVariance()).isCloseTo(variance, Assertions.within(n.getVariance() * TOLERANCE));
     }
-
+    
     private RandomNumberGenerator getRandomNumberGenerator() {
         return new RandomNumberGenerator() {
             @Override

@@ -16,9 +16,7 @@
  */
 package jdplus.seats;
 
-import demetra.arima.SarimaOrders;
 import demetra.math.Complex;
-import jdplus.data.DataBlock;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.sarima.SarimaModel;
 
@@ -28,26 +26,59 @@ import jdplus.sarima.SarimaModel;
  */
 public class DefaultModelValidator implements IModelValidator {
 
-    public static final double DEF_XL = .95;
-    private double xl = DEF_XL;
-    public static final double DEF_EPS = .0001;
-    private double eps = DEF_EPS;
-    private SarimaModel newModel;
-    
-        
-
-    /**
-     *
-     */
-    public DefaultModelValidator() {
+    public static Builder builder() {
+        return new Builder();
     }
+
+    public static class Builder {
+
+        public static final double DEF_XL = .95;
+        public static final double DEF_EPS = .0001;
+        private double xl = DEF_XL;
+        private double eps = DEF_EPS;
+
+        /**
+         * abs of inverse MA roots which are lower than xl are set to xl
+         *
+         * @param xl
+         * @return
+         */
+        public Builder xl(double xl) {
+            this.xl = xl;
+            return this;
+        }
+
+        /**
+         * Only used with xl == 1. Roots which are near 1 are set to 1
+         * (deterministic component).
+         * To be used with the Kalman smoother only.
+         *
+         * @param eps
+         * @return
+         */
+        public Builder urTolerance(double eps) {
+            this.eps = eps;
+            return this;
+        }
+
+        public DefaultModelValidator build() {
+            return new DefaultModelValidator(xl, eps);
+        }
+
+    }
+
+    private final double xl;
+    private final double eps;
+
+    private SarimaModel newModel;
 
     /**
      *
      * @param xl
      */
-    public DefaultModelValidator(double xl) {
+    private DefaultModelValidator(double xl, double eps) {
         this.xl = xl;
+        this.eps = eps;
     }
 
     /**
@@ -66,27 +97,23 @@ public class DefaultModelValidator implements IModelValidator {
         return xl;
     }
 
-    private boolean maStabilize(double ur, DataBlock p, int start, int n) {
-        if (n == 1) {
-            double q = p.get(start);
+    private boolean stabilizeMA(double ur, double[] p) {
+        if (p.length == 1) {
+            double q = p[0];
             if (q < -ur) {
-                p.set(start, -ur);
+                p[0] = -ur;
                 return true;
             } else if (q > ur) {
-                p.set(start, ur);
+                p[0] = ur;
                 return true;
             } else {
                 return false;
             }
         } else {
-            double[] P = Polynomial.Doubles.fromDegree(n);
-            P[0] = 1;
-            for (int i = 0; i < n; ++i) {
-                P[i + 1] = p.get(start + i);
-            }
+            Polynomial P = Polynomial.paste(1.0, p);
             boolean changed = false;
             // FIXME: Arrays2.copyOf() might be useless here
-            Complex[] roots = Arrays2.copyOf(Polynomial.of(P).roots());
+            Complex[] roots = P.roots();
             for (int i = 0; i < roots.length; ++i) {
                 Complex root = roots[i];
                 double q = 1 / roots[i].abs();
@@ -100,43 +127,28 @@ public class DefaultModelValidator implements IModelValidator {
             }
             Polynomial ptmp = Polynomial.fromComplexRoots(roots);
             ptmp = ptmp.divide(ptmp.get(0));
-            for (int i = 0; i < n; ++i) {
-                p.set(start + i, ptmp.get(i + 1));
+            for (int i = 0; i < p.length; ++i) {
+                p[i] = ptmp.get(i + 1);
             }
             return true;
         }
     }
 
     /**
-     * @param xl the xl to set
-     */
-    public void setXl(double xl) {
-        this.xl = xl;
-    }
-
-    /**
      *
-     * @param model
+     * @param model The model to be validated
      * @param info
-     * @return
+     * @return True if the current model is valid. If false, a new model can be
+     * retrieved
+     * through the getNewModel method
      */
     @Override
-    public ModelStatus validate(SarimaModel model, InformationSet info) {
+    public boolean validate(SarimaModel model) {
         newModel = model;
-        ModelStatus smp = simplifyModel(info);
-        ModelStatus ma = validateMA(info);
-        if (ma == ModelStatus.Invalid) {
-            return ModelStatus.Invalid;
-        }
-        ModelStatus ar = validateAR(info);
-        if (ar == ModelStatus.Invalid) {
-            return ModelStatus.Invalid;
-        }
-        if (smp == ModelStatus.Changed || ar == ModelStatus.Changed || ma == ModelStatus.Changed) {
-            return ModelStatus.Changed;
-        } else {
-            return ModelStatus.Valid;
-        }
+        boolean smp = simplifyModel();
+        boolean ma = changeMA();
+        boolean ar = changeAR();
+        return !smp && !ma && !ar;
     }
 
     /**
@@ -144,39 +156,38 @@ public class DefaultModelValidator implements IModelValidator {
      * @param info
      * @return
      */
-    protected ModelStatus validateAR(InformationSet info) {
+    private boolean changeAR() {
         // could be changed...
-        return ModelStatus.Valid;
+        return false;
     }
 
-    protected boolean fixMaUnitRoots(SarimaModel arima) {
-        SarimaOrders spec = arima.orders();
+    private boolean fixMaUnitRoots() {
         boolean changed = false;
         double ur = 1 - eps;
-        if (spec.getBQ() > 0) {
-
-            double sur = Math.pow(ur, arima.getFrequency());
-            double bth = arima.btheta(1);
+        double[] q = newModel.theta(), bq = newModel.btheta();
+        if (bq.length > 0) {
+            double sur = Math.pow(ur, newModel.getFrequency());
+            double bth = bq[0];
             if (bth < -sur) {
+                bq[0] = -1;
                 changed = true;
-                arima.setBTheta(1, -1);
             } else if (bth > sur) {
+                bq[0] = 1;
                 changed = true;
-                arima.setBTheta(1, 1);
             }
         }
-        if (spec.getQ() == 1) {
-            double th = arima.theta(1);
+        if (q.length == 1) {
+            double th = q[0];
             if (th < -ur) {
+                q[0] = -1;
                 changed = true;
-                arima.setTheta(1, -1);
             } else if (th > ur) {
+                q[0] = -1;
                 changed = true;
-                arima.setTheta(1, 1);
             }
-        } else if (spec.getQ() > 1) {
-            Polynomial q = arima.getRegularMA();
-            Complex[] roots = q.roots();
+        } else if (q.length > 1) {
+            Polynomial Q = Polynomial.paste(1, q);
+            Complex[] roots = Q.roots();
             boolean qchanged = false;
             for (int i = 0; i < roots.length; ++i) {
                 double l = roots[i].abs();
@@ -186,13 +197,22 @@ public class DefaultModelValidator implements IModelValidator {
                 }
             }
             if (qchanged) {
-                q = Polynomial.fromComplexRoots(roots);
-                for (int i = 1; i <= spec.getQ(); ++i) {
-                    arima.setTheta(i, q.get(i) / q.get(0));
+                Q = Polynomial.fromComplexRoots(roots);
+                for (int i = 0; i < q.length; ++i) {
+                    q[i] = Q.get(i + 1);
                 }
+                changed = true;
             }
         }
-        return changed;
+        if (changed) {
+            newModel = newModel.toBuilder()
+                    .theta(q)
+                    .btheta(bq)
+                    .build();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -200,44 +220,47 @@ public class DefaultModelValidator implements IModelValidator {
      * @param info
      * @return
      */
-    private ModelStatus validateMA(SarimaModel.Builder nmodel) {
+    private boolean changeMA() {
         if (xl < 1) {
-            SarimaOrders spec = nmodel newModel.orders();
             boolean rslt = false;
-            DataBlock p = new DataBlock(newModel.getParameters());
-            if (spec.getQ() > 0
-                    && maStabilize(this.xl, p, spec.getP() + spec.getBP(), spec
-                            .getQ())) {
+            double[] q = newModel.theta(), bq = newModel.btheta();
+            if (stabilizeMA(xl, q)) {
                 rslt = true;
             }
-            if (spec.getBQ() > 0
-                    //&& maStabilize(Math.pow(xl, spec.getFrequency()), p, spec
-                    // 22/7/2014. Questionable correction
-                    && maStabilize(xl, p, spec
-                            .getP()
-                            + spec.getBP() + spec.getQ(), spec.getBQ())) {
+            if (stabilizeMA(xl, bq)) {
                 rslt = true;
             }
             if (rslt) {
-                newModel.setParameters(p);
-                return ModelStatus.Changed;
+                newModel = newModel.toBuilder()
+                        .theta(q)
+                        .btheta(bq)
+                        .build();
+                return true;
             } else {
-                return ModelStatus.Valid;
+                return false;
             }
         } else {
-            if (fixMaUnitRoots(newModel)) {
-                return ModelStatus.Changed;
+            if (fixMaUnitRoots()) {
+                return true;
             } else {
-                return ModelStatus.Valid;
+                return false;
             }
         }
     }
 
-    protected ModelStatus simplifyModel(InformationSet info) {
-        if (newModel.adjustSpecification()) {
-            return ModelStatus.Changed;
+    private boolean simplifyModel() {
+        if (canSimplify(newModel.phi()) || canSimplify(newModel.bphi())
+                || canSimplify(newModel.theta()) || canSimplify(newModel.btheta())) {
+            newModel = newModel.toBuilder()
+                    .adjustOrders(true)
+                    .build();
+            return true;
         } else {
-            return ModelStatus.Valid;
+            return false;
         }
+    }
+
+    private boolean canSimplify(double[] p) {
+        return p.length > 0 && Math.abs(p[p.length - 1]) < SarimaModel.SMALL;
     }
 }

@@ -90,4 +90,9 @@ public final class Doubles implements DoubleSeq {
     public int length() {
         return values.length;
     }
+    
+    @Override
+    public String toString(){
+        return DoubleSeq.format(this);
+    }
 }

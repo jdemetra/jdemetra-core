@@ -57,7 +57,7 @@ public class DefaultModelEstimator implements IModelEstimator {
 	    return false;
 
         SarimaModel arima=estimation.getModel().arima();
-        if (validator != null && ModelStatus.Changed == validator.validate(arima))
+        if (validator != null && !validator.validate(arima))
             arima=validator.getNewModel();
 	model.setCurrentModel(arima);
         LikelihoodStatistics stat = estimation.statistics();

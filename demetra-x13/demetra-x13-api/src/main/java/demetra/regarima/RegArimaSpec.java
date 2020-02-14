@@ -48,10 +48,7 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
 
     @LombokWorkaround
     public static Builder builder() {
-        SarimaSpec arima = SarimaSpec.builder()
-                .validator(SarimaValidator.VALIDATOR)
-                .airline()
-                .build();
+        SarimaSpec arima = SarimaSpec.airline();
         return new Builder()
                 .basic(BasicSpec.builder().build())
                 .transform(TransformSpec.builder().build())

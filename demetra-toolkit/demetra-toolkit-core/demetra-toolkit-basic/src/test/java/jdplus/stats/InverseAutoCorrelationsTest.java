@@ -14,25 +14,29 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package tramoseats.spi;
+package jdplus.stats;
 
+import demetra.data.Data;
 import demetra.data.DoubleSeq;
-import demetra.seats.SeatsProcessor;
-import demetra.seats.SeatsResults;
-import demetra.seats.SeatsSpec;
-import java.util.List;
-import nbbrd.service.ServiceProvider;
+import java.util.function.IntToDoubleFunction;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author palatej
  */
-@ServiceProvider(SeatsProcessor.Computer.class)
-public class SeatsComputer implements SeatsProcessor.Computer{
-
-    @Override
-    public SeatsResults compute(DoubleSeq series, int period, SeatsSpec spec, List<String> addtionalItems) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+public class InverseAutoCorrelationsTest {
+    
+    public InverseAutoCorrelationsTest() {
     }
 
+    public static void main(String[] args) {
+        DoubleSeq y=DoubleSeq.of(Data.PROD);
+        IntToDoubleFunction fn = InverseAutoCorrelations.sampleInverseAutoCorrelationsFunction(y.log().delta(1).delta(12), 50);
+        for (int i=1; i<=50; ++i){
+            System.out.println(fn.applyAsDouble(i));
+        }
+    }
+    
 }

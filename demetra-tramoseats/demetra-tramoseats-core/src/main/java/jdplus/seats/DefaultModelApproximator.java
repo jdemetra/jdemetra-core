@@ -33,7 +33,7 @@ public class DefaultModelApproximator implements IModelApproximator {
 
     private final IModelEstimator estimator;
     private static final double DEF_RMODP = .7;
-    private double rmodp_ = DEF_RMODP;
+    private final double rmodp_ = DEF_RMODP;
     private int originalDifferencing;
 
     public DefaultModelApproximator(IModelEstimator estimator) {

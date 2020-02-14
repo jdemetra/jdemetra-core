@@ -117,10 +117,7 @@ public final class TramoSpec implements Validatable<TramoSpec> {
      */
     @LombokWorkaround
     public static Builder builder() {
-        SarimaSpec sarima = SarimaSpec.builder()
-                .validator(SarimaValidator.VALIDATOR)
-                .airline()
-                .build();
+        SarimaSpec sarima = SarimaSpec.airline();
         RegressionSpec regs = RegressionSpec.builder()
                 .mean(true)
                 .build();

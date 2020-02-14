@@ -56,7 +56,7 @@ class SeasonalityController extends ModelController {
 //        del = Math.max(Math.min(2, del), 1);
         int del = 1;
         stests = new SeasonalityTests();
-        stests.test(lin, del, true);
+        stests.test(lin.getValues(), lin.getAnnualFrequency(), del, true);
         mstats = ModelStatistics.of(refestimation);
     }
 

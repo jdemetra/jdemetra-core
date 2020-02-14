@@ -18,16 +18,15 @@
 
 package jdplus.seats;
 
+import demetra.data.DoubleSeq;
 import demetra.design.Development;
-import jdplus.sarima.SarimaModel;
-import jdplus.ucarima.UcarimaModel;
 
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IModelDecomposer {
+public interface IModelBuilder {
     
-    UcarimaModel decompose(SarimaModel model, int period);
+    SeatsModel build(DoubleSeq series, int period);
 }

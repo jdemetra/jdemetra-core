@@ -20,21 +20,12 @@ package jdplus.seats;
 
 import demetra.design.Development;
 
+
 /**
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-public enum ModelStatus {
-    /**
-     *
-     */
-    Invalid,
-    /**
-     * 
-     */
-    Valid,
-    /**
-     *
-     */
-    Changed;
+@Development(status = Development.Status.Release)
+public interface IBiasCorrector {
+
+    void correctBias(SeatsModel model);
 }

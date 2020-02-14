@@ -31,6 +31,20 @@ public final class SarimaOrders implements Cloneable {
     private final int period;
     private int p, d, q, bp, bd, bq;
 
+    public void setRegular(int p, int d, int q) {
+        this.p = p;
+        this.d = d;
+        this.q = q;
+    }
+
+    public void setSeasonal(int bp, int bd, int bq) {
+        if (period > 1) {
+            this.bp = bp;
+            this.bd = bd;
+            this.bq = bq;
+        }
+    }
+
     public static SarimaOrders stationary(SarimaOrders spec) {
         SarimaOrders sspec = new SarimaOrders(spec.getPeriod());
         sspec.p = spec.p;

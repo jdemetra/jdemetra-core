@@ -210,7 +210,7 @@ public class SaVariablesMapping {
                 vars.add(var);
             }
         });
-        return vars.toArray(n -> new ITsVariable[n]);
+        return vars.toArray(new ITsVariable[vars.size()]);
     }
 
 }

@@ -25,37 +25,29 @@ import demetra.util.Validatable;
  */
 @Development(status = Development.Status.Alpha)
 @lombok.Value
-@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
-public final class SeatsSpec implements Validatable<SeatsSpec> {
+@lombok.Builder(toBuilder = true, builderClassName = "Builder")
+public final class ComponentsSpec {
 
-    private ModelSpec modelSpec;
-    private DecompositionSpec decompositionSpec;
-    private ComponentsSpec componentsSpec;
-    private BiasSpec biasSpec;
+    public static enum ComponentsEstimationMethod {
+        Burman, KalmanSmoother, McElroyMatrix
+    }
 
-    private static final SeatsSpec DEFAULT = SeatsSpec.builder().build();
+    public static final int DEF_FORECASTS = -2, DEF_BACKCASTS = 0;
+
+    private ComponentsEstimationMethod method;
+    private int backCastCount, forecastCount;
+
+    public static final ComponentsSpec DEFAULT = ComponentsSpec.builder().build();
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
-                .modelSpec(ModelSpec.DEFAULT)
-                .decompositionSpec(DecompositionSpec.DEFAULT)
-                .componentsSpec(ComponentsSpec.DEFAULT)
-                .biasSpec(BiasSpec.DEFAULT);
+                .method(ComponentsEstimationMethod.Burman)
+                .backCastCount(DEF_BACKCASTS)
+                .forecastCount(DEF_FORECASTS);
     }
 
     public boolean isDefault() {
         return this.equals(DEFAULT);
     }
-
-    public static class Builder implements Validatable.Builder<SeatsSpec> {
-    }
-
-    @Override
-    public SeatsSpec validate() throws IllegalArgumentException {
-        modelSpec.validate();
-        decompositionSpec.validate();
-        return this;
-    }
-
 }

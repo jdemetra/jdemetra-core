@@ -32,17 +32,15 @@ import jdplus.regsarima.RegSarimaProcessor;
 @Development(status = Development.Status.Beta)
 public class RegArimaToolkit {
 
-    RegArimaEstimation<SarimaModel> robustEstimation(RegArimaModel<SarimaModel> regarima, IArimaMapping<SarimaModel> mapping){
-        RegSarimaProcessor processor = RegSarimaProcessor.builder().build();
-        return processor.process(regarima, mapping);
+    public RegArimaEstimation<SarimaModel> robustEstimation(RegArimaModel<SarimaModel> regarima, IArimaMapping<SarimaModel> mapping){
+        return RegSarimaProcessor.PROCESSOR.process(regarima, mapping);
     }
 
-    RegArimaEstimation<SarimaModel> fastEstimation(RegArimaModel<SarimaModel> regarima, IArimaMapping<SarimaModel> mapping){
-        GlsSarimaProcessor processor = GlsSarimaProcessor.builder().build();
-        return processor.process(regarima, mapping);
+    public RegArimaEstimation<SarimaModel> fastEstimation(RegArimaModel<SarimaModel> regarima, IArimaMapping<SarimaModel> mapping){
+        return GlsSarimaProcessor.PROCESSOR.process(regarima, mapping);
     }
     
-    RegArimaEstimation<SarimaModel> concentratedLikelihood(RegArimaModel<SarimaModel> regarima){
+    public RegArimaEstimation<SarimaModel> concentratedLikelihood(RegArimaModel<SarimaModel> regarima){
         ConcentratedLikelihoodWithMissing cl = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
         return RegArimaEstimation.<SarimaModel>builder()
                 .model(regarima)

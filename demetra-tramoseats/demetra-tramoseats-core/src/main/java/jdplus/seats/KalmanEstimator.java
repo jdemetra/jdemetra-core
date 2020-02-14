@@ -30,6 +30,8 @@ import jdplus.ssf.univariate.SsfData;
 import jdplus.ucarima.UcarimaModel;
 import jdplus.ucarima.ssf.SsfUcarima;
 import demetra.data.DoubleSeq;
+import jdplus.arima.ArimaModel;
+import static jdplus.math.linearfilters.BackFilter.D1;
 
 /**
  * @author Jean Palate
@@ -45,20 +47,21 @@ public class KalmanEstimator implements IComponentsEstimator {
     @Override
     public SeriesDecomposition decompose(SeatsModel model) {
         SeriesDecomposition.Builder builder = SeriesDecomposition.builder(DecompositionMode.Additive);
-        DoubleSeq s = model.getSeries();
+        DoubleSeq s = model.getTransformedSeries();
         int n = s.length(), nf = model.getForecastsCount(), nb = model.getBackcastsCount();
 
-        CompositeSsf ssf = SsfUcarima.of(model.getUcarimaModel());
+        ComponentType[] cmps=model.componentsType();
+        UcarimaModel ucm = model.compactUcarimaModel();
+
+        CompositeSsf ssf = SsfUcarima.of(ucm);
         // compute KS
         ISsfData data = new ExtendedSsfData(new SsfData(s), nb, nf);
         DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(ssf, data, true, true);
         // for using the same standard error (unbiased stdandard error, not ml)
         srslts.rescaleVariances(model.getInnovationVariance());
-
-        UcarimaModel ucm = model.getUcarimaModel();
         int[] pos = ssf.componentsPosition();
-        for (int i = 0; i < ucm.getComponentsCount(); ++i) {
-            ComponentType type = model.getTypes()[i];
+        for (int i = 0; i < pos.length; ++i) {
+            ComponentType type = cmps[i];
             DoubleSeq cmp = srslts.getComponent(pos[i]);
             if (nb > 0) {
                 builder.add(cmp.range(0, nb), type, ComponentInformation.Backcast);
@@ -78,4 +81,5 @@ public class KalmanEstimator implements IComponentsEstimator {
         }
         return builder.build();
     }
+
 }

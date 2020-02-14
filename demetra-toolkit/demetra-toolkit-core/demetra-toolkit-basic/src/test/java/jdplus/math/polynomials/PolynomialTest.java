@@ -76,6 +76,14 @@ public class PolynomialTest {
         Polynomial d = s1.plus(s2);
         assertTrue(d.isZero());
     }
+    
+    @Test
+    public void testConstructors(){
+        Polynomial P=Polynomial.paste(1, new double[0]);
+        assertTrue(P.equals(Polynomial.ONE));
+        Polynomial P2=Polynomial.paste(1, new double[10]);
+        assertTrue(P2.equals(Polynomial.ONE));
+    }
 
     @Test
     //@Ignore

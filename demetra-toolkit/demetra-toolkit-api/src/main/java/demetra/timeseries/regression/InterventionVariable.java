@@ -77,7 +77,7 @@ public class InterventionVariable implements ITsVariable{
                 throw new TsException(TsException.INVALID_DEFINITION);
             }
             return new InterventionVariable(name, delta, deltaSeasonal,
-                    sequences.toArray(n->new Range[n]), coefficient);
+                    sequences.toArray(new Range[sequences.size()]), coefficient);
         }
     }
     

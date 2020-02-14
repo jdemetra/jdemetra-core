@@ -44,6 +44,10 @@ import jdplus.sarima.SarimaModel;
 @Development(status = Development.Status.Alpha)
 public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
     
+    public static final GlsSarimaProcessor PROCESSOR=new Builder()
+            .precision(1e-7)
+            .build(); 
+    
     public static final double DEF_EPS = 1e-7;
     
     @BuilderPattern(GlsSarimaProcessor.class)

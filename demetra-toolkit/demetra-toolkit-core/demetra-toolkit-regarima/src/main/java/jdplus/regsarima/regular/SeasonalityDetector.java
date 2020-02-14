@@ -16,6 +16,7 @@
  */
 package jdplus.regsarima.regular;
 
+import demetra.data.DoubleSeq;
 import demetra.design.Development;
 import demetra.timeseries.TsData;
 import java.util.function.IntSupplier;
@@ -54,8 +55,11 @@ public interface SeasonalityDetector {
 
     /**
      * Tests the seasonality of a time series
+     *
      * @param data
-     * @return The actual meaning of the returned value is left to the implementation.
+     * @param period
+     * @return The actual meaning of the returned value is left to the
+     * implementation.
      */
-    Seasonality hasSeasonality(TsData data);
+    Seasonality hasSeasonality(DoubleSeq data, int period);
 }

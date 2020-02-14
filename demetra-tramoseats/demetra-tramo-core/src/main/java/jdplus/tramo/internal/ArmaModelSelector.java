@@ -290,7 +290,7 @@ public class ArmaModelSelector {
                     models[j] = candidates[i];
                     icur = j + 1;
                     break;
-                } else if (models[j].getArma().specification().equals(curSpec)) {
+                } else if (models[j].getArma().orders().equals(curSpec)) {
                     icur = j + 1;
                     break;
                 } else if (models[j].getBIC() > bic) {

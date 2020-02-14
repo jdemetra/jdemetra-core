@@ -17,9 +17,9 @@
 package demetra.arima;
 
 import demetra.design.Development;
-import demetra.arima.SarimaOrders;
 import demetra.data.ParameterSpec;
 import demetra.util.Validatable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -60,30 +60,25 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
 
     private Validator validator;
     /**
-     * Mean effect
-     */
-    private ParameterSpec mu; 
-    /**
      * Period of the Arima model. Should be 0 when the period is unspecified
      */
-    private int period;
     private int d, bd;
-    private ParameterSpec[] phi, theta, bphi, btheta;
+    private @NonNull
+    ParameterSpec[] phi, theta, bphi, btheta;
+
+    private static final ParameterSpec[] EMPTY = new ParameterSpec[0];
 
     public static class Builder implements Validatable.Builder<SarimaSpec> {
 
-        public Builder airline() {
-            phi=ParameterSpec.make(0);
-            bphi=ParameterSpec.make(0);
-            theta=ParameterSpec.make(1);
-            btheta=ParameterSpec.make(1);
-            d = 1;
-            bd = 1;
-            return this;
+        private Builder() {
+            phi = EMPTY;
+            theta = EMPTY;
+            bphi = EMPTY;
+            btheta = EMPTY;
         }
 
         public Builder p(int value) {
-            phi = ParameterSpec.make(value);
+            phi = value == 0 ? EMPTY : ParameterSpec.make(value);
             return this;
         }
 
@@ -93,12 +88,12 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
         }
 
         public Builder q(int value) {
-            theta = ParameterSpec.make(value);
+            theta = value == 0 ? EMPTY : ParameterSpec.make(value);
             return this;
         }
 
         public Builder bp(int value) {
-            bphi = ParameterSpec.make(value);
+            bphi = value == 0 ? EMPTY : ParameterSpec.make(value);
             return this;
         }
 
@@ -108,45 +103,52 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
         }
 
         public Builder bq(int value) {
-            btheta = ParameterSpec.make(value);
+            btheta = value == 0 ? EMPTY : ParameterSpec.make(value);
             return this;
         }
 
-        public Builder phi(ParameterSpec[] value) {
+        public Builder phi(@NonNull ParameterSpec[] value) {
             phi = value.clone();
             return this;
         }
 
-        public Builder theta(ParameterSpec[] value) {
+        public Builder theta(@NonNull ParameterSpec[] value) {
             theta = value.clone();
             return this;
         }
 
-        public Builder bphi(ParameterSpec[] value) {
+        public Builder bphi(@NonNull ParameterSpec[] value) {
             bphi = value.clone();
             return this;
         }
 
-        public Builder btheta(ParameterSpec[] value) {
+        public Builder btheta(@NonNull ParameterSpec[] value) {
             btheta = value.clone();
             return this;
         }
     }
 
+    private static final SarimaSpec AIRLINE = new SarimaSpec(null, 1, 1, 
+            EMPTY, ParameterSpec.make(1), EMPTY, ParameterSpec.make(1));
+
+    public static SarimaSpec airline() {
+        return AIRLINE;
+    }
+
     public int getP() {
-        return phi == null ? 0 : phi.length;
+        return phi.length;
     }
 
     public int getQ() {
-        return theta == null ? 0 : theta.length;
+        return theta.length;
     }
 
     public int getBp() {
-        return bphi == null ? 0 : bphi.length;
+        return bphi.length;
     }
 
     public int getBq() {
-        return btheta == null ? 0 : btheta.length;
+        return btheta.length;
     }
 
     public boolean isAirline() {
@@ -154,13 +156,23 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
                 && getBp() == 0 && bd == 1 && getBq() == 1;
     }
 
-    public SarimaOrders getSpecification(int period) {
+    public boolean isFixed() {
+        return ParameterSpec.isFixed(phi) && ParameterSpec.isFixed(bphi)
+                && ParameterSpec.isFixed(theta) && ParameterSpec.isFixed(btheta);
+    }
+
+    public boolean hasFixedParameters() {
+        return !ParameterSpec.isFree(phi) || !ParameterSpec.isFree(bphi)
+                || !ParameterSpec.isFree(theta) || !ParameterSpec.isFree(btheta);
+    }
+
+    public SarimaOrders specification(int period) {
         SarimaOrders spec = new SarimaOrders(period);
         spec.setP(getP());
         spec.setD(d);
         spec.setQ(getQ());
         if (period > 1) {
-            spec.setBp(getBq());
+            spec.setBp(getBp());
             spec.setBd(bd);
             spec.setBq(getBq());
         }

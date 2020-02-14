@@ -18,7 +18,6 @@
 
 package jdplus.seats;
 
-import jdplus.arima.IArimaModel;
 import demetra.design.Development;
 
 
@@ -28,5 +27,10 @@ import demetra.design.Development;
 @Development(status = Development.Status.Alpha)
 public interface IModelEstimator {
     
+    /**
+     * 
+     * @param model
+     * @return 
+     */
     boolean estimate(SeatsModel model);
 }

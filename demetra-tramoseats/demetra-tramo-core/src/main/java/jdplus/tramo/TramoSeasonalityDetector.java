@@ -16,6 +16,7 @@
  */
 package jdplus.tramo;
 
+import demetra.data.DoubleSeq;
 import jdplus.stats.tests.StatisticalTest;
 import demetra.timeseries.TsData;
 import jdplus.regsarima.regular.SeasonalityDetector;
@@ -35,14 +36,13 @@ public class TramoSeasonalityDetector implements SeasonalityDetector{
     }
 
     @Override
-    public Seasonality hasSeasonality(TsData y) {
+    public Seasonality hasSeasonality(DoubleSeq y, int period) {
         ost = 0;
-        int freq=y.getAnnualFrequency();
-        if (freq <= 1) {
+        if (period <= 1) {
             return Seasonality.NotApplicable;
         }
         tests = new SeasonalityTests();
-        tests.test(y, 1, true);
+        tests.test(y, period, 1, true);
         int ost95 = 0;
         int cqs = 0, cnp = 0;
         StatisticalTest qs = tests.getQs();

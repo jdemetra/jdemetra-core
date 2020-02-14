@@ -17,44 +17,75 @@
 package demetra.data;
 
 /**
- * 
+ *
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.AllArgsConstructor(access=lombok.AccessLevel.PRIVATE)
+@lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class ParameterSpec {
-    
+
     /**
      * Value of the parameter
      */
     private double value;
     /**
-     * Type of the parameter. Should be undefined, initial or fixed 
+     * Type of the parameter. Should be undefined, initial or fixed
      */
     private ParameterType type;
-    
-    public boolean isFixed(){
+
+    public boolean isFixed() {
         return type == ParameterType.Fixed;
     }
-    
-    public static ParameterSpec undefined(){
-        return UNDEFINED ;
+
+    public static boolean isFixed(ParameterSpec[] spec) {
+        for (int i = 0; i < spec.length; ++i) {
+            if (!spec[i].isFixed()) {
+                return false;
+            }
+        }
+        return true;
     }
-    
-    public static ParameterSpec fixed(double value){
+
+    public static boolean isFree(ParameterSpec[] spec) {
+        for (int i = 0; i < spec.length; ++i) {
+            if (spec[i].isFixed()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static double[] values(ParameterSpec[] spec) {
+        if (spec.length == 0) {
+            return Doubles.EMPTYARRAY;
+        } else {
+            double[] val = new double[spec.length];
+            for (int i = 0; i < val.length; ++i) {
+                val[i] = spec[i].value;
+            }
+            return val;
+        }
+    }
+
+    public static ParameterSpec undefined() {
+        return UNDEFINED;
+    }
+
+    public static ParameterSpec fixed(double value) {
         return new ParameterSpec(value, ParameterType.Fixed);
     }
-    
-    public static ParameterSpec initial(double value){
+
+    public static ParameterSpec initial(double value) {
         return new ParameterSpec(value, ParameterType.Initial);
     }
-    
-    public static ParameterSpec[] make(int n){
-        ParameterSpec[] all=new ParameterSpec[n];
-        for (int i=0; i<n; ++i)
-            all[i]=UNDEFINED;
+
+    public static ParameterSpec[] make(int n) {
+        ParameterSpec[] all = new ParameterSpec[n];
+        for (int i = 0; i < n; ++i) {
+            all[i] = UNDEFINED;
+        }
         return all;
     }
 
-    private static final ParameterSpec UNDEFINED =new ParameterSpec(0,ParameterType.Undefined);
+    private static final ParameterSpec UNDEFINED = new ParameterSpec(0, ParameterType.Undefined);
 }

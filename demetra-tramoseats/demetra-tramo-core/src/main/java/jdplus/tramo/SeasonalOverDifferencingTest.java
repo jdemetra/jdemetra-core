@@ -42,7 +42,7 @@ class SeasonalOverDifferencingTest {
             return 0;
         }
         TsData lin = context.build().linearizedSeries();
-        SeasonalityTests tests = SeasonalityTests.seasonalityTest(lin, 1, true, true);
+        SeasonalityTests tests = SeasonalityTests.seasonalityTest(lin.getValues(), spec.getPeriod(), 1, true, true);
         SeasonalFTest ftest = new SeasonalFTest();
         ftest.test(context.getDescription());
         int score = tests.getScore();

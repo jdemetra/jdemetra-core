@@ -46,7 +46,7 @@ public class RegArimaDecomposerTest {
                 .meanCorrection(EasterVariable.Correction.Theoretical)
                 .build();
         model.addVariable(new Variable(easter, "easter", true));
-        ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.DEFAULT);
+        ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.PROCESSOR);
 
         SaVariablesMapping mapping=new SaVariablesMapping();
         mapping.addDefault(model.variables().map(var->var.getVariable()).toArray(n->new ITsVariable[n]));

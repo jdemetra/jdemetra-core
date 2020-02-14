@@ -149,7 +149,7 @@ public class DoublesMath {
     }
 
     /**
-     * Computes the euclidian norm of the src. 
+     * Computes the euclidian norm of the src.
      *
      * @param src The data
      * @return The euclidian norm (&gt=0).
@@ -175,9 +175,9 @@ public class DoublesMath {
     }
 
     /**
-     * Computes the infinite-norm of this src 
+     * Computes the infinite-norm of this src
      *
-     * @param src The source 
+     * @param src The source
      * @return Returns min{|src(i)|}
      */
     public double normInf(DoubleSeq src) {
@@ -200,7 +200,7 @@ public class DoublesMath {
     /**
      * Counts the number of identical consecutive values.
      *
-     * @param src The source 
+     * @param src The source
      * @return Missing values are omitted.
      */
     public int getRepeatCount(DoubleSeq src) {
@@ -314,5 +314,52 @@ public class DoublesMath {
     public DoubleSeq exp(DoubleSeq src) {
         return src.fn(Math::exp);
     }
-   
+
+    public DoubleSeq add(DoubleSeq a, DoubleSeq b) {
+        if (a == null) {
+            return b;
+        } else if (b == null) {
+            return a;
+        } else {
+            if (a.length() != b.length())
+                throw new IllegalArgumentException("wrong dimensions");
+            return a.fn(b, (x, y) -> x + y);
+        }
+    }
+
+    public DoubleSeq subtract(DoubleSeq a, DoubleSeq b) {
+        if (a == null) {
+            return b.fn(x->-x);
+        } else if (b == null) {
+            return a;
+        } else {
+            if (a.length() != b.length())
+                throw new IllegalArgumentException("wrong dimensions");
+            return a.fn(b, (x, y) -> x - y);
+        }
+    }
+    
+    public DoubleSeq multiply(DoubleSeq a, DoubleSeq b) {
+        if (a == null) {
+            return b;
+        } else if (b == null) {
+            return a;
+        } else {
+            if (a.length() != b.length())
+                throw new IllegalArgumentException("wrong dimensions");
+            return a.fn(b, (x, y) -> x * y);
+        }
+    }
+
+    public DoubleSeq divide(DoubleSeq a, DoubleSeq b) {
+        if (a == null) {
+            return b.fn(x->1/x);
+        } else if (b == null) {
+            return a;
+        } else {
+            if (a.length() != b.length())
+                throw new IllegalArgumentException("wrong dimensions");
+            return a.fn(b, (x, y) -> x / y);
+        }
+    }
 }

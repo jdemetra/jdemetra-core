@@ -66,18 +66,18 @@ public class SeasonalityTests {
 
     /**
      * @param s The original series
+     * @param period The tested periodicity
      * @param diff The differencing order (-1 if it is automatically detected)
      * @param mean Mean correction of the differenced series
      * @param all Executed all the tests or stop when one of them is significant
      * @return
      */
-    public static SeasonalityTests seasonalityTest(TsData s, int diff, boolean mean, boolean all) {
-        int yfreq=s.getAnnualFrequency();
-        if (yfreq <=1) {
+    public static SeasonalityTests seasonalityTest(DoubleSeq s, int period, int diff, boolean mean, boolean all) {
+        if (period <= 1) {
             throw new TsException(TsException.INVALID_FREQ);
         }
         SeasonalityTests tests = new SeasonalityTests();
-        tests.test(s, diff, mean);
+        tests.test(s, period, diff, mean);
         // compute the score
         StatisticalTest qs = tests.getQs();
         if (qs != null && qs.isSignificant(0.01)) // 9.21 at the 0.01 level
@@ -96,7 +96,7 @@ public class SeasonalityTests {
             }
         }
         int n = tests.getDifferencing().getDifferenced().length();
-        if (n >= MSHORT || (yfreq<12 && n >= SHORT)) {
+        if (n >= MSHORT || (period < 12 && n >= SHORT)) {
             if (SpectralPeaks.hasSeasonalPeaks(tests.getSpectralPeaks())) {
                 tests.score++;
                 if (!all) {
@@ -114,15 +114,15 @@ public class SeasonalityTests {
      * @param mean Mean correction (after differencing)
      * @return
      */
-    void test(TsData input, int ndiff, boolean mean) {
-        period = input.getAnnualFrequency();
-        delta = DifferencingResults.of(input.getValues(), period, ndiff, mean);
+    void test(DoubleSeq input, int period, int ndiff, boolean mean) {
+        delta = DifferencingResults.of(input, period, ndiff, mean);
+        this.period = period;
         clear();
     }
 
     private void testResiduals(DoubleSeq res, int period) {
         delta = DifferencingResults.of(res, period, 0, false);
-        this.period=period;
+        this.period = period;
         clear();
     }
 
@@ -135,7 +135,6 @@ public class SeasonalityTests {
     private StatisticalTest qs, periodogram;
     private int score;
     private int period;
-
 
     public DifferencingResults getDifferencing() {
         return delta;
@@ -168,12 +167,12 @@ public class SeasonalityTests {
             if (wlen > 11) {
                 wlen = 11;
             }
-            btSpectrum=SmoothedPeriodogram.builder()
+            btSpectrum = SmoothedPeriodogram.builder()
                     .data(d)
                     .windowFunction(DiscreteWindowFunction.Tukey)
                     .windowLength(wlen * period)
                     .build();
-                    
+
         }
         return btSpectrum;
     }
@@ -229,7 +228,7 @@ public class SeasonalityTests {
 
     public StatisticalTest getPeriodogramTest() {
         if (periodogram == null) {
-            PeriodogramTest test=new PeriodogramTest(delta.getDifferenced(), period);
+            PeriodogramTest test = new PeriodogramTest(delta.getDifferenced(), period);
             periodogram = test.buildF();
         }
         return periodogram;

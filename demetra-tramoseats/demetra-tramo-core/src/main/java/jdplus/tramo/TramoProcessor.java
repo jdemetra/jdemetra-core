@@ -28,7 +28,6 @@ import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.regular.ModelEstimation;
 import demetra.arima.SarimaOrders;
 import demetra.timeseries.TsData;
-import demetra.timeseries.TsDomain;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.sarima.SarimaModel;
 import demetra.timeseries.calendars.DayClustering;
@@ -425,11 +424,8 @@ public class TramoProcessor implements RegSarimaProcessor {
             return false;
         }
         SarimaOrders curspec = desc.specification();
-        if (curspec.getD() == 2 && curspec.getBd() == 1) {
-            return false;
-        }
-        return true;
 //        return !ModelDescription.sameVariables(refAirline.getDescription(), desc);
+        return curspec.getD() < 2 || curspec.getBd() < 1;
     }
 
     private boolean isAutoModelling() {
@@ -664,13 +660,13 @@ public class TramoProcessor implements RegSarimaProcessor {
             return;
         }
 
-        int ifreq = model.getAnnualFrequency();
-        if (ifreq > 1) {
+        int period = model.getAnnualFrequency();
+        if (period > 1) {
             TramoSeasonalityDetector seas = new TramoSeasonalityDetector();
-            SeasonalityDetector.Seasonality s = seas.hasSeasonality(model.getTransformedSeries());
+            SeasonalityDetector.Seasonality s = seas.hasSeasonality(model.getTransformedSeries().getValues(), period);
             context.originalSeasonalityTest = s.getAsInt();
             if (context.originalSeasonalityTest < 2) {
-                SarimaOrders nspec = SarimaOrders.m011(ifreq);
+                SarimaOrders nspec = SarimaOrders.m011(period);
                 model.setSpecification(nspec);
                 context.seasonal = false;
             } else {

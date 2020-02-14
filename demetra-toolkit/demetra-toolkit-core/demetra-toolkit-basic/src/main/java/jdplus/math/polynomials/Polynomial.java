@@ -38,7 +38,7 @@ import jdplus.math.ComplexUtility;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public final class Polynomial{
+public final class Polynomial {
 
     public static final Polynomial ZERO = new Polynomial(Polynomial.Coefficients.zero());
     public static final Polynomial ONE = new Polynomial(Polynomial.Coefficients.one());
@@ -47,7 +47,7 @@ public final class Polynomial{
     private final AtomicReference<Complex[]> defRoots = new AtomicReference<>(); // caching the roots
     private static final double EPSILON = 1e-9;
 
-     /**
+    /**
      * cut-off value for zero. 1e-9.
      *
      * @return
@@ -74,12 +74,14 @@ public final class Polynomial{
     /**
      * Generates a polynomial that can contain leading/trailing zeros.
      * That can lead to problems in some algorithms. Should be used with caution
+     *
      * @param coefficients
-     * @return 
+     * @return
      */
     public static Polynomial raw(@NonNull double[] coefficients) {
         return new Polynomial(coefficients);
     }
+
     /**
      * Creates a new polynomial form given coefficients
      *
@@ -118,10 +120,20 @@ public final class Polynomial{
      * @param coefficients
      * @return a non-null Polynomial
      */
-    public static Polynomial of(@NonNull double...coefficients) {
+    public static Polynomial of(double... coefficients) {
         return new Polynomial(Coefficients.of(coefficients));
     }
-    
+
+    /**
+     * 
+     * @param p0
+     * @param coefficients
+     * @return 
+     */
+    public static Polynomial paste(double p0, @NonNull double... coefficients) {
+        return new Polynomial(Coefficients.of(p0, coefficients));
+    }
+
     /**
      * Create a new Polynomial by using the specified coefficients, from reader.
      * The polynomial will be of degree <code>n-1</code> <br>, except if there
@@ -250,17 +262,18 @@ public final class Polynomial{
 
     /**
      * Degree of the polynomial
-     * @return 
+     *
+     * @return
      */
     public int degree() {
         return coeff.length - 1;
     }
-    
-    public DoubleSeq coefficients(){
+
+    public DoubleSeq coefficients() {
         return DoubleSeq.of(coeff);
     }
-    
-    public double[] toArray(){
+
+    public double[] toArray() {
         return coeff.clone();
     }
 
@@ -274,7 +287,7 @@ public final class Polynomial{
         return coeff[idx];
     }
 
-    public void copyTo(double[] buffer, int startpos){
+    public void copyTo(double[] buffer, int startpos) {
         System.arraycopy(coeff, 0, buffer, startpos, coeff.length);
     }
 
@@ -295,22 +308,22 @@ public final class Polynomial{
         }
         return new Polynomial(result);
     }
-    
-    public Polynomial integrate(){
-        double[] c=new double[coeff.length+1];
-        for (int i=1; i<=coeff.length; ++i){
-            c[i]=coeff[i-1]/i;
+
+    public Polynomial integrate() {
+        double[] c = new double[coeff.length + 1];
+        for (int i = 1; i <= coeff.length; ++i) {
+            c[i] = coeff[i - 1] / i;
         }
         return new Polynomial(c);
     }
-    
-    public double integrate(double a, double b){
+
+    public double integrate(double a, double b) {
         Polynomial integral = integrate();
-        return integral.evaluateAt(b)-integral.evaluateAt(a);
+        return integral.evaluateAt(b) - integral.evaluateAt(a);
     }
-    
-    public double l2(double a, double b){
-        Polynomial q2=this.times(this);
+
+    public double l2(double a, double b) {
+        Polynomial q2 = this.times(this);
         return Math.sqrt(q2.integrate(a, b));
     }
 
@@ -548,7 +561,8 @@ public final class Polynomial{
     /**
      * Generates a mirror polynomial that can contain leading/trailing zeros.
      * That can lead to problems in some algorithms. Should be used with caution
-     * @return 
+     *
+     * @return
      */
     public Polynomial rawMirror() {
         if (coeff.length == 1) {
@@ -560,6 +574,7 @@ public final class Polynomial{
         }
         return new Polynomial(result);
     }
+
     /**
      * The operator changes the sign ofFunction the coefficients ofFunction the
      * polynomial. A new polynomial is returned as a result.
@@ -627,7 +642,7 @@ public final class Polynomial{
             result = roots(RootsSolver.fastSolver());
             defRoots.set(result);
         }
-        return result;
+        return result.clone();
     }
 
     /**
@@ -869,6 +884,26 @@ public final class Polynomial{
             }
         }
 
+        static double[] of(double c0, @NonNull double[] c) {
+            int nd = getUsedCoefficients(c, EPSILON);
+            if (nd == 0) {
+                if (Math.abs(c0) <= EPSILON) {
+                    return C_ZERO;
+                } else if (c0 == 1) {
+                    return C_ONE;
+                } else {
+                    return new double[]{c0};
+                }
+            } else {
+                double[] nc = new double[nd + 1];
+                nc[0] = c0;
+                for (int i = 0; i < nd; ++i) {
+                    nc[i + 1] = c[i];
+                }
+                return nc;
+            }
+        }
+
         static double[] zero() {
             return C_ZERO;
         }
@@ -890,8 +925,8 @@ public final class Polynomial{
         }
 
         static int getUsedCoefficients(double[] coefficients, double eps) {
-            int n = coefficients.length ;
-            while ((n > 0) && (Math.abs(coefficients[n-1]) <= eps)) {
+            int n = coefficients.length;
+            while ((n > 0) && (Math.abs(coefficients[n - 1]) <= eps)) {
                 --n;
             }
             return n;

@@ -558,9 +558,19 @@ public interface DoubleSeq extends BaseSeq {
         return Doubles.ofInternal(safeArray);
     }
 
+    default DoubleSeq fastOp(DoubleUnaryOperator op) {
+        int n = length();
+        return onMapping(n, i -> op.applyAsDouble(get(i)));
+    }
+
+
     default DoubleSeq fastOp(DoubleSeq b, DoubleBinaryOperator op) {
         int n = length();
-        return onMapping(n, i -> get(i) + b.get(i));
+        return onMapping(n, i -> op.applyAsDouble(get(i), b.get(i)));
+    }
+    
+    default DoubleSeq commit(){
+        return Doubles.ofInternal(this.toArray());
     }
 
     default double sum() {
