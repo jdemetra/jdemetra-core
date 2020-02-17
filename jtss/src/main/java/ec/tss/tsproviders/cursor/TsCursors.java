@@ -19,7 +19,6 @@ package ec.tss.tsproviders.cursor;
 import com.google.common.collect.Iterators;
 import ec.tss.tsproviders.utils.FunctionWithIO;
 import ec.tss.tsproviders.utils.OptionalTsData;
-import ioutil.IO;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,6 +31,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.concurrent.ConcurrentMap;
+import nbbrd.io.Resource;
 import net.jcip.annotations.Immutable;
 
 /**
@@ -260,7 +260,7 @@ final class TsCursors {
 
         @Override
         public void close() throws IOException {
-            IO.closeBoth(delegate, closeHandler);
+            Resource.closeBoth(delegate, closeHandler);
         }
     }
 
@@ -329,7 +329,7 @@ final class TsCursors {
 
         @Override
         public void close() throws IOException {
-            IO.closeBoth(this::flushToCache, delegate::close);
+            Resource.closeBoth(this::flushToCache, delegate::close);
         }
 
         private void flushToCache() throws IOException {
@@ -412,7 +412,7 @@ final class TsCursors {
 
         private Closeable compose(Closeable closeHandler) {
             Closeable first = this.closeable;
-            return () -> IO.closeBoth(first, closeHandler);
+            return () -> Resource.closeBoth(first, closeHandler);
         }
     }
 

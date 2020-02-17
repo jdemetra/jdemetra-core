@@ -17,7 +17,6 @@
 package ec.tstoolkit.utilities;
 
 import com.google.common.io.Closer;
-import ioutil.IO;
 import java.io.Closeable;
 import java.io.IOException;
 import java.sql.Connection;
@@ -27,6 +26,7 @@ import java.sql.Statement;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import nbbrd.io.Resource;
 import org.slf4j.Logger;
 
 /**
@@ -44,7 +44,7 @@ public final class Closeables {
 
     @Deprecated
     public static void closeBoth(@NonNull Closeable first, @NonNull Closeable second) throws IOException {
-        IO.closeBoth(first, second);
+        Resource.closeBoth(first, second);
     }
 
     @Deprecated

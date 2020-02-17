@@ -16,13 +16,13 @@
  */
 package ec.tss.tsproviders.utils;
 
-import ioutil.IO;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Function;
+import nbbrd.io.Resource;
 
 /**
  *
@@ -84,7 +84,7 @@ final class IteratorWithIOs {
 
         @Override
         public void close() throws IOException {
-            IO.closeBoth(delegate, closeHandler);
+            Resource.closeBoth(delegate, closeHandler);
         }
     }
 

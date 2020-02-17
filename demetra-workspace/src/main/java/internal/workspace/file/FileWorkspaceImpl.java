@@ -28,12 +28,12 @@ import java.util.function.Supplier;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import ec.demetra.workspace.file.FileFormat;
 import ec.demetra.workspace.file.spi.FamilyHandler;
-import ioutil.IO;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
+import nbbrd.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +98,7 @@ public final class FileWorkspaceImpl implements FileWorkspace {
         try {
             return new FileWorkspaceImpl(indexFile, format, rootFolder, indexer, SafeHandler.create(logger, handlers, format));
         } catch (IOException ex) {
-            IO.ensureClosed(ex, indexer);
+            Resource.ensureClosed(ex, indexer);
             throw ex;
         }
     }
