@@ -14,7 +14,7 @@
     <name>Demetra - Utilities</name>
 
     <properties>
-        <slf4j.version>1.7.29</slf4j.version>
+        <slf4j.version>1.7.30</slf4j.version>
         <guava.version>21.0</guava.version>
         <java-io-util.version>0.0.5</java-io-util.version>
     </properties>
