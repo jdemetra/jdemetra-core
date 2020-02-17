@@ -28,14 +28,14 @@ import static ec.demetra.workspace.WorkspaceFamily.UTIL_VAR;
 import internal.workspace.file.xml.XmlLegacyWorkspace;
 import internal.workspace.file.xml.XmlLegacyWorkspaceItem;
 import internal.io.JaxbUtil;
-import ioutil.Jaxb;
-import ioutil.Xml;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
 import java.nio.file.Path;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import nbbrd.io.xml.Xml;
+import nbbrd.io.xml.bind.Jaxb;
 
 /**
  *

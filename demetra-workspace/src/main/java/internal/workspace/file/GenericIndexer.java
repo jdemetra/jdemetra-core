@@ -20,13 +20,13 @@ import ec.demetra.workspace.WorkspaceFamily;
 import internal.workspace.file.xml.XmlGenericWorkspace;
 import internal.workspace.file.xml.XmlGenericWorkspaceItem;
 import internal.io.JaxbUtil;
-import ioutil.Jaxb;
-import ioutil.Xml;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import nbbrd.io.xml.Xml;
+import nbbrd.io.xml.bind.Jaxb;
 
 /**
  *
