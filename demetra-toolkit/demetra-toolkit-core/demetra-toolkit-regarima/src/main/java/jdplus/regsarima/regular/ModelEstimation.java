@@ -386,7 +386,7 @@ public final class ModelEstimation {
      * @param domain
      * @return 
      */
-    public TsData getDerministicEffect(TsDomain domain){
+    public TsData getDeterministicEffect(TsDomain domain){
         TsData s = deterministicEffect(domain, v -> true);
         return backTransform(s, true);
     }

@@ -25,6 +25,14 @@ public class UpperTriangularMatrix {
     }
 
     public int rank(Matrix U, double rcond) {
+        return fastRank(U, rcond);
+    }
+
+    public int fastRank(Matrix U, double rcond) {
+        return U.diagonal().count(x -> Math.abs(x) > rcond);
+    }
+
+    public int robustRank(Matrix U, double rcond) {
         DoubleSeqCursor.OnMutable cursor = U.diagonal().cursor();
         double smax = Math.abs(cursor.getAndNext()), smin = smax;
         if (smax == 0) {
@@ -60,6 +68,7 @@ public class UpperTriangularMatrix {
         }
         return rank;
     }
+
     /**
      * y := U*x or x = iU*y
      *
@@ -268,7 +277,7 @@ public class UpperTriangularMatrix {
     public void UtM(Matrix U, Matrix M) {
         DataBlockIterator cols = M.columnsIterator();
         while (cols.hasNext()) {
-            DataBlock c=cols.next();
+            DataBlock c = cols.next();
             Utx(U, c.getStorage(), c.getStartPosition());
         }
     }
@@ -282,7 +291,7 @@ public class UpperTriangularMatrix {
     public void MUt(Matrix U, Matrix M) {
         DataBlockIterator rows = M.rowsIterator();
         while (rows.hasNext()) {
-            DataBlock r=rows.next();
+            DataBlock r = rows.next();
             Ux(U, r.getStorage(), r.getStartPosition(), r.getIncrement());
         }
     }
@@ -441,7 +450,8 @@ public class UpperTriangularMatrix {
 
     /**
      * Set 0 to the lower part of a matrix
-     * @param M 
+     *
+     * @param M
      */
     public void toUpper(Matrix M) {
         int m = M.getRowsCount(), n = M.getColumnsCount();
@@ -497,5 +507,3 @@ public class UpperTriangularMatrix {
     }
 
 }
-
-

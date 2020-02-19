@@ -22,6 +22,7 @@ import demetra.timeseries.regression.RegressionTestType;
 import demetra.timeseries.regression.TradingDaysType;
 import demetra.util.Validatable;
 import java.util.List;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -29,11 +30,56 @@ import java.util.List;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
 
-    private static final TradingDaysSpec DEFAULT = TradingDaysSpec.builder().build();
+    private static final TradingDaysSpec NONE = new TradingDaysSpec(null, null, TradingDaysType.None,
+            false, RegressionTestType.None, 0, AutoMethod.Unused, 0);
 
+    public static TradingDaysSpec stockTradingDays(int w, RegressionTestType type) {
+        return new TradingDaysSpec(null, null, TradingDaysType.TradingDays,
+                false, type, w, AutoMethod.Unused, 0);
+    }
+
+    public static TradingDaysSpec none() {
+        return NONE;
+    }
+
+    public static TradingDaysSpec userDefined(@NonNull String[] vars, RegressionTestType type) {
+        return new TradingDaysSpec(null, vars, TradingDaysType.None,
+                false, type, 0, AutoMethod.Unused, 0);
+    }
+
+    public static TradingDaysSpec automaticHolidays(String holidays, AutoMethod automaticMethod, double probabilityForFTest) {
+        if (automaticMethod == AutoMethod.Unused) {
+            throw new IllegalArgumentException();
+        }
+        return new TradingDaysSpec(holidays, null, TradingDaysType.TradingDays,
+                true, RegressionTestType.None, 0, automaticMethod, probabilityForFTest);
+    }
+
+    public static TradingDaysSpec automatic(AutoMethod automaticMethod, double probabilityForFTest) {
+        if (automaticMethod == AutoMethod.Unused) {
+            throw new IllegalArgumentException();
+        }
+        return new TradingDaysSpec(null, null, TradingDaysType.TradingDays,
+                true, RegressionTestType.None, 0, automaticMethod, probabilityForFTest);
+    }
+
+    public static TradingDaysSpec holidays(String holidays, TradingDaysType type, boolean leapyear, RegressionTestType regtype) {
+        if (type == TradingDaysType.None) {
+            throw new IllegalArgumentException();
+        }
+        return new TradingDaysSpec(holidays, null, type,
+                leapyear, regtype, 0, AutoMethod.Unused, 0);
+    }
+
+    public static TradingDaysSpec td(TradingDaysType type, boolean leapyear, RegressionTestType regtype) {
+        if (type == TradingDaysType.None) {
+            throw new IllegalArgumentException();
+        }
+        return new TradingDaysSpec(null, null, type,
+                leapyear, regtype, 0, AutoMethod.Unused, 0);
+    }
     public static enum AutoMethod {
         Unused,
         FTest,
@@ -43,7 +89,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     public static final double DEF_PFTD = .01;
 
     private String holidays;
-    private List<String> userVariables;
+    private String[] userVariables;
     private TradingDaysType tradingDaysType;
     private boolean leapYear;
     private RegressionTestType regressionTestType;
@@ -51,15 +97,6 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     private AutoMethod automaticMethod;
     private double probabilityForFTest;
 
-    @LombokWorkaround
-    public static Builder builder() {
-        return new Builder()
-                .tradingDaysType(TradingDaysType.None)
-                .regressionTestType(RegressionTestType.None)
-                .stockTradingDays(0)
-                .automaticMethod(AutoMethod.Unused)
-                .probabilityForFTest(DEF_PFTD);
-    }
 
     @Override
     public TradingDaysSpec validate() throws IllegalArgumentException {
@@ -105,71 +142,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     }
 
     public boolean isDefault() {
-        return this.equals(DEFAULT);
+        return this.equals(NONE);
     }
 
-    public static class Builder implements Validatable.Builder<TradingDaysSpec> {
-
-        public Builder automatic(boolean value) {
-            this.automaticMethod = value ? AutoMethod.FTest : AutoMethod.Unused;
-            return this;
-        }
-
-        public Builder test(boolean test) {
-            if (test) {
-                this.regressionTestType = RegressionTestType.Separate_T;
-            } else {
-                this.regressionTestType = RegressionTestType.None;
-            }
-            return this;
-        }
-
-        // TODO : Check if it should be done here
-        public Builder userVariables(List<String> value) {
-            userVariables = value;
-            if (userVariables != null) {
-                holidays = null;
-                tradingDaysType = TradingDaysType.None;
-                leapYear = false;
-                automaticMethod = AutoMethod.Unused;
-                probabilityForFTest = DEF_PFTD;
-            }
-            return this;
-        }
-
-        // TODO : Check if it should be done here
-        public Builder holidays(String value) {
-            holidays = value;
-            if (holidays != null && holidays.length() == 0) {
-                holidays = null;
-            }
-            if (holidays != null) {
-                userVariables = null;
-            }
-            return this;
-        }
-
-        /**
-         *
-         * @param w 1-based day of the month. Should be in [1, 31]
-         * @return
-         */
-        public Builder stockTradingDays(int w) {
-            this.stockTradingDays = w;
-            holidays = null;
-            userVariables = null;
-            tradingDaysType = TradingDaysType.None;
-            leapYear = false;
-            automaticMethod = AutoMethod.Unused;
-            probabilityForFTest = DEF_PFTD;
-            return this;
-        }
-
-        public Builder tradingDaysType(TradingDaysType type) {
-            tradingDaysType = type;
-            userVariables = null;
-            stockTradingDays = 0;
-            return this;
-        }
-    }
 }

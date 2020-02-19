@@ -174,13 +174,12 @@ public class RegArimaUtility {
 
     }
 
-    public IRegArimaProcessor<SarimaModel> processor(IArimaMapping<SarimaModel> mapping, boolean ml, double eps) {
+    public IRegArimaProcessor<SarimaModel> processor(boolean ml, double eps) {
         HannanRissanenInitializer initializer = HannanRissanenInitializer.builder()
                 .stabilize(true)
                 .useDefaultIfFailed(true)
                 .build();
         return GlsSarimaProcessor.builder()
-                .mapping(mapping)
                 .minimizer(LevenbergMarquardtMinimizer.builder())
                 .precision(eps)
                 .initializer(initializer)

@@ -55,7 +55,7 @@ public class OutliersDetectionModuleTest {
         ExactOutliersDetector od = ExactOutliersDetector.builder()
                 .singleOutlierDetector(defaultOutlierDetector(12))
                 .criticalValue(3)
-                .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
+                .processor(RegArimaUtility.processor(true, 1e-7))
                 .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
         od.prepare(regarima.getObservationsCount());
@@ -81,7 +81,7 @@ public class OutliersDetectionModuleTest {
         ExactOutliersDetector od = ExactOutliersDetector.builder()
                 .singleOutlierDetector(defaultOutlierDetector(12))
                 .criticalValue(3)
-                .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
+                .processor(RegArimaUtility.processor(true, 1e-7))
                 .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
         od.prepare(regarima.getObservationsCount());
@@ -126,7 +126,7 @@ public class OutliersDetectionModuleTest {
             ExactOutliersDetector od = ExactOutliersDetector.builder()
                     .singleOutlierDetector(defaultOutlierDetector(12))
                     .criticalValue(3)
-                    .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
+                    .processor(RegArimaUtility.processor(true, 1e-7))
                     .build();
             RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
             od.prepare(regarima.getObservationsCount());

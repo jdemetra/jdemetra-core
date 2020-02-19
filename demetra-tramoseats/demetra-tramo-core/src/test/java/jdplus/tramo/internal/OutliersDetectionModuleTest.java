@@ -50,7 +50,7 @@ public class OutliersDetectionModuleTest {
         FastOutliersDetector od = FastOutliersDetector.builder()
                 .singleOutlierDetector(FastOutliersDetector.defaultOutlierDetector())
                 .criticalValue(3)
-                .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
+                .processor(RegArimaUtility.processor(true, 1e-7))
                 .maximumLikelihood(true)
                 .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
@@ -80,7 +80,7 @@ public class OutliersDetectionModuleTest {
         FastOutliersDetector od = FastOutliersDetector.builder()
                 .singleOutlierDetector(FastOutliersDetector.defaultOutlierDetector())
                 .criticalValue(3)
-                 .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
+                 .processor(RegArimaUtility.processor(true, 1e-7))
                .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
         od.prepare(regarima.getObservationsCount());

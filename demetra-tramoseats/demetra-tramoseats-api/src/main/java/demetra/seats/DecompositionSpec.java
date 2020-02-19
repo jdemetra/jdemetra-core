@@ -30,36 +30,54 @@ public final class DecompositionSpec implements Validatable<DecompositionSpec> {
 
     public static enum ModelApproximationMode {
         None, Legacy, Noisy
-    };
+    }
+    
+    public static enum ComponentsEstimationMethod {
+        Burman, KalmanSmoother, McElroyMatrix
+    }
     
     public static enum BiasCorrection{
         None, Legacy
     }
 
 
+    public static final double DEF_XL = .95;
     public static final double DEF_EPSPHI = 2, DEF_RMOD = .5, DEF_SMOD1 = .8, DEF_SMOD = .8;
+    public static final int DEF_FORECASTS = -1, DEF_BACKCASTS = -1;
 
+    private double xlBoundary;
     private ModelApproximationMode approximationMode;
     private double seasTolerance;
     private double trendBoundary, seasBoundary, seasBoundaryAtPi;
     private BiasCorrection biasCorrection;
+    private int backCastCount, forecastCount;
+    private ComponentsEstimationMethod method;
 
     public static final DecompositionSpec DEFAULT = DecompositionSpec.builder().build();
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
+                .xlBoundary(DEF_XL)
                 .approximationMode(ModelApproximationMode.Legacy)
                 .seasTolerance(DEF_EPSPHI)
                 .trendBoundary(DEF_RMOD)
                 .seasBoundary(DEF_SMOD)
-                .seasBoundaryAtPi(DEF_SMOD1);
+                .seasBoundaryAtPi(DEF_SMOD1)
+                .biasCorrection(BiasCorrection.Legacy)
+                .method(ComponentsEstimationMethod.Burman)
+                .forecastCount(DEF_FORECASTS)
+                .backCastCount(DEF_BACKCASTS)
+                ;
         
         
     }
 
     @Override
     public DecompositionSpec validate() throws IllegalArgumentException {
+        if (xlBoundary < 0.9 || xlBoundary > 1) {
+            throw new IllegalArgumentException("XL should belong to [0.9, 1]");
+        }
         if (seasTolerance < 0 || seasTolerance > 10) {
             throw new IllegalArgumentException("EPSPHI (expressed in degrees) should belong to [0, 10]");
         }

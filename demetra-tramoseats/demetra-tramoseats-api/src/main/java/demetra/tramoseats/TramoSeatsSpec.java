@@ -1,12 +1,12 @@
 /*
- * Copyright 2019 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
- * http://ec.europa.eu/idabc/eupl
+ * https://joinup.ec.europa.eu/software/page/eupl
  *
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
@@ -19,6 +19,7 @@ package demetra.tramoseats;
 import demetra.design.Development;
 import demetra.design.LombokWorkaround;
 import demetra.sa.benchmarking.SaBenchmarkingSpec;
+import demetra.seats.DecompositionSpec;
 import demetra.seats.SeatsSpec;
 import demetra.tramo.TramoSpec;
 import demetra.util.Validatable;
@@ -37,7 +38,7 @@ public final class TramoSeatsSpec implements Validatable<TramoSeatsSpec> {
     @lombok.NonNull
     private TramoSpec tramo;
     @lombok.NonNull
-    private SeatsSpec seats;
+    private DecompositionSpec seats;
     @lombok.NonNull
     private SaBenchmarkingSpec benchmarking;
 
@@ -52,9 +53,9 @@ public final class TramoSeatsSpec implements Validatable<TramoSeatsSpec> {
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
-                .tramo(TramoSpec.builder().build())
-                .seats(SeatsSpec.builder().build())
-                .benchmarking(SaBenchmarkingSpec.builder().build());
+                .tramo(TramoSpec.DEFAULT)
+                .seats(DecompositionSpec.DEFAULT)
+                .benchmarking(SaBenchmarkingSpec.DEFAULT);
     }
 
     public boolean isDefault() {
@@ -74,37 +75,37 @@ public final class TramoSeatsSpec implements Validatable<TramoSeatsSpec> {
     static {
         RSA0 = TramoSeatsSpec.builder()
                 .tramo(TramoSpec.TR0)
-                .seats(SeatsSpec.builder().build())
+                .seats(DecompositionSpec.DEFAULT)
                 .build();
 
         RSA1 = TramoSeatsSpec.builder()
                 .tramo(TramoSpec.TR1)
-                .seats(SeatsSpec.builder().build())
+                .seats(DecompositionSpec.DEFAULT)
                 .build();
 
         RSA2 = TramoSeatsSpec.builder()
                 .tramo(TramoSpec.TR2)
-                .seats(SeatsSpec.builder().build())
+                .seats(DecompositionSpec.DEFAULT)
                 .build();
 
         RSA3 = TramoSeatsSpec.builder()
                 .tramo(TramoSpec.TR3)
-                .seats(SeatsSpec.builder().build())
+                .seats(DecompositionSpec.DEFAULT)
                 .build();
 
         RSA4 = TramoSeatsSpec.builder()
                 .tramo(TramoSpec.TR4)
-                .seats(SeatsSpec.builder().build())
+                .seats(DecompositionSpec.DEFAULT)
                 .build();
 
         RSA5 = TramoSeatsSpec.builder()
                 .tramo(TramoSpec.TR5)
-                .seats(SeatsSpec.builder().build())
+                .seats(DecompositionSpec.DEFAULT)
                 .build();
 
         RSAfull = TramoSeatsSpec.builder()
                 .tramo(TramoSpec.TRfull)
-                .seats(SeatsSpec.builder().build())
+                .seats(DecompositionSpec.DEFAULT)
                 .build();
     }
     //</editor-fold>

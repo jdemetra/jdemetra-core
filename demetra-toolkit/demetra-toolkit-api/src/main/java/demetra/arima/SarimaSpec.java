@@ -18,6 +18,7 @@ package demetra.arima;
 
 import demetra.design.Development;
 import demetra.data.ParameterSpec;
+import demetra.data.ParameterType;
 import demetra.util.Validatable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -126,9 +127,26 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
             btheta = value.clone();
             return this;
         }
+
+        Builder free() {
+            ParameterSpec.freeParameters(phi);
+            ParameterSpec.freeParameters(theta);
+            ParameterSpec.freeParameters(bphi);
+            ParameterSpec.freeParameters(btheta);
+            return this;
+        }
+
+        Builder reset() {
+            ParameterSpec.resetParameters(phi);
+            ParameterSpec.resetParameters(theta);
+            ParameterSpec.resetParameters(bphi);
+            ParameterSpec.resetParameters(btheta);
+            return this;
+        }
+
     }
 
-    private static final SarimaSpec AIRLINE = new SarimaSpec(null, 1, 1, 
+    private static final SarimaSpec AIRLINE = new SarimaSpec(null, 1, 1,
             EMPTY, ParameterSpec.make(1), EMPTY, ParameterSpec.make(1));
 
     public static SarimaSpec airline() {
@@ -156,14 +174,38 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
                 && getBp() == 0 && bd == 1 && getBq() == 1;
     }
 
-    public boolean isFixed() {
-        return ParameterSpec.isFixed(phi) && ParameterSpec.isFixed(bphi)
-                && ParameterSpec.isFixed(theta) && ParameterSpec.isFixed(btheta);
+    public int freeParametersCount() {
+        return ParameterSpec.freeParametersCount(phi) + ParameterSpec.freeParametersCount(bphi)
+                + ParameterSpec.freeParametersCount(theta) + ParameterSpec.freeParametersCount(btheta);
     }
 
     public boolean hasFixedParameters() {
         return !ParameterSpec.isFree(phi) || !ParameterSpec.isFree(bphi)
                 || !ParameterSpec.isFree(theta) || !ParameterSpec.isFree(btheta);
+    }
+
+    public boolean hasFreeParameters() {
+        return ParameterSpec.hasFreeParameters(phi) || ParameterSpec.hasFreeParameters(bphi)
+                || ParameterSpec.hasFreeParameters(theta) || ParameterSpec.hasFreeParameters(btheta);
+    }
+
+    public boolean hasEstimatedParameters() {
+        return ParameterSpec.hasParameters(phi, ParameterType.Estimated) || ParameterSpec.hasParameters(bphi, ParameterType.Estimated)
+                || !ParameterSpec.hasParameters(theta, ParameterType.Estimated) || ParameterSpec.hasParameters(btheta, ParameterType.Estimated);
+    }
+
+    public SarimaSpec resetParameters() {
+        if (!hasEstimatedParameters()) {
+            return this;
+        }
+        return toBuilder().reset().build();
+    }
+
+    public SarimaSpec freeParameters() {
+        if (!hasEstimatedParameters()) {
+            return this;
+        }
+        return toBuilder().free().build();
     }
 
     public SarimaOrders specification(int period) {

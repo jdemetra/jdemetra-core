@@ -211,7 +211,7 @@ public class WienerKolmogorovPreliminaryEstimatorProperties {
             IArimaModel model = m_wk.getUcarimaModel().getModel();
             WienerKolmogorovEstimator fest = m_wk.finalEstimator(m_cmp, m_signal);
             if (m_wcmp == null) {
-                m_wcmp = fest.getFilter();
+                m_wcmp = fest.getWienerKolmogorovFilter();
                 // ACGF = ACGF (e sta) - ACGF (st rev model) +/- 2 * Filter(e sta) * Filter(st rev model)* F ^ lag+1
                 StationaryTransformation<ILinearProcess> st = m_wk.finalStationaryEstimator(m_cmp, m_signal);
                 m_stcmp = (LinearProcess) st.getStationaryModel();

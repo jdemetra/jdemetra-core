@@ -14,27 +14,21 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package tramoseats.spi;
+package jdplus.tramoseats;
 
-import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.ModellingContext;
-import demetra.tramoseats.TramoSeatsProcessor;
-import demetra.tramoseats.TramoSeatsResults;
-import demetra.tramoseats.TramoSeatsSpec;
-import java.util.List;
-import nbbrd.service.ServiceProvider;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.seats.SeatsResults;
+import demetra.sa.SeriesDecomposition;
 
 /**
  *
  * @author palatej
  */
-@ServiceProvider(TramoSeatsProcessor.Computer.class)
-public class TramoSeatsComputer implements TramoSeatsProcessor.Computer{
-
-    @Override
-    public TramoSeatsResults compute(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+@lombok.Value
+public class TramoSeatsResults {
+    
+    private ModelEstimation preprocessing;
+    private SeatsResults results;
+    private SeriesDecomposition seriesDecomposition;
     
 }

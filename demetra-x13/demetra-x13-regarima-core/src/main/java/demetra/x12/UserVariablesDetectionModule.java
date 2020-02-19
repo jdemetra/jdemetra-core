@@ -89,7 +89,7 @@ public class UserVariablesDetectionModule implements IRegressionModule {
 
         ModelDescription description = context.getDescription();
         RegArimaEstimation<SarimaModel> est = context.getEstimation();
-        IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(description.getArimaComponent().defaultMapping(), true, eps);
+        IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(true, eps);
 
         // builds models with and without user variables 
         for (int i = 0; i < users.length; ++i) {

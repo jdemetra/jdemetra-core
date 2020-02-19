@@ -5,12 +5,8 @@
  */
 package demetra.seats;
 
-import demetra.arima.SarimaModel;
-import demetra.data.DoubleSeq;
 import demetra.design.Algorithm;
 import demetra.design.Development;
-import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.LinearModelEstimation;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.service.Mutability;
@@ -36,8 +32,8 @@ public class SeatsProcessor {
         return ENGINE.get();
     }
 
-    public SeatsResults compute(DoubleSeq series, int period, SeatsSpec spec, List<String> addtionalItems) {
-        return ENGINE.get().compute(series, period, spec, addtionalItems);
+    public SeatsResults compute(SeatsSpec spec, List<String> addtionalItems) {
+        return ENGINE.get().compute(spec, addtionalItems);
     }
 
     public void setLegacyEngine(Computer algorithm) {
@@ -48,18 +44,18 @@ public class SeatsProcessor {
         return LEGACYENGINE.get();
     }
 
-    public SeatsResults computeLegacy(DoubleSeq series, int period, SeatsSpec spec, List<String> addtionalItems) {
+    public SeatsResults computeLegacy(SeatsSpec spec, List<String> addtionalItems) {
         Computer cp = LEGACYENGINE.get();
         if (cp == null)
             throw new SeatsException("No legacy engine");
-        return cp.compute(series, period, spec, addtionalItems);
+        return cp.compute(spec, addtionalItems);
     }
  
     @Algorithm
     @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
     public static interface Computer {
 
-        SeatsResults compute(DoubleSeq series, int period, SeatsSpec spec, List<String> addtionalItems);
+        SeatsResults compute(SeatsSpec spec, List<String> addtionalItems);
 
     }
 }

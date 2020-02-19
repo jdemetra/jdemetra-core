@@ -163,7 +163,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
                 .maximumLikelihood(cmvx)
                 .maxOutliers(maxOutliers)
                 .maxRound(maxRound)
-                .processor(RegArimaUtility.processor(desc.getArimaComponent().defaultMapping(), true, eps));
+                .processor(RegArimaUtility.processor(true, eps));
         FastOutliersDetector impl = builder.build();
         TsDomain odom = domain.select(span);
         int start = domain.indexOf(odom.getStartPeriod()), end = start + odom.getLength();

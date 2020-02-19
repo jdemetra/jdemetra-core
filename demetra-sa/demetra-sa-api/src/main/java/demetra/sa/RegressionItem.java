@@ -14,25 +14,25 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package tramoseats.spi;
+package demetra.sa;
 
-import demetra.data.DoubleSeq;
-import demetra.seats.SeatsProcessor;
-import demetra.seats.SeatsResults;
-import demetra.seats.SeatsSpec;
-import java.util.List;
-import nbbrd.service.ServiceProvider;
+import demetra.data.ParameterSpec;
+import demetra.timeseries.regression.ITsVariable;
 
 /**
  *
  * @author palatej
+ * @param <V> Type of the regression variable
  */
-@ServiceProvider(SeatsProcessor.Computer.class)
-public class SeatsComputer implements SeatsProcessor.Computer{
+@lombok.Value
+public class RegressionItem <V extends ITsVariable>{
 
-    @Override
-    public SeatsResults compute(DoubleSeq series, int period, SeatsSpec spec, List<String> addtionalItems) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    String name;
+    V variable;
+    ParameterSpec[] coefficients;
+    ComponentType component;
+
+    public static <V extends ITsVariable> RegressionItem<V> of(String name, V variable) {
+        return new RegressionItem(name, variable, ParameterSpec.make(variable.dim()), ComponentType.Undefined);
     }
-
 }

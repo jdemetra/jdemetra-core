@@ -95,12 +95,8 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         if (ie != null) {
             decomp.add(ie, ComponentType.Irregular, ComponentInformation.Stdev);
         }
-        if (model.getForecastsCount() > 0) {
-            fillForecasts(idecomp, decomp);
-        }
-        if (model.getBackcastsCount() > 0) {
-            fillBackcasts(idecomp, decomp);
-        }
+        fillForecasts(idecomp, decomp);
+        fillBackcasts(idecomp, decomp);
 
         model.setFinalComponents(decomp.build());
     }
@@ -118,13 +114,14 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         } else {
             fsa = DoublesMath.subtract(fy, fs);
         }
+        if (fy == null || fy.isEmpty()) {
+            return;
+        }
 
-        if (fy != null) {
-            decomp.add(fy, ComponentType.Series, ComponentInformation.Forecast);
-            DoubleSeq fye = idecomp.getSeries(ComponentType.Series, ComponentInformation.StdevForecast);
-            if (fye != null) {
-                decomp.add(fye, ComponentType.Series, ComponentInformation.StdevForecast);
-            }
+        decomp.add(fy, ComponentType.Series, ComponentInformation.Forecast);
+        DoubleSeq fye = idecomp.getSeries(ComponentType.Series, ComponentInformation.StdevForecast);
+        if (fye != null) {
+            decomp.add(fye, ComponentType.Series, ComponentInformation.StdevForecast);
         }
         if (fs != null) {
             decomp.add(fs, ComponentType.Seasonal, ComponentInformation.Forecast);
@@ -173,13 +170,13 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         } else {
             fsa = DoublesMath.subtract(fy, fs);
         }
-
-        if (fy != null) {
-            decomp.add(fy, ComponentType.Series, ComponentInformation.Backcast);
-            DoubleSeq fye = idecomp.getSeries(ComponentType.Series, ComponentInformation.StdevBackcast);
-            if (fye != null) {
-                decomp.add(fye, ComponentType.Series, ComponentInformation.StdevBackcast);
-            }
+        if (fy == null || fy.isEmpty()) {
+            return;
+        }
+        decomp.add(fy, ComponentType.Series, ComponentInformation.Backcast);
+        DoubleSeq fye = idecomp.getSeries(ComponentType.Series, ComponentInformation.StdevBackcast);
+        if (fye != null) {
+            decomp.add(fye, ComponentType.Series, ComponentInformation.StdevBackcast);
         }
         if (fs != null) {
             decomp.add(fs, ComponentType.Seasonal, ComponentInformation.Backcast);
@@ -279,12 +276,8 @@ public class DefaultBiasCorrector implements IBiasCorrector {
 
         i = DoublesMath.divide(sa, t);
         decomp.add(i, ComponentType.Irregular);
-        if (model.getForecastsCount() > 0) {
-            fillForecasts(ldecomp, decomp, sbias, ibias);
-        }
-        if (model.getBackcastsCount() > 0) {
-            fillBackcasts(ldecomp, decomp, sbias, ibias);
-        }
+        fillForecasts(ldecomp, decomp, sbias, ibias);
+        fillBackcasts(ldecomp, decomp, sbias, ibias);
 
         model.setFinalComponents(decomp.build());
     }
@@ -298,13 +291,14 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         if (fy == null) {
             fy = DoublesMath.add(fs, ft, fi);
         }
-        if (fy != null) {
-            fy = fy.exp();
-            decomp.add(fy, ComponentType.Series, ComponentInformation.Forecast);
-            DoubleSeq fye = ldecomp.getSeries(ComponentType.Series, ComponentInformation.StdevForecast);
-            if (fye != null) {
-                decomp.add(correctStdevForLog(fye, fy), ComponentType.Series, ComponentInformation.StdevForecast);
-            }
+        if (fy == null || fy.isEmpty()) {
+            return;
+        }
+        fy = fy.exp();
+        decomp.add(fy, ComponentType.Series, ComponentInformation.Forecast);
+        DoubleSeq fye = ldecomp.getSeries(ComponentType.Series, ComponentInformation.StdevForecast);
+        if (fye != null) {
+            decomp.add(correctStdevForLog(fye, fy), ComponentType.Series, ComponentInformation.StdevForecast);
         }
         if (fs != null) {
             if (bias) {
@@ -364,13 +358,14 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         if (fy == null) {
             fy = DoublesMath.add(fs, ft, fi);
         }
-        if (fy != null) {
-            fy = fy.exp();
-            decomp.add(fy, ComponentType.Series, ComponentInformation.Backcast);
-            DoubleSeq fye = ldecomp.getSeries(ComponentType.Series, ComponentInformation.StdevBackcast);
-            if (fye != null) {
-                decomp.add(correctStdevForLog(fye, fy), ComponentType.Series, ComponentInformation.StdevBackcast);
-            }
+        if (fy == null || fy.isEmpty()) {
+            return;
+        }
+        fy = fy.exp();
+        decomp.add(fy, ComponentType.Series, ComponentInformation.Backcast);
+        DoubleSeq fye = ldecomp.getSeries(ComponentType.Series, ComponentInformation.StdevBackcast);
+        if (fye != null) {
+            decomp.add(correctStdevForLog(fye, fy), ComponentType.Series, ComponentInformation.StdevBackcast);
         }
         if (fs != null) {
             if (bias) {

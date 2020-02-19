@@ -17,6 +17,7 @@
 package jdplus.seats;
 
 import demetra.design.Development;
+import demetra.seats.DecompositionSpec;
 import demetra.seats.SeatsSpec;
 import jdplus.regsarima.GlsSarimaProcessor;
 
@@ -28,17 +29,17 @@ import jdplus.regsarima.GlsSarimaProcessor;
 @lombok.Builder(builderClassName = "Builder")
 public class SeatsToolkit {
 
-    public static SeatsToolkit of(SeatsSpec spec) {
+    public static SeatsToolkit of(DecompositionSpec spec) {
         DefaultModelValidator validator = DefaultModelValidator.builder()
-                .xl(spec.getModelSpec().getXlBoundary())
+                .xl(spec.getXlBoundary())
                 .build();
 
         DefaultModelEstimator estimator = new DefaultModelEstimator(validator, GlsSarimaProcessor.PROCESSOR);
 
-        DefaultModelDecomposer decomposer = new DefaultModelDecomposer(spec.getDecompositionSpec());
+        DefaultModelDecomposer decomposer = new DefaultModelDecomposer(spec);
 
         IModelApproximator approximator;
-        switch (spec.getDecompositionSpec().getApproximationMode()) {
+        switch (spec.getApproximationMode()) {
             case None:
                 approximator = null;
                 break;
@@ -46,21 +47,23 @@ public class SeatsToolkit {
                 approximator = new DefaultModelApproximator(estimator);
         }
 
+        int nf = spec.getForecastCount(), nb = spec.getBackCastCount();
+
         IComponentsEstimator cmpEstimator;
-        switch (spec.getComponentsSpec().getMethod()) {
+        switch (spec.getMethod()) {
             case KalmanSmoother:
-                cmpEstimator = new KalmanEstimator();
+                cmpEstimator = new KalmanEstimator(nb, nf);
                 break;
             case McElroyMatrix:
-                cmpEstimator = new MatrixEstimator();
+                cmpEstimator = new MatrixEstimator(nb, nf);
                 break;
             default:
-                cmpEstimator = new WienerKolmogorovEstimator();
+                cmpEstimator = new WienerKolmogorovEstimator(nb, nf);
                 break;
         }
 
         IBiasCorrector bias;
-        switch (spec.getBiasSpec().getBiasCorrection()) {
+        switch (spec.getBiasCorrection()) {
             case Legacy:
                 bias = new DefaultBiasCorrector(true);
                 break;
@@ -69,7 +72,6 @@ public class SeatsToolkit {
         }
 
         return builder()
-                .modelBuilder((s, p) -> SeatsModel.of(s, p, spec))
                 .modelValidator(validator)
                 .modelApproximator(approximator)
                 .modelDecomposer(decomposer)
@@ -78,8 +80,6 @@ public class SeatsToolkit {
                 .build();
 
     }
-
-    private IModelBuilder modelBuilder;
 
     private IModelValidator modelValidator;
 

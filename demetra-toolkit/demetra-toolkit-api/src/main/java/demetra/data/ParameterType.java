@@ -31,20 +31,25 @@ public enum ParameterType {
      */
     Undefined,
     /**
-     * The value should be considered as an initial value.
+     * The value should be considered as an initial value. It should be estimated, 
+     * using that initial information
      */
     Initial,
     /**
-     * The value is fixed. (It will/has not be(en) estimated).
+     * The value is fixed. It will/has not be(en) estimated.
      */
     Fixed,
     /**
-     * The value has been estimated.
+     * The value has been estimated. No further estimation is needed.
+     * The differences in comparison with fixed parameters are:
+     * - in the computation of statistics (degrees of freedom)
+     * - in re-estimation (fixed parameters should not be considered, but
+     * estimated parameters should be recomputed)
      */
     Estimated,
     /**
-     * The value is derived from other parameters. Derived parameters may have 
-     * a standard deviation
+     * The value is derived from other parameters. Such parameters are just
+     * added for information (they are not actual parameters)
      */
     Derived
 }

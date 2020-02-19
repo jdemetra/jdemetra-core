@@ -54,7 +54,7 @@ public class MeanController  implements IRegressionModule{
             est=null;
         }
         if (est == null){
-            est=desc.estimate(RegArimaUtility.processor(desc.getArimaComponent().defaultMapping(), true, eps));
+            est=desc.estimate(RegArimaUtility.processor(true, eps));
         }
             double t=est.getConcentratedLikelihood().tstat(0, 0, false);
         boolean nmean=Math.abs(t) > cval;

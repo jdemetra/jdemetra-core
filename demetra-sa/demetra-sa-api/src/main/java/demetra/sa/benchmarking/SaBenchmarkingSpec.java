@@ -61,7 +61,7 @@ public final class SaBenchmarkingSpec implements Validatable<SaBenchmarkingSpec>
     @lombok.NonNull
     private BiasCorrection biasCorrection;
 
-    private static final SaBenchmarkingSpec DEFAULT = SaBenchmarkingSpec.builder().build();
+    public static final SaBenchmarkingSpec DEFAULT = SaBenchmarkingSpec.builder().build();
 
     @LombokWorkaround
     public static Builder builder() {

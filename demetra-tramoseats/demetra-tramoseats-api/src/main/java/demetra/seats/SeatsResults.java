@@ -21,7 +21,6 @@ public class SeatsResults {
     private SarimaModel initialModel, finalModel;
     private SeriesDecomposition initialComponents, finalComponents;
     private UcarimaModel decomposition;
-    private int backcastsCount, forecastsCount;
     
     private InformationSet addtionalResults=new InformationSet();
 

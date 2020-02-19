@@ -38,6 +38,14 @@ import jdplus.math.matrices.QuadraticForm;
  */
 @Development(status = Development.Status.Alpha)
 public class KalmanEstimator implements IComponentsEstimator {
+    
+    private final int nfcasts, nbcasts;
+    
+    public KalmanEstimator(int nbcasts, int nfcasts){
+        this.nfcasts=nfcasts;
+        this.nbcasts=nbcasts;
+    }
+    
 
     /**
      *
@@ -48,7 +56,8 @@ public class KalmanEstimator implements IComponentsEstimator {
     public SeriesDecomposition decompose(SeatsModel model) {
         SeriesDecomposition.Builder builder = SeriesDecomposition.builder(DecompositionMode.Additive);
         DoubleSeq s = model.getTransformedSeries();
-        int n = s.length(), nf = model.getForecastsCount(), nb = model.getBackcastsCount();
+        int n = s.length(), nf = model.extrapolationCount(nfcasts),
+                nb = model.extrapolationCount(nbcasts);
 
         ComponentType[] cmps = model.componentsType();
         UcarimaModel ucm = model.compactUcarimaModel();

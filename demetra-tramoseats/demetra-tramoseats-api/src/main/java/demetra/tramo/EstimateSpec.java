@@ -38,7 +38,7 @@ public final class EstimateSpec implements Validatable<EstimateSpec> {
     private double tol;
     private double ubp;
 
-    private static final EstimateSpec DEFAULT = EstimateSpec.builder().build();
+    public static final EstimateSpec DEFAULT = EstimateSpec.builder().build();
 
     @LombokWorkaround
     public static Builder builder() {

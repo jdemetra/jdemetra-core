@@ -147,7 +147,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
 
         ModelDescription current = context.getDescription();
         IArimaMapping<SarimaModel> mapping = current.mapping();
-        IRegArimaProcessor processor = RegArimaUtility.processor(current.getArimaComponent().defaultMapping(), true, precision);
+        IRegArimaProcessor processor = RegArimaUtility.processor(true, precision);
         // We compute the full model
         ModelDescription test6 = createTestModel(context, td, null);
         RegArimaEstimation<SarimaModel> regarima6 = processor.process(test6.regarima(), mapping);

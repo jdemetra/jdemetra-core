@@ -221,10 +221,10 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
         return TsData.ofInternal(start, values.extend(nbeg, nend));
     }
 
-    public TsData select(TsData s, TimeSelector selector) {
-        TsDomain ndomain = s.getDomain().select(selector);
-        final int beg = s.getStart().until(ndomain.getStartPeriod());
-        return TsData.of(ndomain.getStartPeriod(), Doubles.of(s.getValues().extract(beg, ndomain.length())));
+    public TsData select(TimeSelector selector) {
+        TsDomain ndomain = domain.select(selector);
+        final int beg = getStart().until(ndomain.getStartPeriod());
+        return TsData.of(ndomain.getStartPeriod(), Doubles.of(values.extract(beg, ndomain.length())));
     }
 
     /**

@@ -49,7 +49,7 @@ public final class EasterSpec implements Validatable<EasterSpec> {
     private Type type;
     private boolean julian;
 
-    private static final EasterSpec DEFAULT = EasterSpec.builder().build();
+    public static final EasterSpec DEFAULT = EasterSpec.builder().build();
 
     @LombokWorkaround
     public static Builder builder() {

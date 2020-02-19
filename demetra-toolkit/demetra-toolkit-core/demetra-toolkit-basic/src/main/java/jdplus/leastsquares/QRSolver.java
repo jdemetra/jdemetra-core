@@ -57,7 +57,7 @@ public class QRSolver {
         int m=qr.m(), n=qr.n();
         DoubleSeq e=DoubleSeq.of(y, rank, m-rank);
         // Solve R*X = Y;
-        UpperTriangularMatrix.solveUx(qr.rawR(), DataBlock.of(y));
+         UpperTriangularMatrix.solveUx(qr.rawR(), DataBlock.of(y));
         int[] pivot=qr.pivot();
         DoubleSeq b;
         if (pivot == null) {

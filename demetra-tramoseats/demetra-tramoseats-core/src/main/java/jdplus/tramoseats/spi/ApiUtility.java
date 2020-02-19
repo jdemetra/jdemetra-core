@@ -14,16 +14,26 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package tramoseats;
+package jdplus.tramoseats.spi;
 
-import jdplus.regsarima.regular.ModelEstimation;
+import demetra.seats.SeatsResults;
 
 /**
  *
  * @author palatej
  */
-public class TramoSeatsResults {
-    
-    private ModelEstimation preprocessing;
-    
+
+@lombok.experimental.UtilityClass
+public class ApiUtility {
+    public demetra.seats.SeatsResults toApi(jdplus.seats.SeatsResults rslts){
+        
+        return SeatsResults.builder()
+                .initialModel(jdplus.modelling.ApiUtility.toApi(rslts.getOriginalModel(), "original"))
+                .finalModel(jdplus.modelling.ApiUtility.toApi(rslts.getFinalModel(), "final"))
+                .decomposition(jdplus.modelling.ApiUtility.toApi(rslts.getUcarimaModel(), null))
+                .initialComponents(rslts.getInitialComponents())
+                .finalComponents(rslts.getFinalComponents())
+                .build();
+        
+    }
 }

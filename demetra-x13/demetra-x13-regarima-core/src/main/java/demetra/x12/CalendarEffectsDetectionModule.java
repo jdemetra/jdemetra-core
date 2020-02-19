@@ -102,7 +102,7 @@ public class CalendarEffectsDetectionModule implements IRegressionModule {
     public ProcessingResult test(RegSarimaModelling context) {
 
         ModelDescription description = context.getDescription();
-        IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(description.getArimaComponent().defaultMapping(), true, eps);
+        IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(true, eps);
 
         // builds models with and without td
         ModelDescription ntddesc = ModelDescription.copyOf(description, null);

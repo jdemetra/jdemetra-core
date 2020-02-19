@@ -362,17 +362,38 @@ public class DoublesMath {
         }
     }
 
-    public DoubleSeq multiply(DoubleSeq a, DoubleSeq b) {
-        if (a == null) {
-            return b;
-        } else if (b == null) {
+    public DoubleSeq multiply(DoubleSeq a, DoubleSeq... b) {
+        int start = -1;
+        if (b != null) {
+            for (int i = 0; i < b.length; ++i) {
+                if (b[i] != null) {
+                    start = i;
+                    break;
+                }
+            }
+        }
+        if (start == -1) {
             return a;
+        }
+        double[] prod;
+        if (a != null) {
+            prod = a.toArray();
+        } else if (start == b.length - 1) {
+            return b[start];
         } else {
-            if (a.length() != b.length()) {
+            prod = b[start++].toArray();
+        }
+
+        for (int i = start; i < b.length; ++i) {
+            if (prod.length != b[i].length()) {
                 throw new IllegalArgumentException("wrong dimensions");
             }
-            return a.fn(b, (x, y) -> x * y);
+            DoubleSeqCursor cursor = b[i].cursor();
+            for (int j = 0; j < prod.length; ++j) {
+                prod[j] *= cursor.getAndNext();
+            }
         }
+        return Doubles.ofInternal(prod);
     }
 
     public DoubleSeq divide(DoubleSeq a, DoubleSeq b) {

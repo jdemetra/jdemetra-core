@@ -14,18 +14,28 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramoseats;
+package demetra.sa;
 
-import demetra.arima.SarimaModel;
-import demetra.seats.SeatsResults;
-import demetra.timeseries.regression.modelling.LinearModelEstimation;
+import demetra.arima.SarimaSpec;
+import demetra.data.ParameterSpec;
+import demetra.timeseries.TsData;
+import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.regression.ITsVariable;
 
 /**
  *
  * @author palatej
  */
 @lombok.Value
-public class TramoSeatsResults {
-    private LinearModelEstimation<SarimaModel> preprocessing;
-    private SeatsResults decomposition;
+public class SaRegArima {
+    
+    
+    private TsData series;
+    private boolean log;
+    private LengthOfPeriodType adjust;
+    
+    private RegressionItem[] regression;
+    
+    private SarimaSpec stochasticComponent;
+    
 }

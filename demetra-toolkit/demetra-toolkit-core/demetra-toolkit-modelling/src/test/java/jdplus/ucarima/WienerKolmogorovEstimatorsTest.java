@@ -42,7 +42,7 @@ public class WienerKolmogorovEstimatorsTest {
             ArimaModel cmp = ucm.getComponent(i);
             if (!cmp.isNull()) {
                 WienerKolmogorovEstimator wk = wke.finalEstimator(i, true);
-                RationalFilter filter = wk.getFilter();
+                RationalFilter filter = wk.getWienerKolmogorovFilter();
                 psie[i] = new double[N];
                 for (int l = 0; l < psie[i].length; ++l) {
                     psie[i][l] = filter.weight(l - 12);
@@ -69,7 +69,7 @@ public class WienerKolmogorovEstimatorsTest {
             ArimaModel cmp = ucm.getComponent(i);
             if (!cmp.isNull()) {
                 WienerKolmogorovEstimator wk = wke.finalEstimator(i, true);
-                RationalFilter filter = wk.getFilter();
+                RationalFilter filter = wk.getWienerKolmogorovFilter();
                 psie[i] = new double[N];
                 for (int l = 0; l < N; ++l) {
                     psie[i][l] = filter.weight(l - 12);

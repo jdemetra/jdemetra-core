@@ -36,6 +36,7 @@ import demetra.data.Doubles;
 import demetra.tramo.CalendarSpec;
 import demetra.tramo.RegressionSpec;
 import demetra.tramo.TradingDaysSpec;
+import demetra.tramo.TradingDaysSpec.AutoMethod;
 import demetra.tramo.TramoSpec;
 
 /**
@@ -160,10 +161,8 @@ public class TramoProcessorTest {
 
         RegressionSpec regSpec = spec.getRegression();
         CalendarSpec calSpec = regSpec.getCalendar();
-        TradingDaysSpec tdSpec = calSpec.getTradingDays()
-                .toBuilder()
-                .holidays("france")
-                .build();
+        TradingDaysSpec tdSpec = TradingDaysSpec.automaticHolidays
+            ("france", AutoMethod.FTest, TradingDaysSpec.DEF_PFTD);
         spec = spec.toBuilder()
                 .regression(regSpec.toBuilder()
                         .calendar(calSpec.toBuilder()
@@ -372,10 +371,7 @@ public class TramoProcessorTest {
 
         RegressionSpec regSpec = nspec.getRegression();
         CalendarSpec calSpec = regSpec.getCalendar();
-        TradingDaysSpec tdSpec = calSpec.getTradingDays()
-                .toBuilder()
-                .automaticMethod(TradingDaysSpec.AutoMethod.WaldTest)
-                .build();
+        TradingDaysSpec tdSpec = TradingDaysSpec.automatic(AutoMethod.WaldTest, TradingDaysSpec.DEF_PFTD);
         nspec = nspec.toBuilder()
                 .regression(regSpec.toBuilder()
                         .calendar(calSpec.toBuilder()

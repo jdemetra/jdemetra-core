@@ -65,7 +65,12 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-sa</artifactId>
+            <artifactId>demetra-sa-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-sa-core</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

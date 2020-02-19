@@ -17,6 +17,7 @@
 package demetra.tramo;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import org.junit.Test;
 
 /**
@@ -26,8 +27,10 @@ import org.junit.Test;
 public class TradingDaysSpecTest {
     
     @Test
-    public void testClone() {
-        TradingDaysSpec spec = TradingDaysSpec.builder().build();
-        assertEquals(spec, spec.toBuilder().build());
+    public void test() {
+        TradingDaysSpec spec1 = TradingDaysSpec.automaticHolidays("test", TradingDaysSpec.AutoMethod.FTest, .99);
+        TradingDaysSpec spec2 = TradingDaysSpec.automatic(TradingDaysSpec.AutoMethod.FTest, .99);
+       
+        assertNotEquals(spec1, spec2);
     }
 }

@@ -23,7 +23,6 @@ import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
 import demetra.sa.DecompositionMode;
 import demetra.sa.SeriesDecomposition;
-import java.util.ArrayList;
 import jdplus.ucarima.UcarimaModel;
 
 /**
@@ -32,15 +31,11 @@ import jdplus.ucarima.UcarimaModel;
 @Development(status = Development.Status.Alpha)
 public class WienerKolmogorovEstimator implements IComponentsEstimator {
 
-    private int nf(int period, int npred) {
-        if (npred >= 0) {
-            return npred;
-        } else {
-            return period * (-npred);
-        }
-    }
+    private final int nfcasts, nbcasts;
 
-    public WienerKolmogorovEstimator() {
+    public WienerKolmogorovEstimator(int nbcasts, int nfcasts) {
+        this.nfcasts = nfcasts;
+        this.nbcasts = nbcasts;
     }
 
     /**
@@ -51,44 +46,41 @@ public class WienerKolmogorovEstimator implements IComponentsEstimator {
     @Override
     public SeriesDecomposition decompose(SeatsModel model) {
         SeriesDecomposition.Builder decomposition = SeriesDecomposition.builder(DecompositionMode.Additive);
-        BurmanEstimates burman = new BurmanEstimates();
+
 //	BurmanEstimates burman = new BurmanEstimates();
         UcarimaModel ucm = model.getUcarimaModel();
         ucm = ucm.compact(2, 2);
 
         DoubleSeq s = model.getTransformedSeries();
-        int nf = nf(model.getOriginalModel().getFrequency(), model.getForecastsCount());
-        burman.setForecastsCount(nf);
+        int nf = model.extrapolationCount(nfcasts);
+        int nb = model.extrapolationCount(nbcasts);
 
-        // check the ucarima model. 
-        // ucm=checkModel(ucm);
-        if (model.isMeanCorrection()) {
-            burman.setUcarimaModelWithMean(ucm);
-        } else {
-            burman.setUcarimaModel(ucm);
-        }
-        burman.setData(s);
-        burman.setSer(Math.sqrt(model.getInnovationVariance()));
+        BurmanEstimates burman = BurmanEstimates.builder()
+                .data(s)
+                .forecastsCount(nf)
+                .backcastsCount(nb)
+                .mean(model.isMeanCorrection())
+                .ucarimaModel(ucm)
+                .innovationStdev(Math.sqrt(model.getInnovationVariance()))
+                .build();
+
         int ncmps = ucm.getComponentsCount();
 
         DoubleSeq[] cmps = new DoubleSeq[ncmps];
         DoubleSeq[] fcmps = new DoubleSeq[ncmps];
         DoubleSeq[] ecmps = new DoubleSeq[ncmps];
         DoubleSeq[] efcmps = new DoubleSeq[ncmps];
+        DoubleSeq[] bcmps = new DoubleSeq[ncmps];
+        DoubleSeq[] ebcmps = new DoubleSeq[ncmps];
 
         for (int i = 0; i < ncmps; ++i) {
             if (i == 0 || !ucm.getComponent(i).isNull()) {
-                double[] tmp = burman.estimates(i, true);
-                cmps[i] = DoubleSeq.of(tmp);
-                ecmps[i] = DoubleSeq.of(burman.stdevEstimates(i));
-                tmp = burman.forecasts(i, true);
-                if (tmp != null) {
-                    fcmps[i] = DoubleSeq.of(tmp);
-                }
-                tmp = burman.stdevForecasts(i, true);
-                if (tmp != null) {
-                    efcmps[i] = DoubleSeq.of(tmp);
-                }
+                cmps[i] = burman.estimates(i, true);
+                ecmps[i] = burman.stdevEstimates(i);
+                fcmps[i] = burman.forecasts(i, true);
+                efcmps[i] = burman.stdevForecasts(i, true);
+                bcmps[i] = burman.backcasts(i, true);
+                ebcmps[i] = burman.stdevBackcasts(i, true);
             }
         }
 
@@ -108,7 +100,7 @@ public class WienerKolmogorovEstimator implements IComponentsEstimator {
         decomposition.add(s, ComponentType.Series);
         decomposition.add(fs, ComponentType.Series, ComponentInformation.Forecast);
         if (efs != null) {
-            decomposition.add(efs.fn(z->z<=0 ? 0 :Math.sqrt(z)), ComponentType.Series, ComponentInformation.StdevForecast);
+            decomposition.add(efs.fn(z -> z <= 0 ? 0 : Math.sqrt(z)), ComponentType.Series, ComponentInformation.StdevForecast);
         }
         if (cmps[0] != null) {
             decomposition.add(cmps[0], ComponentType.Trend);
@@ -136,7 +128,7 @@ public class WienerKolmogorovEstimator implements IComponentsEstimator {
         if (ecmps[1] != null) {
             decomposition.add(ecmps[1], ComponentType.Seasonal, ComponentInformation.Stdev);
             decomposition.add(ecmps[1], ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
-            decomposition.add(efsa.fn(z->z<=0 ? 0 : Math.sqrt(z)), ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
+            decomposition.add(efsa.fn(z -> z <= 0 ? 0 : Math.sqrt(z)), ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
         }
         if (efcmps[1] != null) {
             decomposition.add(efcmps[1], ComponentType.Seasonal, ComponentInformation.StdevForecast);

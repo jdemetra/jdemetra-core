@@ -85,7 +85,7 @@ public class ModelEstimationDescriptor {
 //        MAPPING.set(ModellingDictionary.Y_LIN + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(source.domain(true).getLength(), true));
 //        MAPPING.set(ModellingDictionary.YCAL, TsData.class, source -> source.getYcal(false));
 //        MAPPING.set(ModellingDictionary.YCAL + SeriesInfo.F_SUFFIX, source -> source.getYcal(true));
-        MAPPING.set(ModellingDictionary.DET, TsData.class, source -> source.getDerministicEffect(source.getEstimationDomain()));
+        MAPPING.set(ModellingDictionary.DET, TsData.class, source -> source.getDeterministicEffect(source.getEstimationDomain()));
 //        MAPPING.set(ModellingDictionary.DET + SeriesInfo.F_SUFFIX, source -> source.getDet(true));
 //        MAPPING.set(ModellingDictionary.L + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(source.getForecastCount()));
 //        MAPPING.set(ModellingDictionary.L + SeriesInfo.B_SUFFIX, source -> source.linearizedBackcast(source.description.getFrequency()));

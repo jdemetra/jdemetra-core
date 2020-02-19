@@ -19,8 +19,7 @@ package jdplus.seats;
 import demetra.data.DoubleSeq;
 import demetra.design.Development;
 import demetra.processing.ProcessingLog;
-import demetra.sa.ComponentType;
-import demetra.sa.SeriesDecomposition;
+import demetra.seats.SeatsModelSpec;
 import demetra.seats.SeatsException;
 import jdplus.ucarima.UcarimaModel;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -48,10 +47,10 @@ public class SeatsKernel {
         this.toolkit = toolkit;
     }
 
-    public SeatsResults process(final DoubleSeq series, int period, ProcessingLog log) {
+    public SeatsResults process(final SeatsModelSpec modelSpec, ProcessingLog log) {
         log.push(SEATS);
         // step 0. Build the model
-        SeatsModel model=buildModel(series, period, log);
+        SeatsModel model=buildModel(modelSpec, log);
         // step 1. Validate the current model;
         validate(model, log);
         // step 2. Try to decompose the model
@@ -64,9 +63,9 @@ public class SeatsKernel {
         return results(model);
     }
     
-    private SeatsModel buildModel(DoubleSeq series, int period, ProcessingLog log){
+    private SeatsModel buildModel(SeatsModelSpec modelSpec, ProcessingLog log){
         log.push(MODEL);
-        SeatsModel model = toolkit.getModelBuilder().build(series, period);
+        SeatsModel model = SeatsModel.of(modelSpec);
         model.setCurrentModel(model.getOriginalModel());
         log.pop();
         return model;

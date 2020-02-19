@@ -20,8 +20,9 @@ import demetra.arima.SarimaSpec;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.processing.ProcessingLog;
-import demetra.seats.ComponentsSpec;
-import demetra.seats.ModelSpec;
+import demetra.seats.DecompositionSpec;
+import demetra.seats.DecompositionSpec.ComponentsEstimationMethod;
+import demetra.seats.SeatsModelSpec;
 import demetra.seats.SeatsSpec;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -37,24 +38,22 @@ public class SeatsKernelTest {
 
     @Test
     public void testProdBurman() {
-        ModelSpec model = ModelSpec.builder()
+        SeatsModelSpec model = SeatsModelSpec.builder()
+                .series(DoubleSeq.of(Data.PROD))
+                .period(12)
                 .log(true)
                 .sarimaSpec(SarimaSpec.airline())
                 .build();
-        ComponentsSpec cmps = ComponentsSpec.builder()
+        DecompositionSpec cmps = DecompositionSpec.builder()
                 .backCastCount(0)
                 .forecastCount(0)
                 .build();
 
-        SeatsSpec spec = SeatsSpec.builder()
-                .componentsSpec(cmps)
-                .modelSpec(model)
-                .build();
 
-        SeatsToolkit toolkit = SeatsToolkit.of(spec);
+        SeatsToolkit toolkit = SeatsToolkit.of(cmps);
         SeatsKernel kernel = new SeatsKernel(toolkit);
         ProcessingLog log = new ProcessingLog();
-        SeatsResults rslt = kernel.process(DoubleSeq.of(Data.PROD), 12, log);
+        SeatsResults rslt = kernel.process(model, log);
         assertTrue(rslt != null);
 //        log.all().forEach(v -> System.out.println(v));
 //        System.out.println(rslt.getFinalComponents());
@@ -62,25 +61,22 @@ public class SeatsKernelTest {
 
     @Test
     public void testProdKF() {
-        ModelSpec model = ModelSpec.builder()
+        SeatsModelSpec model = SeatsModelSpec.builder()
+                .series(DoubleSeq.of(Data.PROD))
+                .period(12)
                 .log(true)
                 .sarimaSpec(SarimaSpec.airline())
                 .build();
-        ComponentsSpec cmps = ComponentsSpec.builder()
+        DecompositionSpec cmps = DecompositionSpec.builder()
                 .backCastCount(-2)
                 .forecastCount(-2)
-                .method(ComponentsSpec.ComponentsEstimationMethod.KalmanSmoother)
+                .method(ComponentsEstimationMethod.KalmanSmoother)
                 .build();
 
-        SeatsSpec spec = SeatsSpec.builder()
-                .componentsSpec(cmps)
-                .modelSpec(model)
-                .build();
-
-        SeatsToolkit toolkit = SeatsToolkit.of(spec);
+        SeatsToolkit toolkit = SeatsToolkit.of(cmps);
         SeatsKernel kernel = new SeatsKernel(toolkit);
         ProcessingLog log = new ProcessingLog();
-        SeatsResults rslt = kernel.process(DoubleSeq.of(Data.PROD), 12, log);
+        SeatsResults rslt = kernel.process(model, log);
         assertTrue(rslt != null);
 //        log.all().forEach(v -> System.out.println(v));
 //        System.out.println(rslt.getFinalComponents());
@@ -91,25 +87,22 @@ public class SeatsKernelTest {
         SarimaSpec mspec = SarimaSpec.builder()
                 .p(3).d(1).q(1).bp(0).bd(1).bq(1).build();
                 
-        ModelSpec model = ModelSpec.builder()
+        SeatsModelSpec model = SeatsModelSpec.builder()
+                .series(DoubleSeq.of(Data.PROD))
+                .period(12)
                 .log(true)
                 .sarimaSpec(mspec)
                 .build();
-        ComponentsSpec cmps = ComponentsSpec.builder()
+        DecompositionSpec cmps = DecompositionSpec.builder()
                 .backCastCount(-2)
                 .forecastCount(-2)
-                .method(ComponentsSpec.ComponentsEstimationMethod.KalmanSmoother)
+                .method(ComponentsEstimationMethod.KalmanSmoother)
                 .build();
 
-        SeatsSpec spec = SeatsSpec.builder()
-                .componentsSpec(cmps)
-                .modelSpec(model)
-                .build();
-
-        SeatsToolkit toolkit = SeatsToolkit.of(spec);
+        SeatsToolkit toolkit = SeatsToolkit.of(cmps);
         SeatsKernel kernel = new SeatsKernel(toolkit);
         ProcessingLog log = new ProcessingLog();
-        SeatsResults rslt = kernel.process(DoubleSeq.of(Data.PROD), 12, log);
+        SeatsResults rslt = kernel.process(model, log);
         assertTrue(rslt != null);
 //        log.all().forEach(v -> System.out.println(v));
 //        System.out.println(rslt.getFinalComponents());

@@ -14,18 +14,17 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramoseats;
+package demetra.sa.benchmarking;
 
-import demetra.arima.SarimaModel;
-import demetra.seats.SeatsResults;
-import demetra.timeseries.regression.modelling.LinearModelEstimation;
+import demetra.timeseries.TsData;
 
 /**
  *
  * @author palatej
  */
 @lombok.Value
-public class TramoSeatsResults {
-    private LinearModelEstimation<SarimaModel> preprocessing;
-    private SeatsResults decomposition;
+public class SaBenchmarkingResults {
+
+    private TsData original, target, benchmarked;
+
 }

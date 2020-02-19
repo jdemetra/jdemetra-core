@@ -18,6 +18,7 @@ package demetra.seats;
 
 import demetra.design.Development;
 import demetra.design.LombokWorkaround;
+import demetra.seats.DecompositionSpec.ComponentsEstimationMethod;
 import demetra.util.Validatable;
 
 /**
@@ -28,20 +29,16 @@ import demetra.util.Validatable;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public final class SeatsSpec implements Validatable<SeatsSpec> {
 
-    private ModelSpec modelSpec;
+    private SeatsModelSpec modelSpec;
     private DecompositionSpec decompositionSpec;
-    private ComponentsSpec componentsSpec;
-    private BiasSpec biasSpec;
 
     private static final SeatsSpec DEFAULT = SeatsSpec.builder().build();
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
-                .modelSpec(ModelSpec.DEFAULT)
-                .decompositionSpec(DecompositionSpec.DEFAULT)
-                .componentsSpec(ComponentsSpec.DEFAULT)
-                .biasSpec(BiasSpec.DEFAULT);
+                .modelSpec(null)
+                .decompositionSpec(DecompositionSpec.DEFAULT);
     }
 
     public boolean isDefault() {
@@ -53,8 +50,14 @@ public final class SeatsSpec implements Validatable<SeatsSpec> {
 
     @Override
     public SeatsSpec validate() throws IllegalArgumentException {
-        modelSpec.validate();
         decompositionSpec.validate();
+        if (modelSpec != null) {
+            modelSpec.validate();
+            if (decompositionSpec.getMethod() != ComponentsEstimationMethod.KalmanSmoother
+                    && modelSpec.getSeries().count( z -> !Double.isFinite(z)) > 0) {
+                throw new SeatsException(SeatsException.ERR_MISSING);
+            }
+        }
         return this;
     }
 
