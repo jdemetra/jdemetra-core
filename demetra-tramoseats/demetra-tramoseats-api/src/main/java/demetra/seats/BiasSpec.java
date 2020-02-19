@@ -32,18 +32,17 @@ public final class BiasSpec {
         None, Legacy
     }
 
-
     public static final double DEF_EPSPHI = 2, DEF_RMOD = .5, DEF_SMOD1 = .8, DEF_SMOD = .8, DEF_XL = .95;
 
     private BiasCorrection biasCorrection;
-    private boolean logCorrection;
+    private boolean mode;
 
     public static final BiasSpec DEFAULT = BiasSpec.builder().build();
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
-                .logCorrection(false)
+                .mode(true)
                 .biasCorrection(BiasCorrection.Legacy);
                 
     }

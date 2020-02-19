@@ -23,14 +23,6 @@ import demetra.processing.ProcessingLog;
 import demetra.seats.ComponentsSpec;
 import demetra.seats.ModelSpec;
 import demetra.seats.SeatsSpec;
-import ec.tstoolkit.data.Periodogram;
-import ec.tstoolkit.ucarima.ModelDecomposer;
-import ec.tstoolkit.ucarima.SeasonalSelector;
-import ec.tstoolkit.ucarima.TrendCycleSelector;
-import ec.tstoolkit.ucarima.UcarimaModel;
-import jdplus.arima.ArimaModel;
-import jdplus.arima.Spectrum;
-import jdplus.ucarima.WienerKolmogorovEstimators;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -64,8 +56,8 @@ public class SeatsKernelTest {
         ProcessingLog log = new ProcessingLog();
         SeatsResults rslt = kernel.process(DoubleSeq.of(Data.PROD), 12, log);
         assertTrue(rslt != null);
-        log.all().forEach(v -> System.out.println(v));
-        System.out.println(rslt.getFinalComponents());
+//        log.all().forEach(v -> System.out.println(v));
+//        System.out.println(rslt.getFinalComponents());
     }
 
     @Test
@@ -90,8 +82,8 @@ public class SeatsKernelTest {
         ProcessingLog log = new ProcessingLog();
         SeatsResults rslt = kernel.process(DoubleSeq.of(Data.PROD), 12, log);
         assertTrue(rslt != null);
-        log.all().forEach(v -> System.out.println(v));
-        System.out.println(rslt.getFinalComponents());
+//        log.all().forEach(v -> System.out.println(v));
+//        System.out.println(rslt.getFinalComponents());
     }
 
     @Test
@@ -119,39 +111,9 @@ public class SeatsKernelTest {
         ProcessingLog log = new ProcessingLog();
         SeatsResults rslt = kernel.process(DoubleSeq.of(Data.PROD), 12, log);
         assertTrue(rslt != null);
-        log.all().forEach(v -> System.out.println(v));
-        System.out.println(rslt.getFinalComponents());
-        System.out.println(rslt.getUcarimaModel());
-        
-        WienerKolmogorovEstimators wk=new WienerKolmogorovEstimators(rslt.getUcarimaModel());
-        Spectrum spectrum = wk.finalEstimator(1, true).getModel().getSpectrum();
-        Spectrum.Minimizer min=new Spectrum.Minimizer();
-        min.minimize(spectrum);
-        double minimum = min.getMinimum();
-        System.out.println(minimum);
-        
-        ArimaModel m= rslt.getUcarimaModel().sum();
-        System.out.println(m);
-        
-//        ec.tstoolkit.sarima.SarimaSpecification ospec=new ec.tstoolkit.sarima.SarimaSpecification(12);
-//        ospec.airline(true);
-//        ospec.setP(3);
-//        ec.tstoolkit.sarima.SarimaModel osarima=new ec.tstoolkit.sarima.SarimaModel(ospec);
-//        double[] p = rslt.getFinalModel().parameters().toArray();
-//        osarima.setParameters(new ec.tstoolkit.data.ReadDataBlock(p));
-//        
-//        // Usual decomposers (Trend, Seasonal)
-//        TrendCycleSelector tsel = new TrendCycleSelector(.5);
-//        SeasonalSelector ssel = new SeasonalSelector(12, 3);
-//
-//        ModelDecomposer decomposer = new ModelDecomposer();
-//        decomposer.add(tsel);
-//        decomposer.add(ssel);
-//
-//        UcarimaModel ucm = decomposer.decompose(ec.tstoolkit.arima.ArimaModel.create(osarima));
-//        // Canonical decomposition
-//        double var = ucm.setVarianceMax(-1, true);
-//        System.out.println(ucm);
+//        log.all().forEach(v -> System.out.println(v));
+//        System.out.println(rslt.getFinalComponents());
+//        System.out.println(rslt.getUcarimaModel());
         
     }
 }

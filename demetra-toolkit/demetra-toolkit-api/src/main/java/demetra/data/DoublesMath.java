@@ -315,50 +315,75 @@ public class DoublesMath {
         return src.fn(Math::exp);
     }
 
-    public DoubleSeq add(DoubleSeq a, DoubleSeq b) {
-        if (a == null) {
-            return b;
-        } else if (b == null) {
-            return a;
-        } else {
-            if (a.length() != b.length())
-                throw new IllegalArgumentException("wrong dimensions");
-            return a.fn(b, (x, y) -> x + y);
+    public DoubleSeq add(DoubleSeq a, DoubleSeq... b) {
+        int start = -1;
+        if (b != null) {
+            for (int i = 0; i < b.length; ++i) {
+                if (b[i] != null) {
+                    start = i;
+                    break;
+                }
+            }
         }
+        if (start == -1) {
+            return a;
+        }
+        double[] tot;
+        if (a != null) {
+            tot = a.toArray();
+        } else if (start == b.length - 1) {
+            return b[start];
+        } else {
+            tot = b[start++].toArray();
+        }
+
+        for (int i = start; i < b.length; ++i) {
+            if (tot.length != b[i].length()) {
+                throw new IllegalArgumentException("wrong dimensions");
+            }
+            DoubleSeqCursor cursor = b[i].cursor();
+            for (int j = 0; j < tot.length; ++j) {
+                tot[j] += cursor.getAndNext();
+            }
+        }
+        return Doubles.ofInternal(tot);
     }
 
     public DoubleSeq subtract(DoubleSeq a, DoubleSeq b) {
         if (a == null) {
-            return b.fn(x->-x);
+            return b.fn(x -> -x);
         } else if (b == null) {
             return a;
         } else {
-            if (a.length() != b.length())
+            if (a.length() != b.length()) {
                 throw new IllegalArgumentException("wrong dimensions");
+            }
             return a.fn(b, (x, y) -> x - y);
         }
     }
-    
+
     public DoubleSeq multiply(DoubleSeq a, DoubleSeq b) {
         if (a == null) {
             return b;
         } else if (b == null) {
             return a;
         } else {
-            if (a.length() != b.length())
+            if (a.length() != b.length()) {
                 throw new IllegalArgumentException("wrong dimensions");
+            }
             return a.fn(b, (x, y) -> x * y);
         }
     }
 
     public DoubleSeq divide(DoubleSeq a, DoubleSeq b) {
         if (a == null) {
-            return b.fn(x->1/x);
+            return b.fn(x -> 1 / x);
         } else if (b == null) {
             return a;
         } else {
-            if (a.length() != b.length())
+            if (a.length() != b.length()) {
                 throw new IllegalArgumentException("wrong dimensions");
+            }
             return a.fn(b, (x, y) -> x / y);
         }
     }

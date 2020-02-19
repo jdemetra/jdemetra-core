@@ -32,7 +32,6 @@ import jdplus.arima.ArimaModel;
 import static jdplus.math.linearfilters.BackFilter.D1;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaToolkit;
-import jdplus.regsarima.GlsSarimaProcessor;
 import jdplus.regsarima.regular.SeasonalityDetector;
 import jdplus.tramo.TramoSeasonalityDetector;
 
@@ -61,9 +60,9 @@ public class SeatsModel {
     }
 
     private static SeatsModel buildDefinedModel(DoubleSeq series, int period, SeatsSpec spec) {
-        boolean log=spec.getModelSpec().isLog();
+        boolean log = spec.getModelSpec().isLog();
         DoubleSeq nseries = log ? series.log() : series;
-        boolean mean=spec.getModelSpec().isMeanCorrection();
+        boolean mean = spec.getModelSpec().isMeanCorrection();
         SarimaSpec sarimaSpec = spec.getModelSpec().getSarimaSpec();
         SarimaOrders orders = sarimaSpec.specification(period);
         SarimaModel sarima = SarimaModel.builder(orders)
@@ -72,26 +71,17 @@ public class SeatsModel {
                 .theta(ParameterSpec.values(sarimaSpec.getTheta()))
                 .btheta(ParameterSpec.values(sarimaSpec.getBtheta()))
                 .build();
-       RegArimaModel regarima = RegArimaModel.<SarimaModel>builder()
-                .y(nseries)
-                .arima(sarima)
-                .meanCorrection(mean)
-                .build();
-        RegArimaEstimation<SarimaModel> estimation=RegArimaToolkit.concentratedLikelihood(regarima);
-        LikelihoodStatistics stat = estimation.statistics();
-        double var = stat.getSsqErr() / (stat.getEffectiveObservationsCount() - stat.getEstimatedParametersCount());
         SeasonalityDetector detector = new TramoSeasonalityDetector();
         SeasonalityDetector.Seasonality seas = detector.hasSeasonality(nseries, period);
-        SeatsModel seatsModel = new SeatsModel(series, nseries, log, sarima, seas.getAsInt()>1);
+        SeatsModel seatsModel = new SeatsModel(series, nseries, log, sarima, seas.getAsInt() > 1);
         seatsModel.meanCorrection = mean;
-        seatsModel.innovationVariance = var;
         return seatsModel;
     }
 
     private static SeatsModel buildEstimatedModel(DoubleSeq series, int period, SeatsSpec spec) {
-        boolean log=spec.getModelSpec().isLog();
+        boolean log = spec.getModelSpec().isLog();
         DoubleSeq nseries = log ? series.log() : series;
-        boolean mean=spec.getModelSpec().isMeanCorrection();
+        boolean mean = spec.getModelSpec().isMeanCorrection();
         SarimaSpec sarimaSpec = spec.getModelSpec().getSarimaSpec();
         if (sarimaSpec.hasFixedParameters()) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -116,7 +106,7 @@ public class SeatsModel {
         SeasonalityDetector detector = new TramoSeasonalityDetector();
         SeasonalityDetector.Seasonality seas = detector.hasSeasonality(nseries, period);
 
-        SeatsModel seatsModel = new SeatsModel(series, nseries, log, arima, seas.getAsInt()>1);
+        SeatsModel seatsModel = new SeatsModel(series, nseries, log, arima, seas.getAsInt() > 1);
         seatsModel.meanCorrection = mean;
         seatsModel.innovationVariance = var;
         return seatsModel;
@@ -219,7 +209,6 @@ public class SeatsModel {
 //            return seatsModel;
 //        }
 //    }
-
     private final DoubleSeq originalSeries, transformedSeries;
     private final boolean logTransformation;
     private final SarimaModel originalModel;
@@ -237,6 +226,28 @@ public class SeatsModel {
                 .arima(currentModel)
                 .meanCorrection(meanCorrection)
                 .build();
+    }
+
+    /**
+     * Computes the default innovation variance of the model
+     *
+     * @param set True if the result is set in the model for future use, false
+     * otherwise
+     * @return
+     */
+    public double defaultInnovation(boolean set) {
+        RegArimaModel regarima = RegArimaModel.<SarimaModel>builder()
+                .y(transformedSeries)
+                .arima(this.currentModel)
+                .meanCorrection(meanCorrection)
+                .build();
+        RegArimaEstimation<SarimaModel> estimation = RegArimaToolkit.concentratedLikelihood(regarima);
+        LikelihoodStatistics stat = estimation.statistics();
+        double var = stat.getSsqErr() / (stat.getEffectiveObservationsCount() - stat.getEstimatedParametersCount());
+        if (set) {
+            this.innovationVariance = var;
+        }
+        return var;
     }
 
     public int getPeriod() {

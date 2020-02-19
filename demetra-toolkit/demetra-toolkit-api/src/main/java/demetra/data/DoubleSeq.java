@@ -558,18 +558,42 @@ public interface DoubleSeq extends BaseSeq {
         return Doubles.ofInternal(safeArray);
     }
 
+    default DoubleSeq plus(double del) {
+        if (del == 0) {
+            return this;
+        }
+        double[] safeArray = toArray();
+        for (int i = 0; i < safeArray.length; ++i) {
+            safeArray[i] += del;
+        }
+        return Doubles.ofInternal(safeArray);
+    }
+
+    default DoubleSeq times(double factor) {
+        if (factor == 1) {
+            return this;
+        }
+        if (factor == 0) {
+            return onMapping(this.length(), i -> 0);
+        }
+        double[] safeArray = toArray();
+        for (int i = 0; i < safeArray.length; ++i) {
+            safeArray[i] *= factor;
+        }
+        return Doubles.ofInternal(safeArray);
+    }
+
     default DoubleSeq fastOp(DoubleUnaryOperator op) {
         int n = length();
         return onMapping(n, i -> op.applyAsDouble(get(i)));
     }
 
-
     default DoubleSeq fastOp(DoubleSeq b, DoubleBinaryOperator op) {
         int n = length();
         return onMapping(n, i -> op.applyAsDouble(get(i), b.get(i)));
     }
-    
-    default DoubleSeq commit(){
+
+    default DoubleSeq commit() {
         return Doubles.ofInternal(this.toArray());
     }
 
