@@ -38,7 +38,7 @@ public final class JdbcSamples {
         result.setTableName("Table0");
         result.setDimColumns("");
         // FIXME: "PERIOD" is a keyword in SQL2011 and escaping fails for some raison
-        result.setPeriodColumn("Table0.Period");
+        result.setPeriodColumn("\"Period\"");
         result.setValueColumn("Rate");
         return result;
     }
@@ -48,7 +48,7 @@ public final class JdbcSamples {
         result.setDbName("mydb");
         result.setTableName("Table2");
         result.setDimColumns("Sector, Region");
-        result.setPeriodColumn("Table2.Period");
+        result.setPeriodColumn("\"Period\"");
         result.setValueColumn("Rate");
         return result;
     }
