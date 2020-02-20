@@ -39,7 +39,7 @@
     </modules>
 
     <properties>
-        <sql-util.version>1.0.0</sql-util.version>
+        <sql-util.version>1.0.1</sql-util.version>
     </properties>
 
     <dependencyManagement>
