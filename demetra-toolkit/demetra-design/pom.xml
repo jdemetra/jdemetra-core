@@ -38,13 +38,13 @@
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>joor-java-8</artifactId>
-            <version>0.9.10</version>
+            <version>0.9.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.squareup</groupId>
             <artifactId>javapoet</artifactId>
-            <version>1.11.1</version>
+            <version>1.12.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
