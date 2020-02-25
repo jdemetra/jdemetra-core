@@ -40,22 +40,22 @@ public class ExactArimaForecasts implements ArimaForecasts {
     private double mean;
     private boolean bmean;
 
+    @Override
     public double getMean() {
         return mean;
     }
 
     /**
      *
-     * @param mean
      */
     public ExactArimaForecasts() {
     }
 
     @Override
-    public boolean prepare(final IArimaModel model, boolean mean) {
-        bmean = mean;
+    public boolean prepare(final IArimaModel model, boolean bmean) {
+        this.bmean = bmean;
         IArimaModel cmodel = model;
-        if (mean) {
+        if (bmean) {
             BackFilter ar = model.getStationaryAr(), ur = model
                     .getNonStationaryAr(), ma = model.getMa();
             bar = ar.times(ur);
@@ -79,11 +79,20 @@ public class ExactArimaForecasts implements ArimaForecasts {
         if (nf >= ssf.getStateDim()) {
             DataBlock a = filter.getFinalState().a();
             a.copyTo(f, 0);
-            // complete the forecasts....
-            int last = a.length() - 1;
+//            // complete the forecasts....
+//            int last = a.length() - 1;
+//            for (int i = ssf.getStateDim(); i < nf; ++i) {
+//                ssf.dynamics().TX(0, a);
+//                f[i] = a.get(last);
+//            }
+            // complete the forecasts with simple ar recursion
+            double[] ar = bar.asPolynomial().toArray();
             for (int i = ssf.getStateDim(); i < nf; ++i) {
-                ssf.dynamics().TX(0, a);
-                f[i] = a.get(last);
+                double s = 0;
+                for (int j = 1; j < ar.length; ++j) {
+                    s += -ar[j] * f[i - j];
+                }
+                f[i] = s;
             }
         } else {
             filter.getFinalState().a().range(0, nf).copyTo(f, 0);

@@ -350,10 +350,10 @@ public class DoublesMath {
     }
 
     public DoubleSeq subtract(DoubleSeq a, DoubleSeq b) {
+        if (b == null)
+            return a;
         if (a == null) {
             return b.fn(x -> -x);
-        } else if (b == null) {
-            return a;
         } else {
             if (a.length() != b.length()) {
                 throw new IllegalArgumentException("wrong dimensions");
