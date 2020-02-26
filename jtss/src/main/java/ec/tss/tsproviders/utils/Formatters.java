@@ -25,7 +25,6 @@ import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -121,26 +120,23 @@ public final class Formatters {
 
     @NonNull
     public static Formatter<Date> onDateFormat(@NonNull DateFormat dateFormat) {
-        return new Wrapper<>(dateFormat::format);
+        return new Adapter<>(nbbrd.io.text.Formatter.onDateFormat(dateFormat));
     }
 
     @NonNull
     public static Formatter<Number> onNumberFormat(@NonNull NumberFormat numberFormat) {
-        return new Wrapper<>(numberFormat::format);
+        return new Adapter<>(nbbrd.io.text.Formatter.onNumberFormat(numberFormat));
     }
 
     @NonNull
     public static <T> Formatter<T> onNull() {
-        return ofInstance(null);
+        return new Adapter<>(nbbrd.io.text.Formatter.onNull());
     }
 
     @NonNull
     @SuppressWarnings("null")
     public static <T> Formatter<T> ofInstance(@Nullable CharSequence instance) {
-        return new Wrapper<>(o -> {
-            Objects.requireNonNull(o);
-            return instance;
-        });
+        return new Adapter<>(nbbrd.io.text.Formatter.onConstant(instance));
     }
 
     @NonNull
@@ -180,7 +176,7 @@ public final class Formatters {
 
     @NonNull
     public static <T extends Enum<T>> Formatter<T> enumFormatter() {
-        return (Formatter<T>) ENUM_NAME_FORMATTER;
+        return new Adapter<T>(nbbrd.io.text.Formatter.onEnum());
     }
 
     @NonNull
@@ -214,12 +210,8 @@ public final class Formatters {
 
     @NonNull
     public static Formatter<List<String>> onJoiner(@NonNull Joiner joiner) {
-        return new FailSafeFormatter<List<String>>() {
-            @Override
-            protected CharSequence doFormat(List<String> value) throws Exception {
-                return joiner.join(value);
-            }
-        };
+        Objects.requireNonNull(joiner);
+        return new Adapter<>(nbbrd.io.text.Formatter.onStringList(stream -> joiner.join(stream.iterator())));
     }
 
     /**
@@ -314,6 +306,36 @@ public final class Formatters {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
+    @lombok.RequiredArgsConstructor
+    private static final class Adapter<T> extends Formatter<T> {
+
+        private final nbbrd.io.text.Formatter<T> formatter;
+
+        @Override
+        public CharSequence format(T value) {
+            Objects.requireNonNull(value);
+            return formatter.format(value);
+        }
+
+        @Override
+        public String formatAsString(T value) {
+            Objects.requireNonNull(value);
+            return formatter.formatAsString(value);
+        }
+
+        @Override
+        public java.util.Optional<CharSequence> formatValue(T value) {
+            Objects.requireNonNull(value);
+            return formatter.formatValue(value);
+        }
+
+        @Override
+        public java.util.Optional<String> formatValueAsString(T value) {
+            Objects.requireNonNull(value);
+            return formatter.formatValueAsString(value);
+        }
+    }
+
     private static final class Wrapper<T> extends Formatter<T> {
 
         private final IFormatter<T> formatter;
@@ -343,12 +365,11 @@ public final class Formatters {
         }
     }
 
-    private static final Formatter<File> FILE_FORMATTER = new Wrapper<>(File::getPath);
-    private static final Formatter<Charset> CHARSET_FORMATTER = new Wrapper<>(Charset::name);
-    private static final Formatter<double[]> DOUBLE_ARRAY_FORMATTER = new Wrapper<>(o -> Arrays.toString(Objects.requireNonNull(o)));
-    private static final Formatter<?> OBJECT_TO_STRING_FORMATTER = new Wrapper<>(Object::toString);
-    private static final Formatter<? extends Enum<?>> ENUM_NAME_FORMATTER = new Wrapper<>(Enum::name);
-    private static final Formatter<String[]> STRING_ARRAY_FORMATTER = new Wrapper<>(o -> Arrays.toString(Objects.requireNonNull(o)));
+    private static final Formatter<File> FILE_FORMATTER = new Adapter<>(nbbrd.io.text.Formatter.onFile());
+    private static final Formatter<Charset> CHARSET_FORMATTER = new Adapter<>(nbbrd.io.text.Formatter.onCharset());
+    private static final Formatter<double[]> DOUBLE_ARRAY_FORMATTER = new Adapter<>(nbbrd.io.text.Formatter.onDoubleArray());
+    private static final Formatter<?> OBJECT_TO_STRING_FORMATTER = new Adapter<>(nbbrd.io.text.Formatter.onObjectToString());
+    private static final Formatter<String[]> STRING_ARRAY_FORMATTER = new Adapter<>(nbbrd.io.text.Formatter.onStringArray());
 
     //</editor-fold>
 }

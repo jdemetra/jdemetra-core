@@ -24,13 +24,13 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.StreamSupport;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.xml.bind.JAXBContext;
@@ -138,43 +138,22 @@ public final class Parsers {
 
     @NonNull
     public static Parser<Date> onDateFormat(@NonNull DateFormat dateFormat) {
-        Objects.requireNonNull(dateFormat);
-        return new Parser<Date>() {
-            @Override
-            public Date parse(CharSequence input) {
-                String source = input.toString();
-                ParsePosition pos = new ParsePosition(0);
-                Date result = dateFormat.parse(source, pos);
-                return pos.getIndex() == input.length() ? result : null;
-            }
-        };
+        return new Adapter<>(nbbrd.io.text.Parser.onDateFormat(dateFormat));
     }
 
     @NonNull
     public static Parser<Number> onNumberFormat(@NonNull NumberFormat numberFormat) {
-        Objects.requireNonNull(numberFormat);
-        return new Parser<Number>() {
-            @Override
-            public Number parse(CharSequence input) {
-                return NumberFormats.parseAll(numberFormat, NumberFormats.simplify(numberFormat, input));
-            }
-        };
+        return new Adapter<>(nbbrd.io.text.Parser.onNumberFormat(numberFormat));
     }
 
     @NonNull
     public static <T> Parser<T> onNull() {
-        return ofInstance(null);
+        return new Adapter<>(nbbrd.io.text.Parser.onNull());
     }
 
     @NonNull
     public static <T> Parser<T> ofInstance(@Nullable T instance) {
-        return new Parser<T>() {
-            @Override
-            public T parse(CharSequence input) throws NullPointerException {
-                Objects.requireNonNull(input);
-                return instance;
-            }
-        };
+        return new Adapter<>(nbbrd.io.text.Parser.onConstant(instance));
     }
 
     @NonNull
@@ -226,12 +205,7 @@ public final class Parsers {
 
     @NonNull
     public static <T extends Enum<T>> Parser<T> enumParser(@NonNull Class<T> enumClass) {
-        return new FailSafeParser<T>() {
-            @Override
-            protected T doParse(CharSequence input) throws Exception {
-                return Enum.valueOf(enumClass, input.toString());
-            }
-        };
+        return new Adapter<>(nbbrd.io.text.Parser.onEnum(enumClass));
     }
 
     @NonNull
@@ -267,12 +241,8 @@ public final class Parsers {
 
     @NonNull
     public static Parser<List<String>> onSplitter(@NonNull Splitter splitter) {
-        return new FailSafeParser<List<String>>() {
-            @Override
-            protected List<String> doParse(CharSequence input) throws Exception {
-                return splitter.splitToList(input);
-            }
-        };
+        Objects.requireNonNull(splitter);
+        return new Adapter<>(nbbrd.io.text.Parser.onStringList(chars -> StreamSupport.stream(splitter.split(chars).spliterator(), false)));
     }
 
     /**
@@ -343,13 +313,28 @@ public final class Parsers {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
+    @lombok.RequiredArgsConstructor
+    private static final class Adapter<T> extends Parser<T> {
+
+        private final nbbrd.io.text.Parser<T> parser;
+
+        @Override
+        public T parse(CharSequence input) {
+            Objects.requireNonNull(input);
+            return parser.parse(input);
+        }
+
+        @Override
+        public java.util.Optional<T> parseValue(CharSequence input) {
+            Objects.requireNonNull(input);
+            return parser.parseValue(input);
+        }
+    }
+
+    @lombok.RequiredArgsConstructor
     private static final class Wrapper<T> extends Parser<T> {
 
         private final IParser<T> parser;
-
-        private Wrapper(IParser<T> parser) {
-            this.parser = parser;
-        }
 
         @Override
         public T parse(CharSequence input) {
@@ -372,168 +357,16 @@ public final class Parsers {
         }
     }
 
-    private static Boolean parseBoolean(CharSequence input) {
-        switch (input.toString()) {
-            case "true":
-            case "TRUE":
-            case "1":
-                return Boolean.TRUE;
-            case "false":
-            case "FALSE":
-            case "0":
-                return Boolean.FALSE;
-            default:
-                return null;
-        }
-    }
-
-    private static Character parseCharacter(CharSequence input) {
-        return input.length() == 1 ? input.charAt(0) : null;
-    }
-
-    private static double[] parseDoubleArray(CharSequence input) {
-        String tmp = input.toString();
-        int beginIndex = tmp.indexOf('[');
-        int endIndex = tmp.lastIndexOf(']');
-        if (beginIndex == -1 || endIndex == -1) {
-            return null;
-        }
-        String[] values = tmp.substring(beginIndex + 1, endIndex).split("\\s*,\\s*");
-        double[] result = new double[values.length];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = Double.parseDouble(values[i].trim());
-        }
-        return result;
-    }
-
-    private static String[] parseStringArray(CharSequence input) {
-        String tmp = input.toString();
-        int beginIndex = tmp.indexOf('[');
-        int endIndex = tmp.lastIndexOf(']');
-        if (beginIndex == -1 || endIndex == -1) {
-            return null;
-        }
-        String[] values = tmp.substring(beginIndex + 1, endIndex).split("\\s*,\\s*");
-        String[] result = new String[values.length];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = values[i].trim();
-        }
-        return result;
-    }
-
-    /**
-     * <p>
-     * Converts a String to a Locale.</p>
-     *
-     * <p>
-     * This method takes the string format of a locale and creates the locale
-     * object from it.</p>
-     *
-     * <pre>
-     *   LocaleUtils.toLocale("en")         = new Locale("en", "")
-     *   LocaleUtils.toLocale("en_GB")      = new Locale("en", "GB")
-     *   LocaleUtils.toLocale("en_GB_xxx")  = new Locale("en", "GB", "xxx")   (#)
-     * </pre>
-     *
-     * <p>
-     * (#) The behaviour of the JDK variant constructor changed between JDK1.3
-     * and JDK1.4. In JDK1.3, the constructor upper cases the variant, in
-     * JDK1.4, it doesn't. Thus, the result from getVariant() may vary depending
-     * on your JDK.</p>
-     *
-     * <p>
-     * This method validates the input strictly. The language code must be
-     * lowercase. The country code must be uppercase. The separator must be an
-     * underscore. The length must be correct. </p>
-     *
-     * @param input the locale String to convert, null returns null
-     * @return a Locale, null if invalid locale format
-     * @throws IllegalArgumentException if the string is an invalid format
-     * @see
-     * http://www.java2s.com/Code/Java/Data-Type/ConvertsaStringtoaLocale.htm
-     */
-    private static Locale parseLocale(CharSequence input) {
-        Objects.requireNonNull(input);
-        String str = input.toString();
-        int len = str.length();
-        if (len != 2 && len != 5 && len < 7) {
-            return null;
-        }
-        char ch0 = str.charAt(0);
-        char ch1 = str.charAt(1);
-        if (ch0 < 'a' || ch0 > 'z' || ch1 < 'a' || ch1 > 'z') {
-            return null;
-        }
-        if (len == 2) {
-            return new Locale(str, "");
-        } else {
-            if (str.charAt(2) != '_') {
-                return null;
-            }
-            char ch3 = str.charAt(3);
-            if (ch3 == '_') {
-                return new Locale(str.substring(0, 2), "", str.substring(4));
-            }
-            char ch4 = str.charAt(4);
-            if (ch3 < 'A' || ch3 > 'Z' || ch4 < 'A' || ch4 > 'Z') {
-                return null;
-            }
-            if (len == 5) {
-                return new Locale(str.substring(0, 2), str.substring(3, 5));
-            } else {
-                if (str.charAt(5) != '_') {
-                    return null;
-                }
-                return new Locale(str.substring(0, 2), str.substring(3, 5), str.substring(6));
-            }
-        }
-    }
-
-    private static final Parser<File> FILE_PARSER = new Wrapper<>(o -> new File(o.toString()));
-    private static final Parser<Integer> INT_PARSER = new FailSafeParser<Integer>() {
-        @Override
-        protected Integer doParse(CharSequence input) throws Exception {
-            return Integer.valueOf(input.toString());
-        }
-    };
-    private static final Parser<Long> LONG_PARSER = new FailSafeParser<Long>() {
-        @Override
-        protected Long doParse(CharSequence input) throws Exception {
-            return Long.valueOf(input.toString());
-        }
-    };
-    private static final Parser<Double> DOUBLE_PARSER = new FailSafeParser<Double>() {
-        @Override
-        protected Double doParse(CharSequence input) throws Exception {
-            return Double.valueOf(input.toString());
-        }
-    };
-    private static final Parser<Boolean> BOOL_PARSER = new Wrapper<>(Parsers::parseBoolean);
-    private static final Parser<Character> CHAR_PARSER = new Wrapper<>(Parsers::parseCharacter);
-    private static final Parser<Charset> CHARSET_PARSER = new FailSafeParser<Charset>() {
-        @Override
-        protected Charset doParse(CharSequence input) throws Exception {
-            return Charset.forName(input.toString());
-        }
-    };
-    private static final Parser<String> STRING_PARSER = new Wrapper<>(Object::toString);
-    private static final Parser<double[]> DOUBLE_ARRAY_PARSER = new FailSafeParser<double[]>() {
-        @Override
-        protected double[] doParse(CharSequence input) throws Exception {
-            return parseDoubleArray(input);
-        }
-    };
-    private static final Parser<String[]> STRING_ARRAY_PARSER = new FailSafeParser<String[]>() {
-        @Override
-        protected String[] doParse(CharSequence input) throws Exception {
-            return parseStringArray(input);
-        }
-    };
-    private static final Parsers.Parser<Locale> LOCALE_PARSER = new FailSafeParser<Locale>() {
-        @Override
-        protected Locale doParse(CharSequence input) throws Exception {
-            return parseLocale(input);
-        }
-    };
+    private static final Parser<File> FILE_PARSER = new Adapter<>(nbbrd.io.text.Parser.onFile());
+    private static final Parser<Integer> INT_PARSER = new Adapter<>(nbbrd.io.text.Parser.onInteger());
+    private static final Parser<Long> LONG_PARSER = new Adapter<>(nbbrd.io.text.Parser.onLong());
+    private static final Parser<Double> DOUBLE_PARSER = new Adapter<>(nbbrd.io.text.Parser.onDouble());
+    private static final Parser<Boolean> BOOL_PARSER = new Adapter<>(nbbrd.io.text.Parser.onBoolean());
+    private static final Parser<Character> CHAR_PARSER = new Adapter<>(nbbrd.io.text.Parser.onCharacter());
+    private static final Parser<Charset> CHARSET_PARSER = new Adapter<>(nbbrd.io.text.Parser.onCharset());
+    private static final Parser<String> STRING_PARSER = new Adapter<>(nbbrd.io.text.Parser.onString());
+    private static final Parser<double[]> DOUBLE_ARRAY_PARSER = new Adapter<>(nbbrd.io.text.Parser.onDoubleArray());
+    private static final Parser<String[]> STRING_ARRAY_PARSER = new Adapter<>(nbbrd.io.text.Parser.onStringArray());
+    private static final Parser<Locale> LOCALE_PARSER = new Adapter<>(nbbrd.io.text.Parser.onLocale());
     //</editor-fold>
 }
