@@ -17,11 +17,11 @@
 package internal.tsprovider;
 
 import demetra.tsprovider.TsMeta;
-import demetra.util.Formatter;
-import demetra.util.Parser;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import nbbrd.io.text.Formatter;
+import nbbrd.io.text.Parser;
 
 /**
  *

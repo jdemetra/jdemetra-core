@@ -39,14 +39,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import demetra.util.Parser;
-import demetra.util.Formatter;
 import demetra.util.List2;
 import internal.util.Strings;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.stream.StreamSupport;
+import nbbrd.io.text.Formatter;
+import nbbrd.io.text.Parser;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**

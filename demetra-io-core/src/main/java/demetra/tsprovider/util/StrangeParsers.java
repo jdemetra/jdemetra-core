@@ -20,8 +20,8 @@ import demetra.timeseries.TsException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import demetra.util.Parser;
 import java.time.LocalDate;
+import nbbrd.io.text.Parser;
 
 @lombok.experimental.UtilityClass
 public class StrangeParsers {

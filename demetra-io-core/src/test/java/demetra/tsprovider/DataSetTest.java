@@ -17,7 +17,7 @@
 package demetra.tsprovider;
 
 import com.google.common.collect.ImmutableSortedMap;
-import demetra.util.Formatter;
+import nbbrd.io.text.Formatter;
 import org.junit.Assert;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;

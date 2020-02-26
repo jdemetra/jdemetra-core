@@ -17,8 +17,6 @@
 package demetra.tsprovider;
 
 import demetra.tsprovider.util.ObsFormat;
-import demetra.util.Formatter;
-import demetra.util.Parser;
 import internal.tsprovider.DefaultTsMeta;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,6 +24,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import nbbrd.io.text.Formatter;
+import nbbrd.io.text.Parser;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
