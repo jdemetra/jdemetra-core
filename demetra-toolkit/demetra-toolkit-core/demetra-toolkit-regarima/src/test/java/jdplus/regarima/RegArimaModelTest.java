@@ -8,7 +8,7 @@ package jdplus.regarima;
 import demetra.data.Data;
 import jdplus.data.DataBlock;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import org.junit.Ignore;
 import org.junit.Test;
 import demetra.data.DoubleSeq;
@@ -24,7 +24,7 @@ public class RegArimaModelTest {
 
     @Test
     public void testMissing() {
-        SarimaSpecification spec=SarimaSpecification.airline(12);
+        SarimaOrders spec=SarimaOrders.airline(12);
         DoubleSeq y = DataBlock.of(Data.PROD);
         int[] missingPos = new int[30];
         for (int i = 0; i < missingPos.length - 15; ++i) {
@@ -47,7 +47,7 @@ public class RegArimaModelTest {
 
     @Test
     public void testEstimation() {
-        SarimaSpecification spec=SarimaSpecification.airline(12);
+        SarimaOrders spec=SarimaOrders.airline(12);
         DoubleSeq y = DataBlock.of(Data.PROD);
         int[] missingPos = new int[15];
         for (int i = 0; i < missingPos.length; ++i) {
@@ -99,7 +99,7 @@ public class RegArimaModelTest {
     }
 
     public static void stressTestEstimation() {
-        SarimaSpecification spec=SarimaSpecification.airline(12);
+        SarimaOrders spec=SarimaOrders.airline(12);
         DoubleSeq y = DataBlock.of(Data.PROD);
         int[] missingPos = new int[15];
         for (int i = 0; i < missingPos.length; ++i) {

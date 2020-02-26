@@ -24,5 +24,5 @@ package jdplus.regsarima.regular;
 
 public interface ILogLevelModule {
     
-    ProcessingResult process(RegArimaModelling context);
+    ProcessingResult process(RegSarimaModelling context);
 }

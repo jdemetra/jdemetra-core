@@ -19,8 +19,8 @@ package jdplus.tramo;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
-import demetra.arima.SarimaSpecification;
+import jdplus.regsarima.regular.RegSarimaModelling;
+import demetra.arima.SarimaOrders;
 
 
 /**
@@ -32,13 +32,13 @@ class SeasonalUnderDifferencingTest2 extends ModelController {
     private static final double DEF_SBOUND = .91;
 
     @Override
-    ProcessingResult process(RegArimaModelling modelling, TramoProcessor.Context context) {
+    ProcessingResult process(RegSarimaModelling modelling, TramoProcessor.Context context) {
         ModelDescription desc = modelling.getDescription();
         int period=desc.getAnnualFrequency();
         if (period == 1) {
             return ProcessingResult.Unprocessed;
         }
-        SarimaSpecification spec = desc.specification();
+        SarimaOrders spec = desc.specification();
         if (spec.getBd() == 1 || spec.getBq() == 1 || context.originalSeasonalityTest == 0) {
             return ProcessingResult.Unchanged;
         }
@@ -57,7 +57,7 @@ class SeasonalUnderDifferencingTest2 extends ModelController {
 //        if (!isUnderDiff(context)) {
 //            return ProcessingResult.Unchanged;
 //        }
-        RegArimaModelling scontext=buildNewModel(modelling);
+        RegSarimaModelling scontext=buildNewModel(modelling);
         ModelEstimation smodel = scontext.build();
         ModelComparator cmp = ModelComparator.builder().build();
         if (cmp.compare(smodel, modelling.build()) < 0) {
@@ -76,15 +76,15 @@ class SeasonalUnderDifferencingTest2 extends ModelController {
 //        return tests.getScore() >= 1;
 //    }
 //
-    private RegArimaModelling buildNewModel(RegArimaModelling context) {
+    private RegSarimaModelling buildNewModel(RegSarimaModelling context) {
         ModelDescription ndesc = ModelDescription.copyOf(context.getDescription());
-        SarimaSpecification spec = ndesc.specification();
+        SarimaOrders spec = ndesc.specification();
         spec.setBp(0);
         spec.setBd(1);
         spec.setBq(1);
         ndesc.setSpecification(spec);
         ndesc.setMean(false);
-        RegArimaModelling ncontext = RegArimaModelling.of(ndesc);
+        RegSarimaModelling ncontext = RegSarimaModelling.of(ndesc);
         // estimate the new model
         if (!estimate(ncontext, false)) {
             return null;

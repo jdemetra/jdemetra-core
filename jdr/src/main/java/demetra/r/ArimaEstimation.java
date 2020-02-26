@@ -22,7 +22,7 @@ import demetra.information.InformationMapping;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.regsarima.RegSarimaProcessor;
 import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.util.IntList;
@@ -58,7 +58,7 @@ public class ArimaEstimation {
     }
 
     public Results process() {
-        SarimaSpecification spec = new SarimaSpecification(period);
+        SarimaOrders spec = new SarimaOrders(period);
         if (order != null) {
             spec.setP(order[0]);
             spec.setD(order[1]);

@@ -17,6 +17,7 @@
         <module>demetra-tramoseats-api</module>
         <module>demetra-tramo-core</module>
         <module>demetra-tramoseats-core</module>
+        <module>demetra-tramoseats-legacy</module>
     </modules>
   
     <properties>
@@ -71,7 +72,7 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-toolkit-sa</artifactId>
+                <artifactId>demetra-sa-core</artifactId>
                 <version>${jd3-toolkit.version}</version>            
             </dependency>
             <dependency>

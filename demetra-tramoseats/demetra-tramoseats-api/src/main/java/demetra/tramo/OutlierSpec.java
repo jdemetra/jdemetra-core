@@ -33,7 +33,7 @@ public final class OutlierSpec implements Validatable<OutlierSpec> {
     public static final double DEF_DELTATC = .7;
     public static final boolean DEF_EML = false;
 
-    private static final OutlierSpec DEFAULT = OutlierSpec.builder().build();
+    public static final OutlierSpec DEFAULT = OutlierSpec.builder().build();
 
     private boolean ao, ls, tc, so;
     private double deltaTC;

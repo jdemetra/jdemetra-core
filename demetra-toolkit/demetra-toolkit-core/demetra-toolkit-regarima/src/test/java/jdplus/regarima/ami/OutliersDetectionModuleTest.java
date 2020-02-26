@@ -20,7 +20,7 @@ import demetra.data.Data;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.outlier.ExactSingleOutlierDetector;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.regsarima.GlsSarimaProcessor;
 import demetra.timeseries.TsPeriod;
 import org.junit.Test;
@@ -48,7 +48,7 @@ public class OutliersDetectionModuleTest {
                 .setAll()
                 .build();
         od.setCriticalValue(3.0);
-        SarimaSpecification spec=SarimaSpecification.airline(12);
+        SarimaOrders spec=SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
         System.out.println("Full");
 //        Consumer<int[]> hook = a -> System.out.println("Add outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
@@ -75,7 +75,7 @@ public class OutliersDetectionModuleTest {
                 .setAll()
                 .build();
         od.setCriticalValue(3.0);
-        SarimaSpecification spec=SarimaSpecification.airline(12);
+        SarimaOrders spec=SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
         System.out.println("Fast");
 //        Consumer<int[]> hook = a -> System.out.println("Add outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());

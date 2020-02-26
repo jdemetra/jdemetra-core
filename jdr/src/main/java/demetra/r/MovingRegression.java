@@ -14,7 +14,7 @@ import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.regsarima.RegSarimaProcessor;
 import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.timeseries.TsDomain;
@@ -102,7 +102,7 @@ public class MovingRegression {
 
     public Results regarima(TsData s, String td, int nyears) {
         int period = s.getTsUnit().ratioOf(TsUnit.YEAR);
-        SarimaSpecification spec = SarimaSpecification.airline(period);
+        SarimaOrders spec = SarimaOrders.airline(period);
 
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()

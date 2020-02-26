@@ -19,6 +19,7 @@
 package jdplus.seats;
 
 import demetra.design.Development;
+import demetra.information.InformationSet;
 import jdplus.sarima.SarimaModel;
 
 
@@ -28,16 +29,17 @@ import jdplus.sarima.SarimaModel;
 @Development(status = Development.Status.Alpha)
 public interface IModelValidator {
     /**
-     *
+     * Gets the new (valid) model. Should only be called after that the "validate"
+     * method returned false
      * @return
      */
     SarimaModel getNewModel();
 
     /**
      *
-     * @param model
-     * @param info
-     * @return
+     * @param model Current model
+     * @return True if the model is valid, false otherwise
+     * A new model can be retrieved if the current one is invalid 
      */
-    ModelStatus validate(SarimaModel model);
+    boolean validate(SarimaModel model);
 }

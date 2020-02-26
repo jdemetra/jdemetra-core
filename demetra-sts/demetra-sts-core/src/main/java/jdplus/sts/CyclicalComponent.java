@@ -132,9 +132,9 @@ public class CyclicalComponent {
         @Override
         public void T(int pos, Matrix tr) {
             tr.set(0, 0, ccos);
-            tr.set(1, 1, ccos);
             tr.set(0, 1, csin);
             tr.set(1, 0, -csin);
+            tr.set(1, 1, ccos);
         }
 
         @Override

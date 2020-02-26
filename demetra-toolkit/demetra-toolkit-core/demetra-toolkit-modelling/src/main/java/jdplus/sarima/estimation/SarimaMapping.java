@@ -23,7 +23,7 @@ import jdplus.math.functions.FunctionException;
 import jdplus.math.functions.ParamValidation;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import demetra.math.Complex;
 
@@ -40,7 +40,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
     /**
      *
      */
-    private final SarimaSpecification spec;
+    private final SarimaOrders spec;
     private final double eps;
     private final boolean all;
 
@@ -81,7 +81,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
         return jdplus.math.linearfilters.FilterUtility.checkStability(c.extract(0, nc));
     }
 
-    private static boolean stabilize(boolean all, SarimaSpecification spec, DataBlock p) {
+    private static boolean stabilize(boolean all, SarimaOrders spec, DataBlock p) {
         boolean rslt = false;
         int start = 0;
         if (spec.getP() > 0) {
@@ -177,7 +177,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
      */
     public static SarimaModel stabilize(SarimaModel m) {
         DataBlock np = DataBlock.of(m.parameters());
-        SarimaSpecification mspec = m.specification();
+        SarimaOrders mspec = m.orders();
         if (stabilize(true, mspec, np)) {
             return SarimaModel.builder(mspec).parameters(np).build();
         } else {
@@ -185,18 +185,18 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
         }
     }
 
-    public static SarimaMapping of(SarimaSpecification spec) {
+    public static SarimaMapping of(SarimaOrders spec) {
         return new SarimaMapping(spec, STEP, true);
     }
 
-    public static SarimaMapping ofStationary(final SarimaSpecification spec) {
-        SarimaSpecification nspec = spec.clone();
+    public static SarimaMapping ofStationary(final SarimaOrders spec) {
+        SarimaOrders nspec = spec.clone();
         nspec.setD(0);
         nspec.setBd(0);
         return new SarimaMapping(nspec, STEP, true);
     }
 
-    public SarimaMapping(SarimaSpecification spec, double eps, boolean all) {
+    public SarimaMapping(SarimaOrders spec, double eps, boolean all) {
         this.spec = spec;
         this.all = all;
         this.eps = eps;
@@ -396,7 +396,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
         return getDescription(spec, idx);
     }
 
-    static String getDescription(final SarimaSpecification xspec, final int idx) {
+    static String getDescription(final SarimaOrders xspec, final int idx) {
         int i = idx;
         if (i < xspec.getP()) {
             return desc(PHI, i);
@@ -431,7 +431,7 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
     /**
      * @return the spec
      */
-    public SarimaSpecification getSpec() {
+    public SarimaOrders getSpec() {
         return spec;
     }
 

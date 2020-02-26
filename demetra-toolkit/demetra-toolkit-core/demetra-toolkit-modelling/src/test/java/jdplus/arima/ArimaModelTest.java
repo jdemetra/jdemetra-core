@@ -5,7 +5,7 @@
  */
 package jdplus.arima;
 
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.sarima.SarimaModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -28,7 +28,7 @@ public class ArimaModelTest {
 
     @Test
     public void testSumDiff() {
-        SarimaSpecification spec=SarimaSpecification.airline(12);
+        SarimaOrders spec=SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec)
                 .theta(1, -.6)
                 .btheta(1, -.8)

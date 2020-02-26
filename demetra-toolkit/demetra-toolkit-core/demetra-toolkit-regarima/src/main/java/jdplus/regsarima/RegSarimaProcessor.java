@@ -16,7 +16,7 @@
  */
 package jdplus.regsarima;
 
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
@@ -46,6 +46,11 @@ import jdplus.sarima.SarimaModel;
  */
 @Development(status = Development.Status.Preliminary)
 public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
+
+    public static final RegSarimaProcessor PROCESSOR = new Builder()
+            .precision(1e-12)
+            .startingPoint(StartingPoint.Multiple)
+            .build();
 
     @BuilderPattern(RegSarimaProcessor.class)
     public static class Builder {
@@ -96,7 +101,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         }
 
         public RegSarimaProcessor build() {
-            return new RegSarimaProcessor(min == null ?  LevenbergMarquardtMinimizer.builder() : min, 
+            return new RegSarimaProcessor(min == null ? LevenbergMarquardtMinimizer.builder() : min,
                     eps, feps, ml, start, cdf, mt, fast);
         }
     }
@@ -113,7 +118,6 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         return new Builder();
     }
 
-    public static final RegSarimaProcessor DEFAULT = builder().build();
 
     public static final double DEF_EPS = 1e-7, DEF_INTERNAL_EPS = 1e-4;
     private final double eps, feps;
@@ -129,7 +133,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         return start;
     }
 
-    public RegSarimaProcessor(SsqFunctionMinimizer.Builder min, final double eps, final double feps, 
+    public RegSarimaProcessor(SsqFunctionMinimizer.Builder min, final double eps, final double feps,
             final boolean ml, final StartingPoint start, final boolean cdf, final boolean mt, final boolean fast) {
         this.min = min;
         this.eps = eps;
@@ -144,9 +148,10 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
     @Override
     public RegArimaEstimation<SarimaModel> process(RegArimaModel<SarimaModel> regs, IArimaMapping<SarimaModel> mapping) {
         SarimaModel current = regs.arima();
-        if (mapping == null)
-            mapping=SarimaMapping.of(current.specification());
-        SarimaSpecification curSpec = current.specification();
+        if (mapping == null) {
+            mapping = SarimaMapping.of(current.orders());
+        }
+        SarimaOrders curSpec = current.orders();
         if (curSpec.getParametersCount() == 0 || (mapping != null && mapping.getDim() == 0)) {
             return RegArimaEstimation.<SarimaModel>builder()
                     .model(regs)
@@ -162,7 +167,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
                         .useDefaultIfFailed(true).build();
                 RegArmaModel<SarimaModel> dregs = regs.differencedModel();
                 SarimaModel starthr = initializer.initialize(dregs);
-                SarimaSpecification spec = starthr.specification();
+                SarimaOrders spec = starthr.orders();
                 mstart = starthr;
                 if (this.start == StartingPoint.Multiple) {
                     RegArimaEstimation<SarimaModel> mhr = estimate(regs, mapping, starthr, feps);
@@ -191,11 +196,11 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
                 }
                 break;
             case Default:
-                mstart = SarimaModel.builder(regs.arima().specification().doStationary())
+                mstart = SarimaModel.builder(regs.arima().orders().doStationary())
                         .setDefault().build();
                 break;
             default:
-                mstart = SarimaModel.builder(regs.arima().specification().doStationary())
+                mstart = SarimaModel.builder(regs.arima().orders().doStationary())
                         .setDefault(0, 0).build();
                 break;
         }
@@ -205,8 +210,9 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
     @Override
     public RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs, IArimaMapping<SarimaModel> mapping) {
         SarimaModel arima = regs.arima();
-        if (mapping == null)
-            mapping=SarimaMapping.of(arima.specification());
+        if (mapping == null) {
+            mapping = SarimaMapping.of(arima.orders());
+        }
         return estimate(regs, mapping, (SarimaModel) arima.stationaryTransformation().getStationaryModel(), eps);
     }
 
@@ -229,7 +235,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
      * @return
      */
     private RegArimaEstimation<SarimaModel> estimate(RegArimaModel<SarimaModel> regs, IArimaMapping<SarimaModel> mapping, SarimaModel start, double precision) {
-        SarimaSpecification curSpec = regs.arima().specification();
+        SarimaOrders curSpec = regs.arima().orders();
         if (curSpec.getParametersCount() == 0 || mapping.getDim() == 0) {
             return RegArimaEstimation.<SarimaModel>builder()
                     .model(regs)
@@ -247,7 +253,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
     private RegArimaEstimation<SarimaModel> tryUrpCancelling(RegArimaEstimation<SarimaModel> estimation, IArimaMapping<SarimaModel> mapping) {
         SarimaModel arima = estimation.getModel().arima();
-        SarimaSpecification spec = arima.specification();
+        SarimaOrders spec = arima.orders();
         if (spec.getP() == 0 || spec.getQ() == 0 || spec.getDifferenceOrder() == 0) {
             return estimation;
         }
@@ -286,7 +292,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
         // try the new model
         try {
-            SarimaModel narima = SarimaModel.builder(SarimaSpecification.stationary(spec))
+            SarimaModel narima = SarimaModel.builder(SarimaOrders.stationary(spec))
                     .parameters(parameters)
                     .build();
             RegArimaEstimation<SarimaModel> nrslts = optimize(estimation.getModel(), mapping, narima, eps, false);
@@ -302,7 +308,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
     private RegArimaEstimation<SarimaModel> tryUrmCancelling(RegArimaEstimation<SarimaModel> estimation, IArimaMapping<SarimaModel> mapping) {
         SarimaModel arima = estimation.getModel().arima();
-        SarimaSpecification spec = arima.specification();
+        SarimaOrders spec = arima.orders();
         if (spec.getP() == 0 || spec.getQ() == 0 || spec.getBd() == 0) {
             return estimation;
         }
@@ -345,7 +351,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
         // try the new model
         try {
-            SarimaModel narima = SarimaModel.builder(SarimaSpecification.stationary(spec))
+            SarimaModel narima = SarimaModel.builder(SarimaOrders.stationary(spec))
                     .parameters(parameters)
                     .build();
             RegArimaEstimation<SarimaModel> nrslts = optimize(estimation.getModel(), mapping, narima, eps, false);
@@ -364,7 +370,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
      *
      * @param regs
      * @param mapping Mapping to the non-stationary SarimaModel model
-     * @param ststart The starting model must be stationary ! 
+     * @param ststart The starting model must be stationary !
      * @param prec
      * @return
      */
@@ -379,10 +385,10 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         if (cdf) {
             ndf -= stationaryMapping.getDim();
         }
-        
+
         RegArmaEstimation<SarimaModel> rslt = processor.compute(dmodel, p, stationaryMapping, min.functionPrecision(precision).build(), ndf);
 
-        SarimaModel arima = SarimaModel.builder(regs.arima().specification())
+        SarimaModel arima = SarimaModel.builder(regs.arima().orders())
                 .parameters(DoubleSeq.of(rslt.getParameters()))
                 .build();
         RegArimaModel<SarimaModel> nmodel = RegArimaModel.of(regs, arima);

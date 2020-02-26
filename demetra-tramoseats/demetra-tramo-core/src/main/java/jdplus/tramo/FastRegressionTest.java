@@ -13,7 +13,7 @@ import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.IRegressionTest;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.regular.TRegressionTest;
 import jdplus.sarima.SarimaModel;
 import java.util.Optional;
@@ -69,7 +69,7 @@ public class FastRegressionTest implements IRegressionModule {
     }
 
     @Override
-    public ProcessingResult test(final RegArimaModelling context) {
+    public ProcessingResult test(final RegSarimaModelling context) {
         // estimate the model.
         ModelDescription currentModel = context.getDescription();
         // make a copy.

@@ -19,7 +19,7 @@ package jdplus.tramo.internal;
 import demetra.data.Data;
 import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.tramo.internal.ArmaModule;
 import jdplus.tramo.internal.ArmaModelSelector;
 import org.junit.Test;
@@ -38,10 +38,10 @@ public class ArmaModuleTest {
     @Test
     public void testProd() {
         ArmaModule test = ArmaModule.builder().build();
-        SarimaSpecification spec = SarimaSpecification.airline(12);
+        SarimaOrders spec = SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
-        SarimaSpecification nspec = test.process(regarima, true);
+        SarimaOrders nspec = test.process(regarima, true);
         System.out.println("Prod");
         System.out.println(nspec);
     }
@@ -49,10 +49,10 @@ public class ArmaModuleTest {
     @Test
     public void testX() {
         ArmaModule test = ArmaModule.builder().build();
-        SarimaSpecification spec = SarimaSpecification.airline(12);
+        SarimaOrders spec = SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.EXPORTS)).arima(sarima).build();
-        SarimaSpecification nspec = test.process(regarima, true);
+        SarimaOrders nspec = test.process(regarima, true);
         System.out.println("X");
         System.out.println(nspec);
     }

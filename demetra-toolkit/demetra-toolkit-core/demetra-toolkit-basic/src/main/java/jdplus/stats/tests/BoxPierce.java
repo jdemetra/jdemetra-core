@@ -40,8 +40,17 @@ public class BoxPierce {
     private final int n;
 
     public BoxPierce(DoubleSeq sample) {
-        this.autoCorrelations = AutoCovariances.autoCorrelationFunction(sample, 0);
-        this.n = sample.length();
+        this(sample, false);
+    }
+
+    public BoxPierce(DoubleSeq sample, boolean correctForMean) {
+        if (correctForMean) {
+            this.autoCorrelations = AutoCovariances.autoCorrelationFunction(sample, sample.average());
+            this.n = sample.length() - 1;
+        } else {
+            this.autoCorrelations = AutoCovariances.autoCorrelationFunction(sample, 0);
+            this.n = sample.length();
+        }
     }
 
     public BoxPierce(IntToDoubleFunction autoCorrelations, int sampleSize) {

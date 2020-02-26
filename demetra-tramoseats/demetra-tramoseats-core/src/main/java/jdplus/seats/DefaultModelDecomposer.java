@@ -16,10 +16,12 @@
  */
 package jdplus.seats;
 
-import jdplus.arima.IArimaModel;
+import demetra.arima.SarimaOrders;
 import demetra.design.Development;
+import demetra.seats.DecompositionSpec;
+import demetra.seats.DecompositionSpec.ModelApproximationMode;
 import demetra.seats.SeatsSpec;
-import demetra.seats.SeatsSpec.ApproximationMode;
+import jdplus.sarima.SarimaModel;
 import jdplus.ucarima.ModelDecomposer;
 import jdplus.ucarima.SeasonalSelector;
 import jdplus.ucarima.TrendCycleSelector;
@@ -29,26 +31,10 @@ import jdplus.ucarima.UcarimaModel;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
+@lombok.Data
 public class DefaultModelDecomposer implements IModelDecomposer {
 
-    public static DefaultModelDecomposer of(SeatsSpec spec) {
-        DefaultModelDecomposer decomposer = new DefaultModelDecomposer();
-        decomposer.epsphi = spec.getSeasTolerance();
-        decomposer.smod = spec.getSeasBoundary();
-        decomposer.noisyModel=spec.getApproximationMode() == ApproximationMode.Noisy;
-        return decomposer;
-    }
-
-    private double epsphi = SeatsSpec.DEF_EPSPHI;
-    private double rmod = SeatsSpec.DEF_RMOD;
-    private double smod = SeatsSpec.DEF_SMOD;
-    private boolean noisyModel;
-
-    /**
-     *
-     */
-    private DefaultModelDecomposer() {
-    }
+    private final DecompositionSpec spec;
 
     /**
      *
@@ -57,43 +43,27 @@ public class DefaultModelDecomposer implements IModelDecomposer {
      * @return
      */
     @Override
-    public UcarimaModel decompose(IArimaModel arima, int period) {
+    public UcarimaModel decompose(SarimaModel arima, int period) {
         try {
-            TrendCycleSelector tsel = new TrendCycleSelector(rmod);
+            SarimaOrders orders = arima.orders();
+            TrendCycleSelector tsel = new TrendCycleSelector(spec.getTrendBoundary());
             tsel.setDefaultLowFreqThreshold(period);
-            SeasonalSelector ssel = new SeasonalSelector(period, epsphi);
-            ssel.setK(smod);
-
+            SeasonalSelector ssel = new SeasonalSelector(period, spec.getSeasTolerance());
+            if (orders.getBd()>0 || orders.getBd()>0) {
+                ssel.setK(spec.getSeasBoundary());
+            } else {
+                ssel.setK(spec.getSeasBoundaryAtPi());
+            }
+            
             ModelDecomposer decomposer = new ModelDecomposer();
             decomposer.add(tsel);
             decomposer.add(ssel);
 
             UcarimaModel ucm = decomposer.decompose(arima);
-            return ucm.setVarianceMax(-1, noisyModel);
+            return ucm.setVarianceMax(-1, spec.getApproximationMode()==ModelApproximationMode.Noisy);
         } catch (Exception err) {
             return null;
         }
-    }
-
-    /**
-     * @return the epsphi
-     */
-    public double getEpsphi() {
-        return epsphi;
-    }
-
-    /**
-     * @return the rmod
-     */
-    public double getRmod() {
-        return rmod;
-    }
-
-    /**
-     * @return the smod
-     */
-    public double getSmod() {
-        return smod;
     }
 
 }

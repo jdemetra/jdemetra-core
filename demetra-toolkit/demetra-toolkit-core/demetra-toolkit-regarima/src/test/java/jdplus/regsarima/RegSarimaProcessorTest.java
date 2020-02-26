@@ -5,7 +5,7 @@
  */
 package jdplus.regsarima;
 
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.data.Data;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
@@ -32,7 +32,7 @@ public class RegSarimaProcessorTest {
     
     @Test
     public void testFunction(){
-        SarimaSpecification spec=SarimaSpecification.airline(12);
+        SarimaOrders spec=SarimaOrders.airline(12);
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();
@@ -53,7 +53,7 @@ public class RegSarimaProcessorTest {
     }
     
     public static RegArimaModel<SarimaModel> prodAirline(){
-        SarimaSpecification spec=SarimaSpecification.airline(12);
+        SarimaOrders spec=SarimaOrders.airline(12);
         SarimaModel arima = SarimaModel.builder(spec)
                 .setDefault()
                 .build();

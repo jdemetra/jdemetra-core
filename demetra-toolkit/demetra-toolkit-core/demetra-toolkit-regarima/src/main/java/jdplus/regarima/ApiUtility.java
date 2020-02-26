@@ -22,12 +22,14 @@ import demetra.data.ParameterEstimation;
 import demetra.data.ParametersEstimation;
 import demetra.design.Development;
 import demetra.math.matrices.MatrixType;
+import demetra.timeseries.regression.modelling.LinearModelEstimation;
 import java.util.List;
 import java.util.function.Function;
 import jdplus.arima.IArimaModel;
 import jdplus.dstats.T;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
+import jdplus.regsarima.regular.ModelEstimation;
 
 /**
  *
@@ -65,9 +67,9 @@ public class ApiUtility {
         ParametersEstimation p = null;
         if (nhp > 0) {
             // TODO: adjust the computation of the covariance of the parameters
-            p=new ParametersEstimation(max.getParameters(), max.asymptoticCovariance());
+            p = new ParametersEstimation(max.getParameters(), max.asymptoticCovariance());
         }
-        
+
         ParameterEstimation mean = null;
         T t = new T(ll.degreesOfFreedom() - nhp);
         int x0 = 0, x1 = ll.nx();
@@ -110,4 +112,40 @@ public class ApiUtility {
 
     }
 
+    public LinearModelEstimation<demetra.arima.SarimaModel> toApi(ModelEstimation estimation) {
+        return LinearModelEstimation.<demetra.arima.SarimaModel>builder()
+                .originalSeries(estimation.getOriginalSeries())
+                .estimationDomain(estimation.getEstimationDomain())
+                .logTransformation(estimation.isLogTransformation())
+                .lpTransformation(estimation.getLpTransformation())
+                .preadjustmentVariables(estimation.getPreadjustmentVariables())
+                .meanCorrection(estimation.getModel().isMean())
+                .variables(estimation.getVariables())
+                .stochasticComponent(jdplus.modelling.ApiUtility.toApi(estimation.getModel().arima(), null))
+                .coefficients(estimation.getConcentratedLikelihood().coefficients().toArray())
+                .coefficientsCovariance(estimation.getConcentratedLikelihood().covariance(estimation.getFreeParametersCount(), true))
+                .parameters(estimation.getParameters())
+                .score(estimation.getScore())
+                .parametersCovariance(estimation.getParametersCovariance().unmodifiable())
+                .missing(missing(estimation))
+                .statistics(estimation.getStatistics())
+                .freeParametersCount(estimation.getFreeParametersCount())
+                .build();
+    }
+
+    private MissingValueEstimation[] missing(ModelEstimation estimation) {
+        MissingValueEstimation[] missing = null;
+        int nmissing = estimation.getConcentratedLikelihood().nmissing();
+        if (nmissing > 0) {
+            int[] missingPos = estimation.getMissing();
+            double[] missingVal = estimation.getConcentratedLikelihood().missingCorrections().toArray();
+            double[] missingErr = estimation.getConcentratedLikelihood().missingCorrections().toArray();
+            missing = new MissingValueEstimation[nmissing];
+            DoubleSeq y = estimation.getModel().getY();
+            for (int i = 0; i < nmissing; ++i) {
+                missing[i] = new MissingValueEstimation(missingPos[i], y.get(missingPos[i]) - missingVal[i], missingErr[i]);
+            }
+        }
+        return missing;
+    }
 }

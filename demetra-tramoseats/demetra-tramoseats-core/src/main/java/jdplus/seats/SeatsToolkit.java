@@ -17,13 +17,79 @@
 package jdplus.seats;
 
 import demetra.design.Development;
-
+import demetra.seats.DecompositionSpec;
+import demetra.seats.SeatsSpec;
+import jdplus.regsarima.GlsSarimaProcessor;
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public class SeatsToolkit{
+@lombok.Value
+@lombok.Builder(builderClassName = "Builder")
+public class SeatsToolkit {
+
+    public static SeatsToolkit of(DecompositionSpec spec) {
+        DefaultModelValidator validator = DefaultModelValidator.builder()
+                .xl(spec.getXlBoundary())
+                .build();
+
+        DefaultModelEstimator estimator = new DefaultModelEstimator(validator, GlsSarimaProcessor.PROCESSOR);
+
+        DefaultModelDecomposer decomposer = new DefaultModelDecomposer(spec);
+
+        IModelApproximator approximator;
+        switch (spec.getApproximationMode()) {
+            case None:
+                approximator = null;
+                break;
+            default:
+                approximator = new DefaultModelApproximator(estimator);
+        }
+
+        int nf = spec.getForecastCount(), nb = spec.getBackCastCount();
+
+        IComponentsEstimator cmpEstimator;
+        switch (spec.getMethod()) {
+            case KalmanSmoother:
+                cmpEstimator = new KalmanEstimator(nb, nf);
+                break;
+            case McElroyMatrix:
+                cmpEstimator = new MatrixEstimator(nb, nf);
+                break;
+            default:
+                cmpEstimator = new WienerKolmogorovEstimator(nb, nf);
+                break;
+        }
+
+        IBiasCorrector bias;
+        switch (spec.getBiasCorrection()) {
+            case Legacy:
+                bias = new DefaultBiasCorrector(true);
+                break;
+            default:
+                bias = new DefaultBiasCorrector(false);
+        }
+
+        return builder()
+                .modelValidator(validator)
+                .modelApproximator(approximator)
+                .modelDecomposer(decomposer)
+                .componentsEstimator(cmpEstimator)
+                .biasCorrector(bias)
+                .build();
+
+    }
+
+    private IModelValidator modelValidator;
+
+    private IModelApproximator modelApproximator;
+
+    private IModelDecomposer modelDecomposer;
+
+    private IComponentsEstimator componentsEstimator;
+
+    private IBiasCorrector biasCorrector;
 
 //    /**
 //     *
@@ -148,5 +214,4 @@ public class SeatsToolkit{
 //    public IModelBuilder getModelBuilder() {
 //        return modelBuilder;
 //    }
-
 }

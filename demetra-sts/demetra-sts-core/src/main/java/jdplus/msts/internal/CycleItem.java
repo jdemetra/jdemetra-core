@@ -30,7 +30,7 @@ public class CycleItem extends StateItem {
         super(name);
         factor = BoundedParameterInterpreter.builder()
                 .name(name + ".factor")
-                .value(cvar, fixedcycle)
+                .value(dumpingFactor, fixedcycle)
                 .bounds(0, 1, true)
                 .build();
         period = BoundedParameterInterpreter.builder()

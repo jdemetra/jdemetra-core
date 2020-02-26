@@ -5,7 +5,7 @@
  */
 package jdplus.businesscycle;
 
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import jdplus.data.DataBlockStorage;
@@ -52,7 +52,7 @@ public class ModifiedHodrickPrescottFilterTest {
     }
     
     public static UcarimaModel ucmAirline(int period, double th, double bth) {
-        SarimaSpecification spec=SarimaSpecification.airline(period);
+        SarimaOrders spec=SarimaOrders.airline(period);
         SarimaModel sarima = SarimaModel.builder(spec)
                 .theta(1, th)
                 .btheta(1, bth)

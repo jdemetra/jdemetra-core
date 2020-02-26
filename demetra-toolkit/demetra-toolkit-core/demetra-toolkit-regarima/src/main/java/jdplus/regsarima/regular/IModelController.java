@@ -23,7 +23,7 @@ package jdplus.regsarima.regular;
  */
 public interface IModelController {
     
-    boolean control(RegArimaModelling context);
+    boolean control(RegSarimaModelling context);
     
     ModelEstimation getReferenceModel();
     void setReferenceModel(ModelEstimation model);

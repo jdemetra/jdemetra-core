@@ -18,8 +18,8 @@
 
 package jdplus.seats;
 
-import jdplus.arima.IArimaModel;
 import demetra.design.Development;
+import jdplus.sarima.SarimaModel;
 import jdplus.ucarima.UcarimaModel;
 
 
@@ -29,5 +29,5 @@ import jdplus.ucarima.UcarimaModel;
 @Development(status = Development.Status.Alpha)
 public interface IModelDecomposer {
     
-    UcarimaModel decompose(IArimaModel model, int period);
+    UcarimaModel decompose(SarimaModel model, int period);
 }

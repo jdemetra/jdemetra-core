@@ -16,8 +16,8 @@
  */
 package jdplus.sarima;
 
-import demetra.arima.SarmaSpecification;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarmaOrders;
+import demetra.arima.SarimaOrders;
 import jdplus.arima.AbstractArimaModel;
 import jdplus.arima.StationaryTransformation;
 import jdplus.data.DataBlock;
@@ -31,6 +31,7 @@ import demetra.data.DoubleSeqCursor;
 import demetra.design.BuilderPattern;
 import demetra.design.SkipProcessing;
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 import java.util.Arrays;
 
 /**
@@ -51,36 +52,34 @@ public final class SarimaModel extends AbstractArimaModel {
     @BuilderPattern(SarimaModel.class)
     public static class Builder {
 
-        private static final double[] E = new double[0];
-
         private final int s;
         private int d, bd;
         private double[] phi, bphi, th, bth;
         private boolean adjust = false;
 
-        private Builder(SarimaSpecification spec) {
+        private Builder(SarimaOrders spec) {
             s = spec.getPeriod();
             d = spec.getD();
             bd = spec.getBd();
-            phi = (spec.getP() > 0) ? new double[spec.getP()] : E;
-            bphi = (spec.getBp() > 0) ? new double[spec.getBp()] : E;
-            th = (spec.getQ() > 0) ? new double[spec.getQ()] : E;
-            bth = (spec.getBq() > 0) ? new double[spec.getBq()] : E;
+            phi = (spec.getP() > 0) ? new double[spec.getP()] : Doubles.EMPTYARRAY;
+            bphi = (spec.getBp() > 0) ? new double[spec.getBp()] : Doubles.EMPTYARRAY;
+            th = (spec.getQ() > 0) ? new double[spec.getQ()] : Doubles.EMPTYARRAY;
+            bth = (spec.getBq() > 0) ? new double[spec.getBq()] : Doubles.EMPTYARRAY;
         }
 
-        private Builder(SarmaSpecification spec) {
+        private Builder(SarmaOrders spec) {
             s = spec.getPeriod();
             d = 0;
             bd = 0;
-            phi = (spec.getP() > 0) ? new double[spec.getP()] : E;
-            bphi = (spec.getBp() > 0) ? new double[spec.getBp()] : E;
-            th = (spec.getQ() > 0) ? new double[spec.getQ()] : E;
-            bth = (spec.getBq() > 0) ? new double[spec.getBq()] : E;
+            phi = (spec.getP() > 0) ? new double[spec.getP()] : Doubles.EMPTYARRAY;
+            bphi = (spec.getBp() > 0) ? new double[spec.getBp()] : Doubles.EMPTYARRAY;
+            th = (spec.getQ() > 0) ? new double[spec.getQ()] : Doubles.EMPTYARRAY;
+            bth = (spec.getBq() > 0) ? new double[spec.getBq()] : Doubles.EMPTYARRAY;
         }
 
         private double[] clone(double[] c) {
             if (c.length == 0) {
-                return E;
+                return Doubles.EMPTYARRAY;
             } else {
                 return c.clone();
             }
@@ -183,7 +182,7 @@ public final class SarimaModel extends AbstractArimaModel {
             this.bd = bd;
             return this;
         }
-
+        
         private void adjust() {
             double[] nphi = adjust(phi);
             if (nphi != null) {
@@ -206,7 +205,7 @@ public final class SarimaModel extends AbstractArimaModel {
         private double[] adjust(double[] p) {
             int l = p.length;
             for (int i = l - 1; i >= 0; --i) {
-                if (Math.abs(p[i]) < EPS) {
+                if (Math.abs(p[i]) < SMALL) {
                     --l;
                 } else {
                     break;
@@ -231,15 +230,15 @@ public final class SarimaModel extends AbstractArimaModel {
         }
     }
 
-    public static Builder builder(SarimaSpecification spec) {
+    public static Builder builder(SarimaOrders spec) {
         return new Builder(spec);
     }
 
-    public static Builder builder(SarmaSpecification spec) {
+    public static Builder builder(SarmaOrders spec) {
         return new Builder(spec);
     }
 
-    private static final double EPS = 1e-6;
+    public static final double SMALL = 1e-6;
 
     private final int s;
     private final int d, bd;
@@ -258,6 +257,11 @@ public final class SarimaModel extends AbstractArimaModel {
         this.bth = builder.bth;
     }
 
+    /**
+     * Gets all the parameters in the following order:
+     * phi, bphi, theta, btheta
+     * @return 
+     */
     public DoubleSeq parameters() {
         double[] p = new double[phi.length + bphi.length + th.length + bth.length];
         int pos = 0;
@@ -289,7 +293,7 @@ public final class SarimaModel extends AbstractArimaModel {
     }
 
     private double[] clone(double[] x) {
-        return x == Builder.E ? Builder.E : x.clone();
+        return x == Doubles.EMPTYARRAY ? Doubles.EMPTYARRAY : x.clone();
     }
 
     public double[] phi() {
@@ -554,8 +558,8 @@ public final class SarimaModel extends AbstractArimaModel {
      *
      * @return
      */
-    public SarimaSpecification specification() {
-        SarimaSpecification spec = new SarimaSpecification(s);
+    public SarimaOrders orders() {
+        SarimaOrders spec = new SarimaOrders(s);
         spec.setD(d);
         spec.setBd(bd);
         spec.setP(phi.length);

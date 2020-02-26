@@ -5,7 +5,7 @@
  */
 package jdplus.modelling;
 
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
 import jdplus.math.linearfilters.BackFilter;
@@ -50,7 +50,7 @@ public class ApiUtility {
     }
 
     public SarimaModel fromApi(demetra.arima.SarimaModel model){
-        SarimaSpecification spec = model.specification();
+        SarimaOrders spec = model.specification();
         return SarimaModel.builder(spec)
                 .phi(model.getPhi())
                 .bphi(model.getBphi())

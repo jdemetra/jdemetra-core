@@ -19,6 +19,7 @@
 package jdplus.seats;
 
 import demetra.design.Development;
+import demetra.information.InformationSet;
 
 /**
  * @author Jean Palate
@@ -29,7 +30,6 @@ public interface IModelApproximator {
     /**
      *
      * @param model
-     * @param context
      * @return
      */
     boolean approximate(SeatsModel model);

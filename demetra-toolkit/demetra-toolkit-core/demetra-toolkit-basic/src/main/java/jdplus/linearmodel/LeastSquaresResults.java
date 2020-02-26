@@ -28,6 +28,10 @@ import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
+import demetra.math.matrices.MatrixType;
+import jdplus.data.DataBlockIterator;
+import jdplus.dstats.Chi2;
 import jdplus.math.matrices.Matrix;
 
 /**
@@ -116,6 +120,24 @@ public final class LeastSquaresResults {
     // auxiliary results
     private final double y2, ym, bxy;
 
+    public DoubleSeq getY() {
+        return y;
+    }
+
+    public MatrixType X() {
+        return X.unmodifiable();
+    }
+
+    public DoubleSeq residuals() {
+        DataBlock e = DataBlock.of(y);
+        DoubleSeqCursor c = coefficients.cursor();
+        DataBlockIterator cols = X.columnsIterator();
+        while (cols.hasNext()) {
+            e.addAY(-c.getAndNext(), cols.next());
+        }
+        return e.unmodifiable();
+    }
+
     /**
      * @return the coefficients
      */
@@ -124,7 +146,7 @@ public final class LeastSquaresResults {
     }
 
     /**
-     * SSe
+     * SSE
      *
      * @return
      */
@@ -151,6 +173,19 @@ public final class LeastSquaresResults {
     }
 
     /**
+     * sum(y-ybar)^2 (or SST = SSR + SSE)
+     *
+     * @return
+     */
+    public double getTotalSumOfSquares() {
+        if (mean) {
+            return y2 - n * ym * ym;
+        } else {
+            return y2;
+        }
+    }
+
+    /**
      *
      * @return the r2
      */
@@ -169,6 +204,11 @@ public final class LeastSquaresResults {
         return 1 - (n - 1) * (1 - getR2()) / (n - nx);
     }
 
+    /**
+     * SSR
+     *
+     * @return
+     */
     public double getRegressionSumOfSquares() {
         if (mean) {
             return bxy - n * ym * ym;
@@ -192,6 +232,12 @@ public final class LeastSquaresResults {
     public StatisticalTest Ftest() {
         F f = new F(degreesOfFreedom(), n - nx);
         return new StatisticalTest(f, getRegressionMeanSquare() / getResidualMeanSquare(), TestType.Upper, false);
+    }
+
+    public StatisticalTest Khi2Test() {
+        Chi2 chi = new Chi2(nx);
+        return new StatisticalTest(chi, getRegressionSumOfSquares() / getResidualMeanSquare(), TestType.Upper, true);
+
     }
 
     /**

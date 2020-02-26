@@ -55,7 +55,7 @@ public class X12PreprocessorTest {
         X12Preprocessor processor = X12Preprocessor.of(RegArimaSpec.RG5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(datamissing));
-        ModelEstimation rslt = processor.process(s, null);
+        ModelEstimation rslt = processor.process(s);
         System.out.println("New");
         System.out.println(rslt.getConcentratedLikelihood().logLikelihood());
     }
@@ -82,7 +82,7 @@ public class X12PreprocessorTest {
         X12Preprocessor processor = X12Preprocessor.of(spec, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(data));
-        ModelEstimation rslt = processor.process(s, null);
+        ModelEstimation rslt = processor.process(s);
         RegArimaSpecification ospec = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.clone();
 //        ospec.getOutliers().setDefaultCriticalValue(3);
         IPreprocessor oprocessor = ospec.build();
@@ -107,7 +107,7 @@ public class X12PreprocessorTest {
             X12Preprocessor processor = X12Preprocessor.of(spec, null);
             TsPeriod start = TsPeriod.monthly(1967, 1);
             TsData s = TsData.of(start, Doubles.of(data));
-            ModelEstimation rslt = processor.process(s, null);
+            ModelEstimation rslt = processor.process(s);
         }
         t1 = System.currentTimeMillis();
         System.out.println("new: " + (t1 - t0));

@@ -27,7 +27,7 @@ import demetra.modelling.RegressionTestSpec;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.LevelShift;
-import demetra.timeseries.regression.ModellingContext;
+import demetra.timeseries.regression.modelling.ModellingContext;
 import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.TransitoryChange;
 import jdplus.regarima.AICcComparator;

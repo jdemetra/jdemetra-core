@@ -28,7 +28,7 @@ import jdplus.regarima.RegArimaUtility;
 import jdplus.sarima.SarimaModel;
 import jdplus.regsarima.regular.ILogLevelModule;
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.data.DoubleSeq;
 
 /**
@@ -210,7 +210,7 @@ public class LogLevelModule implements ILogLevelModule {
     }
     
     @Override
-    public ProcessingResult process(RegArimaModelling context) {
+    public ProcessingResult process(RegSarimaModelling context) {
         ModelDescription desc = context.getDescription();
         if (desc.isLogTransformation())
             return ProcessingResult.Unprocessed;

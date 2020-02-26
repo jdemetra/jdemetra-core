@@ -25,7 +25,7 @@ import demetra.design.BuilderPattern;
 import jdplus.leastsquares.QRSolver;
 import jdplus.ar.AutoRegressiveEstimation;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarmaSpecification;
+import demetra.arima.SarmaOrders;
 import demetra.data.DoubleSeq;
 import jdplus.leastsquares.QRSolution;
 
@@ -106,7 +106,7 @@ public class HannanRissanen {
     }
 
     private SarimaModel m_model;
-    private SarmaSpecification m_spec;
+    private SarmaOrders m_spec;
 
     private final boolean biascorrection, finalcorrection;
     private final Initialization initialization;
@@ -247,7 +247,7 @@ public class HannanRissanen {
                 .biasCorrection(biascorrection)
                 .finalCorrection(false)
                 .build();
-        SarmaSpecification nspec = m_spec.clone();
+        SarmaOrders nspec = m_spec.clone();
         nspec.setP(0);
         nspec.setBp(0);
         if (!hr.process(ndata, nspec)) {
@@ -284,7 +284,7 @@ public class HannanRissanen {
      *
      * @return
      */
-    public SarmaSpecification getSpec() {
+    public SarmaOrders getSpec() {
         return m_spec;
     }
 
@@ -372,7 +372,7 @@ public class HannanRissanen {
      * @param spec
      * @return
      */
-    public boolean process(final DoubleSeq value, SarmaSpecification spec) {
+    public boolean process(final DoubleSeq value, SarmaOrders spec) {
         clear();
         m_spec = spec.clone();
         m_odata = value;

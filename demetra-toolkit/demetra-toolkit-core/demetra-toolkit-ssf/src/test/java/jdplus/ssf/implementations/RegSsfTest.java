@@ -9,7 +9,7 @@ import jdplus.arima.ssf.SsfArima;
 import demetra.data.Data;
 import jdplus.modelling.regression.Regression;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.ssf.StateComponent;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
 import jdplus.ssf.dk.DkToolkit;
@@ -35,7 +35,7 @@ public class RegSsfTest {
 
     @Test
     public void testDirectComposite() {
-        SarimaSpecification spec=SarimaSpecification.airline(12);
+        SarimaOrders spec=SarimaOrders.airline(12);
         SarimaModel airline = SarimaModel.builder(spec)
                 .theta(1, -.6)
                 .btheta(1, -.8)
@@ -56,7 +56,7 @@ public class RegSsfTest {
     }
 
     public static void main(String[] arg) {
-        SarimaSpecification spec=SarimaSpecification.airline(12);
+        SarimaOrders spec=SarimaOrders.airline(12);
         SarimaModel airline = SarimaModel.builder(spec)
                 .theta(1, -.6)
                 .btheta(1, -.8)

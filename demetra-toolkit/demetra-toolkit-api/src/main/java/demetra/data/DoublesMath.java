@@ -149,7 +149,7 @@ public class DoublesMath {
     }
 
     /**
-     * Computes the euclidian norm of the src. 
+     * Computes the euclidian norm of the src.
      *
      * @param src The data
      * @return The euclidian norm (&gt=0).
@@ -175,9 +175,9 @@ public class DoublesMath {
     }
 
     /**
-     * Computes the infinite-norm of this src 
+     * Computes the infinite-norm of this src
      *
-     * @param src The source 
+     * @param src The source
      * @return Returns min{|src(i)|}
      */
     public double normInf(DoubleSeq src) {
@@ -200,7 +200,7 @@ public class DoublesMath {
     /**
      * Counts the number of identical consecutive values.
      *
-     * @param src The source 
+     * @param src The source
      * @return Missing values are omitted.
      */
     public int getRepeatCount(DoubleSeq src) {
@@ -314,5 +314,98 @@ public class DoublesMath {
     public DoubleSeq exp(DoubleSeq src) {
         return src.fn(Math::exp);
     }
-   
+
+    public DoubleSeq add(DoubleSeq a, DoubleSeq... b) {
+        int start = -1;
+        if (b != null) {
+            for (int i = 0; i < b.length; ++i) {
+                if (b[i] != null) {
+                    start = i;
+                    break;
+                }
+            }
+        }
+        if (start == -1) {
+            return a;
+        }
+        double[] tot;
+        if (a != null) {
+            tot = a.toArray();
+        } else if (start == b.length - 1) {
+            return b[start];
+        } else {
+            tot = b[start++].toArray();
+        }
+
+        for (int i = start; i < b.length; ++i) {
+            if (tot.length != b[i].length()) {
+                throw new IllegalArgumentException("wrong dimensions");
+            }
+            DoubleSeqCursor cursor = b[i].cursor();
+            for (int j = 0; j < tot.length; ++j) {
+                tot[j] += cursor.getAndNext();
+            }
+        }
+        return Doubles.ofInternal(tot);
+    }
+
+    public DoubleSeq subtract(DoubleSeq a, DoubleSeq b) {
+        if (b == null)
+            return a;
+        if (a == null) {
+            return b.fn(x -> -x);
+        } else {
+            if (a.length() != b.length()) {
+                throw new IllegalArgumentException("wrong dimensions");
+            }
+            return a.fn(b, (x, y) -> x - y);
+        }
+    }
+
+    public DoubleSeq multiply(DoubleSeq a, DoubleSeq... b) {
+        int start = -1;
+        if (b != null) {
+            for (int i = 0; i < b.length; ++i) {
+                if (b[i] != null) {
+                    start = i;
+                    break;
+                }
+            }
+        }
+        if (start == -1) {
+            return a;
+        }
+        double[] prod;
+        if (a != null) {
+            prod = a.toArray();
+        } else if (start == b.length - 1) {
+            return b[start];
+        } else {
+            prod = b[start++].toArray();
+        }
+
+        for (int i = start; i < b.length; ++i) {
+            if (prod.length != b[i].length()) {
+                throw new IllegalArgumentException("wrong dimensions");
+            }
+            DoubleSeqCursor cursor = b[i].cursor();
+            for (int j = 0; j < prod.length; ++j) {
+                prod[j] *= cursor.getAndNext();
+            }
+        }
+        return Doubles.ofInternal(prod);
+    }
+
+    public DoubleSeq divide(DoubleSeq a, DoubleSeq b) {
+        if (a == null) {
+            return b.fn(x -> 1 / x);
+        } else if (b == null) {
+            return a;
+        } else {
+            if (a.length() != b.length()) {
+                throw new IllegalArgumentException("wrong dimensions");
+            }
+            return a.fn(b, (x, y) -> x / y);
+        }
+    }
 }

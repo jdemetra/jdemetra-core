@@ -23,7 +23,7 @@ import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regsarima.GlsSarimaProcessor;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.stats.tests.StatisticalTest;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
@@ -73,7 +73,7 @@ public class SeasonalFTest {
 
     private RegArimaModel.Builder prepareSeasonalModel(TsData input) {
         int period = input.getAnnualFrequency();
-        SarimaSpecification rspec = SarimaSpecification.m011(period);
+        SarimaOrders rspec = SarimaOrders.m011(period);
         SarimaModel arima = SarimaModel.builder(rspec).build();
         return RegArimaModel.<SarimaModel>builder()
                 .y(input.getValues())
@@ -82,7 +82,7 @@ public class SeasonalFTest {
     }
 
     private RegArimaModel.Builder prepareSeasonalModel(ModelDescription m) {
-        SarimaSpecification rspec = m.specification();
+        SarimaOrders rspec = m.specification();
         rspec.setBd(0);
         rspec.setBp(0);
         rspec.setBq(0);
@@ -109,7 +109,7 @@ public class SeasonalFTest {
     private boolean computeStatistics() {
         try {
             int nvars = regarima.getVariablesCount();
-            int np = regarima.arima().specification().getParametersCount();
+            int np = regarima.arima().orders().getParametersCount();
             ftest = new JointTest(seasonalModel.getConcentratedLikelihood())
                     .variableSelection(nvars - nseas, nseas)
                     .hyperParametersCount(np)

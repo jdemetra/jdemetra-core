@@ -35,6 +35,7 @@ public class BowmanShenton
 
     /**
      * 
+     * @param data
      */
     public BowmanShenton(DoubleSeq data)
     {

@@ -21,7 +21,6 @@ package jdplus.businesscycle.regular;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
 import jdplus.businesscycle.HodrickPrescottFilter;
-import jdplus.math.matrices.Matrix;
 
 
 /**

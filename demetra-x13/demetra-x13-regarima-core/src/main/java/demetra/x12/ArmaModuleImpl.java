@@ -22,8 +22,8 @@ import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
-import demetra.arima.SarmaSpecification;
+import demetra.arima.SarimaOrders;
+import demetra.arima.SarmaOrders;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
@@ -106,19 +106,19 @@ public class ArmaModuleImpl {
         }
     }
 
-    public SarmaSpecification process(DoubleSeq data, int period, int d, int bd, boolean seas) {
+    public SarmaOrders process(DoubleSeq data, int period, int d, int bd, boolean seas) {
         return select(data, period, d, bd);
     }
 
-    public SarimaSpecification process(RegArimaModel<SarimaModel> regarima, boolean seas) {
-        SarimaSpecification curSpec = regarima.arima().specification();
+    public SarimaOrders process(RegArimaModel<SarimaModel> regarima, boolean seas) {
+        SarimaOrders curSpec = regarima.arima().orders();
         DoubleSeq res = RegArimaUtility.olsResiduals(regarima);
-        SarmaSpecification nspec = select(res, curSpec.getPeriod(), curSpec.getD(), curSpec.getBd());
+        SarmaOrders nspec = select(res, curSpec.getPeriod(), curSpec.getD(), curSpec.getBd());
         if (nspec == null) {
             curSpec.setDefault(seas);
             return curSpec;
         } else {
-            SarimaSpecification rspec = SarimaSpecification.of(nspec, curSpec.getD(), curSpec.getBd());
+            SarimaOrders rspec = SarimaOrders.of(nspec, curSpec.getD(), curSpec.getBd());
             return rspec;
         }
     }
@@ -138,7 +138,7 @@ public class ArmaModuleImpl {
          * @param spec
          * @param eps
          */
-        RegArmaBic(final DoubleSeq data, final SarmaSpecification spec, double eps) {
+        RegArmaBic(final DoubleSeq data, final SarmaOrders spec, double eps) {
             IRegArimaProcessor processor = X12Utility.processor(true, eps);
             RegArimaModel<SarimaModel> model = RegArimaModel.<SarimaModel>builder()
                     .y(data)
@@ -171,8 +171,8 @@ public class ArmaModuleImpl {
          *
          * @return
          */
-        SarmaSpecification getSpecification() {
-            return arima.specification().doStationary();
+        SarmaOrders getSpecification() {
+            return arima.orders().doStationary();
         }
 
         static void mergeInto(RegArmaBic[] estimations, RegArmaBic[] models) {
@@ -208,7 +208,7 @@ public class ArmaModuleImpl {
             }
         }
 
-        public static RegArmaBic[] sort(final DoubleSeq data, final SarmaSpecification[] specs, double eps) {
+        public static RegArmaBic[] sort(final DoubleSeq data, final SarmaOrders[] specs, double eps) {
             List<RegArmaBic> all = new ArrayList<>();
             for (int i = 0; i < specs.length; ++i) {
                 RegArmaBic cur = new RegArmaBic(data, specs[i], eps);
@@ -269,12 +269,12 @@ public class ArmaModuleImpl {
      * @param bd
      * @return
      */
-    public SarmaSpecification select(DoubleSeq data, final int d, final int bd) {
+    public SarmaOrders select(DoubleSeq data, final int d, final int bd) {
         int idmax = nmod;
         while (estimations[idmax - 1].getBIC() == NO_BIC) {
             --idmax;
         }
-        SarmaSpecification spec = estimations[0].getSpecification();
+        SarmaOrders spec = estimations[0].getSpecification();
         int nr1 = spec.getP() + spec.getQ(), ns1 = spec.getBp() + spec.getBq();
         int nrr1 = Math.abs(spec.getP() + d - spec.getQ());
         int nss1 = Math.abs(spec.getBp() + bd - spec.getBq());
@@ -293,7 +293,7 @@ public class ArmaModuleImpl {
         int idpref = 0;
         int icmod = 0;
         for (int i = 1; i < idmax; ++i) {
-            SarmaSpecification cur = estimations[i].getSpecification();
+            SarmaOrders cur = estimations[i].getSpecification();
             int nr2 = cur.getP() + cur.getQ(), ns2 = cur.getBp() + cur.getBq();
             int nrr2 = Math.abs(cur.getP() + d - cur.getQ());
             int nss2 = Math.abs(cur.getBp() + bd - cur.getBq());
@@ -358,12 +358,12 @@ public class ArmaModuleImpl {
      * @param bd
      * @return
      */
-    public SarmaSpecification select(final DoubleSeq data, final int freq, final int d, final int bd) {
+    public SarmaOrders select(final DoubleSeq data, final int freq, final int d, final int bd) {
         clear();
         // step I
 
-        SarmaSpecification spec = new SarmaSpecification(freq);
-        SarmaSpecification cur = null;
+        SarmaOrders spec = new SarmaOrders(freq);
+        SarmaOrders cur = null;
 
         estimations = new RegArmaBic[nmod];
 
@@ -371,7 +371,7 @@ public class ArmaModuleImpl {
         spec.setQ(0);
 
         int nmax = 0;
-        List<SarmaSpecification> lspecs0 = new ArrayList<>();
+        List<SarmaOrders> lspecs0 = new ArrayList<>();
         if (freq != 1) {
             for (int bp = 0, i = 0; bp <= maxBp; ++bp) {
                 for (int bq = 0; bq <= maxBq; ++bq) {
@@ -382,7 +382,7 @@ public class ArmaModuleImpl {
                     }
                 }
             }
-            SarmaSpecification[] specs0 = lspecs0.toArray(new SarmaSpecification[lspecs0.size()]);
+            SarmaOrders[] specs0 = lspecs0.toArray(new SarmaOrders[lspecs0.size()]);
             RegArmaBic[] bic0 = RegArmaBic.sort(data, specs0, eps);
             if (bic0.length == 0) {
                 return null;
@@ -392,7 +392,7 @@ public class ArmaModuleImpl {
             cur = spec.clone();
         }
 
-        List<SarmaSpecification> lspecs1 = new ArrayList<>();
+        List<SarmaOrders> lspecs1 = new ArrayList<>();
         for (int p = 0, i = 0; p <= maxP; ++p) {
             for (int q = 0; q <= maxQ; ++q) {
                 if (mixed || (p == 0 || q == 0)) {
@@ -402,7 +402,7 @@ public class ArmaModuleImpl {
                 }
             }
         }
-        SarmaSpecification[] specs1 = lspecs1.toArray(new SarmaSpecification[lspecs1.size()]);
+        SarmaOrders[] specs1 = lspecs1.toArray(new SarmaOrders[lspecs1.size()]);
         RegArmaBic[] bic1 = RegArmaBic.sort(data, specs1, eps);
         if (bic1.length == 0) {
             return null;
@@ -416,7 +416,7 @@ public class ArmaModuleImpl {
             spmax = 0;
         }
         if (freq != 1) {
-            List<SarmaSpecification> lspecs2 = new ArrayList<>();
+            List<SarmaOrders> lspecs2 = new ArrayList<>();
             for (int bp = 0, i = 0; bp <= spmax; ++bp) {
                 for (int bq = 0; bq <= sqmax; ++bq) {
                     if (mixed || (bp == 0 || bq == 0)) {
@@ -426,7 +426,7 @@ public class ArmaModuleImpl {
                     }
                 }
             }
-            SarmaSpecification[] specs2 = lspecs2.toArray(new SarmaSpecification[lspecs2.size()]);
+            SarmaOrders[] specs2 = lspecs2.toArray(new SarmaOrders[lspecs2.size()]);
             RegArmaBic[] bic2 = RegArmaBic.sort(data, specs2, eps);
             if (bic2.length == 0) {
                 return null;

@@ -16,10 +16,10 @@
  */
 package jdplus.tramo;
 
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.regular.SeasonalFTest;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.timeseries.TsData;
 
 /**
@@ -31,10 +31,10 @@ class SeasonalOverDifferencingTest {
     private static final double THRESHOLD = -.7;
     private static final double SIGNIF = 0.01;
 
-    public int test(RegArimaModelling context) {
+    public int test(RegSarimaModelling context) {
 
         SarimaModel arima = context.getDescription().arima();
-        SarimaSpecification spec = arima.specification();
+        SarimaOrders spec = arima.orders();
         if (spec.getPeriod() == 1) {
             return 0;
         }
@@ -42,7 +42,7 @@ class SeasonalOverDifferencingTest {
             return 0;
         }
         TsData lin = context.build().linearizedSeries();
-        SeasonalityTests tests = SeasonalityTests.seasonalityTest(lin, 1, true, true);
+        SeasonalityTests tests = SeasonalityTests.seasonalityTest(lin.getValues(), spec.getPeriod(), 1, true, true);
         SeasonalFTest ftest = new SeasonalFTest();
         ftest.test(context.getDescription());
         int score = tests.getScore();

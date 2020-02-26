@@ -20,8 +20,8 @@ import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.design.VisibleForTesting;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
-import demetra.arima.SarmaSpecification;
+import demetra.arima.SarimaOrders;
+import demetra.arima.SarmaOrders;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -118,8 +118,8 @@ public class ArmaModelSelector {
             return Double.compare(BIC, o.BIC);
         }
 
-        public SarmaSpecification getSpecification() {
-            return arma == null ? null : arma.specification().doStationary();
+        public SarmaOrders getSpecification() {
+            return arma == null ? null : arma.orders().doStationary();
         }
 
     }
@@ -168,7 +168,7 @@ public class ArmaModelSelector {
      * @param bd
      * @return
      */
-    private SarmaSpecification select(final int d, final int bd) {
+    private SarmaOrders select(final int d, final int bd) {
         int idmax = nmodels;
         while (hrModels[idmax - 1] == null || hrModels[idmax - 1].getArma() == null && idmax > 0) {
             --idmax;
@@ -178,7 +178,7 @@ public class ArmaModelSelector {
         } else if (idmax == 1) {
             return hrModels[0].getSpecification();
         }
-        SarmaSpecification spec = hrModels[0].getSpecification();
+        SarmaOrders spec = hrModels[0].getSpecification();
         int nr1 = spec.getP() + spec.getQ(), ns1 = spec.getBp() + spec.getBq();
         int nrr1 = Math.abs(spec.getP() + d - spec.getQ());
         int nss1 = Math.abs(spec.getBp() + bd - spec.getBq());
@@ -197,7 +197,7 @@ public class ArmaModelSelector {
 
         int idpref = 0;
         for (int i = 1; i < idmax; ++i) {
-            SarmaSpecification cur = hrModels[i].getSpecification();
+            SarmaOrders cur = hrModels[i].getSpecification();
             int nr2 = cur.getP() + cur.getQ(), ns2 = cur.getBp() + cur.getBq();
             int nrr2 = Math.abs(cur.getP() + d - cur.getQ());
             int nss2 = Math.abs(cur.getBp() + bd - cur.getBq());
@@ -244,7 +244,7 @@ public class ArmaModelSelector {
      * @param specs
      * @return
      */
-    static FastBIC[] sort(final DoubleSeq data, final SarmaSpecification[] specs) {
+    static FastBIC[] sort(final DoubleSeq data, final SarmaOrders[] specs) {
         List<FastBIC> hrs = new ArrayList<>();
         for (int i = 0; i < specs.length; ++i) {
             HannanRissanen hr = HannanRissanen.builder().build();
@@ -260,18 +260,18 @@ public class ArmaModelSelector {
         return hrs.toArray(new FastBIC[hrs.size()]);
     }
 
-    static SarmaSpecification getPreferredSpecification(FastBIC[] hrs, boolean acceptwn) {
+    static SarmaOrders getPreferredSpecification(FastBIC[] hrs, boolean acceptwn) {
         if (hrs.length == 0) {
             return null;
         }
         if (hrs.length == 1 || acceptwn) {
-            return hrs[0].arma.specification().doStationary();
+            return hrs[0].arma.orders().doStationary();
         }
         int idx = 0;
-        while (idx < hrs.length && hrs[idx].arma.specification().getParametersCount() == 0) {
+        while (idx < hrs.length && hrs[idx].arma.orders().getParametersCount() == 0) {
             ++idx;
         }
-        return hrs[idx].arma.specification().doStationary();
+        return hrs[idx].arma.orders().doStationary();
     }
 
     static void mergeInto(FastBIC[] candidates, FastBIC[] models) {
@@ -283,14 +283,14 @@ public class ArmaModelSelector {
         // insert the new specifications in the old one
         for (int i = 0, icur = 0; i < nmax && icur < gmod; ++i) {
             SarimaModel cur = candidates[i].getArma();
-            SarimaSpecification curSpec = cur.specification();
+            SarimaOrders curSpec = cur.orders();
             double bic = candidates[i].getBIC();
             for (int j = icur; j < gmod; ++j) {
                 if (models[j] == null) {
                     models[j] = candidates[i];
                     icur = j + 1;
                     break;
-                } else if (models[j].getArma().specification().equals(curSpec)) {
+                } else if (models[j].getArma().orders().equals(curSpec)) {
                     icur = j + 1;
                     break;
                 } else if (models[j].getBIC() > bic) {
@@ -314,14 +314,14 @@ public class ArmaModelSelector {
      * @param seas
      * @return
      */
-    public SarmaSpecification process(final DoubleSeq data, final int period, final int d, final int bd, final boolean seas) {
+    public SarmaOrders process(final DoubleSeq data, final int period, final int d, final int bd, final boolean seas) {
         clear();
         // step I
 
-        SarmaSpecification[] specs = new SarmaSpecification[(maxBp + 1)
+        SarmaOrders[] specs = new SarmaOrders[(maxBp + 1)
                 * (maxBq + 1)];
-        SarmaSpecification spec = new SarmaSpecification(period);
-        SarmaSpecification cur;
+        SarmaOrders spec = new SarmaOrders(period);
+        SarmaOrders cur;
 
         hrModels=new FastBIC[nmodels];
 
@@ -356,7 +356,7 @@ public class ArmaModelSelector {
             cur = spec.clone();
         }
 
-        specs = new SarmaSpecification[(maxP + 1) * (maxQ + 1)];
+        specs = new SarmaOrders[(maxP + 1) * (maxQ + 1)];
         for (int p = 0, i = 0; p <= maxP; ++p) {
             for (int q = 0; q <= maxQ; ++q) {
                 cur.setP(p);
@@ -374,7 +374,7 @@ public class ArmaModelSelector {
         mergeInto(hrs1, hrModels);
 
         if (seas) {
-            specs = new SarmaSpecification[(maxBp + 1) * (maxBq + 1)];
+            specs = new SarmaOrders[(maxBp + 1) * (maxBq + 1)];
             for (int bp = 0, i = 0; bp <= maxBp; ++bp) {
                 for (int bq = 0; bq <= maxBq; ++bq) {
                     cur.setBp(bp);

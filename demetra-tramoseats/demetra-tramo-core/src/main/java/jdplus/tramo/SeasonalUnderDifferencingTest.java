@@ -19,9 +19,9 @@ package jdplus.tramo;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 
 /**
@@ -33,7 +33,7 @@ class SeasonalUnderDifferencingTest extends ModelController {
     private static final double DEF_SBOUND = .91;
 
     @Override
-    ProcessingResult process(RegArimaModelling modelling, TramoProcessor.Context context) {
+    ProcessingResult process(RegSarimaModelling modelling, TramoProcessor.Context context) {
         int period = modelling.getDescription().getAnnualFrequency();
         if (period == 1) {
             return ProcessingResult.Unprocessed;
@@ -45,7 +45,7 @@ class SeasonalUnderDifferencingTest extends ModelController {
         if (!isUnderDiff(modelling, context)) {
             return ProcessingResult.Unchanged;
         }
-        RegArimaModelling scontext = buildNewModel(modelling);
+        RegSarimaModelling scontext = buildNewModel(modelling);
         ModelEstimation smodel = scontext.build();
         if (smodel == null) {
             return ProcessingResult.Failed;
@@ -61,22 +61,22 @@ class SeasonalUnderDifferencingTest extends ModelController {
         }
     }
 
-    private boolean isUnderDiff(RegArimaModelling modelling, TramoProcessor.Context context) {
+    private boolean isUnderDiff(RegSarimaModelling modelling, TramoProcessor.Context context) {
         DoubleSeq res = modelling.getEstimation().getConcentratedLikelihood().e();
         SeasonalityTests tests
                 = SeasonalityTests.residualSeasonalityTest(res, modelling.getDescription().getAnnualFrequency());
         return tests.getScore() > 1 || (tests.getScore() == 1 && context.seasonal);
     }
 
-    private RegArimaModelling buildNewModel(RegArimaModelling context) {
+    private RegSarimaModelling buildNewModel(RegSarimaModelling context) {
         ModelDescription ndesc = ModelDescription.copyOf(context.getDescription());
-        SarimaSpecification spec = ndesc.specification();
+        SarimaOrders spec = ndesc.specification();
         spec.setBp(0);
         spec.setBd(1);
         spec.setBq(1);
         ndesc.setSpecification(spec);
         ndesc.setMean(false);
-        RegArimaModelling ncontext = RegArimaModelling.of(ndesc);
+        RegSarimaModelling ncontext = RegSarimaModelling.of(ndesc);
         // estimate the new model
         if (!estimate(ncontext, false)) {
             return null;
@@ -84,10 +84,10 @@ class SeasonalUnderDifferencingTest extends ModelController {
         return ncontext;
     }
 
-    private boolean fixSeasonalRoots(RegArimaModelling context) {
+    private boolean fixSeasonalRoots(RegSarimaModelling context) {
         ModelDescription description = context.getDescription();
         SarimaModel model = description.arima();
-        SarimaSpecification spec = model.specification();
+        SarimaOrders spec = model.orders();
         if (spec.getBd() != 0 || spec.getBp() != 1 || model.bphi(1) >= -DEF_SBOUND) {
             return false;
         }
@@ -97,7 +97,7 @@ class SeasonalUnderDifferencingTest extends ModelController {
         ModelDescription ndesc = ModelDescription.copyOf(description);
         ndesc.setSpecification(spec);
         ndesc.setMean(false);
-        RegArimaModelling ncontext = RegArimaModelling.of(ndesc);
+        RegSarimaModelling ncontext = RegSarimaModelling.of(ndesc);
         // estimate the new model
         if (!estimate(ncontext, false)) {
             return false;

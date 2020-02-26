@@ -16,7 +16,7 @@
  */
 package jdplus.regsarima.ami;
 
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.TsPeriod;
@@ -41,7 +41,7 @@ public class FastOutliersDetectorTest {
     @Test
     public void testProd() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        SarimaSpecification spec = SarimaSpecification.airline(12);
+        SarimaOrders spec = SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
 
 //        long t0 = System.currentTimeMillis();
@@ -49,7 +49,7 @@ public class FastOutliersDetectorTest {
         FastOutliersDetector od = FastOutliersDetector.builder()
                 .singleOutlierDetector(FastOutliersDetector.defaultOutlierDetector())
                 .criticalValue(3)
-                .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
+                .processor(RegArimaUtility.processor(true, 1e-7))
                 .maximumLikelihood(true)
                 .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
@@ -68,7 +68,7 @@ public class FastOutliersDetectorTest {
     @Test
     public void testProdWn() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        SarimaSpecification spec = new SarimaSpecification(12);
+        SarimaOrders spec = new SarimaOrders(12);
  //       spec.airline(true);
         spec.setBd(1);
         spec.setD(1);
@@ -79,7 +79,7 @@ public class FastOutliersDetectorTest {
         FastOutliersDetector od = FastOutliersDetector.builder()
                 .singleOutlierDetector(FastOutliersDetector.defaultOutlierDetector())
                 .criticalValue(3)
-                 .processor(RegArimaUtility.processor(SarimaMapping.of(spec), true, 1e-7))
+                 .processor(RegArimaUtility.processor(true, 1e-7))
                .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
         od.prepare(regarima.getObservationsCount());

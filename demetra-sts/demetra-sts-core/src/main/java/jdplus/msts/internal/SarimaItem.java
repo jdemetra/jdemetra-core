@@ -12,7 +12,7 @@ import jdplus.msts.MstsMapping;
 import jdplus.msts.SarimaInterpreter;
 import jdplus.msts.VarianceInterpreter;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import jdplus.ssf.StateComponent;
 import java.util.Arrays;
@@ -31,7 +31,7 @@ public class SarimaItem extends StateItem {
 
     public SarimaItem(final String name, int period, int[] orders, int[] seasonal, double[] parameters, boolean fixed, double var, boolean fixedvar) {
         super(name);
-        SarimaSpecification spec = new SarimaSpecification(period);
+        SarimaOrders spec = new SarimaOrders(period);
         spec.setP(orders[0]);
         spec.setD(orders[1]);
         spec.setQ(orders[2]);
@@ -48,7 +48,7 @@ public class SarimaItem extends StateItem {
     public void addTo(MstsMapping mapping) {
         mapping.add(v);
         mapping.add(p);
-        SarimaSpecification spec = p.getDomain().getSpec();
+        SarimaOrders spec = p.getDomain().getSpec();
         mapping.add((p, builder) -> {
             double var = p.get(0);
             int np = spec.getParametersCount();
@@ -74,7 +74,7 @@ public class SarimaItem extends StateItem {
 
     @Override
     public StateComponent build(DoubleSeq x) {
-        SarimaSpecification spec = p.getDomain().getSpec();
+        SarimaOrders spec = p.getDomain().getSpec();
         double var = x.get(0);
         int np = spec.getParametersCount();
         SarimaModel sarima = SarimaModel.builder(spec)
@@ -92,7 +92,7 @@ public class SarimaItem extends StateItem {
 
     @Override
     public int parametersCount() {
-        SarimaSpecification spec = p.getDomain().getSpec();
+        SarimaOrders spec = p.getDomain().getSpec();
         return spec.getParametersCount() + 1;
     }
 
@@ -108,7 +108,7 @@ public class SarimaItem extends StateItem {
 
     @Override
     public int stateDim() {
-        SarimaSpecification spec = p.getDomain().getSpec();
+        SarimaOrders spec = p.getDomain().getSpec();
         int p = spec.getP()+spec.getD();
         int q=spec.getQ();
         int s=spec.getPeriod();

@@ -21,6 +21,7 @@
     <properties>
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
         <jd3-toolkit.version>1.0.0-SNAPSHOT</jd3-toolkit.version>
+        <jd3-sa.version>1.0.0-SNAPSHOT</jd3-sa.version>
         <jd3-saX.version>1.0.0-SNAPSHOT</jd3-saX.version>
     </properties>
     
@@ -64,8 +65,13 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-toolkit-sa</artifactId>
-                <version>${jd3-toolkit.version}</version>            
+                <artifactId>demetra-sa-api</artifactId>
+                <version>${jd3-sa.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-sa-core</artifactId>
+                <version>${jd3-sa.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>

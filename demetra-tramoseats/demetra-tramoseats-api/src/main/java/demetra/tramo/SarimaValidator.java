@@ -17,7 +17,7 @@
 package demetra.tramo;
 
 import demetra.design.Development;
-import demetra.modelling.regarima.SarimaSpec;
+import demetra.arima.SarimaSpec;
 
 /**
  *

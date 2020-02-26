@@ -33,7 +33,7 @@ import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.JulianEasterVariable;
 import demetra.timeseries.regression.LengthOfPeriod;
 import demetra.timeseries.regression.LevelShift;
-import demetra.timeseries.regression.ModellingContext;
+import demetra.timeseries.regression.modelling.ModellingContext;
 import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.StockTradingDays;
 import demetra.timeseries.regression.TradingDaysType;
@@ -55,7 +55,7 @@ import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.PeriodicOutlierFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
 import demetra.timeseries.regression.UserTradingDays;
-import demetra.modelling.regarima.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.tramo.CalendarSpec;
@@ -167,7 +167,7 @@ class TramoModelBuilder implements IModelBuilder {
     }
 
     private void initializeTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
-        if (!td.isUsed() || td.isTest()) {
+        if (!td.isUsed() || td.isTest() || td.isAutomatic()) {
             return;
         }
         if (td.isStockTradingDays()) {
@@ -373,7 +373,7 @@ class TramoModelBuilder implements IModelBuilder {
     }
 
     private static ITradingDaysVariable userTradingDays(TradingDaysSpec td, ModellingContext context) {
-        String[] userVariables = td.getUserVariables().toArray(new String[0]);
+        String[] userVariables = td.getUserVariables();
         return UserTradingDays.of(userVariables, context);
     }
 

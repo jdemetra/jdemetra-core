@@ -19,8 +19,8 @@ package jdplus.tramo;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
-import demetra.arima.SarimaSpecification;
+import jdplus.regsarima.regular.RegSarimaModelling;
+import demetra.arima.SarimaOrders;
 import jdplus.stats.AutoCovariances;
 import demetra.data.DoubleSeq;
 
@@ -31,7 +31,7 @@ import demetra.data.DoubleSeq;
 class RegularUnderDifferencingTest2 extends ModelController {
 
     @Override
-    ProcessingResult process(RegArimaModelling modelling, TramoProcessor.Context context) {
+    ProcessingResult process(RegSarimaModelling modelling, TramoProcessor.Context context) {
        ModelDescription desc = modelling.getDescription();
         if (desc.getAnnualFrequency() <= 2) {
             return ProcessingResult.Unprocessed;
@@ -43,7 +43,7 @@ class RegularUnderDifferencingTest2 extends ModelController {
         if (!needProcessing(modelling)) {
             return ProcessingResult.Unchanged;
         }
-        RegArimaModelling ncontext = buildNewModel(modelling);
+        RegSarimaModelling ncontext = buildNewModel(modelling);
         ModelEstimation nmodel = ncontext.build();
         if (nmodel == null) {
             return ProcessingResult.Failed;
@@ -59,7 +59,7 @@ class RegularUnderDifferencingTest2 extends ModelController {
         }
     }
 
-    private boolean needProcessing(RegArimaModelling context) {
+    private boolean needProcessing(RegSarimaModelling context) {
         DoubleSeq y = context.getEstimation().getConcentratedLikelihood().e();
         int npos0 = 0;
         int imax = Math.min(24, y.length() - 1);
@@ -78,10 +78,10 @@ class RegularUnderDifferencingTest2 extends ModelController {
         return npos0 >= context.getDescription().getAnnualFrequency() || npos0 >= 9 || npos1 >= 17;
     }
 
-    private RegArimaModelling buildNewModel(RegArimaModelling modelling) {
+    private RegSarimaModelling buildNewModel(RegSarimaModelling modelling) {
         ModelDescription desc = modelling.getDescription();
         ModelDescription ndesc = ModelDescription.copyOf(desc);
-        SarimaSpecification spec = desc.specification();
+        SarimaOrders spec = desc.specification();
         if (spec.getD() == 2) {
             if (spec.getP() == 3) {
                 return null;
@@ -98,7 +98,7 @@ class RegularUnderDifferencingTest2 extends ModelController {
             ndesc.setSpecification(spec);
             ndesc.setMean(false);
         }
-        RegArimaModelling ncontext = RegArimaModelling.of(ndesc);
+        RegSarimaModelling ncontext = RegSarimaModelling.of(ndesc);
         // estimate the new model
         if (!estimate(ncontext, true)) {
             return null;

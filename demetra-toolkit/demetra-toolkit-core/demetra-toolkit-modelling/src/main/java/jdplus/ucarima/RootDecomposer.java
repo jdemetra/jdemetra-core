@@ -158,7 +158,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
 
         signal = new ArimaModel(m_sar, m_sur, m_sfcs != null ? m_sfcs.times(sma) : sma);
         noise = new ArimaModel(m_nar, m_nur, m_sfcn != null ? m_sfcn.times(nma) : nma);
-        //ArimaModel check = m_model.minus(m_n.plus(m_s));
+//        ArimaModel check = model.minus(noise.plus(signal));
     }
 
     private boolean checkSpecialCases() {

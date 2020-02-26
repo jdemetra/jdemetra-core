@@ -40,28 +40,28 @@ import jdplus.arima.ILinearProcess;
 @Development(status = Development.Status.Alpha)
 public class WienerKolmogorovEstimators {
 
-    private final UcarimaModel m_ucm;
-    private WienerKolmogorovEstimator[][] m_final;
+    private final UcarimaModel ucm;
+    private WienerKolmogorovEstimator[][] finals;
 
     /**
      *
      * @param ucm
      */
     public WienerKolmogorovEstimators(final UcarimaModel ucm) {
-        m_ucm = ucm;
+        this.ucm = ucm;
     }
 
     /**
-     * model: P(B)D(B)y(t)= Q(B)e(t), e=N(0, v^2I) signal: Ps(B)Ds(B)s(t)=
-     * Qs(B)es(t), es=N(0, vs^2I)
+     * model: P(B)D(B)y(t) = Q(B)e(t), e=N(0, v^2I) 
+     * signal: Ps(B)Ds(B)s(t) = Qs(B)es(t), es=N(0, vs^2I)
      *
      * rem: special treatment when specific stationary roots are added
      * artificially in Ps(B): we consider P'(x), Ps'(x) so that
      * P(x)/Ps(x)=P'(x)/Ps'(x) and P'(x), Ps'(x) don't contain any common factor
      * we write Dn(x)=D(x)/Ds(x)
      *
-     * The WK filter is WK=(vs/v)^2
-     * Qs(B)P'(B)Dn(B)Qs(F)P'(F)Dn(F)]/[Q(B)Ps'(B)Q(F)Ps'(F)]
+     * The WK filter is 
+     * WK=(vs/v)^2 Qs(B)P'(B)Dn(B)Qs(F)P'(F)Dn(F)]/[Q(B)Ps'(B)Q(F)Ps'(F)]
      *
      * In most cases, we will have WK=(vs/v)^2
      * Qs(B)Pn(B)Dn(B)Qs(F)P'(F)D(F)]/[Q(B)Q(F)]
@@ -96,21 +96,21 @@ public class WienerKolmogorovEstimators {
      */
     private void calcestimator(final int cmp, final boolean signal)
             throws ArimaException, MatrixException {
-        if (m_ucm == null) {
+        if (ucm == null) {
             return;
         }
         int k = signal ? 1 : 0;
-        if (m_final == null) {
-            m_final = new WienerKolmogorovEstimator[m_ucm.getComponentsCount()][2];
-        } else if (m_final[cmp][k] != null) {
+        if (finals == null) {
+            finals = new WienerKolmogorovEstimator[ucm.getComponentsCount()][2];
+        } else if (finals[cmp][k] != null) {
             return;
         }
 
-        IArimaModel a = m_ucm.getComponent(cmp);
-        IArimaModel s = signal ? a : m_ucm.getComplement(cmp);
+        IArimaModel a = ucm.getComponent(cmp);
+        IArimaModel s = signal ? a : ucm.getComplement(cmp);
 
-        BackFilter nar = m_ucm.getModel().getStationaryAr(), dar = s.getStationaryAr();
-        BackFilter nur = m_ucm.getModel().getNonStationaryAr(), dur = s.getNonStationaryAr();
+        BackFilter nar = ucm.getModel().getStationaryAr(), dar = s.getStationaryAr();
+        BackFilter nur = ucm.getModel().getNonStationaryAr(), dur = s.getNonStationaryAr();
 
         BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool();
         // we computes P'(B), Ps'(B) (respectively in nar, dar)
@@ -123,12 +123,12 @@ public class WienerKolmogorovEstimators {
         nar = nar.times(nur);
         // nar is P'(B)Dn(B)
 
-        BackFilter denom = m_ucm.getModel().getMa().times(dar);
+        BackFilter denom = ucm.getModel().getMa().times(dar);
         // denom is Q(B)Ps'(B)
         BackFilter num = s.getMa().times(nar);
         // num is Qs(B)P'(B)Dn(B)
         SymmetricFilter c = SymmetricFilter.convolutionOf(num);
-        double svar = s.getInnovationVariance(), mvar = m_ucm.getModel().getInnovationVariance();
+        double svar = s.getInnovationVariance(), mvar = ucm.getModel().getInnovationVariance();
         c = c.times(svar / mvar);
         BackFilter gf = c.decompose(denom);
 
@@ -138,7 +138,7 @@ public class WienerKolmogorovEstimators {
         RationalFilter mf = new RationalFilter(s.getMa().times(svar / mvar), s.getAr(), num.mirror(), denom.mirror());
         LinearProcess m = new LinearProcess(mf, mvar);
 
-        m_final[cmp][k] = new WienerKolmogorovEstimator(f, m);
+        finals[cmp][k] = new WienerKolmogorovEstimator(f, m);
     }
 
     /**
@@ -152,16 +152,16 @@ public class WienerKolmogorovEstimators {
      * @throws ArimaException
      */
     public ArimaModel finalErrorModel(final int cmp) throws ArimaException {
-        if (m_ucm == null) {
+        if (ucm == null) {
             return null;
         }
         // error model...
-        ArimaModel s = m_ucm.getComponent(cmp);
+        ArimaModel s = ucm.getComponent(cmp);
         if (s.isNull()) {
             return null;
         }
-        ArimaModel n = m_ucm.getComplement(cmp);
-        IArimaModel model = m_ucm.getModel();
+        ArimaModel n = ucm.getComplement(cmp);
+        IArimaModel model = ucm.getModel();
         BackFilter ar = model.getMa();
         SymmetricFilter ss = s.symmetricMa(), sn = n.symmetricMa();
         SymmetricFilter num = ss.times(sn);
@@ -178,15 +178,15 @@ public class WienerKolmogorovEstimators {
      */
     public WienerKolmogorovEstimator finalEstimator(final int cmp,
             final boolean signal) throws ArimaException, MatrixException {
-        if (m_ucm == null) {
+        if (ucm == null) {
             return null;
         }
-        IArimaModel a = m_ucm.getComponent(cmp);
+        IArimaModel a = ucm.getComponent(cmp);
         if (a.isNull()) {
             return null;
         }
         calcestimator(cmp, signal);
-        return m_final[cmp][signal ? 1 : 0];
+        return finals[cmp][signal ? 1 : 0];
     }
 
     /**
@@ -199,19 +199,19 @@ public class WienerKolmogorovEstimators {
     public StationaryTransformation<ILinearProcess> finalStationaryEstimator(final int cmp,
             final boolean signal) throws ArimaException {
         BackFilter ur;
-        if (m_ucm == null) {
+        if (ucm == null) {
             return null;
         }
-        IArimaModel model = m_ucm.getModel();
-        IArimaModel a = signal ? m_ucm.getComponent(cmp) : m_ucm.getComplement(cmp);
+        IArimaModel model = ucm.getModel();
+        IArimaModel a = signal ? ucm.getComponent(cmp) : ucm.getComplement(cmp);
         if (a.isNull()) {
             return null;
         }
 
         // stationary model: Ka * MAa(B)/Stationary(ARa(B))
         // *MAa(F)/MA(F)*[AR(F)/ARa(F)], ur=ARa(B)
-        BackFilter nar = m_ucm.getModel().getStationaryAr(), dar = a.getStationaryAr();
-        BackFilter nur = m_ucm.getModel().getNonStationaryAr(), dur = a.getNonStationaryAr();
+        BackFilter nar = ucm.getModel().getStationaryAr(), dar = a.getStationaryAr();
+        BackFilter nur = ucm.getModel().getNonStationaryAr(), dur = a.getNonStationaryAr();
 
         BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool();
         if (smp.simplify(nar, dar)) {
@@ -235,7 +235,7 @@ public class WienerKolmogorovEstimators {
      * @return
      */
     public UcarimaModel getUcarimaModel() {
-        return m_ucm;
+        return ucm;
     }
 
     /**
@@ -261,7 +261,7 @@ public class WienerKolmogorovEstimators {
         if (n < 0) {
             return null;
         }
-        LinearProcess ln = finalEstimator(cmp, true).getModel();
+        LinearProcess ln = finalEstimator(cmp, true).getEstimatorModel();
         RationalFilter rf = ln.getFilter();
         RationalForeFilter rff = rf.getRationalForeFilter().drop(n + 1);
         ForeFilter num = rff.getNumerator(), denom = rff.getDenominator();
@@ -301,7 +301,7 @@ public class WienerKolmogorovEstimators {
      */
     public double[] revisionVariance(final int cmp, final boolean signal,
             int start, final int n) throws ArimaException, MatrixException {
-        if (m_ucm.getComponent(cmp).isNull()) {
+        if (ucm.getComponent(cmp).isNull()) {
             return null;
         }
         double[] rvar = new double[n];
@@ -309,7 +309,7 @@ public class WienerKolmogorovEstimators {
         // double scale=0;
         double var0 = revisionModel(cmp, 0).getAutoCovarianceFunction().get(0);// , ref
         // scale).ACGF[0];
-        LinearProcess lm = finalEstimator(cmp, signal).getModel();
+        LinearProcess lm = finalEstimator(cmp, signal).getEstimatorModel();
         RationalFilter rf = lm.getFilter();
         double mvar = lm.getInnovationVariance();
 
@@ -366,14 +366,14 @@ public class WienerKolmogorovEstimators {
      */
     public double[] relativeRevisionVariance(final int cmp, final boolean signal,
             int start, final int n) throws ArimaException, MatrixException {
-        if (m_ucm.getComponent(cmp).isNull()) {
+        if (ucm.getComponent(cmp).isNull()) {
             return null;
         }
         double[] rvar = new double[n];
         // variance of concurrent estimator...
         // double scale=0;
         // scale).ACGF[0];
-        LinearProcess lm = finalEstimator(cmp, signal).getModel();
+        LinearProcess lm = finalEstimator(cmp, signal).getEstimatorModel();
         RationalFilter rf = lm.getFilter();
         double mvar = lm.getInnovationVariance();
         IntToDoubleFunction weights = rf.weights();
@@ -400,7 +400,7 @@ public class WienerKolmogorovEstimators {
     public double[] totalErrorVariance(final int cmp, final boolean signal,
             final int start, final int n) throws ArimaException,
             MatrixException {
-        if (m_ucm.getComponent(cmp).isNull()) {
+        if (ucm.getComponent(cmp).isNull()) {
             return null;
         }
         double[] tvar = revisionVariance(cmp, signal, start, n);
@@ -424,10 +424,10 @@ public class WienerKolmogorovEstimators {
      */
     public double variationPrecision(final int cmp,
             final int start, final int del, boolean all) {
-        if (m_ucm.getComponent(cmp).isNull()) {
+        if (ucm.getComponent(cmp).isNull()) {
             return Double.NaN;
         }
-        LinearProcess me = finalEstimator(cmp, true).getModel();
+        LinearProcess me = finalEstimator(cmp, true).getEstimatorModel();
         RationalFilter fe = me.getFilter();
         IntToDoubleFunction weights = fe.weights();
         double mv = me.getInnovationVariance();
@@ -463,10 +463,10 @@ public class WienerKolmogorovEstimators {
      */
     public double variationRevisionVariance(final int cmp,
             final int start, final int del, final int nrevs) {
-        if (m_ucm.getComponent(cmp).isNull()) {
+        if (ucm.getComponent(cmp).isNull()) {
             return Double.NaN;
         }
-        LinearProcess me = finalEstimator(cmp, true).getModel();
+        LinearProcess me = finalEstimator(cmp, true).getEstimatorModel();
         RationalFilter fe = me.getFilter();
         IntToDoubleFunction weights = fe.weights();
         double mv = me.getInnovationVariance();

@@ -28,35 +28,10 @@ import jdplus.math.linearfilters.RationalFilter;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
+@lombok.Value
 public class WienerKolmogorovEstimator {
 
-    private final LinearProcess m_model;
-
-    private final RationalFilter m_filter;
-
-    /**
-     * @param filter Wiener-Kolmogorov filter
-     * @param model Model of the estimator
-     */
-    public WienerKolmogorovEstimator(final RationalFilter filter, final LinearProcess model) {
-	m_filter = filter;
-	m_model = model;
-    }
-
-    /**
-     * The Wiener-Kolmogorov filter of the component
-     * @return
-     */
-    public RationalFilter getFilter() {
-	return m_filter;
-    }
-
-    /**
-     * The model of the final estimator of the component
-     * @return
-     */
-    public LinearProcess getModel() {
-	return m_model;
-    }
+    private final RationalFilter wienerKolmogorovFilter;
+    private final LinearProcess estimatorModel;
 
 }

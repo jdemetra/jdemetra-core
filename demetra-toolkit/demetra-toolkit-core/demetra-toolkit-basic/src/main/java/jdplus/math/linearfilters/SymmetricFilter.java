@@ -204,8 +204,8 @@ public final class SymmetricFilter implements IFiniteFilter {
     }
 
     /**
-     * Returns G(B) such that S(F, B)= G(B)* Q(F) + G(F) * Q(B). Cfr
-     * Burman/Wilson
+     * Returns G(B) such that S(F, B)= G(B)* Q(F) + G(F) * Q(B). 
+     * Cfr Burman/Wilson
      *
      * @param Q(B)
      * @return G(B)

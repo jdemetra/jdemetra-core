@@ -28,14 +28,11 @@ import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArmaModel;
 import jdplus.leastsquares.QRSolver;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import java.util.function.Supplier;
 import jdplus.leastsquares.QRSolution;
 import static jdplus.math.matrices.GeneralMatrix.transpose;
 import jdplus.math.matrices.Matrix;
-import jdplus.modelling.regression.IOutlierFactory;
 
 /**
  *

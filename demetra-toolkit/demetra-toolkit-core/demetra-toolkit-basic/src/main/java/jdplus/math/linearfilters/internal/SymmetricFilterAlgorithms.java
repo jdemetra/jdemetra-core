@@ -34,12 +34,12 @@ public class SymmetricFilterAlgorithms {
             if (Q.length() == 1) {
                 double[] data = filter.coefficientsAsPolynomial().toArray();
                 data[0] /= 2;
-                Polynomial tmp = Polynomial.ofInternal(data);
-                double q0 = Q.get(0);
+                double q0 = Math.abs(Q.get(0));
                 if (q0 != 1) {
-                    tmp = tmp.divide(q0);
-                }
-                return new BackFilter(tmp);
+                    for (int i=0; i<data.length; ++i)
+                        data[i]/=q0;
+                 }
+                return BackFilter.ofInternal(data);
             }
 
             Polynomial q = Q.asPolynomial();
@@ -56,11 +56,11 @@ public class SymmetricFilterAlgorithms {
                 for (int j = 0; j <= i; ++j) {
                     if (i - j <= nq) {
                         double a1 = q.get(i - j);
-                        a.set(i, j, a.get(i, j) + a1);
+                        a.add(i, j, a1);
                     }
                     if (r - i + j <= nq) {
                         double a2 = q.get(r - i + j);
-                        a.set(i, r - j, a.get(i, r - j) + a2);
+                        a.add(i, r - j, a2);
                     }
                 }
             }

@@ -23,8 +23,8 @@ import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
-import demetra.arima.SarmaSpecification;
+import demetra.arima.SarimaOrders;
+import demetra.arima.SarmaOrders;
 import jdplus.sarima.estimation.HannanRissanen;
 import jdplus.regsarima.IArmaInitializer;
 import jdplus.sarima.estimation.SarimaMapping;
@@ -115,8 +115,8 @@ public class HannanRissanenInitializer implements IArmaInitializer {
     @Override
     public SarimaModel initialize(RegArmaModel<SarimaModel> regs) {
         SarimaModel sarima = regs.getArma();
-        SarimaSpecification spec = sarima.specification();
-        SarmaSpecification dspec = spec.doStationary();
+        SarimaOrders spec = sarima.orders();
+        SarmaOrders dspec = spec.doStationary();
         try {
             if (spec.getParametersCount() == 0) {
                 return SarimaModel.builder(dspec).build();

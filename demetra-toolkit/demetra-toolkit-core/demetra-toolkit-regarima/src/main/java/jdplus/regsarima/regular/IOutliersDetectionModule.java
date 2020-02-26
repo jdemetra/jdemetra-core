@@ -30,6 +30,6 @@ public interface IOutliersDetectionModule {
      * @param criticalValue Critical value for the detection of outliers
      * @return True if the model was changed, false otherwise
      */
-    ProcessingResult process(RegArimaModelling model, double criticalValue);
+    ProcessingResult process(RegSarimaModelling model, double criticalValue);
 
 }

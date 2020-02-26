@@ -16,8 +16,13 @@
  */
 package jdplus.seats;
 
+import demetra.data.DoubleSeq;
 import demetra.design.Development;
-
+import demetra.processing.ProcessingLog;
+import demetra.seats.SeatsModelSpec;
+import demetra.seats.SeatsException;
+import jdplus.ucarima.UcarimaModel;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * @author Jean Palate
@@ -25,7 +30,11 @@ import demetra.design.Development;
 @Development(status = Development.Status.Release)
 public class SeatsKernel {
 
-    private SeatsToolkit toolkit;
+    public static final String SEATS = "Seats";
+    public static final String MODEL = "modelling", VALIDATION = "validation", DECOMPOSITION = "decomposition",
+            ESTIMATION = "estimation", BIAS = "bias correction";
+
+    private final SeatsToolkit toolkit;
 
     /**
      * @return the toolkit
@@ -34,81 +43,100 @@ public class SeatsKernel {
         return toolkit;
     }
 
-//    @Override
-//    public SeatsResults process(final TsData s) {
-//        InformationSet info = new InformationSet();
-//        if (toolkit == null) {
-//            toolkit = SeatsToolkit.create(new SeatsSpecification());
-//        }
-//        SeatsContext context = toolkit.getContext();
-//        context.check(s);
-//        SeatsModel model = toolkit.getModelBuilder().build(s, info, context);
-//        // step 1. Validate the current model;
-//        validate(model, info, context);
-//        IModelApproximator approximator = toolkit.getModelApproximator();
-//        approximator.pretest(model, info, context);
-//        approximator.startApproximation();
-//        // step 2. Try to decompose the model
-//        IArimaDecomposer decomposer = toolkit.getModelDecomposer();
-//        UcarimaModel ucm = null;
-//        int nround = 0;
-//        while (++nround <= 10) {
-//            ucm = decomposer.decompose(model, info, context);
-//            if (ucm == null && nround == 1) {
-//                addWarning(NON_DECOMPOSABLE, model, context);
-//            }
-//            if (ucm != null || context.getApproximationMode() == ApproximationMode.None) {
-//                break;
-//            }
-//            if (!approximator.approximate(model, info, context)) {
-////                info.addLog(DECOMPOSITION, "Approximation failed");
-//                break;
-//            } else {
-//                model.setChanged(true);
-////                info.addLog(DECOMPOSITION, model.getSarima().getSpecification());
-//            }
-//        }
-//        if (ucm == null) {
-//            throw new SeatsException(SeatsException.ERR_DECOMP);
-//        }
-//        SeatsResults results = new SeatsResults();
-//        results.model = model;
-//        results.decomposition = ucm;
-//
-//        results.initialComponents = toolkit.getComponentsEstimator().decompose(model, ucm, info, context);
-//        results.finalComponents = toolkit.getBiasCorrector().correct(results.initialComponents, info, context);
-//        results.info_ = info;
-//        results.addProcessingInformation(context.processingLog);
-//        return results;
-//    }
-//
-//    /**
-//     * @param toolkit the toolkit to set
-//     */
-//    public void setToolkit(ISeatsToolkit toolkit) {
-//        this.toolkit = toolkit;
-//    }
-//
-//    private void validate(SeatsModel model, InformationSet info,
-//            SeatsContext context) {
-//        IModelValidator validator = toolkit.getModelValidator();
-//        ModelStatus status = validator.validate(model.getSarima(), info);
-//        if (status == ModelStatus.Invalid) {
-//            throw new SeatsException(SeatsException.ERR_MODEL);
-//        } else if (status == ModelStatus.Changed) {
-//            model.setModel(validator.getNewModel());
-//            model.setCutOff(true);
-//            info.addWarning("Model adjusted to boundaries");
-//            addWarning(CUT_OFF, model, context);
-//        }
-//    }
-//
-//    private void addWarning(String msg, SeatsModel model, SeatsContext context) {
-//        if (context.processingLog != null) {
-//            context.processingLog.add(ProcessingInformation.warning(MODEL_DECOMPOSER,
-//                    DefaultModelDecomposer.class.getName(), msg, model.getSarima().clone()));
-//        }
-//    }
-//
-//    private final String NON_DECOMPOSABLE = "Non decomposable model", CUT_OFF = "Parameters cut off";
+    public SeatsKernel(@NonNull SeatsToolkit toolkit) {
+        this.toolkit = toolkit;
+    }
+
+    public SeatsResults process(final SeatsModelSpec modelSpec, ProcessingLog log) {
+        log.push(SEATS);
+        // step 0. Build the model
+        SeatsModel model=buildModel(modelSpec, log);
+        // step 1. Validate the current model;
+        validate(model, log);
+        // step 2. Try to decompose the model
+        decomposeModel(model, log);
+        // step 3. Computation of the components
+        estimateComponents(model, log);
+        // step 4. Bias correction
+        biasCorrection(model, log);
+        log.pop();
+        return results(model);
+    }
+    
+    private SeatsModel buildModel(SeatsModelSpec modelSpec, ProcessingLog log){
+        log.push(MODEL);
+        SeatsModel model = SeatsModel.of(modelSpec);
+        model.setCurrentModel(model.getOriginalModel());
+        log.pop();
+        return model;
+    }
+
+    private void validate(SeatsModel model, ProcessingLog log) {
+        log.push(VALIDATION);
+        IModelValidator validator = toolkit.getModelValidator();
+        if (!validator.validate(model.getCurrentModel())) {
+            model.setCurrentModel(validator.getNewModel());
+            log.info(CUT_OFF);
+        }
+        log.pop();
+    }
+
+    private final String NON_DECOMPOSABLE = "Non decomposable model",
+            CUT_OFF = "Arima parameters cut off",
+            APPROXIMATION = "Model replaced by an approximation",
+            NOISY = "Noisy model used";
+
+
+    private void decomposeModel(SeatsModel model, ProcessingLog log) {
+        log.push(DECOMPOSITION);
+        IModelApproximator approximator = toolkit.getModelApproximator();
+        IModelDecomposer decomposer = toolkit.getModelDecomposer();
+        UcarimaModel ucm = null;
+        int nround = 0;
+        while (++nround <= 10) {
+            log.step("Canonical decomposition");
+            ucm = decomposer.decompose(model.getCurrentModel(), model.getOriginalModel().getFrequency());
+            if (ucm == null && nround == 1) {
+                log.warning(NON_DECOMPOSABLE);
+            }
+            if (ucm != null || approximator == null) {
+                break;
+            }
+            if (!approximator.approximate(model)) {
+                break;
+            } else {
+                log.step(APPROXIMATION, model.getCurrentModel().orders());
+            }
+        }
+        if (ucm == null) {
+            throw new SeatsException(SeatsException.ERR_DECOMP);
+        }
+        if (!ucm.getModel().equals(model.getCurrentModel())) {
+            log.warning(NOISY);
+        }
+        model.setUcarimaModel(ucm);
+
+        log.pop();
+    }
+
+    private void estimateComponents(SeatsModel model, ProcessingLog log) {
+        log.step(ESTIMATION);
+        IComponentsEstimator componentsEstimator = toolkit.getComponentsEstimator();
+        model.setInitialComponents(componentsEstimator.decompose(model));
+    }
+
+    private void biasCorrection(SeatsModel model, ProcessingLog log) {
+        log.step(BIAS);
+        IBiasCorrector bias = toolkit.getBiasCorrector();
+        if (bias != null) {
+            bias.correctBias(model);
+        }
+    }
+    
+    private SeatsResults results(SeatsModel model){
+        return new SeatsResults(model.getOriginalModel(), model.getCurrentModel(), 
+                model.isMeanCorrection(), model.getUcarimaModel(),
+                model.getInitialComponents(), model.getFinalComponents());
+        
+    }
 }

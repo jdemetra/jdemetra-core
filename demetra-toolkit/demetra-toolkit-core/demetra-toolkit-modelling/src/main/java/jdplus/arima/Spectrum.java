@@ -28,7 +28,10 @@ import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
+import demetra.math.Complex;
 import java.util.function.DoubleUnaryOperator;
+import jdplus.math.linearfilters.SymmetricFrequencyResponse;
+import jdplus.math.polynomials.Polynomial;
 
 /**
  * The (pseudo-)spectrum is the Fourier transform of the auto-covariance
@@ -347,9 +350,9 @@ public final class Spectrum {
                 m_min = y;
                 m_x = Math.PI;
             }
-            int nd = Math.max(spectrum.num.getUpperBound(), spectrum.denom.getUpperBound())/2;
             // degree of the derivative
-            double step = Math.PI / nd, a = 0 ;
+            int nd = (spectrum.num.getUpperBound()+spectrum.denom.getUpperBound())-1;
+            double step = Math.PI / nd, a = step/2 ;
             for (int i = 0; i < nd; ++i, a += step) {
                 double b = a+step;
                 double f = spectrum.denom.realFrequencyResponse(a);
@@ -381,7 +384,104 @@ public final class Spectrum {
                 }
             }
         }
-    }
+         /**
+         * Computes the minimum of the spectrum, by explicit computation of the
+         * roots of the derivative. This implementation can be instable in the
+         * case of complex models (MA and AR seasonal parameters)
+         *
+         * @param spectrum
+         */
+        @Deprecated
+        public void minimize2(final Spectrum spectrum) {
+            SymmetricFrequencyResponse fnum = new SymmetricFrequencyResponse(spectrum.num),
+                    fdenom = new SymmetricFrequencyResponse(spectrum.denom);
+            double scale = fdenom.getIntegral();
+
+            Polynomial num = fnum.getPolynomial().divide(scale),
+                    denom = fdenom.getPolynomial().divide(scale);
+            if (num.isZero()) {
+                m_min = 0;
+                m_x = 0;
+                return;
+            }
+            if (num.degree() == 0 && denom.degree() == 0) {
+                m_min = num.get(0) / denom.get(0);
+                m_x = 0;
+                return;
+            }
+            m_x = 0;
+            m_min = Double.MAX_VALUE;
+            double y = evaluate(num, denom, 0);
+            if (!Double.isNaN(y)) {
+                // evaluates at pi/2 (cos pi/2 = 0)
+                m_min = y;
+                m_x = Math.PI / 2;
+            }
+            // evaluates at 0 (sin 0 = 0)
+            y = evaluate(num, denom, 1);
+            if (!Double.isNaN(y) && y < m_min) {
+                m_min = y;
+                m_x = 0;
+            }
+            // evaluates at pi (sin pi = 0)
+            y = evaluate(num, denom, -1);
+            if (!Double.isNaN(y) && y < m_min) {
+                m_min = y;
+                m_x = Math.PI;
+            }
+            // real roots in [-1, 1]
+            Polynomial r = denom.degree() > 0 ? num.derivate().times(denom).minus(
+                    num.times(denom.derivate())) : num.derivate();
+            Complex[] roots = r.roots();
+            if (roots != null) {
+                for (int i = 0; i < roots.length; ++i) {
+                    if (Math.abs(roots[i].getIm()) < EPS) {
+                        double x = roots[i].getRe();
+                        if (x > -1 && x < 1) {
+                            y = evaluate(num, denom, x);
+                            if (!Double.isNaN(y) && y < m_min) {
+                                m_min = y;
+                                m_x = Math.acos(x);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private double evaluate(Polynomial num, Polynomial denom, double x) {
+            if (Math.abs(x) < EPS2) {
+                x = 0;
+            }
+            double n = num.evaluateAt(x), d = denom.evaluateAt(x);
+            // normal case: 
+            if (Math.abs(d) > EPS2) {
+                return n / d;
+            } else if (Math.abs(n) > EPS2) {
+                return Double.NaN;
+            } else if (x == 0) {
+                int rmax = Math.min(num.degree(), denom.degree());
+                for (int i = 1; i <= rmax; ++i) {
+                    double cn = num.get(i), cd = denom.get(i);
+                    boolean sn = Math.abs(cn) > EPS;
+                    boolean sd = Math.abs(cd) > EPS;
+                    if (sn && sd) {
+                        return cn / cd;
+                    } else if (sn) {
+                        return Double.NaN;
+                    } else if (sd) {
+                        return 0;
+                    }
+                }
+                return Double.NaN;
+            } else {
+                double[] r = new double[]{1, -x};
+                Polynomial R = Polynomial.of(r);
+                return evaluate(num.divide(R), denom.divide(R), x);
+
+            }
+        }
+   }
 
     /**
      *

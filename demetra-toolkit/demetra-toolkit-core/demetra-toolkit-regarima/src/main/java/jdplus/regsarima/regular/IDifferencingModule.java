@@ -25,6 +25,6 @@ package jdplus.regsarima.regular;
  */
 public interface IDifferencingModule {
     
-    ProcessingResult process(RegArimaModelling context);
+    ProcessingResult process(RegSarimaModelling context);
     
 }

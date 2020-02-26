@@ -18,7 +18,7 @@
 package jdplus.tramo;
 
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.stats.tests.NiidTests;
 import demetra.data.DoubleSeq;
 import jdplus.regarima.RegArimaEstimation;
@@ -34,7 +34,7 @@ public class ModelVerifier {
 
     private static final double OUT = .03, NORMAL = 6, SKEWNESS = 2.576, RUNS = 2.576, QSTAT = .05, QS = 6, MEAN = .01;
 
-    public boolean accept(RegArimaModelling context) {
+    public boolean accept(RegSarimaModelling context) {
         ModelDescription desc = context.getDescription();
         RegArimaEstimation<SarimaModel> estimation = context.getEstimation();
         int nz = desc.getSeries().getValues().count(x->Double.isFinite(x));

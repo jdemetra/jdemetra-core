@@ -30,12 +30,22 @@ import jdplus.ssf.univariate.SsfData;
 import jdplus.ucarima.UcarimaModel;
 import jdplus.ucarima.ssf.SsfUcarima;
 import demetra.data.DoubleSeq;
+import jdplus.data.DataBlock;
+import jdplus.math.matrices.QuadraticForm;
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
 public class KalmanEstimator implements IComponentsEstimator {
+    
+    private final int nfcasts, nbcasts;
+    
+    public KalmanEstimator(int nbcasts, int nfcasts){
+        this.nfcasts=nfcasts;
+        this.nbcasts=nbcasts;
+    }
+    
 
     /**
      *
@@ -45,21 +55,35 @@ public class KalmanEstimator implements IComponentsEstimator {
     @Override
     public SeriesDecomposition decompose(SeatsModel model) {
         SeriesDecomposition.Builder builder = SeriesDecomposition.builder(DecompositionMode.Additive);
-        DoubleSeq s = model.getSeries();
-        int n = s.length(), nf = model.getForecastsCount(), nb = model.getBackcastsCount();
+        DoubleSeq s = model.getTransformedSeries();
+        int n = s.length(), nf = model.extrapolationCount(nfcasts),
+                nb = model.extrapolationCount(nbcasts);
 
-        CompositeSsf ssf = SsfUcarima.of(model.getUcarimaModel());
+        ComponentType[] cmps = model.componentsType();
+        UcarimaModel ucm = model.compactUcarimaModel();
+
+        CompositeSsf ssf = SsfUcarima.of(ucm);
         // compute KS
         ISsfData data = new ExtendedSsfData(new SsfData(s), nb, nf);
-        DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(ssf, data, true, true);
-        // for using the same standard error (unbiased stdandard error, not ml)
-        srslts.rescaleVariances(model.getInnovationVariance());
+        double mvar = model.getInnovationVariance();
+        DefaultSmoothingResults srslts;
+        if (mvar != 0) {
+            // for using the same standard error (unbiased stdandard error, not ml)
+            srslts = DkToolkit.sqrtSmooth(ssf, data, true, false);
+            srslts.rescaleVariances(mvar);
+        } else {
+            srslts = DkToolkit.sqrtSmooth(ssf, data, true, true);
+        }
 
-        UcarimaModel ucm = model.getUcarimaModel();
         int[] pos = ssf.componentsPosition();
-        for (int i = 0; i < ucm.getComponentsCount(); ++i) {
-            ComponentType type = model.getTypes()[i];
-            DoubleSeq cmp = srslts.getComponent(pos[i]);
+        DoubleSeq cmp;
+        int scmp = -1;
+        for (int i = 0; i < pos.length; ++i) {
+            ComponentType type = cmps[i];
+            if (type == ComponentType.Seasonal) {
+                scmp = i;
+            }
+            cmp = srslts.getComponent(pos[i]);
             if (nb > 0) {
                 builder.add(cmp.range(0, nb), type, ComponentInformation.Backcast);
             }
@@ -67,7 +91,7 @@ public class KalmanEstimator implements IComponentsEstimator {
                 builder.add(cmp.extract(nb + n, nf), type, ComponentInformation.Forecast);
             }
             builder.add(cmp.extract(nb, n), type);
-            cmp = srslts.getComponentVariance(pos[i]);
+            cmp = srslts.getComponentVariance(pos[i]).fn(x -> x <= 0 ? 0 : Math.sqrt(x));
             if (nb > 0) {
                 builder.add(cmp.range(0, nb), type, ComponentInformation.StdevBackcast);
             }
@@ -75,7 +99,58 @@ public class KalmanEstimator implements IComponentsEstimator {
                 builder.add(cmp.extract(nb + n, nf), type, ComponentInformation.StdevForecast);
             }
             builder.add(cmp.extract(nb, n), type, ComponentInformation.Stdev);
+            if (type == ComponentType.Seasonal) {
+                // No missing values !
+                builder.add(cmp.extract(nb, n), ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
+            }
+        }
+
+        DataBlock z = DataBlock.make(ssf.getStateDim());
+        ssf.measurement().loading().Z(0, z);
+        if (nb > 0) {
+            double[] a = new double[nb];
+            for (int i = 0; i < a.length; ++i) {
+                a[i] = QuadraticForm.apply(srslts.P(i), z);
+            }
+            cmp = DoubleSeq.of(a).fn(x -> x <= 0 ? 0 : Math.sqrt(x));
+            builder.add(cmp, ComponentType.Series, ComponentInformation.StdevBackcast);
+            if (scmp < 0) {
+                builder.add(cmp, ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast);
+            }
+        }
+        if (nf > 0) {
+            double[] a = new double[nb];
+            for (int i = 0, j = n + nb; i < a.length; ++i, ++j) {
+                a[i] = QuadraticForm.apply(srslts.P(j), z);
+            }
+            cmp = DoubleSeq.of(a).fn(x -> x <= 0 ? 0 : Math.sqrt(x));
+            builder.add(cmp, ComponentType.Series, ComponentInformation.StdevForecast);
+            if (scmp < 0) {
+                builder.add(cmp, ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
+            }
+        }
+        // idem for SA
+
+        if (scmp >= 0) {
+            z.range(pos[scmp], scmp == pos.length - 1 ? ssf.getStateDim() : pos[scmp + 1]).set(0);
+            if (nb > 0) {
+                double[] a = new double[nb];
+                for (int i = 0; i < a.length; ++i) {
+                    a[i] = QuadraticForm.apply(srslts.P(i), z);
+                }
+                cmp = DoubleSeq.of(a).fn(x -> x <= 0 ? 0 : Math.sqrt(x));
+                builder.add(cmp, ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast);
+            }
+            if (nf > 0) {
+                double[] a = new double[nb];
+                for (int i = 0, j = n + nb; i < a.length; ++i, ++j) {
+                    a[i] = QuadraticForm.apply(srslts.P(j), z);
+                }
+                cmp = DoubleSeq.of(a).fn(x -> x <= 0 ? 0 : Math.sqrt(x));
+                builder.add(cmp, ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
+            }
         }
         return builder.build();
     }
+
 }

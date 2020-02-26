@@ -21,15 +21,14 @@ import demetra.regarima.RegArimaSpec;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.math.Complex;
-import demetra.timeseries.regression.ModellingContext;
+import demetra.timeseries.regression.modelling.ModellingContext;
 import jdplus.regsarima.regular.ILogLevelModule;
 import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.IModelBuilder;
-import jdplus.regsarima.regular.IPreprocessor;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.timeseries.TsData;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.regsarima.regular.IArmaModule;
@@ -38,30 +37,31 @@ import jdplus.regsarima.regular.IOutliersDetectionModule;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.RegressionVariablesTest;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.regarima.RegArimaEstimation;
+import jdplus.regsarima.regular.RegSarimaProcessor;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class X12Preprocessor implements IPreprocessor {
+public class X12Preprocessor implements RegSarimaProcessor {
 
     @lombok.Value
     @lombok.Builder
     public static class AmiOptions {
-        
-        public static AmiOptionsBuilder builder(){
-            AmiOptionsBuilder builder=new AmiOptionsBuilder();
-            builder.checkMu=true;
-            builder.precision=1e-7;
+
+        public static AmiOptionsBuilder builder() {
+            AmiOptionsBuilder builder = new AmiOptionsBuilder();
+            builder.checkMu = true;
+            builder.precision = 1e-7;
             builder.va=0;
-            builder.reduceVa=.14286;
-            builder.ljungBoxLimit=.95;
-            builder.urLimit=.95;
-            builder.acceptAirline=false;
-            builder.mixedModel=true;
+            builder.reduceVa = .14286;
+            builder.ljungBoxLimit = .95;
+            builder.urLimit = .95;
+            builder.acceptAirline = false;
+            builder.mixedModel = true;
             return builder;
         }
 
@@ -180,7 +180,7 @@ public class X12Preprocessor implements IPreprocessor {
 
     private double va0 = 0, curva = 0;
     private double pcr;
-    private RegArimaModelling reference;
+    private RegSarimaModelling reference;
     private boolean needOutliers;
     private boolean needAutoModelling;
     private int loop, round;
@@ -214,17 +214,13 @@ public class X12Preprocessor implements IPreprocessor {
     }
 
     @Override
-    public ModelEstimation process(TsData originalTs, RegArimaModelling context) {
+    public ModelEstimation process(TsData originalTs) {
         clear();
-         ModelDescription desc = modelBuilder.build(originalTs, null);
-         if (desc == null) {
+        ModelDescription desc = modelBuilder.build(originalTs, null);
+        if (desc == null) {
             throw new X13Exception("Initialization failed");
         }
-      if (context == null) {
-            context = RegArimaModelling.of(desc);
-        }else
-        context.setDescription(desc);
-
+        RegSarimaModelling context = RegSarimaModelling.of(desc);
         // initialize some internal variables
         if (outliers != null) {
             va0 = options.getVa();
@@ -243,7 +239,7 @@ public class X12Preprocessor implements IPreprocessor {
         return rslt;
     }
 
-    private ModelEstimation calc(RegArimaModelling context) {
+    private ModelEstimation calc(RegSarimaModelling context) {
         try {
 
             if (transformation != null) {
@@ -264,7 +260,7 @@ public class X12Preprocessor implements IPreprocessor {
                 if (context.needEstimation()) {
                     context.estimate(options.precision);
                 }
-                reference = RegArimaModelling.copyOf(context);
+                reference = RegSarimaModelling.copyOf(context);
                 ModelController controller = new ModelController(.95);
                 boolean ok = controller.accept(context);
                 plbox0 = 1 - controller.getLjungBoxTest().getPValue();
@@ -353,7 +349,7 @@ public class X12Preprocessor implements IPreprocessor {
         return differencing != null || arma != null;
     }
 
-    private ProcessingResult checkMu(RegArimaModelling context, boolean initial) {
+    private ProcessingResult checkMu(RegSarimaModelling context, boolean initial) {
         if (!options.checkMu) {
             return ProcessingResult.Unchanged;
         }
@@ -362,7 +358,7 @@ public class X12Preprocessor implements IPreprocessor {
         return meanTest.test(context);
     }
 
-    private boolean pass2(boolean defModel, RegArimaModelling context) {
+    private boolean pass2(boolean defModel, RegSarimaModelling context) {
         int ichk = 0;
         ModelDescription desc = context.getDescription();
         int naut = (int) desc.variables().filter(v -> v.isOutlier(false)).count();
@@ -371,8 +367,8 @@ public class X12Preprocessor implements IPreprocessor {
         RegArimaEstimation<SarimaModel> estimation0 = reference.getEstimation();
 
         int naut0 = (int) desc0.variables().filter(v -> v.isOutlier(false)).count();
-        SarimaSpecification spec0 = desc0.specification(),
-                spec = desc.specification();
+        SarimaOrders spec0 = desc0.specification();
+        SarimaOrders spec = desc.specification();
         SarimaModel arima = desc.arima();
         boolean mu0 = desc0.isMean(),
                 mu = desc.isMean();
@@ -403,7 +399,7 @@ public class X12Preprocessor implements IPreprocessor {
             }
         }
         if (ichk > 0) {
-            context.set(desc0,estimation0);
+            context.set(desc0, estimation0);
             plbox = plbox0;
             rvr = rvr0;
             defModel = true;
@@ -411,7 +407,7 @@ public class X12Preprocessor implements IPreprocessor {
             rtval0 = rtval;
             rvr0 = rvr;
             plbox0 = plbox;
-            reference = RegArimaModelling.copyOf(context);
+            reference = RegSarimaModelling.copyOf(context);
         }
 
         if (loop == 1) {
@@ -443,9 +439,9 @@ public class X12Preprocessor implements IPreprocessor {
     }
 
     // use the default model
-    private void lastSolution(RegArimaModelling context) {
+    private void lastSolution(RegSarimaModelling context) {
         ModelDescription description = context.getDescription();
-        SarimaSpecification nspec = description.specification();
+        SarimaOrders nspec = description.specification();
         nspec.setP(3);
         if (nspec.getBd() > 0) {
             nspec.setBp(0);
@@ -470,7 +466,7 @@ public class X12Preprocessor implements IPreprocessor {
         needAutoModelling = false;
     }
 
-    private ProcessingResult regAIC(RegArimaModelling context) {
+    private ProcessingResult regAIC(RegSarimaModelling context) {
         ProcessingResult rslt = ProcessingResult.Unchanged;
         if (calendarTest != null && calendarTest.test(context) == ProcessingResult.Changed) {
             rslt = ProcessingResult.Changed;
@@ -484,11 +480,11 @@ public class X12Preprocessor implements IPreprocessor {
         return rslt;
     }
 
-    private void checkUnitRoots(RegArimaModelling context) {
+    private void checkUnitRoots(RegSarimaModelling context) {
         ModelDescription desc = context.getDescription();
         //quasi-unit roots of ar are changed in true unit roots
         SarimaModel m = desc.arima();
-        SarimaSpecification nspec = m.specification();
+        SarimaOrders nspec = m.orders();
 
         boolean ok = true;
         if (nspec.getP() > 0 && nspec.getD() < MAXD) {
@@ -511,7 +507,7 @@ public class X12Preprocessor implements IPreprocessor {
         }
     }
 
-    private void redoEstimation(RegArimaModelling context) {
+    private void redoEstimation(RegSarimaModelling context) {
         context.estimate(options.precision);
         // check mean
         ModelDescription desc = context.getDescription();
@@ -536,7 +532,7 @@ public class X12Preprocessor implements IPreprocessor {
         rtval0 = controller.getRTval();
         rvr0 = controller.getRvr();
         plbox0 = 1 - controller.getLjungBoxTest().getPValue();
-        reference = RegArimaModelling.copyOf(context);
+        reference = RegSarimaModelling.copyOf(context);
 
     }
 
@@ -555,10 +551,10 @@ public class X12Preprocessor implements IPreprocessor {
         return n;
     }
 
-    private void checkMA(RegArimaModelling context) {
+    private void checkMA(RegSarimaModelling context) {
         ModelDescription description = context.getDescription();
         SarimaModel m = description.arima();
-        SarimaSpecification nspec = m.specification();
+        SarimaOrders nspec = m.orders();
         if (nspec.getQ() == 0 || nspec.getD() == 0) {
             return;
         }

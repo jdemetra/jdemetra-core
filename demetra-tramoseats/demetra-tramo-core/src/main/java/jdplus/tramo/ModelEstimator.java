@@ -7,7 +7,7 @@ package jdplus.tramo;
 
 import demetra.design.Development;
 import jdplus.regsarima.regular.IModelEstimator;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.tramo.internal.OutliersDetectionModule;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
@@ -25,7 +25,7 @@ class ModelEstimator implements IModelEstimator {
     }
 
     @Override
-    public boolean estimate(RegArimaModelling context) {
+    public boolean estimate(RegSarimaModelling context) {
         context.getDescription().removeVariable(var -> var.isOutlier(false));
         if (outliers != null) {
             outliers.process(context, va);
@@ -37,7 +37,7 @@ class ModelEstimator implements IModelEstimator {
         }
     }
 
-    private boolean calc(RegArimaModelling context) {
+    private boolean calc(RegSarimaModelling context) {
         RegSarimaProcessor processor = RegSarimaProcessor.builder()
                 .minimizer(LevenbergMarquardtMinimizer.builder())
                 .precision(eps)                

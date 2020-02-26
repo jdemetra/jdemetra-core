@@ -213,15 +213,19 @@ public class UcarimaModel implements Cloneable {
     public IArimaModel getModel() {
         return model;
     }
+    
+    private ArimaModel of(ArimaModel m){
+        return new ArimaModel(m.getStationaryAr(), m.getNonStationaryAr(), m.getMa(), m.getInnovationVariance());
+    }
 
     public ArimaModel sum() {
         ArimaModel s = null;
         for (int i = 0; i < components.length; ++i) {
             if (!components[i].isNull()) {
                 if (s == null) {
-                    s = components[i];
+                    s = of(components[i]);
                 } else {
-                    s = s.plus(components[i], false);
+                    s = s.plus(of(components[i]), false);
                 }
             }
         }

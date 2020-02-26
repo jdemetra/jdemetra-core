@@ -19,7 +19,7 @@ package jdplus.sarima.estimation;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
-import demetra.arima.SarmaSpecification;
+import demetra.arima.SarmaOrders;
 import demetra.data.DoubleSeq;
 import jdplus.arima.ArimaSeriesGenerator;
 import jdplus.sarima.SarimaModel;
@@ -33,7 +33,7 @@ public class HannanRissanenTest {
     static final DoubleSeq airlineData, data;
 
     static {
-        SarmaSpecification spec = new SarmaSpecification(12);
+        SarmaOrders spec = new SarmaOrders(12);
         spec.setQ(1);
         spec.setBq(1);
         SarimaModel arima = SarimaModel.builder(spec)
@@ -58,7 +58,7 @@ public class HannanRissanenTest {
     @Ignore
     public void testAirline() {
         HannanRissanen hr = HannanRissanen.builder().build();
-        SarmaSpecification spec = new SarmaSpecification(12);
+        SarmaOrders spec = new SarmaOrders(12);
         spec.setQ(1);
         spec.setBq(1);
         hr.process(airlineData, spec);
@@ -70,7 +70,7 @@ public class HannanRissanenTest {
     @Ignore
     public void test3101() {
         HannanRissanen hr = HannanRissanen.builder().build();
-        SarmaSpecification spec = new SarmaSpecification(12);
+        SarmaOrders spec = new SarmaOrders(12);
         spec.setP(3);
         spec.setQ(1);
         spec.setBq(1);
@@ -83,7 +83,7 @@ public class HannanRissanenTest {
     @Ignore
     public void test3101_burg() {
         HannanRissanen hr = HannanRissanen.builder().finalCorrection(false).initialization(HannanRissanen.Initialization.Burg).build();
-        SarmaSpecification spec = new SarmaSpecification(12);
+        SarmaOrders spec = new SarmaOrders(12);
         spec.setP(3);
         spec.setQ(1);
         spec.setBq(1);
@@ -135,7 +135,7 @@ public class HannanRissanenTest {
             t0 = System.currentTimeMillis();
             for (int i = 0; i < (q == 0 ? 100 : K); ++i) {
                 HannanRissanen hr = HannanRissanen.builder().build();
-                SarmaSpecification spec = new SarmaSpecification(12);
+                SarmaOrders spec = new SarmaOrders(12);
                 spec.setQ(1);
                 spec.setBq(1);
                 hr.process(airlineData, spec);

@@ -23,7 +23,7 @@ import jdplus.linearmodel.LinearModel;
 import jdplus.regarima.RegArmaModel;
 import jdplus.regsarima.regular.IAmiController;
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
 import jdplus.stats.tests.LjungBox;
 import jdplus.stats.tests.StatisticalTest;
@@ -52,7 +52,7 @@ public class ModelController implements IAmiController {
     }
 
     @Override
-    public boolean accept(RegArimaModelling context) {
+    public boolean accept(RegSarimaModelling context) {
         ModelDescription desc = context.getDescription();
         RegArimaEstimation<SarimaModel> estimation = context.getEstimation();
         

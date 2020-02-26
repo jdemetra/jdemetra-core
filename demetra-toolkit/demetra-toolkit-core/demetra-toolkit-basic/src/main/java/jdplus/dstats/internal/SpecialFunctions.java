@@ -17,6 +17,7 @@
 package jdplus.dstats.internal;
 
 import demetra.design.Development;
+import static demetra.math.Constants.SQTPI;
 import jdplus.dstats.DStatException;
 
 /**
@@ -29,8 +30,7 @@ public class SpecialFunctions {
 	    -86.50532032941677, 24.01409824083091, -1.231739572450155,
 	    0.1208650973866179e-2, -0.5395239384953e-5 };
 
-    private static final double c_sqrtpi = 2.5066282746310005;
-    private static final double c_eps = 1.0e-16;
+    private static final double EPS = 1.0e-16;
     private static final double c_sqrt2 = Math.sqrt(2.0);
     private static final double c_log2 = Math.log(2.0);
     private static int m_maxiter = 1000;
@@ -271,7 +271,7 @@ public class SpecialFunctions {
 	for (int i = 0; i < 6; i++)
 	    series += (c_gammaconst[i] / (x + (i + 1)));
 
-	series *= c_sqrtpi;
+	series *= SQTPI;
 	series *= ep;
 	series *= t;
 
@@ -407,7 +407,7 @@ public class SpecialFunctions {
 	    d = 1.0 / d;
 	    double del = d * c;
 	    h *= del;
-	    if (Math.abs(del - 1.0) <= c_eps) {
+	    if (Math.abs(del - 1.0) <= EPS) {
 		stopped = true;
 		break;
 	    }
@@ -436,7 +436,7 @@ public class SpecialFunctions {
 	    ++aa;
 	    div *= x / aa;
 	    sum += div;
-	    if (Math.abs(div) < Math.abs(sum) * c_eps) {
+	    if (Math.abs(div) < Math.abs(sum) * EPS) {
 		double gser = sum
 			* Math.exp(-x + a * Math.log(x) - logGamma(a));
 		return gser;
@@ -522,7 +522,7 @@ public class SpecialFunctions {
 	    d = 1.0 / d;
 	    double del = c * d;
 	    h *= del;
-	    if (Math.abs(del - 1.0) < c_eps) {
+	    if (Math.abs(del - 1.0) < EPS) {
 		stopped = true;
 		break;
 	    }
@@ -577,7 +577,7 @@ public class SpecialFunctions {
 	    series += (c_gammaconst[i] / (x + (i + 1)));
 
 	series = Math.log(series);
-	series += Math.log(c_sqrtpi);
+	series += Math.log(SQTPI);
 
 	t += series;
 	return (t - Math.log(x));
@@ -603,7 +603,7 @@ public class SpecialFunctions {
 
 	double larg = Math.log(x);
 	double exp = (larg - t50) * (larg - t50) * (-1.0 / (2.0 * s * s));
-	double res = Math.exp(exp - Math.log(c_sqrtpi * s * x));
+	double res = Math.exp(exp - Math.log(SQTPI * s * x));
 	return res;
     }
 
@@ -635,7 +635,7 @@ public class SpecialFunctions {
     public static double normalDensity(final double x, final double m,
 	    final double s) {
 	double arg = Math.pow((x - m) / s, 2.0) * -0.5;
-	return Math.exp(arg - Math.log(s) - Math.log(c_sqrtpi));
+	return Math.exp(arg - Math.log(s) - Math.log(SQTPI));
     }
 
     /**

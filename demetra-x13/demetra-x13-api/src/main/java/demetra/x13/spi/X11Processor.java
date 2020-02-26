@@ -10,7 +10,7 @@ import nbbrd.service.ServiceDefinition;
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.regarima.RegArimaSpec;
-import demetra.timeseries.regression.ModellingContext;
+import demetra.timeseries.regression.modelling.ModellingContext;
 import demetra.x11.X11Spec;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

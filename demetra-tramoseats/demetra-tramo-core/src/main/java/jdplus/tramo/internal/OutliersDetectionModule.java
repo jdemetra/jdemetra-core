@@ -28,13 +28,13 @@ import jdplus.regarima.outlier.FastOutlierDetector;
 import jdplus.regarima.outlier.SingleOutlierDetector;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import jdplus.regsarima.regular.IOutliersDetectionModule;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -163,7 +163,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
                 .maximumLikelihood(cmvx)
                 .maxOutliers(maxOutliers)
                 .maxRound(maxRound)
-                .processor(RegArimaUtility.processor(desc.getArimaComponent().defaultMapping(), true, eps));
+                .processor(RegArimaUtility.processor(true, eps));
         FastOutliersDetector impl = builder.build();
         TsDomain odom = domain.select(span);
         int start = domain.indexOf(odom.getStartPeriod()), end = start + odom.getLength();
@@ -204,7 +204,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
     }
 
     @Override
-    public ProcessingResult process(RegArimaModelling context, double criticalValue) {
+    public ProcessingResult process(RegSarimaModelling context, double criticalValue) {
         ModelDescription model = context.getDescription();
         TsDomain domain = model.getEstimationDomain();
         FastOutliersDetector impl = make(model, criticalValue);
@@ -243,7 +243,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         // int rslt = ml ? 1 : 0;
         int n = desc.getSeries().getValues().count(x -> Double.isFinite(x));
         // first, check if od is possible
-        SarimaSpecification spec = desc.specification();
+        SarimaOrders spec = desc.specification();
         int nparm = Math.max(spec.getD() + spec.getP() + spec.getPeriod()
                 * (spec.getBd() + spec.getBp()), spec.getQ()
                 + spec.getPeriod() * spec.getBq())

@@ -19,7 +19,7 @@ package demetra.tramo;
 import demetra.design.Development;
 import demetra.design.LombokWorkaround;
 import demetra.modelling.TransformationType;
-import demetra.modelling.regarima.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.timeseries.regression.RegressionTestType;
 import demetra.timeseries.regression.TradingDaysType;
 import demetra.util.Validatable;
@@ -36,7 +36,7 @@ import lombok.NonNull;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public final class TramoSpec implements Validatable<TramoSpec> {
 
-    private static final TramoSpec DEFAULT = TramoSpec.builder().build();
+    public static final TramoSpec DEFAULT = TramoSpec.builder().build();
 
     /**
      * Gets the predefined Arima specification. The AutoModel and the Arima
@@ -117,10 +117,7 @@ public final class TramoSpec implements Validatable<TramoSpec> {
      */
     @LombokWorkaround
     public static Builder builder() {
-        SarimaSpec sarima = SarimaSpec.builder()
-                .validator(SarimaValidator.VALIDATOR)
-                .airline()
-                .build();
+        SarimaSpec sarima = SarimaSpec.airline();
         RegressionSpec regs = RegressionSpec.builder()
                 .mean(true)
                 .build();
@@ -203,22 +200,16 @@ public final class TramoSpec implements Validatable<TramoSpec> {
                 .test(true)
                 .build();
 
-        TradingDaysSpec wd = TradingDaysSpec.builder()
-                .tradingDaysType(TradingDaysType.WorkingDays)
-                .leapYear(true)
-                .regressionTestType(RegressionTestType.Separate_T)
-                .build();
+        TradingDaysSpec wd = TradingDaysSpec.td(TradingDaysType.WorkingDays, 
+                true, RegressionTestType.Separate_T);
 
-        TradingDaysSpec td = TradingDaysSpec.builder()
-                .tradingDaysType(TradingDaysType.TradingDays)
-                .leapYear(true)
-                .regressionTestType(RegressionTestType.Separate_T)
-                .build();
+        TradingDaysSpec td = TradingDaysSpec.td(TradingDaysType.TradingDays,
+                true, RegressionTestType.Separate_T);
 
-        TradingDaysSpec dc = td.toBuilder()
-                .automatic(true)
-                .build();
-        EasterSpec ec = e.toBuilder()
+        TradingDaysSpec dc = TradingDaysSpec.automatic(TradingDaysSpec.AutoMethod.FTest, 
+                TradingDaysSpec.DEF_PFTD);
+        
+         EasterSpec ec = e.toBuilder()
                 .type(EasterSpec.Type.IncludeEaster)
                 .test(true)
                 .build();

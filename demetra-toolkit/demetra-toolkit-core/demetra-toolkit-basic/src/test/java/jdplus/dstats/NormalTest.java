@@ -38,7 +38,7 @@ public class NormalTest {
     @Test
     public void testGetProbabilityInverse() {
         // Ne semble fonctionner que pour un Normal(0,1);
-        Normal n = new Normal(0, 1);
+        Normal n = new Normal(1, 3);
         for (double i = 0.001; i < 1; i += 0.001) {
             double y = n.getProbabilityInverse(i, ProbabilityType.Lower);
             double z = n.getProbability(y, ProbabilityType.Lower);

@@ -10,7 +10,7 @@ import jdplus.regsarima.regular.IModelEstimator;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
 
 /**
@@ -20,13 +20,13 @@ import jdplus.sarima.SarimaModel;
 abstract class ModelController {
 
     private IModelEstimator estimator;
-    private RegArimaModelling refmodelling;
+    private RegSarimaModelling refmodelling;
 
-    RegArimaModelling getReferenceModel() {
+    RegSarimaModelling getReferenceModel() {
         return refmodelling;
     }
 
-    void setReferenceModel(RegArimaModelling model) {
+    void setReferenceModel(RegSarimaModelling model) {
         refmodelling = model;
     }
 
@@ -38,14 +38,14 @@ abstract class ModelController {
         this.estimator = estimator;
     }
 
-    abstract ProcessingResult process(RegArimaModelling modelling, TramoProcessor.Context context);
+    abstract ProcessingResult process(RegSarimaModelling modelling, TramoProcessor.Context context);
 
     /**
      *
      * @param context
      * @return True if the mean is significant
      */
-    protected boolean checkMean(RegArimaModelling context) {
+    protected boolean checkMean(RegSarimaModelling context) {
         ModelDescription desc = context.getDescription();
         RegArimaEstimation<SarimaModel> estimation = context.getEstimation();
         if (!desc.isMean()) {
@@ -56,7 +56,7 @@ abstract class ModelController {
         return Math.abs(estimation.getConcentratedLikelihood().coefficient(0) / ser) >= 1.96;
     }
 
-    protected boolean estimate(RegArimaModelling context, boolean checkmean) {
+    protected boolean estimate(RegSarimaModelling context, boolean checkmean) {
         if (!estimator.estimate(context)) {
             return false;
         }
@@ -72,7 +72,7 @@ abstract class ModelController {
         return true;
     }
 
-    protected void transferInformation(RegArimaModelling from, RegArimaModelling to) {
+    protected void transferInformation(RegSarimaModelling from, RegSarimaModelling to) {
         to.set(from.getDescription(),from.getEstimation());
         //        to.information.clear();
         //        to.information.copy(from.information);

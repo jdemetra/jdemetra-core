@@ -20,7 +20,7 @@ import jdplus.regarima.outlier.FastOutlierDetector;
 import jdplus.data.DataBlock;
 import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarmaSpecification;
+import demetra.arima.SarmaOrders;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
@@ -44,7 +44,7 @@ public class FastOutlierDetectorTest {
         rnd.set(gen::nextDouble);
         FastOutlierDetector sod = new FastOutlierDetector(null);
         sod.setOutlierFactories(AdditiveOutlierFactory.FACTORY, LevelShiftFactory.FACTORY_ZEROENDED);
-        SarmaSpecification spec = new SarmaSpecification(12);
+        SarmaOrders spec = new SarmaOrders(12);
         spec.setBq(1);
         spec.setQ(1);
         SarimaModel model = SarimaModel.builder(spec)

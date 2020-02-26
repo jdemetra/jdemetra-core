@@ -164,6 +164,11 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
         return new TsDomain(get(nstart), len < 0 ? 0 : len);
     }
 
+    public TsDomain extend(int nstart, int nend) {
+        int len = length() + nstart + nend;
+        return new TsDomain(startPeriod.plus(-nstart), len < 0 ? 0 : len);
+    }
+    
     public TsDomain intersection(TsDomain other) {
         startPeriod.checkCompatibility(other.startPeriod);
 

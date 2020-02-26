@@ -27,7 +27,7 @@ import jdplus.regarima.AICcComparator;
 import jdplus.regsarima.regular.IModelComparator;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,11 +85,11 @@ public class UserVariablesDetectionModule implements IRegressionModule {
     }
 
     @Override
-    public ProcessingResult test(RegArimaModelling context) {
+    public ProcessingResult test(RegSarimaModelling context) {
 
         ModelDescription description = context.getDescription();
         RegArimaEstimation<SarimaModel> est = context.getEstimation();
-        IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(description.getArimaComponent().defaultMapping(), true, eps);
+        IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(true, eps);
 
         // builds models with and without user variables 
         for (int i = 0; i < users.length; ++i) {

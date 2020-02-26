@@ -22,10 +22,10 @@ import jdplus.regarima.RegArimaUtility;
 import jdplus.regsarima.regular.IArmaModule;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
-import demetra.arima.SarmaSpecification;
+import demetra.arima.SarimaOrders;
+import demetra.arima.SarmaOrders;
 import demetra.data.DoubleSeq;
 
 /**
@@ -98,30 +98,30 @@ public class ArmaModule implements IArmaModule {
     }
 
     @Override
-    public ProcessingResult process(RegArimaModelling context) {
+    public ProcessingResult process(RegSarimaModelling context) {
         ModelDescription desc = context.getDescription();
-        SarimaSpecification curspec = desc.specification();
+        SarimaOrders curspec = desc.specification();
         DoubleSeq res = RegArimaUtility.olsResiduals(desc.regarima());
         ArmaModuleImpl impl = createModule();
-        SarmaSpecification nspec = impl.process(res, curspec.getPeriod(), curspec.getD(), curspec.getBd(), desc.getAnnualFrequency()>1);
+        SarmaOrders nspec = impl.process(res, curspec.getPeriod(), curspec.getD(), curspec.getBd(), desc.getAnnualFrequency()>1);
         if (nspec.equals(curspec.doStationary())) {
             return ProcessingResult.Unchanged;
         }
-        curspec = SarimaSpecification.of(nspec, curspec.getD(), curspec.getBd());
+        curspec = SarimaOrders.of(nspec, curspec.getD(), curspec.getBd());
         desc.setSpecification(curspec);
         return ProcessingResult.Changed;
     }
 
-    public SarimaSpecification process(RegArimaModel<SarimaModel> regarima, boolean seas) {
-        SarimaSpecification curSpec = regarima.arima().specification();
+    public SarimaOrders process(RegArimaModel<SarimaModel> regarima, boolean seas) {
+        SarimaOrders curSpec = regarima.arima().orders();
         DoubleSeq res = RegArimaUtility.olsResiduals(regarima);
         ArmaModuleImpl impl = createModule();
-        SarmaSpecification spec = impl.process(res, curSpec.getPeriod(), curSpec.getD(), curSpec.getBd(), curSpec.getPeriod() > 1);
+        SarmaOrders spec = impl.process(res, curSpec.getPeriod(), curSpec.getD(), curSpec.getBd(), curSpec.getPeriod() > 1);
         if (spec == null) {
             curSpec.setDefault(seas);
             return curSpec;
         } else {
-            return SarimaSpecification.of(spec, curSpec.getD(), curSpec.getBd());
+            return SarimaOrders.of(spec, curSpec.getD(), curSpec.getBd());
         }
     }
 }

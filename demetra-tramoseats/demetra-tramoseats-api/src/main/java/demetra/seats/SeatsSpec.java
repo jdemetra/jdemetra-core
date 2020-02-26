@@ -18,6 +18,7 @@ package demetra.seats;
 
 import demetra.design.Development;
 import demetra.design.LombokWorkaround;
+import demetra.seats.DecompositionSpec.ComponentsEstimationMethod;
 import demetra.util.Validatable;
 
 /**
@@ -28,58 +29,16 @@ import demetra.util.Validatable;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public final class SeatsSpec implements Validatable<SeatsSpec> {
 
-    public static enum ApproximationMode {
-        None, Legacy, Noisy
-    };
-
-    public static enum EstimationMethod {
-        Burman, KalmanSmoother, McElroyMatrix
-    }
-
-    public static final double DEF_EPSPHI = 2, DEF_RMOD = .5, DEF_SMOD1 = .8, DEF_SMOD = .8, DEF_XL = .95;
-
-    private ApproximationMode approximationMode;
-    private EstimationMethod method;
-    private double xlBoundary;
-    private double seasTolerance;
-    private double trendBoundary, seasBoundary, seasBoundaryAtPi;
+    private SeatsModelSpec modelSpec;
+    private DecompositionSpec decompositionSpec;
 
     private static final SeatsSpec DEFAULT = SeatsSpec.builder().build();
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
-                .approximationMode(ApproximationMode.Legacy)
-                .method(EstimationMethod.Burman)
-                .xlBoundary(DEF_XL)
-                .seasTolerance(DEF_EPSPHI)
-                .trendBoundary(DEF_RMOD)
-                .seasBoundary(DEF_SMOD)
-                .seasBoundaryAtPi(DEF_SMOD1);
-    }
-
-    @Override
-    public SeatsSpec validate() throws IllegalArgumentException {
-        if (xlBoundary < 0.9 || xlBoundary > 1) {
-            throw new IllegalArgumentException("XL should belong to [0.9, 1]");
-        }
-
-        if (seasTolerance < 0 || seasTolerance > 10) {
-            throw new IllegalArgumentException("EPSPHI (expressed in degrees) should belong to [0, 10]");
-        }
-
-        if (trendBoundary < 0 || trendBoundary > 1) {
-            throw new IllegalArgumentException("RMOD should belong to [0, 1]");
-        }
-
-        if (seasBoundary < 0 || seasBoundary > 1) {
-            throw new IllegalArgumentException("SMOD should belong to [0, 1]");
-        }
-
-        if (seasBoundaryAtPi < 0 || seasBoundaryAtPi > 1) {
-            throw new IllegalArgumentException("SMOD1 should belong to [0, 1]");
-        }
-        return this;
+                .modelSpec(null)
+                .decompositionSpec(DecompositionSpec.DEFAULT);
     }
 
     public boolean isDefault() {
@@ -87,6 +46,19 @@ public final class SeatsSpec implements Validatable<SeatsSpec> {
     }
 
     public static class Builder implements Validatable.Builder<SeatsSpec> {
-
     }
+
+    @Override
+    public SeatsSpec validate() throws IllegalArgumentException {
+        decompositionSpec.validate();
+        if (modelSpec != null) {
+            modelSpec.validate();
+            if (decompositionSpec.getMethod() != ComponentsEstimationMethod.KalmanSmoother
+                    && modelSpec.getSeries().count( z -> !Double.isFinite(z)) > 0) {
+                throw new SeatsException(SeatsException.ERR_MISSING);
+            }
+        }
+        return this;
+    }
+
 }

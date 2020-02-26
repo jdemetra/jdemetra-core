@@ -26,7 +26,7 @@ import jdplus.regarima.RegArimaEstimation;
 import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegArimaModelling;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regarima.RegArimaUtility;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.ITradingDaysVariable;
@@ -130,17 +130,17 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         this.teaster = builder.teaster;
         this.tlp = builder.tlp;
         this.testMean = builder.testMean;
-        this.precision=builder.precision;
+        this.precision = builder.precision;
     }
 
     @Override
-    public ProcessingResult test(RegArimaModelling context) {
+    public ProcessingResult test(RegSarimaModelling context) {
 
         ModelDescription current = context.getDescription();
         IArimaMapping<SarimaModel> mapping = current.mapping();
 //      First case TD=0 or Just test EE
         ModelDescription test0 = createTestModel(context, null, null);
-        IRegArimaProcessor processor = RegArimaUtility.processor(current.getArimaComponent().defaultMapping(), true, precision);
+        IRegArimaProcessor processor = RegArimaUtility.processor(true, precision);
         RegArimaEstimation regarima0 = processor.process(test0.regarima(), mapping);
         ConcentratedLikelihoodWithMissing ll0 = regarima0.getConcentratedLikelihood();
         int nhp = test0.getArimaComponent().getFreeParametersCount();
@@ -164,7 +164,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
 
 //      Third case TD=WorkingDay only
         ModelDescription test1 = createTestModel(context, wd, null);
-        RegArimaEstimation regarima1 = processor.process(test1.regarima(), mapping);
+        RegArimaEstimation regarima1 = processor.process(test1.regarima(), test1.mapping());
         ConcentratedLikelihoodWithMissing ll1 = regarima1.getConcentratedLikelihood();
         double SS1 = ll1.ssq(), SSmc1 = SS1 / (ll1.degreesOfFreedom() - nhp);
         Ftd = (SS0 - SS1) / SSmc1;
@@ -190,7 +190,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         }
     }
 
-    private ModelDescription createTestModel(RegArimaModelling context, ITradingDaysVariable td, ILengthOfPeriodVariable lp) {
+    private ModelDescription createTestModel(RegSarimaModelling context, ITradingDaysVariable td, ILengthOfPeriodVariable lp) {
         ModelDescription tmp = ModelDescription.copyOf(context.getDescription());
         tmp.setAirline(true);
         tmp.setMean(true);

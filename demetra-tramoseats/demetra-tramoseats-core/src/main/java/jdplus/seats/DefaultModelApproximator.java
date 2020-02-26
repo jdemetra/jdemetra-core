@@ -18,7 +18,7 @@ package jdplus.seats;
 
 import demetra.math.Complex;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 
 /**
  * This class is largely based on the program SEATS+ developed by Gianluca Caporello
@@ -33,7 +33,7 @@ public class DefaultModelApproximator implements IModelApproximator {
 
     private final IModelEstimator estimator;
     private static final double DEF_RMODP = .7;
-    private double rmodp_ = DEF_RMODP;
+    private final double rmodp_ = DEF_RMODP;
     private int originalDifferencing;
 
     public DefaultModelApproximator(IModelEstimator estimator) {
@@ -46,7 +46,7 @@ public class DefaultModelApproximator implements IModelApproximator {
 
     @Override
     public boolean approximate(SeatsModel sm) {
-        SarimaSpecification spec = sm.getCurrentModel().specification();
+        SarimaOrders spec = sm.getCurrentModel().orders();
         originalDifferencing = spec.getD() + spec.getBd();
         if (app_known(sm)) {
             return true;
@@ -75,7 +75,7 @@ public class DefaultModelApproximator implements IModelApproximator {
 //    }
     private boolean app_seas(SeatsModel sm) {
         SarimaModel cur = sm.getCurrentModel();
-        SarimaSpecification spec = cur.specification();
+        SarimaOrders spec = cur.orders();
         boolean mean = sm.isMeanCorrection();
         int p = spec.getP(), d = spec.getD(), q = spec.getQ(),
                 bp = spec.getBp(), bd = spec.getBd(), bq = spec.getBq();
@@ -120,7 +120,7 @@ public class DefaultModelApproximator implements IModelApproximator {
 
     private boolean app_redp(SeatsModel sm) {
         SarimaModel cur = sm.getCurrentModel();
-        SarimaSpecification spec = cur.specification();
+        SarimaOrders spec = cur.orders();
         if (spec.getP() == 0) {
             return false;
         }
@@ -151,7 +151,7 @@ public class DefaultModelApproximator implements IModelApproximator {
 
     private boolean app_redq(SeatsModel sm) {
         SarimaModel cur = sm.getCurrentModel();
-        SarimaSpecification spec = cur.specification();
+        SarimaOrders spec = cur.orders();
         if (spec.getQ() == 1) {
             return false;
         }
@@ -161,7 +161,7 @@ public class DefaultModelApproximator implements IModelApproximator {
 
     private boolean app_last(SeatsModel sm) {
         SarimaModel cur = sm.getCurrentModel();
-        SarimaSpecification spec = cur.specification();
+        SarimaOrders spec = cur.orders();
 
         spec.setBq(0);
         return estimateModel(sm, spec);
@@ -169,7 +169,7 @@ public class DefaultModelApproximator implements IModelApproximator {
 
     private boolean app_known(SeatsModel sm) {
         SarimaModel cur = sm.getCurrentModel();
-        SarimaSpecification spec = cur.specification();
+        SarimaOrders spec = cur.orders();
         int p = spec.getP(), d = spec.getD(), q = spec.getQ(),
                 bp = spec.getBp(), bd = spec.getBd(), bq = spec.getBq();
         if (bp != 0 || bd != 1 || q > 1 || p != 0) {
@@ -185,12 +185,12 @@ public class DefaultModelApproximator implements IModelApproximator {
         }
     }
 
-    private boolean app_001011(SeatsModel sm, SarimaModel cur, SarimaSpecification spec) {
+    private boolean app_001011(SeatsModel sm, SarimaModel cur, SarimaOrders spec) {
         sm.setCurrentModel(cur.toBuilder().btheta(1, 0).adjustOrders(true).build());
         return true;
     }
 
-    private boolean app_011011(SeatsModel sm, SarimaModel cur, SarimaSpecification spec) {
+    private boolean app_011011(SeatsModel sm, SarimaModel cur, SarimaOrders spec) {
 
         double th = spec.getQ() == 1 ? -cur.theta(1) : 0;
         double bth;
@@ -230,7 +230,7 @@ public class DefaultModelApproximator implements IModelApproximator {
         return true;
     }
 
-    private boolean app_021011(SeatsModel sm, SarimaModel cur, SarimaSpecification spec) {
+    private boolean app_021011(SeatsModel sm, SarimaModel cur, SarimaOrders spec) {
         double th = spec.getQ() == 1 ? -cur.theta(1) : 0;
         double bth = spec.getBq() == 1 ? -cur.btheta(1) : 0;
         switch (spec.getPeriod()) {
@@ -319,7 +319,7 @@ public class DefaultModelApproximator implements IModelApproximator {
         return true;
     }
 
-    private boolean estimateModel(SeatsModel sm, SarimaSpecification spec) {
+    private boolean estimateModel(SeatsModel sm, SarimaOrders spec) {
         sm.setCurrentModel(SarimaModel.builder(spec).setDefault().build());
         return estimator.estimate(sm);
     }

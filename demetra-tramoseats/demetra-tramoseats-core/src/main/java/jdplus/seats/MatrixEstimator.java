@@ -31,6 +31,13 @@ import demetra.data.DoubleSeq;
 @Development(status = Development.Status.Alpha)
 public class MatrixEstimator implements IComponentsEstimator {
 
+    private final int nfcasts, nbcasts;
+
+    public MatrixEstimator(int nbcasts, int nfcasts) {
+        this.nfcasts = nfcasts;
+        this.nbcasts = nbcasts;
+    }
+
     /**
      *
      * @param s
@@ -38,28 +45,30 @@ public class MatrixEstimator implements IComponentsEstimator {
      */
     @Override
     public SeriesDecomposition decompose(SeatsModel model) {
-        DoubleSeq s = model.getSeries();
+        DoubleSeq s = model.getTransformedSeries();
         SeriesDecomposition.Builder builder = SeriesDecomposition.builder(DecompositionMode.Additive);
-        UcarimaModel ucm = model.getUcarimaModel();
+        ComponentType[] cmps = model.componentsType();
+        UcarimaModel ucm = model.compactUcarimaModel();
         McElroyEstimates mc = new McElroyEstimates();
-        mc.setForecastsCount(model.getForecastsCount());
+        mc.setForecastsCount(model.extrapolationCount(nfcasts));
+        // TODO backcasts
         mc.setUcarimaModel(ucm);
         mc.setData(s);
-        double ser=Math.sqrt(model.getInnovationVariance());
+        double ser = Math.sqrt(model.getInnovationVariance());
         for (int i = 0; i < ucm.getComponentsCount(); ++i) {
-            ComponentType type=model.getTypes()[i];
+            ComponentType type = cmps[i];
             double[] tmp = mc.getComponent(i);
             builder.add(DoubleSeq.of(tmp), type);
             tmp = mc.stdevEstimates(i);
-            for (int j=0; j<tmp.length; ++j){
-                tmp[j]*=ser;
+            for (int j = 0; j < tmp.length; ++j) {
+                tmp[j] *= ser;
             }
             builder.add(DoubleSeq.of(tmp), type, ComponentInformation.Stdev);
             tmp = mc.getForecasts(i);
             builder.add(DoubleSeq.of(tmp), type, ComponentInformation.Forecast);
             tmp = mc.stdevForecasts(i);
-            for (int j=0; j<tmp.length; ++j){
-                tmp[j]*=ser;
+            for (int j = 0; j < tmp.length; ++j) {
+                tmp[j] *= ser;
             }
             builder.add(DoubleSeq.of(tmp), type, ComponentInformation.StdevForecast);
         }

@@ -9,7 +9,7 @@ import jdplus.ssf.likelihood.MarginalLikelihood;
 import jdplus.arima.ssf.SsfArima;
 import demetra.data.Data;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
+import demetra.arima.SarimaOrders;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class QRFilterTest {
     static final double[] data;
 
     static {
-        SarimaSpecification spec=SarimaSpecification.airline(12);
+        SarimaOrders spec=SarimaOrders.airline(12);
         arima1 = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).build();
         arima2 = SarimaModel.builder(spec).theta(1, .3).btheta(1, -.4).build();
         data = Data.PROD.clone();

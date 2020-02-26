@@ -5,7 +5,9 @@
  */
 package demetra.seats;
 
+import demetra.arima.SarimaModel;
 import demetra.arima.UcarimaModel;
+import demetra.information.InformationSet;
 import demetra.sa.SeriesDecomposition;
 
 /**
@@ -16,6 +18,11 @@ import demetra.sa.SeriesDecomposition;
 @lombok.Builder(builderClassName = "Builder")
 public class SeatsResults {
 
+    private SarimaModel initialModel, finalModel;
     private SeriesDecomposition initialComponents, finalComponents;
     private UcarimaModel decomposition;
+    
+    private InformationSet addtionalResults=new InformationSet();
+
+    
 }

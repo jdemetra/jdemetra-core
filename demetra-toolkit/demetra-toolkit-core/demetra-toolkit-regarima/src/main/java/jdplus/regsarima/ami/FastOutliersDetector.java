@@ -34,8 +34,8 @@ import jdplus.regarima.outlier.FastOutlierDetector;
 import jdplus.sarima.estimation.HannanRissanen;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaSpecification;
-import demetra.arima.SarmaSpecification;
+import demetra.arima.SarimaOrders;
+import demetra.arima.SarmaOrders;
 import jdplus.modelling.regression.IOutlierFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
@@ -235,7 +235,7 @@ public class FastOutliersDetector implements GenericOutliersDetection<SarimaMode
     private boolean estimateModel(IArimaMapping<SarimaModel> mapping) {
         // step 1 Initial values by OLS
         SarimaModel sarima = regarima.arima();
-        SarimaSpecification spec = sarima.specification();
+        SarimaOrders spec = sarima.orders();
         RegArmaModel<SarimaModel> dm = regarima.differencedModel();
         LinearModel lm = dm.asLinearModel();
         if (rflag) {
@@ -258,7 +258,7 @@ public class FastOutliersDetector implements GenericOutliersDetection<SarimaMode
         rflag = false;
 
         if (estimationStep) {
-            SarmaSpecification dspec = spec.doStationary();
+            SarmaOrders dspec = spec.doStationary();
             if (spec.getParametersCount() != 0) {
                 HannanRissanen hr = HannanRissanen.builder().build();
                 if (hr.process(res, dspec)) {

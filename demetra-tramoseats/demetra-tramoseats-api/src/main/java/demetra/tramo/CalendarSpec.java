@@ -29,7 +29,7 @@ import demetra.util.Validatable;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public final class CalendarSpec implements Validatable<CalendarSpec> {
 
-    private final static CalendarSpec DEFAULT = CalendarSpec.builder().build();
+    public final static CalendarSpec DEFAULT = CalendarSpec.builder().build();
 
     public static final String TD = "td", EASTER = "easter";
 
@@ -42,8 +42,8 @@ public final class CalendarSpec implements Validatable<CalendarSpec> {
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
-                .tradingDays(TradingDaysSpec.builder().build())
-                .easter(EasterSpec.builder().build());
+                .tradingDays(TradingDaysSpec.none())
+                .easter(EasterSpec.DEFAULT);
     }
 
     public boolean isUsed() {
@@ -56,7 +56,6 @@ public final class CalendarSpec implements Validatable<CalendarSpec> {
 
     @Override
     public CalendarSpec validate() throws IllegalArgumentException {
-        tradingDays.validate();
         easter.validate();
         return this;
     }

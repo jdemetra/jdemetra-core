@@ -94,7 +94,7 @@ public final class ConcentratedLikelihoodComputer {
 
             HouseholderWithPivoting hous = new HouseholderWithPivoting();
             QRDecomposition qr = hous.decompose(xl, nm);
-            QRSolution ls = QRSolver.leastSquares(qr, yl, 1e-13);
+            QRSolution ls = QRSolver.leastSquares(qr, yl, 1e-10);
             ConcentratedLikelihoodWithMissing cll;
             if (ls.rank() == 0) {
                 double ssqerr = yl.ssq();
