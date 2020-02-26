@@ -98,8 +98,9 @@ public class WienerKolmogorovEstimator implements IComponentsEstimator {
         }
 
         decomposition.add(s, ComponentType.Series);
-        if (fs != null)
-        decomposition.add(fs, ComponentType.Series, ComponentInformation.Forecast);
+        if (fs != null) {
+            decomposition.add(fs, ComponentType.Series, ComponentInformation.Forecast);
+        }
         if (efs != null) {
             decomposition.add(efs.fn(z -> z <= 0 ? 0 : Math.sqrt(z)), ComponentType.Series, ComponentInformation.StdevForecast);
         }

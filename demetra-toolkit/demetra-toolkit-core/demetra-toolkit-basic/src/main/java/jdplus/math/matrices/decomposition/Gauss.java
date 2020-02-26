@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package jdplus.math.matrices.decomposition;
 
 import demetra.design.Development;
@@ -33,7 +32,7 @@ public class Gauss {
     public LUDecomposition decompose(Matrix M) {
         return decompose(M, Constants.getEpsilon());
     }
-    
+
     public LUDecomposition decompose(Matrix M, double eps) {
         int n = M.getColumnsCount();
         if (M.getRowsCount() != n) {
@@ -42,12 +41,12 @@ public class Gauss {
         double[] lu = M.toArray();
         int[] piv = null;
 
-        for (int k = 0, kn = 0; k < n; k++, kn++) {
+        for (int k = 0, kn = 0; k < n; ++k, kn += n) {
             // Find pivot.
             int p = k;
             double pmax = Math.abs(lu[kn + k]);
-            for (int i = k + 1, idx = i + k * n; i < n; i++, idx++) {
-                double cur = Math.abs(lu[idx]);
+            for (int i = k + 1; i < n; ++i) {
+                double cur = Math.abs(lu[kn + i]);
                 if (cur > pmax) {
                     p = i;
                     pmax = cur;
@@ -61,7 +60,7 @@ public class Gauss {
                         piv[i] = i;
                     }
                 }
-                
+
                 for (int j = 0, pj = p, kj = k; j < n; ++j, pj += n, kj += n) {
                     double tmp = lu[pj];
                     lu[pj] = lu[kj];
@@ -72,16 +71,15 @@ public class Gauss {
                 piv[k] = t;
             }
             // Compute multipliers and eliminate k-th column.
-            double kk = lu[kn + k * n];
+            double kk = lu[kn + k];
             if (kk == 0) {
                 throw new MatrixException(MatrixException.SINGULAR);
             }
 
-            for (int i = k + 1, idx = i; i < n; i++, idx++) {
-                lu[idx + k * n] /= kk;
-
-                for (int j = k + 1; j < n; j++) {
-                    lu[idx + j * n] -= lu[idx + k * n] * lu[kn + j * n];
+            for (int i = k + 1; i < n; i++) {
+                double alpha = lu[i + kn] /= kk;
+                for (int j = k + 1, jn = j * n; j < n; j++, jn += n) {
+                    lu[i + jn] -= alpha * lu[k + jn];
                 }
             }
         }

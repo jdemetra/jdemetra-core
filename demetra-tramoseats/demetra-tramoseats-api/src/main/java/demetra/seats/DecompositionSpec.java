@@ -43,7 +43,7 @@ public final class DecompositionSpec implements Validatable<DecompositionSpec> {
 
     public static final double DEF_XL = .95;
     public static final double DEF_EPSPHI = 2, DEF_RMOD = .5, DEF_SMOD1 = .8, DEF_SMOD = .8;
-    public static final int DEF_FORECASTS = -1, DEF_BACKCASTS = -1;
+    public static final int DEF_FORECASTS = -2, DEF_BACKCASTS = 0;
 
     private double xlBoundary;
     private ModelApproximationMode approximationMode;

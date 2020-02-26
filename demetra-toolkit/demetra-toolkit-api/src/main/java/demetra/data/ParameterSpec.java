@@ -159,6 +159,14 @@ public class ParameterSpec {
         }
     }
 
+    public static ParameterSpec fixed(double value) {
+            return new ParameterSpec(value, ParameterType.Fixed);
+    }
+    
+    public static ParameterSpec initial(double value) {
+             return new ParameterSpec(value, ParameterType.Initial);
+    }
+
     public static ParameterSpec[] of(double values[], ParameterType type) {
         ParameterSpec[] p=new ParameterSpec[values.length];
         for (int i=0; i<p.length; ++i){

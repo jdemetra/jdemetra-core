@@ -34,6 +34,7 @@ import demetra.data.Doubles;
 import jdplus.arima.ssf.ExactArimaForecasts;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixWindow;
+import jdplus.math.matrices.decomposition.CroutDoolittle;
 import jdplus.math.matrices.decomposition.Gauss;
 import jdplus.math.matrices.decomposition.LUDecomposition;
 
@@ -155,8 +156,8 @@ public class BurmanEstimates {
         double[] z = new double[n + 2 * nf];
         data.copyTo(z, nf);
 
-        xfcasts.copyTo(z, nf + n);
-        xbcasts.copyTo(z, 0);
+        xfcasts.range(0, nf).copyTo(z, nf + n);
+        xbcasts.drop(xbcasts.length() - nf, 0).copyTo(z, 0);
         // //////////////////////////////////
         // Compute w1(t) = g(F) z(t)
         double[] g = this.g[cmp].toArray();
@@ -238,25 +239,36 @@ public class BurmanEstimates {
             x2[i] = s / ma[0];
         }
 
-        double[] rslt = new double[n + 2 * qstar];
-        for (int i = 0, j = qstar; i < rslt.length; ++i, ++j) {
-            rslt[i] = x1[i] + x2[j];
-        }
+        int nfc = Math.max(qstar, nfcasts), nbc = Math.max(qstar, nbcasts);
 
-        estimates[cmp] = DoubleSeq.of(rslt, qstar, n);
-        // compute forecasts and backcasts
-        if (nfcasts > 0) {
-            if (nfcasts <= qstar) {
-                forecasts[cmp] = DoubleSeq.of(rslt, n + qstar, nfcasts);
-            } else {
-//                double[] f = new double[nfcasts];
-//                for (int i = 0, j = pstar + n; i < pstar; ++i, ++j) {
-//                    f[i] = rslt[j];
-//                }
-//                for (int i = qstar; i < f.length; ++i) {
-//                    // TODO
-//                }
+        double[] rslt = new double[n + nfc + nbc];
+
+        int nmax=n+2*qstar;
+        for (int i = nbc - qstar, j = 0, k = qstar; i < nmax; ++i, ++j, ++k) {
+            rslt[i] = x1[j] + x2[k];
+        }
+        // complete backcasts
+        for (int j = nbc - qstar - 1; j >= 0; --j) {
+            double s = 0;
+            for (int k = 1; k <= pstar; ++k) {
+                s -= ar[k] * rslt[j + k];
             }
+            rslt[j] = s;
+        }
+        // complete forecasts
+        for (int j = nbc + n + qstar; j < rslt.length; ++j) {
+            double s = 0;
+            for (int k = 1; k <= pstar; ++k) {
+                s -= ar[k] * rslt[j - k];
+            }
+            rslt[j] = s;
+        }
+        estimates[cmp] = DoubleSeq.of(rslt, nbc, n);
+        if (nfcasts > 0) {
+            forecasts[cmp] = DoubleSeq.of(rslt, n + nbc, nfcasts);
+        }
+        if (nbcasts > 0) {
+            backcasts[cmp] = DoubleSeq.of(rslt, nbc - nbcasts, nbcasts);
         }
 
     }
@@ -286,8 +298,8 @@ public class BurmanEstimates {
 
         ExactArimaForecasts fcasts = new ExactArimaForecasts();
         fcasts.prepare(wk.getUcarimaModel().getModel(), bmean);
-        xfcasts = fcasts.forecasts(data, nf);
-        xbcasts = fcasts.backcasts(data, nf);
+        xfcasts = fcasts.forecasts(data, Math.max(nf, nfcasts));
+        xbcasts = fcasts.backcasts(data, Math.max(nf, nbcasts));
         if (bmean) {
             mean = fcasts.getMean();
         } else {
@@ -341,9 +353,7 @@ public class BurmanEstimates {
      * @return
      */
     public DoubleSeq getSeriesBackcasts() {
-        extendSeries();
-        return null;
- //       return xbcasts.drop(xbcasts.length() - nbcasts, 0);
+        return xbcasts.drop(xbcasts.length() - nbcasts, 0);
     }
 
     /**
@@ -351,9 +361,7 @@ public class BurmanEstimates {
      * @return
      */
     public DoubleSeq getSeriesForecasts() {
-        extendSeries();
-        return null;
- //       return xfcasts.range(0, nfcasts);
+        return xfcasts.range(0, nfcasts);
     }
 
     /**

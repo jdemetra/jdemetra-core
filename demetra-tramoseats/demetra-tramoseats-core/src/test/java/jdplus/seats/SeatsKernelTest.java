@@ -55,8 +55,8 @@ public class SeatsKernelTest {
         ProcessingLog log = new ProcessingLog();
         SeatsResults rslt = kernel.process(model, log);
         assertTrue(rslt != null);
-        log.all().forEach(v -> System.out.println(v));
-        System.out.println(rslt.getFinalComponents());
+//        log.all().forEach(v -> System.out.println(v));
+//        System.out.println(rslt.getFinalComponents());
     }
 
     @Test
@@ -94,9 +94,9 @@ public class SeatsKernelTest {
                 .sarimaSpec(mspec)
                 .build();
         DecompositionSpec cmps = DecompositionSpec.builder()
-                .backCastCount(-2)
+                .backCastCount(0)
                 .forecastCount(-2)
-//                .method(ComponentsEstimationMethod.KalmanSmoother)
+                .method(ComponentsEstimationMethod.KalmanSmoother)
                 .build();
 
         SeatsToolkit toolkit = SeatsToolkit.of(cmps);
@@ -104,9 +104,9 @@ public class SeatsKernelTest {
         ProcessingLog log = new ProcessingLog();
         SeatsResults rslt = kernel.process(model, log);
         assertTrue(rslt != null);
-        log.all().forEach(v -> System.out.println(v));
-        System.out.println(rslt.getFinalComponents());
-        System.out.println(rslt.getUcarimaModel());
-        
+//        log.all().forEach(v -> System.out.println(v));
+//        System.out.println(rslt.getInitialComponents());
+//        System.out.println(rslt.getFinalComponents());
+//        System.out.println(rslt.getUcarimaModel());
     }
 }
