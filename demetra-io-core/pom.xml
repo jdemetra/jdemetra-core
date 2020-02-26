@@ -45,7 +45,7 @@
         <dependency>
             <groupId>be.nbb.rd</groupId>
             <artifactId>java-io-base</artifactId>
-            <version>0.0.5</version>
+            <version>${java-io-util.version}</version>
         </dependency>
         <dependency> 
             <groupId>javax.cache</groupId> 
