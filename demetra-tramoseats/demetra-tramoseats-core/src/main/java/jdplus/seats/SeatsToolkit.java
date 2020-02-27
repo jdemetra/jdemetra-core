@@ -47,7 +47,7 @@ public class SeatsToolkit {
                 approximator = new DefaultModelApproximator(estimator);
         }
 
-        int nf = spec.getForecastCount(), nb = spec.getBackCastCount();
+        int nf = spec.getForecastCount(), nb = spec.getBackcastCount();
 
         IComponentsEstimator cmpEstimator;
         switch (spec.getMethod()) {

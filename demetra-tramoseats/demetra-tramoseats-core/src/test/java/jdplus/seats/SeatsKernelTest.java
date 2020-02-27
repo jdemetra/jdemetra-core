@@ -44,7 +44,7 @@ public class SeatsKernelTest {
                 .sarimaSpec(SarimaSpec.airline())
                 .build();
         DecompositionSpec cmps = DecompositionSpec.builder()
-                .backCastCount(0)
+                .backcastCount(0)
                 .forecastCount(0)
                 .build();
 
@@ -67,7 +67,7 @@ public class SeatsKernelTest {
                 .sarimaSpec(SarimaSpec.airline())
                 .build();
         DecompositionSpec cmps = DecompositionSpec.builder()
-                .backCastCount(-2)
+                .backcastCount(-2)
                 .forecastCount(-2)
                 .method(ComponentsEstimationMethod.KalmanSmoother)
                 .build();
@@ -94,7 +94,7 @@ public class SeatsKernelTest {
                 .sarimaSpec(mspec)
                 .build();
         DecompositionSpec cmps = DecompositionSpec.builder()
-                .backCastCount(-1)
+                .backcastCount(-1)
                 .forecastCount(-2)
 //               .method(ComponentsEstimationMethod.KalmanSmoother)
                 .build();

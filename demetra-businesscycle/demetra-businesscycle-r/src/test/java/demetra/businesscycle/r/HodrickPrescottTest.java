@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.r.businesscycle;
+package demetra.businesscycle.r;
 
+import demetra.businesscycle.r.HodrickPrescott;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;

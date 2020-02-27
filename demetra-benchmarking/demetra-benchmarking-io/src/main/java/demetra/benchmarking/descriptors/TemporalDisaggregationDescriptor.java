@@ -24,10 +24,10 @@ import java.util.Map;
 @lombok.experimental.UtilityClass
 public class TemporalDisaggregationDescriptor{
 
-    public static final String LIKELIHOOD = "likelihood", DISAGG = "disagg", EDISAGG = "edisagg",
+    public final String LIKELIHOOD = "likelihood", DISAGG = "disagg", EDISAGG = "edisagg",
             RES = "residuals", ML = "ml", COEFF="coeff", NX="nx", COVAR="covar", C="c", REGEFFECT = "regeffect";
 
-    private static final InformationMapping<TemporalDisaggregationResults> MAPPING = new InformationMapping<>(TemporalDisaggregationResults.class);
+    private final InformationMapping<TemporalDisaggregationResults> MAPPING = new InformationMapping<>(TemporalDisaggregationResults.class);
 
     static {
         MAPPING.set(DISAGG, TsData.class, source -> source.getDisaggregatedSeries());
@@ -49,7 +49,7 @@ public class TemporalDisaggregationDescriptor{
         MAPPING.delegate(RES, ResidualsDiagnosticsDescriptor.getMapping(), source -> source.getResidualsDiagnostics());
     }
 
-    public static InformationMapping<TemporalDisaggregationResults> getMapping() {
+    public InformationMapping<TemporalDisaggregationResults> getMapping() {
         return MAPPING;
     }
    
