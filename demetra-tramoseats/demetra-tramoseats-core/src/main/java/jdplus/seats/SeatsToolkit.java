@@ -54,9 +54,6 @@ public class SeatsToolkit {
             case KalmanSmoother:
                 cmpEstimator = new KalmanEstimator(nb, nf);
                 break;
-            case McElroyMatrix:
-                cmpEstimator = new MatrixEstimator(nb, nf);
-                break;
             default:
                 cmpEstimator = new WienerKolmogorovEstimator(nb, nf);
                 break;

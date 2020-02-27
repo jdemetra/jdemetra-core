@@ -25,16 +25,15 @@ import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.polynomials.Polynomial;
-import jdplus.math.polynomials.UnitRoots;
 import jdplus.ucarima.UcarimaModel;
 import jdplus.ucarima.WienerKolmogorovEstimators;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
+import demetra.data.DoublesMath;
 import jdplus.arima.ssf.ExactArimaForecasts;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixWindow;
-import jdplus.math.matrices.decomposition.CroutDoolittle;
 import jdplus.math.matrices.decomposition.Gauss;
 import jdplus.math.matrices.decomposition.LUDecomposition;
 
@@ -58,6 +57,7 @@ public class BurmanEstimates {
         private DoubleSeq data;
         private UcarimaModel ucm;
         private boolean bmean;
+        private int mcmp;
         private double ser = 1;
 
         public Builder forecastsCount(int nf) {
@@ -77,6 +77,17 @@ public class BurmanEstimates {
 
         public Builder mean(boolean mean) {
             this.bmean = mean;
+            return this;
+        }
+
+        /**
+         * Index of the component associated to the mean correction
+         *
+         * @param cmp
+         * @return
+         */
+        public Builder meanComponent(int cmp) {
+            this.mcmp = cmp;
             return this;
         }
 
@@ -102,6 +113,7 @@ public class BurmanEstimates {
     private BurmanEstimates(Builder builder) {
         this.data = builder.data;
         this.bmean = builder.bmean;
+        this.mcmp = builder.mcmp;
         this.ucm = builder.ucm;
         this.ser = builder.ser;
         this.nfcasts = builder.nf;
@@ -113,12 +125,16 @@ public class BurmanEstimates {
         for (int i = 0; i < ucm.getComponentsCount(); ++i) {
             calc(i);
         }
+        if (bmean) {
+            completeCasts();
+        }
     }
 
     private final int nfcasts, nbcasts;
     private final DoubleSeq data;
     private final UcarimaModel ucm;
     private final boolean bmean;
+    private final int mcmp;
     private final double ser;
     private final WienerKolmogorovEstimators wk;
 
@@ -131,11 +147,10 @@ public class BurmanEstimates {
 
     private void calc(final int cmp) {
         int n = data.length();
-        if (cmp == 0 && isTrendConstant()) {
-            double m = correctedMean();
-            estimates[cmp] = DoubleSeq.onMapping(n, i -> m);
-            forecasts[cmp] = DoubleSeq.onMapping(nfcasts, i -> m);
-            backcasts[cmp] = DoubleSeq.onMapping(nbcasts, i -> m);
+        if (cmp == mcmp && isTrendConstant()) {
+            estimates[cmp] = DoubleSeq.onMapping(n, i -> mean);
+            forecasts[cmp] = DoubleSeq.onMapping(nfcasts, i -> mean);
+            backcasts[cmp] = DoubleSeq.onMapping(nbcasts, i -> mean);
             return;
         } else if (g[cmp] == null) {
             return;
@@ -188,9 +203,9 @@ public class BurmanEstimates {
         for (int i = 0; i < pstar; ++i) {
             ww[i] = w1[ntmp + i];
         }
-        if (cmp == 0 && mean != 0) {
+        if (cmp == mcmp && mean != 0) {
             for (int i = pstar; i < ww.length; ++i) {
-                ww[i] = mean;
+                ww[i] = mean / 2;
             }
         }
 
@@ -219,6 +234,11 @@ public class BurmanEstimates {
         for (int i = 0; i < pstar; ++i) {
             ww[i] = w2[pstar - i - 1];
         }
+        if (cmp == mcmp && mean != 0) {
+            for (int i = pstar; i < ww.length; ++i) {
+                ww[i] = mean / 2;
+            }
+        }
         lu.solve(DataBlock.of(ww));
         // ww contains estimates of the signal for t= -2q* to p*-q* (in reverse order)
         // MA(B) w = x2 
@@ -243,32 +263,56 @@ public class BurmanEstimates {
 
         double[] rslt = new double[n + nfc + nbc];
 
-        int nmax=n+2*qstar;
+        int nmax = n + nbc + qstar;
         for (int i = nbc - qstar, j = 0, k = qstar; i < nmax; ++i, ++j, ++k) {
             rslt[i] = x1[j] + x2[k];
         }
-        // complete backcasts
-        for (int j = nbc - qstar - 1; j >= 0; --j) {
-            double s = 0;
-            for (int k = 1; k <= pstar; ++k) {
-                s -= ar[k] * rslt[j + k];
-            }
-            rslt[j] = s;
-        }
-        // complete forecasts
-        for (int j = nbc + n + qstar; j < rslt.length; ++j) {
-            double s = 0;
-            for (int k = 1; k <= pstar; ++k) {
-                s -= ar[k] * rslt[j - k];
-            }
-            rslt[j] = s;
-        }
         estimates[cmp] = DoubleSeq.of(rslt, nbc, n);
-        if (nfcasts > 0) {
-            forecasts[cmp] = DoubleSeq.of(rslt, n + nbc, nfcasts);
+        // complete backcasts
+        if (!bmean || cmp != mcmp) {
+            double[] car = ucm.getComponent(cmp).getAr().asPolynomial().toArray();
+            for (int j = nbc - qstar - 1; j >= 0; --j) {
+                double s = 0;
+                for (int k = 1; k < car.length; ++k) {
+                    s -= car[k] * rslt[j + k];
+                }
+                rslt[j] = s;
+            }
+            // complete forecasts
+            for (int j = nbc + n + qstar; j < rslt.length; ++j) {
+                double s = 0;
+                for (int k = 1; k < car.length; ++k) {
+                    s -= car[k] * rslt[j - k];
+                }
+                rslt[j] = s;
+            }
+            if (nfcasts > 0) {
+                forecasts[cmp] = DoubleSeq.of(rslt, n + nbc, nfcasts);
+            }
+            if (nbcasts > 0) {
+                backcasts[cmp] = DoubleSeq.of(rslt, nbc - nbcasts, nbcasts);
+            }
         }
+    }
+
+    private void completeCasts() {
         if (nbcasts > 0) {
-            backcasts[cmp] = DoubleSeq.of(rslt, nbc - nbcasts, nbcasts);
+            DoubleSeq tmp = this.getSeriesBackcasts();
+            for (int i = 0; i < backcasts.length; ++i) {
+                if (backcasts[i] != null) {
+                    tmp = DoublesMath.subtract(tmp, backcasts[i]);
+                }
+            }
+            backcasts[mcmp] = tmp;
+        }
+        if (nfcasts > 0) {
+            DoubleSeq tmp = this.getSeriesForecasts();
+            for (int i = 0; i < forecasts.length; ++i) {
+                if (forecasts[i] != null) {
+                    tmp = DoublesMath.subtract(tmp, forecasts[i]);
+                }
+            }
+            forecasts[mcmp] = tmp;
         }
 
     }
@@ -293,7 +337,7 @@ public class BurmanEstimates {
      */
     private void extendSeries() {
 
-        // we must extend the series with pstar+qstar forecasts/backcasts
+        // we must extend the series with at least pstar+qstar forecasts/backcasts
         int nf = ar.degree() + ma.degree();
 
         ExactArimaForecasts fcasts = new ExactArimaForecasts();
@@ -305,16 +349,6 @@ public class BurmanEstimates {
         } else {
             mean = 0;
         }
-    }
-
-    private IArimaModel model() {
-        return wk.getUcarimaModel().getModel();
-    }
-
-    // compute mean/P(1), where P is the stationary AR 
-    private double correctedMean() {
-        IArimaModel arima = model();
-        return mean / arima.getStationaryAr().asPolynomial().evaluateAt(1);
     }
 
     /**
@@ -417,7 +451,7 @@ public class BurmanEstimates {
     }
 
     private boolean isTrendConstant() {
-        return wk.getUcarimaModel().getComponent(0).isNull();
+        return wk.getUcarimaModel().getComponent(mcmp).isNull();
     }
 
     private void initSolver() {
@@ -476,13 +510,13 @@ public class BurmanEstimates {
      *
      * @param cmp
      * @param signal
-     * @return
+     * @return null if no forecasts are requested
      */
     public DoubleSeq stdevForecasts(final int cmp, final boolean signal) {
+        if (wk.getUcarimaModel().getComponent(cmp).isNull() || nfcasts == 0) {
+            return null;
+        }
         try {
-            if (wk.getUcarimaModel().getComponent(cmp).isNull() || nfcasts == 0) {
-                return Doubles.EMPTY;
-            }
 
             double[] e = wk.totalErrorVariance(cmp, signal, -nfcasts, nfcasts);
             double[] err = new double[nfcasts];
@@ -491,24 +525,23 @@ public class BurmanEstimates {
             }
             return DoubleSeq.of(err);
         } catch (ArimaException | MatrixException err) {
-            return Doubles.EMPTY;
+            return null;
         }
     }
 
     public DoubleSeq stdevBackcasts(final int cmp, final boolean signal) {
+        if (wk.getUcarimaModel().getComponent(cmp).isNull() || nbcasts == 0) {
+            return null;
+        }
         try {
-            if (wk.getUcarimaModel().getComponent(cmp).isNull() || nbcasts == 0) {
-                return Doubles.EMPTY;
-            }
-
             double[] e = wk.totalErrorVariance(cmp, signal, -nbcasts, nbcasts);
             double[] err = new double[nbcasts];
-            for (int i = 0; i < nbcasts; ++i) {
-                err[i] = ser * Math.sqrt(e[nbcasts - 1 - i]);
+            for (int j=nbcasts-1; j >= 0; --j) {
+                err[j] = ser * Math.sqrt(e[j]);
             }
             return DoubleSeq.of(err);
         } catch (ArimaException | MatrixException err) {
-            return Doubles.EMPTY;
+            return null;
         }
 
     }

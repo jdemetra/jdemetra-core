@@ -23,7 +23,6 @@ import demetra.processing.ProcessingLog;
 import demetra.seats.DecompositionSpec;
 import demetra.seats.DecompositionSpec.ComponentsEstimationMethod;
 import demetra.seats.SeatsModelSpec;
-import demetra.seats.SeatsSpec;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -89,14 +88,15 @@ public class SeatsKernelTest {
                 
         SeatsModelSpec model = SeatsModelSpec.builder()
                 .series(DoubleSeq.of(Data.PROD))
+                .meanCorrection(true)
                 .period(12)
                 .log(true)
                 .sarimaSpec(mspec)
                 .build();
         DecompositionSpec cmps = DecompositionSpec.builder()
-                .backCastCount(0)
+                .backCastCount(-1)
                 .forecastCount(-2)
-                .method(ComponentsEstimationMethod.KalmanSmoother)
+//               .method(ComponentsEstimationMethod.KalmanSmoother)
                 .build();
 
         SeatsToolkit toolkit = SeatsToolkit.of(cmps);

@@ -33,7 +33,7 @@ public final class DecompositionSpec implements Validatable<DecompositionSpec> {
     }
     
     public static enum ComponentsEstimationMethod {
-        Burman, KalmanSmoother, McElroyMatrix
+        Burman, KalmanSmoother
     }
     
     public static enum BiasCorrection{
