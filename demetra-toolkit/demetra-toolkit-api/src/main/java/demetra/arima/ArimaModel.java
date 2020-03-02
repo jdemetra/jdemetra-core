@@ -19,7 +19,8 @@ package demetra.arima;
 import demetra.design.Development;
 
 /**
- *
+ * Generic ARIMA model (defined by its stationary AR, non-stationary AR and
+ * MA polynomials and innovation variance).
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @Development(status = Development.Status.Release)
@@ -28,7 +29,7 @@ import demetra.design.Development;
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class ArimaModel {
 
-    private static double[] ONE = new double[]{1};
+    private static final double[] ONE = new double[]{1};
 
     /**
      * Innovation variance. 1 by default

@@ -16,6 +16,7 @@
  */
 package demetra.data;
 
+import demetra.design.Development;
 import internal.data.InternalSeqCursor;
 import java.util.function.UnaryOperator;
 import org.checkerframework.checker.index.qual.NonNegative;
@@ -26,6 +27,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
  * @author Philippe Charles
  * @param <E>
  */
+@Development(status = Development.Status.Release)
 public interface Vector<E> extends Seq<E> {
 
     /**

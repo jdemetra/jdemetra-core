@@ -21,7 +21,7 @@ import java.util.Arrays;
 import demetra.math.Complex;
 import jdplus.math.ComplexUtility;
 import jdplus.math.Arithmetics;
-import demetra.math.Simplifying;
+import jdplus.math.Simplifying;
 import demetra.util.IntList;
 
 /**

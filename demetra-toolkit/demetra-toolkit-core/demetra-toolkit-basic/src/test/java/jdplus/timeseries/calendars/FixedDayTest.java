@@ -14,9 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.calendars;
+package jdplus.timeseries.calendars;
 
-import demetra.timeseries.TsUnit;
+import demetra.timeseries.calendars.FixedDay;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Stream;
@@ -36,7 +36,7 @@ public class FixedDayTest {
     @Test
     public void test1() {
         FixedDay fd = new FixedDay(7, 21);
-        Iterable<HolidayInfo> iterable = fd.getIterable(LocalDate.of(2018, 1, 1), LocalDate.of(2018, 1, 1).plus(3, ChronoUnit.YEARS));
+        Iterable<HolidayInfo> iterable = HolidayInfo.iterable(fd, LocalDate.of(2018, 1, 1), LocalDate.of(2018, 1, 1).plus(3, ChronoUnit.YEARS));
         Stream<HolidayInfo> stream = StreamSupport.stream(iterable.spliterator(), false);
         assertTrue(stream.count() == 3);
         stream = StreamSupport.stream(iterable.spliterator(), false);
@@ -46,7 +46,7 @@ public class FixedDayTest {
     @Test
     public void test2() {
         FixedDay fd = new FixedDay(7, 21);
-        Iterable<HolidayInfo> iterable = fd.getIterable(LocalDate.of(2017, 7, 21), LocalDate.of(2018, 1, 1).plus(3, ChronoUnit.YEARS));
+        Iterable<HolidayInfo> iterable = HolidayInfo.iterable(fd, LocalDate.of(2017, 7, 21), LocalDate.of(2018, 1, 1).plus(3, ChronoUnit.YEARS));
         Stream<HolidayInfo> stream = StreamSupport.stream(iterable.spliterator(), false);
         assertTrue(stream.count() == 4);
         stream = StreamSupport.stream(iterable.spliterator(), false);
@@ -56,7 +56,7 @@ public class FixedDayTest {
     @Test
     public void test3() {
         FixedDay fd = new FixedDay(7, 21);
-        Iterable<HolidayInfo> iterable = fd.getIterable(LocalDate.of(2017, 7, 21), LocalDate.of(2017, 7, 22));
+        Iterable<HolidayInfo> iterable = HolidayInfo.iterable(fd, LocalDate.of(2017, 7, 21), LocalDate.of(2017, 7, 22));
         Stream<HolidayInfo> stream = StreamSupport.stream(iterable.spliterator(), false);
         assertTrue(stream.count() == 1);
         stream = StreamSupport.stream(iterable.spliterator(), false);
@@ -66,7 +66,7 @@ public class FixedDayTest {
    @Test
     public void testEmpty() {
         FixedDay fd = new FixedDay(7, 21);
-        Iterable<HolidayInfo> iterable = fd.getIterable(LocalDate.of(2017, 7, 23), LocalDate.of(2018, 6, 22));
+        Iterable<HolidayInfo> iterable = HolidayInfo.iterable(fd, LocalDate.of(2017, 7, 23), LocalDate.of(2018, 6, 22));
         Stream<HolidayInfo> stream = StreamSupport.stream(iterable.spliterator(), false);
         assertTrue(stream.count() == 0);
         stream = StreamSupport.stream(iterable.spliterator(), false);

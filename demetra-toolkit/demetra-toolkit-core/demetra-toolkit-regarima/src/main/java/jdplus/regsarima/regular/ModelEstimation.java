@@ -376,7 +376,7 @@ public final class ModelEstimation {
      * @param domain
      * @return 
      */
-    public TsData getCalendareEffect(TsDomain domain){
+    public TsData getCalendarEffect(TsDomain domain){
         TsData s = deterministicEffect(domain, v -> v instanceof ICalendarVariable || v instanceof IMovingHolidayVariable);
         return backTransform(s, true);
     }

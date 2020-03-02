@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
 */
-package demetra.math;
+package jdplus.math;
 
 import demetra.design.Development;
 
@@ -25,7 +25,7 @@ import demetra.design.Development;
  * @author Jean Palate
  * @param <T>
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 public abstract class Simplifying<T> {
     /**
      * Left, right and common items

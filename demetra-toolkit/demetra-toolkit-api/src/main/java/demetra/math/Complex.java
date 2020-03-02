@@ -16,8 +16,6 @@
  */
 package demetra.math;
 
-import demetra.math.Constants;
-import demetra.math.ComplexType;
 import demetra.design.Development;
 
 /**

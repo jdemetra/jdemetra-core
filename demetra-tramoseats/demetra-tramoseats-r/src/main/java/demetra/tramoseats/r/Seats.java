@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.seats.r;
+package demetra.tramoseats.r;
 
 import demetra.arima.SarimaSpec;
 import demetra.data.DoubleSeq;
 import demetra.descrptors.tramoseats.SeatsDescriptor;
+import demetra.information.InformationMapping;
 import demetra.processing.ProcResults;
 import demetra.processing.ProcessingLog;
 import demetra.seats.DecompositionSpec;
@@ -44,6 +45,10 @@ public class Seats {
         @Override
         public <T> T getData(String id, Class<T> tclass) {
             return SeatsDescriptor.getMapping().getData(core, id, tclass);
+        }
+        
+        public static InformationMapping getMapping(){
+            return SeatsDescriptor.getMapping();
         }
     }
     

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 National Bank of Belgium
+ * Copyright 2017 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,29 +14,43 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.seats.r;
+package jdplus.math.algebra;
 
-import demetra.data.Data;
-import java.util.Map;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import demetra.design.Development;
 
 /**
  *
- * @author PALATEJ
+ * @author Jean Palate
+ * @param <T>
+ * @param <F>
  */
-public class SeatsTest {
+@Development(status = Development.Status.Exploratory)
+public interface VectorSpace<T, F extends Field> {
+    T zero();
     
-    public SeatsTest() {
-    }
+    T plus(T a, T b);
+    
+    /**
+     * y = -x <-> y + x = 0
+     * @param x
+     * @return 
+     */
+    T opposite(T x);
+    
+    /**
+     * x = a - b <-> x = a + (- b)
+     * @param a
+     * @param b
+     * @return 
+     */
+    T minus(T a, T b);
 
-    @Test
-    public void testProd() {
-        Seats.Results rslts = Seats.process(Data.PROD, true, 12, new int[]{3,1,1}, new int[]{0,1,1}, false, -1, -2);
-//        Map<String, Class> dictionary = rslts.getDictionary();
-//        dictionary.keySet().forEach(s->System.out.println(s));
-        double[] data = rslts.getData("t_lin_f", double[].class);
-        assertTrue(data.length == 24);
-    }
-    
+    /**
+     * 
+     * @param c
+     * @param a
+     * @return 
+     */
+    T times(F c, T a);
+
 }

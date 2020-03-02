@@ -21,12 +21,12 @@ import demetra.timeseries.calendars.DayEvent;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.Holiday;
 import jdplus.timeseries.calendars.HolidaysUtility;
-import demetra.timeseries.calendars.IHoliday;
 import demetra.timeseries.calendars.PrespecifiedHoliday;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.math.matrices.MatrixType;
+import demetra.timeseries.ValidityPeriod;
 
 /**
  *
@@ -36,10 +36,9 @@ public class Holidays {
 
     private final List<Holiday> holidays = new ArrayList<>();
 
-    private boolean add(IHoliday fday) {
-        Holiday ev = new Holiday(fday);
-        if (!holidays.contains(ev)) {
-            holidays.add(ev);
+    private boolean add(Holiday fday) {
+        if (!holidays.contains(fday)) {
+            holidays.add(fday);
             return true;
         } else {
             return false;
@@ -52,7 +51,12 @@ public class Holidays {
 
     public boolean add(String holiday, int offset, double weight, boolean julian) {
         try {
-            PrespecifiedHoliday cur = new PrespecifiedHoliday(DayEvent.valueOf(holiday), offset, weight, julian);
+            PrespecifiedHoliday cur = PrespecifiedHoliday.builder()
+                    .event(DayEvent.valueOf(holiday))
+                    .offset(offset)
+                    .weight(weight)
+                    .julian(julian)
+                    .build();
             return add(cur);
         } catch (Exception err) {
             return false;
@@ -60,7 +64,7 @@ public class Holidays {
     }
 
     public boolean addFixedDay(int month, int day, double weight, boolean julian) {
-        FixedDay cur = new FixedDay(month, day, weight);
+        FixedDay cur = new FixedDay(month, day, weight, ValidityPeriod.ALWAYS);
         return add(cur);
     }
 

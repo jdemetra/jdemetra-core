@@ -6,13 +6,14 @@
 package demetra.math.matrices;
 
 import demetra.data.DoubleSeq;
-import demetra.data.Doubles;
+import demetra.design.Development;
 import java.util.function.DoubleUnaryOperator;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@Development(status = Development.Status.Release)
 class LightMutableMatrix implements MatrixType.Mutable{
 
     private final double[] storage;

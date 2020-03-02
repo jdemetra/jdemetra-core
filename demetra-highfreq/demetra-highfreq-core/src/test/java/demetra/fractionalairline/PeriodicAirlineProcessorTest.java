@@ -17,13 +17,11 @@ import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.Holiday;
 import jdplus.timeseries.calendars.HolidaysUtility;
-import demetra.timeseries.calendars.IHoliday;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
@@ -66,7 +64,7 @@ public class PeriodicAirlineProcessorTest {
         double ll = PeriodicAirlineEngine.process(DoubleSeq.copyOf(WeeklyData.US_CLAIMS), null, 365.25 / 7, 1e-9).getConcentratedLikelihood().logLikelihood();
     }
 
-    private static void addDefault(List<IHoliday> holidays) {
+    private static void addDefault(List<Holiday> holidays) {
         holidays.add(FixedDay.NEWYEAR);
         holidays.add(FixedDay.MAYDAY);
         holidays.add(FixedDay.ASSUMPTION);
@@ -78,11 +76,11 @@ public class PeriodicAirlineProcessorTest {
     }
 
     public static Holiday[] france() {
-        List<IHoliday> holidays = new ArrayList<>();
+        List<Holiday> holidays = new ArrayList<>();
         addDefault(holidays);
         holidays.add(new FixedDay(5, 8));
         holidays.add(new FixedDay(7, 14));
         holidays.add(FixedDay.ARMISTICE);
-        return holidays.stream().map(h->new Holiday(h)).toArray(i->new Holiday[i]);
+        return holidays.stream().toArray(i->new Holiday[i]);
     }
 }

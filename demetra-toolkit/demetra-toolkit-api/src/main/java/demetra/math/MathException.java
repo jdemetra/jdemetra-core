@@ -23,37 +23,9 @@ import demetra.design.Development;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 public class MathException extends DemetraException {
 
-    /**
-     *
-     */
-    public final static String DIM = "m_err_dim";
-
-    /**
-     *
-     */
-    public final static String SQUARE = "m_err_square";
-
-    /**
-     *
-     */
-    public final static String CHOLESKY = "m_err_chol";
-
-    /**
-     *
-     */
-    public final static String RANK = "m_err_rank";
-
-    /**
-     *
-     */
-    public final static String SINGULAR = "m_err_sing";
-    /**
-     *
-     */
-    public final static String NOTIMPL = "err_notimpl";
     public final static String OVERFLOW = "overflow";
 
     /**

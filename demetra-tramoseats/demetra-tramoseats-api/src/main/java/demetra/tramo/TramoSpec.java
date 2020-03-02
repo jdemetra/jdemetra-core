@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -187,6 +187,28 @@ public final class TramoSpec implements Validatable<TramoSpec> {
     public static final TramoSpec[] allSpecifications() {
         return new TramoSpec[]{TR0, TR1, TR2, TR3, TR4, TR5, TRfull};
     }
+    
+    public static TramoSpec fromString(String name) {
+        switch (name) {
+            case "TR0":
+                return TR0;
+            case "TR1":
+                return TR1;
+            case "TR2":
+                return TR2;
+            case "TR3":
+                return TR3;
+            case "TR4":
+                return TR4;
+            case "TR5":
+                return TR5;
+            case "TRfull":
+                return TRfull;
+            default:
+                return DEFAULT;
+        }
+    }
+    
 
     static {
         TR0 = TramoSpec.builder().build();

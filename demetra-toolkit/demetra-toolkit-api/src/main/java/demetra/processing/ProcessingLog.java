@@ -16,6 +16,7 @@
  */
 package demetra.processing;
 
+import demetra.design.Development;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.Stack;
  *
  * @author PALATEJ
  */
+@Development(status = Development.Status.Exploratory)
 public class ProcessingLog {
 
     public static enum InformationType {

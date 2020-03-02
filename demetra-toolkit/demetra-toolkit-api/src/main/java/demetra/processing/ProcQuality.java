@@ -26,30 +26,33 @@ import demetra.design.Development;
 @Development(status = Development.Status.Beta)
 public enum ProcQuality {
 
+    /**
+     * The results have been checked and accepted
+     */
     Accepted(-1),
-    /// <summary>
-    /// The quality is undefined: meaningless test, failure in the computation of the test...
-    /// </summary>
+    /**
+     * The quality is undefined: meaningless test, failure in the computation of the test...
+     */
     Undefined(0),
-    /// <summary>
-    /// There is an error in the results. The processing should be rejected
-    /// </summary>
+    /**
+     * There is an error in the results. The processing should be rejected
+     */
     Error(1),
-    /// <summary>
-    /// There is no logical error in the results but they should not be accepted.
-    /// </summary>
+    /**
+     * There is no logical error in the results but they should be accepted with caution.
+     */
     Severe(2),
-    /// <summary>
-    /// The quality of the results is bad, but there is no actual error.
-    /// </summary>
+    /**
+     * The quality of the results is bad, but there is no actual error.
+     */
     Bad(3),
-    /// <summary>
-    /// The result of the test is uncertain
-    /// </summary>
+    /**
+     * The quality of the results is uncertain
+     */
     Uncertain(4),
-    /// <summary>
-    /// The results are compatible with the test.
-    /// </summary>
+    /**
+     * The results are compatible with the test.
+     */
     Good(5);
 
     public static ProcQuality valueOf(int value) {

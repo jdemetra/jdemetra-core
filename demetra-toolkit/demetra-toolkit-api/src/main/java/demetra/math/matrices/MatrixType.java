@@ -25,10 +25,10 @@ import demetra.data.DoubleSeq;
 import java.util.function.DoubleUnaryOperator;
 
 /**
- *
+ * TODO: rename the class
  * @author Philippe Charles
  */
-@Development(status = Development.Status.Release)
+@Development(status = Development.Status.Preliminary)
 public interface MatrixType extends BaseTable<Double> {
 
     interface Mutable extends MatrixType {

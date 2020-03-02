@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,7 +14,6 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-
 package demetra.timeseries.regression;
 
 import demetra.design.Development;
@@ -23,7 +22,7 @@ import demetra.design.Development;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 public interface ITradingDaysVariable extends ICalendarVariable {
     
     public static final String NAME="td";

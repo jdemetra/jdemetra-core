@@ -17,23 +17,47 @@
 package demetra.timeseries;
 
 import demetra.design.Development;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
- *
+ * 
  * @author Jean Palate
  */
-@Development(status = Development.Status.Release)
 @lombok.Value
+@Development(status = Development.Status.Release)
+@lombok.AllArgsConstructor(access=lombok.AccessLevel.PRIVATE)
 public class ValidityPeriod {
-
-    private final LocalDateTime start, end;
-
-    public boolean isStartSpecified() {
-        return start != null;
+    
+    public static final ValidityPeriod ALWAYS=new ValidityPeriod(LocalDate.MIN, LocalDate.MAX);
+   
+    /**
+     * 
+     * @param date Start, included
+     * @return 
+     */    
+    public static ValidityPeriod from(LocalDate date){
+        return new ValidityPeriod(date, LocalDate.MAX);
     }
 
-    public boolean isEndSpecified() {
-        return end != null;
+    /**
+     * 
+     * @param date End, excluded
+     * @return 
+     */
+    public static ValidityPeriod to(LocalDate date){
+        return new ValidityPeriod(LocalDate.MIN, date);
     }
+
+    /**
+     * 
+     * @param date0 Start, included
+     * @param date1 End, excluded
+     * @return 
+     */
+    public static ValidityPeriod between(LocalDate date0, LocalDate date1){
+        return new ValidityPeriod(date0, date1);
+    }
+
+    private final LocalDate start, end;
+
 }

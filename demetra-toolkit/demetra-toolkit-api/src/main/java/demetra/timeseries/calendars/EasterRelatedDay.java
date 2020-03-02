@@ -17,75 +17,59 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import java.time.DayOfWeek;
+import demetra.timeseries.ValidityPeriod;
 import java.time.LocalDate;
-import java.util.AbstractList;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-public class EasterRelatedDay implements IHoliday {
+public class EasterRelatedDay implements Holiday {
 
-    /*
-     * Raw estimation of the probability to get Easter at a specific date is defined below:
-     * 22/3 (1/7)*1/LUNARY
-     * 23/3 (2/7)*1/LUNARY
-     * ...
-     * 27/3 (6/7)*1/LUNARY
-     * 28/3 1/LUNARY
-     * ...
-     * 18/4 1/LUNARY
-     * 19/4 1/LUNARY + (1/7) * DEC_LUNARY/LUNARY = (7 + 1 * DEC_LUNARY)/(7 * LUNARY)
-     * 20/4 (6/7)*1/LUNARY + (1/7) * DEC_LUNARY/LUNARY= (6 + 1 * DEC_LUNARY)/(7 * LUNARY)
-     * 21/4 (5/7)*1/LUNARY + (1/7) * DEC_LUNARY/LUNARY
-     * 22/4 (4/7)*1/LUNARY + (1/7) * DEC_LUNARY/LUNARY
-     * 23/4 (3/7)*1/LUNARY + (1/7) * DEC_LUNARY/LUNARY
-     * 24/4 (2/7)*1/LUNARY + (1/7) * DEC_LUNARY/LUNARY
-     * 25/4 (1/7)*1/LUNARY + (1/7) *DEC_LUNARY/LUNARY
-     */
     private static final Map<Integer, LocalDate> DIC = new HashMap<>();
     private static final Map<Integer, LocalDate> JDIC = new HashMap<>();
-    private static final int[] DAYS = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
     private int offset;
     private double weight;
+    private ValidityPeriod validityPeriod;
     private boolean julian;
     
-    public static EasterRelatedDay gregorian(int offset, double weight){
-        return new EasterRelatedDay(offset, weight, false);
+    public static EasterRelatedDay gregorian(int offset, double weight, ValidityPeriod validityPeriod){
+        return new EasterRelatedDay(offset, weight, validityPeriod, false);
     }
 
     public static EasterRelatedDay gregorian(int offset){
-        return new EasterRelatedDay(offset, 1, false);
+        return new EasterRelatedDay(offset, 1, ValidityPeriod.ALWAYS, false);
     }
 
-    public static EasterRelatedDay julian(int offset, double weight){
-        return new EasterRelatedDay(offset, weight, true);
+    public static EasterRelatedDay julian(int offset, double weight, ValidityPeriod validityPeriod){
+        return new EasterRelatedDay(offset, weight, validityPeriod, true);
     }
 
     public static EasterRelatedDay julian(int offset){
-        return new EasterRelatedDay(offset, 1, true);
+        return new EasterRelatedDay(offset, 1, ValidityPeriod.ALWAYS, true);
     }
 
-    private EasterRelatedDay(int offset, double weight, boolean julian) {
+    private EasterRelatedDay(int offset, double weight, ValidityPeriod validityPeriod, boolean julian) {
         this.weight = weight;
         this.offset = offset;
+        this.validityPeriod=validityPeriod;
         this.julian = julian;
     }
 
+    @Override
     public EasterRelatedDay reweight(double nweight) {
         if (nweight == weight) {
             return this;
         }
-        return new EasterRelatedDay(offset, nweight, julian);
+        return new EasterRelatedDay(offset, nweight, validityPeriod, julian);
     }
 
     public EasterRelatedDay plus(int ndays) {
-        return new EasterRelatedDay(offset + ndays, weight, julian);
+        return new EasterRelatedDay(offset + ndays, weight, validityPeriod, julian);
     }
 
     public static final EasterRelatedDay SHROVEMONDAY = gregorian(-48),
@@ -123,7 +107,7 @@ public class EasterRelatedDay implements IHoliday {
         return easter(year, julian);
     }
 
-    private static LocalDate easter(int year, boolean jul) {
+    public static LocalDate easter(int year, boolean jul) {
         if (jul) {
             synchronized (JDIC) {
                 LocalDate e = JDIC.get(year);
@@ -145,137 +129,4 @@ public class EasterRelatedDay implements IHoliday {
         }
     }
 
-    private double probEaster(int del) {
-        return julian ? Easter.probJulianEaster(del)
-                : Easter.probEaster(del);
-    }
-
-    @Override
-    public Iterable<HolidayInfo> getIterable(LocalDate start, LocalDate end) {
-        return new EasterDayList(offset, start, end, julian);
-    }
-
-    private static int START = 80, JSTART = 90, DEL = 35, JDEL = 43;
-    // 31+28+21=80, 31+28+31=90
-
-    @Override
-    public double[][] longTermMean(int freq) {
-        // week day
-
-        int w = offset % 7;
-        if (w == 0) {
-            w=7; // Sunday
-        }
-        if (w < 0) {
-            w += 7;
-        }
-        // monday must be 0...
-        --w;
-
-        // Easter always falls between March, 22 and April, 25 (inclusive). The probability to get a specific day is defined by probEaster.
-        // We don't take into account leap year. So, the solution is slightly wrong for offset
-        // <= -50.
-        // The considered day falls between ...
-        int d0, d1;
-        if (julian) {
-            d0 = JSTART + offset;
-            d1 = d0 + JDEL;
-        } else {
-            d0 = START + offset;
-            d1 = d0 + DEL;
-        }
-        // d1 excluded
-
-        int ifreq = (int) freq;
-        int c = 12 / ifreq;
-
-        int c0 = 0, c1 = 0;
-        for (int i = 0; i < c; ++i) {
-            c1 += DAYS[i];
-        }
-
-        double[][] rslt = new double[ifreq][];
-        for (int i = 0; i < ifreq;) {
-            if (d0 < c1 && d1 > c0) {
-                double[] m = new double[7];
-                double x = 0;
-                for (int j = Math.max(d0, c0); j < Math.min(d1, c1); ++j) {
-                    x += probEaster(j - d0);
-                }
-                m[w] = x * weight;
-                rslt[i] = m;
-            }
-            // update c0, c1;
-            c0 = c1;
-            if (++i < ifreq) {
-                for (int j = 0; j < c; ++j) {
-                    c1 += DAYS[i * c + j];
-                }
-            }
-        }
-        return rslt;
-    }
-
-    static class EasterDayInfo implements HolidayInfo {
-
-        final LocalDate day;
-
-        public EasterDayInfo(int year, int offset, boolean julian) {
-            LocalDate easter = easter(year, julian);
-            day = easter.plusDays(offset);
-        }
-
-        @Override
-        public LocalDate getDay() {
-            return day;
-        }
-
-        @Override
-        public DayOfWeek getDayOfWeek() {
-            return day.getDayOfWeek();
-        }
-    }
-
-    static class EasterDayList extends AbstractList<HolidayInfo> {
-
-        private final int startyear, n, offset;
-        private final boolean julian;
-
-        public EasterDayList(int offset, LocalDate fstart, LocalDate fend, boolean julian) {
-            this.offset = offset;
-            this.julian = julian;
-            int ystart = fstart.getYear(), yend = fend.getYear();
-            LocalDate xday = easter(ystart, julian).plusDays(offset);
-            LocalDate yday = easter(yend, julian).plusDays(offset);
-
-            if (xday.isBefore(fstart)) {
-                ++ystart;
-            }
-
-            // pstart is the last valid period
-            if (yday.isBefore(fend)) {
-                ++yend;
-            }
-
-            n = yend - ystart;
-            startyear = ystart;
-        }
-
-        @Override
-        public HolidayInfo get(int index) {
-            return new EasterDayInfo(startyear + index, offset, julian);
-        }
-
-        @Override
-        public int size() {
-            return n;
-        }
-    }
-
-    /**
-     * @return the offset
-     */
-    public int getOffset() {
-        return offset;
-    }
 }

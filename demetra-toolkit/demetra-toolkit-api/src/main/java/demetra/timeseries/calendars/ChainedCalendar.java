@@ -6,15 +6,13 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import demetra.timeseries.TsDomain;
 import java.time.LocalDate;
-import demetra.math.matrices.MatrixType;
 
 /**
  *
  * @author PALATEJ
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Release)
 @lombok.Value
 public class ChainedCalendar implements CalendarDefinition {
 

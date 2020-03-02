@@ -16,6 +16,7 @@
  */
 package demetra.information;
 
+import demetra.design.Development;
 import demetra.util.WildCards;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -25,6 +26,7 @@ import java.util.function.Function;
  *
  * @author Jean Palate
  */
+@Development(status = Development.Status.Release)
 class InformationExtractors {
 
     static final String LSTART = "(", LEND = ")";

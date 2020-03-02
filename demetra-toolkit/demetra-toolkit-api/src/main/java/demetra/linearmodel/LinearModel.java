@@ -25,8 +25,9 @@ import demetra.math.matrices.MatrixType;
  * 
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@Development(status = Development.Status.Release)
+@Development(status = Development.Status.Temporary)
 @lombok.Value
+@Deprecated
 public class LinearModel {
     @lombok.NonNull
     /**

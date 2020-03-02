@@ -20,10 +20,12 @@ import demetra.design.Development;
 
 /**
  * Estimation of a missing value in an array of doubles.
+ * TODO Move to another package ?
  * @author Jean Palate <jean.palate@nbb.be>
+ * 
  */
 @lombok.Value
-@Development(status = Development.Status.Release)
+@Development(status = Development.Status.Preliminary)
 public class MissingValueEstimation {
     
     /**

@@ -5,12 +5,14 @@
  */
 package demetra.ssf;
 
+import demetra.design.Development;
+
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@Development(status = Development.Status.Release)
 public enum SsfLikelihood {
-    Undefined,
     Diffuse,
     Marginal,
     Profile

@@ -20,7 +20,7 @@ package demetra.modelling;
 import demetra.design.Development;
 
 /**
- *
+ * TODO: rename the enum
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)

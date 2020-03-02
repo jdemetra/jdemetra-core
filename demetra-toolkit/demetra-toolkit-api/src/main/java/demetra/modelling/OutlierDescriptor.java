@@ -5,11 +5,14 @@
  */
 package demetra.modelling;
 
+import demetra.design.Development;
+
 /**
  *
  * @author palatej
  */
 @lombok.Value
+@Development(status = Development.Status.Release)
 public class OutlierDescriptor {
     private String code;
     private int position;

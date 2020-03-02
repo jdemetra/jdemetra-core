@@ -135,6 +135,10 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
         return domain.getStartPeriod();
     }
 
+    public TsPeriod getEnd() {
+        return domain.getEndPeriod();
+    }
+
     /**
      * Gets the number of periods in one year.
      *

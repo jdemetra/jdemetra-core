@@ -16,12 +16,15 @@
  */
 package demetra.data;
 
+import demetra.design.Development;
+
 /**
- *
+ * // TODO Rename to Parameter (which should disappear)
  * @author Jean Palate
  */
 @lombok.Value
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+@Development(status = Development.Status.Preliminary)
 public class ParameterSpec {
 
     /**

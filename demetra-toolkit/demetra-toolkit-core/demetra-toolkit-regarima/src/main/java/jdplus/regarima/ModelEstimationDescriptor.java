@@ -89,7 +89,7 @@ public class ModelEstimationDescriptor {
 //        MAPPING.set(ModellingDictionary.DET + SeriesInfo.F_SUFFIX, source -> source.getDet(true));
 //        MAPPING.set(ModellingDictionary.L + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(source.getForecastCount()));
 //        MAPPING.set(ModellingDictionary.L + SeriesInfo.B_SUFFIX, source -> source.linearizedBackcast(source.description.getFrequency()));
-        MAPPING.set(ModellingDictionary.CAL, TsData.class, source -> source.getCalendareEffect(source.getEstimationDomain()));
+        MAPPING.set(ModellingDictionary.CAL, TsData.class, source -> source.getCalendarEffect(source.getEstimationDomain()));
 //        MAPPING.set(ModellingDictionary.CAL + SeriesInfo.F_SUFFIX, source -> source.getCal(true));
         MAPPING.set(ModellingDictionary.TDE, TsData.class, source -> source.getTradingDaysEffect(source.getEstimationDomain()));
 //        MAPPING.set(ModellingDictionary.TDE + SeriesInfo.F_SUFFIX, source -> source.getTde(true));

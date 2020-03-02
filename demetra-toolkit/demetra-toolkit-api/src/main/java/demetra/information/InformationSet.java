@@ -26,12 +26,13 @@ import java.util.concurrent.atomic.AtomicLong;
 import demetra.design.ReturnNew;
 
 /**
+ * TODO: Is it necessary?
  * Set of information. That structure can be used recursively: An information
  * set can contain other information sets.
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Release)
+@Development(status = Development.Status.Preliminary)
 public final class InformationSet implements Cloneable {
 
     public static final char SEP = '.';
@@ -49,7 +50,7 @@ public final class InformationSet implements Cloneable {
                 boolean first = true;
                 StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < s.length; ++i) {
-                    if (s[i] != null && s.length>0) {
+                    if (s[i] != null && s[i].length() > 0) {
                         if (!first) {
                             builder.append(SEP);
                         } else {

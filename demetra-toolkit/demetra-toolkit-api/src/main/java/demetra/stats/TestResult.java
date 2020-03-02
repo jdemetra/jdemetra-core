@@ -12,7 +12,7 @@ import demetra.design.Development;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-@Development(status = Development.Status.Beta)
+@Development(status = Development.Status.Exploratory)
 public class TestResult {
  
     double value;

@@ -20,6 +20,7 @@ import lombok.NonNull;
  */
 @lombok.Value
 @lombok.Builder(builderClassName="Builder")
+@Deprecated
 public class RegArimaEstimation<S> {
     
     /**

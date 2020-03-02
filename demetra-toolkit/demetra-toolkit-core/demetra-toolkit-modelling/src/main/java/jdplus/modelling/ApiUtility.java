@@ -43,7 +43,7 @@ public class ApiUtility {
                 .bphi(model.bphi())
                 .theta(model.theta())
                 .btheta(model.btheta())
-                .d(model.getDifferencingOrder())
+                .d(model.getRegularDifferenceOrder())
                 .bd(model.getSeasonalDifferenceOrder())
                 .name(name)
                 .build();

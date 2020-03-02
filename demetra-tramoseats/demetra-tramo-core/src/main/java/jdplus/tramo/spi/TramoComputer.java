@@ -25,7 +25,6 @@ import demetra.tramo.TramoSpec;
 import java.util.List;
 import jdplus.regarima.ApiUtility;
 import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.regsarima.regular.RegSarimaModelling;
 import nbbrd.service.ServiceProvider;
 
 /**

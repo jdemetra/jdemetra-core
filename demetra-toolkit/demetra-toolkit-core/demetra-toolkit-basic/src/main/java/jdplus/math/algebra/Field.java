@@ -3,13 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.math.algebra;
+package jdplus.math.algebra;
+
+import demetra.design.Development;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  * @param <T>
  */
+@Development(status = Development.Status.Exploratory)
 public interface Field<T> {
     T zero();
     

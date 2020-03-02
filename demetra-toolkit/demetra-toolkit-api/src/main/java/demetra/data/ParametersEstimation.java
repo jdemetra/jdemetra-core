@@ -20,11 +20,11 @@ import demetra.design.Development;
 import demetra.math.matrices.MatrixType;
 
 /**
- *
+ * TODO Is it necessary?
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-@Development(status = Development.Status.Release)
+@Development(status = Development.Status.Preliminary)
 public class ParametersEstimation {
     /**
      * Values of the parameters
@@ -34,4 +34,8 @@ public class ParametersEstimation {
      * Covariance of the parameters
      */
     private MatrixType covariance;
+    /**
+     * Any suitable information/description
+     */
+    private String description;
 }

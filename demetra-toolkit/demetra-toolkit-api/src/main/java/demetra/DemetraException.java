@@ -20,7 +20,7 @@ package demetra;
 import demetra.design.Development;
 
 /**
- *
+ * Basic exception of JD+
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
@@ -35,7 +35,6 @@ public class DemetraException extends RuntimeException {
      * @param msg
      */
     public DemetraException(final String msg) {
-        // super(g_origin, g_rmgr.GetString(msg))
         super(msg);
     }
 

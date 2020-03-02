@@ -20,11 +20,11 @@ package demetra.information;
 import demetra.design.Development;
 
 /**
- *
+ * TODO: Is it necessary?
  * @param <S>
  * @author Jean Palate
  */
-@Development(status = Development.Status.Release)
+@Development(status = Development.Status.Preliminary)
 public class InformationComparer<S> implements java.util.Comparator<Information<S>>{
 
     @Override

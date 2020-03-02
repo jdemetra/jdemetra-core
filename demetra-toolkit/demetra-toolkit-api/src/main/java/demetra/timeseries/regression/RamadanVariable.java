@@ -16,10 +16,13 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.design.Development;
+
 /**
  *
  * @author palatej
  */
+@Development(status=Development.Status.Preliminary)
 public class RamadanVariable implements IMovingHolidayVariable{
     
 }

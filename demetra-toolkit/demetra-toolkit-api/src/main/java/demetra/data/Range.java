@@ -16,6 +16,7 @@
  */
 package demetra.data;
 
+import demetra.design.Development;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -23,6 +24,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Philippe Charles
  * @param <E>
  */
+@Development(status = Development.Status.Release)
 public interface Range<E extends Comparable<? super E>> {
 
     /**
