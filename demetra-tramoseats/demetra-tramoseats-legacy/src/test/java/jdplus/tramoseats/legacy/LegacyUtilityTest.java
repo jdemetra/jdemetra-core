@@ -11,6 +11,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.LinearModelEstimation;
 import demetra.timeseries.regression.modelling.ModellingContext;
 import demetra.tramo.TramoProcessor;
+import demetra.tramo.TramoResults;
 import demetra.tramo.TramoSpec;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -31,8 +32,8 @@ public class LegacyUtilityTest {
     @Test
     public void testFull() {
         TsData s = Data.TS_ABS_RETAIL;
-        LinearModelEstimation<SarimaModel> rslt = TramoProcessor.compute(s, TramoSpec.TRfull, ModellingContext.getActiveContext(), null);
-        LinearModelEstimation<SarimaModel> lrslt = TramoProcessor.computeLegacy(s, TramoSpec.TRfull, ModellingContext.getActiveContext(), null);
+        TramoResults rslt = TramoProcessor.compute(s, TramoSpec.TRfull, ModellingContext.getActiveContext(), null);
+        TramoResults lrslt = TramoProcessor.computeLegacy(s, TramoSpec.TRfull, ModellingContext.getActiveContext(), null);
 //        System.out.println("New");
 //        System.out.println(rslt.getStatistics());
 //        System.out.println("Legacy");
@@ -43,14 +44,14 @@ public class LegacyUtilityTest {
         TsData s = Data.TS_PROD;
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 200; ++i) {
-            LinearModelEstimation<SarimaModel> lrslt = TramoProcessor.computeLegacy(s, TramoSpec.TRfull, ModellingContext.getActiveContext(), null);
+            TramoResults lrslt = TramoProcessor.computeLegacy(s, TramoSpec.TRfull, ModellingContext.getActiveContext(), null);
         }
         long t1 = System.currentTimeMillis();
         System.out.println("Legacy");
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < 200; ++i) {
-            LinearModelEstimation<SarimaModel> rslt = TramoProcessor.compute(s, TramoSpec.TRfull, ModellingContext.getActiveContext(), null);
+            TramoResults rslt = TramoProcessor.compute(s, TramoSpec.TRfull, ModellingContext.getActiveContext(), null);
         }
         t1 = System.currentTimeMillis();
         System.out.println("New");

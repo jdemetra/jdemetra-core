@@ -14,30 +14,29 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.descrptors.tramoseats;
+package jdplus.tramoseats.extractors;
 
-import demetra.arima.SarimaModel;
-import demetra.descriptors.arima.SarimaDescriptor;
-import demetra.descriptors.timeseries.regression.LinearModelEstimationDescriptor;
+import jdplus.arima.extractors.SarimaExtractor;
 import demetra.information.InformationMapping;
-import demetra.timeseries.regression.modelling.LinearModelEstimation;
+import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.sarima.SarimaModel;
 
 /**
  *
  * @author palatej
  */
 @lombok.experimental.UtilityClass
-public class TramoDescriptor {
-    static final InformationMapping<LinearModelEstimation> MAPPING = new InformationMapping<>(LinearModelEstimation.class);
+public class TramoExtractor {
+    static final InformationMapping<ModelEstimation> MAPPING = new InformationMapping<>(ModelEstimation.class);
 
     static {
         
-        MAPPING.delegate(null, LinearModelEstimationDescriptor.getMapping(), x->x);
-        MAPPING.set("model", SarimaModel.class, x->((LinearModelEstimation<SarimaModel>)x).getStochasticComponent());
-        MAPPING.delegate("sarima", SarimaDescriptor.getMapping(), x->((LinearModelEstimation<SarimaModel>)x).getStochasticComponent());
+//        MAPPING.delegate(null, LinearModelEstimationDescriptor.getMapping(), x->x);
+        MAPPING.set("model", SarimaModel.class, x->x.getModel().arima());
+//        MAPPING.delegate("sarima", SarimaExtractor.getMapping(), x->((LinearModelEstimation<SarimaModel>)x).getStochasticComponent());
     }
 
-    public InformationMapping<LinearModelEstimation> getMapping() {
+    public InformationMapping<ModelEstimation> getMapping() {
         return MAPPING;
     }
     

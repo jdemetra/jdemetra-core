@@ -16,12 +16,11 @@
  */
 package demetra.tramo;
 
-import demetra.arima.SarimaModel;
 import demetra.design.Algorithm;
 import demetra.design.Development;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.LinearModelEstimation;
 import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.modelling.RegSarimaResults;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.service.Mutability;
@@ -47,7 +46,7 @@ public class TramoProcessor {
         return ENGINE.get();
     }
 
-    public LinearModelEstimation<SarimaModel> compute(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public RegSarimaResults compute(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems) {
         return ENGINE.get().compute(series, spec, context, addtionalItems);
     }
 
@@ -59,7 +58,7 @@ public class TramoProcessor {
         return LEGACYENGINE.get();
     }
 
-    public LinearModelEstimation<SarimaModel> computeLegacy(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public RegSarimaResults computeLegacy(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems) {
         Computer cp = LEGACYENGINE.get();
         if (cp == null)
             throw new TramoException("No legacy engine");
@@ -71,7 +70,7 @@ public class TramoProcessor {
     @FunctionalInterface
     public static interface Computer {
 
-        public LinearModelEstimation<SarimaModel> compute(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems);
+        public RegSarimaResults compute(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems);
 
     }
 }

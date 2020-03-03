@@ -9,6 +9,7 @@ import demetra.arima.SarimaModel;
 import demetra.data.Data;
 import demetra.timeseries.regression.modelling.LinearModelEstimation;
 import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.tramo.TramoResults;
 import demetra.tramo.TramoSpec;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -24,9 +25,9 @@ public class TramoComputerTest {
 
     @Test
     public void testBasic() {
-        LinearModelEstimation<SarimaModel> rslt = demetra.tramo.TramoProcessor.compute(Data.TS_PROD, TramoSpec.TRfull, ModellingContext.getActiveContext(), null);
-        System.out.println(rslt.getStatistics());
-        System.out.println(rslt.getStochasticComponent());
+        TramoResults rslt = demetra.tramo.TramoProcessor.compute(Data.TS_PROD, TramoSpec.TRfull, ModellingContext.getActiveContext(), null);
+        System.out.println(rslt.getRegarima().getStatistics());
+        System.out.println(rslt.getRegarima().getStochasticComponent());
     }
     
 }

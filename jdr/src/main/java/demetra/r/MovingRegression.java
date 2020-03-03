@@ -16,7 +16,7 @@ import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import jdplus.regsarima.RegSarimaProcessor;
-import demetra.descriptors.arima.SarimaDescriptor;
+import jdplus.arima.extractors.SarimaExtractor;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsUnit;
@@ -63,7 +63,7 @@ public class MovingRegression {
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> ApiUtility.toApi(r.getArima(), null));
+//            MAPPING.delegate(ARIMA, SarimaExtractor.getMapping(), r -> ApiUtility.toApi(r.getArima(), null));
             MAPPING.set(COEFF, Matrix.class, r -> r.getCoefficients());
             MAPPING.set(TD, Matrix.class, r -> r.getVariables());
             MAPPING.set(TDEFFECT, TsData.class, r

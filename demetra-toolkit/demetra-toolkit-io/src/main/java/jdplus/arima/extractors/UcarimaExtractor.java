@@ -14,12 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.descriptors.arima;
+package jdplus.arima.extractors;
 
-import demetra.arima.ArimaModel;
-import demetra.arima.UcarimaModel;
 import demetra.design.Development;
 import demetra.information.InformationMapping;
+import jdplus.modelling.ApiUtility;
+import jdplus.ucarima.UcarimaModel;
 
 /**
  *
@@ -27,7 +27,7 @@ import demetra.information.InformationMapping;
  */
 @Development(status = Development.Status.Release)
 @lombok.experimental.UtilityClass
-public class UcarimaDescriptor {
+public class UcarimaExtractor {
 
     final static String COMPONENT="component", MODEL="model", REDUCEDMODEL="reducedmodel", // Component
             SUM="sum",  // Reduced model
@@ -36,13 +36,13 @@ public class UcarimaDescriptor {
     static final InformationMapping<UcarimaModel> MAPPING = new InformationMapping<>(UcarimaModel.class);
 
     static {
-        MAPPING.set(SIZE, Integer.class, source->source.size());
-        MAPPING.set(REDUCEDMODEL, ArimaModel.class, source->source.getSum());
-        MAPPING.delegate(SUM, ArimaDescriptor.getMapping(), source->source.getSum());
-        MAPPING.delegateArray(COMPONENT, 1, 10, ArimaDescriptor.getMapping(), (source, i)
-                -> i>source.size() ? null : source.getComponent(i-1));
-        MAPPING.setArray(MODEL, 1, 10, ArimaModel.class, (source, i)
-                -> i>source.size() ? null : source.getComponent(i-1));
+        MAPPING.set(SIZE, Integer.class, source->source.getComponentsCount());
+        MAPPING.set(REDUCEDMODEL, demetra.arima.ArimaModel.class, source->ApiUtility.toApi(source.getModel(), "reducedmodel"));
+        MAPPING.delegate(SUM, ArimaExtractor.getMapping(), source->source.getModel());
+        MAPPING.delegateArray(COMPONENT, 1, 10, ArimaExtractor.getMapping(), (source, i)
+                -> i>source.getComponentsCount()? null : source.getComponent(i-1));
+        MAPPING.setArray(MODEL, 1, 10, demetra.arima.ArimaModel.class, (source, i)
+                -> i>source.getComponentsCount() ? null : ApiUtility.toApi(source.getComponent(i-1),"cmp"+(i+1)));
     }
 
     public InformationMapping<UcarimaModel> getMapping() {

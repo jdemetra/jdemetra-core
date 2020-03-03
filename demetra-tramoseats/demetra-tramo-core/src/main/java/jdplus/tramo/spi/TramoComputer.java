@@ -16,15 +16,13 @@
  */
 package jdplus.tramo.spi;
 
-import demetra.arima.SarimaModel;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.LinearModelEstimation;
 import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.modelling.RegSarimaResults;
 import demetra.tramo.TramoProcessor;
 import demetra.tramo.TramoSpec;
 import java.util.List;
 import jdplus.regarima.ApiUtility;
-import jdplus.regsarima.regular.ModelEstimation;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -35,10 +33,15 @@ import nbbrd.service.ServiceProvider;
 public class TramoComputer implements TramoProcessor.Computer{
 
     @Override
-    public LinearModelEstimation<SarimaModel> compute(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public RegSarimaResults compute(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems) {
         jdplus.tramo.TramoProcessor processor = jdplus.tramo.TramoProcessor.of(spec, context);
-        ModelEstimation estimation = processor.process(series);
-        return ApiUtility.toApi(estimation);
+        jdplus.regsarima.regular.RegSarimaResults rslt = processor.process(series);
+        // TODO: fill details
+        return RegSarimaResults.builder()
+                .regarima(ApiUtility.toApi(rslt.getRegarima()))
+                .logs(rslt.getLogs())
+//                .addtionalResults()
+                .build();
     }
     
 }

@@ -14,11 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.descriptors.arima;
+package jdplus.arima.extractors;
 
-import demetra.arima.ArimaModel;
 import demetra.design.Development;
 import demetra.information.InformationMapping;
+import jdplus.arima.IArimaModel;
 
 /**
  *
@@ -26,25 +26,23 @@ import demetra.information.InformationMapping;
  */
 @Development(status = Development.Status.Release)
 @lombok.experimental.UtilityClass
-public class ArimaDescriptor {
+public class ArimaExtractor {
 
     final static String AR="ar", // Stationary auto-regressive polynomial
             DELTA="delta",  // Differencing polynomial
             MA="ma",  // Moving average polynomial
-            VAR = "var", // Innovation variance
-            DESC = "desc"; // Optional description/name
+            VAR = "var"; // Innovation variance
 
-    final InformationMapping<ArimaModel> MAPPING = new InformationMapping<>(ArimaModel.class);
+    final InformationMapping<IArimaModel> MAPPING = new InformationMapping<>(IArimaModel.class);
 
     static {
-        MAPPING.set(AR, double[].class, source->source.getAr());
-        MAPPING.set(DELTA, double[].class, source->source.getDelta());
-        MAPPING.set(MA, double[].class, source->source.getMa());
+        MAPPING.set(AR, double[].class, source->source.getNonStationaryAr().asPolynomial().coefficients().drop(1, 0).toArray());
+        MAPPING.set(DELTA, double[].class, source->source.getNonStationaryAr().asPolynomial().coefficients().drop(1, 0).toArray());
+        MAPPING.set(MA, double[].class, source->source.getMa().asPolynomial().coefficients().drop(1, 0).toArray());
         MAPPING.set(VAR, Double.class, source->source.getInnovationVariance());
-        MAPPING.set(DESC, String.class, source->source.getName());
     }
 
-    public InformationMapping<ArimaModel> getMapping() {
+    public InformationMapping<IArimaModel> getMapping() {
         return MAPPING;
     }
 

@@ -6,7 +6,7 @@
 package demetra.benchmarking.descriptors;
 
 import demetra.data.ParameterEstimation;
-import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
+import jdplus.stats.extractors.LikelihoodStatisticsExtractor;
 import demetra.design.Development;
 import demetra.information.InformationMapping;
 import demetra.linearmodel.LinearModelEstimation;
@@ -45,7 +45,7 @@ public class TemporalDisaggregationDescriptor{
         MAPPING.set(NX, Integer.class, source->source.getEstimation().nx());
         MAPPING.set(C, double[].class, source->source.getEstimation().values().toArray());
         MAPPING.set(COVAR, MatrixType.class, source->source.getEstimation().getCovariance());
-        MAPPING.delegate(LIKELIHOOD, LikelihoodStatisticsDescriptor.getMapping(), source -> source.getLikelihood());
+        MAPPING.delegate(LIKELIHOOD, LikelihoodStatisticsExtractor.getMapping(), source -> source.getLikelihood());
         MAPPING.delegate(RES, ResidualsDiagnosticsDescriptor.getMapping(), source -> source.getResidualsDiagnostics());
     }
 

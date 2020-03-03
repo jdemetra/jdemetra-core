@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.descrptors.tramoseats;
+package jdplus.tramoseats.extractors;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,15 +25,15 @@ import static org.junit.Assert.*;
  *
  * @author palatej
  */
-public class TramoDescriptorTest {
+public class TramoExtractorTest {
     
-    public TramoDescriptorTest() {
+    public TramoExtractorTest() {
     }
     
     @Test
     public void testDictionary() {
         Map<String, Class> dic = new LinkedHashMap<>();
-        TramoDescriptor.getMapping().fillDictionary(null, dic, true);
+        TramoExtractor.getMapping().fillDictionary(null, dic, true);
         dic.forEach((key, obj) -> System.out.println(key));
     }
     

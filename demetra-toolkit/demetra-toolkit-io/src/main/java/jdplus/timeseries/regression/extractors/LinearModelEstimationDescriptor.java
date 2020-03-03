@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.descriptors.timeseries.regression;
+package jdplus.timeseries.regression.extractors;
 
 import demetra.information.InformationMapping;
 import demetra.information.InformationSet;

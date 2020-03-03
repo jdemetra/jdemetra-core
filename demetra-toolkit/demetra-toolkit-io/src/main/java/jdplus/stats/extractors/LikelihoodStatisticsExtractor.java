@@ -14,10 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.descriptors.stats;
+package jdplus.stats.extractors;
 
 import demetra.information.InformationMapping;
-import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.LikelihoodStatistics;
 
 /**
@@ -25,7 +24,7 @@ import demetra.likelihood.LikelihoodStatistics;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.experimental.UtilityClass
-public class LikelihoodStatisticsDescriptor {
+public class LikelihoodStatisticsExtractor {
 
     private final String LL = "ll", LLC = "adjustedll", SSQ = "ssqerr", AIC = "aic", BIC = "bic", AICC = "aicc", BICC = "bicc", BIC2 = "bic2", HQ = "hannanquinn",
             NPARAMS = "nparams", NOBS = "nobs", NEFFECTIVEOBS = "neffective";

@@ -17,8 +17,6 @@
 package demetra.tramoseats.r;
 
 import demetra.arima.SarimaModel;
-import demetra.descriptors.timeseries.regression.LinearModelEstimationDescriptor;
-import demetra.descrptors.tramoseats.TramoDescriptor;
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.LinearModelEstimation;
@@ -27,7 +25,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import jdplus.regarima.ApiUtility;
 import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaResults;
 import jdplus.tramo.TramoProcessor;
+import jdplus.tramoseats.extractors.TramoExtractor;
 
 /**
  *
@@ -37,31 +37,31 @@ import jdplus.tramo.TramoProcessor;
 public class Tramo {
     @lombok.Value
     public static class Results implements ProcResults{
-        private final LinearModelEstimation<SarimaModel> core;
+        private ModelEstimation core;
 
         @Override
         public boolean contains(String id) {
-            return TramoDescriptor.getMapping().contains(id);
+            return TramoExtractor.getMapping().contains(id);
         }
 
         @Override
         public Map<String, Class> getDictionary() {
             Map<String, Class> dic = new LinkedHashMap<>();
-            TramoDescriptor.getMapping().fillDictionary(null, dic, true);
+            TramoExtractor.getMapping().fillDictionary(null, dic, true);
             return dic;
         }
 
         @Override
         public <T> T getData(String id, Class<T> tclass) {
-            return TramoDescriptor.getMapping().getData(core, id, tclass);
+            return TramoExtractor.getMapping().getData(core, id, tclass);
         }
     }
     
     public Results process(TsData series, String defSpec){
         TramoSpec spec=TramoSpec.fromString(defSpec);
         TramoProcessor tramo= TramoProcessor.of(spec, null);
-        ModelEstimation rslt = tramo.process(series);
-        return new Results(ApiUtility.toApi(rslt));
+        RegSarimaResults estimation = tramo.process(series);
+        return new Results(estimation.getRegarima());
     }
     
 }

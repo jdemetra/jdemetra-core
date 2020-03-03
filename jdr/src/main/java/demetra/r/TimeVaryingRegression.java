@@ -15,7 +15,7 @@ import jdplus.math.matrices.QuadraticForm;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
-import demetra.descriptors.arima.SarimaDescriptor;
+import jdplus.arima.extractors.SarimaExtractor;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;
@@ -36,7 +36,7 @@ import jdplus.sarima.estimation.SarimaMapping;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
-import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
+import jdplus.stats.extractors.LikelihoodStatisticsExtractor;
 import demetra.likelihood.LikelihoodStatistics;
 import jdplus.math.matrices.Matrix;
 import jdplus.modelling.ApiUtility;
@@ -76,10 +76,10 @@ public class TimeVaryingRegression {
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(ARIMA0,SarimaDescriptor.getMapping(), r ->  ApiUtility.toApi(r.getArima0(), null));
-            MAPPING.delegate(LL0, LikelihoodStatisticsDescriptor.getMapping(), r -> r.getLl0());
-            MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> ApiUtility.toApi(r.getArima(), null));
-            MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.getLl());
+//            MAPPING.delegate(ARIMA0,SarimaExtractor.getMapping(), r ->  ApiUtility.toApi(r.getArima0(), null));
+            MAPPING.delegate(LL0, LikelihoodStatisticsExtractor.getMapping(), r -> r.getLl0());
+//            MAPPING.delegate(ARIMA, SarimaExtractor.getMapping(), r -> ApiUtility.toApi(r.getArima(), null));
+            MAPPING.delegate(LL, LikelihoodStatisticsExtractor.getMapping(), r -> r.getLl());
             MAPPING.set("aic0", Double.class, r -> r.getLl0().getAIC());
             MAPPING.set("aic", Double.class, r -> r.getLl().getAIC());
             MAPPING.set("tdvar", Double.class, r -> r.getNvar());

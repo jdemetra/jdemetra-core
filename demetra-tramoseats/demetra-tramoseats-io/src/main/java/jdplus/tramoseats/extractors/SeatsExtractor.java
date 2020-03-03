@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.descrptors.tramoseats;
+package jdplus.tramoseats.extractors;
 
 import demetra.data.DoubleSeq;
-import demetra.descriptors.arima.ArimaDescriptor;
-import demetra.descriptors.arima.SarimaDescriptor;
+import jdplus.arima.extractors.ArimaExtractor;
+import jdplus.arima.extractors.SarimaExtractor;
 import demetra.design.Development;
 import demetra.information.InformationMapping;
 import demetra.modelling.ComponentInformation;
@@ -15,7 +15,7 @@ import demetra.modelling.ModellingDictionary;
 import demetra.modelling.SeriesInfo;
 import demetra.sa.ComponentType;
 import demetra.sa.SaDictionary;
-import demetra.seats.SeatsResults;
+import jdplus.seats.SeatsResults;
 
 /**
  *
@@ -23,7 +23,7 @@ import demetra.seats.SeatsResults;
  */
 @Development(status = Development.Status.Release)
 @lombok.experimental.UtilityClass
-public class SeatsDescriptor {
+public class SeatsExtractor {
 
     private final InformationMapping<SeatsResults> MAPPING = new InformationMapping<>(SeatsResults.class);
 
@@ -92,15 +92,15 @@ public class SeatsDescriptor {
         MAPPING.set(SaDictionary.I_CMP + SeriesInfo.B_SUFFIX, double[].class, source -> asArray(source.getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.Backcast)));
         MAPPING.set(SaDictionary.I_CMP + SeriesInfo.EB_SUFFIX, double[].class, source -> asArray(source.getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast)));
 
-        MAPPING.delegate("model", ArimaDescriptor.getMapping(), source -> source.getDecomposition().getSum());
-        MAPPING.delegate("tmodel", ArimaDescriptor.getMapping(), source -> source.getDecomposition().getComponent(0));
-        MAPPING.delegate("smodel", ArimaDescriptor.getMapping(), source -> source.getDecomposition().getComponent(1));
+//        MAPPING.delegate("model", ArimaExtractor.getMapping(), source -> source.getDecomposition().getSum());
+//        MAPPING.delegate("tmodel", ArimaExtractor.getMapping(), source -> source.getDecomposition().getComponent(0));
+//        MAPPING.delegate("smodel", ArimaExtractor.getMapping(), source -> source.getDecomposition().getComponent(1));
 //        MAPPING.delegate("samodel", ArimaDescriptor.getMapping(), source -> source.getDecomposition().getComponent(1));
-        MAPPING.delegate("transitorymodel", ArimaDescriptor.getMapping(), source -> source.getDecomposition().getComponent(2));
-        MAPPING.delegate("imodel", ArimaDescriptor.getMapping(), source -> source.getDecomposition().getComponent(3));
-
-        MAPPING.delegate("initialmodel", SarimaDescriptor.getMapping(), source -> source.getInitialModel());
-        MAPPING.delegate("finalmodel", SarimaDescriptor.getMapping(), source -> source.getFinalModel());
+//        MAPPING.delegate("transitorymodel", ArimaExtractor.getMapping(), source -> source.getDecomposition().getComponent(2));
+//        MAPPING.delegate("imodel", ArimaExtractor.getMapping(), source -> source.getDecomposition().getComponent(3));
+//
+//        MAPPING.delegate("initialmodel", SarimaExtractor.getMapping(), source -> source.getInitialModel());
+//        MAPPING.delegate("finalmodel", SarimaExtractor.getMapping(), source -> source.getFinalModel());
     }
  
     public InformationMapping<SeatsResults> getMapping() {

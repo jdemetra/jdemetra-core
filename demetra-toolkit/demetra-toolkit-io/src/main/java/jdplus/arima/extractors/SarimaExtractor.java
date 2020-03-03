@@ -14,18 +14,17 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.descriptors.arima;
+package jdplus.arima.extractors;
 
 import demetra.information.InformationMapping;
-import demetra.arima.SarimaModel;
-import demetra.arima.SarimaOrders;
+import jdplus.sarima.SarimaModel;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
-public class SarimaDescriptor {
+public class SarimaExtractor {
 
     final static String P = "p", D = "d", Q = "q",
             BP = "bp", BD = "bd", BQ = "bq",
@@ -36,16 +35,16 @@ public class SarimaDescriptor {
     static final InformationMapping<SarimaModel> MAPPING = new InformationMapping<>(SarimaModel.class);
 
     static {
-        MAPPING.set(P, Integer.class, source -> source.getP());
-        MAPPING.set(D, Integer.class, source -> source.getD());
-        MAPPING.set(Q, Integer.class, source -> source.getQ());
-        MAPPING.set(BP, Integer.class, source -> source.getBp());
-        MAPPING.set(BQ, Integer.class, source -> source.getBq());
-        MAPPING.set(BD, Integer.class, source -> source.getBd());
+        MAPPING.set(P, Integer.class, source -> source.getRegularAROrder());
+        MAPPING.set(D, Integer.class, source -> source.getRegularDifferenceOrder());
+        MAPPING.set(Q, Integer.class, source -> source.getRegularMAOrder());
+        MAPPING.set(BP, Integer.class, source -> source.getSeasonalAROrder());
+        MAPPING.set(BQ, Integer.class, source -> source.getSeasonalMAOrder());
+        MAPPING.set(BD, Integer.class, source -> source.getSeasonalDifferenceOrder());
         MAPPING.set(PARAMETERS, double[].class,
                 source -> {
-                    double[] phi=source.getPhi(), bphi=source.getBphi()
-                            , th=source.getTheta(), bth=source.getBtheta();
+                    double[] phi=source.phi(), bphi=source.bphi()
+                            , th=source.theta(), bth=source.btheta();
                     int n=phi.length+bphi.length+th.length+bth.length;
                     int pos = 0;
                     double[] all = new double[n];
@@ -63,10 +62,10 @@ public class SarimaDescriptor {
                     }
                     return all;
                 });
-        MAPPING.set(PHI, double[].class, source -> source.getPhi());
-        MAPPING.set(BPHI, double[].class, source -> source.getBphi());
-        MAPPING.set(THETA, double[].class, source -> source.getTheta());
-        MAPPING.set(BTHETA, double[].class, source -> source.getBtheta());
+        MAPPING.set(PHI, double[].class, source -> source.phi());
+        MAPPING.set(BPHI, double[].class, source -> source.bphi());
+        MAPPING.set(THETA, double[].class, source -> source.theta());
+        MAPPING.set(BTHETA, double[].class, source -> source.btheta());
     }
 
     public InformationMapping<SarimaModel> getMapping() {

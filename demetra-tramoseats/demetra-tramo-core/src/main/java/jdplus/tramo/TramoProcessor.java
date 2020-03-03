@@ -43,6 +43,7 @@ import jdplus.tramo.internal.OutliersDetectionModule;
 import java.util.ArrayList;
 import java.util.List;
 import jdplus.regsarima.regular.RegSarimaProcessor;
+import jdplus.regsarima.regular.RegSarimaResults;
 
 /**
  *
@@ -209,7 +210,7 @@ public class TramoProcessor implements RegSarimaProcessor {
     }
 
     @Override
-    public ModelEstimation process(TsData originalTs) {
+    public RegSarimaResults process(TsData originalTs) {
 //        clear();
         ModelDescription desc = build(originalTs, null);
         if (desc == null) {
@@ -221,7 +222,10 @@ public class TramoProcessor implements RegSarimaProcessor {
 //            rslt.info_ = context.information;
 //            rslt.addProcessingInformation(context.processingLog);
 //        }
-        return rslt;
+        return RegSarimaResults.builder()
+                .regarima(rslt)
+                .logs(modelling.getLog().all())
+                .build();
     }
 
     private ModelDescription build(TsData originalTs, InformationSet log) {

@@ -17,7 +17,7 @@
 package demetra.r;
 
 import demetra.data.Doubles;
-import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
+import jdplus.stats.extractors.LikelihoodStatisticsExtractor;
 import demetra.information.InformationMapping;
 import jdplus.math.functions.IFunctionDerivatives;
 import jdplus.math.functions.IFunctionPoint;
@@ -104,7 +104,7 @@ public class StsEstimation {
             MAPPING.set(S, TsData.class, source -> source.getS());
             MAPPING.set(I, TsData.class, source -> source.getI());
             MAPPING.set(SA, TsData.class, source -> subtract(source.getY(), source.getS()));
-            MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.getLikelihood().stats(0, r.getNparams()));
+            MAPPING.delegate(LL, LikelihoodStatisticsExtractor.getMapping(), r -> r.getLikelihood().stats(0, r.getNparams()));
             MAPPING.set(PCOV, Matrix.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
         }

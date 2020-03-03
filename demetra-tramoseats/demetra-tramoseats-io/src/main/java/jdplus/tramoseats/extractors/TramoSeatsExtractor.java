@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.descrptors.tramoseats;
+package jdplus.tramoseats.extractors;
 
 import demetra.design.Development;
 import demetra.information.InformationMapping;
@@ -15,7 +15,7 @@ import demetra.tramoseats.TramoSeatsResults;
  */
 @Development(status = Development.Status.Release)
 @lombok.experimental.UtilityClass
-public class TramoSeatsDescriptor {
+public class TramoSeatsExtractor {
     private final InformationMapping<TramoSeatsResults> MAPPING = new InformationMapping<>(TramoSeatsResults.class);
 
     static {

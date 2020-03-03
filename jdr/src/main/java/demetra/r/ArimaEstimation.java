@@ -21,10 +21,10 @@ import jdplus.regarima.RegArimaModel;
 import demetra.information.InformationMapping;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
+import jdplus.stats.extractors.LikelihoodStatisticsExtractor;
 import demetra.arima.SarimaOrders;
 import jdplus.regsarima.RegSarimaProcessor;
-import demetra.descriptors.arima.SarimaDescriptor;
+import jdplus.arima.extractors.SarimaExtractor;
 import demetra.util.IntList;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -116,8 +116,8 @@ public class ArimaEstimation {
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getArima());
-            MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.statistics);
+//            MAPPING.delegate(ARIMA, SarimaExtractor.getMapping(), r -> r.getArima());
+            MAPPING.delegate(LL, LikelihoodStatisticsExtractor.getMapping(), r -> r.statistics);
             MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
             MAPPING.set(B, double[].class, source

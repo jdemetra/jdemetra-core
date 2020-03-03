@@ -28,5 +28,5 @@ import demetra.timeseries.TsData;
  */
 @Development(status = Development.Status.Preliminary)
 public interface RegSarimaProcessor {
-    ModelEstimation process(TsData originalTs);
+    RegSarimaResults process(TsData originalTs);
 }

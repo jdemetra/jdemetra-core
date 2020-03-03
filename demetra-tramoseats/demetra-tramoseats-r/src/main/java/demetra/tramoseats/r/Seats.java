@@ -7,17 +7,17 @@ package demetra.tramoseats.r;
 
 import demetra.arima.SarimaSpec;
 import demetra.data.DoubleSeq;
-import demetra.descrptors.tramoseats.SeatsDescriptor;
 import demetra.information.InformationMapping;
 import demetra.processing.ProcResults;
 import demetra.processing.ProcessingLog;
 import demetra.seats.DecompositionSpec;
 import demetra.seats.SeatsModelSpec;
-import demetra.seats.SeatsResults;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import jdplus.seats.SeatsKernel;
+import jdplus.seats.SeatsResults;
 import jdplus.seats.SeatsToolkit;
+import jdplus.tramoseats.extractors.SeatsExtractor;
 import jdplus.tramoseats.spi.ApiUtility;
 
 /**
@@ -26,34 +26,36 @@ import jdplus.tramoseats.spi.ApiUtility;
  */
 @lombok.experimental.UtilityClass
 public class Seats {
+
     @lombok.Value
-    public static class Results implements ProcResults{
-        private final SeatsResults core;
+    public static class Results implements ProcResults {
+
+        private SeatsResults core;
 
         @Override
         public boolean contains(String id) {
-            return SeatsDescriptor.getMapping().contains(id);
+            return SeatsExtractor.getMapping().contains(id);
         }
 
         @Override
         public Map<String, Class> getDictionary() {
             Map<String, Class> dic = new LinkedHashMap<>();
-            SeatsDescriptor.getMapping().fillDictionary(null, dic, true);
+            SeatsExtractor.getMapping().fillDictionary(null, dic, true);
             return dic;
         }
 
         @Override
         public <T> T getData(String id, Class<T> tclass) {
-            return SeatsDescriptor.getMapping().getData(core, id, tclass);
+            return SeatsExtractor.getMapping().getData(core, id, tclass);
         }
-        
-        public static InformationMapping getMapping(){
-            return SeatsDescriptor.getMapping();
+
+        public static InformationMapping getMapping() {
+            return SeatsExtractor.getMapping();
         }
     }
-    
-    public Results process(double[] data, boolean log, int period, int[] order, int[] seasonal, boolean mean, int nb, int nf){
-        
+
+    public Results process(double[] data, boolean log, int period, int[] order, int[] seasonal, boolean mean, int nb, int nf) {
+
         SarimaSpec arima = SarimaSpec.builder()
                 .p(order[0])
                 .d(order[1])
@@ -62,7 +64,7 @@ public class Seats {
                 .bd(seasonal == null ? 0 : seasonal[1])
                 .bq(seasonal == null ? 0 : seasonal[2])
                 .build();
-        
+
         SeatsModelSpec model = SeatsModelSpec.builder()
                 .series(DoubleSeq.of(data))
                 .period(period)
@@ -70,16 +72,16 @@ public class Seats {
                 .log(log)
                 .meanCorrection(mean)
                 .build();
-        
+
         DecompositionSpec dspec = DecompositionSpec.builder()
                 .forecastCount(nf)
                 .backcastCount(nb)
                 .build();
-        
+
         SeatsToolkit toolkit = SeatsToolkit.of(dspec);
-        SeatsKernel kernel=new SeatsKernel(toolkit);
-        ProcessingLog plog=new ProcessingLog();
-         return new Results(ApiUtility.toApi(kernel.process(model, plog)));
+        SeatsKernel kernel = new SeatsKernel(toolkit);
+        ProcessingLog plog = new ProcessingLog();
+        return new Results(kernel.process(model, plog));
     }
-    
+
 }
