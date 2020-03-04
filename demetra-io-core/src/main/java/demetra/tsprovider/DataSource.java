@@ -25,12 +25,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.SortedMap;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import demetra.util.Parser;
-import demetra.util.Formatter;
 import internal.util.SortedMaps;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashMap;
+import nbbrd.io.text.Formatter;
+import nbbrd.io.text.Parser;
 
 /**
  * Simple structure that defines a source of data such as a file, a database or

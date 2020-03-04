@@ -25,10 +25,8 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import demetra.util.Parser;
-import demetra.util.Formatter;
 import demetra.util.List2;
-import internal.util.InternalParser;
+import internal.io.text.InternalParser;
 import internal.util.Strings;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
@@ -37,6 +35,8 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import nbbrd.io.text.Formatter;
+import nbbrd.io.text.Parser;
 
 /**
  *

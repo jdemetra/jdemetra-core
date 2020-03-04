@@ -26,8 +26,6 @@ import java.util.Date;
 import java.util.Locale;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import demetra.util.Parser;
-import demetra.util.Formatter;
 import internal.util.Strings;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,6 +34,8 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalQuery;
+import nbbrd.io.text.Formatter;
+import nbbrd.io.text.Parser;
 
 /**
  * A special object that contains all information needed to format and parse
