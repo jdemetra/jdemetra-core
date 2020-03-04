@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.x12;
+package demetra.x13.regarima;
 
 import demetra.information.InformationSet;
 import jdplus.regsarima.regular.IModelBuilder;

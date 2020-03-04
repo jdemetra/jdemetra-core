@@ -3,18 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.benchmarking.descriptors;
+package demetra.benchmarking.extractors;
 
+import demetra.benchmarking.extractors.ResidualsDiagnosticsExtractor;
 import demetra.data.ParameterEstimation;
-import jdplus.stats.extractors.LikelihoodStatisticsExtractor;
+import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import demetra.design.Development;
 import demetra.information.InformationMapping;
 import demetra.linearmodel.LinearModelEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.timeseries.TsData;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  *
@@ -22,7 +21,7 @@ import java.util.Map;
  */
 @Development(status = Development.Status.Release)
 @lombok.experimental.UtilityClass
-public class TemporalDisaggregationDescriptor{
+public class TemporalDisaggregationExtractor{
 
     public final String LIKELIHOOD = "likelihood", DISAGG = "disagg", EDISAGG = "edisagg",
             RES = "residuals", ML = "ml", COEFF="coeff", NX="nx", COVAR="covar", C="c", REGEFFECT = "regeffect";
@@ -46,7 +45,7 @@ public class TemporalDisaggregationDescriptor{
         MAPPING.set(C, double[].class, source->source.getEstimation().values().toArray());
         MAPPING.set(COVAR, MatrixType.class, source->source.getEstimation().getCovariance());
         MAPPING.delegate(LIKELIHOOD, LikelihoodStatisticsExtractor.getMapping(), source -> source.getLikelihood());
-        MAPPING.delegate(RES, ResidualsDiagnosticsDescriptor.getMapping(), source -> source.getResidualsDiagnostics());
+        MAPPING.delegate(RES, ResidualsDiagnosticsExtractor.getMapping(), source -> source.getResidualsDiagnostics());
     }
 
     public InformationMapping<TemporalDisaggregationResults> getMapping() {

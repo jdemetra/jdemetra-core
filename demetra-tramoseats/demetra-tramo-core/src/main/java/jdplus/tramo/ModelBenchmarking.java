@@ -35,7 +35,7 @@ class ModelBenchmarking extends ModelController {
     }
 
     @Override
-    public ProcessingResult process(RegSarimaModelling modelling, TramoProcessor.Context context) {
+    public ProcessingResult process(RegSarimaModelling modelling, TramoContext context) {
 
         ModelEstimation current = modelling.build();
 

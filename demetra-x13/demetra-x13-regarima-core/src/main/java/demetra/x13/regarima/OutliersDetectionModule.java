@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.x12;
+package demetra.x13.regarima;
 
 import jdplus.regsarima.ami.ExactOutliersDetector;
 import demetra.design.BuilderPattern;
@@ -140,7 +140,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
 
     private SingleOutlierDetector<SarimaModel> factories(int freq) {
         SingleOutlierDetector sod = new ExactSingleOutlierDetector(RobustStandardDeviationComputer.mad(false),
-                null, X12Utility.mlComputer());
+                null, X13Utility.mlComputer());
         
         List<IOutlierFactory> factory=new ArrayList<>();
         if (ao) {

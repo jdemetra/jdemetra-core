@@ -14,32 +14,36 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.tramo.spi;
+package demetra.x13.regarima.spi;
 
+import demetra.processing.ProcessingLog;
+import demetra.regarima.RegArima;
+import demetra.regarima.RegArimaSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.ModellingContext;
 import demetra.timeseries.regression.modelling.RegSarimaResults;
-import demetra.tramo.TramoProcessor;
-import demetra.tramo.TramoSpec;
+import demetra.x13.regarima.RegArimaKernel;
 import java.util.List;
 import jdplus.regarima.ApiUtility;
+import jdplus.regsarima.regular.ModelEstimation;
 import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author palatej
  */
-@ServiceProvider(TramoProcessor.Computer.class)
-public class TramoComputer implements TramoProcessor.Computer{
+@ServiceProvider(RegArima.Processor.class)
+public class RegArimaComputer implements RegArima.Processor{
 
     @Override
-    public RegSarimaResults compute(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems) {
-        jdplus.tramo.TramoProcessor processor = jdplus.tramo.TramoProcessor.of(spec, context);
-        jdplus.regsarima.regular.RegSarimaResults rslt = processor.process(series);
+    public RegSarimaResults process(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems) {
+        RegArimaKernel processor = RegArimaKernel.of(spec, context);
+        ProcessingLog log=new ProcessingLog();
+        ModelEstimation rslt = processor.process(series, log);
         // TODO: fill details
         return RegSarimaResults.builder()
-                .regarima(ApiUtility.toApi(rslt.getRegarima()))
-                .logs(rslt.getLogs())
+                .regarima(ApiUtility.toApi(rslt))
+                .logs(log.all())
 //                .addtionalResults()
                 .build();
     }

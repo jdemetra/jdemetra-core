@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.x12;
+package demetra.x13.regarima;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
@@ -105,7 +105,7 @@ public class LogLevelModule implements ILogLevelModule {
         if (model.getSeries().getValues().anyMatch(z -> z <= 0)) {
             return ProcessingResult.Failed;
         }
-        IRegArimaProcessor processor = X12Utility.processor(true, precision);
+        IRegArimaProcessor processor = X13Utility.processor(true, precision);
         level = model.estimate(processor);
 
         ModelDescription logmodel = ModelDescription.copyOf(model);

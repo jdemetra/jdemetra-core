@@ -19,6 +19,7 @@
 package jdplus.regsarima.regular;
 
 import demetra.design.Development;
+import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 
 /**
@@ -28,5 +29,5 @@ import demetra.timeseries.TsData;
  */
 @Development(status = Development.Status.Preliminary)
 public interface RegSarimaProcessor {
-    RegSarimaResults process(TsData originalTs);
+    ModelEstimation process(TsData originalTs, ProcessingLog log);
 }

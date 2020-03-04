@@ -37,7 +37,7 @@ class SeasonalityController extends ModelController {
     }
 
     @Override
-    ProcessingResult process(RegSarimaModelling modelling, TramoProcessor.Context context) {
+    ProcessingResult process(RegSarimaModelling modelling, TramoContext context) {
         ProcessingResult result;
         if (getReferenceModel() == null) {
             result = computeReferenceModel(modelling, context);
@@ -60,7 +60,7 @@ class SeasonalityController extends ModelController {
         mstats = ModelStatistics.of(refestimation);
     }
 
-    private boolean hasSeasonality(RegSarimaModelling modelling, TramoProcessor.Context context) {
+    private boolean hasSeasonality(RegSarimaModelling modelling, TramoContext context) {
         int period = modelling.getDescription().getAnnualFrequency();
         if (stests == null) {
             return false;
@@ -103,7 +103,7 @@ class SeasonalityController extends ModelController {
      * @param modelling
      * @return
      */
-    private ProcessingResult computeReferenceModel(RegSarimaModelling modelling, TramoProcessor.Context context) {
+    private ProcessingResult computeReferenceModel(RegSarimaModelling modelling, TramoContext context) {
         ModelEstimation model = modelling.build();
         setReferenceModel(modelling);
         computeSTests();

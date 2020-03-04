@@ -16,7 +16,7 @@
 */
 
 
-package demetra.x12;
+package demetra.x13.regarima;
 
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regsarima.regular.IRegressionModule;

@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.x12;
+package demetra.x13.regarima;
 
 import jdplus.data.DataBlock;
 import demetra.design.BuilderPattern;
@@ -31,7 +31,7 @@ import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.arima.SarimaOrders;
-import demetra.regarima.X13Exception;
+import demetra.regarima.RegArimaException;
 import demetra.data.DoubleSeq;
 import jdplus.sarima.SarimaModel;
 import jdplus.sarima.estimation.HannanRissanen;
@@ -342,14 +342,14 @@ public class DifferencingModule implements IDifferencingModule {
         if (usedefault || ml || useml) {
             SarimaMapping.stabilize(lastModel);
 
-            IRegArimaProcessor processor = X12Utility.processor(true, eps);
+            IRegArimaProcessor processor = X13Utility.processor(true, eps);
             RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder()
                     .y(data)
                     .arima(lastModel)
                     .build();
             RegArimaEstimation<SarimaModel> rslt = processor.optimize(regarima, null);
             if (rslt == null) {
-                throw new X13Exception("Non convergence in IDDIF");
+                throw new RegArimaException("Non convergence in IDDIF");
             }
 
             lastModel = rslt.getModel().arima();
@@ -534,7 +534,7 @@ public class DifferencingModule implements IDifferencingModule {
                 .arima(SarimaModel.builder(cspec).setDefault().build())
                 .build();
 
-        RegArimaEstimation<SarimaModel> est = X12Utility.processor(true, eps).process(model, null);
+        RegArimaEstimation<SarimaModel> est = X13Utility.processor(true, eps).process(model, null);
 
         if (est == null) {
             return false;

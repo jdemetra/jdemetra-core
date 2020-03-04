@@ -31,7 +31,7 @@ import demetra.data.DoubleSeq;
 class RegularUnderDifferencingTest2 extends ModelController {
 
     @Override
-    ProcessingResult process(RegSarimaModelling modelling, TramoProcessor.Context context) {
+    ProcessingResult process(RegSarimaModelling modelling, TramoContext context) {
        ModelDescription desc = modelling.getDescription();
         if (desc.getAnnualFrequency() <= 2) {
             return ProcessingResult.Unprocessed;

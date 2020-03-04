@@ -14,9 +14,9 @@
 * See the Licence for the specific language governing permissions and
 * limitations under the Licence.
  */
-package demetra.x12;
+package demetra.x13.regarima;
 
-import demetra.regarima.X13Exception;
+import demetra.regarima.RegArimaException;
 import demetra.regarima.RegArimaSpec;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
@@ -38,6 +38,7 @@ import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.RegressionVariablesTest;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
+import demetra.processing.ProcessingLog;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regsarima.regular.RegSarimaProcessor;
 
@@ -46,7 +47,7 @@ import jdplus.regsarima.regular.RegSarimaProcessor;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class X12Preprocessor implements RegSarimaProcessor {
+public class RegArimaKernel implements RegSarimaProcessor {
 
     @lombok.Value
     @lombok.Builder
@@ -90,7 +91,7 @@ public class X12Preprocessor implements RegSarimaProcessor {
         return new Builder();
     }
 
-    @BuilderPattern(X12Preprocessor.class)
+    @BuilderPattern(RegArimaKernel.class)
     public static class Builder {
 
         private IModelBuilder modelBuilder = new DefaultModelBuilder();
@@ -152,15 +153,15 @@ public class X12Preprocessor implements RegSarimaProcessor {
             return this;
         }
 
-        public X12Preprocessor build() {
-            X12Preprocessor processor = new X12Preprocessor(this);
+        public RegArimaKernel build() {
+            RegArimaKernel processor = new RegArimaKernel(this);
             return processor;
         }
 
     }
 
-    public static X12Preprocessor of(RegArimaSpec spec, ModellingContext context) {
-        X12SpecDecoder helper = new X12SpecDecoder(spec, context);
+    public static RegArimaKernel of(RegArimaSpec spec, ModellingContext context) {
+        X13SpecDecoder helper = new X13SpecDecoder(spec, context);
         return helper.buildProcessor();
     }
 
@@ -186,7 +187,7 @@ public class X12Preprocessor implements RegSarimaProcessor {
     private int loop, round;
     private double plbox0, rvr0, rtval0;
 
-    private X12Preprocessor(Builder builder) {
+    private RegArimaKernel(Builder builder) {
         this.modelBuilder = builder.modelBuilder;
         this.transformation = builder.transformation;
         this.calendarTest = builder.calendarTest;
@@ -214,18 +215,18 @@ public class X12Preprocessor implements RegSarimaProcessor {
     }
 
     @Override
-    public ModelEstimation process(TsData originalTs) {
+    public ModelEstimation process(TsData originalTs, ProcessingLog log) {
         clear();
         ModelDescription desc = modelBuilder.build(originalTs, null);
         if (desc == null) {
-            throw new X13Exception("Initialization failed");
+            throw new RegArimaException("Initialization failed");
         }
-        RegSarimaModelling context = RegSarimaModelling.of(desc);
+        RegSarimaModelling context = RegSarimaModelling.of(desc, log);
         // initialize some internal variables
         if (outliers != null) {
             va0 = options.getVa();
             if (va0 == 0) {
-                va0 = X12Utility.calcCv(desc.getSeries().getDomain().getLength());
+                va0 = X13Utility.calcCv(desc.getSeries().getDomain().getLength());
             }
             curva = va0;
             needOutliers = true;

@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.tramoseats;
+package jdplus.x13;
 
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;

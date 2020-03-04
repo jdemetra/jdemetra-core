@@ -16,6 +16,7 @@
  */
 package jdplus.seats;
 
+import demetra.data.DoubleSeq;
 import demetra.design.Development;
 import demetra.processing.ProcessingLog;
 import demetra.seats.SeatsModelSpec;

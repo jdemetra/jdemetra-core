@@ -20,7 +20,6 @@ import demetra.data.Data;
 import java.util.LinkedHashMap;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.data.DoubleSeq;
 
 /**
  *
@@ -44,7 +43,7 @@ public class ArimaEstimationTest {
         LinkedHashMap<String, Class> dic=new LinkedHashMap<>();
         ArimaEstimation.Results.getMapping().fillDictionary(null, dic, true);
 //        dic.keySet().forEach(n->System.out.println(n));
-        assertTrue(null != rslt.getData("arima.parameters", double[].class));
+        assertTrue(null != rslt.getData("sarima.parameters", double[].class));
 //        System.out.println(DoubleSequence.of(rslt.getData("arima.parameters", double[].class)));
 //        
 //        System.out.println(rslt.getParametersCovariance().diagonal());

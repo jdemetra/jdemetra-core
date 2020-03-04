@@ -16,7 +16,7 @@
  */
 package demetra.benchmarking.r;
 
-import demetra.benchmarking.descriptors.TemporalDisaggregationDescriptor;
+import demetra.benchmarking.extractors.TemporalDisaggregationExtractor;
 import demetra.data.AggregationType;
 import demetra.data.ParameterSpec;
 import demetra.information.InformationMapping;
@@ -51,24 +51,24 @@ public class TemporalDisaggregation {
         }
 
         public static InformationMapping<TemporalDisaggregationResults> getMapping() {
-            return TemporalDisaggregationDescriptor.getMapping();
+            return TemporalDisaggregationExtractor.getMapping();
         }
 
         @Override
         public boolean contains(String id) {
-            return TemporalDisaggregationDescriptor.getMapping().contains(id);
+            return TemporalDisaggregationExtractor.getMapping().contains(id);
         }
 
         @Override
         public Map<String, Class> getDictionary() {
             Map<String, Class> dic = new LinkedHashMap<>();
-            TemporalDisaggregationDescriptor.getMapping().fillDictionary(null, dic, true);
+            TemporalDisaggregationExtractor.getMapping().fillDictionary(null, dic, true);
             return dic;
         }
 
         @Override
         public <T> T getData(String id, Class<T> tclass) {
-            return TemporalDisaggregationDescriptor.getMapping().getData(core, id, tclass);
+            return TemporalDisaggregationExtractor.getMapping().getData(core, id, tclass);
         }
     }
 

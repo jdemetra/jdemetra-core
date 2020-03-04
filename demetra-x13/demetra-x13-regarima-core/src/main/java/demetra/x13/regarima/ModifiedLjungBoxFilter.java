@@ -15,7 +15,7 @@
 * limitations under the Licence.
 */
 
-package demetra.x12;
+package demetra.x13.regarima;
 
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;

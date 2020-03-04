@@ -17,10 +17,8 @@
 package demetra.tramoseats;
 
 import demetra.arima.SarimaModel;
-import demetra.sa.SeriesDecomposition;
 import demetra.seats.SeatsResults;
 import demetra.timeseries.regression.modelling.LinearModelEstimation;
-import java.util.Map;
 
 /**
  *
@@ -30,7 +28,4 @@ import java.util.Map;
 public class TramoSeatsResults {
     private LinearModelEstimation<SarimaModel> preprocessing;
     private SeatsResults decomposition;
-    private SeriesDecomposition finals;
-    @lombok.Singular
-    private Map<String, Object> addtionalResults;
 }

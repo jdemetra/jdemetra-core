@@ -26,7 +26,7 @@ import jdplus.sarima.SarimaModel;
 import jdplus.seats.SeatsKernel;
 import jdplus.seats.SeatsResults;
 import jdplus.seats.SeatsToolkit;
-import jdplus.tramo.TramoProcessor;
+import jdplus.tramo.TramoKernel;
 
 /**
  *
@@ -36,6 +36,7 @@ import jdplus.tramo.TramoProcessor;
 public class TramoSeats {
 
     private static PreliminaryChecks of(TramoSeatsSpec spec) {
+        
         TransformSpec transform = spec.getTramo().getTransform();
         return (s, logs) -> {
             TsData sc = s.select(transform.getSpan());
@@ -47,25 +48,24 @@ public class TramoSeats {
     }
 
     private PreliminaryChecks preliminary;
-    private TramoProcessor tramo;
+    private TramoKernel tramo;
     private SaVariablesMapping samapping;
     private SeatsKernel seats;
 
     public static TramoSeats of(TramoSeatsSpec spec, ModellingContext context) {
         PreliminaryChecks check = of(spec);
-        TramoProcessor tramo = TramoProcessor.of(spec.getTramo(), context);
+        TramoKernel tramo = TramoKernel.of(spec.getTramo(), context);
         SaVariablesMapping mapping = new SaVariablesMapping();
         // TO DO: fill maping with existing information in TramoSpec (section Regression)
         SeatsKernel seats = new SeatsKernel(SeatsToolkit.of(spec.getSeats()));
         return new TramoSeats(check, tramo, mapping, seats);
     }
 
-    public TramoSeatsResults compute(TsData s) {
-        ProcessingLog log = new ProcessingLog();
+    public TramoSeatsResults process(TsData s, ProcessingLog log) {
         // Step 0. Preliminary checks
         TsData sc = preliminary.check(s, log);
         // Step 1. Tramo
-        ModelEstimation preprocessing = tramo.process(sc);
+        ModelEstimation preprocessing = tramo.process(sc, log);
         // Step 2. Link between tramo and seats
         SaVariablesMapping nmapping = new SaVariablesMapping();
         nmapping.addDefault(Arrays

@@ -33,42 +33,42 @@ public class SarimaValidator implements SarimaSpec.Validator {
     @Override
     public void checkP(int value) {
         if (value > MAXP) {
-            throw new X13Exception("P must be <= " + Integer.toString(MAXP));
+            throw new RegArimaException("P must be <= " + Integer.toString(MAXP));
         }
     }
 
     @Override
     public void checkD(int value) {
         if (value > MAXD) {
-            throw new X13Exception("D must be <= " + Integer.toString(MAXD));
+            throw new RegArimaException("D must be <= " + Integer.toString(MAXD));
         }
     }
 
     @Override
     public void checkQ(int value) {
         if (value > MAXQ) {
-            throw new X13Exception("Q must be <= " + Integer.toString(MAXQ));
+            throw new RegArimaException("Q must be <= " + Integer.toString(MAXQ));
         }
     }
 
     @Override
     public void checkBp(int value) {
         if (value > MAXBP) {
-            throw new X13Exception("BP must be <= " + Integer.toString(MAXBP));
+            throw new RegArimaException("BP must be <= " + Integer.toString(MAXBP));
         }
     }
 
     @Override
     public void checkBd(int value) {
         if (value > MAXBD) {
-            throw new X13Exception("BD must be <= " + Integer.toString(MAXBD));
+            throw new RegArimaException("BD must be <= " + Integer.toString(MAXBD));
         }
     }
 
     @Override
     public void checkBq(int value) {
         if (value > MAXBQ) {
-            throw new X13Exception("BQ must be <= " + Integer.toString(MAXBQ));
+            throw new RegArimaException("BQ must be <= " + Integer.toString(MAXBQ));
         }
     }
 }

@@ -16,7 +16,7 @@ import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import jdplus.regsarima.RegSarimaProcessor;
-import jdplus.arima.extractors.SarimaExtractor;
+import jdplus.modelling.extractors.SarimaExtractor;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsUnit;

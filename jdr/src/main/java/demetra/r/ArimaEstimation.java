@@ -21,10 +21,9 @@ import jdplus.regarima.RegArimaModel;
 import demetra.information.InformationMapping;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
-import jdplus.stats.extractors.LikelihoodStatisticsExtractor;
+import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import demetra.arima.SarimaOrders;
 import jdplus.regsarima.RegSarimaProcessor;
-import jdplus.arima.extractors.SarimaExtractor;
 import demetra.util.IntList;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -33,8 +32,8 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
+import demetra.toolkit.extractors.SarimaExtractor;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.modelling.ApiUtility;
 import jdplus.sarima.SarimaModel;
 
@@ -111,12 +110,12 @@ public class ArimaEstimation {
             return ApiUtility.toApi(regarima.arima(), null);
         }
 
-        private static final String ARIMA = "arima", LL = "likelihood", PCOV = "pcov", SCORE = "score",
+        private static final String ARIMA = "sarima", LL = "likelihood", PCOV = "pcov", SCORE = "score",
                 B = "b", UNSCALEDBVAR = "unscaledbvar", MEAN = "mean";
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-//            MAPPING.delegate(ARIMA, SarimaExtractor.getMapping(), r -> r.getArima());
+            MAPPING.delegate(ARIMA, SarimaExtractor.getMapping(), r -> r.getArima());
             MAPPING.delegate(LL, LikelihoodStatisticsExtractor.getMapping(), r -> r.statistics);
             MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());

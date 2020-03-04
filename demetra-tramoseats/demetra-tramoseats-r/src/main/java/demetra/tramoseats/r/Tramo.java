@@ -16,18 +16,14 @@
  */
 package demetra.tramoseats.r;
 
-import demetra.arima.SarimaModel;
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.LinearModelEstimation;
 import demetra.tramo.TramoSpec;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import jdplus.regarima.ApiUtility;
+import jdplus.regarima.extractors.ModelEstimationExtractor;
 import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.regsarima.regular.RegSarimaResults;
-import jdplus.tramo.TramoProcessor;
-import jdplus.tramoseats.extractors.TramoExtractor;
+import jdplus.tramo.TramoKernel;
 
 /**
  *
@@ -41,27 +37,27 @@ public class Tramo {
 
         @Override
         public boolean contains(String id) {
-            return TramoExtractor.getMapping().contains(id);
+            return ModelEstimationExtractor.getMapping().contains(id);
         }
 
         @Override
         public Map<String, Class> getDictionary() {
             Map<String, Class> dic = new LinkedHashMap<>();
-            TramoExtractor.getMapping().fillDictionary(null, dic, true);
+            ModelEstimationExtractor.getMapping().fillDictionary(null, dic, true);
             return dic;
         }
 
         @Override
         public <T> T getData(String id, Class<T> tclass) {
-            return TramoExtractor.getMapping().getData(core, id, tclass);
+            return ModelEstimationExtractor.getMapping().getData(core, id, tclass);
         }
     }
     
     public Results process(TsData series, String defSpec){
         TramoSpec spec=TramoSpec.fromString(defSpec);
-        TramoProcessor tramo= TramoProcessor.of(spec, null);
-        RegSarimaResults estimation = tramo.process(series);
-        return new Results(estimation.getRegarima());
+        TramoKernel tramo= TramoKernel.of(spec, null);
+        ModelEstimation estimation = tramo.process(series, null);
+        return new Results(estimation);
     }
     
 }

@@ -6,6 +6,7 @@
 package jdplus.tramoseats;
 
 import demetra.data.Data;
+import demetra.processing.ProcessingLog;
 import demetra.tramoseats.TramoSeatsSpec;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -22,7 +23,8 @@ public class TramoSeatsTest {
     @Test
     public void testProd() {
         TramoSeats ts = TramoSeats.of(TramoSeatsSpec.RSAfull, null);
-        TramoSeatsResults rslt = ts.compute(Data.TS_PROD);
+        ProcessingLog log=new ProcessingLog();
+        TramoSeatsResults rslt = ts.process(Data.TS_PROD, log);
         System.out.println(rslt.getSeriesDecomposition());
     }
     

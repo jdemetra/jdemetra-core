@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.benchmarking.descriptors;
+package demetra.benchmarking.extractors;
 
 import demetra.design.Development;
 import demetra.information.InformationMapping;
@@ -28,7 +28,7 @@ import demetra.timeseries.TsData;
  */
 @Development(status = Development.Status.Release)
 @lombok.experimental.UtilityClass
-public class ResidualsDiagnosticsDescriptor {
+public class ResidualsDiagnosticsExtractor {
     
     public final String FRES="fullresiduals", MEAN="mean", SKEWNESS="skewness", 
             KURTOSIS="kurtosis", DH="doornikhansen", LJUNGBOX="ljungbox",

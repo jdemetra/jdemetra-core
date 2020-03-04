@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.x12;
+package demetra.x13.regarima;
 
 import demetra.design.Development;
 import jdplus.arima.estimation.ResidualsComputer;
@@ -32,7 +32,7 @@ import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.experimental.UtilityClass
-public class X12Utility {
+public class X13Utility {
 
     public static final double MINCV = 2.8;
 

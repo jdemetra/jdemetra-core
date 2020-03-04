@@ -14,13 +14,13 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.tramoseats.spi;
+package jdplus.x13.spi;
 
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.ModellingContext;
-import demetra.tramoseats.TramoSeatsProcessor;
-import demetra.tramoseats.TramoSeatsResults;
-import demetra.tramoseats.TramoSeatsSpec;
+import demetra.x13.X13;
+import demetra.x13.X13Results;
+import demetra.x13.X13Spec;
 import java.util.List;
 import nbbrd.service.ServiceProvider;
 
@@ -28,11 +28,11 @@ import nbbrd.service.ServiceProvider;
  *
  * @author palatej
  */
-@ServiceProvider(TramoSeatsProcessor.Computer.class)
-public class TramoSeatsComputer implements TramoSeatsProcessor.Computer{
+@ServiceProvider(X13.Processor.class)
+public class X13Computer implements X13.Processor{
 
     @Override
-    public TramoSeatsResults compute(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public X13Results process(TsData series, X13Spec spec, ModellingContext context, List<String> addtionalItems) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

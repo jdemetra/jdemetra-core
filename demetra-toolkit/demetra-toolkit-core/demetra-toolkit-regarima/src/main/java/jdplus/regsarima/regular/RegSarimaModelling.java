@@ -18,7 +18,6 @@ package jdplus.regsarima.regular;
 
 import demetra.arima.SarimaOrders;
 import demetra.design.Development;
-import demetra.information.InformationSet;
 import demetra.processing.ProcessingLog;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
@@ -36,15 +35,19 @@ public class RegSarimaModelling {
 
     private ModelDescription description;
     private RegArimaEstimation<SarimaModel> estimation;
-    private final ProcessingLog log = new ProcessingLog();
+    private final ProcessingLog log;
     
     public static RegSarimaModelling of(ModelDescription desc){
-        return new RegSarimaModelling(desc, null);
+        return new RegSarimaModelling(desc, null, null);
+    }
+
+    public static RegSarimaModelling of(ModelDescription desc, ProcessingLog log){
+        return new RegSarimaModelling(desc, null, log);
     }
 
     public static RegSarimaModelling copyOf(RegSarimaModelling modelling){
         return new RegSarimaModelling(ModelDescription.copyOf(modelling.description),
-        modelling.estimation);
+        modelling.estimation, null);
     }
 
     public void estimate(IRegArimaProcessor<SarimaModel> processor) {

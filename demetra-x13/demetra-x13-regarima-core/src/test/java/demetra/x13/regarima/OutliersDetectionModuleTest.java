@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.x12;
+package demetra.x13.regarima;
 
+import demetra.x13.regarima.X13Utility;
 import jdplus.regsarima.ami.ExactOutliersDetector;
 import demetra.data.Data;
 import jdplus.regarima.RegArimaModel;
@@ -19,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.Ignore;
 import demetra.data.DoubleSeq;
-import static demetra.x12.OutliersDetectionModule.EPS;
+import static demetra.x13.regarima.OutliersDetectionModule.EPS;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
@@ -39,7 +40,7 @@ public class OutliersDetectionModuleTest {
 
     static SingleOutlierDetector<SarimaModel> defaultOutlierDetector(int period) {
         SingleOutlierDetector sod = new ExactSingleOutlierDetector(RobustStandardDeviationComputer.mad(false),
-                null, X12Utility.mlComputer());
+                null, X13Utility.mlComputer());
         sod.setOutlierFactories(AdditiveOutlierFactory.FACTORY,
                 LevelShiftFactory.FACTORY_ZEROENDED,
                 new TransitoryChangeFactory(EPS));

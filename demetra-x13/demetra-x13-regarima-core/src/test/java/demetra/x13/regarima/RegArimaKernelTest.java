@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.x12;
+package demetra.x13.regarima;
 
+import demetra.x13.regarima.RegArimaKernel;
 import demetra.regarima.RegArimaSpec;
 import demetra.data.Data;
 import demetra.regarima.OutlierSpec;
@@ -33,7 +34,7 @@ import jdplus.regsarima.regular.ModelEstimation;
  *
  * @author Jean Palate
  */
-public class X12PreprocessorTest {
+public class RegArimaKernelTest {
 
     private static final double[] data, datamissing;
 
@@ -47,15 +48,15 @@ public class X12PreprocessorTest {
 
     }
 
-    public X12PreprocessorTest() {
+    public RegArimaKernelTest() {
     }
 
     @Test
     public void testProdMissing() {
-        X12Preprocessor processor = X12Preprocessor.of(RegArimaSpec.RG5, null);
+        RegArimaKernel processor = RegArimaKernel.of(RegArimaSpec.RG5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(datamissing));
-        ModelEstimation rslt = processor.process(s);
+        ModelEstimation rslt = processor.process(s, null);
         System.out.println("New");
         System.out.println(rslt.getConcentratedLikelihood().logLikelihood());
     }
@@ -79,10 +80,10 @@ public class X12PreprocessorTest {
 //        spec = spec.toBuilder()
 //                .outliers(outlierSpec)
 //                .build();
-        X12Preprocessor processor = X12Preprocessor.of(spec, null);
+        RegArimaKernel processor = RegArimaKernel.of(spec, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(data));
-        ModelEstimation rslt = processor.process(s);
+        ModelEstimation rslt = processor.process(s, null);
         RegArimaSpecification ospec = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.clone();
 //        ospec.getOutliers().setDefaultCriticalValue(3);
         IPreprocessor oprocessor = ospec.build();
@@ -104,10 +105,10 @@ public class X12PreprocessorTest {
         t0 = System.currentTimeMillis();
         for (int i = 0; i < 250; ++i) {
             RegArimaSpec spec = RegArimaSpec.RG5;
-            X12Preprocessor processor = X12Preprocessor.of(spec, null);
+            RegArimaKernel processor = RegArimaKernel.of(spec, null);
             TsPeriod start = TsPeriod.monthly(1967, 1);
             TsData s = TsData.of(start, Doubles.of(data));
-            ModelEstimation rslt = processor.process(s);
+            ModelEstimation rslt = processor.process(s, null);
         }
         t1 = System.currentTimeMillis();
         System.out.println("new: " + (t1 - t0));

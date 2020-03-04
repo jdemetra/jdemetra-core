@@ -37,7 +37,7 @@ class TradingDaysController extends ModelController {
     }
 
     @Override
-    ProcessingResult process(RegSarimaModelling modelling, TramoProcessor.Context context) {
+    ProcessingResult process(RegSarimaModelling modelling, TramoContext context) {
         // find td variables
         ModelDescription desc = modelling.getDescription();
         boolean hascal = desc.variables().anyMatch(var ->(!var.isPrespecified()) && var.isCalendar());

@@ -35,7 +35,7 @@ import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.highfreq.FractionalAirlineDecomposition;
-import demetra.highfreq.descriptors.FractionalAirlineDecompositionDescriptor;
+import jdplus.highfreq.extractors.FractionalAirlineDecompositionExtractor;
 import jdplus.arima.ArimaModel;
 import static jdplus.fractionalairline.PeriodicAirlineEngine.ucm;
 import jdplus.modelling.ApiUtility;
@@ -58,17 +58,17 @@ public class FractionalAirlineProcessor{
 
         @Override
         public boolean contains(String id) {
-            return FractionalAirlineDecompositionDescriptor.contains(id);
+            return FractionalAirlineDecompositionExtractor.contains(id);
         }
 
         @Override
         public Map<String, Class> getDictionary() {
-            return FractionalAirlineDecompositionDescriptor.getDictionary();
+            return FractionalAirlineDecompositionExtractor.getDictionary();
         }
 
         @Override
         public <T> T getData(String id, Class<T> tclass) {
-            return FractionalAirlineDecompositionDescriptor.getData(core, id, tclass);
+            return FractionalAirlineDecompositionExtractor.getData(core, id, tclass);
         }
 
     }

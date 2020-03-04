@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.x12;
+package demetra.x13.regarima;
 
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;

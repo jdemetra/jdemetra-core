@@ -1,5 +1,5 @@
 /*
-* Copyright 2019 National Bank of Belgium
+* Copyright 2020 National Bank of Belgium
 *
 * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,8 +14,9 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.regarima;
+package demetra.x13;
 
+import demetra.regarima.*;
 import demetra.design.Development;
 
 /**

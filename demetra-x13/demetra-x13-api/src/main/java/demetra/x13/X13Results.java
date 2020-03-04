@@ -14,23 +14,18 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramoseats;
+package demetra.x13;
 
 import demetra.arima.SarimaModel;
-import demetra.sa.SeriesDecomposition;
-import demetra.seats.SeatsResults;
 import demetra.timeseries.regression.modelling.LinearModelEstimation;
-import java.util.Map;
+import demetra.x11.X11Results;
 
 /**
  *
  * @author palatej
  */
 @lombok.Value
-public class TramoSeatsResults {
+public class X13Results {
     private LinearModelEstimation<SarimaModel> preprocessing;
-    private SeatsResults decomposition;
-    private SeriesDecomposition finals;
-    @lombok.Singular
-    private Map<String, Object> addtionalResults;
+    private X11Results decomposition;
 }

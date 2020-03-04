@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.x12;
+package demetra.x13.regarima;
 
 import demetra.regarima.SingleOutlierSpec;
 import demetra.regarima.EstimateSpec;
@@ -33,7 +33,7 @@ import demetra.timeseries.regression.TransitoryChange;
 import jdplus.regarima.AICcComparator;
 import jdplus.regsarima.regular.RegressionVariablesTest;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.x12.X12Preprocessor.AmiOptions;
+import demetra.x13.regarima.RegArimaKernel.AmiOptions;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.regarima.EasterSpec;
@@ -47,11 +47,11 @@ import java.util.List;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-final class X12SpecDecoder {
+final class X13SpecDecoder {
 
-    private final X12Preprocessor.Builder builder = X12Preprocessor.builder();
+    private final RegArimaKernel.Builder builder = RegArimaKernel.builder();
 
-    X12SpecDecoder(@NonNull RegArimaSpec spec, ModellingContext context) {
+    X13SpecDecoder(@NonNull RegArimaSpec spec, ModellingContext context) {
         if (context == null) {
             context = ModellingContext.getActiveContext();
         }
@@ -61,12 +61,12 @@ final class X12SpecDecoder {
             readAutoModel(spec);
         }
         readOutliers(spec);
-        builder.modelBuilder(new X12ModelBuilder(spec, context));
+        builder.modelBuilder(new X13ModelBuilder(spec, context));
         readRegression(spec, context);
         readAmiOptions(spec);
     }
 
-    X12Preprocessor buildProcessor() {
+    RegArimaKernel buildProcessor() {
         return builder.build();
     }
 
@@ -134,8 +134,8 @@ final class X12SpecDecoder {
         AICcComparator comparator = new AICcComparator(spec.getRegression().getAicDiff());
         if (tdspec.getTest() != RegressionTestSpec.None) {
             CalendarEffectsDetectionModule cal = CalendarEffectsDetectionModule.builder()
-                    .tradingDays(X12ModelBuilder.tradingDays(spec, context))
-                    .leapYear(X12ModelBuilder.leapYear(tdspec))
+                    .tradingDays(X13ModelBuilder.tradingDays(spec, context))
+                    .leapYear(X13ModelBuilder.leapYear(tdspec))
                     .adjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriodTime() : LengthOfPeriodType.None)
                     .modelComparator(comparator)
                     .build();
@@ -151,7 +151,7 @@ final class X12SpecDecoder {
             }
             IEasterVariable[] easters = new IEasterVariable[w.length];
             for (int i = 0; i < easters.length; ++i) {
-                easters[i] = X12ModelBuilder.easter(espec.getType(), w[i]);
+                easters[i] = X13ModelBuilder.easter(espec.getType(), w[i]);
             }
             EasterDetectionModule e = EasterDetectionModule.builder()
                     .easters(easters)

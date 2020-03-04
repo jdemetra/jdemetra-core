@@ -14,21 +14,21 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.tramoseats;
+package jdplus.x13;
 
 import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.seats.SeatsResults;
 import demetra.sa.SeriesDecomposition;
+import demetra.x11.X11Results;
 
 /**
  *
  * @author palatej
  */
 @lombok.Value
-public class TramoSeatsResults {
+public class X13Results {
     
     private ModelEstimation preprocessing;
-    private SeatsResults results;
+    private X11Results results;
     private SeriesDecomposition seriesDecomposition;
     
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -103,5 +103,31 @@ public class X13Spec implements Validatable<X13Spec> {
                 .x11(X11Spec.builder().build())
                 .build();
     }
+    
+        public static X13Spec fromString(String name) {
+        if (name.equals("X11")) {
+            return RSAX11;
+        }
+        if (name.equals("RSA0")) {
+            return RSA0;
+        }
+        if (name.equals("RSA1")) {
+            return RSA1;
+        }
+        if (name.equals("RSA2c")) {
+            return RSA2;
+        }
+        if (name.equals("RSA3")) {
+            return RSA3;
+        }
+        if (name.equals("RSA4c")) {
+            return RSA4;
+        }
+        if (name.equals("RSA5c")) {
+            return RSA5;
+        }
+        throw new X13Exception();
+    }
+
     //</editor-fold>
 }

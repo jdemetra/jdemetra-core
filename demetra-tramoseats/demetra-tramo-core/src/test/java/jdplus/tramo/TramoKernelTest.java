@@ -43,7 +43,7 @@ import demetra.tramo.TramoSpec;
  *
  * @author Jean Palate
  */
-public class TramoProcessorTest {
+public class TramoKernelTest {
 
     private static final double[] data, datamissing;
     public static final Calendar france;
@@ -85,15 +85,15 @@ public class TramoProcessorTest {
         ofrance.add(ec.tstoolkit.timeseries.calendars.EasterRelatedDay.PentecostMonday);
     }
 
-    public TramoProcessorTest() {
+    public TramoKernelTest() {
     }
 
     @Test
     public void testProdMissing() {
-        TramoProcessor processor = TramoProcessor.of(TramoSpec.TR5, null);
+        TramoKernel processor = TramoKernel.of(TramoSpec.TR5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(datamissing));
-        jdplus.regsarima.regular.ModelEstimation rslt = processor.process(s);
+        jdplus.regsarima.regular.ModelEstimation rslt = processor.process(s, null);
         System.out.println("JD3 with missing");
         System.out.println(rslt.getStatistics().getLogLikelihood());
     }
@@ -109,10 +109,10 @@ public class TramoProcessorTest {
 
     @Test
     public void testProd() {
-        TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
+        TramoKernel processor = TramoKernel.of(TramoSpec.TRfull, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(data));
-        ModelEstimation rslt = processor.process(s);
+        ModelEstimation rslt = processor.process(s, null);
         System.out.println("JD3");
         System.out.println(rslt.getStatistics().getAdjustedLogLikelihood());
     }
@@ -129,11 +129,11 @@ public class TramoProcessorTest {
     @Test
     public void testInseeFull() {
         TsData[] all = Data.insee();
-        TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
+        TramoKernel processor = TramoKernel.of(TramoSpec.TRfull, null);
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i]);
+            ModelEstimation rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -171,7 +171,7 @@ public class TramoProcessorTest {
                         .build())
                 .build();
 
-        TramoProcessor processor = TramoProcessor.of(spec, context);
+        TramoKernel processor = TramoKernel.of(spec, context);
 
         ec.tstoolkit.algorithm.ProcessingContext ocontext = new ec.tstoolkit.algorithm.ProcessingContext();
         ocontext.getGregorianCalendars().set("france", new ec.tstoolkit.timeseries.calendars.NationalCalendarProvider(ofrance));
@@ -180,7 +180,7 @@ public class TramoProcessorTest {
         IPreprocessor oprocessor = ospec.build(ocontext);
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i]);
+            ModelEstimation rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -205,11 +205,11 @@ public class TramoProcessorTest {
     @Test
     public void testInsee0() {
         TsData[] all = Data.insee();
-        TramoProcessor processor = TramoProcessor.of(TramoSpec.TR0, null);
+        TramoKernel processor = TramoKernel.of(TramoSpec.TR0, null);
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR0.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i]);
+            ModelEstimation rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -232,11 +232,11 @@ public class TramoProcessorTest {
     @Test
     public void testInsee1() {
         TsData[] all = Data.insee();
-        TramoProcessor processor = TramoProcessor.of(TramoSpec.TR1, null);
+        TramoKernel processor = TramoKernel.of(TramoSpec.TR1, null);
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR1.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i]);
+            ModelEstimation rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -259,11 +259,11 @@ public class TramoProcessorTest {
     @Test
     public void testInsee2() {
         TsData[] all = Data.insee();
-        TramoProcessor processor = TramoProcessor.of(TramoSpec.TR2, null);
+        TramoKernel processor = TramoKernel.of(TramoSpec.TR2, null);
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR2.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i]);
+            ModelEstimation rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -286,11 +286,11 @@ public class TramoProcessorTest {
     @Test
     public void testInsee3() {
         TsData[] all = Data.insee();
-        TramoProcessor processor = TramoProcessor.of(TramoSpec.TR3, null);
+        TramoKernel processor = TramoKernel.of(TramoSpec.TR3, null);
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR3.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i]);
+            ModelEstimation rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -313,11 +313,11 @@ public class TramoProcessorTest {
     @Test
     public void testInsee4() {
         TsData[] all = Data.insee();
-        TramoProcessor processor = TramoProcessor.of(TramoSpec.TR4, null);
+        TramoKernel processor = TramoKernel.of(TramoSpec.TR4, null);
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR4.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i]);
+            ModelEstimation rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -340,11 +340,11 @@ public class TramoProcessorTest {
     @Test
     public void testInsee5() {
         TsData[] all = Data.insee();
-        TramoProcessor processor = TramoProcessor.of(TramoSpec.TR5, null);
+        TramoKernel processor = TramoKernel.of(TramoSpec.TR5, null);
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR5.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i]);
+            ModelEstimation rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -380,10 +380,10 @@ public class TramoProcessorTest {
                         .build())
                 .build();
 
-        TramoProcessor processor = TramoProcessor.of(nspec, null);
+        TramoKernel processor = TramoKernel.of(nspec, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(data));
-        ModelEstimation rslt = processor.process(s);
+        ModelEstimation rslt = processor.process(s, null);
         System.out.println("JD3 wald");
         System.out.println(rslt.getStatistics().getAdjustedLogLikelihood());
     }
@@ -411,10 +411,10 @@ public class TramoProcessorTest {
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < 1000; ++i) {
-            TramoProcessor processor = TramoProcessor.of(TramoSpec.TRfull, null);
+            TramoKernel processor = TramoKernel.of(TramoSpec.TRfull, null);
             TsPeriod start = TsPeriod.monthly(1967, 1);
             TsData s = TsData.of(start, Doubles.of(data));
-            ModelEstimation rslt = processor.process(s);
+            ModelEstimation rslt = processor.process(s, null);
         }
         t1 = System.currentTimeMillis();
         System.out.println("JD3");

@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.x12;
+package demetra.x13.regarima;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
@@ -139,7 +139,7 @@ public class ArmaModuleImpl {
          * @param eps
          */
         RegArmaBic(final DoubleSeq data, final SarmaOrders spec, double eps) {
-            IRegArimaProcessor processor = X12Utility.processor(true, eps);
+            IRegArimaProcessor processor = X13Utility.processor(true, eps);
             RegArimaModel<SarimaModel> model = RegArimaModel.<SarimaModel>builder()
                     .y(data)
                     .arima(SarimaModel.builder(spec).setDefault().build())

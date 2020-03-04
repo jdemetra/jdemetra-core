@@ -133,10 +133,10 @@ public class SarimaModel {
             }
         }
         for (int i = 0; i < theta.length; ++i) {
-            all[pos++] = -theta[i];
+            all[pos++] = theta[i];
         }
         for (int i = 0; i < btheta.length; ++i) {
-            all[pos++] = -btheta[i];
+            all[pos++] = btheta[i];
         }
         return all;
     }

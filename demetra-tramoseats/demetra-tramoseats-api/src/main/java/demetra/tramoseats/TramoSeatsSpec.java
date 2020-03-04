@@ -20,6 +20,7 @@ import demetra.design.Development;
 import demetra.design.LombokWorkaround;
 import demetra.sa.benchmarking.SaBenchmarkingSpec;
 import demetra.seats.DecompositionSpec;
+import demetra.seats.SeatsSpec;
 import demetra.tramo.TramoSpec;
 import demetra.util.Validatable;
 

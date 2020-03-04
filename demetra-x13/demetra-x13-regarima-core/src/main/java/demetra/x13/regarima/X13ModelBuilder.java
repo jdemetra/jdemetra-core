@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-package demetra.x12;
+package demetra.x13.regarima;
 
 import demetra.data.ParameterSpec;
 import demetra.regarima.EasterSpec;
@@ -71,12 +71,12 @@ import jdplus.data.Parameter;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-class X12ModelBuilder implements IModelBuilder {
+class X13ModelBuilder implements IModelBuilder {
 
     private final RegArimaSpec spec;
     private final ModellingContext context;
 
-    public X12ModelBuilder(RegArimaSpec spec, ModellingContext context) {
+    public X13ModelBuilder(RegArimaSpec spec, ModellingContext context) {
         this.spec = spec;
         if (context != null) {
             this.context = context;

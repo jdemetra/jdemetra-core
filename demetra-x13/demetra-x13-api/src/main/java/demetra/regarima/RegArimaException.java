@@ -23,7 +23,7 @@ import demetra.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class X13Exception extends RuntimeException {
+public class RegArimaException extends RuntimeException {
 
     private static final long serialVersionUID = -8351066904274802554L;
 
@@ -38,7 +38,7 @@ public class X13Exception extends RuntimeException {
     /**
      *
      */
-    public X13Exception() {
+    public RegArimaException() {
     }
 
     /**
@@ -46,7 +46,7 @@ public class X13Exception extends RuntimeException {
      *
      * @param msg Message of the exception
      */
-    public X13Exception(String msg) {
+    public RegArimaException(String msg) {
         super(msg);
     }
 
@@ -57,7 +57,7 @@ public class X13Exception extends RuntimeException {
      * @param message Message of the exception
      * @param innerException Inner exception
      */
-    public X13Exception(final String message, final Exception innerException) {
+    public RegArimaException(final String message, final Exception innerException) {
         super(message, innerException);
     }
 

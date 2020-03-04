@@ -14,9 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.x12;
+package demetra.x13.regarima;
 
-import demetra.x12.DifferencingModule;
+import demetra.x13.regarima.DifferencingModule;
 import demetra.data.Data;
 import ec.tstoolkit.modelling.DefaultTransformationType;
 import org.junit.Test;
