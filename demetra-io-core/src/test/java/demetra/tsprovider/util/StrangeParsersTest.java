@@ -16,8 +16,8 @@
  */
 package demetra.tsprovider.util;
 
-import demetra.util.Parser;
 import java.time.LocalDate;
+import nbbrd.io.text.Parser;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 

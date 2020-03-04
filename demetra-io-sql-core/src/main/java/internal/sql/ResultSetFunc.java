@@ -16,11 +16,11 @@
  */
 package internal.sql;
 
-import demetra.util.Parser;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import nbbrd.io.text.Parser;
 import nbbrd.sql.jdbc.SqlFunc;
 import nbbrd.sql.jdbc.SqlTypes;
 import org.checkerframework.checker.nullness.qual.NonNull;

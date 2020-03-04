@@ -19,7 +19,7 @@ package demetra.tsprovider.legacy;
 import demetra.design.DemetraPlusLegacy;
 import demetra.tsprovider.DataSource;
 import java.io.File;
-import demetra.util.Parser;
+import nbbrd.io.text.Parser;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
