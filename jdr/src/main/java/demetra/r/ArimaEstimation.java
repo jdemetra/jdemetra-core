@@ -32,9 +32,8 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
-import demetra.toolkit.extractors.SarimaExtractor;
 import jdplus.math.matrices.Matrix;
-import jdplus.modelling.ApiUtility;
+import jdplus.modelling.extractors.SarimaExtractor;
 import jdplus.sarima.SarimaModel;
 
 /**
@@ -106,8 +105,8 @@ public class ArimaEstimation {
         Matrix parametersCovariance;
         double[] score;
 
-        public demetra.arima.SarimaModel getArima() {
-            return ApiUtility.toApi(regarima.arima(), null);
+        public SarimaModel getArima() {
+            return regarima.arima();
         }
 
         private static final String ARIMA = "sarima", LL = "likelihood", PCOV = "pcov", SCORE = "score",
