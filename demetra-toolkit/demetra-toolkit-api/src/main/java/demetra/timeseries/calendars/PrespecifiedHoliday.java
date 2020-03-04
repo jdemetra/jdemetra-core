@@ -18,7 +18,7 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import java.time.LocalDate;
+import demetra.timeseries.ValidityPeriod;
 
 
 /**
@@ -26,16 +26,24 @@ import java.time.LocalDate;
  * @author Jean Palate
  */
 @lombok.Value
+@lombok.Builder(builderClassName="Builder")
 @Development(status = Development.Status.Beta)
-public class PrespecifiedHoliday implements IHoliday {
+public class PrespecifiedHoliday implements Holiday {
 
     @lombok.NonNull
     private DayEvent event;
     private int offset;
     private double weight;
+    private ValidityPeriod validityPeriod;
     private boolean julian;
-
-    public IHoliday toSpecialDay() {
+    
+    public static Builder builder(){
+        return new Builder()
+                .validityPeriod(ValidityPeriod.ALWAYS)
+                .weight(1);
+    }
+    
+    public Holiday rawHoliday() {
         switch (event) {
             case ShroveMonday:
                 return julian ? EasterRelatedDay.JULIAN_SHROVEMONDAY.reweight(weight).plus(offset)
@@ -92,30 +100,14 @@ public class PrespecifiedHoliday implements IHoliday {
                 return null;
         }
     }
-    
-    @Override
-    public Iterable<HolidayInfo> getIterable(LocalDate start, LocalDate end) {
-        IHoliday sd = toSpecialDay();
-        if (sd == null) {
-            return null;
-        } else {
-            return sd.getIterable(start, end);
-        }
-    }
-
-    @Override
-    public double[][] longTermMean(int freq) {
-        IHoliday sd = toSpecialDay();
-        if (sd == null) {
-            return null;
-        } else {
-            return sd.longTermMean(freq);
-        }
-    }
 
     @Override
     public double getWeight() {
         return weight;
     }
-    
+
+    @Override
+    public Holiday reweight(double newWeight) {
+        return new PrespecifiedHoliday(event, offset, newWeight, validityPeriod, julian);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -21,10 +21,9 @@ import jdplus.regarima.RegArimaModel;
 import demetra.information.InformationMapping;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.descriptors.stats.LikelihoodStatisticsDescriptor;
+import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import demetra.arima.SarimaOrders;
 import jdplus.regsarima.RegSarimaProcessor;
-import demetra.descriptors.arima.SarimaDescriptor;
 import demetra.util.IntList;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -34,8 +33,7 @@ import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.modelling.ApiUtility;
+import jdplus.modelling.extractors.SarimaExtractor;
 import jdplus.sarima.SarimaModel;
 
 /**
@@ -107,17 +105,17 @@ public class ArimaEstimation {
         Matrix parametersCovariance;
         double[] score;
 
-        public demetra.arima.SarimaModel getArima() {
-            return ApiUtility.toApi(regarima.arima(), null);
+        public SarimaModel getArima() {
+            return regarima.arima();
         }
 
-        private static final String ARIMA = "arima", LL = "likelihood", PCOV = "pcov", SCORE = "score",
+        private static final String ARIMA = "sarima", LL = "likelihood", PCOV = "pcov", SCORE = "score",
                 B = "b", UNSCALEDBVAR = "unscaledbvar", MEAN = "mean";
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.delegate(ARIMA, SarimaDescriptor.getMapping(), r -> r.getArima());
-            MAPPING.delegate(LL, LikelihoodStatisticsDescriptor.getMapping(), r -> r.statistics);
+            MAPPING.delegate(ARIMA, SarimaExtractor.getMapping(), r -> r.getArima());
+            MAPPING.delegate(LL, LikelihoodStatisticsExtractor.getMapping(), r -> r.statistics);
             MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
             MAPPING.set(B, double[].class, source

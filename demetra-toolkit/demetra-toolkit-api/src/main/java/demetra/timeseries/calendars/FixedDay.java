@@ -17,20 +17,19 @@
 package demetra.timeseries.calendars;
 
 import demetra.design.Development;
-import java.time.LocalDate;
-import java.util.Iterator;
+import demetra.timeseries.ValidityPeriod;
 
 /**
- *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Beta)
+@Development(status = Development.Status.Release)
 @lombok.Value
-public class FixedDay implements IHoliday {
+public class FixedDay implements Holiday {
 
     private int month;
     private int day;
     private double weight;
+    private ValidityPeriod validityPeriod;
 
     /**
      * 
@@ -38,7 +37,7 @@ public class FixedDay implements IHoliday {
      * @param day Day of the month, 1-based
      */
     public FixedDay(int month, int day) {
-        this(month, day, 1);
+        this(month, day, 1, ValidityPeriod.ALWAYS);
     }
 
     /**
@@ -46,43 +45,26 @@ public class FixedDay implements IHoliday {
      * @param month Month, 1-based
      * @param day Day of the month, 1-based
      * @param weight Weight of the holiday 
+     * @param validityPeriod 
      */
-    public FixedDay(int month, int day, double weight) {
+    public FixedDay(int month, int day, double weight, ValidityPeriod validityPeriod) {
         this.day = day;
         this.month = month;
         this.weight = weight;
+        this.validityPeriod=validityPeriod;
     }
     
     public FixedDay reweight(double nweight) {
         if (weight == this.weight) {
             return this;
         }
-        return new FixedDay(day, month, nweight);
+        return new FixedDay(day, month, nweight, validityPeriod);
     }
 
     public static final FixedDay CHRISTMAS = new FixedDay(12, 25), NEWYEAR = new FixedDay(1, 1),
             ASSUMPTION = new FixedDay(8, 15), MAYDAY = new FixedDay(5, 1),
             ALLSAINTSDAY = new FixedDay(11, 1), ARMISTICE = new FixedDay(11, 11), HALLOWEEN = new FixedDay(10, 31);
 
-    @Override
-    public Iterable<HolidayInfo> getIterable(LocalDate start, LocalDate end) {
-        return new FixedDayIterable(this, start, end);
-    }
-
-    @Override
-    public double[][] longTermMean(int freq) {
-        int c = 12 / freq;
-        int p = (month-1) / c;
-        double[] m = new double[7];
-        
-        for (int i = 0; i < 7; ++i) {
-            m[i] = weight / 7;
-        }
-
-        double[][] rslt = new double[freq][];
-        rslt[p] = m;
-        return rslt;
-    }
 
     public FixedDay plus(int offset) {
         if (offset == 0) {
@@ -105,63 +87,7 @@ public class FixedDay implements IHoliday {
         if (month <= 2 && nmonth >= 2) {
             return null;
         }
-        return new FixedDay(nmonth+1, nday, weight);
+        return new FixedDay(nmonth+1, nday, weight, validityPeriod);
     }
 
-    static class FixedDayInfo implements HolidayInfo {
-
-        final int year;
-        final FixedDay fday;
-
-        FixedDayInfo(int year, FixedDay fday) {
-            this.fday = fday;
-            this.year = year;
-        }
-
-        @Override
-        public LocalDate getDay() {
-            return LocalDate.of(year, fday.getMonth(), fday.getDay());
-        }
-
-    }
-
-    static class FixedDayIterable implements Iterable<HolidayInfo> {
-
-        private final FixedDay fday;
-        private final int year;
-        private final int n;
-
-        FixedDayIterable(FixedDay fday, LocalDate fstart, LocalDate fend) {
-            this.fday = fday;
-            int ystart = fstart.getYear(), yend = fend.getYear();
-            LocalDate xday = LocalDate.of(ystart, fday.getMonth(), fday.getDay());
-            LocalDate yday = LocalDate.of(yend, fday.getMonth(), fday.getDay());
-
-            if (xday.isBefore(fstart)) {
-                ++ystart;
-            }
-            if (!yday.isBefore(fend)) {
-                --yend;
-            }
-            year = ystart;
-            n = yend - ystart + 1;
-        }
-
-        @Override
-        public Iterator<HolidayInfo> iterator() {
-            return new Iterator<HolidayInfo>() {
-                int cur = 0;
-
-                @Override
-                public boolean hasNext() {
-                    return cur < n;
-                }
-
-                @Override
-                public HolidayInfo next() {
-                    return new FixedDayInfo(year + (cur++), fday);
-                }
-            };
-        }
-    }
 }

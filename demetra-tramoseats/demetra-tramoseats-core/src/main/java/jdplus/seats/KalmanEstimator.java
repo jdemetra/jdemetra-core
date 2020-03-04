@@ -38,14 +38,13 @@ import jdplus.math.matrices.QuadraticForm;
  */
 @Development(status = Development.Status.Alpha)
 public class KalmanEstimator implements IComponentsEstimator {
-    
+
     private final int nfcasts, nbcasts;
-    
-    public KalmanEstimator(int nbcasts, int nfcasts){
-        this.nfcasts=nfcasts;
-        this.nbcasts=nbcasts;
+
+    public KalmanEstimator(int nbcasts, int nfcasts) {
+        this.nfcasts = nfcasts;
+        this.nbcasts = nbcasts;
     }
-    
 
     /**
      *
@@ -56,6 +55,7 @@ public class KalmanEstimator implements IComponentsEstimator {
     public SeriesDecomposition decompose(SeatsModel model) {
         SeriesDecomposition.Builder builder = SeriesDecomposition.builder(DecompositionMode.Additive);
         DoubleSeq s = model.getTransformedSeries();
+        builder.add(s, ComponentType.Series);
         int n = s.length(), nf = model.extrapolationCount(nfcasts),
                 nb = model.extrapolationCount(nbcasts);
 
@@ -109,23 +109,31 @@ public class KalmanEstimator implements IComponentsEstimator {
         ssf.measurement().loading().Z(0, z);
         if (nb > 0) {
             double[] a = new double[nb];
+            double[] e = new double[nb];
             for (int i = 0; i < a.length; ++i) {
-                a[i] = QuadraticForm.apply(srslts.P(i), z);
+                a[i] = srslts.a(i).dot(z);
+                e[i] = QuadraticForm.apply(srslts.P(i), z);
             }
-            cmp = DoubleSeq.of(a).fn(x -> x <= 0 ? 0 : Math.sqrt(x));
+            builder.add(DoubleSeq.of(a), ComponentType.Series, ComponentInformation.Backcast);
+            cmp = DoubleSeq.of(e).fn(x -> x <= 0 ? 0 : Math.sqrt(x));
             builder.add(cmp, ComponentType.Series, ComponentInformation.StdevBackcast);
-            if (scmp < 0) {
+            if (scmp < 0) {  // SA == y
+                builder.add(DoubleSeq.of(a), ComponentType.Series, ComponentInformation.Backcast); 
                 builder.add(cmp, ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast);
             }
         }
         if (nf > 0) {
-            double[] a = new double[nb];
-            for (int i = 0, j = n + nb; i < a.length; ++i, ++j) {
-                a[i] = QuadraticForm.apply(srslts.P(j), z);
+            double[] a = new double[nf];
+            double[] e = new double[nf];
+            for (int i = 0, j=nb+n; i < a.length; ++i, ++j) {
+                a[i] = srslts.a(j).dot(z);
+                e[i] = QuadraticForm.apply(srslts.P(j), z);
             }
-            cmp = DoubleSeq.of(a).fn(x -> x <= 0 ? 0 : Math.sqrt(x));
+            builder.add(DoubleSeq.of(a), ComponentType.Series, ComponentInformation.Forecast);
+            cmp = DoubleSeq.of(e).fn(x -> x <= 0 ? 0 : Math.sqrt(x));
             builder.add(cmp, ComponentType.Series, ComponentInformation.StdevForecast);
-            if (scmp < 0) {
+            if (scmp < 0) {  // SA == y
+                builder.add(DoubleSeq.of(a), ComponentType.Series, ComponentInformation.Forecast); 
                 builder.add(cmp, ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
             }
         }
@@ -133,7 +141,10 @@ public class KalmanEstimator implements IComponentsEstimator {
 
         if (scmp >= 0) {
             z.range(pos[scmp], scmp == pos.length - 1 ? ssf.getStateDim() : pos[scmp + 1]).set(0);
+            DoubleSeq sa = srslts.zcomponent(z);
+            builder.add(sa.range(nb, nb + n), ComponentType.SeasonallyAdjusted);
             if (nb > 0) {
+                builder.add(sa.range(0, nb), ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast);
                 double[] a = new double[nb];
                 for (int i = 0; i < a.length; ++i) {
                     a[i] = QuadraticForm.apply(srslts.P(i), z);
@@ -142,7 +153,8 @@ public class KalmanEstimator implements IComponentsEstimator {
                 builder.add(cmp, ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast);
             }
             if (nf > 0) {
-                double[] a = new double[nb];
+                builder.add(sa.range(nb+n, nb+n+nf), ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
+                double[] a = new double[nf];
                 for (int i = 0, j = n + nb; i < a.length; ++i, ++j) {
                     a[i] = QuadraticForm.apply(srslts.P(j), z);
                 }

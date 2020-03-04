@@ -18,6 +18,7 @@ package demetra.linearmodel;
 
 import demetra.data.DoubleSeq;
 import demetra.data.ParameterEstimation;
+import demetra.design.Development;
 import demetra.math.matrices.MatrixType;
 
 /**
@@ -25,6 +26,8 @@ import demetra.math.matrices.MatrixType;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
+@Deprecated
+@Development(status = Development.Status.Temporary)
 public class LinearModelEstimation {
 
     public static final LinearModelEstimation EMPTY=new LinearModelEstimation(new ParameterEstimation[0], MatrixType.EMPTY);

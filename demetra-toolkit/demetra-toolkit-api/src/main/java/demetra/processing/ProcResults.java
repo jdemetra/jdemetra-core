@@ -47,13 +47,14 @@ public interface ProcResults {
     Map<String, Class> getDictionary();
     
     /**
-     * . The identifier and the type should come from the dictionary provided by
+     * Gets information related to the specified id
+     * The identifier and the type should come from the dictionary provided by
      * this object
      *
      * @param <T>
      * @param id Name of information
-     * @param tclass
-     * @return
+     * @param tclass Class of the information
+     * @return null if this information is not available
      */
     <T> T getData(String id, Class<T> tclass);
 

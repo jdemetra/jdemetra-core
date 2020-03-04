@@ -19,11 +19,11 @@ package demetra.data;
 import demetra.design.Development;
 
 /**
- *
+ * TODO Is it necessary?
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-@Development(status = Development.Status.Release)
+@Development(status = Development.Status.Preliminary)
 public class ParameterEstimation {
     /**
      * Value of the parameter

@@ -32,16 +32,16 @@ public class HolidaysCorrectionFactoryTest {
 
     static {
         List<Holiday> holidays = new ArrayList<>();
-        holidays.add(new Holiday(new FixedDay(7, 21)));
-        holidays.add(new Holiday(FixedDay.ALLSAINTSDAY));
-        holidays.add(new Holiday(FixedDay.ARMISTICE));
-        holidays.add(new Holiday(FixedDay.ASSUMPTION));
-        holidays.add(new Holiday(FixedDay.CHRISTMAS));
-        holidays.add(new Holiday(FixedDay.MAYDAY));
-        holidays.add(new Holiday(FixedDay.NEWYEAR));
-        holidays.add(new Holiday(EasterRelatedDay.ASCENSION));
-        holidays.add(new Holiday(EasterRelatedDay.EASTERMONDAY));
-        holidays.add(new Holiday(EasterRelatedDay.WHITMONDAY));
+        holidays.add(new FixedDay(7, 21));
+        holidays.add(FixedDay.ALLSAINTSDAY);
+        holidays.add(FixedDay.ARMISTICE);
+        holidays.add(FixedDay.ASSUMPTION);
+        holidays.add(FixedDay.CHRISTMAS);
+        holidays.add(FixedDay.MAYDAY);
+        holidays.add(FixedDay.NEWYEAR);
+        holidays.add(EasterRelatedDay.ASCENSION);
+        holidays.add(EasterRelatedDay.EASTERMONDAY);
+        holidays.add(EasterRelatedDay.WHITMONDAY);
 
         belgium = new Calendar(holidays.toArray(new Holiday[holidays.size()]), true);
 

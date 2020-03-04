@@ -38,7 +38,7 @@ abstract class ModelController {
         this.estimator = estimator;
     }
 
-    abstract ProcessingResult process(RegSarimaModelling modelling, TramoProcessor.Context context);
+    abstract ProcessingResult process(RegSarimaModelling modelling, TramoContext context);
 
     /**
      *

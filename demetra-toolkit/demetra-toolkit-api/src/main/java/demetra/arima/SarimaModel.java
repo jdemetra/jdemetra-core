@@ -35,21 +35,6 @@ import demetra.design.Development;
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class SarimaModel {
 
-//    @lombok.Builder.Default
-//    private int period=1;
-//    private int d, bd;
-//    @lombok.Builder.Default
-//    @lombok.NonNull 
-//    private PolynomialType phi=PolynomialType.ONE;
-//    @lombok.Builder.Default
-//    @lombok.NonNull 
-//    private PolynomialType theta=PolynomialType.ONE;
-//    @lombok.Builder.Default
-//    @lombok.NonNull 
-//    private PolynomialType bphi=PolynomialType.ONE;
-//    @lombok.Builder.Default
-//    @lombok.NonNull 
-//    private PolynomialType btheta=PolynomialType.ONE;
     /**
      * Period of the seasonal model
      */
@@ -124,7 +109,8 @@ public class SarimaModel {
      * 
      * @param truesign If truesign, the sign of the coefficients corresponds to the
      * sign in the backshift polynomials. Otherwise, the signs of phi, bphi are changed; 
-     * it is similar to the X13 or R convention (for instance).
+     * if true, it is similar to the "Tramo" convention; otherwise, it is similar to 
+     * the X13 or R convention (for instance).
      * @return 
      */
     public double[] parameters(boolean truesign) {
@@ -147,15 +133,15 @@ public class SarimaModel {
             }
         }
         for (int i = 0; i < theta.length; ++i) {
-            all[pos++] = -theta[i];
+            all[pos++] = theta[i];
         }
         for (int i = 0; i < btheta.length; ++i) {
-            all[pos++] = -btheta[i];
+            all[pos++] = btheta[i];
         }
         return all;
     }
 
-    static final double[] E = new double[0];
+    private static final double[] E = new double[0];
 
     public static Builder builder() {
 

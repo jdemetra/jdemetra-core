@@ -5,11 +5,10 @@
  */
 package jdplus.tramoseats.legacy;
 
-import demetra.arima.SarimaModel;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.LinearModelEstimation;
 import demetra.timeseries.regression.modelling.ModellingContext;
-import demetra.tramo.TramoProcessor;
+import demetra.timeseries.regression.modelling.RegSarimaResults;
+import demetra.tramo.Tramo;
 import demetra.tramo.TramoSpec;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
@@ -20,15 +19,17 @@ import java.util.List;
  *
  * @author palatej
  */
-public class LegacyTramo implements TramoProcessor.Computer{
+public class LegacyTramo implements Tramo.Processor{
 
     @Override
-    public LinearModelEstimation<SarimaModel> compute(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public RegSarimaResults process(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems) {
 
         TramoSpecification lspec = LegacyUtility.toLegacy(spec);
         IPreprocessor ltramo = lspec.build();
         PreprocessingModel process = ltramo.process(LegacyUtility.toLegacy(series), null);
-        return LegacyUtility.toApi(process);
+        return RegSarimaResults.builder()
+                .regarima(LegacyUtility.toApi(process))
+                .build();
     }
     
 }

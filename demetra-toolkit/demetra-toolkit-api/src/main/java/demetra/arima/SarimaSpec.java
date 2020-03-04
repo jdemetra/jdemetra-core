@@ -23,10 +23,14 @@ import demetra.util.Validatable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- *
+ * Specification of Sarima models.
+ * The specification is independent of the periodicity of the model (provided at
+ * run time).
+ * The specification will provide information on the parameters (unknown, fixed,
+ * or initial)
  * @author Jean Palate
  */
-@Development(status = Development.Status.Beta)
+@Development(status = Development.Status.Release)
 @lombok.Value
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public final class SarimaSpec implements Validatable<SarimaSpec> {

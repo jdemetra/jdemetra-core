@@ -67,7 +67,7 @@ public class ApiUtility {
         ParametersEstimation p = null;
         if (nhp > 0) {
             // TODO: adjust the computation of the covariance of the parameters
-            p = new ParametersEstimation(max.getParameters(), max.asymptoticCovariance());
+            p = new ParametersEstimation(max.getParameters(), max.asymptoticCovariance(), null);
         }
 
         ParameterEstimation mean = null;
@@ -86,7 +86,7 @@ public class ApiUtility {
             b = ll.coefficients().range(x0, x1).toArray();
             cov = ll.covariance(nhp, true).extract(x0, b.length, x0, b.length).unmodifiable();
         }
-        ParametersEstimation all = new ParametersEstimation(b, cov);
+        ParametersEstimation all = new ParametersEstimation(b, cov, null);
 
         MissingValueEstimation[] me = null;
         if (missing.length > 0) {

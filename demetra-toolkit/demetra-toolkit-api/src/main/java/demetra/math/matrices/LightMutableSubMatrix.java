@@ -18,7 +18,6 @@ package demetra.math.matrices;
 
 import demetra.design.Development;
 import demetra.data.DoubleSeq;
-import demetra.data.Doubles;
 import java.util.function.DoubleUnaryOperator;
 
 /**

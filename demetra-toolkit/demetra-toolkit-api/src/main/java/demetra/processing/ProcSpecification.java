@@ -17,10 +17,13 @@
 
 package demetra.processing;
 
+import demetra.design.Development;
+
 /**
  *
  * @author Jean Palate
  */
+@Development(status = Development.Status.Exploratory)
 public interface ProcSpecification{
 
     AlgorithmDescriptor getAlgorithmDescriptor();

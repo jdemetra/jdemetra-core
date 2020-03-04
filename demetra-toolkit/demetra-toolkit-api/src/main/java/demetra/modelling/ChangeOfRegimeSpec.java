@@ -25,9 +25,16 @@ import java.util.Objects;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
-public class ChangeOfRegimeSpec implements Cloneable {
+@Development(status = Development.Status.Release)
+@lombok.Value
+public class ChangeOfRegimeSpec{
 
+    public static enum Type {
+        Full,
+        Partial_ZeroStart,
+        Partial_ZeroEnd
+    }
+    
     public ChangeOfRegimeSpec(LocalDate date) {
         this.date = date;
         this.type = Type.Full;
@@ -38,43 +45,6 @@ public class ChangeOfRegimeSpec implements Cloneable {
         this.type = type;
     }
 
-    /**
-     * @return the day
-     */
-    public LocalDate getDate() {
-        return date;
-    }
-
-    /**
-     * @return the type
-     */
-    public Type getType() {
-        return type;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 71 * hash + Objects.hashCode(this.date);
-        hash = 71 * hash + Objects.hashCode(this.type);
-        return hash;
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof ChangeOfRegimeSpec && equals((ChangeOfRegimeSpec) obj));
-    }
-    
-    private boolean equals(ChangeOfRegimeSpec other) {
-        return other.date.equals(date) && other.type == type;
-    }
-
-    public static enum Type {
-        Full,
-        Partial_ZeroStart,
-        Partial_ZeroEnd
-    }
-    
     /**
      * Convention of the US-Census Bureau
      * @return 
@@ -116,8 +86,8 @@ public class ChangeOfRegimeSpec implements Cloneable {
             return new ChangeOfRegimeSpec(day, type);
     }
     
-    private final LocalDate date;
-    private final Type type;
+    private LocalDate date;
+    private Type type;
     
     
     

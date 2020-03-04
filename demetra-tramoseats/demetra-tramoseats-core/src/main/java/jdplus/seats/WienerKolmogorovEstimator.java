@@ -47,7 +47,6 @@ public class WienerKolmogorovEstimator implements IComponentsEstimator {
     public SeriesDecomposition decompose(SeatsModel model) {
         SeriesDecomposition.Builder decomposition = SeriesDecomposition.builder(DecompositionMode.Additive);
 
-//	BurmanEstimates burman = new BurmanEstimates();
         UcarimaModel ucm = model.getUcarimaModel();
         ucm = ucm.compact(2, 2);
 
@@ -97,12 +96,29 @@ public class WienerKolmogorovEstimator implements IComponentsEstimator {
             }
         }
 
+        DoubleSeq bs = burman.getSeriesBackcasts();
+        DoubleSeq ebs = null, ebsa = null;
+        for (int i = 0; i < ebcmps.length; ++i) {
+            if (ebcmps[i] != null) {
+                DoubleSeq var = ebcmps[i].fn(z -> z * z);
+                ebs = DoublesMath.add(ebs, var);
+                if (i != 1) {
+                    ebsa = DoublesMath.add(ebsa, var);
+                }
+            }
+        }
         decomposition.add(s, ComponentType.Series);
         if (fs != null) {
             decomposition.add(fs, ComponentType.Series, ComponentInformation.Forecast);
         }
         if (efs != null) {
             decomposition.add(efs.fn(z -> z <= 0 ? 0 : Math.sqrt(z)), ComponentType.Series, ComponentInformation.StdevForecast);
+        }
+        if (bs != null) {
+            decomposition.add(bs, ComponentType.Series, ComponentInformation.Backcast);
+        }
+        if (ebs != null) {
+            decomposition.add(ebs.fn(z -> z <= 0 ? 0 : Math.sqrt(z)), ComponentType.Series, ComponentInformation.StdevBackcast);
         }
         if (cmps[0] != null) {
             decomposition.add(cmps[0], ComponentType.Trend);
@@ -130,11 +146,11 @@ public class WienerKolmogorovEstimator implements IComponentsEstimator {
         if (ecmps[1] != null) {
             decomposition.add(ecmps[1], ComponentType.Seasonal, ComponentInformation.Stdev);
             decomposition.add(ecmps[1], ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
-            decomposition.add(efsa.fn(z -> z <= 0 ? 0 : Math.sqrt(z)), ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
         }
         if (efcmps[1] != null) {
             decomposition.add(efcmps[1], ComponentType.Seasonal, ComponentInformation.StdevForecast);
         }
+
         decomposition.add(cmps[2], ComponentType.Irregular);
         if (fcmps[2] != null) {
             decomposition.add(fcmps[2], ComponentType.Irregular, ComponentInformation.Forecast);
@@ -144,6 +160,33 @@ public class WienerKolmogorovEstimator implements IComponentsEstimator {
         }
         if (efcmps[2] != null) {
             decomposition.add(efcmps[2], ComponentType.Irregular, ComponentInformation.StdevForecast);
+        }
+        if (bcmps[0] != null) {
+            decomposition.add(bcmps[0], ComponentType.Trend, ComponentInformation.Backcast);
+        }
+        if (bcmps[1] != null) {
+            decomposition.add(bcmps[1], ComponentType.Seasonal, ComponentInformation.Backcast);
+        }
+        if (efsa != null) {
+            decomposition.add(efsa.fn(z -> z <= 0 ? 0 : Math.sqrt(z)), ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
+        }
+
+        decomposition.add(DoublesMath.subtract(bs, bcmps[1]),
+                ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast);
+        if (ebcmps[0] != null) {
+            decomposition.add(ebcmps[0], ComponentType.Trend, ComponentInformation.StdevBackcast);
+        }
+        if (ebcmps[1] != null) {
+            decomposition.add(ebcmps[1], ComponentType.Seasonal, ComponentInformation.StdevBackcast);
+        }
+        if (bcmps[2] != null) {
+            decomposition.add(bcmps[2], ComponentType.Irregular, ComponentInformation.Backcast);
+        }
+        if (ebcmps[2] != null) {
+            decomposition.add(ebcmps[2], ComponentType.Irregular, ComponentInformation.StdevBackcast);
+        }
+        if (ebsa != null) {
+            decomposition.add(ebsa.fn(z -> z <= 0 ? 0 : Math.sqrt(z)), ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast);
         }
         return decomposition.build();
     }

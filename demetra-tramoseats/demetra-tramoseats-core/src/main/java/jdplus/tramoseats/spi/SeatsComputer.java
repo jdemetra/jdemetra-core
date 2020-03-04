@@ -16,9 +16,8 @@
  */
 package jdplus.tramoseats.spi;
 
-import demetra.data.DoubleSeq;
 import demetra.processing.ProcessingLog;
-import demetra.seats.SeatsProcessor;
+import demetra.seats.Seats;
 import demetra.seats.SeatsResults;
 import demetra.seats.SeatsSpec;
 import java.util.List;
@@ -30,11 +29,11 @@ import nbbrd.service.ServiceProvider;
  *
  * @author palatej
  */
-@ServiceProvider(SeatsProcessor.Computer.class)
-public class SeatsComputer implements SeatsProcessor.Computer{
+@ServiceProvider(Seats.Processor.class)
+public class SeatsComputer implements Seats.Processor{
 
     @Override
-    public SeatsResults compute(SeatsSpec spec, List<String> addtionalItems) {
+    public SeatsResults process(SeatsSpec spec, List<String> addtionalItems) {
         // TODO Handling of additional items
         SeatsToolkit toolkit=SeatsToolkit.of(spec.getDecompositionSpec());
         SeatsKernel kernel=new SeatsKernel(toolkit);

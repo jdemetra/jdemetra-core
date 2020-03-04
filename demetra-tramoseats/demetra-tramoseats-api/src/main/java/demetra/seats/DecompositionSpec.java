@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -33,7 +33,7 @@ public final class DecompositionSpec implements Validatable<DecompositionSpec> {
     }
     
     public static enum ComponentsEstimationMethod {
-        Burman, KalmanSmoother, McElroyMatrix
+        Burman, KalmanSmoother
     }
     
     public static enum BiasCorrection{
@@ -50,7 +50,7 @@ public final class DecompositionSpec implements Validatable<DecompositionSpec> {
     private double seasTolerance;
     private double trendBoundary, seasBoundary, seasBoundaryAtPi;
     private BiasCorrection biasCorrection;
-    private int backCastCount, forecastCount;
+    private int backcastCount, forecastCount;
     private ComponentsEstimationMethod method;
 
     public static final DecompositionSpec DEFAULT = DecompositionSpec.builder().build();
@@ -67,7 +67,7 @@ public final class DecompositionSpec implements Validatable<DecompositionSpec> {
                 .biasCorrection(BiasCorrection.Legacy)
                 .method(ComponentsEstimationMethod.Burman)
                 .forecastCount(DEF_FORECASTS)
-                .backCastCount(DEF_BACKCASTS)
+                .backcastCount(DEF_BACKCASTS)
                 ;
         
         

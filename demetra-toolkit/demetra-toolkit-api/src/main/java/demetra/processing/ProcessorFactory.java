@@ -29,7 +29,7 @@ import java.util.Map;
  * @param <I> Input class
  * @param <R> Results (output) class
  */
-@Development(status = Development.Status.Alpha)
+@Development(status = Development.Status.Exploratory)
 public interface ProcessorFactory<S extends ProcSpecification, I, R extends ProcResults>  {
     /**
      * Called when the processor is no longer used. Most implementation will be

@@ -18,7 +18,7 @@ package jdplus.tramoseats.spi;
 
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.ModellingContext;
-import demetra.tramoseats.TramoSeatsProcessor;
+import demetra.tramoseats.TramoSeats;
 import demetra.tramoseats.TramoSeatsResults;
 import demetra.tramoseats.TramoSeatsSpec;
 import java.util.List;
@@ -28,11 +28,11 @@ import nbbrd.service.ServiceProvider;
  *
  * @author palatej
  */
-@ServiceProvider(TramoSeatsProcessor.Computer.class)
-public class TramoSeatsComputer implements TramoSeatsProcessor.Computer{
+@ServiceProvider(TramoSeats.Processor.class)
+public class TramoSeatsComputer implements TramoSeats.Processor{
 
     @Override
-    public TramoSeatsResults compute(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public TramoSeatsResults process(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

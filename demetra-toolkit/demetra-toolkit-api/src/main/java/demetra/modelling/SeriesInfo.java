@@ -39,7 +39,7 @@ public class SeriesInfo implements Comparable<SeriesInfo> {
      */
     public String description;
     public static final String F_SUFFIX = "_f", E_SUFFIX = "_e", EF_SUFFIX = "_ef",
-            B_SUFFIX = "_b";
+            B_SUFFIX = "_b", EB_SUFFIX = "_eb";
 
     @Override
     public int compareTo(SeriesInfo o) {

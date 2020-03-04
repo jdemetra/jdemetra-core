@@ -9,14 +9,12 @@ import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.math.matrices.MatrixType;
 import demetra.timeseries.regression.HolidaysCorrectedTradingDays;
-import jdplus.math.matrices.Matrix;
 import demetra.timeseries.regression.HolidaysCorrectedTradingDays.HolidaysCorrector;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.Calendar;
 import demetra.timeseries.calendars.CalendarManager;
-import demetra.timeseries.calendars.CalendarUtility;
 import demetra.timeseries.calendars.ChainedCalendar;
 import demetra.timeseries.calendars.CompositeCalendar;
 import demetra.util.WeightedItem;
@@ -24,6 +22,7 @@ import java.time.LocalDate;
 import demetra.timeseries.calendars.CalendarDefinition;
 import jdplus.math.matrices.MatrixFactory;
 import jdplus.math.matrices.Matrix;
+import jdplus.timeseries.calendars.HolidaysUtility;
 
 /**
  *
@@ -74,12 +73,12 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
      */
     public static HolidaysCorrector corrector(final Calendar calendar) {
         return (TsDomain domain) -> {
-            MatrixType M = CalendarUtility.holidays(calendar.getHolidays(), domain);
+            MatrixType M = HolidaysUtility.holidays(calendar.getHolidays(), domain);
             Matrix Mc = Matrix.of(M);
             if (calendar.isMeanCorrection()) {
                 TsPeriod start = domain.getStartPeriod();
                 int freq = domain.getAnnualFrequency();
-                double[][] mean = CalendarUtility.longTermMean(calendar.getHolidays(), freq);
+                double[][] mean = HolidaysUtility.longTermMean(calendar.getHolidays(), freq);
                 if (mean != null) {
                     int pstart = start.annualPosition();
                     DataBlock[] Mean = new DataBlock[freq];

@@ -17,12 +17,15 @@
 
 package demetra.processing;
 
+import demetra.design.Development;
+
 /**
  *
  * @author Jean Palate
  * @param <I>
  * @param <R>
  */
+@Development(status = Development.Status.Exploratory)
 public interface Processor <I, R extends ProcResults> {
 
     public static enum Status {

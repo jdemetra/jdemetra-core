@@ -5,10 +5,13 @@
  */
 package demetra.ssf;
 
+import demetra.design.Development;
+
 /**
  *
  * @author Jean Palate
  */
+@Development(status = Development.Status.Release)
 public enum SsfAlgorithm {
     Ordinary,
     Array,

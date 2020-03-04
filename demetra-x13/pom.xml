@@ -65,12 +65,12 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-toolkit-sa</artifactId>
-                <version>${jd3-toolkit.version}</version>
+                <artifactId>demetra-sa-api</artifactId>
+                <version>${jd3-sa.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-sa-api</artifactId>
+                <artifactId>demetra-sa-core</artifactId>
                 <version>${jd3-sa.version}</version>            
             </dependency>
             <dependency>
@@ -80,12 +80,17 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-x13-regarima-core</artifactId>
+                <artifactId>demetra-x13-regarima</artifactId>
                 <version>${jd3-x13.version}</version>
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-x13-core</artifactId>
+                <version>${jd3-x13.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-x13-x11</artifactId>
                 <version>${jd3-x13.version}</version>
             </dependency>
             <!-- < modules 3.0 -->

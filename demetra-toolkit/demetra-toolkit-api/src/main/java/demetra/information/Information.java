@@ -21,12 +21,12 @@ import demetra.design.Development;
 
 /**
  * Generic class to handle named values (pair of {name, object}.
- *
+ * TODO: Is it necessary?
  * @param <S>
  * @author Jean Palate
  */
 @Immutable
-@Development(status = Development.Status.Release)
+@Development(status = Development.Status.Preliminary)
 public final class Information<S> {
 
     /**

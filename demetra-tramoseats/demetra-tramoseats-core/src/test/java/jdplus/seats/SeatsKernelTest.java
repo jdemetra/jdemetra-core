@@ -23,7 +23,6 @@ import demetra.processing.ProcessingLog;
 import demetra.seats.DecompositionSpec;
 import demetra.seats.DecompositionSpec.ComponentsEstimationMethod;
 import demetra.seats.SeatsModelSpec;
-import demetra.seats.SeatsSpec;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -45,7 +44,7 @@ public class SeatsKernelTest {
                 .sarimaSpec(SarimaSpec.airline())
                 .build();
         DecompositionSpec cmps = DecompositionSpec.builder()
-                .backCastCount(0)
+                .backcastCount(0)
                 .forecastCount(0)
                 .build();
 
@@ -68,7 +67,7 @@ public class SeatsKernelTest {
                 .sarimaSpec(SarimaSpec.airline())
                 .build();
         DecompositionSpec cmps = DecompositionSpec.builder()
-                .backCastCount(-2)
+                .backcastCount(-2)
                 .forecastCount(-2)
                 .method(ComponentsEstimationMethod.KalmanSmoother)
                 .build();
@@ -89,14 +88,15 @@ public class SeatsKernelTest {
                 
         SeatsModelSpec model = SeatsModelSpec.builder()
                 .series(DoubleSeq.of(Data.PROD))
+                .meanCorrection(true)
                 .period(12)
                 .log(true)
                 .sarimaSpec(mspec)
                 .build();
         DecompositionSpec cmps = DecompositionSpec.builder()
-                .backCastCount(0)
+                .backcastCount(-1)
                 .forecastCount(-2)
-                .method(ComponentsEstimationMethod.KalmanSmoother)
+//               .method(ComponentsEstimationMethod.KalmanSmoother)
                 .build();
 
         SeatsToolkit toolkit = SeatsToolkit.of(cmps);

@@ -18,6 +18,8 @@
         <module>demetra-tramo-core</module>
         <module>demetra-tramoseats-core</module>
         <module>demetra-tramoseats-legacy</module>
+        <module>demetra-tramoseats-io</module>
+        <module>demetra-tramoseats-r</module>
     </modules>
   
     <properties>
@@ -42,7 +44,22 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-toolkit-io</artifactId>
+                <version>${jd3-toolkit.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-toolkit-r</artifactId>
+                <version>${jd3-toolkit.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-sa-api</artifactId>
+                <version>${jd3-sa.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-sa-core</artifactId>
                 <version>${jd3-sa.version}</version>            
             </dependency>
             <dependency>
@@ -72,11 +89,6 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-sa-core</artifactId>
-                <version>${jd3-toolkit.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-tramoseats-api</artifactId>
                 <version>${jd3-tramoseats.version}</version>            
             </dependency>
@@ -88,6 +100,16 @@
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-tramoseats-core</artifactId>
+                <version>${jd3-tramoseats.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-tramoseats-io</artifactId>
+                <version>${jd3-tramoseats.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-tramoseats-r</artifactId>
                 <version>${jd3-tramoseats.version}</version>            
             </dependency>
             <!-- < modules 3.0 -->

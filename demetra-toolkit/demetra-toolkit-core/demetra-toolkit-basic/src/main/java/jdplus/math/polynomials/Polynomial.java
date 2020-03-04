@@ -25,7 +25,7 @@ import demetra.design.Immutable;
 import demetra.math.Complex;
 import jdplus.math.ComplexComputer;
 import jdplus.math.ComplexMath;
-import demetra.math.Simplifying;
+import jdplus.math.Simplifying;
 import demetra.util.Arrays2;
 import lombok.NonNull;
 import demetra.data.DoubleSeq;

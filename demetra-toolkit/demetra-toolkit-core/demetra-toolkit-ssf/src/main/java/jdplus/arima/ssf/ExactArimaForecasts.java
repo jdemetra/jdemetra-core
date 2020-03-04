@@ -41,6 +41,13 @@ public class ExactArimaForecasts implements ArimaForecasts {
     private boolean bmean;
 
     @Override
+    /**
+     * Returns the mean. The mean correction is defined by 
+     * phi(B)y=mean+theta(B)e
+     * So, it is not equal to the mean correction computed by regression (for 
+     * instance in TRAMO)(phi(B)(y-meanc*C)=theta(B)e).
+     * mean = phi(1)*meanc (we omit the non stationary polynomial)
+     */
     public double getMean() {
         return mean;
     }
@@ -79,27 +86,19 @@ public class ExactArimaForecasts implements ArimaForecasts {
         if (nf >= ssf.getStateDim()) {
             DataBlock a = filter.getFinalState().a();
             a.copyTo(f, 0);
-//            // complete the forecasts....
-//            int last = a.length() - 1;
-//            for (int i = ssf.getStateDim(); i < nf; ++i) {
-//                ssf.dynamics().TX(0, a);
-//                f[i] = a.get(last);
-//            }
-            // complete the forecasts with simple ar recursion
-            double[] ar = bar.asPolynomial().toArray();
+            // complete the forecasts (just run the filter)...
+            int last = a.length() - 1;
             for (int i = ssf.getStateDim(); i < nf; ++i) {
-                double s = 0;
-                for (int j = 1; j < ar.length; ++j) {
-                    s += -ar[j] * f[i - j];
+                ssf.dynamics().TX(0, a);
+                f[i] = a.get(last);
                 }
-                f[i] = s;
-            }
         } else {
             filter.getFinalState().a().range(0, nf).copyTo(f, 0);
         }
         if (bmean) {
-            DataBlock s = DataBlock.make(f.length - bar.getDegree());
-            bar.apply(DataBlock.of(f), s);
+            DataBlock a = filter.getFinalState().a();
+            DataBlock s = DataBlock.make(a.length() - bar.getDegree());
+            bar.apply(a, s);
             mean = s.get(s.length() - 1);
         }
         return f;

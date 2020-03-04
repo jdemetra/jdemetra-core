@@ -17,14 +17,13 @@
 package demetra.math.functions;
 
 import demetra.design.Development;
-import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
 
 /**
- *
+ * TODO: rename this class
  * @author Jean Palate
  */
-@Development(status=Development.Status.Release)
+@Development(status=Development.Status.Preliminary)
 @lombok.Value
 public class ObjectiveFunctionPoint {
     /**
@@ -34,6 +33,7 @@ public class ObjectiveFunctionPoint {
     /**
      * Parameters of the function 
      */
+    @lombok.NonNull
     private double[] parameters;
     /**
      * Gradient of the function at the given point

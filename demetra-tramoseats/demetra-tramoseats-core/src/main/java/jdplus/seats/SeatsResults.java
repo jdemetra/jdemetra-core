@@ -26,6 +26,7 @@ import jdplus.ucarima.UcarimaModel;
  */
 
 @lombok.Value
+@lombok.Builder(builderClassName="Builder")
 public class SeatsResults {
     private SarimaModel originalModel;
     private SarimaModel finalModel;

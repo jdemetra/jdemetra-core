@@ -13,6 +13,7 @@
     <modules>
         <module>demetra-sa-api</module>
         <module>demetra-sa-core</module>
+        <module>demetra-sa-io</module>
     </modules>
     
     <properties>
@@ -72,6 +73,11 @@
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-sa-core</artifactId>
+                <version>${jd3-sa.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-sa-io</artifactId>
                 <version>${jd3-sa.version}</version>            
             </dependency>
             <!-- < modules 3.0 -->

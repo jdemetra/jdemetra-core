@@ -6,7 +6,7 @@
         <artifactId>demetra-x13</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>demetra-x13-regarima-core</artifactId>
+    <artifactId>demetra-x13-regarima</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>JD3 - X13 - Regarima</name>
@@ -21,6 +21,11 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>be.nbb.rd</groupId>
+            <artifactId>java-service-processor</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

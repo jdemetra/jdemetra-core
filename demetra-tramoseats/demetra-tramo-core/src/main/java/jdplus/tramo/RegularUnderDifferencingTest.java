@@ -42,7 +42,7 @@ class RegularUnderDifferencingTest extends ModelController {
     }
 
     @Override
-    ProcessingResult process(RegSarimaModelling modelling, TramoProcessor.Context context) {
+    ProcessingResult process(RegSarimaModelling modelling, TramoContext context) {
         ModelDescription desc = modelling.getDescription();
         RegArimaEstimation<SarimaModel> estimation = modelling.getEstimation();
         SarimaModel cur = desc.arima();

@@ -16,6 +16,7 @@
  */
 package demetra.processing;
 
+import demetra.design.Development;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,11 +26,12 @@ import java.util.Stack;
  *
  * @author PALATEJ
  */
+@Development(status = Development.Status.Exploratory)
 public class ProcessingLog {
 
     public static enum InformationType {
 
-        Error, Warning, Info, Log
+        Error, Warning, Log, Info
     }
 
     @lombok.Value
@@ -52,6 +54,7 @@ public class ProcessingLog {
     
     private final List<Information> logs=new ArrayList<>();
     private final Stack<String> context=new Stack<>();
+    private boolean verbose=true;
     
     private static final String SEP=" > ";
     
@@ -170,5 +173,19 @@ public class ProcessingLog {
 
     public void step(String msg, Object info) {
         logs.add(new Information(context(), null, msg, InformationType.Log, info));
+    }
+
+    /**
+     * @return the verbose
+     */
+    public boolean isVerbose() {
+        return verbose;
+    }
+
+    /**
+     * @param verbose the verbose to set
+     */
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
     }
 }

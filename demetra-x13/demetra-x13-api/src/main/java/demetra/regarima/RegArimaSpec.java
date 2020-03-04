@@ -174,5 +174,24 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
                 .usingAutoModel(true)
                 .build();
     }
+
+    public static RegArimaSpec fromString(String name) {
+        switch (name) {
+            case "RG0":
+                return RG0;
+            case "RG1":
+                return RG1;
+            case "RG2c":
+                return RG2;
+            case "RG3":
+                return RG3;
+            case "RG4c":
+                return RG4;
+            case "RG5c":
+                return RG5;
+            default:
+                throw new RegArimaException();
+        }
+    }
     //</editor-fold>
 }

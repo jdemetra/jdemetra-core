@@ -25,11 +25,10 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import demetra.util.WildCards;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -96,7 +95,7 @@ public class InformationMapping<S> implements InformationExtractor<S> {
         }
     }
 
-    public <Q> void set(final String name, final Class<Q> targetClass,
+    public <Q> void set(@NonNull final String name, final Class<Q> targetClass,
             final Function<S, Q> fn) {
         map.put(name, InformationExtractor.extractor(name, targetClass, fn));
     }
@@ -110,12 +109,12 @@ public class InformationMapping<S> implements InformationExtractor<S> {
         map.put(name, InformationExtractor.delegateArray(name, start, end, mapping, fn));
     }
 
-    public <Q> void setArray(final String name, final int start, final int end,
+    public <Q> void setArray(@NonNull final String name, final int start, final int end,
             final Class<Q> targetClass, final BiFunction<S, Integer, Q> fn) {
         map.put(name, InformationExtractor.array(name, start, end, targetClass, fn));
     }
 
-    public <Q> void setArray(final String name, final int defparam,
+    public <Q> void setArray(@NonNull final String name, final int defparam,
             final Class<Q> targetClass, final BiFunction<S, Integer, Q> fn) {
         map.put(name, InformationExtractor.array(name, defparam, targetClass, fn));
     }

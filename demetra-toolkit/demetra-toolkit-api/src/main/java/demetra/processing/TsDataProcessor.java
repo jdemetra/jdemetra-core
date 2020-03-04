@@ -17,6 +17,7 @@
 
 package demetra.processing;
 
+import demetra.design.Development;
 import demetra.timeseries.TsData;
 
 /**
@@ -24,6 +25,7 @@ import demetra.timeseries.TsData;
  * @author Jean Palate
   * @param <R>
  */
+@Development(status = Development.Status.Exploratory)
 public interface TsDataProcessor <R extends ProcResults> extends Processor<TsData, R>{
 
 }

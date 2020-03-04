@@ -20,11 +20,11 @@ import demetra.design.Development;
 import java.time.LocalDate;
 
 /**
- *
+ * TODO: move to basic
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
-@Development(status = Development.Status.Release)
+@Development(status = Development.Status.Preliminary)
 public class Easter {
 
     /**

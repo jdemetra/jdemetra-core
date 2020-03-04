@@ -26,9 +26,9 @@ import demetra.design.Development;
 @lombok.Value
 public class AlgorithmDescriptor implements Comparable<AlgorithmDescriptor> {
 
-    String family;
-    String name;
-    String version;
+    private String family;
+    private String name;
+    private String version;
 
     @Override
     public String toString() {

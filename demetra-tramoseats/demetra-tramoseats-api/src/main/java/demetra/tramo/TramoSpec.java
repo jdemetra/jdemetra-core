@@ -282,5 +282,26 @@ public final class TramoSpec implements Validatable<TramoSpec> {
                 .usingAutoModel(true)
                 .build();
     }
+    
+    public static TramoSpec fromString(String name) {
+        switch (name) {
+            case "TR0":
+                return TR0;
+            case "TR1":
+                return TR1;
+            case "TR2":
+                return TR2;
+            case "TR3":
+                return TR3;
+            case "TR4":
+                return TR4;
+            case "TR5":
+                return TR5;
+            case "TRfull":
+                return TRfull;
+            default:
+                throw new TramoException();
+        }
+    } 
     //</editor-fold>
 }

@@ -71,10 +71,13 @@ public class LogNormalTest {
     }
     
     private RandomNumberGenerator getRandomNumberGenerator() {
+        
+        Random rnd=new Random(0);
+        
         return new RandomNumberGenerator() {
             @Override
             public double nextDouble() {
-                return new Random().nextDouble();
+                return rnd.nextDouble();
             }
 
             @Override

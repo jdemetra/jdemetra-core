@@ -33,7 +33,7 @@ class SeasonalUnderDifferencingTest extends ModelController {
     private static final double DEF_SBOUND = .91;
 
     @Override
-    ProcessingResult process(RegSarimaModelling modelling, TramoProcessor.Context context) {
+    ProcessingResult process(RegSarimaModelling modelling, TramoContext context) {
         int period = modelling.getDescription().getAnnualFrequency();
         if (period == 1) {
             return ProcessingResult.Unprocessed;
@@ -61,7 +61,7 @@ class SeasonalUnderDifferencingTest extends ModelController {
         }
     }
 
-    private boolean isUnderDiff(RegSarimaModelling modelling, TramoProcessor.Context context) {
+    private boolean isUnderDiff(RegSarimaModelling modelling, TramoContext context) {
         DoubleSeq res = modelling.getEstimation().getConcentratedLikelihood().e();
         SeasonalityTests tests
                 = SeasonalityTests.residualSeasonalityTest(res, modelling.getDescription().getAnnualFrequency());

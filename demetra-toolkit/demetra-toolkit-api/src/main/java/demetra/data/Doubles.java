@@ -16,6 +16,7 @@
  */
 package demetra.data;
 
+import demetra.design.Development;
 import demetra.design.Immutable;
 import demetra.design.Internal;
 import java.util.function.IntToDoubleFunction;
@@ -32,6 +33,7 @@ import lombok.AccessLevel;
 @Immutable
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
 @lombok.EqualsAndHashCode
+@Development(status = Development.Status.Release)
 public final class Doubles implements DoubleSeq {
 
     public static final Doubles EMPTY = new Doubles(new double[0]);

@@ -16,15 +16,14 @@
  */
 package demetra.data;
 
-import demetra.data.DoubleSeqCursor;
-import demetra.data.DoubleSeq;
-import demetra.data.Doubles;
+import demetra.design.Development;
 
 /**
  *
  * @author Philippe Charles
  */
 @lombok.experimental.UtilityClass
+@Development(status = Development.Status.Release)
 public class DoublesMath {
 
     public double sum(DoubleSeq src) {

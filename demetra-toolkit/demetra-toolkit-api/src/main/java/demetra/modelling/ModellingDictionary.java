@@ -16,10 +16,13 @@
  */
 package demetra.modelling;
 
+import demetra.design.Development;
+
 /**
- *
+ * TODO: complete the dictionary
  * @author palatej
  */
+@Development(status = Development.Status.Preliminary)
 public class ModellingDictionary {
     public static final String
             Y="y",      // original series

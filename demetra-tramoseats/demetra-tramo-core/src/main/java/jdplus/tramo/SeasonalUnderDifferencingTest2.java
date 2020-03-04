@@ -32,7 +32,7 @@ class SeasonalUnderDifferencingTest2 extends ModelController {
     private static final double DEF_SBOUND = .91;
 
     @Override
-    ProcessingResult process(RegSarimaModelling modelling, TramoProcessor.Context context) {
+    ProcessingResult process(RegSarimaModelling modelling, TramoContext context) {
         ModelDescription desc = modelling.getDescription();
         int period=desc.getAnnualFrequency();
         if (period == 1) {

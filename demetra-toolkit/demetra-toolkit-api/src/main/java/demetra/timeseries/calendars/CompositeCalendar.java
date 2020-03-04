@@ -5,12 +5,14 @@
  */
 package demetra.timeseries.calendars;
 
+import demetra.design.Development;
 import demetra.util.WeightedItem;
 
 /**
  *
  * @author PALATEJ
  */
+@Development(status = Development.Status.Release)
 @lombok.Value
 public class CompositeCalendar implements CalendarDefinition{
     private WeightedItem<String>[] calendars;    

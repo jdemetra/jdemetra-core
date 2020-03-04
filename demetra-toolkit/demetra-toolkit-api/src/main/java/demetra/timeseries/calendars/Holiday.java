@@ -13,48 +13,23 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
- */
+*/
+
 package demetra.timeseries.calendars;
 
-import demetra.timeseries.ValidityPeriod;
 import demetra.design.Development;
-import java.time.LocalDate;
+import demetra.timeseries.ValidityPeriod;
+
 
 /**
- *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Alpha)
-@lombok.Value
-public class Holiday {
-
-    private IHoliday day;
-    private ValidityPeriod validityPeriod;
-
-    public Holiday(IHoliday day) {
-        this.day = day;
-        validityPeriod=null;
-    }
-
-    public Holiday(IHoliday day, ValidityPeriod validityPeriod) {
-        this.day = day;
-        this.validityPeriod=validityPeriod;
-    }
+@Development(status = Development.Status.Preliminary)
+public interface Holiday {
     
-    public boolean isStartSpecified() {
-        return validityPeriod != null && validityPeriod.isStartSpecified();
-    }
-
-    public boolean isEndSpecified() {
-        return validityPeriod != null && validityPeriod.isEndSpecified();
-    }
-
-    public LocalDate getStart() {
-        return validityPeriod == null ? LocalDate.MIN : validityPeriod.getStart().toLocalDate();
-    }
-
-    public LocalDate getEnd() {
-        return validityPeriod == null ? LocalDate.MAX : validityPeriod.getEnd().toLocalDate();
-    }
-
+    double getWeight();
+    
+    ValidityPeriod getValidityPeriod();
+    
+    Holiday reweight(double newWeight);
 }

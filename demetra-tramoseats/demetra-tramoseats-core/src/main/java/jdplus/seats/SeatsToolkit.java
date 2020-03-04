@@ -47,15 +47,12 @@ public class SeatsToolkit {
                 approximator = new DefaultModelApproximator(estimator);
         }
 
-        int nf = spec.getForecastCount(), nb = spec.getBackCastCount();
+        int nf = spec.getForecastCount(), nb = spec.getBackcastCount();
 
         IComponentsEstimator cmpEstimator;
         switch (spec.getMethod()) {
             case KalmanSmoother:
                 cmpEstimator = new KalmanEstimator(nb, nf);
-                break;
-            case McElroyMatrix:
-                cmpEstimator = new MatrixEstimator(nb, nf);
                 break;
             default:
                 cmpEstimator = new WienerKolmogorovEstimator(nb, nf);

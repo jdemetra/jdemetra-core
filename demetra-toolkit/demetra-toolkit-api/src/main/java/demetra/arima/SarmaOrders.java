@@ -19,7 +19,7 @@ package demetra.arima;
 import demetra.design.Development;
 
 /**
- * @author Jeremy Demortier, Jean Palate
+ * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
 @lombok.Data
