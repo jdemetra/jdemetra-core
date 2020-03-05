@@ -30,6 +30,7 @@ import jdplus.regsarima.regular.ILogLevelModule;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.data.DoubleSeq;
+import demetra.processing.ProcessingLog;
 
 /**
  *
@@ -37,37 +38,39 @@ import demetra.data.DoubleSeq;
  */
 @Development(status = Development.Status.Preliminary)
 public class LogLevelModule implements ILogLevelModule {
-    
-    public static Builder builder(){
+
+    public static final String LL = "log-level test";
+
+    public static Builder builder() {
         return new Builder();
     }
 
     @BuilderPattern(LogLevelModule.class)
     public static class Builder {
-        
-        private double precision=1e-5;
-        private double logpreference=0;
-        private boolean seasonal=true;
-        
-        public Builder logPreference(double lp){
-            this.logpreference=lp;
+
+        private double precision = 1e-5;
+        private double logpreference = 0;
+        private boolean seasonal = true;
+
+        public Builder logPreference(double lp) {
+            this.logpreference = lp;
             return this;
         }
 
-        public Builder estimationPrecision(double eps){
-            this.precision=eps;
+        public Builder estimationPrecision(double eps) {
+            this.precision = eps;
             return this;
         }
 
-        public Builder seasonal(boolean seasonal){
-            this.seasonal=seasonal;
+        public Builder seasonal(boolean seasonal) {
+            this.seasonal = seasonal;
             return this;
         }
 
         public LogLevelModule build() {
             return new LogLevelModule(logpreference, precision, seasonal);
         }
-        
+
     }
 
     private final double logpreference, precision;
@@ -78,11 +81,11 @@ public class LogLevelModule implements ILogLevelModule {
     /**
      *
      */
-    private  LogLevelModule(double logpreference, double precision, boolean seasonal) {
-        this.logpreference=logpreference;
-        this.precision=precision;
-        this.seasonal=seasonal;
-        
+    private LogLevelModule(double logpreference, double precision, boolean seasonal) {
+        this.logpreference = logpreference;
+        this.precision = precision;
+        this.seasonal = seasonal;
+
     }
 
     /**
@@ -151,11 +154,9 @@ public class LogLevelModule implements ILogLevelModule {
         return el == null ? false : log + logpreference < level;
     }
 
-
     /**
      *
-     * @return
-     * @since 2.2
+     * @return @since 2.2
      */
     public double getLogCorrection() {
         return slog;
@@ -165,13 +166,14 @@ public class LogLevelModule implements ILogLevelModule {
      * @param data
      * @param frequency
      * @param seas
+     * @param log
      * @return
      */
-    public boolean process(DoubleSeq data, int frequency, boolean seas) {
-        return process(RegArimaUtility.airlineModel(data, true, frequency, seas));
+    public boolean process(DoubleSeq data, int frequency, boolean seas, ProcessingLog log) {
+        return process(RegArimaUtility.airlineModel(data, true, frequency, seas), log);
     }
-    
-    public boolean process(RegArimaModel<SarimaModel> model) {
+
+    public boolean process(RegArimaModel<SarimaModel> model, ProcessingLog logs) {
         IRegArimaProcessor processor = TramoUtility.processor(true, precision);
         e = processor.process(model, null);
         if (e != null) {
@@ -179,7 +181,6 @@ public class LogLevelModule implements ILogLevelModule {
                     * e.getConcentratedLikelihood().factor());
         }
 
-        
         double[] lx = model.getY().toArray();
         slog = 0;
         for (int i = 0; i < lx.length; ++i) {
@@ -191,7 +192,6 @@ public class LogLevelModule implements ILogLevelModule {
         }
         slog /= lx.length;
 
-        
         RegArimaModel<SarimaModel> logModel = model.toBuilder()
                 .y(DoubleSeq.of(lx))
                 .build();
@@ -208,24 +208,37 @@ public class LogLevelModule implements ILogLevelModule {
     public TransformationType getTransformation() {
         return this.isChoosingLog() ? TransformationType.Log : TransformationType.None;
     }
-    
+
     @Override
     public ProcessingResult process(RegSarimaModelling context) {
         ModelDescription desc = context.getDescription();
-        if (desc.isLogTransformation())
+        if (desc.isLogTransformation()) {
             return ProcessingResult.Unprocessed;
-        DoubleSeq data=desc.getTransformedSeries().getValues();
-        if (! process(data, desc.getAnnualFrequency(), seasonal))
+        }
+        DoubleSeq data = desc.getTransformedSeries().getValues();
+        ProcessingLog logs = context.getLog();
+        if (logs != null) {
+            logs.push(LL);
+        }
+        if (!process(data, desc.getAnnualFrequency(), seasonal, logs)) {
+            if (logs != null) {
+                logs.warning("failed");
+                logs.pop();
+            }
             return ProcessingResult.Failed;
-        if (isChoosingLog()){
+        }
+        if (logs != null) {
+            logs.step("level", this.level);
+            logs.step("log", this.log);
+            logs.pop();
+        }
+        if (isChoosingLog()) {
             desc.setLogTransformation(true);
             context.clearEstimation();
             return ProcessingResult.Changed;
-        }else{
+        } else {
             return ProcessingResult.Unchanged;
         }
     }
-    
-    
 
 }

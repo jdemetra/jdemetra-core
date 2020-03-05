@@ -52,6 +52,8 @@ import jdplus.regsarima.regular.RegSarimaProcessor;
 @Development(status = Development.Status.Preliminary)
 public class TramoKernel implements RegSarimaProcessor {
 
+    private static final String TRAMO = "tramo";
+
     @lombok.Value
     @lombok.Builder
     public static class AmiOptions {
@@ -205,12 +207,18 @@ public class TramoKernel implements RegSarimaProcessor {
 
     @Override
     public ModelEstimation process(TsData originalTs, ProcessingLog log) {
+        if (log != null) {
+            log.push(TRAMO);
+        }
         ModelDescription desc = build(originalTs, null);
         if (desc == null) {
             throw new TramoException("Initialization failed");
         }
         RegSarimaModelling modelling = RegSarimaModelling.of(desc, log);
-        ModelEstimation rslt = ami(modelling);
+        ModelEstimation rslt = ami(modelling, log);
+        if (log != null) {
+            log.pop();
+        }
         return rslt;
     }
 
@@ -225,7 +233,7 @@ public class TramoKernel implements RegSarimaProcessor {
 
     }
 
-    private ModelEstimation ami(RegSarimaModelling modelling) {
+    private ModelEstimation ami(RegSarimaModelling modelling, ProcessingLog log) {
 
         // Test the seasonality
         testSeasonality(modelling);
@@ -643,6 +651,8 @@ public class TramoKernel implements RegSarimaProcessor {
 //    }
 //
 
+    private static final String SEAS = "seasonality test";
+
     private void testSeasonality(RegSarimaModelling modelling) {
         ModelDescription model = modelling.getDescription();
         if (!isAutoModelling()) {
@@ -652,6 +662,7 @@ public class TramoKernel implements RegSarimaProcessor {
 
         int period = model.getAnnualFrequency();
         if (period > 1) {
+
             TramoSeasonalityDetector seas = new TramoSeasonalityDetector();
             SeasonalityDetector.Seasonality s = seas.hasSeasonality(model.getTransformedSeries().getValues(), period);
             context.originalSeasonalityTest = s.getAsInt();
@@ -662,6 +673,10 @@ public class TramoKernel implements RegSarimaProcessor {
             } else {
                 context.seasonal = true;
             }
+            ProcessingLog log = modelling.getLog();
+            if (log != null) {
+                log.step(SEAS, context.originalSeasonalityTest);
+             }
         } else {
             context.seasonal = false;
         }
