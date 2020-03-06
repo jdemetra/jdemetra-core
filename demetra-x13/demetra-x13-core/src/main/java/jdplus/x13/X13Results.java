@@ -16,9 +16,10 @@
  */
 package jdplus.x13;
 
-import jdplus.regsarima.regular.ModelEstimation;
-import demetra.sa.SeriesDecomposition;
 import demetra.x11.X11Results;
+import demetra.x13.X13Finals;
+import demetra.x13.X13Preadjustment;
+import jdplus.regsarima.regular.ModelEstimation;
 
 /**
  *
@@ -28,7 +29,7 @@ import demetra.x11.X11Results;
 public class X13Results {
     
     private ModelEstimation preprocessing;
-    private X11Results results;
-    private SeriesDecomposition seriesDecomposition;
-    
+    private X13Preadjustment preadjustment;
+    private X11Results decomposition;
+    private X13Finals finals;
 }

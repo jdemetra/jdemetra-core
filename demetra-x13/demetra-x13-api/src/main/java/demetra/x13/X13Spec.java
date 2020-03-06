@@ -22,6 +22,7 @@ import demetra.regarima.RegArimaSpec;
 import demetra.sa.DecompositionMode;
 import demetra.sa.benchmarking.SaBenchmarkingSpec;
 import demetra.util.Validatable;
+import demetra.x11.SeasonalFilterOption;
 import demetra.x11.X11Spec;
 
 /**
@@ -75,36 +76,37 @@ public class X13Spec implements Validatable<X13Spec> {
                 .regArima(RegArimaSpec.RGDISABLED)
                 .x11(X11Spec.builder()
                         .mode(DecompositionMode.Multiplicative)
+                        .filter(SeasonalFilterOption.Msr)
                         .forecastHorizon(0)
                         .build())
                 .build();
         RSA0 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG0)
-                .x11(X11Spec.builder().build())
+                .x11(X11Spec.DEFAULT)
                 .build();
         RSA1 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG1)
-                .x11(X11Spec.builder().build())
+                .x11(X11Spec.DEFAULT)
                 .build();
         RSA2 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG2)
-                .x11(X11Spec.builder().build())
+                .x11(X11Spec.DEFAULT)
                 .build();
         RSA3 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG3)
-                .x11(X11Spec.builder().build())
+                .x11(X11Spec.DEFAULT)
                 .build();
         RSA4 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG4)
-                .x11(X11Spec.builder().build())
+                .x11(X11Spec.DEFAULT)
                 .build();
         RSA5 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG5)
-                .x11(X11Spec.builder().build())
+                .x11(X11Spec.DEFAULT)
                 .build();
     }
-    
-        public static X13Spec fromString(String name) {
+
+    public static X13Spec fromString(String name) {
         if (name.equals("X11")) {
             return RSAX11;
         }

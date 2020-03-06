@@ -17,6 +17,7 @@
 package demetra.data;
 
 import demetra.design.Development;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -348,9 +349,33 @@ public class DoublesMath {
         return Doubles.ofInternal(tot);
     }
 
+    public DoubleSeq concatenate(@NonNull DoubleSeq... b) {
+        if (b.length == 1)
+            return b[0];
+        int n = 0;
+        for (int i = 0; i < b.length; ++i) {
+            if (b[i] != null) {
+                n += b[i].length();
+            }
+        }
+        if (n == 0) {
+            return Doubles.EMPTY;
+        } else {
+            double[] d = new double[n];
+            for (int i = 0, j = 0; i < b.length; ++i) {
+                if (b[i] != null) {
+                    b[i].copyTo(d, j);
+                    j += b[i].length();
+                }
+            }
+            return Doubles.ofInternal(d);
+        }
+    }
+
     public DoubleSeq subtract(DoubleSeq a, DoubleSeq b) {
-        if (b == null)
+        if (b == null) {
             return a;
+        }
         if (a == null) {
             return b.fn(x -> -x);
         } else {

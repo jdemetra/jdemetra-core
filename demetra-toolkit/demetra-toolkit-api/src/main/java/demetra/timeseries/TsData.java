@@ -343,14 +343,60 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
         }
     }
 
-    public static TsData multiply(TsData l, TsData r) {
-        if (l == null) {
-            return r;
-        } else if (r == null) {
-            return l;
-        } else {
-            return l.fastFn(r, (a, b) -> a * b);
+    public static TsData multiply(TsData a, TsData... b) {
+        int start = -1;
+        if (b != null) {
+            for (int i = 0; i < b.length; ++i) {
+                if (b[i] != null) {
+                    start = i;
+                    break;
+                }
+            }
         }
+        if (start == -1) {
+            return a;
+        }
+        TsData prod;
+        if (a == null) {
+            prod = b[start++];
+            if (start == b.length) {
+                return prod;
+            }
+        } else {
+            prod = a;
+        }
+        for (int i = start; i < b.length; ++i) {
+            prod = prod.fastFn(b[i], (x, y) -> x * y);
+        }
+        return prod.commit();
+    }
+
+    public static TsData add(TsData a, TsData... b) {
+        int start = -1;
+        if (b != null) {
+            for (int i = 0; i < b.length; ++i) {
+                if (b[i] != null) {
+                    start = i;
+                    break;
+                }
+            }
+        }
+        if (start == -1) {
+            return a;
+        }
+        TsData prod;
+        if (a == null) {
+            prod = b[start++];
+            if (start == b.length) {
+                return prod;
+            }
+        } else {
+            prod = a;
+        }
+        for (int i = start; i < b.length; ++i) {
+            prod = prod.fastFn(b[i], (x, y) -> x + y);
+        }
+        return prod.commit();
     }
 
     public TsData multiply(double d) {
@@ -419,6 +465,43 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
 
     public TsData lag(@NonNegative int lag) {
         return lag == 0 ? this : TsData.ofInternal(getStart().plus(lag), values);
+    }
+
+    public static TsData concatenate(TsData... s) {
+        int ns = s.length;
+        switch (ns) {
+            case 0:
+                return null;
+            case 1:
+                return s[0];
+            default:
+                int n = 0;
+                TsPeriod start=null;
+                TsPeriod curPeriod = null;
+                for (int i = 0; i < ns; ++i) {
+                    if (s[i] != null) {
+                        TsPeriod cstart=s[i].getStart();
+                        if (start == null)
+                            start=cstart;
+                        if (curPeriod != null && !cstart.equals(curPeriod)) {
+                            throw new IllegalArgumentException();
+                        }
+                        n += s[i].length();
+                        curPeriod = s[i].getEnd();
+                    }
+                }
+                if (n == 0)
+                    return null;
+                double[] d = new double[n];
+
+                for (int i = 0, j = 0; i < ns; ++i) {
+                    if (s[i] != null) {
+                        s[i].getValues().copyTo(d, j);
+                        j += s[i].length();
+                    }
+                }
+                return TsData.ofInternal(start, d);
+        }
     }
 
     /**
@@ -527,7 +610,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
         int head = position - spos;
         if (head < 0) {
             head += ratio;
-            nstart=nstart.next();
+            nstart = nstart.next();
         }
         int nlength = 1 + (oldLength - head - 1) / ratio;
         return TsData.of(nstart, Doubles.of(values.extract(head, nlength, ratio)));

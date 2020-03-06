@@ -16,12 +16,16 @@
  */
 package jdplus.x13.spi;
 
+import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.ModellingContext;
 import demetra.x13.X13;
 import demetra.x13.X13Results;
 import demetra.x13.X13Spec;
 import java.util.List;
+import jdplus.regarima.ApiUtility;
+import jdplus.x13.X13Kernel;
+import jdplus.x13.extractors.X13Extractor;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -29,12 +33,27 @@ import nbbrd.service.ServiceProvider;
  * @author palatej
  */
 @ServiceProvider(X13.Processor.class)
-public class X13Computer implements X13.Processor{
-
+public class X13Computer implements X13.Processor {
+    
     @Override
-    public X13Results process(TsData series, X13Spec spec, ModellingContext context, List<String> addtionalItems) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public X13Results process(TsData series, X13Spec spec, ModellingContext context, List<String> additionalItems) {
+        X13Kernel x13 = X13Kernel.of(spec, context);
+        ProcessingLog log = new ProcessingLog();
+        jdplus.x13.X13Results rslt = x13.process(series, log);
+        // Handling of additional items
+        X13Results.Builder builder = X13Results.builder();
+        for (String key : additionalItems) {
+            Object data = X13Extractor.getMapping().getData(rslt, key, Object.class);
+            if (data != null) {
+                builder.addtionalResult(key, data);
+            }
+        }
+        return builder.preadjustment(rslt.getPreadjustment())
+                .preprocessing(ApiUtility.toApi(rslt.getPreprocessing()))
+                .decomposition(rslt.getDecomposition())
+                .finals(rslt.getFinals())
+                .logs(log.all())
+                .build();
     }
-
     
 }

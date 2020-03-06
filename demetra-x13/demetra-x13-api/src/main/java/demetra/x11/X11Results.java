@@ -23,7 +23,6 @@ public class X11Results {
     SeasonalFilterOption[] finalSeasonalFilter;
     int finalHendersonFilterLength;
     DecompositionMode mode;
-    X11Spec spec;
 
     /**
      * I/C-Ratio on D1 !o D10 (D11bis)

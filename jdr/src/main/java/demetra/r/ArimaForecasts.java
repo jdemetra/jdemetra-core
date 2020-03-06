@@ -24,7 +24,7 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import jdplus.arima.ssf.ExactArimaForecasts;
 import demetra.data.DoubleSeq;
-import demetra.x12.FastArimaForecasts;
+import jdplus.x13.regarima.FastArimaForecasts;
 import jdplus.ssf.StateComponent;
 import jdplus.ssf.univariate.Ssf;
 

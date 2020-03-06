@@ -30,12 +30,12 @@ import demetra.data.DoubleSeq;
  */
 @Immutable
 @Development(status = Development.Status.Beta)
-public final class SeriesDecomposition {
+public final class SeriesDecomposition<T> {
 
-    public static class Builder {
+    public static class Builder<T> {
 
         private final DecompositionMode mode;
-        private final EnumMap<ComponentType, DoubleSeq> cmps = new EnumMap<>(ComponentType.class),
+        private final EnumMap<ComponentType, T> cmps = new EnumMap<>(ComponentType.class),
                 bcmps = new EnumMap<>(ComponentType.class),
                 fcmps = new EnumMap<>(ComponentType.class),
                 ecmps = new EnumMap<>(ComponentType.class),
@@ -52,11 +52,11 @@ public final class SeriesDecomposition {
          * @param data
          * @return
          */
-        public Builder add(DoubleSeq data, ComponentType cmp) {
+        public Builder add(T data, ComponentType cmp) {
             return add(data, cmp, ComponentInformation.Value);
         }
 
-        public Builder add(DoubleSeq data, ComponentType cmp, ComponentInformation info) {
+        public Builder add(T data, ComponentType cmp, ComponentInformation info) {
             switch (info) {
                 case Stdev:
                     ecmps.put(cmp, data);
@@ -80,24 +80,24 @@ public final class SeriesDecomposition {
             return this;
         }
 
-        public SeriesDecomposition build() {
+        public SeriesDecomposition<T> build() {
             return new SeriesDecomposition(this);
         }
 
     }
 
-    public static Builder builder(DecompositionMode mode) {
-        return new Builder(mode);
+    public static <T> Builder<T> builder(DecompositionMode mode) {
+        return new Builder<T>(mode);
     }
 
     private final DecompositionMode mode;
-    private final Map<ComponentType, DoubleSeq> bcmps, cmps, fcmps, ebcmps, ecmps, efcmps;
+    private final Map<ComponentType, T> bcmps, cmps, fcmps, ebcmps, ecmps, efcmps;
 
     /**
      *
      * @param mode
      */
-    private SeriesDecomposition(Builder builder) {
+    private SeriesDecomposition(Builder<T> builder) {
         this.mode = builder.mode;
         this.cmps = Collections.unmodifiableMap(builder.cmps);
         this.fcmps = Collections.unmodifiableMap(builder.fcmps);
@@ -121,7 +121,7 @@ public final class SeriesDecomposition {
      * @param info
      * @return
      */
-    public DoubleSeq getSeries(ComponentType cmp, ComponentInformation info) {
+    public T getSeries(ComponentType cmp, ComponentInformation info) {
 
         switch (info) {
             case Stdev:
@@ -170,26 +170,26 @@ public final class SeriesDecomposition {
         return builder.toString();
     }
 
-    private void write(Map<ComponentType, DoubleSeq> cmps, StringBuilder builder) {
-        DoubleSeq s = cmps.get(ComponentType.Series);
+    private void write(Map<ComponentType, T> cmps, StringBuilder builder) {
+        T s = cmps.get(ComponentType.Series);
         if (s != null) {
-            builder.append("series").append('\t').append(DoubleSeq.format(s)).append("\r\n");
+            builder.append("series").append('\t').append(s).append("\r\n");
         }
         s = cmps.get(ComponentType.SeasonallyAdjusted);
         if (s != null) {
-            builder.append("sa").append('\t').append(DoubleSeq.format(s)).append("\r\n");
+            builder.append("sa").append('\t').append(s).append("\r\n");
         }
         s = cmps.get(ComponentType.Trend);
         if (s != null) {
-            builder.append("t").append('\t').append(DoubleSeq.format(s)).append("\r\n");
+            builder.append("t").append('\t').append(s).append("\r\n");
         }
         s = cmps.get(ComponentType.Seasonal);
         if (s != null) {
-            builder.append("s").append('\t').append(DoubleSeq.format(s)).append("\r\n");
+            builder.append("s").append('\t').append(s).append("\r\n");
         }
         s = cmps.get(ComponentType.Irregular);
         if (s != null) {
-            builder.append("i").append('\t').append(DoubleSeq.format(s)).append("\r\n");
+            builder.append("i").append('\t').append(s).append("\r\n");
         }
     }
 

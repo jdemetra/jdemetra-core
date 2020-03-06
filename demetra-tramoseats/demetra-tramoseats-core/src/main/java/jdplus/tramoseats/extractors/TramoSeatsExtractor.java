@@ -7,7 +7,7 @@ package jdplus.tramoseats.extractors;
 
 import demetra.design.Development;
 import demetra.information.InformationMapping;
-import demetra.tramoseats.TramoSeatsResults;
+import jdplus.tramoseats.TramoSeatsResults;
 
 /**
  *

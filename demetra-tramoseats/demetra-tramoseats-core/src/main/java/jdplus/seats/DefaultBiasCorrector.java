@@ -60,10 +60,10 @@ public class DefaultBiasCorrector implements IBiasCorrector {
 
     private void correctLevels(SeatsModel model) {
         DoubleSeq y = model.getOriginalSeries();
-        SeriesDecomposition.Builder decomp = SeriesDecomposition.builder(DecompositionMode.Additive)
+        SeriesDecomposition.Builder<DoubleSeq> decomp = SeriesDecomposition.builder(DecompositionMode.Additive)
                 .add(y, ComponentType.Series);
 
-        SeriesDecomposition idecomp = model.getInitialComponents();
+        SeriesDecomposition<DoubleSeq> idecomp = model.getInitialComponents();
         DoubleSeq s = idecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
         if (s != null) {
             decomp.add(s, ComponentType.Seasonal);
@@ -101,7 +101,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         model.setFinalComponents(decomp.build());
     }
 
-    private void fillForecasts(SeriesDecomposition idecomp, SeriesDecomposition.Builder decomp) {
+    private void fillForecasts(SeriesDecomposition<DoubleSeq> idecomp, SeriesDecomposition.Builder<DoubleSeq> decomp) {
         // idem forecasts
         DoubleSeq fy = idecomp.getSeries(ComponentType.Series, ComponentInformation.Forecast);
         DoubleSeq fs = idecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast);
@@ -157,7 +157,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
 
     }
 
-    private void fillBackcasts(SeriesDecomposition idecomp, SeriesDecomposition.Builder decomp) {
+    private void fillBackcasts(SeriesDecomposition<DoubleSeq> idecomp, SeriesDecomposition.Builder<DoubleSeq> decomp) {
         // idem forecasts
         DoubleSeq fy = idecomp.getSeries(ComponentType.Series, ComponentInformation.Backcast);
         DoubleSeq fs = idecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Backcast);
@@ -221,7 +221,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         int n = y.length();
         int ny = n - n % period;
 
-        SeriesDecomposition ldecomp = model.getInitialComponents();
+        SeriesDecomposition<DoubleSeq> ldecomp = model.getInitialComponents();
 
         double ibias = 1, sbias = 1;
         DoubleSeq s = ldecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
@@ -282,7 +282,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         model.setFinalComponents(decomp.build());
     }
 
-    private void fillForecasts(SeriesDecomposition ldecomp, SeriesDecomposition.Builder decomp, double sbias, double ibias) {
+    private void fillForecasts(SeriesDecomposition<DoubleSeq> ldecomp, SeriesDecomposition.Builder<DoubleSeq> decomp, double sbias, double ibias) {
         // idem forecasts
         DoubleSeq fy = ldecomp.getSeries(ComponentType.Series, ComponentInformation.Forecast);
         DoubleSeq fs = ldecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast);
@@ -349,7 +349,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
 
     }
 
-    private void fillBackcasts(SeriesDecomposition ldecomp, SeriesDecomposition.Builder decomp, double sbias, double ibias) {
+    private void fillBackcasts(SeriesDecomposition<DoubleSeq> ldecomp, SeriesDecomposition.Builder<DoubleSeq> decomp, double sbias, double ibias) {
         // idem forecasts
         DoubleSeq fy = ldecomp.getSeries(ComponentType.Series, ComponentInformation.Backcast);
         DoubleSeq fs = ldecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Backcast);

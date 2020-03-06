@@ -22,10 +22,10 @@ public class TramoSeatsTest {
 
     @Test
     public void testProd() {
-        TramoSeats ts = TramoSeats.of(TramoSeatsSpec.RSAfull, null);
+        TramoSeatsKernel ts = TramoSeatsKernel.of(TramoSeatsSpec.RSAfull, null);
         ProcessingLog log=new ProcessingLog();
         TramoSeatsResults rslt = ts.process(Data.TS_PROD, log);
-        System.out.println(rslt.getSeriesDecomposition());
+        System.out.println(rslt.getFinals());
     }
     
 }
