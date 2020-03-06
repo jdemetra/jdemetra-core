@@ -5,14 +5,11 @@
  */
 package jdplus.tramo.spi;
 
-import demetra.arima.SarimaModel;
 import demetra.data.Data;
-import demetra.timeseries.regression.modelling.LinearModelEstimation;
 import demetra.timeseries.regression.modelling.ModellingContext;
 import demetra.timeseries.regression.modelling.RegSarimaResults;
 import demetra.tramo.TramoSpec;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

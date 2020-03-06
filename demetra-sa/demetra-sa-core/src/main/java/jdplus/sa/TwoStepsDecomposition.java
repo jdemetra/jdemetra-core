@@ -24,6 +24,7 @@ import demetra.sa.DecompositionMode;
 import demetra.sa.SeriesDecomposition;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
 import jdplus.regsarima.regular.ModelEstimation;
 
 /**
@@ -49,10 +50,10 @@ public class TwoStepsDecomposition {
         }
     }
 
-    public SeriesDecomposition merge(RegArimaDecomposer decomposer, SeriesDecomposition sadecomp) {
+    public SeriesDecomposition<TsData> merge(RegArimaDecomposer decomposer, SeriesDecomposition<DoubleSeq> sadecomp) {
         ModelEstimation model = decomposer.getModel();
         boolean mul = model.isLogTransformation();
-        SeriesDecomposition.Builder builder = SeriesDecomposition.builder(mul ? DecompositionMode.Multiplicative : DecompositionMode.Additive);
+        SeriesDecomposition.Builder<TsData> builder = SeriesDecomposition.builder(mul ? DecompositionMode.Multiplicative : DecompositionMode.Additive);
 
         TsData orig = model.getOriginalSeries();
         TsDomain domain = orig.getDomain();
@@ -65,6 +66,7 @@ public class TwoStepsDecomposition {
         int n0 = 0, n1 = nb, n2 = nb + domain.getLength(), n3 = n2 + nf;
 
         TsDomain cdomain = domain.extend(nb, nf);
+        TsPeriod start = domain.getStartPeriod(), bstart = cdomain.getStartPeriod(), fstart = domain.getEndPeriod();
 
         DoubleSeq detT = decomposer.deterministicEffect(cdomain, ComponentType.Trend, false).getValues();
         DoubleSeq detS = decomposer.deterministicEffect(cdomain, ComponentType.Seasonal, false).getValues();
@@ -75,71 +77,69 @@ public class TwoStepsDecomposition {
         DoubleSeq detSA = decomposer.deterministicEffect(cdomain, ComponentType.SeasonallyAdjusted, false).getValues();
 
         DoubleSeq y = inv_op(mul, orig.getValues(), detY.range(n1, n2));
-        builder.add(y, ComponentType.Series);
+        builder.add(TsData.ofInternal(start, y), ComponentType.Series);
 
         // core
         DoubleSeq t = op(mul, detT.range(n1, n2), sadecomp.getSeries(ComponentType.Trend, ComponentInformation.Value));
         if (t != null) {
-            builder.add(t, ComponentType.Trend);
+            builder.add(TsData.ofInternal(start, t), ComponentType.Trend);
         }
         DoubleSeq s = op(mul, detS.range(n1, n2), sadecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Value));
         if (s != null) {
-            builder.add(s, ComponentType.Seasonal);
+            builder.add(TsData.ofInternal(start, s), ComponentType.Seasonal);
         }
         DoubleSeq i = op(mul, detI.range(n1, n2), sadecomp.getSeries(ComponentType.Irregular, ComponentInformation.Value));
         if (i != null) {
-            builder.add(i, ComponentType.Irregular);
+            builder.add(TsData.ofInternal(start, i), ComponentType.Irregular);
         }
         DoubleSeq sa = op(mul, detSA.range(n1, n2), sadecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value));
         if (sa != null) {
-            builder.add(sa, ComponentType.SeasonallyAdjusted);
+            builder.add(TsData.ofInternal(start, sa), ComponentType.SeasonallyAdjusted);
         }
 
         // backcast
         if (nb > 0) {
             DoubleSeq all = op(mul, detT.range(n0, n1), detS.range(n0, n1), detI.range(n0, n1), b);
-            builder.add(all, ComponentType.Series, ComponentInformation.Backcast);
+            builder.add(TsData.ofInternal(bstart, all), ComponentType.Series, ComponentInformation.Backcast);
             DoubleSeq bt = op(mul, detT.range(n0, n1), sadecomp.getSeries(ComponentType.Trend, ComponentInformation.Backcast));
             if (bt != null) {
-                builder.add(bt, ComponentType.Trend, ComponentInformation.Backcast);
+                builder.add(TsData.ofInternal(bstart, bt), ComponentType.Trend, ComponentInformation.Backcast);
             }
             DoubleSeq bs = op(mul, detS.range(n0, n1), sadecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Backcast));
             if (bs != null) {
-                builder.add(bs, ComponentType.Seasonal, ComponentInformation.Backcast);
+                builder.add(TsData.ofInternal(bstart, bs), ComponentType.Seasonal, ComponentInformation.Backcast);
             }
             DoubleSeq bi = op(mul, detI.range(n0, n1), sadecomp.getSeries(ComponentType.Irregular, ComponentInformation.Backcast));
             if (bi != null) {
-                builder.add(bi, ComponentType.Irregular, ComponentInformation.Backcast);
+                builder.add(TsData.ofInternal(bstart, bi), ComponentType.Irregular, ComponentInformation.Backcast);
             }
             DoubleSeq bsa = op(mul, detSA.range(n0, n1), sadecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast));
             if (bsa != null) {
-                builder.add(bsa, ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast);
+                builder.add(TsData.ofInternal(bstart, bsa), ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast);
             }
-
         }
 
         // forecast
         if (nf > 0) {
 
             DoubleSeq all = op(mul, detT.range(n2, n3), detS.range(n2, n3), detI.range(n2, n3), f);
-            builder.add(all, ComponentType.Series, ComponentInformation.Forecast);
+            builder.add(TsData.ofInternal(fstart, all), ComponentType.Series, ComponentInformation.Forecast);
             DoubleSeq ft = op(mul, detT.range(n2, n3), sadecomp.getSeries(ComponentType.Trend, ComponentInformation.Forecast));
             if (ft != null) {
-                builder.add(ft, ComponentType.Trend, ComponentInformation.Forecast);
+                builder.add(TsData.ofInternal(fstart, ft), ComponentType.Trend, ComponentInformation.Forecast);
             }
             DoubleSeq fs = op(mul, detS.range(n2, n3), sadecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast));
             if (fs != null) {
-                builder.add(fs, ComponentType.Seasonal, ComponentInformation.Forecast);
+                builder.add(TsData.ofInternal(fstart, fs), ComponentType.Seasonal, ComponentInformation.Forecast);
             }
             DoubleSeq fi = op(mul, detI.range(n2, n3), sadecomp.getSeries(ComponentType.Irregular, ComponentInformation.Forecast));
             if (fi != null) {
-                builder.add(fi, ComponentType.Irregular, ComponentInformation.Forecast);
+                builder.add(TsData.ofInternal(fstart, fi), ComponentType.Irregular, ComponentInformation.Forecast);
             }
             DoubleSeq fsa = op(mul, detSA.range(n2, n3), sadecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast));
             if (fsa != null) {
-                builder.add(fsa, ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
+                builder.add(TsData.ofInternal(fstart, fsa), ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
             }
-
         }
 
         return builder.build();

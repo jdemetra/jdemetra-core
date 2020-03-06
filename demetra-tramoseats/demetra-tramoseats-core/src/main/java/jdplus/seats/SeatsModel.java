@@ -120,7 +120,7 @@ public class SeatsModel {
 //    private int forecastsCount, backcastsCount;
     private SarimaModel currentModel;
     private UcarimaModel ucarimaModel;
-    private SeriesDecomposition initialComponents, finalComponents;
+    private SeriesDecomposition<DoubleSeq> initialComponents, finalComponents;
     private double innovationVariance;
 
     public RegArimaModel<SarimaModel> asRegarima() {

@@ -1,5 +1,5 @@
 /*
-* Copyright 2019 National Bank of Belgium
+* Copyright 2020 National Bank of Belgium
 *
 * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
 * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -29,8 +29,6 @@ import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
-import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.SymmetricMatrix;
 
 /**
  *

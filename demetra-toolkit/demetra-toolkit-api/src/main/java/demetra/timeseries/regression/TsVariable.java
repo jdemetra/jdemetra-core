@@ -26,7 +26,7 @@ import demetra.timeseries.TsDataSupplier;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public abstract class TsVariable implements IUserTsVariable {
+public abstract class TsVariable implements ITsVariable {
 
     protected static TsData data(String id, ModellingContext context) {
         TsDataSupplier supplier = context.getTsVariable(id);

@@ -19,6 +19,7 @@ package jdplus.tramoseats;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.seats.SeatsResults;
 import demetra.sa.SeriesDecomposition;
+import demetra.timeseries.TsData;
 
 /**
  *
@@ -28,7 +29,7 @@ import demetra.sa.SeriesDecomposition;
 public class TramoSeatsResults {
     
     private ModelEstimation preprocessing;
-    private SeatsResults results;
-    private SeriesDecomposition seriesDecomposition;
+    private SeatsResults decomposition;
+    private SeriesDecomposition<TsData> finals;
     
 }

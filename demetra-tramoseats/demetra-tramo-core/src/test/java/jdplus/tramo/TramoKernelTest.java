@@ -33,6 +33,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
 import demetra.data.Doubles;
+import demetra.processing.ProcessingLog;
 import demetra.tramo.CalendarSpec;
 import demetra.tramo.RegressionSpec;
 import demetra.tramo.TradingDaysSpec;
@@ -109,12 +110,14 @@ public class TramoKernelTest {
 
     @Test
     public void testProd() {
+        ProcessingLog log=new ProcessingLog();
         TramoKernel processor = TramoKernel.of(TramoSpec.TRfull, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(data));
-        ModelEstimation rslt = processor.process(s, null);
+        ModelEstimation rslt = processor.process(s, log);
         System.out.println("JD3");
         System.out.println(rslt.getStatistics().getAdjustedLogLikelihood());
+        log.all().stream().forEach(z->System.out.println(z));
     }
 
     @Test

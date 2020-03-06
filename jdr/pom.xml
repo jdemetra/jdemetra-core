@@ -88,7 +88,7 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-x13-regarima-core</artifactId>
+            <artifactId>demetra-x13-regarima</artifactId>
             <version>${jd3-x13.version}</version>
         </dependency>
         <dependency>

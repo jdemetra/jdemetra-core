@@ -31,7 +31,22 @@ public class ProcessingLog {
 
     public static enum InformationType {
 
-        Error, Warning, Log, Info
+        /**
+         * Error in an algorithm
+         */
+        Error, 
+        /**
+         * Warning for the user (usually, options automatically changed by the software
+         */
+        Warning, 
+        /**
+         * Step in a complex processing. a given step should not have any "child information"
+         */
+        Log, 
+        /**
+         * More detailed info on a specific step
+         */
+        Info
     }
 
     @lombok.Value
@@ -47,6 +62,9 @@ public class ProcessingLog {
         public String toString() {
             StringBuilder builder = new StringBuilder();
             builder.append(name).append(": ").append(msg);
+            if (details != null){
+                builder.append('=').append(details.toString());
+            }
             return builder.toString();
         }
         

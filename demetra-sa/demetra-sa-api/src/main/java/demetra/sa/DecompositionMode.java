@@ -29,7 +29,7 @@ import demetra.design.Development;
 public enum DecompositionMode {
 
     /**
-     * Decomposition that doesn't correspond to the next definitions
+     * Decomposition which doesn't correspond to the next definitions or which is not defined yet 
      */
     Undefined,
     /**

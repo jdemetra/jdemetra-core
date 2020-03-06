@@ -382,7 +382,7 @@ public final class ModelEstimation {
     }
     
     /**
-     * det
+     * Gets all the deterministic effects 
      * @param domain
      * @return 
      */
@@ -390,6 +390,5 @@ public final class ModelEstimation {
         TsData s = deterministicEffect(domain, v -> true);
         return backTransform(s, true);
     }
-
   
 }

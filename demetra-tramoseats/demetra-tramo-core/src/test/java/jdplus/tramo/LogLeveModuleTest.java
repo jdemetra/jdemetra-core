@@ -41,7 +41,7 @@ public class LogLeveModuleTest {
             LogLevelModule ll = LogLevelModule.builder()
                     .estimationPrecision(1e-7)
                     .build();
-            ll.process(DoubleSeq.of(Data.PROD), 12, true);
+            ll.process(DoubleSeq.of(Data.PROD), 12, true, null);
             assertTrue(ll.isChoosingLog());
 //        System.out.println(ll.getLevelLL());
 //        System.out.println(ll.getLogCorrection());

@@ -16,6 +16,7 @@
  */
 package jdplus.seats;
 
+import demetra.data.DoubleSeq;
 import demetra.sa.SeriesDecomposition;
 import jdplus.sarima.SarimaModel;
 import jdplus.ucarima.UcarimaModel;
@@ -32,5 +33,5 @@ public class SeatsResults {
     private SarimaModel finalModel;
     private boolean meanCorrection;
     private UcarimaModel ucarimaModel;
-    private SeriesDecomposition initialComponents, finalComponents;
+    private SeriesDecomposition<DoubleSeq> initialComponents, finalComponents;
 }

@@ -64,43 +64,46 @@ public class RangeMeanTest {
     // / <param name="n"></param>
     private void computeisj(int freq, int n) {
         itrim = 1;
-        if (freq == 12) {
-            isj = 12;
-        } else if (freq == 6) {
-            isj = 12;
-            if (n <= 165) {
-                itrim = 2;
-            }
-        } else if (freq == 4) {
-            if (n > 165) {
-                isj = 8;
-            } else {
+        switch (freq) {
+            case 12:
                 isj = 12;
-                itrim = 2;
-            }
-        } else if (freq == 3) {
-            if (n > 165) {
-                isj = 6;
-            } else {
+                break;
+            case 6:
                 isj = 12;
-                itrim = 2;
-            }
-        } else if (freq == 2) {
-            if (n > 165) {
-                isj = 6;
-            } else {
-                isj = 12;
-                itrim = 2;
-            }
-        } else if (freq == 1) {
-            if (n > 165) {
-                isj = 5;
-            } else {
-                isj = 9;
-                itrim = 2;
-            }
-        } else {
-            isj = freq;
+                if (n <= 165) {
+                    itrim = 2;
+                }   break;
+            case 4:
+                if (n > 165) {
+                    isj = 8;
+                } else {
+                    isj = 12;
+                    itrim = 2;
+                }   break;
+            case 3:
+                if (n > 165) {
+                    isj = 6;
+                } else {
+                    isj = 12;
+                    itrim = 2;
+                }   break;
+            case 2:
+                if (n > 165) {
+                    isj = 6;
+                } else {
+                    isj = 12;
+                    itrim = 2;
+                }   break;
+            case 1:
+                if (n > 165) {
+                    isj = 5;
+                } else {
+                    isj = 9;
+                    itrim = 2;
+                }   break;
+            default:
+                isj = freq;
+                break;
         }
     }
 

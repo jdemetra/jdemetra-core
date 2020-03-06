@@ -16,12 +16,15 @@
  */
 package jdplus.tramoseats.spi;
 
+import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.ModellingContext;
 import demetra.tramoseats.TramoSeats;
 import demetra.tramoseats.TramoSeatsResults;
 import demetra.tramoseats.TramoSeatsSpec;
 import java.util.List;
+import jdplus.tramoseats.TramoSeatsKernel;
+import jdplus.tramoseats.extractors.TramoSeatsExtractor;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -29,12 +32,27 @@ import nbbrd.service.ServiceProvider;
  * @author palatej
  */
 @ServiceProvider(TramoSeats.Processor.class)
-public class TramoSeatsComputer implements TramoSeats.Processor{
+public class TramoSeatsComputer implements TramoSeats.Processor {
 
     @Override
-    public TramoSeatsResults process(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public TramoSeatsResults process(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> additionalItems) {
+        TramoSeatsKernel tramoseats = TramoSeatsKernel.of(spec, context);
+        ProcessingLog log = new ProcessingLog();
+        jdplus.tramoseats.TramoSeatsResults rslt = tramoseats.process(series, log);
+        // Handling of additional items
+        TramoSeatsResults.Builder builder = TramoSeatsResults.builder();
+        for (String key : additionalItems) {
+            Object data = TramoSeatsExtractor.getMapping().getData(rslt, key, Object.class);
+            if (data != null) {
+                builder.addtionalResult(key, data);
+            }
+        }
+        return builder
+                .preprocessing(jdplus.regarima.ApiUtility.toApi(rslt.getPreprocessing()))
+                .decomposition(ApiUtility.toApi(rslt.getDecomposition()))
+                .finals(rslt.getFinals())
+                .logs(log.all())
+                .build();
     }
 
-    
 }

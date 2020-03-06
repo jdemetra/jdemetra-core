@@ -101,7 +101,10 @@ public final class X11Spec implements Validatable<X11Spec> {
     private boolean excludeForecast;
     private BiasCorrection bias;
 
-    private static final X11Spec DEFAULT = X11Spec.builder().build();
+    public static final X11Spec DEFAULT = X11Spec.builder()
+            .filter(SeasonalFilterOption.Msr)
+            .forecastHorizon(-1)
+            .build();
 
     @LombokWorkaround
     public static Builder builder() {
