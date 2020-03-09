@@ -185,7 +185,7 @@ class X13ModelBuilder implements IModelBuilder {
     }
 
     private void initializeEaster(ModelDescription model, EasterSpec easter, Map<String, double[]> preadjustment) {
-        if (easter == null || easter.getTest() == RegressionTestSpec.Add) {
+        if (!easter.isUsed() || easter.getTest() == RegressionTestSpec.Add) {
             return;
         }
         add(model, easter(easter.getType(), easter.getDuration()), "easter", easter.getTest() == RegressionTestSpec.None, preadjustment);
