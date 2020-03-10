@@ -87,8 +87,8 @@ final class X13SpecDecoder {
         AutoModelSpec amiSpec = spec.getAutoModel();
         DifferencingModule diff = DifferencingModule.builder()
                 .cancel(amiSpec.getCancel())
-                .ub1(amiSpec.getUb1())
-                .ub2(amiSpec.getUb2())
+                .ub1(1/amiSpec.getUb1())
+                .ub2(1/amiSpec.getUb2())
                 .build();
         ArmaModule arma = ArmaModule.builder()
                 .balanced(amiSpec.isBalanced())

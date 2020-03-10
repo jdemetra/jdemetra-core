@@ -28,6 +28,10 @@ public class LevelShiftFactory implements IOutlierFactory {
     private LevelShiftFactory(boolean zeroEnded) {
         this.zeroEnded = zeroEnded;
     }
+    
+    public boolean isZeroEnded(){
+        return this.zeroEnded;
+    }
 
     @Override
     public LevelShift make(LocalDateTime position) {

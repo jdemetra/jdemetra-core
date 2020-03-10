@@ -27,6 +27,7 @@ import jdplus.sarima.SarimaModel;
 import jdplus.modelling.regression.IOutlierFactory;
 import java.util.ArrayList;
 import jdplus.arima.estimation.IArimaMapping;
+import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.regarima.ami.GenericOutliersDetection;
 
 /**
@@ -173,7 +174,8 @@ public class ExactOutliersDetector implements GenericOutliersDetection<SarimaMod
         int[] o = new int[]{pos, type};
         outliers.add(o);
         sod.exclude(pos, type);
-    }
+        
+     }
 
     /**
      *

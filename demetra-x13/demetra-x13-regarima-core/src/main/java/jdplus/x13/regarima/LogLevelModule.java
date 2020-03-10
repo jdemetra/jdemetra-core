@@ -94,7 +94,8 @@ public class LogLevelModule implements ILogLevelModule {
         } else if (level == null) {
             return true;
         } else {
-            return aiccLevel > aiccLog - aiccDiff;
+            // the best is the smallest (default aiccdiff is negative to favor logs)
+            return aiccLevel > aiccLog + aiccDiff; 
         }
     }
 

@@ -88,22 +88,22 @@ public class FinalEstimator implements IModelEstimator {
         SarimaOrders spec = m.orders();
         DoubleSeq pm = m.parameters();
         int start = 0, len = spec.getP();
-        boolean dpr = checkRoots(pm.extract(start, len), 1 / cmod);// (m.RegularAR.Roots,
+        boolean dpr = len>0 && checkRoots(pm.extract(start, len), 1 / cmod);// (m.RegularAR.Roots,
         start += len;
         len = spec.getBp();
-        boolean dps = checkRoots(pm.extract(start, len), 1 / cmod);// SeasonalAR.Roots,
+        boolean dps = len>0 && checkRoots(pm.extract(start, len), 1 / cmod);// SeasonalAR.Roots,
         start += len;
         len = spec.getQ();
-        boolean dqr = checkRoots(pm.extract(start, len), 1 / cmod);// RegularMA.Roots,
+        boolean dqr = len>0 && checkRoots(pm.extract(start, len), 1 / cmod);// RegularMA.Roots,
         start += len;
         len = spec.getBq();
-        boolean dqs = checkRoots(pm.extract(start, len), 1 / cmod);// SeasonalMA.Roots,
+        boolean dqs = len>0 && checkRoots(pm.extract(start, len), 1 / cmod);// SeasonalMA.Roots,
         if (!dpr && !dps && !dqr && !dqs) {
             return 0; // nothing to do
         }
         int cpr = 0, cps = 0, cqr = 0, cqs = 0;
         double tmin = cval;
-        DataBlock diag = context.getEstimation().getMax().getInformation().diagonal();
+        DataBlock diag = context.getEstimation().getMax().asymptoticCovariance().diagonal();
 
         int k = -1;
         if (dpr) {

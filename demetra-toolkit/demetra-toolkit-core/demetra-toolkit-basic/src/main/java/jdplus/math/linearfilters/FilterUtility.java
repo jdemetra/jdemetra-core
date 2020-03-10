@@ -55,12 +55,12 @@ public class FilterUtility {
     }
 
     /**
-     * Checks that the norm ofFunction the roots ofFunction a given polynomial
+     * Checks that the norm of the roots of a given polynomial
      * are higher than rmin
      *
-     * @param c The coefficients ofFunction the polynomial. The polynomial is
+     * @param c The coefficients of the polynomial. The polynomial is
      * 1+c(0)x+...
-     * @param rmin The limit ofFunction the roots
+     * @param rmin The limit of the roots
      * @return
      */
     public boolean checkRoots(final DoubleSeq c, final double rmin) {

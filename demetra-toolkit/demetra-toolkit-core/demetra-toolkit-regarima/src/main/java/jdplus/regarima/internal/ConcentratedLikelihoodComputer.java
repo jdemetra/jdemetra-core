@@ -16,24 +16,19 @@
  */
 package jdplus.regarima.internal;
 
-import jdplus.regarima.RegArmaModel;
 import jdplus.arima.IArimaModel;
 import internal.jdplus.arima.KalmanFilter;
-import jdplus.regarima.RegArimaModel;
 import jdplus.data.DataBlock;
 import demetra.design.Immutable;
 import demetra.eco.EcoException;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.decomposition.Householder;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import jdplus.data.LogSign;
 import jdplus.leastsquares.QRSolution;
 import jdplus.leastsquares.QRSolver;
-import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.math.matrices.UpperTriangularMatrix;
 import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import jdplus.math.matrices.decomposition.QRDecomposition;
 import jdplus.regarima.RegArimaModel;

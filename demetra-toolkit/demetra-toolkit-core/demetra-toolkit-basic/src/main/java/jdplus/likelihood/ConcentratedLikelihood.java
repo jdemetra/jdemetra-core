@@ -194,7 +194,6 @@ public interface ConcentratedLikelihood extends Likelihood {
         double[] e = unscaledCovariance().diagonal().toArray();
         int ndf = unbiased ? dim() - nx() - nhp : dim();
         double ssq = ssq();
-        DoubleSeq b = coefficients();
         for (int i = 0; i < e.length; ++i) {
             e[i] = Math.sqrt(e[i] * ssq / ndf);
         }

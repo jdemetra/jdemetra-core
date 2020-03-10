@@ -340,7 +340,7 @@ public class DifferencingModule implements IDifferencingModule {
         }
 
         if (usedefault || ml || useml) {
-            SarimaMapping.stabilize(lastModel);
+            lastModel = SarimaMapping.stabilize(lastModel);
 
             IRegArimaProcessor processor = X13Utility.processor(true, eps);
             RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder()

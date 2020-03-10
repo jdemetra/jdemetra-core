@@ -124,7 +124,7 @@ public class RegressionVariablesTest {
                 int pos = desc.findPosition(var);
                 int nregs = var.dim();
                 if (!tdTest.accept(ll, 0, pos, nregs, null)
-                        && (nregs <= 1 || derivedTest == null || !derivedTest.accept(ll, pos, nregs, nregs, null))) {
+                        && (nregs <= 1 || derivedTest == null || !derivedTest.accept(ll, 0, pos, nregs, null))) {
                     tdtoremove.add(var);
                 } else {
                     usetd = true;
