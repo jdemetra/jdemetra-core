@@ -21,6 +21,8 @@ import ec.tstoolkit.modelling.DefaultTransformationType;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
+import demetra.timeseries.TsData;
+import ec.tstoolkit.data.ReadDataBlock;
 
 /**
  *
@@ -31,40 +33,51 @@ public class DifferencingModuleTest {
     public DifferencingModuleTest() {
     }
 
-    @Test
-    public void testProd() {
-        DifferencingModule test = DifferencingModule.builder().build();
-        test.process(DoubleSeq.copyOf(Data.PROD), 12);
-        assertTrue(test.getD() == 1 && test.getBd() == 1);
-//        System.out.println(diff[0]);
-//        System.out.println(diff[1]);
-//        System.out.println(test.isMeanCorrection());
-    }
 
     @Test
-    public void testX() {
-        DifferencingModule test = DifferencingModule.builder().build();
-        test.process(DoubleSeq.copyOf(Data.EXPORTS), 12);
-        assertTrue(test.getD() == 0 && test.getBd() == 1);
-//        System.out.println(diff[0]);
-//        System.out.println(diff[1]);
-//        System.out.println(test.isMeanCorrection());
+    public void testInsee() {
+        TsData[] insee = Data.insee();
+        for (int i = 0; i < insee.length; ++i) {
+
+            DifferencingModule diff = DifferencingModule.builder()
+                    .build();
+            
+            ec.tstoolkit.modelling.arima.x13.DifferencingModule odiff = new ec.tstoolkit.modelling.arima.x13.DifferencingModule();
+            ec.tstoolkit.modelling.arima.ModelDescription desc = new ec.tstoolkit.modelling.arima.ModelDescription(convert(insee[i]), null);
+            ec.tstoolkit.modelling.arima.ModellingContext context = new ec.tstoolkit.modelling.arima.ModellingContext();
+            desc.setTransformation(DefaultTransformationType.Auto);
+            desc.setAirline(true);
+            context.description = desc;
+            context.hasseas = true;
+            odiff.process(new ReadDataBlock(insee[i].getValues().toArray()), 12);
+            diff.process(insee[i].getValues(), 12);
+            assertEquals(diff.getD(), odiff.getD());
+            assertEquals(diff.getBd(), odiff.getBD());
+            assertTrue(diff.isMeanCorrection()==odiff.isMeanCorrection());
+        }
     }
 
-    //@Test
-    public void testProdLegacy() {
+    @Test
+    public void testInseeLog() {
+        TsData[] insee = Data.insee();
+        for (int i = 0; i < insee.length; ++i) {
 
-        ec.tstoolkit.modelling.arima.x13.DifferencingModule diff = new ec.tstoolkit.modelling.arima.x13.DifferencingModule();
-        ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, Data.PROD, true);
-        ec.tstoolkit.modelling.arima.ModelDescription desc = new ec.tstoolkit.modelling.arima.ModelDescription(s, null);
-        ec.tstoolkit.modelling.arima.ModellingContext context = new ec.tstoolkit.modelling.arima.ModellingContext();
-        desc.setTransformation(DefaultTransformationType.Auto);
-        desc.setAirline(true);
-        context.description = desc;
-        context.hasseas = true;
-        diff.process(s, 12);
-        System.out.println(diff.getD());
-        System.out.println(diff.getBD());
-        System.out.println(diff.isMeanCorrection());
+            DifferencingModule diff = DifferencingModule.builder()
+                    .build();
+            ec.tstoolkit.modelling.arima.x13.DifferencingModule odiff = new ec.tstoolkit.modelling.arima.x13.DifferencingModule();
+            odiff.process(new ReadDataBlock(insee[i].getValues().log().toArray()), 12);
+            diff.process(insee[i].getValues().log(), 12);
+            assertEquals(diff.getD(), odiff.getD());
+            assertEquals(diff.getBd(), odiff.getBD());
+            assertTrue(diff.isMeanCorrection()==odiff.isMeanCorrection());
+        }
     }
+
+    private static ec.tstoolkit.timeseries.simplets.TsData convert(TsData s) {
+        int period = s.getAnnualFrequency();
+        int year = s.getStart().year(), pos = s.getStart().annualPosition();
+        return new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(period),
+                year, pos, s.getValues().toArray(), false);
+    }
+
 }

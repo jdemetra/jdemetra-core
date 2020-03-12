@@ -193,7 +193,6 @@ class X13ModelBuilder implements IModelBuilder {
 
     private void initializeOutliers(ModelDescription model, List<IOutlier> outliers, Map<String, double[]> preadjustment) {
         int freq = model.getAnnualFrequency();
-        IOutlier[] vars = new IOutlier[outliers.size()];
         TransitoryChangeFactory tc = new TransitoryChangeFactory(spec.getOutliers().getMonthlyTCRate());
         PeriodicOutlierFactory so = new PeriodicOutlierFactory(freq, false);
         for (int i = 0; i < outliers.size(); ++i) {
@@ -317,11 +316,6 @@ class X13ModelBuilder implements IModelBuilder {
     private void initializeDefaultTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
         add(model, defaultTradingDays(td), "td", td.getTest() == RegressionTestSpec.None, preadjustment);
         add(model, leapYear(td), "lp", td.getTest() == RegressionTestSpec.None, preadjustment);
-        if (td.isAutoAdjust()) {
-            model.setTransformation(td.getLengthOfPeriodTime());
-        } else {
-            add(model, leapYear(td), "lp", td.getTest() == RegressionTestSpec.None, preadjustment);
-        }
     }
 
     private void initializeStockTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {

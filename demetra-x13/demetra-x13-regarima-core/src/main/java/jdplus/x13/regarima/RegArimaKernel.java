@@ -40,6 +40,7 @@ import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import demetra.processing.ProcessingLog;
 import jdplus.regarima.RegArimaEstimation;
+import jdplus.regsarima.regular.IAutoModellingModule;
 import jdplus.regsarima.regular.RegSarimaProcessor;
 
 /**
@@ -97,8 +98,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
         private IModelBuilder modelBuilder = new DefaultModelBuilder();
         private ILogLevelModule transformation;
         private IRegressionModule calendarTest, easterTest;
-        private IDifferencingModule differencing;
-        private IArmaModule arma;
+        private IAutoModellingModule autoModel;
         private IOutliersDetectionModule outliers;
         private RegressionVariablesTest regressionTest0, regressionTest1;
         private AmiOptions options = new AmiOptions(true, 1e-7, 0, .14286, .95, .95, false, true);
@@ -118,8 +118,8 @@ public class RegArimaKernel implements RegSarimaProcessor {
             return this;
         }
 
-        public Builder differencing(IDifferencingModule diff) {
-            this.differencing = diff;
+        public Builder autoModelling(IAutoModellingModule ami) {
+            this.autoModel=ami;
             return this;
         }
 
@@ -130,11 +130,6 @@ public class RegArimaKernel implements RegSarimaProcessor {
 
         public Builder easterTest(IRegressionModule easterTest) {
             this.easterTest = easterTest;
-            return this;
-        }
-
-        public Builder arma(IArmaModule arma) {
-            this.arma = arma;
             return this;
         }
 
@@ -174,8 +169,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
     private final IRegressionModule calendarTest, easterTest;
     private final IOutliersDetectionModule outliers;
     private final AmiOptions options;
-    private final IDifferencingModule differencing;
-    private final IArmaModule arma;
+    private final IAutoModellingModule autoModel;
     private final RegressionVariablesTest regressionTest0, regressionTest1;
     private FinalEstimator finalEstimator;
 
@@ -194,11 +188,10 @@ public class RegArimaKernel implements RegSarimaProcessor {
         this.easterTest = builder.easterTest;
         this.outliers = builder.outliers;
         this.options = builder.options;
-        this.differencing = builder.differencing;
-        this.arma = builder.arma;
+        this.autoModel=builder.autoModel;
         this.regressionTest0 = builder.regressionTest0;
         this.regressionTest1 = builder.regressionTest1;
-        if (differencing != null || arma != null) {
+        if (autoModel != null) {
             finalEstimator = new FinalEstimator(options.precision);
         } else {
             finalEstimator = null;
@@ -211,7 +204,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
         reference = null;
         curva = 0;
         pcr = options.ljungBoxLimit;
-        needAutoModelling = differencing != null || arma != null;
+        needAutoModelling = autoModel != null;
     }
 
     @Override
@@ -274,10 +267,8 @@ public class RegArimaKernel implements RegSarimaProcessor {
                     do {
                         boolean defModel = false;
                         if (needAutoModelling) {
-                            ProcessingResult drslt = differencing.process(context);
-                            ProcessingResult arslt = arma.process(context);
-                            defModel = drslt == ProcessingResult.Unchanged
-                                    && arslt == ProcessingResult.Unchanged;
+                            ProcessingResult amrslt = autoModel.process(context);
+                            defModel = amrslt == ProcessingResult.Unchanged;
                             if (!defModel) {
                                 if (context.getDescription().removeVariable(var -> var.isOutlier(false))) {
                                     context.clearEstimation();
@@ -347,7 +338,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
     }
 
     private boolean isAutoModelling() {
-        return differencing != null || arma != null;
+        return autoModel != null;
     }
 
     private ProcessingResult checkMu(RegSarimaModelling context, boolean initial) {

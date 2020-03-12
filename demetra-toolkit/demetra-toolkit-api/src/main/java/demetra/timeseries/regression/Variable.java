@@ -24,11 +24,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
+@lombok.Value
 public final class Variable {
 
-    private final String name;
-    private final ITsVariable variable;
-    private final boolean prespecified;
+    private String name;
+    private ITsVariable variable;
+    private boolean prespecified;
 
     /**
      *
@@ -40,18 +41,6 @@ public final class Variable {
         this.variable = variable;
         this.name = name;
         this.prespecified = prespecified;
-    }
-
-    public ITsVariable getVariable() {
-        return variable;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public boolean isPrespecified() {
-        return prespecified;
     }
 
     public Variable rename(String name) {

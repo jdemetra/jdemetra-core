@@ -481,14 +481,14 @@ public final class ModelDescription {
                 .mapToInt(var -> var.getVariable().dim()).sum();
     }
 
-    public void setTransformation(LengthOfPeriodType lengthOfPeriodType) {
+    public void setPreadjustment(LengthOfPeriodType lengthOfPeriodType) {
         if (lpTransformation != lengthOfPeriodType) {
             lpTransformation = lengthOfPeriodType;
             invalidateTransformation();
         }
     }
 
-    public LengthOfPeriodType getTransformation() {
+    public LengthOfPeriodType getPreadjustment() {
         return lpTransformation;
     }
 

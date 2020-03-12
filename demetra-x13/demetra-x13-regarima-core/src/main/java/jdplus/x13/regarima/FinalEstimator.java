@@ -28,8 +28,6 @@ import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import static jdplus.math.linearfilters.FilterUtility.checkRoots;
-import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.SymmetricMatrix;
 
 /**
  *
@@ -57,8 +55,9 @@ public class FinalEstimator implements IModelEstimator {
                 RegSarimaProcessor processor = RegSarimaProcessor.builder()
                         .minimizer(LevenbergMarquardtMinimizer.builder())
                         .precision(eps)
-//                        .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
+                        .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
                         .build();
+                context.getDescription().getArimaComponent().clearFreeParameters();
                 context.estimate(processor);
                 if (ndim == 0) {
                     return true;
@@ -171,7 +170,6 @@ public class FinalEstimator implements IModelEstimator {
             return 0;
         }
 
-        context.clearEstimation();
         // reduce the orders
         if (cpr > 0) {
             spec.setP(spec.getP() - cpr);
@@ -183,7 +181,7 @@ public class FinalEstimator implements IModelEstimator {
             spec.setBq(spec.getBq() - cqs);
         }
 
-        desc.setSpecification(spec);
+        context.setSpecification(spec);
         return nnsig;
     }
 

@@ -273,7 +273,7 @@ public class ExactOutliersDetector implements GenericOutliersDetection<SarimaMod
     }
 
     private void removeOutlier(int idx) {
-        int opos = regarima.getVariablesCount() - outliers.size() + idx;
+        int opos = regarima.getXCount()- outliers.size() + idx;
         regarima = regarima.toBuilder().removeX(opos).build();
         outliers.remove(idx);
         changed = true;

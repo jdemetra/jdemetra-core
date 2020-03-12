@@ -90,7 +90,6 @@ public class RegArimaKernelTest {
         assertEquals(rslt.getStatistics().getLogLikelihood(), orslt.estimation.getStatistics().logLikelihood, 1e-4);
     }
 
-
     @Test
     public void testInsee0() {
         TsData[] all = Data.insee();
@@ -134,11 +133,11 @@ public class RegArimaKernelTest {
             if (Math.abs(del) < 1e-3) {
                 ++n;
             }
-            System.out.print(i);
-            System.out.print('\t');
-            System.out.print(rslt.getStatistics().getAdjustedLogLikelihood());
-            System.out.print('\t');
-            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
         System.out.println("RG1");
         System.out.println(n);
@@ -161,11 +160,11 @@ public class RegArimaKernelTest {
             if (Math.abs(del) < 1e-3) {
                 ++n;
             }
-            System.out.print(i);
-            System.out.print('\t');
-            System.out.print(rslt.getStatistics().getAdjustedLogLikelihood());
-            System.out.print('\t');
-            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
         System.out.println("RG2");
         System.out.println(n);
@@ -175,10 +174,10 @@ public class RegArimaKernelTest {
     @Test
     public void testInsee3() {
         TsData[] all = Data.insee();
-        RegArimaKernel processor = RegArimaKernel.of(RegArimaSpec.RG3, null);
-        IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG3.build();
         int n = 0;
-        for (int i = 0; i < all.length; ++i) {
+        for (int i = 40; i < all.length; ++i) {
+            RegArimaKernel processor = RegArimaKernel.of(RegArimaSpec.RG3, null);
+            IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG3.build();
             ModelEstimation rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
@@ -203,9 +202,9 @@ public class RegArimaKernelTest {
     public void testInsee4() {
         TsData[] all = Data.insee();
         int n = 0;
-        for (int i = 25; i < all.length; ++i) {
-        RegArimaKernel processor = RegArimaKernel.of(RegArimaSpec.RG4, null);
-        IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG4.build();
+        for (int i = 41; i < all.length; ++i) {
+            RegArimaKernel processor = RegArimaKernel.of(RegArimaSpec.RG4, null);
+            IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG4.build();
             ModelEstimation rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
@@ -252,6 +251,7 @@ public class RegArimaKernelTest {
         System.out.println(n);
         assertTrue(n > .9 * all.length);
     }
+
     public static void stressTestProd() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 250; ++i) {

@@ -38,7 +38,7 @@ public class RegArimaDecomposerTest {
         ModelDescription model = new ModelDescription(Data.TS_PROD, null);
         model.setAirline(true);
         model.setLogTransformation(true);
-        model.setTransformation(LengthOfPeriodType.LeapYear);
+        model.setPreadjustment(LengthOfPeriodType.LeapYear);
         GenericTradingDaysVariable td = new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD3));
         model.addVariable(new Variable(td, "td", true));
         EasterVariable easter = EasterVariable.builder()

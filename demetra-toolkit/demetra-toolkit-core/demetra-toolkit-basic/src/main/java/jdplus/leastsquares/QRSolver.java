@@ -38,6 +38,12 @@ public class QRSolver {
         QRSolution solve(DoubleSeq y, Matrix X);
     }
     
+    /**
+     * QR least squares without pivoting
+     * @param y
+     * @param X
+     * @return 
+     */
     public QRSolution fastLeastSquares(DoubleSeq y, Matrix X){
         Householder2 h = new Householder2();
         QRDecomposition qr = h.decompose(X);

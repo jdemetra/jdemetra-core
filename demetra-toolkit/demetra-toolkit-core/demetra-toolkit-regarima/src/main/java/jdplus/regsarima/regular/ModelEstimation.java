@@ -89,7 +89,7 @@ public final class ModelEstimation {
         this.transformedSeries = description.getTransformedSeries();
         this.interpolated = description.getInterpolatedSeries();
         this.logTransformation = description.isLogTransformation();
-        this.lpTransformation = description.getTransformation();
+        this.lpTransformation = description.getPreadjustment();
         this.missing = description.getMissing();
         this.estimationDomain = description.getEstimationDomain();
 

@@ -109,7 +109,7 @@ public class CalendarEffectsDetectionModule implements IRegressionModule {
         boolean removed = ntddesc.removeVariable(var->var.isTradingDays());
         if (lp != null) {
             if (ntddesc.isAdjusted()) {
-                ntddesc.setTransformation(LengthOfPeriodType.None);
+                ntddesc.setPreadjustment(LengthOfPeriodType.None);
             } else {
                 ntddesc.removeVariable(var->var.isLengthOfPeriod());
             }
@@ -120,7 +120,7 @@ public class CalendarEffectsDetectionModule implements IRegressionModule {
         tddesc.addVariable(new Variable(td, "td", false));
         if (lp != null) {
             if (tddesc.isLogTransformation() && adjust != LengthOfPeriodType.None) {
-                tddesc.setTransformation(adjust);
+                tddesc.setPreadjustment(adjust);
             } else {
                 tddesc.addVariable(new Variable(lp, "lp", false));
             }

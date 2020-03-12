@@ -16,24 +16,12 @@
  */
 package jdplus.regsarima.regular;
 
-import demetra.data.DoubleSeq;
-import demetra.processing.ProcessingLog;
-
 /**
- * Estimates the stationary part of the arima model provided in the context.
- * On entry, the estimation should be available
- * The context should contain the new specification on exit. The fully estimated model
- * is not necessary provided
+ * Identifies the arima model
  * @author Jean Palate
  */
-public interface IDifferencingModule {
+public interface IAutoModellingModule {
     
-    boolean process(DoubleSeq data, int period, int d, int bd, boolean isSeasonal, ProcessingLog log);
-    
-    int getD();
-    
-    int getBd();
-    
-    boolean isMean();
+    ProcessingResult process(RegSarimaModelling context);
     
 }

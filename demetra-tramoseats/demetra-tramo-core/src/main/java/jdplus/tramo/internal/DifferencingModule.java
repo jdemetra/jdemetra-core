@@ -27,9 +27,7 @@ import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regsarima.regular.IDifferencingModule;
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
@@ -46,7 +44,7 @@ import jdplus.sarima.estimation.SarimaMapping;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class DifferencingModule implements IDifferencingModule {
+public class DifferencingModule  {
 
     public static final int MAXD = 2, MAXBD = 1;
 
@@ -503,7 +501,6 @@ public class DifferencingModule implements IDifferencingModule {
         tmean = s / Math.sqrt((s2 * n - s * s) / n);
     }
 
-    @Override
     public ProcessingResult process(RegSarimaModelling context) {
         ModelDescription desc = context.getDescription();
         if (context.needEstimation())

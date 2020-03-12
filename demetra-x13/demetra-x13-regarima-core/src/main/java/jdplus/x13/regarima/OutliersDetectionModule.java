@@ -36,10 +36,8 @@ import jdplus.regsarima.regular.IOutliersDetectionModule;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regarima.outlier.RobustStandardDeviationComputer;
-import internal.jdplus.arima.AnsleyFilter;
 import java.util.ArrayList;
 import java.util.List;
-import jdplus.arima.estimation.ResidualsComputer;
 import jdplus.modelling.regression.IOutlierFactory;
 
 /**

@@ -46,7 +46,7 @@ public class ModelEstimationTest {
         ModelDescription model = new ModelDescription(Data.TS_PROD, null);
         model.setAirline(true);
         model.setLogTransformation(true);
-        model.setTransformation(LengthOfPeriodType.LeapYear);
+        model.setPreadjustment(LengthOfPeriodType.LeapYear);
         GenericTradingDaysVariable td = new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD3));
         model.addVariable(new Variable(td, "td", true));
         EasterVariable easter = EasterVariable.builder()
@@ -68,7 +68,7 @@ public class ModelEstimationTest {
         ModelDescription model = new ModelDescription(Data.TS_PROD, Data.TS_PROD.getDomain().drop(25, 33));
         model.setAirline(true);
         model.setLogTransformation(true);
-        model.setTransformation(LengthOfPeriodType.LeapYear);
+        model.setPreadjustment(LengthOfPeriodType.LeapYear);
         GenericTradingDaysVariable td = new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD3));
         model.addVariable(new Variable(td, "td", true));
         EasterVariable easter = EasterVariable.builder()
@@ -93,7 +93,7 @@ public class ModelEstimationTest {
         model.interpolate(AverageInterpolator.interpolator());
         model.setAirline(true);
         model.setLogTransformation(true);
-        model.setTransformation(LengthOfPeriodType.LeapYear);
+        model.setPreadjustment(LengthOfPeriodType.LeapYear);
         GenericTradingDaysVariable td = new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD3));
         model.addVariable(new Variable(td, "td", true));
         EasterVariable easter = EasterVariable.builder()
@@ -118,7 +118,7 @@ public class ModelEstimationTest {
         model.interpolate(AverageInterpolator.interpolator());
         model.setAirline(true);
         model.setLogTransformation(true);
-        model.setTransformation(LengthOfPeriodType.LeapYear);
+        model.setPreadjustment(LengthOfPeriodType.LeapYear);
         GenericTradingDaysVariable td = new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD3));
         model.addVariable(new Variable(td, "td", true));
         EasterVariable easter = EasterVariable.builder()

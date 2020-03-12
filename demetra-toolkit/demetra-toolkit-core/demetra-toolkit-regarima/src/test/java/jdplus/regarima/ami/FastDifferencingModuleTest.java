@@ -19,19 +19,22 @@ public class FastDifferencingModuleTest {
     public FastDifferencingModuleTest() {
     }
 
-    @Test
-    public void testInsee() {
+    public static void testInsee() {
         TsData[] insee = Data.insee();
         FastDifferencingModule d = FastDifferencingModule.builder()
                 .centile(75)
                 .build();
 
         for (int i = 0; i < insee.length; ++i) {
-            int[] del = d.process(insee[i].getValues().fn(x->Math.log(x)), new int[]{1, 12}, null);
-//            System.out.print(del[0]);
-//            System.out.print('\t');
-//            System.out.println(del[1]);
+            int[] del = d.process(insee[i].getValues().fn(x->Math.log(x)), new int[]{12, 1}, null);
+            System.out.print(del[0]);
+            System.out.print('\t');
+            System.out.println(del[1]);
         }
+    }
+    
+    public static void main(String[] arg){
+        testInsee();
     }
 
 }

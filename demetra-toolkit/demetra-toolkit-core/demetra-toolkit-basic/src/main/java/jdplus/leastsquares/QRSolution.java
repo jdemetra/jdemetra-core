@@ -39,7 +39,7 @@ public class QRSolution {
     private DoubleSeq e;
     private double ssqErr;
     
-    public double rank(){
+    public int rank(){
         return rank;
     }
     

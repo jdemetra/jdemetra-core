@@ -42,10 +42,10 @@ import jdplus.sarima.estimation.SarimaMapping;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class DifferencingModule implements IDifferencingModule {
+public class DifferencingModule {
 
     public static final int MAXD = 2, MAXBD = 1;
-
+    
     public static Builder builder() {
         return new Builder();
     }
@@ -557,48 +557,48 @@ public class DifferencingModule implements IDifferencingModule {
         return Math.abs(t) > vct;
     }
 
-    @Override
-    public ProcessingResult process(RegSarimaModelling context) {
-        if (context.needEstimation()) {
-            context.estimate(eps);
-        }
-        ModelDescription desc = context.getDescription();
-        RegArimaEstimation<SarimaModel> estimation = context.getEstimation();
-        int freq = desc.getAnnualFrequency();
-        SarimaOrders curspec = desc.specification();
-        try {
-            // get residuals
-            DoubleSeq res = RegArimaUtility.linearizedData(desc.regarima(), estimation.getConcentratedLikelihood());
-            if (!process(res, freq)) {
-                return airline(context);
-            }
-            boolean changed = false;
-            if (spec.getD() != curspec.getD() || spec.getBd() != curspec.getBd()) {
-                changed = true;
-                desc.setSpecification(spec);
-            }
-            boolean nmean = isMeanCorrection();
-            if (nmean != desc.isMean()) {
-                changed = true;
-                desc.setMean(nmean);
-                context.clearEstimation();
-            }
-            return changed ? ProcessingResult.Changed : ProcessingResult.Unchanged;
-        } catch (RuntimeException err) {
-            return airline(context);
-        }
-    }
-
-    private ProcessingResult airline(RegSarimaModelling context) {
-        ModelDescription desc = context.getDescription();
-        boolean seasonal = desc.getAnnualFrequency() > 1;
-        if (!desc.specification().isAirline(seasonal)) {
-            desc.setAirline(seasonal);
-            desc.setMean(false);
-            context.clearEstimation();
-            return ProcessingResult.Changed;
-        } else {
-            return ProcessingResult.Unprocessed;
-        }
-    }
+//    @Override
+//    public ProcessingResult process(RegSarimaModelling context) {
+//        if (context.needEstimation()) {
+//            context.estimate(eps);
+//        }
+//        ModelDescription desc = context.getDescription();
+//        RegArimaEstimation<SarimaModel> estimation = context.getEstimation();
+//        int freq = desc.getAnnualFrequency();
+//        SarimaOrders curspec = desc.specification();
+//        try {
+//            // get residuals
+//            DoubleSeq res = RegArimaUtility.linearizedData(desc.regarima(), estimation.getConcentratedLikelihood());
+//            if (!process(res, freq)) {
+//                return airline(context);
+//            }
+//            boolean changed = false;
+//            if (spec.getD() != curspec.getD() || spec.getBd() != curspec.getBd()) {
+//                changed = true;
+//                context.setSpecification(spec);
+//            }
+//            boolean nmean = isMeanCorrection();
+//            if (nmean != desc.isMean()) {
+//                changed = true;
+//                desc.setMean(nmean);
+//                context.clearEstimation();
+//            }
+//            return changed ? ProcessingResult.Changed : ProcessingResult.Unchanged;
+//        } catch (RuntimeException err) {
+//            return airline(context);
+//        }
+//    }
+//
+//    private ProcessingResult airline(RegSarimaModelling context) {
+//        ModelDescription desc = context.getDescription();
+//        boolean seasonal = desc.getAnnualFrequency() > 1;
+//        if (!desc.specification().isAirline(seasonal)) {
+//            desc.setAirline(seasonal);
+//            desc.setMean(false);
+//            context.clearEstimation();
+//            return ProcessingResult.Changed;
+//        } else {
+//            return ProcessingResult.Unprocessed;
+//        }
+//    }
 }
