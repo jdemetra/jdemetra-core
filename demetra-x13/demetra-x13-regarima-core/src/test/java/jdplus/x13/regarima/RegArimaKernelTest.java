@@ -97,7 +97,7 @@ public class RegArimaKernelTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG0.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            MoTramKernedelEstimation rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -175,7 +175,7 @@ public class RegArimaKernelTest {
     public void testInsee3() {
         TsData[] all = Data.insee();
         int n = 0;
-        for (int i = 40; i < all.length; ++i) {
+        for (int i = 0; i < all.length; ++i) {
             RegArimaKernel processor = RegArimaKernel.of(RegArimaSpec.RG3, null);
             IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG3.build();
             ModelEstimation rslt = processor.process(all[i], null);
@@ -202,7 +202,7 @@ public class RegArimaKernelTest {
     public void testInsee4() {
         TsData[] all = Data.insee();
         int n = 0;
-        for (int i = 41; i < all.length; ++i) {
+        for (int i = 0; i < all.length; ++i) {
             RegArimaKernel processor = RegArimaKernel.of(RegArimaSpec.RG4, null);
             IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG4.build();
             ModelEstimation rslt = processor.process(all[i], null);
@@ -228,10 +228,10 @@ public class RegArimaKernelTest {
     @Test
     public void testInsee5() {
         TsData[] all = Data.insee();
-        RegArimaKernel processor = RegArimaKernel.of(RegArimaSpec.RG5, null);
-        IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
+            RegArimaKernel processor = RegArimaKernel.of(RegArimaSpec.RG5, null);
+            IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.build();
             ModelEstimation rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);

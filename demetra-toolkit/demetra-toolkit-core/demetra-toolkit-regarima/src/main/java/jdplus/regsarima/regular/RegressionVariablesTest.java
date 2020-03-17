@@ -20,6 +20,7 @@ import jdplus.regarima.FRegressionTest;
 import jdplus.regarima.DerivedRegressionTest;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.timeseries.calendars.LengthOfPeriodType;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.timeseries.regression.Variable;
 import demetra.timeseries.regression.ITsVariable;
@@ -34,52 +35,52 @@ import java.util.stream.Collectors;
  */
 @Development(status = Development.Status.Preliminary)
 public class RegressionVariablesTest {
-    
+
     public static final double CVAL = 1.96, F_PROB = 0.05;
     public static final double TSIG = 1;
-    
+
     public static Builder builder() {
         return new Builder();
     }
-    
+
     @BuilderPattern(RegressionVariablesTest.class)
     public static class Builder {
-        
+
         private double ftd = 0;
         private double tmu = CVAL, ttd = CVAL, tmh = CVAL;
         private boolean derived;
-        
+
         public Builder meanTest(double t) {
             tmu = t;
             return this;
         }
-        
+
         public Builder movingHolidaysTest(double t) {
             tmh = t;
             return this;
         }
-        
+
         public Builder tdTest(double t, boolean derived) {
             ttd = t;
             this.derived = derived;
             ftd = 0;
             return this;
         }
-        
+
         public Builder tdJointTest(double fprob) {
             ttd = 0;
             ftd = fprob;
             return this;
         }
-        
+
         public RegressionVariablesTest build() {
             return new RegressionVariablesTest(this);
         }
     }
-    
+
     private final IRegressionTest meanTest, tdTest, mhTest;
     private final DerivedRegressionTest derivedTest;
-    
+
     private RegressionVariablesTest(Builder builder) {
         if (builder.tmu > 0) {
             meanTest = new TRegressionTest(builder.tmu);
@@ -107,12 +108,12 @@ public class RegressionVariablesTest {
             }
         }
     }
-    
+
     public ProcessingResult process(RegSarimaModelling context) {
-        
+
         ConcentratedLikelihoodWithMissing ll = context.getEstimation().getConcentratedLikelihood();
         ModelDescription desc = context.getDescription();
-        
+
         boolean changed = false;
         // td
         List<ITsVariable> tdtoremove = new ArrayList<>();
@@ -123,8 +124,8 @@ public class RegressionVariablesTest {
                 ITsVariable var = cur.getVariable();
                 int pos = desc.findPosition(var);
                 int nregs = var.dim();
-                if (!tdTest.accept(ll, 0, pos, nregs, null)
-                        && (nregs <= 1 || derivedTest == null || !derivedTest.accept(ll, 0, pos, nregs, null))) {
+                if (!tdTest.accept(ll, -1, pos, nregs, null)
+                        && (nregs <= 1 || derivedTest == null || !derivedTest.accept(ll, -1, pos, nregs, null))) {
                     tdtoremove.add(var);
                 } else {
                     usetd = true;
@@ -134,7 +135,7 @@ public class RegressionVariablesTest {
             for (Variable cur : llp) {
                 ITsVariable var = cur.getVariable();
                 int pos = desc.findPosition(var);
-                if (!tdTest.accept(ll, 0, pos, 1, null)) {
+                if (!tdTest.accept(ll, -1, pos, 1, null)) {
                     tdtoremove.add(var);
                 } else {
                     uselp = true;
@@ -147,7 +148,7 @@ public class RegressionVariablesTest {
             for (Variable cur : lmh) {
                 ITsVariable var = cur.getVariable();
                 int pos = desc.findPosition(var);
-                if (!mhTest.accept(ll, 0, pos, 1, null)) {
+                if (!mhTest.accept(ll, -1, pos, 1, null)) {
                     mhtoremove.add(var);
                     changed = true;
                 }
@@ -156,27 +157,30 @@ public class RegressionVariablesTest {
                 desc.remove(var);
             }
         }
-        
+
         if (!tdtoremove.isEmpty() && !uselp && !usetd) {
             changed = true;
             for (ITsVariable var : tdtoremove) {
                 desc.remove(var);
             }
+            if (desc.isAdjusted()) {
+                desc.setPreadjustment(LengthOfPeriodType.None);
+            }
         }
-        
+
         if (meanTest != null && desc.isMean()) {
             if (!meanTest.accept(ll, -1, 0, 1, null)) {
                 desc.setMean(false);
                 changed = true;
             }
         }
-        
+
         if (changed) {
             context.clearEstimation();
             return ProcessingResult.Changed;
         } else {
             return ProcessingResult.Unchanged;
         }
-        
+
     }
 }

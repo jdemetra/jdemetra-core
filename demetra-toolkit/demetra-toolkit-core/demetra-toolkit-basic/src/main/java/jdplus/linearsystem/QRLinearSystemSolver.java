@@ -36,13 +36,15 @@ import jdplus.math.matrices.decomposition.QRDecomposition;
 @AlgorithmImplementation(algorithm = LinearSystemSolver.class)
 @Development(status = Development.Status.Release)
 public class QRLinearSystemSolver implements LinearSystemSolver {
+    
+    public static final QRLinearSystemSolver DEFAULT=builder().build();
 
     @BuilderPattern(QRLinearSystemSolver.class)
     public static class Builder {
 
         private QRDecomposition.Decomposer decomposer = A -> new HouseholderWithPivoting().decompose(A, 0);
-        private double eps;
-        private boolean normalize;
+        private double eps=1e-12;
+        private boolean normalize=false;
 
         private Builder() {
         }

@@ -23,7 +23,6 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.design.Development;
 import jdplus.math.linearfilters.BackFilter;
-import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArmaModel;
 import jdplus.leastsquares.QRSolver;
@@ -31,8 +30,8 @@ import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import jdplus.leastsquares.QRSolution;
-import static jdplus.math.matrices.GeneralMatrix.transpose;
 import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.UpperTriangularMatrix;
 
 /**
  *
@@ -42,9 +41,10 @@ import jdplus.math.matrices.Matrix;
 @Development(status = Development.Status.Preliminary)
 public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOutlierDetector<T> {
 
-    private ArmaFilter filter;
+    private final ArmaFilter filter;
     private final ResidualsComputer resComputer;
-    private Matrix L, Xl;
+    private Matrix U, Xl;
+    private int[] pivot;
     private double[] yl, b, z;
     private int n;
     private double mad;
@@ -110,36 +110,35 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
                 filter.apply(rcols.next(), drcols.next());
             }
 
-            QRSolution ls = QRSolver.fastLeastSquares(Yl, Xl);
+            QRSolution ls = QRSolver.robustLeastSquares(Yl, Xl);
             if (ls.rank() != regs.getColumnsCount()) {
                 return false;
             }
+            pivot = ls.pivot();
+            U = ls.rawR();
+
+            // z = yl'*Xl
+            int nx = Xl.getColumnsCount();
+            z = new double[nx];
+            for (int i = 0; i < nx; ++i) {
+                z[i] = Yl.dot(Xl.column(pivot[i]));
+            }
+            // z = z U^-1
+            UpperTriangularMatrix.solvexU(U, DataBlock.of(z));
+
+            DoubleSeq B = ls.getB();
+            b = B.toArray();
 
             // calcMAD(E);
             DataBlock e = DataBlock.of(model.getY());
 
+            // b are in the right order
             DoubleSeqCursor coeff = ls.getB().cursor();
             rcols.begin();
             while (rcols.hasNext()) {
                 e.addAY(-coeff.getAndNext(), rcols.next());
             }
             mad = getStandardDeviationComputer().compute((filter(e)));
-
-            int nx = Xl.getColumnsCount();
-            DoubleSeq B = ls.getB();
-            b = B.toArray();
-            z = new double[nx];
-
-            // L (no pivoting !)
-            L = transpose(ls.rawR());
-
-            // z = Xl'*yl
-            drcols.begin();
-            for (int i = 0; i < Xl.getColumnsCount(); ++i) {
-                z[i] = drcols.next().dot(Yl);
-            }
-            // z = L^-1*z
-            LowerTriangularMatrix.solveLx(L, DataBlock.of(z));
 
             return true;
         } catch (RuntimeException ex) {
@@ -164,6 +163,8 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
         df.apply(O, OD);
         DataBlock Yl = DataBlock.of(yl);
 
+        int nx = Xl == null ? 0 : Xl.getColumnsCount();
+
         for (int i = lbound; i < ubound; ++i) {
             if (isAllowed(i, idx)) {
                 O = DataBlock.of(od, len - i, 2 * len - d - i, 1);
@@ -172,17 +173,16 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
                 filter.apply(O, Ol);
                 double xx = Ol.ssq(), xy = Ol.dot(Yl);
 
-                if (L != null) {
-                    // w=Xl*yl
+                if (U != null) {
+                    // w=ol*Xl
                     double[] w = new double[b.length];
-                    DataBlockIterator xcols = Xl.columnsIterator();
-                    for (int q = 0; q < Xl.getColumnsCount(); ++q) {
-                        w[q] = xcols.next().dot(Ol);
+                    for (int q = 0; q < nx; ++q) {
+                        w[q] = Ol.dot(Xl.column(pivot[q]));
                     }
                     DataBlock a = DataBlock.of(w);
-                    // a=L-1w
-                    LowerTriangularMatrix.solveLx(L, a);
-                    // q = l'A^-1l
+                    // a=wU^-1
+                    UpperTriangularMatrix.solvexU(U, a);
+                    // q = l'A^{-1}l
                     double q = a.ssq();
                     //
                     double v = xx - q;
@@ -208,7 +208,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
     @Override
     protected void clear(boolean all) {
         super.clear(all);
-        L = null;
+        U = null;
         Xl = null;
         b = null;
         z = null;

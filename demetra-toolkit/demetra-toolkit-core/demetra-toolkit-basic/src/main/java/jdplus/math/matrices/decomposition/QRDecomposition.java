@@ -57,7 +57,7 @@ public class QRDecomposition {
     /**
      * The method multiplies an array of double by Q.
      *
-     * @param b The array of double. It contains the product at the // return of
+     * @param b The array of double. It contains the product at the return of
      * the method
      */
     public void applyQ(double[] b) {
@@ -127,6 +127,11 @@ public class QRDecomposition {
         return R;
     }
 
+    /**
+     * Contains the order in which the columns of X have be handled.
+     * pivot[i] indicates which column is in position i after pivoting
+     * @return 
+     */
     public int[] pivot() {
         return pivot == null ? null : pivot.clone();
     }

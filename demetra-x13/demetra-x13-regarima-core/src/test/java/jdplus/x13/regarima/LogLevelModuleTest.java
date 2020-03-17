@@ -30,6 +30,7 @@ import ec.tstoolkit.modelling.arima.PreadjustmentType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
+import static jdplus.x13.regarima.Converter.convert;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -145,10 +146,4 @@ public class LogLevelModuleTest {
         System.out.println(t1 - t0);
     }
 
-    private static ec.tstoolkit.timeseries.simplets.TsData convert(TsData s) {
-        int period = s.getAnnualFrequency();
-        int year = s.getStart().year(), pos = s.getStart().annualPosition();
-        return new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(period),
-                year, pos, s.getValues().toArray(), false);
-    }
 }

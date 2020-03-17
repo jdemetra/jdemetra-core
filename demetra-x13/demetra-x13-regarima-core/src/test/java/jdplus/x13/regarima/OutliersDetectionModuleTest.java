@@ -19,6 +19,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.Ignore;
 import demetra.data.DoubleSeq;
+import demetra.timeseries.TsData;
+import demetra.timeseries.regression.Variable;
 import static jdplus.x13.regarima.OutliersDetectionModule.EPS;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
@@ -26,7 +28,10 @@ import jdplus.modelling.regression.TransitoryChangeFactory;
 import jdplus.regarima.outlier.ExactSingleOutlierDetector;
 import jdplus.regarima.outlier.RobustStandardDeviationComputer;
 import jdplus.regarima.outlier.SingleOutlierDetector;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.estimation.SarimaMapping;
+import static jdplus.x13.regarima.Converter.convert;
 
 /**
  *
@@ -45,11 +50,11 @@ public class OutliersDetectionModuleTest {
                 new TransitoryChangeFactory(EPS));
         return sod;
     }
-    
+
     @Test
     public void testProd() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        SarimaOrders spec =  SarimaOrders.airline(12);
+        SarimaOrders spec = SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
 
         ExactOutliersDetector od = ExactOutliersDetector.builder()
@@ -69,7 +74,6 @@ public class OutliersDetectionModuleTest {
     }
 
     @Test
-    @Ignore
     public void testProdWn() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
         SarimaOrders spec = new SarimaOrders(12);
@@ -109,19 +113,119 @@ public class OutliersDetectionModuleTest {
         od.process(context);
         List<IOutlierVariable> outliers = context.description.getOutliers();
         int n = outliers.size();
-//        System.out.println("Legacy");
-//        for (IOutlierVariable o : outliers) {
-//            System.out.println(o.getName());
-//        }
+        System.out.println("Legacy");
+        for (IOutlierVariable o : outliers) {
+            System.out.println(o.getName());
+        }
     }
 
     @Test
-    @Ignore
-    public void stressTestProd() {
+    public void testInsee() {
+
+        TsData[] insee = Data.insee();
+        for (int i = 0; i < insee.length; ++i) {
+            ec.tstoolkit.modelling.arima.x13.OutliersDetector lod = new ec.tstoolkit.modelling.arima.x13.OutliersDetector();
+//            lod.setCriticalValue(3);
+//            lod.addOutlierFactory(new ec.tstoolkit.timeseries.regression.AdditiveOutlierFactory());
+//            ec.tstoolkit.timeseries.regression.LevelShiftFactory ls = new ec.tstoolkit.timeseries.regression.LevelShiftFactory();
+//            ls.setZeroEnded(true);
+//            lod.addOutlierFactory(ls);
+            lod.setDefault();
+            ec.tstoolkit.modelling.arima.ModelDescription ldesc = new ec.tstoolkit.modelling.arima.ModelDescription(convert(insee[i]), null);
+            ec.tstoolkit.modelling.arima.ModellingContext context = new ec.tstoolkit.modelling.arima.ModellingContext();
+
+            ldesc.setAirline(true);
+            context.description = ldesc;
+            context.hasseas = true;
+            lod.process(context);
+            List<IOutlierVariable> loutliers = context.description.getOutliers();
+            int on = loutliers.size();
+
+            SarimaOrders spec = SarimaOrders.airline(12);
+
+            OutliersDetectionModule od = OutliersDetectionModule.builder()
+                    .ao(true)
+                    .ls(true)
+                    .tc(true)
+                    .tcrate(0.7)
+                    .precision(1e-7)
+                    .maxOutliers(30)
+                    .build();
+
+            ModelDescription desc = new ModelDescription(insee[i], null);
+            desc.setAirline(true);
+            RegSarimaModelling modelling = RegSarimaModelling.of(desc);
+            double va=X13Utility.calcCv(insee[i].length());
+            od.process(modelling, va);
+            Variable[] outs = modelling.getDescription().variables().filter(var -> var.isOutlier()).toArray(k -> new Variable[k]);
+            int n=outs.length;
+            System.out.print(on);
+            System.out.print('\t');
+            System.out.println(n);
+            //assertTrue(on ==n);
+        }
+    }
+
+    @Test
+    public void testInsee31() {
+
+        TsData[] insee = Data.insee();
+        for (int i = 0; i < insee.length; ++i) {
+            ec.tstoolkit.modelling.arima.x13.OutliersDetector lod = new ec.tstoolkit.modelling.arima.x13.OutliersDetector();
+            lod.setDefault();
+//            lod.addOutlierFactory(new ec.tstoolkit.timeseries.regression.AdditiveOutlierFactory());
+//            ec.tstoolkit.timeseries.regression.LevelShiftFactory ls = new ec.tstoolkit.timeseries.regression.LevelShiftFactory();
+//            ls.setZeroEnded(true);
+//            lod.addOutlierFactory(ls);
+            lod.setCriticalValue(3);
+            ec.tstoolkit.modelling.arima.ModelDescription ldesc = new ec.tstoolkit.modelling.arima.ModelDescription(convert(insee[i]), null);
+            ec.tstoolkit.modelling.arima.ModellingContext context = new ec.tstoolkit.modelling.arima.ModellingContext();
+
+            ec.tstoolkit.sarima.SarimaSpecification ospec=new ec.tstoolkit.sarima.SarimaSpecification(12);
+            ospec.airline(true);
+            ospec.setP(1);
+            ldesc.setSpecification(ospec);
+            context.description = ldesc;
+            context.hasseas = true;
+            lod.process(context);
+            List<IOutlierVariable> loutliers = context.description.getOutliers();
+            int on = loutliers.size();
+
+            SarimaOrders spec = SarimaOrders.airline(12);
+            spec.setP(1);
+
+            OutliersDetectionModule od = OutliersDetectionModule.builder()
+                    .ao(true)
+                    .ls(true)
+                    .tc(true)
+                    .tcrate(0.7)
+                    .precision(1e-7)
+                    .maxOutliers(30)
+                    .build();
+
+            ModelDescription desc = new ModelDescription(insee[i], null);
+            desc.setSpecification(spec);
+            RegSarimaModelling modelling = RegSarimaModelling.of(desc);
+            od.process(modelling, 3);
+            Variable[] outs = modelling.getDescription().variables().filter(var -> var.isOutlier()).toArray(k -> new Variable[k]);
+            int n=outs.length;
+            System.out.print(on);
+            System.out.print('\t');
+            System.out.println(n);
+            //assertTrue(on ==n);
+        }
+    }
+
+    public static void main(String[] args) {
+        stressTestProd();
+        stressTestProdLegacy();
+    }
+
+    public static void stressTestProd() {
         System.out.println("JD3");
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 200; ++i) {
-        SarimaOrders spec =  SarimaOrders.airline(12);
+            SarimaOrders spec = SarimaOrders.airline(12);
             SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
             ExactOutliersDetector od = ExactOutliersDetector.builder()
                     .singleOutlierDetector(defaultOutlierDetector(12))
@@ -137,9 +241,7 @@ public class OutliersDetectionModuleTest {
         System.out.println(t1 - t0);
     }
 
-    @Test
-    @Ignore
-    public void stressTestProdLegacy() {
+    public static void stressTestProdLegacy() {
 
         System.out.println("Legacy");
         long t0 = System.currentTimeMillis();

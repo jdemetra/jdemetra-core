@@ -51,7 +51,7 @@ public class ArmaModule {
         private boolean wn = false;
         private boolean balanced = false, mixed = true;
         private double eps = 1e-5;
-        private int maxP = 3, maxBp = 1, maxQ = 3, maxBq = 1;
+        private int maxP = 2, maxBp = 1, maxQ = 2, maxBq = 1;
 
         private Builder() {
         }
@@ -367,6 +367,9 @@ public class ArmaModule {
 
         estimations = new RegArmaBic[nmod];
 
+        if (freq == 2)
+            spec.setP(1);
+        else
         spec.setP(3);
         spec.setQ(0);
 

@@ -51,6 +51,11 @@ public class QRSolution {
         return qr.rawRdiagonal();
     }
     
+    /**
+     * Contains the order in which the columns of X have be handled.
+     * pivot[i] indicates which column is in position i after pivoting
+     * @return 
+     */
     public int[] pivot(){
         return qr.pivot();
     }

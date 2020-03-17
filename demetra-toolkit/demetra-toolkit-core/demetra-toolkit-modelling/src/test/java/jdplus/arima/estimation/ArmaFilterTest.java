@@ -23,18 +23,21 @@ import jdplus.sarima.SarimaUtility;
  */
 public class ArmaFilterTest {
 
-    private static final SarimaModel airline, arima;
+    private static final SarimaModel airline, arima, ar1;
     private static final DoubleSeq data;
 
     static {
         SarimaOrders spec=SarimaOrders.airline(12);
-        airline = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.6).build();
+        airline = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.006).build();
         spec.setP(3);
         arima = SarimaModel.builder(spec).theta(1, -.6).btheta(1, -.8).phi(-.2, -.5, -.2).build();
         DataBlock s = DataBlock.copyOf(Data.PROD);
         DataBlock ds = DataBlock.make(s.length() - spec.getDifferenceOrder());
         SarimaUtility.getDifferencingFilter(spec).apply(s, ds);
         data = ds;
+        SarimaOrders sar1=new SarimaOrders(12);
+        sar1.setP(1);
+        ar1=SarimaModel.builder(sar1).phi(-.95).build();
     }
 
     public ArmaFilterTest() {
@@ -43,6 +46,7 @@ public class ArmaFilterTest {
 
     @Test
     public void testAirline() {
+        
         ArmaFilter filter = ArmaFilter.ansley();
         int m = filter.prepare((IArimaModel) airline.stationaryTransformation().getStationaryModel(), data.length());
         DataBlock s = DataBlock.make(m);
@@ -52,8 +56,24 @@ public class ArmaFilterTest {
         m = filter.prepare((IArimaModel) airline.stationaryTransformation().getStationaryModel(), data.length());
         s = DataBlock.make(m);
         filter.apply(data, s);
-        assertEquals(ldet, filter.getLogDeterminant(), 1e-8);
-        assertEquals(ssq, s.ssq(), 1e-6);
+        assertEquals(ldet, filter.getLogDeterminant(), 1e-12);
+        assertEquals(ssq, s.ssq(), 1e-12);
+    }
+
+    @Test
+    public void testAr1() {
+        
+        ArmaFilter filter = ArmaFilter.ansley();
+        int m = filter.prepare(ar1, data.length());
+        DataBlock s = DataBlock.make(m);
+        filter.apply(data, s);
+        double ldet = filter.getLogDeterminant(), ssq = s.ssq();
+        filter = ArmaFilter.kalman();
+        m = filter.prepare(ar1, data.length());
+        s = DataBlock.make(m);
+        filter.apply(data, s);
+        assertEquals(ldet, filter.getLogDeterminant(), 1e-12);
+        assertEquals(ssq, s.ssq(), 1e-8);
     }
 
     @Test

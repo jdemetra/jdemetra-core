@@ -40,11 +40,10 @@ import demetra.data.DoubleSeq;
 @ServiceProvider(ArmaFilter.class)
 public class AnsleyFilter implements ArmaFilter {
 
-    private Matrix m_bL;
-    private double[] m_ar, m_ma;
-    private double m_var;
-    private int m_n;
-    protected boolean m_wnoptimize = true;
+    private Matrix L;
+    private double[] ar, ma;
+    private double var;
+    private int n;
 
     /**
      *
@@ -53,11 +52,11 @@ public class AnsleyFilter implements ArmaFilter {
      */
     public double[] filter(DoubleSeq y) {
         double[] e = y.toArray();
-        int p = m_ar.length-1;
-        int q = m_ma.length-1;
-        if (m_wnoptimize && p == 0 && q == 0) {
-            if (m_var != 1) {
-                double std = Math.sqrt(m_var);
+        int p = ar.length-1;
+        int q = ma.length-1;
+        if (p == 0 && q == 0) {
+            if (var != 1) {
+                double std = Math.sqrt(var);
                 for (int i = 0; i < e.length; ++i) {
                     e[i] /= std;
                 }
@@ -68,7 +67,7 @@ public class AnsleyFilter implements ArmaFilter {
             for (int i = e.length - 1; i >= p; --i) {
                 double s = 0;
                 for (int j = 1; j <= p; ++j) {
-                    s += m_ar[j] * e[i - j];
+                    s += ar[j] * e[i - j];
                 }
                 e[i] += s;
             }
@@ -91,24 +90,23 @@ public class AnsleyFilter implements ArmaFilter {
 
     @Override
     public double getLogDeterminant() {
-        if (m_bL == null) {
-            return m_n*Math.log(m_var);
+        if (L == null) {
+            return n*Math.log(var);
         } else {
-            DataBlock diag = m_bL.row(0);
+            DataBlock diag = L.row(0);
             return 2 * LogSign.of(diag).getValue();
         }
     }
 
     @Override
     public int prepare(final IArimaModel arima, int n) {
-        m_n = n;
-        m_bL = null;
-        m_ar = arima.getAr().asPolynomial().toArray();
-        BackFilter ma = arima.getMa();
-        m_var = arima.getInnovationVariance();
-        m_ma = ma.asPolynomial().toArray();
-        int p = m_ar.length-1, q = m_ma.length-1;
-        if (m_wnoptimize && p == 0 && q == 0) {
+        this.n = n;
+        L = null;
+        ar = arima.getAr().asPolynomial().toArray();
+        var = arima.getInnovationVariance();
+        ma = arima.getMa().asPolynomial().toArray();
+        int p = ar.length-1, q = ma.length-1;
+        if (p == 0 && q == 0) {
             return n;
         }
         int r = Math.max(p, q + 1);
@@ -118,22 +116,22 @@ public class AnsleyFilter implements ArmaFilter {
             double[] psi = arima.getPsiWeights().getWeights(q);
             dcov = new double[r];
             for (int i = 1; i <= q; ++i) {
-                double v = m_ma[i];
+                double v = ma[i];
                 for (int j = i + 1; j <= q; ++j) {
-                    v += m_ma[j] * psi[j - i];
+                    v += ma[j] * psi[j - i];
                 }
-                dcov[i] = v * m_var;
+                dcov[i] = v * var;
             }
         }
 
-        Polynomial sma = SymmetricFilter.convolutionOf(ma, m_var).coefficientsAsPolynomial();
+        Polynomial sma = SymmetricFilter.convolutionOf(arima.getMa(), var).coefficientsAsPolynomial();
 
-        m_bL = Matrix.make(r, n);
+        L = Matrix.make(r, n);
         // complete the matrix
         // if (i >= j) m(i, j) = lband[i-j, j]; if i-j >= r, m(i, j) =0
         // if (i < j) m(i, j) = lband(j-i, i)
 
-        DataBlockIterator cols = m_bL.columnsIterator();
+        DataBlockIterator cols = L.columnsIterator();
         for (int j = 0; j < p; ++j) {
             DataBlock col = cols.next();
             for (int i = 0; i < p - j; ++i) {
@@ -144,7 +142,7 @@ public class AnsleyFilter implements ArmaFilter {
             }
         }
 
-        Matrix M = m_bL.extract(0, q + 1, p, n-p);
+        Matrix M = L.extract(0, q + 1, p, n-p);
         DataBlockIterator rows = M.rowsIterator();
 
         int pos=0;
@@ -161,9 +159,8 @@ public class AnsleyFilter implements ArmaFilter {
     }
 
     private void lcholesky() {
-        int r = m_bL.getRowsCount();
-        int n = m_bL.getColumnsCount();
-        double[] data = m_bL.getStorage();
+        int r = L.getRowsCount();
+        double[] data = L.getStorage();
         if (r == 1) {
             for (int i = 0; i < data.length; ++i) {
                 if (data[i] <= 0) {
@@ -226,10 +223,9 @@ public class AnsleyFilter implements ArmaFilter {
      * @param b
      */
     private void rsolve(double[] b) {
-        int n = m_bL.getColumnsCount();
-        int r = m_bL.getRowsCount();
+        int r = L.getRowsCount();
 
-        double[] data = m_bL.getStorage();
+        double[] data = L.getStorage();
 
         int nb = b.length;
 
@@ -249,26 +245,13 @@ public class AnsleyFilter implements ArmaFilter {
     }
 
     public Matrix getCholeskyFactor() {
-        if (m_bL == null) {
-            Matrix l = Matrix.make(1, m_n);
-            l.set(Math.sqrt(m_var));
+        if (L == null) {
+            Matrix l = Matrix.make(1, n);
+            l.set(Math.sqrt(var));
             return l;
         } else {
-            return m_bL;
+            return L;
         }
     }
 
-    /**
-     * @return the m_wnoptimize
-     */
-    public boolean isOptimizedForWhiteNoise() {
-        return m_wnoptimize;
-    }
-
-    /**
-     * @param m_wnoptimize the m_wnoptimize to set
-     */
-    public void setOptimizedForWhiteNoise(boolean m_wnoptimize) {
-        this.m_wnoptimize = m_wnoptimize;
-    }
 }

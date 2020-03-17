@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package jdplus.regsarima.regular;
 
 import demetra.design.Development;
@@ -45,7 +44,7 @@ public class TRegressionTest implements IRegressionTest {
 
     @Override
     public boolean accept(ConcentratedLikelihoodWithMissing ll, int nhp, int ireg, int nregs, InformationSet info) {
-        double[] t = ll.tstats(nhp, true);
+        double[] t = ll.tstats(nhp < 0 ? 0 : nhp, nhp >= 0);
         int nlow = 0, nhigh = 0;
         for (int i = 0; i < nregs; ++i) {
             double ct = Math.abs(t[ireg + i]);

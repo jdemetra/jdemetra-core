@@ -48,7 +48,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
 
     public static int DEF_MAXROUND = 100;
     public static int DEF_MAXOUTLIERS = 50;
-    public static final double EPS = 1e-7;
+    public static final double EPS = 1e-7, TCRATE=.7;
 
     public static Builder builder() {
         return new Builder();
@@ -61,7 +61,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         private int maxOutliers = DEF_MAXOUTLIERS;
         private int maxRound = DEF_MAXROUND;
         private boolean ao, ls, tc, so;
-        private double tcrate;
+        private double tcrate=TCRATE;
         private TimeSelector span = TimeSelector.all();
 
         private Builder() {
