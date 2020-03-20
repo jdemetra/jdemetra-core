@@ -25,11 +25,6 @@ import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regsarima.regular.IDifferencingModule;
-import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.arima.SarimaOrders;
 import demetra.regarima.RegArimaException;
 import demetra.data.DoubleSeq;
@@ -342,10 +337,13 @@ public class DifferencingModule {
         if (usedefault || ml || useml) {
             lastModel = SarimaMapping.stabilize(lastModel);
 
-            IRegArimaProcessor processor = X13Utility.processor(true, eps);
+            IRegArimaProcessor processor = RegArimaUtility.processor(true, eps);
+            SarimaModel arima=SarimaModel.builder(spec)
+                    .parameters(lastModel.parameters())
+                    .build();
             RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder()
-                    .y(data)
-                    .arima(lastModel)
+                    .y(DoubleSeq.of(x))
+                    .arima(arima)
                     .build();
             RegArimaEstimation<SarimaModel> rslt = processor.optimize(regarima, null);
             if (rslt == null) {

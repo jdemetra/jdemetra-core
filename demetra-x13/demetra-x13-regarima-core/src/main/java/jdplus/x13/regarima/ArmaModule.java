@@ -139,7 +139,7 @@ public class ArmaModule {
          * @param eps
          */
         RegArmaBic(final DoubleSeq data, final SarmaOrders spec, double eps) {
-            IRegArimaProcessor processor = X13Utility.processor(true, eps);
+            IRegArimaProcessor processor = RegArimaUtility.processor(true, eps);
             RegArimaModel<SarimaModel> model = RegArimaModel.<SarimaModel>builder()
                     .y(data)
                     .arima(SarimaModel.builder(spec).setDefault().build())

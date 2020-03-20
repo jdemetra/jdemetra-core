@@ -104,7 +104,7 @@ public class AutoModelSpecTest {
     @Test
     public void validUb2() {
         AutoModelSpec.builder()
-                .ub2(.8)
+                .ub2(1/.8)
                 .build();
     }
 

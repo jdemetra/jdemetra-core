@@ -117,7 +117,7 @@ public class LogLevelModuleTest {
     @Test
     public void testAdjustTD() {
         long t0 = System.currentTimeMillis();
-        int n=0;
+        int n = 0;
         TsData[] insee = Data.insee();
         for (int i = 0; i < insee.length; ++i) {
             LogLevelModule ll = LogLevelModule.builder()
@@ -137,13 +137,44 @@ public class LogLevelModuleTest {
             RegSarimaModelling m1 = RegSarimaModelling.of(model1);
             ll.process(m1);
             boolean log1 = m1.getDescription().isLogTransformation();
-            if(log0 != log1)
+            if (log0 != log1) {
                 ++n;
+            }
         }
-        assertTrue(n==3);
+        assertTrue(n == 3);
         System.out.println(n);
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
     }
 
+    @Test
+    public void testAO() {
+        long t0 = System.currentTimeMillis();
+        TsData[] insee = Data.insee();
+        for (int i = 0; i < insee.length; ++i) {
+            LogLevelModule ll = LogLevelModule.builder()
+                    .preadjust(LengthOfPeriodType.None)
+                    .estimationPrecision(1e-5)
+                    .aiccLogCorrection(2)
+                    .build();
+            ModelDescription model = new ModelDescription(insee[i], null);
+            model.setAirline(true);
+            RegSarimaModelling m = RegSarimaModelling.of(model);
+            ll.process(m);
+            System.out.print(ll.isChoosingLog());
+            System.out.print('\t');
+
+            double[] nvals = insee[i].getValues().toArray();
+            nvals[nvals.length - 3] *= 0.25;
+            nvals[nvals.length - 2] *= 0.20;
+            TsData s = TsData.ofInternal(insee[i].getStart(), nvals);
+            model = new ModelDescription(s, null);
+            model.setAirline(true);
+            m = RegSarimaModelling.of(model);
+            ll.process(m);
+            System.out.println(ll.isChoosingLog());
+        }
+        long t1 = System.currentTimeMillis();
+        System.out.println(t1 - t0);
+    }
 }

@@ -97,7 +97,7 @@ public class RegArimaKernelTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG0.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            MoTramKernedelEstimation rslt = processor.process(all[i], null);
+            ModelEstimation rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
@@ -187,11 +187,11 @@ public class RegArimaKernelTest {
             if (Math.abs(del) < 1e-3) {
                 ++n;
             }
-            System.out.print(i);
-            System.out.print('\t');
-            System.out.print(rslt.getStatistics().getAdjustedLogLikelihood());
-            System.out.print('\t');
-            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
         System.out.println("RG3");
         System.out.println(n);
@@ -214,11 +214,11 @@ public class RegArimaKernelTest {
             if (Math.abs(del) < 1e-3) {
                 ++n;
             }
-            System.out.print(i);
-            System.out.print('\t');
-            System.out.print(rslt.getStatistics().getAdjustedLogLikelihood());
-            System.out.print('\t');
-            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
         System.out.println("RG4");
         System.out.println(n);
@@ -241,11 +241,11 @@ public class RegArimaKernelTest {
             if (Math.abs(del) < 1e-3) {
                 ++n;
             }
-            System.out.print(i);
-            System.out.print('\t');
-            System.out.print(rslt.getStatistics().getAdjustedLogLikelihood());
-            System.out.print('\t');
-            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
         System.out.println("RG5");
         System.out.println(n);

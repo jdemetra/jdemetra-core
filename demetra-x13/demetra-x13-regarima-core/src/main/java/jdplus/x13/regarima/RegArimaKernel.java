@@ -434,8 +434,12 @@ public class RegArimaKernel implements RegSarimaProcessor {
     private void lastSolution(RegSarimaModelling context) {
         ModelDescription description = context.getDescription();
         SarimaOrders nspec = description.specification();
-        nspec.setP(3);
-        if (nspec.getBd() > 0) {
+        switch (nspec.getPeriod()){
+            case 2: nspec.setP(1);break;
+            case 3: nspec.setP(2);break;
+            default:nspec.setP(3);
+        }
+        if (nspec.getBd() > 0 || nspec.getPeriod() == 1) {
             nspec.setBp(0);
         }
         if (options.mixedModel) {
@@ -448,13 +452,13 @@ public class RegArimaKernel implements RegSarimaProcessor {
             nspec.setBq(1);
         }
         context.setSpecification(nspec);
+        context.estimate(options.precision);
         if (outliers != null) {
             curva = va0;
             needOutliers = true;
             // we should remove the outliers because the model could be different
             //description.removeVariable(var->var.isOutlier(false));
         }
-        context.estimate(options.precision);
         needAutoModelling = false;
     }
 

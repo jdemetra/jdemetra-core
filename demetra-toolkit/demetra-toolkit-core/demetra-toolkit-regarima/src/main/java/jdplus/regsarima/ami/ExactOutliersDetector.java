@@ -204,11 +204,6 @@ public class ExactOutliersDetector implements GenericOutliersDetection<SarimaMod
                     estimateModel(mapping, false);
                     break;
                 }
-                /*
-                 * int v = verifymodel(cv_); if (v == -1) break; else if (v ==
-                 * 0) reestimatemodel();
-                 */
-                // updatesod();
             } else {
                 break;// no outliers to remove...
             }
