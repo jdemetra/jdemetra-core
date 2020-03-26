@@ -19,7 +19,6 @@ package jdplus.math.functions.ssq;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import jdplus.math.functions.IFunction;
-import jdplus.math.matrices.Matrix;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;

@@ -186,6 +186,12 @@ public class AutoCovariances {
         return v / data.length();
     }
 
+    /**
+     * Computes the variance of a sample from a population with known mean
+     * @param data The sample
+     * @param mean Mean of the population
+     * @return 
+     */
     public static double varianceNoMissing(DoubleSeq data, double mean) {
         int n = data.length();
         if (n == 0) {

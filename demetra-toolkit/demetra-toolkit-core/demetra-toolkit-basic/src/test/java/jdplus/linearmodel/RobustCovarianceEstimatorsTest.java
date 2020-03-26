@@ -50,10 +50,10 @@ public class RobustCovarianceEstimatorsTest {
 
         LeastSquaresResults rslts = Ols.compute(model);
 //        System.out.println(rslts.covariance());
-        Matrix hac=RobustCovarianceEstimators.hac(model, rslts.getCoefficients(), WindowFunction.Bartlett, 5);
+        Matrix hac = RobustCovarianceEstimators.hac(model, rslts.getCoefficients(), WindowFunction.Bartlett, 5);
 //        System.out.println(hac);
         DataBlock u = model.calcResiduals(rslts.getCoefficients());
-        Matrix hc=RobustCovarianceEstimators.hc(model, rslts.getCoefficients(), i->u.get(i));
+        Matrix hc = RobustCovarianceEstimators.hc(model, rslts.getCoefficients(), i -> u.get(i));
 //        System.out.println(hc);
     }
 

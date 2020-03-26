@@ -55,7 +55,7 @@ public class X13Kernel {
         return (s, logs) -> {
             TsData sc = s.select(basic.getSpan());
             if (basic.isPreliminaryCheck()) {
-                jdplus.sa.diagnostics.PreliminaryChecks.testSeries(sc);
+                jdplus.sa.PreliminaryChecks.testSeries(sc);
             }
             return sc;
         };

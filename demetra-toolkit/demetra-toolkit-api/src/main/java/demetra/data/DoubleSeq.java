@@ -577,8 +577,14 @@ public interface DoubleSeq extends BaseSeq {
             return onMapping(this.length(), i -> 0);
         }
         double[] safeArray = toArray();
-        for (int i = 0; i < safeArray.length; ++i) {
-            safeArray[i] *= factor;
+        if (factor == -1) {
+            for (int i = 0; i < safeArray.length; ++i) {
+                safeArray[i] = -safeArray[i];
+            }
+        } else {
+            for (int i = 0; i < safeArray.length; ++i) {
+                safeArray[i] *= factor;
+            }
         }
         return Doubles.ofInternal(safeArray);
     }
@@ -654,6 +660,59 @@ public interface DoubleSeq extends BaseSeq {
      */
     default double normInf() {
         return DoublesMath.normInf(this);
+    }
+
+    default double max() {
+        int n = length();
+        DoubleSeqCursor cursor = this.cursor();
+        double max = Double.NaN;
+        for (int i = 0; i < n; ++i) {
+            double x = cursor.getAndNext();
+            if (!Double.isNaN(x)) {
+                if (Double.isNaN(max)) {
+                    max = x;
+                } else if (x > max) {
+                    max = x;
+                }
+            }
+        }
+        return max;
+    }
+
+    default double min() {
+        int n = length();
+        DoubleSeqCursor cursor = this.cursor();
+        double min = Double.NaN;
+        for (int i = 0; i < n; ++i) {
+            double x = cursor.getAndNext();
+            if (!Double.isNaN(x)) {
+                if (Double.isNaN(min)) {
+                    min = x;
+                } else if (x < min) {
+                    min = x;
+                }
+            }
+        }
+        return min;
+    }
+
+    default Interval range() {
+        int n = length();
+        DoubleSeqCursor cursor = this.cursor();
+        double min = Double.NaN, max = Double.NaN;
+        for (int i = 0; i < n; ++i) {
+            double x = cursor.getAndNext();
+            if (!Double.isNaN(x)) {
+                if (Double.isNaN(min)) {
+                    min = max = x;
+                } else if (x < min) {
+                    min = x;
+                } else if (x > max) {
+                    max = x;
+                }
+            }
+        }
+        return new Interval(min, max);
     }
 
     /**
@@ -822,6 +881,25 @@ public interface DoubleSeq extends BaseSeq {
     @NonNull
     static DoubleSeq onMapping(@NonNegative int length, @NonNull IntToDoubleFunction getter) {
         return new InternalDoubleSeq.MappingDoubleSeq(length, getter);
+    }
+    
+    @NonNull
+    static DoubleSeq pooled(@NonNull DoubleSeq[] seqs){
+        // TODO improve the current solution (without necessarly copying the data)
+        if (seqs.length == 0)
+            return Doubles.EMPTY;
+        if (seqs.length == 1)
+            return seqs[0];
+        int csize=0;
+        for (int i=0; i<seqs.length; ++i)
+            csize+=seqs[i].length();
+        double[] all =new double[csize];
+        int pos=0;
+        for (int i=0; i<seqs.length; ++i){
+            seqs[i].copyTo(all, pos);
+            pos+=seqs[i].length();
+        }
+        return DoubleSeq.of(all);
     }
     //</editor-fold>
 }

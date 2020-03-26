@@ -17,21 +17,43 @@
 package jdplus.seats;
 
 import demetra.data.DoubleSeq;
+import demetra.processing.ProcResults;
 import demetra.sa.SeriesDecomposition;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import jdplus.sarima.SarimaModel;
+import jdplus.tramoseats.extractors.SeatsExtractor;
 import jdplus.ucarima.UcarimaModel;
 
 /**
  *
  * @author palatej
  */
-
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
-public class SeatsResults {
+@lombok.Builder(builderClassName = "Builder")
+public class SeatsResults implements ProcResults {
+
     private SarimaModel originalModel;
     private SarimaModel finalModel;
     private boolean meanCorrection;
     private UcarimaModel ucarimaModel;
     private SeriesDecomposition<DoubleSeq> initialComponents, finalComponents;
+
+    @Override
+    public boolean contains(String id) {
+        return SeatsExtractor.getMapping().contains(id);
+    }
+
+    @Override
+    public Map<String, Class> getDictionary() {
+        Map<String, Class> dic = new LinkedHashMap<>();
+        SeatsExtractor.getMapping().fillDictionary(null, dic, true);
+        return dic;
+    }
+
+    @Override
+    public <T> T getData(String id, Class<T> tclass) {
+        return SeatsExtractor.getMapping().getData(this, id, tclass);
+    }
+
 }

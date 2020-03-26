@@ -27,7 +27,6 @@ import jdplus.sarima.SarimaModel;
 import jdplus.modelling.regression.IOutlierFactory;
 import java.util.ArrayList;
 import jdplus.arima.estimation.IArimaMapping;
-import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.regarima.ami.GenericOutliersDetection;
 
 /**

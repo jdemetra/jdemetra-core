@@ -83,4 +83,30 @@ public class QRSolution {
         }
     }
 
+    /**
+     * Inverse of the unscaled covariance matrix
+     * =re-ordered rawR'*rawR
+     * @return 
+     */
+    public Matrix RtR() {
+        int[] pivot = qr.pivot();
+        Matrix rawR = qr.rawR();
+        Matrix v = SymmetricMatrix.UtU(rawR);
+        if (pivot == null) {
+            return v;
+        } else {
+            int n = pivot.length;
+            Matrix V = Matrix.square(n);
+            for (int i = 0; i < rank; ++i) {
+                double sii = v.get(i, i);
+                V.set(pivot[i], pivot[i], sii);
+                for (int j = 0; j < i; ++j) {
+                    double sij = v.get(i, j);
+                    V.set(pivot[i], pivot[j], sij);
+                    V.set(pivot[j], pivot[i], sij);
+                }
+            }
+            return V;
+        }
+    }
 }

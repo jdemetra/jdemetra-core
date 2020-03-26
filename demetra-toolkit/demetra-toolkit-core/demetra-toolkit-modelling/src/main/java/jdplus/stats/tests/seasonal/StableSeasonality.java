@@ -1,17 +1,25 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2020 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package jdplus.stats.tests.seasonal;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.design.BuilderPattern;
 import demetra.design.Development;
-import jdplus.dstats.F;
-import jdplus.stats.tests.StatisticalTest;
-import jdplus.stats.tests.TestType;
+import jdplus.stats.tests.AnovaTest;
 
 /**
  * One way ANOVA test on seasonality. The treatments are the different periods.
@@ -19,97 +27,47 @@ import jdplus.stats.tests.TestType;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@Development(status = Development.Status.Alpha)
-@BuilderPattern(StatisticalTest.class)
+@Development(status = Development.Status.Release)
+@lombok.experimental.UtilityClass
 public class StableSeasonality {
 
-    private final double M, SSQ, SSR, SSM;
-    private final int N, DFM, DFR;
-
-    public StableSeasonality(DoubleSeq ts, int period) {
+    /**
+     *
+     * @param series Sequence of data
+     * @param period Tested periodicity
+     * @return
+     */
+    public static AnovaTest of(DoubleSeq series, int period) {
         // compute mean
-        M = ts.average();
-        N = ts.length();
-        DFM = period - 1;
-        DFR = N - period;
+        double mm = series.average();
+
         // compute total SSQ
-        double ssq = 0;
-        int n = ts.length();
-        DoubleSeqCursor reader = ts.cursor();
+        double SSQ = 0.0;
+        int n = series.length();
+        DoubleSeqCursor reader = series.cursor();
         for (int i = 0; i < n; i++) {
             double cur = reader.getAndNext();
-            ssq += (cur - M) * (cur - M);
+            SSQ += (cur - mm) * (cur - mm);
         }
-        SSQ = ssq;
-        // compute SS of seasonality factors
 
-        double ssm = 0;
+        // compute SS of seasonality factors
+        double SSM = 0;
         for (int i = 0; i < period; ++i) {
             double s = 0;
             int nc = 0;
             for (int j = i; j < n; j += period) {
-                s += ts.get(j);
+                s += series.get(j);
                 ++nc;
             }
             double mmj = s / nc;
-            ssm += (mmj - M) * (mmj - M) * nc;
+            SSM += (mmj - mm) * (mmj - mm) * nc;
         }
-        SSM = ssm;
 
-        SSR = Math.max(0, SSQ - SSM);
-    }
-
-    /**
-     * @return the M
-     */
-    public double getM() {
-        return M;
-    }
-
-    /**
-     * @return the SSQ
-     */
-    public double getSSQ() {
-        return SSQ;
-    }
-
-    /**
-     * @return the SSM
-     */
-    public double getSSM() {
-        return SSM;
-    }
-
-    /**
-     * @return the SSR
-     */
-    public double getSSR() {
-        return SSR;
-    }
-
-    /**
-     * @return the N
-     */
-    public int getN() {
-        return N;
-    }
-
-    /**
-     * @return the DFM
-     */
-    public int getDFM() {
-        return DFM;
-    }
-
-    /**
-     * @return the DFR
-     */
-    public int getDFR() {
-        return DFR;
-    }
-
-    public StatisticalTest build() {
-        F f = new F(DFM, DFR);
-        return new StatisticalTest(f, (SSM / DFM) * (DFR / SSR), TestType.Upper, true);
+        double SSR = SSQ - SSM;
+        if (SSR < 0) {
+            SSR = 0;
+        }
+        return new AnovaTest(SSM, period - 1, SSR,
+                n - period);
     }
 }

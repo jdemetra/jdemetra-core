@@ -26,12 +26,11 @@ import jdplus.stats.tests.StatisticalTest;
 import jdplus.stats.tests.TestType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixFactory;
 
 /**
- *
+ * TODO: create tests with robust covariance matrix
  * @author Jean Palate
  */
 @BuilderPattern(StatisticalTest.class)
@@ -123,8 +122,10 @@ public class JointTest {
     private Matrix rwr() {
         if (coef != null) {
             return MatrixFactory.select(bvar, coef, coef);
-        } else {
+        } else if (R != null){
             return SymmetricMatrix.XSXt(bvar, R);
+        } else{
+            return bvar.deepClone();
         }
     }
 
@@ -135,11 +136,13 @@ public class JointTest {
             for (int i = 0; i < rb.length; ++i) {
                 rb[i] = b.get(coef[i]);
             }
-        } else {
+        } else if (R != null){
             rb = new double[R.getRowsCount()];
             for (int i = 0; i < rb.length; ++i) {
                 rb[i] = R.row(i).dot(b) - alpha.get(i);
             }
+        }else{
+            rb=b.toArray();
         }
         return DataBlock.of(rb);
     }

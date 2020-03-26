@@ -138,7 +138,7 @@ public final class SeriesDecomposition<T> {
                 return cmps.get(cmp);
         }
     }
-
+    
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

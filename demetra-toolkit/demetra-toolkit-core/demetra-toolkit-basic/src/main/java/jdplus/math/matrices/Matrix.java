@@ -96,11 +96,17 @@ public final class Matrix implements MatrixType.Mutable {
     public static final Matrix EMPTY = new Matrix(Doubles.EMPTYARRAY, 0, 0);
 
     public static Matrix square(int n) {
+        if (n == 0) {
+            return Matrix.EMPTY;
+        }
         double[] data = new double[n * n];
         return new Matrix(data, n, n);
     }
 
     public static Matrix make(int nrows, int ncols) {
+        if (nrows == 0 || ncols == 0) {
+            return Matrix.EMPTY;
+        }
         double[] data = new double[nrows * ncols];
         return new Matrix(data, nrows, ncols);
     }

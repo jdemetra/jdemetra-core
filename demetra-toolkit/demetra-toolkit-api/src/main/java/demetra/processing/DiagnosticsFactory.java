@@ -22,7 +22,7 @@ import java.util.List;
 /**
  *
  * @author Jean Palate
- * @param <R>
+ * @param <R> Original result
  */
 public interface DiagnosticsFactory <R>{
 
@@ -38,5 +38,5 @@ public interface DiagnosticsFactory <R>{
      */
     List<String> getTestDictionary();
     
-    Diagnostics create(R rslts);
+    Diagnostics create(R results);
 }

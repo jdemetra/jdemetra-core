@@ -41,7 +41,7 @@ public class TramoSeatsKernel {
         return (s, logs) -> {
             TsData sc = s.select(transform.getSpan());
             if (transform.isPreliminaryCheck()) {
-                jdplus.sa.diagnostics.PreliminaryChecks.testSeries(sc);
+                jdplus.sa.PreliminaryChecks.testSeries(sc);
             }
             return sc;
         };
