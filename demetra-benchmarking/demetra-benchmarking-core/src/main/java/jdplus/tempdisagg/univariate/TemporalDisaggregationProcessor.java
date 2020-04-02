@@ -11,7 +11,6 @@ import jdplus.arima.ssf.Rw;
 import jdplus.benchmarking.ssf.SsfCumulator;
 import demetra.data.AggregationType;
 import jdplus.data.DataBlock;
-import jdplus.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.stats.ProbabilityType;
 import jdplus.dstats.T;
@@ -49,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import demetra.data.Parameter;
 import demetra.data.ParameterEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.tempdisagg.univariate.ResidualsDiagnostics;
@@ -500,7 +500,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
 
         @Override
         public Parameter map(DoubleSeq p) {
-            return new Parameter(p.get(0), ParameterType.Estimated); //To change body of generated methods, choose Tools | Templates.
+            return Parameter.estimated(p.get(0)); 
         }
 
         @Override

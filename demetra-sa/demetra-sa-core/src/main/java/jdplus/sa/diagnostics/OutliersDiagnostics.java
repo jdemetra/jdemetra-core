@@ -57,8 +57,8 @@ public final class OutliersDiagnostics implements Diagnostics {
             return;
         }
         n = y.length();
-        prespecifiedOutliers = (int) (Arrays.stream(rslts.getPreadjustmentVariables()).filter(var -> var.isOutlier()).count()
-                + Arrays.stream(rslts.getVariables()).filter(var -> var.isOutlier(true)).count());
+        
+        prespecifiedOutliers = (int) Arrays.stream(rslts.getVariables()).filter(var -> var.isOutlier(true)).count();
         detectedOutliers = (int) Arrays.stream(rslts.getVariables()).filter(var -> var.isOutlier(false)).count();
     }
 

@@ -16,7 +16,7 @@
  */
 package jdplus.regsarima.regular;
 
-import jdplus.data.Parameter;
+import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
 import jdplus.math.linearfilters.BackFilter;
@@ -28,6 +28,7 @@ import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import java.util.Arrays;
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
 
 /**
  *
@@ -50,31 +51,31 @@ public class SarimaComponent {
         d = other.d;
         bd = other.bd;
         period = other.period;
-        phi = Parameter.clone(other.phi);
-        bphi = Parameter.clone(other.bphi);
-        theta = Parameter.clone(other.theta);
-        btheta = Parameter.clone(other.btheta);
+        phi = other.phi == null ? null : other.phi.clone();
+        bphi = other.bphi == null ? null : other.bphi.clone();
+        theta = other.theta == null ? null : other.theta.clone();
+        btheta = other.btheta == null ? null : other.btheta.clone();
     }
 
     public void setParameterType(ParameterType type) {
         if (phi != null) {
             for (int i = 0; i < phi.length; ++i) {
-                phi[i].setType(type);
+                phi[i] = phi[i].withType(type);
             }
         }
         if (bphi != null) {
             for (int i = 0; i < bphi.length; ++i) {
-                bphi[i].setType(type);
+                bphi[i] = bphi[i].withType(type);
             }
         }
         if (theta != null) {
             for (int i = 0; i < theta.length; ++i) {
-                theta[i].setType(type);
+                theta[i] = theta[i].withType(type);
             }
         }
         if (btheta != null) {
             for (int i = 0; i < btheta.length; ++i) {
-                btheta[i].setType(type);
+                btheta[i] = btheta[i].withType(type);
             }
         }
     }
@@ -87,51 +88,32 @@ public class SarimaComponent {
         if (phi != null) {
             for (int i = 0; i < phi.length; ++i) {
                 if (phi[i] == null || !phi[i].isFixed()) {
-                    phi[i].setType(ParameterType.Undefined);
+                    phi[i] = Parameter.undefined();
                 }
             }
         }
         if (bphi != null) {
             for (int i = 0; i < bphi.length; ++i) {
                 if (bphi[i] == null || !bphi[i].isFixed()) {
-                    bphi[i].setType(ParameterType.Undefined);
+                    bphi[i] = Parameter.undefined();
                 }
             }
         }
         if (theta != null) {
             for (int i = 0; i < theta.length; ++i) {
                 if (theta[i] == null || !theta[i].isFixed()) {
-                    theta[i].setType(ParameterType.Undefined);
+                    theta[i] = Parameter.undefined();
                 }
             }
         }
         if (btheta != null) {
             for (int i = 0; i < btheta.length; ++i) {
                 if (btheta[i] == null || !btheta[i].isFixed()) {
-                    btheta[i].setType(ParameterType.Undefined);
+                    btheta[i] = Parameter.undefined();
                 }
             }
         }
 
-    }
-
-    public void updateParameters(SarimaComponent aspec) {
-        updateParameters(phi, aspec.phi);
-        updateParameters(theta, aspec.theta);
-        updateParameters(bphi, aspec.bphi);
-        updateParameters(btheta, aspec.btheta);
-    }
-
-    private void updateParameters(Parameter[] target, Parameter[] source) {
-        if (target == null || source == null || target.length != source.length) {
-            return;
-        }
-        for (int i = 0; i < target.length; ++i) {
-            if ((target[i] == null || target[i].getType() != ParameterType.Fixed)
-                    && source[i] != null) {
-                target[i] = source[i].clone();
-            }
-        }
     }
 
     public void airline(int freq) {
@@ -149,7 +131,7 @@ public class SarimaComponent {
     }
 
     public void setP(int value) {
-        phi = Parameter.create(value);
+        phi = Parameter.make(value);
     }
 
     public int getD() {
@@ -165,7 +147,7 @@ public class SarimaComponent {
     }
 
     public void setQ(int value) {
-        theta = Parameter.create(value);
+        theta = Parameter.make(value);
     }
 
     /// <summary>Seasonal frequency</summary>
@@ -192,7 +174,7 @@ public class SarimaComponent {
     }
 
     public void setBp(int value) {
-        bphi = Parameter.create(value);
+        bphi = Parameter.make(value);
     }
 
     public int getBd() {
@@ -208,7 +190,7 @@ public class SarimaComponent {
     }
 
     public void setBq(int value) {
-        btheta = Parameter.create(value);
+        btheta = Parameter.make(value);
     }
 
     public Parameter[] getPhi() {
@@ -216,7 +198,7 @@ public class SarimaComponent {
     }
 
     public void setPhi(Parameter[] value) {
-        phi = Parameter.clone(value);
+        phi = value == null ? null : value.clone();
     }
 
     public Parameter[] getTheta() {
@@ -224,7 +206,7 @@ public class SarimaComponent {
     }
 
     public void setTheta(Parameter[] value) {
-        theta = Parameter.clone(value);
+        theta = value == null ? null : value.clone();
     }
 
     public Parameter[] getBphi() {
@@ -232,7 +214,7 @@ public class SarimaComponent {
     }
 
     public void setBphi(Parameter[] value) {
-        bphi = Parameter.clone(value);
+        bphi = value == null ? null : value.clone();
     }
 
     public Parameter[] getBtheta() {
@@ -240,7 +222,7 @@ public class SarimaComponent {
     }
 
     public void setBtheta(Parameter[] value) {
-        btheta = Parameter.clone(value);
+        btheta = value == null ? null : value.clone();
     }
 
     public int getDifferencingOrder() {
@@ -329,7 +311,7 @@ public class SarimaComponent {
 
         return spec;
     }
-    
+
     public boolean isDefined() {
         return Parameter.isDefined(phi) && Parameter.isDefined(theta)
                 && Parameter.isDefined(bphi) && Parameter.isDefined(btheta);
@@ -361,19 +343,19 @@ public class SarimaComponent {
         period = spec.getPeriod();
         Parameter[] p = phi;
         for (int i = 0; i < spec.getP(); ++i) {
-            p[i] = new Parameter(value.phi(i + 1), ParameterType.Estimated);
+            p[i] = Parameter.estimated(value.phi(i + 1));
         }
         p = theta;
         for (int i = 0; i < spec.getQ(); ++i) {
-            p[i] = new Parameter(value.theta(i + 1), ParameterType.Estimated);
+            p[i] = Parameter.estimated(value.theta(i + 1));
         }
         p = bphi;
         for (int i = 0; i < spec.getBp(); ++i) {
-            p[i] = new Parameter(value.bphi(i + 1), ParameterType.Estimated);
+            p[i] = Parameter.estimated(value.bphi(i + 1));
         }
         p = btheta;
         for (int i = 0; i < spec.getBq(); ++i) {
-            p[i] = new Parameter(value.btheta(i + 1), ParameterType.Estimated);
+            p[i] = Parameter.estimated(value.btheta(i + 1));
         }
     }
 
@@ -382,27 +364,29 @@ public class SarimaComponent {
     }
 
     public int getFreeParametersCount() {
-        int n = Parameter.countFreeParameters(phi);
-        n += Parameter.countFreeParameters(bphi);
-        n += Parameter.countFreeParameters(theta);
-        n += Parameter.countFreeParameters(btheta);
+        int n = Parameter.freeParametersCount(phi);
+        n += Parameter.freeParametersCount(bphi);
+        n += Parameter.freeParametersCount(theta);
+        n += Parameter.freeParametersCount(btheta);
         return n;
     }
 
     public int getFixedParametersCount() {
-        int n = Parameter.countFixedParameters(phi);
-        n += Parameter.countFixedParameters(bphi);
-        n += Parameter.countFixedParameters(theta);
-        n += Parameter.countFixedParameters(btheta);
+        int n = Parameter.fixedParametersCount(phi);
+        n += Parameter.fixedParametersCount(bphi);
+        n += Parameter.fixedParametersCount(theta);
+        n += Parameter.fixedParametersCount(btheta);
         return n;
     }
 
     /**
      * Returns the p constraints, using the order defined in Tramo: regular AR,
      * seasonal AR, regular MA, seasonal MA
-     * 
-     * @return An array of boolean corresponding to all the parameters. Yhe item i of 
-     * the array is true if the corresponding parameter is fixed, false otherwise.
+     *
+     * @return An array of boolean corresponding to all the parameters. Yhe item
+     * i of
+     * the array is true if the corresponding parameter is fixed, false
+     * otherwise.
      */
     public boolean[] fixedConstraints() {
         int n = getParametersCount();
@@ -480,45 +464,33 @@ public class SarimaComponent {
         return p;
     }
 
-    public void setFreeParameters(DoubleSeq p, ParameterType type) {
-        int j = 0;
+    public void setFreeParameters(DoubleSeq p) {
+        DoubleSeqCursor cursor = p.cursor();
         if (phi != null) {
-            for (int i = 0; i < phi.length; ++i, ++j) {
-                if (phi[i] == null) {
-                    phi[i] = new Parameter(p.get(j), type);
-                } else if (!phi[i].isFixed()) {
-                    phi[i].setValue(p.get(j));
-                    phi[i].setType(type);
+            for (int i = 0; i < phi.length; ++i) {
+                if (!phi[i].isFixed()) {
+                    phi[i] = Parameter.estimated(cursor.getAndNext());
                 }
             }
         }
         if (bphi != null) {
-            for (int i = 0; i < bphi.length; ++i, ++j) {
-                if (bphi[i] == null) {
-                    bphi[i] = new Parameter(p.get(j), type);
-                } else if (!bphi[i].isFixed()) {
-                    bphi[i].setValue(p.get(j));
-                    bphi[i].setType(type);
+            for (int i = 0; i < bphi.length; ++i) {
+                if (!bphi[i].isFixed()) {
+                    bphi[i] = Parameter.estimated(cursor.getAndNext());
                 }
             }
         }
         if (theta != null) {
-            for (int i = 0; i < theta.length; ++i, ++j) {
-                if (theta[i] == null) {
-                    theta[i] = new Parameter(p.get(j), type);
-                } else if (!theta[i].isFixed()) {
-                    theta[i].setValue(p.get(j));
-                    theta[i].setType(type);
+            for (int i = 0; i < theta.length; ++i) {
+                if (!theta[i].isFixed()) {
+                    theta[i] = Parameter.estimated(cursor.getAndNext());
                 }
             }
         }
         if (btheta != null) {
-            for (int i = 0; i < btheta.length; ++i, ++j) {
-                if (btheta[i] == null) {
-                    btheta[i] = new Parameter(p.get(j), type);
-                } else if (!btheta[i].isFixed()) {
-                    btheta[i].setValue(p.get(j));
-                    btheta[i].setType(type);
+            for (int i = 0; i < btheta.length; ++i) {
+                if (!btheta[i].isFixed()) {
+                    btheta[i] = Parameter.estimated(cursor.getAndNext());
                 }
             }
         }

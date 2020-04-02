@@ -117,12 +117,12 @@ public class CalendarEffectsDetectionModule implements IRegressionModule {
         }
 
         ModelDescription tddesc = ModelDescription.copyOf(ntddesc);
-        tddesc.addVariable(new Variable(td, "td", false));
+        tddesc.addVariable(Variable.variable("td", td));
         if (lp != null) {
             if (tddesc.isLogTransformation() && adjust != LengthOfPeriodType.None) {
                 tddesc.setPreadjustment(adjust);
             } else {
-                tddesc.addVariable(new Variable(lp, "lp", false));
+                tddesc.addVariable(Variable.variable("lp", lp));
             }
         }
 

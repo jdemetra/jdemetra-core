@@ -20,6 +20,7 @@ import demetra.sa.ComponentType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.Variable;
 import java.util.function.Predicate;
 import jdplus.regsarima.regular.ModelEstimation;
 
@@ -65,7 +66,7 @@ public class RegArimaDecomposer {
         final ITsVariable[] vars = mapping.forComponentType(type);
         TsData f = getModel().deterministicEffect(domain, v -> {
             for (int i = 0; i < vars.length; ++i) {
-                if (v == vars[i]) {
+                if (v.getVariable() == vars[i]) {
                     return true;
                 }
             }
@@ -91,14 +92,14 @@ public class RegArimaDecomposer {
      * @param test The selection test
      * @return
      */
-    public TsData deterministicEffect(TsDomain domain, ComponentType type, boolean transformed, Predicate<ITsVariable> test) {
+    public TsData deterministicEffect(TsDomain domain, ComponentType type, boolean transformed, Predicate<Variable> test) {
         final ITsVariable[] vars = mapping.forComponentType(type);
         TsData f = getModel().deterministicEffect(domain, v -> {
             if (!test.test(v)) {
                 return false;
             }
             for (int i = 0; i < vars.length; ++i) {
-                if (v == vars[i]) {
+                if (v.getVariable() == vars[i]) {
                     return true;
                 }
             }

@@ -27,7 +27,8 @@ import demetra.data.ParameterType;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public final class Parameter implements Cloneable, Comparable<Parameter> {
+@Deprecated
+public final class OldParameter implements Cloneable, Comparable<OldParameter> {
 
     private double value;
     private ParameterType type;
@@ -38,11 +39,11 @@ public final class Parameter implements Cloneable, Comparable<Parameter> {
      * @param value The parameters being copied
      * @return A new array of parameters is returned (deep copy)
      */
-    public static Parameter[] clone(Parameter[] value) {
+    public static OldParameter[] clone(OldParameter[] value) {
         if (value==null) {
             return null;
         }
-        Parameter[] p = new Parameter[value.length];
+        OldParameter[] p = new OldParameter[value.length];
         for (int i = 0; i < value.length; ++i) {
             if (value[i] != null) {
                 p[i] = value[i].clone();
@@ -51,7 +52,7 @@ public final class Parameter implements Cloneable, Comparable<Parameter> {
         return p;
     }
     
-    public static Parameter clone(Parameter p){
+    public static OldParameter clone(OldParameter p){
         return p == null ? null : p.clone();
     }
 
@@ -61,13 +62,13 @@ public final class Parameter implements Cloneable, Comparable<Parameter> {
      * @return An array of n parameters. They are all set to the default value
      * (undefined type). Returns null for n = 0.
      */
-    public static Parameter[] create(int n) {
+    public static OldParameter[] create(int n) {
         if (n == 0) {
             return null;
         }
-        Parameter[] p = new Parameter[n];
+        OldParameter[] p = new OldParameter[n];
         for (int i = 0; i < n; ++i) {
-            p[i] = new Parameter();
+            p[i] = new OldParameter();
         }
         return p;
     }
@@ -77,7 +78,7 @@ public final class Parameter implements Cloneable, Comparable<Parameter> {
      * @param p The array of parameters. May be null.
      * @return True if some item of the array is fixed
      */
-    public static boolean hasFixedParameters(Parameter[] p) {
+    public static boolean hasFixedParameters(OldParameter[] p) {
         if (p == null) {
             return false;
         }
@@ -94,7 +95,7 @@ public final class Parameter implements Cloneable, Comparable<Parameter> {
      * @param p The array of parameters. May be null.
      * @return True if some item of the array is free (or null)
      */
-    public static boolean hasFreeParameters(Parameter[] p) {
+    public static boolean hasFreeParameters(OldParameter[] p) {
         if (p == null) {
             return false;
         }
@@ -111,7 +112,7 @@ public final class Parameter implements Cloneable, Comparable<Parameter> {
      * @param p The considered array of parameters. May be null. 
      * @return The number of fixed parameters (in [0, p.length[)
      */
-    public static int countFixedParameters(Parameter[] p) {
+    public static int countFixedParameters(OldParameter[] p) {
         if (p == null) {
             return 0;
         }
@@ -129,7 +130,7 @@ public final class Parameter implements Cloneable, Comparable<Parameter> {
      * @param p The considered array of parameter s. May be null.
      * @return The number of fixed parameters (in [0, p.length[)
      */
-   public static int countFreeParameters(Parameter[] p) {
+   public static int countFreeParameters(OldParameter[] p) {
         if (p == null) {
             return 0;
         }
@@ -148,7 +149,7 @@ public final class Parameter implements Cloneable, Comparable<Parameter> {
      * @param p The array of parameters. May be null;
      * @return True if all parameters are undefined (or null)
      */
-    public static boolean isDefault(Parameter[] p) {
+    public static boolean isDefault(OldParameter[] p) {
         if (p == null) {
             return true;
         }
@@ -160,7 +161,7 @@ public final class Parameter implements Cloneable, Comparable<Parameter> {
         return true;
     }
 
-    public static boolean isDefault(Parameter p) {
+    public static boolean isDefault(OldParameter p) {
         if (p == null) {
             return true;
         }
@@ -172,7 +173,7 @@ public final class Parameter implements Cloneable, Comparable<Parameter> {
      * @param p The array of parameters. May be null;
      * @return True if all parameters are defined (or null)
      */
-    public static boolean isDefined(Parameter[] p) {
+    public static boolean isDefined(OldParameter[] p) {
         if (p == null) {
             return true;
         }
@@ -190,7 +191,7 @@ public final class Parameter implements Cloneable, Comparable<Parameter> {
      * @param p
      * @return 
      */
-    public static boolean isDefined(Parameter p) {
+    public static boolean isDefined(OldParameter p) {
         return p != null && p.type != ParameterType.Undefined;
     }
     // / <summary></summary>
@@ -206,7 +207,7 @@ public final class Parameter implements Cloneable, Comparable<Parameter> {
      * @return True if some defined parameters are different from 0.
      * An empty array is considered as a 0-array (returns true).
      */
-    public static boolean isZero(Parameter[] p) {
+    public static boolean isZero(OldParameter[] p) {
         if (p == null) {
             return true;
         }
@@ -221,7 +222,7 @@ public final class Parameter implements Cloneable, Comparable<Parameter> {
     /**
      * Creates a new undefined parameter
      */
-    public Parameter() {
+    public OldParameter() {
         type = ParameterType.Undefined;
     }
 
@@ -230,27 +231,27 @@ public final class Parameter implements Cloneable, Comparable<Parameter> {
      * @param value The value of the parameter
      * @param type The type of the parameter
      */
-    public Parameter(double value, ParameterType type) {
+    public OldParameter(double value, ParameterType type) {
         this.type = type;
         this.value = value;
     }
 
     @Override
-    public Parameter clone() {
+    public OldParameter clone() {
         try {
-            return (Parameter) super.clone();
+            return (OldParameter) super.clone();
         } catch (CloneNotSupportedException err) {
             throw new AssertionError();
         }
     }
 
-    public void copy(Parameter mu) {
+    public void copy(OldParameter mu) {
         this.value=mu.value;
         this.type=mu.type;
     }
 
     @Override
-    public int compareTo(Parameter p) {
+    public int compareTo(OldParameter p) {
         int r = Double.compare(value, p.value);
         if (r != 0) {
             return r;
@@ -261,10 +262,10 @@ public final class Parameter implements Cloneable, Comparable<Parameter> {
 
     @Override
     public boolean equals(Object obj) {
-        return this == obj || (obj instanceof Parameter && equals((Parameter) obj));
+        return this == obj || (obj instanceof OldParameter && equals((OldParameter) obj));
     }
     
-    public boolean equals(Parameter other) {
+    public boolean equals(OldParameter other) {
         return value == other.value && type == other.type;
     }
 

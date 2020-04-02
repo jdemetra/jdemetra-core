@@ -16,7 +16,7 @@
  */
 package jdplus.x13.regarima;
 
-import demetra.data.ParameterSpec;
+import demetra.data.Parameter;
 import demetra.regarima.EasterSpec;
 import demetra.regarima.RegressionSpec;
 import demetra.regarima.RegArimaSpec;
@@ -25,7 +25,6 @@ import demetra.regarima.TransformSpec;
 import jdplus.data.interpolation.AverageInterpolator;
 import demetra.design.Development;
 import demetra.information.InformationSet;
-import demetra.timeseries.regression.PreadjustmentVariable;
 import demetra.modelling.RegressionTestSpec;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.regression.Variable;
@@ -64,7 +63,7 @@ import demetra.arima.SarimaSpec;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.GenericTradingDays;
 import java.util.List;
-import jdplus.data.Parameter;
+import jdplus.data.OldParameter;
 
 /**
  *
@@ -97,25 +96,15 @@ class X13ModelBuilder implements IModelBuilder {
             SarimaComponent cmp = model.getArimaComponent();
             SarimaSpec arima = spec.getArima();
             cmp.setPeriod(freq);
-            cmp.setPhi(toParameters(arima.getPhi()));
-            cmp.setTheta(toParameters(arima.getTheta()));
+            cmp.setPhi(arima.getPhi());
+            cmp.setTheta(arima.getTheta());
             cmp.setD(arima.getD());
             if (!yearly) {
-                cmp.setBphi(toParameters(arima.getBphi()));
-                cmp.setBtheta(toParameters(arima.getBtheta()));
+                cmp.setBphi(arima.getBphi());
+                cmp.setBtheta(arima.getBtheta());
                 cmp.setBd(arima.getBd());
             }
         }
-    }
-
-    private Parameter[] toParameters(ParameterSpec[] p){
-        if (p == null)
-            return null;
-        Parameter[] np=new Parameter[p.length];
-        for (int i=0; i<np.length; ++i){
-            np[i]=new Parameter(p[i].getValue(), p[i].getType());
-        }
-        return np;
     }
 
     private void initializeVariables(ModelDescription model, RegressionSpec regSpec) {
@@ -219,9 +208,9 @@ class X13ModelBuilder implements IModelBuilder {
                 String name = IOutlier.defaultName(code, pos, model.getEstimationDomain());
                 double[] c = preadjustment.get(name);
                 if (c != null) {
-                    model.addPreadjustmentVariable(new PreadjustmentVariable(v, name, c));
+                    model.addVariable(Variable.preadjustmentVariable(name, v, c));
                 } else {
-                    model.addVariable(new Variable(v, name, true));
+                    model.addVariable(Variable.prespecifiedVariable(name, v));
                 }
             }
         }
@@ -332,9 +321,12 @@ class X13ModelBuilder implements IModelBuilder {
         }
         double[] c = preadjustment.get(name);
         if (c != null) {
-            model.addPreadjustmentVariable(new PreadjustmentVariable(var, name, c));
-        } else {
-            model.addVariable(new Variable(var, name, prespecified));
+            model.addVariable(Variable.preadjustmentVariable(name, var, c));
+        } else if (prespecified){
+            model.addVariable(Variable.prespecifiedVariable(name, var));
+        } else{
+            model.addVariable(Variable.variable(name, var));
+            
         }
 
     }

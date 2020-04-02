@@ -22,7 +22,7 @@ import demetra.sa.ComponentType;
 import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;
 import jdplus.ucarima.UcarimaModel;
-import demetra.data.ParameterSpec;
+import demetra.data.Parameter;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.sa.SeriesDecomposition;
 import demetra.seats.SeatsModelSpec;
@@ -64,10 +64,10 @@ public class SeatsModel {
         SarimaSpec sarimaSpec = spec.getSarimaSpec();
         SarimaOrders orders = sarimaSpec.specification(period);
         SarimaModel sarima = SarimaModel.builder(orders)
-                .phi(ParameterSpec.values(sarimaSpec.getPhi()))
-                .bphi(ParameterSpec.values(sarimaSpec.getBphi()))
-                .theta(ParameterSpec.values(sarimaSpec.getTheta()))
-                .btheta(ParameterSpec.values(sarimaSpec.getBtheta()))
+                .phi(Parameter.values(sarimaSpec.getPhi()))
+                .bphi(Parameter.values(sarimaSpec.getBphi()))
+                .theta(Parameter.values(sarimaSpec.getTheta()))
+                .btheta(Parameter.values(sarimaSpec.getBtheta()))
                 .build();
         SeasonalityDetector detector = new TramoSeasonalityDetector();
         SeasonalityDetector.Seasonality seas = detector.hasSeasonality(nseries.getValues(), period);
@@ -88,10 +88,10 @@ public class SeatsModel {
         }
         SarimaOrders orders = sarimaSpec.specification(period);
         SarimaModel sarima = SarimaModel.builder(orders)
-                .phi(ParameterSpec.values(sarimaSpec.getPhi()))
-                .bphi(ParameterSpec.values(sarimaSpec.getBphi()))
-                .theta(ParameterSpec.values(sarimaSpec.getTheta()))
-                .btheta(ParameterSpec.values(sarimaSpec.getBtheta()))
+                .phi(Parameter.values(sarimaSpec.getPhi()))
+                .bphi(Parameter.values(sarimaSpec.getBphi()))
+                .theta(Parameter.values(sarimaSpec.getTheta()))
+                .btheta(Parameter.values(sarimaSpec.getBtheta()))
                 .build();
         RegArimaModel regarima = RegArimaModel.<SarimaModel>builder()
                 .y(nseries.getValues())

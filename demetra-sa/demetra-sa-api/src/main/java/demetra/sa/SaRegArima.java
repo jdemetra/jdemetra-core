@@ -17,10 +17,8 @@
 package demetra.sa;
 
 import demetra.arima.SarimaSpec;
-import demetra.data.ParameterSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.regression.ITsVariable;
 
 /**
  *

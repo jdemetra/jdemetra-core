@@ -48,12 +48,12 @@ public class ModelEstimationTest {
         model.setLogTransformation(true);
         model.setPreadjustment(LengthOfPeriodType.LeapYear);
         GenericTradingDaysVariable td = new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD3));
-        model.addVariable(new Variable(td, "td", true));
+        model.addVariable(Variable.variable("td", td));
         EasterVariable easter = EasterVariable.builder()
                 .duration(6)
                 .meanCorrection(EasterVariable.Correction.Theoretical)
                 .build();
-        model.addVariable(new Variable(easter, "easter", true));
+        model.addVariable(Variable.variable("easter", easter));
         ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.PROCESSOR);
         List<TsData> all = new ArrayList<>();
         all.add(rslt.getOriginalSeries());
@@ -70,12 +70,12 @@ public class ModelEstimationTest {
         model.setLogTransformation(true);
         model.setPreadjustment(LengthOfPeriodType.LeapYear);
         GenericTradingDaysVariable td = new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD3));
-        model.addVariable(new Variable(td, "td", true));
+        model.addVariable(Variable.variable("td", td));
         EasterVariable easter = EasterVariable.builder()
                 .duration(6)
                 .meanCorrection(EasterVariable.Correction.Theoretical)
                 .build();
-        model.addVariable(new Variable(easter, "easter", true));
+        model.addVariable(Variable.variable("easter", easter));
         ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.PROCESSOR);
         List<TsData> all = new ArrayList<>();
         all.add(rslt.getOriginalSeries());
@@ -95,12 +95,12 @@ public class ModelEstimationTest {
         model.setLogTransformation(true);
         model.setPreadjustment(LengthOfPeriodType.LeapYear);
         GenericTradingDaysVariable td = new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD3));
-        model.addVariable(new Variable(td, "td", true));
+        model.addVariable(Variable.variable("td", td));
         EasterVariable easter = EasterVariable.builder()
                 .duration(6)
                 .meanCorrection(EasterVariable.Correction.Theoretical)
                 .build();
-        model.addVariable(new Variable(easter, "easter", true));
+        model.addVariable(Variable.variable("easter", easter));
         ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.PROCESSOR);
         List<TsData> all = new ArrayList<>();
         all.add(rslt.getOriginalSeries());
@@ -120,20 +120,20 @@ public class ModelEstimationTest {
         model.setLogTransformation(true);
         model.setPreadjustment(LengthOfPeriodType.LeapYear);
         GenericTradingDaysVariable td = new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD3));
-        model.addVariable(new Variable(td, "td", true));
+        model.addVariable(Variable.variable("td", td));
         EasterVariable easter = EasterVariable.builder()
                 .duration(6)
                 .meanCorrection(EasterVariable.Correction.Theoretical)
                 .build();
-        model.addVariable(new Variable(easter, "easter", true));
+        model.addVariable(Variable.variable("easter", easter));
         ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.PROCESSOR);
         List<TsData> all = new ArrayList<>();
         all.add(rslt.getOriginalSeries());
         all.add(rslt.interpolatedSeries(false));
         all.add(rslt.linearizedSeries());
         // Test regression effects
-        TsData tde = rslt.regressionEffect2(rslt.getEstimationDomain().drop(-50, -100), var -> var.isTradingDays());
-        TsData ee = rslt.regressionEffect2(rslt.getEstimationDomain().drop(-50, -100), var -> var.isMovingHolidays());
+        TsData tde = rslt.regressionEffect(rslt.getEstimationDomain().drop(-50, -100), var -> var.isTradingDays());
+        TsData ee = rslt.regressionEffect(rslt.getEstimationDomain().drop(-50, -100), var -> var.isMovingHolidays());
         TsData rege = rslt.regressionEffect(rslt.getEstimationDomain().drop(-50, -100), var -> true);
         all.add(tde);
         all.add(ee);

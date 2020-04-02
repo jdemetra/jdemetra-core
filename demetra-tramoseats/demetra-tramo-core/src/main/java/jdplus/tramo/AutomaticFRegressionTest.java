@@ -195,13 +195,13 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         tmp.setAirline(true);
         tmp.setMean(true);
         if (td != null) {
-            tmp.addVariable(new Variable(td, "td", false));
+            tmp.addVariable(Variable.variable("td", td));
             if (lp != null) {
-                tmp.addVariable(new Variable(lp, "lp", false));
+                tmp.addVariable(Variable.variable("lp", lp));
             }
         }
         if (easter != null) {
-            tmp.addVariable(new Variable(easter, "easter", false));
+            tmp.addVariable(Variable.variable("easter", easter));
         }
         return tmp;
     }
@@ -209,7 +209,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
     private ProcessingResult update(ModelDescription current, ModelDescription test, ITradingDaysVariable aTd, ConcentratedLikelihoodWithMissing ll, int nhp) {
         boolean changed = false;
         if (aTd != null) {
-            current.addVariable(new Variable(aTd, "td", false));
+            current.addVariable(Variable.variable("td", aTd));
         }
         if (testMean) {
             boolean mean = Math.abs(ll.tstat(0, nhp, true)) > tmean;
@@ -221,14 +221,14 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         if (aTd != null && lp != null) {
             int pos = test.findPosition(lp);
             if (Math.abs(ll.tstat(pos, nhp, true)) > tlp) {
-                current.addVariable(new Variable(lp, "lp", false));
+                current.addVariable(Variable.variable("lp", lp));
                 changed = true;
             }
         }
         if (easter != null) {
             int pos = test.findPosition(easter);
             if (Math.abs(ll.tstat(pos, nhp, true)) > teaster) {
-                current.addVariable(new Variable(easter, "easter", false));
+                current.addVariable(Variable.variable("easter", easter));
                 changed = true;
             }
         }

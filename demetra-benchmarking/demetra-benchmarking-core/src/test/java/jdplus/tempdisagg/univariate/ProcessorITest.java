@@ -8,7 +8,7 @@ package jdplus.tempdisagg.univariate;
 import demetra.data.AggregationType;
 import demetra.data.Data;
 import demetra.data.Doubles;
-import demetra.data.ParameterSpec;
+import demetra.data.Parameter;
 import demetra.tempdisagg.univariate.TemporalDisaggregationIResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationISpec;
 import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
@@ -57,7 +57,7 @@ public class ProcessorITest {
                 .residualsModel(TemporalDisaggregationSpec.Model.Ar1)
                 .constant(true)
                 .truncatedRho(.5)
-                .parameter(ParameterSpec.initial(.6))
+                .parameter(Parameter.initial(.6))
                 .build();
         TsData y = TsData.of(TsPeriod.yearly(1978), Doubles.of(Data.PCRA));
         TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
@@ -72,7 +72,7 @@ public class ProcessorITest {
                 .aggregationType(AggregationType.Sum)
                 .residualsModel(TemporalDisaggregationSpec.Model.Ar1)
                 .constant(true)
-                .parameter(ParameterSpec.fixed(.6))
+                .parameter(Parameter.fixed(.6))
                 .build();
         TsData y = TsData.of(TsPeriod.yearly(1978), Doubles.of(Data.PCRA));
         TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));

@@ -24,6 +24,7 @@ import demetra.design.Development;
  */
 @lombok.Value
 @Development(status = Development.Status.Preliminary)
+@Deprecated
 public class ParameterEstimation {
     /**
      * Value of the parameter

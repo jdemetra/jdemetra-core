@@ -16,11 +16,10 @@
  */
 package jdplus.tramo;
 
-import demetra.data.ParameterSpec;
+import demetra.data.Parameter;
 import jdplus.data.interpolation.AverageInterpolator;
 import demetra.design.Development;
 import demetra.information.InformationSet;
-import demetra.timeseries.regression.PreadjustmentVariable;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.regression.Variable;
 import demetra.timeseries.regression.AdditiveOutlier;
@@ -64,7 +63,7 @@ import demetra.tramo.RegressionSpec;
 import demetra.tramo.TradingDaysSpec;
 import demetra.tramo.TramoSpec;
 import demetra.tramo.TransformSpec;
-import jdplus.data.Parameter;
+import jdplus.data.OldParameter;
 
 /**
  *
@@ -85,16 +84,6 @@ class TramoModelBuilder implements IModelBuilder {
         }
     }
     
-    private static Parameter[] toParameters(ParameterSpec[] p){
-        if (p == null)
-            return null;
-        Parameter[] np=new Parameter[p.length];
-        for (int i=0; i<np.length; ++i){
-            np[i]=new Parameter(p[i].getValue(), p[i].getType());
-        }
-        return np;
-    }
-
     private void initializeArima(ModelDescription model) {
         int freq = model.getAnnualFrequency();
         boolean yearly = freq == 1;
@@ -104,12 +93,12 @@ class TramoModelBuilder implements IModelBuilder {
             SarimaComponent cmp = model.getArimaComponent();
             SarimaSpec arima = spec.getArima();
             cmp.setPeriod(freq);
-            cmp.setPhi(toParameters(arima.getPhi()));
-            cmp.setTheta(toParameters(arima.getTheta()));
+            cmp.setPhi(arima.getPhi());
+            cmp.setTheta(arima.getTheta());
             cmp.setD(arima.getD());
             if (!yearly) {
-                cmp.setBphi(toParameters(arima.getBphi()));
-                cmp.setBtheta(toParameters(arima.getBtheta()));
+                cmp.setBphi(arima.getBphi());
+                cmp.setBtheta(arima.getBtheta());
                 cmp.setBd(arima.getBd());
             }
         }
@@ -216,9 +205,9 @@ class TramoModelBuilder implements IModelBuilder {
                 String name = IOutlier.defaultName(code, pos, model.getEstimationDomain());
                 double[] c = preadjustment.get(name);
                 if (c != null) {
-                    model.addPreadjustmentVariable(new PreadjustmentVariable(v, name, c));
+                    model.addVariable(Variable.preadjustmentVariable(name, v, c));
                 } else {
-                    model.addVariable(new Variable(v, name, true));
+                    model.addVariable(Variable.prespecifiedVariable(name, v));
                 }
             }
         }
@@ -303,9 +292,9 @@ class TramoModelBuilder implements IModelBuilder {
         }
         double[] c = name == null ? null : preadjustment.get(name);
         if (c != null) {
-            model.addPreadjustmentVariable(new PreadjustmentVariable(var, name, c));
+            model.addVariable(Variable.preadjustmentVariable(name, var, c));
         } else {
-            model.addVariable(new Variable(var, name, true));
+            model.addVariable(Variable.prespecifiedVariable(name, var));
         }
 
     }

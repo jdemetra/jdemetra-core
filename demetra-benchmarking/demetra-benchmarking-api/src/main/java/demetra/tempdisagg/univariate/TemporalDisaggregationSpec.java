@@ -18,7 +18,7 @@ package demetra.tempdisagg.univariate;
 
 import demetra.processing.AlgorithmDescriptor;
 import demetra.data.AggregationType;
-import demetra.data.ParameterSpec;
+import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
 import demetra.timeseries.TimeSelector;
@@ -84,7 +84,7 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
     @lombok.NonNull
     private Model residualsModel;
     private boolean constant, trend;
-    private ParameterSpec parameter;
+    private Parameter parameter;
     @lombok.NonNull
     private TimeSelector estimationSpan;
     private boolean log, diffuseRegressors;
@@ -110,7 +110,7 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
                 .constant(true)
                 .estimationSpan(TimeSelector.all())
                 .maximumLikelihood(true)
-                .parameter(ParameterSpec.undefined())
+                .parameter(Parameter.undefined())
                 .estimationPrecision(DEF_EPS)
                 .algorithm(SsfInitialization.SqrtDiffuse)
                 .rescale(true);

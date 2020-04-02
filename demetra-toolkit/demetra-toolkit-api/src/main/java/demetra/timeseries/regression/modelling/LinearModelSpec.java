@@ -18,7 +18,6 @@ package demetra.timeseries.regression.modelling;
 
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.regression.PreadjustmentVariable;
 import demetra.timeseries.regression.Variable;
 
 /**
@@ -42,10 +41,6 @@ public class LinearModelSpec<M> {
      * Transformation for leap year or length of period
      */
     private LengthOfPeriodType lengthOfPeriodTransformation;
-    /**
-     * Pre-adjustment variables (with their corresponding coefficients)
-     */
-    private PreadjustmentVariable[] preadjustmentVariables;
 
     /**
      * Regression variables

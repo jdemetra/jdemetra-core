@@ -96,7 +96,7 @@ public class EasterDetectionModule implements IRegressionModule {
 
         for (int i = 0; i < n; ++i) {
             ModelDescription curDesc = ModelDescription.copyOf(refdesc);
-            curDesc.addVariable(new Variable(easters[i], "easter", false));
+            curDesc.addVariable(Variable.variable("easter", easters[i]));
             desc[i] = curDesc;
             est[i] = curDesc.estimate(processor);
         }

@@ -19,7 +19,6 @@ package jdplus.regsarima.regular;
 import demetra.timeseries.regression.Variable;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import demetra.data.DoubleSeqCursor;
 import jdplus.data.transformation.LogJacobian;
 import demetra.data.ParameterType;
 import jdplus.data.interpolation.DataInterpolator;
@@ -27,11 +26,9 @@ import demetra.design.Development;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.math.matrices.Matrix;
-import demetra.timeseries.regression.PreadjustmentVariable;
 import demetra.timeseries.regression.ITsVariable;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.IRegArimaProcessor;
-import jdplus.regarima.ami.TransformedSeries;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import demetra.timeseries.TsData;
@@ -41,13 +38,13 @@ import jdplus.timeseries.simplets.Transformations;
 import jdplus.timeseries.simplets.TsDataTransformation;
 import demetra.util.IntList;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
+import demetra.data.Parameter;
 import demetra.timeseries.TsException;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.regarima.RegArimaEstimation;
@@ -80,11 +77,6 @@ public final class ModelDescription {
     private boolean logTransformation;
     private LengthOfPeriodType lpTransformation = LengthOfPeriodType.None;
 
-    /**
-     * Preadjustment variables (with their coefficients
-     */
-    private final List<PreadjustmentVariable> preadjustmentVariables = new ArrayList<>();
-
     private boolean mean;
     /**
      * Regression variables
@@ -96,8 +88,7 @@ public final class ModelDescription {
      */
     private final SarimaComponent arima = new SarimaComponent();
 
-    // Caching
-    private ITsVariable[] regressionVariables;
+    private boolean sortedVariables; //optimization
 
     public static ModelDescription dummyModel() {
         return new ModelDescription();
@@ -106,7 +97,7 @@ public final class ModelDescription {
     public static ModelDescription copyOf(@NonNull ModelDescription model) {
         return copyOf(model, null);
     }
-    
+
     public static ModelDescription copyOf(@NonNull ModelDescription model, TsDomain estimationDomain) {
         ModelDescription nmodel = new ModelDescription(model.series, estimationDomain);
         nmodel.arima.copy(model.arima);
@@ -115,10 +106,8 @@ public final class ModelDescription {
         nmodel.lpTransformation = model.lpTransformation;
         nmodel.interpolatedData = model.interpolatedData;
         nmodel.transformedData = model.transformedData;
-        nmodel.missing=model.missing;
+        nmodel.missing = model.missing;
         nmodel.llCorrection = model.llCorrection;
-        nmodel.regressionVariables = model.regressionVariables;
-        model.preadjustmentVariables.forEach(nmodel.preadjustmentVariables::add);
         model.variables.forEach(nmodel.variables::add);
         return nmodel;
     }
@@ -162,16 +151,19 @@ public final class ModelDescription {
     // 3 calendars
     // 4 moving holidays
     // 5 outliers, 5.1 pre-specified, 5.2 detected 
-    private void buildRegressionVariables() {
-        if (regressionVariables == null) {
-            List<ITsVariable> vars = new ArrayList<>();
-            variables.stream().filter(v -> v.isUser()).forEachOrdered(v -> vars.add(v.getVariable()));
-            variables.stream().filter(v -> v.isCalendar()).forEachOrdered(v -> vars.add(v.getVariable()));
-            variables.stream().filter(v -> v.isMovingHolidays()).forEachOrdered(v -> vars.add(v.getVariable()));
-            variables.stream().filter(v -> v.isOutlier(true)).forEachOrdered(v -> vars.add(v.getVariable()));
-            variables.stream().filter(v -> v.isOutlier(false)).forEachOrdered(v -> vars.add(v.getVariable()));
-            regressionVariables = vars.toArray(new ITsVariable[vars.size()]);
+    private void sortVariables() {
+        if (sortedVariables) {
+            return;
         }
+        List<Variable> vars = new ArrayList<>();
+        variables.stream().filter(v -> v.isUser()).forEachOrdered(v -> vars.add(v));
+        variables.stream().filter(v -> v.isCalendar()).forEachOrdered(v -> vars.add(v));
+        variables.stream().filter(v -> v.isMovingHolidays()).forEachOrdered(v -> vars.add(v));
+        variables.stream().filter(v -> v.isOutlier(true)).forEachOrdered(v -> vars.add(v));
+        variables.stream().filter(v -> v.isOutlier(false)).forEachOrdered(v -> vars.add(v));
+        variables.clear();
+        variables.addAll(vars);
+        sortedVariables = true;
     }
 
     private void buildTransformation() {
@@ -188,15 +180,23 @@ public final class ModelDescription {
                 tmp = Transformations.log().transform(tmp, lj);
             }
             llCorrection = lj.value;
-            if (!preadjustmentVariables.isEmpty()) {
+
+            // remove preadjustment
+            if (hasFixedEffects()) {
                 final DataBlock ndata = DataBlock.of(tmp.getValues());
                 final TsDomain domain = tmp.getDomain();
-                preadjustmentVariables.forEach(v -> {
-                    Matrix m = Regression.matrix(domain, v.getVariable());
-                    DoubleSeqCursor reader = v.getCoefficients().cursor();
-                    DataBlockIterator columns = m.columnsIterator();
-                    while (columns.hasNext()) {
-                        ndata.addAY(reader.getAndNext(), columns.next());
+                variables.forEach(v -> {
+                    if (!v.isFree()) {
+                        Matrix m = Regression.matrix(domain, v.getVariable());
+                        DataBlockIterator columns = m.columnsIterator();
+                        int cur = 0;
+                        while (columns.hasNext()) {
+                            DataBlock col = columns.next();
+                            Parameter c = v.getCoefficient(cur++);
+                            if (c.isFixed()) {
+                                ndata.addAY(-c.getValue(), col);
+                            }
+                        }
                     }
                 });
                 tmp = TsData.ofInternal(domain.getStartPeriod(), ndata.getStorage());
@@ -213,27 +213,30 @@ public final class ModelDescription {
     public TsDomain getEstimationDomain() {
         return estimationDomain == null ? series.getDomain() : estimationDomain;
     }
-    
-    public int[] getMissingInEstimationDomain(){
-        if (estimationDomain == null || missing == null || missing.length == 0)
+
+    public int[] getMissingInEstimationDomain() {
+        if (estimationDomain == null || missing == null || missing.length == 0) {
             return missing;
-        int start=series.getStart().until(estimationDomain.getStartPeriod());
-        if (start == 0)
+        }
+        int start = series.getStart().until(estimationDomain.getStartPeriod());
+        if (start == 0) {
             return missing;
-        int[] nmissing=missing.clone();
-        for (int i=0; i<nmissing.length; ++i)
-            nmissing[i]-=start;
+        }
+        int[] nmissing = missing.clone();
+        for (int i = 0; i < nmissing.length; ++i) {
+            nmissing[i] -= start;
+        }
         return nmissing;
     }
 
     /**
-     * Gets the regarimamodel corresponding to the estimation domain
+     * Gets the regarima model corresponding to the estimation domain
      *
      * @return
      */
     public RegArimaModel<SarimaModel> regarima() {
         buildTransformation();
-        buildRegressionVariables();
+        sortVariables();
         TsDomain domain = getEstimationDomain();
         double[] y = transformedData;
         DoubleSeq yc;
@@ -256,24 +259,25 @@ public final class ModelDescription {
                 .missing(missingc)
                 .meanCorrection(mean)
                 .arima(arima.getModel());
-        for (ITsVariable v : regressionVariables) {
-            builder.addX(getX(v, domain));
+        for (Variable v : variables) {
+            if (!v.isPreadjustment()) {
+                Matrix x = Regression.matrix(domain, v.getVariable());
+                DataBlockIterator columns = x.columnsIterator();
+                int ic = 0;
+                while (columns.hasNext()) {
+                    DataBlock col = columns.next();
+                    if (v.getCoefficient(ic++).isFree()) {
+                        builder.addX(col.unmodifiable());
+                    }
+                }
+            }
         }
         return builder.build();
-    }
-
-    private void invalidateRegarima() {
-        this.regressionVariables = null;
     }
 
     private void invalidateTransformation() {
         this.transformedData = null;
         this.llCorrection = 0;
-    }
-
-    public ITsVariable[] regressionVariables() {
-        buildRegressionVariables();
-        return regressionVariables;
     }
 
     public Variable variable(String name) {
@@ -296,7 +300,6 @@ public final class ModelDescription {
                 .findFirst();
         if (search.isPresent()) {
             variables.remove(search.get());
-            invalidateRegarima();
             return true;
         } else {
             return false;
@@ -309,18 +312,10 @@ public final class ModelDescription {
                 .findFirst();
         if (search.isPresent()) {
             variables.remove(search.get());
-            invalidateRegarima();
             return true;
         } else {
             return false;
         }
-    }
-
-    public PreadjustmentVariable preadjustmentVariable(String name) {
-        Optional<PreadjustmentVariable> search = preadjustmentVariables.stream()
-                .filter(var -> var.getName().equals(name))
-                .findFirst();
-        return search.isPresent() ? search.get() : null;
     }
 
     public Variable addVariable(Variable var) {
@@ -330,26 +325,13 @@ public final class ModelDescription {
         }
         Variable nvar = var.rename(name);
         variables.add(nvar);
-        invalidateRegarima();
-        return nvar;
-    }
-
-    public PreadjustmentVariable addPreadjustmentVariable(PreadjustmentVariable var) {
-        String name = var.getName();
-        while (contains(name)) {
-            name = ITsVariable.nextName(name);
-        }
-        PreadjustmentVariable nvar = var.rename(name);
-        preadjustmentVariables.add(nvar);
-        invalidateTransformation();
+        sortedVariables = false;
         return nvar;
     }
 
     public boolean contains(String name) {
         return variables.stream()
-                .anyMatch(var -> var.getName().equals(name))
-                || preadjustmentVariables.stream()
-                        .anyMatch(var -> var.getVariable().equals(name));
+                .anyMatch(var -> var.getName().equals(name));
     }
 
     public void setLogTransformation(boolean log) {
@@ -368,9 +350,6 @@ public final class ModelDescription {
         return logTransformation && lpTransformation != LengthOfPeriodType.None;
     }
 
-    private Matrix getX(ITsVariable variable, TsDomain domain) {
-        return Regression.matrix(domain, variable);
-    }
 
     /**
      * @return the original_
@@ -451,14 +430,7 @@ public final class ModelDescription {
     }
 
     public boolean hasFixedEffects() {
-        return !preadjustmentVariables.isEmpty();
-    }
-
-    /**
-     * @return the pre-adjustment variables
-     */
-    public Stream<PreadjustmentVariable> preadjustmentVariables() {
-        return preadjustmentVariables.stream();
+        return variables.stream().anyMatch(v -> !v.isFree());
     }
 
     /**
@@ -519,17 +491,8 @@ public final class ModelDescription {
         this.mean = mean;
     }
 
-    public void addPreadjustmentVariable(PreadjustmentVariable... var) {
-        if (var != null) {
-            for (PreadjustmentVariable v : var) {
-                preadjustmentVariables.add(v);
-            }
-        }
-    }
-
     public boolean removeVariable(Predicate<Variable> pred) {
         if (variables.removeIf(pred.and(var -> !var.isPrespecified()))) {
-            regressionVariables = null;
             return true;
         } else {
             return false;
@@ -592,21 +555,28 @@ public final class ModelDescription {
 
     /**
      * Position of the variable in the generated regarima model, The returned
-     * position take into account an eventual mean correction.
+     * position take into account an eventual mean correction. 
      *
      * @param variable
-     * @return
+     * @return -1 if not found, otherwise the position of the first 
+     * free coefficient of the considered variable, corrected for the presence
+     * of a mean correction (which is always the first one).
      */
     public int findPosition(ITsVariable variable) {
-        buildRegressionVariables();
+        sortVariables();
         int pos = 0;
-        int cur = 0;
-        while (cur < regressionVariables.length && regressionVariables[cur] != variable) {
-            pos += regressionVariables[cur++].dim();
+        boolean found=false;
+        for (Variable var : variables) {
+            if (!var.isPreadjustment()) {
+                if (var.getVariable() == variable) {
+                    found=true;
+                    break;
+                }else
+                    pos+=var.freeCoefficientsCount();
+            }
         }
-        if (cur >= regressionVariables.length) {
-            return -1; // not found
-        }
+        if (! found)
+            return -1;
         return mean ? pos + 1 : pos;
     }
 
@@ -623,7 +593,7 @@ public final class ModelDescription {
         int p = this.getAnnualFrequency();
         LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
         if (max != null) {
-            arima.setFreeParameters(DoubleSeq.of(max.getParameters()), ParameterType.Estimated);
+            arima.setFreeParameters(DoubleSeq.of(max.getParameters()));
         }
         return RegArimaEstimation.<SarimaModel>builder()
                 .model(rslt.getModel())
@@ -631,19 +601,6 @@ public final class ModelDescription {
                 .max(max)
                 .llAdjustment(llCorrection)
                 .build();
-    }
-
-    public static boolean sameArimaSpecification(ModelDescription desc1, ModelDescription desc2) {
-        if (!desc1.specification().equals(desc2.specification())) {
-            return false;
-        }
-        return desc1.isMean() == desc2.isMean();
-    }
-
-    public static boolean sameVariables(ModelDescription desc1, ModelDescription desc2) {
-        desc1.buildRegressionVariables();
-        desc2.buildRegressionVariables();
-        return Arrays.deepEquals(desc1.regressionVariables, desc2.regressionVariables);
     }
 
 }

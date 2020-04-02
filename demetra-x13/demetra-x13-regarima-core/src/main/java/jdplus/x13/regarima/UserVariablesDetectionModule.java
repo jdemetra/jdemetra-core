@@ -97,7 +97,7 @@ public class UserVariablesDetectionModule implements IRegressionModule {
             final IUserTsVariable cur=users[i];
             boolean removed = nudesc.removeVariable(var->var.getVariable().equals(cur));
             ModelDescription udesc = ModelDescription.copyOf(nudesc);
-            nudesc.addVariable(new Variable(users[i], "user-"+(i+1), false));
+            nudesc.addVariable(Variable.variable("user-"+(i+1), users[i]));
 
             RegArimaEstimation<SarimaModel> nuest, uest;
             if (removed || est == null) {
