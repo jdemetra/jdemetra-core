@@ -21,9 +21,9 @@ import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
 import demetra.sa.DecompositionMode;
 import demetra.sa.SeriesDecomposition;
+import demetra.timeseries.TsData;
 import jdplus.ucarima.UcarimaModel;
 import jdplus.ucarima.estimation.McElroyEstimates;
-import demetra.data.DoubleSeq;
 
 /**
  * @author Jean Palate
@@ -45,7 +45,7 @@ public class MatrixEstimator implements IComponentsEstimator {
      */
     @Override
     public SeriesDecomposition decompose(SeatsModel model) {
-        DoubleSeq s = model.getTransformedSeries();
+        TsData s = model.getTransformedSeries();
         SeriesDecomposition.Builder builder = SeriesDecomposition.builder(DecompositionMode.Additive);
         ComponentType[] cmps = model.componentsType();
         UcarimaModel ucm = model.compactUcarimaModel();
@@ -53,24 +53,24 @@ public class MatrixEstimator implements IComponentsEstimator {
         mc.setForecastsCount(model.extrapolationCount(nfcasts));
         // TODO backcasts
         mc.setUcarimaModel(ucm);
-        mc.setData(s);
+        mc.setData(s.getValues());
         double ser = Math.sqrt(model.getInnovationVariance());
         for (int i = 0; i < ucm.getComponentsCount(); ++i) {
             ComponentType type = cmps[i];
             double[] tmp = mc.getComponent(i);
-            builder.add(DoubleSeq.of(tmp), type);
+            builder.add(TsData.ofInternal(s.getStart(), tmp), type);
             tmp = mc.stdevEstimates(i);
             for (int j = 0; j < tmp.length; ++j) {
                 tmp[j] *= ser;
             }
-            builder.add(DoubleSeq.of(tmp), type, ComponentInformation.Stdev);
+            builder.add(TsData.ofInternal(s.getStart(), tmp), type, ComponentInformation.Stdev);
             tmp = mc.getForecasts(i);
-            builder.add(DoubleSeq.of(tmp), type, ComponentInformation.Forecast);
+            builder.add(TsData.ofInternal(s.getStart(), tmp), type, ComponentInformation.Forecast);
             tmp = mc.stdevForecasts(i);
             for (int j = 0; j < tmp.length; ++j) {
                 tmp[j] *= ser;
             }
-            builder.add(DoubleSeq.of(tmp), type, ComponentInformation.StdevForecast);
+            builder.add(TsData.ofInternal(s.getStart(), tmp), type, ComponentInformation.StdevForecast);
         }
         builder.add(s, ComponentType.Series);
         return builder.build();

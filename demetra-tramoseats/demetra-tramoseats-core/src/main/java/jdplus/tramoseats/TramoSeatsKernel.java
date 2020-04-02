@@ -105,10 +105,9 @@ public class TramoSeatsKernel {
                 .build();
         
         return SeatsModelSpec.builder()
-                .series(series.getValues())
+                .series(series)
                 .log(model.isLogTransformation())
                 .meanCorrection(model.getModel().isMean())
-                .period(series.getAnnualFrequency())
                 .sarimaSpec(sarima)
                 .build();
     }

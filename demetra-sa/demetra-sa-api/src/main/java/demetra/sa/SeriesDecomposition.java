@@ -22,7 +22,10 @@ import demetra.modelling.ComponentInformation;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
-import demetra.data.DoubleSeq;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsDataTable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -30,12 +33,12 @@ import demetra.data.DoubleSeq;
  */
 @Immutable
 @Development(status = Development.Status.Beta)
-public final class SeriesDecomposition<T> {
+public final class SeriesDecomposition {
 
-    public static class Builder<T> {
+    public static class Builder {
 
         private final DecompositionMode mode;
-        private final EnumMap<ComponentType, T> cmps = new EnumMap<>(ComponentType.class),
+        private final EnumMap<ComponentType, TsData> cmps = new EnumMap<>(ComponentType.class),
                 bcmps = new EnumMap<>(ComponentType.class),
                 fcmps = new EnumMap<>(ComponentType.class),
                 ecmps = new EnumMap<>(ComponentType.class),
@@ -52,11 +55,11 @@ public final class SeriesDecomposition<T> {
          * @param data
          * @return
          */
-        public Builder add(T data, ComponentType cmp) {
+        public Builder add(TsData data, ComponentType cmp) {
             return add(data, cmp, ComponentInformation.Value);
         }
 
-        public Builder add(T data, ComponentType cmp, ComponentInformation info) {
+        public Builder add(TsData data, ComponentType cmp, ComponentInformation info) {
             switch (info) {
                 case Stdev:
                     ecmps.put(cmp, data);
@@ -80,24 +83,24 @@ public final class SeriesDecomposition<T> {
             return this;
         }
 
-        public SeriesDecomposition<T> build() {
+        public SeriesDecomposition build() {
             return new SeriesDecomposition(this);
         }
 
     }
 
-    public static <T> Builder<T> builder(DecompositionMode mode) {
-        return new Builder<T>(mode);
+    public static Builder builder(DecompositionMode mode) {
+        return new Builder(mode);
     }
 
     private final DecompositionMode mode;
-    private final Map<ComponentType, T> bcmps, cmps, fcmps, ebcmps, ecmps, efcmps;
+    private final Map<ComponentType, TsData> bcmps, cmps, fcmps, ebcmps, ecmps, efcmps;
 
     /**
      *
      * @param mode
      */
-    private SeriesDecomposition(Builder<T> builder) {
+    private SeriesDecomposition(Builder builder) {
         this.mode = builder.mode;
         this.cmps = Collections.unmodifiableMap(builder.cmps);
         this.fcmps = Collections.unmodifiableMap(builder.fcmps);
@@ -121,7 +124,7 @@ public final class SeriesDecomposition<T> {
      * @param info
      * @return
      */
-    public T getSeries(ComponentType cmp, ComponentInformation info) {
+    public TsData getSeries(ComponentType cmp, ComponentInformation info) {
 
         switch (info) {
             case Stdev:
@@ -138,7 +141,7 @@ public final class SeriesDecomposition<T> {
                 return cmps.get(cmp);
         }
     }
-    
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -170,27 +173,29 @@ public final class SeriesDecomposition<T> {
         return builder.toString();
     }
 
-    private void write(Map<ComponentType, T> cmps, StringBuilder builder) {
-        T s = cmps.get(ComponentType.Series);
+    private void write(Map<ComponentType, TsData> cmps, StringBuilder builder) {
+        List<TsData> all = new ArrayList<>();
+        TsData s = cmps.get(ComponentType.Series);
         if (s != null) {
-            builder.append("series").append('\t').append(s).append("\r\n");
+            all.add(s);
         }
         s = cmps.get(ComponentType.SeasonallyAdjusted);
         if (s != null) {
-            builder.append("sa").append('\t').append(s).append("\r\n");
+            all.add(s);
         }
         s = cmps.get(ComponentType.Trend);
         if (s != null) {
-            builder.append("t").append('\t').append(s).append("\r\n");
+            all.add(s);
         }
         s = cmps.get(ComponentType.Seasonal);
         if (s != null) {
-            builder.append("s").append('\t').append(s).append("\r\n");
+            all.add(s);
         }
         s = cmps.get(ComponentType.Irregular);
         if (s != null) {
-            builder.append("i").append('\t').append(s).append("\r\n");
+            all.add(s);
         }
+        builder.append(TsDataTable.of(all)).append("\r\n");
     }
 
 }

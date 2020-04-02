@@ -5,7 +5,6 @@
  */
 package jdplus.tramoseats.extractors;
 
-import demetra.data.DoubleSeq;
 import demetra.design.Development;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
@@ -16,7 +15,6 @@ import demetra.sa.ComponentType;
 import demetra.sa.DecompositionMode;
 import demetra.sa.SaDictionary;
 import demetra.timeseries.TsData;
-import demetra.timeseries.TsPeriod;
 import jdplus.modelling.extractors.ArimaExtractor;
 import jdplus.modelling.extractors.SarimaExtractor;
 import jdplus.regarima.extractors.ModelEstimationExtractor;
@@ -32,135 +30,119 @@ public class TramoSeatsExtractor {
 
     private final InformationMapping<TramoSeatsResults> MAPPING = new InformationMapping<>(TramoSeatsResults.class);
 
-    private TsPeriod start(TramoSeatsResults rslts) {
-        return rslts.getPreprocessing().getOriginalSeries().getStart();
-    }
-
-    private TsPeriod end(TramoSeatsResults rslts) {
-        return rslts.getPreprocessing().getOriginalSeries().getEnd();
-    }
-
-    private TsData of(DoubleSeq d, TsPeriod start) {
-        return d == null ? null : TsData.ofInternal(start, d);
-    }
-
-    private TsData backcastOf(DoubleSeq d, TsPeriod start) {
-        return d == null ? null : TsData.ofInternal(start.plus(-d.length()), d);
-    }
-
     private final String DECOMP = "decomposition" + InformationExtractor.SEP, FINAL = "";
 
     static {
         MAPPING.set(SaDictionary.MODE, DecompositionMode.class, source -> source.getFinals().getMode());
         MAPPING.set(DECOMP + ModellingDictionary.Y_LIN, TsData.class, source
-                -> of(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Series, ComponentInformation.Value), start(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Series, ComponentInformation.Value));
         MAPPING.set(DECOMP + ModellingDictionary.Y_LIN + SeriesInfo.F_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Series, ComponentInformation.Forecast), end(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Series, ComponentInformation.Forecast));
         MAPPING.set(DECOMP + ModellingDictionary.Y_LIN + SeriesInfo.EF_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Series, ComponentInformation.StdevForecast), end(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Series, ComponentInformation.StdevForecast));
         MAPPING.set(DECOMP + ModellingDictionary.Y_LIN + SeriesInfo.B_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Series, ComponentInformation.Backcast), start(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Series, ComponentInformation.Backcast));
         MAPPING.set(DECOMP + ModellingDictionary.Y_LIN + SeriesInfo.EB_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Series, ComponentInformation.StdevBackcast), start(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Series, ComponentInformation.StdevBackcast));
 
         MAPPING.set(DECOMP + SaDictionary.T_LIN, TsData.class, source
-                -> of(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Trend, ComponentInformation.Value), start(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Trend, ComponentInformation.Value));
         MAPPING.set(DECOMP + SaDictionary.T_LIN + SeriesInfo.F_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Trend, ComponentInformation.Forecast), end(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Trend, ComponentInformation.Forecast));
         MAPPING.set(DECOMP + SaDictionary.T_LIN + SeriesInfo.EF_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Trend, ComponentInformation.StdevForecast), end(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Trend, ComponentInformation.StdevForecast));
         MAPPING.set(DECOMP + SaDictionary.T_LIN + SeriesInfo.B_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Trend, ComponentInformation.Backcast), start(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Trend, ComponentInformation.Backcast));
         MAPPING.set(DECOMP + SaDictionary.T_LIN + SeriesInfo.EB_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Trend, ComponentInformation.StdevBackcast), start(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Trend, ComponentInformation.StdevBackcast));
 
         MAPPING.set(DECOMP + SaDictionary.SA_LIN, TsData.class, source
-                -> of(source.getDecomposition().getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value), start(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value));
         MAPPING.set(DECOMP + SaDictionary.SA_LIN + SeriesInfo.F_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast), end(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast));
         MAPPING.set(DECOMP + SaDictionary.SA_LIN + SeriesInfo.EF_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast), end(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast));
         MAPPING.set(DECOMP + SaDictionary.SA_LIN + SeriesInfo.B_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast), start(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast));
         MAPPING.set(DECOMP + SaDictionary.SA_LIN + SeriesInfo.EB_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast), start(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast));
 
         MAPPING.set(DECOMP + SaDictionary.S_LIN, TsData.class, source
-                -> of(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Value), start(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Value));
         MAPPING.set(DECOMP + SaDictionary.S_LIN + SeriesInfo.F_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Forecast), end(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Forecast));
         MAPPING.set(DECOMP + SaDictionary.S_LIN + SeriesInfo.EF_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast), end(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast));
         MAPPING.set(DECOMP + SaDictionary.S_LIN + SeriesInfo.B_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Backcast), start(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Backcast));
         MAPPING.set(DECOMP + SaDictionary.S_LIN + SeriesInfo.EB_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Seasonal, ComponentInformation.StdevBackcast), start(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Seasonal, ComponentInformation.StdevBackcast));
 
         MAPPING.set(DECOMP + SaDictionary.I_LIN, TsData.class, source
-                -> of(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.Value), start(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.Value));
         MAPPING.set(DECOMP + SaDictionary.I_LIN + SeriesInfo.F_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.Forecast), end(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.Forecast));
         MAPPING.set(DECOMP + SaDictionary.I_LIN + SeriesInfo.EF_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.StdevForecast), end(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.StdevForecast));
         MAPPING.set(DECOMP + SaDictionary.I_LIN + SeriesInfo.B_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.Backcast), start(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.Backcast));
         MAPPING.set(DECOMP + SaDictionary.I_LIN + SeriesInfo.EB_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast), start(source)));
+                -> source.getDecomposition().getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast));
 
         MAPPING.set(DECOMP + ModellingDictionary.L, TsData.class, source
-                -> of(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.Value), start(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.Value));
         MAPPING.set(DECOMP + ModellingDictionary.L + SeriesInfo.F_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.Forecast), end(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.Forecast));
         MAPPING.set(DECOMP + ModellingDictionary.L + SeriesInfo.EF_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.StdevForecast), end(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.StdevForecast));
         MAPPING.set(DECOMP + ModellingDictionary.L + SeriesInfo.B_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.Backcast), start(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.Backcast));
         MAPPING.set(DECOMP + ModellingDictionary.L + SeriesInfo.EB_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.StdevBackcast), start(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.StdevBackcast));
 
         MAPPING.set(DECOMP + SaDictionary.T_CMP, TsData.class, source
-                -> of(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.Value), start(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.Value));
         MAPPING.set(DECOMP + SaDictionary.T_CMP + SeriesInfo.F_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.Forecast), end(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.Forecast));
         MAPPING.set(DECOMP + SaDictionary.T_CMP + SeriesInfo.EF_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.StdevForecast), end(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.StdevForecast));
         MAPPING.set(DECOMP + SaDictionary.T_CMP + SeriesInfo.B_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.Backcast), start(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.Backcast));
         MAPPING.set(DECOMP + SaDictionary.T_CMP + SeriesInfo.EB_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.StdevBackcast), start(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.StdevBackcast));
 
         MAPPING.set(DECOMP + SaDictionary.SA_CMP, TsData.class, source
-                -> of(source.getDecomposition().getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value), start(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value));
         MAPPING.set(DECOMP + SaDictionary.SA_CMP + SeriesInfo.F_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast), end(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast));
         MAPPING.set(DECOMP + SaDictionary.SA_CMP + SeriesInfo.EF_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast), end(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast));
         MAPPING.set(DECOMP + SaDictionary.SA_CMP + SeriesInfo.B_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast), start(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast));
         MAPPING.set(DECOMP + SaDictionary.SA_CMP + SeriesInfo.EB_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast), start(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast));
 
         MAPPING.set(DECOMP + SaDictionary.S_CMP, TsData.class, source
-                -> of(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Value), start(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Value));
         MAPPING.set(DECOMP + SaDictionary.S_CMP + SeriesInfo.F_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Forecast), end(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Forecast));
         MAPPING.set(DECOMP + SaDictionary.S_CMP + SeriesInfo.EF_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast), end(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast));
         MAPPING.set(DECOMP + SaDictionary.S_CMP + SeriesInfo.B_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Backcast), start(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Backcast));
         MAPPING.set(DECOMP + SaDictionary.S_CMP + SeriesInfo.EB_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Seasonal, ComponentInformation.StdevBackcast), start(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Seasonal, ComponentInformation.StdevBackcast));
 
         MAPPING.set(DECOMP + SaDictionary.I_CMP, TsData.class, source
-                -> of(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.Value), start(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.Value));
         MAPPING.set(DECOMP + SaDictionary.I_CMP + SeriesInfo.F_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.Forecast), end(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.Forecast));
         MAPPING.set(DECOMP + SaDictionary.I_CMP + SeriesInfo.EF_SUFFIX, TsData.class, source
-                -> of(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.StdevForecast), end(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.StdevForecast));
         MAPPING.set(DECOMP + SaDictionary.I_CMP + SeriesInfo.B_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.Backcast), start(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.Backcast));
         MAPPING.set(DECOMP + SaDictionary.I_CMP + SeriesInfo.EB_SUFFIX, TsData.class, source
-                -> backcastOf(source.getDecomposition().getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast), start(source)));
+                -> source.getDecomposition().getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast));
 
         MAPPING.set(FINAL + ModellingDictionary.Y, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Value));

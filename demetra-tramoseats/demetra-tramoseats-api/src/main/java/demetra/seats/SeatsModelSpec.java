@@ -17,9 +17,9 @@
 package demetra.seats;
 
 import demetra.arima.SarimaSpec;
-import demetra.data.DoubleSeq;
 import demetra.design.Development;
 import demetra.design.LombokWorkaround;
+import demetra.timeseries.TsData;
 import demetra.util.Validatable;
 
 /**
@@ -31,8 +31,7 @@ import demetra.util.Validatable;
 public final class SeatsModelSpec implements Validatable<SeatsModelSpec> {
 
 
-    private DoubleSeq series;
-    private int period;
+    private TsData series;
     private boolean log, meanCorrection;
     private SarimaSpec sarimaSpec;
 
@@ -49,11 +48,9 @@ public final class SeatsModelSpec implements Validatable<SeatsModelSpec> {
 
     @Override
     public SeatsModelSpec validate() throws IllegalArgumentException {
-        if (period <=0)
-            throw new SeatsException(SeatsException.ERR_PERIOD);
         if (series == null)
             throw new SeatsException(SeatsException.ERR_NODATA);
-        if (series.length() < 3*period)
+        if (series.length() < 3*series.getAnnualFrequency())
             throw new SeatsException(SeatsException.ERR_LENGTH);
 
         return this;

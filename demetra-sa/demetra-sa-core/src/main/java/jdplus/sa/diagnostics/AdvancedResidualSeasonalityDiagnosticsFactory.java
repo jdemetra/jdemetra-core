@@ -14,62 +14,64 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-//package jdplus.sa.diagnostics;
-//
-//import demetra.processing.Diagnostics;
-//import demetra.processing.DiagnosticsFactory;
-//import demetra.processing.ProcResults;
-//import java.util.Arrays;
-//import java.util.Collections;
-//import java.util.List;
-//import java.util.stream.Collectors;
-//import nbbrd.service.ServiceProvider;
-//
-///**
-// *
-// * @author Jean Palate
-// */
-//@ServiceProvider(DiagnosticsFactory.class)
-//public class AdvancedResidualSeasonalityDiagnosticsFactory<R> implements DiagnosticsFactory<R> {
-//    
-//    static final String NAME="Residual seasonality tests", DESC="Residual seasonality tests";
-//    static final String QS_SA = "Qs test on SA", QS_I = "Qs test on I", FTEST_SA = "F-Test on SA (seasonal dummies)", FTEST_I = "F-Test on I (seasonal dummies)";
-//    static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(QS_SA, QS_I, FTEST_SA, FTEST_I));
-//
-//    private final AdvancedResidualSeasonalityDiagnosticsConfiguration config;
-//    private boolean enabled;
-//
-//    public AdvancedResidualSeasonalityDiagnosticsFactory(AdvancedResidualSeasonalityDiagnosticsConfiguration config) {
-//        this.config = config;
-//    }
-//
-//    public AdvancedResidualSeasonalityDiagnosticsConfiguration getConfiguration() {
-//        return config;
-//    }
-//
-//    @Override
-//    public String getName() {
-//        return NAME; 
-//    }
-//    
-//    @Override
-//    public List<String> getTestDictionary(){
-//        return ALL.stream().map(s->s+":2").collect(Collectors.toList());
-//    }
-//
-//    @Override
-//    public boolean isEnabled() {
-//        return enabled;
-//    }
-//
-//    @Override
-//    public void setEnabled(boolean enabled) {
-//        this.enabled=enabled;
-//    }
-//
-//    @Override
-//    public Diagnostics create(ProcResults rslts) {
-//        return AdvancedResidualSeasonalityDiagnostics.create(rslts, config);
-//    }
-//
-//}
+package jdplus.sa.diagnostics;
+
+import demetra.processing.Diagnostics;
+import demetra.processing.DiagnosticsFactory;
+import demetra.sa.SeriesDecomposition;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+/**
+ *
+ * @author Jean Palate
+ * @param <R>
+ */
+public class AdvancedResidualSeasonalityDiagnosticsFactory<R> implements DiagnosticsFactory<R> {
+
+    static final String NAME = "Residual seasonality tests", DESC = "Residual seasonality tests";
+    static final String QS_SA = "Qs test on SA", QS_I = "Qs test on I", FTEST_SA = "F-Test on SA (seasonal dummies)", FTEST_I = "F-Test on I (seasonal dummies)";
+    static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(QS_SA, QS_I, FTEST_SA, FTEST_I));
+
+    private final AdvancedResidualSeasonalityDiagnosticsConfiguration config;
+    private final Function<R, SeriesDecomposition> extractor;
+    private boolean enabled;
+
+    public AdvancedResidualSeasonalityDiagnosticsFactory(AdvancedResidualSeasonalityDiagnosticsConfiguration config, Function<R, SeriesDecomposition> extractor) {
+        this.config = config;
+        this.extractor = extractor;
+    }
+
+    public AdvancedResidualSeasonalityDiagnosticsConfiguration getConfiguration() {
+        return config;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public List<String> getTestDictionary() {
+        return ALL.stream().map(s -> s + ":2").collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    @Override
+    public Diagnostics create(R rslts) {
+        return AdvancedResidualSeasonalityDiagnostics.create(config, extractor.apply(rslts));
+    }
+
+}

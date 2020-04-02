@@ -22,11 +22,11 @@ import demetra.sa.ComponentType;
 import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;
 import jdplus.ucarima.UcarimaModel;
-import demetra.data.DoubleSeq;
 import demetra.data.ParameterSpec;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.sa.SeriesDecomposition;
 import demetra.seats.SeatsModelSpec;
+import demetra.timeseries.TsData;
 import jdplus.arima.ArimaModel;
 import static jdplus.math.linearfilters.BackFilter.D1;
 import jdplus.regarima.RegArimaEstimation;
@@ -56,10 +56,10 @@ public class SeatsModel {
     }
 
     private static SeatsModel buildDefinedModel(SeatsModelSpec spec) {
-        DoubleSeq series=spec.getSeries();
-        int period=spec.getPeriod();
+        TsData series=spec.getSeries();
+        int period=series.getAnnualFrequency();
         boolean log = spec.isLog();
-        DoubleSeq nseries = log ? series.log() : series;
+        TsData nseries = log ? series.log() : series;
         boolean mean = spec.isMeanCorrection();
         SarimaSpec sarimaSpec = spec.getSarimaSpec();
         SarimaOrders orders = sarimaSpec.specification(period);
@@ -70,17 +70,17 @@ public class SeatsModel {
                 .btheta(ParameterSpec.values(sarimaSpec.getBtheta()))
                 .build();
         SeasonalityDetector detector = new TramoSeasonalityDetector();
-        SeasonalityDetector.Seasonality seas = detector.hasSeasonality(nseries, period);
+        SeasonalityDetector.Seasonality seas = detector.hasSeasonality(nseries.getValues(), period);
         SeatsModel seatsModel = new SeatsModel(series, nseries, log, sarima, seas.getAsInt() > 1);
         seatsModel.meanCorrection = mean;
         return seatsModel;
     }
 
     private static SeatsModel buildEstimatedModel(SeatsModelSpec spec) {
-        DoubleSeq series=spec.getSeries();
-        int period=spec.getPeriod();
+        TsData series=spec.getSeries();
+        int period=series.getAnnualFrequency();
         boolean log = spec.isLog();
-        DoubleSeq nseries = log ? series.log() : series;
+        TsData nseries = log ? series.log() : series;
         boolean mean = spec.isMeanCorrection();
         SarimaSpec sarimaSpec = spec.getSarimaSpec();
         if (sarimaSpec.hasFixedParameters()) {
@@ -94,7 +94,7 @@ public class SeatsModel {
                 .btheta(ParameterSpec.values(sarimaSpec.getBtheta()))
                 .build();
         RegArimaModel regarima = RegArimaModel.<SarimaModel>builder()
-                .y(nseries)
+                .y(nseries.getValues())
                 .arima(sarima)
                 .meanCorrection(mean)
                 .build();
@@ -104,7 +104,7 @@ public class SeatsModel {
         LikelihoodStatistics stat = estimation.statistics();
         double var = stat.getSsqErr() / (stat.getEffectiveObservationsCount() - stat.getEstimatedParametersCount());
         SeasonalityDetector detector = new TramoSeasonalityDetector();
-        SeasonalityDetector.Seasonality seas = detector.hasSeasonality(nseries, period);
+        SeasonalityDetector.Seasonality seas = detector.hasSeasonality(nseries.getValues(), period);
 
         SeatsModel seatsModel = new SeatsModel(series, nseries, log, arima, seas.getAsInt() > 1);
         seatsModel.meanCorrection = mean;
@@ -112,7 +112,7 @@ public class SeatsModel {
         return seatsModel;
     }
 
-    private final DoubleSeq originalSeries, transformedSeries;
+    private final TsData originalSeries, transformedSeries;
     private final boolean logTransformation;
     private final SarimaModel originalModel;
     private final boolean significantSeasonality;
@@ -120,12 +120,12 @@ public class SeatsModel {
 //    private int forecastsCount, backcastsCount;
     private SarimaModel currentModel;
     private UcarimaModel ucarimaModel;
-    private SeriesDecomposition<DoubleSeq> initialComponents, finalComponents;
+    private SeriesDecomposition initialComponents, finalComponents;
     private double innovationVariance;
 
     public RegArimaModel<SarimaModel> asRegarima() {
         return RegArimaModel.<SarimaModel>builder()
-                .y(transformedSeries)
+                .y(transformedSeries.getValues())
                 .arima(currentModel)
                 .meanCorrection(meanCorrection)
                 .build();
@@ -140,7 +140,7 @@ public class SeatsModel {
      */
     public double defaultInnovation(boolean set) {
         RegArimaModel regarima = RegArimaModel.<SarimaModel>builder()
-                .y(transformedSeries)
+                .y(transformedSeries.getValues())
                 .arima(this.currentModel)
                 .meanCorrection(meanCorrection)
                 .build();

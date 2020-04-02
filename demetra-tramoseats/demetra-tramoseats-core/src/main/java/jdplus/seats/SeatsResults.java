@@ -37,7 +37,7 @@ public class SeatsResults implements ProcResults {
     private SarimaModel finalModel;
     private boolean meanCorrection;
     private UcarimaModel ucarimaModel;
-    private SeriesDecomposition<DoubleSeq> initialComponents, finalComponents;
+    private SeriesDecomposition initialComponents, finalComponents;
 
     @Override
     public boolean contains(String id) {

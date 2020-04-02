@@ -16,13 +16,12 @@
  */
 package jdplus.seats;
 
-import demetra.data.DoubleSeq;
-import demetra.data.DoublesMath;
 import demetra.design.Development;
 import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
 import demetra.sa.DecompositionMode;
 import demetra.sa.SeriesDecomposition;
+import demetra.timeseries.TsData;
 import jdplus.dstats.LogNormal;
 
 /**
@@ -54,44 +53,45 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         }
     }
 
-    private DoubleSeq correctStdevForLog(DoubleSeq e, DoubleSeq s) {
-        return e.fastOp(s, (stde, m) -> LogNormal.stdev2(m, stde));
+    private TsData correctStdevForLog(TsData e, TsData s) {
+        return e.fastFn(s, (stde, m) -> LogNormal.stdev2(m, stde));
     }
 
     private void correctLevels(SeatsModel model) {
-        DoubleSeq y = model.getOriginalSeries();
-        SeriesDecomposition.Builder<DoubleSeq> decomp = SeriesDecomposition.builder(DecompositionMode.Additive)
+        TsData y = model.getOriginalSeries();
+        SeriesDecomposition.Builder decomp = 
+                SeriesDecomposition.builder(DecompositionMode.Additive)
                 .add(y, ComponentType.Series);
 
-        SeriesDecomposition<DoubleSeq> idecomp = model.getInitialComponents();
-        DoubleSeq s = idecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
+        SeriesDecomposition idecomp = model.getInitialComponents();
+        TsData s = idecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
         if (s != null) {
             decomp.add(s, ComponentType.Seasonal);
-            DoubleSeq se = idecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Stdev);
+            TsData se = idecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Stdev);
             if (se != null) {
                 decomp.add(se, ComponentType.Seasonal, ComponentInformation.Stdev);
             }
         }
-        DoubleSeq t = idecomp.getSeries(ComponentType.Trend, ComponentInformation.Value);
+        TsData t = idecomp.getSeries(ComponentType.Trend, ComponentInformation.Value);
         if (t != null) {
             decomp.add(t, ComponentType.Trend);
-            DoubleSeq te = idecomp.getSeries(ComponentType.Trend, ComponentInformation.Stdev);
+            TsData te = idecomp.getSeries(ComponentType.Trend, ComponentInformation.Stdev);
             if (te != null) {
                 decomp.add(te, ComponentType.Trend, ComponentInformation.Stdev);
             }
         }
 
         // correct SA =Y / S (-> *sbias)
-        DoubleSeq sa = DoublesMath.subtract(y, s);
+        TsData sa = TsData.subtract(y, s);
         decomp.add(sa, ComponentType.SeasonallyAdjusted);
-        DoubleSeq sae = idecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
+        TsData sae = idecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
         if (sae != null) {
             decomp.add(sae, ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
         }
 
-        DoubleSeq i = DoublesMath.subtract(sa, t);
+        TsData i = TsData.subtract(sa, t);
         decomp.add(i, ComponentType.Irregular);
-        DoubleSeq ie = idecomp.getSeries(ComponentType.Irregular, ComponentInformation.Stdev);
+        TsData ie = idecomp.getSeries(ComponentType.Irregular, ComponentInformation.Stdev);
         if (ie != null) {
             decomp.add(ie, ComponentType.Irregular, ComponentInformation.Stdev);
         }
@@ -101,31 +101,31 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         model.setFinalComponents(decomp.build());
     }
 
-    private void fillForecasts(SeriesDecomposition<DoubleSeq> idecomp, SeriesDecomposition.Builder<DoubleSeq> decomp) {
+    private void fillForecasts(SeriesDecomposition idecomp, SeriesDecomposition.Builder decomp) {
         // idem forecasts
-        DoubleSeq fy = idecomp.getSeries(ComponentType.Series, ComponentInformation.Forecast);
-        DoubleSeq fs = idecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast);
-        DoubleSeq ft = idecomp.getSeries(ComponentType.Trend, ComponentInformation.Forecast);
-        DoubleSeq fi = idecomp.getSeries(ComponentType.Irregular, ComponentInformation.Forecast);
-        DoubleSeq fsa;
+        TsData fy = idecomp.getSeries(ComponentType.Series, ComponentInformation.Forecast);
+        TsData fs = idecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast);
+        TsData ft = idecomp.getSeries(ComponentType.Trend, ComponentInformation.Forecast);
+        TsData fi = idecomp.getSeries(ComponentType.Irregular, ComponentInformation.Forecast);
+        TsData fsa;
         if (fy == null) {
-            fy = DoublesMath.add(fs, ft, fi);
-            fsa = DoublesMath.add(ft, fi);
+            fy = TsData.add(fs, ft, fi);
+            fsa = TsData.add(ft, fi);
         } else {
-            fsa = DoublesMath.subtract(fy, fs);
+            fsa = TsData.subtract(fy, fs);
         }
         if (fy == null || fy.isEmpty()) {
             return;
         }
 
         decomp.add(fy, ComponentType.Series, ComponentInformation.Forecast);
-        DoubleSeq fye = idecomp.getSeries(ComponentType.Series, ComponentInformation.StdevForecast);
+        TsData fye = idecomp.getSeries(ComponentType.Series, ComponentInformation.StdevForecast);
         if (fye != null) {
             decomp.add(fye, ComponentType.Series, ComponentInformation.StdevForecast);
         }
         if (fs != null) {
             decomp.add(fs, ComponentType.Seasonal, ComponentInformation.Forecast);
-            DoubleSeq fse = idecomp.getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast);
+            TsData fse = idecomp.getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast);
             if (fse != null) {
                 decomp.add(fse, ComponentType.Seasonal, ComponentInformation.StdevForecast);
             }
@@ -133,7 +133,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
 
         if (ft != null) {
             decomp.add(ft, ComponentType.Trend, ComponentInformation.Forecast);
-            DoubleSeq fte = idecomp.getSeries(ComponentType.Trend, ComponentInformation.StdevForecast);
+            TsData fte = idecomp.getSeries(ComponentType.Trend, ComponentInformation.StdevForecast);
             if (fte != null) {
                 decomp.add(fte, ComponentType.Trend, ComponentInformation.StdevForecast);
             }
@@ -141,7 +141,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
 
         if (fsa != null) {
             decomp.add(fsa, ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
-            DoubleSeq fsae = idecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
+            TsData fsae = idecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
             if (fsae != null) {
                 decomp.add(fsae, ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
             }
@@ -149,7 +149,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
 
         if (fi != null) {
             decomp.add(fi, ComponentType.Irregular, ComponentInformation.Forecast);
-            DoubleSeq fie = idecomp.getSeries(ComponentType.Irregular, ComponentInformation.StdevForecast);
+            TsData fie = idecomp.getSeries(ComponentType.Irregular, ComponentInformation.StdevForecast);
             if (fie != null) {
                 decomp.add(fie, ComponentType.Irregular, ComponentInformation.StdevForecast);
             }
@@ -157,30 +157,30 @@ public class DefaultBiasCorrector implements IBiasCorrector {
 
     }
 
-    private void fillBackcasts(SeriesDecomposition<DoubleSeq> idecomp, SeriesDecomposition.Builder<DoubleSeq> decomp) {
+    private void fillBackcasts(SeriesDecomposition idecomp, SeriesDecomposition.Builder decomp) {
         // idem forecasts
-        DoubleSeq fy = idecomp.getSeries(ComponentType.Series, ComponentInformation.Backcast);
-        DoubleSeq fs = idecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Backcast);
-        DoubleSeq ft = idecomp.getSeries(ComponentType.Trend, ComponentInformation.Backcast);
-        DoubleSeq fi = idecomp.getSeries(ComponentType.Irregular, ComponentInformation.Backcast);
-        DoubleSeq fsa;
+        TsData fy = idecomp.getSeries(ComponentType.Series, ComponentInformation.Backcast);
+        TsData fs = idecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Backcast);
+        TsData ft = idecomp.getSeries(ComponentType.Trend, ComponentInformation.Backcast);
+        TsData fi = idecomp.getSeries(ComponentType.Irregular, ComponentInformation.Backcast);
+        TsData fsa;
         if (fy == null) {
-            fy = DoublesMath.add(fs, ft, fi);
-            fsa = DoublesMath.add(ft, fi);
+            fy = TsData.add(fs, ft, fi);
+            fsa = TsData.add(ft, fi);
         } else {
-            fsa = DoublesMath.subtract(fy, fs);
+            fsa = TsData.subtract(fy, fs);
         }
         if (fy == null || fy.isEmpty()) {
             return;
         }
         decomp.add(fy, ComponentType.Series, ComponentInformation.Backcast);
-        DoubleSeq fye = idecomp.getSeries(ComponentType.Series, ComponentInformation.StdevBackcast);
+        TsData fye = idecomp.getSeries(ComponentType.Series, ComponentInformation.StdevBackcast);
         if (fye != null) {
             decomp.add(fye, ComponentType.Series, ComponentInformation.StdevBackcast);
         }
         if (fs != null) {
             decomp.add(fs, ComponentType.Seasonal, ComponentInformation.Backcast);
-            DoubleSeq fse = idecomp.getSeries(ComponentType.Seasonal, ComponentInformation.StdevBackcast);
+            TsData fse = idecomp.getSeries(ComponentType.Seasonal, ComponentInformation.StdevBackcast);
             if (fse != null) {
                 decomp.add(fse, ComponentType.Seasonal, ComponentInformation.StdevBackcast);
             }
@@ -188,7 +188,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
 
         if (ft != null) {
             decomp.add(ft, ComponentType.Trend, ComponentInformation.Backcast);
-            DoubleSeq fte = idecomp.getSeries(ComponentType.Trend, ComponentInformation.StdevBackcast);
+            TsData fte = idecomp.getSeries(ComponentType.Trend, ComponentInformation.StdevBackcast);
             if (fte != null) {
                 decomp.add(fte, ComponentType.Trend, ComponentInformation.StdevBackcast);
             }
@@ -196,7 +196,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
 
         if (fsa != null) {
             decomp.add(fsa, ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast);
-            DoubleSeq fsae = idecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast);
+            TsData fsae = idecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast);
             if (fsae != null) {
                 decomp.add(fsae, ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast);
             }
@@ -204,7 +204,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
 
         if (fi != null) {
             decomp.add(fi, ComponentType.Irregular, ComponentInformation.Backcast);
-            DoubleSeq fie = idecomp.getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast);
+            TsData fie = idecomp.getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast);
             if (fie != null) {
                 decomp.add(fie, ComponentType.Irregular, ComponentInformation.StdevBackcast);
             }
@@ -212,7 +212,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
     }
 
     private void correctLogs(SeatsModel model) {
-        DoubleSeq y = model.getOriginalSeries();
+        TsData y = model.getOriginalSeries();
         int period = model.getPeriod();
         SeriesDecomposition.Builder decomp = SeriesDecomposition
                 .builder(DecompositionMode.Multiplicative)
@@ -221,60 +221,60 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         int n = y.length();
         int ny = n - n % period;
 
-        SeriesDecomposition<DoubleSeq> ldecomp = model.getInitialComponents();
+        SeriesDecomposition ldecomp = model.getInitialComponents();
 
         double ibias = 1, sbias = 1;
-        DoubleSeq s = ldecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
+        TsData s = ldecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
         if (s != null) {
             s = s.exp();
             if (bias) {
-                sbias = s.range(0, ny).average();
-                s = s.times(1 / sbias);
+                sbias = s.getValues().range(0, ny).average();
+                s = s.multiply(1 / sbias);
             }
 
             decomp.add(s, ComponentType.Seasonal);
-            DoubleSeq se = ldecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Stdev);
+            TsData se = ldecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Stdev);
             if (se != null) {
                 decomp.add(correctStdevForLog(se, s), ComponentType.Seasonal, ComponentInformation.Stdev);
             }
         }
-        DoubleSeq i = ldecomp.getSeries(ComponentType.Irregular, ComponentInformation.Value);
+        TsData i = ldecomp.getSeries(ComponentType.Irregular, ComponentInformation.Value);
         if (i != null) {
             i = i.exp();
             if (bias) {
-                ibias = i.average();
-                i = i.times(1 / ibias);
+                ibias = i.getValues().average();
+                i = i.multiply(1 / ibias);
             }
             decomp.add(i, ComponentType.Irregular);
-            DoubleSeq ie = ldecomp.getSeries(ComponentType.Irregular, ComponentInformation.Stdev);
+            TsData ie = ldecomp.getSeries(ComponentType.Irregular, ComponentInformation.Stdev);
             if (ie != null) {
                 decomp.add(correctStdevForLog(ie, i), ComponentType.Irregular, ComponentInformation.Stdev);
             }
         }
         // correct T = Y /S * I) (-> *sbias*ibias)
-        DoubleSeq t = ldecomp.getSeries(ComponentType.Trend, ComponentInformation.Value);
+        TsData t = ldecomp.getSeries(ComponentType.Trend, ComponentInformation.Value);
         if (t != null) {
             t = t.exp();
             if (bias) {
                 double tbias = sbias * ibias;
-                t = t.times(tbias);
+                t = t.multiply(tbias);
             }
             decomp.add(t, ComponentType.Trend);
-            DoubleSeq te = ldecomp.getSeries(ComponentType.Trend, ComponentInformation.Stdev);
+            TsData te = ldecomp.getSeries(ComponentType.Trend, ComponentInformation.Stdev);
             if (te != null) {
                 decomp.add(correctStdevForLog(te, t), ComponentType.Trend, ComponentInformation.Stdev);
             }
         }
 
         // correct SA =Y / S (-> *sbias)
-        DoubleSeq sa = DoublesMath.divide(y, s);
+        TsData sa = TsData.divide(y, s);
         decomp.add(sa, ComponentType.SeasonallyAdjusted);
-        DoubleSeq sae = ldecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
+        TsData sae = ldecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
         if (sae != null) {
             decomp.add(correctStdevForLog(sae, sa), ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
         }
 
-        i = DoublesMath.divide(sa, t);
+        i = TsData.divide(sa, t);
         decomp.add(i, ComponentType.Irregular);
         fillForecasts(ldecomp, decomp, sbias, ibias);
         fillBackcasts(ldecomp, decomp, sbias, ibias);
@@ -282,21 +282,21 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         model.setFinalComponents(decomp.build());
     }
 
-    private void fillForecasts(SeriesDecomposition<DoubleSeq> ldecomp, SeriesDecomposition.Builder<DoubleSeq> decomp, double sbias, double ibias) {
+    private void fillForecasts(SeriesDecomposition ldecomp, SeriesDecomposition.Builder decomp, double sbias, double ibias) {
         // idem forecasts
-        DoubleSeq fy = ldecomp.getSeries(ComponentType.Series, ComponentInformation.Forecast);
-        DoubleSeq fs = ldecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast);
-        DoubleSeq ft = ldecomp.getSeries(ComponentType.Trend, ComponentInformation.Forecast);
-        DoubleSeq fi = ldecomp.getSeries(ComponentType.Irregular, ComponentInformation.Forecast);
+        TsData fy = ldecomp.getSeries(ComponentType.Series, ComponentInformation.Forecast);
+        TsData fs = ldecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Forecast);
+        TsData ft = ldecomp.getSeries(ComponentType.Trend, ComponentInformation.Forecast);
+        TsData fi = ldecomp.getSeries(ComponentType.Irregular, ComponentInformation.Forecast);
         if (fy == null) {
-            fy = DoublesMath.add(fs, ft, fi);
+            fy = TsData.add(fs, ft, fi);
         }
         if (fy == null || fy.isEmpty()) {
             return;
         }
         fy = fy.exp();
         decomp.add(fy, ComponentType.Series, ComponentInformation.Forecast);
-        DoubleSeq fye = ldecomp.getSeries(ComponentType.Series, ComponentInformation.StdevForecast);
+        TsData fye = ldecomp.getSeries(ComponentType.Series, ComponentInformation.StdevForecast);
         if (fye != null) {
             decomp.add(correctStdevForLog(fye, fy), ComponentType.Series, ComponentInformation.StdevForecast);
         }
@@ -307,7 +307,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
                 fs = fs.exp();
             }
             decomp.add(fs, ComponentType.Seasonal, ComponentInformation.Forecast);
-            DoubleSeq fse = ldecomp.getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast);
+            TsData fse = ldecomp.getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast);
             if (fse != null) {
                 decomp.add(correctStdevForLog(fse, fs), ComponentType.Seasonal, ComponentInformation.StdevForecast);
             }
@@ -322,26 +322,26 @@ public class DefaultBiasCorrector implements IBiasCorrector {
                 ft = ft.exp();
             }
             decomp.add(ft, ComponentType.Trend, ComponentInformation.Forecast);
-            DoubleSeq fte = ldecomp.getSeries(ComponentType.Trend, ComponentInformation.StdevForecast);
+            TsData fte = ldecomp.getSeries(ComponentType.Trend, ComponentInformation.StdevForecast);
             if (fte != null) {
                 decomp.add(correctStdevForLog(fte, ft), ComponentType.Trend, ComponentInformation.StdevForecast);
             }
         }
 
         // correct SA =Y / S (-> *sbias)
-        DoubleSeq fsa = DoublesMath.divide(fy, fs);
+        TsData fsa = TsData.divide(fy, fs);
         if (fsa != null) {
             decomp.add(fsa, ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
-            DoubleSeq fsae = ldecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
+            TsData fsae = ldecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
             if (fsae != null) {
                 decomp.add(correctStdevForLog(fsae, fsa), ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
             }
         }
 
-        fi = DoublesMath.divide(fsa, ft);
+        fi = TsData.divide(fsa, ft);
         if (fi != null) {
             decomp.add(fi, ComponentType.Irregular, ComponentInformation.Forecast);
-            DoubleSeq fie = ldecomp.getSeries(ComponentType.Irregular, ComponentInformation.StdevForecast);
+            TsData fie = ldecomp.getSeries(ComponentType.Irregular, ComponentInformation.StdevForecast);
             if (fie != null) {
                 decomp.add(correctStdevForLog(fie, fi), ComponentType.Irregular, ComponentInformation.StdevForecast);
             }
@@ -349,21 +349,21 @@ public class DefaultBiasCorrector implements IBiasCorrector {
 
     }
 
-    private void fillBackcasts(SeriesDecomposition<DoubleSeq> ldecomp, SeriesDecomposition.Builder<DoubleSeq> decomp, double sbias, double ibias) {
+    private void fillBackcasts(SeriesDecomposition ldecomp, SeriesDecomposition.Builder decomp, double sbias, double ibias) {
         // idem forecasts
-        DoubleSeq fy = ldecomp.getSeries(ComponentType.Series, ComponentInformation.Backcast);
-        DoubleSeq fs = ldecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Backcast);
-        DoubleSeq ft = ldecomp.getSeries(ComponentType.Trend, ComponentInformation.Backcast);
-        DoubleSeq fi = ldecomp.getSeries(ComponentType.Irregular, ComponentInformation.Backcast);
+        TsData fy = ldecomp.getSeries(ComponentType.Series, ComponentInformation.Backcast);
+        TsData fs = ldecomp.getSeries(ComponentType.Seasonal, ComponentInformation.Backcast);
+        TsData ft = ldecomp.getSeries(ComponentType.Trend, ComponentInformation.Backcast);
+        TsData fi = ldecomp.getSeries(ComponentType.Irregular, ComponentInformation.Backcast);
         if (fy == null) {
-            fy = DoublesMath.add(fs, ft, fi);
+            fy = TsData.add(fs, ft, fi);
         }
         if (fy == null || fy.isEmpty()) {
             return;
         }
         fy = fy.exp();
         decomp.add(fy, ComponentType.Series, ComponentInformation.Backcast);
-        DoubleSeq fye = ldecomp.getSeries(ComponentType.Series, ComponentInformation.StdevBackcast);
+        TsData fye = ldecomp.getSeries(ComponentType.Series, ComponentInformation.StdevBackcast);
         if (fye != null) {
             decomp.add(correctStdevForLog(fye, fy), ComponentType.Series, ComponentInformation.StdevBackcast);
         }
@@ -374,7 +374,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
                 fs = fs.exp();
             }
             decomp.add(fs, ComponentType.Seasonal, ComponentInformation.Backcast);
-            DoubleSeq fse = ldecomp.getSeries(ComponentType.Seasonal, ComponentInformation.StdevBackcast);
+            TsData fse = ldecomp.getSeries(ComponentType.Seasonal, ComponentInformation.StdevBackcast);
             if (fse != null) {
                 decomp.add(correctStdevForLog(fse, fs), ComponentType.Seasonal, ComponentInformation.StdevBackcast);
             }
@@ -389,26 +389,26 @@ public class DefaultBiasCorrector implements IBiasCorrector {
                 ft = ft.exp();
             }
             decomp.add(ft, ComponentType.Trend, ComponentInformation.Backcast);
-            DoubleSeq fte = ldecomp.getSeries(ComponentType.Trend, ComponentInformation.StdevBackcast);
+            TsData fte = ldecomp.getSeries(ComponentType.Trend, ComponentInformation.StdevBackcast);
             if (fte != null) {
                 decomp.add(correctStdevForLog(fte, ft), ComponentType.Trend, ComponentInformation.StdevBackcast);
             }
         }
 
         // correct SA =Y / S (-> *sbias)
-        DoubleSeq fsa = DoublesMath.divide(fy, fs);
+        TsData fsa = TsData.divide(fy, fs);
         if (fsa != null) {
             decomp.add(fsa, ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast);
-            DoubleSeq fsae = ldecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast);
+            TsData fsae = ldecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast);
             if (fsae != null) {
                 decomp.add(correctStdevForLog(fsae, fsa), ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast);
             }
         }
 
-        fi = DoublesMath.divide(fsa, ft);
+        fi = TsData.divide(fsa, ft);
         if (fi != null) {
             decomp.add(fi, ComponentType.Irregular, ComponentInformation.Backcast);
-            DoubleSeq fie = ldecomp.getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast);
+            TsData fie = ldecomp.getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast);
             if (fie != null) {
                 decomp.add(correctStdevForLog(fie, fi), ComponentType.Irregular, ComponentInformation.StdevBackcast);
             }

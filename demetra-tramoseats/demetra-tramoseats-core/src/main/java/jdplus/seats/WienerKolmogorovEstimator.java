@@ -23,6 +23,8 @@ import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
 import demetra.sa.DecompositionMode;
 import demetra.sa.SeriesDecomposition;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsPeriod;
 import jdplus.ucarima.UcarimaModel;
 
 /**
@@ -50,12 +52,14 @@ public class WienerKolmogorovEstimator implements IComponentsEstimator {
         UcarimaModel ucm = model.getUcarimaModel();
         ucm = ucm.compact(2, 2);
 
-        DoubleSeq s = model.getTransformedSeries();
+        TsData s = model.getTransformedSeries();
         int nf = model.extrapolationCount(nfcasts);
         int nb = model.extrapolationCount(nbcasts);
+        
+        TsPeriod start=s.getStart(), bstart=start.plus(-nb), fstart=s.getEnd();
 
         BurmanEstimates burman = BurmanEstimates.builder()
-                .data(s)
+                .data(s.getValues())
                 .forecastsCount(nf)
                 .backcastsCount(nb)
                 .mean(model.isMeanCorrection())
@@ -109,84 +113,84 @@ public class WienerKolmogorovEstimator implements IComponentsEstimator {
         }
         decomposition.add(s, ComponentType.Series);
         if (fs != null) {
-            decomposition.add(fs, ComponentType.Series, ComponentInformation.Forecast);
+            decomposition.add(TsData.ofInternal(fstart, fs), ComponentType.Series, ComponentInformation.Forecast);
         }
         if (efs != null) {
-            decomposition.add(efs.fn(z -> z <= 0 ? 0 : Math.sqrt(z)), ComponentType.Series, ComponentInformation.StdevForecast);
+            decomposition.add(TsData.ofInternal(fstart, efs.fn(z -> z <= 0 ? 0 : Math.sqrt(z))), ComponentType.Series, ComponentInformation.StdevForecast);
         }
         if (bs != null) {
-            decomposition.add(bs, ComponentType.Series, ComponentInformation.Backcast);
+            decomposition.add(TsData.ofInternal(bstart, bs), ComponentType.Series, ComponentInformation.Backcast);
         }
         if (ebs != null) {
-            decomposition.add(ebs.fn(z -> z <= 0 ? 0 : Math.sqrt(z)), ComponentType.Series, ComponentInformation.StdevBackcast);
+            decomposition.add(TsData.ofInternal(bstart, ebs.fn(z -> z <= 0 ? 0 : Math.sqrt(z))), ComponentType.Series, ComponentInformation.StdevBackcast);
         }
         if (cmps[0] != null) {
-            decomposition.add(cmps[0], ComponentType.Trend);
+            decomposition.add(TsData.ofInternal(start, cmps[0]), ComponentType.Trend);
         }
         if (cmps[1] != null) {
-            decomposition.add(cmps[1], ComponentType.Seasonal);
+            decomposition.add(TsData.ofInternal(start, cmps[1]), ComponentType.Seasonal);
         }
 
         if (fcmps[0] != null) {
-            decomposition.add(fcmps[0], ComponentType.Trend, ComponentInformation.Forecast);
+            decomposition.add(TsData.ofInternal(fstart, fcmps[0]), ComponentType.Trend, ComponentInformation.Forecast);
         }
         if (fcmps[1] != null) {
-            decomposition.add(fcmps[1], ComponentType.Seasonal, ComponentInformation.Forecast);
+            decomposition.add(TsData.ofInternal(fstart, fcmps[1]), ComponentType.Seasonal, ComponentInformation.Forecast);
         }
-        decomposition.add(DoublesMath.subtract(fs, fcmps[1]),
+        decomposition.add(TsData.ofInternal(fstart, DoublesMath.subtract(fs, fcmps[1])),
                 ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
         if (ecmps[0] != null) {
-            decomposition.add(ecmps[0], ComponentType.Trend, ComponentInformation.Stdev);
+            decomposition.add(TsData.ofInternal(start, ecmps[0]), ComponentType.Trend, ComponentInformation.Stdev);
         }
         if (efcmps[0] != null) {
-            decomposition.add(efcmps[0], ComponentType.Trend, ComponentInformation.StdevForecast);
+            decomposition.add(TsData.ofInternal(fstart, efcmps[0]), ComponentType.Trend, ComponentInformation.StdevForecast);
         }
-        decomposition.add(DoublesMath.subtract(s, cmps[1]),
+        decomposition.add(TsData.ofInternal(start, DoublesMath.subtract(s.getValues(), cmps[1])),
                 ComponentType.SeasonallyAdjusted);
         if (ecmps[1] != null) {
-            decomposition.add(ecmps[1], ComponentType.Seasonal, ComponentInformation.Stdev);
-            decomposition.add(ecmps[1], ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
+            decomposition.add(TsData.ofInternal(start, ecmps[1]), ComponentType.Seasonal, ComponentInformation.Stdev);
+            decomposition.add(TsData.ofInternal(start, ecmps[1]), ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);
         }
         if (efcmps[1] != null) {
-            decomposition.add(efcmps[1], ComponentType.Seasonal, ComponentInformation.StdevForecast);
+            decomposition.add(TsData.ofInternal(fstart, efcmps[1]), ComponentType.Seasonal, ComponentInformation.StdevForecast);
         }
 
-        decomposition.add(cmps[2], ComponentType.Irregular);
+        decomposition.add(TsData.ofInternal(start, cmps[2]), ComponentType.Irregular);
         if (fcmps[2] != null) {
-            decomposition.add(fcmps[2], ComponentType.Irregular, ComponentInformation.Forecast);
+            decomposition.add(TsData.ofInternal(fstart, fcmps[2]), ComponentType.Irregular, ComponentInformation.Forecast);
         }
         if (ecmps[2] != null) {
-            decomposition.add(ecmps[2], ComponentType.Irregular, ComponentInformation.Stdev);
+            decomposition.add(TsData.ofInternal(start, ecmps[2]), ComponentType.Irregular, ComponentInformation.Stdev);
         }
         if (efcmps[2] != null) {
-            decomposition.add(efcmps[2], ComponentType.Irregular, ComponentInformation.StdevForecast);
+            decomposition.add(TsData.ofInternal(fstart, efcmps[2]), ComponentType.Irregular, ComponentInformation.StdevForecast);
         }
         if (bcmps[0] != null) {
-            decomposition.add(bcmps[0], ComponentType.Trend, ComponentInformation.Backcast);
+            decomposition.add(TsData.ofInternal(bstart, bcmps[0]), ComponentType.Trend, ComponentInformation.Backcast);
         }
         if (bcmps[1] != null) {
-            decomposition.add(bcmps[1], ComponentType.Seasonal, ComponentInformation.Backcast);
+            decomposition.add(TsData.ofInternal(bstart, bcmps[1]), ComponentType.Seasonal, ComponentInformation.Backcast);
         }
         if (efsa != null) {
-            decomposition.add(efsa.fn(z -> z <= 0 ? 0 : Math.sqrt(z)), ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
+            decomposition.add(TsData.ofInternal(fstart, efsa.fn(z -> z <= 0 ? 0 : Math.sqrt(z))), ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
         }
 
-        decomposition.add(DoublesMath.subtract(bs, bcmps[1]),
+        decomposition.add(TsData.ofInternal(bstart, DoublesMath.subtract(bs, bcmps[1])),
                 ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast);
         if (ebcmps[0] != null) {
-            decomposition.add(ebcmps[0], ComponentType.Trend, ComponentInformation.StdevBackcast);
+            decomposition.add(TsData.ofInternal(bstart, ebcmps[0]), ComponentType.Trend, ComponentInformation.StdevBackcast);
         }
         if (ebcmps[1] != null) {
-            decomposition.add(ebcmps[1], ComponentType.Seasonal, ComponentInformation.StdevBackcast);
+            decomposition.add(TsData.ofInternal(bstart, ebcmps[1]), ComponentType.Seasonal, ComponentInformation.StdevBackcast);
         }
         if (bcmps[2] != null) {
-            decomposition.add(bcmps[2], ComponentType.Irregular, ComponentInformation.Backcast);
+            decomposition.add(TsData.ofInternal(bstart, bcmps[2]), ComponentType.Irregular, ComponentInformation.Backcast);
         }
         if (ebcmps[2] != null) {
-            decomposition.add(ebcmps[2], ComponentType.Irregular, ComponentInformation.StdevBackcast);
+            decomposition.add(TsData.ofInternal(bstart, ebcmps[2]), ComponentType.Irregular, ComponentInformation.StdevBackcast);
         }
         if (ebsa != null) {
-            decomposition.add(ebsa.fn(z -> z <= 0 ? 0 : Math.sqrt(z)), ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast);
+            decomposition.add(TsData.ofInternal(bstart, ebsa.fn(z -> z <= 0 ? 0 : Math.sqrt(z))), ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast);
         }
         return decomposition.build();
     }

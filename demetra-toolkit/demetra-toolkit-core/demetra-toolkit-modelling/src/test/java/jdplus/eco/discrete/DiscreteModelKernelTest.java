@@ -54,7 +54,7 @@ public class DiscreteModelKernelTest {
         DiscreteModelEvaluation rslt = DiscreteModelKernel.process(model, null);
     }
 
-    @Test
+ //   @Test
     public void logit() throws URISyntaxException, IOException {
         URI uri = Data.class.getResource("/smarket.txt").toURI();
         MatrixType smarket = MatrixSerializer.read(new File(uri));

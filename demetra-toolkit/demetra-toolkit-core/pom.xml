@@ -24,7 +24,6 @@
         <module>demetra-toolkit-modelling</module>
         <module>demetra-toolkit-ssf</module>
         <module>demetra-toolkit-regarima</module>
-        <module>demetra-toolkit-sa</module>
         <module>demetra-toolkit-algorithms</module>
         <module>demetra-toolkit-basic-algorithms</module>
     </modules>

@@ -23,15 +23,15 @@ import demetra.processing.Diagnostics;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
+ * @param <R>
  */
-@ServiceProvider(DiagnosticsFactory.class)
-public class ResidualsDiagnosticsFactory implements DiagnosticsFactory<ModelEstimation> {
+public class ResidualsDiagnosticsFactory<R> implements DiagnosticsFactory<R> {
 
     public static final String NORMALITY = "normality", INDEPENDENCE = "independence",
         TD_PEAK = "spectral td peaks", S_PEAK = "spectral seas peaks";
@@ -40,16 +40,13 @@ public class ResidualsDiagnosticsFactory implements DiagnosticsFactory<ModelEsti
 
     public static List<String> ALL = Collections.unmodifiableList(Arrays.asList(NORMALITY, INDEPENDENCE, TD_PEAK, S_PEAK));
 
-    private ResidualsDiagnosticsConfiguration config;
+    private final ResidualsDiagnosticsConfiguration config;
+    private final Function<R, ModelEstimation > extractor;
     private boolean enabled=true;
-    //public static final ResidualsDiagnosticsFactory Default = new ResidualsDiagnosticsFactory();
 
-    public ResidualsDiagnosticsFactory() {
-        config = ResidualsDiagnosticsConfiguration.builder().build();
-    }
-
-    public ResidualsDiagnosticsFactory(ResidualsDiagnosticsConfiguration config) {
+    public ResidualsDiagnosticsFactory(ResidualsDiagnosticsConfiguration config,Function<R, ModelEstimation > extractor) {
         this.config = config;
+        this.extractor=extractor;
     }
 
     public ResidualsDiagnosticsConfiguration getConfiguration() {
@@ -77,8 +74,8 @@ public class ResidualsDiagnosticsFactory implements DiagnosticsFactory<ModelEsti
     }
 
     @Override
-    public Diagnostics create(ModelEstimation rslts) {
-        return ResidualsDiagnostics.create(config, rslts);
+    public Diagnostics create(R rslts) {
+        return ResidualsDiagnostics.create(config, extractor.apply(rslts));
     }
 
 }

@@ -54,7 +54,7 @@ public final class SeatsSpec implements Validatable<SeatsSpec> {
         if (modelSpec != null) {
             modelSpec.validate();
             if (decompositionSpec.getMethod() != ComponentsEstimationMethod.KalmanSmoother
-                    && modelSpec.getSeries().count( z -> !Double.isFinite(z)) > 0) {
+                    && modelSpec.getSeries().getValues().count( z -> !Double.isFinite(z)) > 0) {
                 throw new SeatsException(SeatsException.ERR_MISSING);
             }
         }

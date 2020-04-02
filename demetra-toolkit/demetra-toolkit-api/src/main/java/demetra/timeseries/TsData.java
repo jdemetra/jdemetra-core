@@ -214,10 +214,43 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
         return TsData.of(getStart().plus(lag), Doubles.of(values.fn(lag, fn)));
     }
 
+    /**
+     * Extract a time series from beg (included) to end (excluded)
+     * The series could be smaller (or empty) if the range is outside the given
+     * series
+     *
+     * @param beg Index of the start
+     * @param end Index of the end
+     * @return
+     */
+    public TsData range(@NonNegative int beg, @NonNegative int end) {
+        int len = length();
+        TsPeriod start = getStart().plus(beg);
+        if (beg >= len) {
+            return TsData.of(start, Doubles.EMPTY);
+        } else {
+            return TsData.ofInternal(start, values.range(beg, Math.min(end, len)));
+        }
+    }
+
+    /**
+     * Extract a time series from start (included) to start+n (excluded)
+     * The series could be smaller (or empty) if the range is outside the given
+     * series
+     *
+     * @param start Index of the start
+     * @param n Number of obs being extracted
+     * @return
+     */
+    public TsData extract(@NonNegative int start, @NonNegative int n) {
+        TsPeriod pstart = getStart().plus(start);
+        return TsData.ofInternal(pstart, Doubles.of(values.extract(start, n)));
+    }
+
     public TsData drop(@NonNegative int nbeg, @NonNegative int nend) {
         int len = length() - nbeg - nend;
         TsPeriod start = getStart().plus(nbeg);
-        return TsData.of(start, Doubles.of(values.extract(nbeg, Math.max(0, len))));
+        return TsData.ofInternal(start, values.extract(nbeg, Math.max(0, len)));
     }
 
     public TsData extend(@NonNegative int nbeg, @NonNegative int nend) {
@@ -476,13 +509,14 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
                 return s[0];
             default:
                 int n = 0;
-                TsPeriod start=null;
+                TsPeriod start = null;
                 TsPeriod curPeriod = null;
                 for (int i = 0; i < ns; ++i) {
                     if (s[i] != null) {
-                        TsPeriod cstart=s[i].getStart();
-                        if (start == null)
-                            start=cstart;
+                        TsPeriod cstart = s[i].getStart();
+                        if (start == null) {
+                            start = cstart;
+                        }
                         if (curPeriod != null && !cstart.equals(curPeriod)) {
                             throw new IllegalArgumentException();
                         }
@@ -490,8 +524,9 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
                         curPeriod = s[i].getEnd();
                     }
                 }
-                if (n == 0)
+                if (n == 0) {
                     return null;
+                }
                 double[] d = new double[n];
 
                 for (int i = 0, j = 0; i < ns; ++i) {
