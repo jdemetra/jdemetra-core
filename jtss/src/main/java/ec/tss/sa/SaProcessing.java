@@ -19,6 +19,7 @@ package ec.tss.sa;
 import com.google.common.collect.ForwardingList;
 import ec.satoolkit.ISaSpecification;
 import ec.tss.Ts;
+import ec.tss.TsInformationType;
 import ec.tss.TsStatus;
 import ec.tstoolkit.IDocumented;
 import ec.tstoolkit.MetaData;
@@ -228,9 +229,18 @@ public final class SaProcessing extends ForwardingList<SaItem> implements IDocum
         for (int i = 0; i < n; ++i) {
             SaItem item = items_.get(i);
             if (!item.isLocked()) {
+                TsDomain newDomain = null;
                 Ts s = item.getTs().unfreeze();
+                if (policy == EstimationPolicyType.Current) {
+                    if (s.hasData() == TsStatus.Undefined) {
+                        s.load(TsInformationType.Data);
+                    }
+                    if (s.hasData() == TsStatus.Valid) {
+                        newDomain = s.getTsData().getDomain();
+                    }
+                }
                 // createDiagnostics the new spec
-                ISaSpecification nspec = SaManager.instance.createSpecification(item, null, policy, nospan);
+                ISaSpecification nspec = SaManager.instance.createSpecification(item, newDomain, policy, nospan);
                 SaItem citem = item.newSpecification(s, nspec, policy);
                 citem.setKey(item.getKey());
                 items_.set(i, citem);

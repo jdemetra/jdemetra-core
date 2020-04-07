@@ -20,6 +20,7 @@ package ec.tstoolkit.eco.discrete;
 import ec.tstoolkit.data.DataBlock;
 import ec.tstoolkit.data.IReadDataBlock;
 import ec.tstoolkit.maths.matrices.Matrix;
+import org.junit.Test;
 
 /**
  *
@@ -30,7 +31,7 @@ public class DiscreteModelTest {
     public DiscreteModelTest() {
     }
 
-    //@Test
+    @Test
     public void demoSomeMethod() {
         int n=10000;
         int[] y=new int[n];

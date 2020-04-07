@@ -19,13 +19,15 @@ public class NormalTest {
 
     @Test
     public void testProbinverse() {
-        IContinuousDistribution dist=new Normal();
+        Normal dist= new Normal();
+        dist.setMean(10);
+        dist.setStdev(5);
         double step=0.00001;
         for (double p=step; p<=1-step; p+=step){
             double x=dist.getProbabilityInverse(p, ProbabilityType.Lower);
             double np=dist.getProbability(x, ProbabilityType.Lower);
             double nx=dist.getProbabilityInverse(np, ProbabilityType.Lower);
-            assertTrue(Math.abs(x-nx)<IDistribution.EPS_P);
+            assertTrue(Math.abs(x-nx)<1e-12);
         }
     }
 }

@@ -105,7 +105,7 @@ public class RevisionAnalysisSpec implements IProcSpecification, Cloneable {
         FreeParameters(EstimationPolicyType.FreeParameters),
         FixedParameters(EstimationPolicyType.FixedParameters),
         Fixed(EstimationPolicyType.Fixed),
-        UseForecasts(EstimationPolicyType.UseForecasts);
+        Current(EstimationPolicyType.Current);
 
         private final EstimationPolicyType t;
 
