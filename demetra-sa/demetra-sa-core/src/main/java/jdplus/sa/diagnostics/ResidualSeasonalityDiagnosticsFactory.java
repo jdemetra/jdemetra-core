@@ -72,7 +72,7 @@ public class ResidualSeasonalityDiagnosticsFactory implements DiagnosticsFactory
     }
 
     @Override
-    public Diagnostics create(ProcResults rslts) {
+    public Diagnostics of(ProcResults rslts) {
         return ResidualSeasonalityDiagnostics.create(rslts, config);
     }
 }

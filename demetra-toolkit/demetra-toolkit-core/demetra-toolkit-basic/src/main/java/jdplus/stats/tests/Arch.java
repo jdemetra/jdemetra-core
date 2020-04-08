@@ -19,12 +19,9 @@ package jdplus.stats.tests;
 import demetra.data.DoubleSeq;
 import demetra.design.BuilderPattern;
 import demetra.stats.StatException;
-import jdplus.data.DataBlock;
-import jdplus.dstats.Chi2;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
-import jdplus.stats.AutoCovariances;
 
 /**
  *

@@ -72,7 +72,7 @@ public class ResidualTradingDaysDiagnosticsFactory implements DiagnosticsFactory
     }
 
     @Override
-    public Diagnostics create(ProcResults rslts) {
+    public Diagnostics of(ProcResults rslts) {
         return ResidualTradingDaysDiagnostics.create(rslts, config);
     }
 

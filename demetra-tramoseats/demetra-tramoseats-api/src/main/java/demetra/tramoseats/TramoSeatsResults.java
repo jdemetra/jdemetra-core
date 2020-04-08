@@ -37,7 +37,7 @@ public class TramoSeatsResults {
     private SeatsResults decomposition;
     private SeriesDecomposition finals;
     
-        @lombok.Singular
+    @lombok.Singular
     private Map<String, Object> addtionalResults;
    
     @lombok.Singular

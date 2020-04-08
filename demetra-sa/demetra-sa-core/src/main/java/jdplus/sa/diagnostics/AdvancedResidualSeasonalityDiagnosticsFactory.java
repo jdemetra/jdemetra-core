@@ -16,9 +16,9 @@
  */
 package jdplus.sa.diagnostics;
 
+import demetra.design.Development;
 import demetra.processing.Diagnostics;
 import demetra.processing.DiagnosticsFactory;
-import demetra.sa.SeriesDecomposition;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
  * @author Jean Palate
  * @param <R>
  */
+@Development(status = Development.Status.Release)
 public class AdvancedResidualSeasonalityDiagnosticsFactory<R> implements DiagnosticsFactory<R> {
 
     static final String NAME = "Residual seasonality tests", DESC = "Residual seasonality tests";
@@ -37,10 +38,11 @@ public class AdvancedResidualSeasonalityDiagnosticsFactory<R> implements Diagnos
     static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(QS_SA, QS_I, FTEST_SA, FTEST_I));
 
     private final AdvancedResidualSeasonalityDiagnosticsConfiguration config;
-    private final Function<R, SeriesDecomposition> extractor;
-    private boolean enabled;
+    private final Function<R, AdvancedResidualSeasonalityDiagnostics.Input> extractor;
+    private boolean enabled=true;
 
-    public AdvancedResidualSeasonalityDiagnosticsFactory(AdvancedResidualSeasonalityDiagnosticsConfiguration config, Function<R, SeriesDecomposition> extractor) {
+    public AdvancedResidualSeasonalityDiagnosticsFactory(AdvancedResidualSeasonalityDiagnosticsConfiguration config, 
+            Function<R, AdvancedResidualSeasonalityDiagnostics.Input> extractor) {
         this.config = config;
         this.extractor = extractor;
     }
@@ -70,8 +72,8 @@ public class AdvancedResidualSeasonalityDiagnosticsFactory<R> implements Diagnos
     }
 
     @Override
-    public Diagnostics create(R rslts) {
-        return AdvancedResidualSeasonalityDiagnostics.create(config, extractor.apply(rslts));
+    public Diagnostics of(R rslts) {
+        return AdvancedResidualSeasonalityDiagnostics.of(config, extractor.apply(rslts));
     }
 
 }

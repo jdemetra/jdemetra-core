@@ -74,7 +74,7 @@ public class ResidualsDiagnosticsFactory<R> implements DiagnosticsFactory<R> {
     }
 
     @Override
-    public Diagnostics create(R rslts) {
+    public Diagnostics of(R rslts) {
         return ResidualsDiagnostics.create(config, extractor.apply(rslts));
     }
 

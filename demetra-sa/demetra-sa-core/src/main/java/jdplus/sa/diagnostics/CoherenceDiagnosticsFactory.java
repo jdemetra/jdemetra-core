@@ -16,12 +16,14 @@
  */
 package jdplus.sa.diagnostics;
 
+import demetra.design.Development;
 import demetra.processing.Diagnostics;
 import demetra.processing.DiagnosticsFactory;
 import demetra.processing.ProcResults;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import nbbrd.service.ServiceProvider;
 
@@ -29,22 +31,21 @@ import nbbrd.service.ServiceProvider;
  *
  * @author Jean Palate
  */
-@ServiceProvider(DiagnosticsFactory.class)
-public class CoherenceDiagnosticsFactory implements DiagnosticsFactory<ProcResults> {
+@Development(status = Development.Status.Release)
+public class CoherenceDiagnosticsFactory<R> implements DiagnosticsFactory<R> {
 
     public static final String DEF = "definition", BIAS = "annual totals";
     public static final String NAME = "Basic checks";
     public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(DEF, BIAS));
 //    public static final CoherenceDiagnosticsFactory Default = new CoherenceDiagnosticsFactory();
     private final CoherenceDiagnosticsConfiguration config;
-    private boolean enabled;
+    private final Function<R, CoherenceDiagnostics.Input> extractor;
+    private boolean enabled=true;
 
-    public CoherenceDiagnosticsFactory() {
-         config = CoherenceDiagnosticsConfiguration.DEFAULT;
-    }
-
-    public CoherenceDiagnosticsFactory(CoherenceDiagnosticsConfiguration config) {
+    public CoherenceDiagnosticsFactory(CoherenceDiagnosticsConfiguration config,
+            Function<R, CoherenceDiagnostics.Input> extractor) {
         this.config = config;
+        this.extractor=extractor;
     }
 
     public CoherenceDiagnosticsConfiguration getConfiguration() {
@@ -72,8 +73,8 @@ public class CoherenceDiagnosticsFactory implements DiagnosticsFactory<ProcResul
     }
 
     @Override
-    public Diagnostics create(ProcResults rslts) {
-        return CoherenceDiagnostics.create(rslts, config);
+    public Diagnostics of(R rslts) {
+        return CoherenceDiagnostics.of(config, extractor.apply(rslts));
     }
 
     

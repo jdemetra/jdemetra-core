@@ -73,7 +73,7 @@ public class OutliersDiagnosticsFactory implements DiagnosticsFactory<ModelEstim
     }
 
     @Override
-    public Diagnostics create(ModelEstimation rslts) {
+    public Diagnostics of(ModelEstimation rslts) {
         return OutliersDiagnostics.create(rslts, config);
     }
 }

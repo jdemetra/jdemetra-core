@@ -38,5 +38,5 @@ public interface DiagnosticsFactory <R>{
      */
     List<String> getTestDictionary();
     
-    Diagnostics create(R results);
+    Diagnostics of(R results);
 }

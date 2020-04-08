@@ -22,8 +22,6 @@ import jdplus.dstats.Chi2;
 import jdplus.dstats.F;
 import jdplus.stats.DescriptiveStatistics;
 import jdplus.stats.samples.Sample;
-import jdplus.stats.tests.StatisticalTest;
-import jdplus.stats.tests.TestType;
 
 /**
  *

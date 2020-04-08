@@ -16,12 +16,15 @@
  */
 package jdplus.sa.diagnostics;
 
+import demetra.design.Development;
+
 /**
  *
  * @author Jean Palate
  */
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder")
+@Development(status = Development.Status.Release)
 public class AdvancedResidualSeasonalityDiagnosticsConfiguration {
     
     public static AdvancedResidualSeasonalityDiagnosticsConfiguration DEFAULT=builder().build();

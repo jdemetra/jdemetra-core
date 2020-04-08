@@ -17,6 +17,7 @@
 package jdplus.sa.diagnostics;
 
 import demetra.data.AggregationType;
+import demetra.design.Development;
 import demetra.modelling.ModellingDictionary;
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
@@ -33,8 +34,22 @@ import jdplus.stats.DescriptiveStatistics;
  *
  * @author Jean Palate
  */
+@Development(status = Development.Status.Release)
 public final class CoherenceDiagnostics implements Diagnostics {
 
+    @lombok.Value
+    public static class Input{
+        
+        /**
+         * 
+         */
+        DecompositionMode mode;
+        /**
+         * Results that can be consulted through a dictionary
+         */
+        ProcResults result;
+    }
+    
     private final CoherenceDiagnosticsConfiguration config;
     private double maxAnnualDifference, maxDefinitionDifference;
     private boolean multiplicative;
@@ -42,30 +57,29 @@ public final class CoherenceDiagnostics implements Diagnostics {
     private double scale;
     private final static String SHORTSERIES = "Short series";
 
-    static CoherenceDiagnostics create(ProcResults rslts, CoherenceDiagnosticsConfiguration config) {
+    public static CoherenceDiagnostics of(CoherenceDiagnosticsConfiguration config, Input data) {
         try {
-            if (rslts == null) {
+            if (data == null) {
                 return null;
             } else {
-                return new CoherenceDiagnostics(rslts, config);
+                return new CoherenceDiagnostics(config, data.result, data.getMode());
             }
         } catch (Exception ex) {
             return null;
         }
     }
 
-    private CoherenceDiagnostics(ProcResults rslts, CoherenceDiagnosticsConfiguration config) {
+    private CoherenceDiagnostics(CoherenceDiagnosticsConfiguration config, ProcResults rslts, DecompositionMode mode) {
         // set the boundaries...
         this.config = config;
-        test(rslts);
+        test(rslts, mode);
     }
 
-    private void test(ProcResults rslts) {
+    private void test(ProcResults rslts, DecompositionMode mode) {
         TsData yl = rslts.getData(ModellingDictionary.Y_LIN, TsData.class);
         if (yl != null && yl.length() < config.getShortSeriesLimit() * yl.getAnnualFrequency()) {
             shortSeries = true;
         }
-        DecompositionMode mode = rslts.getData(SaDictionary.DECOMPOSITION, DecompositionMode.class);
         multiplicative = mode != DecompositionMode.Additive;
         TsData y = rslts.getData(ModellingDictionary.YC, TsData.class);
         DescriptiveStatistics ds = DescriptiveStatistics.of(y.getValues());

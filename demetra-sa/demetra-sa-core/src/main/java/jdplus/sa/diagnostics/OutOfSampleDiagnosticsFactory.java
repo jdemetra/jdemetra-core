@@ -74,7 +74,7 @@ public class OutOfSampleDiagnosticsFactory<R> implements DiagnosticsFactory<R>  
 
 
     @Override
-    public Diagnostics create(R rslts) {
+    public Diagnostics of(R rslts) {
         return OutOfSampleDiagnostics.create(config, extractor.apply(rslts));
     }
 

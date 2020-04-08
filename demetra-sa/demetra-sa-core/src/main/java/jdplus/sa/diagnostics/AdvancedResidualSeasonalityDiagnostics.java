@@ -17,11 +17,9 @@
 package jdplus.sa.diagnostics;
 
 import demetra.data.DoubleSeq;
-import demetra.modelling.ComponentInformation;
+import demetra.design.Development;
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
-import demetra.sa.ComponentType;
-import demetra.sa.SeriesDecomposition;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.PeriodicDummies;
@@ -43,7 +41,27 @@ import jdplus.stats.tests.seasonal.Qs;
  *
  * @author Jean Palate
  */
+@Development(status = Development.Status.Release)
 public class AdvancedResidualSeasonalityDiagnostics implements Diagnostics {
+    
+    @lombok.Value
+    public static class Input{
+        
+        /**
+         * Multiplicative decomposition
+         */
+        boolean multiplicative;
+        
+        /**
+         * Seasonally adjusted series, linearized, level
+         */
+        TsData sa;
+        
+        /**
+         * Irregular component, linearized, level (around 0 or 1)
+         */
+        TsData irregular;
+    }
 
     private static final double E_LIMIT = .005;
     private StatisticalTest qs_sa, qs_i, f_sa, f_i;
@@ -66,15 +84,15 @@ public class AdvancedResidualSeasonalityDiagnostics implements Diagnostics {
         return se > E_LIMIT;
     }
 
-    public static Diagnostics create(AdvancedResidualSeasonalityDiagnosticsConfiguration config, SeriesDecomposition rslts) {
+    public static Diagnostics of(AdvancedResidualSeasonalityDiagnosticsConfiguration config, Input data) {
         try {
             AdvancedResidualSeasonalityDiagnostics test = new AdvancedResidualSeasonalityDiagnostics();
-            TsData sa = rslts.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
-            TsData i = rslts.getSeries(ComponentType.Irregular, ComponentInformation.Value);
+            TsData sa = data.getSa();
+            TsData i = data.getIrregular();
+            boolean mul=data.isMultiplicative();
             if (sa == null && i == null) {
                 return null;
             }
-            boolean mul = rslts.getMode().isMultiplicative();
             boolean isignif = mul ? isSignificant(i.getValues()) : (sa != null && i != null) ? isSignificant(i.getValues(), sa.getValues(), E_LIMIT) : true;
             if (config.isQs()) {
                 int ny = config.getQslast();
