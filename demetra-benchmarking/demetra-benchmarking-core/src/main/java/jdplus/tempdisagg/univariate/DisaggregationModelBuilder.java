@@ -31,7 +31,9 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
+import demetra.timeseries.regression.Variable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -47,7 +49,7 @@ import jdplus.math.matrices.Matrix;
 class DisaggregationModelBuilder {
 
     final TsData y;
-    private final List<ITsVariable> regressors = new ArrayList<>();
+    final List<Variable> regressors = new ArrayList<>();
     private TsDomain disaggregationDomain;
     private AggregationType aType = AggregationType.Sum;
     private int observationPosition; // only used in custom interpolation
@@ -88,14 +90,14 @@ class DisaggregationModelBuilder {
         return this;
     }
 
-    DisaggregationModelBuilder addX(@NonNull ITsVariable... vars) {
+    DisaggregationModelBuilder addX(@NonNull Variable... vars) {
         for (int i = 0; i < vars.length; ++i) {
             regressors.add(vars[i]);
         }
         return this;
     }
 
-    DisaggregationModelBuilder addX(@NonNull Collection<ITsVariable> vars) {
+    DisaggregationModelBuilder addX(@NonNull Collection<Variable> vars) {
         regressors.addAll(vars);
         return this;
     }
@@ -251,8 +253,12 @@ class DisaggregationModelBuilder {
     }
 
     private void prepareX() {
-
-        hX = Regression.matrix(disaggregationDomain, regressors.toArray(new ITsVariable[regressors.size()]));
+        ITsVariable[] vars=new ITsVariable[regressors.size()];
+        int vpos=0;
+        for (Variable var : regressors){
+            vars[vpos++]=var.getVariable();
+        }
+        hX = Regression.matrix(disaggregationDomain, vars);
 
         int pos = hDom.indexOf(hEDom.getStartPeriod());
         int del = pos % frequencyRatio;

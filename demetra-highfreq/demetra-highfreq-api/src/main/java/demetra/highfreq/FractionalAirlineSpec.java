@@ -31,5 +31,14 @@ public class FractionalAirlineSpec {
     
     // operational
     private boolean adjustToInt;
+    private double precision;
+    
+    public static Builder builder(){
+        return new Builder()
+                .criticalValue(8)
+                .log(false)
+                .meanCorrection(false)
+                .precision(1e-9);
+    }
     
 }

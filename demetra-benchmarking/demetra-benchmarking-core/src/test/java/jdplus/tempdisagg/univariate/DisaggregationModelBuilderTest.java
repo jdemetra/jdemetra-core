@@ -5,14 +5,14 @@
  */
 package jdplus.tempdisagg.univariate;
 
-import jdplus.tempdisagg.univariate.DisaggregationModel;
-import jdplus.tempdisagg.univariate.DisaggregationModelBuilder;
 import demetra.data.AggregationType;
 import demetra.timeseries.regression.Constant;
 import demetra.timeseries.regression.UserVariable;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.regression.TsVariable;
+import demetra.timeseries.regression.Variable;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -22,9 +22,9 @@ import static org.junit.Assert.*;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public class DisaggregationModelBuilderTest {
-    
+
     private static final TsData Y, Q;
-    
+
     static {
         Random rnd = new Random(0);
         double[] y = new double[4];
@@ -32,58 +32,58 @@ public class DisaggregationModelBuilderTest {
             y[i] = i + rnd.nextDouble();
         }
         Y = TsData.ofInternal(TsPeriod.yearly(2000), y);
-        
+
         double[] q = new double[32];
         for (int i = 0; i < q.length; ++i) {
             q[i] = i + rnd.nextDouble();
         }
         Q = TsData.ofInternal(TsPeriod.quarterly(1998, 1), q);
-        
+
     }
-    
+
     public DisaggregationModelBuilderTest() {
     }
-    
+
     @Test
     public void testFull() {
-        
+
         DisaggregationModel model = new DisaggregationModelBuilder(Y)
                 .aggregationType(AggregationType.Sum)
                 .disaggregationDomain(TsDomain.of(TsPeriod.quarterly(2000, 1), 16))
-                .addX(new Constant())
-                .addX(new UserVariable("q", Q))
+                .addX(Variable.variable("c", new Constant()))
+                .addX(Variable.variable("q", new UserVariable(null, Q)))
                 .build();
         assertTrue(model.getHEDom().length() == 16);
         model = new DisaggregationModelBuilder(Y)
                 .aggregationType(AggregationType.Last)
                 .disaggregationDomain(TsDomain.of(TsPeriod.quarterly(2000, 1), 16))
-                .addX(new Constant())
-                .addX(new UserVariable("q", Q))
+                .addX(Variable.variable("c", new Constant()))
+                .addX(Variable.variable("q", new UserVariable(null, Q)))
                 .build();
         assertTrue(model.getHEDom().length() == 13);
         model = new DisaggregationModelBuilder(Y)
                 .aggregationType(AggregationType.First)
                 .disaggregationDomain(TsDomain.of(TsPeriod.quarterly(2000, 1), 16))
-                .addX(new Constant())
-                .addX(new UserVariable("q", Q))
+                .addX(Variable.variable("c", new Constant()))
+                .addX(Variable.variable("q", new UserVariable(null, Q)))
                 .build();
         assertTrue(model.getHEDom().length() == 13);
         model = new DisaggregationModelBuilder(Y)
                 .observationPosition(2)
                 .disaggregationDomain(TsDomain.of(TsPeriod.quarterly(2000, 1), 16))
-                .addX(new Constant())
-                .addX(new UserVariable("q", Q))
+                .addX(Variable.variable("c", new Constant()))
+                .addX(Variable.variable("q", new UserVariable(null, Q)))
                 .build();
         assertTrue(model.getHEDom().length() == 13);
     }
-    
+
     @Test
     public void testSum() {
         DisaggregationModelBuilder builder = new DisaggregationModelBuilder(Y)
                 .aggregationType(AggregationType.Sum)
                 .disaggregationDomain(TsDomain.of(TsPeriod.quarterly(2000, 1), 15))
-                .addX(new Constant())
-                .addX(new UserVariable("q", Q));
+                .addX(Variable.variable("c", new Constant()))
+                .addX(Variable.variable("q", new UserVariable(null, Q)));
         DisaggregationModel model = builder.build();
         assertTrue(model.getHEDom().length() == 12);
         model = builder.disaggregationDomain(TsDomain.of(TsPeriod.quarterly(2000, 2), 15)).build();
@@ -101,8 +101,8 @@ public class DisaggregationModelBuilderTest {
         DisaggregationModelBuilder builder = new DisaggregationModelBuilder(Y)
                 .aggregationType(AggregationType.First)
                 .disaggregationDomain(TsDomain.of(TsPeriod.quarterly(2000, 1), 15))
-                .addX(new Constant())
-                .addX(new UserVariable("q", Q));
+                .addX(Variable.variable("c", new Constant()))
+                .addX(Variable.variable("q", new UserVariable(null, Q)));
         DisaggregationModel model = builder.build();
         assertTrue(model.getHEDom().length() == 13);
         model = builder.disaggregationDomain(TsDomain.of(TsPeriod.quarterly(2000, 2), 15)).build();
@@ -120,8 +120,8 @@ public class DisaggregationModelBuilderTest {
         DisaggregationModelBuilder builder = new DisaggregationModelBuilder(Y)
                 .aggregationType(AggregationType.Last)
                 .disaggregationDomain(TsDomain.of(TsPeriod.quarterly(2000, 1), 15))
-                .addX(new Constant())
-                .addX(new UserVariable("q", Q));
+                .addX(Variable.variable("c", new Constant()))
+                .addX(Variable.variable("q", new UserVariable(null, Q)));
         DisaggregationModel model = builder.build();
         assertTrue(model.getHEDom().length() == 9);
         model = builder.disaggregationDomain(TsDomain.of(TsPeriod.quarterly(2000, 2), 15)).build();
@@ -139,8 +139,8 @@ public class DisaggregationModelBuilderTest {
         DisaggregationModelBuilder builder = new DisaggregationModelBuilder(Y)
                 .observationPosition(2)
                 .disaggregationDomain(TsDomain.of(TsPeriod.quarterly(2000, 1), 15))
-                .addX(new Constant())
-                .addX(new UserVariable("q", Q));
+                .addX(Variable.variable("c", new Constant()))
+                .addX(Variable.variable("q", new UserVariable(null, Q)));
         DisaggregationModel model = builder.build();
         assertTrue(model.getHEDom().length() == 13);
         model = builder.disaggregationDomain(TsDomain.of(TsPeriod.quarterly(2000, 2), 15)).build();

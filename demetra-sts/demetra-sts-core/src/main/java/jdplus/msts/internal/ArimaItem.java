@@ -78,7 +78,7 @@ public class ArimaItem extends StateItem {
             double var = p.get(pos++);
             ArimaModel arima = new ArimaModel(bar, bdiff, bma, var);
             StateComponent cmp = SsfArima.of(arima);
-            builder.add(name, cmp, null);
+            builder.add(name, cmp, SsfArima.defaultLoading());
             return pos;
         });
     }

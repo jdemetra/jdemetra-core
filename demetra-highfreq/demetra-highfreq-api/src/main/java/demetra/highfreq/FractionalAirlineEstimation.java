@@ -5,16 +5,89 @@
  */
 package demetra.highfreq;
 
+import demetra.data.DoubleSeqCursor;
+import demetra.highfreq.extractors.FractionalAirlineModelExtractor;
+import demetra.information.InformationMapping;
+import demetra.likelihood.LikelihoodStatistics;
+import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
-import demetra.modelling.regarima.RegArimaEstimation;
+import demetra.processing.ProcResults;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
+ * Low-level results. Should be refined
  *
  * @author palatej
  */
 @lombok.Value
-public class FractionalAirlineEstimation {
-        RegArimaEstimation<FractionalAirline> regarima;
-//        LinearModelDescription model;
-        OutlierDescriptor[] outliers;
+@lombok.Builder(builderClassName = "Builder")
+public class FractionalAirlineEstimation implements ProcResults{
+
+    double[] y;
+    MatrixType x;
+
+    FractionalAirline model;
+
+    OutlierDescriptor[] outliers;
+
+    double[] coefficients;
+    MatrixType coefficientsCovariance;
+
+    private double[] parameters, score;
+    private MatrixType parametersCovariance;
+
+    LikelihoodStatistics likelihood;
+
+    public double[] linearized() {
+
+        double[] l = y.clone();
+        for (int j = 0; j < x.getColumnsCount(); ++j) {
+            double a = coefficients[j];
+            if (a != 0) {
+                DoubleSeqCursor cursor = x.column(j).cursor();
+                for (int k = 0; k < l.length; ++k) {
+                    l[k] -= a * cursor.getAndNext();
+                }
+            }
+        }
+        return l;
+    }
+
+    public double[] tstats() {
+        double[] t = coefficients.clone();
+        if (t == null) {
+            return null;
+        }
+        DoubleSeqCursor v = coefficientsCovariance.diagonal().cursor();
+        for (int i = 0; i < t.length; ++i) {
+            t[i] /= Math.sqrt(v.getAndNext());
+        }
+        return t;
+    }
+
+    @Override
+    public boolean contains(String id) {
+        return FractionalAirlineModelExtractor.getMapping().contains(id);
+    }
+
+    @Override
+    public Map<String, Class> getDictionary() {
+        Map<String, Class> dic = new LinkedHashMap<>();
+        FractionalAirlineModelExtractor.getMapping().fillDictionary(null, dic, true);
+        return dic;
+    }
+
+    @Override
+    public <T> T getData(String id, Class<T> tclass) {
+        return FractionalAirlineModelExtractor.getMapping().getData(this, id, tclass);
+    }
+    
+    public static InformationMapping<FractionalAirlineEstimation> getMapping(){
+        return FractionalAirlineModelExtractor.getMapping();
+    }
+
+    public int getNx() {
+        return coefficients == null ? 0 : coefficients.length;
+    }
 }

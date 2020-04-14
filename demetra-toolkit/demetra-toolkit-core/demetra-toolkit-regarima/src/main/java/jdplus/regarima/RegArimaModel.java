@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
+import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.Matrix;
 
 /**
@@ -237,6 +238,18 @@ public final class RegArimaModel<M extends IArimaModel> {
 
     public boolean isMean() {
         return mean;
+    }
+    
+    public Matrix variables(){
+        int n=y.length();
+        Matrix m=Matrix.make(n, x.size());
+        double[] storage = m.getStorage();
+        int pos=0;
+        for (DoubleSeq xcur:x){
+            xcur.copyTo(storage, pos);
+            pos+=n;
+        }
+        return m;
     }
 
     @NonNull

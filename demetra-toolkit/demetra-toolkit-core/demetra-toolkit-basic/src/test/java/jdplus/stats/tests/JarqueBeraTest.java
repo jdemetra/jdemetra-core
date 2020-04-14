@@ -41,7 +41,7 @@ public class JarqueBeraTest {
                 .build();
 
         StatisticalTest test1 = new JarqueBera(X)
-                .regressionCount(0) // not necessary: 0 is the default)
+                .degreeOfFreedomCorrection(0) // not necessary: 0 is the default)
                 .build();
 
         StatisticalTest test2 = new JarqueBera(X)

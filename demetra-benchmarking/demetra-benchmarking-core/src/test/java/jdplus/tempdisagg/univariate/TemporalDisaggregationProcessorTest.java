@@ -65,9 +65,9 @@ public class TemporalDisaggregationProcessorTest {
                 .algorithm(SsfInitialization.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
-        assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
-        assertTrue(rslt1.getEstimation().getCovariance().diagonal()
-                .distance(rslt3.getEstimation().getCovariance().diagonal()) < 1e-6);
+        assertTrue(rslt1.getCoefficients().distance(rslt3.getCoefficients()) < 1e-6);
+        assertTrue(rslt1.getCoefficientsCovariance().diagonal()
+                .distance(rslt3.getCoefficientsCovariance().diagonal()) < 1e-6);
 //        System.out.println("CL");
 //        System.out.println(rslt2.getDisaggregatedSeries().getValues());
 //        System.out.println(rslt2.getStdevDisaggregatedSeries().getValues());
@@ -115,9 +115,9 @@ public class TemporalDisaggregationProcessorTest {
                 .algorithm(SsfInitialization.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
-        assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
-        assertTrue(rslt1.getEstimation().getCovariance().diagonal()
-                .distance(rslt3.getEstimation().getCovariance().diagonal()) < 1e-6);
+        assertTrue(rslt1.getCoefficients().distance(rslt3.getCoefficients()) < 1e-6);
+        assertTrue(rslt1.getCoefficientsCovariance().diagonal()
+                .distance(rslt3.getCoefficientsCovariance().diagonal()) < 1e-6);
 //        System.out.println("CL-average");
 //        System.out.println(rslt2.getDisaggregatedSeries().getValues());
 //        System.out.println(rslt2.getStdevDisaggregatedSeries().getValues());
@@ -156,9 +156,9 @@ public class TemporalDisaggregationProcessorTest {
                 .algorithm(SsfInitialization.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
-        assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
-        assertTrue(rslt1.getEstimation().getCovariance().diagonal()
-                .distance(rslt3.getEstimation().getCovariance().diagonal()) < 1e-6);
+        assertTrue(rslt1.getCoefficients().distance(rslt3.getCoefficients()) < 1e-6);
+        assertTrue(rslt1.getCoefficientsCovariance().diagonal()
+                .distance(rslt3.getCoefficientsCovariance().diagonal()) < 1e-6);
 //        System.out.println("RW");
 //        System.out.println(rslt1.getDisaggregatedSeries().getValues());
 //        System.out.println(rslt1.getStdevDisaggregatedSeries().getValues());
@@ -200,9 +200,9 @@ public class TemporalDisaggregationProcessorTest {
                 .algorithm(SsfInitialization.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
-        assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
-        assertTrue(rslt1.getEstimation().getCovariance().diagonal()
-                .distance(rslt3.getEstimation().getCovariance().diagonal()) < 1e-6);
+         assertTrue(rslt1.getCoefficients().distance(rslt3.getCoefficients()) < 1e-6);
+        assertTrue(rslt1.getCoefficientsCovariance().diagonal()
+                .distance(rslt3.getCoefficientsCovariance().diagonal()) < 1e-6);
     }
 
     @Test
@@ -244,9 +244,9 @@ public class TemporalDisaggregationProcessorTest {
                 .algorithm(SsfInitialization.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
-        assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
-        assertTrue(rslt1.getEstimation().getCovariance().diagonal()
-                .distance(rslt3.getEstimation().getCovariance().diagonal()) < 1e-6);
+        assertTrue(rslt1.getCoefficients().distance(rslt3.getCoefficients()) < 1e-6);
+        assertTrue(rslt1.getCoefficientsCovariance().diagonal()
+                .distance(rslt3.getCoefficientsCovariance().diagonal()) < 1e-6);
 //        System.out.println("ar1");
 //        System.out.println(rslt1.getDisaggregatedSeries().getValues());
 //        System.out.println(rslt1.getStdevDisaggregatedSeries().getValues());
@@ -282,9 +282,9 @@ public class TemporalDisaggregationProcessorTest {
                 .algorithm(SsfInitialization.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
-        assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
-        assertTrue(rslt1.getEstimation().getCovariance().diagonal()
-                .distance(rslt3.getEstimation().getCovariance().diagonal()) < 1e-6);
+        assertTrue(rslt1.getCoefficients().distance(rslt3.getCoefficients()) < 1e-6);
+        assertTrue(rslt1.getCoefficientsCovariance().diagonal()
+                .distance(rslt3.getCoefficientsCovariance().diagonal()) < 1e-6);
 //        System.out.println("rw");
 //        System.out.println(rslt1.getDisaggregatedSeries().getValues());
 //        System.out.println(rslt1.getStdevDisaggregatedSeries().getValues());
@@ -326,9 +326,9 @@ public class TemporalDisaggregationProcessorTest {
                 .algorithm(SsfInitialization.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.PROCESSOR.process(y, new TsData[]{q}, spec3);
-        assertTrue(rslt1.getEstimation().values().distance(rslt3.getEstimation().values()) < 1e-6);
-        assertTrue(rslt1.getEstimation().getCovariance().diagonal()
-                .distance(rslt3.getEstimation().getCovariance().diagonal()) < 1e-6);
+        assertTrue(rslt1.getCoefficients().distance(rslt3.getCoefficients()) < 1e-6);
+        assertTrue(rslt1.getCoefficientsCovariance().diagonal()
+                .distance(rslt3.getCoefficientsCovariance().diagonal()) < 1e-6);
 //        System.out.println("rwar1");
 //        System.out.println(rslt1.getDisaggregatedSeries().getValues());
 //        System.out.println(rslt1.getStdevDisaggregatedSeries().getValues());

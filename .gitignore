@@ -7,7 +7,6 @@
 /demetra-toolkit/demetra-toolkit-core/demetra-toolkit-modelling/target/
 /demetra-toolkit/demetra-toolkit-core/demetra-toolkit-ssf/target/
 /demetra-toolkit/demetra-toolkit-core/demetra-toolkit-regarima/target/
-/demetra-toolkit/demetra-toolkit-core/demetra-toolkit-sa/target/
 /demetra-tramoseats/demetra-tramoseats-api/target/
 /demetra-tramoseats/demetra-tramo-core/target/
 /demetra-tramoseats/demetra-tramoseats-core/target/
@@ -69,3 +68,5 @@ demetra-io-core/target/
 /demetra-calendars/demetra-calendars-core/target/
 /demetra-calendars/demetra-calendars-io/target/
 /demetra-calendars/demetra-calendars-r/target/
+/demetra-stl/demetra-stl-r/target/
+/demetra-sa/demetra-sa-r/target/

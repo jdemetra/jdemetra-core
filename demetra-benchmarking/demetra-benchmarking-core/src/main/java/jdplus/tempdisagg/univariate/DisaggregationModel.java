@@ -17,8 +17,10 @@
 package jdplus.tempdisagg.univariate;
 
 import demetra.design.Development;
+import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
+import demetra.timeseries.regression.Variable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.math.matrices.Matrix;
 
@@ -30,9 +32,10 @@ import jdplus.math.matrices.Matrix;
 @lombok.Value
 class DisaggregationModel {
     
-    @NonNull
-    TsUnit yUnit;
-
+    @NonNull TsData originalSeries;
+    
+    Variable[] indicators;
+    
     @NonNull
     double[] hO;
 
@@ -89,7 +92,8 @@ class DisaggregationModel {
     int start;
     
     DisaggregationModel(DisaggregationModelBuilder builder){
-        this.yUnit=builder.y.getTsUnit();
+        this.originalSeries=builder.y;
+        this.indicators=builder.regressors.toArray(new Variable[builder.regressors.size()]);
         this.hO=builder.hO;
         this.hY=builder.hY;
         this.hEY=builder.hEY;

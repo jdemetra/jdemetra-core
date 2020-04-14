@@ -110,17 +110,17 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
                 p[i + 1] = -ma.get(p0[i]);
             }
         }
-        return DoubleSeq.copyOf(p);
+        return DoubleSeq.of(p);
     }
 
     @Override
     public boolean checkBoundaries(DoubleSeq inparams) {
-        return inparams.allMatch(x -> Math.abs(x) < .999);
+        return inparams.allMatch(x -> Math.abs(x) <= .999);
     }
 
     @Override
     public double epsilon(DoubleSeq inparams, int idx) {
-        return 1e-6;
+        return inparams.get(idx)>0 ? -1e-6 : 1e-6;
     }
 
     @Override
@@ -138,15 +138,22 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
         return 1;
     }
 
+    private final static double UB = .999;
+
     @Override
     public ParamValidation validate(DataBlock ioparams) {
         boolean changed = false;
         for (int i = 0; i < ioparams.length(); ++i) {
             double p = ioparams.get(i);
-            if (Math.abs(p) >= .999) {
+            if (Math.abs(p) > 1/UB) {
                 ioparams.set(i, 1 / p);
                 changed = true;
+            } 
+            else if (Math.abs(p) > UB) {
+                ioparams.set(i, p<0 ? -UB : UB);
+                changed = true;
             }
+
         }
         return changed ? ParamValidation.Changed : ParamValidation.Valid;
     }
