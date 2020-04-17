@@ -5,18 +5,20 @@
  */
 package demetra.revisions.parametric;
 
-import demetra.stats.TestResult;
-
 /**
  *
  * @author PALATEJ
  */
 @lombok.Value
-public class EfficiencyTests {
+@lombok.Builder(builderClassName="Builder")
+public class Efficiency {
+    enum Type{
+        Preliminary,
+        Previous
+    }
     
-    TestResult breuschPagan;
-    TestResult white;
-    TestResult jarqueBera;
-    TestResult arch;
+    Type type;
+    double b0, b1;
     
+    RegressionTests tests;
 }

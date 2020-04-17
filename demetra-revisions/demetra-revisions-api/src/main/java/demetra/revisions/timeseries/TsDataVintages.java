@@ -109,15 +109,7 @@ public class TsDataVintages<K extends Comparable> implements Seq<TsObsVintages> 
         return TsDomain.of(start, data.length);
     }
 
-    public TsPeriod getFirstPeriod() {
-        return start;
-    }
-
-    public TsPeriod getEndPeriod() {
-        return start.plus(data.length);
-    }
-
-    public TsData initial() {
+    public TsData preliminary() {
         double[] z = new double[data.length];
         for (int i = 0; i < data.length; ++i) {
             if (data[i] != null) {
@@ -157,7 +149,24 @@ public class TsDataVintages<K extends Comparable> implements Seq<TsObsVintages> 
                 z[i] = Double.NaN;
             }
         }
-        return TsData.ofInternal(start, z);
+        return TsData.ofInternal(start, z).cleanExtremities();
+    }
+
+    public TsData vintage(int pos) {
+        double[] z = new double[data.length];
+        for (int i = 0; i < data.length; ++i) {
+            TsObsVintages.Entry<K>[] cur = data[i];
+            if (cur != null) {
+                if (pos <cur.length) {
+                    z[i] = cur[pos].getValue();
+                } else {
+                    z[i] = Double.NaN;
+                }
+            } else {
+                z[i] = Double.NaN;
+            }
+        }
+        return TsData.ofInternal(start, z).cleanExtremities();
     }
 
     private int search(TsObsVintages.Entry<K>[] cur, K vintage, boolean exact) {
@@ -194,7 +203,7 @@ public class TsDataVintages<K extends Comparable> implements Seq<TsObsVintages> 
         TsPeriod sstart=selection.getStartPeriod();
         int istart=start.until(sstart);
         Entry<K>[][] copy = Arrays.copyOfRange(data, istart, istart+selection.getLength());
-        return new TsDataVintages<K>(sstart, copy);
+        return new TsDataVintages<>(sstart, copy);
     }
 
 }

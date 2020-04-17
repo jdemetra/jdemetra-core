@@ -24,28 +24,29 @@ import demetra.data.DoubleSeq;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@lombok.experimental.UtilityClass
 public class AutoCovariances {
 
-    public static final double SMALL = 1e-38;
+    public final double SMALL = 1e-38;
 
-    public static double[] autoCovariancesWithZeroMean(DoubleSeq data, int maxLag) {
+    public double[] autoCovariancesWithZeroMean(DoubleSeq data, int maxLag) {
         return autoCovariances(data, 0, maxLag);
     }
 
-    public static double[] autoCovariances(DoubleSeq data, double mean, int maxLag) {
-        double[] cov = new double[maxLag + 1];
+    public double[] autoCovariances(DoubleSeq data, double mean, int maxLag) {
+        double[] autoCovariance = new double[maxLag + 1];
         if (data.anyMatch(x -> !Double.isFinite(x))) {
-            cov[0] = variance(data, mean);
+            autoCovariance[0] = variance(data, mean);
             for (int i = 1; i <= maxLag; ++i) {
-                cov[i] = cov(data, mean, i);
+                autoCovariance[i] = autoCovariance(data, mean, i);
             }
         } else {
-            cov[0] = varianceNoMissing(data, mean);
+            autoCovariance[0] = varianceNoMissing(data, mean);
             for (int i = 1; i <= maxLag; ++i) {
-                cov[i] = covNoMissing(data, mean, i);
+                autoCovariance[i] = autoCovarianceNoMissing(data, mean, i);
             }
         }
-        return cov;
+        return autoCovariance;
     }
 
     /**
@@ -59,7 +60,7 @@ public class AutoCovariances {
      * @param t The delay between the two arrays
      * @return The covariance; covariance = sum((x(i)*y(i+t)/n)
      */
-    public static double covarianceWithZeroMean(DoubleSeq x, DoubleSeq y, int t) {
+    public double covarianceWithZeroMean(DoubleSeq x, DoubleSeq y, int t) {
         // x and y must have the same Length...
         if (t < 0) {
             return covarianceWithZeroMean(y, x, -t);
@@ -86,11 +87,11 @@ public class AutoCovariances {
         return v / m;
     }
 
-    public static double covarianceWithZeroMean(DoubleSeq x, DoubleSeq y) {
+    public double covarianceWithZeroMean(DoubleSeq x, DoubleSeq y) {
         return covarianceWithZeroMean(x, y, 0);
     }
 
-    public static double covarianceWithZeroMeanAndNoMissing(DoubleSeq x, DoubleSeq y, int t) {
+    public double covarianceWithZeroMeanAndNoMissing(DoubleSeq x, DoubleSeq y, int t) {
         // x and y must have the same Length...
         if (t < 0) {
             return covarianceWithZeroMeanAndNoMissing(y, x, -t);
@@ -106,25 +107,102 @@ public class AutoCovariances {
         return v / x.length();
     }
 
-    public static IntToDoubleFunction autoCorrelationFunction(DoubleSeq data, double mean) {
+    public IntToDoubleFunction autoCorrelationFunction(DoubleSeq data, double mean) {
         if (data.anyMatch(x -> !Double.isFinite(x))) {
             final double var = variance(data, mean);
-            return i -> var < SMALL ? 0 : cov(data, mean, i) / var;
+            return i -> var < SMALL ? 0 : autoCovariance(data, mean, i) / var;
         } else {
             final double var = varianceNoMissing(data, mean);
-            return i -> var < SMALL ? 0 : covNoMissing(data, mean, i) / var;
+            return i -> var < SMALL ? 0 : autoCovarianceNoMissing(data, mean, i) / var;
         }
     }
 
-    public static IntToDoubleFunction autoCovarianceFunction(DoubleSeq data, double mean) {
+    public IntToDoubleFunction autoCovarianceFunction(DoubleSeq data, double mean) {
         if (data.anyMatch(x -> !Double.isFinite(x))) {
-            return i -> cov(data, mean, i);
+            return i -> autoCovariance(data, mean, i);
         } else {
-            return i -> covNoMissing(data, mean, i);
+            return i -> autoCovarianceNoMissing(data, mean, i);
         }
     }
 
-    private static double cov(DoubleSeq data, double mean, int lag) {
+    /**
+     * Computes the auto-covariance of a sample from a population with known
+     * mean.
+     *
+     * =sum(lag:n-1)((x(t)-mu)(x(t-lag)-mu))/n
+     *
+     * @param data The sample
+     * @param mean Mean of the population
+     * @return
+     */
+    public double autoCovarianceNoMissing(DoubleSeq data, double mean, int lag) {
+        int n = data.length() - lag;
+        if (n <= 0) {
+            return 0;
+        }
+        double v = 0;
+        DoubleSeqCursor xr = data.cursor();
+        DoubleSeqCursor yr = data.cursor();
+        yr.moveTo(lag);
+        for (int j = 0; j < n; ++j) {
+            double xcur = xr.getAndNext();
+            double ycur = yr.getAndNext();
+            v += (xcur - mean) * (ycur - mean);
+        }
+        return v / data.length();
+    }
+
+    /**
+     * Computes the variance of a sample from a population with known mean
+     *
+     * =sum(0:n-1)((x(t)-mu)^2)/n
+     *
+     * @param data The sample
+     * @param mean Mean of the population
+     * @return
+     */
+    public double varianceNoMissing(DoubleSeq data, double mean) {
+        int n = data.length();
+        if (n == 0) {
+            return 0;
+        }
+        double v = 0;
+        DoubleSeqCursor xr = data.cursor();
+        for (int j = 0; j < n; ++j) {
+            double xcur = xr.getAndNext();
+            v += (xcur - mean) * (xcur - mean);
+        }
+        return v / n;
+    }
+
+    /**
+     * Same as varianceNoMissing. The data can contain missing values
+     * @param data
+     * @param mean
+     * @return 
+     */
+    public double variance(DoubleSeq data, double mean) {
+        double v = 0;
+        int n = data.length();
+        int nm = 0;
+        DoubleSeqCursor xr = data.cursor();
+        for (int j = 0; j < n; ++j) {
+            double xcur = xr.getAndNext();
+            if (Double.isFinite(xcur)) {
+                v += (xcur - mean) * (xcur - mean);
+            } else {
+                ++nm;
+            }
+        }
+        int m = data.length() - nm;
+        if (m == 0) {
+            return 0;
+        } else {
+            return v / m;
+        }
+    }
+
+    public double autoCovariance(DoubleSeq data, double mean, int lag) {
         double v = 0;
         int n = data.length() - lag;
         int nm = 0;
@@ -148,61 +226,4 @@ public class AutoCovariances {
         }
     }
 
-    public static double variance(DoubleSeq data, double mean) {
-        double v = 0;
-        int n = data.length();
-        int nm = 0;
-        DoubleSeqCursor xr = data.cursor();
-        for (int j = 0; j < n; ++j) {
-            double xcur = xr.getAndNext();
-            if (Double.isFinite(xcur)) {
-                v += (xcur - mean) * (xcur - mean);
-            } else {
-                ++nm;
-            }
-        }
-        int m = data.length() - nm;
-        if (m == 0) {
-            return 0;
-        } else {
-            return v / m;
-        }
-    }
-
-    private static double covNoMissing(DoubleSeq data, double mean, int lag) {
-        int n = data.length() - lag;
-        if (n <= 0) {
-            return 0;
-        }
-        double v = 0;
-        DoubleSeqCursor xr = data.cursor();
-        DoubleSeqCursor yr = data.cursor();
-        yr.moveTo(lag);
-        for (int j = 0; j < n; ++j) {
-            double xcur = xr.getAndNext();
-            double ycur = yr.getAndNext();
-            v += (xcur - mean) * (ycur - mean);
-        }
-        return v / data.length();
-    }
-
-    /**
-     * Computes the variance of a sample from a population with known mean
-     * @param data The sample
-     * @param mean Mean of the population
-     * @return 
-     */
-    public static double varianceNoMissing(DoubleSeq data, double mean) {
-        int n = data.length();
-        if (n == 0) {
-            return 0;
-        }
-        double v = 0;
-        DoubleSeqCursor xr = data.cursor();
-        for (int j = 0; j < n; ++j) {
-            double xcur = xr.getAndNext();
-            v += (xcur - mean) * (xcur - mean);
-        }
-        return v / n;
-    }
 }

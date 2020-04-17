@@ -22,7 +22,7 @@ import java.util.Map;
 public class FractionalAirlineModelExtractor {
 
     private static final String PARAMETERS = "parameters", LL = "likelihood", PCOV = "pcov", SCORE = "score",
-            B = "b", T = "t", BVAR = "bvar", OUTLIERS = "outliers", LIN = "lin", REGRESSORS = "regressors", Y = "y", X = "x", BNAMES = "variables";
+            B = "b", T = "t", BVAR = "bvar", OUTLIERS = "outliers", LIN = "lin", REGRESSORS = "regressors", Y = "y", BNAMES = "variables";
 
     private static final InformationMapping<FractionalAirlineEstimation> MAPPING = new InformationMapping<>(FractionalAirlineEstimation.class);
 
@@ -49,7 +49,6 @@ public class FractionalAirlineModelExtractor {
         MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
         MAPPING.set(PARAMETERS, double[].class, source -> source.getParameters());
         MAPPING.set(SCORE, double[].class, source -> source.getScore());
-        MAPPING.set(BVAR, MatrixType.class, source -> source.getCoefficientsCovariance());
         MAPPING.set(B, double[].class, source -> source.getCoefficients());
         MAPPING.set(T, double[].class, source -> source.tstats());
         MAPPING.set(BVAR, MatrixType.class, source -> source.getCoefficientsCovariance());
@@ -67,7 +66,6 @@ public class FractionalAirlineModelExtractor {
         MAPPING.set(REGRESSORS, MatrixType.class, source -> source.getX());
         MAPPING.set(LIN, double[].class, source -> source.linearized());
         MAPPING.set(Y, double[].class, source -> source.getY());
-        MAPPING.set(X, MatrixType.class, source -> source.getX());
         MAPPING.set(BNAMES, String[].class, source -> {
             int nx = source.getNx();
             if (nx == 0) {
