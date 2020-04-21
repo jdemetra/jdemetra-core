@@ -18,7 +18,7 @@ package demetra.benchmarking.r;
 
 import demetra.benchmarking.extractors.TemporalDisaggregationExtractor;
 import demetra.data.AggregationType;
-import demetra.data.ParameterSpec;
+import demetra.data.Parameter;
 import demetra.information.InformationMapping;
 import demetra.processing.ProcResults;
 import demetra.ssf.SsfInitialization;
@@ -79,7 +79,7 @@ public class TemporalDisaggregation {
                 .residualsModel(Model.valueOf(model))
                 .aggregationType(AggregationType.valueOf(aggregation))
                 .observationPosition(obspos)
-                .parameter(fixedrho ? ParameterSpec.fixed(rho) : ParameterSpec.initial(rho))
+                .parameter(fixedrho ? Parameter.fixed(rho) : Parameter.initial(rho))
                 .truncatedRho(truncatedRho)
                 .build();
         TemporalDisaggregationIResults rslt = new ProcessorI().process(y, indicator, spec);
@@ -95,7 +95,7 @@ public class TemporalDisaggregation {
                 .trend(trend)
                 .residualsModel(TemporalDisaggregationSpec.Model.valueOf(model))
                 .aggregationType(AggregationType.valueOf(aggregation))
-                .parameter(fixedrho ? ParameterSpec.fixed(rho) : ParameterSpec.initial(rho))
+                .parameter(fixedrho ? Parameter.fixed(rho) : Parameter.initial(rho))
                 .truncatedParameter(truncatedRho <= -1 ? null : truncatedRho)
                 .algorithm(SsfInitialization.valueOf(algorithm))
                 .zeroInitialization(zeroinit)

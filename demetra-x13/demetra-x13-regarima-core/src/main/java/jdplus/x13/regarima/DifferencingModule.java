@@ -25,11 +25,6 @@ import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regsarima.regular.IDifferencingModule;
-import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.arima.SarimaOrders;
 import demetra.regarima.RegArimaException;
 import demetra.data.DoubleSeq;
@@ -42,10 +37,10 @@ import jdplus.sarima.estimation.SarimaMapping;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class DifferencingModule implements IDifferencingModule {
+public class DifferencingModule {
 
     public static final int MAXD = 2, MAXBD = 1;
-
+    
     public static Builder builder() {
         return new Builder();
     }
@@ -340,12 +335,15 @@ public class DifferencingModule implements IDifferencingModule {
         }
 
         if (usedefault || ml || useml) {
-            SarimaMapping.stabilize(lastModel);
+            lastModel = SarimaMapping.stabilize(lastModel);
 
-            IRegArimaProcessor processor = X13Utility.processor(true, eps);
+            IRegArimaProcessor processor = RegArimaUtility.processor(true, eps);
+            SarimaModel arima=SarimaModel.builder(spec)
+                    .parameters(lastModel.parameters())
+                    .build();
             RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder()
-                    .y(data)
-                    .arima(lastModel)
+                    .y(DoubleSeq.of(x))
+                    .arima(arima)
                     .build();
             RegArimaEstimation<SarimaModel> rslt = processor.optimize(regarima, null);
             if (rslt == null) {
@@ -557,48 +555,48 @@ public class DifferencingModule implements IDifferencingModule {
         return Math.abs(t) > vct;
     }
 
-    @Override
-    public ProcessingResult process(RegSarimaModelling context) {
-        if (context.needEstimation()) {
-            context.estimate(eps);
-        }
-        ModelDescription desc = context.getDescription();
-        RegArimaEstimation<SarimaModel> estimation = context.getEstimation();
-        int freq = desc.getAnnualFrequency();
-        SarimaOrders curspec = desc.specification();
-        try {
-            // get residuals
-            DoubleSeq res = RegArimaUtility.linearizedData(desc.regarima(), estimation.getConcentratedLikelihood());
-            if (!process(res, freq)) {
-                return airline(context);
-            }
-            boolean changed = false;
-            if (spec.getD() != curspec.getD() || spec.getBd() != curspec.getBd()) {
-                changed = true;
-                desc.setSpecification(spec);
-            }
-            boolean nmean = isMeanCorrection();
-            if (nmean != desc.isMean()) {
-                changed = true;
-                desc.setMean(nmean);
-                context.clearEstimation();
-            }
-            return changed ? ProcessingResult.Changed : ProcessingResult.Unchanged;
-        } catch (RuntimeException err) {
-            return airline(context);
-        }
-    }
-
-    private ProcessingResult airline(RegSarimaModelling context) {
-        ModelDescription desc = context.getDescription();
-        boolean seasonal = desc.getAnnualFrequency() > 1;
-        if (!desc.specification().isAirline(seasonal)) {
-            desc.setAirline(seasonal);
-            desc.setMean(false);
-            context.clearEstimation();
-            return ProcessingResult.Changed;
-        } else {
-            return ProcessingResult.Unprocessed;
-        }
-    }
+//    @Override
+//    public ProcessingResult process(RegSarimaModelling context) {
+//        if (context.needEstimation()) {
+//            context.estimate(eps);
+//        }
+//        ModelDescription desc = context.getDescription();
+//        RegArimaEstimation<SarimaModel> estimation = context.getEstimation();
+//        int freq = desc.getAnnualFrequency();
+//        SarimaOrders curspec = desc.specification();
+//        try {
+//            // get residuals
+//            DoubleSeq res = RegArimaUtility.linearizedData(desc.regarima(), estimation.getConcentratedLikelihood());
+//            if (!process(res, freq)) {
+//                return airline(context);
+//            }
+//            boolean changed = false;
+//            if (spec.getD() != curspec.getD() || spec.getBd() != curspec.getBd()) {
+//                changed = true;
+//                context.setSpecification(spec);
+//            }
+//            boolean nmean = isMeanCorrection();
+//            if (nmean != desc.isMean()) {
+//                changed = true;
+//                desc.setMean(nmean);
+//                context.clearEstimation();
+//            }
+//            return changed ? ProcessingResult.Changed : ProcessingResult.Unchanged;
+//        } catch (RuntimeException err) {
+//            return airline(context);
+//        }
+//    }
+//
+//    private ProcessingResult airline(RegSarimaModelling context) {
+//        ModelDescription desc = context.getDescription();
+//        boolean seasonal = desc.getAnnualFrequency() > 1;
+//        if (!desc.specification().isAirline(seasonal)) {
+//            desc.setAirline(seasonal);
+//            desc.setMean(false);
+//            context.clearEstimation();
+//            return ProcessingResult.Changed;
+//        } else {
+//            return ProcessingResult.Unprocessed;
+//        }
+//    }
 }

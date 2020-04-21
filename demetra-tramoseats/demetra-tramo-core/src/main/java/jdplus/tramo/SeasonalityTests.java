@@ -16,6 +16,7 @@
  */
 package jdplus.tramo;
 
+import jdplus.modelling.DifferencingResults;
 import jdplus.data.analysis.DiscreteWindowFunction;
 import jdplus.data.analysis.SmoothedPeriodogram;
 import jdplus.stats.tests.StatisticalTest;

@@ -48,6 +48,7 @@ public final class EasterSpec implements Validatable<EasterSpec> {
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
+                .type(Type.Unused)
                 .duration(DEF_EASTERDUR)
                 .test(RegressionTestSpec.None);
     }

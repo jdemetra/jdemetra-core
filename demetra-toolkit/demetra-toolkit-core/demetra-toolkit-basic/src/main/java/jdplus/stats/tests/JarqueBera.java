@@ -31,7 +31,7 @@ import jdplus.stats.DescriptiveStatistics;
 @BuilderPattern(StatisticalTest.class)
 public class JarqueBera {
     
-    private int nregs;
+    private int k;
     private boolean corrected;
     
     private final DescriptiveStatistics stats;
@@ -46,11 +46,12 @@ public class JarqueBera {
 
     /**
      *
-     * @param nregs
-     * @return Number of regression variables
+     * @param k Correction of the degree of freedom. For instance, number of regression variables
+     * if the data correspond to the residuals of a linear model.
+     * @return 
      */
-    public JarqueBera regressionCount(int nregs) {
-        this.nregs = nregs;
+    public JarqueBera degreeOfFreedomCorrection(int k) {
+        this.k = k;
         return this;
     }
     
@@ -61,7 +62,7 @@ public class JarqueBera {
     
     
     public StatisticalTest build() {
-        double n = stats.getObservationsCount()-nregs;
+        double n = stats.getObservationsCount()-k;
         if (n<4)
             throw new StatException("Invalid test: not enough observations");
         double s = stats.getSkewness();

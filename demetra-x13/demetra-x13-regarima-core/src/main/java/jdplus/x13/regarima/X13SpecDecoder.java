@@ -76,9 +76,9 @@ final class X13SpecDecoder {
         TradingDaysSpec tdspec = spec.getRegression().getTradingDays();
         if (tspec.getFunction() == TransformationType.Auto) {
             builder.logLevel(LogLevelModule.builder()
-                    .comparator(tspec.getAicDiff())
+                    .aiccLogCorrection(tspec.getAicDiff())
                     .estimationPrecision(espec.getTol())
-                    .adjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriodTime() : LengthOfPeriodType.None)
+                    .preadjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriodTime() : LengthOfPeriodType.None)
                     .build());
         }
     }
@@ -87,16 +87,15 @@ final class X13SpecDecoder {
         AutoModelSpec amiSpec = spec.getAutoModel();
         DifferencingModule diff = DifferencingModule.builder()
                 .cancel(amiSpec.getCancel())
-                .ub1(amiSpec.getUb1())
-                .ub2(amiSpec.getUb2())
+                .ub1(1/amiSpec.getUb1())
+                .ub2(1/amiSpec.getUb2())
                 .build();
         ArmaModule arma = ArmaModule.builder()
                 .balanced(amiSpec.isBalanced())
                 .mixed(amiSpec.isMixed())
                 .build();
 
-        builder.differencing(diff)
-                .arma(arma);
+        builder.autoModelling(new AutoModellingModule(diff, arma));
     }
 
     private void readOutliers(final RegArimaSpec spec) {

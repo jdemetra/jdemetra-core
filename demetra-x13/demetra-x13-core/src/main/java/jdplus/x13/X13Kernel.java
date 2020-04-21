@@ -17,7 +17,6 @@
 package jdplus.x13;
 
 import demetra.data.DoubleSeq;
-import demetra.data.DoublesMath;
 import demetra.processing.ProcessingLog;
 import demetra.regarima.BasicSpec;
 import demetra.sa.ComponentType;
@@ -55,7 +54,7 @@ public class X13Kernel {
         return (s, logs) -> {
             TsData sc = s.select(basic.getSpan());
             if (basic.isPreliminaryCheck()) {
-                jdplus.sa.diagnostics.PreliminaryChecks.testSeries(sc);
+                jdplus.sa.PreliminaryChecks.testSeries(sc);
             }
             return sc;
         };
@@ -119,15 +118,15 @@ public class X13Kernel {
         TsData mh = model.getMovingHolidayEffect(domain);
         TsData td = model.getTradingDaysEffect(domain);
 
-        TsData pt = decomposer.deterministicEffect(domain, ComponentType.Trend, false, v -> v instanceof IOutlier);
-        TsData ps = decomposer.deterministicEffect(domain, ComponentType.Seasonal, false, v -> v instanceof IOutlier);
-        TsData pi = decomposer.deterministicEffect(domain, ComponentType.Irregular, false, v -> v instanceof IOutlier);
-        TsData ut = decomposer.deterministicEffect(domain, ComponentType.Trend, false, v -> v instanceof IUserTsVariable);
-        TsData us = decomposer.deterministicEffect(domain, ComponentType.Seasonal, false, v -> v instanceof IUserTsVariable);
-        TsData ui = decomposer.deterministicEffect(domain, ComponentType.Irregular, false, v -> v instanceof IUserTsVariable);
-        TsData usa = decomposer.deterministicEffect(domain, ComponentType.SeasonallyAdjusted, false, v -> v instanceof IUserTsVariable);
-        TsData user = decomposer.deterministicEffect(domain, ComponentType.Series, false, v -> v instanceof IUserTsVariable);
-        TsData uu = decomposer.deterministicEffect(domain, ComponentType.Undefined, false, v -> v instanceof IUserTsVariable);
+        TsData pt = decomposer.deterministicEffect(domain, ComponentType.Trend, false, v -> v.isOutlier());
+        TsData ps = decomposer.deterministicEffect(domain, ComponentType.Seasonal, false, v -> v.isOutlier());
+        TsData pi = decomposer.deterministicEffect(domain, ComponentType.Irregular, false, v -> v.isOutlier());
+        TsData ut = decomposer.deterministicEffect(domain, ComponentType.Trend, false, v -> v.isUser());
+        TsData us = decomposer.deterministicEffect(domain, ComponentType.Seasonal, false, v -> v.isUser());
+        TsData ui = decomposer.deterministicEffect(domain, ComponentType.Irregular, false, v -> v.isUser());
+        TsData usa = decomposer.deterministicEffect(domain, ComponentType.SeasonallyAdjusted, false, v->v.isUser());
+        TsData user = decomposer.deterministicEffect(domain, ComponentType.Series, false, v -> v.isUser());
+        TsData uu = decomposer.deterministicEffect(domain, ComponentType.Undefined, false, v -> v.isUser());
         TsData p = mul ? TsData.multiply(pt, ps, pi) : TsData.add(pt, ps, pi);
 
         pt = mul ? TsData.multiply(pt, ut) : TsData.add(pt, ut);

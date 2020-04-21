@@ -122,9 +122,9 @@ public class RegArmaModel<M extends IArimaModel> {
     
     /**
      * The differenced regression variables. Contains successively
-     * the additive outliers corresponding to the missing values,
-     * the constant
-     * the other regression variables
+     * - the additive outliers corresponding to the missing values,
+     * - the constant
+     * - the other regression variables
      */
     Matrix x;
     

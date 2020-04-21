@@ -33,20 +33,19 @@ public class OneWayAnova {
     @lombok.Value
     public static final class Group {
 
-        String name;
         DoubleSeq data;
-
-        int n;
         double sx;
 
         public double mean() {
-            return sx / n;
+            return sx / data.length();
+        }
+
+        public int size() {
+            return data.length();
         }
 
         public Group(final String name, final DoubleSeq data) {
-            this.name = name;
             this.data = data;
-            n = data.length();
             sx = data.sum();
         }
     }
@@ -66,7 +65,7 @@ public class OneWayAnova {
         N = 0;
         for (Group g : groups) {
             Sx += g.sx;
-            N += g.n;
+            N += g.size();
         }
         M = Sx / getN();
 
@@ -76,7 +75,7 @@ public class OneWayAnova {
         for (Group g : groups) {
             SSQ += g.data.ssqc(M);
             double dm = g.mean() - M;
-            SSM += dm * dm * g.n;
+            SSM += dm * dm * g.size();
         }
 
         SSR = SSQ - SSM;

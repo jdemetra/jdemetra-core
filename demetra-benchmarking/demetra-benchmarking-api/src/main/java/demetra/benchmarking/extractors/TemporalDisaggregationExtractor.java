@@ -5,15 +5,13 @@
  */
 package demetra.benchmarking.extractors;
 
-import demetra.benchmarking.extractors.ResidualsDiagnosticsExtractor;
-import demetra.data.ParameterEstimation;
 import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import demetra.design.Development;
 import demetra.information.InformationMapping;
-import demetra.linearmodel.LinearModelEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.timeseries.TsData;
+import demetra.timeseries.regression.Variable;
 
 /**
  *
@@ -21,10 +19,11 @@ import demetra.timeseries.TsData;
  */
 @Development(status = Development.Status.Release)
 @lombok.experimental.UtilityClass
-public class TemporalDisaggregationExtractor{
+public class TemporalDisaggregationExtractor {
 
     public final String LIKELIHOOD = "likelihood", DISAGG = "disagg", EDISAGG = "edisagg",
-            RES = "residuals", ML = "ml", COEFF="coeff", NX="nx", COVAR="covar", C="c", REGEFFECT = "regeffect";
+            RES = "residuals", ML = "ml", COEFF = "coeff", COVAR = "covar", REGEFFECT = "regeffect", 
+            REGNAMES = "regnames", PARAMETER ="parameter", EPARAMETER="eparameter";
 
     private final InformationMapping<TemporalDisaggregationResults> MAPPING = new InformationMapping<>(TemporalDisaggregationResults.class);
 
@@ -32,18 +31,22 @@ public class TemporalDisaggregationExtractor{
         MAPPING.set(DISAGG, TsData.class, source -> source.getDisaggregatedSeries());
         MAPPING.set(EDISAGG, TsData.class, source -> source.getStdevDisaggregatedSeries());
         MAPPING.set(REGEFFECT, TsData.class, source -> source.getRegressionEffects());
-        MAPPING.setArray(COEFF, 1, 9, ParameterEstimation.class, (TemporalDisaggregationResults source, Integer i)->
-        {
-            LinearModelEstimation estimation = source.getEstimation();
-            ParameterEstimation[] coefficients = estimation.getCoefficients();
-            if (i>=1 && i<=coefficients.length){
-                return coefficients[i-1];
+        MAPPING.set(COEFF, double[].class, source -> source.getCoefficients().toArray());
+        MAPPING.set(COVAR, MatrixType.class, source -> source.getCoefficientsCovariance());
+        MAPPING.set(REGNAMES, String[].class, source -> {
+            Variable[] vars = source.getIndicators();
+            int n = vars == null ? 0 : vars.length;
+             if (n == 0) {
+                return null;
             }
-            return null;
+            String[] names = new String[n];
+            for (int i = 0; i < names.length; ++i) {
+                names[i] = vars[i].getName();
+            }
+            return names;
         });
-        MAPPING.set(NX, Integer.class, source->source.getEstimation().nx());
-        MAPPING.set(C, double[].class, source->source.getEstimation().values().toArray());
-        MAPPING.set(COVAR, MatrixType.class, source->source.getEstimation().getCovariance());
+        MAPPING.set(PARAMETER, Double.class, source -> source.getMaximum().getParameters()[0]);
+        MAPPING.set(EPARAMETER, Double.class, source -> Math.sqrt(1/source.getMaximum().getHessian().get(0, 0)));
         MAPPING.delegate(LIKELIHOOD, LikelihoodStatisticsExtractor.getMapping(), source -> source.getLikelihood());
         MAPPING.delegate(RES, ResidualsDiagnosticsExtractor.getMapping(), source -> source.getResidualsDiagnostics());
     }
@@ -51,5 +54,5 @@ public class TemporalDisaggregationExtractor{
     public InformationMapping<TemporalDisaggregationResults> getMapping() {
         return MAPPING;
     }
-   
+
 }

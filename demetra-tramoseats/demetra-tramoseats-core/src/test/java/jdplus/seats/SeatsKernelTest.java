@@ -18,7 +18,6 @@ package jdplus.seats;
 
 import demetra.arima.SarimaSpec;
 import demetra.data.Data;
-import demetra.data.DoubleSeq;
 import demetra.processing.ProcessingLog;
 import demetra.seats.DecompositionSpec;
 import demetra.seats.DecompositionSpec.ComponentsEstimationMethod;
@@ -38,8 +37,7 @@ public class SeatsKernelTest {
     @Test
     public void testProdBurman() {
         SeatsModelSpec model = SeatsModelSpec.builder()
-                .series(DoubleSeq.of(Data.PROD))
-                .period(12)
+                .series(Data.TS_PROD)
                 .log(true)
                 .sarimaSpec(SarimaSpec.airline())
                 .build();
@@ -55,20 +53,19 @@ public class SeatsKernelTest {
         SeatsResults rslt = kernel.process(model, log);
         assertTrue(rslt != null);
 //        log.all().forEach(v -> System.out.println(v));
-//        System.out.println(rslt.getFinalComponents());
+//        System.out.println(rslt.getInitialComponents());
     }
 
     @Test
     public void testProdKF() {
         SeatsModelSpec model = SeatsModelSpec.builder()
-                .series(DoubleSeq.of(Data.PROD))
-                .period(12)
+                .series(Data.TS_PROD)
                 .log(true)
                 .sarimaSpec(SarimaSpec.airline())
                 .build();
         DecompositionSpec cmps = DecompositionSpec.builder()
-                .backcastCount(-2)
-                .forecastCount(-2)
+                .backcastCount(0)
+                .forecastCount(0)
                 .method(ComponentsEstimationMethod.KalmanSmoother)
                 .build();
 
@@ -78,7 +75,7 @@ public class SeatsKernelTest {
         SeatsResults rslt = kernel.process(model, log);
         assertTrue(rslt != null);
 //        log.all().forEach(v -> System.out.println(v));
-//        System.out.println(rslt.getFinalComponents());
+//        System.out.println(rslt.getInitialComponents());
     }
 
     @Test
@@ -87,9 +84,8 @@ public class SeatsKernelTest {
                 .p(3).d(1).q(1).bp(0).bd(1).bq(1).build();
                 
         SeatsModelSpec model = SeatsModelSpec.builder()
-                .series(DoubleSeq.of(Data.PROD))
+                .series(Data.TS_PROD)
                 .meanCorrection(true)
-                .period(12)
                 .log(true)
                 .sarimaSpec(mspec)
                 .build();

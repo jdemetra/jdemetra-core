@@ -173,7 +173,8 @@ public class ExactOutliersDetector implements GenericOutliersDetection<SarimaMod
         int[] o = new int[]{pos, type};
         outliers.add(o);
         sod.exclude(pos, type);
-    }
+        
+     }
 
     /**
      *
@@ -202,11 +203,6 @@ public class ExactOutliersDetector implements GenericOutliersDetection<SarimaMod
                     estimateModel(mapping, false);
                     break;
                 }
-                /*
-                 * int v = verifymodel(cv_); if (v == -1) break; else if (v ==
-                 * 0) reestimatemodel();
-                 */
-                // updatesod();
             } else {
                 break;// no outliers to remove...
             }
@@ -271,7 +267,7 @@ public class ExactOutliersDetector implements GenericOutliersDetection<SarimaMod
     }
 
     private void removeOutlier(int idx) {
-        int opos = regarima.getVariablesCount() - outliers.size() + idx;
+        int opos = regarima.getXCount()- outliers.size() + idx;
         regarima = regarima.toBuilder().removeX(opos).build();
         outliers.remove(idx);
         changed = true;

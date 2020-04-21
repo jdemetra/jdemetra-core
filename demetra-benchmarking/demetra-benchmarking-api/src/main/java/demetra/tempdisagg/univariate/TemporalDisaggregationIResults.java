@@ -18,7 +18,6 @@ package demetra.tempdisagg.univariate;
 
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.functions.ObjectiveFunctionPoint;
-import demetra.linearmodel.LinearModelEstimation;
 import demetra.timeseries.TsData;
 
 /**

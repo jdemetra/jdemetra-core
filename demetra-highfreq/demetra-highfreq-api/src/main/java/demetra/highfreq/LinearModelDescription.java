@@ -8,7 +8,6 @@ package demetra.highfreq;
 import demetra.data.Range;
 import demetra.timeseries.TimeSeriesData;
 import demetra.timeseries.TimeSeriesObs;
-import demetra.timeseries.regression.PreadjustmentVariable;
 import demetra.timeseries.regression.Variable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,11 +30,6 @@ public class LinearModelDescription<P extends Range<LocalDateTime>, O extends Ti
      * Log transformation
      */
     private boolean logTransformation;
-
-    /**
-     * Pre-adjustment variables (with their corresponding coefficients)
-     */
-    private PreadjustmentVariable[] preadjustmentVariables;
 
     /**
      * Regression variables

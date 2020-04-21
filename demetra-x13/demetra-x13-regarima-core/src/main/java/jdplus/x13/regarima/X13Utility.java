@@ -25,6 +25,7 @@ import jdplus.regsarima.GlsSarimaProcessor;
 import jdplus.sarima.SarimaModel;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.regsarima.RegSarimaProcessor;
 
 /**
  *
@@ -41,16 +42,10 @@ public class X13Utility {
     }
 
     public IRegArimaProcessor<SarimaModel> processor(boolean ml, double precision) {
-        HannanRissanenInitializer initializer = HannanRissanenInitializer.builder()
-                .stabilize(true)
-                .useDefaultIfFailed(true)
-                .build();
-
-        return GlsSarimaProcessor.builder()
-                .initializer(initializer)
+        return RegSarimaProcessor.builder()
                 .useMaximumLikelihood(ml)
-                .minimizer(LevenbergMarquardtMinimizer.builder())
                 .precision(precision)
+                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
                 .build();
     }
 

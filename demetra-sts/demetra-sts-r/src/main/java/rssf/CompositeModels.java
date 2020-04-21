@@ -54,21 +54,21 @@ public class CompositeModels {
             MAPPING.set("ssf.cmppos", int[].class, source -> source.getCmpPos());
             MAPPING.set("ssf.cmpnames", String[].class, source -> source.getCmpName());
             MAPPING.set("parameters", double[].class, source -> source.getFullParameters());
-            MAPPING.set("parameternames", String[].class, source -> source.getParametersName());
+            MAPPING.set("parametersnames", String[].class, source -> source.getParametersName());
             MAPPING.set("fn.parameters", double[].class, source -> source.getParameters());
-            MAPPING.setArray("ssf.T", 0, 10000, Matrix.class, (source, t) -> {
+            MAPPING.setArray("ssf.T", 0, 10000, MatrixType.class, (source, t) -> {
                 int dim = source.getSsf().getStateDim();
                 Matrix T = Matrix.square(dim);
                 source.getSsf().dynamics().T(t, T);
                 return T;
             });
-            MAPPING.setArray("ssf.V", 0, 10000, Matrix.class, (source, t) -> {
+            MAPPING.setArray("ssf.V", 0, 10000, MatrixType.class, (source, t) -> {
                 int dim = source.getSsf().getStateDim();
                 Matrix V = Matrix.square(dim);
                 source.getSsf().dynamics().V(t, V);
                 return V;
             });
-            MAPPING.setArray("ssf.Z", 0, 10000, Matrix.class, (source, t) -> {
+            MAPPING.setArray("ssf.Z", 0, 10000, MatrixType.class, (source, t) -> {
                 int dim = source.getSsf().getStateDim();
                 int m = source.getSsf().measurementsCount();
                 Matrix M = Matrix.make(m, dim);
@@ -77,7 +77,7 @@ public class CompositeModels {
                 }
                 return M;
             });
-            MAPPING.set("ssf.T", Matrix.class, source -> {
+            MAPPING.set("ssf.T", MatrixType.class, source -> {
                 if (!source.getSsf().dynamics().isTimeInvariant()) {
                     return null;
                 }
@@ -86,7 +86,7 @@ public class CompositeModels {
                 source.getSsf().dynamics().T(0, T);
                 return T;
             });
-            MAPPING.set("ssf.V", Matrix.class, source -> {
+            MAPPING.set("ssf.V", MatrixType.class, source -> {
                 if (!source.getSsf().dynamics().isTimeInvariant()) {
                     return null;
                 }
@@ -95,20 +95,20 @@ public class CompositeModels {
                 source.getSsf().dynamics().V(0, V);
                 return V;
             });
-            MAPPING.set("ssf.P0", Matrix.class, source -> {
+            MAPPING.set("ssf.P0", MatrixType.class, source -> {
                 int dim = source.getSsf().getStateDim();
                 Matrix V = Matrix.square(dim);
                 source.getSsf().initialization().Pf0(V);
                 return V;
             });
-            MAPPING.set("ssf.B0", Matrix.class, source -> {
+            MAPPING.set("ssf.B0", MatrixType.class, source -> {
                 int dim = source.getSsf().getStateDim();
                 int nd = source.getSsf().initialization().getDiffuseDim();
                 Matrix V = Matrix.make(dim, nd);
                 source.getSsf().initialization().diffuseConstraints(V);
                 return V;
             });
-            MAPPING.set("ssf.Z", Matrix.class, source -> {
+            MAPPING.set("ssf.Z", MatrixType.class, source -> {
                 if (!source.getSsf().measurements().isTimeInvariant()) {
                     return null;
                 }
@@ -308,12 +308,12 @@ public class CompositeModels {
         }
     }
 
-    public Results estimate(CompositeModel model, Matrix data, boolean marginal, boolean rescaling, String initialization,
+    public Results estimate(CompositeModel model, MatrixType data, boolean marginal, boolean rescaling, String initialization,
             String opt, double eps, double[] parameters) {
         return new Results(model.estimate(Matrix.of(data), marginal, rescaling, SsfInitialization.valueOf(initialization), Optimizer.valueOf(opt), eps, parameters));
     }
 
-    public Results compute(CompositeModel model, Matrix data, double[] parameters, boolean marginal, boolean concentrated) {
+    public Results compute(CompositeModel model, MatrixType data, double[] parameters, boolean marginal, boolean concentrated) {
         return new Results(model.compute(Matrix.of(data), parameters, marginal, concentrated));
     }
 }

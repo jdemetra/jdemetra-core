@@ -36,10 +36,8 @@ import jdplus.regsarima.regular.IOutliersDetectionModule;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regarima.outlier.RobustStandardDeviationComputer;
-import internal.jdplus.arima.AnsleyFilter;
 import java.util.ArrayList;
 import java.util.List;
-import jdplus.arima.estimation.ResidualsComputer;
 import jdplus.modelling.regression.IOutlierFactory;
 
 /**
@@ -50,7 +48,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
 
     public static int DEF_MAXROUND = 100;
     public static int DEF_MAXOUTLIERS = 50;
-    public static final double EPS = 1e-7;
+    public static final double EPS = 1e-7, TCRATE=.7;
 
     public static Builder builder() {
         return new Builder();
@@ -63,7 +61,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         private int maxOutliers = DEF_MAXOUTLIERS;
         private int maxRound = DEF_MAXROUND;
         private boolean ao, ls, tc, so;
-        private double tcrate;
+        private double tcrate=TCRATE;
         private TimeSelector span = TimeSelector.all();
 
         private Builder() {
@@ -219,7 +217,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
                 int[] cur = outliers[i];
                 TsPeriod pos = domain.get(cur[0]);
                 IOutlier o = impl.getFactory(cur[1]).make(pos.start());
-                model.addVariable(new Variable(o, IOutlier.defaultName(o.getCode(), pos), false));
+                model.addVariable(Variable.variable(IOutlier.defaultName(o.getCode(), pos), o));
             }
             context.clearEstimation();
             return ProcessingResult.Changed;

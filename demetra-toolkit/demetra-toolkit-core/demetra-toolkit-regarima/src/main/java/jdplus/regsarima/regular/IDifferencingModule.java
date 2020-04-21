@@ -16,6 +16,9 @@
  */
 package jdplus.regsarima.regular;
 
+import demetra.data.DoubleSeq;
+import demetra.processing.ProcessingLog;
+
 /**
  * Estimates the stationary part of the arima model provided in the context.
  * On entry, the estimation should be available
@@ -25,6 +28,12 @@ package jdplus.regsarima.regular;
  */
 public interface IDifferencingModule {
     
-    ProcessingResult process(RegSarimaModelling context);
+    boolean process(DoubleSeq data, int period, int d, int bd, boolean isSeasonal, ProcessingLog log);
+    
+    int getD();
+    
+    int getBd();
+    
+    boolean isMean();
     
 }

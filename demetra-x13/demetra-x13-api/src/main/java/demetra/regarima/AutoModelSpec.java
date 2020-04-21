@@ -31,7 +31,7 @@ public final class AutoModelSpec implements Validatable<AutoModelSpec> {
 
     private static final AutoModelSpec DEFAULT = AutoModelSpec.builder().build();
 
-    public static final double DEF_LJUNGBOX = .95, DEF_TSIG = 1, DEF_PREDCV = .14286, DEF_UBFINAL = 1.05, DEF_UB1 = 1 / .96, DEF_UB2 = .88,
+    public static final double DEF_LJUNGBOX = .95, DEF_TSIG = 1, DEF_PREDCV = .14286, DEF_UBFINAL = 1.05, DEF_UB1 = 1 / .97, DEF_UB2 = 1/.88,
             DEF_CANCEL = 0.1, DEF_FCT = 1 / .9875;
     public static final boolean DEF_ACCEPTDEF = false, DEF_CHECKMU = true, DEF_MIXED = true,
             DEF_BALANCED = false, DEF_HR = false;
@@ -84,10 +84,10 @@ public final class AutoModelSpec implements Validatable<AutoModelSpec> {
         }
 
         if (ub1 <= 1) {
-            throw new IllegalArgumentException("Initial unit root limit must be greater than 1");
+            throw new IllegalArgumentException("Initial unit root limit must be less than 1");
         }
 
-        if (ub2 >= 1) {
+        if (ub2 <= 1) {
             throw new IllegalArgumentException("Final unit root limit must be less than 1");
         }
         

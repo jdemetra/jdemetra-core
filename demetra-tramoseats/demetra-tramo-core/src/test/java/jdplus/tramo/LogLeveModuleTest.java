@@ -22,6 +22,8 @@ import ec.tstoolkit.modelling.DefaultTransformationType;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
+import demetra.timeseries.TsData;
+import jdplus.regarima.ami.RobustLogLevelModule;
 
 /**
  *
@@ -74,4 +76,22 @@ public class LogLeveModuleTest {
 //        long t1 = System.currentTimeMillis();
 //        System.out.println(t1 - t0);
     }
+    
+        @Test
+    public void testInseeRecursive() {
+        TsData[] all = Data.insee();
+        for (int i = 0; i < all.length; ++i) {
+            for (int j = 0; j < 36; ++j) {
+            LogLevelModule ll = LogLevelModule.builder()
+                    .logPreference(0)
+                    .estimationPrecision(1e-7)
+                    .build();
+                ll.process(all[i].drop(0, j).getValues(), 12, true, null);
+                System.out.print(ll.isChoosingLog() ? 1 : 0);
+                System.out.print('\t');
+            }
+            System.out.println();
+        }
+    }
+
 }

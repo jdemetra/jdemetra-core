@@ -35,9 +35,9 @@ public class TramoSeatsResults {
 
     private LinearModelEstimation<SarimaModel> preprocessing;
     private SeatsResults decomposition;
-    private SeriesDecomposition<TsData> finals;
+    private SeriesDecomposition finals;
     
-        @lombok.Singular
+    @lombok.Singular
     private Map<String, Object> addtionalResults;
    
     @lombok.Singular

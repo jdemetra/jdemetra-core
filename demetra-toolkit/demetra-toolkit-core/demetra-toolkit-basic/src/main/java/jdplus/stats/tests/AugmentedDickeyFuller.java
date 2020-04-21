@@ -20,7 +20,6 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.design.BuilderPattern;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.decomposition.Householder;
 import demetra.data.DoubleSeq;
 import jdplus.leastsquares.QRSolution;
 import jdplus.leastsquares.QRSolver;

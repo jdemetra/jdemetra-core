@@ -157,13 +157,13 @@ public class DefaultRegressionTest implements IRegressionModule {
         ModelDescription model = ModelDescription.copyOf(current.getDescription());
         // add td, lp and easter
         if (td != null) {
-            model.addVariable(new Variable(td, "td", false));
+            model.addVariable(Variable.variable("td", td));
         }
         if (lp != null) {
-            model.addVariable(new Variable(lp, "lp", false));
+            model.addVariable(Variable.variable("lp", lp));
         }
         if (easter != null) {
-            model.addVariable(new Variable(easter, "easter", false));
+            model.addVariable(Variable.variable("easter", easter));
         }
         model.setAirline(true);
         model.setMean(true);
@@ -194,7 +194,7 @@ public class DefaultRegressionTest implements IRegressionModule {
                 IRegressionTest test = dim == 1 ? wdTest : tdTest;
                 if (test.accept(ll, nhp, pos, dim, null)) {
                     usetd = true;
-                    currentModel.addVariable(new Variable(td, "td", false));
+                    currentModel.addVariable(Variable.variable("td", td));
                     changed = true;
                 }
             }
@@ -204,7 +204,7 @@ public class DefaultRegressionTest implements IRegressionModule {
             if (variable != null && !variable.isPrespecified()) {
                 int pos = tmpModel.findPosition(variable.getVariable());
                 if (usetd && lpTest.accept(ll, nhp, pos, 1, null)) {
-                    currentModel.addVariable(new Variable(lp, "lp", false));
+                    currentModel.addVariable(Variable.variable("lp", lp));
                     changed = true;
                 }
             }
@@ -215,7 +215,7 @@ public class DefaultRegressionTest implements IRegressionModule {
             if (variable != null && !variable.isPrespecified()) {
                 int pos = tmpModel.findPosition(variable.getVariable());
                 if (mhTest.accept(ll, nhp, pos, 1, null)) {
-                    currentModel.addVariable(new Variable(easter, "easter", false));
+                    currentModel.addVariable(Variable.variable("easter", easter));
                     changed = true;
                 }
             }

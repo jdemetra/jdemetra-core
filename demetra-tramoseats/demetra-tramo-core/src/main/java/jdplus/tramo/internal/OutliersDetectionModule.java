@@ -224,7 +224,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
             int[] cur = outliers[i];
             TsPeriod pos = domain.get(cur[0]);
             IOutlier o = impl.getFactory(cur[1]).make(pos.start());
-            model.addVariable(new Variable(o, IOutlier.defaultName(o.getCode(), pos), false));
+            model.addVariable(Variable.variable(IOutlier.defaultName(o.getCode(), pos), o));
         }
         context.clearEstimation();
         return ProcessingResult.Changed;

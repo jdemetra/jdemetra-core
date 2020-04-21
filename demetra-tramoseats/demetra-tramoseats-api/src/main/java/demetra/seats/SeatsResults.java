@@ -18,7 +18,6 @@ package demetra.seats;
 
 import demetra.arima.SarimaModel;
 import demetra.arima.UcarimaModel;
-import demetra.data.DoubleSeq;
 import demetra.sa.SeriesDecomposition;
 import java.util.Map;
 
@@ -31,7 +30,7 @@ import java.util.Map;
 public class SeatsResults {
 
     private SarimaModel initialModel, finalModel;
-    private SeriesDecomposition<DoubleSeq> initialComponents, finalComponents;
+    private SeriesDecomposition initialComponents, finalComponents;
     private UcarimaModel decomposition;
     
     @lombok.Singular

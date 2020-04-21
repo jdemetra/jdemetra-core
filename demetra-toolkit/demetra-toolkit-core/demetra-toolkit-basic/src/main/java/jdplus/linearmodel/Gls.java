@@ -19,7 +19,6 @@ package jdplus.linearmodel;
 import jdplus.data.DataBlock;
 import demetra.eco.EcoException;
 import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.math.matrices.UpperTriangularMatrix;
 import jdplus.data.LogSign;
 import jdplus.leastsquares.QRSolution;
 import jdplus.math.matrices.LowerTriangularMatrix;

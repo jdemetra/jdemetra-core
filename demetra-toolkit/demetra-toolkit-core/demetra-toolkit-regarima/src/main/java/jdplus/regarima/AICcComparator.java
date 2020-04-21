@@ -61,10 +61,18 @@ public class AICcComparator implements IModelComparator {
         }
         else {
             double aiccRef = reference.statistics().getAICC();
-            return aiccRef > aicc - aicDiff ? imin : -1;
+            return aicc < aiccRef - aicDiff ? imin : -1;
         }
     }
 
+    /**
+     * 
+     * @param <M>
+     * @param reference Model without the considered regression variables
+     * @param alternative Model with the considered variables
+     * @return if -1; take the model without the regression variables; if 0, take the model 
+     * with the regression variable
+     */
     @Override
     public <M extends IArimaModel> int compare(RegArimaEstimation<M> reference, RegArimaEstimation<M> alternative) {
         if (reference == null) {
@@ -75,7 +83,7 @@ public class AICcComparator implements IModelComparator {
         }
         double aiccRef = reference.statistics().getAICC();
         double aicc = alternative.statistics().getAICC();
-        return aiccRef > aicc - aicDiff ? 0 : -1;
+        return aicc < aiccRef - aicDiff ? 0 : -1;
     }
     
 }

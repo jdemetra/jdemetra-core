@@ -16,6 +16,8 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.data.Parameter;
+import demetra.data.ParameterType;
 import demetra.design.Development;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -24,52 +26,131 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
+@lombok.Value
+@lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public final class Variable {
 
-    private final String name;
-    private final ITsVariable variable;
-    private final boolean prespecified;
+    private String name;
+    private ITsVariable variable;
+    private boolean prespecified;
+    private Parameter[] coefficients;
+    
+    public int dim(){
+        return variable.dim();
+    }
+    
+    public Parameter getCoefficient(int i){
+        return coefficients == null ? Parameter.undefined() : coefficients[i];
+    }
 
     /**
      *
      * @param variable Actual variable
      * @param name
-     * @param prespecified
+     * @return
      */
-    public Variable(@NonNull final ITsVariable variable, @NonNull final String name, final boolean prespecified) {
-        this.variable = variable;
-        this.name = name;
-        this.prespecified = prespecified;
+    public static Variable variable(@NonNull final String name, @NonNull final ITsVariable variable) {
+        return new Variable(name, variable, false, null);
     }
 
-    public ITsVariable getVariable() {
-        return variable;
+    /**
+     *
+     * @param variable Actual variable
+     * @param name
+     * @return
+     */
+    public static Variable prespecifiedVariable(@NonNull final String name, @NonNull final ITsVariable variable) {
+        return new Variable(name, variable, true, null);
     }
 
-    public String getName() {
-        return name;
+    /**
+     *
+     * @param variable Actual variable
+     * @param name
+     * @param coeff
+     * @return
+     */
+    public static Variable preadjustmentVariable(@NonNull final String name, @NonNull final ITsVariable variable, double coeff) {
+        if (variable.dim() != 1) {
+            throw new IllegalArgumentException();
+        }
+        return new Variable(name, variable, true, new Parameter[]{Parameter.fixed(coeff)});
     }
-
-    public boolean isPrespecified() {
-        return prespecified;
+    
+   /**
+     *
+     * @param variable Actual variable
+     * @param name
+     * @param coeff
+     * @return
+     */
+    public static Variable preadjustmentVariable(@NonNull final String name, @NonNull final ITsVariable variable, @NonNull double[] coeff) {
+        if (variable.dim() != coeff.length) {
+            throw new IllegalArgumentException();
+        }
+        return new Variable(name, variable, true, Parameter.of(coeff, ParameterType.Fixed));
     }
 
     public Variable rename(String name) {
         if (name.equals(this.name)) {
             return this;
         } else {
-            return new Variable(variable, name, prespecified);
+            return new Variable(name, variable, prespecified, coefficients);
+        }
+    }
+
+    public Variable withCoefficient(Parameter coefficient) {
+        if (variable.dim() != 1) {
+            throw new IllegalArgumentException();
+        }
+        return new Variable(name, variable, prespecified, new Parameter[]{coefficient});
+    }
+
+    public Variable withCoefficient(Parameter[] coefficients) {
+        if (coefficients != null && variable.dim() != coefficients.length) {
+            throw new IllegalArgumentException();
+        }
+        return new Variable(name, variable, prespecified, coefficients);
+    }
+    
+    public int freeCoefficientsCount(){
+        if (coefficients == null)
+            return variable.dim();
+        else{
+            return Parameter.freeParametersCount(coefficients);
         }
     }
 
     // main types
+    
+    /**
+     * 
+     * @return True if all coefficients are fixed, false otherwise
+     */
+    public boolean isPreadjustment(){
+        return coefficients != null && !Parameter.hasFreeParameters(coefficients);
+    }
+    
+    /**
+     * 
+     * @return True if all coefficients are free, false otherwise
+     */
+    public boolean isFree(){
+        return coefficients == null || Parameter.isFree(coefficients);
+    }
+    
     public boolean isUser() {
         return variable instanceof IUserTsVariable;
     }
 
+    /**
+     * Detected outliers  (prespecified=false) or preadjusted/prespecified outliers
+     * @param prespecified
+     * @return 
+     */
     public boolean isOutlier(boolean prespecified) {
         return variable instanceof IOutlier
-                && this.prespecified == prespecified;
+                && (this.prespecified == prespecified || this.isPreadjustment());
     }
 
     public boolean isOutlier() {

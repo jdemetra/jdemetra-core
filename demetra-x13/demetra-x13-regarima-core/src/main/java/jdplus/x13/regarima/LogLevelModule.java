@@ -19,22 +19,25 @@ package jdplus.x13.regarima;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.modelling.TransformationType;
+import demetra.processing.ProcessingLog;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.ILogLevelModule;
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.sarima.SarimaModel;
 
 /**
- *
+ * Identification of log/level transformation
+ * 
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
 public class LogLevelModule implements ILogLevelModule {
+
+    public static final String LL = "log-level test";
 
     public static Builder builder() {
         return new Builder();
@@ -45,39 +48,69 @@ public class LogLevelModule implements ILogLevelModule {
 
         private double aiccdiff = -2;
         private double precision = 1e-7;
-        private LengthOfPeriodType adjust = LengthOfPeriodType.None;
+        private LengthOfPeriodType preadjust = LengthOfPeriodType.None;
 
-        public Builder adjust(LengthOfPeriodType adjust) {
-            this.adjust = adjust;
+        /**
+         * When a pre-adjustment is specified, the model in logs is computed as follows:
+         * - if the regression variables contain a length of period/leap year,
+         * this variable (which must be named "lp") is removed and the specified 
+         * pre-adjustment is used instead.
+         * - otherwise, the model is not modified (same model for logs and levels)
+         * 
+         * The likelihood is automatically adjusted to take into account 
+         * possible transformations
+         * 
+         * This feature is new in JD+ 3.0
+         * 
+         * @param preadjust
+         * @return 
+         * @since ("3.0")
+         */
+        public Builder preadjust(LengthOfPeriodType preadjust) {
+            this.preadjust = preadjust;
             return this;
         }
 
+        /**
+         * Precision used in the estimation of the models (1e-5 by default).
+         * In most cases, the precision can be smaller than for the estimation
+         * of the final model.
+         * @param eps
+         * @return 
+         */
         public Builder estimationPrecision(double eps) {
             this.precision = eps;
             return this;
         }
 
-        public Builder comparator(double aiccdiff) {
+        /**
+         * Correction on the AICc of the model in logs.
+         * Negative corrections will favour logs (-2 by default)
+         * Same as aiccdiff in the original fortran program
+         * @param aiccdiff 
+         * @return 
+         */
+        public Builder aiccLogCorrection(double aiccdiff) {
             this.aiccdiff = aiccdiff;
             return this;
         }
 
         public LogLevelModule build() {
-            return new LogLevelModule(aiccdiff, precision, adjust);
+            return new LogLevelModule(aiccdiff, precision, preadjust);
         }
 
     }
 
     private final double aiccDiff;
     private final double precision;
-    private final LengthOfPeriodType adjust;
+    private final LengthOfPeriodType preadjust;
     private RegArimaEstimation<SarimaModel> level, log;
     private double aiccLevel, aiccLog;
 
-    private LogLevelModule(double aiccdiff, final double precision, final LengthOfPeriodType adjust) {
+    private LogLevelModule(double aiccdiff, final double precision, final LengthOfPeriodType preadjust) {
         this.aiccDiff = aiccdiff;
         this.precision = precision;
-        this.adjust = adjust;
+        this.preadjust = preadjust;
     }
 
     public double getEpsilon() {
@@ -94,40 +127,56 @@ public class LogLevelModule implements ILogLevelModule {
         } else if (level == null) {
             return true;
         } else {
-            return aiccLevel > aiccLog - aiccDiff;
+            // the best is the smallest (default aiccdiff is negative to favor logs)
+            return aiccLevel > aiccLog + aiccDiff;
         }
     }
 
     @Override
-    public ProcessingResult process(RegSarimaModelling context) {
+    public ProcessingResult process(RegSarimaModelling modelling) {
         clear();
-        ModelDescription model = context.getDescription();
-        if (model.getSeries().getValues().anyMatch(z -> z <= 0)) {
-            return ProcessingResult.Failed;
-        }
-        IRegArimaProcessor processor = X13Utility.processor(true, precision);
-        level = model.estimate(processor);
+        ProcessingLog logs = modelling.getLog();
+        try {
+            if (logs != null) {
+                logs.push(LL);
+            }
+            ModelDescription model = modelling.getDescription();
+            if (model.getSeries().getValues().anyMatch(z -> z <= 0)) {
+                return ProcessingResult.Failed;
+            }
+            IRegArimaProcessor processor = X13Utility.processor(true, precision);
+            level = model.estimate(processor);
 
-        ModelDescription logmodel = ModelDescription.copyOf(model);
-        logmodel.setLogTransformation(true);
-        if (adjust != LengthOfPeriodType.None) {
-            logmodel.remove("lp");
-            logmodel.setTransformation(adjust);
-        }
-        log = logmodel.estimate(processor);
-        if (level != null) {
-            aiccLevel = level.statistics().getAICC();
-        }
-        if (log != null) {
-            aiccLog = log.statistics().getAICC();
-        }
-        if (isChoosingLog()) {
-            context.set(logmodel, log);
-            return ProcessingResult.Changed;
-        } else {
-            return ProcessingResult.Unchanged;
-        }
+            ModelDescription logmodel = ModelDescription.copyOf(model);
+            logmodel.setLogTransformation(true);
+            if (preadjust != LengthOfPeriodType.None && logmodel.remove("lp")) {
+                logmodel.setPreadjustment(preadjust);
+            }
+            log = logmodel.estimate(processor);
+            if (level != null) {
+                aiccLevel = level.statistics().getAICC();
+                if (logs != null) {
+                    logs.info("level", level.statistics());
+                }
+            }
+            if (log != null) {
+                aiccLog = log.statistics().getAICC();
+                if (logs != null) {
+                    logs.info("level", level.statistics());
+                }
+            }
+            if (isChoosingLog()) {
+                modelling.set(logmodel, log);
+                return ProcessingResult.Changed;
+            } else {
+                return ProcessingResult.Unchanged;
+            }
+        } finally {
+            if (logs != null) {
+                logs.pop();
+            }
 
+        }
     }
 
     public TransformationType getTransformation() {

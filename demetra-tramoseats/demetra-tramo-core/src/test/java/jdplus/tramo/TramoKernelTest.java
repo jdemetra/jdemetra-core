@@ -147,7 +147,7 @@ public class TramoKernelTest {
             }
 //            System.out.print(i);
 //            System.out.print('\t');
-//            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+//            System.out.print(rslt.getStatistics().getAdjustedLogLikelihood());
 //            System.out.print('\t');
 //            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
@@ -331,7 +331,7 @@ public class TramoKernelTest {
             }
 //            System.out.print(i);
 //            System.out.print('\t');
-//            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+//            System.out.print(rslt.getStatistics().getAdjustedLogLikelihood());
 //            System.out.print('\t');
 //            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
@@ -358,7 +358,7 @@ public class TramoKernelTest {
             }
 //            System.out.print(i);
 //            System.out.print('\t');
-//            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+//            System.out.print(rslt.getStatistics().getAdjustedLogLikelihood());
 //            System.out.print('\t');
 //            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }

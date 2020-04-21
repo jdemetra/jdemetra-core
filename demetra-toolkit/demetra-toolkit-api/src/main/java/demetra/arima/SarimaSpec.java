@@ -17,7 +17,7 @@
 package demetra.arima;
 
 import demetra.design.Development;
-import demetra.data.ParameterSpec;
+import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.util.Validatable;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -69,9 +69,9 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
      */
     private int d, bd;
     private @NonNull
-    ParameterSpec[] phi, theta, bphi, btheta;
+    Parameter[] phi, theta, bphi, btheta;
 
-    private static final ParameterSpec[] EMPTY = new ParameterSpec[0];
+    private static final Parameter[] EMPTY = new Parameter[0];
 
     public static class Builder implements Validatable.Builder<SarimaSpec> {
 
@@ -83,7 +83,7 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
         }
 
         public Builder p(int value) {
-            phi = value == 0 ? EMPTY : ParameterSpec.make(value);
+            phi = value == 0 ? EMPTY : Parameter.make(value);
             return this;
         }
 
@@ -93,12 +93,12 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
         }
 
         public Builder q(int value) {
-            theta = value == 0 ? EMPTY : ParameterSpec.make(value);
+            theta = value == 0 ? EMPTY : Parameter.make(value);
             return this;
         }
 
         public Builder bp(int value) {
-            bphi = value == 0 ? EMPTY : ParameterSpec.make(value);
+            bphi = value == 0 ? EMPTY : Parameter.make(value);
             return this;
         }
 
@@ -108,50 +108,50 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
         }
 
         public Builder bq(int value) {
-            btheta = value == 0 ? EMPTY : ParameterSpec.make(value);
+            btheta = value == 0 ? EMPTY : Parameter.make(value);
             return this;
         }
 
-        public Builder phi(@NonNull ParameterSpec[] value) {
+        public Builder phi(@NonNull Parameter[] value) {
             phi = value.clone();
             return this;
         }
 
-        public Builder theta(@NonNull ParameterSpec[] value) {
+        public Builder theta(@NonNull Parameter[] value) {
             theta = value.clone();
             return this;
         }
 
-        public Builder bphi(@NonNull ParameterSpec[] value) {
+        public Builder bphi(@NonNull Parameter[] value) {
             bphi = value.clone();
             return this;
         }
 
-        public Builder btheta(@NonNull ParameterSpec[] value) {
+        public Builder btheta(@NonNull Parameter[] value) {
             btheta = value.clone();
             return this;
         }
 
         Builder free() {
-            ParameterSpec.freeParameters(phi);
-            ParameterSpec.freeParameters(theta);
-            ParameterSpec.freeParameters(bphi);
-            ParameterSpec.freeParameters(btheta);
+            Parameter.freeParameters(phi);
+            Parameter.freeParameters(theta);
+            Parameter.freeParameters(bphi);
+            Parameter.freeParameters(btheta);
             return this;
         }
 
         Builder reset() {
-            ParameterSpec.resetParameters(phi);
-            ParameterSpec.resetParameters(theta);
-            ParameterSpec.resetParameters(bphi);
-            ParameterSpec.resetParameters(btheta);
+            Parameter.resetParameters(phi);
+            Parameter.resetParameters(theta);
+            Parameter.resetParameters(bphi);
+            Parameter.resetParameters(btheta);
             return this;
         }
 
     }
 
     private static final SarimaSpec AIRLINE = new SarimaSpec(null, 1, 1,
-            EMPTY, ParameterSpec.make(1), EMPTY, ParameterSpec.make(1));
+            EMPTY, Parameter.make(1), EMPTY, Parameter.make(1));
 
     public static SarimaSpec airline() {
         return AIRLINE;
@@ -179,23 +179,23 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
     }
 
     public int freeParametersCount() {
-        return ParameterSpec.freeParametersCount(phi) + ParameterSpec.freeParametersCount(bphi)
-                + ParameterSpec.freeParametersCount(theta) + ParameterSpec.freeParametersCount(btheta);
+        return Parameter.freeParametersCount(phi) + Parameter.freeParametersCount(bphi)
+                + Parameter.freeParametersCount(theta) + Parameter.freeParametersCount(btheta);
     }
 
     public boolean hasFixedParameters() {
-        return !ParameterSpec.isFree(phi) || !ParameterSpec.isFree(bphi)
-                || !ParameterSpec.isFree(theta) || !ParameterSpec.isFree(btheta);
+        return !Parameter.isFree(phi) || !Parameter.isFree(bphi)
+                || !Parameter.isFree(theta) || !Parameter.isFree(btheta);
     }
 
     public boolean hasFreeParameters() {
-        return ParameterSpec.hasFreeParameters(phi) || ParameterSpec.hasFreeParameters(bphi)
-                || ParameterSpec.hasFreeParameters(theta) || ParameterSpec.hasFreeParameters(btheta);
+        return Parameter.hasFreeParameters(phi) || Parameter.hasFreeParameters(bphi)
+                || Parameter.hasFreeParameters(theta) || Parameter.hasFreeParameters(btheta);
     }
 
     public boolean hasEstimatedParameters() {
-        return ParameterSpec.hasParameters(phi, ParameterType.Estimated) || ParameterSpec.hasParameters(bphi, ParameterType.Estimated)
-                || !ParameterSpec.hasParameters(theta, ParameterType.Estimated) || ParameterSpec.hasParameters(btheta, ParameterType.Estimated);
+        return Parameter.hasParameters(phi, ParameterType.Estimated) || Parameter.hasParameters(bphi, ParameterType.Estimated)
+                || !Parameter.hasParameters(theta, ParameterType.Estimated) || Parameter.hasParameters(btheta, ParameterType.Estimated);
     }
 
     public SarimaSpec resetParameters() {

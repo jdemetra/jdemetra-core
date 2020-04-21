@@ -16,10 +16,15 @@
  */
 package demetra.tempdisagg.univariate;
 
+import demetra.data.DoubleSeq;
+import demetra.design.Development;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.functions.ObjectiveFunctionPoint;
-import demetra.linearmodel.LinearModelEstimation;
+import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.regression.Variable;
+import java.util.Map;
 
 /**
  *
@@ -27,15 +32,41 @@ import demetra.timeseries.TsData;
  */
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder")
+@Development(status = Development.Status.Alpha)
 public class TemporalDisaggregationResults {
 
-    private @lombok.NonNull
+    @lombok.NonNull
+    TsData originalSeries;
+    
+    @lombok.NonNull
+    TsDomain disaggregationDomain;
+    
+    /**
+     * Regression variables
+     */
+    private Variable[] indicators;
+    
+    
+    /**
+     * Regression estimation. The order correspond to the order of the variables
+     * 
+     */
+    private DoubleSeq coefficients;
+    private MatrixType coefficientsCovariance;
+    
+    ObjectiveFunctionPoint maximum;
+    
+    LikelihoodStatistics likelihood;
+    ResidualsDiagnostics residualsDiagnostics;
+
+    @lombok.NonNull
     TsData disaggregatedSeries;
-    private @lombok.NonNull
+    
+    @lombok.NonNull
     TsData stdevDisaggregatedSeries;
-    private TsData regressionEffects, residuals;
-    private ObjectiveFunctionPoint maximum;
-    private LikelihoodStatistics likelihood;
-    private LinearModelEstimation estimation;
-    private ResidualsDiagnostics residualsDiagnostics;
+    
+    TsData regressionEffects, residuals;
+    
+    @lombok.Singular
+    private Map<String, Object> addtionalResults;
 }

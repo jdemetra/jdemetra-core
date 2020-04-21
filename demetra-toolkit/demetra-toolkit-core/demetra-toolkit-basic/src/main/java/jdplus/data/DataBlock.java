@@ -1619,7 +1619,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
     }
 
     public DoubleSeq unmodifiable() {
-        return DoubleSeq.onMapping(this.length(), i -> get(i));
+        return DoubleSeq.of(data, beg, length(), inc);
     }
 
     public String toString(String fmt) {

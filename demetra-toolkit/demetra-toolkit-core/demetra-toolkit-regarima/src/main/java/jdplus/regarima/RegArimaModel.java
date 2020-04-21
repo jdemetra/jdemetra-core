@@ -27,10 +27,12 @@ import java.util.Collections;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
+import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.Matrix;
 
 /**
- * Description of a generic regarima model  
+ * Description of a generic regarima model
+ *
  * @param <M> Type of the stochastic component
  * @author Jean Palate
  */
@@ -188,9 +190,11 @@ public final class RegArimaModel<M extends IArimaModel> {
     }
 
     /**
-     * Gets the number of variables, including the mean but without the missing values
+     * Gets the number of variables, including the mean but without the missing
+     * values
      * estimated by additive outliers.
-     * @return 
+     *
+     * @return
      */
     public int getVariablesCount() {
         int nv = x.size();
@@ -198,6 +202,17 @@ public final class RegArimaModel<M extends IArimaModel> {
             ++nv;
         }
         return nv;
+    }
+
+    /**
+     * Gets the number of variables, excluding the mean and without the missing
+     * values
+     * estimated by additive outliers.
+     *
+     * @return
+     */
+    public int getXCount() {
+        return x.size();
     }
 
     /**
@@ -215,7 +230,7 @@ public final class RegArimaModel<M extends IArimaModel> {
     public List<DoubleSeq> getX() {
         return x;
     }
-    
+
     @NonNull
     public M arima() {
         return arima;
@@ -223,6 +238,18 @@ public final class RegArimaModel<M extends IArimaModel> {
 
     public boolean isMean() {
         return mean;
+    }
+    
+    public Matrix variables(){
+        int n=y.length();
+        Matrix m=Matrix.make(n, x.size());
+        double[] storage = m.getStorage();
+        int pos=0;
+        for (DoubleSeq xcur:x){
+            xcur.copyTo(storage, pos);
+            pos+=n;
+        }
+        return m;
     }
 
     @NonNull

@@ -27,9 +27,7 @@ import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regsarima.regular.IDifferencingModule;
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
@@ -46,7 +44,7 @@ import jdplus.sarima.estimation.SarimaMapping;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class DifferencingModule implements IDifferencingModule {
+public class DifferencingModule  {
 
     public static final int MAXD = 2, MAXBD = 1;
 
@@ -128,7 +126,7 @@ public class DifferencingModule implements IDifferencingModule {
         return m;
     }
 
-    private double[] y;
+    private DoubleSeq y;
     private SarimaOrders spec;
     private SarimaModel lastModel;
     private double rmax, rsmax, c, din, tmean;
@@ -264,7 +262,7 @@ public class DifferencingModule implements IDifferencingModule {
 
     public boolean isMeanCorrection() {
         double vct = 2.5;
-        int n = y.length;
+        int n = y.length();
         if (n <= 80) {
             vct = 1.96;
         } else if (n <= 155) {
@@ -309,10 +307,10 @@ public class DifferencingModule implements IDifferencingModule {
         BackFilter ur = RegArimaUtility.differencingFilter(spec.getPeriod(), spec.getD(), spec.getBd());
         DataBlock data;
         if (ur.getDegree() > 0) {
-            data = DataBlock.make(y.length - ur.getDegree());
+            data = DataBlock.make(y.length() - ur.getDegree());
             ur.apply(DataBlock.of(y), data);
         } else {
-            data = DataBlock.copyOf(y);
+            data = DataBlock.of(y);
         }
         removeMean(data);
 
@@ -339,12 +337,19 @@ public class DifferencingModule implements IDifferencingModule {
         if (usedefault || ml || useml) {
             lastModel=SarimaMapping.stabilize(lastModel);
             IRegArimaProcessor processor = TramoUtility.processor(true, eps);
-            RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(data).arima(lastModel).build();
+            SarimaModel arima = SarimaModel.builder(spec)
+                    .parameters(lastModel.parameters())
+                    .build();
+            RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder()
+                    .y(y)
+                    .arima(arima)
+                    .meanCorrection(true)
+                    .build();
             RegArimaEstimation<SarimaModel> rslt = processor.optimize(regarima, null);
             if (rslt == null) {
                 throw new TramoException("Non convergence in ESPDIF");
             }
-            lastModel = rslt.getModel().arima();
+            lastModel = rslt.getModel().arima().stationaryTransformation().getStationaryModel();
             mlused = true;
         } else {
             mlused = false;
@@ -431,7 +436,7 @@ public class DifferencingModule implements IDifferencingModule {
     @VisibleForTesting
     public boolean process(DoubleSeq data, int period, int d, int bd, boolean seasonal) {
         clear();
-        y = data.toArray();
+        y = data;
         spec = new SarimaOrders(period);
         spec.setD(d);
         if (seasonal) {
@@ -494,7 +499,7 @@ public class DifferencingModule implements IDifferencingModule {
             lastModel=SarimaMapping.stabilize(lastModel);
             FastKalmanFilter kf = new FastKalmanFilter(lastModel);
             BackFilter D = RegArimaUtility.differencingFilter(spec.getPeriod(), spec.getD(), spec.getBd());
-            res = DataBlock.make(y.length - D.getDegree());
+            res = DataBlock.make(y.length() - D.getDegree());
             D.apply(DataBlock.of(y), res);
             res = kf.fastFilter(res);
         }
@@ -503,7 +508,6 @@ public class DifferencingModule implements IDifferencingModule {
         tmean = s / Math.sqrt((s2 * n - s * s) / n);
     }
 
-    @Override
     public ProcessingResult process(RegSarimaModelling context) {
         ModelDescription desc = context.getDescription();
         if (context.needEstimation())

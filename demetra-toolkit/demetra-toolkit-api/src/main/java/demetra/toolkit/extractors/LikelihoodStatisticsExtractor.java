@@ -27,7 +27,7 @@ import demetra.likelihood.LikelihoodStatistics;
 public class LikelihoodStatisticsExtractor {
 
     private final String LL = "ll", LLC = "adjustedll", SSQ = "ssqerr", AIC = "aic", BIC = "bic", AICC = "aicc", BICC = "bicc", BIC2 = "bic2", HQ = "hannanquinn",
-            NPARAMS = "nparams", NOBS = "nobs", NEFFECTIVEOBS = "neffective";
+            NPARAMS = "nparams", NOBS = "nobs", NEFFECTIVEOBS = "neffective", DF="df";
 
     private final InformationMapping<LikelihoodStatistics> MAPPING = new InformationMapping<>(LikelihoodStatistics.class);
 
@@ -45,6 +45,7 @@ public class LikelihoodStatisticsExtractor {
         MAPPING.set(NPARAMS, Integer.class, source -> source.getEstimatedParametersCount());
         MAPPING.set(NOBS, Integer.class, source -> source.getObservationsCount());
         MAPPING.set(NEFFECTIVEOBS, Integer.class, source -> source.getEffectiveObservationsCount());
+        MAPPING.set(DF, Integer.class, source -> source.getEffectiveObservationsCount()-source.getEstimatedParametersCount());
 
     }
 

@@ -16,7 +16,7 @@
  */
 package demetra.sa;
 
-import demetra.data.ParameterSpec;
+import demetra.data.Parameter;
 import demetra.timeseries.regression.ITsVariable;
 
 /**
@@ -29,10 +29,10 @@ public class RegressionItem <V extends ITsVariable>{
 
     String name;
     V variable;
-    ParameterSpec[] coefficients;
+    Parameter[] coefficients;
     ComponentType component;
 
     public static <V extends ITsVariable> RegressionItem<V> of(String name, V variable) {
-        return new RegressionItem(name, variable, ParameterSpec.make(variable.dim()), ComponentType.Undefined);
+        return new RegressionItem(name, variable, Parameter.make(variable.dim()), ComponentType.Undefined);
     }
 }

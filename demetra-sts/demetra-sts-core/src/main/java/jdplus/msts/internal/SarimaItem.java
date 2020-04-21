@@ -62,7 +62,7 @@ public class SarimaItem extends StateItem {
                 ArimaModel arima = new ArimaModel(sarima.getStationaryAr(), sarima.getNonStationaryAr(), sarima.getMa(), var);
                 cmp = SsfArima.of(arima);
             }
-            builder.add(name, cmp, null);
+            builder.add(name, cmp, SsfArima.defaultLoading());
             return np + 1;
         });
     }

@@ -72,7 +72,7 @@ public class ArmaItem extends StateItem {
             double n = p.get(pos++);
             ArimaModel arima = new ArimaModel(bar, BackFilter.ONE, bma, n);
             StateComponent cmp = SsfArima.of(arima);
-            builder.add(name, cmp, null);
+            builder.add(name, cmp, SsfArima.defaultLoading());
             return pos;
         });
     }

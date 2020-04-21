@@ -95,7 +95,7 @@ class TradingDaysController extends ModelController {
     private ModelDescription newModel(RegSarimaModelling context) {
         ModelDescription ndesc = ModelDescription.copyOf(context.getDescription());
         ndesc.removeVariable(var -> var.isCalendar());
-        ndesc.addVariable(new Variable(td, "td", false));
+        ndesc.addVariable(Variable.variable("td", td));
         return ndesc;
     }
 

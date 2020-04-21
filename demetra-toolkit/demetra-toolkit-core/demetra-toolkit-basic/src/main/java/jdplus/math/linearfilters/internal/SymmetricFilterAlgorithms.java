@@ -36,9 +36,10 @@ public class SymmetricFilterAlgorithms {
                 data[0] /= 2;
                 double q0 = Math.abs(Q.get(0));
                 if (q0 != 1) {
-                    for (int i=0; i<data.length; ++i)
-                        data[i]/=q0;
-                 }
+                    for (int i = 0; i < data.length; ++i) {
+                        data[i] /= q0;
+                    }
+                }
                 return BackFilter.ofInternal(data);
             }
 
@@ -135,15 +136,13 @@ public class SymmetricFilterAlgorithms {
         return filter -> {
             SymmetricFilter.Factorization fac = evFactorizer2().factorize(filter);
             if (fac == null) {
-                System.out.println("fast");
-                fac = fastFactorizer().factorize(filter);
-            }
-//            if (fac == null) {
-//                fac = evFactorizer().factorize(filter);
-//            }
-            if (fac == null) {
-                System.out.println("robust");
-                fac = robustFactorizer().factorize(filter);
+                fac = evFactorizer().factorize(filter);
+                if (fac == null) {
+                    fac = fastFactorizer().factorize(filter);
+                    if (fac == null) {
+                        fac = robustFactorizer().factorize(filter);
+                    }
+                }
             }
             return fac;
         };

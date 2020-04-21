@@ -6,7 +6,7 @@
 package jdplus.tramoseats;
 
 import demetra.arima.SarimaSpec;
-import demetra.data.ParameterSpec;
+import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
@@ -41,7 +41,7 @@ public class TramoSeatsKernel {
         return (s, logs) -> {
             TsData sc = s.select(transform.getSpan());
             if (transform.isPreliminaryCheck()) {
-                jdplus.sa.diagnostics.PreliminaryChecks.testSeries(sc);
+                jdplus.sa.PreliminaryChecks.testSeries(sc);
             }
             return sc;
         };
@@ -98,17 +98,16 @@ public class TramoSeatsKernel {
         SarimaSpec sarima = SarimaSpec.builder()
                 .d(arima.getRegularDifferenceOrder())
                 .bd(arima.getSeasonalDifferenceOrder())
-                .phi(ParameterSpec.of(arima.phi(), ParameterType.Estimated))
-                .theta(ParameterSpec.of(arima.theta(), ParameterType.Estimated))
-                .bphi(ParameterSpec.of(arima.bphi(), ParameterType.Estimated))
-                .btheta(ParameterSpec.of(arima.btheta(), ParameterType.Estimated))
+                .phi(Parameter.of(arima.phi(), ParameterType.Estimated))
+                .theta(Parameter.of(arima.theta(), ParameterType.Estimated))
+                .bphi(Parameter.of(arima.bphi(), ParameterType.Estimated))
+                .btheta(Parameter.of(arima.btheta(), ParameterType.Estimated))
                 .build();
         
         return SeatsModelSpec.builder()
-                .series(series.getValues())
+                .series(series)
                 .log(model.isLogTransformation())
                 .meanCorrection(model.getModel().isMean())
-                .period(series.getAnnualFrequency())
                 .sarimaSpec(sarima)
                 .build();
     }

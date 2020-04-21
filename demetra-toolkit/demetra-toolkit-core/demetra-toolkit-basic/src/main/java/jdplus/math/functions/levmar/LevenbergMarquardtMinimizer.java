@@ -24,6 +24,8 @@ import jdplus.math.functions.ssq.ISsqFunctionPoint;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
+import jdplus.leastsquares.QRSolution;
+import jdplus.leastsquares.QRSolver;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 
@@ -38,13 +40,14 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
     private static final double DEF_INIT_MU = 1e-03;
     private static final double DEF_STOP_THRESH = 1e-15, DEF_STOP_THRESH_3 = 1e-12;
 
-    public static class LmBuilder implements Builder{
+    public static class LmBuilder implements Builder {
 
         private double fnPrecision = DEF_STOP_THRESH_3;
         private double paramPrecision = DEF_STOP_THRESH;
         private double gPrecision = DEF_STOP_THRESH;
         private double tau = DEF_INIT_MU;
         private int maxIter = DEF_MAX_ITER;
+        private boolean qr = true;
 
         private LmBuilder() {
         }
@@ -57,6 +60,11 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
 
         public LmBuilder parametersPrecision(double eps) {
             paramPrecision = eps;
+            return this;
+        }
+
+        public LmBuilder useQR(boolean qr) {
+            this.qr = qr;
             return this;
         }
 
@@ -90,17 +98,24 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
     private final int maxIter;
 
     private final double tau, eps1, eps2, eps3;
+    private final boolean qr;
     private int iter = 0;
-    private DataBlock Jte;
     ///////////////////////////////////////////
-    private ISsqFunction fn_;
-    private ISsqFunctionPoint fcur_, ftry_;
-    private DataBlock ecur;
-    private double Fcur_, Ftry_;
-    private Matrix J, V;
+    private ISsqFunction function;
+    private ISsqFunctionPoint currentPoint, tentativePoint;
+    private DataBlock currentE;
+    private double currentObjective, tentativeObjective;
+    /**
+     * Approximate hessian of the function at the current point
+     * V = 2*[de/dxi*de/dxj]
+     */
+    private Matrix H;
+    /**
+     * Gradient of the function at the current point
+     * G = 2*[de/dxi*e]
+     */
     private DoubleSeq G;
-    //private SubMatrix J, K;
-    private double scale_, scale2_;
+    private double scale, scale2;
     ///////////////////////////////////////////
     private double mu;
     private long nu;
@@ -113,6 +128,7 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
         this.eps2 = builder.paramPrecision;
         this.eps3 = builder.fnPrecision;
         this.tau = builder.tau;
+        this.qr = builder.qr;
     }
 
     public boolean hasConverged() {
@@ -121,19 +137,19 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
 
     @Override
     public Matrix curvatureAtMinimum() {
-        if (V == null) {
-            ISsqFunctionDerivatives derivatives = fcur_.ssqDerivatives();
-            V = derivatives.hessian();
+        if (H == null) {
+            ISsqFunctionDerivatives derivatives = currentPoint.ssqDerivatives();
+            H = derivatives.hessian();
             G = derivatives.gradient();
         }
-        return V;
+        return H;
     }
 
     @Override
     public DoubleSeq gradientAtMinimum() {
         if (G == null) {
-            ISsqFunctionDerivatives derivatives = fcur_.ssqDerivatives();
-            V = derivatives.hessian();
+            ISsqFunctionDerivatives derivatives = currentPoint.ssqDerivatives();
+            H = derivatives.hessian();
             G = derivatives.gradient();
         }
         return G;
@@ -141,46 +157,200 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
 
     @Override
     public ISsqFunctionPoint getResult() {
-        return fcur_;
+        return currentPoint;
     }
 
     @Override
     public double getObjective() {
-        return Fcur_;
+        return currentObjective;
     }
 
     @Override
     public boolean minimize(ISsqFunctionPoint start) {
-        fn_ = start.getSsqFunction();
-        fcur_ = start;
+        function = start.getSsqFunction();
+        currentPoint = start;
         return calc();
     }
 
-    protected boolean iterate() {
+    private boolean iterate() {
+        if (qr) {
+            return iterateQR();
+        } else {
+            return iterateCholesky();
+        }
+    }
+
+    private boolean iterateQR() {
         // Step 1: Initialize e, J)
-        if (!Double.isFinite(Fcur_)) {
+        if (!Double.isFinite(currentObjective)) {
             stop = 7;
             return false;
         }
 
-        if (Fcur_ <= eps3 * scale2_) {
+        if (currentObjective <= eps3 * scale2) {
             stop = 6;
             return false;
         }
 
+        int n = currentE.length(), m = function.getDomain().getDim();
+        Matrix JC = Matrix.make(n + m, m);
+        Matrix J = JC.extract(0, n, 0, m);
+        // e, extended with 0
+        double[] e = new double[n + m];
+        currentE.copyTo(e, 0);
+        ISsqFunctionDerivatives derivatives = currentPoint.ssqDerivatives();
+        // Gets the jacobian and the gradient
         try {
-            fcur_.ssqDerivatives().jacobian(J);
+            derivatives.jacobian(J);
+            G = derivatives.gradient();
         } catch (Exception ex) {
             return false;
         }
 
+        // Computes the norm
+        double nJte = G.normInf();
+        if (nJte <= eps1 * scale) {
+            stop = 1;
+            return false;
+        }
+
+        int kiter = 0;
+        while (kiter++ < 100) {
+            Matrix V = null;
+            if (mu > 0) {
+                double smu = Math.sqrt(mu);
+                JC.subDiagonal(-n).set(smu);
+            }
+            QRSolution ls = QRSolver.robustLeastSquares(DoubleSeq.of(e), JC);
+            V=ls.RtR();
+            DoubleSeq dp = ls.getB().times(-1);
+            if (!Double.isFinite(dp.ssq())) {
+                stop = 7;
+                return false;
+            }
+            DataBlock np = DataBlock.of(currentPoint.getParameters());
+            double dpl2 = dp.ssq(), pl2 = np.ssq();
+            if (dpl2 <= eps2 * (pl2 + eps2)) {
+                /*
+                     * relative change in p is small, stop
+                 */
+                stop = 2;
+                return false;
+            }
+            if (dpl2 >= (pl2 + eps2) / (EPSILON * EPSILON)) {
+                /*
+                     * almost singular
+                 */
+                stop = 4;
+                return false;
+            }
+            //if (fn_.getDomain().checkBoundaries(np)) {
+            np.add(dp);
+            ParamValidation status = function.getDomain().validate(np);
+            if (status != ParamValidation.Invalid) {
+                try {
+                    tentativePoint = function.ssqEvaluate(np);
+                    tentativeObjective = tentativePoint.getSsqE();
+                    double dF = currentObjective - tentativeObjective;
+                    if (dF > 0.0) {
+                        if (status == ParamValidation.Changed) {
+                            // we have a new starting point (better than the current point).
+                            // restart the processing. Undefined score and hessian
+                            currentPoint = tentativePoint;
+                            currentObjective = tentativeObjective;
+                            currentE = DataBlock.of(currentPoint.getE());
+                            H = null;
+                            G = null;
+//                        mu = 0;
+//                        nu = 4;
+                            return true;
+                        }
+                        DataBlock dl = DataBlock.of(G);
+                        dl.addAY(-2*mu, dp);
+                        double dL = -dl.dot(dp)/2;
+                        double ratio = dF / dL;
+                        if (ratio > 0.0001) {
+                            /*
+                                 * reduction in error, increment is accepted
+                             */
+
+                            double tmp = 2.0 * ratio - 1.0;
+                            tmp = 1.0 - tmp * tmp * tmp;
+                            if (mu != 0) {
+                                mu *= tmp >= ONE_THIRD ? tmp : ONE_THIRD;
+                            }
+                            nu = 4;
+                            // accept the solution
+                            boolean end = dF <= eps3 * scale2;
+                            currentPoint = tentativePoint;
+                            currentObjective = tentativeObjective;
+                            currentE = DataBlock.of(currentPoint.getE());
+                            // H = 2* J'J =2*(R'Q'QR) 
+                            V.mul(2);
+                            H = V;
+                            if (end) {
+                                stop = 2;
+                                return false;
+                            } else {
+                                return true;
+                            }
+
+                        }
+                    }
+                } catch (Exception err) {
+                }
+            } else {
+            }
+
+            /*
+             * if this point is reached, either the linear system could not be
+             * solved or the error did not reduce; in any case, the increment
+             * must be rejected
+             */
+            if (mu == 0) {
+                mu = tau * V.diagonal().max();
+            } else {
+                mu *= nu;
+            }
+            long nu2 = nu << 2; // 4*nu;
+            if (nu2 <= nu) {
+                stop = 5;
+                return false;
+            }
+            nu = nu2;
+        }
+
+        return false;
+    }
+
+    private boolean iterateCholesky() {
+        // Step 1: Initialize e, J)
+        if (!Double.isFinite(currentObjective)) {
+            stop = 7;
+            return false;
+        }
+
+        if (currentObjective <= eps3 * scale2) {
+            stop = 6;
+            return false;
+        }
+
+        int n = currentE.length(), m = function.getDomain().getDim();
+        Matrix J = Matrix.make(n, m);
+        DataBlock Jte = DataBlock.make(m);
+        try {
+            currentPoint.ssqDerivatives().jacobian(J);
+        } catch (Exception ex) {
+            return false;
+        }
+
+        // Gets the jacobian
         // Computes J'J, J'e
-        Jte.product(J.columnsIterator(), ecur);
-        int m = J.getColumnsCount();
-        V = SymmetricMatrix.XtX(J);
+        Jte.product(J.columnsIterator(), currentE);
+        H = SymmetricMatrix.XtX(J);
 
         double nJte = Jte.normInf();
-        if (nJte <= eps1 * scale_) {
+        if (nJte <= eps1 * scale) {
             stop = 1;
             return false;
         }
@@ -191,7 +361,7 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
         int kiter = 0;
         while (kiter++ < 100) {
             DataBlock dp = null;
-            Matrix K = V.deepClone();
+            Matrix K = H.deepClone();
             if (mu > 0) {
                 K.diagonal().add(mu);
             }
@@ -219,7 +389,7 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
                     stop = 7;
                     return false;
                 }
-                DataBlock np = DataBlock.of(fcur_.getParameters());
+                DataBlock np = DataBlock.of(currentPoint.getParameters());
                 double dpl2 = dp.ssq(), pl2 = np.ssq();
                 if (dpl2 <= eps2 * (pl2 + eps2)) {
                     /*
@@ -239,19 +409,19 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
                 }
                 //if (fn_.getDomain().checkBoundaries(np)) {
                 np.add(dp);
-                ParamValidation status = fn_.getDomain().validate(np);
+                ParamValidation status = function.getDomain().validate(np);
                 if (status != ParamValidation.Invalid) {
                     try {
-                        ftry_ = fn_.ssqEvaluate(np);
-                        Ftry_ = ftry_.getSsqE();
-                        double dF = Fcur_ - Ftry_;
+                        tentativePoint = function.ssqEvaluate(np);
+                        tentativeObjective = tentativePoint.getSsqE();
+                        double dF = currentObjective - tentativeObjective;
                         if (dF > 0.0) {
                             if (status == ParamValidation.Changed) {
                                 // we have a new starting point (better than the current point).
                                 // restart the processing. 
-                                fcur_ = ftry_;
-                                Fcur_ = Ftry_;
-                                ecur = DataBlock.of(fcur_.getE());
+                                currentPoint = tentativePoint;
+                                currentObjective = tentativeObjective;
+                                currentE = DataBlock.of(currentPoint.getE());
 //                        mu = 0;
 //                        nu = 4;
                                 return true;
@@ -272,13 +442,13 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
                                 }
                                 nu = 4;
                                 // accept the solution
-                                boolean end = dF <= eps3 * scale2_;
-                                fcur_ = ftry_;
-                                Fcur_ = Ftry_;
-                                ecur = DataBlock.of(fcur_.getE());
+                                boolean end = dF <= eps3 * scale2;
+                                currentPoint = tentativePoint;
+                                currentObjective = tentativeObjective;
+                                currentE = DataBlock.of(currentPoint.getE());
                                 if (end) {
                                     // clear the variance
-                                    V = null;
+                                    H = null;
                                     stop = 2;
                                     return false;
                                 } else {
@@ -299,7 +469,7 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
              * must be rejected
              */
             if (mu == 0) {
-                mu = tau * V.diagonal().max();
+                mu = tau * H.diagonal().max();
             } else {
                 mu *= nu;
             }
@@ -316,17 +486,14 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
 
     private boolean calc() {
         G = null;
-        V = null;
+        H = null;
         iter = 0;
         nu = 4;
         mu = 0;
-        ecur = DataBlock.of(fcur_.getE());
-        Fcur_ = fcur_.getSsqE();
-        scale2_ = Fcur_;
-        scale_ = Math.sqrt(Fcur_);
-        int n = ecur.length(), m = fn_.getDomain().getDim();
-        J = Matrix.make(n, m);
-        Jte = DataBlock.make(m);
+        currentE = DataBlock.of(currentPoint.getE());
+        currentObjective = currentPoint.getSsqE();
+        scale2 = currentObjective;
+        scale = Math.sqrt(currentObjective);
         while (iter++ < maxIter) {
             if (!iterate()) {
                 break;

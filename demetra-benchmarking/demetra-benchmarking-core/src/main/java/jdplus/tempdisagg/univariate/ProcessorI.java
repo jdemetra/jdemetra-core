@@ -8,7 +8,7 @@ package jdplus.tempdisagg.univariate;
 import demetra.data.AggregationType;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
-import demetra.data.ParameterSpec;
+import demetra.data.Parameter;
 import demetra.math.functions.ObjectiveFunctionPoint;
 import demetra.tempdisagg.univariate.TemporalDisaggregationIResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationISpec;
@@ -94,7 +94,7 @@ public class ProcessorI {
             cumul(xc, ratio);
         }
         // compute the coefficient b
-        ParameterSpec p = parameter(spec);
+        Parameter p = parameter(spec);
         FunctionI I = new FunctionI(xc, Y, ratio, p, cumul, spec.getTruncatedRho());
         Bfgs bfgs = Bfgs.builder()
                 .functionPrecision(spec.getEstimationPrecision())
@@ -181,14 +181,14 @@ public class ProcessorI {
         }
     }
 
-    private ParameterSpec parameter(TemporalDisaggregationISpec spec) {
+    private Parameter parameter(TemporalDisaggregationISpec spec) {
         switch (spec.getResidualsModel()) {
             case Rw:
-                return ParameterSpec.fixed(1);
+                return Parameter.fixed(1);
             case Ar1:
                 return spec.getParameter();
             default:
-                return ParameterSpec.fixed(0);
+                return Parameter.fixed(0);
         }
     }
 
@@ -201,11 +201,11 @@ class FunctionI implements IFunction {
     private final double[] xc;
     private final double[] Y;
     private final int ratio;
-    private final ParameterSpec p;
+    private final Parameter p;
     private final boolean agg;
     private final double truncatedRho;
 
-    FunctionI(final double[] xc, final double[] Y, final int ratio, final ParameterSpec p, final boolean agg, final double truncatedRho) {
+    FunctionI(final double[] xc, final double[] Y, final int ratio, final Parameter p, final boolean agg, final double truncatedRho) {
         this.xc = xc;
         this.Y = Y;
         this.ratio = ratio;

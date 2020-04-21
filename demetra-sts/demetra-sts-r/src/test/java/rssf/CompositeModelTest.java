@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 import org.junit.Test;
 import demetra.math.matrices.MatrixType;
 import demetra.ssf.SsfInitialization;
-import demetra.ssf.SsfLikelihood;
+import demetra.timeseries.TsData;
 import jdplus.sts.LocalLevel;
 import jdplus.sts.LocalLinearTrend;
 
@@ -51,7 +51,27 @@ public class CompositeModelTest {
     public CompositeModelTest() {
     }
 
-    //@Test
+    @Test
+    public void testAirline() {
+        TsData P = Data.TS_PROD;
+        CompositeModel model = new CompositeModel();
+        model.add(AtomicModels.sarima("air", 12, new int[]{0, 1, 1}, new int[]{0, 1, 1}, null, false, 1, false));
+        model.add(AtomicModels.tdRegression("td", P.getDomain(), new int[]{1, 2, 3, 4, 5, 6, 0}, true, 0, false));
+        ModelEquation eq = new ModelEquation("eq1", 0, true);
+        eq.add("air", 1, true, null);
+        eq.add("td", 1, true, null);
+        model.add(eq);
+        int len = Data.PROD.length;
+        Matrix M = Matrix.make(len, 1);
+        M.column(0).copyFrom(Data.PROD, 0);
+        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
+        System.out.println(DataBlock.of(rslt.getFullParameters()));
+        System.out.println(rslt.getSmoothedStates().getComponent(19));
+        System.out.println(rslt.getSmoothedStates().getComponentVariance(1));
+        System.out.println(rslt.getLikelihood().logLikelihood());
+    }
+
+    @Test
     public void testBsm() {
         CompositeModel model = new CompositeModel();
         model.add(AtomicModels.localLinearTrend("l", 1, .01, true, false));

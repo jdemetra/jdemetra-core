@@ -12,13 +12,13 @@ import demetra.processing.ProcResults;
 import demetra.processing.ProcessingLog;
 import demetra.seats.DecompositionSpec;
 import demetra.seats.SeatsModelSpec;
+import demetra.timeseries.TsData;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import jdplus.seats.SeatsKernel;
 import jdplus.seats.SeatsResults;
 import jdplus.seats.SeatsToolkit;
 import jdplus.tramoseats.extractors.SeatsExtractor;
-import jdplus.tramoseats.spi.ApiUtility;
 
 /**
  *
@@ -54,7 +54,7 @@ public class Seats {
         }
     }
 
-    public Results process(double[] data, boolean log, int period, int[] order, int[] seasonal, boolean mean, int nb, int nf) {
+    public Results process(TsData data, boolean log, int[] order, int[] seasonal, boolean mean, int nb, int nf) {
 
         SarimaSpec arima = SarimaSpec.builder()
                 .p(order[0])
@@ -66,8 +66,7 @@ public class Seats {
                 .build();
 
         SeatsModelSpec model = SeatsModelSpec.builder()
-                .series(DoubleSeq.of(data))
-                .period(period)
+                .series(data)
                 .sarimaSpec(arima)
                 .log(log)
                 .meanCorrection(mean)

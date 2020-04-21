@@ -88,6 +88,8 @@ public class PrespecifiedHoliday implements Holiday {
                 return FixedDay.MAYDAY.reweight(weight).plus(offset);
             case AllSaintsDay:
                 return FixedDay.ALLSAINTSDAY.reweight(weight).plus(offset);
+            case Armistice:
+                return FixedDay.ARMISTICE.reweight(weight).plus(offset);
             case Halloween:
                 return FixedDay.HALLOWEEN.reweight(weight).plus(offset);
 

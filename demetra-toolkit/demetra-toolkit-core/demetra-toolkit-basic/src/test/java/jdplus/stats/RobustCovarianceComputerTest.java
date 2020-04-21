@@ -16,7 +16,6 @@
  */
 package jdplus.stats;
 
-import jdplus.stats.RobustCovarianceComputer;
 import jdplus.data.DataBlock;
 import jdplus.data.analysis.WindowFunction;
 import java.util.Random;

@@ -76,7 +76,6 @@ public class ArimaForecasts {
         public static final InformationMapping<Results> getMapping() {
             return MAPPING;
         }
-
     }
 
     public Results process(RegArimaModel regarima, double mean, int nf, int nb, String method) {

@@ -25,13 +25,14 @@ import demetra.data.DoubleSeqCursor;
 import demetra.design.Internal;
 import demetra.data.DoubleSeq;
 import jdplus.math.matrices.Matrix;
+import demetra.math.matrices.MatrixType;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @Immutable
-public final class LinearModel{
+public final class LinearModel {
 
     public static class Builder {
 
@@ -57,8 +58,10 @@ public final class LinearModel{
             return this;
         }
 
-        public Builder addX(@NonNull Matrix X) {
-            X.columns().forEach(col -> x.add(col));
+        public Builder addX(@NonNull MatrixType X) {
+            for (int i = 0; i < X.getColumnsCount(); ++i) {
+                x.add(X.column(i));
+            }
             return this;
         }
 
@@ -95,7 +98,7 @@ public final class LinearModel{
     public static Builder builder() {
         return new Builder();
     }
-    
+
     /**
      *
      * @param y
@@ -177,8 +180,8 @@ public final class LinearModel{
     public boolean isMeanCorrection() {
         return mean;
     }
-    
-    public Matrix getX(){
+
+    public Matrix getX() {
         return x;
     }
 
@@ -190,8 +193,8 @@ public final class LinearModel{
         if (!mean) {
             return x.deepClone();
         } else {
-            int m=x.getRowsCount(), n=x.getColumnsCount();
-            Matrix vars = Matrix.make(m, n+1);
+            int m = x.getRowsCount(), n = x.getColumnsCount();
+            Matrix vars = Matrix.make(m, n + 1);
             vars.column(0).set(1);
             vars.extract(0, m, 1, n).copy(x);
             return vars;
@@ -216,5 +219,5 @@ public final class LinearModel{
         }
         return builder.toString();
     }
-   
+
 }

@@ -47,9 +47,9 @@ public enum ParameterType {
      * estimated parameters should be recomputed)
      */
     Estimated,
-    /**
-     * The value is derived from other parameters. Such parameters are just
-     * added for information (they are not actual parameters)
-     */
-    Derived
+//    /**
+//     * The value is derived from other parameters. Such parameters are just
+//     * added for information (they are not actual parameters)
+//     */
+//    Derived
 }

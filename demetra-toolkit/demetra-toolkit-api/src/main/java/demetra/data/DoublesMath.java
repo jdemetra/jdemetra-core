@@ -77,8 +77,9 @@ public class DoublesMath {
         double result = 0;
         DoubleSeqCursor cursor = src.cursor();
         for (int i = 0; i < n; i++) {
-            double value = cursor.getAndNext() - mean;
-            if (Double.isFinite(value)) {
+            double x = cursor.getAndNext();
+            if (Double.isFinite(x)) {
+                double value=x-mean;
                 result += value * value;
             }
         }

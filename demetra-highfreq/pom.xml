@@ -75,11 +75,6 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-toolkit-sa</artifactId>
-                <version>${jd3-toolkit.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-highfreq-api</artifactId>
                 <version>${jd3-highfreq.version}</version>            
             </dependency>

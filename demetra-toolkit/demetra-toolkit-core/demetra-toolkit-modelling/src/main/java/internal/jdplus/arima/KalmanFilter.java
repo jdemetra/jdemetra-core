@@ -46,13 +46,13 @@ public class KalmanFilter implements ArmaFilter {
 
     private double ldet = Double.NaN, h0, var;
 
-    private static final double EPS = 1e-9;
+    private static final double EPS = 1e-12;
 
     /**
      *
      */
     public KalmanFilter() {
-        multiUse=false;
+        multiUse = false;
     }
 
     /**
@@ -65,7 +65,6 @@ public class KalmanFilter implements ArmaFilter {
 
     private void calcC() {
 
-        DeterminantalTerm det = new DeterminantalTerm();
         double[] L = C0.clone();
         C = new double[dim * n];
         for (int i = 0; i < dim; ++i) {
@@ -74,39 +73,34 @@ public class KalmanFilter implements ArmaFilter {
         s = new double[n];
         double h = h0;
 
-        det.add(h);
-        s[0] = Math.sqrt(h);
-        // iteration
-        int pos = 0, cpos = 0, ilast = dim - 1;
-        steadyPos = n;
-        while (++pos < n) {
+        DeterminantalTerm det = new DeterminantalTerm();
+        int pos = 0, ccur = 0, cnext = dim, ilast = dim - 1;
+        steadyPos = n - 1; // we don't need to update the last run
+        do {
             if (Double.isNaN(h) || h < 0) {
                 throw new ArimaException(ArimaException.INVALID);
             }
+            det.add(h);
+            s[pos] = Math.sqrt(h);
+            // update
             if (pos < steadyPos) {
                 double zl = L[0];
                 double zlv = zl / h;
-                double llast = tlast(L);
+                double llast = tlast(L), clast = C[ccur + ilast];
 
                 // C, L
-                for (int i = 0; i < ilast; ++i, ++cpos) {
+                for (int i = 0, j = ccur, k = cnext; i < ilast; ++i, ++j, ++k) {
                     double li = L[i + 1];
-                    double ci = C[cpos];
                     if (zlv != 0) {
-                        L[i] = li - ci * zlv;
-                        C[cpos + dim] = ci - zlv * li;
+                        L[i] = li - C[j] * zlv;
+                        C[k] = C[j] - zlv * li;
                     } else {
                         L[i] = li;
-                        C[cpos + dim] = ci;
                     }
                 }
 
-                double clast = C[cpos];
-
                 L[ilast] = llast - zlv * clast;
-                C[cpos + dim] = clast - zlv * llast;
-                ++cpos;
-
+                C[cnext + ilast] = C[ccur + ilast] - zlv * llast;
                 h -= zl * zlv;
                 if (h < var) {
                     h = var;
@@ -118,12 +112,12 @@ public class KalmanFilter implements ArmaFilter {
                     }
                 }
                 if (k == L.length) {
-                    steadyPos = pos;
+                    steadyPos = pos + 1;
                 }
+                ccur = cnext;
+                cnext += dim;
             }
-            det.add(h);
-            s[pos] = Math.sqrt(h);
-        }
+        } while (++pos < n);
 
         ldet = det.getLogDeterminant();
     }
@@ -136,7 +130,7 @@ public class KalmanFilter implements ArmaFilter {
 
         // iteration
         int pos = 0, ilast = dim - 1;
-        steadyPos = -1;
+        steadyPos = n;
         do {
             if (Double.isNaN(h) || h < 0) {
                 throw new ArimaException(ArimaException.INVALID);
@@ -144,7 +138,7 @@ public class KalmanFilter implements ArmaFilter {
             det.add(h);
             // filter x if any
 
-            if (steadyPos < 0) {
+            if (pos < steadyPos) {
                 double zl = L[0];
                 double zlv = zl / h;
 
@@ -231,33 +225,38 @@ public class KalmanFilter implements ArmaFilter {
         DoubleSeqCursor yreader = y.cursor();
         DoubleSeqCursor.OnMutable yfwriter = yf.cursor();
         int pos = 0, cpos = 0, ilast = dim - 1;
-        double s = this.s[pos];
-        double e = yreader.getAndNext() / s;
-        boolean started = e != 0;
-        yfwriter.setAndNext(e);
-        while (++pos < n) {
-            // filter y
-            if (started) {
-                double la = tlast(a);
-                double v = e / s;
-                for (int i = 0; i < ilast; ++i) {
-                    a[i] = a[i + 1] + C[cpos++] * v;
-                }
-                a[ilast] = la + C[cpos++] * v;
-                if (pos >= steadyPos) {
-                    cpos -= dim;
-                }
-                // filter x if any
-            } else if (pos < steadyPos) {
-                cpos += dim;
-            }
-            s = this.s[pos];
-            e = (yreader.getAndNext() - a[0]) / s;
-            yfwriter.setAndNext(e);
-            if (e != 0) {
+        boolean started = false;
+        do {
+            double z = yreader.getAndNext();
+            if (z != 0) {
                 started = true;
             }
-        }
+            double s = this.s[pos];
+            double e = (z - a[0]) / s;
+            yfwriter.setAndNext(e);
+            // update state
+            if (started) {
+                double la = tlast(a);
+                // update the state
+                if (e != 0) {
+                    double v = e / s;
+                    for (int i = 0, j = cpos; i < ilast; ++i, ++j) {
+                        a[i] = a[i + 1] + C[j] * v;
+                    }
+                    a[ilast] = la + C[cpos + ilast] * v;
+                } else {
+                    for (int i = 0; i < ilast; ++i) {
+                        a[i] = a[i + 1];
+                    }
+                    a[ilast] = la;
+                }
+            }
+            // filter x if any
+            if (pos < steadyPos) {
+                cpos += dim;
+            }
+
+        } while (++pos < n);
     }
 
     private void sfilter(DoubleSeq y, DataBlock outrc) {
@@ -270,12 +269,32 @@ public class KalmanFilter implements ArmaFilter {
         double[] yf = new double[n];
         // iteration
         int pos = 0, ilast = dim - 1;
-        steadyPos = n;
+        steadyPos = n - 1; // we don't need to update the last run
         do {
             if (Double.isNaN(h) || h < 0) {
                 throw new ArimaException(ArimaException.INVALID);
             }
-            if (pos > 0 && pos < steadyPos) {
+            // filter y
+            det.add(h);
+            double s = Math.sqrt(h);
+            double e = y.get(pos) - a[0];
+            yf[pos] = e / s;
+            double la = tlast(a);
+            // update the state
+            if (e != 0) {
+                double v = e / h;
+                for (int i = 0; i < ilast; ++i) {
+                    a[i] = a[i + 1] + C[i] * v;
+                }
+                a[ilast] = la + C[ilast] * v;
+            } else {
+                for (int i = 0; i < ilast; ++i) {
+                    a[i] = a[i + 1];
+                }
+                a[ilast] = la;
+            }
+            // next
+            if (pos < steadyPos) {
                 double zl = L[0];
                 double zlv = zl / h;
                 double llast = tlast(L), clast = C[ilast];
@@ -304,30 +323,11 @@ public class KalmanFilter implements ArmaFilter {
                     }
                 }
                 if (k == L.length) {
-                    steadyPos = pos;
+                    steadyPos = pos + 1;
                 }
             }
 
-            det.add(h);
-            // filter y
-            double s = Math.sqrt(h);
-            double e = (y.get(pos) - a[0]) / s;
-            yf[pos] = e;
-            double la = tlast(a);
-            if (e != 0) {
-                double v = e / s;
-                for (int i = 0; i < ilast; ++i) {
-                    a[i] = a[i + 1] + C[i] * v;
-                }
-                a[ilast] = la + C[ilast] * v;
-            } else {
-                for (int i = 0; i < ilast; ++i) {
-                    a[i] = a[i + 1];
-                }
-                a[ilast] = la;
-            }
             // filter x if any
-
         } while (++pos < n);
 
         ldet = det.getLogDeterminant();

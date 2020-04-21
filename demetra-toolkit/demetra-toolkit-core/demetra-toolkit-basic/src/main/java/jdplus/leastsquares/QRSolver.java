@@ -32,46 +32,53 @@ import jdplus.math.matrices.decomposition.QRDecomposition;
  */
 @lombok.experimental.UtilityClass
 public class QRSolver {
-    
+
     @FunctionalInterface
-    public interface Processor{
+    public interface Processor {
+
         QRSolution solve(DoubleSeq y, Matrix X);
     }
-    
-    public QRSolution fastLeastSquares(DoubleSeq y, Matrix X){
+
+    /**
+     * QR least squares without pivoting
+     *
+     * @param y
+     * @param X
+     * @return
+     */
+    public QRSolution fastLeastSquares(DoubleSeq y, Matrix X) {
         Householder2 h = new Householder2();
         QRDecomposition qr = h.decompose(X);
         return leastSquares(qr, y, 0);
     }
-    
-    public QRSolution robustLeastSquares(DoubleSeq y, Matrix X){
+
+    public QRSolution robustLeastSquares(DoubleSeq y, Matrix X) {
         HouseholderWithPivoting h = new HouseholderWithPivoting();
         QRDecomposition qr = h.decompose(X, 0);
         return leastSquares(qr, y, Constants.getEpsilon());
     }
-    
-    public QRSolution leastSquares(QRDecomposition qr, DoubleSeq x, double rcond){
+
+    public QRSolution leastSquares(QRDecomposition qr, DoubleSeq x, double rcond) {
         int rank = UpperTriangularMatrix.rank(qr.rawR(), rcond);
         double[] y = x.toArray();
         qr.applyQt(y);
-        int m=qr.m(), n=qr.n();
-        DoubleSeq e=DoubleSeq.of(y, rank, m-rank);
+        int m = qr.m(), n = qr.n();
+        DoubleSeq e = DoubleSeq.of(y, rank, m - rank);
         // Solve R*X = Y;
-         UpperTriangularMatrix.solveUx(qr.rawR(), DataBlock.of(y));
-        int[] pivot=qr.pivot();
+        UpperTriangularMatrix.solveUx(qr.rawR(), DataBlock.of(y));
+        int[] pivot = qr.pivot();
         DoubleSeq b;
         if (pivot == null) {
-            b=DoubleSeq.of(y, 0, rank);
+            b = DoubleSeq.of(y, 0, rank);
         } else {
-            double[] tmp=new double[n];
+            double[] tmp = new double[n];
             for (int i = 0; i < rank; ++i) {
-                tmp[pivot[i]]=y[i];
+                tmp[pivot[i]] = y[i];
             }
-            b=DoubleSeq.of(tmp);
+            b = DoubleSeq.of(tmp);
         }
 
         return new QRSolution(qr, rank, b, e, e.ssq());
     }
 
 }
-

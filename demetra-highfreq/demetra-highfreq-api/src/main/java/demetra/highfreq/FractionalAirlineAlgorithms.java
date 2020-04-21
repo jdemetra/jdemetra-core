@@ -12,7 +12,7 @@ import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
 
 /**
- *
+ * Low-level algorithms. Should be refined
  * @author palatej
  */
 @Development(status = Development.Status.Beta)

@@ -38,19 +38,18 @@ public class RegArimaDecomposerTest {
         ModelDescription model = new ModelDescription(Data.TS_PROD, null);
         model.setAirline(true);
         model.setLogTransformation(true);
-        model.setTransformation(LengthOfPeriodType.LeapYear);
+        model.setPreadjustment(LengthOfPeriodType.LeapYear);
         GenericTradingDaysVariable td = new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD3));
-        model.addVariable(new Variable(td, "td", true));
+        model.addVariable(Variable.variable("td", td));
         EasterVariable easter = EasterVariable.builder()
                 .duration(6)
                 .meanCorrection(EasterVariable.Correction.Theoretical)
                 .build();
-        model.addVariable(new Variable(easter, "easter", true));
+        model.addVariable(Variable.prespecifiedVariable("easter", easter));
         ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.PROCESSOR);
 
         SaVariablesMapping mapping=new SaVariablesMapping();
         mapping.addDefault(model.variables().map(var->var.getVariable()).toArray(n->new ITsVariable[n]));
-        mapping.addDefault(model.preadjustmentVariables().map(var->var.getVariable()).toArray(n->new ITsVariable[n]));
 
         RegArimaDecomposer decomposer=RegArimaDecomposer.of(rslt, mapping);
 

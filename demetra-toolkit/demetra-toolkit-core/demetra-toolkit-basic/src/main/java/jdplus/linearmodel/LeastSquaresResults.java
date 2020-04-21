@@ -33,6 +33,7 @@ import demetra.math.matrices.MatrixType;
 import jdplus.data.DataBlockIterator;
 import jdplus.dstats.Chi2;
 import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.QuadraticForm;
 
 /**
  *
@@ -116,6 +117,9 @@ public final class LeastSquaresResults {
     private final int n, nx;
     private final DoubleSeq coefficients;
     private final double ssq, ldet;
+    /**
+     * (X'X)^-1
+     */
     private final Matrix ucov;
     // auxiliary results
     private final double y2, ym, bxy;
@@ -124,8 +128,24 @@ public final class LeastSquaresResults {
         return y;
     }
 
+    /**
+     * Regression variables (including the constant when it is used)
+     * @return 
+     */
     public MatrixType X() {
         return X.unmodifiable();
+    }
+    
+    /**
+     * Gets X(X'X)^-1X'
+     * @return 
+     */
+    public Matrix projectionMatrix(){
+        return SymmetricMatrix.XSXt(ucov, X);
+    }
+    
+    public boolean isMean(){
+        return mean;
     }
 
     public DoubleSeq residuals() {
@@ -138,6 +158,18 @@ public final class LeastSquaresResults {
         return e.unmodifiable();
     }
 
+    public DoubleSeq studentizedResiduals() {
+        DoubleSeq e=residuals();
+        double[] v=new double[e.length()];
+        double sig=getResidualStandardDeviation();
+        DataBlockIterator rows = X.rowsIterator();
+        DoubleSeqCursor cursor = e.cursor();
+        for (int i=0; i<v.length; ++i){
+            v[i]=cursor.getAndNext()/(sig*Math.sqrt(1-QuadraticForm.apply(ucov, rows.next())));
+        }
+        return DoubleSeq.of(v);
+    }
+    
     /**
      * @return the coefficients
      */
@@ -235,9 +267,8 @@ public final class LeastSquaresResults {
     }
 
     public StatisticalTest Khi2Test() {
-        Chi2 chi = new Chi2(nx);
+        Chi2 chi = new Chi2(mean ? nx - 1 : nx);
         return new StatisticalTest(chi, getRegressionSumOfSquares() / getResidualMeanSquare(), TestType.Upper, true);
-
     }
 
     /**

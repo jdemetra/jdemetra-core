@@ -18,7 +18,7 @@ package demetra.tempdisagg.univariate;
 
 import demetra.processing.AlgorithmDescriptor;
 import demetra.data.AggregationType;
-import demetra.data.ParameterSpec;
+import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.design.Development;
 import demetra.processing.ProcSpecification;
@@ -48,7 +48,7 @@ public final class TemporalDisaggregationISpec implements ProcSpecification, Val
     @lombok.NonNull
     private Model residualsModel;
     private boolean constant;
-    private ParameterSpec parameter;
+    private Parameter parameter;
     private double truncatedRho;
     private double estimationPrecision;
 
@@ -65,7 +65,7 @@ public final class TemporalDisaggregationISpec implements ProcSpecification, Val
                 .aggregationType(AggregationType.Sum)
                 .residualsModel(Model.Ar1)
                 .constant(true)
-                .parameter(ParameterSpec.initial(.9))
+                .parameter(Parameter.initial(.9))
                 .truncatedRho(-1)
                 .estimationPrecision(DEF_EPS);
     }

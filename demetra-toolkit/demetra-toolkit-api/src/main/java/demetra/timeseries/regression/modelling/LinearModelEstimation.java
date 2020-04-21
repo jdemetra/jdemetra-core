@@ -23,7 +23,6 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsDomain;
-import demetra.timeseries.regression.PreadjustmentVariable;
 import demetra.timeseries.regression.Variable;
 import java.util.Map;
 
@@ -45,12 +44,6 @@ public class LinearModelEstimation<M> {
     private LengthOfPeriodType lpTransformation;
 
     /**
-     * Pre-adjustment variables. Pre-specified mean should be integrated in
-     * the pre-adjustment variables
-     */
-    private PreadjustmentVariable[] preadjustmentVariables;
-
-    /**
      * Mean correction (after differencing)
      */
     private boolean meanCorrection;
@@ -70,7 +63,6 @@ public class LinearModelEstimation<M> {
      * (starting with the mean)
      */
     private double[] coefficients;
-
     private MatrixType coefficientsCovariance;
     private double[] parameters, score;
     private MatrixType parametersCovariance;

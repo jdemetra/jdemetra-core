@@ -30,6 +30,9 @@ import jdplus.ssf.univariate.SsfData;
 import jdplus.ucarima.UcarimaModel;
 import jdplus.ucarima.ssf.SsfUcarima;
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsPeriod;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.QuadraticForm;
 
@@ -54,7 +57,7 @@ public class KalmanEstimator implements IComponentsEstimator {
     @Override
     public SeriesDecomposition decompose(SeatsModel model) {
         SeriesDecomposition.Builder builder = SeriesDecomposition.builder(DecompositionMode.Additive);
-        DoubleSeq s = model.getTransformedSeries();
+        TsData s = model.getTransformedSeries();
         builder.add(s, ComponentType.Series);
         int n = s.length(), nf = model.extrapolationCount(nfcasts),
                 nb = model.extrapolationCount(nbcasts);
@@ -64,7 +67,7 @@ public class KalmanEstimator implements IComponentsEstimator {
 
         CompositeSsf ssf = SsfUcarima.of(ucm);
         // compute KS
-        ISsfData data = new ExtendedSsfData(new SsfData(s), nb, nf);
+        ISsfData data = new ExtendedSsfData(new SsfData(s.getValues()), nb, nf);
         double mvar = model.getInnovationVariance();
         DefaultSmoothingResults srslts;
         if (mvar != 0) {
@@ -75,15 +78,16 @@ public class KalmanEstimator implements IComponentsEstimator {
             srslts = DkToolkit.sqrtSmooth(ssf, data, true, true);
         }
 
+        TsPeriod start=s.getStart(), bstart=start.plus(-nb), fstart=start.plus(n);
         int[] pos = ssf.componentsPosition();
-        DoubleSeq cmp;
+        TsData cmp;
         int scmp = -1;
         for (int i = 0; i < pos.length; ++i) {
             ComponentType type = cmps[i];
             if (type == ComponentType.Seasonal) {
                 scmp = i;
             }
-            cmp = srslts.getComponent(pos[i]);
+            cmp = TsData.ofInternal(bstart, srslts.getComponent(pos[i]));
             if (nb > 0) {
                 builder.add(cmp.range(0, nb), type, ComponentInformation.Backcast);
             }
@@ -91,7 +95,7 @@ public class KalmanEstimator implements IComponentsEstimator {
                 builder.add(cmp.extract(nb + n, nf), type, ComponentInformation.Forecast);
             }
             builder.add(cmp.extract(nb, n), type);
-            cmp = srslts.getComponentVariance(pos[i]).fn(x -> x <= 0 ? 0 : Math.sqrt(x));
+            cmp = TsData.ofInternal(bstart, srslts.getComponentVariance(pos[i]).fn(x -> x <= 0 ? 0 : Math.sqrt(x)));
             if (nb > 0) {
                 builder.add(cmp.range(0, nb), type, ComponentInformation.StdevBackcast);
             }
@@ -114,11 +118,12 @@ public class KalmanEstimator implements IComponentsEstimator {
                 a[i] = srslts.a(i).dot(z);
                 e[i] = QuadraticForm.apply(srslts.P(i), z);
             }
-            builder.add(DoubleSeq.of(a), ComponentType.Series, ComponentInformation.Backcast);
-            cmp = DoubleSeq.of(e).fn(x -> x <= 0 ? 0 : Math.sqrt(x));
+            TsData sb=TsData.ofInternal(bstart, a);
+            builder.add(sb, ComponentType.Series, ComponentInformation.Backcast);
+            cmp = TsData.ofInternal(bstart, DoubleSeq.of(e).fn(x -> x <= 0 ? 0 : Math.sqrt(x)));
             builder.add(cmp, ComponentType.Series, ComponentInformation.StdevBackcast);
             if (scmp < 0) {  // SA == y
-                builder.add(DoubleSeq.of(a), ComponentType.Series, ComponentInformation.Backcast); 
+                builder.add(sb, ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast); 
                 builder.add(cmp, ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast);
             }
         }
@@ -129,11 +134,12 @@ public class KalmanEstimator implements IComponentsEstimator {
                 a[i] = srslts.a(j).dot(z);
                 e[i] = QuadraticForm.apply(srslts.P(j), z);
             }
-            builder.add(DoubleSeq.of(a), ComponentType.Series, ComponentInformation.Forecast);
-            cmp = DoubleSeq.of(e).fn(x -> x <= 0 ? 0 : Math.sqrt(x));
+            TsData sf=TsData.ofInternal(fstart, a);
+            builder.add(sf, ComponentType.Series, ComponentInformation.Forecast);
+            cmp = TsData.ofInternal(fstart, DoubleSeq.of(e).fn(x -> x <= 0 ? 0 : Math.sqrt(x)));
             builder.add(cmp, ComponentType.Series, ComponentInformation.StdevForecast);
             if (scmp < 0) {  // SA == y
-                builder.add(DoubleSeq.of(a), ComponentType.Series, ComponentInformation.Forecast); 
+                builder.add(sf, ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast); 
                 builder.add(cmp, ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
             }
         }
@@ -141,7 +147,7 @@ public class KalmanEstimator implements IComponentsEstimator {
 
         if (scmp >= 0) {
             z.range(pos[scmp], scmp == pos.length - 1 ? ssf.getStateDim() : pos[scmp + 1]).set(0);
-            DoubleSeq sa = srslts.zcomponent(z);
+            TsData sa = TsData.ofInternal(bstart, srslts.zcomponent(z));
             builder.add(sa.range(nb, nb + n), ComponentType.SeasonallyAdjusted);
             if (nb > 0) {
                 builder.add(sa.range(0, nb), ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast);
@@ -149,7 +155,7 @@ public class KalmanEstimator implements IComponentsEstimator {
                 for (int i = 0; i < a.length; ++i) {
                     a[i] = QuadraticForm.apply(srslts.P(i), z);
                 }
-                cmp = DoubleSeq.of(a).fn(x -> x <= 0 ? 0 : Math.sqrt(x));
+                cmp = TsData.ofInternal(bstart, DoubleSeq.of(a).fn(x -> x <= 0 ? 0 : Math.sqrt(x)));
                 builder.add(cmp, ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast);
             }
             if (nf > 0) {
@@ -158,7 +164,7 @@ public class KalmanEstimator implements IComponentsEstimator {
                 for (int i = 0, j = n + nb; i < a.length; ++i, ++j) {
                     a[i] = QuadraticForm.apply(srslts.P(j), z);
                 }
-                cmp = DoubleSeq.of(a).fn(x -> x <= 0 ? 0 : Math.sqrt(x));
+                cmp = TsData.ofInternal(fstart, DoubleSeq.of(a).fn(x -> x <= 0 ? 0 : Math.sqrt(x)));
                 builder.add(cmp, ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast);
             }
         }

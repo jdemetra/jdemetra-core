@@ -6,7 +6,7 @@
 package demetra.highfreq;
 
 /**
- *
+ * Description of a fractional airline model with multiple periodicities
  * @author palatej
  */
 @lombok.Value

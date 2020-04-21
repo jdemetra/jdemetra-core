@@ -118,7 +118,6 @@ public class ApiUtility {
                 .estimationDomain(estimation.getEstimationDomain())
                 .logTransformation(estimation.isLogTransformation())
                 .lpTransformation(estimation.getLpTransformation())
-                .preadjustmentVariables(estimation.getPreadjustmentVariables())
                 .meanCorrection(estimation.getModel().isMean())
                 .variables(estimation.getVariables())
                 .stochasticComponent(jdplus.modelling.ApiUtility.toApi(estimation.getModel().arima(), null))
