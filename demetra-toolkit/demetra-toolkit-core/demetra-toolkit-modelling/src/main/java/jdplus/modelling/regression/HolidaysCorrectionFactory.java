@@ -5,6 +5,7 @@
  */
 package jdplus.modelling.regression;
 
+import demetra.data.Range;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.math.matrices.MatrixType;
@@ -20,6 +21,7 @@ import demetra.timeseries.calendars.CompositeCalendar;
 import demetra.util.WeightedItem;
 import java.time.LocalDate;
 import demetra.timeseries.calendars.CalendarDefinition;
+import java.time.LocalDateTime;
 import jdplus.math.matrices.MatrixFactory;
 import jdplus.math.matrices.Matrix;
 import jdplus.timeseries.calendars.HolidaysUtility;
@@ -159,7 +161,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(HolidaysCorrectedTradingDays var, D domain, Matrix buffer) {
+    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>>  boolean fill(HolidaysCorrectedTradingDays var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

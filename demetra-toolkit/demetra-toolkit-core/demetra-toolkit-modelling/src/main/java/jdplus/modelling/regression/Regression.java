@@ -37,6 +37,7 @@ import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.regression.MovingHolidayVariable;
 import java.util.HashMap;
 import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -90,6 +91,7 @@ public class Regression {
             // Moving holidays
             FACTORIES.put(EasterVariable.class, EasterFactory.FACTORY);
             FACTORIES.put(JulianEasterVariable.class, JulianEasterFactory.FACTORY);
+            FACTORIES.put(MovingHolidayVariable.class, MovingHolidayFactory.FACTORY);
 
             // Others
             FACTORIES.put(Ramp.class, RampFactory.FACTORY);

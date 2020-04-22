@@ -5,6 +5,7 @@
  */
 package jdplus.modelling.regression;
 
+import demetra.data.Range;
 import demetra.timeseries.regression.PeriodicOutlier;
 import jdplus.data.DataBlock;
 import jdplus.math.linearfilters.BackFilter;
@@ -110,7 +111,7 @@ class SOFactory implements RegressionVariableFactory<PeriodicOutlier> {
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(PeriodicOutlier var, D domain, Matrix buffer) {
+    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>>  boolean fill(PeriodicOutlier var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported.");
     }
 

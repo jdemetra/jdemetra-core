@@ -5,6 +5,7 @@
  */
 package jdplus.modelling.regression;
 
+import demetra.data.Range;
 import demetra.timeseries.regression.Ramp;
 import jdplus.data.DataBlock;
 import demetra.timeseries.TimeSeriesDomain;
@@ -30,7 +31,7 @@ class RampFactory implements RegressionVariableFactory<Ramp> {
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(Ramp var, D domain, Matrix buffer) {
+    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>>  boolean fill(Ramp var, D domain, Matrix buffer) {
         data(var, domain, buffer.column(0));
         return true;
     }

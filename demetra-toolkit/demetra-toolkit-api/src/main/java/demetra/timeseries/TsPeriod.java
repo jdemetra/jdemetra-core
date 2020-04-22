@@ -17,6 +17,7 @@
 package demetra.timeseries;
 
 import demetra.data.Range;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -215,6 +216,13 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
 
     public static TsPeriod daily(int year, int month, int dayOfMonth) {
         return make(DEFAULT_EPOCH, TsUnit.DAY, LocalDate.of(year, month, dayOfMonth));
+    }
+
+    public static TsPeriod weekly(int year, int month, int dayOfMonth) {
+        LocalDate start = LocalDate.of(year, month, dayOfMonth);
+        int dw_start = start.getDayOfWeek().getValue();
+        int dw_epoch = DEFAULT_EPOCH.getDayOfWeek().getValue();
+        return make(DEFAULT_EPOCH.plusDays(dw_start-dw_epoch), TsUnit.WEEK, start);
     }
 
     public static TsPeriod hourly(int year, int month, int dayOfMonth, int hour) {
