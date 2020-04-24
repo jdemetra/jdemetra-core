@@ -119,7 +119,7 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
                     Day day = end.firstday();
                     Sequence seq=new Sequence(day, day);
                     InterventionVariable var=new InterventionVariable();
-                    var.setDescription("I:"+end.toString());
+                    var.setDescription("AO:"+end.toString());
                     var.setSequences(new Sequence[]{seq});
                     
                     nrspec.add(var);
