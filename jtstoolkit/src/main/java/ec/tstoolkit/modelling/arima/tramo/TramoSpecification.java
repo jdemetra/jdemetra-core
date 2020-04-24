@@ -24,6 +24,8 @@ import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.RegressionTestType;
 import ec.tstoolkit.modelling.arima.*;
 import ec.tstoolkit.modelling.arima.tramo.TradingDaysSpec.AutoMethod;
+import ec.tstoolkit.timeseries.calendars.DefaultGregorianCalendarProvider;
+import ec.tstoolkit.timeseries.calendars.IGregorianCalendarProvider;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import ec.tstoolkit.timeseries.regression.OutlierType;
 import ec.tstoolkit.timeseries.regression.OutliersFactory;
@@ -372,7 +374,19 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
         return estimator;
     }
 
-    private void makeAutoModelling(TramoProcessor tramo, AutoModelSpec automdl, TradingDaysSpec td) {
+    IGregorianCalendarProvider tdProvider(ProcessingContext context) {
+        TradingDaysSpec tdspec = regression_.getCalendar().getTradingDays();
+        if (tdspec.isStockTradingDays() || tdspec.getUserVariables() != null) {
+            return null;
+        }
+        if (tdspec.getHolidays() != null && context != null) {
+            return context.getGregorianCalendars().get(tdspec.getHolidays());
+        } else {
+            return DefaultGregorianCalendarProvider.instance;
+        }
+    }
+
+    private void makeAutoModelling(TramoProcessor tramo, AutoModelSpec automdl, TradingDaysSpec td, ProcessingContext context) {
         if (automdl.isEnabled()) {
             DifferencingModule diff = new DifferencingModule();
             diff.setCancel(automdl.getCancel());
@@ -387,14 +401,14 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
                 tramo.controllers.add(new ModelBenchmarking());
             }
             if (td.isAutomatic()) {
-                tramo.controllers.add(new TDController(td.getProbabibilityForFTest()));
+                tramo.controllers.add(new TDController(tdProvider(context), td.getProbabibilityForFTest()));
             }
             tramo.controllers.add(new SeasonalUnderDifferencingTest2());
             tramo.controllers.add(new RegularUnderDifferencingTest2());
             tramo.differencing = diff;
             tramo.autoModelling = new ArmaModule();
         } else if (td.isAutomatic()) {
-            tramo.controllers.add(new TDController(td.getProbabibilityForFTest()));
+            tramo.controllers.add(new TDController(tdProvider(context), td.getProbabibilityForFTest()));
         }
 
     }
@@ -567,10 +581,10 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
         //
         switch (td.getAutomaticMethod()) {
             case FTest:
-                tramo.regressionTest = new RegressionTestTD2(td.getProbabibilityForFTest());
+                tramo.regressionTest = new RegressionTestTD2(tdProvider(context), td.getProbabibilityForFTest());
                 break;
             case WaldTest:
-                tramo.regressionTest = new RegressionTestTD(td.getProbabibilityForFTest());
+                tramo.regressionTest = new RegressionTestTD(tdProvider(context), td.getProbabibilityForFTest());
                 break;
             default:
                 tramo.regressionTest = new RegressionVariablesTest(join);
@@ -583,7 +597,7 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
 //        tramo.regressionTest2 = new RegressionVariablesController(td.getProbabibilityForFTest(), join);
         tramo.regressionTest3 = new RegressionVariablesTest2(CVAL, automdl_.getTsig());
         tramo.outliers = makeOutliers(outlier_, automdl_);
-        makeAutoModelling(tramo, automdl_, td);
+        makeAutoModelling(tramo, automdl_, td, context);
 //        if (td.getAutomaticMethod() != AutoMethod.Unused) {
 //            tramo.controllers.add(new TDController(td.getProbabibilityForFTest())); // NO EFFECT
 //        }

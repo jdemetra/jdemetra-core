@@ -24,8 +24,6 @@ import static ec.tstoolkit.algorithm.IProcSpecification.ALGORITHM;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.timeseries.Month;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -84,7 +82,8 @@ public class RevisionAnalysisSpec implements IProcSpecification, Cloneable {
         LastOutliers(EstimationPolicyType.LastOutliers),
         FreeParameters(EstimationPolicyType.FreeParameters),
         FixedParameters(EstimationPolicyType.FixedParameters),
-        Fixed(EstimationPolicyType.Fixed);
+        Fixed(EstimationPolicyType.Fixed),
+        Current(EstimationPolicyType.Current);
 
         private final EstimationPolicyType t;
 
@@ -105,7 +104,7 @@ public class RevisionAnalysisSpec implements IProcSpecification, Cloneable {
         FreeParameters(EstimationPolicyType.FreeParameters),
         FixedParameters(EstimationPolicyType.FixedParameters),
         Fixed(EstimationPolicyType.Fixed),
-        UseForecasts(EstimationPolicyType.UseForecasts);
+        Current(EstimationPolicyType.Current);
 
         private final EstimationPolicyType t;
 

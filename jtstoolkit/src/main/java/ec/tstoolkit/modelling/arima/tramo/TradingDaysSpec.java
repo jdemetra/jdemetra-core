@@ -221,6 +221,7 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
     public void setRegressionTestType(RegressionTestType value) {
         test_ = value;
     }
+    
 
     public boolean isDefault() {
 

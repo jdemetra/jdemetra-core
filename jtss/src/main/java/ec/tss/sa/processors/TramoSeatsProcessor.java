@@ -43,18 +43,23 @@ import ec.tstoolkit.modelling.arima.tramo.RegressionSpec;
 import ec.tstoolkit.modelling.arima.tramo.TradingDaysSpec;
 import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
 import ec.tstoolkit.modelling.arima.tramo.TransformSpec;
+import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
+import ec.tstoolkit.timeseries.regression.AdditiveOutlier;
 import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import ec.tstoolkit.timeseries.regression.ITradingDaysVariable;
 import ec.tstoolkit.timeseries.regression.ITsVariable;
+import ec.tstoolkit.timeseries.regression.InterventionVariable;
 import ec.tstoolkit.timeseries.regression.OutlierDefinition;
 import ec.tstoolkit.timeseries.regression.OutlierType;
+import ec.tstoolkit.timeseries.regression.Sequence;
 import ec.tstoolkit.timeseries.regression.TsVariableList;
 import ec.tstoolkit.timeseries.regression.TsVariableSelection;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -118,13 +123,32 @@ public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpeci
             Map<String, double[]> all = dtspec.getRegression().getAllFixedCoefficients();
             all.forEach((n, c) -> nrspec.setFixedCoefficients(n, c));
         }
+        if (policy == EstimationPolicyType.Current) {
+            TsData cur = doc.getTsData();
+            if (cur != null && frozen != null) {
+                TsDomain ndomain = cur.getDomain();
+                TsPeriod end=ndomain.getEnd();
+                int ndata = frozen.getEnd().minus(end);
+                for (int i=0; i<ndata; ++i){
+                    Day day = end.firstday();
+                    Sequence seq=new Sequence(day, day);
+                    InterventionVariable var=new InterventionVariable();
+                    var.setDescription("AO:"+end.toString());
+                    var.setSequences(new Sequence[]{seq});
+                    
+                    nrspec.add(var);
+                    end.move(1);
+                }
+            }
+        }
         nrspec.clearAllCoefficients();
-       return newspec;
+        return newspec;
     }
 
     private void refreshArimaSpec(TramoSpecification spec, TramoSpecification defspec, EstimationPolicyType policy) {
         ArimaSpec arima = spec.getArima(), defarima = defspec.isUsingAutoModel() ? null : defspec.getArima();
         switch (policy) {
+            case Current:
             case Fixed:
                 if (arima.isMean()) {
                     arima.fixMu();
@@ -157,6 +181,7 @@ public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpeci
         RegressionSpec rspec = spec.getRegression(), defrspec = defspec.getRegression();
         OutlierSpec defospec = defspec.getOutliers();
         switch (policy) {
+            case Current:
             case Fixed:
             case FixedParameters:
             case FreeParameters:

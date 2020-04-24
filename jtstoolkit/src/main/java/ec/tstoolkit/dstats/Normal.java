@@ -41,10 +41,6 @@ public class Normal implements IContinuousDistribution {
 	stdev_ = 1.0;
     }
 
-    double evaluate(final double x) {
-	return getProbability(x, ProbabilityType.Lower);
-    }
-
     /**
      * Returns the centered (around the mean) confidence interval for the
      * given probability p.
@@ -124,15 +120,7 @@ public class Normal implements IContinuousDistribution {
 	if (p < EPS_P || 1 - p < EPS_P)
 	    throw new DStatException(DStatException.ERR_INV_SMALL, "Normal");
 
-	calcProbDelegate cb = new calcProbDelegate() {
-
-	    @Override
-	    public double calcProb(double x) {
-		return evaluate(x);
-	    }
-	};
-
-	double zp= Utility.intProbabilityInverse(p, cb);
+        double zp = Utility.intProbabilityInverse(p, x -> Utility.intProbability(x, ProbabilityType.Lower));
 	return zp * stdev_ + mean_;
     }
 
