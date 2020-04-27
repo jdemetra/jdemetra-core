@@ -16,14 +16,7 @@
  */
 package demetra.specialcalendar.r;
 
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsPeriod;
-import demetra.timeseries.calendars.HolidayPattern;
-import demetra.timeseries.regression.MovingHolidayVariable;
-import jdplus.math.matrices.Matrix;
-import jdplus.modelling.regression.Regression;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

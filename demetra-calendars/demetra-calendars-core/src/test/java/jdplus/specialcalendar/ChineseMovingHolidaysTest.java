@@ -40,7 +40,7 @@ public class ChineseMovingHolidaysTest {
         MovingHolidayVariable ge = new MovingHolidayVariable("gregorian.easter", HolidayPattern.of(-15, HolidayPattern.Shape.LinearUp, 12, 
                 HolidayPattern.Shape.Constant,5, 
                 HolidayPattern.Shape.LinearDown, 3).normalize());
-        TsDomain domain = TsDomain.of(TsPeriod.monthly(1980, 4), 997);
+        TsDomain domain = TsDomain.of(TsPeriod.monthly(1980, 1), 1000);
         Matrix matrix = Regression.matrix(domain, ny, ge);
         System.out.println(matrix);
     }

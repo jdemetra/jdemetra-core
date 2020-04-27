@@ -6,9 +6,9 @@
 package jdplus.revisions.parametric;
 
 import demetra.data.DoubleSeq;
-import demetra.data.DoublesMath;
 import demetra.revisions.parametric.Bias;
 import demetra.stats.ProbabilityType;
+import java.util.Random;
 import jdplus.dstats.T;
 import jdplus.stats.AutoCovariances;
 import jdplus.stats.samples.Population;
@@ -29,13 +29,16 @@ public class BiasComputer {
      */
     public Bias of(DoubleSeq revisions) {
 
-        int n = revisions.length();
+        Sample sample = Sample.build(revisions, true, Population.UNKNOWN);
+        int n = sample.observationsCount();
         if (n < 2) {
             return null;
         }
 
-        double mu = revisions.average();
-        double sigma = Math.sqrt(revisions.ssqc(mu) / (n - 1));
+        double mu = sample.mean();
+        double v = sample.variance();
+        // stdev of the mean
+        double sigma = Math.sqrt(v / n);
         double t = mu / sigma;
         T tstat = new T(n - 1);
         // two-sided
@@ -48,23 +51,32 @@ public class BiasComputer {
                 .t(t)
                 .tPvalue(pval);
         if (n > 2) {
-            double gamma = AutoCovariances.autoCovariance(revisions, mu, 1) / sigma;
-            if (Math.abs(gamma) < 1) {
-                // TODO Check the correction factor. Differences between Eurostat's document in literature
-                double corr = Math.sqrt((1 - gamma) / (1 + gamma));
-                double nc = n * corr;
-                tstat = new T(nc);
-                double sigmac = Math.sqrt(revisions.ssqc(mu) / nc);
-                t=mu/sigmac;
+            double rho = AutoCovariances.autoCovariance(revisions, mu, 1) / v;
+            builder
+                    .ar(rho);
+            if (Math.abs(rho) < 1) {
+//                double neff = n * n*(1 - rho)*(1-rho) / (n-2*rho-n*rho*rho+2*Math.pow(rho, n+1));
+                double neff = n * (1 - rho) / (1 + rho); // asymptotic number of obs 
+                // adjusted stdev of the mean
+                double sigmac = Math.sqrt(v / neff);
+                tstat = new T(neff);
+                t = mu / sigmac;
                 pval = 2 * tstat.getProbability(Math.abs(t), ProbabilityType.Upper);
-                builder
-                        .ar(gamma)
-                        .adjustedSigma(sigmac)
+                builder.adjustedSigma(sigmac)
                         .adjustedT(t)
                         .adjustedTPvalue(pval);
+            } else {
+                builder.adjustedSigma(Double.NaN)
+                        .adjustedT(Double.NaN)
+                        .adjustedTPvalue(Double.NaN);
+
             }
-        }else
-            builder.ar(Double.NaN);
+        } else {
+            builder.ar(Double.NaN)
+                    .adjustedSigma(Double.NaN)
+                    .adjustedT(Double.NaN)
+                    .adjustedTPvalue(Double.NaN);
+        }
         return builder.build();
     }
 

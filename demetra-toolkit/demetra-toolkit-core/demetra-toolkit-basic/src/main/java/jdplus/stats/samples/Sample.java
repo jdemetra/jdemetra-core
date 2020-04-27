@@ -111,6 +111,7 @@ public class Sample {
             }
             double m = sx / nobs;
             double sxxc=0;
+            reader.moveTo(0);
             for (int i = 0; i < n; ++i) {
                 double x = reader.getAndNext();
                 if (Double.isFinite(x)) {
