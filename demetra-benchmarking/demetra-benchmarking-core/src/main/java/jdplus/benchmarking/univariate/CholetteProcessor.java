@@ -57,24 +57,20 @@ public class CholetteProcessor implements Cholette.Processor {
     }
 
     private TsData correctBias(TsData s, TsData target, CholetteSpec spec) {
-        // No bias correction when we use pure interpolation
         AggregationType agg = spec.getAggregationType();
-        if (spec.getBias() == BiasCorrection.None
-                || (agg != AggregationType.Average && agg != AggregationType.Sum)) {
+        if (spec.getBias() == BiasCorrection.None) {
             return s;
         }
         TsData sy = s.aggregate(target.getTsUnit(), agg, true);
-        sy = TsDataToolkit.fitToDomain(sy, target.getDomain());
+        sy = TsDataToolkit.fitToDomain(sy, sy.getDomain().intersection(target.getDomain()));
         // TsDataBlock.all(target).data.sum() is the sum of the aggregation constraints
         //  TsDataBlock.all(sy).data.sum() is the sum of the averages or sums of the original series
         BiasCorrection bias = spec.getBias();
         if (bias == BiasCorrection.Multiplicative) {
-            return multiply(s, target.getValues().sum() / sy.getValues().sum());
+            double b=target.getValues().sum() / sy.getValues().sum();
+            return multiply(s, b);
         } else {
             double b = (target.getValues().sum() - sy.getValues().sum()) / target.length();
-            if (agg == AggregationType.Average) {
-                b *= s.getTsUnit().ratioOf(target.getTsUnit());
-            }
             return TsDataToolkit.add(s, b);
         }
     }
