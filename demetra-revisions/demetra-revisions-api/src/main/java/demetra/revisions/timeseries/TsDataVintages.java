@@ -1,16 +1,30 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2020 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package demetra.revisions.timeseries;
 
+import demetra.data.DoubleList;
 import demetra.data.Seq;
 import demetra.revisions.timeseries.TsObsVintages.Entry;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -157,7 +171,7 @@ public class TsDataVintages<K extends Comparable> implements Seq<TsObsVintages> 
         for (int i = 0; i < data.length; ++i) {
             TsObsVintages.Entry<K>[] cur = data[i];
             if (cur != null) {
-                if (pos <cur.length) {
+                if (pos < cur.length) {
                     z[i] = cur[pos].getValue();
                 } else {
                     z[i] = Double.NaN;
@@ -197,13 +211,118 @@ public class TsDataVintages<K extends Comparable> implements Seq<TsObsVintages> 
         }
         return builder;
     }
-    
-    public TsDataVintages<K> selectPeriods(TimeSelector ts){
+
+    public TsDataVintages<K> select(TimeSelector ts) {
         TsDomain selection = getDomain().select(ts);
-        TsPeriod sstart=selection.getStartPeriod();
-        int istart=start.until(sstart);
-        Entry<K>[][] copy = Arrays.copyOfRange(data, istart, istart+selection.getLength());
+        TsPeriod sstart = selection.getStartPeriod();
+        int istart = start.until(sstart);
+        Entry<K>[][] copy = Arrays.copyOfRange(data, istart, istart + selection.getLength());
         return new TsDataVintages<>(sstart, copy);
     }
 
+    public TsDataVintages<K> select(VintageSelector vs) {
+        if (vs.getType() == VintageSelectorType.All) {
+            return this;
+        }
+        Builder builder = new Builder();
+        for (int i = 0; i < data.length; ++i) {
+            Entry<K>[] cur = data[i];
+            if (cur != null) {
+                TsPeriod period = start.plus(i);
+                switch (vs.getType()) {
+                    case First:
+                        if (cur.length <= vs.getN0()) {
+                            builder.add(period, data[i]);
+                        } else {
+                            builder.add(period, Arrays.copyOfRange(cur, 0, vs.getN0()));
+                        }
+                        break;
+                    case Last:
+                        if (cur.length <= vs.getN1()) {
+                            builder.add(period, data[i]);
+                        } else {
+                            builder.add(period, Arrays.copyOfRange(cur, cur.length - vs.getN1(), cur.length));
+                        }
+                        break;
+                    case Custom:
+                        int pos0 = vs.getN0(),
+                         pos1 = vs.getN1() + 1;
+                        if (pos0 < cur.length) {
+                            pos1 = Math.min(pos1, cur.length);
+                            builder.add(period, Arrays.copyOfRange(cur, pos0, pos1));
+                        }
+                        break;
+                    case Excluding:
+                        int n0 = vs.getN0(),
+                         n1 = cur.length - vs.getN1();
+                        if (n0 < n1) {
+                            builder.add(period, Arrays.copyOfRange(cur, n0, n1));
+                        }
+                        break;
+
+                }
+            }
+        }
+        return builder.build();
+    }
+
+    public static <K extends Comparable & TimeComparable> TsData seriesAt(TsDataVintages vintages, LocalDateTime dt) {
+        TsPeriod start = vintages.start;
+        double[] data = new double[vintages.data.length];
+        for (int i = 0; i < vintages.data.length; ++i) {
+            Entry<K>[] cur = vintages.data[i];
+            data[i] = find(cur, dt);
+        }
+        return TsData.ofInternal(start, data).cleanExtremities();
+    }
+
+    public static <K extends Comparable & DateComparable> TsData seriesAt(TsDataVintages vintages, LocalDate dt) {
+        TsPeriod start = vintages.start;
+        double[] data = new double[vintages.data.length];
+        for (int i = 0; i < vintages.data.length; ++i) {
+            Entry<K>[] cur = vintages.data[i];
+            data[i] = find(cur, dt);
+        }
+        return TsData.ofInternal(start, data).cleanExtremities();
+    }
+
+    private static <K extends Comparable & TimeComparable> double find(Entry<K>[] v, LocalDateTime dt) {
+        if (v == null) {
+            return Double.NaN;
+        }
+        double cur = Double.NaN;
+        for (int i = 0; i < v.length; ++i) {
+            int pos = v[i].getKey().compareToTime(dt);
+            switch (pos) {
+                case 0:
+                    return v[i].getValue();
+                case -1:
+                    cur = v[i].getValue();
+                    break;
+                case 1:
+                    return cur;
+            }
+        }
+        return cur;
+    }
+
+    private static <K extends Comparable & DateComparable> double find(Entry<K>[] v, LocalDate dt) {
+        if (v == null) {
+            return Double.NaN;
+        }
+        double cur = Double.NaN;
+        for (int i = 0; i < v.length; ++i) {
+            int pos = v[i].getKey().compareToDate(dt);
+            switch (pos) {
+                case 0:
+                    return v[i].getValue();
+                case -1:
+                    cur = v[i].getValue();
+                    break;
+                case 1:
+                    return cur;
+            }
+        }
+        return cur;
+    }
 }

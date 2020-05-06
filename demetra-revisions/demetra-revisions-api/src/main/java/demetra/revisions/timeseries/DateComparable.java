@@ -14,42 +14,15 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.revisions.parametric;
+package demetra.revisions.timeseries;
+
+import java.time.LocalDate;
 
 /**
  *
  * @author PALATEJ
  */
-@lombok.Value
-@lombok.Builder(builderClassName="Builder")
-public class Bias {
-    /**
-     * Number of observations used
-     */
-    int n;
-    /**
-     * Estimated bias and its standard deviation
-     */
-    double mu, sigma;
-
-    /**
-     * T-Statistic and corresponding PValue
-     */
-    double t, tPvalue;
-    
-    /**
-     * Auto-regressive coefficient on residuals
-     */
-    double ar;
-    
-    /**
-     * Adjusted standard deviation
-     */
-    double adjustedSigma;
-    
-    /**
-     * Adjusted T-statistic
-     */
-    double adjustedT, adjustedTPvalue;
+public interface DateComparable {
+    int compareToDate(LocalDate dt);
     
 }
