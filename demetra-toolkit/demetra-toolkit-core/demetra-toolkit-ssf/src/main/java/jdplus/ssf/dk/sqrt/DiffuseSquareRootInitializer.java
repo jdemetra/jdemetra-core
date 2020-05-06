@@ -138,7 +138,10 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
             state.P().copy(this.astate.P());
             state.a().copy(this.astate.a());
             state.next(t++, dynamics);
+        } else {
+            throw new SsfException("Diffuse initialization failed");
         }
+
         if (results != null) {
             results.close(t);
         }

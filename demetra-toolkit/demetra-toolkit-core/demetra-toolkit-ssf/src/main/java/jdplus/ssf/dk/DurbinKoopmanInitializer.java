@@ -28,6 +28,7 @@ import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.univariate.OrdinaryFilter;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixNorms;
+import jdplus.ssf.SsfException;
 
 /**
  *
@@ -109,7 +110,7 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.Initializer {
      */
     @Override
     public int initializeFilter(final State fstate, final ISsf ssf, final ISsfData data) {
-        if (! ssf.initialization().isDiffuse()){
+        if (!ssf.initialization().isDiffuse()) {
             ssf.initialization().a0(fstate.a());
             ssf.initialization().Pf0(fstate.P());
             return 0;
@@ -147,6 +148,8 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.Initializer {
             fstate.P().copy(state.P());
             fstate.a().copy(state.a());
             fstate.next(t++, dynamics);
+        } else {
+            throw new SsfException("Diffuse initialization failed");
         }
         if (results != null) {
             results.close(t);
