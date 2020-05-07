@@ -16,7 +16,7 @@
  */
 package internal.spreadsheet.grid;
 
-import demetra.tsprovider.TsCollection;
+import demetra.timeseries.TsCollection;
 import ec.util.spreadsheet.Book;
 import demetra.tsprovider.grid.GridReader;
 import ec.util.spreadsheet.Sheet;

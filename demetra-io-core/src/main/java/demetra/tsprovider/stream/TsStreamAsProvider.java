@@ -17,13 +17,13 @@
 package demetra.tsprovider.stream;
 
 import demetra.design.ThreadSafe;
-import demetra.tsprovider.TsCollection;
-import demetra.tsprovider.Ts;
-import demetra.tsprovider.TsInformationType;
+import demetra.timeseries.TsCollection;
+import demetra.timeseries.Ts;
+import demetra.timeseries.TsInformationType;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.HasDataMoniker;
-import demetra.tsprovider.TsMoniker;
+import demetra.timeseries.TsMoniker;
 import demetra.tsprovider.TsProvider;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import java.io.IOException;

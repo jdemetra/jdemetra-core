@@ -26,7 +26,7 @@ import demetra.tsprovider.HasDataSourceBean;
 import demetra.tsprovider.HasDataSourceList;
 import demetra.tsprovider.HasDataSourceMutableList;
 import demetra.tsprovider.HasFilePaths;
-import demetra.tsprovider.TsMoniker;
+import demetra.timeseries.TsMoniker;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.IParam;
 import java.io.File;

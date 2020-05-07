@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.tsprovider;
+package demetra.timeseries;
 
 import java.util.function.IntSupplier;
 

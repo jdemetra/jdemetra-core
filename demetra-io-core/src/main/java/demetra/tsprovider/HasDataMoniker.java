@@ -16,6 +16,7 @@
  */
 package demetra.tsprovider;
 
+import demetra.timeseries.TsMoniker;
 import demetra.design.ThreadSafe;
 import internal.tsprovider.InternalTsProvider;
 import org.checkerframework.checker.nullness.qual.NonNull;

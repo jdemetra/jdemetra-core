@@ -21,7 +21,7 @@ import demetra.spreadsheet.SpreadSheetBean;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.HasDataMoniker;
-import demetra.tsprovider.TsMoniker;
+import demetra.timeseries.TsMoniker;
 import demetra.tsprovider.legacy.LegacyFileId;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import internal.spreadsheet.SpreadSheetParam;

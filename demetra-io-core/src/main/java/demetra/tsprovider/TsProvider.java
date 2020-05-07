@@ -16,6 +16,10 @@
  */
 package demetra.tsprovider;
 
+import demetra.timeseries.TsCollection;
+import demetra.timeseries.TsInformationType;
+import demetra.timeseries.Ts;
+import demetra.timeseries.TsMoniker;
 import nbbrd.service.ServiceDefinition;
 import demetra.design.ThreadSafe;
 import java.io.IOException;

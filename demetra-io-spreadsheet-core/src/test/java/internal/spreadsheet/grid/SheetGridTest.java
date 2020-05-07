@@ -16,7 +16,7 @@
  */
 package internal.spreadsheet.grid;
 
-import demetra.tsprovider.TsCollection;
+import demetra.timeseries.TsCollection;
 import java.io.File;
 import java.io.IOException;
 import static org.assertj.core.api.Assertions.*;
