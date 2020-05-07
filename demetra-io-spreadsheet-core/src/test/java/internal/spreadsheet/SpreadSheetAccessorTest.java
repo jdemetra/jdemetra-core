@@ -16,7 +16,7 @@
  */
 package internal.spreadsheet;
 
-import demetra.tsprovider.TsCollection;
+import demetra.timeseries.TsCollection;
 import internal.spreadsheet.grid.SheetGrid;
 import java.io.File;
 import java.io.IOException;

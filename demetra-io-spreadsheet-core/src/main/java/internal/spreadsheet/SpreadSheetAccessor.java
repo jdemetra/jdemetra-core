@@ -16,7 +16,7 @@
  */
 package internal.spreadsheet;
 
-import demetra.tsprovider.TsCollection;
+import demetra.timeseries.TsCollection;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;

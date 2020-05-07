@@ -27,7 +27,7 @@ import demetra.tsprovider.HasDataDisplayName;
 import demetra.tsprovider.HasDataHierarchy;
 import demetra.tsprovider.HasDataMoniker;
 import demetra.tsprovider.HasDataSourceList;
-import demetra.tsprovider.TsInformationType;
+import demetra.timeseries.TsInformationType;
 import demetra.tsprovider.TsProvider;
 import demetra.tsprovider.stream.TsStreamAsProvider;
 import demetra.tsprovider.stream.DataSetTs;

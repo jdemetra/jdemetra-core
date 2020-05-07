@@ -21,7 +21,7 @@ import demetra.bridge.FromDataSourceLoader;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.DataSourceProvider;
-import demetra.tsprovider.TsMoniker;
+import demetra.timeseries.TsMoniker;
 import ec.tss.tsproviders.IDataSourceLoaderAssert;
 import java.io.IOException;
 import static org.assertj.core.api.Assertions.*;
