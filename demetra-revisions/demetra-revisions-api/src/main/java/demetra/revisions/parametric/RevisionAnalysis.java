@@ -14,15 +14,34 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.revisions.timeseries;
-
-import java.time.LocalDate;
+package demetra.revisions.parametric;
 
 /**
  *
  * @author PALATEJ
  */
-public interface DateComparable {
-    int compareToDate(LocalDate dt);
+@lombok.Value
+@lombok.Builder(builderClassName="Builder")
+public class RevisionAnalysis<K> {
+    
+    /**
+     * Current vintage
+     */
+    K vintage;
+    
+    /**
+     * Theil coefficient (computed between vintage0 and vintagek
+     */
+    double theilCoefficient;
+    
+    /**
+     * Ols regression between vintage0 and vintagek
+     */
+    OlsTest regression;
+    
+    /**
+     * Computed between vintage k and vintage k-1
+     */
+    Bias bias;
     
 }

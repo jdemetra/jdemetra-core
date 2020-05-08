@@ -22,16 +22,18 @@ import lombok.AccessLevel;
 /**
  *
  * @author PALATEJ
+ * @param <K>
  */
 @Development(status = Development.Status.Release)
 @lombok.Value
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class VintageSelector {
+public class VintageSelector<K extends Comparable> {
 
-    private static VintageSelector ALL = new VintageSelector(VintageSelectorType.All, 0, 0);
+    private static VintageSelector ALL = new VintageSelector(VintageSelectorType.All, 0, 0, null, null);
 
     VintageSelectorType type;
     private int n0, n1;
+    private K k0, k1;
 
     /**
      *
@@ -48,7 +50,7 @@ public class VintageSelector {
      * @return
      */
     public static VintageSelector excluding(final int n0, final int n1) {
-        return new VintageSelector(VintageSelectorType.Excluding, n0, n1);
+        return new VintageSelector(VintageSelectorType.Excluding, n0, n1, null, null);
     }
 
     /**
@@ -57,7 +59,7 @@ public class VintageSelector {
      * @return
      */
     public static VintageSelector first(final int n) {
-        return new VintageSelector(VintageSelectorType.First, n, 0);
+        return new VintageSelector(VintageSelectorType.First, n, 0, null, null);
     }
 
     /**
@@ -66,28 +68,30 @@ public class VintageSelector {
      * @return
      */
     public static VintageSelector last(final int n) {
-        return new VintageSelector(VintageSelectorType.Last, 0, n);
+        return new VintageSelector(VintageSelectorType.Last, 0, n, null, null);
     }
 
     /**
-     * Selects vintages between positions n0 and n1 (included)
+     * Selects vintages between k0 and k1 (included)
      *
-     * @param n0
-     * @param n1
+     * @param <K>
+     * @param k0
+     * @param k1
      * @return
      */
-    public static VintageSelector custom(final int n0, final int n1) {
-        return new VintageSelector(VintageSelectorType.Custom, n0, n1);
+    public static <K extends Comparable> VintageSelector custom(final K k0, final K k1) {
+        return new VintageSelector(VintageSelectorType.Custom, 0, 0, k0, k1);
     }
 
     /**
      * Selects vintage at position n
      *
-     * @param n
+     * @param <K>
+     * @param k
      * @return
      */
-    public static VintageSelector custom(final int n) {
-        return new VintageSelector(VintageSelectorType.Custom, n, n);
+    public static <K extends Comparable> VintageSelector custom(final K k) {
+        return new VintageSelector(VintageSelectorType.Custom, 0, 0, k, k);
     }
 
 }

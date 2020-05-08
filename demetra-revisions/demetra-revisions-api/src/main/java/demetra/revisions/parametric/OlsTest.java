@@ -14,15 +14,19 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.revisions.timeseries;
-
-import java.time.LocalDateTime;
+package demetra.revisions.parametric;
 
 /**
  *
  * @author PALATEJ
  */
-public interface TimeComparable {
 
-    int compareToTime(LocalDateTime dt);
+@lombok.Value
+@lombok.Builder(builderClassName="Builder")
+public class OlsTest {
+    int n;
+    double R2;
+    Coefficient intercept;
+    Coefficient slope;
+    RegressionTests diagnostics;
 }

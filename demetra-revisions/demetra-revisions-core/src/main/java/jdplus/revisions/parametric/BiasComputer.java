@@ -29,7 +29,7 @@ import jdplus.stats.samples.Sample;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class BiasComputer {
+class BiasComputer {
 
     /**
      * Revisions should not contain missing values
@@ -37,7 +37,7 @@ public class BiasComputer {
      * @param revisions
      * @return
      */
-    public Bias of(DoubleSeq revisions) {
+    Bias of(DoubleSeq revisions) {
 
         Sample sample = Sample.build(revisions, true, Population.UNKNOWN);
         int n = sample.observationsCount();

@@ -16,12 +16,13 @@
  */
 package demetra.revisions.r;
 
-import demetra.data.DoubleSeqCursor;
-import demetra.math.matrices.MatrixType;
 import demetra.revisions.parametric.Bias;
+import demetra.revisions.parametric.Coefficient;
+import demetra.revisions.parametric.OlsTest;
 import demetra.revisions.parametric.RegressionBasedAnalysis;
-import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import demetra.revisions.parametric.RevisionAnalysis;
+import demetra.stats.TestResult;
+import java.time.LocalDate;
 
 /**
  *
@@ -29,31 +30,56 @@ import jdplus.math.matrices.Matrix;
  */
 @lombok.experimental.UtilityClass
 public class Utility {
-
-    public MatrixType biasInformation(RegressionBasedAnalysis analysis) {
-        int nrevs = analysis.getRevisionBiases().size();
-        Matrix all = Matrix.make(nrevs + 1, 9);
-        informationOf(analysis.getCurrentBias(), all.row(0));
-        int row = 0;
-        for (Bias bias : analysis.getRevisionBiases()) {
-            informationOf(bias, all.row(++row));
-        }
-        return all.unmodifiable();
+    
+    public double theil(RegressionBasedAnalysis<LocalDate> analysis, int k){
+        if (k>analysis.getRevisions().size())
+            return Double.NaN;
+        return analysis.getRevisions().get(k-1).getTheilCoefficient();
+    }
+    
+    public double[] olsInformation(RegressionBasedAnalysis<LocalDate> analysis, int k){
+        if (k>analysis.getRevisions().size())
+            return null;
+        RevisionAnalysis<LocalDate> cur = analysis.getRevisions().get(k-1);
+        if (cur == null)
+            return null;
+        OlsTest reg = cur.getRegression();
+        if (reg == null)
+            return null;
+        Coefficient b0 = reg.getIntercept();
+        Coefficient b1 = reg.getSlope();
+        TestResult jb = reg.getDiagnostics().getJarqueBera();
+        TestResult bp = reg.getDiagnostics().getBreuschPagan();
+        TestResult w = reg.getDiagnostics().getWhite();
+        return new double[]{
+            reg.getN(), reg.getR2(), 
+            b0.getEstimate(), b0.getStdev(), b0.getTstat(), b0.getPvalue(),
+            b1.getEstimate(), b1.getStdev(), b1.getTstat(), b1.getPvalue(),
+            jb.getValue(), jb.getPvalue(),
+            bp.getValue(), bp.getPvalue(),
+            w.getValue(), w.getPvalue()
+        };
     }
 
-    void informationOf(Bias bias, DataBlock buffer) {
+    public double[] biasInformation(RegressionBasedAnalysis<LocalDate> analysis, int k) {
+        if (k>analysis.getRevisions().size())
+            return null;
+        RevisionAnalysis<LocalDate> cur = analysis.getRevisions().get(k-1);
+        if (cur == null)
+            return null;
+        Bias bias = cur.getBias();
         if (bias == null) {
-            return;
+            return null;
         }
-        DoubleSeqCursor.OnMutable cursor = buffer.cursor();
-        cursor.setAndNext(bias.getN());
-        cursor.setAndNext(bias.getMu());
-        cursor.setAndNext(bias.getSigma());
-        cursor.setAndNext(bias.getT());
-        cursor.setAndNext(bias.getTPvalue());
-        cursor.setAndNext(bias.getAr());
-        cursor.setAndNext(bias.getAdjustedSigma());
-        cursor.setAndNext(bias.getAdjustedT());
-        cursor.setAndNext(bias.getAdjustedTPvalue());
+        return new double[]{
+            bias.getN(), 
+            bias.getMu(),
+            bias.getSigma(),
+            bias.getT(),
+            bias.getTPvalue(),
+            bias.getAr(),
+            bias.getAdjustedSigma(),
+            bias.getAdjustedT(),
+            bias.getAdjustedTPvalue()};
     }
 }

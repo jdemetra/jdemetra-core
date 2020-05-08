@@ -16,27 +16,15 @@
  */
 package demetra.revisions.parametric;
 
-import demetra.revisions.timeseries.VintageSelector;
-import demetra.timeseries.TimeSelector;
-import java.util.List;
-import java.util.Map;
-
 /**
  *
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
-public class RegressionBasedAnalysis<K extends Comparable> {
+public class Coefficient {
     
-    public static enum Type{
-        Horizontal, Vertical, Diagonal
-    }
-    
-    /**
-     * revisions[k] contains revision analysis for vintage[k+1]-vintage[k]
-     */
-    @lombok.Singular("revision")
-    List<RevisionAnalysis<K> > revisions;
-    
+    double estimate;
+    double stdev;
+    double tstat;
+    double pvalue;
 }

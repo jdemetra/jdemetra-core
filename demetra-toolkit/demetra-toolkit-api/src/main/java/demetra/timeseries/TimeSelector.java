@@ -18,8 +18,6 @@ package demetra.timeseries;
 
 import demetra.design.Development;
 import java.time.LocalDateTime;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AccessLevel;
 

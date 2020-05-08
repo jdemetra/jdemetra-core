@@ -18,25 +18,29 @@ package demetra.revisions.parametric;
 
 import demetra.revisions.timeseries.VintageSelector;
 import demetra.timeseries.TimeSelector;
-import java.util.List;
-import java.util.Map;
 
 /**
  *
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
-public class RegressionBasedAnalysis<K extends Comparable> {
+@lombok.Builder(builderClassName = "Builder")
+public class Specification {
+
     
-    public static enum Type{
-        Horizontal, Vertical, Diagonal
-    }
+    VintageSelector vintageSelection;
+    
+    TimeSelector timeSelection;
     
     /**
-     * revisions[k] contains revision analysis for vintage[k+1]-vintage[k]
+     * Critical value for testing
      */
-    @lombok.Singular("revision")
-    List<RevisionAnalysis<K> > revisions;
-    
+    double alpha;
+
+    public static Builder builder() {
+        return new Builder()
+                .timeSelection(TimeSelector.all())
+                .vintageSelection(VintageSelector.all())
+                .alpha(.05);
+    }
 }

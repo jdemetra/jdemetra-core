@@ -206,18 +206,44 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         return make(DEFAULT_EPOCH, TsUnit.YEAR, LocalDate.of(year, 1, 1));
     }
 
+    /**
+     * Creates a quarterly period
+     * @param year Year of the period
+     * @param quarter Quarter of the period (in 1-4)
+     * @return 
+     */
     public static TsPeriod quarterly(int year, int quarter) {
         return make(DEFAULT_EPOCH, TsUnit.QUARTER, LocalDate.of(year, ((quarter - 1) * 3) + 1, 1));
     }
 
+    /**
+     * Creates a monthly period
+     * @param year Year of the period
+     * @param month Month of the period (in 1-12)
+     * @return 
+     */
     public static TsPeriod monthly(int year, int month) {
         return make(DEFAULT_EPOCH, TsUnit.MONTH, LocalDate.of(year, month, 1));
     }
 
+    /**
+     * Creates a period of one day
+     * @param year Year of the day
+     * @param month Month of the day (in 1-12)
+     * @param dayOfMonth Day of month of the day (1-31)
+     * @return 
+     */
     public static TsPeriod daily(int year, int month, int dayOfMonth) {
         return make(DEFAULT_EPOCH, TsUnit.DAY, LocalDate.of(year, month, dayOfMonth));
     }
 
+    /**
+     * Creates a period of seven days
+     * @param year Year of the first day
+     * @param month Month of the first day (in 1-12)
+     * @param dayOfMonth Day of month of the first day (1-31)
+     * @return 
+     */
     public static TsPeriod weekly(int year, int month, int dayOfMonth) {
         LocalDate start = LocalDate.of(year, month, dayOfMonth);
         int dw_start = start.getDayOfWeek().getValue();
