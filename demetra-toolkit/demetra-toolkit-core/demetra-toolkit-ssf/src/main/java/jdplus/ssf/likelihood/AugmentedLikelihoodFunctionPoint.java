@@ -26,6 +26,7 @@ import jdplus.math.functions.ssq.ISsqFunctionDerivatives;
 import jdplus.math.functions.ssq.SsqNumericalDerivatives;
 import demetra.data.DoubleSeq;
 import jdplus.likelihood.LikelihoodFunctionPoint;
+import jdplus.ssf.SsfException;
 import jdplus.ssf.akf.AkfToolkit;
 
 /**
@@ -47,8 +48,8 @@ public class AugmentedLikelihoodFunctionPoint<S, F extends ISsf> implements
      *
      */
     private final DiffuseLikelihood ll;
-    private final DataBlock p;
-    private DataBlock E;
+    private final DoubleSeq p;
+    private final DoubleSeq E;
     private final AugmentedLikelihoodFunction<S, F> fn;
 
     /**
@@ -58,15 +59,33 @@ public class AugmentedLikelihoodFunctionPoint<S, F extends ISsf> implements
      */
     public AugmentedLikelihoodFunctionPoint(AugmentedLikelihoodFunction<S, F> fn, DoubleSeq p) {
         this.fn = fn;
-        this.p = DataBlock.of(p);
+        this.p = p;
         current = fn.getMapping().map(p);
         currentSsf = fn.getBuilder().buildSsf(current);
         boolean fastcomputer = fn.isFast() && !fn.isMissing() && currentSsf.isTimeInvariant();
-        if (fastcomputer) {
-            ll = AkfToolkit.fastLikelihoodComputer(fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
-        } else {
-            ll = AkfToolkit.likelihoodComputer(true, fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
+        DiffuseLikelihood dl = null;
+        DoubleSeq e = null;
+        try {
+            if (fastcomputer) {
+                dl = AkfToolkit.fastLikelihoodComputer(fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
+            } else {
+                dl = AkfToolkit.likelihoodComputer(true, fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
+            }
+            if (fn.isScalingFactor()) {
+                DoubleSeq res = dl.e();
+                DataBlock r = DataBlock.select(res, x -> Double.isFinite(x));
+                if (fn.isMaximumLikelihood()) {
+                    double factor = Math.sqrt(dl.factor());
+                    r.mul(factor);
+                }
+                e = r;
+            }
+        } catch (SsfException err) {
+            dl = null;
         }
+        ll = dl;
+        E = e;
+
     }
 
     public F getSsf() {
@@ -79,18 +98,6 @@ public class AugmentedLikelihoodFunctionPoint<S, F extends ISsf> implements
 
     @Override
     public DoubleSeq getE() {
-        if (E == null) {
-            DoubleSeq res = ll.e();
-            if (res == null) {
-                return null;
-            } else {
-                E = DataBlock.select(res, x -> Double.isFinite(x));
-                if (fn.isMaximumLikelihood()) {
-                    double factor = Math.sqrt(ll.factor());
-                    E.mul(factor);
-                }
-            }
-        }
         return E;
     }
 
@@ -144,11 +151,8 @@ public class AugmentedLikelihoodFunctionPoint<S, F extends ISsf> implements
         return new NumericalDerivatives(this, fn.isSymmetric(), fn.isMultiThreaded());
     }
 
-    ;
-
     @Override
     public ISsqFunctionDerivatives ssqDerivatives() {
         return new SsqNumericalDerivatives(this, fn.isSymmetric(), fn.isMultiThreaded());
     }
-;
 }

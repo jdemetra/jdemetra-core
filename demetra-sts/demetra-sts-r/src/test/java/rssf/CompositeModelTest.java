@@ -145,7 +145,7 @@ public class CompositeModelTest {
         model.add(eq6);
         //estimate the model
         double[] dp = model.fullDefaultParameters();
-        CompositeModelEstimation rslt = model.estimate(x, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
+        CompositeModelEstimation rslt = model.estimate(x, false, true, SsfInitialization.Diffuse, Optimizer.BFGS, 1e-15, null);
 //        System.out.println(rslt.getLikelihood().logLikelihood());
 //        System.out.println(DataBlock.ofInternal(rslt.getFullParameters()));
 ////        System.out.println(rslt.getLikelihood().sigma());

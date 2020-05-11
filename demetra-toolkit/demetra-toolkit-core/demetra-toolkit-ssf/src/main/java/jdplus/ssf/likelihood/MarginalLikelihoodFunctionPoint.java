@@ -27,6 +27,7 @@ import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.univariate.ISsf;
 import demetra.data.DoubleSeq;
 import jdplus.likelihood.LikelihoodFunctionPoint;
+import jdplus.ssf.SsfException;
 
 /**
  *
@@ -46,8 +47,8 @@ public class MarginalLikelihoodFunctionPoint<S, F extends ISsf> implements
      *
      */
     private final MarginalLikelihood ll;
-    private final DataBlock p;
-    private DataBlock E;
+    private final DoubleSeq p;
+    private final DoubleSeq E;
     private final MarginalLikelihoodFunction<S, F> fn;
 
     /**
@@ -58,11 +59,28 @@ public class MarginalLikelihoodFunctionPoint<S, F extends ISsf> implements
     public MarginalLikelihoodFunctionPoint(MarginalLikelihoodFunction<S, F> fn, DoubleSeq p) {
         this.fn = fn;
         this.p = DataBlock.of(p);
-        current=fn.getMapping().map(p);
+        current = fn.getMapping().map(p);
         currentSsf = fn.getBuilder().buildSsf(current);
-//        ILikelihoodComputer<MarginalLikelihood> computer= AkfToolkit.marginalLikelihoodComputer(fn.isScalingFactor());
-//        ll=computer.compute(currentSsf, fn.getData());
-        ll=DkToolkit.marginalLikelihood(currentSsf, fn.getData(), fn.isScalingFactor(), fn.isResiduals());
+        MarginalLikelihood ml;
+        DataBlock e;
+        try {
+            ml = DkToolkit.marginalLikelihood(currentSsf, fn.getData(), fn.isScalingFactor(), fn.isResiduals());
+            if (fn.isScalingFactor()) {
+                DoubleSeq res = ml.e();
+                e = DataBlock.select(res, x -> Double.isFinite(x));
+                if (fn.isMaximumLikelihood()) {
+                    double factor = Math.sqrt(ml.factor());
+                    e.mul(factor);
+                }
+            } else {
+                e = null;
+            }
+        } catch (SsfException err) {
+            ml = null;
+            e = null;
+        }
+        ll = ml;
+        E = e;
     }
 
     public F getSsf() {
@@ -75,18 +93,6 @@ public class MarginalLikelihoodFunctionPoint<S, F extends ISsf> implements
 
     @Override
     public DoubleSeq getE() {
-        if (E == null) {
-            DoubleSeq res = ll.e();
-            if (res == null) {
-                return null;
-            } else {
-                E = DataBlock.select(res, x->Double.isFinite(x));
-                if (fn.isMaximumLikelihood()) {
-                    double factor = Math.sqrt(ll.factor());
-                    E.mul(factor);
-                }
-            }
-        }
         return E;
     }
 
@@ -134,14 +140,17 @@ public class MarginalLikelihoodFunctionPoint<S, F extends ISsf> implements
     public IFunction getFunction() {
         return fn;
     }
-    
-    @Override
-     public IFunctionDerivatives derivatives(){
-        return new NumericalDerivatives(this, fn.isSymmetric(), fn.isMultiThreaded());
-    };
 
     @Override
-     public ISsqFunctionDerivatives ssqDerivatives(){
+    public IFunctionDerivatives derivatives() {
+        return new NumericalDerivatives(this, fn.isSymmetric(), fn.isMultiThreaded());
+    }
+
+    ;
+
+    @Override
+    public ISsqFunctionDerivatives ssqDerivatives() {
         return new SsqNumericalDerivatives(this, fn.isSymmetric(), fn.isMultiThreaded());
-    };
+    }
+;
 }

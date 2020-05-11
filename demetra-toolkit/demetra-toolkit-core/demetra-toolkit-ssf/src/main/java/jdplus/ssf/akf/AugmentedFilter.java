@@ -47,6 +47,7 @@ public class AugmentedFilter {
     private boolean missing;
     private final boolean collapsing;
     private int collapsingPos = -1;
+    private double scale;
 
     /**
      *
@@ -67,7 +68,6 @@ public class AugmentedFilter {
             // pe_ = null;
             return false;
         } else {
-            // pe_ = new PredictionError(ssf_.getStateDim(), 1);
             // K = PZ'/f
             // computes (ZP)' in K'. Missing values are set to 0 
             // Z~v x r, P~r x r, K~r x v
