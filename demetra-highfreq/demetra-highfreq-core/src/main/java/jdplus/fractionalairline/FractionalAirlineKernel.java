@@ -81,6 +81,7 @@ public class FractionalAirlineKernel {
         RegArimaModel regarima = builder.build();
         GlsArimaProcessor<ArimaModel> finalProcessor = GlsArimaProcessor.builder(ArimaModel.class)
                 .precision(spec.getPrecision())
+                .computeExactFinalDerivatives(! spec.isApproximateHessian())
                 .build();
         RegArimaEstimation rslt = finalProcessor.process(regarima, mapping);
         LogLikelihoodFunction.Point max = rslt.getMax();

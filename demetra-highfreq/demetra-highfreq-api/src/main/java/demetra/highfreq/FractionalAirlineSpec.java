@@ -32,6 +32,7 @@ public class FractionalAirlineSpec {
     // operational
     private boolean adjustToInt;
     private double precision;
+    private boolean approximateHessian;
     
     public static Builder builder(){
         return new Builder()

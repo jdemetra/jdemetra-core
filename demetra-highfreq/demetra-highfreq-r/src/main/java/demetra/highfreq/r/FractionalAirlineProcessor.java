@@ -41,7 +41,7 @@ public class FractionalAirlineProcessor{
         return FractionalAirlineKernel.decompose(DoubleSeq.of(s), period, adjust, sn);
     }
     
-    public FractionalAirlineEstimation estimate(double[] y, MatrixType x, boolean mean, double[] periods, String[] outliers, double cv, double precision){
+    public FractionalAirlineEstimation estimate(double[] y, MatrixType x, boolean mean, double[] periods, String[] outliers, double cv, double precision, boolean approximateHessian){
         FractionalAirlineSpec spec = FractionalAirlineSpec.builder()
                 .y(y)
                 .X(x)
@@ -51,6 +51,7 @@ public class FractionalAirlineProcessor{
                 .criticalValue(cv)
                 .adjustToInt(false)
                 .precision(precision)
+                .approximateHessian(approximateHessian)
                 .build();
         return FractionalAirlineKernel.process(spec);
     }

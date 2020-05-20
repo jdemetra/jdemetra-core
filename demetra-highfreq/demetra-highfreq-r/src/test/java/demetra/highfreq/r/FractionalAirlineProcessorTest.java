@@ -33,7 +33,7 @@ public class FractionalAirlineProcessorTest {
     
    @Test
     public void testWeeklyEstimation() {
-        FractionalAirlineEstimation rslt = FractionalAirlineProcessor.estimate(WeeklyData.US_CLAIMS2, null, false, new double[]{365.25/7}, new String[]{"ao", "wo"}, 5, 1e-12);
+        FractionalAirlineEstimation rslt = FractionalAirlineProcessor.estimate(WeeklyData.US_CLAIMS2, null, false, new double[]{365.25/7}, new String[]{"ao", "wo"}, 5, 1e-12, true);
         System.out.println(rslt.getLikelihood());
         System.out.println();
     }
