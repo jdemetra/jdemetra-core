@@ -16,6 +16,7 @@
  */
 package demetra.tsprovider;
 
+import demetra.timeseries.TsMoniker;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;

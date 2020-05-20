@@ -17,7 +17,7 @@
 package demetra.tsprovider.cube;
 
 import demetra.design.ThreadSafe;
-import demetra.tsprovider.TsInformationType;
+import demetra.timeseries.TsInformationType;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.HasDataDisplayName;

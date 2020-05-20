@@ -14,9 +14,9 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.tsprovider;
+package demetra.timeseries;
 
-import internal.util.LombokHelper;
+import internal.timeseries.LombokHelper;
 import java.util.List;
 import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;

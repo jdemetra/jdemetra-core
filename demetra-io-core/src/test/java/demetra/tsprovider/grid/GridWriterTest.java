@@ -17,7 +17,7 @@
 package demetra.tsprovider.grid;
 
 import static demetra.timeseries.TsUnit.*;
-import demetra.tsprovider.TsCollection;
+import demetra.timeseries.TsCollection;
 import static demetra.tsprovider.grid.GridLayout.*;
 import demetra.tsprovider.util.ObsFormat;
 import java.io.IOException;

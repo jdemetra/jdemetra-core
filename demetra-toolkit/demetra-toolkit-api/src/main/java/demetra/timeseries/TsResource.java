@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tsprovider;
+package demetra.timeseries;
 
+import demetra.timeseries.TsMoniker;
 import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

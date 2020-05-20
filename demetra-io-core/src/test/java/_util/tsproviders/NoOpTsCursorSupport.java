@@ -18,7 +18,7 @@ package _util.tsproviders;
 
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
-import demetra.tsprovider.TsInformationType;
+import demetra.timeseries.TsInformationType;
 import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import java.io.IOException;

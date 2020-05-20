@@ -17,9 +17,9 @@
 package demetra.demo;
 
 import demetra.bridge.FromDataSourceProvider;
+import demetra.timeseries.TsInformationType;
 import demetra.tsprovider.DataSource;
-import demetra.tsprovider.TsInformationType;
-import demetra.tsprovider.TsMoniker;
+import demetra.timeseries.TsMoniker;
 import ec.tss.tsproviders.IDataSourceProviderAssert;
 import java.io.IOException;
 import java.util.Optional;

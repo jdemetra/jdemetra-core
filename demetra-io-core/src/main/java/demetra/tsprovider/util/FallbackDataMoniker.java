@@ -19,7 +19,7 @@ package demetra.tsprovider.util;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.HasDataMoniker;
-import demetra.tsprovider.TsMoniker;
+import demetra.timeseries.TsMoniker;
 
 /**
  *

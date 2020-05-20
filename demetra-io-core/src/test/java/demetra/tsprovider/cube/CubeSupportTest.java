@@ -21,7 +21,7 @@ import _util.tsproviders.XCubeAccessor;
 import _util.tsproviders.XCubeSupportResource;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
-import demetra.tsprovider.TsInformationType;
+import demetra.timeseries.TsInformationType;
 import static demetra.tsprovider.cube.CubeIdTest.EMPTY;
 import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY;
 import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY_BE;

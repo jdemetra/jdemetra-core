@@ -18,9 +18,9 @@ package demetra.tsprovider.grid;
 
 import demetra.design.LombokWorkaround;
 import demetra.timeseries.TsData;
-import demetra.tsprovider.Ts;
-import demetra.tsprovider.TsCollection;
-import demetra.tsprovider.TsInformationType;
+import demetra.timeseries.Ts;
+import demetra.timeseries.TsCollection;
+import demetra.timeseries.TsInformationType;
 import static demetra.tsprovider.grid.GridLayout.HORIZONTAL;
 import static demetra.tsprovider.grid.GridLayout.VERTICAL;
 import demetra.tsprovider.util.MultiLineNameUtil;
