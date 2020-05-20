@@ -18,14 +18,11 @@ package demetra.revisions.r;
 
 import demetra.revisions.parametric.RegressionBasedAnalysis;
 import demetra.revisions.timeseries.TsDataVintages;
-import demetra.revisions.timeseries.VintageSelector;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -37,14 +34,26 @@ public class UtilityTest {
     }
 
     @Test
-    public void testAll() {
-        TsDataVintages<LocalDate> v = random(360, 360);
+    public void testVertical() {
+        TsDataVintages<LocalDate> v = random(480, 20);
         LocalDate t0=LocalDate.of(2015, 1, 1);
         LocalDate t1=LocalDate.of(2020, 1, 1);
-        VintageSelector sel = VintageSelector.<LocalDate>custom(t0, t1);
-        TsDataVintages <LocalDate>vc = v.select(sel);
-        Vintages V=new Vintages(vc);
-        RegressionBasedAnalysis<LocalDate> analysis = V.verticalAnalysis();
+//        VintageSelector sel = VintageSelector.<LocalDate>custom(t0, t1);
+//        TsDataVintages <LocalDate>vc = v.select(sel);
+        Vintages V=new Vintages(v);
+        RegressionBasedAnalysis<LocalDate> analysis = V.verticalAnalysis(t0.format(DateTimeFormatter.ISO_DATE), t1.format(DateTimeFormatter.ISO_DATE));
+        double[] olsInformation = Utility.olsInformation(analysis, 10);
+        double theil = Utility.theil(analysis, 10);
+        double[] biasInformation = Utility.biasInformation(analysis, 10);
+    }
+
+    @Test
+    public void testDiagonal() {
+        TsDataVintages<LocalDate> v = random(360, 20);
+        LocalDate t0=LocalDate.of(2015, 1, 1);
+        LocalDate t1=LocalDate.of(2020, 1, 1);
+        Vintages V=new Vintages(v);
+        RegressionBasedAnalysis<LocalDate> analysis = V.diagonalAnalysis(0, 15);
         double[] olsInformation = Utility.olsInformation(analysis, 10);
         double theil = Utility.theil(analysis, 10);
         double[] biasInformation = Utility.biasInformation(analysis, 10);

@@ -137,7 +137,7 @@ public class MstsMonitor {
 
     private LikelihoodFunction function(boolean concentrated) {
         SsfMatrix s = new SsfMatrix(data);
-        boolean needres = optimizer == Optimizer.LevenbergMarquardt || optimizer == Optimizer.MinPack;
+        boolean needres = (optimizer == Optimizer.LevenbergMarquardt || optimizer == Optimizer.MinPack) || initialization == SsfInitialization.Augmented || marginal;
         if (marginal)
                 return MarginalLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
                         .useParallelProcessing(true)

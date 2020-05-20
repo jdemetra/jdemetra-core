@@ -32,87 +32,83 @@ import jdplus.stats.StatUtility;
  */
 @lombok.experimental.UtilityClass
 public class Processor {
-    
-    
 
-    public <K extends Comparable> RegressionBasedAnalysis<K> regressionBasedAnalysis(TsDataVintages<K> all, RegressionBasedAnalysis.Type type) {
-        
-        switch (type){
-            case Vertical:
-                return vanalysis(all);
-            case Diagonal:
-                return danalysis(all);
-            default:
-                return null;
-        }
-    }
-
-    private static <K extends Object & Comparable> RegressionBasedAnalysis<K> vanalysis(TsDataVintages<K> all) {
-        RegressionBasedAnalysis.Builder builder=RegressionBasedAnalysis.builder();
+    public static <K extends Object & Comparable> RegressionBasedAnalysis<K> verticalAnalysis(TsDataVintages<K> all, K first, K last) {
+        RegressionBasedAnalysis.Builder builder = RegressionBasedAnalysis.builder();
         List<K> vintages = all.getVintages();
-        TsData preliminary=all.vintage(vintages.get(0));
-        TsData prev=preliminary;
-        for (int i=1; i<vintages.size(); ++i){
-                    
-            K k=vintages.get(i);
-            RevisionAnalysis.Builder<K> analysis = RevisionAnalysis.<K>builder()
-                    .vintage(k);
-            TsData cur=all.vintage(k);
-            if (cur == null)
+        TsData preliminary = null;
+        TsData prev = null;
+        for (int i = 0; i < vintages.size(); ++i) {
+            K k = vintages.get(i);
+            if (k.compareTo(first) >= 0 && k.compareTo(last) <= 0) {
+                RevisionAnalysis.Builder<K> analysis = RevisionAnalysis.<K>builder()
+                        .vintage(k);
+                TsData cur = all.vintage(k);
+                if (cur == null) {
+                    continue;
+                }
+                if (preliminary == null) {
+                    preliminary = cur;
+                    prev=cur;
+                } else {
+                    // common domain
+                    TsDomain common = cur.getDomain().intersection(preliminary.getDomain());
+                    if (common.length() < 3) {
+                        break;
+                    }
+                    DoubleSeq v0 = TsData.fitToDomain(preliminary, common).getValues(),
+                            v1 = TsData.fitToDomain(cur, common).getValues();
+                    // first Vi % V
+                    analysis.theilCoefficient(StatUtility.theilInequalityCoefficient(v1, v0))
+                            .regression(OlsTestComputer.of(v1, v0));
+
+                    // than revisions
+                    DoubleSeq rev = TsData.subtract(cur, prev).getValues();
+                    Bias bias = BiasComputer.of(rev);
+                    if (bias != null) {
+                        analysis.bias(bias);
+                    }
+                    prev = cur;
+                    builder.revision(analysis.build());
+                }
+            }
+        }
+        return builder.build();
+    }
+
+    public static <K extends Object & Comparable> RegressionBasedAnalysis<K> diagonalAnalysis(TsDataVintages<K> all, int first, int last) {
+        RegressionBasedAnalysis.Builder builder = RegressionBasedAnalysis.builder();
+        TsData preliminary = all.vintage(first);
+        TsData prev = preliminary;
+        for (int i = first+1; i <= last; ++i) {
+
+            RevisionAnalysis.Builder<K> analysis = RevisionAnalysis.<K>builder();
+            TsData cur = all.vintage(i);
+            if (cur == null) {
                 break;
-            
+            }
+
             // common domain
-            TsDomain common=cur.getDomain().intersection(preliminary.getDomain());
-            if (common.length()<3)
+            TsDomain common = cur.getDomain().intersection(preliminary.getDomain());
+            if (common.isEmpty()) {
                 break;
-            DoubleSeq v0=TsData.fitToDomain(preliminary, common).getValues(),
-                    v1=TsData.fitToDomain(cur, common).getValues();
+            }
+            DoubleSeq v0 = TsData.fitToDomain(preliminary, common).getValues(),
+                    v1 = TsData.fitToDomain(cur, common).getValues();
             // first Vi % V
             analysis.theilCoefficient(StatUtility.theilInequalityCoefficient(v1, v0))
                     .regression(OlsTestComputer.of(v1, v0));
-            
+
             // than revisions
-            DoubleSeq rev=TsData.subtract(cur, prev).getValues();
-            Bias bias=BiasComputer.of(rev);
-            if (bias != null)
+            DoubleSeq rev = TsData.subtract(cur, prev).getValues();
+            Bias bias = BiasComputer.of(rev);
+            if (bias != null) {
                 analysis.bias(bias);
-            prev=cur;
+            }
+            prev = cur;
             builder.revision(analysis.build());
         }
         return builder.build();
     }
 
-    private static <K extends Object & Comparable> RegressionBasedAnalysis<K> danalysis(TsDataVintages<K> all) {
-        RegressionBasedAnalysis.Builder builder=RegressionBasedAnalysis.builder();
-        TsData preliminary=all.preliminary();
-        TsData prev=preliminary;
-        int nmax=all.maxRevisionsCount();
-        for (int i=1; i<nmax; ++i){
-                    
-            RevisionAnalysis.Builder<K> analysis = RevisionAnalysis.<K>builder();
-            TsData cur=all.vintage(i);
-            if (cur == null)
-                break;
-            
-            // common domain
-            TsDomain common=cur.getDomain().intersection(preliminary.getDomain());
-            if (common.isEmpty())
-                break;
-            DoubleSeq v0=TsData.fitToDomain(preliminary, common).getValues(),
-                    v1=TsData.fitToDomain(cur, common).getValues();
-            // first Vi % V
-            analysis.theilCoefficient(StatUtility.theilInequalityCoefficient(v1, v0))
-                    .regression(OlsTestComputer.of(v1, v0));
-            
-            // than revisions
-            DoubleSeq rev=TsData.subtract(cur, prev).getValues();
-            Bias bias=BiasComputer.of(rev);
-            if (bias != null)
-                analysis.bias(bias);
-            prev=cur;
-            builder.revision(analysis.build());
-        }
-        return builder.build();
-    }
-    
 }

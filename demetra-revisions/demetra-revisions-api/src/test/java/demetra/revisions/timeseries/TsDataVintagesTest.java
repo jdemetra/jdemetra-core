@@ -42,18 +42,18 @@ public class TsDataVintagesTest {
         assertEquals(s1, s2);
     }
 
-    @Test
-    public void testVintageSelection() {
-        TsDataVintages<LocalDateTime> v = random(360, 15);
-        LocalDateTime t0=LocalDateTime.of(2015, 1, 1, 0, 0);
-        LocalDateTime t1=LocalDateTime.of(2020, 1, 1, 0, 0);
-        VintageSelector sel = VintageSelector.<LocalDateTime>custom(t0, t1);
-        TsDataVintages <LocalDateTime>vc = v.select(sel);
-        List<LocalDateTime> vintages = vc.getVintages();
-        assertTrue(!vintages.get(0).isBefore(t0));
-        assertTrue(!vintages.get(vintages.size()-1).isAfter(t1));
-    }
-
+//    @Test
+//    public void testVintageSelection() {
+//        TsDataVintages<LocalDateTime> v = random(360, 15);
+//        LocalDateTime t0=LocalDateTime.of(2015, 1, 1, 0, 0);
+//        LocalDateTime t1=LocalDateTime.of(2020, 1, 1, 0, 0);
+//        VintageSelector sel = VintageSelector.<LocalDateTime>custom(t0, t1);
+//        TsDataVintages <LocalDateTime>vc = v.select(sel);
+//        List<LocalDateTime> vintages = vc.getVintages();
+//        assertTrue(!vintages.get(0).isBefore(t0));
+//        assertTrue(!vintages.get(vintages.size()-1).isAfter(t1));
+//    }
+//
     private static TsDataVintages<LocalDateTime> random(int N, int K) {
         Random rnd = new Random();
         TsDataVintages.Builder<LocalDateTime> builder = TsDataVintages.<LocalDateTime>builder();

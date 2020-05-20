@@ -209,7 +209,7 @@ public class AlgorithmsTest {
 //        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
 //        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
 
-        CompositeModelEstimation rslt = model.estimate(M, true, true, SsfInitialization.Diffuse, Optimizer.BFGS, 1e-15, null);
+        CompositeModelEstimation rslt = model.estimate(M, true, false, SsfInitialization.Augmented, Optimizer.BFGS, 1e-15, null);
 
         double[] p = rslt.getFullParameters();
         System.out.println("SUTSE");

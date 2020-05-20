@@ -27,6 +27,7 @@ import lombok.AccessLevel;
 @Development(status = Development.Status.Release)
 @lombok.Value
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Deprecated
 public class VintageSelector<K extends Comparable> {
 
     private static VintageSelector ALL = new VintageSelector(VintageSelectorType.All, 0, 0, null, null);

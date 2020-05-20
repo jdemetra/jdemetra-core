@@ -75,16 +75,14 @@ public class SsfFunctionPoint<S, F extends ISsf> implements
             } else {
                 dcl = computer.compute(new SsfRegressionModel(currentSsf, fn.getData(), fn.getX(), fn.getDiffuseX()));
             }
+            e = dcl.e();
             if (fn.isScalingFactor()) {
-                DoubleSeq res = dcl.e();
-                DataBlock r = DataBlock.select(res, x -> Double.isFinite(x));
+                DataBlock r = DataBlock.select(e, x -> Double.isFinite(x));
                 if (fn.isMaximumLikelihood()) {
                     double factor = Math.sqrt(dcl.factor());
                     r.mul(factor);
                 }
                 e = r;
-            } else {
-                e = null;
             }
         } catch (SsfException err) {
             dcl = null;
@@ -157,11 +155,8 @@ public class SsfFunctionPoint<S, F extends ISsf> implements
         return new NumericalDerivatives(this, fn.isSymmetric(), fn.isMultiThreaded());
     }
 
-    ;
-
     @Override
     public ISsqFunctionDerivatives ssqDerivatives() {
         return new SsqNumericalDerivatives(this, fn.isSymmetric(), fn.isMultiThreaded());
     }
-;
 }

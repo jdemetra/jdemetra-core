@@ -285,62 +285,62 @@ public class TsDataVintages<K extends Comparable> implements Seq<TsObsVintages> 
         return new TsDataVintages<>(sstart, copy, v);
     }
 
-    public TsDataVintages<K> select(VintageSelector<K> vs) {
-        if (vs.getType() == VintageSelectorType.All) {
-            return this;
-        }
-        Builder builder = new Builder();
-        for (int i = 0; i < data.length; ++i) {
-            Entry<K>[] cur = data[i];
-            if (cur != null) {
-                TsPeriod period = start.plus(i);
-                switch (vs.getType()) {
-                    case First:
-                        if (cur.length <= vs.getN0()) {
-                            builder.add(period, data[i]);
-                        } else {
-                            builder.add(period, Arrays.copyOfRange(cur, 0, vs.getN0()));
-                        }
-                        break;
-                    case Last:
-                        if (cur.length <= vs.getN1()) {
-                            builder.add(period, data[i]);
-                        } else {
-                            builder.add(period, Arrays.copyOfRange(cur, cur.length - vs.getN1(), cur.length));
-                        }
-                        break;
-                    case Custom:
-                        K k0 = vs.getK0(),
-                         k1 = vs.getK1();
-                        int pos0 = search(cur, k0),
-                         pos1 = search(cur, k1);
-                        if ((pos0 >= 0 || -1 - pos0 < cur.length) && (pos1 >= 0 || pos1 != -1)) { // not completely before and not completely after
-                            if (pos0 < 0) {
-                                pos0 = -pos0;
-                            }
-                            if (pos1 < 0) {
-                                pos1 = -pos1 - 1;
-                            } else {
-                                pos1 = pos1 + 1;
-                            }
-                            if (pos1 > pos0) {
-                                builder.add(period, Arrays.copyOfRange(cur, pos0, pos1));
-                            }
-                        }
-                        break;
-                    case Excluding:
-                        int n0 = vs.getN0(),
-                         n1 = cur.length - vs.getN1();
-                        if (n0 < n1) {
-                            builder.add(period, Arrays.copyOfRange(cur, n0, n1));
-                        }
-                        break;
-                }
-            }
-        }
-        return builder.build();
-    }
-
+//    public TsDataVintages<K> select(VintageSelector<K> vs) {
+//        if (vs.getType() == VintageSelectorType.All) {
+//            return this;
+//        }
+//        Builder builder = new Builder();
+//        for (int i = 0; i < data.length; ++i) {
+//            Entry<K>[] cur = data[i];
+//            if (cur != null) {
+//                TsPeriod period = start.plus(i);
+//                switch (vs.getType()) {
+//                    case First:
+//                        if (cur.length <= vs.getN0()) {
+//                            builder.add(period, data[i]);
+//                        } else {
+//                            builder.add(period, Arrays.copyOfRange(cur, 0, vs.getN0()));
+//                        }
+//                        break;
+//                    case Last:
+//                        if (cur.length <= vs.getN1()) {
+//                            builder.add(period, data[i]);
+//                        } else {
+//                            builder.add(period, Arrays.copyOfRange(cur, cur.length - vs.getN1(), cur.length));
+//                        }
+//                        break;
+//                    case Custom:
+//                        K k0 = vs.getK0(),
+//                        k1 = vs.getK1();
+//                        int pos0 = search(cur, k0),
+//                        pos1 = search(cur, k1);
+//                        if ((pos0 >= 0 || -1 - pos0 < cur.length) && (pos1 >= 0 || pos1 != -1)) { // not completely before and not completely after
+//                            if (pos0 < 0) {
+//                                pos0 = -pos0;
+//                            }
+//                            if (pos1 < 0) {
+//                                pos1 = -pos1 - 1;
+//                            } else {
+//                                pos1 = pos1 + 1;
+//                            }
+//                            if (pos1 > pos0) {
+//                                builder.add(period, Arrays.copyOfRange(cur, pos0, pos1));
+//                            }
+//                        }
+//                        break;
+//                    case Excluding:
+//                        int n0 = vs.getN0(),
+//                         n1 = cur.length - vs.getN1();
+//                        if (n0 < n1) {
+//                            builder.add(period, Arrays.copyOfRange(cur, n0, n1));
+//                        }
+//                        break;
+//                }
+//            }
+//        }
+//        return builder.build();
+//    }
+//
     public static <K extends Comparable> TsData seriesAt(TsDataVintages vintages, LocalDateTime dt, TimeComparator<K> cmp) {
         TsPeriod start = vintages.start;
         double[] data = new double[vintages.data.length];

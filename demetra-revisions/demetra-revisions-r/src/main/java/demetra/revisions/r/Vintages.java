@@ -45,22 +45,15 @@ public class Vintages {
      *
      * @return
      */
-    public RegressionBasedAnalysis diagonalAnalysis() {
-        return Processor.regressionBasedAnalysis(core, RegressionBasedAnalysis.Type.Diagonal);
+    public RegressionBasedAnalysis diagonalAnalysis(int first, int last) {
+        return Processor.diagonalAnalysis(core, first, last);
     }
 
-    public Vintages selectFirstRevisions(int nrevs) {
-        return new Vintages(core.select(VintageSelector.first(nrevs)));
-    }
+    public RegressionBasedAnalysis verticalAnalysis(String first, String last) {
+        LocalDate fdate = LocalDate.parse(first, DateTimeFormatter.ISO_DATE);
+        LocalDate ldate = LocalDate.parse(last, DateTimeFormatter.ISO_DATE);
 
-    public Vintages selectBetween(String start, String end) {
-        LocalDate d0 = LocalDate.parse(start, DateTimeFormatter.ISO_DATE);
-        LocalDate d1 = LocalDate.parse(end, DateTimeFormatter.ISO_DATE);
-        return new Vintages(core.select(VintageSelector.<LocalDate>custom(d0, d1)));
-    }
-
-    public RegressionBasedAnalysis verticalAnalysis() {
-        return Processor.regressionBasedAnalysis(core, RegressionBasedAnalysis.Type.Vertical);
+        return Processor.verticalAnalysis(core, fdate, ldate);
     }
 
     public TsData preliminary() {

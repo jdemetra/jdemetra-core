@@ -62,18 +62,17 @@ public class MarginalLikelihoodFunctionPoint<S, F extends ISsf> implements
         current = fn.getMapping().map(p);
         currentSsf = fn.getBuilder().buildSsf(current);
         MarginalLikelihood ml;
-        DataBlock e;
+        DoubleSeq e;
         try {
             ml = DkToolkit.marginalLikelihood(currentSsf, fn.getData(), fn.isScalingFactor(), fn.isResiduals());
+            e = ml.e();
             if (fn.isScalingFactor()) {
-                DoubleSeq res = ml.e();
-                e = DataBlock.select(res, x -> Double.isFinite(x));
+                DataBlock r = DataBlock.select(e, x -> Double.isFinite(x));
                 if (fn.isMaximumLikelihood()) {
                     double factor = Math.sqrt(ml.factor());
-                    e.mul(factor);
+                    r.mul(factor);
                 }
-            } else {
-                e = null;
+                e = r;
             }
         } catch (SsfException err) {
             ml = null;

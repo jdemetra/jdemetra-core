@@ -9,6 +9,7 @@ package demetra.revisions.timeseries;
  *
  * @author PALATEJ
  */
+@Deprecated
 public enum VintageSelectorType {
     /**
      * Takes all vintages

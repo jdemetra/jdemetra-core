@@ -37,6 +37,5 @@ public class FractionalAirlineProcessorTest {
         System.out.println(rslt.getLikelihood());
         System.out.println();
     }
-    
 
 }
