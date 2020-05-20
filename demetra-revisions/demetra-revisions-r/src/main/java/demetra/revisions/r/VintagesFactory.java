@@ -46,8 +46,8 @@ public class VintagesFactory {
          }
     }
 
-    public TsDataVintages<LocalDate> build() {
-        return builder.build();
+    public Vintages build() {
+        return new Vintages(builder.build());
     }
 
 }

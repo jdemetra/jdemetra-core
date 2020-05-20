@@ -25,6 +25,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import jdplus.revisions.parametric.Processor;
 
 /**
@@ -33,13 +34,13 @@ import jdplus.revisions.parametric.Processor;
  */
 @lombok.Value
 public class Vintages {
-    
+
     TsDataVintages<LocalDate> core;
-    
-    private TsUnit unit(){
+
+    private TsUnit unit() {
         return core.getStart().getUnit();
     }
-    
+
     /**
      *
      * @return
@@ -47,12 +48,12 @@ public class Vintages {
     public RegressionBasedAnalysis diagonalAnalysis() {
         return Processor.regressionBasedAnalysis(core, RegressionBasedAnalysis.Type.Diagonal);
     }
-    
-    public Vintages selectFirstRevisions(int nrevs){
+
+    public Vintages selectFirstRevisions(int nrevs) {
         return new Vintages(core.select(VintageSelector.first(nrevs)));
     }
 
-    public Vintages selectBetween(String start, String end){
+    public Vintages selectBetween(String start, String end) {
         LocalDate d0 = LocalDate.parse(start, DateTimeFormatter.ISO_DATE);
         LocalDate d1 = LocalDate.parse(end, DateTimeFormatter.ISO_DATE);
         return new Vintages(core.select(VintageSelector.<LocalDate>custom(d0, d1)));
@@ -88,5 +89,15 @@ public class Vintages {
         TsObsVintages vpos = v.get(pos);
         return vpos == null ? null : vpos.values();
     }
-    
+
+    public String[] vintages() {
+        List<LocalDate> vintages = core.getVintages();
+        String[] v = new String[vintages.size()];
+        int pos = 0;
+        for (LocalDate d : vintages) {
+            v[pos++] = d.format(DateTimeFormatter.ISO_DATE);
+        }
+        return v;
+    }
+
 }

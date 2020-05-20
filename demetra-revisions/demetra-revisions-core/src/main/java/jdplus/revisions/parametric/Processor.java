@@ -63,7 +63,7 @@ public class Processor {
             
             // common domain
             TsDomain common=cur.getDomain().intersection(preliminary.getDomain());
-            if (common.isEmpty())
+            if (common.length()<3)
                 break;
             DoubleSeq v0=TsData.fitToDomain(preliminary, common).getValues(),
                     v1=TsData.fitToDomain(cur, common).getValues();

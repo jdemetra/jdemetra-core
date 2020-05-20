@@ -16,10 +16,7 @@
  */
 package demetra.revisions.parametric;
 
-import demetra.revisions.timeseries.VintageSelector;
-import demetra.timeseries.TimeSelector;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -38,5 +35,13 @@ public class RegressionBasedAnalysis<K extends Comparable> {
      */
     @lombok.Singular("revision")
     List<RevisionAnalysis<K> > revisions;
+    
+    public int size(){
+        return revisions.size();
+    }
+    
+    public RevisionAnalysis<K> revision(int k){
+        return revisions.get(k);
+    }
     
 }
