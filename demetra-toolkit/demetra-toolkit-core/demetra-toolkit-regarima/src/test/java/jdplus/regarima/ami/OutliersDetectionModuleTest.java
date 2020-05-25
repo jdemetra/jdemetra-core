@@ -50,19 +50,19 @@ public class OutliersDetectionModuleTest {
         od.setCriticalValue(3.0);
         SarimaOrders spec=SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
-        System.out.println("Full");
+//        System.out.println("Full");
 //        Consumer<int[]> hook = a -> System.out.println("Add outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
 //        Consumer<int[]> rhook = a -> System.out.println("Remove outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
 //        od.setAddHook(hook);
 //        od.setRemoveHook(rhook);
-        long t0 = System.currentTimeMillis();
+//        long t0 = System.currentTimeMillis();
         for (int i = 0; i < 100; ++i) {
             od.prepare(regarima.getObservationsCount());
             od.process(regarima, SarimaMapping.of(spec));
         }
-        long t1 = System.currentTimeMillis();
-        System.out.println(t1 - t0);
+//        long t1 = System.currentTimeMillis();
+//        System.out.println(t1 - t0);
         assertTrue(od.getOutliers().length == 8);
     }
 
@@ -77,19 +77,19 @@ public class OutliersDetectionModuleTest {
         od.setCriticalValue(3.0);
         SarimaOrders spec=SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
-        System.out.println("Fast");
+//        System.out.println("Fast");
 //        Consumer<int[]> hook = a -> System.out.println("Add outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
 //        Consumer<int[]> rhook = a -> System.out.println("Remove outlier: " + od.getFactory(a[1]).getCode() + '-' + start.plus(a[0]).display());
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
 //        od.setAddHook(hook);
 //        od.setRemoveHook(rhook);
-        long t0 = System.currentTimeMillis();
+//        long t0 = System.currentTimeMillis();
         for (int i = 0; i < 100; ++i) {
             od.prepare(regarima.getObservationsCount());
             od.process(regarima, SarimaMapping.of(spec));
         }
-        long t1 = System.currentTimeMillis();
-        System.out.println(t1 - t0);
+//        long t1 = System.currentTimeMillis();
+//        System.out.println(t1 - t0);
         assertTrue(od.getOutliers().length == 8);
     }
 }

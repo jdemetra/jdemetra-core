@@ -42,8 +42,8 @@ public class ArmaModuleTest {
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
         SarimaOrders nspec = test.process(regarima, true);
-        System.out.println("Prod");
-        System.out.println(nspec);
+//        System.out.println("Prod");
+//        System.out.println(nspec);
     }
 
     @Test
@@ -53,8 +53,8 @@ public class ArmaModuleTest {
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.EXPORTS)).arima(sarima).build();
         SarimaOrders nspec = test.process(regarima, true);
-        System.out.println("X");
-        System.out.println(nspec);
+//        System.out.println("X");
+//        System.out.println(nspec);
     }
 
     @Test
@@ -68,8 +68,8 @@ public class ArmaModuleTest {
         context.description = desc;
         context.hasseas = true;
         arma.process(context);
-        System.out.println("Prod-Legacy");
-        System.out.println(context.description.getSpecification());
+//        System.out.println("Prod-Legacy");
+//        System.out.println(context.description.getSpecification());
 //        System.out.println(diff.getD());
 //        System.out.println(diff.getBD());
 //        System.out.println(diff.isMeanCorrection());
@@ -86,8 +86,8 @@ public class ArmaModuleTest {
         context.description = desc;
         context.hasseas = true;
         arma.process(context);
-        System.out.println("X-Legacy");
-        System.out.println(context.description.getSpecification());
+//        System.out.println("X-Legacy");
+//        System.out.println(context.description.getSpecification());
 //        System.out.println(diff.getD());
 //        System.out.println(diff.getBD());
 //        System.out.println(diff.isMeanCorrection());

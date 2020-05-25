@@ -35,15 +35,20 @@ import demetra.data.DoubleSeq;
  */
 public class OutliersDetectionModuleTest {
 
-
     public OutliersDetectionModuleTest() {
     }
 
-    @Test
-    public void testProd() {
+    public static void main(String[] args) {
+        testProdLegacy();
+        testProd();
+        testProdWn();
+    }
+
+    public static void testProd() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
         SarimaOrders spec = SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
+        System.out.println("New");
 
 //        long t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 500; ++i) {
@@ -66,11 +71,10 @@ public class OutliersDetectionModuleTest {
 //        System.out.println(t1 - t0);
     }
 
-    @Test
-    public void testProdWn() {
+    public static void testProdWn() {
         TsPeriod start = TsPeriod.monthly(1967, 1);
         SarimaOrders spec = new SarimaOrders(12);
- //       spec.airline(true);
+        //       spec.airline(true);
         spec.setBd(1);
         spec.setD(1);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
@@ -80,8 +84,8 @@ public class OutliersDetectionModuleTest {
         FastOutliersDetector od = FastOutliersDetector.builder()
                 .singleOutlierDetector(FastOutliersDetector.defaultOutlierDetector())
                 .criticalValue(3)
-                 .processor(RegArimaUtility.processor(true, 1e-7))
-               .build();
+                .processor(RegArimaUtility.processor(true, 1e-7))
+                .build();
         RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
         od.prepare(regarima.getObservationsCount());
         od.process(regarima, SarimaMapping.of(spec));
@@ -95,8 +99,7 @@ public class OutliersDetectionModuleTest {
 //        System.out.println(t1 - t0);
     }
 
-    @Test
-    public void testProdLegacy() {
+    public static void testProdLegacy() {
 
         System.out.println("Legacy");
 //        long t0 = System.currentTimeMillis();
@@ -114,7 +117,6 @@ public class OutliersDetectionModuleTest {
         context.hasseas = true;
         od.process(context);
         List<IOutlierVariable> outliers = context.description.getOutliers();
-        int n = outliers.size();
         for (IOutlierVariable o : outliers) {
             System.out.println(o.getName());
         }
