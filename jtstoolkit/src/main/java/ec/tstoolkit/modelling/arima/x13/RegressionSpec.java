@@ -267,15 +267,15 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
             } else {
                 String[] user = td_.getUserVariables();
                 if (user != null) {
-                    if (shortname) {
-                        names.add("td");
-                    } else {
-                        for (String username : user) {
-                            if (!username.startsWith("td|")) {
-                                username = "td|" + username;
-                            }
-                            names.add(ITsVariable.validName(username));
+//                    if (shortname) {
+//                        names.add("td");
+//                    } else {
+                    for (String username : user) {
+                        if (!username.startsWith("td|")) {
+                            username = "td|" + username;
                         }
+                        names.add(ITsVariable.validName(username));
+//                        }
                     }
                 } else {
                     if (td_.getTradingDaysType() == TradingDaysType.WorkingDays || shortname) {
@@ -666,19 +666,30 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
     private void checkFixedCoefficients() {
         String[] names = getRegressionVariableShortNames(TsFrequency.Undefined);
         Arrays.sort(names);
+        // Fixed coefficients that are not used anymore should be removed.
+        // Be careful with user-defined calendar variables: td is useless if all the variables are in the list of fixed coefficients
         List<String> toremove = fcoeff.keySet().stream().filter(s -> Arrays.binarySearch(names, s) < 0).collect(Collectors.toList());
-        // if the number of user-defined calender variables nemes is not equal to the number of coefficents fcoeff for "td" td is needed
-        int i = 0;
-        for (int j = 0; j < names.length; j++) {
-            if (names[j].startsWith("td|")) {
-                i = i + 1;
+        if (toremove.contains("td")) {
+            for (String name : names) {
+                if (name.startsWith("td|") && ! fcoeff.keySet().contains(name)) {
+                    toremove.remove("td");
+                    break;
+                }
             }
         }
-
-        if (toremove.contains("td") && fcoeff.get("td").length != i) {
-            toremove.remove("td");
-        }
         toremove.forEach(s -> fcoeff.remove(s));
+//        // if the number of user-defined calender variables nemes is not equal to the number of coefficents fcoeff for "td" td is needed
+//        int i = 0;
+//        for (int j = 0; j < names.length; j++) {
+//            if (names[j].startsWith("td|")) {
+//                i = i + 1;
+//            }
+//        }
+//
+//        if (toremove.contains("td") && fcoeff.get("td").length != i) {
+//            toremove.remove("td");
+//        }
+//        toremove.forEach(s -> fcoeff.remove(s));
     }
 
 }
