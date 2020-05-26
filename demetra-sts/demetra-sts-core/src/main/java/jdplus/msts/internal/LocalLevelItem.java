@@ -31,6 +31,17 @@ public class LocalLevelItem extends StateItem {
         this.v = new VarianceInterpreter(name + ".var", lvar, fixed, true);
     }
 
+    private LocalLevelItem(LocalLevelItem item) {
+        super(item.name);
+        this.v = item.v.duplicate();
+        this.initial = item.initial;
+    }
+
+    @Override
+    public LocalLevelItem duplicate() {
+        return new LocalLevelItem(this);
+    }
+
     @Override
     public void addTo(MstsMapping mapping) {
         mapping.add(v);

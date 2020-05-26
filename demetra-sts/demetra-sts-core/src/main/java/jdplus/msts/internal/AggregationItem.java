@@ -27,6 +27,13 @@ public class AggregationItem extends StateItem {
         super(name);
         this.cmps = cmps;
     }
+    
+    public AggregationItem duplicate(){
+        StateItem[] citems=new StateItem[cmps.length];
+        for (int i=0; i<citems.length; ++i)
+            citems[i]=cmps[i].duplicate();
+        return new AggregationItem(name, citems);
+    }
 
     @Override
     public StateComponent build(DoubleSeq p) {

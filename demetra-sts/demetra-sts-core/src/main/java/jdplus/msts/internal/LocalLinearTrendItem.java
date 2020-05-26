@@ -30,6 +30,17 @@ public class LocalLinearTrendItem extends StateItem {
         sv = new VarianceInterpreter(name + ".svar", svar, sfixed, true);
     }
 
+    private LocalLinearTrendItem(LocalLinearTrendItem item) {
+        super(item.name);
+        this.lv = item.lv.duplicate();
+        this.sv = item.sv.duplicate();
+     }
+
+    @Override
+    public LocalLinearTrendItem duplicate() {
+        return new LocalLinearTrendItem(this);
+    }
+
     @Override
     public void addTo(MstsMapping mapping) {
         mapping.add(lv);

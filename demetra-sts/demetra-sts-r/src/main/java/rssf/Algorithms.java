@@ -19,6 +19,7 @@ import jdplus.ssf.multivariate.SsfMatrix;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.math.matrices.Matrix;
+import jdplus.msts.MstsMapping;
 
 /**
  *
@@ -70,15 +71,17 @@ public class Algorithms {
     }
     
     public double diffuseLikelihood(CompositeModel model, Matrix data, double[] parameters){
-        MultivariateCompositeSsf mssf = model.getMapping().map(DoubleSeq.copyOf(parameters));
+        MstsMapping mapping = model.mapping();
+        MultivariateCompositeSsf mssf = mapping.map(DoubleSeq.copyOf(parameters));
         DiffuseLikelihood likelihood = DkToolkit.likelihood(mssf, new SsfMatrix(data), true, false);
         return likelihood.logLikelihood();
     }
     
     public double[] estimate(CompositeModel model, Matrix data){
+        MstsMapping mapping = model.mapping();
         MstsMonitor monitor=MstsMonitor.builder()
                 .build();
-        monitor.process(data, model.getMapping(), null);
+        monitor.process(data, mapping, null);
         return monitor.fullParameters().toArray();
     }
 }

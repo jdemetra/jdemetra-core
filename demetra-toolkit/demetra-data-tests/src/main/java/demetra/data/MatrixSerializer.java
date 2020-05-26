@@ -29,21 +29,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import demetra.math.matrices.MatrixType;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 /**
  *
  * @author Jean Palate
  */
 public class MatrixSerializer {
-    
-    
 
     public static MatrixType read(File file, String separators) throws FileNotFoundException, IOException {
-        return read(file, Locale.ROOT, separators);
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            return read(reader, Locale.ROOT, separators);
+        }
     }
 
     public static MatrixType read(File file) throws FileNotFoundException, IOException {
-        return read(file, Locale.ROOT, "\\s+|,");
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            return read(reader, Locale.ROOT, "\\s+|,");
+        }
+    }
+
+    public static MatrixType read(InputStream stream, String separators) throws FileNotFoundException, IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+            return read(reader, Locale.ROOT, separators);
+        }
+    }
+
+    public static MatrixType read(InputStream stream) throws FileNotFoundException, IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+            return read(reader, Locale.ROOT, "\\s+|,");
+        }
     }
 
     public static void write(MatrixType m, File file) throws FileNotFoundException, IOException {
@@ -52,37 +69,36 @@ public class MatrixSerializer {
         }
     }
 
-    public static MatrixType read(File file, Locale locale, String separators) throws FileNotFoundException, IOException {
+    public static MatrixType read(BufferedReader reader, Locale locale, String separators) throws FileNotFoundException, IOException {
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            List<double[]> data = new ArrayList<>();
-            String curline;
-            int nc = 0;
-            while ((curline = reader.readLine()) != null) {
-                double[] c = split(curline, locale, separators);
-                if (c == null) {
-                    return null;
-                }
-                if (nc == 0) {
-                    nc = c.length;
-                } else if (nc != c.length) {
-                    return null;
-                }
-                data.add(c);
-            }
-            if (data.isEmpty()) {
+        List<double[]> data = new ArrayList<>();
+        String curline;
+        int nc = 0;
+        while ((curline = reader.readLine()) != null) {
+            double[] c = split(curline, locale, separators);
+            if (c == null) {
                 return null;
             }
-            int nrows = data.size(), ncols = data.get(0).length;
-            double[] all = new double[nrows * ncols];
-            for (int i = 0; i < nrows; ++i) {
-                double[] cur = data.get(i);
-                for (int j = 0; j < ncols; ++j) {
-                    all[i + j * nrows] = cur[j];
-                }
+            if (nc == 0) {
+                nc = c.length;
+            } else if (nc != c.length) {
+                return null;
             }
-            return MatrixType.of(all, nrows, ncols);
+            data.add(c);
         }
+        if (data.isEmpty()) {
+            return null;
+        }
+        int nrows = data.size(), ncols = data.get(0).length;
+        double[] all = new double[nrows * ncols];
+        for (int i = 0; i < nrows; ++i) {
+            double[] cur = data.get(i);
+            for (int j = 0; j < ncols; ++j) {
+                all[i + j * nrows] = cur[j];
+            }
+        }
+        return MatrixType.of(all, nrows, ncols);
+
     }
 
     private static double[] split(String line, Locale locale, String separators) {

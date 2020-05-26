@@ -8,10 +8,8 @@ package jdplus.msts.internal;
 import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.math.matrices.Matrix;
-import jdplus.msts.ModelItem;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
-import jdplus.ssf.implementations.RegSsf;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -46,6 +44,24 @@ public class RegressionItem extends StateItem {
                 }
             }
         }
+    }
+    
+    private RegressionItem(RegressionItem item){
+        super(item.name);
+        this.x=item.x;
+        if (item.v == null)
+            v=null;
+        else{
+            v=new VarianceInterpreter[item.v.length];
+            for (int i=0; i<v.length; ++i){
+                v[i]=item.v[i].duplicate();
+            }
+        }
+    }
+    
+    @Override
+    public RegressionItem duplicate(){
+        return new RegressionItem(this);
     }
 
     @Override

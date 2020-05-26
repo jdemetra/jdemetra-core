@@ -44,6 +44,17 @@ public class SarimaItem extends StateItem {
         p = new SarimaInterpreter(name, spec, parameters, fixed);
     }
 
+    private SarimaItem(SarimaItem item) {
+        super(item.name);
+        this.v = item.v.duplicate();
+        this.p = item.p.duplicate();
+    }
+
+    @Override
+    public SarimaItem duplicate() {
+        return new SarimaItem(this);
+    }
+
     @Override
     public void addTo(MstsMapping mapping) {
         mapping.add(v);
@@ -109,12 +120,12 @@ public class SarimaItem extends StateItem {
     @Override
     public int stateDim() {
         SarimaOrders spec = p.getDomain().getSpec();
-        int p = spec.getP()+spec.getD();
-        int q=spec.getQ();
-        int s=spec.getPeriod();
-        if (s>0){
-            p+=s*(spec.getBp()+spec.getBd());
-            q+=s*spec.getBq();
+        int p = spec.getP() + spec.getD();
+        int q = spec.getQ();
+        int s = spec.getPeriod();
+        if (s > 0) {
+            p += s * (spec.getBp() + spec.getBd());
+            q += s * spec.getBq();
         }
         return Math.max(p, q + 1);
     }

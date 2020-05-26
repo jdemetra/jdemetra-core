@@ -26,6 +26,7 @@ import org.junit.Test;
 import demetra.math.matrices.MatrixType;
 import demetra.ssf.SsfInitialization;
 import demetra.timeseries.TsData;
+import jdplus.msts.MstsMapping;
 import jdplus.sts.LocalLevel;
 import jdplus.sts.LocalLinearTrend;
 
@@ -144,7 +145,8 @@ public class CompositeModelTest {
         eq6.add("cycle", .1, false, Loading.from(new int[]{5, 6, 7, 8}, new double[]{1, 1, 1, 1}));
         model.add(eq6);
         //estimate the model
-        double[] dp = model.fullDefaultParameters();
+        MstsMapping mapping = model.mapping();
+        double[] dp = mapping.getDefaultParameters().toArray();
         CompositeModelEstimation rslt = model.estimate(x, false, true, SsfInitialization.Diffuse, Optimizer.BFGS, 1e-15, null);
 //        System.out.println(rslt.getLikelihood().logLikelihood());
 //        System.out.println(DataBlock.ofInternal(rslt.getFullParameters()));

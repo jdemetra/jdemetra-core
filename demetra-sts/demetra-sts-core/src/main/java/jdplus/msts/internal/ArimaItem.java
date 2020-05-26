@@ -50,6 +50,19 @@ public class ArimaItem extends StateItem {
             bdiff = BackFilter.ONE;
         }
     }
+    
+    private ArimaItem(ArimaItem item){
+        super(item.name);
+        this.par=item.par == null ? null : item.par.duplicate();
+        this.pma=item.pma == null ? null : item.pma.duplicate();
+        this.v=item.v.duplicate();
+        this.bdiff=item.bdiff;
+    }
+    
+    @Override
+    public ArimaItem duplicate(){
+        return new ArimaItem(this);
+    }
 
     @Override
     public void addTo(MstsMapping mapping) {

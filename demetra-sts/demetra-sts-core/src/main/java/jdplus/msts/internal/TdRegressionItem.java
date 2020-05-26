@@ -49,6 +49,18 @@ public class TdRegressionItem extends StateItem {
         }
     }
 
+    private TdRegressionItem(TdRegressionItem item) {
+        super(item.name);
+        this.x = item.x;
+        this.mvar = item.mvar;
+        this.v = item.v == null ? null : item.v.duplicate();
+    }
+
+    @Override
+    public TdRegressionItem duplicate() {
+        return new TdRegressionItem(this);
+    }
+
     @Override
     public void addTo(MstsMapping mapping) {
         mapping.add(v);
@@ -121,9 +133,9 @@ public class TdRegressionItem extends StateItem {
     public int parametersCount() {
         return 1;
     }
-    
+
     @Override
-    public int stateDim(){
+    public int stateDim() {
         return x.getColumnsCount();
     }
 

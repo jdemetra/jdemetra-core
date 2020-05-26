@@ -18,6 +18,9 @@ import jdplus.ssf.StateComponent;
  * @author palatej
  */
 public abstract class StateItem implements ModelItem {
+    
+    @Override
+    public abstract StateItem duplicate();
 
     protected final String name;
 

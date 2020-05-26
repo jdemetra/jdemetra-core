@@ -21,7 +21,6 @@ import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
-import demetra.ssf.SsfLikelihood;
 import jdplus.math.matrices.Matrix;
 
 /**
@@ -30,9 +29,19 @@ import jdplus.math.matrices.Matrix;
  */
 public class CompositeModel {
 
-    private MstsMapping mapping;
     private final List<StateItem> items = new ArrayList<>();
     private final List<ModelEquation> equations = new ArrayList<>();
+    
+    public CompositeModel duplicate(){
+        CompositeModel m=new CompositeModel();
+        for (StateItem item : items){
+            m.items.add(item.duplicate());
+        }
+        for (ModelEquation eq : equations){
+            m.equations.add(eq.duplicate());
+        }
+        return m;
+    }
 
     public int getEquationsCount() {
         return equations.size();
@@ -56,20 +65,14 @@ public class CompositeModel {
 
     public void add(StateItem item) {
         this.items.add(item);
-        mapping = null;
     }
 
     public void add(ModelEquation eq) {
         this.equations.add(eq);
-        mapping = null;
-    }
+     }
 
-    public MstsMapping getMapping() {
-        return mapping;
-    }
-
-    public void build() {
-        mapping = new MstsMapping();
+    public MstsMapping mapping() {
+        MstsMapping mapping = new MstsMapping();
         for (StateItem item : items) {
             item.addTo(mapping);
             if (!item.isScalable()) {
@@ -79,29 +82,16 @@ public class CompositeModel {
         for (ModelEquation eq : equations) {
             eq.addTo(mapping);
         }
+        return mapping;
     }
 
-    public double[] defaultParameters() {
-        if (mapping == null) {
-            build();
-        }
-        return mapping.getDefaultParameters().toArray();
-    }
-
-    public double[] fullDefaultParameters() {
-        if (mapping == null) {
-            build();
-        }
-        return mapping.modelParameters(mapping.getDefaultParameters()).toArray();
-    }
 
     public CompositeModelEstimation estimate(Matrix data, boolean marginal, boolean rescaling, SsfInitialization initialization, Optimizer optimizer, double eps, double[] parameters) {
-        build();
-        return CompositeModelEstimation.estimationOf(this, data, marginal, rescaling, initialization, optimizer, eps, parameters);
+        return CompositeModelEstimation.estimationOf(this.duplicate(), data, marginal, rescaling, initialization, optimizer, eps, parameters);
     }
 
     public CompositeModelEstimation compute(Matrix data, double[] parameters, boolean marginal, boolean concentrated) {
-        build();
-        return CompositeModelEstimation.computationOf(this, data, DoubleSeq.of(parameters), marginal, concentrated);
+        
+        return CompositeModelEstimation.computationOf(this.duplicate(), data, DoubleSeq.of(parameters), marginal, concentrated);
     }
 }

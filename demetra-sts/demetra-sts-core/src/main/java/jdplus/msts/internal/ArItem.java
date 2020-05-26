@@ -8,11 +8,8 @@ package jdplus.msts.internal;
 import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.msts.ArInterpreter;
-import jdplus.msts.ModelItem;
-import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
 import jdplus.arima.ssf.SsfAr;
-import jdplus.arima.ssf.SsfAr2;
 import java.util.Arrays;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
@@ -36,6 +33,19 @@ public class ArItem extends StateItem {
         this.ar = new ArInterpreter(name + ".ar", ar, fixedar);
         this.v = new VarianceInterpreter(name + ".var", var, fixedvar, true);
         this.zeroinit = zeroinit;
+    }
+
+    private ArItem(ArItem item) {
+        super(item.name);
+        this.ar = item.ar.duplicate();
+        this.v = item.v.duplicate();
+        this.nlags = item.nlags;
+        this.zeroinit = item.zeroinit;
+    }
+
+    @Override
+    public ArItem duplicate() {
+        return new ArItem(this);
     }
 
     @Override
@@ -72,7 +82,7 @@ public class ArItem extends StateItem {
 
     @Override
     public int stateDim() {
-        return Math.max(nlags, ar.getDomain().getDim())+1;
+        return Math.max(nlags, ar.getDomain().getDim()) + 1;
     }
 
 }

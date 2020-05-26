@@ -49,6 +49,21 @@ public class MsaeItem extends StateItem {
             par[i] = new ArInterpreter(name + ".wae" + (i + 1), car, fixedar);
         }
     }
+    
+   private MsaeItem(MsaeItem item) {
+        super(item.name);
+        this.nwaves=item.nwaves;
+        this.lag=item.lag;
+        this.lar=item.lar;
+        this.par=new ArInterpreter[item.par.length];
+        for (int i=0; i<par.length; ++i)
+            par[i]=item.par[i].duplicate();
+     }
+
+    @Override
+    public MsaeItem duplicate() {
+        return new MsaeItem(this);
+    }
 
     @Override
     public void addTo(MstsMapping mapping) {

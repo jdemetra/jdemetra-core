@@ -5,9 +5,7 @@
  */
 package jdplus.msts;
 
-import jdplus.msts.LoadingInterpreter;
 import jdplus.msts.MstsMapping;
-import jdplus.msts.VarianceInterpreter;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.implementations.MultivariateCompositeSsf;
 import java.util.ArrayList;
@@ -36,7 +34,19 @@ public class ModelConstraint implements ModelItem {
         this.name = name;
         this.value = value;
     }
+    
+    private ModelConstraint(ModelConstraint cnt){
+        this.name=cnt.name;
+        this.items.addAll(cnt.items);
+        this.value=cnt.value;
+    }
+    
+    @Override
+    public ModelConstraint duplicate(){
+        return new ModelConstraint(this);
+    }
 
+    @Override
     public String getName() {
         return name;
     }

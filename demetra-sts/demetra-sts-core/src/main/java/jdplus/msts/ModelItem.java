@@ -49,4 +49,6 @@ public interface ModelItem {
         return npos;
     }
     
+    ModelItem duplicate();
+    
 }
