@@ -99,29 +99,37 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
         refreshOutliersSpec(ntspec, dtspec, frozen, policy);
 
         RegressionSpec nrspec = ntspec.getRegression();
-        if (policy == EstimationPolicyType.Fixed) {
-            // fix all the coefficients of the regression variables
-            Map<String, double[]> all = nrspec.getAllCoefficients();
-            all.forEach((n, c) -> nrspec.setFixedCoefficients(n, c));
-        } else {
-            // copy back the initial fixed coefficients
-            nrspec.clearAllFixedCoefficients();
-            Map<String, double[]> all = dtspec.getRegression().getAllFixedCoefficients();
-            all.forEach((n, c) -> nrspec.setFixedCoefficients(n, c));
+        switch (policy) {
+            case Fixed:
+            case Current:
+                {
+                    // fix all the coefficients of the regression variables, except names starting with "AO:" (special intervention variables)
+                    Map<String, double[]> all = nrspec.getAllCoefficients();
+                    all.forEach((n, c) -> {if (!n.startsWith("AO:")) nrspec.setFixedCoefficients(n, c);});
+                    break;
+                }
+            default:
+                {
+                    // copy back the initial fixed coefficients
+                    nrspec.clearAllFixedCoefficients();
+                    Map<String, double[]> all = dtspec.getRegression().getAllFixedCoefficients();
+                    all.forEach((n, c) -> nrspec.setFixedCoefficients(n, c));
+                    break;
+                }
         }
         if (policy == EstimationPolicyType.Current) {
             TsData cur = doc.getTsData();
             if (cur != null && frozen != null) {
                 TsDomain ndomain = cur.getDomain();
-                TsPeriod end=ndomain.getEnd();
+                TsPeriod end = ndomain.getEnd();
                 int ndata = frozen.getEnd().minus(end);
-                for (int i=0; i<ndata; ++i){
+                for (int i = 0; i < ndata; ++i) {
                     Day day = end.firstday();
-                    Sequence seq=new Sequence(day, day);
-                    InterventionVariable var=new InterventionVariable();
-                    var.setDescription("AO:"+end.toString());
+                    Sequence seq = new Sequence(day, day);
+                    InterventionVariable var = new InterventionVariable();
+                    var.setDescription("AO:" + end.toString());
                     var.setSequences(new Sequence[]{seq});
-                    
+
                     nrspec.add(var);
                     end.move(1);
                 }
@@ -180,8 +188,8 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
             }
             if (vars.select(ILengthOfPeriodVariable.class).isEmpty()) {
                 tdspec.setLengthOfPeriod(LengthOfPeriodType.None);
-            }else{
-                used=true;
+            } else {
+                used = true;
             }
             if (!used) {
                 rspec.getTradingDays().disable();

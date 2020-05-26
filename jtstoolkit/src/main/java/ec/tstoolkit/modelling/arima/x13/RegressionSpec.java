@@ -267,11 +267,15 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
             } else {
                 String[] user = td_.getUserVariables();
                 if (user != null) {
-                    for (String username : user) {
-                        if (!username.startsWith("td|")) {
-                            username = "td|" + username;
+                    if (shortname) {
+                        names.add("td");
+                    } else {
+                        for (String username : user) {
+                            if (!username.startsWith("td|")) {
+                                username = "td|" + username;
+                            }
+                            names.add(ITsVariable.validName(username));
                         }
-                        names.add(ITsVariable.validName(username));
                     }
                 } else {
                     if (td_.getTradingDaysType() == TradingDaysType.WorkingDays || shortname) {
@@ -311,8 +315,8 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         ramps_.forEach(rp -> names.add(rp.getName()));
 
         // intervention
-        interventions_.forEach(iv ->
-        {
+        interventions_.forEach(iv
+                -> {
             String n = iv.getName();
             if (names.contains(n)) {
                 n += '*';
@@ -321,8 +325,8 @@ public class RegressionSpec implements Cloneable, InformationSetSerializable {
         });
 
         // user
-        users_.forEach(uv ->
-        {
+        users_.forEach(uv
+                -> {
             int n = uv.getLastLag() - uv.getFirstLag() + 1;
             if (n == 1 || shortname) {
                 names.add(validName(uv.getName()));
