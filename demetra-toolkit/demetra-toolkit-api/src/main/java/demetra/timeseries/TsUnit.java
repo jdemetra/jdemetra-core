@@ -199,10 +199,10 @@ public class TsUnit implements TemporalAmount {
             case 12:
                 return MONTH;
         }
-        if (freq % 12 == 0) {
-            return new TsUnit(freq / 12, ChronoUnit.MONTHS);
+        if (12 % freq == 0) {
+            return new TsUnit(12 / freq, ChronoUnit.MONTHS);
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Illegal annual frequency: " + Integer.toString(freq));
         }
     }
 

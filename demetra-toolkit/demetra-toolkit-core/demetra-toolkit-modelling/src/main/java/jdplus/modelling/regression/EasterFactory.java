@@ -16,6 +16,7 @@
  */
 package jdplus.modelling.regression;
 
+import demetra.data.Range;
 import jdplus.data.DataBlock;
 import demetra.design.Development;
 import demetra.timeseries.regression.EasterVariable;
@@ -23,6 +24,7 @@ import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.Easter;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import jdplus.math.matrices.Matrix;
 
 /**
@@ -179,7 +181,7 @@ class EasterFactory implements RegressionVariableFactory<EasterVariable>  {
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(EasterVariable var, D domain, Matrix buffer) {
+    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>>  boolean fill(EasterVariable var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported."); //To change body of generated methods, choose Tools | Templates.
     }
 

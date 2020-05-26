@@ -5,9 +5,11 @@
  */
 package jdplus.modelling.regression;
 
+import demetra.data.Range;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
+import java.time.LocalDateTime;
 import jdplus.math.matrices.Matrix;
 
 /**
@@ -18,5 +20,5 @@ import jdplus.math.matrices.Matrix;
 public interface RegressionVariableFactory <X extends ITsVariable> {
     boolean fill(X var, TsPeriod start, Matrix buffer);
     
-    <D extends TimeSeriesDomain> boolean fill(X var, D domain, Matrix buffer);
+    <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>> boolean fill(X var, D domain, Matrix buffer);
 }

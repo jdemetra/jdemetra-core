@@ -58,7 +58,7 @@ public class FastOutliersDetectorTest {
         int[][] outliers = od.getOutliers();
         for (int i = 0; i < outliers.length; ++i) {
             int[] cur = outliers[i];
-            System.out.println(od.getFactory(cur[1]).getCode() + '-' + start.plus(cur[0]).display());
+//            System.out.println(od.getFactory(cur[1]).getCode() + '-' + start.plus(cur[0]).display());
         }
 //        }
 //        long t1 = System.currentTimeMillis();
@@ -73,7 +73,7 @@ public class FastOutliersDetectorTest {
         spec.setBd(1);
         spec.setD(1);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
-        System.out.println("WN");
+//        System.out.println("WN");
 //        long t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 500; ++i) {
         FastOutliersDetector od = FastOutliersDetector.builder()
@@ -85,10 +85,10 @@ public class FastOutliersDetectorTest {
         od.prepare(regarima.getObservationsCount());
         od.process(regarima, SarimaMapping.of(spec));
         int[][] outliers = od.getOutliers();
-        for (int i = 0; i < outliers.length; ++i) {
-            int[] cur = outliers[i];
-            System.out.println(od.getFactory(cur[1]).getCode() + '-' + start.plus(cur[0]).display());
-        }
+//        for (int i = 0; i < outliers.length; ++i) {
+//            int[] cur = outliers[i];
+//            System.out.println(od.getFactory(cur[1]).getCode() + '-' + start.plus(cur[0]).display());
+//        }
 //        }
 //        long t1 = System.currentTimeMillis();
 //        System.out.println(t1 - t0);
@@ -97,7 +97,7 @@ public class FastOutliersDetectorTest {
     @Test
     public void testProdLegacy() {
 
-        System.out.println("Legacy");
+//        System.out.println("Legacy");
 //        long t0 = System.currentTimeMillis();
 //        for (int i = 0; i < 500; ++i) {
         ec.tstoolkit.modelling.arima.tramo.OutliersDetector od = new ec.tstoolkit.modelling.arima.tramo.OutliersDetector();
@@ -114,9 +114,9 @@ public class FastOutliersDetectorTest {
         od.process(context);
         List<IOutlierVariable> outliers = context.description.getOutliers();
         int n = outliers.size();
-        for (IOutlierVariable o : outliers) {
-            System.out.println(o.getName());
-        }
+//        for (IOutlierVariable o : outliers) {
+//            System.out.println(o.getName());
+//        }
 //        }
 //        long t1 = System.currentTimeMillis();
 //        System.out.println(t1 - t0);

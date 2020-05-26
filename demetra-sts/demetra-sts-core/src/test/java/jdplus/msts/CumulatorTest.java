@@ -70,6 +70,7 @@ public class CumulatorTest {
         System.out.println(states.getComponent(2));
         System.out.println(states.getComponent(3));
         System.out.println(DoubleSeq.of(Data.PCRA));
+        System.out.println(rslt.getParameters()[0]);
     }
    
 }

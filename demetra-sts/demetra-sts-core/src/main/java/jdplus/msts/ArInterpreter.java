@@ -124,6 +124,8 @@ public class ArInterpreter implements ParameterInterpreter {
 
 
     static class Domain implements IParametersDomain {
+        
+        private double EPS=1e-6;
 
         private final int degree;
 
@@ -133,6 +135,8 @@ public class ArInterpreter implements ParameterInterpreter {
 
         @Override
         public boolean checkBoundaries(DoubleSeq inparams) {
+            if (degree==1)
+                return Math.abs(inparams.get(0))<1-EPS;
             return SarimaMapping.checkStability(DoubleSeq.onMapping(inparams.length(), i -> -inparams.get(i)));
         }
 
@@ -148,16 +152,23 @@ public class ArInterpreter implements ParameterInterpreter {
 
         @Override
         public double lbound(int idx) {
+            if (degree == 1)
+                return -1+EPS;
+            else
             return -Double.MAX_VALUE;
         }
 
         @Override
         public double ubound(int idx) {
+            if (degree == 1)
+                return 1-EPS;
+            else
             return Double.MAX_VALUE;
         }
 
         @Override
         public ParamValidation validate(DataBlock ioparams) {
+            
             double[] z = ioparams.toArray();
             for (int i = 0; i < z.length; ++i) {
                 z[i] = -z[i];

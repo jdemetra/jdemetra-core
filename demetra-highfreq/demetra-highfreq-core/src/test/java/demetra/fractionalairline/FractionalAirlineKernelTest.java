@@ -6,31 +6,26 @@
 package demetra.fractionalairline;
 
 import jdplus.fractionalairline.FractionalAirlineKernel;
-import jdplus.arima.ArimaModel;
 import demetra.data.Data;
 import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.matrices.Matrix;
-import jdplus.regarima.RegArimaEstimation;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.Holiday;
 import jdplus.timeseries.calendars.HolidaysUtility;
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 import demetra.data.DoubleSeq;
 import demetra.highfreq.FractionalAirlineEstimation;
 import demetra.highfreq.FractionalAirlineSpec;
 import demetra.math.matrices.MatrixType;
+import java.io.InputStream;
 
 /**
  *
@@ -42,9 +37,9 @@ public class FractionalAirlineKernelTest {
     }
     
     @Test
-    public void testDaily() throws URISyntaxException, IOException {
-        URI uri = Data.class.getResource("/edf.txt").toURI();
-        MatrixType edf = MatrixSerializer.read(new File(uri));
+    public void testDaily() throws IOException {
+        InputStream stream = Data.class.getResourceAsStream("/edf.txt");
+        MatrixType edf = MatrixSerializer.read(stream);
         Holiday[] france = france();
         Matrix hol = Matrix.make(edf.getRowsCount(), france.length);
         HolidaysUtility.fillDays(france, hol, LocalDate.of(1996, 1, 1), false);

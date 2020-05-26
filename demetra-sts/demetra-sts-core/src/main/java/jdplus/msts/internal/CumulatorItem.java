@@ -29,6 +29,11 @@ public class CumulatorItem extends StateItem {
         this.period = period;
         this.start = start;
     }
+    
+    @Override
+    public CumulatorItem duplicate(){
+        return new CumulatorItem(name, core.duplicate(), period, start);
+    }
 
     @Override
     public void addTo(MstsMapping mapping) {

@@ -30,6 +30,7 @@ import jdplus.math.functions.ssq.ISsqFunctionDerivatives;
 import jdplus.math.functions.ssq.SsqNumericalDerivatives;
 import demetra.data.DoubleSeq;
 import jdplus.likelihood.LikelihoodFunctionPoint;
+import jdplus.ssf.SsfException;
 
 /**
  *
@@ -50,8 +51,8 @@ public class DiffuseConcentratedLikelihoodFunctionPoint<S, F extends ISsf> imple
      *
      */
     private final DiffuseConcentratedLikelihood ll;
-    private final DataBlock p;
-    private DataBlock E;
+    private final DoubleSeq p;
+    private final DoubleSeq E;
     private final DiffuseConcentratedLikelihoodFunction<S, F> fn;
 
     /**
@@ -62,14 +63,33 @@ public class DiffuseConcentratedLikelihoodFunctionPoint<S, F extends ISsf> imple
     public DiffuseConcentratedLikelihoodFunctionPoint(DiffuseConcentratedLikelihoodFunction<S, F> fn, DoubleSeq p) {
         this.fn = fn;
         this.p = DataBlock.of(p);
-        current=fn.getMapping().map(p);
+        current = fn.getMapping().map(p);
         currentSsf = fn.getBuilder().buildSsf(current);
-        boolean fastcomputer=fn.isFast() && !fn.isMissing() && currentSsf.isTimeInvariant();
-        IConcentratedLikelihoodComputer<DiffuseConcentratedLikelihood> computer= DkToolkit.concentratedLikelihoodComputer(true, fastcomputer, fn.isScalingFactor());
-        if (fn.getX() == null)
-            ll=computer.compute(currentSsf, fn.getData());
-        else
-            ll=computer.compute(new SsfRegressionModel(currentSsf, fn.getData(), fn.getX(), fn.getDiffuseX()));
+        boolean fastcomputer = fn.isFast() && !fn.isMissing() && currentSsf.isTimeInvariant();
+        IConcentratedLikelihoodComputer<DiffuseConcentratedLikelihood> computer = DkToolkit.concentratedLikelihoodComputer(true, fastcomputer, fn.isScalingFactor());
+        DiffuseConcentratedLikelihood dcl;
+        DoubleSeq e;
+        try {
+            if (fn.getX() == null) {
+                dcl = computer.compute(currentSsf, fn.getData());
+            } else {
+                dcl = computer.compute(new SsfRegressionModel(currentSsf, fn.getData(), fn.getX(), fn.getDiffuseX()));
+            }
+            e = dcl.e();
+            if (fn.isScalingFactor()) {
+                DataBlock r = DataBlock.select(e, x -> Double.isFinite(x));
+                if (fn.isMaximumLikelihood()) {
+                    double factor = Math.sqrt(dcl.factor());
+                    r.mul(factor);
+                }
+                e = r;
+            }
+        } catch (SsfException err) {
+            dcl = null;
+            e = null;
+        }
+        ll = dcl;
+        E = e;
     }
 
     public F getSsf() {
@@ -82,18 +102,6 @@ public class DiffuseConcentratedLikelihoodFunctionPoint<S, F extends ISsf> imple
 
     @Override
     public DoubleSeq getE() {
-        if (E == null) {
-            DoubleSeq res = ll.e();
-            if (res == null) {
-                return null;
-            } else {
-                E = DataBlock.select(res, x->Double.isFinite(x));
-                if (fn.isMaximumLikelihood()) {
-                    double factor = Math.sqrt(ll.factor());
-                    E.mul(factor);
-                }
-            }
-        }
         return E;
     }
 
@@ -141,14 +149,17 @@ public class DiffuseConcentratedLikelihoodFunctionPoint<S, F extends ISsf> imple
     public IFunction getFunction() {
         return fn;
     }
-    
-    @Override
-     public IFunctionDerivatives derivatives(){
-        return new NumericalDerivatives(this, fn.isSymmetric(), fn.isMultiThreaded());
-    };
 
     @Override
-     public ISsqFunctionDerivatives ssqDerivatives(){
+    public IFunctionDerivatives derivatives() {
+        return new NumericalDerivatives(this, fn.isSymmetric(), fn.isMultiThreaded());
+    }
+
+    ;
+
+    @Override
+    public ISsqFunctionDerivatives ssqDerivatives() {
         return new SsqNumericalDerivatives(this, fn.isSymmetric(), fn.isMultiThreaded());
-    };
+    }
+;
 }

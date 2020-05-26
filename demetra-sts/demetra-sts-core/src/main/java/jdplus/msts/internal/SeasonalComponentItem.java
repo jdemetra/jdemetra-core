@@ -34,6 +34,18 @@ public class SeasonalComponentItem extends StateItem {
         this.v = new VarianceInterpreter(name + ".var", seasvar, fixed, true);
     }
 
+    private SeasonalComponentItem(SeasonalComponentItem item) {
+        super(item.name);
+        this.v = item.v.duplicate();
+        this.model=item.model;
+        this.period=item.period;
+    }
+
+    @Override
+    public SeasonalComponentItem duplicate() {
+        return new SeasonalComponentItem(this);
+    }
+
     @Override
     public void addTo(MstsMapping mapping) {
         mapping.add(v);

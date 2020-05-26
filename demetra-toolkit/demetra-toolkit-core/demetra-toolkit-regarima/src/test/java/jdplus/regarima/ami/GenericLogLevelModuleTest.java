@@ -25,16 +25,15 @@ import static org.junit.Assert.*;
  *
  * @author PALATEJ
  */
-public class RobustLogLevelModuleTest {
+public class GenericLogLevelModuleTest {
 
-    public RobustLogLevelModuleTest() {
+    public GenericLogLevelModuleTest() {
     }
 
-    @Test
-    public void testInsee() {
+    public static void testInsee() {
         TsData[] all = Data.insee();
         for (int i = 0; i < all.length; ++i) {
-            RobustLogLevelModule ll = new RobustLogLevelModule();
+            GenericLogLevelModule ll = GenericLogLevelModule.builder().build();
             ll.process(all[i].getValues());
             System.out.print(ll.getLog());
             System.out.print('\t');
@@ -42,11 +41,10 @@ public class RobustLogLevelModuleTest {
         }
     }
 
-    @Test
-    public void testInseeRecursive() {
+    public static void testInseeRecursive() {
         TsData[] all = Data.insee();
         for (int i = 0; i < all.length; ++i) {
-            RobustLogLevelModule ll = new RobustLogLevelModule();
+            GenericLogLevelModule ll = new GenericLogLevelModule.Builder().build();
             for (int j = 0; j < 36; ++j) {
                 ll.process(all[i].drop(0, j).getValues());
                 System.out.print(ll.isChoosingLog() ? 1 : 0);
@@ -54,5 +52,10 @@ public class RobustLogLevelModuleTest {
             }
             System.out.println();
         }
+    }
+    
+    public static void main(String[] args){
+        testInsee();
+        testInseeRecursive();
     }
 }

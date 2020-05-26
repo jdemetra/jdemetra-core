@@ -40,6 +40,18 @@ public class CycleItem extends StateItem {
                 .build();
         v = new VarianceInterpreter(name + ".var", cvar, fixedvar, true);
     }
+    
+    private CycleItem(CycleItem item){
+        super(item.name);
+        factor=item.factor.duplicate();
+        period=item.period.duplicate();
+        v=item.v.duplicate();
+    }
+    
+    @Override
+    public CycleItem duplicate(){
+        return new CycleItem(this);
+    }
 
     @Override
     public void addTo(MstsMapping mapping) {

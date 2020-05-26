@@ -18,6 +18,8 @@ package demetra.tramoseats;
 
 import demetra.design.Development;
 import demetra.design.LombokWorkaround;
+import demetra.processing.AlgorithmDescriptor;
+import demetra.sa.SaSpecification;
 import demetra.sa.benchmarking.SaBenchmarkingSpec;
 import demetra.seats.DecompositionSpec;
 import demetra.seats.SeatsSpec;
@@ -31,7 +33,16 @@ import demetra.util.Validatable;
 @Development(status = Development.Status.Beta)
 @lombok.Value
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
-public final class TramoSeatsSpec implements Validatable<TramoSeatsSpec> {
+public final class TramoSeatsSpec implements Validatable<TramoSeatsSpec>, SaSpecification{
+    
+    public static final String METHOD = "tramoseats";
+    public static final String VERSION = "1.0.0.0";
+    public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, METHOD, VERSION);
+
+    @Override
+    public AlgorithmDescriptor getAlgorithmDescriptor() {
+        return DESCRIPTOR;
+    }
 
     private static final TramoSeatsSpec DEFAULT = TramoSeatsSpec.builder().build();
 
@@ -61,6 +72,7 @@ public final class TramoSeatsSpec implements Validatable<TramoSeatsSpec> {
     public boolean isDefault() {
         return this.equals(DEFAULT);
     }
+
 
     public static class Builder implements Validatable.Builder<TramoSeatsSpec> {
     }

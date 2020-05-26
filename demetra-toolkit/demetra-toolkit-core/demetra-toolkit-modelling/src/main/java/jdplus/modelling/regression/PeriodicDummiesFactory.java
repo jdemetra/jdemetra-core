@@ -16,11 +16,13 @@
  */
 package jdplus.modelling.regression;
 
+import demetra.data.Range;
 import demetra.timeseries.regression.PeriodicDummies;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.Matrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
+import java.time.LocalDateTime;
 import jdplus.math.matrices.Matrix;
 
 /**
@@ -71,7 +73,7 @@ public class PeriodicDummiesFactory implements RegressionVariableFactory<Periodi
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(PeriodicDummies var, D domain, Matrix buffer) {
+    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>>  boolean fill(PeriodicDummies var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -49,7 +49,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         if (model.isLogTransformation()) {
             correctLogs(model);
         } else {
-            correctLevels(model);
+            fillLevels(model);
         }
     }
 
@@ -57,7 +57,7 @@ public class DefaultBiasCorrector implements IBiasCorrector {
         return e.fastFn(s, (stde, m) -> LogNormal.stdev2(m, stde));
     }
 
-    private void correctLevels(SeatsModel model) {
+    private void fillLevels(SeatsModel model) {
         TsData y = model.getOriginalSeries();
         SeriesDecomposition.Builder decomp = 
                 SeriesDecomposition.builder(DecompositionMode.Additive)
@@ -81,7 +81,6 @@ public class DefaultBiasCorrector implements IBiasCorrector {
             }
         }
 
-        // correct SA =Y / S (-> *sbias)
         TsData sa = TsData.subtract(y, s);
         decomp.add(sa, ComponentType.SeasonallyAdjusted);
         TsData sae = idecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev);

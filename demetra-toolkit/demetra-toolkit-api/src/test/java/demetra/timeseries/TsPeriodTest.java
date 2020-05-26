@@ -24,6 +24,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import org.junit.Test;
 
 /**
@@ -304,6 +305,13 @@ public class TsPeriodTest {
         assertEquals(x, d2011_02_01_0000);
         LocalDate y = d2011_02_01.plus(0, ChronoUnit.DAYS);
         assertEquals(y, d2011_02_01);
+    }
+    
+    @Test
+    public void testWeek(){
+        TsPeriod w1=TsPeriod.weekly(2020, 4, 30);
+        TsPeriod w2=TsPeriod.weekly(2020, 4, 20);
+        assertNotEquals(w1, w2);
     }
 
     private final LocalDate d2011_02_01 = LocalDate.of(2011, 2, 1);

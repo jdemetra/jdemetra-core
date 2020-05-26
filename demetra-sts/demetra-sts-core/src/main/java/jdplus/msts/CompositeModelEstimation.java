@@ -21,9 +21,7 @@ import demetra.data.Doubles;
 import jdplus.likelihood.Likelihood;
 import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
-import demetra.ssf.SsfLikelihood;
 import java.util.Arrays;
-import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.QuadraticForm;
@@ -46,13 +44,14 @@ public class CompositeModelEstimation {
                 .optimizer(optimizer)
                 .precision(eps)
                 .build();
-        monitor.process(data, model.getMapping(), parameters == null ? null : DoubleSeq.of(parameters));
+        MstsMapping mapping = model.mapping();
+        monitor.process(data, mapping, parameters == null ? null : DoubleSeq.of(parameters));
         rslt.likelihood = monitor.getLikelihood();
         rslt.ssf = monitor.getSsf();
         rslt.cmpPos = rslt.getSsf().componentsPosition();
         rslt.parameters = monitor.getParameters().toArray();
         rslt.fullParameters = monitor.fullParameters().toArray();
-        rslt.parametersName = model.getMapping().parametersName();
+        rslt.parametersName = mapping.parametersName();
         rslt.cmpName = model.getCmpsName();
         return rslt;
     }
@@ -61,12 +60,13 @@ public class CompositeModelEstimation {
         CompositeModelEstimation rslt = new CompositeModelEstimation();
         rslt.data = data;
         rslt.fullParameters = fullParameters.toArray();
-        model.getMapping().fixModelParameters(p -> true, fullParameters);
+        MstsMapping mapping = model.mapping();
+        mapping.fixModelParameters(p -> true, fullParameters);
         rslt.parameters = DoubleSeq.EMPTYARRAY;
-        rslt.ssf = model.getMapping().map(Doubles.EMPTY);
+        rslt.ssf = mapping.map(Doubles.EMPTY);
         rslt.cmpPos = rslt.getSsf().componentsPosition();
-        rslt.cmpName = model.getMapping().parametersName();
-        rslt.parametersName = model.getMapping().parametersName();
+        rslt.cmpName = mapping.parametersName();
+        rslt.parametersName = mapping.parametersName();
         if (marginal) {
             rslt.likelihood = AkfToolkit.marginalLikelihoodComputer(concentrated).
                     compute(M2uAdapter.of(rslt.getSsf()), M2uAdapter.of(new SsfMatrix(data)));

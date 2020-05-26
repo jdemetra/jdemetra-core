@@ -46,6 +46,25 @@ public class MsaeItem3 extends StateItem {
         }
     }
 
+   private MsaeItem3(MsaeItem3 item) {
+        super(item.name);
+        this.lag = item.lag;
+        this.k=item.k;
+        this.v = new VarianceInterpreter[item.v.length];
+        for (int i = 0; i < v.length; ++i) {
+            v[i] = item.v[i].duplicate();
+        }
+        this.par = new ArInterpreter[item.par.length];
+        for (int i = 0; i < par.length; ++i) {
+            par[i] = item.par[i].duplicate();
+        }
+    }
+
+    @Override
+    public MsaeItem3 duplicate() {
+        return new MsaeItem3(this);
+    }
+
     @Override
     public void addTo(MstsMapping mapping) {
         for (int i = 0; i < v.length; ++i) {

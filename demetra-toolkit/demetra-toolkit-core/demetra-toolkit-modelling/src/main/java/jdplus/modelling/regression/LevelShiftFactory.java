@@ -5,6 +5,7 @@
  */
 package jdplus.modelling.regression;
 
+import demetra.data.Range;
 import demetra.timeseries.regression.LevelShift;
 import jdplus.data.DataBlock;
 import jdplus.math.linearfilters.BackFilter;
@@ -83,7 +84,7 @@ class LSFactory implements RegressionVariableFactory<LevelShift> {
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(LevelShift var, D domain, Matrix m) {
+    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>>  boolean fill(LevelShift var, D domain, Matrix m) {
         fill(var, domain.indexOf(var.getPosition()), m.column(0));
         return true;
     }

@@ -18,16 +18,16 @@ package jdplus.ssf.univariate;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.Seq;
 
 /**
  *
  * @author Jean Palate
  */
-public interface ISsfData extends DoubleSeq{
+public interface ISsfData extends DoubleSeq {
 
-
-     /**
+    /**
      *
      * @param pos
      * @return
@@ -40,22 +40,43 @@ public interface ISsfData extends DoubleSeq{
      */
     boolean hasData();
 
-    
-    default int getObsCount(){
-        int nm=0, n=length();
-        for (int i=0; i<n; ++i){
-            if (isMissing(i))
+    default int getObsCount() {
+        int nm = 0, n = length();
+        for (int i = 0; i < n; ++i) {
+            if (isMissing(i)) {
                 ++nm;
+            }
         }
-        return n-nm;
+        return n - nm;
     }
- 
-    default boolean hasMissingValues(){
-        int n=length();
-        for (int i=0; i<n; ++i){
-            if (isMissing(i))
+
+    default boolean hasMissingValues() {
+        int n = length();
+        for (int i = 0; i < n; ++i) {
+            if (isMissing(i)) {
                 return true;
+            }
         }
         return false;
+    }
+
+    default double scale() {
+        int n = this.length();
+        int nd = 0;
+        double sabs = 0;
+        DoubleSeqCursor cursor = cursor();
+        for (int i = 0; i < n; ++i) {
+            double c = cursor.getAndNext();
+            if (Double.isFinite(c)) {
+                sabs += Math.abs(c);
+            } else {
+                ++nd;
+            }
+        }
+        if (nd == n) {
+            return 0;
+        } else {
+            return sabs / (n - nd);
+        }
     }
 }

@@ -18,8 +18,11 @@ package demetra.x13;
 
 import demetra.design.Development;
 import demetra.design.LombokWorkaround;
+import demetra.processing.AlgorithmDescriptor;
 import demetra.regarima.RegArimaSpec;
 import demetra.sa.DecompositionMode;
+import demetra.sa.SaSpecification;
+import static demetra.sa.SaSpecification.FAMILY;
 import demetra.sa.benchmarking.SaBenchmarkingSpec;
 import demetra.util.Validatable;
 import demetra.x11.SeasonalFilterOption;
@@ -32,8 +35,16 @@ import demetra.x11.X11Spec;
 @Development(status = Development.Status.Beta)
 @lombok.Value
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
-public class X13Spec implements Validatable<X13Spec> {
+public class X13Spec implements Validatable<X13Spec>, SaSpecification {
 
+    public static final String METHOD = "x13";
+    public static final String VERSION = "1.0.0.0";
+    public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, METHOD, VERSION);
+
+    @Override
+    public AlgorithmDescriptor getAlgorithmDescriptor() {
+        return DESCRIPTOR;
+    }
     private static final X13Spec DEFAULT = X13Spec.builder().build();
 
     private RegArimaSpec regArima;

@@ -35,6 +35,18 @@ public class SaeItem extends StateItem {
         this.zeroinit = zeroinit;
     }
 
+   private SaeItem(SaeItem item) {
+        super(item.name);
+        this.ar=item.ar.duplicate();
+        this.lag=item.lag;
+        this.zeroinit=item.zeroinit;
+     }
+
+    @Override
+    public SaeItem duplicate() {
+        return new SaeItem(this);
+    }
+
     @Override
     public void addTo(MstsMapping mapping) {
         mapping.add(ar);

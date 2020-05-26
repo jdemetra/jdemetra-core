@@ -57,6 +57,26 @@ public class MsaeItem2 extends StateItem {
         }
     }
 
+    private MsaeItem2(MsaeItem2 item) {
+        super(item.name);
+        this.lag = item.lag;
+        this.maxar = item.maxar;
+        this.lar = item.lar;
+        this.v = new VarianceInterpreter[item.v.length];
+        for (int i = 0; i < v.length; ++i) {
+            v[i] = item.v[i].duplicate();
+        }
+        this.par = new ArInterpreter[item.par.length];
+        for (int i = 0; i < par.length; ++i) {
+            par[i] = item.par[i].duplicate();
+        }
+    }
+
+    @Override
+    public MsaeItem2 duplicate() {
+        return new MsaeItem2(this);
+    }
+
     @Override
     public void addTo(MstsMapping mapping) {
         for (int i = 0; i < v.length; ++i) {
@@ -135,8 +155,8 @@ public class MsaeItem2 extends StateItem {
 
     @Override
     public ISsfLoading defaultLoading(int m) {
-        int n=maxar*lag;
-        return m>v.length ? null : Loading.fromPosition(m*n);
+        int n = maxar * lag;
+        return m > v.length ? null : Loading.fromPosition(m * n);
     }
 
     @Override
@@ -146,6 +166,6 @@ public class MsaeItem2 extends StateItem {
 
     @Override
     public int stateDim() {
-        return maxar*lag*v.length;
+        return maxar * lag * v.length;
     }
 }

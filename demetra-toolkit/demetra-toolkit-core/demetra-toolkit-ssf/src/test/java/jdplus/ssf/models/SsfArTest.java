@@ -34,10 +34,5 @@ public class SsfArTest {
         assertTrue(MatrixNorms.frobeniusNorm(I.minus(P)) < 1e-9);
     }
 
-    @Test
-    public void testVar() {
-        AutoCovarianceFunction fn = new AutoCovarianceFunction(Polynomial.ONE, Polynomial.valueOf(1, -.5, .8), 1);
-        System.out.println(fn.get(0));
-    }
 
 }

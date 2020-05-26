@@ -18,6 +18,7 @@ package jdplus.modelling.regression;
 
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
+import demetra.data.Range;
 import demetra.design.Development;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
 import jdplus.math.matrices.Matrix;
@@ -29,6 +30,7 @@ import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.calendars.CalendarUtility;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import jdplus.math.matrices.MatrixWindow;
@@ -133,7 +135,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
     }
 
     @Override
-    public <D extends TimeSeriesDomain> boolean fill(GenericTradingDaysVariable var, D domain, Matrix buffer) {
+    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>>  boolean fill(GenericTradingDaysVariable var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported.");
     }
 

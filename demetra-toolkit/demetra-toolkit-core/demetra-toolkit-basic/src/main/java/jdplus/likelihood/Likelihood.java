@@ -204,7 +204,7 @@ public interface Likelihood {
     }
 
     /**
-     * @return The deviances. = e*sqrt(factor) Not used if the likelihood is not
+     * @return The deviances = e*sqrt(factor). Not used if the likelihood is not
      * concentrated.
      */
     default DoubleSeq deviances() {

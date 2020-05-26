@@ -21,6 +21,7 @@ import jdplus.math.functions.ssq.ISsqFunctionPoint;
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
+ * @param <L>
  */
 
 public interface LikelihoodFunctionPoint<L extends Likelihood> extends IFunctionPoint, ISsqFunctionPoint{

@@ -15,7 +15,6 @@ import java.util.List;
 import jdplus.msts.ParameterInterpreter;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
-import jdplus.ssf.implementations.Loading;
 
 /**
  *
@@ -28,6 +27,16 @@ public class NoiseItem extends StateItem {
     public NoiseItem(String name, double var, boolean fixed) {
         super(name);
         this.v = new VarianceInterpreter(name + ".var", var, fixed, true);
+    }
+    
+    private NoiseItem(NoiseItem item){
+        super(item.name);
+        v=item.v.duplicate();
+    }
+    
+    @Override
+    public NoiseItem duplicate(){
+        return new NoiseItem(this);
     }
 
     @Override

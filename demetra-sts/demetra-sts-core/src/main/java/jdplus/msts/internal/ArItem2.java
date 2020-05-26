@@ -34,6 +34,19 @@ public class ArItem2 extends StateItem {
         this.ar = new ArInterpreter(name + ".ar", ar, fixedar);
         this.v = new VarianceInterpreter(name + ".var", var, fixedvar, true);
     }
+    
+    private ArItem2(ArItem2 item){
+        super(item.name);
+        this.ar=item.ar.duplicate();
+        this.v=item.v.duplicate();
+        this.nlags=item.nlags;
+        this.nfcasts=item.nfcasts;
+    }
+    
+    @Override
+    public ArItem2 duplicate(){
+        return new ArItem2(this);
+    }
 
     @Override
     public void addTo(MstsMapping mapping) {

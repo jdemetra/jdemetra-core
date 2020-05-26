@@ -60,6 +60,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
     private ISsfData data;
     private int t, endpos;
     private DataBlock Z;
+    private double scale;
 
     public DiffuseSquareRootInitializer() {
         this.results = null;
@@ -106,6 +107,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
         error = ssf.measurementError();
         dynamics = ssf.dynamics();
         this.data = data;
+        this.scale=data.scale();
         t = 0;
         int end = data.length();
         if (!initState()) {
@@ -138,7 +140,10 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
             state.P().copy(this.astate.P());
             state.a().copy(this.astate.a());
             state.next(t++, dynamics);
+        } else {
+            throw new SsfException("Diffuse initialization failed");
         }
+
         if (results != null) {
             results.close(t);
         }
@@ -244,7 +249,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
                 return false;
             } else {
                 double e = y - loading.ZX(t, astate.a());
-                if (Math.abs(e) < State.ZERO) {
+                if (Math.abs(e) < scale * State.ZERO) {
                     e = 0;
                 }
                 if (fi == 0 && f == 0 && e != 0) {

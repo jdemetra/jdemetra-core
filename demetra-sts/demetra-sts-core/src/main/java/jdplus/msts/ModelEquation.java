@@ -20,8 +20,9 @@ public class ModelEquation implements ModelItem {
     private final List<Item> items = new ArrayList<>();
 
     private final VarianceInterpreter var;
-
+    
     @lombok.Value
+    @lombok.AllArgsConstructor
     public static class Item {
 
         String cmp;
@@ -45,6 +46,10 @@ public class ModelEquation implements ModelItem {
             }
             this.loading = loading;
         }
+        
+        Item duplicate(){
+            return new Item(cmp, c == null ? null : c.duplicate(), loading);
+        }
     }
 
     public ModelEquation(String name, double var, boolean fixed) {
@@ -55,6 +60,20 @@ public class ModelEquation implements ModelItem {
             this.var = new VarianceInterpreter(name + ".var", var, fixed, var == 0);
         }
     }
+    
+    private ModelEquation(ModelEquation eq){
+        this.name=eq.name;
+        for (Item item : eq.items){
+            this.items.add(item.duplicate());
+        }
+        var = eq.var == null ? null : eq.var.duplicate();
+    }
+    
+    @Override
+    public ModelEquation duplicate(){
+        return new ModelEquation(this);
+    }
+
 
     @Override
     public String getName() {
