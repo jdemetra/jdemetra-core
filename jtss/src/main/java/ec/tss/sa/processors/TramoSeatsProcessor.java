@@ -25,7 +25,6 @@ import ec.tss.sa.ISaProcessingFactory;
 import ec.tss.sa.SaItem;
 import ec.tss.sa.documents.SaDocument;
 import ec.tss.sa.documents.TramoSeatsDocument;
-import ec.tstoolkit.Parameter;
 import ec.tstoolkit.ParameterType;
 import ec.tstoolkit.algorithm.AlgorithmDescriptor;
 import ec.tstoolkit.algorithm.CompositeResults;
@@ -45,7 +44,6 @@ import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
 import ec.tstoolkit.modelling.arima.tramo.TransformSpec;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
-import ec.tstoolkit.timeseries.regression.AdditiveOutlier;
 import ec.tstoolkit.timeseries.regression.IEasterVariable;
 import ec.tstoolkit.timeseries.regression.ILengthOfPeriodVariable;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
@@ -113,15 +111,23 @@ public class TramoSeatsProcessor implements ISaProcessingFactory<TramoSeatsSpeci
         refreshOutliersSpec(ntspec, dtspec, frozen, policy);
 
         RegressionSpec nrspec = ntspec.getRegression();
-        if (policy == EstimationPolicyType.Fixed) {
-            // fix all the coefficients of the regression variables
-            Map<String, double[]> all = nrspec.getAllCoefficients();
-            all.forEach((n, c) -> nrspec.setFixedCoefficients(n, c));
-        } else {
-            // copy back the initial fixed coefficients
-            nrspec.clearAllFixedCoefficients();
-            Map<String, double[]> all = dtspec.getRegression().getAllFixedCoefficients();
-            all.forEach((n, c) -> nrspec.setFixedCoefficients(n, c));
+        switch (policy) {
+            case Fixed:
+            case Current:
+                {
+                    // fix all the coefficients of the regression variables, except names starting with "AO:" (special intervention variables)
+                    Map<String, double[]> all = nrspec.getAllCoefficients();
+                    all.forEach((n, c) -> {if (!n.startsWith("AO:")) nrspec.setFixedCoefficients(n, c);});
+                    break;
+                }
+            default:
+                {
+                    // copy back the initial fixed coefficients
+                    nrspec.clearAllFixedCoefficients();
+                    Map<String, double[]> all = dtspec.getRegression().getAllFixedCoefficients();
+                    all.forEach((n, c) -> nrspec.setFixedCoefficients(n, c));
+                    break;
+                }
         }
         if (policy == EstimationPolicyType.Current) {
             TsData cur = doc.getTsData();
