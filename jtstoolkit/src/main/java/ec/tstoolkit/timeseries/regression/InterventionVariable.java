@@ -353,6 +353,6 @@ public class InterventionVariable extends AbstractSingleTsVariable implements IU
     
     @Override
     public String getName(){
-        return toString().replace('.','$');
+        return desc_ == null ? toString().replace('.','$') : desc_;
     }
 }
