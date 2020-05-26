@@ -177,9 +177,18 @@ public final class SaProcessing extends ForwardingList<SaItem> implements IDocum
                     nitems.add(null);
                     continue;
                 }
+                TsDomain newDomain = null;
                 Ts s = item.getTs().unfreeze();
+                if (policy == EstimationPolicyType.Current) {
+                    if (s.hasData() == TsStatus.Undefined) {
+                        s.load(TsInformationType.Data);
+                    }
+                    if (s.hasData() == TsStatus.Valid) {
+                        newDomain = s.getTsData().getDomain();
+                    }
+                }
                 // createDiagnostics the new spec
-                ISaSpecification nspec = SaManager.instance.createSpecification(item, null, policy, nospan);
+                ISaSpecification nspec = SaManager.instance.createSpecification(item, newDomain, policy, nospan);
                 SaItem citem = item.newSpecification(s, nspec, policy);
                 citem.setKey(item.getKey());
                 nitems.add(citem);
