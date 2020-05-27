@@ -13,6 +13,7 @@ import jdplus.math.polynomials.Polynomial;
 import jdplus.sarima.estimation.SarimaMapping;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
+import jdplus.math.linearfilters.FilterUtility;
 
 /**
  *
@@ -135,9 +136,7 @@ public class ArInterpreter implements ParameterInterpreter {
 
         @Override
         public boolean checkBoundaries(DoubleSeq inparams) {
-            if (degree==1)
-                return Math.abs(inparams.get(0))<1-EPS;
-            return SarimaMapping.checkStability(DoubleSeq.onMapping(inparams.length(), i -> -inparams.get(i)));
+            return FilterUtility.checkRoots(DoubleSeq.onMapping(inparams.length(), i -> -inparams.get(i)), 1-EPS);
         }
 
         @Override
@@ -174,7 +173,7 @@ public class ArInterpreter implements ParameterInterpreter {
                 z[i] = -z[i];
             }
             Polynomial p = Polynomial.valueOf(1, z);
-            Polynomial np = SarimaMapping.stabilize(p);
+            Polynomial np = FilterUtility.stabilize(p, 1-EPS);
             if (np.equals(p)) {
                 return ParamValidation.Valid;
             } else {

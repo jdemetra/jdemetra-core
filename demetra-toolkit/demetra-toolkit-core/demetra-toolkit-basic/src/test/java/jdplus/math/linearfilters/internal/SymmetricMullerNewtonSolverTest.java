@@ -31,7 +31,7 @@ public class SymmetricMullerNewtonSolverTest {
         SymmetricMullerNewtonSolver solver=new SymmetricMullerNewtonSolver();
         solver.factorize(Polynomial.ofInternal(sf.weightsToArray()));
         Complex[] sroots = solver.getStableRoots();
-        Polynomial p = Polynomial.fromComplexRoots(sroots, bf.get(bf.getDegree()));
+        Polynomial p = Polynomial.fromComplexRoots(sroots);
         assertTrue(p.equals(bf.asPolynomial(), 1e-6));
     }
     
@@ -45,7 +45,7 @@ public class SymmetricMullerNewtonSolverTest {
         SymmetricMullerNewtonSolver solver=new SymmetricMullerNewtonSolver();
         solver.factorize(Polynomial.ofInternal(sf.weightsToArray()));
         Complex[] sroots = solver.getStableRoots();
-        Polynomial p = Polynomial.fromComplexRoots(sroots, bf.get(bf.getDegree()));
+        Polynomial p = Polynomial.fromComplexRoots(sroots);
         assertTrue(p.equals(bf.asPolynomial(), 1e-6));
     }
 
@@ -62,7 +62,7 @@ public class SymmetricMullerNewtonSolverTest {
         Complex[] sroots = solver.getStableRoots();
 //        for (Complex r : sroots)
 //            System.out.println(r);
-        Polynomial p = Polynomial.fromComplexRoots(sroots, bf.get(bf.getDegree()));
+        Polynomial p = Polynomial.fromComplexRoots(sroots);
         assertTrue(p.equals(bf.asPolynomial(), 1e-9));
     }
 }

@@ -36,18 +36,20 @@ public class FilterUtility {
     final double EPS = 1e-9;
 
     /**
+     * Checks that the absolute values of all the given roots are higher
+     * than the given limit.
      *
-     * @param roots
-     * @param nmax
+     * @param roots The roots
+     * @param amin The limit (positive number)
      * @return
      */
-    public boolean checkRoots(final Complex[] roots, final double nmax) {
-        if (roots == null) {
+    public boolean checkRoots(final Complex[] roots, final double amin) {
+        if (roots == null || amin < 0) {
             return true;
         }
         for (int i = 0; i < roots.length; ++i) {
             double n = (roots[i].abs());
-            if (n < nmax) {
+            if (n <= amin) {
                 return false;
             }
         }
@@ -58,8 +60,9 @@ public class FilterUtility {
      * Checks that the norm of the roots of a given polynomial
      * are higher than rmin
      *
-     * @param c The coefficients of the polynomial. The polynomial is
-     * 1+c(0)x+...
+     * @param c The coefficients of the polynomial (excluding the constant,
+     * which is considered as 1).
+     * The polynomial is 1+c(0)x+...
      * @param rmin The limit of the roots
      * @return
      */
@@ -94,9 +97,14 @@ public class FilterUtility {
     }
 
     /**
+     * Checks that the polynomial corresponding to the given coefficients
+     * has all its roots outside the unit circle. Same as checkRoots(c, 1), but
+     * more efficient.
      *
-     * @param c
+     * @param c The coefficients of the polynomial. The polynomial is
+     * 1+c(0)x+...
      * @return
+     *
      */
     public boolean checkStability(final DoubleSeq c) {
         int nc = c.length();
@@ -130,34 +138,105 @@ public class FilterUtility {
         return true;
     }
 
-    public boolean checkQuasiStability(final DoubleSeq c, double rtol) {
-        int nc = c.length();
-        if (nc == 0) {
-            return true;
-        }
-        if (nc == 1) {
-            return Math.abs(c.get(0)) < rtol;
-        }
-        double[] coef = new double[nc + 1];
-        coef[0] = 1;
-        c.copyTo(coef, 1);
-        Polynomial p = Polynomial.of(coef);
-        Complex[] roots = p.roots();
-        for (int i = 0; i < roots.length; ++i) {
-            if (roots[i].abs() < 1 / rtol) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     /**
+     * Checks that the given polynomial has all its roots outside the unit
+     * circle.
      *
      * @param p
      * @return
      */
     public boolean checkStability(final Polynomial p) {
-        return checkStability(p.coefficients().extract(0, 0).drop(1, 0));
+        double c = p.get(0);
+        if (c == 0) {
+            return false;
+        }
+        double[] q = p.coefficients().toArray();
+
+        if (c != 1) {
+            for (int i = 1; i < q.length; ++i) {
+                q[i] /= c;
+            }
+        }
+        return checkStability(DoubleSeq.of(q, 1, q.length - 1));
+    }
+
+    /**
+     * /**
+     * Stabilize a given polynomial (all its roots will be > 1/rmin)
+     *
+     * @param c The coefficients of the polynomial (excluding the constant,
+     * which is considered as 1).
+     * The polynomial is 1+c(0)x+...
+     * @param rmin The inverse of the limit of the roots
+     * @return true if some coefficients where changed , false otherwise
+     */
+    public boolean stabilize(DoubleSeq.Mutable c, double rmin) {
+        int nc = c.length();
+        if (nc == 0) {
+            return false;
+        }
+        if (nc == 1) {
+            double c0 = c.get(0);
+            double cabs = Math.abs(c0);
+            if (cabs < rmin) {
+                return false;
+            }
+
+            if (rmin < 1) {
+                c.set(0, c0 > 0 ? rmin : -rmin);
+            } else {
+                c.set(0, 1 / c0);
+            }
+            return true;
+        }
+
+        double[] ctmp = new double[nc + 1];
+        ctmp[0] = 1;
+        c.copyTo(ctmp, 1);
+        Polynomial p = Polynomial.of(ctmp);
+        Polynomial sp = stabilize(p, rmin);
+        if (p != sp) {
+            for (int i = 0; i < nc; ++i) {
+                c.set(i, sp.get(1 + i));
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Stabilize a polynomial
+     *
+     * @param p
+     * @param rmin
+     * @return A new polynomial is returned if the initial polynomial was not
+     * stable
+     * (= some roots were higher than rmin
+     */
+    public Polynomial stabilize(Polynomial p, double rmin) {
+        if (p == null) {
+            return null;
+        }
+
+        Complex[] roots = p.roots();
+        boolean changed = false;
+        for (int i = 0; i < roots.length; ++i) {
+            Complex root = roots[i];
+            double n = 1 / roots[i].abs();
+            if (n > rmin) {
+                if (rmin < 1) {
+                    roots[i] = root.times(n / rmin);
+                } else if (n > 1) {
+                    roots[i] = root.inv();
+
+                }
+                changed = true;
+            }
+        }
+        if (!changed) {
+            return p;
+        }
+        return Polynomial.fromComplexRoots(roots);
     }
 
     /**
@@ -253,61 +332,6 @@ public class FilterUtility {
     }
 
     /**
-     *
-     * @param p
-     * @param rmax
-     * @param np
-     * @return
-     */
-    public boolean stabilize(final Polynomial p, final double rmax,
-            final Ref<Polynomial> np) {
-        np.val = p;
-        if (p != null) {
-            boolean rslt = false;
-            Complex[] roots = p.roots();
-            for (int i = 0; i < roots.length; ++i) {
-                Complex root = roots[i];
-                double n = (roots[i].abs());
-                if (n < 1 / rmax) {
-                    roots[i] = root.div(n * rmax);
-                    rslt = true;
-                }
-            }
-            if (rslt) {
-                np.val = Polynomial.fromComplexRoots(roots);
-                np.val = np.val.divide(np.val.get(0));
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     *
-     * @param p
-     * @param np
-     * @return
-     */
-    public boolean stabilize(final Polynomial p, final Ref<Polynomial> np) {
-        if (p != null && !checkStability(p)) {
-            Complex[] roots = p.roots();
-            for (int i = 0; i < roots.length; ++i) {
-                Complex root = roots[i];
-                double n = (roots[i].abs());
-                if (n < 1) {
-                    roots[i] = root.inv();
-                }
-            }
-            np.val = Polynomial.fromComplexRoots(roots);
-            np.val = np.val.divide(np.val.get(0));
-            return true;
-        } else {
-            np.val = p;
-            return false;
-        }
-    }
-
-    /**
      * Applies the given symmetric filter on a sequence of input. The end-points
      * are handled using given asymmetric filters or set to NaN.
      *
@@ -328,7 +352,7 @@ public class FilterUtility {
 
         // apply the endpoints filters
         if (afilters != null) {
-            for (int i = 0, j=h-1, k=x.length - h, len = 2 * h; i < h; ++i, --len, --j, ++k) {
+            for (int i = 0, j = h - 1, k = x.length - h, len = 2 * h; i < h; ++i, --len, --j, ++k) {
                 x[j] = afilters[i].apply(input.extract(0, len).reverse());
                 x[k] = afilters[i].apply(input.extract(x.length - len, len));
             }
@@ -365,7 +389,7 @@ public class FilterUtility {
 
         // apply the endpoints filters
         if (leftFilters != null) {
-            for (int i = 0, j=l-1; i < l; ++i, --j) {
+            for (int i = 0, j = l - 1; i < l; ++i, --j) {
                 IFiniteFilter cur = leftFilters[i];
                 x[j] = cur.apply(input.extract(j + cur.getLowerBound(), cur.length()));
             }
@@ -375,7 +399,7 @@ public class FilterUtility {
             }
         }
         if (rightFilters != null) {
-            for (int i = 0, j=x.length - u; i < u; ++i, ++j) {
+            for (int i = 0, j = x.length - u; i < u; ++i, ++j) {
                 IFiniteFilter cur = rightFilters[i];
                 x[j] = cur.apply(input.extract(j + cur.getLowerBound(), cur.length()));
             }
