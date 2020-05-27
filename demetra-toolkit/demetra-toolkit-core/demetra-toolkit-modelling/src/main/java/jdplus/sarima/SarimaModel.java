@@ -595,8 +595,8 @@ public final class SarimaModel extends AbstractArimaModel {
 
     @Override
     public boolean isInvertible() {
-        return FilterUtility.checkStability(getRegularMA())
-                && FilterUtility.checkStability(getSeasonalMA());
+        return FilterUtility.checkStability(DoubleSeq.of(th)) 
+                && FilterUtility.checkStability(DoubleSeq.of(bth));
     }
 
     @Override
@@ -611,17 +611,17 @@ public final class SarimaModel extends AbstractArimaModel {
      */
     public boolean isStable(boolean checkMA) {
         int pos = 0;
-        if (phi.length > 0 && !FilterUtility.checkStability(DataBlock.of(phi))) {
+        if (!FilterUtility.checkStability(DataBlock.of(phi))) {
             return false;
         }
-        if (bphi.length > 0 && !FilterUtility.checkStability(DataBlock.of(bphi))) {
+        if (!FilterUtility.checkStability(DataBlock.of(bphi))) {
             return false;
         }
         if (checkMA) {
-            if (th.length > 0 && !FilterUtility.checkStability(DataBlock.of(th))) {
+            if (!FilterUtility.checkStability(DataBlock.of(th))) {
                 return false;
             }
-            if (bth.length > 0 && !FilterUtility.checkStability(DataBlock.of(bth))) {
+            if (!FilterUtility.checkStability(DataBlock.of(bth))) {
                 return false;
             }
         }

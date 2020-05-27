@@ -151,7 +151,8 @@ public final class Polynomial {
 
     /**
      * Constructor: the polynomial is initialized with an array of complex
-     * roots. The coefficient of the highest power = 1.0
+     * roots. The constant term = 1.0 (which also means that all roots 
+     * should be different from 0)
      *
      * @param roots
      * @return a non-null Polynomial
@@ -175,7 +176,7 @@ public final class Polynomial {
         double[] pcoeff = new double[roots.length + 1];
 
         final Complex[] p = new Complex[roots.length + 1];
-        p[0] = Complex.cart(c, 0);
+        p[0] = Complex.cart(1, 0);
         for (int i = 0; i < roots.length; ++i) {
             // multiply by (x-rc[i])
             p[i + 1] = p[i];
@@ -184,9 +185,14 @@ public final class Polynomial {
             }
             p[0] = p[0].times(roots[i].negate());
         }
-        for (int i = 0; i < p.length; ++i) {
-            pcoeff[i] = p[i].getRe();
+        double p0=p[0].getRe();
+        if (p0 == 0)
+            throw new IllegalArgumentException("Roots should all be different from 0");
+        double fac=c/p0;
+        for (int i = 1; i < p.length; ++i) {
+            pcoeff[i] = p[i].getRe()*fac;
         }
+        pcoeff[0]=c;
 
         Polynomial pol = new Polynomial(pcoeff);
         pol.defRoots.set(roots.clone());

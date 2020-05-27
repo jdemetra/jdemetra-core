@@ -13,6 +13,7 @@ import jdplus.math.polynomials.Polynomial;
 import jdplus.sarima.estimation.SarimaMapping;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
+import jdplus.math.linearfilters.FilterUtility;
 
 /**
  *
@@ -31,9 +32,9 @@ public class StablePolynomialInterpreter implements ParameterInterpreter {
         this.fixed = fixed;
         this.domain = new Domain(values.length);
     }
-    
+
     @Override
-    public StablePolynomialInterpreter duplicate(){
+    public StablePolynomialInterpreter duplicate() {
         return new StablePolynomialInterpreter(name, values.clone(), fixed);
     }
 
@@ -46,15 +47,15 @@ public class StablePolynomialInterpreter implements ParameterInterpreter {
     public boolean isFixed() {
         return fixed;
     }
-    
+
     @Override
-    public boolean isScaleSensitive(boolean variance){
+    public boolean isScaleSensitive(boolean variance) {
         return false;
     }
 
     @Override
     public int rescaleVariances(double factor, double[] buffer, int pos) {
-        return pos+values.length;
+        return pos + values.length;
     }
 
     @Override
@@ -92,8 +93,8 @@ public class StablePolynomialInterpreter implements ParameterInterpreter {
     }
 
     @Override
-    public void free(){
-        fixed=false;
+    public void free() {
+        fixed = false;
     }
 
     @Override
@@ -123,7 +124,7 @@ public class StablePolynomialInterpreter implements ParameterInterpreter {
 
         @Override
         public boolean checkBoundaries(DoubleSeq inparams) {
-            return SarimaMapping.checkStability(inparams);
+            return FilterUtility.checkStability(inparams);
         }
 
         @Override
@@ -148,13 +149,11 @@ public class StablePolynomialInterpreter implements ParameterInterpreter {
 
         @Override
         public ParamValidation validate(DataBlock ioparams) {
-            Polynomial p = Polynomial.valueOf(1, ioparams.toArray());
-            Polynomial np = SarimaMapping.stabilize(p);
-            if (np.equals(p)) {
-                return ParamValidation.Valid;
-            } else {
-                ioparams.copy(np.coefficients().drop(1, 0));
+            boolean rslt = FilterUtility.stabilize(ioparams, 1);
+            if (rslt) {
                 return ParamValidation.Changed;
+            } else {
+                return ParamValidation.Valid;
             }
         }
 
