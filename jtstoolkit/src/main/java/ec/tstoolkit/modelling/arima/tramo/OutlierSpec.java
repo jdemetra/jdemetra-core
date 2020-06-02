@@ -136,7 +136,7 @@ public class OutlierSpec implements Cloneable, InformationSetSerializable {
 
     public void setCriticalValue(double value) {
         if (value != 0 && value < 2) {
-            throw new TramoException("Critical value should be greater than 2.0");
+            throw new TramoException("Critical value should be not be smaller than 2.0");
         }
         cv_ = value;
     }
@@ -179,16 +179,22 @@ public class OutlierSpec implements Cloneable, InformationSetSerializable {
 
     public void setAIO(int value) {
         clearTypes();
-        if (value == 1) {
-            add(OutlierType.AO);
-            add(OutlierType.TC);
-        } else if (value == 2) {
-            add(OutlierType.AO);
-            add(OutlierType.TC);
-            add(OutlierType.LS);
-        } else if (value == 3) {
-            add(OutlierType.AO);
-            add(OutlierType.LS);
+        switch (value) {
+            case 1:
+                add(OutlierType.AO);
+                add(OutlierType.TC);
+                break;
+            case 2:
+                add(OutlierType.AO);
+                add(OutlierType.TC);
+                add(OutlierType.LS);
+                break;
+            case 3:
+                add(OutlierType.AO);
+                add(OutlierType.LS);
+                break;
+            default:
+                break;
         }
     }
 

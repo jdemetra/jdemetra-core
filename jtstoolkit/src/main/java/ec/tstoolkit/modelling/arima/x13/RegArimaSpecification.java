@@ -48,7 +48,6 @@ import java.util.Objects;
 @Development(status = Development.Status.Preliminary)
 public class RegArimaSpecification implements IRegArimaSpecification, Cloneable {
 
-    final static OutliersFactory fac = new OutliersFactory(false);
     public static final RegArimaSpecification RGDISABLED, RG0, RG1, RG2, RG3, RG4, RG5;
     public static final String BASIC = "basic", TRANSFORM = "transform",
             AUTOMDL = "automdl", ARIMA = "arima",
@@ -65,18 +64,19 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
 
     private static final String SMETHOD = "RG";
 
-    static {
+    static final LevelShiftFactory LFAC;
+    static final TransitoryChangeFactory TFAC;
+    static final AdditiveOutlierFactory AFAC;
+    static final SeasonalOutlierFactory SFAC;
 
-        fac.register(new AdditiveOutlierFactory());
-        LevelShiftFactory lfac = new LevelShiftFactory();
-        lfac.setZeroEnded(true);
-        fac.register(lfac);
-        TransitoryChangeFactory tfac = new TransitoryChangeFactory();
-        tfac.setMonthlyCoefficient(true);
-        fac.register(tfac);
-        SeasonalOutlierFactory sfac = new SeasonalOutlierFactory();
-        sfac.setZeroEnded(true);
-        fac.register(sfac);
+    static {
+        LFAC = new LevelShiftFactory();
+        LFAC.setZeroEnded(true);
+        TFAC = new TransitoryChangeFactory();
+        TFAC.setMonthlyCoefficient(true);
+        AFAC = new AdditiveOutlierFactory();
+        SFAC = new SeasonalOutlierFactory();
+        SFAC.setZeroEnded(true);
 
         RGDISABLED = new RegArimaSpecification();
         RG0 = new RegArimaSpecification();
@@ -167,6 +167,24 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
      */
     public OutlierSpec getOutliers() {
         return outliers_;
+    }
+
+    public OutliersFactory getOutliersFactory() {
+
+        OutliersFactory fac = new OutliersFactory(false);
+        fac.register(AFAC);
+        fac.register(LFAC);
+        fac.register(SFAC);
+        if (outliers_.getMonthlyTCRate() == OutlierSpec.DEF_TCRATE) {
+            fac.register(TFAC);
+        } else {
+            TransitoryChangeFactory t = new TransitoryChangeFactory();
+            t.setCoefficient(outliers_.getMonthlyTCRate());
+            t.setMonthlyCoefficient(true);
+            fac.register(t);
+        }
+        return fac;
+
     }
 
     /**
@@ -366,7 +384,27 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
         detector.setEpsilon(estimate_.getTol());
         detector.setSpan(o.getSpan());
         for (int i = 0; i < types.length; ++i) {
-            detector.addOutlierFactory(fac.getFactory(types[i].getType()));
+            switch (types[i].getType()) {
+                case AO:
+                    detector.addOutlierFactory(AFAC);
+                    break;
+                case LS:
+                    detector.addOutlierFactory(LFAC);
+                    break;
+                case SO:
+                    detector.addOutlierFactory(SFAC);
+                    break;
+                case TC:
+                    if (outliers_.getMonthlyTCRate() == OutlierSpec.DEF_TCRATE) {
+                        detector.addOutlierFactory(TFAC);
+                    } else {
+                        TransitoryChangeFactory t = new TransitoryChangeFactory();
+                        t.setCoefficient(outliers_.getMonthlyTCRate());
+                        t.setMonthlyCoefficient(true);
+                        detector.addOutlierFactory(t);
+                    }
+                    break;
+            }
         }
         if (automdl_ != null) {
             detector.setPc(automdl_.getPercentReductionCV());
