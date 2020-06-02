@@ -193,6 +193,9 @@ public class OutlierSpec implements Cloneable, InformationSetSerializable {
     }
 
     public void setMonthlyTCRate(double value) {
+        if (value != 0 && value < .3 || value >= 1) {
+            throw new X13Exception("TC should belong to [0.3, 1.0[");
+        }
         tc_ = value;
     }
 
@@ -204,6 +207,9 @@ public class OutlierSpec implements Cloneable, InformationSetSerializable {
     }
 
     public void setDefaultCriticalValue(double value) {
+        if (value != 0 && value < 2) {
+            throw new X13Exception("Critical value should be not be smaller than 2.0");
+        }
         defcv_ = value;
         for (SingleOutlierSpec s : types_) {
             s.setCriticalValue(value);

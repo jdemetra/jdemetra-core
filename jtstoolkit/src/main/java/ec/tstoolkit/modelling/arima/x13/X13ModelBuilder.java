@@ -198,8 +198,9 @@ public class X13ModelBuilder implements IModelBuilder {
 
     private void initializeOutliers(ModelDescription model, OutlierDefinition[] outliers, Map<String, double[]> preadjustment) {
         ArrayList<IOutlierVariable> pvar = new ArrayList<>();
+        OutliersFactory fac = spec_.getOutliersFactory();
         for (int i = 0; i < outliers.length; ++i) {
-            IOutlierVariable v = RegArimaSpecification.fac.make(outliers[i]);
+            IOutlierVariable v = fac.make(outliers[i]);
             String sname = ITsVariable.shortName(v.getName());
             if (preadjustment.containsKey(sname)) {
                 PreadjustmentVariable pv = PreadjustmentVariable.outlier(v, preadjustment.get(sname));
