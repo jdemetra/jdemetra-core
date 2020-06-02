@@ -174,8 +174,9 @@ public class TramoModelBuilder implements IModelBuilder {
 
     private void initializeOutliers(ModelDescription model, OutlierDefinition[] outliers, Map<String, double[]> preadjustment) {
         ArrayList<IOutlierVariable> pvar = new ArrayList<>();
+        OutliersFactory outliersFactory = spec_.getOutliersFactory();
         for (int i = 0; i < outliers.length; ++i) {
-            IOutlierVariable v = TramoSpecification.getOutliersFactory().make(outliers[i]);
+            IOutlierVariable v = outliersFactory.make(outliers[i]);
             String sname = ITsVariable.shortName(v.getName());
             if (preadjustment.containsKey(sname)) {
                 PreadjustmentVariable pv = PreadjustmentVariable.outlier(v, preadjustment.get(sname));
