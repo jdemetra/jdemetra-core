@@ -93,24 +93,6 @@ public class AsymmetricFilters {
         return ff;
     }
 
-    /**
-     * Provides an asymmetric filter [-h, p] based on the given symmetric
-     * filter. The asymmetric filter minimizes the mean square revision error
-     * (mmsre) relative to the symmetric filter. The series follows the model
-     * y=U*du + Z*dz + e, std(e) = sigma/ki
-     *
-     * See Proietti, Luati, "Real time estimation in local polynomial regression
-     * with application to trend-cycle analysis.
-     *
-     * @param sw The symmetric filter
-     * @param q The horizon of the asymmetric filter (from 0 to deg(w)/2)
-     * @param u The degree of the constraints (U, the weights preserve
-     * polynomials of degree at most u).
-     * @param dz Coefficients of the linear model. The number of the
-     * coefficients and the degree of the constraints define the type of the linear model.
-     * @param k The weighting factors (null for no weighting)
-     * @return
-     */
     @Deprecated
     public IFiniteFilter mmsreFilter2(SymmetricFilter sw, int q, int u, double[] dz, IntToDoubleFunction k) {
         double[] w = sw.weightsToArray();
@@ -181,10 +163,41 @@ LinearSystemSolver.fastSolver().solve(C, a11);
         return FiniteFilter.ofInternal(wp.toArray(), -h);
     }
 
+    /**
+     * Provides an asymmetric filter [-h, p] based on the given symmetric
+     * filter. The asymmetric filter minimizes the mean square revision error
+     * (mmsre) relative to the symmetric filter. The series follows the model
+     * y=U*du + Z*dz + e, std(e) = sigma/ki
+     *
+     * See Proietti, Luati, "Real time estimation in local polynomial regression
+     * with application to trend-cycle analysis".
+     *
+     * @param sw The symmetric filter
+     * @param q The horizon of the asymmetric filter (from 0 to deg(w)/2)
+     * @param u The degree of the constraints (U, the weights preserve
+     * polynomials of degree at most u).
+     * @param dz Coefficients of the linear model. The number of the
+     * coefficients and the degree of the constraints define the type of the linear model.
+     * @param k The weighting factors (null for no weighting)
+     * @return
+     */
     public IFiniteFilter mmsreFilter(SymmetricFilter sw, int q, int u, double[] dz, IntToDoubleFunction k) {
         return mmsreFilter(sw, q, u, dz, k, 0, 0);
     }
 
+    /**
+     * Extension of the usual asymmetric filters that introduces a timeliness criterion,
+     * "à la Guggemos".
+     * See Grun-Rehomme, Guggemos and Ladiray, "Asymmetric Moving Averages Minimizing Phase-Shift"
+     * @param sw
+     * @param q
+     * @param u
+     * @param dz
+     * @param k
+     * @param passBand
+     * @param tweight
+     * @return 
+     */
     public IFiniteFilter mmsreFilter(SymmetricFilter sw, int q, int u, double[] dz, IntToDoubleFunction k, double passBand, double tweight) {
         double[] w = sw.weightsToArray();
         int h = w.length / 2;
@@ -227,8 +240,6 @@ LinearSystemSolver.fastSolver().solve(C, a11);
             row.mul(-tweight);
             a.addProduct(row, W.columnsIterator());
         }
-//        Householder hous = new Householder(Q);
-//        hous.solve(a);
         LinearSystemSolver.fastSolver().solve(Q, a);
         wp.add(a.extract(0, nv));
         return FiniteFilter.ofInternal(wp.toArray(), -h);
@@ -239,7 +250,6 @@ LinearSystemSolver.fastSolver().solve(C, a11);
         int m = nlags + nleads + 1;
         Matrix T = Matrix.square(m);
         double[] sin1 = new double[n];
-        double[] sin0 = new double[n];
         for (int i = 0; i < n; ++i) {
             sin1[i] = Math.sin(i * w);
         }
@@ -248,14 +258,14 @@ LinearSystemSolver.fastSolver().solve(C, a11);
                 int sum = Math.abs(i + j), diff = Math.abs(i - j);
                 if (sum == 0) {
                     if (diff != 0) {
-                        double dk = w, dl = (sin1[diff] - sin0[diff]) / diff;
+                        double dk = w, dl = sin1[diff] / diff;
                         T.set(i + nlags, j + nlags, .5 * (dl - dk));
                     }
                 } else if (diff == 0) {
-                    double dk = (sin1[sum] - sin0[sum]) / sum, dl = w;
+                    double dk = sin1[sum] / sum, dl = w;
                     T.set(i + nlags, j + nlags, .5 * (dl - dk));
                 } else {
-                    double dk = (sin1[sum] - sin0[sum]) / sum, dl = (sin1[diff] - sin0[diff]) / diff;
+                    double dk = sin1[sum] / sum, dl = sin1[diff] / diff;
                     T.set(i + nlags, j + nlags, .5 * (dl - dk));
                 }
             }

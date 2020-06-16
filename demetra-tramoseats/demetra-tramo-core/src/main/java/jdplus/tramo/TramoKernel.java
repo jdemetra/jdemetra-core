@@ -33,6 +33,7 @@ import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.sarima.SarimaModel;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.tramo.AutoModelSpec;
+import demetra.tramo.EasterSpec;
 import demetra.tramo.EstimateSpec;
 import demetra.tramo.OutlierSpec;
 import demetra.tramo.TradingDaysSpec;
@@ -139,10 +140,11 @@ public class TramoKernel implements RegSarimaProcessor {
 
     private IRegressionModule regressionModule() {
         TradingDaysSpec tdspec = spec.getRegression().getCalendar().getTradingDays();
+        EasterSpec espec = spec.getRegression().getCalendar().getEaster();
         if (tdspec.isAutomatic()) {
             if (tdspec.getAutomaticMethod() == TradingDaysSpec.AutoMethod.FTest) {
                 return AutomaticFRegressionTest.builder()
-                        .easter(TramoModelBuilder.easter(spec))
+                        .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
                         .leapYear(TramoModelBuilder.leapYear(tdspec))
                         .tradingDays(TramoModelBuilder.td(spec, DayClustering.TD7, modellingContext))
                         .workingDays(TramoModelBuilder.td(spec, DayClustering.TD2, modellingContext))
@@ -152,7 +154,7 @@ public class TramoKernel implements RegSarimaProcessor {
                         .build();
             } else {
                 return AutomaticWaldRegressionTest.builder()
-                        .easter(TramoModelBuilder.easter(spec))
+                        .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
                         .leapYear(TramoModelBuilder.leapYear(tdspec))
                         .tradingDays(TramoModelBuilder.td(spec, DayClustering.TD7, modellingContext))
                         .workingDays(TramoModelBuilder.td(spec, DayClustering.TD2, modellingContext))
@@ -164,9 +166,9 @@ public class TramoKernel implements RegSarimaProcessor {
             }
         } else {
             return DefaultRegressionTest.builder()
-                    .easter(TramoModelBuilder.easter(spec))
-                    .leapYear(TramoModelBuilder.leapYear(tdspec))
-                    .tradingDays(TramoModelBuilder.tradingDays(spec, modellingContext))
+                    .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
+                    .leapYear(tdspec.isTest() ? TramoModelBuilder.leapYear(tdspec) : null)
+                    .tradingDays(tdspec.isTest() ? TramoModelBuilder.tradingDays(spec, modellingContext) : null)
                     .testMean(spec.isUsingAutoModel())
                     .estimationPrecision(options.intermediatePrecision)
                     .build();
@@ -676,7 +678,7 @@ public class TramoKernel implements RegSarimaProcessor {
             ProcessingLog log = modelling.getLog();
             if (log != null) {
                 log.step(SEAS, context.originalSeasonalityTest);
-             }
+            }
         } else {
             context.seasonal = false;
         }

@@ -19,12 +19,14 @@ package demetra.tramoseats;
 import demetra.design.Development;
 import demetra.design.LombokWorkaround;
 import demetra.processing.AlgorithmDescriptor;
+import demetra.sa.ComponentType;
 import demetra.sa.SaSpecification;
 import demetra.sa.benchmarking.SaBenchmarkingSpec;
 import demetra.seats.DecompositionSpec;
 import demetra.seats.SeatsSpec;
 import demetra.tramo.TramoSpec;
 import demetra.util.Validatable;
+import java.util.Map;
 
 /**
  *
@@ -48,6 +50,10 @@ public final class TramoSeatsSpec implements Validatable<TramoSeatsSpec>, SaSpec
 
     @lombok.NonNull
     private TramoSpec tramo;
+    
+    @lombok.Singular("map")
+    private Map<String, ComponentType> samapping;
+    
     @lombok.NonNull
     private DecompositionSpec seats;
     @lombok.NonNull

@@ -78,7 +78,7 @@ final class X13SpecDecoder {
             builder.logLevel(LogLevelModule.builder()
                     .aiccLogCorrection(tspec.getAicDiff())
                     .estimationPrecision(espec.getTol())
-                    .preadjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriodTime() : LengthOfPeriodType.None)
+                    .preadjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriod() : LengthOfPeriodType.None)
                     .build());
         }
     }
@@ -135,7 +135,7 @@ final class X13SpecDecoder {
             CalendarEffectsDetectionModule cal = CalendarEffectsDetectionModule.builder()
                     .tradingDays(X13ModelBuilder.tradingDays(spec, context))
                     .leapYear(X13ModelBuilder.leapYear(tdspec))
-                    .adjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriodTime() : LengthOfPeriodType.None)
+                    .adjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriod() : LengthOfPeriodType.None)
                     .modelComparator(comparator)
                     .build();
             builder.calendarTest(cal);

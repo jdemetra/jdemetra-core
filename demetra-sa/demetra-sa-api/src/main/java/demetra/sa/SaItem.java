@@ -17,34 +17,51 @@
 package demetra.sa;
 
 import demetra.processing.ProcQuality;
+import demetra.processing.ProcResults;
+import demetra.timeseries.Ts;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author PALATEJ
  */
-@lombok.Value
-@lombok.Builder(builderClassName="Builder")
-public class SaItem {
-    
-    SaSpecification domainSpec, estimationSpec, pointSpec;
-    EstimationPolicy policy;
-    ProcQuality quality;
+public final class SaItem {
+
+    String name;
+
+    private Map<String, String> meta = new HashMap<>();
+
+    /**
+     * Operational. Importance of this estimation
+     */
     int priority;
 
-/*    private boolean dirty_ = true;
-    private Ts ts_;
-    private ISaSpecification pspec_, espec_, dspec_;
-    private boolean cacheResults_ = true;
-    private volatile CompositeResults rslts_;
-    private EstimationPolicyType estimation_ = EstimationPolicyType.None;
-    private Status status_ = Status.Unprocessed;
-    private int priority_ = -1;
-    private ProcQuality quality_ = ProcQuality.Undefined;
-    private String[] warnings_;
-    private InformationSet qsummary_;
-    private MetaData metaData_;
-    private String name = "";
-    private boolean locked_;
-*/
-    
+    private final SaDefinition definition;
+
+    /**
+     * All information available after processing.
+     * SA processors must be able to generate full estimations starting from
+     * definitions
+     */
+    private volatile SaEstimation estimation;
+
+    public SaItem(String name, SaDefinition definition) {
+        this.name = name;
+        this.definition = definition;
+    }
+
+    public SaEstimation getEstimation() {
+        SaEstimation e = estimation;
+        if (e == null) {
+            synchronized (this) {
+                e = estimation;
+                if (e == null) {
+                    e = null;
+                    estimation = e;
+                }
+            }
+        }
+        return e;
+    }
 }

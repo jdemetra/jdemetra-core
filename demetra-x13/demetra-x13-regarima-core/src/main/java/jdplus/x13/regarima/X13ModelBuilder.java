@@ -63,7 +63,6 @@ import demetra.arima.SarimaSpec;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.GenericTradingDays;
 import java.util.List;
-import jdplus.data.OldParameter;
 
 /**
  *
@@ -113,7 +112,7 @@ class X13ModelBuilder implements IModelBuilder {
             return;
         }
         model.setMean(regSpec.isMean());
-        Map<String, double[]> preadjustment = regSpec.getFixedCoefficients();
+        Map<String, Parameter[]> preadjustment = regSpec.getCoefficients();
         initializeCalendar(model, regSpec, preadjustment);
         if (regSpec.getOutliersCount() > 0) {
             initializeOutliers(model, regSpec.getOutliers(), preadjustment);
@@ -151,14 +150,15 @@ class X13ModelBuilder implements IModelBuilder {
         if (fnSpec.getFunction() == TransformationType.Log) {
             model.setLogTransformation(true);
         }
+        model.setPreadjustment(fnSpec.getAdjust());
     }
 
-    private void initializeCalendar(ModelDescription model, RegressionSpec calendar, Map<String, double[]> preadjustment) {
+    private void initializeCalendar(ModelDescription model, RegressionSpec calendar, Map<String, Parameter[]> preadjustment) {
         initializeTradingDays(model, calendar.getTradingDays(), preadjustment);
         initializeEaster(model, calendar.getEaster(), preadjustment);
     }
 
-    private void initializeTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
+    private void initializeTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> preadjustment) {
         if (!td.isUsed() || td.getTest() == RegressionTestSpec.Add) {
             return;
         }
@@ -173,14 +173,14 @@ class X13ModelBuilder implements IModelBuilder {
         }
     }
 
-    private void initializeEaster(ModelDescription model, EasterSpec easter, Map<String, double[]> preadjustment) {
+    private void initializeEaster(ModelDescription model, EasterSpec easter, Map<String, Parameter[]> preadjustment) {
         if (!easter.isUsed() || easter.getTest() == RegressionTestSpec.Add) {
             return;
         }
         add(model, easter(easter.getType(), easter.getDuration()), "easter", easter.getTest() == RegressionTestSpec.None, preadjustment);
     }
 
-    private void initializeOutliers(ModelDescription model, List<IOutlier> outliers, Map<String, double[]> preadjustment) {
+    private void initializeOutliers(ModelDescription model, List<IOutlier> outliers, Map<String, Parameter[]> preadjustment) {
         int freq = model.getAnnualFrequency();
         TransitoryChangeFactory tc = new TransitoryChangeFactory(spec.getOutliers().getMonthlyTCRate());
         PeriodicOutlierFactory so = new PeriodicOutlierFactory(freq, false);
@@ -206,9 +206,9 @@ class X13ModelBuilder implements IModelBuilder {
             }
             if (v != null) {
                 String name = IOutlier.defaultName(code, pos, model.getEstimationDomain());
-                double[] c = preadjustment.get(name);
+                Parameter[] c = preadjustment.get(name);
                 if (c != null) {
-                    model.addVariable(Variable.preadjustmentVariable(name, v, c));
+                    model.addVariable(Variable.of(name, v, c));
                 } else {
                     model.addVariable(Variable.prespecifiedVariable(name, v));
                 }
@@ -298,16 +298,16 @@ class X13ModelBuilder implements IModelBuilder {
 //            }
 //        }
 //    }
-    private void initializeUserTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
+    private void initializeUserTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> preadjustment) {
         add(model, userTradingDays(td, context), "td", td.getTest() == RegressionTestSpec.None, preadjustment);
     }
 
-    private void initializeDefaultTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
+    private void initializeDefaultTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> preadjustment) {
         add(model, defaultTradingDays(td), "td", td.getTest() == RegressionTestSpec.None, preadjustment);
         add(model, leapYear(td), "lp", td.getTest() == RegressionTestSpec.None, preadjustment);
     }
 
-    private void initializeStockTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
+    private void initializeStockTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> preadjustment) {
         add(model, stockTradingDays(td), "td", td.getTest() == RegressionTestSpec.None, preadjustment);
     }
 
@@ -315,18 +315,16 @@ class X13ModelBuilder implements IModelBuilder {
         return new StockTradingDays(td.getStockTradingDays());
     }
 
-    private void add(ModelDescription model, ITsVariable var, String name, boolean prespecified, Map<String, double[]> preadjustment) {
+    private void add(ModelDescription model, ITsVariable var, String name, boolean prespecified, Map<String, Parameter[]> preadjustment) {
         if (var == null) {
             return;
         }
-        double[] c = preadjustment.get(name);
+        Parameter[] c = preadjustment.get(name);
         if (c != null) {
-            model.addVariable(Variable.preadjustmentVariable(name, var, c));
-        } else if (prespecified){
-            model.addVariable(Variable.prespecifiedVariable(name, var));
-        } else{
+            model.addVariable(Variable.of(name, var, c));
+        } else {
             model.addVariable(Variable.variable(name, var));
-            
+
         }
 
     }
@@ -375,15 +373,15 @@ class X13ModelBuilder implements IModelBuilder {
     }
 
     private static ITradingDaysVariable userTradingDays(TradingDaysSpec td, ModellingContext context) {
-        String[] userVariables = td.getUserVariables().toArray(new String[0]);
+        String[] userVariables = td.getUserVariables();
         return UserTradingDays.of(userVariables, context);
     }
 
     public static ILengthOfPeriodVariable leapYear(TradingDaysSpec tdspec) {
-        if (tdspec.getLengthOfPeriodTime() == LengthOfPeriodType.None) {
+        if (tdspec.getLengthOfPeriod() == LengthOfPeriodType.None) {
             return null;
         } else {
-            return new LengthOfPeriod(tdspec.getLengthOfPeriodTime());
+            return new LengthOfPeriod(tdspec.getLengthOfPeriod());
         }
     }
 

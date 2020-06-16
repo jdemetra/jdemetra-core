@@ -18,6 +18,7 @@ package demetra.maths.matrices.spi;
 
 import demetra.math.matrices.MatrixType;
 import demetra.design.Algorithm;
+import demetra.math.algebra.Ring;
 import nbbrd.service.ServiceDefinition;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
@@ -63,8 +64,8 @@ public class MatrixOperations {
         return PROCESSOR.get().times(M, d);
     }
 
-    public MatrixType chs(MatrixType M) {
-        return PROCESSOR.get().chs(M);
+    public MatrixType opposite(MatrixType M) {
+        return PROCESSOR.get().opposite(M);
     }
 
     public MatrixType inv(MatrixType M) {
@@ -83,23 +84,17 @@ public class MatrixOperations {
         return PROCESSOR.get().XtX(X);
     }
 
+    
     @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
-    @Algorithm
-    public static interface Processor {
-
-        MatrixType plus(MatrixType left, MatrixType right);
+    public static interface Processor extends Ring<MatrixType>{
+        // Use the Ring definition to normalize the names. To get an actual ring, we should consider square matrices 
+        // of size n.
 
         MatrixType plus(MatrixType M, double d);
 
-        MatrixType minus(MatrixType left, MatrixType right);
-
         MatrixType minus(MatrixType M, double d);
 
-        MatrixType times(MatrixType left, MatrixType right);
-
         MatrixType times(MatrixType M, double d);
-
-        MatrixType chs(MatrixType M);
 
         MatrixType inv(MatrixType M);
 

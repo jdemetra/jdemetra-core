@@ -165,8 +165,6 @@ public class DefaultRegressionTest implements IRegressionModule {
         if (easter != null) {
             model.addVariable(Variable.variable("easter", easter));
         }
-        model.setAirline(true);
-        model.setMean(true);
         return model;
     }
 

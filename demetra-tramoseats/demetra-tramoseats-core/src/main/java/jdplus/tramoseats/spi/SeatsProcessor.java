@@ -30,7 +30,7 @@ import nbbrd.service.ServiceProvider;
  * @author palatej
  */
 @ServiceProvider(Seats.Processor.class)
-public class SeatsComputer implements Seats.Processor{
+public class SeatsProcessor implements Seats.Processor{
 
     @Override
     public SeatsResults process(SeatsSpec spec, List<String> addtionalItems) {

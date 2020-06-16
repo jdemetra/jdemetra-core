@@ -27,7 +27,6 @@ import java.util.Map;
 import demetra.processing.ProcResults;
 import demetra.math.matrices.MatrixType;
 import demetra.ssf.SsfInitialization;
-import demetra.ssf.SsfLikelihood;
 import jdplus.ssf.multivariate.MultivariateSsf;
 
 /**

@@ -68,6 +68,10 @@ public final class EasterSpec implements Validatable<EasterSpec> {
     public boolean isUsed() {
         return type != Type.Unused;
     }
+    
+    public static EasterSpec none(){
+        return DEFAULT;
+    }
 
     public static class Builder implements Validatable.Builder<EasterSpec> {
 

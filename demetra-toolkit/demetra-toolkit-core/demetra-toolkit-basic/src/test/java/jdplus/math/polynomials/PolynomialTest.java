@@ -79,9 +79,9 @@ public class PolynomialTest {
     
     @Test
     public void testConstructors(){
-        Polynomial P=Polynomial.paste(1, new double[0]);
+        Polynomial P=Polynomial.valueOf(1, new double[0]);
         assertTrue(P.equals(Polynomial.ONE));
-        Polynomial P2=Polynomial.paste(1, new double[10]);
+        Polynomial P2=Polynomial.valueOf(1, new double[10]);
         assertTrue(P2.equals(Polynomial.ONE));
     }
 

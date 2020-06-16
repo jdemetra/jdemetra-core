@@ -32,7 +32,7 @@ import nbbrd.service.ServiceProvider;
  * @author palatej
  */
 @ServiceProvider(TramoSeats.Processor.class)
-public class TramoSeatsComputer implements TramoSeats.Processor {
+public class TramoSeatsProcessor implements TramoSeats.Processor {
 
     @Override
     public TramoSeatsResults process(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> additionalItems) {

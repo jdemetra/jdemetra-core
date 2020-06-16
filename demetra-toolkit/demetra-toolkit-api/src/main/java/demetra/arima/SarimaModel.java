@@ -16,6 +16,7 @@
  */
 package demetra.arima;
 
+import demetra.data.DoubleSeq;
 import demetra.design.Development;
 
 /**
@@ -49,26 +50,26 @@ public class SarimaModel {
     private int bd;
     @lombok.NonNull
     /**
-     * Regular auto-regressive parameters (true sign, 1 excluded)
+     * Regular auto-regressive parameters (true signs, 1 excluded)
      */
     private double[] phi;
     @lombok.NonNull
     /**
-     * Regular moving average parameters (true sign, 1 excluded)
+     * Regular moving average parameters (true signs, 1 excluded)
      */
     private double[] theta;
     @lombok.NonNull
     /**
-     * Seasonal auto-regressive parameters (true sign, 1 excluded)
+     * Seasonal auto-regressive parameters (true signs, 1 excluded)
      */
     private double[] bphi;
     @lombok.NonNull
     /**
-     * Seasonal moving average parameters (true sign, 1 excluded)
+     * Seasonal moving average parameters (true signs, 1 excluded)
      */
     private double[] btheta;
     /**
-     * Name of the model. Optional (null ny default)
+     * Name of the model. Optional (null by default)
      */
     private String name;
 
@@ -141,11 +142,10 @@ public class SarimaModel {
         return all;
     }
 
-    private static final double[] E = new double[0];
-
     public static Builder builder() {
 
         Builder builder = new Builder();
+        double[] E=DoubleSeq.EMPTYARRAY;
         builder.period = 1;
         builder.phi = E;
         builder.theta = E;

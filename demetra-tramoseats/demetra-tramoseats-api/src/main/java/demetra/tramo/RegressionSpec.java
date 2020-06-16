@@ -16,6 +16,7 @@
  */
 package demetra.tramo;
 
+import demetra.data.Parameter;
 import demetra.design.Development;
 import demetra.design.LombokWorkaround;
 import demetra.timeseries.regression.IOutlier;
@@ -48,15 +49,14 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
     private List<UserVariable> userDefinedVariables;
 
     // the maps with the coefficients use short names...
-    private Map<String, double[]> fixedCoefficients;
-    private Map<String, double[]> coefficients;
+    @lombok.Singular
+    private Map<String, Parameter[]> coefficients;
 
     private static final RegressionSpec DEFAULT = RegressionSpec.builder().build();
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
-                .fixedCoefficients(new LinkedHashMap<>())
                 .coefficients(new LinkedHashMap<>())
                 .calendar(CalendarSpec.builder().build());
     }
@@ -78,22 +78,5 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
 
     public static class Builder implements Validatable.Builder<RegressionSpec> {
 
-        @LombokWorkaround
-        public Builder fixedCoefficient(String key, double[] value) {
-            if (fixedCoefficients == null) {
-                fixedCoefficients = new LinkedHashMap<>();
-            }
-            fixedCoefficients.put(key, value);
-            return this;
-        }
-
-        @LombokWorkaround
-        public Builder coefficient(String key, double[] value) {
-            if (coefficients == null) {
-                coefficients = new LinkedHashMap<>();
-            }
-            coefficients.put(key, value);
-            return this;
-        }
     }
 }

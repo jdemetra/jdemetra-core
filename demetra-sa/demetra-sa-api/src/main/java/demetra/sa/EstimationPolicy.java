@@ -16,69 +16,24 @@
  */
 package demetra.sa;
 
+import demetra.timeseries.TsDomain;
+
 /**
  *
  * @author PALATEJ
  */
-public enum EstimationPolicy{
-
-    /**
-     *
-     */
-    None,
-    /**
-     * The complete model is re-estimated
-     */
-    Complete,
-    /**
-     * The model is completely re-estimated excepting the log/level mode and the
-     * automatic calendar options (if any)
-     */
-    Outliers_StochasticComponent,
-    /**
-     * The outliers are re-identified and all the parameters are re-estimated.
-     * The form of the model itself (log/level, calendars, ARIMA) is not
-     * reviewed
-     */
-    Outliers,
-    /**
-     * The last outliers are re-identified and all the parameters are
-     * re-estimated. The form of the model itself (log/level, calendars, ARIMA)
-     * and the first outliers are not reviewed
-     */
-    LastOutliers,
-    /**
-     * All the parameters are re-estimated, but the structural form of the model
-     * is unchanged
-     */
-    FreeParameters,
-    /**
-     * The auto-regressive parameters used in the definition of the filters are considered as
-     * fixed. In the case of Seats, the roots of the ARIMA model are always distributed the same way.
-     */
-    FixedAutoRegressiveParameters,
-    /**
-     * The parameters used in the definition of the filters are considered as
-     * fixed. In the case of Seats, the ARIMA model is unchanged; in the case of
-     * X13, both the ARIMA model and the x11 filters are unchanged.
-     */
-    FixedParameters,
-    /**
-     * All the parameters of the model are fixed (including the regression coefficients)
-     */
-    Fixed,
-    /**
-     * The new sa series is only based on previously computed seasonal factors (estimates+forecasts)
-     * Nomenclature in line with the guidelines
-     */
-    Current,
-    /**
-     * 
-     */
-    Interactive,
-    /**
-     * 
-     */
-    Custom;
+@lombok.Value
+public class EstimationPolicy {
     
+    public static final EstimationPolicy COMPLETE=new EstimationPolicy(EstimationPolicyType.Complete, null, null);
+    public static final EstimationPolicy FIXED=new EstimationPolicy(EstimationPolicyType.Fixed, null, null);
+    public static final EstimationPolicy FIXEDAUTOREGRESSIVEOARAMETERS=new EstimationPolicy(EstimationPolicyType.FixedAutoRegressiveParameters, null, null);
+    public static final EstimationPolicy FIXEDPARAMETERS=new EstimationPolicy(EstimationPolicyType.FixedParameters, null, null);
+    public static final EstimationPolicy FREEPARAMETERS=new EstimationPolicy(EstimationPolicyType.FreeParameters, null, null);
+    public static final EstimationPolicy INTERACTIVE=new EstimationPolicy(EstimationPolicyType.Interactive, null, null);
+    public static final EstimationPolicy OUTLIERS=new EstimationPolicy(EstimationPolicyType.Outliers, null, null);
+    public static final EstimationPolicy ARIMA=new EstimationPolicy(EstimationPolicyType.Outliers_StochasticComponent, null, null);
+    
+    EstimationPolicyType policy;
+    TsDomain outliersSpan, frozenSpan;
 }
