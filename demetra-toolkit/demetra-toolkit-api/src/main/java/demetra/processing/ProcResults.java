@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package demetra.processing;
 
 import demetra.design.Development;
@@ -24,7 +23,9 @@ import java.util.Map;
 
 /**
  * Generic description of the results of a processing.
- * All processing should generate results that implements this interface
+ * Except in trivial cases, all processing should generate results that
+ * implements this interface
+ * The returned objects should belong to the general API
  *
  * @author Jean Palate
  */
@@ -42,10 +43,10 @@ public interface ProcResults {
     /**
      * Gets the dictionary of all the possible results
      *
-     * @return 
+     * @return
      */
     Map<String, Class> getDictionary();
-    
+
     /**
      * Gets information related to the specified id
      * The identifier and the type should come from the dictionary provided by
@@ -79,6 +80,59 @@ public interface ProcResults {
             }
         }
         return rslt;
+    }
+
+    public static final char SEP = '.';
+
+
+    /**
+     * Concatenates arrays of strings without separator
+     * 
+     * @param s
+     * @return 
+     */
+    public static String paste(String... s) {
+        switch (s.length) {
+            case 0:
+                return "";
+            case 1:
+                return s[0];
+            default:
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < s.length; ++i) {
+                    builder.append(s[i]);
+                }
+                return builder.toString();
+        }
+    }
+    
+    /**
+     * Concatenates arrays of strings with the default separator (.)
+     *
+     * @param s
+     * @return
+     */
+    public static String spaste(String... s) {
+        switch (s.length) {
+            case 0:
+                return "";
+            case 1:
+                return s[0];
+            default:
+                boolean first = true;
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < s.length; ++i) {
+                    if (s[i] != null) {
+                        if (!first) {
+                            builder.append(SEP);
+                        } else {
+                            first = false;
+                        }
+                        builder.append(s[i]);
+                    }
+                }
+                return builder.toString();
+        }
     }
 
 }

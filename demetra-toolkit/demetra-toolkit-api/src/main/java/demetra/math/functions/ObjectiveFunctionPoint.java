@@ -27,20 +27,20 @@ import demetra.math.matrices.MatrixType;
 @lombok.Value
 public class ObjectiveFunctionPoint {
     /**
-     * value of the function
+     * value of the function (=f(x))
      */
     private double value;
     /**
-     * Parameters of the function 
+     * Parameters of the function (=x)
      */
     @lombok.NonNull
     private double[] parameters;
     /**
-     * Gradient of the function at the given point
+     * Gradient of the function at the given point (=df(x)/dxi)
      */
     private double[] gradient;
     /**
-     * Hessian of the function at the given point
+     * Hessian of the function at the given point (=d2f(x)/dxi*dxj)
      */
     private MatrixType hessian;
 }
