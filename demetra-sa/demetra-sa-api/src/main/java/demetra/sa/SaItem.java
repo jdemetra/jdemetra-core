@@ -18,7 +18,11 @@ package demetra.sa;
 
 import demetra.processing.ProcQuality;
 import demetra.processing.ProcResults;
+import demetra.processing.ProcessingLog;
+import demetra.processing.ProcessingLog.InformationType;
 import demetra.timeseries.Ts;
+import demetra.timeseries.TsData;
+import demetra.timeseries.regression.modelling.ModellingContext;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +39,7 @@ public final class SaItem {
     /**
      * Operational. Importance of this estimation
      */
-    int priority;
+    private final int priority;
 
     private final SaDefinition definition;
 
@@ -49,6 +53,23 @@ public final class SaItem {
     public SaItem(String name, SaDefinition definition) {
         this.name = name;
         this.definition = definition;
+        this.priority=0;
+    }
+    
+    public SaItem(String name, SaDefinition definition, int priority) {
+        this.name = name;
+        this.definition = definition;
+        this.priority=priority;
+    }
+
+    public SaItem withPriority(int priority){
+        SaItem nitem = new SaItem(name, definition, priority);
+        nitem.estimation=this.estimation;
+        return nitem;
+    }
+    
+    public SaDefinition getDefinition(){
+        return this.definition;
     }
 
     public SaEstimation getEstimation() {
@@ -57,11 +78,22 @@ public final class SaItem {
             synchronized (this) {
                 e = estimation;
                 if (e == null) {
-                    e = null;
+                    TsData data = definition.getTs().getData();
+                    ProcessingLog log=new ProcessingLog();
+                    ProcResults rslt = SaManager.process(data, definition.activeSpecification(), ModellingContext.getActiveContext(), log);
+                    e = SaEstimation.builder()
+                            .results(rslt)
+                            .warnings(log.all().stream().filter(i->i.getType() == InformationType.Warning)
+                                    .map(i->i.getMsg()).toArray(n->new String[n]))
+                            .build();
                     estimation = e;
                 }
             }
         }
         return e;
+    }
+    
+    public int getPriority(){
+        return this.priority;
     }
 }

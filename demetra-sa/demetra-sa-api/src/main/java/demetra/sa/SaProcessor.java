@@ -18,6 +18,7 @@ package demetra.sa;
 
 import demetra.design.Algorithm;
 import demetra.processing.ProcResults;
+import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.ModellingContext;
 import nbbrd.service.Mutability;
@@ -28,9 +29,10 @@ import nbbrd.service.ServiceDefinition;
  * Generic seasonal adjustment processor
  *
  * @author PALATEJ
+ * @param <R>
  */
 @Algorithm
-@ServiceDefinition(quantifier = Quantifier.MULTIPLE, mutability = Mutability.NONE)
-public interface SaProcessor {
-    ProcResults process(TsData series, ModellingContext context);
+@FunctionalInterface
+public interface SaProcessor<R extends ProcResults> {
+    ProcResults process(TsData series, ModellingContext context, ProcessingLog log);
 }

@@ -42,8 +42,8 @@ public class SaEstimation {
      */
     String[] warnings;
     
-    /**
-     * Specification corresponding to the results of the current estimation (fully identified model)
-     */
-    SaSpecification pointSpec;
+//    /**
+//     * Specification corresponding to the results of the current estimation (fully identified model)
+//     */
+//    SaSpecification pointSpec;
 }

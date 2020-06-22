@@ -11,6 +11,7 @@ import demetra.data.ParameterType;
 import demetra.modelling.TransformationType;
 import demetra.processing.ProcResults;
 import demetra.sa.EstimationPolicy;
+import demetra.sa.SaProcessor;
 import demetra.sa.SaProcessorFactory;
 import demetra.sa.SaSpecification;
 import demetra.seats.DecompositionSpec;
@@ -34,17 +35,19 @@ import java.util.Optional;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.sarima.SarimaModel;
 import jdplus.seats.SeatsResults;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author PALATEJ
  */
-public class TramoSeatsFactory implements SaProcessorFactory {
-    
-    public static final TramoSeatsFactory INSTANCE=new TramoSeatsFactory();
+@ServiceProvider(SaProcessorFactory.class)
+public class TramoSeatsFactory implements SaProcessorFactory<TramoSeatsSpec, TramoSeatsResults> {
+
+    public static final TramoSeatsFactory INSTANCE = new TramoSeatsFactory();
 
     @Override
-    public TramoSeatsSpec of(SaSpecification spec, ProcResults estimation) {
+    public TramoSeatsSpec of(TramoSeatsSpec spec, TramoSeatsResults estimation) {
         if (spec instanceof TramoSeatsSpec && estimation instanceof TramoSeatsResults) {
             TramoSeatsSpec espec = (TramoSeatsSpec) spec;
             TramoSeatsResults rslts = (TramoSeatsResults) estimation;
@@ -62,7 +65,7 @@ public class TramoSeatsFactory implements SaProcessorFactory {
     }
 
     @Override
-    public SaSpecification refreshSpecification(SaSpecification currentSpec, SaSpecification domainSpec, EstimationPolicy policy) {
+    public SaSpecification refreshSpecification(TramoSeatsSpec currentSpec, TramoSeatsSpec domainSpec, EstimationPolicy policy) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -222,6 +225,19 @@ public class TramoSeatsFactory implements SaProcessorFactory {
         } else {
             return Parameter.of(vals, ParameterType.Estimated);
         }
+    }
+
+    @Override
+    public SaProcessor processor(TramoSeatsSpec spec) {
+            return (s, cxt, log) -> TramoSeatsKernel.of(spec, cxt).process(s, log);
+   }
+
+    @Override
+    public TramoSeatsSpec decode(SaSpecification spec) {
+        if (spec instanceof TramoSeatsSpec)
+            return (TramoSeatsSpec) spec;
+        else
+            return null;
     }
 
 }

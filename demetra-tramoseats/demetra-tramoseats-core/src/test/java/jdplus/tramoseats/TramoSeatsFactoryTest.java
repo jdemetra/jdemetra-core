@@ -7,6 +7,11 @@ package jdplus.tramoseats;
 
 import demetra.data.Data;
 import demetra.processing.ProcessingLog;
+import demetra.sa.SaDefinition;
+import demetra.sa.SaEstimation;
+import demetra.sa.SaItem;
+import demetra.timeseries.Ts;
+import demetra.timeseries.TsMoniker;
 import demetra.tramoseats.TramoSeatsSpec;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -36,6 +41,31 @@ public class TramoSeatsFactoryTest {
         System.out.println(nspec2);
         assertEquals(rslt.getPreprocessing().getConcentratedLikelihood().logLikelihood(),
                 rslt2.getPreprocessing().getConcentratedLikelihood().logLikelihood(), 1e-4);
+    }
+    
+    @Test
+    public void testProcessor(){
+        ProcessingLog log=new ProcessingLog();
+        TramoSeatsResults rslts = (TramoSeatsResults) TramoSeatsFactory.INSTANCE.processor(TramoSeatsSpec.RSAfull).process(Data.TS_PROD, null, log);
+        
+    }
+    
+    @Test
+    public void testSaItem(){
+        Ts ts=Ts.builder()
+                .moniker(TsMoniker.of())
+                .name("prod")
+                .data(Data.TS_PROD)
+                .build();
+        
+        SaDefinition sadef=SaDefinition.builder()
+                .domainSpec(TramoSeatsSpec.RSAfull)
+                .ts(ts)
+                .build();
+        
+        SaItem item=new SaItem("prod", sadef);
+        SaEstimation estimation = item.getEstimation();
+        assertTrue(estimation != null);
     }
 
 }

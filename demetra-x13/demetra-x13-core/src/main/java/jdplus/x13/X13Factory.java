@@ -19,6 +19,7 @@ import demetra.regarima.RegressionSpec;
 import demetra.regarima.TradingDaysSpec;
 import demetra.regarima.TransformSpec;
 import demetra.sa.EstimationPolicy;
+import demetra.sa.SaProcessor;
 import demetra.sa.SaProcessorFactory;
 import demetra.sa.SaSpecification;
 import demetra.timeseries.calendars.LengthOfPeriodType;
@@ -33,24 +34,26 @@ import java.util.Arrays;
 import java.util.Optional;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.sarima.SarimaModel;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author PALATEJ
  */
-public class X13Factory implements SaProcessorFactory {
-    
+@ServiceProvider(SaProcessorFactory.class)
+public class X13Factory implements SaProcessorFactory<X13Spec, X13Results> {
+
     public static final X13Factory INSTANCE = new X13Factory();
-    
+
     @Override
-    public X13Spec of(SaSpecification spec, ProcResults estimation) {
+    public X13Spec of(X13Spec spec, X13Results estimation) {
         if (spec instanceof X13Spec && estimation instanceof X13Results) {
             X13Spec espec = (X13Spec) spec;
             X13Results rslts = (X13Results) estimation;
-            
+
             RegArimaSpec ntspec = update(espec.getRegArima(), rslts.getPreprocessing());
             X11Spec nsspec = update(espec.getX11(), rslts.getDecomposition());
-            
+
             return espec.toBuilder()
                     .regArima(ntspec)
                     .x11(nsspec)
@@ -59,17 +62,17 @@ public class X13Factory implements SaProcessorFactory {
             throw new IllegalArgumentException("Invalid specification");
         }
     }
-    
+
     @Override
-    public SaSpecification refreshSpecification(SaSpecification currentSpec, SaSpecification domainSpec, EstimationPolicy policy) {
+    public SaSpecification refreshSpecification(X13Spec currentSpec, X13Spec domainSpec, EstimationPolicy policy) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    private X11Spec update(X11Spec seats, X11Results rslts) {
+
+    private X11Spec update(X11Spec x11, X11Results rslts) {
         // Nothing to do (for the time being)
-        return seats;
+        return x11;
     }
-    
+
     private void update(TransformSpec transform, ModelEstimation rslts, RegArimaSpec.Builder builder) {
         TransformSpec ntransform = transform.toBuilder()
                 .function(rslts.isLogTransformation() ? TransformationType.Log : TransformationType.None)
@@ -77,7 +80,7 @@ public class X13Factory implements SaProcessorFactory {
                 .build();
         builder.transform(ntransform);
     }
-    
+
     private void update(SarimaSpec sarima, ModelEstimation rslts, RegArimaSpec.Builder builder) {
         // Update the model (taking into account fixed parameters)
         sarima.getPhi();
@@ -92,7 +95,7 @@ public class X13Factory implements SaProcessorFactory {
                 .build();
         builder.arima(nspec);
     }
-    
+
     private void updateArima(ModelEstimation rslts, RegArimaSpec.Builder builder) {
         // Update completely the model (if AMI, no fixed parameters!)
         SarimaModel model = rslts.getModel().arima();
@@ -106,7 +109,7 @@ public class X13Factory implements SaProcessorFactory {
                 .build();
         builder.arima(nspec);
     }
-    
+
     private void update(AutoModelSpec ami, ModelEstimation rslts, RegArimaSpec.Builder builder) {
         // Disable ami
         AutoModelSpec nami = ami.toBuilder()
@@ -114,7 +117,7 @@ public class X13Factory implements SaProcessorFactory {
                 .build();
         builder.autoModel(nami);
     }
-    
+
     private RegArimaSpec update(RegArimaSpec regarima, ModelEstimation rslts) {
         RegArimaSpec.Builder builder = regarima.toBuilder();
         update(regarima.getTransform(), rslts, builder);
@@ -125,13 +128,13 @@ public class X13Factory implements SaProcessorFactory {
         } else {
             updateArima(rslts, builder);
         }
-        
+
         update(regarima.getOutliers(), rslts, builder);
         update(regarima.getRegression(), rslts, builder);
-        
+
         return builder.build();
     }
-    
+
     private void update(OutlierSpec outliers, ModelEstimation rslts, RegArimaSpec.Builder builder) {
         if (outliers.isUsed()) {    // Disable outliers
             builder.outliers(
@@ -140,7 +143,7 @@ public class X13Factory implements SaProcessorFactory {
                             .build());
         }
     }
-    
+
     private void update(RegressionSpec regression, ModelEstimation rslts, RegArimaSpec.Builder builder) {
         RegressionSpec.Builder rbuilder = regression.toBuilder();
         // fill all the coefficients (either estimated or fixed)
@@ -154,7 +157,7 @@ public class X13Factory implements SaProcessorFactory {
         // calendar effects
         EasterSpec espec = regression.getEaster();
         TradingDaysSpec tdspec = regression.getTradingDays();
-        
+
         if (tdspec.isUsed() && (tdspec.getTest() != RegressionTestSpec.None)) {
             // leap year
             LengthOfPeriodType lp = LengthOfPeriodType.None;
@@ -167,7 +170,7 @@ public class X13Factory implements SaProcessorFactory {
             if (ftd.isPresent()) {
                 td = tdspec.getType();
             }
-            
+
             if (lp != null || td != null) {
                 if (tdspec.isStockTradingDays()) {
                     int ntd = tdspec.getStockTradingDays();
@@ -184,7 +187,7 @@ public class X13Factory implements SaProcessorFactory {
                 tdspec = TradingDaysSpec.none();
             }
         }
-        
+
         if (espec.isUsed() && espec.getTest() != RegressionTestSpec.None) {
             Optional<Variable> fe = Arrays.stream(variables).filter(v -> v.isEaster()).findFirst();
             if (fe.isPresent()) {
@@ -202,7 +205,7 @@ public class X13Factory implements SaProcessorFactory {
                 .tradingDays(tdspec)
                 .build());
     }
-    
+
     private Parameter[] parametersOf(Parameter[] phi, double[] vals) {
         if (!Parameter.isFree(phi) && phi.length == vals.length) {
             Parameter[] all = new Parameter[vals.length];
@@ -218,5 +221,19 @@ public class X13Factory implements SaProcessorFactory {
             return Parameter.of(vals, ParameterType.Estimated);
         }
     }
-    
+
+    @Override
+    public SaProcessor processor(X13Spec spec) {
+        return (s, cxt, log) -> X13Kernel.of(spec, cxt).process(s, log);
+    }
+
+    @Override
+    public X13Spec decode(SaSpecification spec) {
+        if (spec instanceof X13Spec) {
+            return (X13Spec) spec;
+        } else {
+            return null;
+        }
+    }
+
 }

@@ -29,6 +29,7 @@ public class SaDefinition {
     /**
      * Initial specification. Reference for any relaxing of some elements of the specification
      */
+    @lombok.NonNull
     SaSpecification domainSpec;
     
     /**
@@ -45,4 +46,8 @@ public class SaDefinition {
      * Time series 
      */
     Ts ts;
+    
+    public SaSpecification activeSpecification(){
+        return estimationSpec == null ? domainSpec: estimationSpec;
+    }
 }

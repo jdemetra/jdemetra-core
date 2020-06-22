@@ -17,6 +17,7 @@
 package demetra.sa;
 
 import demetra.processing.ProcResults;
+import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.ModellingContext;
 import java.util.List;
@@ -27,9 +28,15 @@ import java.util.List;
  */
 @lombok.experimental.UtilityClass
 public class SaManager {
-    public final SaManager INSTANCE=new SaManager();
   
-    public ProcResults process(TsData series, SaSpecification spec, ModellingContext context){
+    public ProcResults process(TsData series, SaSpecification spec, ModellingContext context, ProcessingLog log){
+        List<SaProcessorFactory> all = SaProcessorFactoryLoader.get();
+        for (SaProcessorFactory fac : all){
+            SaSpecification dspec = fac.decode(spec);
+            if (dspec != null){
+                return fac.processor(dspec).process(series, context, log);
+            }
+        }
         return null;
     }
     
