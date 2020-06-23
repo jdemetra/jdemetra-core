@@ -8,9 +8,9 @@ package jdplus.x13;
 import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
+import demetra.modelling.ComponentInformation;
 import demetra.modelling.RegressionTestSpec;
 import demetra.modelling.TransformationType;
-import demetra.processing.ProcResults;
 import demetra.regarima.AutoModelSpec;
 import demetra.regarima.EasterSpec;
 import demetra.regarima.OutlierSpec;
@@ -18,9 +18,10 @@ import demetra.regarima.RegArimaSpec;
 import demetra.regarima.RegressionSpec;
 import demetra.regarima.TradingDaysSpec;
 import demetra.regarima.TransformSpec;
+import demetra.sa.ComponentType;
 import demetra.sa.EstimationPolicy;
+import demetra.sa.SaDiagnosticsFactory;
 import demetra.sa.SaProcessor;
-import demetra.sa.SaProcessorFactory;
 import demetra.sa.SaSpecification;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.EasterVariable;
@@ -35,15 +36,39 @@ import java.util.Optional;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.sarima.SarimaModel;
 import nbbrd.service.ServiceProvider;
+import demetra.sa.SaProcessingFactory;
+import demetra.timeseries.TsData;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnostics;
+import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
+import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsFactory;
 
 /**
  *
  * @author PALATEJ
  */
-@ServiceProvider(SaProcessorFactory.class)
-public class X13Factory implements SaProcessorFactory<X13Spec, X13Results> {
+@ServiceProvider(SaProcessingFactory.class)
+public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
 
     public static final X13Factory INSTANCE = new X13Factory();
+
+    private final List<SaDiagnosticsFactory<X13Results>> diagnostics = new CopyOnWriteArrayList<>();
+
+    public X13Factory() {
+        AdvancedResidualSeasonalityDiagnosticsFactory<X13Results> advancedResidualSeasonality
+                = new AdvancedResidualSeasonalityDiagnosticsFactory<>(AdvancedResidualSeasonalityDiagnosticsConfiguration.DEFAULT,
+                        (X13Results r) -> {
+                            boolean mul = r.getPreprocessing().isLogTransformation();
+                            TsData sa = r.getDecomposition().getD11();
+                            TsData irr = r.getDecomposition().getD13();
+                            return new AdvancedResidualSeasonalityDiagnostics.Input(mul, sa, irr);
+                        }
+                );
+        diagnostics.add(advancedResidualSeasonality);
+    }
 
     @Override
     public X13Spec of(X13Spec spec, X13Results estimation) {
@@ -233,6 +258,24 @@ public class X13Factory implements SaProcessorFactory<X13Spec, X13Results> {
             return (X13Spec) spec;
         } else {
             return null;
+        }
+    }
+
+    @Override
+    public List<SaDiagnosticsFactory> diagnostics() {
+        return Collections.unmodifiableList(diagnostics);
+    }
+
+    public void addDiagnostics(SaDiagnosticsFactory<X13Results> diag) {
+        diagnostics.add(diag);
+    }
+
+    public void replaceDiagnostics(SaDiagnosticsFactory<X13Results> olddiag, SaDiagnosticsFactory<X13Results> newdiag) {
+        int idx = diagnostics.indexOf(olddiag);
+        if (idx < 0) {
+            diagnostics.add(newdiag);
+        } else {
+            diagnostics.set(idx, newdiag);
         }
     }
 

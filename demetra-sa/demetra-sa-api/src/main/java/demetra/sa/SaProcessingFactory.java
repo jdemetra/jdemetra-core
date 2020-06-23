@@ -17,6 +17,7 @@
 package demetra.sa;
 
 import demetra.processing.ProcResults;
+import java.util.List;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
@@ -28,7 +29,7 @@ import nbbrd.service.ServiceDefinition;
  * @param <R>
  */
 @ServiceDefinition(quantifier = Quantifier.MULTIPLE, mutability = Mutability.NONE, singleton=true)
-public interface SaProcessorFactory<I extends SaSpecification, R extends ProcResults> {
+public interface SaProcessingFactory<I extends SaSpecification, R extends ProcResults> {
     /**
      * Translate the given specification in a specification that a processor generated
      * by this factory can understand
@@ -55,4 +56,6 @@ public interface SaProcessorFactory<I extends SaSpecification, R extends ProcRes
     I of(I spec, R estimation);
     
     SaSpecification refreshSpecification(I currentSpec, I domainSpec, EstimationPolicy policy);
+    
+    List<SaDiagnosticsFactory> diagnostics();
 }

@@ -30,14 +30,14 @@ import jdplus.x13.extractors.X13Extractor;
  * @author palatej
  */
 @lombok.Value
-public class X13Results implements ProcResults{
-    
+public class X13Results implements ProcResults {
+
     private ModelEstimation preprocessing;
     private X13Preadjustment preadjustment;
     private X11Results decomposition;
     private X13Finals finals;
-    
-        @Override
+
+    @Override
     public boolean contains(String id) {
         return X13Extractor.getMapping().contains(id);
     }

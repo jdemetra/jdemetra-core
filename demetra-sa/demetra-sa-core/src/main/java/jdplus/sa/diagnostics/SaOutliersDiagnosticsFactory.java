@@ -14,31 +14,33 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sa;
+package jdplus.sa.diagnostics;
 
-import demetra.processing.ProcResults;
-import demetra.processing.ProcessingLog;
-import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.ModellingContext;
-import java.util.List;
+import demetra.sa.SaDiagnosticsFactory;
+import java.util.function.Function;
+import jdplus.regarima.diagnostics.OutliersDiagnosticsConfiguration;
+import jdplus.regarima.diagnostics.OutliersDiagnosticsFactory;
+import jdplus.regsarima.regular.ModelEstimation;
 
 /**
  *
  * @author PALATEJ
+ * @param <R>
  */
-@lombok.experimental.UtilityClass
-public class SaManager {
-  
-    public ProcResults process(TsData series, SaSpecification spec, ModellingContext context, ProcessingLog log){
-        List<SaProcessingFactory> all = SaProcessingFactoryLoader.get();
-        for (SaProcessingFactory fac : all){
-            SaSpecification dspec = fac.decode(spec);
-            if (dspec != null){
-                return fac.processor(dspec).process(series, context, log);
-            }
-        }
-        return null;
+public class SaOutliersDiagnosticsFactory<R> extends OutliersDiagnosticsFactory<R> implements SaDiagnosticsFactory<R> {
+
+    public SaOutliersDiagnosticsFactory(OutliersDiagnosticsConfiguration config, Function<R, ModelEstimation> extractor) {
+        super(config, extractor);
     }
-    
-    
+
+    @Override
+    public Scope getScope() {
+        return Scope.Modelling;
+    }
+
+    @Override
+    public int getOrder() {
+        return 200;
+    }
+
 }

@@ -53,11 +53,14 @@ public final class SaDictionary  {
      */
     public final String OUT="out_", REG="reg_", DET="det_";
     
+    
+///////////////////////////////////////////////////////////////////////////////
+    
     /**
      * Decomposition mode of the series
      */
     public static final String MODE = "mode";
-    
+   
     public static final String T_LIN = "t_lin", S_LIN = "s_lin", SA_LIN = "sa_lin", I_LIN = "i_lin", SI_LIN = "si_lin";
     public static final String T_CMP = "t_cmp", S_CMP = "s_cmp", SA_CMP = "sa_cmp", I_CMP = "i_cmp", SI_CMP = "si_cmp";
     public static final String OUT_I = "out_i", OUT_S = "out_s", OUT_T = "out_t";

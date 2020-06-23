@@ -15,40 +15,40 @@
 * limitations under the Licence.
 */
 
-
-package jdplus.sa.diagnostics;
+package jdplus.regarima.diagnostics;
 
 import demetra.processing.Diagnostics;
 import demetra.processing.DiagnosticsFactory;
-import demetra.processing.ProcResults;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import jdplus.regsarima.regular.ModelEstimation;
-import nbbrd.service.ServiceProvider;
+import jdplus.regarima.RegArimaModel;
+import jdplus.sarima.SarimaModel;
 
 /**
  *
- * @author Kristof Bayens
+ * @author Jean Palate
+ * @param <R>
  */
-@ServiceProvider(DiagnosticsFactory.class)
-public class OutliersDiagnosticsFactory implements DiagnosticsFactory<ModelEstimation> {
+public class OutOfSampleDiagnosticsFactory<R> implements DiagnosticsFactory<R>  {
 
-    public static final String NUMBER = "number of outliers";
-    public static final String NAME = "Outliers";
-    public static final List<String> ALL = Collections.singletonList(NUMBER);
-    private final OutliersDiagnosticsConfiguration config;
+    public static final String MEAN = "mean", MSE = "mse";
+    public static final String NAME = "Out-of-sample";
+    public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(MEAN, MSE));
+
+    //public static final OutOfSampleDiagnosticsFactory Default = new OutOfSampleDiagnosticsFactory();
+    private final OutOfSampleDiagnosticsConfiguration config;
+    private final Function<R, RegArimaModel<SarimaModel> > extractor;
     private boolean enabled=true;
 
-    public OutliersDiagnosticsFactory() {
-        config = OutliersDiagnosticsConfiguration.DEFAULT;
-    }
-
-    public OutliersDiagnosticsFactory(OutliersDiagnosticsConfiguration config) {
+    public OutOfSampleDiagnosticsFactory(OutOfSampleDiagnosticsConfiguration config, Function<R, RegArimaModel<SarimaModel> > extractor) {
         this.config = config;
+        this.extractor=extractor;
     }
 
-    public OutliersDiagnosticsConfiguration getConfiguration() {
+    public OutOfSampleDiagnosticsConfiguration getConfiguration() {
         return config;
     }
 
@@ -72,8 +72,10 @@ public class OutliersDiagnosticsFactory implements DiagnosticsFactory<ModelEstim
         this.enabled=enabled;
     }
 
+
     @Override
-    public Diagnostics of(ModelEstimation rslts) {
-        return OutliersDiagnostics.create(rslts, config);
+    public Diagnostics of(R rslts) {
+        return OutOfSampleDiagnostics.create(config, extractor.apply(rslts));
     }
+
 }

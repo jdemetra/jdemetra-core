@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package jdplus.sa.diagnostics;
+package jdplus.regarima.diagnostics;
 
 import jdplus.regsarima.regular.ModelEstimation;
 import demetra.processing.DiagnosticsFactory;

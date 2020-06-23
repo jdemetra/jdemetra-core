@@ -8,11 +8,12 @@ package jdplus.tramoseats;
 import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
+import demetra.modelling.ComponentInformation;
 import demetra.modelling.TransformationType;
-import demetra.processing.ProcResults;
+import demetra.sa.ComponentType;
 import demetra.sa.EstimationPolicy;
+import demetra.sa.SaDiagnosticsFactory;
 import demetra.sa.SaProcessor;
-import demetra.sa.SaProcessorFactory;
 import demetra.sa.SaSpecification;
 import demetra.seats.DecompositionSpec;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
@@ -36,15 +37,81 @@ import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.sarima.SarimaModel;
 import jdplus.seats.SeatsResults;
 import nbbrd.service.ServiceProvider;
+import demetra.sa.SaProcessingFactory;
+import demetra.timeseries.TsData;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnostics;
+import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
+import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsFactory;
+import jdplus.sa.diagnostics.CoherenceDiagnostics;
+import jdplus.sa.diagnostics.CoherenceDiagnosticsConfiguration;
+import jdplus.sa.diagnostics.CoherenceDiagnosticsFactory;
+import jdplus.regarima.diagnostics.OutOfSampleDiagnosticsConfiguration;
+import jdplus.regarima.diagnostics.OutliersDiagnosticsConfiguration;
+import jdplus.regarima.diagnostics.ResidualsDiagnosticsConfiguration;
+import jdplus.sa.diagnostics.ResidualTradingDaysDiagnostics;
+import jdplus.sa.diagnostics.ResidualTradingDaysDiagnosticsConfiguration;
+import jdplus.sa.diagnostics.ResidualTradingDaysDiagnosticsFactory;
+import jdplus.sa.diagnostics.SaOutOfSampleDiagnosticsFactory;
+import jdplus.sa.diagnostics.SaOutliersDiagnosticsFactory;
+import jdplus.sa.diagnostics.SaResidualsDiagnosticsFactory;
 
 /**
  *
  * @author PALATEJ
  */
-@ServiceProvider(SaProcessorFactory.class)
-public class TramoSeatsFactory implements SaProcessorFactory<TramoSeatsSpec, TramoSeatsResults> {
+@ServiceProvider(SaProcessingFactory.class)
+public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, TramoSeatsResults> {
 
     public static final TramoSeatsFactory INSTANCE = new TramoSeatsFactory();
+
+    private final List<SaDiagnosticsFactory<TramoSeatsResults>> diagnostics = new CopyOnWriteArrayList<>();
+
+    public TramoSeatsFactory() {
+        CoherenceDiagnosticsFactory<TramoSeatsResults> coherence
+                = new CoherenceDiagnosticsFactory<>(CoherenceDiagnosticsConfiguration.DEFAULT,
+                        (TramoSeatsResults r) -> {
+                            return new CoherenceDiagnostics.Input(r.getFinals().getMode(), r);
+                        }
+                );
+        SaOutOfSampleDiagnosticsFactory<TramoSeatsResults> outofsample
+                = new SaOutOfSampleDiagnosticsFactory<>(OutOfSampleDiagnosticsConfiguration.DEFAULT,
+                        r->r.getPreprocessing().getModel());
+        SaResidualsDiagnosticsFactory<TramoSeatsResults> residuals
+                = new SaResidualsDiagnosticsFactory<>(ResidualsDiagnosticsConfiguration.DEFAULT,
+                        r->r.getPreprocessing());
+        SaOutliersDiagnosticsFactory<TramoSeatsResults> outliers
+                = new SaOutliersDiagnosticsFactory<>(OutliersDiagnosticsConfiguration.DEFAULT,
+                        r->r.getPreprocessing());
+        AdvancedResidualSeasonalityDiagnosticsFactory<TramoSeatsResults> advancedResidualSeasonality
+                = new AdvancedResidualSeasonalityDiagnosticsFactory<>(AdvancedResidualSeasonalityDiagnosticsConfiguration.DEFAULT,
+                        (TramoSeatsResults r) -> {
+                            boolean mul = r.getPreprocessing().isLogTransformation();
+                            TsData sa = r.getDecomposition().getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
+                            TsData irr = r.getDecomposition().getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.Value);
+                            return new AdvancedResidualSeasonalityDiagnostics.Input(mul, sa, irr);
+                        }
+                );
+        ResidualTradingDaysDiagnosticsFactory<TramoSeatsResults> residualTradingDays
+                = new ResidualTradingDaysDiagnosticsFactory<>(ResidualTradingDaysDiagnosticsConfiguration.DEFAULT,
+                        (TramoSeatsResults r) -> {
+                            boolean mul = r.getPreprocessing().isLogTransformation();
+                            TsData sa = r.getDecomposition().getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
+                            TsData irr = r.getDecomposition().getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.Value);
+                            return new ResidualTradingDaysDiagnostics.Input(mul, sa, irr);
+                        }
+                );
+        
+        diagnostics.add(coherence);
+        diagnostics.add(residuals);
+        diagnostics.add(outofsample);
+        diagnostics.add(outliers);
+        diagnostics.add(advancedResidualSeasonality);
+        diagnostics.add(residualTradingDays);
+        
+    }
 
     @Override
     public TramoSeatsSpec of(TramoSeatsSpec spec, TramoSeatsResults estimation) {
@@ -229,15 +296,34 @@ public class TramoSeatsFactory implements SaProcessorFactory<TramoSeatsSpec, Tra
 
     @Override
     public SaProcessor processor(TramoSeatsSpec spec) {
-            return (s, cxt, log) -> TramoSeatsKernel.of(spec, cxt).process(s, log);
-   }
+        return (s, cxt, log) -> TramoSeatsKernel.of(spec, cxt).process(s, log);
+    }
 
     @Override
     public TramoSeatsSpec decode(SaSpecification spec) {
-        if (spec instanceof TramoSeatsSpec)
+        if (spec instanceof TramoSeatsSpec) {
             return (TramoSeatsSpec) spec;
-        else
+        } else {
             return null;
+        }
+    }
+
+    @Override
+    public List<SaDiagnosticsFactory> diagnostics() {
+        return Collections.unmodifiableList(diagnostics);
+    }
+
+    public void addDiagnostics(SaDiagnosticsFactory<TramoSeatsResults> diag) {
+        diagnostics.add(diag);
+    }
+
+    public void replaceDiagnostics(SaDiagnosticsFactory<TramoSeatsResults> olddiag, SaDiagnosticsFactory<TramoSeatsResults> newdiag) {
+        int idx = diagnostics.indexOf(olddiag);
+        if (idx < 0) {
+            diagnostics.add(newdiag);
+        } else {
+            diagnostics.set(idx, newdiag);
+        }
     }
 
 }

@@ -18,21 +18,20 @@ package jdplus.sa.diagnostics;
 
 import demetra.design.Development;
 import demetra.processing.Diagnostics;
-import demetra.processing.DiagnosticsFactory;
-import demetra.processing.ProcResults;
+import demetra.sa.SaDiagnosticsFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
+ * @param <R>
  */
 @Development(status = Development.Status.Release)
-public class CoherenceDiagnosticsFactory<R> implements DiagnosticsFactory<R> {
+public class CoherenceDiagnosticsFactory<R> implements SaDiagnosticsFactory<R> {
 
     public static final String DEF = "definition", BIAS = "annual totals";
     public static final String NAME = "Basic checks";
@@ -77,5 +76,14 @@ public class CoherenceDiagnosticsFactory<R> implements DiagnosticsFactory<R> {
         return CoherenceDiagnostics.of(config, extractor.apply(rslts));
     }
 
+    @Override
+    public Scope getScope() {
+        return Scope.General;
+    }
+
+    @Override
+    public int getOrder() {
+        return 0;
+    }
     
 }

@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package jdplus.sa.diagnostics;
+package jdplus.regarima.diagnostics;
 
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;

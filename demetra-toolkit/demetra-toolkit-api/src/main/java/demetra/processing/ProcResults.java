@@ -107,7 +107,7 @@ public interface ProcResults {
     }
     
     /**
-     * Concatenates arrays of strings with the default separator (.)
+     * Concatenates arrays of strings with the default separator ('.')
      *
      * @param s
      * @return

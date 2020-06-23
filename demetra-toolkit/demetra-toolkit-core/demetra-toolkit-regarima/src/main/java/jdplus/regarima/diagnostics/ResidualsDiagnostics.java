@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jdplus.sa.diagnostics;
+package jdplus.regarima.diagnostics;
 
 import jdplus.data.analysis.Periodogram;
 import demetra.processing.Diagnostics;

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package jdplus.sa.diagnostics;
+package jdplus.regarima.diagnostics;
 
 
 /**

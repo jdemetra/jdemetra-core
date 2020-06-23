@@ -32,6 +32,7 @@ import jdplus.stats.tests.seasonal.StableSeasonality;
  */
 public class ResidualSeasonalityDiagnostics implements Diagnostics {
 
+
     private StatisticalTest saFTest, lastSaFTest, irregularFTest;
 
     private final double[] saThresholds = new double[]{0.1, 0.05, 0.01};
