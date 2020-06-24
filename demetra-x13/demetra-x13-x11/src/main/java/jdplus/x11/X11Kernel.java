@@ -43,6 +43,7 @@ public class X11Kernel implements X11.Processor {
         return x;
     }
 
+    
     @Override
     public X11Results process(@lombok.NonNull TsData timeSeries, @lombok.NonNull X11Spec spec) {
         clear();
@@ -141,10 +142,15 @@ public class X11Kernel implements X11.Processor {
                 .d11(TsData.ofInternal(start, prepare(dstep.getD11())))
                 .d12(TsData.ofInternal(start, prepare(dstep.getD12(), dstep.getD10(), cstep.getC13())))
                 .d13(TsData.ofInternal(start, kernelD13))
-                //Final
+                //msr
+                .d9Msr(dstep.getD9msr())
+                .d9default(dstep.isD9default())
+                .d9filter(dstep.getD9filter())
+                // trend selection
                 .iCRatio(dstep.getICRatio())
-                .mode(spec.getMode())
                 .finalHendersonFilterLength(dstep.getFinalHendersonFilterLength())
+                
+                .mode(spec.getMode())
                 .build();
     }
 

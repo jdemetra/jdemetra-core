@@ -13,7 +13,7 @@ import static jdplus.x11.X11Kernel.table;
 import jdplus.x11.filter.endpoints.FilteredMeanEndPoints;
 import jdplus.data.DataBlock;
 import jdplus.math.linearfilters.SymmetricFilter;
-import jdplus.x11.MsrTable;
+import demetra.x11.MsrTable;
 
 /**
  *
@@ -29,13 +29,23 @@ public class MsrFilterSelection {
 
     private MsrTable msrTable;
     private double msr;
-    
-    public MsrTable getMsrTable(){
+    private int iter;
+    private boolean useDefault;
+
+    public MsrTable getMsrTable() {
         return msrTable;
     }
 
-    public double getGlobalMsr(){
+    public double getGlobalMsr() {
         return msr;
+    }
+
+    public int getIterCount() {
+        return iter;
+    }
+
+    public boolean isUsingDefault() {
+        return useDefault;
     }
 
     public SeasonalFilterOption doMSR(DoubleSeq data, X11Context context) {
@@ -47,23 +57,28 @@ public class MsrFilterSelection {
 
         // 0. complete year
         series = completeYear(series, context);
-        msr=0;
+        useDefault = false;
+        iter = 0;
+        msr = 0;
         do {
+            ++iter;
             // 1. calc Components
             calcComponents(series, context);
             // 2. calc periodic variations
-            msrTable=MsrTable.of(seas, irr, context.getFirstPeriod(), context.getPeriod(), context.getMode() == DecompositionMode.Multiplicative);
+            msrTable = MsrTable.of(seas, irr, context.getPeriod(), context.getFirstPeriod(), context.getMode() == DecompositionMode.Multiplicative);
             // 3. calc gmsr
             msr = msrTable.getGlobalMsr();
             // 4. decision
             seasFilter = decideFilter(msr);
-            if (seasFilter != null)
+            if (seasFilter != null) {
                 break;
+            }
             // 5. cut year
             series = series.drop(0, context.getPeriod());
 //          As we have shortend the series, we must adapt the test on the length (5 instead of 6)
         } while (series.length() / context.getPeriod() >= 5);
         if (seasFilter == null) {
+            useDefault = true;
             seasFilter = SeasonalFilterOption.S3X5;
         }
         return seasFilter;

@@ -33,15 +33,20 @@ public class EvolutiveSeasonality {
      *
      * @param series Sequence of data
      * @param period Tested periodicity
+     * @param startPos Position in a cycle of the first obs.
      * @param multiplicative Multiplicative series (average = 1) or Additive series
      * (average = 0)
      * @return
      */
-    public AnovaTest of(final DoubleSeq series, int period, boolean multiplicative) {
+    public AnovaTest of(final DoubleSeq series, int period, int startPos, boolean multiplicative) {
         // determine "full cycles"
 
         int n = series.length();
-        int ny = n / period;
+        int nskip=0;
+        if (startPos != 0){
+            nskip=period-startPos;
+        }
+        int ny = (n-nskip) / period;
         if (ny == 0) {
             return null;
         }
@@ -55,6 +60,7 @@ public class EvolutiveSeasonality {
         double[] tmp = new double[ny * period];
 
         DoubleSeqCursor reader = series.cursor();
+        reader.skip(nskip);
         for (int i = 0; i < tmp.length; i++) {
             tmp[i] = Math.abs(reader.getAndNext() - xbar);
         }

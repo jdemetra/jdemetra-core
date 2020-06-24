@@ -16,5 +16,6 @@ import demetra.timeseries.TsData;
 public class X13Finals {
     
     TsData d10final, d11final, d12final, d13final, d16, d18;
+    TsData d10a, d11a, d12a, d16a, d18a;
     TsData e1, e2, e3, e11;
 }

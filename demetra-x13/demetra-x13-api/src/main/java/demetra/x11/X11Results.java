@@ -28,4 +28,11 @@ public class X11Results {
      * I/C-Ratio on D1 !o D10 (D11bis)
      */
     double iCRatio;
+    
+    /**
+     * MSR (moving seasonality ratio) table on D9 and related
+     */
+    MsrTable d9Msr;
+    SeasonalFilterOption d9filter;
+    boolean d9default;
 }

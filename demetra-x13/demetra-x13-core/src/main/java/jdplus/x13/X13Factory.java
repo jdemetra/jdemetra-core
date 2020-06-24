@@ -8,7 +8,6 @@ package jdplus.x13;
 import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
-import demetra.modelling.ComponentInformation;
 import demetra.modelling.RegressionTestSpec;
 import demetra.modelling.TransformationType;
 import demetra.regarima.AutoModelSpec;
@@ -18,7 +17,6 @@ import demetra.regarima.RegArimaSpec;
 import demetra.regarima.RegressionSpec;
 import demetra.regarima.TradingDaysSpec;
 import demetra.regarima.TransformSpec;
-import demetra.sa.ComponentType;
 import demetra.sa.EstimationPolicy;
 import demetra.sa.SaDiagnosticsFactory;
 import demetra.sa.SaProcessor;
@@ -38,13 +36,24 @@ import jdplus.sarima.SarimaModel;
 import nbbrd.service.ServiceProvider;
 import demetra.sa.SaProcessingFactory;
 import demetra.timeseries.TsData;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import jdplus.regarima.diagnostics.OutOfSampleDiagnosticsConfiguration;
+import jdplus.regarima.diagnostics.OutliersDiagnosticsConfiguration;
+import jdplus.regarima.diagnostics.ResidualsDiagnosticsConfiguration;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnostics;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsFactory;
+import jdplus.sa.diagnostics.CoherenceDiagnostics;
+import jdplus.sa.diagnostics.CoherenceDiagnosticsConfiguration;
+import jdplus.sa.diagnostics.CoherenceDiagnosticsFactory;
+import jdplus.sa.diagnostics.ResidualTradingDaysDiagnostics;
+import jdplus.sa.diagnostics.ResidualTradingDaysDiagnosticsConfiguration;
+import jdplus.sa.diagnostics.ResidualTradingDaysDiagnosticsFactory;
+import jdplus.sa.diagnostics.SaOutOfSampleDiagnosticsFactory;
+import jdplus.sa.diagnostics.SaOutliersDiagnosticsFactory;
+import jdplus.sa.diagnostics.SaResidualsDiagnosticsFactory;
 
 /**
  *
@@ -58,6 +67,21 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
     private final List<SaDiagnosticsFactory<X13Results>> diagnostics = new CopyOnWriteArrayList<>();
 
     public X13Factory() {
+        CoherenceDiagnosticsFactory<X13Results> coherence
+                = new CoherenceDiagnosticsFactory<>(CoherenceDiagnosticsConfiguration.DEFAULT,
+                        (X13Results r) -> {
+                            return new CoherenceDiagnostics.Input(r.getDecomposition().getMode(), r);
+                        }
+                );
+        SaOutOfSampleDiagnosticsFactory<X13Results> outofsample
+                = new SaOutOfSampleDiagnosticsFactory<>(OutOfSampleDiagnosticsConfiguration.DEFAULT,
+                        r->r.getPreprocessing().getModel());
+        SaResidualsDiagnosticsFactory<X13Results> residuals
+                = new SaResidualsDiagnosticsFactory<>(ResidualsDiagnosticsConfiguration.DEFAULT,
+                        r->r.getPreprocessing());
+        SaOutliersDiagnosticsFactory<X13Results> outliers
+                = new SaOutliersDiagnosticsFactory<>(OutliersDiagnosticsConfiguration.DEFAULT,
+                        r->r.getPreprocessing());
         AdvancedResidualSeasonalityDiagnosticsFactory<X13Results> advancedResidualSeasonality
                 = new AdvancedResidualSeasonalityDiagnosticsFactory<>(AdvancedResidualSeasonalityDiagnosticsConfiguration.DEFAULT,
                         (X13Results r) -> {
@@ -67,7 +91,23 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
                             return new AdvancedResidualSeasonalityDiagnostics.Input(mul, sa, irr);
                         }
                 );
+        ResidualTradingDaysDiagnosticsFactory<X13Results> residualTradingDays
+                = new ResidualTradingDaysDiagnosticsFactory<>(ResidualTradingDaysDiagnosticsConfiguration.DEFAULT,
+                        (X13Results r) -> {
+                            boolean mul = r.getPreprocessing().isLogTransformation();
+                            TsData sa = r.getDecomposition().getD11();
+                            TsData irr = r.getDecomposition().getD13();
+                            return new ResidualTradingDaysDiagnostics.Input(mul, sa, irr);
+                        }
+                );
+        
+        diagnostics.add(coherence);
+        diagnostics.add(residuals);
+        diagnostics.add(outofsample);
+        diagnostics.add(outliers);
         diagnostics.add(advancedResidualSeasonality);
+        diagnostics.add(residualTradingDays);
+        
     }
 
     @Override

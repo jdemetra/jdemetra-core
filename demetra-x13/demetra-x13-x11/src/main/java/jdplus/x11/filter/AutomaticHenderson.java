@@ -7,7 +7,7 @@ package jdplus.x11.filter;
 
 import jdplus.data.DataBlock;
 import jdplus.math.linearfilters.SymmetricFilter;
-import jdplus.x11.SeriesEvolution;
+import jdplus.x11.X11Utility;
 import jdplus.x11.X11Context;
 import static jdplus.x11.X11Kernel.table;
 import demetra.data.DoubleSeq;
@@ -34,8 +34,8 @@ public class AutomaticHenderson {
         int nb = context.getBackcastHorizon();
         sc = sc.drop(nb, nf);
         si = si.drop(nb, nf);
-        double gc = SeriesEvolution.calcAbsMeanVariation(sc, 1, context.isMultiplicative());
-        double gi = SeriesEvolution.calcAbsMeanVariation(si, 1, context.isMultiplicative());
+        double gc = X11Utility.calcAbsMeanVariation(sc, 1, context.isMultiplicative());
+        double gi = X11Utility.calcAbsMeanVariation(si, 1, context.isMultiplicative());
         double icr = gi / gc;
         if (freq == 4) {
             icr *= 3.0;

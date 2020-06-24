@@ -5,7 +5,9 @@
  */
 package jdplus.x11;
 
+import demetra.x11.MsrTable;
 import demetra.data.DoubleSeq;
+import demetra.sa.DecompositionMode;
 import demetra.x11.CalendarSigmaOption;
 import demetra.x11.SeasonalFilterOption;
 import static jdplus.x11.X11Kernel.table;
@@ -34,6 +36,10 @@ public class X11DStep {
     private static final double EPS = 1e-9;
 
     private DoubleSeq d1, d2, d4, d5, d6, d7, d8, d9, d9g, d9bis, d9_g_bis, d10, d10bis, d11, d11bis, d12, d13;
+    private int d9msriter;
+    private SeasonalFilterOption d9filter;
+    private boolean d9default;
+    private MsrTable d9msr;
     private int d2drop, finalHendersonFilterLength;
     private double iCRatio;
     private SeasonalFilterOption[] seasFilter;
@@ -142,8 +148,11 @@ public class X11DStep {
         if (context.isMSR()) {
             MsrFilterSelection msr = getMsrFilterSelection();
             SeasonalFilterOption msrFilter = msr.doMSR(d9_g_bis, context);
+            d9msriter=msr.getIterCount();
+            d9filter = msrFilter;
             Arrays.fill(seasFilter, msrFilter);
         }
+        d9msr=X11Utility.defaultMsrTable(d9_g_bis.drop(context.getBackcastHorizon(), context.getForecastHorizon()), context.getPeriod(), context.getFirstPeriod(), context.getMode());
         X11SeasonalFilterProcessor processor = X11SeasonalFiltersFactory.filter(context.getPeriod(), seasFilter);
         d10bis = processor.process(d9_g_bis, context.getFirstPeriod());
         d10 = DefaultSeasonalNormalizer.normalize(d10bis, 0, context);

@@ -148,6 +148,24 @@ public final class LeastSquaresResults {
         return mean;
     }
 
+    /**
+     * Returns X*b
+     * @return 
+     */
+    public DoubleSeq regressionEffect() {
+        DataBlock e = DataBlock.make(y.length());
+        DoubleSeqCursor c = coefficients.cursor();
+        DataBlockIterator cols = X.columnsIterator();
+        while (cols.hasNext()) {
+            e.addAY(c.getAndNext(), cols.next());
+        }
+        return e.unmodifiable();
+    }
+    
+    /**
+     * Returns e=y-Xb
+     * @return 
+     */
     public DoubleSeq residuals() {
         DataBlock e = DataBlock.of(y);
         DoubleSeqCursor c = coefficients.cursor();
