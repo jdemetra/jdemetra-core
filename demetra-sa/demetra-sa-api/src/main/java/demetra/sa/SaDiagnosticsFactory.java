@@ -16,8 +16,13 @@
  */
 package demetra.sa;
 
+import demetra.information.Information;
+import demetra.information.InformationSet;
+import demetra.processing.Diagnostics;
 import demetra.processing.DiagnosticsFactory;
+import demetra.processing.ProcDiagnostic;
 import java.util.Comparator;
+import java.util.List;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
@@ -70,6 +75,27 @@ public interface SaDiagnosticsFactory<R> extends DiagnosticsFactory<R>{
             else
                 return 0;
         }
-        
     }
+    
+    default Information<InformationSet> qualityOf(R sa) {
+        if (sa == null) {
+            return null;
+        }
+        Diagnostics diags = of(sa);
+        if (diags == null) {
+            return null;
+        }
+        InformationSet set = new InformationSet();
+        for (String test : diags.getTests()) {
+            double val = diags.getValue(test);
+            ProcDiagnostic item = new ProcDiagnostic(val, diags.getDiagnostic(test));
+            set.set(test.toLowerCase(), item);
+        }
+        List<String> warnings = diags.getWarnings();
+        if (warnings != null && !warnings.isEmpty()) {
+            set.set(InformationSet.WARNINGS, warnings.toArray());
+        }
+        return new Information<>(diags.getName().toLowerCase(), set);
+    }
+
 }

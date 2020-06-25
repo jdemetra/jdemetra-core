@@ -16,8 +16,11 @@
  */
 package demetra.sa;
 
+import demetra.information.InformationSet;
 import demetra.processing.ProcQuality;
 import demetra.processing.ProcResults;
+import demetra.processing.ProcessingLog;
+import java.util.List;
 
 /**
  *
@@ -33,17 +36,27 @@ public class SaEstimation {
     ProcResults results;
     
     /**
+     * ProcessingLog. Could be null
+     */
+    ProcessingLog log;
+   
+    InformationSet  diagnostics;
+    
+    /**
      * Quality of the current results
      */
     ProcQuality quality;
-    
-    /**
-     * Warnings on the current estimation
-     */
-    String[] warnings;
-    
+   
 //    /**
 //     * Specification corresponding to the results of the current estimation (fully identified model)
 //     */
 //    SaSpecification pointSpec;
+    
+    /**
+     * Warnings on the current estimation
+     * @return 
+     */
+    public List<String> warnings(){
+        return diagnostics.warnings();
+    }
 }

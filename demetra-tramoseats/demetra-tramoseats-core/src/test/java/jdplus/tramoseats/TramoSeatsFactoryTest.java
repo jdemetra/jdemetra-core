@@ -6,6 +6,7 @@
 package jdplus.tramoseats;
 
 import demetra.data.Data;
+import demetra.processing.ProcQuality;
 import demetra.processing.ProcessingLog;
 import demetra.sa.SaDefinition;
 import demetra.sa.SaEstimation;
@@ -64,8 +65,9 @@ public class TramoSeatsFactoryTest {
                 .build();
         
         SaItem item=new SaItem("prod", sadef);
+        item.process(true);
         SaEstimation estimation = item.getEstimation();
-        assertTrue(estimation != null);
+        assertTrue(estimation.getQuality() == ProcQuality.Good);
     }
 
 }

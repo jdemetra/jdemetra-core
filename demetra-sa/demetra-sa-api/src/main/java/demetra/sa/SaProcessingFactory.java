@@ -16,6 +16,7 @@
  */
 package demetra.sa;
 
+import demetra.information.InformationSet;
 import demetra.processing.ProcResults;
 import java.util.List;
 import nbbrd.service.Mutability;
@@ -30,6 +31,15 @@ import nbbrd.service.ServiceDefinition;
  */
 @ServiceDefinition(quantifier = Quantifier.MULTIPLE, mutability = Mutability.NONE, singleton=true)
 public interface SaProcessingFactory<I extends SaSpecification, R extends ProcResults> {
+    
+    /**
+     * If a processor can handle a given specification, it should be able to 
+     * execute all the methods of the interface, starting from that specification
+     * @param spec
+     * @return 
+     */
+    boolean canHandle(SaSpecification spec);
+    
     /**
      * Translate the given specification in a specification that a processor generated
      * by this factory can understand
@@ -57,5 +67,16 @@ public interface SaProcessingFactory<I extends SaSpecification, R extends ProcRe
     
     SaSpecification refreshSpecification(I currentSpec, I domainSpec, EstimationPolicy policy);
     
-    List<SaDiagnosticsFactory> diagnostics();
+    List<SaDiagnosticsFactory<R>> diagnostics();
+    
+    default InformationSet diagnosticsOf(R sa) {
+        InformationSet summary = new InformationSet();
+        for (SaDiagnosticsFactory<R> diag : diagnostics()) {
+            if (diag.isEnabled()) {
+                summary.add(diag.qualityOf(sa));
+            }
+        }
+        return summary;
+    }
+
 }

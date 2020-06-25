@@ -16,6 +16,8 @@
  */
 package demetra.sa;
 
+import demetra.information.InformationSet;
+import demetra.processing.ProcDiagnostic;
 import demetra.processing.ProcResults;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
@@ -32,7 +34,7 @@ public class SaManager {
     public ProcResults process(TsData series, SaSpecification spec, ModellingContext context, ProcessingLog log){
         List<SaProcessingFactory> all = SaProcessingFactoryLoader.get();
         for (SaProcessingFactory fac : all){
-            SaSpecification dspec = fac.decode(spec);
+            SaSpecification dspec=fac.decode(spec);
             if (dspec != null){
                 return fac.processor(dspec).process(series, context, log);
             }
@@ -40,5 +42,29 @@ public class SaManager {
         return null;
     }
     
+    public SaEstimation process(SaDefinition def, ModellingContext context, boolean verbose){
+        List<SaProcessingFactory> all = SaProcessingFactoryLoader.get();
+        SaSpecification spec=def.activeSpecification();
+        for (SaProcessingFactory fac : all){
+            SaSpecification dspec=fac.decode(spec);
+            if (dspec != null){
+                ProcessingLog log= new ProcessingLog();
+                SaProcessor processor = fac.processor(dspec);
+                ProcResults rslt = processor.process(def.getTs().getData(), context, log);
+                InformationSet diagnostics = fac.diagnosticsOf(rslt);
+                return SaEstimation.builder()
+                        .results(rslt)
+                        .log(verbose ? log : null)
+                        .diagnostics(diagnostics)
+                        .quality(ProcDiagnostic.summary(diagnostics))
+                        .build();
+            }
+        }
+        return null;
+    }
     
+    public <I extends SaSpecification> SaProcessingFactory factoryFor(SaSpecification spec){
+        List<SaProcessingFactory> all = SaProcessingFactoryLoader.get();
+        return all.stream().filter(p->p.canHandle(spec)).findFirst().get();
+     }
 }

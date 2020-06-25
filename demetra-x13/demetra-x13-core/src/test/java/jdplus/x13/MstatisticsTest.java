@@ -14,15 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.x13.diagnostics;
+package jdplus.x13;
 
 import demetra.data.Data;
 import demetra.processing.ProcessingLog;
 import demetra.x13.X13Spec;
-import ec.satoolkit.x13.X13Specification;
 import ec.tstoolkit.algorithm.CompositeResults;
-import jdplus.x13.X13Kernel;
-import jdplus.x13.X13Results;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -50,7 +47,7 @@ public class MstatisticsTest {
         X13Kernel x13=X13Kernel.of(X13Spec.RSA4, null);
         ProcessingLog log=new ProcessingLog();
         X13Results rslt = x13.process(Data.TS_PROD.drop(bdrop, edrop), log);
-        Mstatistics m=Mstatistics.of(rslt);
+        Mstatistics m=rslt.getMstatistics();
         
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, Data.PROD, true).drop(bdrop, edrop);
         CompositeResults orslt = ec.satoolkit.algorithm.implementation.X13ProcessingFactory.process(s, ec.satoolkit.x13.X13Specification.RSA4);

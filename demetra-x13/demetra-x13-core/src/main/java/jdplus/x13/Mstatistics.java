@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-package jdplus.x13.diagnostics;
+package jdplus.x13;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
@@ -45,14 +45,14 @@ public final class Mstatistics {
 
     /**
      *
-     * @param info
+     * @param preadj
+     * @param x11
+     * @param finals
      * @return
      */
-    public static Mstatistics of(X13Results rslts) {
+    public static Mstatistics of(X13Preadjustment preadj, X11Results x11, X13Finals finals) {
         try {
-            X11Results x11 = rslts.getDecomposition();
-            X13Preadjustment preadj = rslts.getPreadjustment();
-            X13Finals finals = rslts.getFinals();
+            
             Mstatistics mstats = new Mstatistics(x11.getMode());
             TsData s = preadj.getA1();
             TsDomain dom=s.getDomain();

@@ -17,7 +17,6 @@
 package jdplus.x13;
 
 import demetra.data.DoubleSeq;
-import demetra.data.Doubles;
 import demetra.processing.ProcessingLog;
 import demetra.regarima.BasicSpec;
 import demetra.sa.ComponentType;
@@ -25,9 +24,7 @@ import demetra.sa.DecompositionMode;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITsVariable;
-import demetra.timeseries.regression.IUserTsVariable;
 import demetra.timeseries.regression.modelling.ModellingContext;
 import jdplus.x11.X11Kernel;
 import demetra.x11.X11Results;
@@ -104,7 +101,8 @@ public class X13Kernel {
         X11Spec nspec = updateSpec(spec, preprocessing);
         X11Results xr = x11.process(alin, nspec);
         X13Finals finals = finals(nspec.getMode(), preadjustment, xr);
-        return new X13Results(preprocessing, preadjustment, xr, finals);
+        Mstatistics mstats = Mstatistics.of(preadjustment, xr, finals);
+        return new X13Results(preprocessing, preadjustment, xr, finals, mstats);
     }
 
     private TsData initialStep(RegArimaDecomposer decomposer, int nb, int nf, X13Preadjustment.Builder astep) {
@@ -212,7 +210,7 @@ public class X13Kernel {
         return builder.build();
     }
 
-    private final TsData op(DecompositionMode mode, TsData l, TsData r) {
+    private TsData op(DecompositionMode mode, TsData l, TsData r) {
         if (mode != DecompositionMode.Multiplicative && mode != DecompositionMode.PseudoAdditive) {
             return TsData.subtract(l, r);
         } else {
@@ -229,7 +227,7 @@ public class X13Kernel {
      *
      * @return A new time series is returned
      */
-    private final TsData invOp(DecompositionMode mode, TsData l, TsData r) {
+    private TsData invOp(DecompositionMode mode, TsData l, TsData r) {
         if (mode != DecompositionMode.Multiplicative && mode != DecompositionMode.PseudoAdditive) {
             return TsData.add(l, r);
         } else {
@@ -277,6 +275,7 @@ public class X13Kernel {
 //        }
 //        return sa;
 //    }
+    
     private X13Finals finals(DecompositionMode mode, X13Preadjustment astep, X11Results x11) {
         // add preadjustment
         TsData a1 = astep.getA1();

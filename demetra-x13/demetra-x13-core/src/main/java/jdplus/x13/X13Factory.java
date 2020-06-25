@@ -54,6 +54,8 @@ import jdplus.sa.diagnostics.ResidualTradingDaysDiagnosticsFactory;
 import jdplus.sa.diagnostics.SaOutOfSampleDiagnosticsFactory;
 import jdplus.sa.diagnostics.SaOutliersDiagnosticsFactory;
 import jdplus.sa.diagnostics.SaResidualsDiagnosticsFactory;
+import jdplus.x13.diagnostics.MDiagnosticsConfiguration;
+import jdplus.x13.diagnostics.MDiagnosticsFactory;
 
 /**
  *
@@ -75,13 +77,14 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
                 );
         SaOutOfSampleDiagnosticsFactory<X13Results> outofsample
                 = new SaOutOfSampleDiagnosticsFactory<>(OutOfSampleDiagnosticsConfiguration.DEFAULT,
-                        r->r.getPreprocessing().getModel());
+                        r -> r.getPreprocessing().getModel());
         SaResidualsDiagnosticsFactory<X13Results> residuals
                 = new SaResidualsDiagnosticsFactory<>(ResidualsDiagnosticsConfiguration.DEFAULT,
-                        r->r.getPreprocessing());
+                        r -> r.getPreprocessing());
         SaOutliersDiagnosticsFactory<X13Results> outliers
                 = new SaOutliersDiagnosticsFactory<>(OutliersDiagnosticsConfiguration.DEFAULT,
-                        r->r.getPreprocessing());
+                        r -> r.getPreprocessing());
+        MDiagnosticsFactory mstats = new MDiagnosticsFactory(MDiagnosticsConfiguration.DEFAULT);
         AdvancedResidualSeasonalityDiagnosticsFactory<X13Results> advancedResidualSeasonality
                 = new AdvancedResidualSeasonalityDiagnosticsFactory<>(AdvancedResidualSeasonalityDiagnosticsConfiguration.DEFAULT,
                         (X13Results r) -> {
@@ -100,14 +103,15 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
                             return new ResidualTradingDaysDiagnostics.Input(mul, sa, irr);
                         }
                 );
-        
+
         diagnostics.add(coherence);
         diagnostics.add(residuals);
         diagnostics.add(outofsample);
         diagnostics.add(outliers);
+        diagnostics.add(mstats);
         diagnostics.add(advancedResidualSeasonality);
         diagnostics.add(residualTradingDays);
-        
+
     }
 
     @Override
@@ -287,6 +291,11 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
         }
     }
 
+   @Override
+    public boolean canHandle(SaSpecification spec){
+        return spec instanceof X13Spec;
+    }
+
     @Override
     public SaProcessor processor(X13Spec spec) {
         return (s, cxt, log) -> X13Kernel.of(spec, cxt).process(s, log);
@@ -302,7 +311,7 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
     }
 
     @Override
-    public List<SaDiagnosticsFactory> diagnostics() {
+    public List<SaDiagnosticsFactory<X13Results>> diagnostics() {
         return Collections.unmodifiableList(diagnostics);
     }
 

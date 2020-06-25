@@ -16,12 +16,6 @@
  */
 package demetra.sa;
 
-import demetra.processing.ProcQuality;
-import demetra.processing.ProcResults;
-import demetra.processing.ProcessingLog;
-import demetra.processing.ProcessingLog.InformationType;
-import demetra.timeseries.Ts;
-import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.ModellingContext;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,47 +47,61 @@ public final class SaItem {
     public SaItem(String name, SaDefinition definition) {
         this.name = name;
         this.definition = definition;
-        this.priority=0;
+        this.priority = 0;
     }
-    
+
     public SaItem(String name, SaDefinition definition, int priority) {
         this.name = name;
         this.definition = definition;
-        this.priority=priority;
+        this.priority = priority;
     }
 
-    public SaItem withPriority(int priority){
+    public SaItem withPriority(int priority) {
         SaItem nitem = new SaItem(name, definition, priority);
-        nitem.estimation=this.estimation;
+        nitem.estimation = this.estimation;
         return nitem;
     }
-    
-    public SaDefinition getDefinition(){
+
+    public SaDefinition getDefinition() {
         return this.definition;
     }
 
+    public boolean isProcessed() {
+        return estimation != null;
+    }
+
+    /**
+     * Process this item. The Processing is always executed, even if the item has already been
+     * estimated. To avoid re-estimation, use getEstimation (which is not verbose by default)
+     * @param verbose
+     * @return 
+     */
+    public boolean process(boolean verbose) {
+        synchronized (this) {
+            estimation = SaManager.process(definition, ModellingContext.getActiveContext(), verbose);
+        }
+        return estimation != null;
+    }
+
+    /**
+     * Gets the current estimation (executes it silently if not processed yet).
+     * @return The current estimation
+     */
     public SaEstimation getEstimation() {
         SaEstimation e = estimation;
         if (e == null) {
             synchronized (this) {
                 e = estimation;
                 if (e == null) {
-                    TsData data = definition.getTs().getData();
-                    ProcessingLog log=new ProcessingLog();
-                    ProcResults rslt = SaManager.process(data, definition.activeSpecification(), ModellingContext.getActiveContext(), log);
-                    e = SaEstimation.builder()
-                            .results(rslt)
-                            .warnings(log.all().stream().filter(i->i.getType() == InformationType.Warning)
-                                    .map(i->i.getMsg()).toArray(n->new String[n]))
-                            .build();
+                    e = SaManager.process(definition, ModellingContext.getActiveContext(), false);
                     estimation = e;
                 }
             }
         }
         return e;
     }
-    
-    public int getPriority(){
+
+    public int getPriority() {
         return this.priority;
     }
 }

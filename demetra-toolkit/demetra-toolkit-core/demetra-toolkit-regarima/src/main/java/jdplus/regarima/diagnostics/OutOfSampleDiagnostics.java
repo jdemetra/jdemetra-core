@@ -19,6 +19,7 @@ package jdplus.regarima.diagnostics;
 import jdplus.regarima.tests.OneStepAheadForecastingTest;
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
+import java.util.Collections;
 import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.sarima.SarimaModel;
 import java.util.List;
@@ -114,6 +115,6 @@ public class OutOfSampleDiagnostics implements Diagnostics {
 
     @Override
     public List<String> getWarnings() {
-        return null;
+        return Collections.emptyList();
     }
 }

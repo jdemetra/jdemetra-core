@@ -17,7 +17,13 @@
 package jdplus.x13;
 
 import demetra.data.Data;
+import demetra.processing.ProcQuality;
 import demetra.processing.ProcessingLog;
+import demetra.sa.SaDefinition;
+import demetra.sa.SaEstimation;
+import demetra.sa.SaItem;
+import demetra.timeseries.Ts;
+import demetra.timeseries.TsMoniker;
 import demetra.x13.X13Spec;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -49,4 +55,21 @@ public class X13FactoryTest {
                 rslt2.getPreprocessing().getConcentratedLikelihood().logLikelihood(), 1e-4);
     }
     
+    @Test
+    public void testSaItem(){
+        Ts ts=Ts.builder()
+                .moniker(TsMoniker.of())
+                .name("prod")
+                .data(Data.TS_PROD)
+                .build();
+        
+        SaDefinition sadef=SaDefinition.builder()
+                .domainSpec(X13Spec.RSA5)
+                .ts(ts)
+                .build();
+        
+        SaItem item=new SaItem("prod", sadef);
+        SaEstimation estimation = item.getEstimation();
+        assertTrue(estimation.getQuality() == ProcQuality.Good);
+    }
 }

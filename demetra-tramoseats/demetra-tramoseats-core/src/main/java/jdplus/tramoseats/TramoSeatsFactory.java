@@ -57,6 +57,8 @@ import jdplus.sa.diagnostics.ResidualTradingDaysDiagnosticsFactory;
 import jdplus.sa.diagnostics.SaOutOfSampleDiagnosticsFactory;
 import jdplus.sa.diagnostics.SaOutliersDiagnosticsFactory;
 import jdplus.sa.diagnostics.SaResidualsDiagnosticsFactory;
+import jdplus.seats.diagnostics.SeatsDiagnosticsConfiguration;
+import jdplus.seats.diagnostics.SeatsDiagnosticsFactory;
 
 /**
  *
@@ -85,6 +87,9 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
         SaOutliersDiagnosticsFactory<TramoSeatsResults> outliers
                 = new SaOutliersDiagnosticsFactory<>(OutliersDiagnosticsConfiguration.DEFAULT,
                         r->r.getPreprocessing());
+        SeatsDiagnosticsFactory<TramoSeatsResults> seats
+                = new SeatsDiagnosticsFactory<>(SeatsDiagnosticsConfiguration.DEFAULT,
+                        r->r.getDecomposition());
         AdvancedResidualSeasonalityDiagnosticsFactory<TramoSeatsResults> advancedResidualSeasonality
                 = new AdvancedResidualSeasonalityDiagnosticsFactory<>(AdvancedResidualSeasonalityDiagnosticsConfiguration.DEFAULT,
                         (TramoSeatsResults r) -> {
@@ -108,6 +113,7 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
         diagnostics.add(residuals);
         diagnostics.add(outofsample);
         diagnostics.add(outliers);
+        diagnostics.add(seats);
         diagnostics.add(advancedResidualSeasonality);
         diagnostics.add(residualTradingDays);
         
@@ -307,9 +313,14 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
             return null;
         }
     }
+    
+    @Override
+    public boolean canHandle(SaSpecification spec){
+        return spec instanceof TramoSeatsSpec;
+    }
 
     @Override
-    public List<SaDiagnosticsFactory> diagnostics() {
+    public List<SaDiagnosticsFactory<TramoSeatsResults>> diagnostics() {
         return Collections.unmodifiableList(diagnostics);
     }
 

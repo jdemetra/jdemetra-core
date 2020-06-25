@@ -26,6 +26,7 @@ import jdplus.stats.tests.StatisticalTest;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.data.DoubleSeq;
+import java.util.Collections;
 
 /**
  *
@@ -280,7 +281,7 @@ public class ResidualsDiagnostics implements Diagnostics {
 
     @Override
     public List<String> getWarnings() {
-        return warnings;
+        return Collections.emptyList();
     }
 
     public double getNIIDBound(ProcQuality quality) {

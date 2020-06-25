@@ -38,10 +38,10 @@ import jdplus.stats.DescriptiveStatistics;
 public final class CoherenceDiagnostics implements Diagnostics {
 
     @lombok.Value
-    public static class Input{
-        
+    public static class Input {
+
         /**
-         * 
+         *
          */
         DecompositionMode mode;
         /**
@@ -49,7 +49,7 @@ public final class CoherenceDiagnostics implements Diagnostics {
          */
         ProcResults result;
     }
-    
+
     private final CoherenceDiagnosticsConfiguration config;
     private double maxAnnualDifference, maxDefinitionDifference;
     private boolean multiplicative;
@@ -258,11 +258,11 @@ public final class CoherenceDiagnostics implements Diagnostics {
         if (shortSeries) {
             return Collections.singletonList(SHORTSERIES);
         } else {
-            return null;
+            return Collections.emptyList();
         }
     }
 
-     public double getLowerBound(ProcQuality quality) {
+    public double getLowerBound(ProcQuality quality) {
         switch (quality) {
             case Error:
                 return config.getErrorThreshold();

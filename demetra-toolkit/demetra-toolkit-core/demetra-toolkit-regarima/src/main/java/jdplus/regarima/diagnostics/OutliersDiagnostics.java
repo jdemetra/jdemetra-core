@@ -21,6 +21,7 @@ import demetra.processing.ProcQuality;
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import jdplus.regsarima.regular.ModelEstimation;
 
@@ -106,6 +107,6 @@ public final class OutliersDiagnostics implements Diagnostics {
 
     @Override
     public List<String> getWarnings() {
-        return null;
+        return Collections.emptyList();
     }
 }
