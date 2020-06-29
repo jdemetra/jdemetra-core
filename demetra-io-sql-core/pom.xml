@@ -14,7 +14,7 @@
     <description>A TS Provider that handles JDBC sources.</description>
 
     <properties>
-        <hsqldb.version>2.5.0</hsqldb.version>
+        <hsqldb.version>2.5.1</hsqldb.version>
         <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
         <java-sql-util.version>1.0.1</java-sql-util.version>
     </properties>
