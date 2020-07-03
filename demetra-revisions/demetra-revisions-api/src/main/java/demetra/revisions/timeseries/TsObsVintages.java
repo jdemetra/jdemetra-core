@@ -42,6 +42,9 @@ public class TsObsVintages<K extends Comparable> {
     @lombok.NonNull
     TsPeriod period;
 
+    /**
+     * Vintages. Must be sorted.
+     */
     Entry<K>[] vintages;
 
     public Entry<K> first() {

@@ -35,9 +35,9 @@ import jdplus.stats.tests.StatisticalTest;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-class OlsTestComputer {
+public class OlsTestComputer {
 
-    OlsTest of(DoubleSeq vintage, DoubleSeq preliminary) {
+    public OlsTest of(DoubleSeq vintage, DoubleSeq preliminary) {
         OlsTest.Builder builder = OlsTest.builder();
         LinearModel lm = LinearModel.builder()
                 .y(vintage)

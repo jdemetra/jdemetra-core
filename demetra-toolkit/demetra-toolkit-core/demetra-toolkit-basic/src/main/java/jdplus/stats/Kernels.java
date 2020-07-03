@@ -180,6 +180,8 @@ public class Kernels {
 
     /**
      * k*((m+1)^2-(m+1)^2 u^2)((m+2)^2-(m+1)^2 u^2)((m+3)^2-(m+1)^2 u^2)
+     * @param length
+     * @return 
      */
     public Kernel henderson(int length) {
         final Polynomial p = hendersonAsPolynomial(length);

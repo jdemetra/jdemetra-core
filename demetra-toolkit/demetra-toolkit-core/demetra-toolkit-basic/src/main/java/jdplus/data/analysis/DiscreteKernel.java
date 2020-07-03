@@ -24,7 +24,7 @@ import demetra.design.Development;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@Development(status=Development.Status.Release)
+@Development(status = Development.Status.Release)
 public enum DiscreteKernel {
 
     Uniform,
@@ -108,13 +108,15 @@ public enum DiscreteKernel {
     }
 
     public static IntToDoubleFunction trapezoidal(final int h) {
-        int len=2*h-1;
-        double H = 1.0/len, H3=1.0/(3*len);
+        int len = 2 * h - 1;
+        double H = 1.0 / len, H3 = 1.0 / (3 * len);
         return i -> {
-            if (i == -h || i == h)
+            if (i == -h || i == h) {
                 return H3;
-            if (i == 1-h || i == h-1)
-                return 2*H3;
+            }
+            if (i == 1 - h || i == h - 1) {
+                return 2 * H3;
+            }
             return H;
         };
     }
@@ -133,8 +135,9 @@ public enum DiscreteKernel {
         };
     }
 
-    public static IntToDoubleFunction gaussian(final double v) {
-        return i -> Math.exp(-i * i / v);
+    public static IntToDoubleFunction gaussian(final int h, final double v) {
+        final double c = 0.5 / (v * h * h);
+        return i -> Math.exp(-c * i * i);
     }
 
     public double distance(DiscreteKernel other, int horizon) {

@@ -88,7 +88,7 @@ public class LocalPolynomialFilters {
             case "Trapezoidal":
                 return DiscreteKernel.trapezoidal(horizon);
             case "Gaussian":
-                return DiscreteKernel.gaussian(4 * horizon);
+                return DiscreteKernel.gaussian(horizon, 0.25);
             default:
                 return DiscreteKernel.henderson(horizon);
         }

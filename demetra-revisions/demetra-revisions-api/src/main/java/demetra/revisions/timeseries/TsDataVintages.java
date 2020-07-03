@@ -237,6 +237,22 @@ public class TsDataVintages<K extends Comparable> implements Seq<TsObsVintages> 
         return TsData.ofInternal(start, z).cleanExtremities();
     }
 
+    public double data(int idx, K vintage) {
+        TsObsVintages.Entry<K>[] cur = data[idx];
+        if (cur != null) {
+            int pos = search(cur, vintage);
+            if (pos >= 0) {
+                return cur[pos].getValue();
+            } else if (pos == -1) {
+                return Double.NaN;
+            } else {
+                return cur[-pos - 2].getValue(); // before the insertion point
+            }
+        } else {
+            return Double.NaN;
+        }
+    }
+
     /**
      *
      * @param cur

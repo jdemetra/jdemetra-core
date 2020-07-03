@@ -16,6 +16,9 @@
  */
 package demetra.revisions.r;
 
+import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
+import demetra.math.matrices.MatrixType;
 import demetra.revisions.parametric.Bias;
 import demetra.revisions.parametric.Coefficient;
 import demetra.revisions.parametric.OlsTest;
@@ -23,6 +26,9 @@ import demetra.revisions.parametric.RegressionBasedAnalysis;
 import demetra.revisions.parametric.RevisionAnalysis;
 import demetra.stats.TestResult;
 import java.time.LocalDate;
+import jdplus.math.matrices.Matrix;
+import jdplus.revisions.parametric.OlsTestComputer;
+import jdplus.stats.StatUtility;
 
 /**
  *
@@ -30,29 +36,59 @@ import java.time.LocalDate;
  */
 @lombok.experimental.UtilityClass
 public class Utility {
-    
-    public double theil(RegressionBasedAnalysis<LocalDate> analysis, int k){
-        if (k>analysis.getRevisions().size())
-            return Double.NaN;
-        return analysis.getRevisions().get(k-1).getTheilCoefficient();
+
+    public double[] theil(MatrixType m) {
+        double[] u = new double[m.getColumnsCount() - 1];
+        DoubleSeq prev = m.column(0);
+        for (int i = 0; i < u.length; ++i) {
+            DoubleSeq cur = m.column(i + 1);
+            u[i] = StatUtility.theilInequalityCoefficient(cur, prev);
+            prev = cur;
+        }
+        return u;
     }
-    
-    public double[] olsInformation(RegressionBasedAnalysis<LocalDate> analysis, int k){
-        if (k>analysis.getRevisions().size())
+
+    public MatrixType slopeAndDrift(MatrixType m) {
+        int n = m.getColumnsCount();
+        DoubleSeq prev = m.column(0);
+        Matrix rslt = Matrix.make(n - 1, 16);
+
+        for (int i = 1; i < n; ++i) {
+            DoubleSeq cur = m.column(i);
+            DoubleSeqCursor.OnMutable cursor = rslt.row(i - 1).cursor();
+            OlsTest test = OlsTestComputer.of(cur, prev);
+            olsInformation(test, cursor);
+            prev = cur;
+        }
+        return rslt;
+    }
+
+    public double theil(RegressionBasedAnalysis<LocalDate> analysis, int k) {
+        if (k > analysis.getRevisions().size()) {
+            return Double.NaN;
+        }
+        return analysis.getRevisions().get(k - 1).getTheilCoefficient();
+    }
+
+    public double[] olsInformation(RegressionBasedAnalysis<LocalDate> analysis, int k) {
+        if (k > analysis.getRevisions().size()) {
             return null;
-        RevisionAnalysis<LocalDate> cur = analysis.getRevisions().get(k-1);
-        if (cur == null)
+        }
+        RevisionAnalysis<LocalDate> cur = analysis.getRevisions().get(k - 1);
+        if (cur == null) {
             return null;
+        }
         OlsTest reg = cur.getRegression();
-        if (reg == null)
+        if (reg == null) {
             return null;
+        }
         Coefficient b0 = reg.getIntercept();
         Coefficient b1 = reg.getSlope();
         TestResult jb = reg.getDiagnostics().getJarqueBera();
         TestResult bp = reg.getDiagnostics().getBreuschPagan();
         TestResult w = reg.getDiagnostics().getWhite();
         return new double[]{
-            reg.getN(), reg.getR2(), 
+            reg.getN(), reg.getR2(),
             b0.getEstimate(), b0.getStdev(), b0.getTstat(), b0.getPvalue(),
             b1.getEstimate(), b1.getStdev(), b1.getTstat(), b1.getPvalue(),
             jb.getValue(), jb.getPvalue(),
@@ -61,18 +97,47 @@ public class Utility {
         };
     }
 
+    public void olsInformation(OlsTest reg, DoubleSeqCursor.OnMutable cursor) {
+        if (reg == null) {
+            return;
+        }
+        Coefficient b0 = reg.getIntercept();
+        Coefficient b1 = reg.getSlope();
+        TestResult jb = reg.getDiagnostics().getJarqueBera();
+        TestResult bp = reg.getDiagnostics().getBreuschPagan();
+        TestResult w = reg.getDiagnostics().getWhite();
+        cursor.setAndNext(reg.getN());
+        cursor.setAndNext(reg.getR2());
+        cursor.setAndNext(b0.getEstimate());
+        cursor.setAndNext(b0.getStdev());
+        cursor.setAndNext(b0.getTstat());
+        cursor.setAndNext(b0.getPvalue());
+        cursor.setAndNext(b1.getEstimate());
+        cursor.setAndNext(b1.getStdev());
+        cursor.setAndNext(b1.getTstat());
+        cursor.setAndNext(b1.getPvalue());
+        cursor.setAndNext(jb.getValue());
+        cursor.setAndNext(jb.getPvalue());
+        cursor.setAndNext(bp.getValue());
+        cursor.setAndNext(bp.getPvalue());
+        cursor.setAndNext(w.getValue());
+        cursor.setAndNext(w.getPvalue());
+    }
+
     public double[] biasInformation(RegressionBasedAnalysis<LocalDate> analysis, int k) {
-        if (k>analysis.getRevisions().size())
+        if (k > analysis.getRevisions().size()) {
             return null;
-        RevisionAnalysis<LocalDate> cur = analysis.getRevisions().get(k-1);
-        if (cur == null)
+        }
+        RevisionAnalysis<LocalDate> cur = analysis.getRevisions().get(k - 1);
+        if (cur == null) {
             return null;
+        }
         Bias bias = cur.getBias();
         if (bias == null) {
             return null;
         }
         return new double[]{
-            bias.getN(), 
+            bias.getN(),
             bias.getMu(),
             bias.getSigma(),
             bias.getT(),

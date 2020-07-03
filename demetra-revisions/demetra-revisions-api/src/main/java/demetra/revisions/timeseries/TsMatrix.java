@@ -35,6 +35,8 @@ public class TsMatrix {
     private TsPeriod start;
     @lombok.NonNull
     private MatrixType matrix;
+    
+    private String[] fields;
 
     public TsDomain domain() {
         return TsDomain.of(start, matrix.getRowsCount());
@@ -45,6 +47,7 @@ public class TsMatrix {
      *
      * @param s The array of time series that will constitute the matrix.
      * The time domain of the different series may differ.
+     * @return 
      */
     public static TsMatrix of(TsData... s) {
         TsDataTable tmp = TsDataTable.of(Arrays.asList(s));
@@ -62,6 +65,6 @@ public class TsMatrix {
                 }
             }
         }
-        return new TsMatrix(start, MatrixType.of(x, domain.getLength(), s.length));
+        return new TsMatrix(start, MatrixType.of(x, domain.getLength(), s.length), null);
     }
 }
