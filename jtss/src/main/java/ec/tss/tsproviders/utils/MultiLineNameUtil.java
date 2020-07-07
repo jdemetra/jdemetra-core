@@ -19,7 +19,7 @@ package ec.tss.tsproviders.utils;
 import ec.tstoolkit.utilities.Trees;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -39,18 +39,18 @@ public final class MultiLineNameUtil {
 
     public static final String SEPARATOR = "\n";
 
-    @Nonnull
-    public static String join(@Nonnull String input) {
+    @NonNull
+    public static String join(@NonNull String input) {
         return join(input, JOIN_SEP);
     }
 
-    @Nonnull
-    public static String join(@Nonnull String input, @Nonnull String separator) {
+    @NonNull
+    public static String join(@NonNull String input, @NonNull String separator) {
         return input.replace(SEPARATOR, separator);
     }
 
-    @Nonnull
-    public static String toHtml(@Nonnull String input) {
+    @NonNull
+    public static String toHtml(@NonNull String input) {
 //        return "<html>" + input.replace(SEPARATOR, "<br>");
         String[] items = input.split(SEPARATOR, -1);
         Function<Integer, Stream<Integer>> children = o -> o < items.length - 1 ? Stream.of(o + 1) : Stream.empty();
@@ -59,14 +59,14 @@ public final class MultiLineNameUtil {
         return "<html>" + result.replace(" ", "&nbsp;");
     }
 
-    @Nonnull
-    public static String last(@Nonnull String input) {
+    @NonNull
+    public static String last(@NonNull String input) {
         int index = input.lastIndexOf(SEPARATOR);
         return index == -1 ? input : input.substring(index + 1);
     }
 
-    @Nonnull
-    public static String lastWithMax(@Nonnull String input, int maxLength) {
+    @NonNull
+    public static String lastWithMax(@NonNull String input, int maxLength) {
         String last = last(input);
         return last.length() < maxLength ? last : (LAST_PREFIX + last.substring(last.length() - maxLength));
     }

@@ -30,6 +30,7 @@ import java.util.ServiceLoader;
  * @see ServiceLoader
  * @author Philippe Charles
  */
+@Deprecated
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.SOURCE)
 @Documented

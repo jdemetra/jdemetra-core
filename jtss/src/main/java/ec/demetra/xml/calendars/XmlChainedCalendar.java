@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -72,7 +72,7 @@ public class XmlChainedCalendar
         this.calendarBreak = value;
     }
 
-    @ServiceProvider(service = CalendarAdapter.class)
+    @ServiceProvider(CalendarAdapter.class)
     public static class Adapter extends CalendarAdapter<XmlChainedCalendar, ChainedGregorianCalendarProvider> {
 
         @Override

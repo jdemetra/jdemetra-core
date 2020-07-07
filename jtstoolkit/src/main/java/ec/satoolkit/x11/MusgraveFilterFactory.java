@@ -122,8 +122,6 @@ public class MusgraveFilterFactory {
      *
      * @param len          Length of the Henderson filter.
      * @param freq         Annual frequency of the series
-     * @param rForHalfYear nur zum Testen vom R Wert
-     *
      * @return
      */
     public static synchronized IFiniteFilter[] makeFiltersForHenderson(int len,

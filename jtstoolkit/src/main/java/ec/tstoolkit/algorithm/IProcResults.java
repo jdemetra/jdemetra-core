@@ -80,6 +80,6 @@ public interface IProcResults {
     }
 
     default List<ProcessingInformation> getProcessingInformation(){
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 }

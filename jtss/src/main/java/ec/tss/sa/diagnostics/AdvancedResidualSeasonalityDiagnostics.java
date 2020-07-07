@@ -219,7 +219,7 @@ public class AdvancedResidualSeasonalityDiagnostics implements IDiagnostics {
 
     @Override
     public List<String> getWarnings() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     private ProcQuality quality(StatisticalTest test) {

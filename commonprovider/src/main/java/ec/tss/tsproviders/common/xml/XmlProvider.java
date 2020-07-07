@@ -29,18 +29,18 @@ import ec.tss.tsproviders.utils.IParam;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tss.tsproviders.utils.Params;
 import ec.tss.tsproviders.utils.Parsers;
-import ioutil.Jaxb;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.io.xml.bind.Jaxb;
+import nbbrd.service.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ServiceProvider(service = ITsProvider.class)
+@ServiceProvider(ITsProvider.class)
 public class XmlProvider extends AbstractFileLoader<wsTsWorkspace, XmlBean> {
 
     public static final String SOURCE = "Xml";

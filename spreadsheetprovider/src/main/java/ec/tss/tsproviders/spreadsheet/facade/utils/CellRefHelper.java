@@ -16,7 +16,7 @@
  */
 package ec.tss.tsproviders.spreadsheet.facade.utils;
 
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *

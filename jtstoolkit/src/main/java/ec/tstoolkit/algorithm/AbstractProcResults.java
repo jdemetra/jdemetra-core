@@ -34,7 +34,7 @@ public abstract class AbstractProcResults implements IProcResults{
 
     @Override
     public Map<String, Class> getDictionary() {
-        return Collections.EMPTY_MAP;
+        return Collections.emptyMap();
     }
 
     @Override
@@ -44,7 +44,7 @@ public abstract class AbstractProcResults implements IProcResults{
     
     @Override
     public List<ProcessingInformation> getProcessingInformation() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
     
 }

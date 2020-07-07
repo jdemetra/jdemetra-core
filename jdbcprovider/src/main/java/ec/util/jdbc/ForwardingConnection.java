@@ -34,7 +34,7 @@ import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * An implementation of connection that delegates all its methods to another
@@ -44,7 +44,7 @@ import javax.annotation.Nonnull;
  */
 public abstract class ForwardingConnection implements Connection {
 
-    @Nonnull
+    @NonNull
     abstract protected Connection getConnection();
 
     @Override

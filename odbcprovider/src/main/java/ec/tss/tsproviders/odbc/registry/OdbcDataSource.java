@@ -18,6 +18,7 @@ package ec.tss.tsproviders.odbc.registry;
 
 import ec.tstoolkit.design.Immutable;
 
+@Deprecated
 @Immutable
 public final class OdbcDataSource {
 

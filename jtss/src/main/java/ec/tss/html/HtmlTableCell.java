@@ -16,8 +16,8 @@
  */
 package ec.tss.html;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -91,7 +91,7 @@ public class HtmlTableCell {
         this.styles = styles;
     }
 
-    public HtmlTableCell withClass(@Nonnull HtmlClass classname) {
+    public HtmlTableCell withClass(@NonNull HtmlClass classname) {
         this.classnames = this.classnames.with(classname);
         return this;
     }
@@ -112,7 +112,7 @@ public class HtmlTableCell {
         return this;
     }
 
-    @Nonnull
+    @NonNull
     HtmlClass getClassnames() {
         return classnames;
     }

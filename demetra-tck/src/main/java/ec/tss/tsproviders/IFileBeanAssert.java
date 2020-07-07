@@ -16,7 +16,7 @@
  */
 package ec.tss.tsproviders;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.util.Objects;
 
@@ -34,7 +34,7 @@ public class IFileBeanAssert extends AbstractAssert<IFileBeanAssert, IFileBean> 
      *
      * @param actual the IFileBean we want to make assertions on.
      */
-    public IFileBeanAssert(@Nonnull IFileBean actual) {
+    public IFileBeanAssert(@NonNull IFileBean actual) {
         super(actual, IFileBeanAssert.class);
     }
 
@@ -48,8 +48,8 @@ public class IFileBeanAssert extends AbstractAssert<IFileBeanAssert, IFileBean> 
      * @param actual the IFileBean we want to make assertions on.
      * @return a new <code>{@link IFileBeanAssert}</code>
      */
-    @Nonnull
-    public static IFileBeanAssert assertThat(@Nonnull IFileBean actual) {
+    @NonNull
+    public static IFileBeanAssert assertThat(@NonNull IFileBean actual) {
         return new IFileBeanAssert(actual);
     }
 
@@ -61,7 +61,7 @@ public class IFileBeanAssert extends AbstractAssert<IFileBeanAssert, IFileBean> 
      * @throws AssertionError - if the actual IFileBean's file is not equal to
      * the given one.
      */
-    @Nonnull
+    @NonNull
     public IFileBeanAssert hasFile(java.io.File file) {
         // check that actual IFileBean we want to make assertions on is not null.
         isNotNull();

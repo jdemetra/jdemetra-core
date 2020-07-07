@@ -34,8 +34,8 @@ import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -65,7 +65,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         return count;
     }
 
-    public boolean copyInto(@Nonnull Collection<? super E> collection) throws T {
+    public boolean copyInto(@NonNull Collection<? super E> collection) throws T {
         Objects.requireNonNull(collection);
         boolean wasModified = false;
         while (hasNext()) {
@@ -74,7 +74,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         return wasModified;
     }
 
-    @Nonnull
+    @NonNull
     public List<E> toList() throws T {
         List<E> result = new ArrayList<>();
         while (hasNext()) {
@@ -83,18 +83,18 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         return result;
     }
 
-    @Nonnull
-    public E[] toArray(@Nonnull Class<E> type) throws T {
+    @NonNull
+    public E[] toArray(@NonNull Class<E> type) throws T {
         return Iterables.toArray(toList(), type);
     }
 
-    @Nonnull
-    public <V> Map<E, V> toMap(@Nonnull Function<? super E, V> valueFunc) throws T {
+    @NonNull
+    public <V> Map<E, V> toMap(@NonNull Function<? super E, V> valueFunc) throws T {
         return toMap(o -> o, valueFunc);
     }
 
-    @Nonnull
-    public <K, V> Map<K, V> toMap(@Nonnull Function<? super E, K> keyFunc, @Nonnull Function<? super E, V> valueFunc) throws T {
+    @NonNull
+    public <K, V> Map<K, V> toMap(@NonNull Function<? super E, K> keyFunc, @NonNull Function<? super E, V> valueFunc) throws T {
         requireNonNull(keyFunc, "keyFunc");
         requireNonNull(valueFunc, "valueFunc");
         Map<K, V> result = new LinkedHashMap<>();
@@ -142,7 +142,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         return next(defaultValue);
     }
 
-    public boolean all(@Nonnull Predicate<? super E> predicate) throws T {
+    public boolean all(@NonNull Predicate<? super E> predicate) throws T {
         requireNonNull(predicate);
         while (hasNext()) {
             E element = next();
@@ -153,11 +153,11 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         return true;
     }
 
-    public boolean any(@Nonnull Predicate<? super E> predicate) throws T {
+    public boolean any(@NonNull Predicate<? super E> predicate) throws T {
         return indexOf(predicate) != -1;
     }
 
-    public int indexOf(@Nonnull Predicate<? super E> predicate) throws T {
+    public int indexOf(@NonNull Predicate<? super E> predicate) throws T {
         requireNonNull(predicate, "predicate");
         for (int i = 0; hasNext(); i++) {
             E current = next();
@@ -172,7 +172,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         return any(element != null ? o -> element.equals(o) : o -> o == null);
     }
 
-    public boolean elementsEqual(@Nonnull CheckedIterator<E, T> that) throws T {
+    public boolean elementsEqual(@NonNull CheckedIterator<E, T> that) throws T {
         while (this.hasNext()) {
             if (!that.hasNext()) {
                 return false;
@@ -187,12 +187,12 @@ public abstract class CheckedIterator<E, T extends Throwable> {
     }
 
     @Nullable
-    public E find(@Nonnull Predicate<? super E> predicate) throws T, NoSuchElementException {
+    public E find(@NonNull Predicate<? super E> predicate) throws T, NoSuchElementException {
         return filter(predicate).next();
     }
 
     @Nullable
-    public E find(@Nonnull Predicate<? super E> predicate, @Nullable E defaultValue) throws T {
+    public E find(@NonNull Predicate<? super E> predicate, @Nullable E defaultValue) throws T {
         return filter(predicate).next(defaultValue);
     }
 
@@ -202,8 +202,8 @@ public abstract class CheckedIterator<E, T extends Throwable> {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="View methods">
-    @Nonnull
-    public CheckedIterator<E, T> filter(@Nonnull final Predicate<? super E> predicate) {
+    @NonNull
+    public CheckedIterator<E, T> filter(@NonNull final Predicate<? super E> predicate) {
         requireNonNull(predicate);
         final CheckedIterator<E, T> unfiltered = this;
         return new ACheckedIterator<E, T>() {
@@ -220,12 +220,12 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         };
     }
 
-    @Nonnull
-    public CheckedIterator<E, T> filter(@Nonnull Class<? extends E> type) {
+    @NonNull
+    public CheckedIterator<E, T> filter(@NonNull Class<? extends E> type) {
         return filter(type::isInstance);
     }
 
-    @Nonnull
+    @NonNull
     public CheckedIterator<E, T> skip(final int skipSize) throws IllegalArgumentException {
         checkArgument(skipSize >= 0, "skipSize is negative");
         final CheckedIterator<E, T> iterator = this;
@@ -243,7 +243,7 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         };
     }
 
-    @Nonnull
+    @NonNull
     public CheckedIterator<E, T> limit(final int limitSize) throws IllegalArgumentException {
         checkArgument(limitSize >= 0, "limit is negative");
         final CheckedIterator<E, T> iterator = this;
@@ -266,8 +266,8 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         };
     }
 
-    @Nonnull
-    public <NEW> CheckedIterator<NEW, T> transform(@Nonnull final Function<? super E, ? extends NEW> function) {
+    @NonNull
+    public <NEW> CheckedIterator<NEW, T> transform(@NonNull final Function<? super E, ? extends NEW> function) {
         requireNonNull(function);
         final CheckedIterator<E, T> iterator = this;
         return new CheckedIterator<NEW, T>() {
@@ -283,14 +283,14 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         };
     }
 
-    @Nonnull
-    public CheckedIterator<E, T> concat(@Nonnull CheckedIterator<E, T> input) {
+    @NonNull
+    public CheckedIterator<E, T> concat(@NonNull CheckedIterator<E, T> input) {
         return concat(this, input);
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Factories">
-    @Nonnull
+    @NonNull
     public static <E, T extends Throwable> CheckedIterator<E, T> emptyIterator() {
         return new CheckedIterator<E, T>() {
             @Override
@@ -305,13 +305,13 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         };
     }
 
-    @Nonnull
-    private static <E, T extends Throwable> CheckedIterator<E, T> concat(@Nonnull CheckedIterator<E, T>... inputs) {
+    @NonNull
+    private static <E, T extends Throwable> CheckedIterator<E, T> concat(@NonNull CheckedIterator<E, T>... inputs) {
         return concat(ImmutableList.copyOf(inputs).iterator());
     }
 
-    @Nonnull
-    private static <E, T extends Throwable> CheckedIterator<E, T> concat(@Nonnull final Iterator<CheckedIterator<E, T>> inputs) {
+    @NonNull
+    private static <E, T extends Throwable> CheckedIterator<E, T> concat(@NonNull final Iterator<CheckedIterator<E, T>> inputs) {
         requireNonNull(inputs);
         return new CheckedIterator<E, T>() {
             private CheckedIterator<E, T> current = emptyIterator();
@@ -336,8 +336,8 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         };
     }
 
-    @Nonnull
-    public static <X> CheckedIterator<X, RuntimeException> fromIterator(@Nonnull final Iterator<X> iterator) {
+    @NonNull
+    public static <X> CheckedIterator<X, RuntimeException> fromIterator(@NonNull final Iterator<X> iterator) {
         return new CheckedIterator<X, RuntimeException>() {
             @Override
             public boolean hasNext() {
@@ -351,8 +351,8 @@ public abstract class CheckedIterator<E, T extends Throwable> {
         };
     }
 
-    @Nonnull
-    public static CheckedIterator<String, IOException> fromBufferedReader(@Nonnull final BufferedReader reader) {
+    @NonNull
+    public static CheckedIterator<String, IOException> fromBufferedReader(@NonNull final BufferedReader reader) {
         return new ACheckedIterator<String, IOException>() {
             @Override
             protected String computeNext() throws IOException {

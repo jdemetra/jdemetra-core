@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.internal.Iterables;
@@ -46,7 +46,7 @@ public class IDataSourceLoaderAssert extends AbstractAssert<IDataSourceLoaderAss
      *
      * @param actual the IDataSourceLoader we want to make assertions on.
      */
-    public IDataSourceLoaderAssert(@Nonnull IDataSourceLoader actual) {
+    public IDataSourceLoaderAssert(@NonNull IDataSourceLoader actual) {
         super(actual, IDataSourceLoaderAssert.class);
     }
 
@@ -60,8 +60,8 @@ public class IDataSourceLoaderAssert extends AbstractAssert<IDataSourceLoaderAss
      * @param actual the IDataSourceLoader we want to make assertions on.
      * @return a new <code>{@link IDataSourceLoaderAssert}</code>
      */
-    @Nonnull
-    public static IDataSourceLoaderAssert assertThat(@Nonnull IDataSourceLoader actual) {
+    @NonNull
+    public static IDataSourceLoaderAssert assertThat(@NonNull IDataSourceLoader actual) {
         return new IDataSourceLoaderAssert(actual);
     }
 
@@ -75,7 +75,7 @@ public class IDataSourceLoaderAssert extends AbstractAssert<IDataSourceLoaderAss
      * @throws AssertionError - if the actual IDataSourceLoader's asyncMode is
      * not equal to the given one.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceLoaderAssert hasAsyncMode(ec.tss.TsAsyncMode asyncMode) {
         // check that actual IDataSourceLoader we want to make assertions on is not null.
         isNotNull();
@@ -103,7 +103,7 @@ public class IDataSourceLoaderAssert extends AbstractAssert<IDataSourceLoaderAss
      * @throws AssertionError if the actual IDataSourceLoader's dataSources does
      * not contain all given DataSource elements.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceLoaderAssert hasDataSources(DataSource... dataSources) {
         // check that actual IDataSourceLoader we want to make assertions on is not null.
         isNotNull();
@@ -131,7 +131,7 @@ public class IDataSourceLoaderAssert extends AbstractAssert<IDataSourceLoaderAss
      * @throws AssertionError if the actual IDataSourceLoader's dataSources does
      * not contain all given DataSource elements.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceLoaderAssert hasOnlyDataSources(DataSource... dataSources) {
         // check that actual IDataSourceLoader we want to make assertions on is not null.
         isNotNull();
@@ -158,7 +158,7 @@ public class IDataSourceLoaderAssert extends AbstractAssert<IDataSourceLoaderAss
      * @throws AssertionError if the actual IDataSourceLoader's dataSources
      * contains any given DataSource elements.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceLoaderAssert doesNotHaveDataSources(DataSource... dataSources) {
         // check that actual IDataSourceLoader we want to make assertions on is not null.
         isNotNull();
@@ -182,7 +182,7 @@ public class IDataSourceLoaderAssert extends AbstractAssert<IDataSourceLoaderAss
      * @throws AssertionError if the actual IDataSourceLoader's dataSources is
      * not empty.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceLoaderAssert hasNoDataSources() {
         // check that actual IDataSourceLoader we want to make assertions on is not null.
         isNotNull();
@@ -209,7 +209,7 @@ public class IDataSourceLoaderAssert extends AbstractAssert<IDataSourceLoaderAss
      * @throws AssertionError - if the actual IDataSourceLoader's displayName is
      * not equal to the given one.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceLoaderAssert hasDisplayName(String displayName) {
         // check that actual IDataSourceLoader we want to make assertions on is not null.
         isNotNull();
@@ -237,7 +237,7 @@ public class IDataSourceLoaderAssert extends AbstractAssert<IDataSourceLoaderAss
      * @throws AssertionError - if the actual IDataSourceLoader's source is not
      * equal to the given one.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceLoaderAssert hasSource(String source) {
         // check that actual IDataSourceLoader we want to make assertions on is not null.
         isNotNull();
@@ -262,7 +262,7 @@ public class IDataSourceLoaderAssert extends AbstractAssert<IDataSourceLoaderAss
      * @throws AssertionError - if the actual IDataSourceLoader is not
      * available.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceLoaderAssert isAvailable() {
         // check that actual IDataSourceLoader we want to make assertions on is not null.
         isNotNull();
@@ -282,7 +282,7 @@ public class IDataSourceLoaderAssert extends AbstractAssert<IDataSourceLoaderAss
      * @return this assertion object.
      * @throws AssertionError - if the actual IDataSourceLoader is available.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceLoaderAssert isNotAvailable() {
         // check that actual IDataSourceLoader we want to make assertions on is not null.
         isNotNull();
@@ -308,10 +308,10 @@ public class IDataSourceLoaderAssert extends AbstractAssert<IDataSourceLoaderAss
      * @throws AssertionError - if the actual IDataSourceLoader is not
      * equivalent.
      */
-    @Nonnull
+    @NonNull
     public <X extends IDataSourceLoader> IDataSourceLoaderAssert isEquivalentTo(
-            @Nonnull X expected,
-            @Nonnull Function<? super X, DataSource> toDataSource) throws IOException {
+            @NonNull X expected,
+            @NonNull Function<? super X, DataSource> toDataSource) throws IOException {
         isNotNull();
         SoftAssertions s = new SoftAssertions();
         Utils.assertDataSourceLoaderEquivalence(s, actual, expected, toDataSource.apply(expected));
@@ -328,8 +328,7 @@ public class IDataSourceLoaderAssert extends AbstractAssert<IDataSourceLoaderAss
      * @throws AssertionError - if the actual IDataSourceLoader is not
      * compliant.
      */
-    @Nonnull
-    public static <T extends IDataSourceLoader> void assertCompliance(@Nonnull Supplier<T> factory, @Nonnull Sampler<T> sampler) {
+    public static <T extends IDataSourceLoader> void assertCompliance(@NonNull Supplier<T> factory, @NonNull Sampler<T> sampler) {
         IDataSourceProviderAssert.assertCompliance(factory, sampler);
         SoftAssertions s = new SoftAssertions();
         checkOpen(s, factory, sampler);
@@ -358,8 +357,8 @@ public class IDataSourceLoaderAssert extends AbstractAssert<IDataSourceLoaderAss
             return dataSource(p).map(target -> firstCollectionOrNull(p, target));
         }
 
-        @Nonnull
-        Object bean(@Nonnull P p);
+        @NonNull
+        Object bean(@NonNull P p);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">

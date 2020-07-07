@@ -16,7 +16,7 @@
  */
 package ec.tss.tsproviders;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Entry point for assertions of different data types. Each method in this class
@@ -33,8 +33,8 @@ public class Assertions {
      * @param actual the actual value.
      * @return the created assertion object.
      */
-    @Nonnull
-    public static DataSetAssert assertThat(@Nonnull DataSet actual) {
+    @NonNull
+    public static DataSetAssert assertThat(@NonNull DataSet actual) {
         return new DataSetAssert(actual);
     }
 
@@ -44,8 +44,8 @@ public class Assertions {
      * @param actual the actual value.
      * @return the created assertion object.
      */
-    @Nonnull
-    public static DataSourceAssert assertThat(@Nonnull DataSource actual) {
+    @NonNull
+    public static DataSourceAssert assertThat(@NonNull DataSource actual) {
         return new DataSourceAssert(actual);
     }
 
@@ -55,8 +55,8 @@ public class Assertions {
      * @param actual the actual value.
      * @return the created assertion object.
      */
-    @Nonnull
-    public static IDataSourceLoaderAssert assertThat(@Nonnull IDataSourceLoader actual) {
+    @NonNull
+    public static IDataSourceLoaderAssert assertThat(@NonNull IDataSourceLoader actual) {
         return new IDataSourceLoaderAssert(actual);
     }
 
@@ -66,8 +66,8 @@ public class Assertions {
      * @param actual the actual value.
      * @return the created assertion object.
      */
-    @Nonnull
-    public static IDataSourceProviderAssert assertThat(@Nonnull IDataSourceProvider actual) {
+    @NonNull
+    public static IDataSourceProviderAssert assertThat(@NonNull IDataSourceProvider actual) {
         return new IDataSourceProviderAssert(actual);
     }
 
@@ -77,8 +77,8 @@ public class Assertions {
      * @param actual the actual value.
      * @return the created assertion object.
      */
-    @Nonnull
-    public static IFileBeanAssert assertThat(@Nonnull IFileBean actual) {
+    @NonNull
+    public static IFileBeanAssert assertThat(@NonNull IFileBean actual) {
         return new IFileBeanAssert(actual);
     }
 
@@ -88,8 +88,8 @@ public class Assertions {
      * @param actual the actual value.
      * @return the created assertion object.
      */
-    @Nonnull
-    public static IFileLoaderAssert assertThat(@Nonnull IFileLoader actual) {
+    @NonNull
+    public static IFileLoaderAssert assertThat(@NonNull IFileLoader actual) {
         return new IFileLoaderAssert(actual);
     }
 

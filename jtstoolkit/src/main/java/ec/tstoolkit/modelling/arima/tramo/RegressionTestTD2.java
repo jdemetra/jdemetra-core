@@ -25,6 +25,7 @@ import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.*;
 import ec.tstoolkit.sarima.estimation.GlsSarimaMonitor;
+import ec.tstoolkit.timeseries.calendars.IGregorianCalendarProvider;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
@@ -45,11 +46,13 @@ public class RegressionTestTD2 extends AbstractTramoModule implements IPreproces
 
     public static final double DEF_TVAL = 1.96;
 
+    private final IGregorianCalendarProvider calendar;
     private final double pftd_;
     private double tval_ = DEF_TVAL;
 
-    public RegressionTestTD2(double pftd) {
+    public RegressionTestTD2(IGregorianCalendarProvider calendar, double pftd) {
         pftd_ = pftd;
+        this.calendar=calendar;
     }
 
     public double getPftd() {
@@ -180,7 +183,7 @@ public class RegressionTestTD2 extends AbstractTramoModule implements IPreproces
 // remove previous calendar effects 
         model.removeVariable(var -> var.isCalendar());
         if (td != TradingDaysType.None) {
-            model.addVariable(Variable.calendarVariable(GregorianCalendarVariables.getDefault(td), RegStatus.Accepted));
+            model.addVariable(Variable.calendarVariable(new GregorianCalendarVariables(calendar, td), RegStatus.Accepted));
         }
         if (lp != LengthOfPeriodType.None) {
             model.addVariable(Variable.calendarVariable(new LeapYearVariable(lp), RegStatus.Accepted));
@@ -226,7 +229,7 @@ public class RegressionTestTD2 extends AbstractTramoModule implements IPreproces
         if (found.isPresent()) {
             return ((GregorianCalendarVariables) found.get().getVariable()).clone();
         } else {
-            return GregorianCalendarVariables.getDefault(TradingDaysType.None);
+            return new GregorianCalendarVariables(calendar, TradingDaysType.None);
         }
     }
 

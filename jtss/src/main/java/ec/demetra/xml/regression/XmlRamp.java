@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  * 
@@ -123,7 +123,7 @@ public class XmlRamp
     public XmlRamp() {
     }
 
-    @ServiceProvider(service = TsVariableAdapter.class)
+    @ServiceProvider(TsVariableAdapter.class)
     public static class Adapter extends TsVariableAdapter<XmlRamp, Ramp> {
 
         @Override

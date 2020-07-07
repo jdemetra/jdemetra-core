@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -51,7 +51,7 @@ public final class TreeOfIds {
     private final TreeNode root;
     private final Map<Id, TreeNode> nodes;
 
-    public TreeOfIds(@Nonnull List<Id> items) {
+    public TreeOfIds(@NonNull List<Id> items) {
         this.root = new TreeNode(null);
         this.nodes = new HashMap<>();
         for (Id id : items) {
@@ -77,12 +77,12 @@ public final class TreeOfIds {
         return nodes.containsKey(id);
     }
 
-    @Nonnull
+    @NonNull
     public Id[] roots() {
         return root.getChildrenIds();
     }
 
-    @Nonnull
+    @NonNull
     public Id[] children(@Nullable Id cur) {
         if (cur == null) {
             return roots();

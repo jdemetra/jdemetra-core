@@ -54,7 +54,7 @@ public class InterventionVariable extends AbstractSingleTsVariable implements IU
     }
 
     private static final String DESC = "Intervention variable";
-    private String desc_ = DESC;
+    private String desc_ = null;
     private double delta_, deltas_;
     private ArrayList<Sequence> seqs_ = new ArrayList<>();
 
@@ -224,7 +224,11 @@ public class InterventionVariable extends AbstractSingleTsVariable implements IU
         }
     }
 
-    @Override
+   public void setDescription(String desc) {
+        desc_ = desc;
+    }
+
+   @Override
     public boolean equals(Object obj) {
         return this == obj || (obj instanceof InterventionVariable && equals((InterventionVariable) obj));
     }
@@ -349,6 +353,6 @@ public class InterventionVariable extends AbstractSingleTsVariable implements IU
     
     @Override
     public String getName(){
-        return toString().replace('.','$');
+        return desc_ == null ? toString().replace('.','$') : desc_;
     }
 }

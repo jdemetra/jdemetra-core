@@ -57,7 +57,7 @@ public class ProcessingInformation {
 
     public static List<String> getMessages(List<ProcessingInformation> infos, InformationType type) {
         if (infos == null || infos.isEmpty()) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         ArrayList<String> msg = new ArrayList();
         for (ProcessingInformation inf : infos) {
@@ -70,7 +70,7 @@ public class ProcessingInformation {
 
     public static List<ProcessingInformation> addPrefix(List<ProcessingInformation> infos, String prefix) {
         if (infos == null || infos.isEmpty()) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         ArrayList<ProcessingInformation> msg = new ArrayList();
         for (ProcessingInformation inf : infos) {

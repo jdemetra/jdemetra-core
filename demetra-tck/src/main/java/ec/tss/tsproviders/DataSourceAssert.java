@@ -16,7 +16,7 @@
  */
 package ec.tss.tsproviders;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.util.Objects;
 
@@ -34,7 +34,7 @@ public class DataSourceAssert extends AbstractAssert<DataSourceAssert, DataSourc
      *
      * @param actual the DataSource we want to make assertions on.
      */
-    public DataSourceAssert(@Nonnull DataSource actual) {
+    public DataSourceAssert(@NonNull DataSource actual) {
         super(actual, DataSourceAssert.class);
     }
 
@@ -48,8 +48,8 @@ public class DataSourceAssert extends AbstractAssert<DataSourceAssert, DataSourc
      * @param actual the DataSource we want to make assertions on.
      * @return a new <code>{@link DataSourceAssert}</code>
      */
-    @Nonnull
-    public static DataSourceAssert assertThat(@Nonnull DataSource actual) {
+    @NonNull
+    public static DataSourceAssert assertThat(@NonNull DataSource actual) {
         return new DataSourceAssert(actual);
     }
 
@@ -62,7 +62,7 @@ public class DataSourceAssert extends AbstractAssert<DataSourceAssert, DataSourc
      * @throws AssertionError - if the actual DataSource's params is not equal
      * to the given one.
      */
-    @Nonnull
+    @NonNull
     public DataSourceAssert hasParams(java.util.SortedMap params) {
         // check that actual DataSource we want to make assertions on is not null.
         isNotNull();
@@ -90,7 +90,7 @@ public class DataSourceAssert extends AbstractAssert<DataSourceAssert, DataSourc
      * @throws AssertionError - if the actual DataSource's providerName is not
      * equal to the given one.
      */
-    @Nonnull
+    @NonNull
     public DataSourceAssert hasProviderName(String providerName) {
         // check that actual DataSource we want to make assertions on is not null.
         isNotNull();
@@ -117,7 +117,7 @@ public class DataSourceAssert extends AbstractAssert<DataSourceAssert, DataSourc
      * @throws AssertionError - if the actual DataSource's version is not equal
      * to the given one.
      */
-    @Nonnull
+    @NonNull
     public DataSourceAssert hasVersion(String version) {
         // check that actual DataSource we want to make assertions on is not null.
         isNotNull();

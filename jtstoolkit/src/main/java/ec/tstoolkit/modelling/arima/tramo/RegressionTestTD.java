@@ -16,19 +16,17 @@
  */
 package ec.tstoolkit.modelling.arima.tramo;
 
-import ec.tstoolkit.algorithm.ProcessingInformation;
 import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
 import ec.tstoolkit.dstats.F;
 import ec.tstoolkit.dstats.ProbabilityType;
 import ec.tstoolkit.eco.ConcentratedLikelihood;
-import ec.tstoolkit.modelling.ComponentType;
 import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.Variable;
 import ec.tstoolkit.modelling.arima.*;
+import ec.tstoolkit.timeseries.calendars.IGregorianCalendarProvider;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import ec.tstoolkit.timeseries.regression.*;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -47,15 +45,18 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
     private double sigma;
     private static final double DEF_TVAL = 1.96;
     private double tval_ = DEF_TVAL;
+    private final IGregorianCalendarProvider calendar;
 
-    public RegressionTestTD(double pftd) {
+    public RegressionTestTD(IGregorianCalendarProvider calendar, double pftd) {
         pftd_ = pftd;
         pfwd_ = pftd;
+        this.calendar=calendar;
     }
 
-    public RegressionTestTD(double pftd, double pfwd) {
+    public RegressionTestTD(IGregorianCalendarProvider calendar, double pftd, double pfwd) {
         pftd_ = pftd;
         pfwd_ = pfwd;
+        this.calendar=calendar;
     }
 
     public double getPftd() {
@@ -332,7 +333,7 @@ public class RegressionTestTD extends AbstractTramoModule implements IPreprocess
             GregorianCalendarVariables gv = (GregorianCalendarVariables) found.get().getVariable();
             return gv.clone();
         } else {
-            return GregorianCalendarVariables.getDefault(TradingDaysType.None);
+            return new GregorianCalendarVariables(calendar, TradingDaysType.None);
         }
     }
 

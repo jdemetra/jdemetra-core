@@ -16,8 +16,8 @@
 */
 package ec.tss.tsproviders.utils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Defines a constraint on an class.
@@ -33,5 +33,5 @@ public interface IConstraint<T> {
      * @return a description of the violated constraint, null otherwise.
      */
     @Nullable
-    String check(@Nonnull T t);
+    String check(@NonNull T t);
 }

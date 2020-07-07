@@ -20,8 +20,8 @@ import ec.tss.tsproviders.utils.DataSourceEventSupport;
 import java.util.List;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import net.jcip.annotations.ThreadSafe;
 import org.slf4j.Logger;
 
 /**
@@ -34,14 +34,14 @@ import org.slf4j.Logger;
 @ThreadSafe
 public interface HasDataSourceList {
 
-    void reload(@Nonnull DataSource dataSource) throws IllegalArgumentException;
+    void reload(@NonNull DataSource dataSource) throws IllegalArgumentException;
 
     /**
      * Gets the DataSources loaded by this provider.
      *
      * @return a list of DataSources; might be empty but never null.
      */
-    @Nonnull
+    @NonNull
     List<DataSource> getDataSources();
 
     /**
@@ -52,7 +52,7 @@ public interface HasDataSourceList {
      *
      * @param listener
      */
-    void addDataSourceListener(@Nonnull IDataSourceListener listener);
+    void addDataSourceListener(@NonNull IDataSourceListener listener);
 
     /**
      * Removes a listener from the provider if that listener has been added.
@@ -60,20 +60,20 @@ public interface HasDataSourceList {
      *
      * @param listener
      */
-    void removeDataSourceListener(@Nonnull IDataSourceListener listener);
+    void removeDataSourceListener(@NonNull IDataSourceListener listener);
 
-    @Nonnull
+    @NonNull
     public static HasDataSourceList of(
-            @Nonnull String providerName, @Nonnull Logger logger,
-            @Nonnull Iterable<DataSource> dataSources,
-            @Nonnull Consumer<? super DataSource> cacheCleaner) {
+            @NonNull String providerName, @NonNull Logger logger,
+            @NonNull Iterable<DataSource> dataSources,
+            @NonNull Consumer<? super DataSource> cacheCleaner) {
         return new Util.DataSourceListSupport(providerName, dataSources, DataSourceEventSupport.create(logger), cacheCleaner);
     }
 
-    @Nonnull
+    @NonNull
     public static HasDataSourceList of(
-            @Nonnull String providerName, @Nonnull Logger logger,
-            @Nonnull Iterable<DataSource> dataSources) {
+            @NonNull String providerName, @NonNull Logger logger,
+            @NonNull Iterable<DataSource> dataSources) {
         return of(providerName, logger, dataSources, Util.DO_NOTHING);
     }
 }

@@ -16,8 +16,6 @@
  */
 package ec.tss.tsproviders.odbc;
 
-import adodb.wsh.AdoDriver;
-import com.google.common.base.StandardSystemProperty;
 import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.tsproviders.DataSource;
@@ -33,8 +31,9 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
-import org.openide.util.lookup.ServiceProvider;
+import java.util.Optional;
+import nbbrd.service.ServiceProvider;
+import nbbrd.sql.odbc.OdbcConnectionSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +41,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Demortier Jeremy
  */
-@ServiceProvider(service = ITsProvider.class)
+@ServiceProvider(ITsProvider.class)
 public class OdbcProvider extends JdbcProvider<OdbcBean> implements IFileLoader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OdbcProvider.class);
@@ -121,14 +120,13 @@ public class OdbcProvider extends JdbcProvider<OdbcBean> implements IFileLoader 
 
     private static final class OdbcSupplier extends DriverBasedSupplier {
 
-        private AdoDriver fallback;
+        private final Optional<OdbcConnectionSupplier> odbc = OdbcConnectionSupplier.ofServiceLoader();
 
         @Override
         public Connection getConnection(JdbcBean bean) throws SQLException {
-            if (fallback != null) {
-                return fallback.connect(AdoDriver.PREFIX + bean.getDbName(), new Properties());
-            }
-            return super.getConnection(bean);
+            return odbc.isPresent()
+                    ? odbc.get().getConnection(bean.getDbName())
+                    : super.getConnection(bean);
         }
 
         @Override
@@ -138,28 +136,12 @@ public class OdbcProvider extends JdbcProvider<OdbcBean> implements IFileLoader 
 
         @Override
         protected boolean loadDriver() {
-            // 64bit version of ODBC driver is bugged
-            // https://bugs.openjdk.java.net/browse/JDK-8038751
-            if (!is64bit() && isClassAvailable("sun.jdbc.odbc.JdbcOdbcDriver")) {
-                LOGGER.info("Using Sun's odbc driver");
-                return true;
-            }
-            fallback = new AdoDriver();
-            LOGGER.info("Using ADO driver");
             return true;
         }
 
-        private static boolean isClassAvailable(String className) {
-            try {
-                Class.forName(className);
-                return true;
-            } catch (ClassNotFoundException ex) {
-                return false;
-            }
-        }
-
-        private static boolean is64bit() {
-            return "amd64".equals(StandardSystemProperty.OS_ARCH.value());
+        @Override
+        public boolean isDriverAvailable() {
+            return odbc.isPresent();
         }
     }
 }

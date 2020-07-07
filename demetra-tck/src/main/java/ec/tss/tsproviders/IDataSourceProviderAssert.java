@@ -27,7 +27,7 @@ import static ec.tss.tsproviders.Utils.NULL_IO_EXCEPTION;
 import static ec.tss.tsproviders.Utils.NULL_MONIKER;
 import java.util.Optional;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.internal.Iterables;
@@ -48,7 +48,7 @@ public class IDataSourceProviderAssert extends AbstractAssert<IDataSourceProvide
      *
      * @param actual the IDataSourceProvider we want to make assertions on.
      */
-    public IDataSourceProviderAssert(@Nonnull IDataSourceProvider actual) {
+    public IDataSourceProviderAssert(@NonNull IDataSourceProvider actual) {
         super(actual, IDataSourceProviderAssert.class);
     }
 
@@ -62,8 +62,8 @@ public class IDataSourceProviderAssert extends AbstractAssert<IDataSourceProvide
      * @param actual the IDataSourceProvider we want to make assertions on.
      * @return a new <code>{@link IDataSourceProviderAssert}</code>
      */
-    @Nonnull
-    public static IDataSourceProviderAssert assertThat(@Nonnull IDataSourceProvider actual) {
+    @NonNull
+    public static IDataSourceProviderAssert assertThat(@NonNull IDataSourceProvider actual) {
         return new IDataSourceProviderAssert(actual);
     }
 
@@ -77,7 +77,7 @@ public class IDataSourceProviderAssert extends AbstractAssert<IDataSourceProvide
      * @throws AssertionError - if the actual IDataSourceProvider's asyncMode is
      * not equal to the given one.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceProviderAssert hasAsyncMode(ec.tss.TsAsyncMode asyncMode) {
         // check that actual IDataSourceProvider we want to make assertions on is not null.
         isNotNull();
@@ -105,7 +105,7 @@ public class IDataSourceProviderAssert extends AbstractAssert<IDataSourceProvide
      * @throws AssertionError if the actual IDataSourceProvider's dataSources
      * does not contain all given DataSource elements.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceProviderAssert hasDataSources(DataSource... dataSources) {
         // check that actual IDataSourceProvider we want to make assertions on is not null.
         isNotNull();
@@ -133,7 +133,7 @@ public class IDataSourceProviderAssert extends AbstractAssert<IDataSourceProvide
      * @throws AssertionError if the actual IDataSourceProvider's dataSources
      * does not contain all given DataSource elements.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceProviderAssert hasOnlyDataSources(DataSource... dataSources) {
         // check that actual IDataSourceProvider we want to make assertions on is not null.
         isNotNull();
@@ -160,7 +160,7 @@ public class IDataSourceProviderAssert extends AbstractAssert<IDataSourceProvide
      * @throws AssertionError if the actual IDataSourceProvider's dataSources
      * contains any given DataSource elements.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceProviderAssert doesNotHaveDataSources(DataSource... dataSources) {
         // check that actual IDataSourceProvider we want to make assertions on is not null.
         isNotNull();
@@ -184,7 +184,7 @@ public class IDataSourceProviderAssert extends AbstractAssert<IDataSourceProvide
      * @throws AssertionError if the actual IDataSourceProvider's dataSources is
      * not empty.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceProviderAssert hasNoDataSources() {
         // check that actual IDataSourceProvider we want to make assertions on is not null.
         isNotNull();
@@ -211,7 +211,7 @@ public class IDataSourceProviderAssert extends AbstractAssert<IDataSourceProvide
      * @throws AssertionError - if the actual IDataSourceProvider's displayName
      * is not equal to the given one.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceProviderAssert hasDisplayName(String displayName) {
         // check that actual IDataSourceProvider we want to make assertions on is not null.
         isNotNull();
@@ -239,7 +239,7 @@ public class IDataSourceProviderAssert extends AbstractAssert<IDataSourceProvide
      * @throws AssertionError - if the actual IDataSourceProvider's source is
      * not equal to the given one.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceProviderAssert hasSource(String source) {
         // check that actual IDataSourceProvider we want to make assertions on is not null.
         isNotNull();
@@ -264,7 +264,7 @@ public class IDataSourceProviderAssert extends AbstractAssert<IDataSourceProvide
      * @throws AssertionError - if the actual IDataSourceProvider is not
      * available.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceProviderAssert isAvailable() {
         // check that actual IDataSourceProvider we want to make assertions on is not null.
         isNotNull();
@@ -284,7 +284,7 @@ public class IDataSourceProviderAssert extends AbstractAssert<IDataSourceProvide
      * @return this assertion object.
      * @throws AssertionError - if the actual IDataSourceProvider is available.
      */
-    @Nonnull
+    @NonNull
     public IDataSourceProviderAssert isNotAvailable() {
         // check that actual IDataSourceProvider we want to make assertions on is not null.
         isNotNull();
@@ -307,7 +307,7 @@ public class IDataSourceProviderAssert extends AbstractAssert<IDataSourceProvide
      * @throws AssertionError - if the actual IDataSourceProvider is not
      * compliant.
      */
-    public static <P extends IDataSourceProvider> void assertCompliance(@Nonnull Supplier<P> factory, @Nonnull Sampler sampler) {
+    public static <P extends IDataSourceProvider> void assertCompliance(@NonNull Supplier<P> factory, @NonNull Sampler sampler) {
         ITsProviderAssert.assertCompliance(factory, sampler);
         SoftAssertions s = new SoftAssertions();
         checkGetDisplayName(s, factory, sampler);
@@ -339,14 +339,14 @@ public class IDataSourceProviderAssert extends AbstractAssert<IDataSourceProvide
             return tsCollectionDataSet(p).map(p::toMoniker);
         }
 
-        @Nonnull
-        Optional<DataSource> dataSource(@Nonnull P p);
+        @NonNull
+        Optional<DataSource> dataSource(@NonNull P p);
 
-        @Nonnull
-        Optional<DataSet> tsDataSet(@Nonnull P p);
+        @NonNull
+        Optional<DataSet> tsDataSet(@NonNull P p);
 
-        @Nonnull
-        Optional<DataSet> tsCollectionDataSet(@Nonnull P p);
+        @NonNull
+        Optional<DataSet> tsCollectionDataSet(@NonNull P p);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">

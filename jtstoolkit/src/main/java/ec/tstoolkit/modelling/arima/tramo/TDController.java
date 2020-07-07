@@ -18,6 +18,7 @@ import ec.tstoolkit.modelling.arima.ModellingContext;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.modelling.arima.ProcessingResult;
 import ec.tstoolkit.modelling.arima.RegArimaEstimator;
+import ec.tstoolkit.timeseries.calendars.IGregorianCalendarProvider;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import ec.tstoolkit.timeseries.regression.GregorianCalendarVariables;
@@ -33,20 +34,23 @@ import java.util.Optional;
  */
 public class TDController extends AbstractModelController {
 
-    private TradingDaysType td;
-    private LengthOfPeriodType lp;
+    private final IGregorianCalendarProvider calendar;
+    private final TradingDaysType td;
+    private final LengthOfPeriodType lp;
     private double ptd = 0.01;
 
-    public TDController(double ptd) {
+    public TDController(IGregorianCalendarProvider calendar, double ptd) {
         this.ptd = ptd;
         td = TradingDaysType.WorkingDays;
         lp = LengthOfPeriodType.None;
+        this.calendar=calendar;
     }
 
-    public TDController(TradingDaysType td, LengthOfPeriodType lp, double ptd) {
+    public TDController(IGregorianCalendarProvider calendar, TradingDaysType td, LengthOfPeriodType lp, double ptd) {
         this.td = td;
         this.lp = lp;
         this.ptd = ptd;
+        this.calendar=calendar;
     }
 
     @Override
@@ -133,7 +137,7 @@ public class TDController extends AbstractModelController {
         if (found.isPresent()) {
             return ((GregorianCalendarVariables) found.get().getVariable()).clone();
         } else {
-            return GregorianCalendarVariables.getDefault(TradingDaysType.None);
+            return new GregorianCalendarVariables(calendar, TradingDaysType.None);
         }
     }
 }

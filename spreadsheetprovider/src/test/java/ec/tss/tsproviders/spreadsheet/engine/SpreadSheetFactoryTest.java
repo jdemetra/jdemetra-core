@@ -45,6 +45,7 @@ import static ec.tstoolkit.timeseries.TsAggregationType.None;
 import static ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly;
 import static ec.tstoolkit.timeseries.simplets.TsFrequency.Undefined;
 import java.util.Date;
+import org.junit.Ignore;
 
 /**
  *

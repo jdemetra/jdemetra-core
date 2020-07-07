@@ -38,22 +38,24 @@ import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.RegressionTestSpec;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.modelling.arima.x13.*;
+import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.calendars.LengthOfPeriodType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import ec.tstoolkit.timeseries.regression.*;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
+import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = ISaProcessingFactory.class)
+@ServiceProvider(ISaProcessingFactory.class)
 public class X13Processor implements ISaProcessingFactory<X13Specification> {
 
     public static final AlgorithmDescriptor DESCRIPTOR = X13ProcessingFactory.DESCRIPTOR;
@@ -97,15 +99,41 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
         refreshOutliersSpec(ntspec, dtspec, frozen, policy);
 
         RegressionSpec nrspec = ntspec.getRegression();
-        if (policy == EstimationPolicyType.Fixed) {
-            // fix all the coefficients of the regression variables
-            Map<String, double[]> all = nrspec.getAllCoefficients();
-            all.forEach((n, c) -> nrspec.setFixedCoefficients(n, c));
-        } else {
-            // copy back the initial fixed coefficients
-            nrspec.clearAllFixedCoefficients();
-            Map<String, double[]> all = dtspec.getRegression().getAllFixedCoefficients();
-            all.forEach((n, c) -> nrspec.setFixedCoefficients(n, c));
+        switch (policy) {
+            case Fixed:
+            case Current:
+                {
+                    // fix all the coefficients of the regression variables, except names starting with "AO:" (special intervention variables)
+                    Map<String, double[]> all = nrspec.getAllCoefficients();
+                    all.forEach((n, c) -> {if (!n.startsWith("AO:")) nrspec.setFixedCoefficients(n, c);});
+                    break;
+                }
+            default:
+                {
+                    // copy back the initial fixed coefficients
+                    nrspec.clearAllFixedCoefficients();
+                    Map<String, double[]> all = dtspec.getRegression().getAllFixedCoefficients();
+                    all.forEach((n, c) -> nrspec.setFixedCoefficients(n, c));
+                    break;
+                }
+        }
+        if (policy == EstimationPolicyType.Current) {
+            TsData cur = doc.getTsData();
+            if (cur != null && frozen != null) {
+                TsDomain ndomain = cur.getDomain();
+                TsPeriod end = ndomain.getEnd();
+                int ndata = frozen.getEnd().minus(end);
+                for (int i = 0; i < ndata; ++i) {
+                    Day day = end.firstday();
+                    Sequence seq = new Sequence(day, day);
+                    InterventionVariable var = new InterventionVariable();
+                    var.setDescription("AO:" + end.toString());
+                    var.setSequences(new Sequence[]{seq});
+
+                    nrspec.add(var);
+                    end.move(1);
+                }
+            }
         }
         nrspec.clearAllCoefficients();
 
@@ -160,8 +188,8 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
             }
             if (vars.select(ILengthOfPeriodVariable.class).isEmpty()) {
                 tdspec.setLengthOfPeriod(LengthOfPeriodType.None);
-            }else{
-                used=true;
+            } else {
+                used = true;
             }
             if (!used) {
                 rspec.getTradingDays().disable();
@@ -221,6 +249,7 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
     private void refreshArimaSpec(RegArimaSpecification spec, RegArimaSpecification defspec, EstimationPolicyType policy) {
         ArimaSpec arima = spec.getArima(), defarima = defspec.isUsingAutoModel() ? null : defspec.getArima();
         switch (policy) {
+            case Current:
             case Fixed:
                 if (arima.isMean()) {
                     arima.fixMu();
@@ -253,6 +282,7 @@ public class X13Processor implements ISaProcessingFactory<X13Specification> {
         RegressionSpec rspec = spec.getRegression(), defrspec = defspec.getRegression();
         OutlierSpec defospec = defspec.getOutliers();
         switch (policy) {
+            case Current:
             case Fixed:
             case FixedParameters:
             case FreeParameters:

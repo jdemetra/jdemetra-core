@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
  *
  * @author Philippe Charles
  */
+@Deprecated
 @Immutable
 public final class OdbcDriver {
 

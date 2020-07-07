@@ -33,8 +33,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.function.BiConsumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * http://en.wikipedia.org/wiki/URI_scheme
@@ -51,7 +51,7 @@ public final class UriBuilder implements IBuilder<URI> {
     private SortedMap<String, String> query;
     private SortedMap<String, String> fragment;
 
-    public UriBuilder(@Nonnull String scheme, @Nonnull String host) {
+    public UriBuilder(@NonNull String scheme, @NonNull String host) {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(scheme), "scheme can't be null or empty");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(host), "host can't be null or empty");
         this.scheme = scheme;
@@ -59,7 +59,7 @@ public final class UriBuilder implements IBuilder<URI> {
         reset();
     }
 
-    @Nonnull
+    @NonNull
     public UriBuilder reset() {
         this.path = null;
         this.query = null;
@@ -67,25 +67,25 @@ public final class UriBuilder implements IBuilder<URI> {
         return this;
     }
 
-    @Nonnull
+    @NonNull
     public UriBuilder path(@Nullable String... path) {
         this.path = path;
         return this;
     }
 
-    @Nonnull
+    @NonNull
     public UriBuilder query(@Nullable SortedMap<String, String> query) {
         this.query = query;
         return this;
     }
 
-    @Nonnull
+    @NonNull
     public UriBuilder fragment(@Nullable SortedMap<String, String> fragment) {
         this.fragment = fragment;
         return this;
     }
 
-    @Nonnull
+    @NonNull
     public String buildString() {
         StringBuilder result = new StringBuilder();
         result.append(scheme);
@@ -116,16 +116,16 @@ public final class UriBuilder implements IBuilder<URI> {
         }
     }
 
-    @Nonnull
-    private static StringBuilder appendEntry(@Nonnull StringBuilder sb, @Nonnull Entry<String, String> o, char sep) {
+    @NonNull
+    private static StringBuilder appendEntry(@NonNull StringBuilder sb, @NonNull Entry<String, String> o, char sep) {
         URLEncoder2.encode(sb, o.getKey(), StandardCharsets.UTF_8);
         sb.append(sep);
         URLEncoder2.encode(sb, o.getValue(), StandardCharsets.UTF_8);
         return sb;
     }
 
-    @Nonnull
-    private static StringBuilder appendMap(@Nonnull StringBuilder sb, @Nonnull Map<String, String> keyValues, char sep1, char sep2) {
+    @NonNull
+    private static StringBuilder appendMap(@NonNull StringBuilder sb, @NonNull Map<String, String> keyValues, char sep1, char sep2) {
         if (!keyValues.isEmpty()) {
             Iterator<Entry<String, String>> iterator = keyValues.entrySet().iterator();
             appendEntry(sb, iterator.next(), sep2);
@@ -136,8 +136,8 @@ public final class UriBuilder implements IBuilder<URI> {
         return sb;
     }
 
-    @Nonnull
-    private static StringBuilder appendArray(@Nonnull StringBuilder sb, @Nonnull String[] array, char sep) {
+    @NonNull
+    private static StringBuilder appendArray(@NonNull StringBuilder sb, @NonNull String[] array, char sep) {
         if (array.length > 0) {
             int i = 0;
             URLEncoder2.encode(sb, array[i], StandardCharsets.UTF_8);
@@ -149,25 +149,25 @@ public final class UriBuilder implements IBuilder<URI> {
     }
 
     @Nullable
-    public static String[] getPathArray(@Nonnull URI uri) {
+    public static String[] getPathArray(@NonNull URI uri) {
         String path = uri.getRawPath();
         return path != null && !path.isEmpty() ? splitToArray(path.subSequence(1, path.length())) : null;
     }
 
     @Nullable
-    public static String[] getPathArray(@Nonnull URI uri, int expectedSize) {
+    public static String[] getPathArray(@NonNull URI uri, int expectedSize) {
         String path = uri.getRawPath();
         return path != null && !path.isEmpty() ? splitToArray(path.subSequence(1, path.length()), expectedSize) : null;
     }
 
     @Nullable
-    public static Map<String, String> getQueryMap(@Nonnull URI uri) {
+    public static Map<String, String> getQueryMap(@NonNull URI uri) {
         String query = uri.getRawQuery();
         return query != null ? splitMap(query) : null;
     }
 
     @Nullable
-    public static Map<String, String> getFragmentMap(@Nonnull URI uri) {
+    public static Map<String, String> getFragmentMap(@NonNull URI uri) {
         String fragment = uri.getRawFragment();
         return fragment != null ? splitMap(fragment) : null;
     }
@@ -177,12 +177,12 @@ public final class UriBuilder implements IBuilder<URI> {
     private static final Splitter KEY_VALUE_SPLITTER = Splitter.on('=');
 
     @Nullable
-    private static String[] splitToArray(@Nonnull CharSequence input) {
+    private static String[] splitToArray(@NonNull CharSequence input) {
         return Streams.stream(PATH_SPLITTER.split(input)).map(UriBuilder::decodeUrlUtf8).toArray(String[]::new);
     }
 
     @Nullable
-    private static String[] splitToArray(@Nonnull CharSequence input, int expectedSize) {
+    private static String[] splitToArray(@NonNull CharSequence input, int expectedSize) {
         Iterator<String> items = PATH_SPLITTER.split(input).iterator();
         if (expectedSize == 0 || !items.hasNext()) {
             return null;
@@ -196,7 +196,7 @@ public final class UriBuilder implements IBuilder<URI> {
     }
 
     @Nullable
-    private static Map<String, String> splitMap(@Nonnull CharSequence input) {
+    private static Map<String, String> splitMap(@NonNull CharSequence input) {
         if (input.length() == 0) {
             return Collections.emptyMap();
         }
@@ -204,7 +204,7 @@ public final class UriBuilder implements IBuilder<URI> {
         return splitMapTo(input, result::put) ? result : null;
     }
 
-    private static boolean splitMapTo(@Nonnull CharSequence input, @Nonnull BiConsumer<String, String> consumer) {
+    private static boolean splitMapTo(@NonNull CharSequence input, @NonNull BiConsumer<String, String> consumer) {
         for (String entry : ENTRY_SPLITTER.split(input)) {
             Iterator<String> entryFields = KEY_VALUE_SPLITTER.split(entry).iterator();
             if (!entryFields.hasNext()) {

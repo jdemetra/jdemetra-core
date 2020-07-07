@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
@@ -43,7 +43,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      *
      * @param actual the IFileLoader we want to make assertions on.
      */
-    public IFileLoaderAssert(@Nonnull IFileLoader actual) {
+    public IFileLoaderAssert(@NonNull IFileLoader actual) {
         super(actual, IFileLoaderAssert.class);
     }
 
@@ -57,8 +57,8 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @param actual the IFileLoader we want to make assertions on.
      * @return a new <code>{@link IFileLoaderAssert}</code>
      */
-    @Nonnull
-    public static IFileLoaderAssert assertThat(@Nonnull IFileLoader actual) {
+    @NonNull
+    public static IFileLoaderAssert assertThat(@NonNull IFileLoader actual) {
         return new IFileLoaderAssert(actual);
     }
 
@@ -72,7 +72,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @throws AssertionError - if the actual IFileLoader's asyncMode is not
      * equal to the given one.
      */
-    @Nonnull
+    @NonNull
     public IFileLoaderAssert hasAsyncMode(ec.tss.TsAsyncMode asyncMode) {
         // check that actual IFileLoader we want to make assertions on is not null.
         isNotNull();
@@ -100,7 +100,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @throws AssertionError if the actual IFileLoader's dataSources does not
      * contain all given DataSource elements.
      */
-    @Nonnull
+    @NonNull
     public IFileLoaderAssert hasDataSources(DataSource... dataSources) {
         // check that actual IFileLoader we want to make assertions on is not null.
         isNotNull();
@@ -127,7 +127,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @throws AssertionError if the actual IFileLoader's dataSources does not
      * contain all given DataSource elements.
      */
-    @Nonnull
+    @NonNull
     public IFileLoaderAssert hasOnlyDataSources(DataSource... dataSources) {
         // check that actual IFileLoader we want to make assertions on is not null.
         isNotNull();
@@ -154,7 +154,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @throws AssertionError if the actual IFileLoader's dataSources contains
      * any given DataSource elements.
      */
-    @Nonnull
+    @NonNull
     public IFileLoaderAssert doesNotHaveDataSources(DataSource... dataSources) {
         // check that actual IFileLoader we want to make assertions on is not null.
         isNotNull();
@@ -178,7 +178,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @throws AssertionError if the actual IFileLoader's dataSources is not
      * empty.
      */
-    @Nonnull
+    @NonNull
     public IFileLoaderAssert hasNoDataSources() {
         // check that actual IFileLoader we want to make assertions on is not null.
         isNotNull();
@@ -205,7 +205,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @throws AssertionError - if the actual IFileLoader's displayName is not
      * equal to the given one.
      */
-    @Nonnull
+    @NonNull
     public IFileLoaderAssert hasDisplayName(String displayName) {
         // check that actual IFileLoader we want to make assertions on is not null.
         isNotNull();
@@ -233,7 +233,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @throws AssertionError - if the actual IFileLoader's fileDescription is
      * not equal to the given one.
      */
-    @Nonnull
+    @NonNull
     public IFileLoaderAssert hasFileDescription(String fileDescription) {
         // check that actual IFileLoader we want to make assertions on is not null.
         isNotNull();
@@ -261,7 +261,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @throws AssertionError if the actual IFileLoader's paths does not contain
      * all given java.io.File elements.
      */
-    @Nonnull
+    @NonNull
     public IFileLoaderAssert hasPaths(java.io.File... paths) {
         // check that actual IFileLoader we want to make assertions on is not null.
         isNotNull();
@@ -288,7 +288,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @throws AssertionError if the actual IFileLoader's paths does not contain
      * all given java.io.File elements and nothing else.
      */
-    @Nonnull
+    @NonNull
     public IFileLoaderAssert hasOnlyPaths(java.io.File... paths) {
         // check that actual IFileLoader we want to make assertions on is not null.
         isNotNull();
@@ -315,7 +315,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @throws AssertionError if the actual IFileLoader's paths contains any
      * given java.io.File elements.
      */
-    @Nonnull
+    @NonNull
     public IFileLoaderAssert doesNotHavePaths(java.io.File... paths) {
         // check that actual IFileLoader we want to make assertions on is not null.
         isNotNull();
@@ -338,7 +338,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @return this assertion object.
      * @throws AssertionError if the actual IFileLoader's paths is not empty.
      */
-    @Nonnull
+    @NonNull
     public IFileLoaderAssert hasNoPaths() {
         // check that actual IFileLoader we want to make assertions on is not null.
         isNotNull();
@@ -364,7 +364,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @throws AssertionError - if the actual IFileLoader's source is not equal
      * to the given one.
      */
-    @Nonnull
+    @NonNull
     public IFileLoaderAssert hasSource(String source) {
         // check that actual IFileLoader we want to make assertions on is not null.
         isNotNull();
@@ -388,7 +388,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @return this assertion object.
      * @throws AssertionError - if the actual IFileLoader is not available.
      */
-    @Nonnull
+    @NonNull
     public IFileLoaderAssert isAvailable() {
         // check that actual IFileLoader we want to make assertions on is not null.
         isNotNull();
@@ -408,7 +408,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @return this assertion object.
      * @throws AssertionError - if the actual IFileLoader is available.
      */
-    @Nonnull
+    @NonNull
     public IFileLoaderAssert isNotAvailable() {
         // check that actual IFileLoader we want to make assertions on is not null.
         isNotNull();
@@ -433,10 +433,10 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @throws IOException
      * @throws AssertionError - if the actual IFileLoader is not equivalent.
      */
-    @Nonnull
+    @NonNull
     public <X extends IFileLoader> IFileLoaderAssert isEquivalentTo(
-            @Nonnull X expected,
-            @Nonnull Function<? super X, DataSource> toDataSource) throws IOException {
+            @NonNull X expected,
+            @NonNull Function<? super X, DataSource> toDataSource) throws IOException {
         isNotNull();
         SoftAssertions s = new SoftAssertions();
         Utils.assertFileLoaderEquivalence(s, actual, expected, toDataSource.apply(expected));
@@ -452,7 +452,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
      * @param sampler
      * @throws AssertionError - if the actual IFileLoader is not compliant.
      */
-    public static <P extends IFileLoader> void assertCompliance(@Nonnull Supplier<P> factory, @Nonnull Sampler<P> sampler) {
+    public static <P extends IFileLoader> void assertCompliance(@NonNull Supplier<P> factory, @NonNull Sampler<P> sampler) {
         IDataSourceLoaderAssert.assertCompliance(factory, sampler);
         SoftAssertions soft = new SoftAssertions();
         checkNewBean(soft, factory, sampler);
@@ -465,7 +465,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
 
     public interface Sampler<P extends IFileLoader> extends IDataSourceLoaderAssert.Sampler<P> {
 
-        @Nonnull
+        @NonNull
         default File validFile(P p) {
             return bean(p).getFile();
         }

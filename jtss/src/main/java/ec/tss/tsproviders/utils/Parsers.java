@@ -20,7 +20,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import ec.tstoolkit.design.UtilityClass;
-import ioutil.Jaxb;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
@@ -31,12 +30,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.stream.StreamSupport;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import nbbrd.io.xml.bind.Jaxb;
 
 /**
  *
@@ -50,7 +51,7 @@ public final class Parsers {
     }
 
     @Nullable
-    public static <T> T parseFirstNotNull(@Nonnull CharSequence input, @Nonnull Iterable<? extends IParser<T>> parsers) {
+    public static <T> T parseFirstNotNull(@NonNull CharSequence input, @NonNull Iterable<? extends IParser<T>> parsers) {
         Objects.requireNonNull(input); // if parsers is empty
         for (IParser<T> o : parsers) {
             T result = o.parse(input);
@@ -69,13 +70,13 @@ public final class Parsers {
      * @return
      * @see Parsers#using(java.lang.Iterable)
      */
-    @Nonnull
+    @NonNull
     public static <T> Parser<T> firstNotNull(IParser<T>... parsers) {
         return firstNotNull(ImmutableList.copyOf(parsers));
     }
 
-    @Nonnull
-    public static <T> Parser<T> firstNotNull(@Nonnull ImmutableList<? extends IParser<T>> parsers) {
+    @NonNull
+    public static <T> Parser<T> firstNotNull(@NonNull ImmutableList<? extends IParser<T>> parsers) {
         return new Parser<T>() {
             @Override
             public T parse(CharSequence input) throws NullPointerException {
@@ -99,8 +100,8 @@ public final class Parsers {
      * @param classToBeParsed
      * @return
      */
-    @Nonnull
-    public static <T> Parser<T> onJAXB(@Nonnull Class<T> classToBeParsed) {
+    @NonNull
+    public static <T> Parser<T> onJAXB(@NonNull Class<T> classToBeParsed) {
         try {
             return onJAXB(JAXBContext.newInstance(classToBeParsed));
         } catch (JAXBException ex) {
@@ -108,8 +109,8 @@ public final class Parsers {
         }
     }
 
-    @Nonnull
-    public static <T> Parser<T> onJAXB(@Nonnull JAXBContext context) {
+    @NonNull
+    public static <T> Parser<T> onJAXB(@NonNull JAXBContext context) {
         try {
             return onJAXB(context.createUnmarshaller());
         } catch (JAXBException ex) {
@@ -117,8 +118,8 @@ public final class Parsers {
         }
     }
 
-    @Nonnull
-    public static <T> Parser<T> onJAXB(@Nonnull Unmarshaller unmarshaller) {
+    @NonNull
+    public static <T> Parser<T> onJAXB(@NonNull Unmarshaller unmarshaller) {
         Jaxb.Parser<T> p = Jaxb.Parser.<T>builder().factory(() -> unmarshaller).build();
         return new FailSafeParser<T>() {
             @Override
@@ -128,52 +129,34 @@ public final class Parsers {
         };
     }
 
-    @Nonnull
-    public static Parsers.Parser<Date> onStrictDatePattern(@Nonnull String datePattern, @Nonnull Locale locale) {
-        final DateFormat dateFormat = new SimpleDateFormat(datePattern, locale);
+    @Deprecated
+    public static Parsers.@NonNull Parser<Date> onStrictDatePattern(@NonNull String datePattern, @NonNull Locale locale) {
+        DateFormat dateFormat = new SimpleDateFormat(datePattern, locale);
         dateFormat.setLenient(false);
-        return new Parsers.FailSafeParser<Date>() {
-            @Override
-            protected Date doParse(CharSequence input) throws Exception {
-                String inputAsString = input.toString();
-                Date result = dateFormat.parse(inputAsString);
-                return result != null && inputAsString.equals(dateFormat.format(result)) ? result : null;
-            }
-        };
+        return onDateFormat(dateFormat);
     }
 
-    @Nonnull
-    public static Parser<Date> onDateFormat(@Nonnull DateFormat dateFormat) {
-        return new FailSafeParser<Date>() {
-            @Override
-            protected Date doParse(CharSequence input) throws Exception {
-                return dateFormat.parse(input.toString());
-            }
-        };
+    @NonNull
+    public static Parser<Date> onDateFormat(@NonNull DateFormat dateFormat) {
+        return new Adapter<>(nbbrd.io.text.Parser.onDateFormat(dateFormat));
     }
 
-    @Nonnull
-    public static Parser<Number> onNumberFormat(@Nonnull NumberFormat numberFormat) {
-        return new FailSafeParser<Number>() {
-            @Override
-            protected Number doParse(CharSequence input) throws Exception {
-                return numberFormat.parse(input.toString());
-            }
-        };
+    @NonNull
+    public static Parser<Number> onNumberFormat(@NonNull NumberFormat numberFormat) {
+        return new Adapter<>(nbbrd.io.text.Parser.onNumberFormat(numberFormat));
     }
 
-    @Nonnull
+    @NonNull
+    public static <T> Parser<T> onNull() {
+        return new Adapter<>(nbbrd.io.text.Parser.onNull());
+    }
+
+    @NonNull
     public static <T> Parser<T> ofInstance(@Nullable T instance) {
-        return new Parser<T>() {
-            @Override
-            public T parse(CharSequence input) throws NullPointerException {
-                Objects.requireNonNull(input);
-                return instance;
-            }
-        };
+        return new Adapter<>(nbbrd.io.text.Parser.onConstant(instance));
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<File> fileParser() {
         return FILE_PARSER;
     }
@@ -184,22 +167,22 @@ public final class Parsers {
      *
      * @return a non-null parser
      */
-    @Nonnull
+    @NonNull
     public static Parser<Integer> intParser() {
         return INT_PARSER;
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<Long> longParser() {
         return LONG_PARSER;
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<Boolean> boolParser() {
         return BOOL_PARSER;
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<Character> charParser() {
         return CHAR_PARSER;
     }
@@ -210,43 +193,43 @@ public final class Parsers {
      *
      * @return a non-null parser
      */
-    @Nonnull
+    @NonNull
     public static Parser<Double> doubleParser() {
         return DOUBLE_PARSER;
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<Charset> charsetParser() {
         return CHARSET_PARSER;
     }
 
-    @Nonnull
-    public static <T extends Enum<T>> Parser<T> enumParser(@Nonnull Class<T> enumClass) {
-        return new FailSafeParser<T>() {
-            @Override
-            protected T doParse(CharSequence input) throws Exception {
-                return Enum.valueOf(enumClass, input.toString());
-            }
-        };
+    @NonNull
+    public static <T extends Enum<T>> Parser<T> enumParser(@NonNull Class<T> enumClass) {
+        return new Adapter<>(nbbrd.io.text.Parser.onEnum(enumClass));
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<String> stringParser() {
         return STRING_PARSER;
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<double[]> doubleArrayParser() {
         return DOUBLE_ARRAY_PARSER;
     }
 
-    @Nonnull
+    @NonNull
     public static Parser<String[]> stringArrayParser() {
         return STRING_ARRAY_PARSER;
     }
 
-    @Nonnull
-    public static <X, Y> Parser<Y> compose(@Nonnull IParser<X> parser, @Nonnull Function<X, Y> after) {
+    @NonNull
+    public static Parser<Locale> localeParser() {
+        return LOCALE_PARSER;
+    }
+
+    @NonNull
+    public static <X, Y> Parser<Y> compose(@NonNull IParser<X> parser, @NonNull Function<X, Y> after) {
         return new Parser<Y>() {
             @Override
             public Y parse(CharSequence input) throws NullPointerException {
@@ -256,14 +239,10 @@ public final class Parsers {
         };
     }
 
-    @Nonnull
-    public static Parser<List<String>> onSplitter(@Nonnull Splitter splitter) {
-        return new FailSafeParser<List<String>>() {
-            @Override
-            protected List<String> doParse(CharSequence input) throws Exception {
-                return splitter.splitToList(input);
-            }
-        };
+    @NonNull
+    public static Parser<List<String>> onSplitter(@NonNull Splitter splitter) {
+        Objects.requireNonNull(splitter);
+        return new Adapter<>(nbbrd.io.text.Parser.onStringList(chars -> StreamSupport.stream(splitter.split(chars).spliterator(), false)));
     }
 
     /**
@@ -273,8 +252,8 @@ public final class Parsers {
      * @return
      * @since 2.2.0
      */
-    @Nonnull
-    public static <T> Parser<T> wrap(@Nonnull IParser<T> parser) {
+    @NonNull
+    public static <T> Parser<T> wrap(@NonNull IParser<T> parser) {
         return parser instanceof Parser ? (Parser<T>) parser : new Wrapper<>(parser);
     }
 
@@ -292,19 +271,19 @@ public final class Parsers {
          * @deprecated use {@link #parseValue(java.lang.CharSequence)} instead
          */
         @Deprecated
-        @Nonnull
-        public Optional<T> tryParse(@Nonnull CharSequence input) {
+        @NonNull
+        public Optional<T> tryParse(@NonNull CharSequence input) {
             return Optional.fromNullable(parse(input));
         }
 
         @Deprecated
-        @Nonnull
-        public <X> Parser<X> compose(@Nonnull Function<T, X> after) {
+        @NonNull
+        public <X> Parser<X> compose(@NonNull Function<T, X> after) {
             return Parsers.<T, X>compose(this, after);
         }
 
         @Deprecated
-        @Nonnull
+        @NonNull
         public Parser<T> or(IParser<T>... parsers) {
             switch (parsers.length) {
                 case 0:
@@ -330,17 +309,32 @@ public final class Parsers {
         }
 
         @Nullable
-        abstract protected T doParse(@Nonnull CharSequence input) throws Exception;
+        abstract protected T doParse(@NonNull CharSequence input) throws Exception;
     }
 
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
+    @lombok.RequiredArgsConstructor
+    private static final class Adapter<T> extends Parser<T> {
+
+        private final nbbrd.io.text.Parser<T> parser;
+
+        @Override
+        public T parse(CharSequence input) {
+            Objects.requireNonNull(input);
+            return parser.parse(input);
+        }
+
+        @Override
+        public java.util.Optional<T> parseValue(CharSequence input) {
+            Objects.requireNonNull(input);
+            return parser.parseValue(input);
+        }
+    }
+
+    @lombok.RequiredArgsConstructor
     private static final class Wrapper<T> extends Parser<T> {
 
         private final IParser<T> parser;
-
-        private Wrapper(IParser<T> parser) {
-            this.parser = parser;
-        }
 
         @Override
         public T parse(CharSequence input) {
@@ -363,94 +357,16 @@ public final class Parsers {
         }
     }
 
-    private static Boolean parseBoolean(CharSequence input) {
-        switch (input.toString()) {
-            case "true":
-            case "TRUE":
-            case "1":
-                return Boolean.TRUE;
-            case "false":
-            case "FALSE":
-            case "0":
-                return Boolean.FALSE;
-            default:
-                return null;
-        }
-    }
-
-    private static Character parseCharacter(CharSequence input) {
-        return input.length() == 1 ? input.charAt(0) : null;
-    }
-
-    private static double[] parseDoubleArray(CharSequence input) {
-        String tmp = input.toString();
-        int beginIndex = tmp.indexOf('[');
-        int endIndex = tmp.lastIndexOf(']');
-        if (beginIndex == -1 || endIndex == -1) {
-            return null;
-        }
-        String[] values = tmp.substring(beginIndex + 1, endIndex).split("\\s*,\\s*");
-        double[] result = new double[values.length];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = Double.parseDouble(values[i].trim());
-        }
-        return result;
-    }
-
-    private static String[] parseStringArray(CharSequence input) {
-        String tmp = input.toString();
-        int beginIndex = tmp.indexOf('[');
-        int endIndex = tmp.lastIndexOf(']');
-        if (beginIndex == -1 || endIndex == -1) {
-            return null;
-        }
-        String[] values = tmp.substring(beginIndex + 1, endIndex).split("\\s*,\\s*");
-        String[] result = new String[values.length];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = values[i].trim();
-        }
-        return result;
-    }
-
-    private static final Parser<File> FILE_PARSER = new Wrapper<>(o -> new File(o.toString()));
-    private static final Parser<Integer> INT_PARSER = new FailSafeParser<Integer>() {
-        @Override
-        protected Integer doParse(CharSequence input) throws Exception {
-            return Integer.valueOf(input.toString());
-        }
-    };
-    private static final Parser<Long> LONG_PARSER = new FailSafeParser<Long>() {
-        @Override
-        protected Long doParse(CharSequence input) throws Exception {
-            return Long.valueOf(input.toString());
-        }
-    };
-    private static final Parser<Double> DOUBLE_PARSER = new FailSafeParser<Double>() {
-        @Override
-        protected Double doParse(CharSequence input) throws Exception {
-            return Double.valueOf(input.toString());
-        }
-    };
-    private static final Parser<Boolean> BOOL_PARSER = new Wrapper<>(Parsers::parseBoolean);
-    private static final Parser<Character> CHAR_PARSER = new Wrapper<>(Parsers::parseCharacter);
-    private static final Parser<Charset> CHARSET_PARSER = new FailSafeParser<Charset>() {
-        @Override
-        protected Charset doParse(CharSequence input) throws Exception {
-            return Charset.forName(input.toString());
-        }
-    };
-    private static final Parser<String> STRING_PARSER = new Wrapper<>(Object::toString);
-    private static final Parser<double[]> DOUBLE_ARRAY_PARSER = new FailSafeParser<double[]>() {
-        @Override
-        protected double[] doParse(CharSequence input) throws Exception {
-            return parseDoubleArray(input);
-        }
-    };
-    private static final Parser<String[]> STRING_ARRAY_PARSER = new FailSafeParser<String[]>() {
-        @Override
-        protected String[] doParse(CharSequence input) throws Exception {
-            return parseStringArray(input);
-        }
-    };
+    private static final Parser<File> FILE_PARSER = new Adapter<>(nbbrd.io.text.Parser.onFile());
+    private static final Parser<Integer> INT_PARSER = new Adapter<>(nbbrd.io.text.Parser.onInteger());
+    private static final Parser<Long> LONG_PARSER = new Adapter<>(nbbrd.io.text.Parser.onLong());
+    private static final Parser<Double> DOUBLE_PARSER = new Adapter<>(nbbrd.io.text.Parser.onDouble());
+    private static final Parser<Boolean> BOOL_PARSER = new Adapter<>(nbbrd.io.text.Parser.onBoolean());
+    private static final Parser<Character> CHAR_PARSER = new Adapter<>(nbbrd.io.text.Parser.onCharacter());
+    private static final Parser<Charset> CHARSET_PARSER = new Adapter<>(nbbrd.io.text.Parser.onCharset());
+    private static final Parser<String> STRING_PARSER = new Adapter<>(nbbrd.io.text.Parser.onString());
+    private static final Parser<double[]> DOUBLE_ARRAY_PARSER = new Adapter<>(nbbrd.io.text.Parser.onDoubleArray());
+    private static final Parser<String[]> STRING_ARRAY_PARSER = new Adapter<>(nbbrd.io.text.Parser.onStringArray());
+    private static final Parser<Locale> LOCALE_PARSER = new Adapter<>(nbbrd.io.text.Parser.onLocale());
     //</editor-fold>
 }

@@ -16,58 +16,36 @@
  */
 package ec.util.jdbc;
 
-import com.google.common.io.Resources;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
  *
  * @author Philippe Charles
  */
+@Deprecated
 public final class SqlKeywords {
 
     private SqlKeywords() {
         // static class
     }
-    //
-    private static final Set<String> SQL92_RESERVED_WORDS = loadWords("ec/util/jdbc/Sql92ReservedWords.txt");
-    private static final Set<String> SQL92_NON_RESERVED_WORDS = loadWords("ec/util/jdbc/Sql92NonReservedWords.txt");
-    private static final Set<String> SQL99_RESERVED_WORDS = loadWords("ec/util/jdbc/Sql99ReservedWords.txt");
-    private static final Set<String> SQL2003_RESERVED_WORDS = loadWords("ec/util/jdbc/Sql2003ReservedWords.txt");
-    private static final Set<String> SQL2008_RESERVED_WORDS = loadWords("ec/util/jdbc/Sql2008ReservedWords.txt");
 
     public static Set<String> getSql92ReservedWords() {
-        return SQL92_RESERVED_WORDS;
+        return nbbrd.sql.jdbc.SqlKeywords.SQL92_RESERVED_WORDS.getKeywords();
     }
 
     public static Set<String> getSql92NonReservedWords() {
-        return SQL92_NON_RESERVED_WORDS;
+        return nbbrd.sql.jdbc.SqlKeywords.SQL92_NON_RESERVED_WORDS.getKeywords();
     }
 
     public static Set<String> getSql99ReservedWords() {
-        return SQL99_RESERVED_WORDS;
+        return nbbrd.sql.jdbc.SqlKeywords.SQL99_RESERVED_WORDS.getKeywords();
     }
 
     public static Set<String> getSql2003ReservedWords() {
-        return SQL2003_RESERVED_WORDS;
+        return nbbrd.sql.jdbc.SqlKeywords.SQL2003_RESERVED_WORDS.getKeywords();
     }
 
     public static Set<String> getSql2008ReservedWords() {
-        return SQL2008_RESERVED_WORDS;
-    }
-
-    private static Set<String> loadWords(String resourceName) {
-        try {
-            Set<String> result = new HashSet<>();
-            for (String o : Resources.readLines(Resources.getResource(resourceName), StandardCharsets.UTF_8)) {
-                result.add(o);
-            }
-            return Collections.unmodifiableSet(result);
-        } catch (IOException ex) {
-            throw new RuntimeException("Missing resource '" + resourceName + "'", ex);
-        }
+        return nbbrd.sql.jdbc.SqlKeywords.SQL2008_RESERVED_WORDS.getKeywords();
     }
 }

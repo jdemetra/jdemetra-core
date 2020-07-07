@@ -17,8 +17,8 @@
 package ec.tss.tsproviders;
 
 import java.io.IOException;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * Defines the ability to get a label from a DataSource or a DataSet. Note that
@@ -39,8 +39,8 @@ public interface HasDataDisplayName {
      * @throws IllegalArgumentException if the DataSource doesn't belong to this
      * provider.
      */
-    @Nonnull
-    String getDisplayName(@Nonnull DataSource dataSource) throws IllegalArgumentException;
+    @NonNull
+    String getDisplayName(@NonNull DataSource dataSource) throws IllegalArgumentException;
 
     /**
      * Gets a full label of the specified DataSet. Use this method in a
@@ -52,8 +52,8 @@ public interface HasDataDisplayName {
      * @throws IllegalArgumentException if the DataSet doesn't belong to this
      * provider.
      */
-    @Nonnull
-    String getDisplayName(@Nonnull DataSet dataSet) throws IllegalArgumentException;
+    @NonNull
+    String getDisplayName(@NonNull DataSet dataSet) throws IllegalArgumentException;
 
     /**
      * Gets a short label of the specified DataSet. Use this method in a
@@ -65,8 +65,8 @@ public interface HasDataDisplayName {
      * @throws IllegalArgumentException if the DataSet doesn't belong to this
      * provider.
      */
-    @Nonnull
-    default String getDisplayNodeName(@Nonnull DataSet dataSet) throws IllegalArgumentException {
+    @NonNull
+    default String getDisplayNodeName(@NonNull DataSet dataSet) throws IllegalArgumentException {
         return getDisplayName(dataSet);
     }
 
@@ -78,8 +78,8 @@ public interface HasDataDisplayName {
      * @throws IllegalArgumentException if the exception doesn't belong to this
      * provider.
      */
-    @Nonnull
-    default String getDisplayName(@Nonnull IOException exception) throws IllegalArgumentException {
+    @NonNull
+    default String getDisplayName(@NonNull IOException exception) throws IllegalArgumentException {
         return Util.getDisplayNameFromMessageOrClassName(exception);
     }
 
@@ -89,8 +89,8 @@ public interface HasDataDisplayName {
      * @param providerName a non-null provider name
      * @return a non-null instance
      */
-    @Nonnull
-    static HasDataDisplayName usingUri(@Nonnull String providerName) {
+    @NonNull
+    static HasDataDisplayName usingUri(@NonNull String providerName) {
         return new Util.DataDisplayNameSupport(providerName, DataSource.uriFormatter(), DataSet.uriFormatter());
     }
 }

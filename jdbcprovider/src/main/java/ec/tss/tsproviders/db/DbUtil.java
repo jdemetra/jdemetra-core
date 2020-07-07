@@ -27,8 +27,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -43,7 +43,7 @@ public final class DbUtil {
     public interface Func<X, Y, EX extends Exception> {
 
         @Nullable
-        Y apply(@Nonnull X input) throws EX;
+        Y apply(@NonNull X input) throws EX;
     }
 
     public interface Cursor<EX extends Exception> {
@@ -56,8 +56,8 @@ public final class DbUtil {
         public String[] dimValues;
     }
 
-    @Nonnull
-    public static <T extends Exception> List<DbSetId> getAllSeries(@Nonnull AllSeriesCursor<T> cursor, @Nonnull DbSetId ref) throws T {
+    @NonNull
+    public static <T extends Exception> List<DbSetId> getAllSeries(@NonNull AllSeriesCursor<T> cursor, @NonNull DbSetId ref) throws T {
         ImmutableList.Builder<DbSetId> result = ImmutableList.builder();
         while (cursor.next()) {
             result.add(ref.child(cursor.dimValues));
@@ -72,8 +72,8 @@ public final class DbUtil {
         public Number value;
     }
 
-    @Nonnull
-    public static <T extends Exception> List<DbSeries> getAllSeriesWithData(@Nonnull AllSeriesWithDataCursor<T> cursor, @Nonnull DbSetId ref, @Nonnull TsFrequency frequency, @Nonnull TsAggregationType aggregationType) throws T {
+    @NonNull
+    public static <T extends Exception> List<DbSeries> getAllSeriesWithData(@NonNull AllSeriesWithDataCursor<T> cursor, @NonNull DbSetId ref, @NonNull TsFrequency frequency, @NonNull TsAggregationType aggregationType) throws T {
         ImmutableList.Builder<DbSeries> result = ImmutableList.builder();
         ObsGathering gathering = ObsGathering.includingMissingValues(frequency, aggregationType);
         OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(new GregorianCalendar(), gathering, ObsCharacteristics.ORDERED);
@@ -105,8 +105,8 @@ public final class DbUtil {
         public Number value;
     }
 
-    @Nonnull
-    public static <T extends Exception> DbSeries getSeriesWithData(@Nonnull SeriesWithDataCursor<T> cursor, @Nonnull DbSetId ref, @Nonnull TsFrequency frequency, @Nonnull TsAggregationType aggregationType) throws T {
+    @NonNull
+    public static <T extends Exception> DbSeries getSeriesWithData(@NonNull SeriesWithDataCursor<T> cursor, @NonNull DbSetId ref, @NonNull TsFrequency frequency, @NonNull TsAggregationType aggregationType) throws T {
         ObsGathering gathering = ObsGathering.includingMissingValues(frequency, aggregationType);
         OptionalTsData.Builder2<Date> data = OptionalTsData.builderByDate(new GregorianCalendar(), gathering, ObsCharacteristics.ORDERED);
         boolean t0 = cursor.next();
@@ -132,8 +132,8 @@ public final class DbUtil {
         public String child;
     }
 
-    @Nonnull
-    public static <T extends Exception> List<String> getChildren(@Nonnull ChildrenCursor<T> cursor) throws T {
+    @NonNull
+    public static <T extends Exception> List<String> getChildren(@NonNull ChildrenCursor<T> cursor) throws T {
         ImmutableList.Builder<String> result = ImmutableList.builder();
         while (cursor.next()) {
             result.add(cursor.child);

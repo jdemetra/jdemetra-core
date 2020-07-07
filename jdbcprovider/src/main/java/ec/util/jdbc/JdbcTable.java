@@ -22,22 +22,19 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import ec.tstoolkit.design.Immutable;
 import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.stream.Collectors;
+import nbbrd.sql.jdbc.SqlTable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
  * @author Philippe Charles
  */
+@Deprecated
 @Immutable
 public final class JdbcTable implements Comparable<JdbcTable> {
 
@@ -50,8 +47,8 @@ public final class JdbcTable implements Comparable<JdbcTable> {
      * @see DatabaseMetaData#getTables(java.lang.String, java.lang.String,
      * java.lang.String, java.lang.String[])
      */
-    @Nonnull
-    public static List<JdbcTable> allOf(@Nonnull DatabaseMetaData md) throws SQLException {
+    @NonNull
+    public static List<JdbcTable> allOf(@NonNull DatabaseMetaData md) throws SQLException {
         return allOf(md, null, null, "%", null);
     }
 
@@ -68,60 +65,17 @@ public final class JdbcTable implements Comparable<JdbcTable> {
      * @see DatabaseMetaData#getTables(java.lang.String, java.lang.String,
      * java.lang.String, java.lang.String[])
      */
-    @Nonnull
-    public static List<JdbcTable> allOf(@Nonnull DatabaseMetaData md,
+    @NonNull
+    public static List<JdbcTable> allOf(@NonNull DatabaseMetaData md,
             @Nullable String catalog, @Nullable String schemaPattern,
-            @Nonnull String tableNamePattern, @Nullable String[] types) throws SQLException {
-        try (ResultSet rs = md.getTables(catalog, schemaPattern, tableNamePattern, types)) {
-            List<JdbcTable> result = new ArrayList<>();
-            // some infos are not supported by all drivers!
-            String[] normalizedColumnNames = getNormalizedColumnNames(rs.getMetaData());
-            Map<String, String> row = new HashMap<>();
-            while (rs.next()) {
-                for (int i = 0; i < normalizedColumnNames.length; i++) {
-                    row.put(normalizedColumnNames[i], rs.getString(i + 1));
-                }
-                result.add(fromMap(row));
-            }
-            return result;
-        }
+            @NonNull String tableNamePattern, @Nullable String[] types) throws SQLException {
+
+        return SqlTable.allOf(md, catalog, schemaPattern, tableNamePattern, types)
+                .stream()
+                .map(t -> new JdbcTable(t.getCatalog(), t.getSchema(), t.getName(), t.getType(), t.getRemarks(), t.getTypesCatalog(), t.getTypesSchema(), t.getTypeName(), t.getSelfReferencingColumnName(), t.getRefGeneration()))
+                .collect(Collectors.toList());
     }
 
-    private static String[] getNormalizedColumnNames(ResultSetMetaData md) throws SQLException {
-        String[] columnNames = new String[md.getColumnCount()];
-        for (int i = 0; i < columnNames.length; i++) {
-            // normalize to upper case (postgresql driver returns lower case)
-            columnNames[i] = md.getColumnName(i + 1).toUpperCase(Locale.ROOT);
-        }
-        return columnNames;
-    }
-
-    @Nonnull
-    private static JdbcTable fromMap(@Nonnull Map<String, String> map) {
-        return new JdbcTable(
-                get(map, "TABLE_CAT", "TABLE_CATALOG"),
-                get(map, "TABLE_SCHEM", "TABLE_SCHEMA"),
-                get(map, "TABLE_NAME"),
-                get(map, "TABLE_TYPE"),
-                get(map, "REMARKS"),
-                get(map, "TYPE_CAT"),
-                get(map, "TYPE_SCHEM"),
-                get(map, "TYPE_NAME"),
-                get(map, "SELF_REFERENCING_COL_NAME"),
-                get(map, "REF_GENERATION"));
-    }
-
-    @Nullable
-    private static String get(@Nonnull Map<String, String> map, String... keys) {
-        for (String key : keys) {
-            String result = map.get(key);
-            if (result != null) {
-                return result;
-            }
-        }
-        return null;
-    }
-    
     private final String catalog;
     private final String schema;
     private final String name;
@@ -147,8 +101,7 @@ public final class JdbcTable implements Comparable<JdbcTable> {
     }
 
     /**
-     * table catalog (may be
-     * <code>null</code>)
+     * table catalog (may be <code>null</code>)
      *
      * @return
      */
@@ -158,8 +111,7 @@ public final class JdbcTable implements Comparable<JdbcTable> {
     }
 
     /**
-     * table schema (may be
-     * <code>null</code>)
+     * table schema (may be <code>null</code>)
      *
      * @return
      */
@@ -173,7 +125,7 @@ public final class JdbcTable implements Comparable<JdbcTable> {
      *
      * @return
      */
-    @Nonnull
+    @NonNull
     public String getName() {
         return name;
     }
@@ -184,7 +136,7 @@ public final class JdbcTable implements Comparable<JdbcTable> {
      *
      * @return
      */
-    @Nonnull
+    @NonNull
     public String getType() {
         return type;
     }
@@ -199,8 +151,7 @@ public final class JdbcTable implements Comparable<JdbcTable> {
     }
 
     /**
-     * the types catalog (may be
-     * <code>null</code>)
+     * the types catalog (may be <code>null</code>)
      *
      * @return
      */
@@ -210,8 +161,7 @@ public final class JdbcTable implements Comparable<JdbcTable> {
     }
 
     /**
-     * the types schema (may be
-     * <code>null</code>)
+     * the types schema (may be <code>null</code>)
      *
      * @return
      */
@@ -221,8 +171,7 @@ public final class JdbcTable implements Comparable<JdbcTable> {
     }
 
     /**
-     * type name (may be
-     * <code>null</code>)
+     * type name (may be <code>null</code>)
      *
      * @return
      */
@@ -233,8 +182,7 @@ public final class JdbcTable implements Comparable<JdbcTable> {
 
     /**
      * String => name of the designated "identifier" column of a typed table
-     * (may be
-     * <code>null</code>)
+     * (may be <code>null</code>)
      *
      * @return
      */
@@ -245,8 +193,7 @@ public final class JdbcTable implements Comparable<JdbcTable> {
 
     /**
      * specifies how values in SELF_REFERENCING_COL_NAME are created. Values are
-     * "SYSTEM", "USER", "DERIVED". (may be
-     * <code>null</code>)
+     * "SYSTEM", "USER", "DERIVED". (may be <code>null</code>)
      *
      * @return
      */

@@ -25,7 +25,6 @@ import ec.tss.tsproviders.jdbc.dsm.identification.AccountManager;
 import ec.tss.tsproviders.jdbc.dsm.identification.aes.AESContentManager;
 import ec.tss.tsproviders.jdbc.dsm.identification.aes.KeyGen;
 import ec.tstoolkit.utilities.*;
-import ioutil.Jaxb;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +39,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlValue;
+import nbbrd.io.xml.bind.Jaxb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

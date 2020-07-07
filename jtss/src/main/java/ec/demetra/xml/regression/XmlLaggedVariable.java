@@ -20,7 +20,7 @@ import ec.tstoolkit.timeseries.regression.LaggedTsVariable;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
@@ -38,7 +38,7 @@ public class XmlLaggedVariable extends XmlRegressionVariableModifier{
     @XmlElement
     public int LastLag;
 
-    @ServiceProvider(service = TsModifierAdapter.class)
+    @ServiceProvider(TsModifierAdapter.class)
     public static class Adapter extends TsModifierAdapter<XmlLaggedVariable, LaggedTsVariable> {
 
         @Override

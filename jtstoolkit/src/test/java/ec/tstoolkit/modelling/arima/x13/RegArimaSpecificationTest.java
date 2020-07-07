@@ -28,13 +28,13 @@ public class RegArimaSpecificationTest {
         assertEquals(expected, actual);
         
         OutlierSpec oSpec = new OutlierSpec();
-        oSpec.setDefaultCriticalValue(1.2);
+        oSpec.setDefaultCriticalValue(2.1);
         expected.setOutliers(oSpec);
         assertNotEquals(expected, actual);
         info = expected.write(true);
         actual.read(info);
         assertEquals(expected, actual);
-        assertEquals(1.2, actual.getOutliers().getDefaultCriticalValue(),.0);
+        assertEquals(2.1, actual.getOutliers().getDefaultCriticalValue(),.0);
         
         AutoModelSpec amSpec = new AutoModelSpec();
         amSpec.setPercentRSE(1.2);

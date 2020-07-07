@@ -21,7 +21,7 @@ import static ec.tss.Utils.NULL_TS_COLLECTION_INFO;
 import static ec.tss.Utils.NULL_TS_INFO;
 import java.util.Optional;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.SoftAssertions;
 import static ec.tss.Utils.throwDescription;
@@ -40,12 +40,11 @@ public class ITsProviderAssert extends AbstractAssert<ITsProviderAssert, ITsProv
      *
      * @param actual the ITsProvider we want to make assertions on.
      */
-    public ITsProviderAssert(@Nonnull ITsProvider actual) {
+    public ITsProviderAssert(@NonNull ITsProvider actual) {
         super(actual, ITsProviderAssert.class);
     }
 
-    @Nonnull
-    public static <P extends ITsProvider> void assertCompliance(@Nonnull Supplier<P> factory, @Nonnull Sampler<P> sampler) {
+    public static <P extends ITsProvider> void assertCompliance(@NonNull Supplier<P> factory, @NonNull Sampler<P> sampler) {
         SoftAssertions s = new SoftAssertions();
         checkClearCache(s, factory, sampler);
         checkDispose(s, factory, sampler);
@@ -62,21 +61,21 @@ public class ITsProviderAssert extends AbstractAssert<ITsProviderAssert, ITsProv
 
     public interface Sampler<P extends ITsProvider> {
 
-        @Nonnull
-        default Optional<TsCollectionInformation> tsCollectionInformation(@Nonnull P p) {
+        @NonNull
+        default Optional<TsCollectionInformation> tsCollectionInformation(@NonNull P p) {
             return tsMoniker(p).map(ITsProviderAssert::syncQueryForCollection);
         }
 
-        @Nonnull
-        default Optional<TsInformation> tsInformation(@Nonnull P p) {
+        @NonNull
+        default Optional<TsInformation> tsInformation(@NonNull P p) {
             return tsMoniker(p).map(ITsProviderAssert::syncQueryForSeries);
         }
 
-        @Nonnull
-        Optional<TsMoniker> tsMoniker(@Nonnull P p);
+        @NonNull
+        Optional<TsMoniker> tsMoniker(@NonNull P p);
 
-        @Nonnull
-        Optional<TsMoniker> tsCollectionMoniker(@Nonnull P p);
+        @NonNull
+        Optional<TsMoniker> tsCollectionMoniker(@NonNull P p);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">

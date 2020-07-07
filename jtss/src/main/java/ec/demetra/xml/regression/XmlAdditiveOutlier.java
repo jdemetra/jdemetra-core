@@ -20,7 +20,7 @@ import ec.tstoolkit.timeseries.regression.AdditiveOutlier;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
@@ -30,7 +30,7 @@ import org.openide.util.lookup.ServiceProvider;
 @XmlType(name = "AdditiveOutlierType")
 public class XmlAdditiveOutlier extends XmlOutlier {
 
-    @ServiceProvider(service = TsVariableAdapter.class)
+    @ServiceProvider(TsVariableAdapter.class)
     public static class Adapter extends TsVariableAdapter<XmlAdditiveOutlier, AdditiveOutlier> {
 
         @Override

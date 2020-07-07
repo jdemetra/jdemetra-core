@@ -19,8 +19,8 @@ package ec.tss.tsproviders.utils;
 import ec.tss.TsMoniker;
 import ec.tss.tsproviders.DataSet;
 import ec.tss.tsproviders.DataSource;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A collection of preconditions for DataSource, DataSet and TsMoniker.
@@ -42,8 +42,8 @@ public final class DataSourcePreconditions {
      * @return
      * @throws IllegalArgumentException
      */
-    @Nonnull
-    public static DataSource checkProvider(@Nonnull String providerName, @Nonnull DataSource dataSource) throws IllegalArgumentException {
+    @NonNull
+    public static DataSource checkProvider(@NonNull String providerName, @NonNull DataSource dataSource) throws IllegalArgumentException {
         checkProvider(providerName, dataSource.getProviderName());
         return dataSource;
     }
@@ -56,8 +56,8 @@ public final class DataSourcePreconditions {
      * @return
      * @throws IllegalArgumentException
      */
-    @Nonnull
-    public static DataSet checkProvider(@Nonnull String providerName, @Nonnull DataSet dataSet) throws IllegalArgumentException {
+    @NonNull
+    public static DataSet checkProvider(@NonNull String providerName, @NonNull DataSet dataSet) throws IllegalArgumentException {
         checkProvider(providerName, dataSet.getDataSource().getProviderName());
         return dataSet;
     }
@@ -70,13 +70,13 @@ public final class DataSourcePreconditions {
      * @return
      * @throws IllegalArgumentException
      */
-    @Nonnull
-    public static TsMoniker checkProvider(@Nonnull String providerName, @Nonnull TsMoniker moniker) throws IllegalArgumentException {
+    @NonNull
+    public static TsMoniker checkProvider(@NonNull String providerName, @NonNull TsMoniker moniker) throws IllegalArgumentException {
         checkProvider(providerName, moniker.getSource());
         return moniker;
     }
 
-    private static void checkProvider(@Nonnull String expected, @Nullable String found) throws IllegalArgumentException {
+    private static void checkProvider(@NonNull String expected, @Nullable String found) throws IllegalArgumentException {
         if (!expected.equals(found)) {
             throw new IllegalArgumentException("Invalid provider name; expected: '" + expected + "' found: '" + found + "'");
         }

@@ -40,8 +40,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -49,13 +49,13 @@ import javax.annotation.Nullable;
  */
 abstract class TswFactory {
 
-    @Nonnull
-    abstract public TswSource load(@Nonnull Path repository) throws IOException;
+    @NonNull
+    abstract public TswSource load(@NonNull Path repository) throws IOException;
 
-    @Nonnull
-    abstract public List<TswSeries> loadFile(@Nonnull Path file) throws IOException;
+    @NonNull
+    abstract public List<TswSeries> loadFile(@NonNull Path file) throws IOException;
 
-    @Nonnull
+    @NonNull
     public static TswFactory getDefault() {
         return NewTswFactory.INSTANCE;
     }
@@ -64,7 +64,7 @@ abstract class TswFactory {
     private static abstract class ATswFactory extends TswFactory {
 
         @Override
-        public TswSource load(@Nonnull Path repository) throws IOException {
+        public TswSource load(@NonNull Path repository) throws IOException {
             List<TswSeries> result = new ArrayList<>();
             try (DirectoryStream<Path> ds = Files.newDirectoryStream(repository, getFilter())) {
                 for (Path file : ds) {
@@ -78,8 +78,7 @@ abstract class TswFactory {
             return new TswSource(repository.toFile(), result);
         }
 
-        @Nonnull
-        abstract protected DirectoryStream.Filter<Path> getFilter();
+        abstract protected DirectoryStream.@NonNull Filter<Path> getFilter();
 
         @Override
         public List<TswSeries> loadFile(Path file) throws IOException {
@@ -89,7 +88,7 @@ abstract class TswFactory {
             }
         }
 
-        @Nonnull
+        @NonNull
         abstract protected List<TswSeries> loadFile(String fileName, CheckedIterator<String, IOException> iterator) throws IOException;
     }
 
@@ -157,7 +156,7 @@ abstract class TswFactory {
     }
 
     @Nullable
-    private static TswSeries loadSeries(@Nonnull String fileName, @Nonnull CheckedIterator<String, IOException> iterator) throws IOException {
+    private static TswSeries loadSeries(@NonNull String fileName, @NonNull CheckedIterator<String, IOException> iterator) throws IOException {
         // Read first line (name)
         String name;
         if (!(iterator.hasNext() && (name = NameParser.INSTANCE.parse(iterator.next())) != null)) {

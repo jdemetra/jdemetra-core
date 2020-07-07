@@ -16,12 +16,11 @@
  */
 package ec.demetra.xml.regression;
 
-import com.google.common.collect.Iterables;
 import ec.tstoolkit.design.GlobalServiceProvider;
 import ec.tstoolkit.timeseries.regression.ITsModifier;
+import internal.xml.regression.TsModifierAdapterLoader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -53,8 +52,7 @@ public class TsModifierAdapters {
     private final List<TsModifierAdapter> adapters = new ArrayList<>();
 
     public void load() {
-        Iterable<TsModifierAdapter> all = ServiceLoader.load(TsModifierAdapter.class);
-        Iterables.addAll(adapters, all);
+        adapters.addAll(new TsModifierAdapterLoader().get());
     }
 
     public List<Class> getXmlClasses() {

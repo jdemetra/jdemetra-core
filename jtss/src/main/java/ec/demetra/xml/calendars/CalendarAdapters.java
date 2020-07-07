@@ -16,13 +16,12 @@
  */
 package ec.demetra.xml.calendars;
 
-import com.google.common.collect.Iterables;
 import ec.tstoolkit.design.GlobalServiceProvider;
 import ec.tstoolkit.timeseries.calendars.GregorianCalendarManager;
 import ec.tstoolkit.timeseries.calendars.IGregorianCalendarProvider;
+import internal.xml.calendars.CalendarAdapterLoader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -56,8 +55,7 @@ public class CalendarAdapters {
     private final List<CalendarAdapter> adapters = new ArrayList<>();
 
     private void load() {
-        Iterable<CalendarAdapter> all = ServiceLoader.load(CalendarAdapter.class);
-        Iterables.addAll(adapters, all);
+        adapters.addAll(new CalendarAdapterLoader().get());
     }
 
     public List<Class> getXmlClasses() {

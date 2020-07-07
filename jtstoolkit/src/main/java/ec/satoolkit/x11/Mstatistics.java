@@ -813,7 +813,7 @@ public final class Mstatistics implements IProcResults {
 
     @Override
     public List<ProcessingInformation> getProcessingInformation() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     public static final String M1 = "m1", M2 = "m2", M3 = "m3", M4 = "m4";

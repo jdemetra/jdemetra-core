@@ -34,8 +34,8 @@ import java.util.AbstractList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Utility class that simplify the use of Ts providers.
@@ -49,7 +49,7 @@ public final class TsProviders {
         // static class
     }
 
-    @Nonnull
+    @NonNull
     static List<ITsProvider> asList() {
         final String[] providers = TsFactory.instance.getProviders();
         return new AbstractList<ITsProvider>() {
@@ -70,29 +70,29 @@ public final class TsProviders {
      *
      * @return
      */
-    @Nonnull
+    @NonNull
     public static FluentIterable<ITsProvider> all() {
         return FluentIterable.from(asList());
     }
 
-    @Nonnull
-    public static <T extends ITsProvider> Optional<T> lookup(@Nonnull Class<T> clazz, @Nonnull String providerName) {
+    @NonNull
+    public static <T extends ITsProvider> Optional<T> lookup(@NonNull Class<T> clazz, @NonNull String providerName) {
         ITsProvider result = TsFactory.instance.getProvider(providerName);
         return clazz.isInstance(result) ? Optional.of(clazz.cast(result)) : Optional.<T>absent();
     }
 
-    @Nonnull
-    public static <T extends ITsProvider> Optional<T> lookup(@Nonnull Class<T> clazz, @Nonnull DataSource dataSource) {
+    @NonNull
+    public static <T extends ITsProvider> Optional<T> lookup(@NonNull Class<T> clazz, @NonNull DataSource dataSource) {
         return lookup(clazz, dataSource.getProviderName());
     }
 
-    @Nonnull
-    public static <T extends ITsProvider> Optional<T> lookup(@Nonnull Class<T> clazz, @Nonnull DataSet dataSet) {
+    @NonNull
+    public static <T extends ITsProvider> Optional<T> lookup(@NonNull Class<T> clazz, @NonNull DataSet dataSet) {
         return lookup(clazz, dataSet.getDataSource());
     }
 
-    @Nonnull
-    public static <T extends ITsProvider> Optional<T> lookup(@Nonnull Class<T> clazz, @Nonnull TsMoniker moniker) {
+    @NonNull
+    public static <T extends ITsProvider> Optional<T> lookup(@NonNull Class<T> clazz, @NonNull TsMoniker moniker) {
         String providerName = moniker.getSource();
         return providerName != null ? lookup(clazz, providerName) : Optional.<T>absent();
     }
@@ -233,8 +233,8 @@ public final class TsProviders {
     }
     //</editor-fold>
 
-    @Nonnull
-    public static Optional<File> tryGetFile(@Nonnull DataSource dataSource) {
+    @NonNull
+    public static Optional<File> tryGetFile(@NonNull DataSource dataSource) {
         Optional<IFileLoader> loader = lookup(IFileLoader.class, dataSource.getProviderName());
         if (loader.isPresent()) {
             File file = loader.get().decodeBean(dataSource).getFile();
@@ -244,8 +244,8 @@ public final class TsProviders {
         return Optional.absent();
     }
 
-    @Nonnull
-    public static Optional<TsCollection> getTsCollection(@Nonnull DataSource dataSource, @Nonnull TsInformationType type) {
+    @NonNull
+    public static Optional<TsCollection> getTsCollection(@NonNull DataSource dataSource, @NonNull TsInformationType type) {
         IDataSourceProvider provider = find(IDataSourceProvider.class, dataSource);
         if (provider == null) {
             return Optional.absent();
@@ -255,8 +255,8 @@ public final class TsProviders {
         return Optional.of(TsFactory.instance.createTsCollection(name, moniker, type));
     }
 
-    @Nonnull
-    public static Optional<TsCollection> getTsCollection(@Nonnull DataSet dataSet, @Nonnull TsInformationType type) {
+    @NonNull
+    public static Optional<TsCollection> getTsCollection(@NonNull DataSet dataSet, @NonNull TsInformationType type) {
         IDataSourceProvider provider = find(IDataSourceProvider.class, dataSet);
         if (provider == null) {
             return Optional.absent();
@@ -276,8 +276,8 @@ public final class TsProviders {
         throw new RuntimeException("Not implemented");
     }
 
-    @Nonnull
-    public static Optional<Ts> getTs(@Nonnull DataSet dataSet, @Nonnull TsInformationType type) {
+    @NonNull
+    public static Optional<Ts> getTs(@NonNull DataSet dataSet, @NonNull TsInformationType type) {
         IDataSourceProvider provider = find(IDataSourceProvider.class, dataSet);
         if (provider == null) {
             return Optional.absent();
@@ -293,10 +293,10 @@ public final class TsProviders {
     }
 
     public static void prettyPrintTree(
-            @Nonnull IDataSourceProvider provider,
-            @Nonnull DataSource dataSource,
-            @Nonnegative int maxLevel,
-            @Nonnull PrintStream printStream,
+            @NonNull IDataSourceProvider provider,
+            @NonNull DataSource dataSource,
+            @NonNegative int maxLevel,
+            @NonNull PrintStream printStream,
             boolean displayName) throws IOException {
 
         Function<Object, String> toString = displayName

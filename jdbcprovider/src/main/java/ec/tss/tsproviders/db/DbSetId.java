@@ -23,8 +23,8 @@ import ec.tstoolkit.design.Immutable;
 import ec.tstoolkit.utilities.Arrays2;
 import java.util.Arrays;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -34,8 +34,8 @@ import javax.annotation.Nullable;
 public final class DbSetId {
 
     //<editor-fold defaultstate="collapsed" desc="Factory methods">
-    @Nonnull
-    public static DbSetId root(@Nonnull String... dimColumns) throws IllegalArgumentException {
+    @NonNull
+    public static DbSetId root(@NonNull String... dimColumns) throws IllegalArgumentException {
         for (String o : dimColumns) {
             if (o == null) {
                 throw new IllegalArgumentException("Columns cannot be null");
@@ -47,7 +47,7 @@ public final class DbSetId {
     private final String[] dimValues;
     private final String[] dimColumns;
 
-    private DbSetId(@Nonnull String[] dimValues, @Nonnull String[] dimColumns) {
+    private DbSetId(@NonNull String[] dimValues, @NonNull String[] dimColumns) {
         this.dimValues = dimValues;
         this.dimColumns = dimColumns;
     }
@@ -56,7 +56,7 @@ public final class DbSetId {
         return dimValues.length;
     }
 
-    @Nonnull
+    @NonNull
     public String getValue(int index) throws IndexOutOfBoundsException {
         return dimValues[index];
     }
@@ -65,7 +65,7 @@ public final class DbSetId {
         return dimColumns.length;
     }
 
-    @Nonnull
+    @NonNull
     public String getColumn(int index) throws IndexOutOfBoundsException {
         return dimColumns[index];
     }
@@ -78,8 +78,8 @@ public final class DbSetId {
         return dimValues.length == dimColumns.length;
     }
 
-    @Nonnull
-    public DbSetId child(@Nonnull String... dimValues) throws IllegalArgumentException {
+    @NonNull
+    public DbSetId child(@NonNull String... dimValues) throws IllegalArgumentException {
         if (this.dimValues.length + dimValues.length > dimColumns.length) {
             throw new IllegalArgumentException("Too much values");
         }
@@ -95,12 +95,12 @@ public final class DbSetId {
         return getLevel() == 0;
     }
 
-    @Nonnull
+    @NonNull
     public Optional<DbSetId> parent() {
         return isRoot() ? Optional.<DbSetId>absent() : Optional.of(new DbSetId(Arrays.copyOf(dimValues, getLevel() - 1), dimColumns));
     }
 
-    @Nonnull
+    @NonNull
     public String[] selectColumns() {
         String[] result = new String[getDepth()];
         for (int i = 0; i < result.length; i++) {
@@ -109,7 +109,7 @@ public final class DbSetId {
         return result;
     }
 
-    @Nonnull
+    @NonNull
     public String[] filterColumns() {
         String[] result = new String[getLevel()];
         for (int i = 0; i < result.length; i++) {
@@ -128,7 +128,7 @@ public final class DbSetId {
         return this == obj || (obj instanceof DbSetId && equals((DbSetId) obj));
     }
 
-    private boolean equals(@Nonnull DbSetId that) {
+    private boolean equals(@NonNull DbSetId that) {
         // reversed values first to fail fast
         return equalsReversed(dimValues, that.dimValues) && Arrays.equals(dimColumns, that.dimColumns);
     }

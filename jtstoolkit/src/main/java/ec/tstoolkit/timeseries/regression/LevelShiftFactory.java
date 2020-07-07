@@ -27,7 +27,7 @@ import ec.tstoolkit.timeseries.simplets.TsDomain;
  */
 @Development(status = Development.Status.Alpha)
 public class LevelShiftFactory implements IOutlierFactory {
-
+    
     private int minLength = DEF_MINLENGTH;
 
     private boolean zeroEnded=true;

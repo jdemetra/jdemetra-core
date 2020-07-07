@@ -16,7 +16,7 @@
  */
 package ec.tss.tsproviders;
 
-import javax.annotation.concurrent.ThreadSafe;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * Defines a provider whose content can be changed programmatically.<br>

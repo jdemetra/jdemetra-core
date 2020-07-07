@@ -19,8 +19,8 @@ package ec.tss.tsproviders;
 import ec.tss.tsproviders.utils.DataSourceEventSupport;
 import java.util.LinkedHashSet;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import net.jcip.annotations.ThreadSafe;
 import org.slf4j.Logger;
 
 /**
@@ -42,7 +42,7 @@ public interface HasDataSourceMutableList extends HasDataSourceList {
      * @throws IllegalArgumentException if the DataSource doesn't belong to this
      * provider.
      */
-    boolean open(@Nonnull DataSource dataSource) throws IllegalArgumentException;
+    boolean open(@NonNull DataSource dataSource) throws IllegalArgumentException;
 
     /**
      * Removes a DataSource from the provider.
@@ -53,7 +53,7 @@ public interface HasDataSourceMutableList extends HasDataSourceList {
      * @throws IllegalArgumentException if the DataSource doesn't belong to this
      * provider.
      */
-    boolean close(@Nonnull DataSource dataSource) throws IllegalArgumentException;
+    boolean close(@NonNull DataSource dataSource) throws IllegalArgumentException;
 
     /**
      * Removes all the DataSources from this provider.
@@ -62,15 +62,15 @@ public interface HasDataSourceMutableList extends HasDataSourceList {
         getDataSources().forEach(this::close);
     }
 
-    @Nonnull
+    @NonNull
     public static HasDataSourceMutableList of(
-            @Nonnull String providerName, @Nonnull Logger logger,
-            @Nonnull Consumer<? super DataSource> cacheCleaner) {
+            @NonNull String providerName, @NonNull Logger logger,
+            @NonNull Consumer<? super DataSource> cacheCleaner) {
         return new Util.DataSourceMutableListSupport(providerName, new LinkedHashSet<>(), DataSourceEventSupport.create(logger), cacheCleaner);
     }
 
-    @Nonnull
-    public static HasDataSourceMutableList of(@Nonnull String providerName, @Nonnull Logger logger) {
+    @NonNull
+    public static HasDataSourceMutableList of(@NonNull String providerName, @NonNull Logger logger) {
         return of(providerName, logger, Util.DO_NOTHING);
     }
 }

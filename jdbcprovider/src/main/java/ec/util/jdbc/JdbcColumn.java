@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package ec.util.jdbc;
 
 import ec.tstoolkit.design.Immutable;
@@ -22,17 +21,19 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
-import javax.annotation.Nonnull;
+import nbbrd.sql.jdbc.SqlColumn;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author Philippe Charles
  */
+@Deprecated
 @Immutable
 public final class JdbcColumn {
 
-    @Nonnull
-    public static List<JdbcColumn> ofAll(@Nonnull ResultSetMetaData md) throws SQLException {
+    @NonNull
+    public static List<JdbcColumn> ofAll(@NonNull ResultSetMetaData md) throws SQLException {
         JdbcColumn[] result = new JdbcColumn[md.getColumnCount()];
         for (int i = 0; i < result.length; i++) {
             result[i] = of(md, i + 1);
@@ -40,15 +41,17 @@ public final class JdbcColumn {
         return Arrays.asList(result);
     }
 
-    @Nonnull
-    public static JdbcColumn of(@Nonnull ResultSetMetaData md, int columnIndex) throws SQLException {
+    @NonNull
+    public static JdbcColumn of(@NonNull ResultSetMetaData md, int columnIndex) throws SQLException {
+        SqlColumn result = SqlColumn.of(md, columnIndex);
         return new JdbcColumn(
-                md.getColumnClassName(columnIndex),
-                md.getColumnDisplaySize(columnIndex),
-                md.getColumnLabel(columnIndex),
-                md.getColumnName(columnIndex),
-                md.getColumnType(columnIndex),
-                md.getColumnTypeName(columnIndex));
+                result.getClassName(),
+                result.getDisplaySize(),
+                result.getLabel(),
+                result.getName(),
+                result.getType(),
+                result.getTypeName()
+        );
     }
     //
     final String className;
@@ -89,9 +92,8 @@ public final class JdbcColumn {
 
     /**
      * Gets the column's suggested title for use in printouts and displays. The
-     * suggested title is usually specified by the SQL
-     * <code>AS</code> clause. If a SQL
-     * <code>AS</code> is not specified, the value returned from
+     * suggested title is usually specified by the SQL <code>AS</code> clause.
+     * If a SQL <code>AS</code> is not specified, the value returned from
      * <code>getColumnLabel</code> will be the same as the value returned by the
      * <code>getColumnName</code> method.
      *

@@ -18,13 +18,13 @@
 package ec.tss.sa.output;
 
 import ec.tss.sa.ISaOutputFactory;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@ServiceProvider(service = ISaOutputFactory.class)
+@ServiceProvider(ISaOutputFactory.class)
 public class CsvOutputFactory implements ISaOutputFactory {
     //public static final CsvOutputFactory Default = new CsvOutputFactory();
 

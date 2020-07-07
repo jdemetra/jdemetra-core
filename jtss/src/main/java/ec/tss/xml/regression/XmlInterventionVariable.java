@@ -55,6 +55,7 @@ public class XmlInterventionVariable implements IXmlConverter<InterventionVariab
         int n = t.getCount();
         sequence = new XmlSeq[n];
         for (int i = 0; i < n; ++i) {
+            sequence[i]=new XmlSeq();
             sequence[i].start = StringFormatter.yearMonth(t.getSequence(i).start);
             sequence[i].end = StringFormatter.yearMonth(t.getSequence(i).end);
         }

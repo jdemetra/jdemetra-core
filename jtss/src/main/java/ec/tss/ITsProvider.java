@@ -17,9 +17,10 @@
 package ec.tss;
 
 import ec.tstoolkit.design.Development;
-import ec.tstoolkit.design.ServiceDefinition;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
+import net.jcip.annotations.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Generic interface for providers of time series.
@@ -28,7 +29,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * @since 1.0.0
  */
 @Development(status = Development.Status.Alpha)
-@ServiceDefinition
+@ServiceDefinition(quantifier = Quantifier.MULTIPLE)
 @ThreadSafe
 public interface ITsProvider extends AutoCloseable {
 
@@ -61,7 +62,7 @@ public interface ITsProvider extends AutoCloseable {
      * @param info The requested information
      * @return true if the query run without exception, false otherwise
      */
-    boolean get(@Nonnull TsCollectionInformation info);
+    boolean get(@NonNull TsCollectionInformation info);
 
     /**
      * Synchronous query of the information about a ts (with or without data).
@@ -71,7 +72,7 @@ public interface ITsProvider extends AutoCloseable {
      * @param info The requested information
      * @return true if the query run without exception, false otherwise
      */
-    boolean get(@Nonnull TsInformation info);
+    boolean get(@NonNull TsInformation info);
 
     /**
      * Gets the asynchronous mode of the provider.
@@ -81,7 +82,7 @@ public interface ITsProvider extends AutoCloseable {
      * TSAsyncMode.None
      * @see TSAsyncMode
      */
-    @Nonnull
+    @NonNull
     TsAsyncMode getAsyncMode();
 
     /**
@@ -91,7 +92,7 @@ public interface ITsProvider extends AutoCloseable {
      * used as first string in the moniker of a series provided by this
      * provider.
      */
-    @Nonnull
+    @NonNull
     String getSource();
 
     /**
@@ -114,7 +115,7 @@ public interface ITsProvider extends AutoCloseable {
      * @return
      * @see TSCollectionInformation
      */
-    boolean queryTs(@Nonnull TsMoniker ts, @Nonnull TsInformationType type);
+    boolean queryTs(@NonNull TsMoniker ts, @NonNull TsInformationType type);
 
     /**
      * Asynchronous query of the information about a tscollection (with or
@@ -128,5 +129,5 @@ public interface ITsProvider extends AutoCloseable {
      *
      * @see TSInformationType
      */
-    boolean queryTsCollection(@Nonnull TsMoniker collection, @Nonnull TsInformationType info);
+    boolean queryTsCollection(@NonNull TsMoniker collection, @NonNull TsInformationType info);
 }

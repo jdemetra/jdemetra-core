@@ -46,8 +46,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -55,25 +55,25 @@ import javax.annotation.Nullable;
  */
 public abstract class SpreadSheetFactory {
 
-    @Nonnull
-    abstract public SpreadSheetSource toSource(@Nonnull Book book, @Nonnull TsImportOptions options) throws IOException;
+    @NonNull
+    abstract public SpreadSheetSource toSource(@NonNull Book book, @NonNull TsImportOptions options) throws IOException;
 
-    @Nonnull
-    abstract public TsCollectionInformation toTsCollectionInfo(@Nonnull Sheet sheet, @Nonnull TsImportOptions options);
+    @NonNull
+    abstract public TsCollectionInformation toTsCollectionInfo(@NonNull Sheet sheet, @NonNull TsImportOptions options);
 
-    @Nonnull
-    abstract public Table<?> toTable(@Nonnull Sheet sheet);
+    @NonNull
+    abstract public Table<?> toTable(@NonNull Sheet sheet);
 
-    @Nonnull
-    abstract public ArraySheet fromTsCollectionInfo(@Nonnull TsCollectionInformation col, @Nonnull TsExportOptions options);
+    @NonNull
+    abstract public ArraySheet fromTsCollectionInfo(@NonNull TsCollectionInformation col, @NonNull TsExportOptions options);
 
-    @Nonnull
-    abstract public ArraySheet fromMatrix(@Nonnull Matrix matrix);
+    @NonNull
+    abstract public ArraySheet fromMatrix(@NonNull Matrix matrix);
 
-    @Nonnull
-    abstract public ArraySheet fromTable(@Nonnull Table<?> table);
+    @NonNull
+    abstract public ArraySheet fromTable(@NonNull Table<?> table);
 
-    @Nonnull
+    @NonNull
     public static SpreadSheetFactory getDefault() {
         return DefaultImpl.INSTANCE;
     }
@@ -301,15 +301,15 @@ public abstract class SpreadSheetFactory {
     static abstract class CellParser<T> {
 
         @Nullable
-        abstract public T parse(@Nonnull Sheet sheet, int rowIndex, int columnIndex);
+        abstract public T parse(@NonNull Sheet sheet, int rowIndex, int columnIndex);
 
-        @Nonnull
-        public Optional<T> tryParse(@Nonnull Sheet sheet, int rowIndex, int columnIndex) {
+        @NonNull
+        public Optional<T> tryParse(@NonNull Sheet sheet, int rowIndex, int columnIndex) {
             return Optional.fromNullable(parse(sheet, rowIndex, columnIndex));
         }
 
-        @Nonnull
-        public CellParser<T> or(@Nonnull CellParser<T>... cellParser) {
+        @NonNull
+        public CellParser<T> or(@NonNull CellParser<T>... cellParser) {
             switch (cellParser.length) {
                 case 0:
                     return this;
@@ -320,27 +320,27 @@ public abstract class SpreadSheetFactory {
             }
         }
 
-        @Nonnull
-        public static <X> CellParser<X> firstNotNull(@Nonnull ImmutableList<? extends CellParser<X>> list) {
+        @NonNull
+        public static <X> CellParser<X> firstNotNull(@NonNull ImmutableList<? extends CellParser<X>> list) {
             return new FirstNotNull(list);
         }
 
-        @Nonnull
-        public static <X> CellParser<X> fromParser(@Nonnull IParser<X> parser) {
+        @NonNull
+        public static <X> CellParser<X> fromParser(@NonNull IParser<X> parser) {
             return new Adapter(parser);
         }
 
-        @Nonnull
+        @NonNull
         public static CellParser<Date> onDateType() {
             return DateCellFunc.INSTANCE;
         }
 
-        @Nonnull
+        @NonNull
         public static CellParser<Number> onNumberType() {
             return NumberCellFunc.INSTANCE;
         }
 
-        @Nonnull
+        @NonNull
         public static CellParser<String> onStringType() {
             return StringCellFunc.INSTANCE;
         }

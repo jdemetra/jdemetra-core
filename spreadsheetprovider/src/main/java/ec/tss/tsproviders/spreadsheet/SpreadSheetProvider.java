@@ -32,13 +32,14 @@ import ec.tss.tsproviders.spreadsheet.engine.TsImportOptions;
 import ec.tss.tsproviders.utils.*;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.util.spreadsheet.Book;
+import ec.util.spreadsheet.BookFactoryLoader;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.openide.util.lookup.ServiceProvider;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import nbbrd.service.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Demortier Jeremy
  */
-@ServiceProvider(service = ITsProvider.class)
+@ServiceProvider(ITsProvider.class)
 public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, SpreadSheetBean> {
 
     public static final String SOURCE = "XCLPRVDR";
@@ -218,7 +219,7 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         info.type = TsInformationType.All;
     }
 
-    @Nonnull
+    @NonNull
     public SpreadSheetSource getSource(DataSource dataSource) throws IOException {
         return support.getValue(cache, dataSource);
     }
@@ -298,9 +299,8 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
         return "Spreadsheet file";
     }
 
-    @Nullable
-    private Book.Factory getFactoryByFile(@Nonnull File file) {
-        for (Book.Factory o : ServiceLoader.load(Book.Factory.class)) {
+    private Book.@Nullable Factory getFactoryByFile(@NonNull File file) {
+        for (Book.Factory o : BookFactoryLoader.get()) {
             if (o.canLoad() && o.accept(file)) {
                 return o;
             }

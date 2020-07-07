@@ -23,7 +23,7 @@ import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 @UtilityClass(IParser.class)
 public final class StrangeParsers {
@@ -39,20 +39,17 @@ public final class StrangeParsers {
      *
      * @return a new parser
      */
-    @Nonnull
-    public static Parsers.Parser<Date> yearFreqPosParser() {
+    public static Parsers.@NonNull Parser<Date> yearFreqPosParser() {
         return YearFreqPosParser.INSTANCE;
     }
 
     @Deprecated
-    @Nonnull
-    public static Parsers.Parser<Number> onDoubleValueOf() {
+    public static Parsers.@NonNull Parser<Number> onDoubleValueOf() {
         return DoubleValueOf.INSTANCE;
     }
 
     @Deprecated
-    @Nonnull
-    public static Parsers.Parser<Number> onIntegerValueOf() {
+    public static Parsers.@NonNull Parser<Number> onIntegerValueOf() {
         return IntegerValueOf.INSTANCE;
     }
 

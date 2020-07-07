@@ -22,7 +22,7 @@ import ec.tss.tsproviders.*;
 import ec.tss.tsproviders.db.DbProvider;
 import ec.tss.tsproviders.utils.Parsers;
 import ec.tstoolkit.design.VisibleForTesting;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 
 /**
@@ -35,16 +35,16 @@ public abstract class JdbcProvider<BEAN extends JdbcBean> extends DbProvider<BEA
     protected final Parsers.Parser<DataSource> legacyDataSourceParser;
     protected final Parsers.Parser<DataSet> legacyDataSetParser;
 
-    protected JdbcProvider(@Nonnull String source, @Nonnull String version, @Nonnull Logger logger, @Nonnull TsAsyncMode asyncMode) {
+    protected JdbcProvider(@NonNull String source, @NonNull String version, @NonNull Logger logger, @NonNull TsAsyncMode asyncMode) {
         this(source, version, logger, asyncMode, JdbcLegacy.dbParser(source, version));
     }
 
-    protected JdbcProvider(@Nonnull String source, @Nonnull String version, @Nonnull Logger logger, @Nonnull TsAsyncMode asyncMode, @Nonnull Parsers.Parser<DataSource> legacyDbParser) {
+    protected JdbcProvider(@NonNull String source, @NonNull String version, @NonNull Logger logger, @NonNull TsAsyncMode asyncMode, Parsers.@NonNull Parser<DataSource> legacyDbParser) {
         this(source, version, logger, asyncMode, legacyDbParser, JdbcLegacy.domainSeriesParser(legacyDbParser));
     }
 
     @VisibleForTesting
-    JdbcProvider(@Nonnull String providerName, @Nonnull String version, @Nonnull Logger logger, @Nonnull TsAsyncMode asyncMode, @Nonnull Parsers.Parser<DataSource> legacyDataSourceParser, @Nonnull Parsers.Parser<DataSet> legacyDataSetParser) {
+    JdbcProvider(@NonNull String providerName, @NonNull String version, @NonNull Logger logger, @NonNull TsAsyncMode asyncMode, Parsers.@NonNull Parser<DataSource> legacyDataSourceParser, Parsers.@NonNull Parser<DataSet> legacyDataSetParser) {
         super(logger, providerName, asyncMode);
         this.version = version;
         this.legacyDataSourceParser = legacyDataSourceParser;

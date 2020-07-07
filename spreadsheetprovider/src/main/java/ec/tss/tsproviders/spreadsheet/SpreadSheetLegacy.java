@@ -27,7 +27,7 @@ import ec.tss.tsproviders.utils.IParser;
 import ec.tss.tsproviders.utils.Parsers;
 import ec.tss.tsproviders.utils.Parsers.FailSafeParser;
 import ec.tss.tsproviders.utils.Parsers.Parser;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -39,8 +39,7 @@ final class SpreadSheetLegacy {
         // static class
     }
 
-    @Nonnull
-    static Parsers.Parser<DataSource> legacyDataSourceParser() {
+    static Parsers.@NonNull Parser<DataSource> legacyDataSourceParser() {
         return new Parser<DataSource>() {
             @Override
             public DataSource parse(CharSequence input) throws NullPointerException {
@@ -50,8 +49,7 @@ final class SpreadSheetLegacy {
         };
     }
 
-    @Nonnull
-    static Parsers.Parser<DataSet> legacyDataSetParser() {
+    static Parsers.@NonNull Parser<DataSet> legacyDataSetParser() {
         final IParser<DataSource> tmp = legacyDataSourceParser();
         return new FailSafeParser<DataSet>() {
             @Override

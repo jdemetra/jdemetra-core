@@ -25,13 +25,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Kristof Bayens
  */
-@ServiceProvider(service = ISaDiagnosticsFactory.class)
+@ServiceProvider(ISaDiagnosticsFactory.class)
 public class ResidualsDiagnosticsFactory implements ISaDiagnosticsFactory {
 
     public static final String NORMALITY = "normality", INDEPENDENCE = "independence",

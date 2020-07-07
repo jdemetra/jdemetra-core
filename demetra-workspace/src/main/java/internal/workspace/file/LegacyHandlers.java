@@ -24,7 +24,7 @@ import static ec.demetra.workspace.WorkspaceFamily.SA_SPEC_TRAMOSEATS;
 import static ec.demetra.workspace.WorkspaceFamily.SA_SPEC_X13;
 import static ec.demetra.workspace.WorkspaceFamily.UTIL_CAL;
 import static ec.demetra.workspace.WorkspaceFamily.UTIL_VAR;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 import ec.demetra.workspace.file.FileFormat;
 import ec.demetra.workspace.file.spi.FamilyHandler;
 import ec.demetra.workspace.file.util.XmlConverterSupport;
@@ -50,49 +50,49 @@ public final class LegacyHandlers {
         return XmlConverterSupport.of(factory, repository).asHandler(family, FileFormat.LEGACY);
     }
 
-    @ServiceProvider(service = FamilyHandler.class)
+    @ServiceProvider(FamilyHandler.class)
     public static final class SaMulti implements FamilyHandler {
 
         @lombok.experimental.Delegate
         private final FamilyHandler delegate = xmlConverter(SA_MULTI, XmlSaProcessing::new, "SAProcessing");
     }
 
-    @ServiceProvider(service = FamilyHandler.class)
+    @ServiceProvider(FamilyHandler.class)
     public static final class SaDocX13 implements FamilyHandler {
 
         @lombok.experimental.Delegate
         private final FamilyHandler delegate = xmlConverter(SA_DOC_X13, XmlX12Document::new, "X12Doc");
     }
 
-    @ServiceProvider(service = FamilyHandler.class)
+    @ServiceProvider(FamilyHandler.class)
     public static final class SaDocTramoSeats implements FamilyHandler {
 
         @lombok.experimental.Delegate
         private final FamilyHandler delegate = xmlConverter(SA_DOC_TRAMOSEATS, XmlTramoSeatsDocument::new, "TramoSeatsDoc");
     }
 
-    @ServiceProvider(service = FamilyHandler.class)
+    @ServiceProvider(FamilyHandler.class)
     public static final class SaSpecX13 implements FamilyHandler {
 
         @lombok.experimental.Delegate
         private final FamilyHandler delegate = xmlConverter(SA_SPEC_X13, XmlX12Specification::new, "X12Spec");
     }
 
-    @ServiceProvider(service = FamilyHandler.class)
+    @ServiceProvider(FamilyHandler.class)
     public static final class SaSpecTramoseats implements FamilyHandler {
 
         @lombok.experimental.Delegate
         private final FamilyHandler delegate = xmlConverter(SA_SPEC_TRAMOSEATS, XmlTramoSeatsSpecification::new, "TramoSeatsSpec");
     }
 
-    @ServiceProvider(service = FamilyHandler.class)
+    @ServiceProvider(FamilyHandler.class)
     public static final class UtilCal implements FamilyHandler {
 
         @lombok.experimental.Delegate
         private final FamilyHandler delegate = xmlConverter(UTIL_CAL, ec.tss.xml.legacy.XmlCalendars::new, "Calendars");
     }
 
-    @ServiceProvider(service = FamilyHandler.class)
+    @ServiceProvider(FamilyHandler.class)
     public static final class UtilVar implements FamilyHandler {
 
         @lombok.experimental.Delegate

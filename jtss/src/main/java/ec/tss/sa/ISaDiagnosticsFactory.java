@@ -20,15 +20,16 @@ package ec.tss.sa;
 import ec.tstoolkit.algorithm.CompositeResults;
 import ec.tstoolkit.algorithm.IDiagnosticsFactory;
 import ec.tstoolkit.design.IntValue;
-import ec.tstoolkit.design.ServiceDefinition;
 import java.util.Comparator;
+import nbbrd.service.Quantifier;
+import nbbrd.service.ServiceDefinition;
 
 /**
  *
  * @author Jean Palate
  * @since 1.4.1
  */
-@ServiceDefinition
+@ServiceDefinition(quantifier = Quantifier.MULTIPLE)
 public interface ISaDiagnosticsFactory
         extends IDiagnosticsFactory<CompositeResults> {
 

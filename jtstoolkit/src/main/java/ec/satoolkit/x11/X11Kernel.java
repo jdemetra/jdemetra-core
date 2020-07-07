@@ -394,6 +394,8 @@ public class X11Kernel implements ISeriesDecomposer {
         // d5
         TsData d5a = toolkit.getSeasonalComputer().doInitialFiltering(
                 X11Step.D, d4, info);
+//        System.out.println("d5a_alt");
+//        System.out.println(d5a);
         TsData d5 = toolkit.getSeasonalNormalizer().normalize(d5a,
                 d1.getDomain());
         TsData d6;

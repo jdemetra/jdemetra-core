@@ -18,8 +18,8 @@ package ec.tss.tsproviders.utils;
 
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * Defines the ability to fill the content of a time series or a collection.
@@ -37,7 +37,7 @@ public interface TsFiller {
      * @param info the collection info to fill
      * @return true if the process performed properly, false otherwise
      */
-    boolean fillCollection(@Nonnull TsCollectionInformation info);
+    boolean fillCollection(@NonNull TsCollectionInformation info);
 
     /**
      * Fills a time series info according to its request.
@@ -45,14 +45,14 @@ public interface TsFiller {
      * @param info the time series info to fill
      * @return true if the process performed properly, false otherwise
      */
-    boolean fillSeries(@Nonnull TsInformation info);
+    boolean fillSeries(@NonNull TsInformation info);
 
     /**
      * Creates a new instance of TsFiller that does nothing.
      *
      * @return a non-null instance
      */
-    @Nonnull
+    @NonNull
     static TsFiller noOp() {
         return TsFillers.NoOpFiller.INSTANCE;
     }

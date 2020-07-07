@@ -22,13 +22,13 @@ import ec.satoolkit.ISaSpecification;
 import ec.tss.sa.ISaOutputFactory;
 import ec.tss.sa.documents.SaDocument;
 import ec.tstoolkit.algorithm.IOutput;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Kristof Bayens
  */
-@ServiceProvider(service = ISaOutputFactory.class)
+@ServiceProvider(ISaOutputFactory.class)
 public class CsvMatrixOutputFactory implements ISaOutputFactory {
     //public static final CsvMatrixOutputFactory Default = new CsvMatrixOutputFactory();
     

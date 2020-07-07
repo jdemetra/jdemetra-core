@@ -23,9 +23,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import nbbrd.io.Resource;
 import org.slf4j.Logger;
 
 /**
@@ -34,26 +35,19 @@ import org.slf4j.Logger;
  *
  * @author Philippe Charles
  */
+@Deprecated
 public final class Closeables {
 
     private Closeables() {
         // static class
     }
 
-    public static void closeBoth(@Nonnull Closeable first, @Nonnull Closeable second) throws IOException {
-        try {
-            first.close();
-        } catch (IOException ex) {
-            try {
-                second.close();
-            } catch (IOException suppressed) {
-                ex.addSuppressed(suppressed);
-            }
-            throw ex;
-        }
-        second.close();
+    @Deprecated
+    public static void closeBoth(@NonNull Closeable first, @NonNull Closeable second) throws IOException {
+        Resource.closeBoth(first, second);
     }
-    
+
+    @Deprecated
     public static Closeable asCloseable(final XMLStreamWriter o) {
         return () -> {
             try {

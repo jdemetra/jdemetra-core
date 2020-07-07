@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import org.openide.util.lookup.ServiceProvider;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
@@ -42,7 +42,7 @@ public class XmlGenericTradingDays extends XmlModifiableRegressionVariable {
     @XmlAttribute
     public boolean contrasts;
 
-    @ServiceProvider(service = TsVariableAdapter.class)
+    @ServiceProvider(TsVariableAdapter.class)
     public static class Adapter extends TsVariableAdapter<XmlGenericTradingDays, GenericTradingDaysVariables> {
 
         @Override

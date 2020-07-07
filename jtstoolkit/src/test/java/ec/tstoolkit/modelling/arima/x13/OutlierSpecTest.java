@@ -84,18 +84,18 @@ public class OutlierSpecTest {
         assertEquals(expected, actual);
         assertEquals(tsPeriodSelector, actual.getSpan());
         
-        expected.setMonthlyTCRate(1.5);
+        expected.setMonthlyTCRate(0.5);
         info = expected.write(true);
         actual.read(info);
         assertEquals(expected, actual);
-        assertEquals(1.5, actual.getMonthlyTCRate(),.0);
+        assertEquals(0.5, actual.getMonthlyTCRate(),.0);
 
-        expected.setDefaultCriticalValue(1.6);
+        expected.setDefaultCriticalValue(2.1);
         info = expected.write(true);
         actual.read(info);
         assertEquals(expected, actual);
-        assertEquals(1.6, actual.getDefaultCriticalValue(),.0);
-        assertEquals(1.6, actual.search(OutlierType.SLS).getCriticalValue(),.0);
+        assertEquals(2.1, actual.getDefaultCriticalValue(),.0);
+        assertEquals(2.1, actual.search(OutlierType.SLS).getCriticalValue(),.0);
 
         expected.reset();
         info = expected.write(true);

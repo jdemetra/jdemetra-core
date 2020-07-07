@@ -16,16 +16,18 @@
  */
 package ec.tss.tsproviders.utils;
 
-import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import ec.tstoolkit.timeseries.simplets.TsPeriod;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
-import static org.junit.Assert.*;
+import static java.util.Locale.*;
+import java.util.function.BiConsumer;
+import static org.assertj.core.api.Assertions.*;
+import org.assertj.core.util.DateUtil;
 import org.junit.Test;
+import static ec.tss.tsproviders.utils.DataFormat.of;
 
 /**
  *
@@ -33,96 +35,102 @@ import org.junit.Test;
  */
 public class DataFormatTest {
 
-    static final double VALUE = 1234.5d;
-    static final Date PERIOD = new TsPeriod(TsFrequency.Monthly, 2000, 0).firstday().getTime();
-
-    private void assertEquivalent(Date value, DataFormat df, DateFormat r) throws ParseException {
-        DateFormat l = df.newDateFormat();
-        assertEquals(value, l.parse(r.format(value)));
-        assertEquals(value, r.parse(l.format(value)));
-    }
-
     @Test
-    public void testNewNumberFormat() throws ParseException {
+    public void testFactories() {
+        assertThat(of(null, null, null))
+                .extracting(DataFormat::getLocale, DataFormat::getDatePattern, DataFormat::getNumberPattern)
+                .containsExactly(null, "", "");
 
-        NumberFormat f1 = new DataFormat(Locale.FRANCE, null, null).newNumberFormat();
-        assertEquals(VALUE, f1.parse("1234,5").doubleValue(), 0);
-        // '\u00a0' -> non-breaking space
-        assertEquals("1\u00a0234,5", f1.format(VALUE));
+        assertThat(of(FRENCH, null, null))
+                .extracting(DataFormat::getLocale, DataFormat::getDatePattern, DataFormat::getNumberPattern)
+                .containsExactly(FRENCH, "", "");
 
-        NumberFormat f2 = new DataFormat(Locale.US, null, null).newNumberFormat();
-        assertEquals(VALUE, f2.parse("1,234.5").doubleValue(), 0);
-        assertEquals("1,234.5", f2.format(VALUE));
+        assertThat(of(null, "yyyy", null))
+                .extracting(DataFormat::getLocale, DataFormat::getDatePattern, DataFormat::getNumberPattern)
+                .containsExactly(null, "yyyy", "");
 
-        NumberFormat f3 = new DataFormat(Locale.FRANCE, null, "#0.00").newNumberFormat();
-        assertEquals("1234,50", f3.format(VALUE));
-
-        NumberFormat f4 = new DataFormat(Locale.US, null, "#0.00 €").newNumberFormat();
-        assertEquals(VALUE, f4.parse("1234.50 €"));
-        assertEquals("1234.50 €", f4.format(VALUE));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testNewNumberFormat2() {
-        new DataFormat(Locale.US, null, ",.,.,.").newNumberFormat();
-    }
-
-    @Test
-    public void testNewDateFormat() throws ParseException {
-        DateFormat f1 = new DataFormat(Locale.FRANCE, "yyyy-MMM", null).newDateFormat();
-        assertEquals("2000-janv.", f1.format(PERIOD));
-        assertEquals(PERIOD, f1.parse("2000-janv."));
-
-        assertEquivalent(PERIOD, new DataFormat(Locale.FRANCE, "yyyy-MMM", null), new SimpleDateFormat("yyyy-MMM", Locale.FRANCE));
-        assertEquivalent(PERIOD, new DataFormat(null, "yyyy-MMM", null), new SimpleDateFormat("yyyy-MMM"));
-        assertEquivalent(PERIOD, new DataFormat(Locale.FRANCE, null, null), SimpleDateFormat.getDateInstance(DateFormat.DEFAULT, Locale.FRANCE));
-        assertEquivalent(PERIOD, new DataFormat(null, null, null), SimpleDateFormat.getDateInstance());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testNewDateFormat2() throws ParseException {
-        new DataFormat(Locale.FRENCH, "c", null).newDateFormat();
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testNewDateFormat3() throws ParseException {
-        new DataFormat(null, "c", null).newDateFormat();
+        assertThat(of(null, null, "#0.00"))
+                .extracting(DataFormat::getLocale, DataFormat::getDatePattern, DataFormat::getNumberPattern)
+                .containsExactly(null, "", "#0.00");
     }
 
     @Test
     public void testEquals() {
-        assertEquals(new DataFormat(null, null, null), new DataFormat(null, null, null));
-        assertEquals(new DataFormat(Locale.JAPAN, null, null), new DataFormat(Locale.JAPAN, null, null));
-        assertNotEquals(new DataFormat(Locale.JAPAN, null, null), new DataFormat(Locale.FRANCE, null, null));
-        assertEquals(new DataFormat(Locale.JAPAN, "MMMdd", "#"), new DataFormat(Locale.JAPAN, "MMMdd", "#"));
-        assertNotEquals(new DataFormat(Locale.JAPAN, "MMMdd", "#"), new DataFormat(Locale.FRANCE, null, null));
+        assertThat(of(null, null, null)).isEqualTo(of(null, null, null));
+        assertThat(of(JAPAN, null, null))
+                .isEqualTo(of(JAPAN, null, null))
+                .isNotEqualTo(of(null, null, null))
+                .isNotEqualTo(of(FRANCE, null, null));
+        assertThat(of(JAPAN, "MMMdd", "#"))
+                .isEqualTo(of(JAPAN, "MMMdd", "#"))
+                .isNotEqualTo(of(null, null, null))
+                .isNotEqualTo(of(FRANCE, "MMMdd", "#"));
     }
 
     @Test
-    public void testToLocale() {
-        Locale locale;
-        locale = DataFormat.toLocale("fr");
-        assertEquals("fr", locale.getLanguage());
-        locale = DataFormat.toLocale("fr_BE");
-        assertEquals("fr", locale.getLanguage());
-        locale = DataFormat.toLocale("fr_BE_WIN");
-        assertEquals("fr", locale.getLanguage());
-        assertEquals("BE", locale.getCountry());
-        assertEquals("WIN", locale.getVariant());
+    public void testNewNumberFormat() throws ParseException {
+        assertThatIllegalArgumentException().isThrownBy(() -> of(FRENCH, null, ",.,.,.").newNumberFormat());
+        assertThatIllegalArgumentException().isThrownBy(() -> of(null, null, ",.,.,.").newNumberFormat());
+
+        double value = 1234.5d;
+
+        NumberFormat f1 = of(FRANCE, null, null).newNumberFormat();
+        assertThat(f1.parse("1234,5")).isEqualTo(value);
+        assertThat(f1.format(value)).isEqualTo("1" + getGroupingSeparator(f1) + "234,5");
+
+        NumberFormat f2 = of(US, null, null).newNumberFormat();
+        assertThat(f2.parse("1,234.5")).isEqualTo(value);
+        assertThat(f2.format(value)).isEqualTo("1,234.5");
+
+        NumberFormat f3 = of(FRANCE, null, "#0.00").newNumberFormat();
+        assertThat(f3.parse("1234,50")).isEqualTo(value);
+        assertThat(f3.format(value)).isEqualTo("1234,50");
+
+        NumberFormat f4 = of(US, null, "#0.00 €").newNumberFormat();
+        assertThat(f4.parse("1234.50 €")).isEqualTo(value);
+        assertThat(f4.format(value)).isEqualTo("1234.50 €");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testToLocale2() {
-        DataFormat.toLocale("helloworld");
+    @Test
+    public void testNewDateFormat() throws ParseException {
+        assertThatIllegalArgumentException().isThrownBy(() -> of(FRENCH, "c", null).newDateFormat());
+        assertThatIllegalArgumentException().isThrownBy(() -> of(null, "c", null).newDateFormat());
+
+        Date date = DateUtil.parse("2000-01-01");
+
+        DateFormat f1 = of(FRANCE, null, null).newDateFormat();
+        assertThat(f1.format(date)).isEqualTo("1 janv. 2000");
+        assertThat(f1.parse("1 janv. 2000")).isEqualTo(date);
+
+        DateFormat f2 = of(US, null, null).newDateFormat();
+        assertThat(f2.format(date)).isEqualTo("Jan 1, 2000");
+        assertThat(f2.parse("Jan 1, 2000")).isEqualTo(date);
+
+        DateFormat f3 = of(FRANCE, "yyyy-MMM", null).newDateFormat();
+        assertThat(f3.format(date)).isEqualTo("2000-janv.");
+        assertThat(f3.parse("2000-janv.")).isEqualTo(date);
+
+        DateFormat f4 = of(US, "yyyy-MMM", null).newDateFormat();
+        assertThat(f4.format(date)).isEqualTo("2000-Jan");
+        assertThat(f4.parse("2000-Jan")).isEqualTo(date);
+
+        BiConsumer<DataFormat, DateFormat> equivalence = (o, r) -> {
+            try {
+                DateFormat l = o.newDateFormat();
+                assertThat(l.parseObject(r.format(date))).isEqualTo(date);
+                assertThat(r.parseObject(l.format(date))).isEqualTo(date);
+            } catch (ParseException ex) {
+                throw new RuntimeException(ex);
+            }
+        };
+
+        equivalence.accept(of(FRANCE, "yyyy-MMM", null), new SimpleDateFormat("yyyy-MMM", FRANCE));
+        equivalence.accept(of(null, "yyyy-MMM", null), new SimpleDateFormat("yyyy-MMM"));
+        equivalence.accept(of(FRANCE, null, null), SimpleDateFormat.getDateInstance(DateFormat.DEFAULT, FRANCE));
+        equivalence.accept(of(null, null, null), SimpleDateFormat.getDateInstance());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testToLocale3() {
-        DataFormat.toLocale("fr_");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testToLocale4() {
-        DataFormat.toLocale("fr_BE_");
+    private static char getGroupingSeparator(NumberFormat format) {
+        return (((DecimalFormat) format).getDecimalFormatSymbols()).getGroupingSeparator();
     }
 }

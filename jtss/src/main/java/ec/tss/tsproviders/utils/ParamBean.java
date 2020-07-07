@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.xml.bind.annotation.XmlAttribute;
 
 /**
@@ -37,7 +37,7 @@ public class ParamBean {
     @XmlAttribute(name = "value")
     public String value;
 
-    @Nonnull
+    @NonNull
     public static ImmutableSortedMap<String, String> toSortedMap(@Nullable ParamBean[] params) {
         if (params == null || params.length == 0) {
             return ImmutableSortedMap.of();
@@ -50,7 +50,7 @@ public class ParamBean {
     }
 
     @Nullable
-    public static ParamBean[] fromSortedMap(@Nonnull SortedMap<String, String> sortedMap) {
+    public static ParamBean[] fromSortedMap(@NonNull SortedMap<String, String> sortedMap) {
         if (sortedMap.isEmpty()) {
             return null;
         }
@@ -65,7 +65,7 @@ public class ParamBean {
         return result;
     }
 
-    @Nonnull
+    @NonNull
     public static Properties toProperties(@Nullable ParamBean[] params) {
         Properties result = new Properties();
         if (params != null) {
@@ -77,7 +77,7 @@ public class ParamBean {
     }
 
     @Nullable
-    public static ParamBean[] fromProperties(@Nonnull Properties properties) {
+    public static ParamBean[] fromProperties(@NonNull Properties properties) {
         SortedMap<String, String> result = new TreeMap<>();
         properties.stringPropertyNames().forEach((o) -> {
             result.put(o, properties.getProperty(o));

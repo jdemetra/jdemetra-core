@@ -27,8 +27,8 @@ import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * A thread-safe converter that converts objects from/to byte arrays. Note that
@@ -49,7 +49,7 @@ public abstract class ByteArrayConverter {
      *
      * @return a non-null converter
      */
-    @Nonnull
+    @NonNull
     public static final ByteArrayConverter getInstance() {
         return INSTANCE.get();
     }
@@ -61,13 +61,13 @@ public abstract class ByteArrayConverter {
      * @see #getInstance()
      * @throws IllegalArgumentException
      */
-    public static final void setInstance(@Nonnull ByteArrayConverter s) throws IllegalArgumentException {
+    public static final void setInstance(@NonNull ByteArrayConverter s) throws IllegalArgumentException {
         INSTANCE.set(check(Objects.requireNonNull(s)));
     }
 
-    @Nonnull
+    @NonNull
     @NewObject
-    public byte[] fromDoubleArray(@Nonnull double[] input) {
+    public byte[] fromDoubleArray(@NonNull double[] input) {
         int pos = 0;
         byte[] result = new byte[input.length * 8];
         for (int i = 0; i < input.length; i++) {
@@ -84,9 +84,9 @@ public abstract class ByteArrayConverter {
         return result;
     }
 
-    @Nonnull
+    @NonNull
     @NewObject
-    public double[] toDoubleArray(@Nonnull byte[] input) {
+    public double[] toDoubleArray(@NonNull byte[] input) {
         int pos = 0;
         double[] result = new double[input.length / 8];
         for (int i = 0; i < result.length; i++) {
@@ -108,7 +108,7 @@ public abstract class ByteArrayConverter {
      *
      * @return a non-null converter
      */
-    @Nonnull
+    @NonNull
     public static final ByteArrayConverter getDefault() {
         return DefaultConverter.INSTANCE;
     }
@@ -121,7 +121,7 @@ public abstract class ByteArrayConverter {
      * @return a non-null converter
      * @throws IllegalArgumentException if the compression level is invalid
      */
-    @Nonnull
+    @NonNull
     public static final ByteArrayConverter getDeflate(int level, boolean nowrap) throws IllegalArgumentException {
         return new DeflateConverter(level, nowrap);
     }

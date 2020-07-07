@@ -25,8 +25,8 @@ import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
+import nbbrd.io.xml.Xml;
+import nbbrd.io.xml.bind.Jaxb;
 
 /**
  *
@@ -40,7 +40,7 @@ final class GenericIndexer implements Indexer {
             return true;
         } catch (FileSystemException ex) {
             throw ex;
-        } catch (IOException | JAXBException ex) {
+        } catch (IOException ex) {
             return false;
         }
     }
@@ -64,20 +64,12 @@ final class GenericIndexer implements Indexer {
 
     @Override
     public Index loadIndex() throws IOException {
-        try {
-            return xmlToIndex(unmarshalIndex(file), rootFolder);
-        } catch (JAXBException ex) {
-            throw new IOException(ex);
-        }
+        return xmlToIndex(unmarshalIndex(file), rootFolder);
     }
 
     @Override
     public void storeIndex(Index index) throws IOException {
-        try {
-            marshalIndex(file, indexToXml(index, rootFolder));
-        } catch (JAXBException ex) {
-            throw new IOException(ex);
-        }
+        marshalIndex(file, indexToXml(index, rootFolder));
     }
 
     @Override
@@ -121,15 +113,25 @@ final class GenericIndexer implements Indexer {
                 .toArray(XmlGenericWorkspaceItem[]::new);
     }
 
-    private static XmlGenericWorkspace unmarshalIndex(Path file) throws JAXBException, IOException {
-        return (XmlGenericWorkspace) JaxbUtil.unmarshal(file, XML_GENERIC_WS_CONTEXT);
+    private static final Xml.Parser<XmlGenericWorkspace> PARSER;
+    private static final Xml.Formatter<XmlGenericWorkspace> FORMATTER;
+
+    static {
+        try {
+            PARSER = Jaxb.Parser.of(XmlGenericWorkspace.class);
+            FORMATTER = Jaxb.Formatter.of(XmlGenericWorkspace.class).withFormatted(true);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
-    private static void marshalIndex(Path file, XmlGenericWorkspace jaxbElement) throws JAXBException, IOException {
-        JaxbUtil.marshal(file, XML_GENERIC_WS_CONTEXT, jaxbElement, true);
+    private static XmlGenericWorkspace unmarshalIndex(Path file) throws IOException {
+        return PARSER.parsePath(file);
     }
 
-    private static final JAXBContext XML_GENERIC_WS_CONTEXT = JaxbUtil.createContext(XmlGenericWorkspace.class);
+    private static void marshalIndex(Path file, XmlGenericWorkspace jaxbElement) throws IOException {
+        FORMATTER.formatPath(jaxbElement, file);
+    }
 
     private static void pushCalendar(Path rootFolder, Index.Builder index) {
         Path calFile = rootFolder.resolve("Calendars").resolve("Calendars.xml");

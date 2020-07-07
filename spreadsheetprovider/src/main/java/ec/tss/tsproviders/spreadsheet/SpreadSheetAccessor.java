@@ -24,8 +24,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ServiceLoader;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -53,8 +53,7 @@ public final class SpreadSheetAccessor implements FileFilter {
         this.factories = factories;
     }
 
-    @Nullable
-    private Book.Factory getFactoryByFile(@Nonnull File file) {
+    private Book.@Nullable Factory getFactoryByFile(@NonNull File file) {
         for (Book.Factory o : getFactories()) {
             if (o.canLoad() && o.accept(file)) {
                 return o;
@@ -68,8 +67,8 @@ public final class SpreadSheetAccessor implements FileFilter {
         return getFactoryByFile(file) != null;
     }
 
-    @Nonnull
-    public SpreadSheetSource load(@Nonnull File file, @Nonnull SpreadSheetBean bean) throws IOException {
+    @NonNull
+    public SpreadSheetSource load(@NonNull File file, @NonNull SpreadSheetBean bean) throws IOException {
         Book.Factory factory = getFactoryByFile(file);
         if (factory != null) {
             try (Book book = factory.load(file)) {

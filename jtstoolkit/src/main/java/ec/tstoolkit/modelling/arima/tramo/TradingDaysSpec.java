@@ -198,6 +198,7 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
             lp_ = false;
             auto_ = AutoMethod.Unused;
             pftd_ = DEF_PFTD;
+            w_ = 0;
         }
     }
 
@@ -220,6 +221,7 @@ public class TradingDaysSpec implements Cloneable, InformationSetSerializable {
     public void setRegressionTestType(RegressionTestType value) {
         test_ = value;
     }
+    
 
     public boolean isDefault() {
 
