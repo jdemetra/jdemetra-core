@@ -21,7 +21,7 @@ import demetra.design.Development;
 import jdplus.dstats.Chi2;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatException;
-import jdplus.stats.DescriptiveStatistics;
+import jdplus.stats.samples.Moments;
 
 /**
  *
@@ -30,50 +30,53 @@ import jdplus.stats.DescriptiveStatistics;
 @Development(status = Development.Status.Alpha)
 @BuilderPattern(StatisticalTest.class)
 public class JarqueBera {
-    
+
     private int k;
     private boolean corrected;
-    
-    private final DescriptiveStatistics stats;
-    
+    private double skewness, kurtosis;
+
+    private final DoubleSeq x;
+
     public JarqueBera(DoubleSeq data) {
-        this.stats = DescriptiveStatistics.of(data);
-    }
-    
-    public JarqueBera(DescriptiveStatistics stats) {
-        this.stats = stats;
+        this.x = data;
     }
 
     /**
      *
-     * @param k Correction of the degree of freedom. For instance, number of regression variables
+     * @param k Correction of the degree of freedom. For instance, number of
+     * regression variables
      * if the data correspond to the residuals of a linear model.
-     * @return 
+     * @return
      */
     public JarqueBera degreeOfFreedomCorrection(int k) {
         this.k = k;
         return this;
     }
-    
+
     public JarqueBera correctionForSample() {
         corrected = true;
         return this;
     }
-    
-    
+
     public StatisticalTest build() {
-        double n = stats.getObservationsCount()-k;
-        if (n<4)
+        double n = x.length();
+        if (n < 4) {
             throw new StatException("Invalid test: not enough observations");
-        double s = stats.getSkewness();
-        double k = stats.getKurtosis() - 3.0;
-        if (corrected) {
-            s *= Math.sqrt(n * (n - 1)) / (n - 2);
-            k = (n - 1) / ((n - 2) * (n - 3)) * ((n + 1) * k + 6);
         }
-        double val = n * (s * s / 6 + k * k / 24);
+        double m = Moments.mean(x), v = Moments.variance(x, m, corrected);
+        skewness = Moments.skewness(x, m, v, corrected);
+        kurtosis = Moments.excessKurtosis(x, m, v, corrected);
+        double val = (n - k) * (skewness * skewness / 6 + (kurtosis) * (kurtosis) / 24);
         Chi2 chi = new Chi2(2);
         return new StatisticalTest(chi, val, TestType.Upper, true);
     }
-    
+
+    public double getSkewness() {
+        return skewness;
+    }
+
+    public double getKurtosis() {
+        return kurtosis;
+    }
+
 }

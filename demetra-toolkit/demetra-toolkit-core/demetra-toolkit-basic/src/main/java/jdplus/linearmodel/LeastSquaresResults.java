@@ -286,7 +286,7 @@ public final class LeastSquaresResults {
 
     public StatisticalTest Khi2Test() {
         Chi2 chi = new Chi2(mean ? nx - 1 : nx);
-        return new StatisticalTest(chi, getRegressionSumOfSquares() / getResidualMeanSquare(), TestType.Upper, true);
+        return new StatisticalTest(chi, n*getR2(), TestType.Upper, true);
     }
 
     /**

@@ -27,6 +27,7 @@ import jdplus.linearmodel.HeteroskedasticityTest;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
+import jdplus.stats.tests.Arch;
 import jdplus.stats.tests.JarqueBera;
 import jdplus.stats.tests.StatisticalTest;
 
@@ -38,7 +39,12 @@ import jdplus.stats.tests.StatisticalTest;
 public class OlsTestComputer {
 
     public OlsTest of(DoubleSeq vintage, DoubleSeq preliminary) {
+        // Skip meaningless models
+        double dot=vintage.dot(preliminary);
         OlsTest.Builder builder = OlsTest.builder();
+        if (dot == 0){
+            return null;
+        }
         LinearModel lm = LinearModel.builder()
                 .y(vintage)
                 .meanCorrection(true)
@@ -47,27 +53,42 @@ public class OlsTestComputer {
         try {
             LeastSquaresResults lsr = Ols.compute(lm);
             DoubleSeq coef = lsr.getCoefficients();
-            StatisticalTest t0 = lsr.Ttest(0), t1=lsr.Ttest(1);
+            StatisticalTest t0 = lsr.Ttest(0), t1 = lsr.Ttest(1);
             DataBlock diag = lsr.covariance().diagonal();
-            
-            StatisticalTest bp = HeteroskedasticityTest.builder(lsr)
+
+            HeteroskedasticityTest bp = HeteroskedasticityTest.builder(lsr)
                     .type(HeteroskedasticityTest.Type.BreuschPagan)
-                    .build();
-            StatisticalTest w = HeteroskedasticityTest.builder(lsr)
+                    .fisherTest(true);
+
+            StatisticalTest bptest = bp.build();
+
+            HeteroskedasticityTest w = HeteroskedasticityTest.builder(lsr)
                     .type(HeteroskedasticityTest.Type.White)
-                    .build();
+                    .fisherTest(false);
+
+            StatisticalTest wtest = w.build();
+
+            JarqueBera jb = new JarqueBera(lsr.residuals())
+                    .correctionForSample()
+                    .degreeOfFreedomCorrection(1);
+            StatisticalTest jbtest=jb.build();
             
-            StatisticalTest jb = new JarqueBera(lsr.residuals())
-                    .degreeOfFreedomCorrection(1)
-                    .build();
-            
+            Arch.Lm arch = Arch.lm(lsr.residuals());
+            StatisticalTest artest = arch.build();
+
             RegressionTests tests = RegressionTests.builder()
-                    .jarqueBera(new TestResult(jb.getValue(), jb.getPValue(), "Jarque-Bera"))
-                    .breuschPagan(new TestResult(bp.getValue(), bp.getPValue(), "Breusch-Pagan"))
-                    .white(new TestResult(w.getValue(), w.getPValue(), "White"))
-                    .build();
-            
+                    .jarqueBera(new TestResult(jbtest.getValue(), jbtest.getPValue(), "Jarque-Bera"))
+                    .kurtosis(jb.getKurtosis())
+                    .skewness(jb.getSkewness())
+                    .breuschPagan(new TestResult(bptest.getValue(), bptest.getPValue(), "Breusch-Pagan"))
+                    .white(new TestResult(wtest.getValue(), wtest.getPValue(), "White"))
+                    .bpr2(bp.getLeastSquaresResultsOnSquaredResiduals().getR2())
+                    .wr2(w.getLeastSquaresResultsOnSquaredResiduals().getR2())
+                    .arch(new TestResult(artest.getValue(), artest.getPValue(), "Arch"))
+                   .build();
+
             builder.R2(lsr.getR2())
+                    .F(lsr.Ftest().getValue())
                     .n(lm.getObservationsCount())
                     .intercept(new Coefficient(coef.get(0), Math.sqrt(diag.get(0)), t0.getValue(), t0.getPValue()))
                     .slope(new Coefficient(coef.get(1), Math.sqrt(diag.get(1)), t1.getValue(), t1.getPValue()))

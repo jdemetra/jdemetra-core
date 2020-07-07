@@ -43,6 +43,7 @@ public class HeteroskedasticityTest {
     private boolean fisher = false;
     private boolean studentized = false;
     private final LeastSquaresResults lsr;
+    private LeastSquaresResults lsr2;
 
     private HeteroskedasticityTest(LeastSquaresResults lsr) {
         this.lsr = lsr;
@@ -83,14 +84,16 @@ public class HeteroskedasticityTest {
                 }
             }
         }
-        LeastSquaresResults lsr2 = Ols.compute(builder.build());
+        lsr2 = Ols.compute(builder.build());
         if (fisher) {
             return lsr2.Ftest();
         } else {
-//                double r2 = lsr2.getR2();
-//                return new StatisticalTest(new Chi2(m - 1), n * r2, TestType.Upper, true);
             return lsr2.Khi2Test();
         }
+    }
+    
+    public LeastSquaresResults getLeastSquaresResultsOnSquaredResiduals(){
+        return lsr2;
     }
 
 }

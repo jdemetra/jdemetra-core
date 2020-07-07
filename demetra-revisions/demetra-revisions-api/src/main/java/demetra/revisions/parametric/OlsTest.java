@@ -25,7 +25,7 @@ package demetra.revisions.parametric;
 @lombok.Builder(builderClassName="Builder")
 public class OlsTest {
     int n;
-    double R2;
+    double R2, F;
     Coefficient intercept;
     Coefficient slope;
     RegressionTests diagnostics;
