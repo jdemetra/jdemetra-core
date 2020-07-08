@@ -10,6 +10,8 @@ import java.util.Arrays;
 import jdplus.filters.FSTFilter.SmoothnessCriterion;
 import jdplus.math.linearfilters.FiniteFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.UnitRoots;
 import org.junit.Test;
@@ -31,7 +33,7 @@ public class FSTFilterTest {
                     .nlags(4)
                     .nleads(4)
                     .build();
-            FSTFilter.Results rslt = ff.make(.1 * i, 0);
+            FSTFilter.Results rslt = ff.make(.1 * i, 0, false);
             System.out.println(DoubleSeq.of(rslt.getFilter().weightsToArray()));
         }
     }
@@ -39,15 +41,15 @@ public class FSTFilterTest {
     public static void main(String[] args) {
         daf(11);
     }
-    
-    public static void daf(int h){
-        for (int i = 0; i <=h; ++i) {
+
+    public static void daf(int h) {
+        for (int i = 0; i <= h; ++i) {
             FSTFilter ff = FSTFilter.builder()
                     .nlags(h)
                     .nleads(i)
                     .polynomialPreservation(2)
                     .build();
-            FSTFilter.Results rslt = ff.make(1, 0);
+            FSTFilter.Results rslt = ff.make(1, 0, false);
             FiniteFilter filter = rslt.getFilter();
             System.out.println(DoubleSeq.of(filter.weightsToArray()));
         }
@@ -63,4 +65,17 @@ public class FSTFilterTest {
             assertTrue(Arrays.equals(s, SmoothnessCriterion.weights(degree)));
         }
     }
+
+//    @Test
+//    public void testMatrix() {
+//        Polynomial D = UnitRoots.D(1, 3);
+//        Matrix M=Matrix.square(13);
+//        for (int i=0; i<4; ++i){
+//            M.subDiagonal(-i).set(D.get(i));
+//        }
+//        Matrix S1=SymmetricMatrix.XtX(M);
+//        System.out.println(S1);
+//        Matrix S2=SymmetricMatrix.XtX(M.extract(3, 10, 0, 13));
+//        System.out.println(S2);
+//    }
 }
