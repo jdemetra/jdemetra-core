@@ -15,7 +15,6 @@ import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.Holiday;
 import jdplus.timeseries.calendars.HolidaysUtility;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

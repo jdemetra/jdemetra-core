@@ -5,16 +5,12 @@
  */
 package demetra.highfreq.r;
 
-import demetra.data.MatrixSerializer;
+import demetra.data.DoubleSeq;
 import demetra.data.WeeklyData;
-import java.io.File;
-import java.io.IOException;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.data.DoubleSeq;
 import demetra.highfreq.FractionalAirlineDecomposition;
 import demetra.highfreq.FractionalAirlineEstimation;
-import demetra.math.matrices.MatrixType;
 
 /**
  *
@@ -27,7 +23,14 @@ public class FractionalAirlineProcessorTest {
 
     @Test
     public void testWeeklyDecomp() {
-        FractionalAirlineDecomposition rslt = FractionalAirlineProcessor.decompose(WeeklyData.US_CLAIMS2, 59, true, false);
+        DoubleSeq y=DoubleSeq.of(WeeklyData.US_CLAIMS2).log();
+        FractionalAirlineDecomposition rslt = FractionalAirlineProcessor.decompose(y.toArray(), 365.25/7, false, false, true);
+//        System.out.println(DoubleSeq.of(rslt.getT()));
+//        System.out.println(DoubleSeq.of(rslt.getS()));
+//        System.out.println(DoubleSeq.of(rslt.getI()));
+//        System.out.println(DoubleSeq.of(rslt.getStdeT()));
+//        System.out.println(DoubleSeq.of(rslt.getStdeS()));
+//        System.out.println(DoubleSeq.of(rslt.getStdeI()));
         assertTrue(null != rslt.getData("sa", double[].class));
     }
     

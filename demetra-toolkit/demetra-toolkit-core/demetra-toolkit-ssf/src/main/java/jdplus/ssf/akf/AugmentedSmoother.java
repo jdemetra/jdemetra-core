@@ -305,7 +305,7 @@ public class AugmentedSmoother {
         }
     }
 
-    public IAugmentedFilteringResults getFilteringResults() {
+    public DefaultAugmentedFilteringResults getFilteringResults() {
         return frslts;
     }
 }

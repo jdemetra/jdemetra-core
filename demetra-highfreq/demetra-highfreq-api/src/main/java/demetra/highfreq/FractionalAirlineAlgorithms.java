@@ -33,11 +33,12 @@ public class FractionalAirlineAlgorithms {
      *
      * @param s Time series being decomposed
      * @param airline
+     * @param var True if the covariance matrices of the components are computed
      *
      * @return
      */
-    public FractionalAirlineDecomposition process(double[] s, FractionalAirline airline) {
-        return PROCESSOR.get().process(s, airline);
+    public FractionalAirlineDecomposition process(double[] s, FractionalAirline airline, boolean var) {
+        return PROCESSOR.get().process(s, airline, var);
     }
 
     public FractionalAirlineEstimation process(FractionalAirlineSpec spec) {
@@ -48,7 +49,7 @@ public class FractionalAirlineAlgorithms {
     @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
     public interface Processor {
 
-        FractionalAirlineDecomposition process(double[] s, FractionalAirline airline);
+        FractionalAirlineDecomposition process(double[] s, FractionalAirline airline, boolean var);
 
         FractionalAirlineEstimation process(FractionalAirlineSpec spec);
     }

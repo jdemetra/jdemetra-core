@@ -72,13 +72,15 @@ public class AkfToolkit {
         return frslts;
     }
 
-    public DefaultSmoothingResults smooth(ISsf ssf, ISsfData data, boolean all) {
+    public DefaultSmoothingResults smooth(ISsf ssf, ISsfData data, boolean all, boolean rescaleVariance) {
         AugmentedSmoother smoother = new AugmentedSmoother();
         smoother.setCalcVariances(all);
         DefaultSmoothingResults sresults = all ? DefaultSmoothingResults.full()
                 : DefaultSmoothingResults.light();
         sresults.prepare(ssf.getStateDim(), 0, data.length());
         if (smoother.process(ssf, data, sresults)) {
+            if (rescaleVariance)
+                sresults.rescaleVariances(var(data.length(), smoother.getFilteringResults()));
             return sresults;
         } else {
             return null;
@@ -88,7 +90,7 @@ public class AkfToolkit {
     public StateStorage smooth(IMultivariateSsf ssf, IMultivariateSsfData data, boolean all, boolean rescaleVariance) {
         ISsf ussf = M2uAdapter.of(ssf);
         ISsfData udata = M2uAdapter.of(data);
-        DefaultSmoothingResults sr = smooth(ussf, udata, all);
+        DefaultSmoothingResults sr = smooth(ussf, udata, all, false);
         StateStorage ss = all ? StateStorage.full(StateInfo.Smoothed) : StateStorage.light(StateInfo.Smoothed);
         int m = data.getVarsCount(), n = data.getObsCount();
         ss.prepare(ussf.getStateDim(), 0, n);
