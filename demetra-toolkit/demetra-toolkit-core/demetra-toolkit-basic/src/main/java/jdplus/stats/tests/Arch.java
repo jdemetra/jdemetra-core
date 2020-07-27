@@ -43,6 +43,7 @@ public class Arch {
 
         private DoubleSeq e2;
         private int nlags = 1;
+        private LeastSquaresResults lsr;
 
         private Lm(DoubleSeq e2) {
             this.e2 = e2;
@@ -65,8 +66,12 @@ public class Arch {
             for (int i = 0; i < nlags; ++i) {
                 builder.addX(e2.extract(i, n));
             }
-            LeastSquaresResults ls = Ols.compute(builder.build());
-            return ls.Khi2Test();
+            lsr = Ols.compute(builder.build());
+            return lsr==null ? null : lsr.Khi2Test();
+        }
+        
+        public LeastSquaresResults getLeastSquaresResults(){
+            return lsr;
         }
     }
 

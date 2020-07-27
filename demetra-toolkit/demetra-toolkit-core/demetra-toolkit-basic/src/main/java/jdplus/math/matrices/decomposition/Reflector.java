@@ -74,7 +74,7 @@ class Reflector {
             double eps = Constants.getEpsilon();
             double safemin = Constants.getSafeMin() / eps;
             int k = 0;
-            if (nrm < safemin) {
+            if (nrm != 0 && nrm < safemin) {
                 double rsafemin = 1 / safemin;
                 do {
                     v.mul(m, rsafemin);
@@ -89,7 +89,8 @@ class Reflector {
             for (int j = 0; j < k; ++j) {
                 nrm *= safemin;
             }
-            beta = nrm / (nrm + x0);
+            // check for var=0 !
+            beta = nrm == 0 ? 0 : nrm / (nrm + x0);
             v.div(m, nrm);
             x0(1 + x0 / nrm);
             alpha = -nrm;

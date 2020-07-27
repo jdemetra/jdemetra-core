@@ -7,6 +7,7 @@ package jdplus.linearmodel;
 
 import demetra.data.DoubleSeq;
 import demetra.eco.EcoException;
+import demetra.math.Constants;
 import jdplus.leastsquares.QRSolution;
 import jdplus.leastsquares.QRSolver;
 import jdplus.math.matrices.Matrix;
@@ -22,6 +23,9 @@ public class OlsComputer implements jdplus.linearmodel.Ols.Processor {
     public LeastSquaresResults compute(LinearModel model) {
         try {
             DoubleSeq y = model.getY();
+            if (y.norm2() < Constants.getEpsilon()) {
+                return null;
+            }
             if (model.getVariablesCount() > 0) {
                 Matrix x = model.variables();
                 QRSolution solution = QRSolver.robustLeastSquares(y, x);
@@ -32,13 +36,13 @@ public class OlsComputer implements jdplus.linearmodel.Ols.Processor {
                         .ssq(solution.getSsqErr())
                         .residuals(solution.getE())
                         .build();
-            }else{
+            } else {
                 return LeastSquaresResults.builder(y, null)
                         .mean(model.isMeanCorrection())
                         .ssq(y.ssq())
                         .residuals(y)
                         .build();
-                
+
             }
         } catch (MatrixException err) {
             throw new EcoException(EcoException.OLS_FAILED);

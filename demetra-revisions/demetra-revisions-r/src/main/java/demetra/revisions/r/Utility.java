@@ -28,6 +28,7 @@ import demetra.revisions.parametric.RevisionAnalysis;
 import demetra.stats.TestResult;
 import java.time.LocalDate;
 import jdplus.math.matrices.Matrix;
+import jdplus.revisions.parametric.BiasComputer;
 import jdplus.revisions.parametric.OlsTestComputer;
 import jdplus.stats.StatUtility;
 
@@ -38,55 +39,77 @@ import jdplus.stats.StatUtility;
 @lombok.experimental.UtilityClass
 public class Utility {
 
-    public double[] theil(MatrixType m) {
-        double[] u = new double[m.getColumnsCount() - 1];
-        DoubleSeq prev = m.column(0);
-        for (int i = 0; i < u.length; ++i) {
-            DoubleSeq cur = m.column(i + 1);
-            u[i] = StatUtility.theilInequalityCoefficient(cur, prev);
-            prev = cur;
+    /**
+     * Theil coefficients computed on the columns of the vintages matrix
+     *
+     * @param vintages Vintages
+     * @param gap Delay between the compared vintages (should be &ge 1)
+     * @return
+     */
+    public double[] theil(MatrixType vintages, int gap) {
+        if (gap < 1) {
+            throw new IllegalArgumentException("gap should be >= 1");
+        }
+        int n = vintages.getColumnsCount() - gap;
+        if (n <= 0) {
+            return null;
+        }
+        double[] u = new double[n];
+        for (int i = 0; i < n; ++i) {
+            u[i] = StatUtility.theilInequalityCoefficient(vintages.column(i + gap), vintages.column(i));
         }
         return u;
     }
 
+    private final int OLS = 16, C = 3;
+
     /**
-     * v(t)=a+b*v(t-1)
+     * v(t)=a+b*v(t-gap)
      *
-     * @param m
+     * @param vintages Vintages
+     * @param gap Delay between the compared vintages (should be &ge 1)
      * @return
      */
-    public MatrixType slopeAndDrift(MatrixType m) {
-        int n = m.getColumnsCount();
-        DoubleSeq prev = m.column(0);
-        Matrix rslt = Matrix.make(n - 1, 22);
+    public MatrixType slopeAndDrift(MatrixType vintages, int gap) {
+        if (gap < 1) {
+            throw new IllegalArgumentException("gap should be >= 1");
+        }
+        int n = vintages.getColumnsCount() - gap;
+        if (n <= 0) {
+            return null;
+        }
+        Matrix rslt = Matrix.make(n, OLS + 2 * C);
 
-        for (int i = 1; i < n; ++i) {
-            DoubleSeq cur = m.column(i);
-            DoubleSeqCursor.OnMutable cursor = rslt.row(i - 1).cursor();
-            OlsTest test = OlsTestComputer.of(cur, prev);
+        for (int i = 0; i < n; ++i) {
+            DoubleSeqCursor.OnMutable cursor = rslt.row(i).cursor();
+            OlsTest test = OlsTestComputer.of(vintages.column(i + gap), vintages.column(i));
             olsInformation(test, cursor);
-            prev = cur;
         }
         return rslt;
     }
 
     /**
-     * rev(t)=a+b*v(t-1)
+     * rev(t)=a+b*v(t-gap)
      *
-     * @param m
+     * @param vintages Vintages
+     * @param gap Delay between the compared vintages (should be &ge 1)
      * @return
      */
-    public MatrixType efficiencyModel1(MatrixType m) {
-        int n = m.getColumnsCount();
-        DoubleSeq prev = m.column(0);
-        Matrix rslt = Matrix.make(n - 1, 22);
+    public MatrixType efficiencyModel1(MatrixType vintages, int gap) {
+        if (gap < 1) {
+            throw new IllegalArgumentException("gap should be >= 1");
+        }
+        int n = vintages.getColumnsCount() - gap;
+        if (n <= 0) {
+            return null;
+        }
+        Matrix rslt = Matrix.make(n, OLS + 2 * C);
 
-        for (int i = 1; i < n; ++i) {
-            DoubleSeq cur = m.column(i);
-            DoubleSeqCursor.OnMutable cursor = rslt.row(i - 1).cursor();
+        for (int i = 0; i < n; ++i) {
+            DoubleSeq prev = vintages.column(i), cur = vintages.column(i + gap);
+            DoubleSeqCursor.OnMutable cursor = rslt.row(i).cursor();
             OlsTest test = OlsTestComputer.of(DoublesMath.subtract(cur, prev), prev);
             olsInformation(test, cursor);
-            prev = cur;
         }
         return rslt;
     }
@@ -94,20 +117,76 @@ public class Utility {
     /**
      * rev(t)=a+b*rev(t-1)
      *
-     * @param m
+     * @param vintages Vintages
+     * @param gap Delay between the vintages used to compute the revisions
+     * (should be &ge 1)
      * @return
      */
-    public MatrixType efficiencyModel2(MatrixType m) {
-        int n = m.getColumnsCount();
-        DoubleSeq prev0 = m.column(0), prev1 = m.column(1);
-        Matrix rslt = Matrix.make(n - 2, 22);
-        for (int i = 2; i < n; ++i) {
-            DoubleSeq cur = m.column(i);
-            DoubleSeqCursor.OnMutable cursor = rslt.row(i - 1).cursor();
-            OlsTest test = OlsTestComputer.of(DoublesMath.subtract(cur, prev1), DoublesMath.subtract(prev1, prev0));
-            olsInformation(test, cursor);
-            prev0 = prev1;
-            prev1 = cur;
+    public MatrixType efficiencyModel2(MatrixType vintages, int gap) {
+        int n = vintages.getColumnsCount() - gap - 1;
+        Matrix rslt = Matrix.make(n, OLS + 2 * C);
+        for (int i = 0; i < n; ++i) {
+            DoubleSeqCursor.OnMutable cursor = rslt.row(i).cursor();
+            try {
+                OlsTest test = OlsTestComputer.of(DoublesMath.subtract(vintages.column(i + gap + 1), vintages.column(i + 1)),
+                        DoublesMath.subtract(vintages.column(i + gap), vintages.column(i)));
+                olsInformation(test, cursor);
+            } catch (Exception err) {
+            }
+        }
+        return rslt;
+    }
+
+    /**
+     * rev(t)=a+b(1)*rev(t-1)+b(2)*rev(t-2)+...+b(nrevs)*rev(t-nrevs)
+     *
+     * @param revs
+     * @param nrevs
+     * @return
+     */
+    public MatrixType orthogonallyModel1(MatrixType revs, int nrevs) {
+        int n = revs.getColumnsCount();
+        if (nrevs >= n) {
+            return null;
+        }
+        Matrix rslt = Matrix.make(n - nrevs, OLS + C * (1 + nrevs));
+        DoubleSeq[] x = new DoubleSeq[nrevs];
+        for (int i = nrevs; i < n; ++i) {
+            for (int j = 0; j < nrevs; ++j) {
+                x[j] = revs.column(i - j - 1);
+            }
+            DoubleSeqCursor.OnMutable cursor = rslt.row(i - nrevs).cursor();
+            try {
+                OlsTest test = OlsTestComputer.of(revs.column(i), x);
+                olsInformation(test, cursor);
+            } catch (Exception err) {
+            }
+        }
+        return rslt;
+    }
+
+    /**
+     *
+     * @param revs
+     * @param ref
+     * @return
+     */
+    public MatrixType orthogonallyModel2(MatrixType revs, int ref) {
+        int n = revs.getColumnsCount();
+        if (ref >= n || ref < 1) {
+            return null;
+        }
+        Matrix rslt = Matrix.make(n - 1, OLS + C * 2);
+        DoubleSeq cref = revs.column(ref - 1);
+        for (int i = 0, j = 0; i < n; ++i) {
+            if (i != ref-1) {
+                DoubleSeqCursor.OnMutable cursor = rslt.row(j++).cursor();
+                try{
+                OlsTest test = OlsTestComputer.of(revs.column(i), cref);
+                olsInformation(test, cursor);
+            } catch (Exception err) {
+            }
+            }
         }
         return rslt;
     }
@@ -119,40 +198,33 @@ public class Utility {
         return analysis.getRevisions().get(k - 1).getTheilCoefficient();
     }
 
-    public double[] olsInformation(RegressionBasedAnalysis<LocalDate> analysis, int k) {
-        if (k > analysis.getRevisions().size()) {
-            return null;
+    private static final int BIAS = 9;
+
+    /**
+     * Bias computed on a matrix of revisions (each column corresponds to a
+     * revision)
+     *
+     * @param revs The revisions
+     * @return
+     */
+    public MatrixType bias(MatrixType revs) {
+        int n = revs.getColumnsCount();
+        Matrix rslt = Matrix.make(n, BIAS);
+
+        for (int i = 0; i < n; ++i) {
+            DoubleSeq cur = revs.column(i);
+            DoubleSeqCursor.OnMutable cursor = rslt.row(i).cursor();
+            Bias bias = BiasComputer.of(cur);
+            biasInformation(bias, cursor);
         }
-        RevisionAnalysis<LocalDate> cur = analysis.getRevisions().get(k - 1);
-        if (cur == null) {
-            return null;
-        }
-        OlsTest reg = cur.getRegression();
-        if (reg == null) {
-            return null;
-        }
-        Coefficient b0 = reg.getIntercept();
-        Coefficient b1 = reg.getSlope();
-        TestResult jb = reg.getDiagnostics().getJarqueBera();
-        TestResult bp = reg.getDiagnostics().getBreuschPagan();
-        TestResult w = reg.getDiagnostics().getWhite();
-        return new double[]{
-            reg.getN(), reg.getR2(),
-            b0.getEstimate(), b0.getStdev(), b0.getTstat(), b0.getPvalue(),
-            b1.getEstimate(), b1.getStdev(), b1.getTstat(), b1.getPvalue(),
-            jb.getValue(), jb.getPvalue(),
-            bp.getValue(), bp.getPvalue(),
-            w.getValue(), w.getPvalue()
-        };
+        return rslt;
     }
 
     public void olsInformation(OlsTest reg, DoubleSeqCursor.OnMutable cursor) {
         if (reg == null) {
             return;
         }
-
-        Coefficient b0 = reg.getIntercept();
-        Coefficient b1 = reg.getSlope();
+        Coefficient[] c = reg.getCoefficients();
         TestResult jb = reg.getDiagnostics().getJarqueBera();
         TestResult bp = reg.getDiagnostics().getBreuschPagan();
         TestResult w = reg.getDiagnostics().getWhite();
@@ -160,22 +232,22 @@ public class Utility {
         cursor.setAndNext(reg.getN());
         cursor.setAndNext(reg.getR2());
         cursor.setAndNext(reg.getF());
-        cursor.setAndNext(b0.getEstimate());
-        cursor.setAndNext(b0.getStdev());
-        cursor.setAndNext(b0.getPvalue());
-        cursor.setAndNext(b1.getEstimate());
-        cursor.setAndNext(b1.getStdev());
-        cursor.setAndNext(b1.getPvalue());
-        cursor.setAndNext(jb.getValue());
-        cursor.setAndNext(jb.getPvalue());
+        for (int i = 0; i < c.length; ++i) {
+            cursor.setAndNext(c[i].getEstimate());
+            cursor.setAndNext(c[i].getStdev());
+            cursor.setAndNext(c[i].getPvalue());
+        }
         cursor.setAndNext(reg.getDiagnostics().getSkewness());
         cursor.setAndNext(reg.getDiagnostics().getKurtosis());
+        cursor.setAndNext(jb.getValue());
+        cursor.setAndNext(jb.getPvalue());
         cursor.setAndNext(reg.getDiagnostics().getBpr2());
         cursor.setAndNext(bp.getValue());
         cursor.setAndNext(bp.getPvalue());
         cursor.setAndNext(reg.getDiagnostics().getWr2());
         cursor.setAndNext(w.getValue());
         cursor.setAndNext(w.getPvalue());
+        cursor.setAndNext(reg.getDiagnostics().getArchr2());
         cursor.setAndNext(arch.getValue());
         cursor.setAndNext(arch.getPvalue());
     }
@@ -203,4 +275,20 @@ public class Utility {
             bias.getAdjustedT(),
             bias.getAdjustedTPvalue()};
     }
+
+    public void biasInformation(Bias bias, DoubleSeqCursor.OnMutable cursor) {
+        if (bias == null) {
+            return;
+        }
+        cursor.setAndNext(bias.getN());
+        cursor.setAndNext(bias.getMu());
+        cursor.setAndNext(bias.getSigma());
+        cursor.setAndNext(bias.getT());
+        cursor.setAndNext(bias.getTPvalue());
+        cursor.setAndNext(bias.getAr());
+        cursor.setAndNext(bias.getAdjustedSigma());
+        cursor.setAndNext(bias.getAdjustedT());
+        cursor.setAndNext(bias.getAdjustedTPvalue());
+    }
+
 }

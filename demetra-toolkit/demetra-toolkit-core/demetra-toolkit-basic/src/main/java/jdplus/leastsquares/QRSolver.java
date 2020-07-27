@@ -55,7 +55,7 @@ public class QRSolver {
     public QRSolution robustLeastSquares(DoubleSeq y, Matrix X) {
         HouseholderWithPivoting h = new HouseholderWithPivoting();
         QRDecomposition qr = h.decompose(X, 0);
-        return leastSquares(qr, y, Constants.getEpsilon());
+        return leastSquares(qr, y, 1e-9);
     }
 
     public QRSolution leastSquares(QRDecomposition qr, DoubleSeq x, double rcond) {
@@ -65,7 +65,7 @@ public class QRSolver {
         int m = qr.m(), n = qr.n();
         DoubleSeq e = DoubleSeq.of(y, rank, m - rank);
         // Solve R*X = Y;
-        UpperTriangularMatrix.solveUx(qr.rawR(), DataBlock.of(y));
+        UpperTriangularMatrix.solveUx(qr.rawR().extract(0, rank, 0, rank), DataBlock.of(y));
         int[] pivot = qr.pivot();
         DoubleSeq b;
         if (pivot == null) {

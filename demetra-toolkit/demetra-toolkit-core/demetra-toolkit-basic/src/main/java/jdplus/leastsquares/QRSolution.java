@@ -38,37 +38,44 @@ public class QRSolution {
     private DoubleSeq b;
     private DoubleSeq e;
     private double ssqErr;
-    
-    public int rank(){
+
+    public int rank() {
         return rank;
     }
-    
-    public Matrix rawR(){
+
+    public Matrix rawR() {
         return qr.rawR();
     }
-    
-    public DoubleSeq rawRDiagonal(){
+
+    public DoubleSeq rawRDiagonal() {
         return qr.rawRdiagonal();
     }
-    
+
     /**
      * Contains the order in which the columns of X have be handled.
      * pivot[i] indicates which column is in position i after pivoting
-     * @return 
+     *
+     * @return
      */
-    public int[] pivot(){
+    public int[] pivot() {
         return qr.pivot();
     }
 
     public Matrix unscaledCovariance() {
         int[] pivot = qr.pivot();
-        Matrix rawR = qr.rawR();
+        Matrix rawR = qr.rawR().extract(0, rank, 0, rank);
         Matrix v = SymmetricMatrix.UUt(UpperTriangularMatrix
                 .inverse(rawR));
+        int n = qr.n();
         if (pivot == null) {
-            return v;
+            if (rank == n) {
+                return v;
+            } else {
+                Matrix V = Matrix.square(n);
+                V.extract(0, rank, 0, rank).copy(v);
+                return V;
+            }
         } else {
-            int n = pivot.length;
             Matrix V = Matrix.square(n);
             for (int i = 0; i < rank; ++i) {
                 double sii = v.get(i, i);
@@ -86,7 +93,8 @@ public class QRSolution {
     /**
      * Inverse of the unscaled covariance matrix
      * =re-ordered rawR'*rawR
-     * @return 
+     *
+     * @return
      */
     public Matrix RtR() {
         int[] pivot = qr.pivot();

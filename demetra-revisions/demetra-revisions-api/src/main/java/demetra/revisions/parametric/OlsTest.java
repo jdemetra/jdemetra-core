@@ -26,7 +26,6 @@ package demetra.revisions.parametric;
 public class OlsTest {
     int n;
     double R2, F;
-    Coefficient intercept;
-    Coefficient slope;
+    Coefficient[] coefficients;
     RegressionTests diagnostics;
 }

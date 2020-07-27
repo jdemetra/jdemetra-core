@@ -44,7 +44,6 @@ public class UtilityTest {
 //        TsDataVintages <LocalDate>vc = v.select(sel);
         Vintages V=new Vintages(v);
         RegressionBasedAnalysis<LocalDate> analysis = V.verticalAnalysis(t0.format(DateTimeFormatter.ISO_DATE), t1.format(DateTimeFormatter.ISO_DATE));
-        double[] olsInformation = Utility.olsInformation(analysis, 10);
         double theil = Utility.theil(analysis, 10);
         double[] biasInformation = Utility.biasInformation(analysis, 10);
     }
@@ -67,7 +66,6 @@ public class UtilityTest {
         LocalDate t1=LocalDate.of(2020, 1, 1);
         Vintages V=new Vintages(v);
         RegressionBasedAnalysis<LocalDate> analysis = V.diagonalAnalysis(0, 15);
-        double[] olsInformation = Utility.olsInformation(analysis, 10);
         double theil = Utility.theil(analysis, 10);
         double[] biasInformation = Utility.biasInformation(analysis, 10);
     }

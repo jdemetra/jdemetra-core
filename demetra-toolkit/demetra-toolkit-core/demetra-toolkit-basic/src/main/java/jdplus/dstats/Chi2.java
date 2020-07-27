@@ -111,7 +111,6 @@ public class Chi2 implements ContinuousDistribution {
         if (pt == ProbabilityType.Point) {
             return 0;
         }
-
         double res;
         res = SpecialFunctions.chiSquare(x, df);
         if (pt == ProbabilityType.Upper) {

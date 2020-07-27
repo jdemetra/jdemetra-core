@@ -130,27 +130,30 @@ public final class LeastSquaresResults {
 
     /**
      * Regression variables (including the constant when it is used)
-     * @return 
+     *
+     * @return
      */
     public MatrixType X() {
         return X.unmodifiable();
     }
-    
+
     /**
      * Gets X(X'X)^-1X'
-     * @return 
+     *
+     * @return
      */
-    public Matrix projectionMatrix(){
+    public Matrix projectionMatrix() {
         return SymmetricMatrix.XSXt(ucov, X);
     }
-    
-    public boolean isMean(){
+
+    public boolean isMean() {
         return mean;
     }
 
     /**
      * Returns X*b
-     * @return 
+     *
+     * @return
      */
     public DoubleSeq regressionEffect() {
         DataBlock e = DataBlock.make(y.length());
@@ -161,10 +164,11 @@ public final class LeastSquaresResults {
         }
         return e.unmodifiable();
     }
-    
+
     /**
      * Returns e=y-Xb
-     * @return 
+     *
+     * @return
      */
     public DoubleSeq residuals() {
         DataBlock e = DataBlock.of(y);
@@ -177,17 +181,17 @@ public final class LeastSquaresResults {
     }
 
     public DoubleSeq studentizedResiduals() {
-        DoubleSeq e=residuals();
-        double[] v=new double[e.length()];
-        double sig=getResidualStandardDeviation();
+        DoubleSeq e = residuals();
+        double[] v = new double[e.length()];
+        double sig = getResidualStandardDeviation();
         DataBlockIterator rows = X.rowsIterator();
         DoubleSeqCursor cursor = e.cursor();
-        for (int i=0; i<v.length; ++i){
-            v[i]=cursor.getAndNext()/(sig*Math.sqrt(1-QuadraticForm.apply(ucov, rows.next())));
+        for (int i = 0; i < v.length; ++i) {
+            v[i] = cursor.getAndNext() / (sig * Math.sqrt(1 - QuadraticForm.apply(ucov, rows.next())));
         }
         return DoubleSeq.of(v);
     }
-    
+
     /**
      * @return the coefficients
      */
@@ -240,11 +244,13 @@ public final class LeastSquaresResults {
      * @return the r2
      */
     public double getR2() {
+        double r2;
         if (mean) {
-            return 1 - getResidualSumOfSquares() / (y2 - n * ym * ym);
+            r2 = 1 - getResidualSumOfSquares() / (y2 - n * ym * ym);
         } else {
-            return 1 - getResidualSumOfSquares() / y2;
+            r2 = 1 - getResidualSumOfSquares() / y2;
         }
+        return r2 < 0 ? 0 : (r2 > 1 ? 1 : r2);
     }
 
     /**
@@ -281,7 +287,8 @@ public final class LeastSquaresResults {
 
     public StatisticalTest Ftest() {
         F f = new F(degreesOfFreedom(), n - nx);
-        return new StatisticalTest(f, getRegressionMeanSquare() / getResidualMeanSquare(), TestType.Upper, false);
+        double num=getRegressionMeanSquare();
+        return new StatisticalTest(f, num == 0 ? 0 : num / getResidualMeanSquare(), TestType.Upper, false);
     }
 
     public StatisticalTest Khi2Test() {
@@ -297,13 +304,13 @@ public final class LeastSquaresResults {
      * @return
      */
     public StatisticalTest Ftest(int v0, int nvars) {
-        Matrix bvar = ucov.extract(v0, nvars, v0, nvars).deepClone();
-        SymmetricMatrix.lcholesky(bvar);
-        DataBlock b = DataBlock.of(coefficients.extract(v0, nvars));
-        LowerTriangularMatrix.solveLx(bvar, b);
-        double fval = b.ssq() / nvars / (ssq / (n - nx));
-        F f = new F(nvars, n - nx);
-        return new StatisticalTest(f, fval, TestType.Upper, false);
+            Matrix bvar = ucov.extract(v0, nvars, v0, nvars).deepClone();
+            SymmetricMatrix.lcholesky(bvar);
+            DataBlock b = DataBlock.of(coefficients.extract(v0, nvars));
+            LowerTriangularMatrix.solveLx(bvar, b);
+            double fval = b.ssq() / nvars / (ssq / (n - nx));
+            F f = new F(nvars, n - nx);
+            return new StatisticalTest(f, fval, TestType.Upper, false);
 
     }
 
