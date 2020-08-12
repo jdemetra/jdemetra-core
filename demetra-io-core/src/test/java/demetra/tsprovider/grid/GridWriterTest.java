@@ -16,6 +16,7 @@
  */
 package demetra.tsprovider.grid;
 
+import demetra.timeseries.Ts;
 import static demetra.timeseries.TsUnit.*;
 import demetra.timeseries.TsCollection;
 import static demetra.tsprovider.grid.GridLayout.*;
@@ -38,12 +39,12 @@ public class GridWriterTest {
 
     @Test
     public void testVertical() throws IOException {
-        GridWriter.Builder opts = GridWriter.builder().layout(VERTICAL);
+        GridWriter.Builder opts = GridWriter.builder().layout(VERTICAL).cornerLabel("x");
 
         assertThat(toArray(sample, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()))
                 .containsExactly(
                         new Object[][]{
-                            {null, "G1\nS1", "G1\nS2", "G2\nS1", "S1"},
+                            {"x", "G1\nS1", "G1\nS2", "G2\nS1", "S1"},
                             {JAN_2010, 1.01, 2.01, 3.01, null},
                             {FEB_2010, null, null, 3.02, 4.02},
                             {MAR_2010, 1.03, null, null, 4.03}
@@ -52,7 +53,7 @@ public class GridWriterTest {
         assertThat(toArray(sample, opts.ignoreNames(false).ignoreDates(false).reverseChronology(true).build()))
                 .containsExactly(
                         new Object[][]{
-                            {null, "G1\nS1", "G1\nS2", "G2\nS1", "S1"},
+                            {"x", "G1\nS1", "G1\nS2", "G2\nS1", "S1"},
                             {MAR_2010, 1.03, null, null, 4.03},
                             {FEB_2010, null, null, 3.02, 4.02},
                             {JAN_2010, 1.01, 2.01, 3.01, null}
@@ -107,16 +108,31 @@ public class GridWriterTest {
                             {null, null, 3.02, 4.02},
                             {1.01, 2.01, 3.01, null}
                         });
+
+        assertThat(toArray(empty, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()))
+                .containsExactly(
+                        new Object[][]{
+                            {"x"}
+                        });
+
+        assertThat(toArray(empty, opts.ignoreNames(true).ignoreDates(true).reverseChronology(false).build()))
+                .isEmpty();
+
+        assertThat(toArray(seriesWithoutData, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()))
+                .containsExactly(
+                        new Object[][]{
+                            {"x", "S1", "S2"}
+                        });
     }
 
     @Test
     public void testHorizontal() throws IOException {
-        GridWriter.Builder opts = GridWriter.builder().layout(HORIZONTAL);
+        GridWriter.Builder opts = GridWriter.builder().layout(HORIZONTAL).cornerLabel("x");
 
         assertThat(toArray(sample, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()))
                 .containsExactly(
                         new Object[][]{
-                            {null, JAN_2010, FEB_2010, MAR_2010},
+                            {"x", JAN_2010, FEB_2010, MAR_2010},
                             {"G1\nS1", 1.01, null, 1.03},
                             {"G1\nS2", 2.01, null, null},
                             {"G2\nS1", 3.01, 3.02, null},
@@ -126,7 +142,7 @@ public class GridWriterTest {
         assertThat(toArray(sample, opts.ignoreNames(false).ignoreDates(false).reverseChronology(true).build()))
                 .containsExactly(
                         new Object[][]{
-                            {null, MAR_2010, FEB_2010, JAN_2010},
+                            {"x", MAR_2010, FEB_2010, JAN_2010},
                             {"G1\nS1", 1.03, null, 1.01},
                             {"G1\nS2", null, null, 2.01},
                             {"G2\nS1", null, 3.02, 3.01},
@@ -186,6 +202,23 @@ public class GridWriterTest {
                             {null, null, 2.01},
                             {null, 3.02, 3.01},
                             {4.03, 4.02, null}
+                        });
+
+        assertThat(toArray(empty, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()))
+                .containsExactly(
+                        new Object[][]{
+                            {"x"}
+                        });
+
+        assertThat(toArray(empty, opts.ignoreNames(true).ignoreDates(true).reverseChronology(false).build()))
+                .isEmpty();
+
+        assertThat(toArray(seriesWithoutData, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()))
+                .containsExactly(
+                        new Object[][]{
+                            {"x"},
+                            {"S1"},
+                            {"S2"}
                         });
     }
 
@@ -255,5 +288,13 @@ public class GridWriterTest {
             .data(s("G1\nS2", QUARTER, 2010, 0, 2.01d))
             .data(s("G2\nS1", MONTH, 2010, 0, 3.01d, 3.02d))
             .data(s("S1", MONTH, 2010, 1, 4.02d, 4.03d))
+            .build();
+
+    private final TsCollection empty = TsCollection.EMPTY;
+
+    private final TsCollection seriesWithoutData = TsCollection
+            .builder()
+            .data(Ts.builder().name("S1").build())
+            .data(Ts.builder().name("S2").build())
             .build();
 }
