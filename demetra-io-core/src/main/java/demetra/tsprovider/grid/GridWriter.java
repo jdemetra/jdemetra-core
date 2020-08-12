@@ -81,12 +81,6 @@ public final class GridWriter {
     public void write(@NonNull TsCollection input, @NonNull GridOutput output) throws IOException {
         TsDataTable table = TsDataTable.of(input.getData(), Ts::getData);
 
-        if (table.getDomain().isEmpty()) {
-            try (GridOutput.Stream stream = output.open(input.getName(), 0, 0)) {
-            }
-            return;
-        }
-
         boolean seriesByRow = isSeriesByRow(input);
 
         int rows = getLength(table, seriesByRow);

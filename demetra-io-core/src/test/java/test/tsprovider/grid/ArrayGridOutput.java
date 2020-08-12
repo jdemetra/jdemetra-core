@@ -114,8 +114,8 @@ public final class ArrayGridOutput implements GridOutput {
         }
 
         private Object[][] build() {
-            int maxRow = 0;
-            int maxColumn = 0;
+            int maxRow = -1;
+            int maxColumn = -1;
             for (Cell o : cells) {
                 if (maxRow <= o.getRow()) {
                     maxRow = o.getRow();
