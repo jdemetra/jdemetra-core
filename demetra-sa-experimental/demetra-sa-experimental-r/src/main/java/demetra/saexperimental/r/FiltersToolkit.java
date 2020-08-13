@@ -97,7 +97,7 @@ public class FiltersToolkit {
 
     static double bias0(IFiniteFilter filter) {
         double s = 0;
-        int l = Math.max(filter.getLowerBound(), -2), u = Math.min(filter.getUpperBound(), 2);
+        int l = filter.getLowerBound(), u = filter.getUpperBound();
         IntToDoubleFunction weights = filter.weights();
         for (int i = l; i <= u; ++i) {
             double w = weights.applyAsDouble(i);
@@ -140,7 +140,7 @@ public class FiltersToolkit {
 
     public double[] mseDecomposition(double[] sfilter, double[] afilter, String density, double passband) {
         SymmetricFilter sf = SymmetricFilter.ofInternal(sfilter);
-        FiniteFilter af = FiniteFilter.of(afilter, -sfilter.length);
+        FiniteFilter af = FiniteFilter.of(afilter, -sfilter.length+1);
         DoubleUnaryOperator sd;
         switch (density) {
             case "uniform":

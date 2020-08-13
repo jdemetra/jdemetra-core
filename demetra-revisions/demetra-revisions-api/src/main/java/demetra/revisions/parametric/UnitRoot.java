@@ -16,22 +16,21 @@
  */
 package demetra.revisions.parametric;
 
-import demetra.stats.TestResult;
-
 /**
  *
- * @author PALATEJ
+ * @author palatej
  */
 @lombok.Value
 @lombok.Builder(builderClassName="Builder")
-public class RegressionTests {
-    TestResult breuschPagan;
-    double bpr2;
-    TestResult white;
-    double wr2;
-    TestResult jarqueBera;
-    double skewness, kurtosis;
-    TestResult arch;
-    double archr2;
+public class UnitRoot {
+    @lombok.Value
+    public static class Test{
+        private double value, stdev, statistic, pvalue;
+    }
     
+    Test dickeyFuller;
+    Test augmentedDickeyFuller;
+    Test dickeyFullerWithTrendAndIntercept;
+    Test philipsPerron;
+
 }

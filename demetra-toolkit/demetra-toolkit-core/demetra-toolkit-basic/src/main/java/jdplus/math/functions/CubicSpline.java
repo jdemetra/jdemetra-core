@@ -37,6 +37,13 @@ public class CubicSpline {
         return new CubicSplineFunction(xi, fxi);
     }
 
+    public static enum MonotonicMethod {
+        FritschCarlson, Steffen, Stineman;
+    }
+
+    public DoubleUnaryOperator monotonic(double[] xi, double[] fxi){//, MonotonicMethod method) {
+        return new MonotonicCubicSplineFunction(xi, fxi, MonotonicMethod.FritschCarlson);
+    }
 
     static class CubicSplineFunction implements DoubleUnaryOperator {
 
@@ -65,7 +72,6 @@ public class CubicSpline {
                 double alpha = 3 / h[i] * (a[i + 1] - a[i]) - 3 / h[i - 1] * (a[i] - a[i - 1]);
                 z[i] = (alpha - h[i - 1] * z[i - 1]) / l;
             }
-            // STEP 5
             for (int i = n - 1; i >= 0; --i) {
                 c[i] = z[i] - m[i] * c[i + 1];
                 b[i] = (a[i + 1] - a[i]) / h[i] - h[i] * (c[i + 1] + 2 * c[i]) / 3;
@@ -115,5 +121,93 @@ public class CubicSpline {
             }
         }
     }
-}
 
+    static class MonotonicCubicSplineFunction implements DoubleUnaryOperator {
+
+        final int n;
+        final double[] xi;
+        final double[] a, b, c, d;
+
+        MonotonicCubicSplineFunction(final double[] xi, final double[] fxi, MonotonicMethod method) {
+            this.xi = xi.clone();
+            this.a = fxi.clone();
+
+            // compute the polynomials
+            n = xi.length - 1;
+            b = new double[n + 1];
+            c = new double[n + 1];
+            d = new double[n + 1];
+
+            // differences and slopes
+            double[] dy = new double[n], dx = new double[n], ms = new double[n];
+            for (int i = 0; i < n; i++) {
+                double dxi = xi[i + 1] - xi[i], dyi = a[i + 1] - a[i];
+                dx[i] = dxi;
+                dy[i] = dyi;
+                ms[i] = dyi / dxi;
+            }
+
+            // degree-1 coefficients
+            b[0] = ms[0];
+            for (int i = 1; i < n; ++i) {
+                double m = ms[i - 1], mnext = ms[i];
+                if (Math.signum(m) != Math.signum(mnext)) {
+                    b[i] = 0;
+                } else {
+                    double dxcur = dx[i - 1], dxnext = dx[i], common = dxcur + dxnext;
+                    b[i] = 3 * common / ((common + dxnext) / m + (common + dxcur) / mnext);
+                }
+            }
+            b[n] = ms[n - 1];
+
+            // degree-2 and degree-3 coefficients
+            for (int i = 0; i < n; ++i) {
+                double c1 = b[i], m = ms[i], invdx = 1 / dx[i], common = c1 + b[i + 1] - 2*m;
+                c[i]=(m - c1 - common) * invdx;
+                d[i]=common * invdx * invdx;
+            }
+        }
+
+        private int find(double x) {
+            if (x <= xi[0]) {
+                return -1;
+            } else if (x >= xi[n]) {
+                return n;
+            }
+            int pos = Arrays.binarySearch(xi, x);
+            if (pos >= 0) {
+                return pos;
+            } else {
+                return -pos - 2;
+            }
+        }
+
+        private double compute(double x, int p) {
+            double dx = x - xi[p], dx2 = dx * dx, dx3 = dx2 * dx;
+            return a[p] + b[p] * dx + c[p] * dx2 + d[p] * dx3;
+        }
+
+        private double compute0(double x) {
+            double df = b[0];
+            return a[0] + (x - xi[0]) * df;
+        }
+
+        private double computen(double x) {
+            double dx = xi[n] - xi[n - 1], dx2 = dx * dx;
+            double df = b[n - 1] + 2 * c[n - 1] * dx + 3 * d[n - 1] * dx2;
+            return a[n] + (x - xi[n]) * df;
+        }
+
+        @Override
+        public double applyAsDouble(double value) {
+            int pos = find(value);
+            if (pos < 0) {
+                return compute0(value);
+            } else if (pos >= n) {
+                return computen(value);
+            } else {
+                return compute(value, pos);
+            }
+        }
+    }
+}

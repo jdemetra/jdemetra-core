@@ -21,11 +21,13 @@ import jdplus.data.DataBlockIterator;
 import demetra.design.BuilderPattern;
 import jdplus.math.matrices.Matrix;
 import demetra.data.DoubleSeq;
+import demetra.data.DoublesMath;
 import jdplus.leastsquares.QRSolution;
 import jdplus.leastsquares.QRSolver;
 
 /**
- * Augmented Dickey-Fuller test
+ * (Augmented) Dickey-Fuller test
+ * The estimated model is dy(t)=d*y(t-1)[+a][+b*t+][+e1*dy(t-1)+...+ek*dy(t-k)]+eps
  *
  * @author Jean Palate
  */
@@ -38,8 +40,8 @@ public class AugmentedDickeyFuller {
     @BuilderPattern(AugmentedDickeyFuller.class)
     public static class Builder {
 
-        private int k = 1; // number of lags. 
-        private boolean cnt, trend;
+        private int k = 0; // number of lags. 0 for simple Dickey-Fuller
+        private boolean cnt=false, trend=false;
         private DoubleSeq y;
 
         public Builder data(DoubleSeq y) {
@@ -48,8 +50,8 @@ public class AugmentedDickeyFuller {
         }
 
         public Builder numberOfLags(int nlags) {
-            if (k < 1) {
-                throw new java.lang.IllegalArgumentException("k should be greater or equal to 1");
+            if (k < 0) {
+                throw new java.lang.IllegalArgumentException("k should be greater or equal to 0");
             }
             this.k = nlags;
             return this;
@@ -67,30 +69,29 @@ public class AugmentedDickeyFuller {
 
         public AugmentedDickeyFuller build() {
             //
-            int ndata = y.length();
-            int ncols = k;
+            DoubleSeq del=DoublesMath.delta(y, 1);
+            int ndata = del.length()-k;
+            int ncols = k+1;
             if (cnt) {
                 ++ncols;
             }
             if (trend) {
                 ++ncols;
             }
-            Matrix x = Matrix.make(ndata - k, ncols);
+            Matrix x = Matrix.make(ndata, ncols);
 
-            DataBlockIterator columns = x.reverseColumnsIterator();
-            columns.next().copy(y.extract(k - 1, ndata - k));
-            DataBlock del = DataBlock.of(y);
-            del.autoApply(-1, (a, b) -> a - b);
-            for (int i = 1; i < k; ++i) {
-                columns.next().copy(del.extract(k - i, ndata - k));
-            }
+            DataBlockIterator columns = x.columnsIterator();
             if (cnt) {
                 columns.next().set(1);
             }
             if (trend) {
                 columns.next().set(idx -> idx);
             }
-            return new AugmentedDickeyFuller(del.drop(k, 0), x, cnt, trend);
+            for (int i = 1; i <= k; ++i) {
+                columns.next().copy(del.extract(k - i, ndata));
+            }
+            columns.next().copy(y.extract(k, ndata));
+            return new AugmentedDickeyFuller(del.extract(k, ndata), x, cnt, trend);
         }
 
     }
@@ -109,7 +110,7 @@ public class AugmentedDickeyFuller {
     private final Matrix x;
     private final DoubleSeq y;
     private final DataBlock b, e;
-    private final double t;
+    private final double stderr, t;
 
     private AugmentedDickeyFuller(DoubleSeq y, Matrix x, boolean cnt, boolean trend) {
         this.x = x;
@@ -117,15 +118,15 @@ public class AugmentedDickeyFuller {
         this.cnt = cnt;
         this.trend = trend;
         QRSolution ls = QRSolver.fastLeastSquares(y, x);
+        int l=x.getColumnsCount()-1;
         b=DataBlock.of(ls.getB());
         e=DataBlock.of(ls.getE());
-        int nlast = b.length() - 1;
         double ssq = ls.getSsqErr();
-        double val = b.get(nlast);
-        double std = Math.abs(Math.sqrt(ssq / e.length()) / ls.rawRDiagonal().get(nlast));
-        t = val / std;
+        double val = b.get(l);
+        stderr = Math.abs(Math.sqrt(ssq / e.length()) / ls.rawRDiagonal().get(l));
+        t = val / stderr;
     }
-
+    
     public boolean isSignificant(double eps) {
         if (!cnt && !trend) {
             return sign00(eps);
@@ -134,6 +135,14 @@ public class AugmentedDickeyFuller {
         } else {
             return sign11(eps);
         }
+    }
+
+    public double getRho(){
+        return b.get(0)+1;
+    }
+
+    public double getStdErr(){
+        return stderr;
     }
 
     /**

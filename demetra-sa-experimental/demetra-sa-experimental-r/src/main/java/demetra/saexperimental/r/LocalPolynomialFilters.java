@@ -31,7 +31,7 @@ import jdplus.math.linearfilters.IFiniteFilter;
 @lombok.experimental.UtilityClass
 public class LocalPolynomialFilters {
 
-    public double[] filter(double[] data, int horizon, int degree, String kernel, String endpoints, double ic) {
+    public double[] filter(double[] data, int horizon, int degree, String kernel, String endpoints, double ic, double tw, double passband) {
         // Creates the filters
         IntToDoubleFunction weights = weights(horizon, kernel);
         SymmetricFilter filter = jdplus.filters.LocalPolynomialFilterFactory.of(horizon, degree, weights);
@@ -64,7 +64,7 @@ public class LocalPolynomialFilters {
             }
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[i] = AsymmetricFilters.mmsreFilter(filter, horizon-i-1, u, c, null);
+                afilters[i] = AsymmetricFilters.mmsreFilter(filter, horizon-i-1, u, c, null, passband, tw );
             }
         }
         DoubleSeq rslt = jdplus.math.linearfilters.FilterUtility.filter(DoubleSeq.of(data), filter, afilters);
@@ -94,7 +94,7 @@ public class LocalPolynomialFilters {
         }
     }
 
-    public FiltersToolkit.FiniteFilters filterProperties(int horizon, int degree, String kernel, String endpoints, double ic) {
+    public FiltersToolkit.FiniteFilters filterProperties(int horizon, int degree, String kernel, String endpoints, double ic, double tw, double passband) {
         // Creates the filters
         IntToDoubleFunction weights = weights(horizon, kernel);
         SymmetricFilter filter = jdplus.filters.LocalPolynomialFilterFactory.of(horizon, degree, weights);
@@ -127,7 +127,7 @@ public class LocalPolynomialFilters {
             }
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[i] = AsymmetricFilters.mmsreFilter(filter, i, u, c, null);
+                afilters[i] = AsymmetricFilters.mmsreFilter(filter, i, u, c, null, passband, tw);
             }
         }
         return new FiltersToolkit.FiniteFilters(filter, afilters);

@@ -20,16 +20,20 @@ import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.DoublesMath;
 import demetra.math.matrices.MatrixType;
+import demetra.revisions.parametric.AutoCorrelationTests;
 import demetra.revisions.parametric.Bias;
 import demetra.revisions.parametric.Coefficient;
-import demetra.revisions.parametric.OlsTest;
+import demetra.revisions.parametric.OlsTests;
 import demetra.revisions.parametric.RegressionBasedAnalysis;
 import demetra.revisions.parametric.RevisionAnalysis;
+import demetra.revisions.parametric.UnitRoot;
 import demetra.stats.TestResult;
 import java.time.LocalDate;
 import jdplus.math.matrices.Matrix;
+import jdplus.revisions.parametric.AutoCorrelationTestsComputer;
 import jdplus.revisions.parametric.BiasComputer;
-import jdplus.revisions.parametric.OlsTestComputer;
+import jdplus.revisions.parametric.OlsTestsComputer;
+import jdplus.revisions.parametric.UnitRootTestsComputer;
 import jdplus.stats.StatUtility;
 
 /**
@@ -82,8 +86,64 @@ public class Utility {
 
         for (int i = 0; i < n; ++i) {
             DoubleSeqCursor.OnMutable cursor = rslt.row(i).cursor();
-            OlsTest test = OlsTestComputer.of(vintages.column(i + gap), vintages.column(i));
+            OlsTests test = OlsTestsComputer.of(vintages.column(i + gap), vintages.column(i));
             olsInformation(test, cursor);
+        }
+        return rslt;
+    }
+
+    private final int AC = 5;
+
+    /**
+     * v(t)=a+b*v(t-gap)
+     *
+     * @param vintages Vintages
+     * @param nbg Number of lags in Breusch-Godfrey test
+     * @param nlb Number of lag in Ljung-Box
+     * @return
+     */
+    public MatrixType autoCorrelation(MatrixType vintages, int nbg, int nlb) {
+        int n = vintages.getColumnsCount();
+        Matrix rslt = Matrix.make(n * (n - 1) / 2, AC);
+
+        for (int i = 0, k = 0; i < n; ++i) {
+            for (int j = i + 1; j < n; ++j) {
+                try {
+                    DoubleSeqCursor.OnMutable cursor = rslt.row(k++).cursor();
+                    AutoCorrelationTests test = AutoCorrelationTestsComputer.of(vintages.column(i), vintages.column(j), nbg, nlb);
+                    acInformation(test, cursor);
+                } catch (Exception err) {
+                }
+            }
+        }
+        return rslt;
+    }
+
+    private final int UR = 4*4;
+
+    /**
+     * Computes unit roots tests.
+     * The tests are givenin the following order:
+     * Dickey-Fuller
+     * Augmented Dickey-Fuller
+     * Dickey-Fuller with c and trend
+     * Philips-Perron
+     * @param vintages
+     * @param adfk Number of lags in augmented dickey-fuller test
+     * @return
+     */
+    public MatrixType unitroot(MatrixType vintages, int adfk) {
+        int n = vintages.getColumnsCount();
+        Matrix rslt = Matrix.make(n, UR);
+
+        for (int i = 0, k = 0; i < n; ++i) {
+            try {
+                DoubleSeqCursor.OnMutable cursor = rslt.row(k++).cursor();
+                UnitRoot ur = UnitRootTestsComputer.of(vintages.column(i), adfk);
+                urInformation(ur, cursor);
+            } catch (Exception err) {
+            }
+
         }
         return rslt;
     }
@@ -108,7 +168,7 @@ public class Utility {
         for (int i = 0; i < n; ++i) {
             DoubleSeq prev = vintages.column(i), cur = vintages.column(i + gap);
             DoubleSeqCursor.OnMutable cursor = rslt.row(i).cursor();
-            OlsTest test = OlsTestComputer.of(DoublesMath.subtract(cur, prev), prev);
+            OlsTests test = OlsTestsComputer.of(DoublesMath.subtract(cur, prev), prev);
             olsInformation(test, cursor);
         }
         return rslt;
@@ -128,7 +188,7 @@ public class Utility {
         for (int i = 0; i < n; ++i) {
             DoubleSeqCursor.OnMutable cursor = rslt.row(i).cursor();
             try {
-                OlsTest test = OlsTestComputer.of(DoublesMath.subtract(vintages.column(i + gap + 1), vintages.column(i + 1)),
+                OlsTests test = OlsTestsComputer.of(DoublesMath.subtract(vintages.column(i + gap + 1), vintages.column(i + 1)),
                         DoublesMath.subtract(vintages.column(i + gap), vintages.column(i)));
                 olsInformation(test, cursor);
             } catch (Exception err) {
@@ -157,7 +217,7 @@ public class Utility {
             }
             DoubleSeqCursor.OnMutable cursor = rslt.row(i - nrevs).cursor();
             try {
-                OlsTest test = OlsTestComputer.of(revs.column(i), x);
+                OlsTests test = OlsTestsComputer.of(revs.column(i), x);
                 olsInformation(test, cursor);
             } catch (Exception err) {
             }
@@ -179,13 +239,13 @@ public class Utility {
         Matrix rslt = Matrix.make(n - 1, OLS + C * 2);
         DoubleSeq cref = revs.column(ref - 1);
         for (int i = 0, j = 0; i < n; ++i) {
-            if (i != ref-1) {
+            if (i != ref - 1) {
                 DoubleSeqCursor.OnMutable cursor = rslt.row(j++).cursor();
-                try{
-                OlsTest test = OlsTestComputer.of(revs.column(i), cref);
-                olsInformation(test, cursor);
-            } catch (Exception err) {
-            }
+                try {
+                    OlsTests test = OlsTestsComputer.of(revs.column(i), cref);
+                    olsInformation(test, cursor);
+                } catch (Exception err) {
+                }
             }
         }
         return rslt;
@@ -220,7 +280,7 @@ public class Utility {
         return rslt;
     }
 
-    public void olsInformation(OlsTest reg, DoubleSeqCursor.OnMutable cursor) {
+    public void olsInformation(OlsTests reg, DoubleSeqCursor.OnMutable cursor) {
         if (reg == null) {
             return;
         }
@@ -250,6 +310,19 @@ public class Utility {
         cursor.setAndNext(reg.getDiagnostics().getArchr2());
         cursor.setAndNext(arch.getValue());
         cursor.setAndNext(arch.getPvalue());
+    }
+
+    public void acInformation(AutoCorrelationTests ac, DoubleSeqCursor.OnMutable cursor) {
+        if (ac == null) {
+            return;
+        }
+        TestResult bg = ac.getBreuschGodfrey();
+        TestResult lb = ac.getLjungBox();
+        cursor.setAndNext(ac.getBgr2());
+        cursor.setAndNext(bg.getValue());
+        cursor.setAndNext(bg.getPvalue());
+        cursor.setAndNext(lb.getValue());
+        cursor.setAndNext(lb.getPvalue());
     }
 
     public double[] biasInformation(RegressionBasedAnalysis<LocalDate> analysis, int k) {
@@ -289,6 +362,32 @@ public class Utility {
         cursor.setAndNext(bias.getAdjustedSigma());
         cursor.setAndNext(bias.getAdjustedT());
         cursor.setAndNext(bias.getAdjustedTPvalue());
+    }
+
+    private static void urInformation(UnitRoot ur, DoubleSeqCursor.OnMutable cursor) {
+        if (ur == null) {
+            return;
+        }
+        UnitRoot.Test t = ur.getDickeyFuller();
+        cursor.setAndNext(t.getValue());
+        cursor.setAndNext(t.getStdev());
+        cursor.setAndNext(t.getStatistic());
+        cursor.setAndNext(t.getPvalue());
+        t = ur.getAugmentedDickeyFuller();
+        cursor.setAndNext(t.getValue());
+        cursor.setAndNext(t.getStdev());
+        cursor.setAndNext(t.getStatistic());
+        cursor.setAndNext(t.getPvalue());
+        t = ur.getDickeyFullerWithTrendAndIntercept();
+        cursor.setAndNext(t.getValue());
+        cursor.setAndNext(t.getStdev());
+        cursor.setAndNext(t.getStatistic());
+        cursor.setAndNext(t.getPvalue());
+        t = ur.getPhilipsPerron();
+        cursor.setAndNext(t.getValue());
+        cursor.setAndNext(t.getStdev());
+        cursor.setAndNext(t.getStatistic());
+        cursor.setAndNext(t.getPvalue());
     }
 
 }

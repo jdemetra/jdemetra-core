@@ -15,7 +15,6 @@ import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.math.functions.NumericalIntegration;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.math.matrices.decomposition.Householder;
 
 /**
  *
@@ -31,14 +30,14 @@ public class AsymmetricFilters {
     }
 
     /**
-     * 
+     *
      * @param s
      * @param q
      * @param ic I/C Ratio
-     * @return 
+     * @return
      */
     public IFiniteFilter musgraveFilter(final SymmetricFilter s, final int q, double ic) {
-        double r=4/(Math.PI*ic*ic);
+        double r = 4 / (Math.PI * ic * ic);
         double[] h = s.weightsToArray();
         int n = s.length();
         int l = (n - 1) / 2;
@@ -153,7 +152,7 @@ public class AsymmetricFilters {
         DataBlock a11 = a4.deepClone();
 //        hous=new Householder(C);
 //        hous.solve(a11);
-LinearSystemSolver.fastSolver().solve(C, a11);
+        LinearSystemSolver.fastSolver().solve(C, a11);
         double s = a11.dot(d);
         a9.mul(s);
 
@@ -177,7 +176,8 @@ LinearSystemSolver.fastSolver().solve(C, a11);
      * @param u The degree of the constraints (U, the weights preserve
      * polynomials of degree at most u).
      * @param dz Coefficients of the linear model. The number of the
-     * coefficients and the degree of the constraints define the type of the linear model.
+     * coefficients and the degree of the constraints define the type of the
+     * linear model.
      * @param k The weighting factors (null for no weighting)
      * @return
      */
@@ -186,9 +186,12 @@ LinearSystemSolver.fastSolver().solve(C, a11);
     }
 
     /**
-     * Extension of the usual asymmetric filters that introduces a timeliness criterion,
+     * Extension of the usual asymmetric filters that introduces a timeliness
+     * criterion,
      * "à la Guggemos".
-     * See Grun-Rehomme, Guggemos and Ladiray, "Asymmetric Moving Averages Minimizing Phase-Shift"
+     * See Grun-Rehomme, Guggemos and Ladiray, "Asymmetric Moving Averages
+     * Minimizing Phase-Shift"
+     *
      * @param sw
      * @param q
      * @param u
@@ -196,7 +199,7 @@ LinearSystemSolver.fastSolver().solve(C, a11);
      * @param k
      * @param passBand
      * @param tweight
-     * @return 
+     * @return
      */
     public IFiniteFilter mmsreFilter(SymmetricFilter sw, int q, int u, double[] dz, IntToDoubleFunction k, double passBand, double tweight) {
         double[] w = sw.weightsToArray();
@@ -232,11 +235,11 @@ LinearSystemSolver.fastSolver().solve(C, a11);
             D.addXaXt(1, Yp);
             a.extract(0, nv).setAY(Yf.dot(wf), Yp);
         }
-        if (passBand>0 && tweight >0){
-            Matrix W=buildMatrix(passBand, h, q);
+        if (passBand > 0 && tweight > 0) {
+            Matrix W = buildMatrix(passBand, h, q);
             D.addAY(tweight, W);
             // we have to update a
-            DataBlock row=DataBlock.of(wp);
+            DataBlock row = DataBlock.of(wp);
             row.mul(-tweight);
             a.addProduct(row, W.columnsIterator());
         }
@@ -290,6 +293,7 @@ LinearSystemSolver.fastSolver().solve(C, a11);
         }
         return ff;
     }
+
     /**
      * Retrieve the implicit forecasts corresponding to the asymmetric filters
      *

@@ -16,22 +16,16 @@
  */
 package demetra.revisions.parametric;
 
-import demetra.stats.TestResult;
-
 /**
  *
  * @author PALATEJ
  */
+
 @lombok.Value
 @lombok.Builder(builderClassName="Builder")
-public class RegressionTests {
-    TestResult breuschPagan;
-    double bpr2;
-    TestResult white;
-    double wr2;
-    TestResult jarqueBera;
-    double skewness, kurtosis;
-    TestResult arch;
-    double archr2;
-    
+public class OlsTests {
+    int n;
+    double R2, F;
+    Coefficient[] coefficients;
+    RegressionTests diagnostics;
 }

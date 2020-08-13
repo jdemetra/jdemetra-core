@@ -35,8 +35,11 @@ public class CubicSplineTest {
     @Test
     public void testConstant() {
         DoubleUnaryOperator fn = CubicSpline.of(new double[]{5, 10, 15, 20}, new double[]{1, 1, 1, 1});
+        DoubleUnaryOperator fnm = CubicSpline.monotonic(new double[]{5, 10, 15, 20}, new double[]{1, 1, 1, 1});
+        
         for (int i = 0; i < 25; ++i) {
             assertEquals(1, fn.applyAsDouble(i), 1e-9);
+            assertEquals(1, fnm.applyAsDouble(i), 1e-9);
         }
     }
 
@@ -48,4 +51,13 @@ public class CubicSplineTest {
         }
     }
 
+    public void testIncreasing() {
+        DoubleUnaryOperator fn = CubicSpline.of(new double[]{5, 10, 15, 20}, new double[]{5, 18, 18, 25});
+        DoubleUnaryOperator fnm = CubicSpline.monotonic(new double[]{5, 10, 15, 20}, new double[]{5, 18, 18, 25});
+        for (int i = 0; i < 250; ++i) {
+            System.out.print(fn.applyAsDouble(i*.1));
+            System.out.print('\t');
+            System.out.println(fnm.applyAsDouble(i*.1));
+        }
+    }
 }

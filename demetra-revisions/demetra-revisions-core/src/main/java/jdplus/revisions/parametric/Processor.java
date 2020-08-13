@@ -60,7 +60,7 @@ public class Processor {
                             v1 = TsData.fitToDomain(cur, common).getValues();
                     // first Vi % V
                     analysis.theilCoefficient(StatUtility.theilInequalityCoefficient(v1, v0))
-                            .regression(OlsTestComputer.of(v1, v0));
+                            .regression(OlsTestsComputer.of(v1, v0));
 
                     // than revisions
                     DoubleSeq rev = TsData.subtract(cur, prev).getValues();
@@ -97,7 +97,7 @@ public class Processor {
                     v1 = TsData.fitToDomain(cur, common).getValues();
             // first Vi % V
             analysis.theilCoefficient(StatUtility.theilInequalityCoefficient(v1, v0))
-                    .regression(OlsTestComputer.of(v1, v0));
+                    .regression(OlsTestsComputer.of(v1, v0));
 
             // than revisions
             DoubleSeq rev = TsData.subtract(cur, prev).getValues();

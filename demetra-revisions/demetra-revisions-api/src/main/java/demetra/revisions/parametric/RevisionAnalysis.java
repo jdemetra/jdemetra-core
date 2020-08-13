@@ -37,7 +37,7 @@ public class RevisionAnalysis<K> {
     /**
      * Ols regression between vintage0 and vintagek
      */
-    OlsTest regression;
+    OlsTests regression;
     
     /**
      * Computed between vintage k and vintage k-1

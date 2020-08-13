@@ -16,16 +16,17 @@
  */
 package demetra.revisions.parametric;
 
+import demetra.stats.TestResult;
+
 /**
  *
  * @author PALATEJ
  */
-
 @lombok.Value
 @lombok.Builder(builderClassName="Builder")
-public class OlsTest {
-    int n;
-    double R2, F;
-    Coefficient[] coefficients;
-    RegressionTests diagnostics;
+public class AutoCorrelationTests {
+    
+    TestResult breuschGodfrey;
+    double bgr2;
+    TestResult ljungBox;
 }
