@@ -21,7 +21,7 @@ import demetra.design.Development;
 import java.util.Map;
 
 /**
- * A processing factory is an object that is able to generate a 
+ * A processor factory is an object that is able to generate a 
  * processing for a given specification S. 
  * The processing itself will accept input of type I for generating output of type R
  * @author Jean Palate
@@ -46,11 +46,11 @@ public interface ProcessorFactory<S extends ProcSpecification, I, R extends Proc
     boolean canHandle(ProcSpecification spec);
 
     /**
-     * Generates the processing related to given specifications
-     * @param specification The specifications (=input) of the processing 
+     * Generates the processor related to given specifications
+     * @param specification The specifications (=input) of the processor 
      * @return The results (=output) of the processing. May be null.
      */
-    Processor<I,R> generateProcessing(S specification);
+    Processor<I,R> generateProcessor(S specification);
     
     /**
      * Returns the output dictionary.

@@ -16,11 +16,16 @@
  */
 package demetra.arima;
 
+import demetra.data.DoubleSeq;
 import demetra.design.Development;
 
 /**
- * Generic ARIMA model (defined by its stationary AR, non-stationary AR and
+ * Generic ARIMA model (defined by its stationary AR, non-stationary AR, 
  * MA polynomials and innovation variance).
+ * 
+ * ar(B)delta(b)y(t)=ma(b)e(t), 
+ * where B is the backshift operator and e(t)~N(0,innovationVariance) 
+ *  
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @Development(status = Development.Status.Release)
@@ -29,24 +34,27 @@ import demetra.design.Development;
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class ArimaModel {
 
-    private static final double[] ONE = new double[]{1};
-
     /**
      * Innovation variance. 1 by default
      */
     private double innovationVariance;
     @lombok.NonNull
     /**
-     * Stationary auto-regressive polynomial (1, phi(1)...); True signs. 1 by default
+     * Stationary auto-regressive polynomial (1+ar[0]B...); True signs. 
+     * Doesn't contain the constant term (always 1)
+     * All the roots of the stationary polynomial should be outside the unit circle (not checked)
      */
     private double[] ar;
     @lombok.NonNull
     /**
-     * Non-stationary auto-regressive polynomial (1, delta(1)...); True signs. 1 by default
+     * Non-stationary auto-regressive polynomial (1, delta(1)...); True signs. 
+     * Doesn't contain the constant term (always 1)
+     * All the roots of the non-stationary polynomial should be on the unit circle (not checked)
      */
     private double[] delta;
     /**
-     * Moving-average polynomial (1, theta(1)...); True signs. 1 by default
+     * Moving-average polynomial (1, theta(1)...); True signs.
+     * Doesn't contain the constant term (always 1)
      */
     @lombok.NonNull
     private double[] ma;
@@ -67,9 +75,9 @@ public class ArimaModel {
     public static Builder builder() {
         Builder builder = new Builder();
         builder.innovationVariance = 1;
-        builder.ar = ONE;
-        builder.delta = ONE;
-        builder.ma = ONE;
+        builder.ar = DoubleSeq.EMPTYARRAY;
+        builder.delta = DoubleSeq.EMPTYARRAY;
+        builder.ma = DoubleSeq.EMPTYARRAY;
         return builder;
     }
 }

@@ -119,6 +119,7 @@ public class SeatsModel {
     private boolean meanCorrection;
 //    private int forecastsCount, backcastsCount;
     private SarimaModel currentModel;
+    private boolean parametersCutOff, modelChanged;
     private UcarimaModel ucarimaModel;
     private SeriesDecomposition initialComponents, finalComponents;
     private double innovationVariance;

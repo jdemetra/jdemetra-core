@@ -50,8 +50,8 @@ public class JarqueBeraTest {
 
         assertEquals(test.getPValue(), test1.getPValue(), 1e-9);
         
-//        System.out.println(test1.getPValue());
-//        System.out.println(test2.getPValue());
+        System.out.println(test1.getPValue());
+        System.out.println(test2.getPValue());
     }
     
 }

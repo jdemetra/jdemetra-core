@@ -91,6 +91,13 @@ public final class Variable {
         return new Variable(name, variable, true, Parameter.of(coeff, ParameterType.Fixed));
     }
 
+    public static Variable of(@NonNull final String name, @NonNull final ITsVariable variable, @NonNull Parameter[] coeff) {
+        if (variable.dim() != coeff.length) {
+            throw new IllegalArgumentException();
+        }
+        return new Variable(name, variable, true, coeff);
+    }
+
     public Variable rename(String name) {
         if (name.equals(this.name)) {
             return this;

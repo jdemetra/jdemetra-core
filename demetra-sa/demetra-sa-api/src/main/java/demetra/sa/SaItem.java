@@ -16,35 +16,92 @@
  */
 package demetra.sa;
 
-import demetra.processing.ProcQuality;
+import demetra.timeseries.regression.modelling.ModellingContext;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author PALATEJ
  */
-@lombok.Value
-@lombok.Builder(builderClassName="Builder")
-public class SaItem {
-    
-    SaSpecification domainSpec, estimationSpec, pointSpec;
-    EstimationPolicy policy;
-    ProcQuality quality;
-    int priority;
+public final class SaItem {
 
-/*    private boolean dirty_ = true;
-    private Ts ts_;
-    private ISaSpecification pspec_, espec_, dspec_;
-    private boolean cacheResults_ = true;
-    private volatile CompositeResults rslts_;
-    private EstimationPolicyType estimation_ = EstimationPolicyType.None;
-    private Status status_ = Status.Unprocessed;
-    private int priority_ = -1;
-    private ProcQuality quality_ = ProcQuality.Undefined;
-    private String[] warnings_;
-    private InformationSet qsummary_;
-    private MetaData metaData_;
-    private String name = "";
-    private boolean locked_;
-*/
-    
+    String name;
+
+    private Map<String, String> meta = new HashMap<>();
+
+    /**
+     * Operational. Importance of this estimation
+     */
+    private final int priority;
+
+    private final SaDefinition definition;
+
+    /**
+     * All information available after processing.
+     * SA processors must be able to generate full estimations starting from
+     * definitions
+     */
+    private volatile SaEstimation estimation;
+
+    public SaItem(String name, SaDefinition definition) {
+        this.name = name;
+        this.definition = definition;
+        this.priority = 0;
+    }
+
+    public SaItem(String name, SaDefinition definition, int priority) {
+        this.name = name;
+        this.definition = definition;
+        this.priority = priority;
+    }
+
+    public SaItem withPriority(int priority) {
+        SaItem nitem = new SaItem(name, definition, priority);
+        nitem.estimation = this.estimation;
+        return nitem;
+    }
+
+    public SaDefinition getDefinition() {
+        return this.definition;
+    }
+
+    public boolean isProcessed() {
+        return estimation != null;
+    }
+
+    /**
+     * Process this item. The Processing is always executed, even if the item has already been
+     * estimated. To avoid re-estimation, use getEstimation (which is not verbose by default)
+     * @param verbose
+     * @return 
+     */
+    public boolean process(boolean verbose) {
+        synchronized (this) {
+            estimation = SaManager.process(definition, ModellingContext.getActiveContext(), verbose);
+        }
+        return estimation != null;
+    }
+
+    /**
+     * Gets the current estimation (executes it silently if not processed yet).
+     * @return The current estimation
+     */
+    public SaEstimation getEstimation() {
+        SaEstimation e = estimation;
+        if (e == null) {
+            synchronized (this) {
+                e = estimation;
+                if (e == null) {
+                    e = SaManager.process(definition, ModellingContext.getActiveContext(), false);
+                    estimation = e;
+                }
+            }
+        }
+        return e;
+    }
+
+    public int getPriority() {
+        return this.priority;
+    }
 }

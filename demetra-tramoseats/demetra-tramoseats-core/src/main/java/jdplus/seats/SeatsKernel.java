@@ -49,7 +49,7 @@ public class SeatsKernel {
     public SeatsResults process(final SeatsModelSpec modelSpec, ProcessingLog log) {
         log.push(SEATS);
         // step 0. Build the model
-        SeatsModel model=buildModel(modelSpec, log);
+        SeatsModel model = buildModel(modelSpec, log);
         // step 1. Validate the current model;
         validate(model, log);
         // step 2. Try to decompose the model
@@ -61,8 +61,8 @@ public class SeatsKernel {
         log.pop();
         return results(model);
     }
-    
-    private SeatsModel buildModel(SeatsModelSpec modelSpec, ProcessingLog log){
+
+    private SeatsModel buildModel(SeatsModelSpec modelSpec, ProcessingLog log) {
         log.push(MODEL);
         SeatsModel model = SeatsModel.of(modelSpec);
         model.setCurrentModel(model.getOriginalModel());
@@ -75,6 +75,7 @@ public class SeatsKernel {
         IModelValidator validator = toolkit.getModelValidator();
         if (!validator.validate(model.getCurrentModel())) {
             model.setCurrentModel(validator.getNewModel());
+            model.setParametersCutOff(true);
             log.info(CUT_OFF);
         }
         log.pop();
@@ -84,7 +85,6 @@ public class SeatsKernel {
             CUT_OFF = "Arima parameters cut off",
             APPROXIMATION = "Model replaced by an approximation",
             NOISY = "Noisy model used";
-
 
     private void decomposeModel(SeatsModel model, ProcessingLog log) {
         log.push(DECOMPOSITION);
@@ -104,6 +104,7 @@ public class SeatsKernel {
             if (!approximator.approximate(model)) {
                 break;
             } else {
+                model.setModelChanged(true);
                 log.step(APPROXIMATION, model.getCurrentModel().orders());
             }
         }
@@ -111,6 +112,7 @@ public class SeatsKernel {
             throw new SeatsException(SeatsException.ERR_DECOMP);
         }
         if (!ucm.getModel().equals(model.getCurrentModel())) {
+            model.setModelChanged(true);
             log.warning(NOISY);
         }
         model.setUcarimaModel(ucm);
@@ -131,11 +133,19 @@ public class SeatsKernel {
             bias.correctBias(model);
         }
     }
-    
-    private SeatsResults results(SeatsModel model){
-        return new SeatsResults(model.getOriginalModel(), model.getCurrentModel(), 
-                model.isMeanCorrection(), model.getUcarimaModel(),
-                model.getInitialComponents(), model.getFinalComponents());
-        
+
+    private SeatsResults results(SeatsModel model) {
+        return SeatsResults.builder()
+                .originalModel(model.getOriginalModel())
+                .finalModel(model.getCurrentModel())
+                .meanCorrection(model.isMeanCorrection())
+                .innovationVariance(model.getInnovationVariance())
+                .parametersCutOff(model.isParametersCutOff())
+                .modelChanged(model.isModelChanged())
+                .ucarimaModel(model.getUcarimaModel())
+                .compactUcarimaModel(model.compactUcarimaModel())
+                .initialComponents(model.getInitialComponents())
+                .finalComponents(model.getFinalComponents())
+                .build();
     }
 }

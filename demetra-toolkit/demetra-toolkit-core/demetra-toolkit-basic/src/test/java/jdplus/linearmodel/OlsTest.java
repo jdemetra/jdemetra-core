@@ -54,16 +54,16 @@ public class OlsTest {
         LeastSquaresResults rslts = Ols.compute(model);
 //        System.out.println("Longley");
 //        System.out.println(rslts);
-        assertEquals(Math.abs(rslts.Ttest(0).getValue()), Math.sqrt(rslts.Ftest(0, 1).getValue()), 1e-9 );
-        assertEquals(rslts.Ftest().getValue(), rslts.Ftest(1, model.getVariablesCount()-1).getValue(), 1e-9 );
+        assertEquals(Math.abs(rslts.Ttest(0).getValue()), Math.sqrt(rslts.Ftest(0, 1).getValue()), 1e-9);
+        assertEquals(rslts.Ftest().getValue(), rslts.Ftest(1, model.getVariablesCount() - 1).getValue(), 1e-9);
         Matrix P = rslts.projectionMatrix();
-        assertTrue(MatrixNorms.absNorm(P.minus(GeneralMatrix.AB(P, P)))<1e-6);
+        assertTrue(MatrixNorms.absNorm(P.minus(GeneralMatrix.AB(P, P))) < 1e-6);
     }
 
     @Test
     public void testFilip() {
         double[] y = DataSets.Filip.y;
-        DoubleSeq x=DoubleSeq.of(DataSets.Filip.x);
+        DoubleSeq x = DoubleSeq.of(DataSets.Filip.x);
         LinearModel model = LinearModel.builder()
                 .y(DoubleSeq.of(y))
                 .meanCorrection(true)
@@ -82,7 +82,27 @@ public class OlsTest {
         LeastSquaresResults rslts = Ols.compute(model);
 //        System.out.println("Filip");
 //        System.out.println(rslts);
-        assertEquals(Math.abs(rslts.Ttest(0).getValue()), Math.sqrt(rslts.Ftest(0, 1).getValue()), 1e-9 );
+        assertEquals(Math.abs(rslts.Ttest(0).getValue()), Math.sqrt(rslts.Ftest(0, 1).getValue()), 1e-9);
 //        assertEquals(rslts.Ftest().getValue(), rslts.Ftest(1, model.getVariablesCount()-1).getValue(), 1e-9 );
     }
+
+    @Test
+    public void testSingular() {
+        double[] y = DataSets.Filip.y;
+        DoubleSeq x = DoubleSeq.of(DataSets.Filip.x);
+        LinearModel model = LinearModel.builder()
+                .y(DoubleSeq.of(y))
+                .meanCorrection(true)
+                .addX(x)
+                .addX(x.map(a -> a * a))
+                .addX(x.map(a -> a * a * a))
+                .addX(x.map(a -> -a * a * a))
+                .addX(x.map(a -> 0))
+                .addX(x.map(a -> a * a * a * a * a))
+                .build();
+
+        LeastSquaresResults rslts = Ols.compute(model);
+        System.out.println(rslts.getR2());
+    }
+
 }

@@ -22,6 +22,7 @@ import demetra.processing.ProcResults;
 import demetra.sa.SaDictionary;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
+import java.util.Collections;
 import java.util.List;
 import jdplus.stats.tests.StatisticalTest;
 import jdplus.stats.tests.seasonal.StableSeasonality;
@@ -31,6 +32,7 @@ import jdplus.stats.tests.seasonal.StableSeasonality;
  * @author PALATEJ
  */
 public class ResidualSeasonalityDiagnostics implements Diagnostics {
+
 
     private StatisticalTest saFTest, lastSaFTest, irregularFTest;
 
@@ -182,6 +184,6 @@ public class ResidualSeasonalityDiagnostics implements Diagnostics {
 
     @Override
     public List<String> getWarnings() {
-        return null;
+        return Collections.emptyList();
     }
 }

@@ -24,9 +24,7 @@ import demetra.sa.DecompositionMode;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITsVariable;
-import demetra.timeseries.regression.IUserTsVariable;
 import demetra.timeseries.regression.modelling.ModellingContext;
 import jdplus.x11.X11Kernel;
 import demetra.x11.X11Results;
@@ -41,6 +39,7 @@ import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.sa.RegArimaDecomposer;
 import jdplus.sa.SaVariablesMapping;
 import jdplus.sarima.SarimaModel;
+import jdplus.x11.X11Utility;
 
 /**
  *
@@ -102,7 +101,8 @@ public class X13Kernel {
         X11Spec nspec = updateSpec(spec, preprocessing);
         X11Results xr = x11.process(alin, nspec);
         X13Finals finals = finals(nspec.getMode(), preadjustment, xr);
-        return new X13Results(preprocessing, preadjustment, xr, finals);
+        Mstatistics mstats = Mstatistics.of(preadjustment, xr, finals);
+        return new X13Results(preprocessing, preadjustment, xr, finals, mstats);
     }
 
     private TsData initialStep(RegArimaDecomposer decomposer, int nb, int nf, X13Preadjustment.Builder astep) {
@@ -124,7 +124,7 @@ public class X13Kernel {
         TsData ut = decomposer.deterministicEffect(domain, ComponentType.Trend, false, v -> v.isUser());
         TsData us = decomposer.deterministicEffect(domain, ComponentType.Seasonal, false, v -> v.isUser());
         TsData ui = decomposer.deterministicEffect(domain, ComponentType.Irregular, false, v -> v.isUser());
-        TsData usa = decomposer.deterministicEffect(domain, ComponentType.SeasonallyAdjusted, false, v->v.isUser());
+        TsData usa = decomposer.deterministicEffect(domain, ComponentType.SeasonallyAdjusted, false, v -> v.isUser());
         TsData user = decomposer.deterministicEffect(domain, ComponentType.Series, false, v -> v.isUser());
         TsData uu = decomposer.deterministicEffect(domain, ComponentType.Undefined, false, v -> v.isUser());
         TsData p = mul ? TsData.multiply(pt, ps, pi) : TsData.add(pt, ps, pi);
@@ -177,10 +177,11 @@ public class X13Kernel {
                     nfcasts = TsData.add(nfcasts, detall.drop(nb + n, 0));
                 }
             }
-            s = TsData.concatenate(nbcasts, s, nfcasts);
         }
 
         astep.a1(s)
+                .a1a(nfcasts)
+                .a1b(nbcasts)
                 .a6(td)
                 .a7(mh)
                 .a8(pall)
@@ -191,6 +192,7 @@ public class X13Kernel {
                 .a9sa(usa)
                 .a9ser(user);
 
+        s = TsData.concatenate(nbcasts, s, nfcasts);
         return (mul ? TsData.divide(s, detlin) : TsData.subtract(s, detlin));
     }
 
@@ -208,7 +210,7 @@ public class X13Kernel {
         return builder.build();
     }
 
-    private final TsData op(DecompositionMode mode, TsData l, TsData r) {
+    private TsData op(DecompositionMode mode, TsData l, TsData r) {
         if (mode != DecompositionMode.Multiplicative && mode != DecompositionMode.PseudoAdditive) {
             return TsData.subtract(l, r);
         } else {
@@ -225,12 +227,30 @@ public class X13Kernel {
      *
      * @return A new time series is returned
      */
-    private final TsData invOp(DecompositionMode mode, TsData l, TsData r) {
+    private TsData invOp(DecompositionMode mode, TsData l, TsData r) {
         if (mode != DecompositionMode.Multiplicative && mode != DecompositionMode.PseudoAdditive) {
             return TsData.add(l, r);
         } else {
             return TsData.multiply(l, r);
         }
+    }
+
+    private double mean(DecompositionMode mode) {
+        if (mode != DecompositionMode.Multiplicative && mode != DecompositionMode.PseudoAdditive) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    private TsData correct(TsData s, TsData weights, TsData rs) {
+        DoubleSeq sc = X11Utility.correctSeries(s.getValues(), weights.getValues(), rs.getValues());
+        return TsData.ofInternal(s.getStart(), sc.commit());
+    }
+
+    private TsData correct(TsData s, TsData weights, double mean) {
+        DoubleSeq sc = X11Utility.correctSeries(s.getValues(), weights.getValues(), mean);
+        return TsData.ofInternal(s.getStart(), sc.commit());
     }
 
 //    private final TsData pseudoOp(TsData y, TsData t, TsData s) {
@@ -255,9 +275,11 @@ public class X13Kernel {
 //        }
 //        return sa;
 //    }
+    
     private X13Finals finals(DecompositionMode mode, X13Preadjustment astep, X11Results x11) {
         // add preadjustment
         TsData a1 = astep.getA1();
+        TsData a1a = astep.getA1a();
         TsData a8t = astep.getA8t();
         TsData a8i = astep.getA8i();
         TsData a8s = astep.getA8s();
@@ -269,16 +291,30 @@ public class X13Kernel {
 
         X13Finals.Builder decomp = X13Finals.builder();
 
+        TsDomain fd = a1a == null ? null : a1a.getDomain();
+        TsDomain d = a1.getDomain();
         // add ps to d10
+
         TsData d10c = invOp(mode, d10, a8s);
+        if (fd != null) {
+            decomp.d10a(TsData.fitToDomain(d10c, fd));
+            d10c = TsData.fitToDomain(d10c, d);
+        }
         decomp.d10final(d10c);
 
         // add pt to trend
         TsData d12c = invOp(mode, d12, a8t);
+        if (fd != null) {
+            decomp.d12a(TsData.fitToDomain(d12c, fd));
+            d12c = TsData.fitToDomain(d12c, d);
+        }
         decomp.d12final(d12c);
 
         // add pi to irregular
         TsData d13c = invOp(mode, d13, a8i);
+        if (fd != null) {
+             d13c = TsData.fitToDomain(d13c, d);
+        }
         decomp.d13final(d13c);
 
         // add pt, pi to d11
@@ -287,6 +323,10 @@ public class X13Kernel {
         //   d11c = toolkit.getContext().invOp(d11c, a8s);
         TsData a9sa = astep.getA9sa();
         d11c = invOp(mode, d11c, a9sa);
+        if (fd != null) {
+            decomp.d11a(TsData.fitToDomain(d11c, fd));
+            d11c = TsData.fitToDomain(d11c, d);
+        }
         decomp.d11final(d11c);
 
         TsData d16;
@@ -297,8 +337,34 @@ public class X13Kernel {
         } else {
             d16 = op(mode, a1, d11c);
         }
+        if (fd != null) {
+            decomp.d16a(TsData.fitToDomain(d16, fd));
+            d16 = TsData.fitToDomain(d16, d);
+        }
         decomp.d16(d16);
-        decomp.d18(op(mode, d16, d10c));
+        TsData d18=op(mode, d16, d10c);
+        if (fd != null) {
+            decomp.d18a(TsData.fitToDomain(d18, fd));
+            d18= TsData.fitToDomain(d18, d);
+        }
+        decomp.d18(d18);
+
+        // remove pre-specified outliers
+        TsData a1c = op(mode, a1, a8i);
+        d11c = op(mode, d11c, a8i);
+
+        TsData c17 = TsData.fitToDomain(x11.getC17(), d);
+
+        TsData tmp = op(mode, a1, d13c);
+        TsData e1 = correct(a1c, c17, tmp);
+        TsData e2 = correct(d11c, c17, d12);
+        TsData e3 = correct(TsData.fitToDomain(d13, d), c17, mean(mode));
+        TsData e11 = correct(d11c, c17, invOp(mode, d12, op(mode, a1c, e1)));
+
+        decomp.e1(e1);
+        decomp.e2(e2);
+        decomp.e3(e3);
+        decomp.e11(e11);
 
 //        int nf = toolkit.getContext().getForecastHorizon();
 //        if (nf > 0) {

@@ -26,7 +26,12 @@ import demetra.stats.TestResult;
 @lombok.Builder(builderClassName="Builder")
 public class RegressionTests {
     TestResult breuschPagan;
+    double bpr2;
     TestResult white;
+    double wr2;
     TestResult jarqueBera;
+    double skewness, kurtosis;
     TestResult arch;
+    double archr2;
+    
 }

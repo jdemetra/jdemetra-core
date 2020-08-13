@@ -54,13 +54,14 @@ public class CombinedSeasonality {
      * 
      * @param series Data
      * @param period Tested periodicity
+     * @param startPeriod
      * @param multiplicative True for multiplicative model
      */
-    public CombinedSeasonality(DoubleSeq series, int period, boolean multiplicative)
+    public CombinedSeasonality(DoubleSeq series, int period, int startPeriod, boolean multiplicative)
     {
 	kruskallwallis = new KruskalWallis(series, period);
 	stable = StableSeasonality.of(series, period);
-	evolutive = EvolutiveSeasonality.of(series, period, multiplicative);
+	evolutive = EvolutiveSeasonality.of(series, period, startPeriod, multiplicative);
 
     }
 

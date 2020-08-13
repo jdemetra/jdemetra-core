@@ -18,10 +18,12 @@ package demetra.revisions.r;
 
 import demetra.revisions.parametric.RegressionBasedAnalysis;
 import demetra.revisions.timeseries.TsDataVintages;
+import demetra.revisions.timeseries.TsMatrix;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -42,9 +44,19 @@ public class UtilityTest {
 //        TsDataVintages <LocalDate>vc = v.select(sel);
         Vintages V=new Vintages(v);
         RegressionBasedAnalysis<LocalDate> analysis = V.verticalAnalysis(t0.format(DateTimeFormatter.ISO_DATE), t1.format(DateTimeFormatter.ISO_DATE));
-        double[] olsInformation = Utility.olsInformation(analysis, 10);
         double theil = Utility.theil(analysis, 10);
         double[] biasInformation = Utility.biasInformation(analysis, 10);
+    }
+
+    @Test
+    public void testvtable() {
+        TsDataVintages<LocalDate> v = random2(480, 20);
+        LocalDate t0=LocalDate.of(2005, 1, 1);
+        LocalDate t1=LocalDate.of(2020, 1, 1);
+        Vintages V=new Vintages(v);
+        TsMatrix vtable = V.vtable(3, 136, t0.format(DateTimeFormatter.ISO_DATE), t1.format(DateTimeFormatter.ISO_DATE));
+        assertTrue(vtable.getMatrix().getRowsCount() == 134);
+//        System.out.println(vtable.getMatrix());
     }
 
     @Test
@@ -54,7 +66,6 @@ public class UtilityTest {
         LocalDate t1=LocalDate.of(2020, 1, 1);
         Vintages V=new Vintages(v);
         RegressionBasedAnalysis<LocalDate> analysis = V.diagonalAnalysis(0, 15);
-        double[] olsInformation = Utility.olsInformation(analysis, 10);
         double theil = Utility.theil(analysis, 10);
         double[] biasInformation = Utility.biasInformation(analysis, 10);
     }
@@ -72,4 +83,18 @@ public class UtilityTest {
         return builder.build();
     }
     
+    private static TsDataVintages<LocalDate> random2(int N, int K) {
+        Random rnd = new Random();
+        TsDataVintages.Builder<LocalDate> builder = TsDataVintages.<LocalDate>builder();
+        TsPeriod start = TsPeriod.monthly(2000, 1);
+        for (int i = 0; i < N; ++i) {
+            for (int k = 0; k < K; ++k) {
+                TsPeriod v = start.plus(k);
+                builder.add(start, v.end().toLocalDate(), rnd.nextDouble());
+                builder.add(start, v.end().toLocalDate().plusDays(15), rnd.nextDouble());
+            }
+            start = start.next();
+        }
+        return builder.build();
+    }
 }

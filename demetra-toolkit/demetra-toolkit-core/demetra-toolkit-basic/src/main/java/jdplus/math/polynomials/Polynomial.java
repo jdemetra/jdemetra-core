@@ -125,16 +125,6 @@ public final class Polynomial {
     }
 
     /**
-     * 
-     * @param p0
-     * @param coefficients
-     * @return 
-     */
-    public static Polynomial paste(double p0, @NonNull double... coefficients) {
-        return new Polynomial(Coefficients.of(p0, coefficients));
-    }
-
-    /**
      * Create a new Polynomial by using the specified coefficients, from reader.
      * The polynomial will be of degree <code>n-1</code> <br>, except if there
      * are 0 values at the end

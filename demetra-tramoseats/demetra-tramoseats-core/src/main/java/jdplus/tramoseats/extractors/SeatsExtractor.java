@@ -14,6 +14,7 @@ import demetra.modelling.SeriesInfo;
 import demetra.sa.ComponentType;
 import demetra.sa.SaDictionary;
 import demetra.timeseries.TsData;
+import java.util.function.Function;
 import jdplus.modelling.extractors.ArimaExtractor;
 import jdplus.modelling.extractors.SarimaExtractor;
 import jdplus.seats.SeatsResults;

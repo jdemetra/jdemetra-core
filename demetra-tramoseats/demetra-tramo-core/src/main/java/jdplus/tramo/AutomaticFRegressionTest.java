@@ -192,8 +192,6 @@ public class AutomaticFRegressionTest implements IRegressionModule {
 
     private ModelDescription createTestModel(RegSarimaModelling context, ITradingDaysVariable td, ILengthOfPeriodVariable lp) {
         ModelDescription tmp = ModelDescription.copyOf(context.getDescription());
-        tmp.setAirline(true);
-        tmp.setMean(true);
         if (td != null) {
             tmp.addVariable(Variable.variable("td", td));
             if (lp != null) {

@@ -31,6 +31,7 @@ import jdplus.modelling.regression.SwitchOutlierFactory;
 import jdplus.regarima.ami.OutliersDetectionModule;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.implementations.CompositeSsf;
+import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.ucarima.AllSelector;
 import jdplus.ucarima.ModelDecomposer;
@@ -81,7 +82,7 @@ public class FractionalAirlineKernel {
         RegArimaModel regarima = builder.build();
         GlsArimaProcessor<ArimaModel> finalProcessor = GlsArimaProcessor.builder(ArimaModel.class)
                 .precision(spec.getPrecision())
-                .computeExactFinalDerivatives(! spec.isApproximateHessian())
+                .computeExactFinalDerivatives(!spec.isApproximateHessian())
                 .build();
         RegArimaEstimation rslt = finalProcessor.process(regarima, mapping);
         LogLikelihoodFunction.Point max = rslt.getMax();
@@ -100,7 +101,7 @@ public class FractionalAirlineKernel {
                 .build();
     }
 
-    public FractionalAirlineDecomposition decompose(DoubleSeq s, double period, boolean adjust, boolean sn) {
+    public FractionalAirlineDecomposition decompose(DoubleSeq s, double period, boolean adjust, boolean sn, boolean cov) {
         int iperiod = (int) period;
         if (period - iperiod < 1e-9) {
             period = iperiod;
@@ -126,9 +127,6 @@ public class FractionalAirlineKernel {
         UcarimaModel ucm = ucm(rslt.getModel().arima(), sn);
 
         ucm = ucm.simplify();
-        CompositeSsf ssf = SsfUcarima.of(ucm);
-        SsfData data = new SsfData(s);
-        DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
 
         demetra.arima.ArimaModel sum = ApiUtility.toApi(ucm.getModel(), "sum");
         demetra.arima.UcarimaModel ucmt;
@@ -143,7 +141,6 @@ public class FractionalAirlineKernel {
             demetra.arima.ArimaModel mi = ApiUtility.toApi(ucm.getComponent(2), "irregular");
             ucmt = new demetra.arima.UcarimaModel(sum, new demetra.arima.ArimaModel[]{mt, ms, mi});
         }
-        int[] pos = ssf.componentsPosition();
         FractionalAirlineDecomposition.Builder dbuilder = FractionalAirlineDecomposition.builder()
                 .model(new demetra.highfreq.FractionalAirline(new double[]{1, period}, max.getParameters(), adjust))
                 .likelihood(rslt.statistics())
@@ -151,15 +148,42 @@ public class FractionalAirlineKernel {
                 .parametersCovariance(max.asymptoticCovariance())
                 .score(max.getScore())
                 .y(s.toArray())
-                .s(ds.item(pos[1]).toArray())
                 .ucarima(ucmt);
+        CompositeSsf ssf = SsfUcarima.of(ucm);
+        SsfData data = new SsfData(s);
+        int[] pos = ssf.componentsPosition();
+        if (cov) {
+            try{
+                DefaultSmoothingResults sr = DkToolkit.sqrtSmooth(ssf, data, true, true);
+                if (sn) {
+                    return dbuilder
+                            .s(sr.getComponent(pos[1]).toArray())
+                            .n(sr.getComponent(pos[0]).toArray())
+                            .stdeS(sr.getComponentVariance(pos[1]).fastOp(a->a<=0?0:Math.sqrt(a)).toArray())
+                            .stdeN(sr.getComponentVariance(pos[0]).fastOp(a->a<=0?0:Math.sqrt(a)).toArray())
+                            .build();
+                } else {
+                    return dbuilder
+                            .s(sr.getComponent(pos[1]).toArray())
+                            .t(sr.getComponent(pos[0]).toArray())
+                            .i(sr.getComponent(pos[2]).toArray())
+                            .stdeS(sr.getComponentVariance(pos[1]).fastOp(a->a<=0?0:Math.sqrt(a)).toArray())
+                            .stdeT(sr.getComponentVariance(pos[0]).fastOp(a->a<=0?0:Math.sqrt(a)).toArray())
+                            .stdeI(sr.getComponentVariance(pos[2]).fastOp(a->a<=0?0:Math.sqrt(a)).toArray())
+                            .build();
+                }
+            }catch (Exception err){}
+        }
 
+        DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
         if (sn) {
             return dbuilder
+                    .s(ds.item(pos[1]).toArray())
                     .n(ds.item(pos[0]).toArray())
                     .build();
         } else {
             return dbuilder
+                    .s(ds.item(pos[1]).toArray())
                     .t(ds.item(pos[0]).toArray())
                     .i(ds.item(pos[2]).toArray())
                     .build();

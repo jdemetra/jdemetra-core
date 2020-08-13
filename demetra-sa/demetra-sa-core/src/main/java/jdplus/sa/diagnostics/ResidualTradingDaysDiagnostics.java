@@ -36,6 +36,25 @@ import jdplus.stats.tests.StatisticalTest;
  */
 public class ResidualTradingDaysDiagnostics implements Diagnostics {
 
+    @lombok.Value
+    public static class Input{
+        
+        /**
+         * Multiplicative decomposition
+         */
+        boolean multiplicative;
+        
+        /**
+         * Seasonally adjusted series, linearized, level
+         */
+        TsData sa;
+        
+        /**
+         * Irregular component, linearized, level (around 0 or 1)
+         */
+        TsData irregular;
+    }
+
     private StatisticalTest f_sa, f_i;
     private double sev, bad, unc;
 
@@ -63,17 +82,17 @@ public class ResidualTradingDaysDiagnostics implements Diagnostics {
         return se > E_LIMIT;
     }
 
-    static Diagnostics create(ProcResults rslts, ResidualTradingDaysDiagnosticsConfiguration config) {
+    static Diagnostics of(ResidualTradingDaysDiagnosticsConfiguration config, Input data) {
         try {
             ResidualTradingDaysDiagnostics test = new ResidualTradingDaysDiagnostics();
-            TsData sa = rslts.getData(SaDictionary.SA_CMP, TsData.class);
-            TsData i = rslts.getData(SaDictionary.I_CMP, TsData.class);
+            TsData sa = data.sa;
+            TsData i = data.irregular;
             if (sa == null && i == null) {
                 return null;
             }
             int ny = config.getSpanInYears();
             boolean ar = config.isArModel();
-            boolean mul = isMultiplicative(rslts);
+            boolean mul = data.multiplicative;
             boolean isignif = mul ? isSignificant(i.getValues()) : (sa != null && i != null) ? isSignificant(i.getValues(), sa.getValues()) : true;
             if (sa != null) {
                 if (mul) {

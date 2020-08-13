@@ -1,12 +1,12 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
- * http://ec.europa.eu/idabc/eupl
+ * https://joinup.ec.europa.eu/software/page/eupl
  *
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
@@ -114,17 +114,9 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
                 .easterSpec(true)
                 .build();
 
-        TradingDaysSpec wd = TradingDaysSpec.builder()
-                .type(TradingDaysType.WorkingDays)
-                .lengthOfPeriodTime(LengthOfPeriodType.LeapYear)
-                .test(RegressionTestSpec.Remove)
-                .build();
+        TradingDaysSpec wd = TradingDaysSpec.td(TradingDaysType.WorkingDays, LengthOfPeriodType.LeapYear, RegressionTestSpec.Remove, true);
 
-        TradingDaysSpec td = TradingDaysSpec.builder()
-                .type(TradingDaysType.TradingDays)
-                .lengthOfPeriodTime(LengthOfPeriodType.LeapYear)
-                .test(RegressionTestSpec.Remove)
-                .build();
+        TradingDaysSpec td = TradingDaysSpec.td(TradingDaysType.TradingDays, LengthOfPeriodType.LeapYear, RegressionTestSpec.Remove, true);
 
         RegressionSpec rwd = RegressionSpec.builder()
                 .easter(easter)

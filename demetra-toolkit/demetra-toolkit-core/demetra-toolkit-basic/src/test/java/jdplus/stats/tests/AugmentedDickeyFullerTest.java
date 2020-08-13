@@ -29,6 +29,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import demetra.data.DoubleSeq;
+import jdplus.stats.tests.DickeyFullerTable.DickeyFullerType;
 
 /**
  *
@@ -43,25 +44,31 @@ public class AugmentedDickeyFullerTest {
 
 
     @Test
-    @Ignore
+//    @Ignore
     public void testADF() {
         int N = 10000;
         double[] T = new double[N];
+        double[] PT = new double[N];
         for (int i = 0; i < N; ++i) {
-            DoubleSeq data = test(600);
+            DoubleSeq data = test(200);
             AugmentedDickeyFuller adf = AugmentedDickeyFuller.builder()
                     .data(data)
-                    .numberOfLags(1)
+                    .numberOfLags(0)
                     .constant(true)
                     .linearTrend(true)
                     .build();
             T[i] = adf.getT();
+            PT[i] = DickeyFullerTable.probability(200, T[i], DickeyFullerType.CT, true);
         }
         Arrays.sort(T);
+        Arrays.sort(PT);
         int n01 = N / 100, n05 = N / 20, n10 = N / 10;
         System.out.println((T[n01] + T[n01 - 1]) / 2);
         System.out.println((T[n05] + T[n05 - 1]) / 2);
         System.out.println((T[n10] + T[n10 - 1]) / 2);
+        
+        System.out.println(DoubleSeq.of(T));
+        System.out.println(DoubleSeq.of(PT));
     }
 
     private final static int R = 1000000, S = 500;
@@ -113,10 +120,10 @@ public class AugmentedDickeyFullerTest {
         }
     }
 
+    final static MersenneTwister rnd = new MersenneTwister(0);
     public static DoubleSeq test(int n) {
 
         Normal N = new Normal();
-        MersenneTwister rnd = MersenneTwister.fromSystemNanoTime();
         DataBlock data = DataBlock.make(n + K);
         data.set(() -> N.random(rnd));
         data.applyRecursively(1, (a,b)->a+b);

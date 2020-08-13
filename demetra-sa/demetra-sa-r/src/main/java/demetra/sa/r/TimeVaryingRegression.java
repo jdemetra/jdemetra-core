@@ -15,7 +15,6 @@ import jdplus.math.matrices.QuadraticForm;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
-import jdplus.modelling.extractors.SarimaExtractor;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;

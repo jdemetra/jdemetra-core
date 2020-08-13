@@ -9,6 +9,7 @@ import demetra.arima.SarimaOrders;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
 import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.sarima.SarimaModel;
 import jdplus.ucarima.UcarimaModel;
 
@@ -18,12 +19,22 @@ import jdplus.ucarima.UcarimaModel;
  */
 @lombok.experimental.UtilityClass
 public class ApiUtility {
+    
+    private double[] coefficients(BackFilter filter){
+        int n=filter.getDegree();
+        double[] w=new double[n];
+        for (int i=0; i<n; ++i){
+            w[i]=filter.get(i+1);
+        }
+        return w;
+    }
+    
     // ARIMA
     public demetra.arima.ArimaModel toApi(IArimaModel model, String name){
         return demetra.arima.ArimaModel.builder()
-                .ar(model.getStationaryAr().weightsToArray())
-                .delta(model.getNonStationaryAr().weightsToArray())
-                .ma(model.getMa().weightsToArray())
+                .ar(coefficients(model.getStationaryAr()))
+                .delta(coefficients(model.getNonStationaryAr()))
+                .ma(coefficients(model.getMa()))
                 .innovationVariance(model.getInnovationVariance())
                 .name(name)
                 .build();
@@ -31,9 +42,9 @@ public class ApiUtility {
 
     public ArimaModel fromApi(demetra.arima.ArimaModel model){
         return new ArimaModel(
-                BackFilter.ofInternal(model.getAr()), 
-                BackFilter.ofInternal(model.getDelta()),
-                BackFilter.ofInternal(model.getMa()),
+                new BackFilter(Polynomial.valueOf(1, model.getAr())), 
+                new BackFilter(Polynomial.valueOf(1, model.getDelta())),
+                new BackFilter(Polynomial.valueOf(1, model.getMa())),
                 model.getInnovationVariance());
     }
     // SARIMA

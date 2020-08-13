@@ -38,6 +38,6 @@ public interface TsDataProcessorFactory<S extends ProcSpecification, R extends P
      * @return The results (=output) of the processing. May be null.
      */
     @Override
-    TsDataProcessor<R> generateProcessing(S specification);
+    TsDataProcessor<R> generateProcessor(S specification);
     
 }

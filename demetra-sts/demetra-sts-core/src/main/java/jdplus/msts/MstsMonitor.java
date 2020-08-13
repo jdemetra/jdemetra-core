@@ -22,7 +22,6 @@ import demetra.data.DoubleSeq;
 import jdplus.likelihood.Likelihood;
 import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
-import demetra.ssf.SsfLikelihood;
 import jdplus.math.matrices.Matrix;
 import jdplus.likelihood.LikelihoodFunction;
 import jdplus.likelihood.LikelihoodFunctionPoint;

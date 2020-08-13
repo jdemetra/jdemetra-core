@@ -26,16 +26,22 @@ import demetra.data.DoubleSeq;
  * @author Jean Palate
  */
 public class LocalPolynomialFiltersTest {
-    
+
     public LocalPolynomialFiltersTest() {
     }
 
     @Test
     public void testHenderson() {
-        double[] rslt = LocalPolynomialFilters.filter(Data.NILE, 11, 3, "Henderson", "DAF", .5);
+        System.out.println(DoubleSeq.of(Data.NILE));
+        double[] rslt = LocalPolynomialFilters.filter(Data.NILE, 9, 3, "Henderson", "LC", .5, 0, 0);
         assertTrue(rslt != null);
-//        System.out.println(DoubleSequence.ofInternal(rslt));
+        System.out.println(DoubleSeq.of(rslt));
+        rslt = LocalPolynomialFilters.filter(Data.NILE, 9, 3, "Henderson", "CC", .5, 10, Math.PI / 8);
+        assertTrue(rslt != null);
+        System.out.println(DoubleSeq.of(rslt));
+        rslt = LocalPolynomialFilters.filter(Data.NILE, 9, 3, "Henderson", "DAF", .5, 0,0);
+        assertTrue(rslt != null);
+        System.out.println(DoubleSeq.of(rslt));
     }
-    
- 
+
 }

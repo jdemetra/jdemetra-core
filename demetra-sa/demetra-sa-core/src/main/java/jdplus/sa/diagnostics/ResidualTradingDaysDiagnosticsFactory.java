@@ -19,9 +19,11 @@ package jdplus.sa.diagnostics;
 import demetra.processing.Diagnostics;
 import demetra.processing.DiagnosticsFactory;
 import demetra.processing.ProcResults;
+import demetra.sa.SaDiagnosticsFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import nbbrd.service.ServiceProvider;
 
@@ -29,22 +31,19 @@ import nbbrd.service.ServiceProvider;
  *
  * @author Jean Palate
  */
-@ServiceProvider(DiagnosticsFactory.class)
-public class ResidualTradingDaysDiagnosticsFactory implements DiagnosticsFactory<ProcResults> {
+public class ResidualTradingDaysDiagnosticsFactory<R> implements SaDiagnosticsFactory<R> {
     
     static final String NAME="Residual trading days tests", DESC="Residual trading days tests";
     static final String FTEST_SA = "F-Test on SA (td)", FTEST_I = "F-Test on I (td)";
     static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(FTEST_SA, FTEST_I));
 
     private final ResidualTradingDaysDiagnosticsConfiguration config;
+    private final Function<R, ResidualTradingDaysDiagnostics.Input> extractor;
     private boolean enabled;
 
-    public ResidualTradingDaysDiagnosticsFactory() {
-        config = ResidualTradingDaysDiagnosticsConfiguration.DEFAULT;
-    }
-
-    public ResidualTradingDaysDiagnosticsFactory(ResidualTradingDaysDiagnosticsConfiguration config) {
+    public ResidualTradingDaysDiagnosticsFactory(ResidualTradingDaysDiagnosticsConfiguration config, Function<R, ResidualTradingDaysDiagnostics.Input> extractor) {
         this.config = config;
+        this.extractor=extractor;
     }
 
     public ResidualTradingDaysDiagnosticsConfiguration getConfiguration() {
@@ -72,8 +71,18 @@ public class ResidualTradingDaysDiagnosticsFactory implements DiagnosticsFactory
     }
 
     @Override
-    public Diagnostics of(ProcResults rslts) {
-        return ResidualTradingDaysDiagnostics.create(rslts, config);
+    public Diagnostics of(R rslts) {
+        return ResidualTradingDaysDiagnostics.of(config, extractor.apply(rslts));
+    }
+
+    @Override
+    public Scope getScope() {
+        return Scope.Final; 
+    }
+
+    @Override
+    public int getOrder() {
+        return 100; 
     }
 
 }

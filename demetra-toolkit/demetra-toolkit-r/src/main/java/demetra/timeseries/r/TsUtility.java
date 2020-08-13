@@ -73,14 +73,16 @@ public class TsUtility {
      * @return
      */
     public int[] startPeriod(TsData s) {
-        LocalDate start = s.getStart().start().toLocalDate();
+        return of(s.getStart());
+    }
 
-        int freq = s.getAnnualFrequency();
+    public int[] of(TsPeriod p) {
+        LocalDate start = p.start().toLocalDate();
+        int freq = p.getUnit().getAnnualFrequency();
         int c = 12 / freq;
         int mon = start.getMonthValue();
         int year = start.getYear();
         return new int[]{freq, year, 1 + (mon - 1) / c};
     }
-
 
 }

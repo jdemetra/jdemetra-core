@@ -28,7 +28,7 @@ public class FractionalAirlineDecomposition implements ProcResults {
     private MatrixType parametersCovariance;
 
     LikelihoodStatistics likelihood;
-    double[] y, t, s, i, n;
+    double[] y, t, s, i, n, stdeT, stdeS, stdeI, stdeN;
     demetra.arima.UcarimaModel ucarima;
 
     public double[] getSa() {

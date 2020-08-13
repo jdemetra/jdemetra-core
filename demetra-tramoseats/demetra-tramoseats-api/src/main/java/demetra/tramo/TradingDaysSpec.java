@@ -17,11 +17,9 @@
 package demetra.tramo;
 
 import demetra.design.Development;
-import demetra.design.LombokWorkaround;
 import demetra.timeseries.regression.RegressionTestType;
 import demetra.timeseries.regression.TradingDaysType;
 import demetra.util.Validatable;
-import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -80,6 +78,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
         return new TradingDaysSpec(null, null, type,
                 leapyear, regtype, 0, AutoMethod.Unused, 0);
     }
+    
     public static enum AutoMethod {
         Unused,
         FTest,
@@ -122,6 +121,18 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
 
     public boolean isStockTradingDays() {
         return stockTradingDays != 0;
+    }
+
+    public boolean isUserDefined() {
+        return userVariables != null;
+    }
+
+    public boolean isDefaultTradingDays() {
+        return userVariables == null && holidays==null && stockTradingDays ==0 && tradingDaysType != TradingDaysType.None;
+    }
+
+    public boolean isHolidays() {
+        return holidays != null;
     }
 
     public boolean isValid() {

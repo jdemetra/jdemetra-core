@@ -110,7 +110,7 @@ public class DefaultModelValidator implements IModelValidator {
                 return false;
             }
         } else {
-            Polynomial P = Polynomial.paste(1.0, p);
+            Polynomial P = Polynomial.valueOf(1.0, p);
             boolean changed = false;
             // FIXME: Arrays2.copyOf() might be useless here
             Complex[] roots = P.roots();
@@ -186,7 +186,7 @@ public class DefaultModelValidator implements IModelValidator {
                 changed = true;
             }
         } else if (q.length > 1) {
-            Polynomial Q = Polynomial.paste(1, q);
+            Polynomial Q = Polynomial.valueOf(1, q);
             Complex[] roots = Q.roots();
             boolean qchanged = false;
             for (int i = 0; i < roots.length; ++i) {

@@ -1,21 +1,22 @@
 /*
- * Copyright 2013 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
- * http://ec.europa.eu/idabc/eupl
+ * https://joinup.ec.europa.eu/software/page/eupl
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and
+ * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
 package demetra.regarima;
 
+import demetra.data.Parameter;
 import demetra.design.Development;
 import demetra.design.LombokWorkaround;
 import demetra.timeseries.regression.IOutlier;
@@ -54,17 +55,16 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
     @lombok.Singular
     private List<Ramp> ramps;
 
-    private Map<String, double[]> fixedCoefficients;
-    private Map<String, double[]> coefficients;
+    @lombok.Singular
+    private Map<String, Parameter[]> coefficients;
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
                 .aicDiff(DEF_AICCDIFF)
                 .easter(EasterSpec.builder().build())
-                .fixedCoefficients(new LinkedHashMap<>())
                 .coefficients(new LinkedHashMap<>())
-                .tradingDays(TradingDaysSpec.builder().build());
+                .tradingDays(TradingDaysSpec.none());
     }
 
     public boolean isUsed() {
@@ -89,23 +89,6 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
 
     public static class Builder implements Validatable.Builder<RegressionSpec> {
 
-        @LombokWorkaround
-        public Builder fixedCoefficient(String key, double[] value) {
-            if (fixedCoefficients == null) {
-                fixedCoefficients = new LinkedHashMap<>();
-            }
-            fixedCoefficients.put(key, value);
-            return this;
-        }
-
-        @LombokWorkaround
-        public Builder coefficient(String key, double[] value) {
-            if (coefficients == null) {
-                coefficients = new LinkedHashMap<>();
-            }
-            coefficients.put(key, value);
-            return this;
-        }
     }
 
 }

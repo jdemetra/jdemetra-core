@@ -33,19 +33,19 @@ public class FSTFilterFactory {
                     .timelinessAntiphaseCriterion(spec.isAntiphase())
                     .timelinessLimits(spec.getW0(), spec.getW1());
                     
-            FSTFilter.Results rslt = builder.build().make(spec.getSmoothnessWeight(), spec.getTimelinessWeight());
+            FSTFilter.Results rslt = builder.build().make(spec.getSmoothnessWeight(), spec.getTimelinessWeight(), true);
             cf=rslt.getFilter();
             lf=new IFiniteFilter[spec.getLags()];
             rf=new IFiniteFilter[spec.getLeads()];
             int del=spec.getLags()+spec.getLeads();
             for (int i=0; i<lf.length; ++i){
-                rslt = builder.nlags(i).nleads(del-i).build().make(spec.getSmoothnessWeight(), spec.getTimelinessWeight());
+                rslt = builder.nlags(i).nleads(del-i).build().make(spec.getSmoothnessWeight(), spec.getTimelinessWeight(), false);
                 lf[lf.length-i-1]=rslt.getFilter();
             }
             builder.nlags(spec.getLags());
             builder.nleads(spec.getLeads());
             for (int i=0; i<rf.length; ++i){
-                rslt = builder.nleads(i).nlags(del-i).build().make(spec.getSmoothnessWeight(), spec.getTimelinessWeight());
+                rslt = builder.nleads(i).nlags(del-i).build().make(spec.getSmoothnessWeight(), spec.getTimelinessWeight(), false);
                rf[rf.length-i-1]=rslt.getFilter();
             }
         }

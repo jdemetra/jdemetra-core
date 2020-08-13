@@ -39,8 +39,8 @@ public class FilteredMeanEndPoints implements IEndPointsProcessor {
         DoubleSeq rbeg = in.range(0, len);
         DoubleSeq rend = in.range(n - len, n);
 
-        double beg = DataBlock.of(rbeg).sum() / len;
-        double end = DataBlock.of(rend).sum() / len;
+        double beg = rbeg.average();
+        double end = rend.average();
         // fill the first/last items
         for (int i = 0, j = n + len; i < len; ++i, ++j) {
             tmp[i] = beg;

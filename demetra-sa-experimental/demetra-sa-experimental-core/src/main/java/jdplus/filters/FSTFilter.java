@@ -132,7 +132,7 @@ public class FSTFilter {
         a = DoubleSeq.of(q);
     }
 
-    private Results makeQuadratic(double wf, double ws, double wt) {
+    private Results makeQuadratic(double wf, double ws, double wt, boolean all) {
         int n = nlags + nleads + 1;
         Matrix J = Matrix.square(n + p);
         J.extract(n, p, 0, n).copy(C);
@@ -146,7 +146,7 @@ public class FSTFilter {
             X.addAY(ws, SM);
         }
         Matrix TM = null;
-        if (wt != 0 && nlags != nleads) {
+        if ((wt != 0 || all) && nlags != nleads) {
             TM = T.buildMatrix(nlags, nleads);
             X.addAY(wt, TM);
         }
@@ -158,12 +158,12 @@ public class FSTFilter {
         builder.filter(FiniteFilter.ofInternal(w.toArray(), -nlags));
 
         double q = 0;
-        if (wf > 0) {
+        if (wf > 0 || all) {
             double f = w.ssq();
             q += wf * f;
             builder.f(f);
         }
-        if (ws > 0) {
+        if (ws > 0 || all) {
             double s = QuadraticForm.apply(SM, w);
             q += ws * s;
             builder.s(s);
@@ -178,7 +178,7 @@ public class FSTFilter {
                 .build();
     }
 
-    private Results makeNumeric(double wf, double ws, double wt) {
+    private Results makeNumeric(double wf, double ws, double wt, boolean all) {
 
         int n = nlags + nleads + 1;
         FSTFunction fn = new FSTFunction(this, ws, wt);
@@ -189,7 +189,7 @@ public class FSTFilter {
 //        DataBlock w0 = DataBlock.make(n-p);
 //        w0.set(1.0/n);
 //        bfgs.minimize(fn.evaluate(w0));
-        double[] w0 = makeQuadratic(wf, ws, wt).filter.weightsToArray();
+        double[] w0 = makeQuadratic(wf, ws, wt, false).filter.weightsToArray();
         bfgs.minimize(fn.evaluate(DoubleSeq.of(w0, p, n - p)));
         FSTFunction.Point rslt = (FSTFunction.Point) bfgs.getResult();
 
@@ -210,14 +210,14 @@ public class FSTFilter {
         private double f, s, t, z;
     }
 
-    public Results make(double ws, double wt) {
+    public Results make(double ws, double wt, boolean all) {
         if (ws < 0 || wt < 0 || ws + wt > 1) {
             throw new IllegalArgumentException();
         }
         if (wt == 0 || T.antiphase || nleads == nlags) {
-            return makeQuadratic(1 - ws - wt, ws, wt);
+            return makeQuadratic(1 - ws - wt, ws, wt, all);
         } else {
-            return makeNumeric(1 - ws - wt, ws, wt);
+            return makeNumeric(1 - ws - wt, ws, wt, all);
         }
     }
 
@@ -287,12 +287,12 @@ public class FSTFilter {
     }
 
     public static class TimelinessCriterion {
-        
-        public static double timeliness(IFiniteFilter f, double bandpass){
-            TimelinessCriterion c=new TimelinessCriterion().antiphase(true).bounds(0, bandpass);
+
+        public static double timeliness(IFiniteFilter f, double bandpass) {
+            TimelinessCriterion c = new TimelinessCriterion().antiphase(true).bounds(0, bandpass);
             Matrix M = c.buildMatrix(-f.getLowerBound(), f.getUpperBound());
             DataBlock w = DataBlock.of(f.weightsToArray());
-             return QuadraticForm.ofSymmetric(M).apply(w);
+            return QuadraticForm.ofSymmetric(M).apply(w);
         }
 
         private double w0 = 0, w1 = Math.PI / 18;

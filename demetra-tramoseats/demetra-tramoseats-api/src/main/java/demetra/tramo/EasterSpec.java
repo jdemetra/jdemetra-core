@@ -79,6 +79,10 @@ public final class EasterSpec implements Validatable<EasterSpec> {
     public boolean isDefault() {
         return this.equals(DEFAULT);
     }
+    
+    public static EasterSpec none(){
+        return DEFAULT;
+    }
 
     public static class Builder implements Validatable.Builder<EasterSpec> {
     }

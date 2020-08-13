@@ -14,10 +14,13 @@ import demetra.sa.SeriesDecomposition;
 import demetra.seats.SeatsModelSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.Variable;
 import demetra.timeseries.regression.modelling.ModellingContext;
 import demetra.tramo.TransformSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.sa.RegArimaDecomposer;
 import jdplus.sa.SaVariablesMapping;
@@ -36,7 +39,7 @@ import jdplus.tramo.TramoKernel;
 public class TramoSeatsKernel {
 
     private static PreliminaryChecks of(TramoSeatsSpec spec) {
-        
+
         TransformSpec transform = spec.getTramo().getTransform();
         return (s, logs) -> {
             TsData sc = s.select(transform.getSpan());
@@ -49,16 +52,14 @@ public class TramoSeatsKernel {
 
     private PreliminaryChecks preliminary;
     private TramoKernel tramo;
-    private SaVariablesMapping samapping;
+    private Map<String, ComponentType> samapping;
     private SeatsKernel seats;
 
     public static TramoSeatsKernel of(TramoSeatsSpec spec, ModellingContext context) {
         PreliminaryChecks check = of(spec);
         TramoKernel tramo = TramoKernel.of(spec.getTramo(), context);
-        SaVariablesMapping mapping = new SaVariablesMapping();
-        // TO DO: fill maping with existing information in TramoSpec (section Regression)
         SeatsKernel seats = new SeatsKernel(SeatsToolkit.of(spec.getSeats()));
-        return new TramoSeatsKernel(check, tramo, mapping, seats);
+        return new TramoSeatsKernel(check, tramo, spec.getSamapping(), seats);
     }
 
     public TramoSeatsResults process(TsData s, ProcessingLog log) {
@@ -72,7 +73,13 @@ public class TramoSeatsKernel {
                 .stream(preprocessing.getVariables())
                 .map(var -> var.getVariable())
                 .toArray(q -> new ITsVariable[q]));
-        nmapping.put(samapping);
+        Variable[] variables = preprocessing.getVariables();
+        samapping.entrySet().forEach((ks) -> {
+            Optional<Variable> fvar = Arrays.stream(variables).filter(v->v.getName().equals(ks.getKey())).findFirst();
+            if (fvar.isPresent()) {
+                nmapping.put(fvar.get().getVariable(), ks.getValue()); // Will override default behaviour
+            }
+        });
         RegArimaDecomposer decomposer = RegArimaDecomposer.of(preprocessing, nmapping);
         SeatsModelSpec smodel = of(decomposer);
         // Step 3. Seats
@@ -103,7 +110,7 @@ public class TramoSeatsKernel {
                 .bphi(Parameter.of(arima.bphi(), ParameterType.Estimated))
                 .btheta(Parameter.of(arima.btheta(), ParameterType.Estimated))
                 .build();
-        
+
         return SeatsModelSpec.builder()
                 .series(series)
                 .log(model.isLogTransformation())

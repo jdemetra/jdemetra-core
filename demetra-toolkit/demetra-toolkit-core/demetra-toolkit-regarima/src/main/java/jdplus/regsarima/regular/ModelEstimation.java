@@ -17,6 +17,7 @@
 package jdplus.regsarima.regular;
 
 import demetra.arima.SarimaOrders;
+import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
@@ -88,6 +89,26 @@ public final class ModelEstimation {
         SarimaComponent arima = description.getArimaComponent();
         freeParametersCount = arima.getParametersCount();
         this.variables = description.variables().toArray(q -> new Variable[q]);
+        // fill the free coefficients
+        DoubleSeqCursor cursor = estimation.getConcentratedLikelihood().coefficients().cursor();
+        for (int i = 0; i < variables.length; ++i) {
+            int nfree = variables[i].freeCoefficientsCount();
+            if (nfree == variables[i].dim()) {
+                Parameter[] p = new Parameter[nfree];
+                for (int j = 0; j < nfree; ++j) {
+                    p[j] = Parameter.estimated(cursor.getAndNext());
+                }
+                variables[i] = variables[i].withCoefficient(p);
+            } else if (nfree > 0) {
+                Parameter[] p = variables[i].getCoefficients();
+                for (int j = 0; j < p.length; ++j) {
+                    if (p[j].isFree()) {
+                        p[j] = Parameter.estimated(cursor.getAndNext());
+                    }
+                }
+                variables[i] = variables[i].withCoefficient(p);
+            }
+        }
 
         this.model = estimation.getModel();
         this.concentratedLikelihood = estimation.getConcentratedLikelihood();
@@ -271,9 +292,9 @@ public final class ModelEstimation {
                         Parameter c = cur.getCoefficient(ic++);
                         if (c.isFree()) {
                             all.addAY(cursor.getAndNext(), col);
-                        }else{
+                        } else {
                             all.addAY(c.getValue(), col);
-                            
+
                         }
                     }
                 } else {
@@ -367,7 +388,7 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getOutliersEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> v .isOutlier());
+        TsData s = deterministicEffect(domain, v -> v.isOutlier());
         return backTransform(s, false);
     }
 

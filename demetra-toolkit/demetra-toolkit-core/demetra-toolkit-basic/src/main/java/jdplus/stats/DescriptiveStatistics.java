@@ -29,7 +29,7 @@ import demetra.data.DoubleSeq;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-@Immutable(lazy=true)
+@Immutable(lazy = true)
 public final class DescriptiveStatistics {
 
     public static boolean isSmall(double val) {
@@ -117,11 +117,11 @@ public final class DescriptiveStatistics {
                 sxxc += e * e;
             }
         }
-        double stdev = Math.sqrt(sxxc / nc);
+        double v = sxxc / nc, stdev = Math.sqrt(v);
         // skweness...
         double skew = 0.0;
         double kurt = 0.0;
-        double stdev3 = stdev * stdev * stdev;
+        double stdev3 = v * stdev;
         for (int i = 0; i < n; i++) {
             double cur = data[i];
             if (Double.isFinite(cur)) {
@@ -132,7 +132,7 @@ public final class DescriptiveStatistics {
             }
         }
         skewness = skew / (stdev3 * nc);
-        kurtosis = kurt / (stdev3 * stdev * nc);
+        kurtosis = kurt / (v * v * nc);
     }
 
     /**

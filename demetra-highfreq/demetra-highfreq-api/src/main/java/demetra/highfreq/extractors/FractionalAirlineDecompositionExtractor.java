@@ -34,7 +34,7 @@ public class FractionalAirlineDecompositionExtractor {
         return MAPPING.getData(decomposition, id, tclass);
     }
 
-    static final String Y = "y", T = "t", S = "s", I = "i", SA = "sa",
+    static final String Y = "y", T = "t", S = "s", I = "i", SA = "sa", T_E = "t_stde", S_E = "s_stde", I_E = "i_stde",
             UCARIMA = "ucarima", ARIMA = "arima",
             PARAMETERS = "parameters", LL = "likelihood", PCOV = "pcov", SCORE = "score";
 
@@ -54,6 +54,9 @@ public class FractionalAirlineDecompositionExtractor {
         MAPPING.set(S, double[].class, source -> source.getS());
         MAPPING.set(I, double[].class, source -> source.getI());
         MAPPING.set(SA, double[].class, source -> source.getN() != null ? source.getN() : source.getSa());
+        MAPPING.set(T_E, double[].class, source -> source.getStdeT());
+        MAPPING.set(S_E, double[].class, source -> source.getStdeS());
+        MAPPING.set(I_E, double[].class, source -> source.getStdeI());
         MAPPING.delegate(UCARIMA, UcarimaExtractor.getMapping(), source -> source.getUcarima());
     }
 }

@@ -41,8 +41,8 @@ public interface IOutlier extends ITsVariable {
             builder.append(pos);
         } else {
             TsPeriod p = ((TsDomain) context).get(0);
-            p.withDate(pos);
-            builder.append(p);
+            p=p.withDate(pos);
+            builder.append(p.display());
         }
         builder.append(')');
         return builder.toString();
@@ -51,7 +51,7 @@ public interface IOutlier extends ITsVariable {
     public static <D extends TimeSeriesDomain<?>> String defaultName(String code, TsPeriod pos) {
         StringBuilder builder = new StringBuilder();
         builder.append(code).append(" (");
-             builder.append(pos);
+             builder.append(pos.display());
         builder.append(')');
         return builder.toString();
     }

@@ -35,8 +35,10 @@ public class SeatsResults implements ProcResults {
 
     private SarimaModel originalModel;
     private SarimaModel finalModel;
+    private double innovationVariance;
     private boolean meanCorrection;
-    private UcarimaModel ucarimaModel;
+    private boolean parametersCutOff, modelChanged;
+    private UcarimaModel ucarimaModel, compactUcarimaModel;
     private SeriesDecomposition initialComponents, finalComponents;
 
     @Override

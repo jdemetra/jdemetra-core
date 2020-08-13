@@ -175,7 +175,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
         DefaultSmoothingResults srslts;
         switch (spec.getAlgorithm()) {
             case Augmented:
-                srslts = AkfToolkit.smooth(rssf, ssfdata, true);
+                srslts = AkfToolkit.smooth(rssf, ssfdata, true, false);
                 break;
             case Diffuse:
                 srslts = DkToolkit.smooth(rssf, ssfdata, true, false);
@@ -276,7 +276,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
         DefaultSmoothingResults srslts;
         switch (spec.getAlgorithm()) {
             case Augmented:
-                srslts = AkfToolkit.smooth(ssf, ssfdata, true);
+                srslts = AkfToolkit.smooth(ssf, ssfdata, true, false);
                 break;
             case Diffuse:
                 srslts = DkToolkit.smooth(ssf, ssfdata, true, false);

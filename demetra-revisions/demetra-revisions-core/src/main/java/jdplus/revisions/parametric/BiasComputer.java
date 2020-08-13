@@ -29,7 +29,7 @@ import jdplus.stats.samples.Sample;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-class BiasComputer {
+public class BiasComputer {
 
     /**
      * Revisions should not contain missing values
@@ -37,7 +37,7 @@ class BiasComputer {
      * @param revisions
      * @return
      */
-    Bias of(DoubleSeq revisions) {
+    public Bias of(DoubleSeq revisions) {
 
         Sample sample = Sample.build(revisions, true, Population.UNKNOWN);
         int n = sample.observationsCount();
@@ -62,7 +62,7 @@ class BiasComputer {
                     .t(t)
                     .tPvalue(pval);
             if (n > 2) {
-                double rho = AutoCovariances.autoCovariance(revisions, mu, 1) / v;
+                double rho = AutoCovariances.autoCorrelationFunction(revisions, mu).applyAsDouble(1);
                 builder
                         .ar(rho);
                 if (Math.abs(rho) < 1) {
