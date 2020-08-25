@@ -16,6 +16,7 @@
  */
 package demetra.tsprovider.grid;
 
+import static _util.FixAssertj.assertDeepEqualTo;
 import demetra.timeseries.Ts;
 import static demetra.timeseries.TsUnit.*;
 import demetra.timeseries.TsCollection;
@@ -41,235 +42,210 @@ public class GridWriterTest {
     public void testVertical() throws IOException {
         GridWriter.Builder opts = GridWriter.builder().layout(VERTICAL).cornerLabel("x");
 
-        assertThat(toArray(sample, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {"x", "G1\nS1", "G1\nS2", "G2\nS1", "S1"},
-                            {JAN_2010, 1.01, 2.01, 3.01, null},
-                            {FEB_2010, null, null, 3.02, 4.02},
-                            {MAR_2010, 1.03, null, null, 4.03}
-                        });
+        assertDeepEqualTo(toArray(sample, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()),
+                new Object[][]{
+                    {"x", "G1\nS1", "G1\nS2", "G2\nS1", "S1"},
+                    {JAN_2010, 1.01, 2.01, 3.01, null},
+                    {FEB_2010, null, null, 3.02, 4.02},
+                    {MAR_2010, 1.03, null, null, 4.03}
+                });
 
-        assertThat(toArray(sample, opts.ignoreNames(false).ignoreDates(false).reverseChronology(true).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {"x", "G1\nS1", "G1\nS2", "G2\nS1", "S1"},
-                            {MAR_2010, 1.03, null, null, 4.03},
-                            {FEB_2010, null, null, 3.02, 4.02},
-                            {JAN_2010, 1.01, 2.01, 3.01, null}
-                        });
+        assertDeepEqualTo(toArray(sample, opts.ignoreNames(false).ignoreDates(false).reverseChronology(true).build()),
+                new Object[][]{
+                    {"x", "G1\nS1", "G1\nS2", "G2\nS1", "S1"},
+                    {MAR_2010, 1.03, null, null, 4.03},
+                    {FEB_2010, null, null, 3.02, 4.02},
+                    {JAN_2010, 1.01, 2.01, 3.01, null}
+                });
 
-        assertThat(toArray(sample, opts.ignoreNames(true).ignoreDates(false).reverseChronology(false).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {JAN_2010, 1.01, 2.01, 3.01, null},
-                            {FEB_2010, null, null, 3.02, 4.02},
-                            {MAR_2010, 1.03, null, null, 4.03}
-                        });
+        assertDeepEqualTo(toArray(sample, opts.ignoreNames(true).ignoreDates(false).reverseChronology(false).build()),
+                new Object[][]{
+                    {JAN_2010, 1.01, 2.01, 3.01, null},
+                    {FEB_2010, null, null, 3.02, 4.02},
+                    {MAR_2010, 1.03, null, null, 4.03}
+                });
 
-        assertThat(toArray(sample, opts.ignoreNames(true).ignoreDates(false).reverseChronology(true).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {MAR_2010, 1.03, null, null, 4.03},
-                            {FEB_2010, null, null, 3.02, 4.02},
-                            {JAN_2010, 1.01, 2.01, 3.01, null}
-                        });
+        assertDeepEqualTo(toArray(sample, opts.ignoreNames(true).ignoreDates(false).reverseChronology(true).build()),
+                new Object[][]{
+                    {MAR_2010, 1.03, null, null, 4.03},
+                    {FEB_2010, null, null, 3.02, 4.02},
+                    {JAN_2010, 1.01, 2.01, 3.01, null}
+                });
 
-        assertThat(toArray(sample, opts.ignoreNames(false).ignoreDates(true).reverseChronology(false).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {"G1\nS1", "G1\nS2", "G2\nS1", "S1"},
-                            {1.01, 2.01, 3.01, null},
-                            {null, null, 3.02, 4.02},
-                            {1.03, null, null, 4.03}
-                        });
+        assertDeepEqualTo(toArray(sample, opts.ignoreNames(false).ignoreDates(true).reverseChronology(false).build()),
+                new Object[][]{
+                    {"G1\nS1", "G1\nS2", "G2\nS1", "S1"},
+                    {1.01, 2.01, 3.01, null},
+                    {null, null, 3.02, 4.02},
+                    {1.03, null, null, 4.03}
+                });
 
-        assertThat(toArray(sample, opts.ignoreNames(false).ignoreDates(true).reverseChronology(true).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {"G1\nS1", "G1\nS2", "G2\nS1", "S1"},
-                            {1.03, null, null, 4.03},
-                            {null, null, 3.02, 4.02},
-                            {1.01, 2.01, 3.01, null}
-                        });
+        assertDeepEqualTo(toArray(sample, opts.ignoreNames(false).ignoreDates(true).reverseChronology(true).build()),
+                new Object[][]{
+                    {"G1\nS1", "G1\nS2", "G2\nS1", "S1"},
+                    {1.03, null, null, 4.03},
+                    {null, null, 3.02, 4.02},
+                    {1.01, 2.01, 3.01, null}
+                });
 
-        assertThat(toArray(sample, opts.ignoreNames(true).ignoreDates(true).reverseChronology(false).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {1.01, 2.01, 3.01, null},
-                            {null, null, 3.02, 4.02},
-                            {1.03, null, null, 4.03}
-                        });
+        assertDeepEqualTo(toArray(sample, opts.ignoreNames(true).ignoreDates(true).reverseChronology(false).build()),
+                new Object[][]{
+                    {1.01, 2.01, 3.01, null},
+                    {null, null, 3.02, 4.02},
+                    {1.03, null, null, 4.03}
+                });
 
-        assertThat(toArray(sample, opts.ignoreNames(true).ignoreDates(true).reverseChronology(true).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {1.03, null, null, 4.03},
-                            {null, null, 3.02, 4.02},
-                            {1.01, 2.01, 3.01, null}
-                        });
+        assertDeepEqualTo(toArray(sample, opts.ignoreNames(true).ignoreDates(true).reverseChronology(true).build()),
+                new Object[][]{
+                    {1.03, null, null, 4.03},
+                    {null, null, 3.02, 4.02},
+                    {1.01, 2.01, 3.01, null}
+                });
 
-        assertThat(toArray(empty, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {"x"}
-                        });
+        assertDeepEqualTo(toArray(empty, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()),
+                new Object[][]{
+                    {"x"}
+                });
 
         assertThat(toArray(empty, opts.ignoreNames(true).ignoreDates(true).reverseChronology(false).build()))
                 .isEmpty();
 
-        assertThat(toArray(seriesWithoutData, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {"x", "S1", "S2"}
-                        });
+        assertDeepEqualTo(toArray(seriesWithoutData, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()),
+                new Object[][]{
+                    {"x", "S1", "S2"}
+                });
     }
 
     @Test
     public void testHorizontal() throws IOException {
         GridWriter.Builder opts = GridWriter.builder().layout(HORIZONTAL).cornerLabel("x");
 
-        assertThat(toArray(sample, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {"x", JAN_2010, FEB_2010, MAR_2010},
-                            {"G1\nS1", 1.01, null, 1.03},
-                            {"G1\nS2", 2.01, null, null},
-                            {"G2\nS1", 3.01, 3.02, null},
-                            {"S1", null, 4.02, 4.03}
-                        });
+        assertDeepEqualTo(toArray(sample, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()),
+                new Object[][]{
+                    {"x", JAN_2010, FEB_2010, MAR_2010},
+                    {"G1\nS1", 1.01, null, 1.03},
+                    {"G1\nS2", 2.01, null, null},
+                    {"G2\nS1", 3.01, 3.02, null},
+                    {"S1", null, 4.02, 4.03}
+                });
 
-        assertThat(toArray(sample, opts.ignoreNames(false).ignoreDates(false).reverseChronology(true).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {"x", MAR_2010, FEB_2010, JAN_2010},
-                            {"G1\nS1", 1.03, null, 1.01},
-                            {"G1\nS2", null, null, 2.01},
-                            {"G2\nS1", null, 3.02, 3.01},
-                            {"S1", 4.03, 4.02, null}
-                        });
+        assertDeepEqualTo(toArray(sample, opts.ignoreNames(false).ignoreDates(false).reverseChronology(true).build()),
+                new Object[][]{
+                    {"x", MAR_2010, FEB_2010, JAN_2010},
+                    {"G1\nS1", 1.03, null, 1.01},
+                    {"G1\nS2", null, null, 2.01},
+                    {"G2\nS1", null, 3.02, 3.01},
+                    {"S1", 4.03, 4.02, null}
+                });
 
-        assertThat(toArray(sample, opts.ignoreNames(true).ignoreDates(false).reverseChronology(false).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {JAN_2010, FEB_2010, MAR_2010},
-                            {1.01, null, 1.03},
-                            {2.01, null, null},
-                            {3.01, 3.02, null},
-                            {null, 4.02, 4.03}
-                        });
+        assertDeepEqualTo(toArray(sample, opts.ignoreNames(true).ignoreDates(false).reverseChronology(false).build()),
+                new Object[][]{
+                    {JAN_2010, FEB_2010, MAR_2010},
+                    {1.01, null, 1.03},
+                    {2.01, null, null},
+                    {3.01, 3.02, null},
+                    {null, 4.02, 4.03}
+                });
 
-        assertThat(toArray(sample, opts.ignoreNames(true).ignoreDates(false).reverseChronology(true).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {MAR_2010, FEB_2010, JAN_2010},
-                            {1.03, null, 1.01},
-                            {null, null, 2.01},
-                            {null, 3.02, 3.01},
-                            {4.03, 4.02, null}
-                        });
+        assertDeepEqualTo(toArray(sample, opts.ignoreNames(true).ignoreDates(false).reverseChronology(true).build()),
+                new Object[][]{
+                    {MAR_2010, FEB_2010, JAN_2010},
+                    {1.03, null, 1.01},
+                    {null, null, 2.01},
+                    {null, 3.02, 3.01},
+                    {4.03, 4.02, null}
+                });
 
-        assertThat(toArray(sample, opts.ignoreNames(false).ignoreDates(true).reverseChronology(false).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {"G1\nS1", 1.01, null, 1.03},
-                            {"G1\nS2", 2.01, null, null},
-                            {"G2\nS1", 3.01, 3.02, null},
-                            {"S1", null, 4.02, 4.03}
-                        });
-        assertThat(toArray(sample, opts.ignoreNames(false).ignoreDates(true).reverseChronology(true).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {"G1\nS1", 1.03, null, 1.01},
-                            {"G1\nS2", null, null, 2.01},
-                            {"G2\nS1", null, 3.02, 3.01},
-                            {"S1", 4.03, 4.02, null}
-                        });
+        assertDeepEqualTo(toArray(sample, opts.ignoreNames(false).ignoreDates(true).reverseChronology(false).build()),
+                new Object[][]{
+                    {"G1\nS1", 1.01, null, 1.03},
+                    {"G1\nS2", 2.01, null, null},
+                    {"G2\nS1", 3.01, 3.02, null},
+                    {"S1", null, 4.02, 4.03}
+                });
+        assertDeepEqualTo(toArray(sample, opts.ignoreNames(false).ignoreDates(true).reverseChronology(true).build()),
+                new Object[][]{
+                    {"G1\nS1", 1.03, null, 1.01},
+                    {"G1\nS2", null, null, 2.01},
+                    {"G2\nS1", null, 3.02, 3.01},
+                    {"S1", 4.03, 4.02, null}
+                });
 
-        assertThat(toArray(sample, opts.ignoreNames(true).ignoreDates(true).reverseChronology(false).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {1.01, null, 1.03},
-                            {2.01, null, null},
-                            {3.01, 3.02, null},
-                            {null, 4.02, 4.03}
-                        });
+        assertDeepEqualTo(toArray(sample, opts.ignoreNames(true).ignoreDates(true).reverseChronology(false).build()),
+                new Object[][]{
+                    {1.01, null, 1.03},
+                    {2.01, null, null},
+                    {3.01, 3.02, null},
+                    {null, 4.02, 4.03}
+                });
 
-        assertThat(toArray(sample, opts.ignoreNames(true).ignoreDates(true).reverseChronology(true).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {1.03, null, 1.01},
-                            {null, null, 2.01},
-                            {null, 3.02, 3.01},
-                            {4.03, 4.02, null}
-                        });
+        assertDeepEqualTo(toArray(sample, opts.ignoreNames(true).ignoreDates(true).reverseChronology(true).build()),
+                new Object[][]{
+                    {1.03, null, 1.01},
+                    {null, null, 2.01},
+                    {null, 3.02, 3.01},
+                    {4.03, 4.02, null}
+                });
 
-        assertThat(toArray(empty, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {"x"}
-                        });
+        assertDeepEqualTo(toArray(empty, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()),
+                new Object[][]{
+                    {"x"}
+                });
 
         assertThat(toArray(empty, opts.ignoreNames(true).ignoreDates(true).reverseChronology(false).build()))
                 .isEmpty();
 
-        assertThat(toArray(seriesWithoutData, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()))
-                .containsExactly(
-                        new Object[][]{
-                            {"x"},
-                            {"S1"},
-                            {"S2"}
-                        });
+        assertDeepEqualTo(toArray(seriesWithoutData, opts.ignoreNames(false).ignoreDates(false).reverseChronology(false).build()),
+                new Object[][]{
+                    {"x"},
+                    {"S1"},
+                    {"S2"}
+                });
     }
 
     @Test
     public void testValueTypes() throws IOException {
         GridWriter opts = GridWriter.builder().format(ObsFormat.of(Locale.ROOT, "yyyy-MM-dd", "00.00")).build();
 
-        assertThat(toArray(sample, opts, EnumSet.allOf(GridDataType.class)))
-                .containsExactly(
-                        new Object[][]{
-                            {null, "G1\nS1", "G1\nS2", "G2\nS1", "S1"},
-                            {JAN_2010, 1.01, 2.01, 3.01, null},
-                            {FEB_2010, null, null, 3.02, 4.02},
-                            {MAR_2010, 1.03, null, null, 4.03}
-                        });
+        assertDeepEqualTo(toArray(sample, opts, EnumSet.allOf(GridDataType.class)),
+                new Object[][]{
+                    {null, "G1\nS1", "G1\nS2", "G2\nS1", "S1"},
+                    {JAN_2010, 1.01, 2.01, 3.01, null},
+                    {FEB_2010, null, null, 3.02, 4.02},
+                    {MAR_2010, 1.03, null, null, 4.03}
+                });
 
-        assertThat(toArray(sample, opts, EnumSet.of(GridDataType.LOCAL_DATE_TIME)))
-                .containsExactly(
-                        new Object[][]{
-                            {null, null, null, null, null},
-                            {JAN_2010, null, null, null, null},
-                            {FEB_2010, null, null, null, null},
-                            {MAR_2010, null, null, null, null}
-                        });
+        assertDeepEqualTo(toArray(sample, opts, EnumSet.of(GridDataType.LOCAL_DATE_TIME)),
+                new Object[][]{
+                    {null, null, null, null, null},
+                    {JAN_2010, null, null, null, null},
+                    {FEB_2010, null, null, null, null},
+                    {MAR_2010, null, null, null, null}
+                });
 
-        assertThat(toArray(sample, opts, EnumSet.of(GridDataType.DOUBLE)))
-                .containsExactly(
-                        new Object[][]{
-                            {null, null, null, null, null},
-                            {null, 1.01, 2.01, 3.01, null},
-                            {null, null, null, 3.02, 4.02},
-                            {null, 1.03, null, null, 4.03}
-                        });
+        assertDeepEqualTo(toArray(sample, opts, EnumSet.of(GridDataType.DOUBLE)),
+                new Object[][]{
+                    {null, null, null, null, null},
+                    {null, 1.01, 2.01, 3.01, null},
+                    {null, null, null, 3.02, 4.02},
+                    {null, 1.03, null, null, 4.03}
+                });
 
-        assertThat(toArray(sample, opts, EnumSet.of(GridDataType.STRING)))
-                .containsExactly(
-                        new Object[][]{
-                            {null, "G1\nS1", "G1\nS2", "G2\nS1", "S1"},
-                            {"2010-01-01", "01.01", "02.01", "03.01", null},
-                            {"2010-02-01", null, null, "03.02", "04.02"},
-                            {"2010-03-01", "01.03", null, null, "04.03"}
-                        });
+        assertDeepEqualTo(toArray(sample, opts, EnumSet.of(GridDataType.STRING)),
+                new Object[][]{
+                    {null, "G1\nS1", "G1\nS2", "G2\nS1", "S1"},
+                    {"2010-01-01", "01.01", "02.01", "03.01", null},
+                    {"2010-02-01", null, null, "03.02", "04.02"},
+                    {"2010-03-01", "01.03", null, null, "04.03"}
+                });
 
-        assertThat(toArray(sample, opts, EnumSet.noneOf(GridDataType.class)))
-                .containsExactly(
-                        new Object[][]{
-                            {null, null, null, null, null},
-                            {null, null, null, null, null},
-                            {null, null, null, null, null},
-                            {null, null, null, null, null}
-                        });
+        assertDeepEqualTo(toArray(sample, opts, EnumSet.noneOf(GridDataType.class)),
+                new Object[][]{
+                    {null, null, null, null, null},
+                    {null, null, null, null, null},
+                    {null, null, null, null, null},
+                    {null, null, null, null, null}
+                });
     }
 
     private static Object[][] toArray(TsCollection grid, GridWriter writer) throws IOException {

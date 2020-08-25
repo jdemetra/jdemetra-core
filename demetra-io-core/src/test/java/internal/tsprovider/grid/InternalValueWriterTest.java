@@ -16,6 +16,7 @@
  */
 package internal.tsprovider.grid;
 
+import static _util.FixAssertj.assertDeepEqualTo;
 import demetra.tsprovider.grid.GridDataType;
 import demetra.tsprovider.grid.GridLayout;
 import demetra.tsprovider.grid.GridOutput;
@@ -37,18 +38,18 @@ import static org.assertj.core.api.Assertions.*;
  * @author Philippe Charles
  */
 public class InternalValueWriterTest {
-
+    
     @Test
     public void testOnNull() throws IOException {
         InternalValueWriter<Object> x = onNull();
-
+        
         Object[][] data = {
             {null, JAN_2010, FEB_2010, MAR_2010},
             {"S1", 3.14, 4.56, 7.89}
         };
-
+        
         ArrayGridInput in = ArrayGridInput.of(data);
-
+        
         ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, EnumSet.allOf(GridDataType.class));
         try (GridOutput.Stream stream = out.open("test", in.getRowCount(), in.getColumnCount())) {
             for (int i = 0; i < in.getRowCount(); i++) {
@@ -58,58 +59,57 @@ public class InternalValueWriterTest {
                 stream.writeEndOfRow();
             }
         }
-
-        assertThat(out.getData().get("test"))
-                .containsExactly(
-                        new Object[][]{
-                            {null, null, null, null},
-                            {null, null, null, null}
-                        });
+        
+        assertDeepEqualTo(out.getData().get("test"),
+                new Object[][]{
+                    {null, null, null, null},
+                    {null, null, null, null}
+                });
     }
-
+    
     @Test
     public void testOnDateTime() throws IOException {
         InternalValueWriter<LocalDateTime> x = onDateTime();
-
+        
         ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, EnumSet.allOf(GridDataType.class));
         try (GridOutput.Stream stream = out.open("test", 1, 2)) {
             x.write(stream, JAN_2010);
             x.write(stream, null);
         }
-
-        assertThat(out.getData().get("test")).containsExactly(new Object[]{JAN_2010, null});
+        
+        assertThat(out.getData().get("test")).contains(new Object[]{JAN_2010, null}, atIndex(0));
     }
-
+    
     @Test
     public void testOnDouble() throws IOException {
         InternalValueWriter<Double> x = onDouble();
-
+        
         ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, EnumSet.allOf(GridDataType.class));
         try (GridOutput.Stream stream = out.open("test", 1, 2)) {
             x.write(stream, 3.14);
             x.write(stream, null);
         }
-
-        assertThat(out.getData().get("test")).containsExactly(new Object[]{3.14, null});
+        
+        assertThat(out.getData().get("test")).contains(new Object[]{3.14, null}, atIndex(0));
     }
-
+    
     @Test
     public void testOnString() throws IOException {
         InternalValueWriter<String> x = onString();
-
+        
         ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, EnumSet.allOf(GridDataType.class));
         try (GridOutput.Stream stream = out.open("test", 1, 2)) {
             x.write(stream, "S1");
             x.write(stream, null);
         }
-
-        assertThat(out.getData().get("test")).containsExactly(new Object[]{"S1", null});
+        
+        assertThat(out.getData().get("test")).contains(new Object[]{"S1", null}, atIndex(0));
     }
-
+    
     @Test
     public void testOnStringFormatter() throws IOException {
         ObsFormat f = ObsFormat.of(Locale.ROOT, "yyyy-MM-dd", "");
-
+        
         ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, EnumSet.allOf(GridDataType.class));
         try (GridOutput.Stream stream = out.open("test", 1, 4)) {
             onStringFormatter(f.dateTimeFormatter()::formatAsString).write(stream, JAN_2010);
@@ -117,7 +117,7 @@ public class InternalValueWriterTest {
             onStringFormatter(f.numberFormatter()::formatAsString).write(stream, null);
             onStringFormatter(f.numberFormatter()::formatAsString).write(stream, 3.14);
         }
-
-        assertThat(out.getData().get("test")).containsExactly(new Object[]{JAN_2010.format(DateTimeFormatter.ISO_DATE), null, null, "3.14"});
+        
+        assertThat(out.getData().get("test")).contains(new Object[]{JAN_2010.format(DateTimeFormatter.ISO_DATE), null, null, "3.14"}, atIndex(0));
     }
 }
