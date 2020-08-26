@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.util.List2;
-import internal.io.text.InternalParser;
 import internal.util.Strings;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
@@ -37,6 +36,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import nbbrd.io.text.Formatter;
 import nbbrd.io.text.Parser;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -197,6 +197,13 @@ public class Params {
             return locale != null && datePattern != null;
         }
 
+        @Nullable
+        private Locale parseLocale(@NonNull String locale) {
+            // Fix behavior change in Parser#onLocale()
+            Locale result = Parser.onLocale().parse(locale);
+            return Locale.ROOT.equals(result) && locale.isEmpty() ? null : result;
+        }
+
         @Override
         public ObsFormat defaultValue() {
             return defaultValue;
@@ -208,7 +215,7 @@ public class Params {
             String datePattern = config.get(datePatternKey);
             String numberPattern = config.get(numberPatternKey);
             return isValid(locale, datePattern)
-                    ? ObsFormat.of(InternalParser.parseLocale(locale), datePattern, numberPattern)
+                    ? ObsFormat.of(parseLocale(locale), datePattern, numberPattern)
                     : defaultValue;
         }
 
