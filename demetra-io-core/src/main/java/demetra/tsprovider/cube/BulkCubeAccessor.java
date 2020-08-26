@@ -18,15 +18,19 @@ package demetra.tsprovider.cube;
 
 import demetra.design.ThreadSafe;
 import java.io.IOException;
-import java.util.function.Supplier;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import javax.cache.Cache;
 import lombok.AccessLevel;
-import demetra.tsprovider.util.CacheFactory;
-import internal.tsprovider.cube.CachedStream;
+import java.io.Closeable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import static java.util.Objects.requireNonNull;
 import java.util.stream.Stream;
+import nbbrd.io.IOIterator;
 import nbbrd.io.Resource;
+import nbbrd.io.function.IOFunction;
+import nbbrd.io.function.IORunnable;
 
 /**
  *
@@ -37,9 +41,9 @@ import nbbrd.io.Resource;
 public final class BulkCubeAccessor implements CubeAccessor {
 
     @NonNull
-    public static CubeAccessor of(@NonNull CubeAccessor delegate, @NonNull BulkCubeConfig options, @NonNull Supplier<String> cacheName) {
+    public static CubeAccessor of(@NonNull CubeAccessor delegate, @NonNull BulkCubeConfig options, BulkCubeCache.@NonNull Factory cacheFactory) {
         return options.isCacheEnabled()
-                ? new BulkCubeAccessor(delegate, options.getDepth(), CacheFactory.getTtlCacheByRef(cacheName, options.getTtl()))
+                ? new BulkCubeAccessor(delegate, options.getDepth(), cacheFactory.ofTtl(options.getTtl()))
                 : delegate;
     }
 
@@ -50,7 +54,7 @@ public final class BulkCubeAccessor implements CubeAccessor {
     private final int depth;
 
     @lombok.NonNull
-    private final Cache<CubeId, Object> cache;
+    private final BulkCubeCache cache;
 
     private int getCacheLevel() throws IOException {
         return Math.max(0, delegate.getRoot().getMaxLevel() - depth);
@@ -61,7 +65,7 @@ public final class BulkCubeAccessor implements CubeAccessor {
         if (!ref.isSeries()) {
             int cacheLevel = getCacheLevel();
             if (ref.getLevel() == cacheLevel) {
-                return CachedStream.getOrLoad(cache, ref, delegate::getAllSeriesWithData);
+                return getOrLoad(cache, ref, delegate::getAllSeriesWithData);
             } else {
                 CubeId ancestor = ref.getAncestor(cacheLevel);
                 if (ancestor != null) {
@@ -131,5 +135,64 @@ public final class BulkCubeAccessor implements CubeAccessor {
     @Override
     public void close() throws IOException {
         Resource.closeBoth(cache, delegate);
+    }
+
+    @NonNull
+    private static Stream<CubeSeriesWithData> getOrLoad(
+            @NonNull BulkCubeCache cache,
+            @NonNull CubeId key,
+            @NonNull IOFunction<CubeId, Stream<CubeSeriesWithData>> loader) throws IOException {
+
+        requireNonNull(cache, "cache");
+        requireNonNull(key, "key");
+        requireNonNull(loader, "loader");
+
+        List<CubeSeriesWithData> result = cache.get(key);
+        if (result != null) {
+            return result.stream();
+        }
+        Stream<CubeSeriesWithData> delegate = loader.applyWithIO(key);
+        IOIterator<CubeSeriesWithData> iterator = IOIterator.checked(delegate.iterator());
+        return new CachingIterator(key, cache, iterator, delegate::close).asStream();
+    }
+
+    @lombok.RequiredArgsConstructor
+    private static final class CachingIterator implements IOIterator<CubeSeriesWithData>, Closeable {
+
+        private final CubeId key;
+        private final BulkCubeCache cache;
+        private final IOIterator<CubeSeriesWithData> delegate;
+        private final Closeable closeable;
+
+        private final List<CubeSeriesWithData> items = new ArrayList<>();
+
+        @Override
+        public boolean hasNextWithIO() throws IOException {
+            return delegate.hasNextWithIO();
+        }
+
+        @Override
+        public CubeSeriesWithData nextWithIO() throws IOException, NoSuchElementException {
+            CubeSeriesWithData result = delegate.nextWithIO();
+            items.add(result);
+            return result;
+        }
+
+        @Override
+        public Stream<CubeSeriesWithData> asStream() {
+            return IOIterator.super.asStream().onClose(IORunnable.unchecked(this::close));
+        }
+
+        @Override
+        public void close() throws IOException {
+            Resource.closeBoth(this::flushToCache, closeable::close);
+        }
+
+        private void flushToCache() throws IOException {
+            while (hasNextWithIO()) {
+                nextWithIO();
+            }
+            cache.put(key, items);
+        }
     }
 }

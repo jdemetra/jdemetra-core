@@ -21,11 +21,12 @@ import _util.tsproviders.XCubeAccessor;
 import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY;
 import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY_BE;
 import static demetra.tsprovider.cube.CubeIdTest.SECTOR_REGION;
-import demetra.tsprovider.util.CacheFactory;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.IntFunction;
-import javax.cache.Cache;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,56 +43,79 @@ public class BulkCubeAccessorTest {
 
     @Test
     public void testBulkApi() throws IOException {
-        CubeAccessor accessor = BulkCubeAccessor.of(newSample(), BulkCubeConfig.of(Duration.ZERO, 0), () -> "");
+        CubeAccessor accessor = BulkCubeAccessor.of(newSample(), BulkCubeConfig.of(Duration.ZERO, 0), ttl -> new FakeCache(new ConcurrentHashMap<>()));
         assertThatThrownBy(() -> accessor.getAllSeriesWithData(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> accessor.getSeriesWithData(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void testBulkDepth() throws IOException {
-        try (Cache<CubeId, Object> cache = CacheFactory.getTtlCacheByRef(Duration.ofHours(1))) {
+        ConcurrentMap x = new ConcurrentHashMap<>();
+        try (BulkCubeCache cache = new FakeCache(x)) {
             IntFunction<BulkCubeAccessor> factory = o -> {
-                cache.clear();
+                x.clear();
                 return new BulkCubeAccessor(newSample(), o, cache);
             };
 
             factory.apply(0).getSeriesWithData(INDUSTRY_BE);
-            assertThat(cache).isEmpty();
+            assertThat(x).isEmpty();
 
             factory.apply(0).getAllSeriesWithData(INDUSTRY).close();
-            assertThat(cache).isEmpty();
+            assertThat(x).isEmpty();
 
             factory.apply(0).getAllSeriesWithData(SECTOR_REGION).close();
-            assertThat(cache).isEmpty();
+            assertThat(x).isEmpty();
 
             factory.apply(1).getSeriesWithData(INDUSTRY_BE);
-            assertThat(cache).isNotEmpty();
+            assertThat(x).isNotEmpty();
 
             factory.apply(1).getAllSeriesWithData(INDUSTRY).close();
-            assertThat(cache).isNotEmpty();
+            assertThat(x).isNotEmpty();
 
             factory.apply(1).getAllSeriesWithData(SECTOR_REGION).close();
-            assertThat(cache).isEmpty();
+            assertThat(x).isEmpty();
 
             factory.apply(2).getSeriesWithData(INDUSTRY_BE);
-            assertThat(cache).isNotEmpty();
+            assertThat(x).isNotEmpty();
 
             factory.apply(2).getAllSeriesWithData(INDUSTRY).close();
-            assertThat(cache).isNotEmpty();
+            assertThat(x).isNotEmpty();
 
             factory.apply(2).getAllSeriesWithData(SECTOR_REGION).close();
-            assertThat(cache).isNotEmpty();
+            assertThat(x).isNotEmpty();
         }
     }
 
     @Test
     public void testResourceLeak() throws IOException {
         ResourceWatcher watcher = new ResourceWatcher();
-        try (Cache<CubeId, Object> cache = CacheFactory.getTtlCacheByRef(Duration.ofHours(1))) {
+        ConcurrentMap x = new ConcurrentHashMap<>();
+        try (BulkCubeCache cache = new FakeCache(x)) {
             BulkCubeAccessor accessor = new BulkCubeAccessor(new XCubeAccessor(SECTOR_REGION, watcher), 1, cache);
             accessor.getSeriesWithData(INDUSTRY_BE);
-            assertThat(cache).isNotEmpty();
+            assertThat(x).isNotEmpty();
             assertThat(watcher.isLeaking()).isFalse();
+        }
+    }
+
+    @lombok.AllArgsConstructor
+    private static final class FakeCache implements BulkCubeCache {
+
+        @lombok.NonNull
+        private final ConcurrentMap<CubeId, List<CubeSeriesWithData>> delegate;
+
+        @Override
+        public void put(CubeId key, List<CubeSeriesWithData> value) {
+            delegate.put(key, value);
+        }
+
+        @Override
+        public List<CubeSeriesWithData> get(CubeId key) {
+            return delegate.get(key);
+        }
+
+        @Override
+        public void close() throws IOException {
         }
     }
 }

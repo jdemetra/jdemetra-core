@@ -36,7 +36,7 @@ import java.util.Optional;
  * @author Philippe Charles
  */
 @lombok.AllArgsConstructor(staticName = "of")
-public class SheetGrid implements SpreadSheetAccessor {
+public final class SheetGrid implements SpreadSheetAccessor {
 
     @lombok.NonNull
     private final File file;
