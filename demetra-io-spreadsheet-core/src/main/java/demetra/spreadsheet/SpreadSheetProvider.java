@@ -43,8 +43,9 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import nbbrd.service.ServiceProvider;
-import demetra.tsprovider.util.CacheFactory;
+import demetra.tsprovider.util.JCacheFactory;
 import demetra.tsprovider.stream.HasTsStream;
+import internal.spreadsheet.CachedSpreadSheetAccessor;
 
 /**
  *
@@ -139,9 +140,8 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
             if (factory == null) {
                 throw new IOException("File type not supported");
             }
-            return SheetGrid
-                    .of(file, factory, getReader(bean))
-                    .withCache(CacheFactory.getTtlCacheByRef(key::toString, Duration.ofMinutes(5)));
+            SheetGrid result = SheetGrid.of(file, factory, getReader(bean));
+            return new CachedSpreadSheetAccessor(JCacheFactory.getTtlCacheByRef(key::toString, Duration.ofMinutes(5)), result);
         }
 
         private GridReader getReader(SpreadSheetBean bean) {

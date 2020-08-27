@@ -16,7 +16,12 @@
  */
 package demetra.tsprovider.util;
 
+import demetra.tsprovider.cube.BulkCubeCache;
+import demetra.tsprovider.cube.CubeId;
+import demetra.tsprovider.cube.CubeSeriesWithData;
+import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -32,7 +37,7 @@ import javax.cache.spi.CachingProvider;
  * @author Philippe Charles
  */
 @lombok.experimental.UtilityClass
-public class CacheFactory {
+public class JCacheFactory {
 
     public <K, V> Cache<K, V> getTtlCacheByRef(Duration ttl) {
         return getTtlCacheByRef(() -> UUID.randomUUID().toString(), ttl);
@@ -51,5 +56,31 @@ public class CacheFactory {
 
     private javax.cache.expiry.Duration toCacheDuration(Duration o) {
         return new javax.cache.expiry.Duration(TimeUnit.MILLISECONDS, o.toMillis());
+    }
+
+    public BulkCubeCache.Factory bulkCubeCacheOf(Supplier<String> name) {
+        return ttl -> new CacheAdapter(getTtlCacheByRef(name, ttl));
+    }
+
+    @lombok.AllArgsConstructor
+    private static final class CacheAdapter implements BulkCubeCache {
+
+        @lombok.NonNull
+        private final Cache<CubeId, List<CubeSeriesWithData>> delegate;
+
+        @Override
+        public void put(CubeId key, List<CubeSeriesWithData> value) {
+            delegate.put(key, value);
+        }
+
+        @Override
+        public List<CubeSeriesWithData> get(CubeId key) {
+            return delegate.get(key);
+        }
+
+        @Override
+        public void close() throws IOException {
+            delegate.close();
+        }
     }
 }

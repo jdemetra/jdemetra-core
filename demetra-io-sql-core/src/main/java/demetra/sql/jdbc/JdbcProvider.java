@@ -40,6 +40,7 @@ import java.io.IOException;
 import nbbrd.service.ServiceProvider;
 import nbbrd.sql.jdbc.SqlConnectionSupplier;
 import demetra.tsprovider.stream.HasTsStream;
+import demetra.tsprovider.util.JCacheFactory;
 
 /**
  *
@@ -109,7 +110,7 @@ public final class JdbcProvider implements DataSourceLoader<JdbcBean>, HasSqlPro
             SqlTableAsCubeResource sqlResource = SqlTableAsCubeResource.of(properties.getConnectionSupplier(), bean.getDatabase(), bean.getTable(), toRoot(bean), toDataParams(bean), bean.getObsGathering(), bean.getLabelColumn());
 
             CubeAccessor result = TableAsCubeAccessor.of(sqlResource);
-            return BulkCubeAccessor.of(result, bean.getCacheConfig(), key::toString);
+            return BulkCubeAccessor.of(result, bean.getCacheConfig(), JCacheFactory.bulkCubeCacheOf(key::toString));
         }
 
         private static CubeId toRoot(JdbcBean bean) {

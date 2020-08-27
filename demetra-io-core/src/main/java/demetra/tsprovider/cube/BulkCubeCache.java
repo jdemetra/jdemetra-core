@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,27 +14,28 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package internal.spreadsheet;
+package demetra.tsprovider.cube;
 
-import demetra.timeseries.TsCollection;
 import java.io.Closeable;
-import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
-import java.util.Optional;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
  * @author Philippe Charles
  */
-public interface SpreadSheetAccessor extends Closeable {
+public interface BulkCubeCache extends Closeable {
 
-    @NonNull
-    Optional<TsCollection> getSheetByName(@NonNull String name) throws IOException;
+    void put(@NonNull CubeId key, @NonNull List<CubeSeriesWithData> value);
 
-    @NonNull
-    List<String> getSheetNames() throws IOException;
+    @Nullable
+    List<CubeSeriesWithData> get(@NonNull CubeId key);
 
-    @NonNull
-    List<TsCollection> getSheets() throws IOException;
+    interface Factory {
+
+        @NonNull
+        BulkCubeCache ofTtl(@NonNull Duration ttl);
+    }
 }
