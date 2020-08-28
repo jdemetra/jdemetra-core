@@ -21,6 +21,7 @@ import demetra.timeseries.TsDataTable.ValueStatus;
 import static demetra.timeseries.TsDataTable.ValueStatus.*;
 import static demetra.timeseries.TsDataTable.computeDomain;
 import static java.lang.Double.NaN;
+import java.util.Arrays;
 import static java.util.Arrays.asList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -112,38 +113,35 @@ public class TsDataTableTest {
         assertThatExceptionOfType(IndexOutOfBoundsException.class).isThrownBy(() -> table.cursor(FIRST).moveTo(0, 3));
         assertThatExceptionOfType(IndexOutOfBoundsException.class).isThrownBy(() -> table.cursor(FIRST).moveTo(6, 0));
 
-        assertThat(Cell.toArray(table.cursor(FIRST)))
-                .containsExactly(
-                        new Cell[][]{
-                            {Cell.of(-3, -1, -1, BEFORE, NaN), Cell.of(0, 3, 0, PRESENT, 2.1), Cell.EMPTY},
-                            {Cell.of(-2, -1, -1, BEFORE, NaN), Cell.of(0, 3, 1, UNUSED, NaN), Cell.EMPTY},
-                            {Cell.of(-1, -1, -1, BEFORE, NaN), Cell.of(0, 3, 2, UNUSED, NaN), Cell.EMPTY},
-                            {Cell.of(0, 1, 0, PRESENT, 1.1), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
-                            {Cell.of(1, 1, 0, PRESENT, NaN), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
-                            {Cell.of(2, 1, 0, PRESENT, 1.3), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY}
-                        });
+        assertDeepEqualTo(Cell.toArray(table.cursor(FIRST)),
+                new Cell[][]{
+                    {Cell.of(-3, -1, -1, BEFORE, NaN), Cell.of(0, 3, 0, PRESENT, 2.1), Cell.EMPTY},
+                    {Cell.of(-2, -1, -1, BEFORE, NaN), Cell.of(0, 3, 1, UNUSED, NaN), Cell.EMPTY},
+                    {Cell.of(-1, -1, -1, BEFORE, NaN), Cell.of(0, 3, 2, UNUSED, NaN), Cell.EMPTY},
+                    {Cell.of(0, 1, 0, PRESENT, 1.1), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
+                    {Cell.of(1, 1, 0, PRESENT, NaN), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
+                    {Cell.of(2, 1, 0, PRESENT, 1.3), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY}
+                });
 
-        assertThat(Cell.toArray(table.cursor(MIDDLE)))
-                .containsExactly(
-                        new Cell[][]{
-                            {Cell.of(-3, -1, -1, BEFORE, NaN), Cell.of(0, 3, 0, UNUSED, NaN), Cell.EMPTY},
-                            {Cell.of(-2, -1, -1, BEFORE, NaN), Cell.of(0, 3, 1, PRESENT, 2.1), Cell.EMPTY},
-                            {Cell.of(-1, -1, -1, BEFORE, NaN), Cell.of(0, 3, 2, UNUSED, NaN), Cell.EMPTY},
-                            {Cell.of(0, 1, 0, PRESENT, 1.1), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
-                            {Cell.of(1, 1, 0, PRESENT, NaN), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
-                            {Cell.of(2, 1, 0, PRESENT, 1.3), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY}
-                        });
+        assertDeepEqualTo(Cell.toArray(table.cursor(MIDDLE)),
+                new Cell[][]{
+                    {Cell.of(-3, -1, -1, BEFORE, NaN), Cell.of(0, 3, 0, UNUSED, NaN), Cell.EMPTY},
+                    {Cell.of(-2, -1, -1, BEFORE, NaN), Cell.of(0, 3, 1, PRESENT, 2.1), Cell.EMPTY},
+                    {Cell.of(-1, -1, -1, BEFORE, NaN), Cell.of(0, 3, 2, UNUSED, NaN), Cell.EMPTY},
+                    {Cell.of(0, 1, 0, PRESENT, 1.1), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
+                    {Cell.of(1, 1, 0, PRESENT, NaN), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
+                    {Cell.of(2, 1, 0, PRESENT, 1.3), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY}
+                });
 
-        assertThat(Cell.toArray(table.cursor(LAST)))
-                .containsExactly(
-                        new Cell[][]{
-                            {Cell.of(-3, -1, -1, BEFORE, NaN), Cell.of(0, 3, 0, UNUSED, NaN), Cell.EMPTY},
-                            {Cell.of(-2, -1, -1, BEFORE, NaN), Cell.of(0, 3, 1, UNUSED, NaN), Cell.EMPTY},
-                            {Cell.of(-1, -1, -1, BEFORE, NaN), Cell.of(0, 3, 2, PRESENT, 2.1), Cell.EMPTY},
-                            {Cell.of(0, 1, 0, PRESENT, 1.1), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
-                            {Cell.of(1, 1, 0, PRESENT, NaN), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
-                            {Cell.of(2, 1, 0, PRESENT, 1.3), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY}
-                        });
+        assertDeepEqualTo(Cell.toArray(table.cursor(LAST)),
+                new Cell[][]{
+                    {Cell.of(-3, -1, -1, BEFORE, NaN), Cell.of(0, 3, 0, UNUSED, NaN), Cell.EMPTY},
+                    {Cell.of(-2, -1, -1, BEFORE, NaN), Cell.of(0, 3, 1, UNUSED, NaN), Cell.EMPTY},
+                    {Cell.of(-1, -1, -1, BEFORE, NaN), Cell.of(0, 3, 2, PRESENT, 2.1), Cell.EMPTY},
+                    {Cell.of(0, 1, 0, PRESENT, 1.1), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
+                    {Cell.of(1, 1, 0, PRESENT, NaN), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
+                    {Cell.of(2, 1, 0, PRESENT, 1.3), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY}
+                });
     }
 
     private static String computeUnit(String... periods) {
@@ -177,5 +175,11 @@ public class TsDataTableTest {
             }
             return result;
         }
+    }
+
+    private void assertDeepEqualTo(Object[][] actual, Object[][] expected) {
+        // workaround of bug in assertj 3.17.0
+//        assertThat(actual).isDeepEqualTo(expected);
+        assertThat(Arrays.deepEquals(actual, expected));
     }
 }
