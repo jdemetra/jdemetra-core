@@ -23,7 +23,6 @@ import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
 import jdplus.math.matrices.Matrix;
 import jdplus.random.MersenneTwister;
-import java.io.IOException;
 import java.util.Arrays;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -36,12 +35,11 @@ import jdplus.stats.tests.DickeyFullerTable.DickeyFullerType;
  * @author Jean Palate
  */
 public class AugmentedDickeyFullerTest {
-    
+
     public AugmentedDickeyFullerTest() {
     }
 
-    static final int K = 50;
-
+    static final int K = 0;
 
     @Test
 //    @Ignore
@@ -58,7 +56,7 @@ public class AugmentedDickeyFullerTest {
                     .linearTrend(true)
                     .build();
             T[i] = adf.getT();
-            PT[i] = DickeyFullerTable.probability(200, T[i], DickeyFullerType.CT, true);
+            PT[i] = DickeyFullerTable.probability(200, T[i], DickeyFullerType.CT);
         }
         Arrays.sort(T);
         Arrays.sort(PT);
@@ -66,7 +64,7 @@ public class AugmentedDickeyFullerTest {
         System.out.println((T[n01] + T[n01 - 1]) / 2);
         System.out.println((T[n05] + T[n05 - 1]) / 2);
         System.out.println((T[n10] + T[n10 - 1]) / 2);
-        
+
         System.out.println(DoubleSeq.of(T));
         System.out.println(DoubleSeq.of(PT));
     }
@@ -121,12 +119,13 @@ public class AugmentedDickeyFullerTest {
     }
 
     final static MersenneTwister rnd = new MersenneTwister(0);
+
     public static DoubleSeq test(int n) {
 
         Normal N = new Normal();
         DataBlock data = DataBlock.make(n + K);
         data.set(() -> N.random(rnd));
-        data.applyRecursively(1, (a,b)->a+b);
+        data.applyRecursively(1, (a, b) -> a + b);
         return data.drop(K, 0);
     }
 
@@ -151,23 +150,65 @@ public class AugmentedDickeyFullerTest {
         return pct;
     }
 
-    @Test
-    public void tesTable() {
-        DoubleSeq data = test(600);
+    public static double[] simulate2(int N, int len, boolean cnt, boolean trend) {
+        double[] T = new double[N];
+        Arrays.setAll(T, i -> {
+            DoubleSeq data = test(len);
             AugmentedDickeyFuller adf = AugmentedDickeyFuller.builder()
                     .data(data)
-                    .numberOfLags(1)
-                    .constant(true)
-                    .linearTrend(true)
+                    .numberOfLags(0)
+                    .constant(cnt)
+                    .linearTrend(trend)
                     .build();
-        boolean b0 = adf.isSignificant(.01);
-        boolean b1 = adf.isSignificant(.05);
-        boolean b2 = adf.isSignificant(.1);
-        assertTrue(b1 || !b0);
-        assertTrue(b2 || !b1);
-//        System.out.println(AugmentedDickeyFullerTest.thresholdc(.01, 100));
-//        System.out.println(AugmentedDickeyFullerTest.thresholdc(.05, 100));
-//        System.out.println(AugmentedDickeyFullerTest.thresholdc(.1, 100));
+            return adf.getT();
+        });
+        Arrays.sort(T);
+        return T;
+    }
+
+    public static double[] simulatez(int N, int len, boolean cnt, boolean trend) {
+        double[] T = new double[N];
+        Arrays.setAll(T, i -> {
+            DoubleSeq data = test(len);
+            AugmentedDickeyFuller adf = AugmentedDickeyFuller.builder()
+                    .data(data)
+                    .numberOfLags(0)
+                    .constant(cnt)
+                    .linearTrend(trend)
+                    .build();
+            return adf.getZ();
+        });
+        Arrays.sort(T);
+        return T;
+    }
+
+    private static final int[] NOBS = new int[]{25, 50, 100, 250, 500};
+    private static final double[] PROB = new double[]{0.001, 0.01, 0.025, 0.05, 0.1, 0.9, 0.95, 0.975, 0.99, .999};
+
+    public static void main(String[] args) {
+        int N = 10000000;
+        for (int i = 0; i < NOBS.length; ++i) {
+            double[] t = simulatez(N, NOBS[i], false, false);
+            for (int j = 0; j < PROB.length; ++j) {
+                System.out.println(t[(int) (t.length * PROB[j]-.5)]);
+            }
+            System.out.println("");
+        }
+
+        for (int i = 0; i < NOBS.length; ++i) {
+            double[] t = simulatez(N, NOBS[i], true, false);
+            for (int j = 0; j < PROB.length; ++j) {
+                System.out.println(t[(int) (t.length * PROB[j]-.5)]);
+            }
+            System.out.println("");
+        }
+        for (int i = 0; i < NOBS.length; ++i) {
+            double[] t = simulatez(N, NOBS[i], true, true);
+            for (int j = 0; j < PROB.length; ++j) {
+                System.out.println(t[(int) (t.length * PROB[j]-.5)]);
+            }
+            System.out.println("");
+        }
     }
 
 }

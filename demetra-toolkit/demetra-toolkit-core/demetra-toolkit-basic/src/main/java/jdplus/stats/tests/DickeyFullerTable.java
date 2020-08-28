@@ -17,7 +17,6 @@
 package jdplus.stats.tests;
 
 import jdplus.math.functions.CubicSpline;
-import jdplus.math.functions.analysis.PiecewiseBicubicSplineInterpolatingFunction;
 
 /**
  *
@@ -32,26 +31,26 @@ public class DickeyFullerTable {
     }
 
     private final double[][] T_NC = new double[][]{
-        new double[]{-2.66, -2.26, -1.95, -1.60, 0.92, 1.33, 1.70, 2.16},
-        new double[]{-2.62, -2.25, -1.95, -1.60, 0.91, 1.31, 1.66, 2.08},
-        new double[]{-2.60, -2.24, -1.95, -1.60, 0.90, 1.29, 1.64, 2.03},
-        new double[]{-2.58, -2.23, -1.95, -1.60, 0.89, 1.29, 1.63, 2.01},
-        new double[]{-2.58, -2.23, -1.95, -1.60, 0.89, 1.28, 1.62, 2.00},
-        new double[]{-3.96, -2.23, -1.95, -1.60, 0.89, 1.28, 1.62, 2.00}};
+        new double[]{-3.58, -2.66, -2.26, -1.95, -1.60, 0.92, 1.33, 1.70, 2.16, 3.13},
+        new double[]{-3.42, -2.62, -2.25, -1.95, -1.60, 0.91, 1.31, 1.66, 2.08, 2.96},
+        new double[]{-3.34, -2.60, -2.24, -1.95, -1.60, 0.90, 1.29, 1.64, 2.03, 2.89},
+        new double[]{-3.31, -2.58, -2.23, -1.95, -1.60, 0.89, 1.29, 1.63, 2.01, 2.85},
+        new double[]{-3.29, -2.58, -2.23, -1.95, -1.60, 0.89, 1.28, 1.62, 2.00, 2.84},
+        new double[]{-3.28, -2.58, -2.23, -1.95, -1.60, 0.89, 1.28, 1.62, 2.00, 2.83}};
     private final double[][] T_C = new double[][]{
-        new double[]{-3.75, -3.33, -3.00, -2.62, -0.37, 0, 0.34, 0.72},
-        new double[]{-3.58, -3.22, -2.93, -2.60, -0.40, -0.03, 0.29, 0.66},
-        new double[]{-3.51, -3.17, -2.89, -2.58, -0.42, -0.05, 0.26, 0.63},
-        new double[]{-3.46, -3.14, -2.88, -2.57, -0.42, -0.06, 0.24, 0.62},
-        new double[]{-3.44, -3.13, -2.87, -2.57, -0.43, -0.07, 0.24, 0.61},
-        new double[]{-3.43, -3.12, -2.86, -2.57, -0.44, -0.07, 0.23, 0.60}};
+        new double[]{-4.73, -3.75, -3.33, -3.00, -2.62, -0.37, 0, 0.34, 0.72, 1.57},
+        new double[]{-4.38, -3.58, -3.22, -2.93, -2.60, -0.40, -0.03, 0.29, 0.66, 1.47},
+        new double[]{-4.22, -3.51, -3.17, -2.89, -2.58, -0.42, -0.05, 0.26, 0.63, 1.42},
+        new double[]{-4.14, -3.46, -3.14, -2.88, -2.57, -0.42, -0.06, 0.24, 0.62, 1.39},
+        new double[]{-4.12, -3.44, -3.13, -2.87, -2.57, -0.43, -0.07, 0.24, 0.61, 1.38},
+        new double[]{-4.10, -3.43, -3.12, -2.86, -2.57, -0.44, -0.07, 0.23, 0.60, 1.37}};
     private final double[][] T_CT = new double[][]{
-        new double[]{-4.38, -3.95, -3.6, -3.24, -1.14, -0.8, -0.5, -0.15},
-        new double[]{-4.15, -3.8, -3.5, -3.18, -1.19, -0.87, -0.58, -0.24},
-        new double[]{-4.04, -3.73, -3.45, -3.15, -1.22, -0.9, -0.62, -0.28},
-        new double[]{-3.99, -3.69, -3.43, -3.13, -1.23, -0.92, -0.64, -0.31},
-        new double[]{-3.98, -3.68, -3.42, -3.13, -1.24, -0.93, -0.65, -0.32},
-        new double[]{-3.96, -3.66, -3.41, -3.12, -1.25, -0.94, -0.66, -0.33}};
+        new double[]{-5.45, -4.38, -3.95, -3.6, -3.24, -1.14, -0.8, -0.5, -0.15, 0.60},
+        new double[]{-4.97, -4.15, -3.8, -3.5, -3.18, -1.19, -0.87, -0.58, -0.24, 0.49},
+        new double[]{-4.77, -4.04, -3.73, -3.45, -3.15, -1.22, -0.9, -0.62, -0.28, 0.44},
+        new double[]{-4.66, -3.99, -3.69, -3.43, -3.13, -1.23, -0.92, -0.64, -0.31, 0.40},
+        new double[]{-4.63, -3.98, -3.68, -3.42, -3.13, -1.24, -0.93, -0.65, -0.32, 0.39},
+        new double[]{-4.60, -3.96, -3.66, -3.41, -3.12, -1.25, -0.94, -0.66, -0.33, 0.38}};
 
     private final double[][] Z_NC = new double[][]{
         new double[]{-11.9, -9.3, -7.3, -5.3, +1.01, +1.40, +1.79, +2.28},
@@ -78,10 +77,9 @@ public class DickeyFullerTable {
         new double[]{-29.5, -25.1, -21.8, -18.3, -3.77, -2.66, -1.79, -0.87}};
 
     private final double[] NOBS = new double[]{25, 50, 100, 250, 500, Integer.MAX_VALUE};
-    private final double[] PROB = new double[]{0.01, 0.025, 0.05, 0.1, 0.9, 0.95, 0.975, 0.99};
+    private final double[] PROB = new double[]{0.001, 0.01, 0.025, 0.05, 0.1, 0.9, 0.95, 0.975, 0.99, 0.999};
 
-    private double[][] adfTable(DickeyFullerType type, boolean t) {
-        if (t) {
+    private double[][] adfTable(DickeyFullerType type) {
             switch (type) {
                 case NC:
                     return T_NC;
@@ -90,21 +88,11 @@ public class DickeyFullerTable {
                 default:
                     return T_CT;
             }
-        } else {
-            switch (type) {
-                case NC:
-                    return Z_NC;
-                case C:
-                    return Z_C;
-                default:
-                    return Z_CT;
-            }
-        }
     }
 
-    public double probability(int n, double q, DickeyFullerType type, boolean t) {
+    public double probability3(int n, double q, DickeyFullerType type) {
 
-        double[][] adfTable = adfTable(type, t);
+        double[][] adfTable = adfTable(type);
 
         // for each n, find the suitable p
         double[] pd = new double[NOBS.length];
@@ -128,9 +116,9 @@ public class DickeyFullerTable {
         return p;
     }
 
-    public double probability2(int n, double q, DickeyFullerType type, boolean t) {
+    public double probability2(int n, double q, DickeyFullerType type) {
 
-        double[][] adfTable = adfTable(type, t);
+        double[][] adfTable = adfTable(type);
 
         // for each n, find the suitable p
         double[] pd = new double[NOBS.length];
@@ -153,4 +141,27 @@ public class DickeyFullerTable {
         }
         return p;
     }
+    
+    private final double[] PROBL;
+    
+    static{
+        PROBL=PROB.clone();
+        for (int i=0; i<PROBL.length; ++i){
+            PROBL[i]=-Math.log(1/PROBL[i]-1);
+        }
+    }
+    
+    public double probability(int n, double q, DickeyFullerType type) {
+
+        double[][] adfTable = adfTable(type);
+
+        // for each n, find the suitable p
+        double[] pd = new double[NOBS.length];
+        for (int i = 0; i < pd.length; ++i) {
+            pd[i] =CubicSpline.of(adfTable[i], PROBL).applyAsDouble(q);
+        }
+        double p = CubicSpline.of(NOBS, pd).applyAsDouble(n);
+        return Math.exp(p)/(1+Math.exp(p));
+    }
+    
 }

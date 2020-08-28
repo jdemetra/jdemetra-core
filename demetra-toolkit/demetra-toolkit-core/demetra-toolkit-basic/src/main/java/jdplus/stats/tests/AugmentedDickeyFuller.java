@@ -22,12 +22,14 @@ import demetra.design.BuilderPattern;
 import jdplus.math.matrices.Matrix;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
+import demetra.stats.TestResult;
 import jdplus.leastsquares.QRSolution;
 import jdplus.leastsquares.QRSolver;
 
 /**
  * (Augmented) Dickey-Fuller test
- * The estimated model is dy(t)=d*y(t-1)[+a][+b*t+][+e1*dy(t-1)+...+ek*dy(t-k)]+eps
+ * The estimated model is
+ * dy(t)=d*y(t-1)[+a][+b*t+][+e1*dy(t-1)+...+ek*dy(t-k)]+eps
  *
  * @author Jean Palate
  */
@@ -41,8 +43,9 @@ public class AugmentedDickeyFuller {
     public static class Builder {
 
         private int k = 0; // number of lags. 0 for simple Dickey-Fuller
-        private boolean cnt=false, trend=false;
+        private boolean cnt = false, trend = false;
         private DoubleSeq y;
+        private boolean pp;
 
         public Builder data(DoubleSeq y) {
             this.y = y;
@@ -66,12 +69,17 @@ public class AugmentedDickeyFuller {
             this.trend = trend;
             return this;
         }
+        
+        public Builder philppsPerron(boolean pp){
+            this.pp = pp;
+            return this;
+        }
 
         public AugmentedDickeyFuller build() {
             //
-            DoubleSeq del=DoublesMath.delta(y, 1);
-            int ndata = del.length()-k;
-            int ncols = k+1;
+            DoubleSeq del = DoublesMath.delta(y, 1);
+            int ndata = del.length() - k;
+            int ncols = k + 1;
             if (cnt) {
                 ++ncols;
             }
@@ -118,30 +126,21 @@ public class AugmentedDickeyFuller {
         this.cnt = cnt;
         this.trend = trend;
         QRSolution ls = QRSolver.fastLeastSquares(y, x);
-        int l=x.getColumnsCount()-1;
-        b=DataBlock.of(ls.getB());
-        e=DataBlock.of(ls.getE());
+        int l = x.getColumnsCount() - 1;
+        b = DataBlock.of(ls.getB());
+        e = DataBlock.of(ls.getE());
         double ssq = ls.getSsqErr();
         double val = b.get(l);
         stderr = Math.abs(Math.sqrt(ssq / e.length()) / ls.rawRDiagonal().get(l));
         t = val / stderr;
     }
-    
-    public boolean isSignificant(double eps) {
-        if (!cnt && !trend) {
-            return sign00(eps);
-        } else if (!trend) {
-            return sign10(eps);
-        } else {
-            return sign11(eps);
-        }
+
+    public double getRho() {
+        int l = x.getColumnsCount() - 1;
+        return b.get(l) + 1;
     }
 
-    public double getRho(){
-        return b.get(0)+1;
-    }
-
-    public double getStdErr(){
+    public double getStdErr() {
         return stderr;
     }
 
@@ -150,6 +149,11 @@ public class AugmentedDickeyFuller {
      */
     public double getT() {
         return t;
+    }
+    
+    public double getZ(){
+        int l = x.getColumnsCount() - 1;
+        return y.length()*b.get(l);
     }
 
     /**
@@ -166,7 +170,32 @@ public class AugmentedDickeyFuller {
         return trend;
     }
 
-    static double thresholdnc(double eps, int n) {
+    public TestResult result() {
+        DickeyFullerTable.DickeyFullerType type;
+        if (cnt) {
+            if (trend) {
+                type = DickeyFullerTable.DickeyFullerType.CT;
+            } else {
+                type = DickeyFullerTable.DickeyFullerType.C;
+            }
+        } else {
+            type = DickeyFullerTable.DickeyFullerType.NC;
+        }
+
+        return new TestResult(getT(), DickeyFullerTable.probability(e.length(), getT(), type), "Engle-Granger cointegration test");
+    }
+
+    boolean isSignificant(double eps) {
+        if (!cnt && !trend) {
+            return sign00(eps);
+        } else if (!trend) {
+            return sign10(eps);
+        } else {
+            return sign11(eps);
+        }
+    }
+
+    double thresholdnc(double eps, int n) {
         double[] w = null;
         if (eps == 0.01) {
             w = TNC_01;
