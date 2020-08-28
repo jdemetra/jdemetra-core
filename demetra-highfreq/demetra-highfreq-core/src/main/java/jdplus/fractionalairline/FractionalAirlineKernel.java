@@ -10,6 +10,7 @@ import jdplus.regarima.GlsArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import demetra.data.DoubleSeq;
+import demetra.data.DoublesMath;
 import demetra.highfreq.FractionalAirlineDecomposition;
 import demetra.highfreq.FractionalAirlineEstimation;
 import demetra.highfreq.FractionalAirlineSpec;
@@ -32,6 +33,8 @@ import jdplus.regarima.ami.OutliersDetectionModule;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.implementations.CompositeSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
+import jdplus.ssf.univariate.ExtendedSsfData;
+import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.ucarima.AllSelector;
 import jdplus.ucarima.ModelDecomposer;
@@ -101,7 +104,7 @@ public class FractionalAirlineKernel {
                 .build();
     }
 
-    public FractionalAirlineDecomposition decompose(DoubleSeq s, double period, boolean adjust, boolean sn, boolean cov) {
+    public FractionalAirlineDecomposition decompose(DoubleSeq s, double period, boolean adjust, boolean sn, boolean cov, int nb, int nf) {
         int iperiod = (int) period;
         if (period - iperiod < 1e-9) {
             period = iperiod;
@@ -147,45 +150,74 @@ public class FractionalAirlineKernel {
                 .parameters(max.getParameters())
                 .parametersCovariance(max.asymptoticCovariance())
                 .score(max.getScore())
-                .y(s.toArray())
                 .ucarima(ucmt);
         CompositeSsf ssf = SsfUcarima.of(ucm);
-        SsfData data = new SsfData(s);
+        ISsfData data = new ExtendedSsfData(new SsfData(s), nb, nf);
         int[] pos = ssf.componentsPosition();
+        double[] yc = s.toArray();
         if (cov) {
-            try{
+            try {
                 DefaultSmoothingResults sr = DkToolkit.sqrtSmooth(ssf, data, true, true);
                 if (sn) {
+                    DoubleSeq sc = sr.getComponent(pos[1]), nc = sr.getComponent(pos[0]);
+                    if (nb > 0 || nf > 0) {
+                        double[] z = DoublesMath.add(sc, nc).toArray();
+                        System.arraycopy(yc, 0, z, nb, yc.length);
+                        yc = z;
+                    }
                     return dbuilder
-                            .s(sr.getComponent(pos[1]).toArray())
-                            .n(sr.getComponent(pos[0]).toArray())
-                            .stdeS(sr.getComponentVariance(pos[1]).fastOp(a->a<=0?0:Math.sqrt(a)).toArray())
-                            .stdeN(sr.getComponentVariance(pos[0]).fastOp(a->a<=0?0:Math.sqrt(a)).toArray())
+                            .y(yc)
+                            .s(sc.toArray())
+                            .n(nc.toArray())
+                            .stdeS(sr.getComponentVariance(pos[1]).fastOp(a -> a <= 0 ? 0 : Math.sqrt(a)).toArray())
+                            .stdeN(sr.getComponentVariance(pos[0]).fastOp(a -> a <= 0 ? 0 : Math.sqrt(a)).toArray())
                             .build();
                 } else {
+                    DoubleSeq sc = sr.getComponent(pos[1]), tc = sr.getComponent(pos[0]), ic = sr.getComponent(pos[2]);
+                    if (nb > 0 || nf > 0) {
+                        double[] z = DoublesMath.add(tc, sc, ic).toArray();
+                        System.arraycopy(yc, 0, z, nb, yc.length);
+                        yc = z;
+                    }
                     return dbuilder
-                            .s(sr.getComponent(pos[1]).toArray())
-                            .t(sr.getComponent(pos[0]).toArray())
-                            .i(sr.getComponent(pos[2]).toArray())
-                            .stdeS(sr.getComponentVariance(pos[1]).fastOp(a->a<=0?0:Math.sqrt(a)).toArray())
-                            .stdeT(sr.getComponentVariance(pos[0]).fastOp(a->a<=0?0:Math.sqrt(a)).toArray())
-                            .stdeI(sr.getComponentVariance(pos[2]).fastOp(a->a<=0?0:Math.sqrt(a)).toArray())
+                            .y(yc)
+                            .s(sc.toArray())
+                            .t(tc.toArray())
+                            .i(ic.toArray())
+                            .stdeS(sr.getComponentVariance(pos[1]).fastOp(a -> a <= 0 ? 0 : Math.sqrt(a)).toArray())
+                            .stdeT(sr.getComponentVariance(pos[0]).fastOp(a -> a <= 0 ? 0 : Math.sqrt(a)).toArray())
+                            .stdeI(sr.getComponentVariance(pos[2]).fastOp(a -> a <= 0 ? 0 : Math.sqrt(a)).toArray())
                             .build();
                 }
-            }catch (Exception err){}
+            } catch (Exception err) {
+            }
         }
 
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
         if (sn) {
+            DoubleSeq sc = ds.item(pos[1]), nc = ds.item(pos[0]);
+            if (nb > 0 || nf > 0) {
+                double[] z = DoublesMath.add(sc, nc).toArray();
+                System.arraycopy(yc, 0, z, nb, yc.length);
+                yc = z;
+            }
             return dbuilder
+                    .y(yc)
                     .s(ds.item(pos[1]).toArray())
                     .n(ds.item(pos[0]).toArray())
                     .build();
         } else {
+            DoubleSeq sc = ds.item(pos[1]), tc = ds.item(pos[0]), ic = ds.item(pos[2]);
+            if (nb > 0 || nf > 0) {
+                double[] z = DoublesMath.add(tc, sc, ic).toArray();
+                System.arraycopy(yc, 0, z, nb, yc.length);
+                yc = z;
+            }
             return dbuilder
-                    .s(ds.item(pos[1]).toArray())
-                    .t(ds.item(pos[0]).toArray())
-                    .i(ds.item(pos[2]).toArray())
+                    .y(yc)
+                    .s(sc.toArray())
+                    .t(tc.toArray())
+                    .i(ic.toArray())
                     .build();
         }
     }

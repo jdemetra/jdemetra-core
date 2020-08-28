@@ -31,14 +31,13 @@ import jdplus.fractionalairline.FractionalAirlineKernel;
 public class FractionalAirlineProcessor{
 
 
-    public FractionalAirlineDecomposition decompose(double[] s, double period, boolean adjust, boolean sn, boolean cov) {
+    public FractionalAirlineDecomposition decompose(double[] s, double period, boolean adjust, boolean sn, boolean cov, int nb, int nf) {
         int iperiod = (int) period;
         if (period - iperiod < 1e-9) {
             period = iperiod;
             adjust = false;
         }
-        
-        return FractionalAirlineKernel.decompose(DoubleSeq.of(s), period, adjust, sn, cov);
+        return FractionalAirlineKernel.decompose(DoubleSeq.of(s), period, adjust, sn, cov, nb, nf);
     }
     
     public FractionalAirlineEstimation estimate(double[] y, MatrixType x, boolean mean, double[] periods, String[] outliers, double cv, double precision, boolean approximateHessian){

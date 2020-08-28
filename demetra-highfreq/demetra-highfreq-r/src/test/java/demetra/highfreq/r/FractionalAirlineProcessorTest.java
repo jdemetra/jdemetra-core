@@ -23,20 +23,21 @@ public class FractionalAirlineProcessorTest {
 
     @Test
     public void testWeeklyDecomp() {
-        DoubleSeq y=DoubleSeq.of(WeeklyData.US_CLAIMS2).log();
-        FractionalAirlineDecomposition rslt = FractionalAirlineProcessor.decompose(y.toArray(), 365.25/7, false, false, true);
-//        System.out.println(DoubleSeq.of(rslt.getT()));
-//        System.out.println(DoubleSeq.of(rslt.getS()));
-//        System.out.println(DoubleSeq.of(rslt.getI()));
-//        System.out.println(DoubleSeq.of(rslt.getStdeT()));
-//        System.out.println(DoubleSeq.of(rslt.getStdeS()));
-//        System.out.println(DoubleSeq.of(rslt.getStdeI()));
+        DoubleSeq y = DoubleSeq.of(WeeklyData.US_CLAIMS2).log();
+        FractionalAirlineDecomposition rslt = FractionalAirlineProcessor.decompose(y.toArray(), 365.25 / 7, true, false, true, 10, 53);
+        System.out.println(DoubleSeq.of(rslt.getT()));
+        System.out.println(DoubleSeq.of(rslt.getS()));
+        System.out.println(DoubleSeq.of(rslt.getI()));
+        System.out.println(DoubleSeq.of(rslt.getStdeT()));
+        System.out.println(DoubleSeq.of(rslt.getStdeS()));
+        System.out.println(DoubleSeq.of(rslt.getStdeI()));
+        System.out.println(DoubleSeq.of(rslt.getY()));
         assertTrue(null != rslt.getData("sa", double[].class));
     }
-    
-   @Test
+
+    @Test
     public void testWeeklyEstimation() {
-        FractionalAirlineEstimation rslt = FractionalAirlineProcessor.estimate(WeeklyData.US_CLAIMS2, null, false, new double[]{365.25/7}, new String[]{"ao", "wo"}, 5, 1e-12, true);
+        FractionalAirlineEstimation rslt = FractionalAirlineProcessor.estimate(WeeklyData.US_CLAIMS2, null, false, new double[]{365.25 / 7}, new String[]{"ao", "wo"}, 5, 1e-12, true);
         System.out.println(rslt.getLikelihood());
         System.out.println();
     }
