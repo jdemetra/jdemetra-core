@@ -20,7 +20,7 @@ import demetra.data.DoubleSeq;
 import demetra.revisions.parametric.UnitRoot;
 import demetra.stats.ProbabilityType;
 import jdplus.dstats.T;
-import jdplus.stats.tests.AugmentedDickeyFuller;
+import jdplus.stats.tests.DickeyFuller;
 import jdplus.stats.tests.DickeyFullerTable;
 
 /**
@@ -29,39 +29,40 @@ import jdplus.stats.tests.DickeyFullerTable;
  */
 @lombok.experimental.UtilityClass
 public class UnitRootTestsComputer {
-    
+
     public UnitRoot of(DoubleSeq y, int adfk) {
-        
+
         // dy(t)=a*y(t-1)+e
-        AugmentedDickeyFuller df = AugmentedDickeyFuller.builder()
+        DickeyFuller df = DickeyFuller.builder()
                 .data(y)
-                .constant(false)
-                .linearTrend(false)
+                .type(DickeyFuller.DickeyFullerType.NC)
                 .numberOfLags(0)
                 .build();
         // dy(t)=c+d*t+a*y(t-1)+e
-        AugmentedDickeyFuller dfc = AugmentedDickeyFuller.builder()
+        DickeyFuller dfc = DickeyFuller.builder()
                 .data(y)
-                .constant(true)
-                .linearTrend(true)
+                .type(DickeyFuller.DickeyFullerType.CT)
                 .numberOfLags(0)
                 .build();
-        
+
         // dy(t)=a*y(t-1)+b1*dy(t-1)+bk*dy(t-k)+e
-        AugmentedDickeyFuller adf = AugmentedDickeyFuller.builder()
+        DickeyFuller adf = DickeyFuller.builder()
                 .data(y)
-                .constant(false)
-                .linearTrend(false)
+                .type(DickeyFuller.DickeyFullerType.NC)
                 .numberOfLags(adfk)
                 .build();
-        T t=new T(y.length()-2);
-        return UnitRoot.builder()
-                .dickeyFuller(new UnitRoot.Test(df.getRho(),df.getStdErr(),df.getT(),DickeyFullerTable.probability(y.length(), df.getT(), DickeyFullerTable.DickeyFullerType.NC)))
-                .dickeyFullerWithTrendAndIntercept(new UnitRoot.Test(dfc.getRho(),dfc.getStdErr(),dfc.getT(),DickeyFullerTable.probability(y.length(), dfc.getT(), DickeyFullerTable.DickeyFullerType.CT)))
-                .augmentedDickeyFuller(new UnitRoot.Test(adf.getRho(),adf.getStdErr(),adf.getT(),DickeyFullerTable.probability(y.length(), adf.getT(), DickeyFullerTable.DickeyFullerType.NC)))
-                .philipsPerron(new UnitRoot.Test(df.getRho()-1,df.getStdErr(),df.getT(),
-                        t.getProbability((df.getRho()-1)/df.getStdErr(), ProbabilityType.Lower)))
+        DickeyFuller pp = DickeyFuller.builder()
+                .data(y)
+                .type(DickeyFuller.DickeyFullerType.NC)
+                .numberOfLags(0)
+                .phillipsPerron(true)
                 .build();
-        
+        return UnitRoot.builder()
+                .dickeyFuller(new UnitRoot.Test(df.getRho(), df.getSer(), df.getTest(), df.getPvalue()))
+                .dickeyFullerWithTrendAndIntercept(new UnitRoot.Test(dfc.getRho(), dfc.getSer(), dfc.getTest(), dfc.getPvalue()))
+                .augmentedDickeyFuller(new UnitRoot.Test(adf.getRho(), adf.getSer(), adf.getTest(), adf.getPvalue()))
+                .philipsPerron(new UnitRoot.Test(pp.getRho(), pp.getSer(), pp.getTest(), pp.getPvalue()))
+                .build();
+
     }
- }
+}

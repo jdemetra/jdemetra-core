@@ -37,8 +37,7 @@ import jdplus.revisions.parametric.OlsTestsComputer;
 import jdplus.revisions.parametric.SignalNoiseComputer;
 import jdplus.revisions.parametric.UnitRootTestsComputer;
 import jdplus.stats.StatUtility;
-import jdplus.stats.tests.AugmentedDickeyFuller;
-import jdplus.stats.tests.EngleGranger;
+import jdplus.stats.tests.DickeyFuller;
 
 /**
  *
@@ -139,13 +138,12 @@ public class Utility {
             for (int j = i + 1; j < n; ++j) {
                 try {
                     DoubleSeqCursor.OnMutable cursor = rslt.row(k++).cursor();
-                    AugmentedDickeyFuller df = EngleGranger.df(vintages.column(i), vintages.column(j));
+                    DickeyFuller df = DickeyFuller.engleGranger(vintages.column(i), vintages.column(j)).build();
                     if (df != null) {
-                        TestResult result = df.result();
                         cursor.setAndNext(df.getRho());
-                        cursor.setAndNext(df.getStdErr());
-                        cursor.setAndNext(df.getT());
-                        cursor.setAndNext(result.getPvalue());
+                        cursor.setAndNext(df.getSer());
+                        cursor.setAndNext(df.getTest());
+                        cursor.setAndNext(df.getPvalue());
                     }
                 } catch (Exception err) {
                 }

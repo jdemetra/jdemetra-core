@@ -30,21 +30,21 @@ public class DickeyFullerTableTest {
 
     public static void test1() {
         for (int i = 10; i < 500; ++i) {
-            System.out.print(DickeyFullerTable.probability(i, 1.6, DickeyFullerTable.DickeyFullerType.NC));
+            System.out.print(DickeyFullerTable.probability(i, 1.6, DickeyFuller.DickeyFullerType.NC, false));
             System.out.print('\t');
-            System.out.print(DickeyFullerTable.probability2(i, 1.6, DickeyFullerTable.DickeyFullerType.NC));
+            System.out.print(DickeyFullerTable.probability2(i, 1.6, DickeyFuller.DickeyFullerType.NC));
             System.out.print('\t');
-            System.out.println(DickeyFullerTable.probability3(i, 1.6, DickeyFullerTable.DickeyFullerType.NC));
+            System.out.println(DickeyFullerTable.probability3(i, 1.6, DickeyFuller.DickeyFullerType.NC));
         }
     }
 
     public static void test2() {
         for (int i = -250; i < 250; ++i) {
-            System.out.print(DickeyFullerTable.probability(50, .1*i, DickeyFullerTable.DickeyFullerType.NC));
+            System.out.print(DickeyFullerTable.probability(50, .1*i, DickeyFuller.DickeyFullerType.NC, false));
             System.out.print('\t');
-            System.out.print(DickeyFullerTable.probability2(50, .1*i, DickeyFullerTable.DickeyFullerType.NC));
+            System.out.print(DickeyFullerTable.probability2(50, .1*i, DickeyFuller.DickeyFullerType.NC));
             System.out.print('\t');
-            System.out.println(DickeyFullerTable.probability3(50, .1*i, DickeyFullerTable.DickeyFullerType.NC));
+            System.out.println(DickeyFullerTable.probability3(50, .1*i, DickeyFuller.DickeyFullerType.NC));
         }
     }
     
