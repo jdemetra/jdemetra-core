@@ -36,7 +36,8 @@ public class QsTest {
         TsData s=Data.TS_PROD;
         s=TsDataToolkit.delta(s, 1);
         Qs test=new Qs(s.getValues(),12);
-//        System.out.println(test.build());
+        assertTrue(test.build().isSignificant(0.01));
+        System.out.println(test.build());
     }
     
     @Test
@@ -44,7 +45,8 @@ public class QsTest {
         TsData s=Data.TS_PROD;
         s=TsDataToolkit.delta(s, 12);
         Qs test=new Qs(s.getValues(),12);
-//        System.out.println(test.build());
-//        System.out.println(test.useNegativeAutocorrelations().build());
+        assertFalse(test.build().isSignificant(0.01));
+        System.out.println(test.build());
+        System.out.println(test.useNegativeAutocorrelations().build());
     }
 }

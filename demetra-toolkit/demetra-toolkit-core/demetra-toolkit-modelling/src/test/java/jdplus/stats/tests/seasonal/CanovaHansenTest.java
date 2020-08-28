@@ -35,7 +35,7 @@ public class CanovaHansenTest {
     @Test
     public void testUnempl_dummy() {
 //        System.out.println("dummies");
-        CanovaHansen ch = CanovaHansen.test(DoubleSeq.copyOf(Data.US_UNEMPL))
+        CanovaHansen ch = CanovaHansen.test(DoubleSeq.of(Data.US_UNEMPL))
                 .dummies(4)
                 .truncationLag(4)
                 .build();
@@ -49,7 +49,7 @@ public class CanovaHansenTest {
     @Test
     public void testUnempl_trig() {
 //        System.out.println("trig");
-        CanovaHansen ch = CanovaHansen.test(DoubleSeq.copyOf(Data.US_UNEMPL))
+        CanovaHansen ch = CanovaHansen.test(DoubleSeq.of(Data.US_UNEMPL))
                 .trigonometric(4)
                 .truncationLag(4)
                 .build();

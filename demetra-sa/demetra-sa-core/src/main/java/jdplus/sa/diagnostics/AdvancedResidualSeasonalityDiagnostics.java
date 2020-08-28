@@ -21,20 +21,13 @@ import demetra.design.Development;
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import demetra.timeseries.TsData;
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.regression.PeriodicDummies;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import jdplus.linearmodel.JointTest;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
-import jdplus.math.matrices.Matrix;
 import jdplus.modelling.DifferencingResults;
-import jdplus.modelling.regression.Regression;
 import jdplus.stats.DescriptiveStatistics;
 import jdplus.stats.tests.StatisticalTest;
+import jdplus.stats.tests.seasonal.FTest;
 import jdplus.stats.tests.seasonal.Qs;
 
 /**
@@ -137,15 +130,10 @@ public class AdvancedResidualSeasonalityDiagnostics implements Diagnostics {
                         sac = sac.log();
                     }
                     int ifreq = sac.getAnnualFrequency();
-                    TsData salast = sac;
-                    if (ny != 0) {
-                        salast = sac.drop(Math.max(0, sac.length() - ifreq * ny - 1), 0);
-                    }
-//                    FTest ftest = new FTest();
-//                    if (ftest.test(salast)) {
-//                        test.f_sa = ftest.getFTest();
-//                    }
-                    test.f_sa = processAr(salast);
+                    test.f_sa=new FTest(sac.getValues(), ifreq)
+                            .model(FTest.Model.AR)
+                            .ncycles(ny)
+                            .build();
                 }
                 if (i != null && isignif) {
                     TsData ic = i;
@@ -153,15 +141,10 @@ public class AdvancedResidualSeasonalityDiagnostics implements Diagnostics {
                         ic = ic.log();
                     }
                     int ifreq = ic.getAnnualFrequency();
-                    TsData ilast = ic;
-                    if (ny != 0) {
-                        ilast = ic.drop(Math.max(0, ic.length() - ifreq * ny - 1), 0);
-                    }
-//                    FTest ftest = new FTest();
-//                    if (ftest.test(ilast)) {
-//                        test.f_i = ftest.getFTest();
-//                    }
-                    test.f_i = processAr(ilast);
+                    test.f_i=new FTest(ic.getValues(), ifreq)
+                            .model(FTest.Model.AR)
+                            .ncycles(ny)
+                            .build();
                 }
             }
             test.sev = config.getSevereThreshold();
@@ -256,45 +239,4 @@ public class AdvancedResidualSeasonalityDiagnostics implements Diagnostics {
         return test == null ? Double.NaN : test.getPValue();
     }
 
-    private static StatisticalTest processAr(TsData s) {
-        try {
-            PeriodicDummies dummies = new PeriodicDummies(s.getAnnualFrequency());
-            TsDomain edomain = s.getDomain().drop(1, 0);
-            DoubleSeq y=s.getValues();
-            Matrix matrix = Regression.matrix(edomain, dummies);
-            LinearModel reg=LinearModel.builder()
-                    .y(y.drop(1, 0))
-                    .meanCorrection(true)
-                    .addX(y.drop(0, 1))
-                    .addX(matrix)
-                    .build();
-            int nseas = dummies.dim();
-            LeastSquaresResults lsr = Ols.compute(reg);
-            return new JointTest(lsr.getLikelihood())
-                    .variableSelection(2, nseas)
-                    .blue()
-                    .build();
-        } catch (Exception err) {
-            return null;
-        }
-    }
-
-    private static StatisticalTest process(TsData s) {
-        try {
-            PeriodicDummies dummies = new PeriodicDummies(s.getAnnualFrequency());
-            Matrix matrix = Regression.matrix(s.getDomain(), dummies);
-            LinearModel reg=LinearModel.builder()
-                    .y(s.getValues().plus(-s.getValues().average()))
-                    .addX(matrix)
-                    .build();
-            int nseas = dummies.dim();
-            LeastSquaresResults lsr = Ols.compute(reg);
-            return new JointTest(lsr.getLikelihood())
-                    .variableSelection(0, nseas)
-                    .blue()
-                    .build();
-        } catch (Exception err) {
-            return null;
-        }
-    }
 }

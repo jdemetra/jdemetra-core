@@ -18,7 +18,6 @@ package jdplus.tramo;
 
 import demetra.data.DoubleSeq;
 import jdplus.stats.tests.StatisticalTest;
-import demetra.timeseries.TsData;
 import jdplus.regsarima.regular.SeasonalityDetector;
 
 /**
