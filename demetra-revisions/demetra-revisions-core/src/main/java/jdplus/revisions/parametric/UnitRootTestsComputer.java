@@ -56,9 +56,9 @@ public class UnitRootTestsComputer {
                 .build();
         T t=new T(y.length()-2);
         return UnitRoot.builder()
-                .dickeyFuller(new UnitRoot.Test(df.getRho(),df.getStdErr(),df.getT(),DickeyFullerTable.probability(y.length(), df.getT(), DickeyFullerTable.DickeyFullerType.NC, true)))
-                .dickeyFullerWithTrendAndIntercept(new UnitRoot.Test(dfc.getRho(),dfc.getStdErr(),dfc.getT(),DickeyFullerTable.probability(y.length(), dfc.getT(), DickeyFullerTable.DickeyFullerType.CT, true)))
-                .augmentedDickeyFuller(new UnitRoot.Test(adf.getRho(),adf.getStdErr(),adf.getT(),DickeyFullerTable.probability(y.length(), adf.getT(), DickeyFullerTable.DickeyFullerType.NC, true)))
+                .dickeyFuller(new UnitRoot.Test(df.getRho(),df.getStdErr(),df.getT(),DickeyFullerTable.probability(y.length(), df.getT(), DickeyFullerTable.DickeyFullerType.NC)))
+                .dickeyFullerWithTrendAndIntercept(new UnitRoot.Test(dfc.getRho(),dfc.getStdErr(),dfc.getT(),DickeyFullerTable.probability(y.length(), dfc.getT(), DickeyFullerTable.DickeyFullerType.CT)))
+                .augmentedDickeyFuller(new UnitRoot.Test(adf.getRho(),adf.getStdErr(),adf.getT(),DickeyFullerTable.probability(y.length(), adf.getT(), DickeyFullerTable.DickeyFullerType.NC)))
                 .philipsPerron(new UnitRoot.Test(df.getRho()-1,df.getStdErr(),df.getT(),
                         t.getProbability((df.getRho()-1)/df.getStdErr(), ProbabilityType.Lower)))
                 .build();
