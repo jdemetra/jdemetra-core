@@ -287,13 +287,13 @@ public final class LeastSquaresResults {
 
     public StatisticalTest Ftest() {
         F f = new F(degreesOfFreedom(), n - nx);
-        double num=getRegressionMeanSquare();
+        double num = getRegressionMeanSquare();
         return new StatisticalTest(f, num == 0 ? 0 : num / getResidualMeanSquare(), TestType.Upper, false);
     }
 
     public StatisticalTest Khi2Test() {
         Chi2 chi = new Chi2(mean ? nx - 1 : nx);
-        return new StatisticalTest(chi, n*getR2(), TestType.Upper, true);
+        return new StatisticalTest(chi, n * getR2(), TestType.Upper, true);
     }
 
     /**
@@ -304,13 +304,13 @@ public final class LeastSquaresResults {
      * @return
      */
     public StatisticalTest Ftest(int v0, int nvars) {
-            Matrix bvar = ucov.extract(v0, nvars, v0, nvars).deepClone();
-            SymmetricMatrix.lcholesky(bvar);
-            DataBlock b = DataBlock.of(coefficients.extract(v0, nvars));
-            LowerTriangularMatrix.solveLx(bvar, b);
-            double fval = b.ssq() / nvars / (ssq / (n - nx));
-            F f = new F(nvars, n - nx);
-            return new StatisticalTest(f, fval, TestType.Upper, false);
+        Matrix bvar = ucov.extract(v0, nvars, v0, nvars).deepClone();
+        SymmetricMatrix.lcholesky(bvar);
+        DataBlock b = DataBlock.of(coefficients.extract(v0, nvars));
+        LowerTriangularMatrix.solveLx(bvar, b);
+        double fval = b.ssq() / nvars / (ssq / (n - nx));
+        F f = new F(nvars, n - nx);
+        return new StatisticalTest(f, fval, TestType.Upper, false);
 
     }
 

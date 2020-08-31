@@ -26,6 +26,7 @@ import demetra.revisions.parametric.Coefficient;
 import demetra.revisions.parametric.OlsTests;
 import demetra.revisions.parametric.RegressionBasedAnalysis;
 import demetra.revisions.parametric.RevisionAnalysis;
+import demetra.revisions.parametric.SignalNoise;
 import demetra.revisions.parametric.UnitRoot;
 import demetra.stats.TestResult;
 import java.time.LocalDate;
@@ -33,8 +34,10 @@ import jdplus.math.matrices.Matrix;
 import jdplus.revisions.parametric.AutoCorrelationTestsComputer;
 import jdplus.revisions.parametric.BiasComputer;
 import jdplus.revisions.parametric.OlsTestsComputer;
+import jdplus.revisions.parametric.SignalNoiseComputer;
 import jdplus.revisions.parametric.UnitRootTestsComputer;
 import jdplus.stats.StatUtility;
+import jdplus.stats.tests.DickeyFuller;
 
 /**
  *
@@ -119,7 +122,37 @@ public class Utility {
         return rslt;
     }
 
-    private final int UR = 4*4;
+    private final int EG = 4;
+
+    /**
+     * v(t)=a+b*v(t-gap)
+     *
+     * @param vintages Vintages
+     * @return
+     */
+    public MatrixType cointegration(MatrixType vintages) {
+        int n = vintages.getColumnsCount();
+        Matrix rslt = Matrix.make(n * (n - 1) / 2, EG);
+
+        for (int i = 0, k = 0; i < n; ++i) {
+            for (int j = i + 1; j < n; ++j) {
+                try {
+                    DoubleSeqCursor.OnMutable cursor = rslt.row(k++).cursor();
+                    DickeyFuller df = DickeyFuller.engleGranger(vintages.column(i), vintages.column(j)).build();
+                    if (df != null) {
+                        cursor.setAndNext(df.getRho());
+                        cursor.setAndNext(df.getSer());
+                        cursor.setAndNext(df.getTest());
+                        cursor.setAndNext(df.getPvalue());
+                    }
+                } catch (Exception err) {
+                }
+            }
+        }
+        return rslt;
+    }
+
+    private final int UR = 4 * 4;
 
     /**
      * Computes unit roots tests.
@@ -128,6 +161,7 @@ public class Utility {
      * Augmented Dickey-Fuller
      * Dickey-Fuller with c and trend
      * Philips-Perron
+     *
      * @param vintages
      * @param adfk Number of lags in augmented dickey-fuller test
      * @return
@@ -280,6 +314,26 @@ public class Utility {
         return rslt;
     }
 
+    private final int SN = 6;
+
+    public MatrixType signalNoise(MatrixType vintages, int gap) {
+        if (gap < 1) {
+            throw new IllegalArgumentException("gap should be >= 1");
+        }
+        int n = vintages.getColumnsCount() - gap;
+        if (n <= 0) {
+            return null;
+        }
+        Matrix rslt = Matrix.make(n, SN);
+
+        for (int i = 0; i < n; ++i) {
+            DoubleSeqCursor.OnMutable cursor = rslt.row(i).cursor();
+            SignalNoise test = SignalNoiseComputer.of(vintages.column(i), vintages.column(i + gap));
+            signalNoiseInformation(test, cursor);
+        }
+        return rslt;
+    }
+
     public void olsInformation(OlsTests reg, DoubleSeqCursor.OnMutable cursor) {
         if (reg == null) {
             return;
@@ -388,6 +442,18 @@ public class Utility {
         cursor.setAndNext(t.getStdev());
         cursor.setAndNext(t.getStatistic());
         cursor.setAndNext(t.getPvalue());
+    }
+
+    private static void signalNoiseInformation(SignalNoise sn, DoubleSeqCursor.OnMutable cursor) {
+        if (sn == null) {
+            return;
+        }
+        cursor.setAndNext(sn.getNewsR2());
+        cursor.setAndNext(sn.getNewsF());
+        cursor.setAndNext(sn.getNewsPvalue());
+        cursor.setAndNext(sn.getNoiseR2());
+        cursor.setAndNext(sn.getNoiseF());
+        cursor.setAndNext(sn.getNoisePvalue());
     }
 
 }
