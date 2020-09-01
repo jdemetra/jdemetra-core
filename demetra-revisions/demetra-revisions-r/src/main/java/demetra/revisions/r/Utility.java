@@ -128,9 +128,10 @@ public class Utility {
      * v(t)=a+b*v(t-gap)
      *
      * @param vintages Vintages
+     * @param adfk Number of lags in augmented dickey-fuller test
      * @return
      */
-    public MatrixType cointegration(MatrixType vintages) {
+    public MatrixType cointegration(MatrixType vintages, int adfk) {
         int n = vintages.getColumnsCount();
         Matrix rslt = Matrix.make(n * (n - 1) / 2, EG);
 
@@ -138,7 +139,8 @@ public class Utility {
             for (int j = i + 1; j < n; ++j) {
                 try {
                     DoubleSeqCursor.OnMutable cursor = rslt.row(k++).cursor();
-                    DickeyFuller df = DickeyFuller.engleGranger(vintages.column(i), vintages.column(j)).build();
+                    DickeyFuller df = DickeyFuller.engleGranger(vintages.column(j), vintages.column(i))
+                            .numberOfLags(adfk).build();
                     if (df != null) {
                         cursor.setAndNext(df.getRho());
                         cursor.setAndNext(df.getSer());

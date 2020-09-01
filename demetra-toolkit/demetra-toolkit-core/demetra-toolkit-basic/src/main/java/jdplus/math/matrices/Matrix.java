@@ -23,6 +23,7 @@ import demetra.data.Doubles;
 import demetra.design.Development;
 import demetra.design.Unsafe;
 import demetra.math.matrices.MatrixType;
+import demetra.util.IntList;
 import java.util.Iterator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -32,12 +33,11 @@ import java.util.function.DoubleUnaryOperator;
 import jdplus.data.DataWindow;
 import jdplus.data.LogSign;
 import jdplus.math.matrices.decomposition.Gauss;
-import jdplus.math.matrices.decomposition.Householder;
-import jdplus.math.matrices.decomposition.Householder2;
 import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import jdplus.math.matrices.decomposition.LUDecomposition;
 import jdplus.math.matrices.decomposition.QRDecomposition;
 import org.checkerframework.checker.index.qual.Positive;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -150,6 +150,7 @@ public final class Matrix implements MatrixType.Mutable {
         return new Matrix(x.getStorage(), n, start, n, 1);
     }
 
+
     /**
      * Creates a new instance of SubMatrix
      *
@@ -192,10 +193,9 @@ public final class Matrix implements MatrixType.Mutable {
         return new Matrix(toArray(), nrows, ncols);
     }
 
-    public Matrix shallowClone() {
-        return new Matrix(storage, lda, start, nrows, ncols);
-    }
-
+//    public Matrix shallowClone() {
+//        return new Matrix(storage, lda, start, nrows, ncols);
+//    }
     /**
      * Creates a sub-matrix
      *
@@ -218,7 +218,7 @@ public final class Matrix implements MatrixType.Mutable {
         return new Matrix(storage, lda, start, nrows - nr, ncols - nc);
     }
 
-    //<editor-fold defaultstate="collapsed" desc="diagnistics">
+    //<editor-fold defaultstate="collapsed" desc="diagnostics">
     public boolean isFull() {
         return storage.length == nrows * ncols;
     }
@@ -342,6 +342,11 @@ public final class Matrix implements MatrixType.Mutable {
         return ncur - c;
     }
 
+    /**
+     * Gets the index of the last column with values different from zero.
+     *
+     * @return Index of the column or -1 if the matrix is zero
+     */
     public int lastSignificantColumn() {
         if (isEmpty()) {
             return -1;
@@ -358,6 +363,7 @@ public final class Matrix implements MatrixType.Mutable {
         }
         return -1;
     }
+
 
     //</editor-fold>
     @Override
