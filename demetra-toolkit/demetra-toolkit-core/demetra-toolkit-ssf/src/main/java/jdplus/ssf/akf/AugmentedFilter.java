@@ -22,13 +22,11 @@ import jdplus.ssf.State;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
-import java.util.Iterator;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.ISsfLoading;
-import jdplus.ssf.univariate.ISsfMeasurement;
 import jdplus.math.matrices.Matrix;
 
 /**
@@ -148,11 +146,11 @@ public class AugmentedFilter {
         }
         int t = 0, end = data.length();
         while (t < end) {
-            if (collapse(t, rslts)) {
-                break;
-            }
             if (rslts != null) {
                 rslts.save(t, state, StateInfo.Forecast);
+            }
+            if (collapse(t, rslts)) {
+                break;
             }
             if (error(t)) {
                 if (rslts != null) {

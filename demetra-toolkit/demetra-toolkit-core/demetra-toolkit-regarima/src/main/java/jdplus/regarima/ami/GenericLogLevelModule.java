@@ -25,7 +25,7 @@ import jdplus.arima.ArimaModel;
 import jdplus.regarima.GlsArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
-import jdplus.regarima.outlier.RobustStandardDeviationComputer;
+import jdplus.stats.RobustStandardDeviationComputer;
 
 /**
  *

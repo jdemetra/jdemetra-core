@@ -16,6 +16,7 @@
  */
 package jdplus.regarima.outlier;
 
+import jdplus.stats.RobustStandardDeviationComputer;
 import jdplus.arima.IArimaModel;
 import demetra.data.DoubleList;
 import jdplus.math.matrices.Matrix;

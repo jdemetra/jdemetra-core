@@ -26,7 +26,7 @@ import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
 import jdplus.regarima.outlier.ExactSingleOutlierDetector;
-import jdplus.regarima.outlier.RobustStandardDeviationComputer;
+import jdplus.stats.RobustStandardDeviationComputer;
 import jdplus.regarima.outlier.SingleOutlierDetector;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;

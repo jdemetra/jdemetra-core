@@ -50,12 +50,6 @@ public class DiffuseSimulationSmoother {
         }
     }
 
-    private static double random() {
-        synchronized (N) {
-            return N.random(RNG);
-        }
-    }
-
     private static final double EPS = 1e-8;
 
     private Matrix LA;

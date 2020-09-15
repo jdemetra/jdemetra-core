@@ -21,6 +21,7 @@ import demetra.data.Data;
 import jdplus.data.DataBlockStorage;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
+import jdplus.ssf.akf.AkfToolkit;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.implementations.CompositeSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
@@ -47,14 +48,14 @@ public class SsfUcarimaTest {
         ucm = ucm.simplify();
         CompositeSsf ssf = SsfUcarima.of(ucm);
         SsfData data = new SsfData(Data.PROD);
-        DefaultSmoothingResults sd = DkToolkit.sqrtSmooth(ssf, data, true, true);
+        DefaultSmoothingResults sd = AkfToolkit.smooth(ssf, data, true, true);
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
         int[] pos = ssf.componentsPosition();
         for (int i = 0; i < 3; ++i) {
 //            System.out.println(sd.getComponent(pos[i]));
             assertTrue(ds.item(pos[i]).distance(sd.getComponent(pos[i])) < 1e-9);
         }
-//        System.out.println(sd.getComponentVariance(0));
+       System.out.println(sd.getComponentVariance(0));
     }
 
     public static UcarimaModel ucmAirline(double th, double bth) {

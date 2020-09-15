@@ -16,6 +16,7 @@
  */
 package jdplus.regarima.outlier;
 
+import jdplus.stats.RobustStandardDeviationComputer;
 import jdplus.arima.IArimaModel;
 import jdplus.arima.StationaryTransformation;
 import internal.jdplus.arima.FastKalmanFilter;

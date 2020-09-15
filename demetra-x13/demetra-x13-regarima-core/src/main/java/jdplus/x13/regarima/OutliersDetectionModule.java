@@ -35,7 +35,7 @@ import demetra.timeseries.TsPeriod;
 import jdplus.regsarima.regular.IOutliersDetectionModule;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
-import jdplus.regarima.outlier.RobustStandardDeviationComputer;
+import jdplus.stats.RobustStandardDeviationComputer;
 import java.util.ArrayList;
 import java.util.List;
 import jdplus.modelling.regression.IOutlierFactory;

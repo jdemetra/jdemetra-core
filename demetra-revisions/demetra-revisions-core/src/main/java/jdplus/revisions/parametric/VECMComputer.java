@@ -91,23 +91,43 @@ public class VECMComputer {
         int p = X.getColumnsCount();
         Z = MatrixFactory.embed(MatrixFactory.delta(X, 1, 1), k);
         int nz = Z.getRowsCount(); // n-k
-        Z0 = Z.extract(0, Z.getRowsCount(), 0, p);
+        Z0 = Z.extract(0, nz, 0, p);
         MatrixType one = one(nz);
+        Matrix D1 = D == null ? null : D.extract(k, nz, 0, D.getColumnsCount());
+        Matrix Ds1 = Ds == null ? null : Ds.extract(k, nz, 0, Ds.getColumnsCount());
         switch (ecdet) {
             case cnt:
                 if (spec == Spec.longrun) {
+                    // Zk =[X(t-k), 1]
                     Zk = MatrixFactory.columnBind(X.extract(0, nz, 0, p), one);
                 } else {
-                    Zk = X.extract(k - 1, nz, 0, p);
+                    // Zk =[X(t-1), 1]
+                    Zk = MatrixFactory.columnBind(X.extract(k - 1, nz, 0, p), one);
                 }
-                Z1 = Z.extract(0, Z.getRowsCount(), p, Z.getColumnsCount() - p);
+                // Zl=[Ds, D, dX(t-1)...dX(t-k+1)]
+                Z1 = MatrixFactory.columnBind(D1, Ds1, Z.extract(0, nz, p, Z.getColumnsCount() - p));
                 break;
             case trend:
+                if (spec == Spec.longrun) {
+                    // Zk =[X(t-k), T]
+                    Zk = MatrixFactory.columnBind(X.extract(0, nz, 0, p), T);
+                } else {
+                    // Zk =[X(t-1), T]
+                    Zk = MatrixFactory.columnBind(X.extract(k - 1, nz, 0, p), T);
+                }
+                // Zl=[1, D, Ds, dX(t-1)...dX(t-k+1)]
+                Z1 = MatrixFactory.columnBind(one, D1, Ds1, Z.extract(0, nz, p, Z.getColumnsCount() - p));
                 break;
             case none:
-                if (spec == Spec.longrun){
-                    
+                if (spec == Spec.longrun) {
+                    // Zk =[X(t-k)]
+                    Zk = X.extract(0, nz, 0, p);
+                } else {
+                    // Zk =[X(t-1)]
+                    Zk = X.extract(k - 1, nz, 0, p);
                 }
+                // Zl=[1, D, Ds, dX(t-1)...dX(t-k+1)]
+                Z1 = MatrixFactory.columnBind(one, D1, Ds1, Z.extract(0, nz, p, Z.getColumnsCount() - p));
                 break;
         }
     }

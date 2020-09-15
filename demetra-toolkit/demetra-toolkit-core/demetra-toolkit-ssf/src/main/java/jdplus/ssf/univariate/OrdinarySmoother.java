@@ -21,9 +21,11 @@ package jdplus.ssf.univariate;
 import jdplus.ssf.ISsfLoading;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.QuadraticForm;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ResultsRange;
+import jdplus.ssf.SsfException;
 import jdplus.ssf.State;
 import jdplus.ssf.StateInfo;
 
@@ -149,6 +151,14 @@ public class OrdinarySmoother {
         return N;
     }
 
+    public double getFinalSmoothation() {
+        return u;
+    }
+
+    public double getFinalSmoothationVariance() {
+        return uVariance;
+    }
+
     private void initSmoother(ISsf ssf) {
         int dim = ssf.getStateDim();
         state = new State(dim);
@@ -169,10 +179,13 @@ public class OrdinarySmoother {
     }
 
     private boolean iterate(int pos) {
+        iterateSmoothation(pos);
         iterateR(pos);
         if (calcvar) {
             iterateN(pos);
         }
+        srslts.saveSmoothation(pos, u, uVariance);
+        srslts.saveR(pos, R, N);
         DataBlock fa = frslts.a(pos);
         Matrix fP = frslts.P(pos);
         if (fP == null) {
@@ -193,6 +206,39 @@ public class OrdinarySmoother {
     }
     // 
 
+    private void iterateSmoothation(int pos) {
+        if (missing) {
+            u = Double.NaN;
+            uVariance = Double.NaN;
+        }
+        // u = v(t)/f(t)-K'(t)*R(t)
+        DataBlock k = M.deepClone();
+        dynamics.TX(pos, k);
+        k.div(errVariance);
+        if (errVariance != 0) {
+            u = err / errVariance - R.dot(k);
+            // apply the same to the colums of Rd
+            if (calcvar) {
+                // uvar = 1/f(t)+ K'NK
+                // = 1/f + 1/f*M'T'*N*T*M/f
+                uVariance = 1 / errVariance + QuadraticForm.apply(N, k);
+            }
+            if (uVariance < State.ZERO) {
+                uVariance = 0;
+            }
+            if (uVariance == 0) {
+                if (Math.abs(u) < State.ZERO) {
+                    u = 0;
+                } else {
+                    throw new SsfException(SsfException.INCONSISTENT);
+                }
+            }
+        } else {
+            u = 0;
+            uVariance = Double.NaN;
+        }
+    }
+
     /**
      *
      */
@@ -203,8 +249,7 @@ public class OrdinarySmoother {
             // N(t-1) = Z'(t)*Z(t)/f(t) + (T'(t)-Z'K')*N(t)*(T(t)-KZ)
             // Z'(t)*Z(t)(1/f(t)+K'N(t)K) + T'NT - Z'K'N(t) - NK'Z'
             ssf.XL(pos, N, M, errVariance);
-            ssf.XtL(pos, N,  M, errVariance);
-
+            ssf.XtL(pos, N, M, errVariance);
             loading.VpZdZ(pos, N, 1 / errVariance);
         } else {
             //T'*N(t)*T
@@ -212,23 +257,20 @@ public class OrdinarySmoother {
             dynamics.TtM(pos, N);
         }
         SymmetricMatrix.reenforceSymmetry(N);
+        N.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
     }
 
     /**
      *
      */
     private void iterateR(int pos) {
-        // R(t-1)=v(t)/f(t)Z(t)+R(t)L(t)
-        //   = v/f*Z + R*(T-TC/f*Z)
-        //  = (v - RT*C)/f*Z + RT
+        // R(t-1)=u(t)Z(t)+R(t)T'(t)
         dynamics.XT(pos, R);
-        if (!missing && errVariance != 0) {
+        if (!missing && u != 0) {
             // RT
-            u = (err - R.dot(M)) / errVariance;
             loading.XpZd(pos, R, u);
-        } else {
-            u = 0;
         }
+        R.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
     }
 
 }
