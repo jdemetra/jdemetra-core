@@ -22,14 +22,12 @@ import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import demetra.sts.ComponentUse;
 import demetra.sts.SeasonalModel;
-import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.SymmetricMatrix;
 
 /**
  *
  * @author Jean Palate
  */
-public class BasicStructuralModel {
+public final class BasicStructuralModel implements Cloneable{
 
     private static ComponentUse of(double var) {
         return var < 0 ? ComponentUse.Unused : ComponentUse.Free;
@@ -72,23 +70,23 @@ public class BasicStructuralModel {
         return spec;
     }
 
-    private static void svar(int freq, Matrix O) {
-        int n = freq - 1;
-        Matrix H = Matrix.make(freq, n);
-        // should be improved
-        for (int i = 0; i < freq; ++i) {
-            double z = 2 * Math.PI * (i + 1) / freq;
-            for (int j = 0; j < n / 2; ++j) {
-                H.set(i, 2 * j, Math.cos((j + 1) * z));
-                H.set(i, 2 * j + 1, Math.sin((j + 1) * z));
-            }
-            if (n % 2 == 1) {
-                H.set(i, n - 1, Math.cos((freq / 2) * z));
-            }
-        }
-
-        SymmetricMatrix.XXt(H, O);
-    }
+//    private static void svar(int freq, Matrix O) {
+//        int n = freq - 1;
+//        Matrix H = Matrix.make(freq, n);
+//        // should be improved
+//        for (int i = 0; i < freq; ++i) {
+//            double z = 2 * Math.PI * (i + 1) / freq;
+//            for (int j = 0; j < n / 2; ++j) {
+//                H.set(i, 2 * j, Math.cos((j + 1) * z));
+//                H.set(i, 2 * j + 1, Math.sin((j + 1) * z));
+//            }
+//            if (n % 2 == 1) {
+//                H.set(i, n - 1, Math.cos((freq / 2) * z));
+//            }
+//        }
+//
+//        SymmetricMatrix.XXt(H, O);
+//    }
 
     /**
      *
@@ -179,6 +177,15 @@ public class BasicStructuralModel {
                 seasFixed = false;
                 seasVar = -1;
                 break;
+        }
+    }
+    
+    @Override
+    public BasicStructuralModel clone(){
+        try {
+            return (BasicStructuralModel) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            return null;
         }
     }
 
@@ -387,7 +394,6 @@ public class BasicStructuralModel {
     /**
      *
      * @param cmp
-     * @param var
      */
     public double getVariance(Component cmp) {
         switch (cmp) {

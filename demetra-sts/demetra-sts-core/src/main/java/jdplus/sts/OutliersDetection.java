@@ -107,7 +107,7 @@ public class OutliersDetection {
             return this;
         }
 
-        OutliersDetection build() {
+        public OutliersDetection build() {
             return new OutliersDetection(spec, ao, ls, cv, tcv, maxIter, forwardEstimation, backwardEstimation, precision, fullEstimationThreshold);
         }
     }
@@ -139,6 +139,8 @@ public class OutliersDetection {
         if (!fullEstimation(y, W, period, eps2)) {
             return false;
         }
+        initialModel=model;
+        initialLikelihood=getLikelihood();
         double curcv = criticalValue(y.length());
         // forward recursion
         while (i++ < maxIter) {
@@ -163,7 +165,7 @@ public class OutliersDetection {
             if (W == null) {
                 break;
             }
-            double[] tstats = likelihood.tstats(0, false);
+            double[] tstats = getLikelihood().tstats(0, false);
             int nx = X == null ? 0 : X.getColumnsCount();
             if (tstats.length == nx) {
                 break;
@@ -199,6 +201,8 @@ public class OutliersDetection {
         lsPositions.clear();
         model = null;
         likelihood = null;
+        initialModel=null;
+        initialLikelihood=null;
         regressors = null;
         curp = null;
         sig = 0;
@@ -355,7 +359,7 @@ public class OutliersDetection {
 //    }
 //
     private double robustSigma() {
-        DoubleSeq errors = likelihood.e();
+        DoubleSeq errors = getLikelihood().e();
         return RobustStandardDeviationComputer.mad().compute(errors);
     }
 
@@ -400,8 +404,8 @@ public class OutliersDetection {
 
     private final IntList aoPositions = new IntList();
     private final IntList lsPositions = new IntList();
-    private BasicStructuralModel model;
-    private DiffuseConcentratedLikelihood likelihood;
+    private BasicStructuralModel initialModel, model;
+    private DiffuseConcentratedLikelihood initialLikelihood, likelihood;
     private DoubleSeq curp;
     private Matrix regressors;
     private double sig;
@@ -429,6 +433,27 @@ public class OutliersDetection {
     }
 
     /**
+     * @return the initialModel
+     */
+    public BasicStructuralModel getInitialModel() {
+        return initialModel;
+    }
+
+    /**
+     * @return the initialLikelihood
+     */
+    public DiffuseConcentratedLikelihood getInitialLikelihood() {
+        return initialLikelihood;
+    }
+
+    /**
+     * @return the likelihood
+     */
+    public DiffuseConcentratedLikelihood getLikelihood() {
+        return likelihood;
+    }
+    
+    /**
      * @return the regressors
      */
     public Matrix getRegressors() {
@@ -442,5 +467,6 @@ public class OutliersDetection {
     public static double defaultCriticalValue2(int n) {
         return 1 / (0.05508697 + 1.72286327 / n - 13.62470737 / (n * n));
     }
+
 
 }

@@ -82,7 +82,7 @@ public class StsEstimation {
         static final String Y = "y", T = "t", S = "s", I = "i", SA = "sa",
                 UCM = "ucm", UCARIMA = "ucarima", BSM = "bsm",
                 LVAR = "levelvar", SVAR = "slopevar", SEASVAR = "seasvar", CVAR = "cyclevar", NVAR = "noisevar",
-                CDUMP = "cycledumpingfactor", CLENGTH = "cycleLength",
+                CDUMP = "cycledumpingfactor", CLENGTH = "cyclelength",
                 LL = "likelihood", PCOV = "pcov", SCORE = "score";
 
         public static final InformationMapping<Results> getMapping() {
