@@ -9,6 +9,7 @@ import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.design.BuilderPattern;
 import demetra.sts.BsmSpec;
+import demetra.sts.Component;
 import demetra.util.IntList;
 import jdplus.data.DataBlock;
 import jdplus.likelihood.DiffuseConcentratedLikelihood;
@@ -192,7 +193,7 @@ public class OutliersDetection {
             }
         } while (!aoPositions.isEmpty() && !lsPositions.isEmpty());
 
-        return false;
+        return true;
 
     }
 
@@ -241,15 +242,18 @@ public class OutliersDetection {
         int imax = -1;
         double smax = 0;
         int type = -1;
-        for (int i = 0; i < n; ++i) {
-            try {
+        boolean isnoise=model.getVariance(Component.Noise)!= 0;
+       for (int i = 0; i < n; ++i) {
+             try {
                 DataBlock R = DataBlock.of(sd.R(i));
                 Matrix Rvar = sd.RVariance(i);
                 double sao = 0, sls = 0, sall = 0;
-                if (ao) {
+                if (ao && isnoise) {
                     sao = R.get(0) * R.get(0) / Rvar.get(0, 0) / sig2;
-                } else if (ls) {
-                    sls = R.get(1) * R.get(1) / Rvar.get(1, 1) / sig2;
+                }
+                if (ls && i>0) {
+                    int c=isnoise ? 1 : 0;
+                    sls = R.get(c) * R.get(c) / Rvar.get(c, c) / sig2;
                 }
                 if (!Double.isFinite(sao)) {
                     sao = 0;
@@ -257,9 +261,9 @@ public class OutliersDetection {
                 if (!Double.isFinite(sls)) {
                     sls = 0;
                 }
-                if (!ls) {
+                if (! ls || i==0 ) {
                     sall = sao;
-                } else if (!ao) {
+                } else if (!ao || ! isnoise) {
                     sall = sls;
                 } else {
                     Matrix S = Rvar.extract(0, 2, 0, 2).deepClone();

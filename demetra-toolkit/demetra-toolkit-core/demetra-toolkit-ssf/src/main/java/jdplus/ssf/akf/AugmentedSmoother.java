@@ -16,24 +16,24 @@
  */
 package jdplus.ssf.akf;
 
+import demetra.data.DoubleSeqCursor;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
+import jdplus.math.matrices.GeneralMatrix;
 import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.QuadraticForm;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
+import jdplus.ssf.ISsfInitialization;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.SsfException;
+import jdplus.ssf.State;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.univariate.ISmoothingResults;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.OrdinarySmoother;
-import demetra.data.DoubleSeqCursor;
-import jdplus.math.matrices.GeneralMatrix;
-import jdplus.ssf.ISsfInitialization;
-import jdplus.ssf.ISsfLoading;
-import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.QuadraticForm;
-import jdplus.ssf.SsfException;
-import jdplus.ssf.State;
 
 /**
  *
@@ -268,6 +268,7 @@ public class AugmentedSmoother {
             uc = Double.NaN;
             U.set(Double.NaN);
             ucVariance = Double.NaN;
+            return;
         }
 
         if (errVariance != 0) {
@@ -285,15 +286,15 @@ public class AugmentedSmoother {
                 DataBlock C = DataBlock.make(U.length());
                 C.product(K, NA.columnsIterator());
                 ucVariance = 1 / errVariance + QuadraticForm.apply(N, K) - vcorrection(U.deepClone(), C);
-            }
-            if (ucVariance < State.ZERO) {
-                ucVariance = 0;
-            }
-            if (ucVariance == 0) {
-                if (Math.abs(uc) < State.ZERO) {
-                    uc = 0;
-                } else {
-                    throw new SsfException(SsfException.INCONSISTENT);
+                if (ucVariance < State.ZERO) {
+                    ucVariance = 0;
+                }
+                if (ucVariance == 0) {
+                    if (Math.abs(uc) < State.ZERO) {
+                        uc = 0;
+                    } else {
+                        throw new SsfException(SsfException.INCONSISTENT);
+                    }
                 }
             }
         } else {
@@ -376,8 +377,8 @@ public class AugmentedSmoother {
     }
 
     /**
-     * V+=B*psi*B'-B*S*C'+C*S*B')
-     * Attention ! B, C are modified on exit. Make a copy if necessary
+     * V+=B*psi*B'-B*S*C'+C*S*B') Attention ! B, C are modified on exit. Make a
+     * copy if necessary
      *
      * @param V
      * @param B

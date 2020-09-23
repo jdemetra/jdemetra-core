@@ -18,12 +18,12 @@
  */
 package jdplus.ssf.univariate;
 
-import jdplus.ssf.ISsfLoading;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
+import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.ResultsRange;
 import jdplus.ssf.SsfException;
 import jdplus.ssf.State;
@@ -210,6 +210,7 @@ public class OrdinarySmoother {
         if (missing) {
             u = Double.NaN;
             uVariance = Double.NaN;
+            return;
         }
         // u = v(t)/f(t)-K'(t)*R(t)
         DataBlock k = M.deepClone();
@@ -222,15 +223,15 @@ public class OrdinarySmoother {
                 // uvar = 1/f(t)+ K'NK
                 // = 1/f + 1/f*M'T'*N*T*M/f
                 uVariance = 1 / errVariance + QuadraticForm.apply(N, k);
-            }
-            if (uVariance < State.ZERO) {
-                uVariance = 0;
-            }
-            if (uVariance == 0) {
-                if (Math.abs(u) < State.ZERO) {
-                    u = 0;
-                } else {
-                    throw new SsfException(SsfException.INCONSISTENT);
+                if (uVariance < State.ZERO) {
+                    uVariance = 0;
+                }
+                if (uVariance == 0) {
+                    if (Math.abs(u) < State.ZERO) {
+                        u = 0;
+                    } else {
+                        throw new SsfException(SsfException.INCONSISTENT);
+                    }
                 }
             }
         } else {

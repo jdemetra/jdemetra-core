@@ -38,7 +38,7 @@ public class StsOutliersDetection {
 
         BasicStructuralModel initialBsm, finalBsm;
 
-        double[] y;
+        DoubleSeq y;
         MatrixType x;
         OutlierDescriptor[] outliers;
 
@@ -81,7 +81,7 @@ public class StsOutliersDetection {
             return MAPPING.getData(this, id, tclass);
         }
 
-        static final String Y = "y", BSM0 = "initialbsm", BSM1 = "finalBSM",
+        static final String Y = "y", BSM0 = "initialbsm", BSM1 = "finalbsm",
                 LL0 = "initiallikelihood", LL1 = "finallikelihood", B = "b", T = "t", BVAR = "bvar", OUTLIERS = "outliers", REGRESSORS = "regressors", BNAMES = "variables";
 
         public static final InformationMapping<Results> getMapping() {
@@ -116,10 +116,9 @@ public class StsOutliersDetection {
                 return names;
             });
         }
-
     }
 
-    public Results process(double[] y, int period, int level, int slope, int cycle, int noise, String seasmodel, MatrixType x,
+    public Results process(TsData y, int level, int slope, int cycle, int noise, String seasmodel, MatrixType x,
             double cv, double tcv, String forwardEstimation, String backwardEstimation) {
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
         BsmSpec mspec = new BsmSpec();
@@ -131,12 +130,13 @@ public class StsOutliersDetection {
         OutliersDetection.Estimation fe = OutliersDetection.Estimation.valueOf(forwardEstimation);
         OutliersDetection.Estimation be = OutliersDetection.Estimation.valueOf(backwardEstimation);
         OutliersDetection od = OutliersDetection.builder()
+                .bsm(mspec)
                 .forwardEstimation(fe)
                 .backardEstimation(be)
                 .criticalValue(cv)
                 .tcriticalValue(tcv)
                 .build();
-        if (!od.process(DoubleSeq.of(y), Matrix.of(x), period)) {
+        if (!od.process(y.getValues(), Matrix.of(x), y.getAnnualFrequency())) {
             return null;
         }
 
@@ -162,7 +162,7 @@ public class StsOutliersDetection {
                 .coefficients(od.getLikelihood().coefficients().toArray())
                 .coefficientsCovariance(od.getLikelihood().covariance(np, true))
                 .x(x)
-                .y(y)
+                .y(y.getValues())
                 .build();
     }
 

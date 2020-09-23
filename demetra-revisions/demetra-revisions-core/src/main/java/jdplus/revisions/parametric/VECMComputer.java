@@ -19,8 +19,10 @@ package jdplus.revisions.parametric;
 import demetra.math.matrices.MatrixType;
 import demetra.stats.StatException;
 import demetra.util.IntList;
+import jdplus.math.matrices.GeneralMatrix;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixFactory;
+import jdplus.math.matrices.SymmetricMatrix;
 
 /**
  *
@@ -64,6 +66,25 @@ public class VECMComputer {
         D = MatrixFactory.selectRows(dummies, rows);
         buildDet(n);
         buildZ();
+        // actual computation
+        int nz=Z0.getRowsCount();
+        Matrix M00=SymmetricMatrix.XtX(Z0);
+        M00.div(nz);
+        Matrix M11=SymmetricMatrix.XtX(Z1);
+        M11.div(nz);
+        Matrix Mkk=SymmetricMatrix.XtX(Zk);
+        Mkk.div(nz);
+        Matrix M01=GeneralMatrix.AtB(Z0, Z1);
+        M01.div(nz);
+        Matrix M0k=GeneralMatrix.AtB(Z0, Zk);
+        M0k.div(nz);
+        Matrix M1k=GeneralMatrix.AtB(Z1, Zk);
+        M1k.div(nz);
+        Matrix Mk0=GeneralMatrix.transpose(M0k);
+        Matrix M10=GeneralMatrix.transpose(M01);
+        Matrix Mk1=GeneralMatrix.transpose(M1k);
+        Matrix M11inv=SymmetricMatrix.inverse(M11);
+        
     }
 
     private void buildDet(int n) {

@@ -172,6 +172,16 @@ public final class DataBlock implements DoubleSeq.Mutable {
         return DataBlock.of(list.toArray());
     }
 
+    public static DataBlock select(@NonNull DoubleSeq data, @NonNull int[] sel) {
+        if (sel.length == 0) {
+            return DataBlock.EMPTY;
+        }
+        double[] s = new double[sel.length];
+        for (int i = 0; i < sel.length; ++i) {
+            s[i] = data.get(sel[i]);
+        }
+        return DataBlock.of(s);
+    }
     //</editor-fold>
     final double[] data;
     final int inc;
@@ -910,17 +920,18 @@ public final class DataBlock implements DoubleSeq.Mutable {
             data[i] = tmp;
         }
     }
-    
-    public void swap(int i, int j){
-        if (i == j)
+
+    public void swap(int i, int j) {
+        if (i == j) {
             return;
+        }
         int xi, xj;
-        if (inc ==1){
-            xi=beg+i;
-            xj=beg+j;
-        }else{
-            xi=beg+i*inc;
-            xj=beg+j*inc;
+        if (inc == 1) {
+            xi = beg + i;
+            xj = beg + j;
+        } else {
+            xi = beg + i * inc;
+            xj = beg + j * inc;
         }
         double tmp = data[xj];
         data[xj] = data[xi];
