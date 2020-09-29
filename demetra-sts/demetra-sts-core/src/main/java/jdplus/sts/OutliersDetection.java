@@ -55,7 +55,7 @@ public class OutliersDetection {
         private double tcv = 0;
         private int maxIter = 20;
         private double precision = 1e-5;
-        private double fullEstimationThreshold=5;
+        private double fullEstimationThreshold = 5;
         private Estimation forwardEstimation = Estimation.Score, backwardEstimation = Estimation.Point;
 
         public Builder bsm(BsmSpec spec) {
@@ -104,7 +104,7 @@ public class OutliersDetection {
         }
 
         public Builder fullEstimationThreshold(double ft) {
-            this.fullEstimationThreshold=ft;
+            this.fullEstimationThreshold = ft;
             return this;
         }
 
@@ -129,7 +129,7 @@ public class OutliersDetection {
         this.backwardEstimation = backwardEstimation;
         this.eps = eps;
         this.eps2 = Math.sqrt(eps);
-        this.fullEstimationThreshold=ft;
+        this.fullEstimationThreshold = ft;
     }
 
     public boolean process(DoubleSeq y, Matrix X, int period) {
@@ -140,8 +140,8 @@ public class OutliersDetection {
         if (!fullEstimation(y, W, period, eps2)) {
             return false;
         }
-        initialModel=model;
-        initialLikelihood=getLikelihood();
+        initialModel = model;
+        initialLikelihood = getLikelihood();
         double curcv = criticalValue(y.length());
         // forward recursion
         while (i++ < maxIter) {
@@ -161,7 +161,7 @@ public class OutliersDetection {
         if (!fullEstimation(y, W, period, eps)) {
             return false;
         }
-        double tcvcur=tcriticalValue(y.length());
+        double tcvcur = tcriticalValue(y.length());
         do {
             if (W == null) {
                 break;
@@ -202,12 +202,12 @@ public class OutliersDetection {
         lsPositions.clear();
         model = null;
         likelihood = null;
-        initialModel=null;
-        initialLikelihood=null;
+        initialModel = null;
+        initialLikelihood = null;
         regressors = null;
         curp = null;
         sig = 0;
-        full=false;
+        full = false;
     }
 
     private double criticalValue(int n) {
@@ -242,17 +242,17 @@ public class OutliersDetection {
         int imax = -1;
         double smax = 0;
         int type = -1;
-        boolean isnoise=model.getVariance(Component.Noise)!= 0;
-       for (int i = 0; i < n; ++i) {
-             try {
+        boolean isnoise = model.getVariance(Component.Noise) != 0;
+        for (int i = 0; i < n; ++i) {
+            try {
                 DataBlock R = DataBlock.of(sd.R(i));
                 Matrix Rvar = sd.RVariance(i);
                 double sao = 0, sls = 0, sall = 0;
                 if (ao && isnoise) {
                     sao = R.get(0) * R.get(0) / Rvar.get(0, 0) / sig2;
                 }
-                if (ls && i>0) {
-                    int c=isnoise ? 1 : 0;
+                if (ls && i > 0) {
+                    int c = isnoise ? 1 : 0;
                     sls = R.get(c) * R.get(c) / Rvar.get(c, c) / sig2;
                 }
                 if (!Double.isFinite(sao)) {
@@ -261,9 +261,9 @@ public class OutliersDetection {
                 if (!Double.isFinite(sls)) {
                     sls = 0;
                 }
-                if (! ls || i==0 ) {
+                if (!ls || i == 0) {
                     sall = sao;
-                } else if (!ao || ! isnoise) {
+                } else if (!ao || !isnoise) {
                     sall = sls;
                 } else {
                     Matrix S = Rvar.extract(0, 2, 0, 2).deepClone();
@@ -283,7 +283,7 @@ public class OutliersDetection {
         if (smax < curcv) {
             return false;
         }
-        full = smax > fullEstimationThreshold*curcv;
+        full = smax > fullEstimationThreshold * curcv;
         switch (type) {
             case 0:
                 aoPositions.add(imax);
@@ -334,8 +334,9 @@ public class OutliersDetection {
     }
 
     private boolean estimate(DoubleSeq y, Matrix W, Estimation method) {
-        if (full)
+        if (full) {
             return fullEstimation(y, W, model.getPeriod(), eps2);
+        }
         try {
             switch (method) {
                 case Point:
@@ -456,7 +457,7 @@ public class OutliersDetection {
     public DiffuseConcentratedLikelihood getLikelihood() {
         return likelihood;
     }
-    
+
     /**
      * @return the regressors
      */
@@ -471,6 +472,5 @@ public class OutliersDetection {
     public static double defaultCriticalValue2(int n) {
         return 1 / (0.05508697 + 1.72286327 / n - 13.62470737 / (n * n));
     }
-
 
 }

@@ -13,17 +13,28 @@ import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
 import demetra.processing.ProcResults;
 import demetra.sts.BsmSpec;
+import demetra.sts.Component;
 import demetra.sts.ComponentUse;
 import demetra.sts.SeasonalModel;
 import demetra.timeseries.TsData;
 import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import jdplus.data.DataBlock;
 import jdplus.likelihood.DiffuseConcentratedLikelihood;
+import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.ssf.akf.AugmentedSmoother;
+import jdplus.ssf.implementations.RegSsf;
+import jdplus.ssf.univariate.DefaultSmoothingResults;
+import jdplus.ssf.univariate.Ssf;
+import jdplus.ssf.univariate.SsfData;
 import jdplus.sts.BasicStructuralModel;
 import jdplus.sts.OutliersDetection;
+import jdplus.sts.SsfBsm;
 import jdplus.sts.extractors.BasicStructuralModelExtractor;
+import jdplus.sts.internal.BsmMonitor;
 
 /**
  *
@@ -150,7 +161,7 @@ public class StsOutliersDetection {
         for (int i = 0, j = ao.length; i < ls.length; ++i, ++j) {
             outliers[j] = new OutlierDescriptor("LS", ls[i]);
         }
-        int np=mspec.getParametersCount();
+        int np = mspec.getParametersCount();
 
         return Results.builder()
                 .initialBsm(od.getInitialModel())
@@ -174,5 +185,66 @@ public class StsOutliersDetection {
         } else {
             return ComponentUse.Unused;
         }
+    }
+
+    public double[] seasonalBreaks(TsData y, int level, int slope, int noise, String seasmodel, MatrixType x) {
+        SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
+        BsmSpec mspec = new BsmSpec();
+        mspec.setLevelUse(of(level));
+        mspec.setSlopeUse(of(slope));
+        mspec.setNoiseUse(of(noise));
+        mspec.setSeasonalModel(sm);
+        BsmMonitor monitor = new BsmMonitor();
+        monitor.setSpecification(mspec);
+        monitor.useDiffuseRegressors(true);
+        int freq = y.getAnnualFrequency();
+        Matrix X = Matrix.of(x);
+        if (!monitor.process(y.getValues(), X, freq)) {
+            return null;
+        }
+        BasicStructuralModel bsm = monitor.getResult();
+
+        Ssf ssf = SsfBsm.of(bsm);
+        int nx = 0;
+
+        if (x != null) {
+            ssf = RegSsf.ssf(ssf, X);
+            nx = X.getColumnsCount();
+        }
+        AugmentedSmoother smoother = new AugmentedSmoother();
+        smoother.setCalcVariances(true);
+        SsfData data = new SsfData(y.getValues());
+        DefaultSmoothingResults sd = DefaultSmoothingResults.full();
+        int n = data.length();
+        double sig2 = monitor.getLikelihood().sigma();
+        sd.prepare(ssf.getStateDim(), 0, data.length());
+        smoother.process(ssf, data, sd);
+
+        int spos = 0;
+        if (bsm.getVariance(Component.Noise) != 0) {
+            ++spos;
+        }
+        if (mspec.hasLevel()) {
+            ++spos;
+        }
+        if (mspec.hasSlope()) {
+            ++spos;
+        }
+        double[] s = new double[n];
+        for (int i = 0; i < n; ++i) {
+            try {
+                DataBlock R = DataBlock.of(sd.R(i));
+                Matrix Rvar = sd.RVariance(i);
+                Matrix S = Rvar.extract(spos, freq - 1, spos, freq - 1).deepClone();
+                DataBlock ur = R.extract(spos, freq - 1).deepClone();
+                SymmetricMatrix.lcholesky(S, 1e-9);
+                LowerTriangularMatrix.solveLx(S, ur, 1e-9);
+                s[i] = ur.ssq() / sig2;
+
+            } catch (Exception err) {
+            }
+        }
+        return s;
+
     }
 }
