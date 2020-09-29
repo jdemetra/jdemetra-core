@@ -7,6 +7,8 @@ package demetra.sts.r;
 
 import demetra.data.Data;
 import demetra.math.matrices.MatrixType;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsPeriod;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -21,7 +23,8 @@ public class StsOutliersDetectionTest {
 
     @Test
     public void testSomeMethod() {
-        StsOutliersDetection.Results rslt = StsOutliersDetection.process(Data.insee()[0], 1, 1, 1, 1, "HarrisonStevens", null, 0, 0, "Score", "Point");
+        TsData y=TsData.ofInternal(TsPeriod.monthly(1992,1), Data.RETAIL_BOOKSTORES);
+        StsOutliersDetection.Results rslt = StsOutliersDetection.process(y, 1, 1, -1, 1, "Trigonometric", null, 0, 0, "Score", "Point");
     }
     
 }

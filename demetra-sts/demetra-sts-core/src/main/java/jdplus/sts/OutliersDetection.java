@@ -191,7 +191,7 @@ public class OutliersDetection {
             if (!estimate(y, W, backwardEstimation)) {
                 break;
             }
-        } while (!aoPositions.isEmpty() && !lsPositions.isEmpty());
+        } while (!aoPositions.isEmpty() || !lsPositions.isEmpty());
 
         return true;
 

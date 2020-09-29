@@ -89,8 +89,8 @@ public class OutliersDetectionTest {
                 .forwardEstimation(OutliersDetection.Estimation.Full)
                 .build();
         double[] A = Data.PROD.clone();
-        A[68] *= .1;
-        A[69] /= 1.1;
+        A[74] *= 1.3;
+        A[69] *= .1;
         DoubleSeq Y = DoubleSeq.of(A);
 
         Matrix days = Matrix.make(A.length, 7);

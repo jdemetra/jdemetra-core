@@ -7,25 +7,18 @@ package jdplus.ssf.akf;
 
 import demetra.arima.SarimaOrders;
 import demetra.data.Data;
-import demetra.data.DoubleSeq;
 import jdplus.arima.ssf.SsfArima;
 import jdplus.data.DataBlock;
-import jdplus.data.DataBlockStorage;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.sarima.SarimaModel;
 import jdplus.ssf.dk.DkToolkit;
-import jdplus.ssf.implementations.CompositeSsf;
 import jdplus.ssf.implementations.RegSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
-import jdplus.ucarima.UcarimaModel;
-import jdplus.ucarima.ssf.SsfUcarima;
-import static jdplus.ucarima.ssf.SsfUcarimaTest.ucmAirline;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -70,6 +63,8 @@ public class AugmentedSmootherTest {
             System.out.print('\t');
             DataBlock R = DataBlock.of(sd.R(i));
             Matrix Rvar = sd.RVariance(i).deepClone();
+            System.out.print(R.get(0) / Rvar.get(0,0));
+            System.out.print('\t');
             SymmetricMatrix.lcholesky(Rvar, 1e-9);
             LowerTriangularMatrix.solveLx(Rvar, R, 1e-9);
             System.out.println(R.ssq()/sig2);

@@ -182,6 +182,7 @@ public class AugmentedSmoother {
     }
 
     private void updateA(int pos) {
+        // a(t) + P*r(t-1) + (A(t)+P*R(t-1))*d
         DataBlock a = state.a();
         // normal iteration
         a.addProduct(R, calcvar ? state.P().columnsIterator() : frslts.P(pos).columnsIterator());
@@ -190,6 +191,9 @@ public class AugmentedSmoother {
     }
 
     private void updateP() {
+        // P(t|y)=var(a(t) + P*r(t-1) + (A(t)+P*R(t-1))*d)
+        // B(t)=(A(t)+P*R(t-1)), C(t)=R(t-1)+N(t-1)*A(t)
+        // P(t|y)=P(t)-P(t)N(t-1)P(t)+B(t)*psi*B'(t)-B(t)*S*C't)*P(t)-P(t)*C(t)*B'(t)
         Matrix P = state.P();
         // normal iteration
         Matrix PNP = SymmetricMatrix.XtSX(N, P);
@@ -219,6 +223,8 @@ public class AugmentedSmoother {
      */
     private void iterateN(int pos) {
         if (!missing && uc != 0) {
+            // rc(t-1)=r(t-1)+d*R(t-1) 
+            // Nc(t-1)=
             // N(t-1) = Z'(t)*Z(t)/f(t) + L'(t)*N(t)*L(t)
             XL(pos, N.rowsIterator());
             XL(pos, N.columnsIterator());
@@ -228,13 +234,16 @@ public class AugmentedSmoother {
             dynamics.TtM(pos, N);
         }
         SymmetricMatrix.reenforceSymmetry(N);
+        N.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
         if (uc != 0) {
-            Matrix A = frslts.B(pos + 1).deepClone();
-            // N*A
+            Matrix A = frslts.B(pos);
+            // Rd(t-1)+N(t-1)*A(t)
             Matrix NA = GeneralMatrix.AB(N, A);
             NA.add(Rd);
-            Nc.copy(N);
+            Nc.set(0);
             vcorrection(Nc, Rd.deepClone(), NA);
+            Nc.chs();
+            Nc.add(N);
             SymmetricMatrix.reenforceSymmetry(Nc);
             Nc.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
         }
@@ -244,7 +253,9 @@ public class AugmentedSmoother {
      *
      */
     private void iterateR(int pos) {
-        // R(t-1)=u(t)Z(t)+R(t)T(t)
+        // r(t-1)=u(t)Z(t)+r(t)T(t)
+        // R(t-1)=U(t)Z(t)+R(t)T(t)
+        // rc(t-1)=r(t-1)+d*R(t-1) [=uc(t)Z(t)+rc(t)T(t)]
         dynamics.XT(pos, R);
         dynamics.TtM(pos, Rd);
         if (!missing) {
@@ -285,6 +296,7 @@ public class AugmentedSmoother {
                 NA.add(Rd);
                 DataBlock C = DataBlock.make(U.length());
                 C.product(K, NA.columnsIterator());
+                C.chs();
                 ucVariance = 1 / errVariance + QuadraticForm.apply(N, K) - vcorrection(U.deepClone(), C);
                 if (ucVariance < State.ZERO) {
                     ucVariance = 0;
@@ -377,7 +389,7 @@ public class AugmentedSmoother {
     }
 
     /**
-     * V+=B*psi*B'-B*S*C'+C*S*B') Attention ! B, C are modified on exit. Make a
+     * V+=B*psi*B'-B*S*C'-C*S*B') Attention ! B, C are modified on exit. Make a
      * copy if necessary
      *
      * @param V
@@ -401,6 +413,6 @@ public class AugmentedSmoother {
         LowerTriangularMatrix.solveLx(S, B);
         LowerTriangularMatrix.solveLx(S, C);
         // compute B*C'
-        return v + 2 * B.dot(C);
+        return v - 2 * B.dot(C);
     }
 }
