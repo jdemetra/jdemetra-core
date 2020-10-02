@@ -16,23 +16,25 @@
  */
 package jdplus.revisions.parametric;
 
+import demetra.math.Complex;
 import demetra.math.matrices.MatrixType;
 import demetra.stats.StatException;
 import demetra.util.IntList;
-import jdplus.math.matrices.GeneralMatrix;
+import static jdplus.math.matrices.GeneralMatrix.AB;
+import static jdplus.math.matrices.GeneralMatrix.AtB;
+import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixFactory;
 import jdplus.math.matrices.SymmetricMatrix;
+import static jdplus.math.matrices.SymmetricMatrix.XtX;
+import jdplus.math.matrices.decomposition.EigenSystem;
+import jdplus.math.matrices.decomposition.IEigenSystem;
 
 /**
  *
  * @author PALATEJ
  */
 public class VECMComputer {
-
-    public static enum Type {
-        eigen, trace
-    }
 
     public static enum Spec {
         longrun, transitory
@@ -42,14 +44,54 @@ public class VECMComputer {
         none, cnt, trend
     }
 
-    private Type type = Type.eigen;
-    private Spec spec = Spec.transitory;
-    private ECDet ecdet = ECDet.none;
-    private int k = 2;
-    private int season = 0;
+    public static class Builder {
 
-    private Matrix X, Z, Z0, Z1, Zk, D, Ds, T;
+        private Spec spec = Spec.transitory;
+        private ECDet ecdet = ECDet.none;
+        private int k = 2;
+        private int season = 0;
+
+        public Builder season(int season) {
+            this.season = season;
+            return this;
+        }
+
+        public Builder lag(int k) {
+            this.k = k;
+            return this;
+        }
+
+        public Builder errorCorrectionModel(ECDet det) {
+            this.ecdet = det;
+            return this;
+        }
+
+        public VECMComputer build() {
+            return new VECMComputer(this);
+        }
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    private final Spec spec;
+    private final ECDet ecdet;
+    private final int k;
+    private final int season;
+
+    private VECMComputer(Builder builder) {
+        this.spec = builder.spec;
+        this.ecdet = builder.ecdet;
+        this.k = builder.k;
+        this.season = builder.season;
+    }
+
+    private Matrix X, Z, Z0, Z2, Z1, D, Ds, T;
     private IntList rows;
+
+    private double[] vp;
+    private Matrix V;
 
     public void process(Matrix x, Matrix dummies) {
         clear();
@@ -66,25 +108,98 @@ public class VECMComputer {
         D = MatrixFactory.selectRows(dummies, rows);
         buildDet(n);
         buildZ();
+        // Model: Z0 = ab Z1 + c Z2 +e
+
         // actual computation
-        int nz=Z0.getRowsCount();
-        Matrix M00=SymmetricMatrix.XtX(Z0);
-        M00.div(nz);
-        Matrix M11=SymmetricMatrix.XtX(Z1);
-        M11.div(nz);
-        Matrix Mkk=SymmetricMatrix.XtX(Zk);
-        Mkk.div(nz);
-        Matrix M01=GeneralMatrix.AtB(Z0, Z1);
-        M01.div(nz);
-        Matrix M0k=GeneralMatrix.AtB(Z0, Zk);
-        M0k.div(nz);
-        Matrix M1k=GeneralMatrix.AtB(Z1, Zk);
-        M1k.div(nz);
-        Matrix Mk0=GeneralMatrix.transpose(M0k);
-        Matrix M10=GeneralMatrix.transpose(M01);
-        Matrix Mk1=GeneralMatrix.transpose(M1k);
-        Matrix M11inv=SymmetricMatrix.inverse(M11);
-        
+        int nz = Z0.getRowsCount();
+        Matrix M22 = XtX(Z2); // Z2'Z2
+        Matrix M20 = AtB(Z2, Z0); // Z2'Z0
+        Matrix M21 = AtB(Z2, Z1); // Z2'Z1
+        // (Z2'Z2)^(-1)
+        Matrix M22inv = SymmetricMatrix.inverse(M22);
+
+        // Z0 on Z2: R0=Z0-Z2*(Z2'Z2)^(-1)*Z2'Z0
+        Matrix R0 = Z0.minus(AB(Z2, AB(M22inv, M20)));
+        // Z1 on Z2: R1=Z1-Z2(Z2'Z2)^(-1)*Z2'Z1
+        Matrix R1 = Z1.minus(AB(Z2, AB(M22inv, M21)));
+
+        // R0 = ab R1 + e
+        Matrix S00 = XtX(R0);
+        Matrix S11 = XtX(R1);
+        Matrix S01 = AtB(R0, R1);
+        S00.div(nz);
+        S11.div(nz);
+        S01.div(nz);
+        Matrix L0 = S00; // S00 not cloned! be careful
+        SymmetricMatrix.lcholesky(L0);
+        Matrix K1 = S01;// S01 not clone! be careful
+        LowerTriangularMatrix.solveLX(L0, K1);
+        Matrix L1 = S11; // S11 not cloned! be careful
+        SymmetricMatrix.lcholesky(L1);
+        LowerTriangularMatrix.solveXLt(L1, K1);
+
+        // K = L1^(-1)*S10(S00)^(-1)S01*L1^(-1) = L1^(-1)*S10*(L0L0')^(-1)*S01*L1'^(-1)* =  L1^(-1)*S10*L0'^(-1)*L0(^-1)*S01*L1'^(-1) 
+        Matrix K = SymmetricMatrix.XtX(K1);
+        IEigenSystem eig = EigenSystem.create(K, true);
+        eig.setComputingEigenVectors(true);
+        eig.compute();
+        Complex[] eigenValues = eig.getEigenValues();
+        Matrix E = eig.getEigenVectors(); // normalized vectors by column
+        LowerTriangularMatrix.solveLX(L1, E); // 
+        V = Matrix.make(E.getRowsCount(), E.getColumnsCount());
+        vp = new double[eigenValues.length];
+
+        for (int i = 0; i < vp.length; ++i) {
+            int jmax = 0;
+            double vmax = 0;
+            for (int j = 0; j < vp.length; ++j) {
+                if (eigenValues[j] != null) {
+                    if (eigenValues[j].getRe() > vmax) {
+                        vmax=eigenValues[j].getRe();
+                        jmax = j;
+                    }
+                }
+            }
+            vp[i] = vmax;
+            V.column(i).copy(E.column(jmax));
+            eigenValues[jmax] = null;
+        }
+    }
+    
+    public double traceCriticalValue(int eps){
+        return cv(Z0.getColumnsCount(), eps, 1);
+    }
+
+    public double maxCriticalValue(int eps){
+        return cv(Z0.getColumnsCount(), eps, 0);
+    }
+
+    public double traceTest(int k) {
+        if (vp == null) {
+            return Double.NaN;
+        }
+        int nz = Z0.getRowsCount();
+        double t = 0;
+        for (int j = k; j < vp.length; ++j) {
+            t += Math.log(1 - vp[j]);
+        }
+        return -t * nz;
+    }
+
+    public double maxTest(int k) {
+        if (vp == null) {
+            return Double.NaN;
+        }
+        int nz = Z0.getRowsCount();
+        return -nz * Math.log(1 - vp[k]);
+    }
+
+    private int[] order(int[] p) {
+        int[] o = new int[p.length];
+        for (int i = 0; i < p.length; ++i) {
+            o[p[i]] = i;
+        }
+        return o;
     }
 
     private void buildDet(int n) {
@@ -109,6 +224,7 @@ public class VECMComputer {
     }
 
     private void buildZ() {
+        // Z0 = a Z1 + b Z2 + e
         int p = X.getColumnsCount();
         Z = MatrixFactory.embed(MatrixFactory.delta(X, 1, 1), k);
         int nz = Z.getRowsCount(); // n-k
@@ -119,36 +235,36 @@ public class VECMComputer {
         switch (ecdet) {
             case cnt:
                 if (spec == Spec.longrun) {
-                    // Zk =[X(t-k), 1]
-                    Zk = MatrixFactory.columnBind(X.extract(0, nz, 0, p), one);
+                    // Z1 =[X(t-k), 1]
+                    Z1 = MatrixFactory.columnBind(X.extract(0, nz, 0, p), one);
                 } else {
-                    // Zk =[X(t-1), 1]
-                    Zk = MatrixFactory.columnBind(X.extract(k - 1, nz, 0, p), one);
+                    // Z1 =[X(t-1), 1]
+                    Z1 = MatrixFactory.columnBind(X.extract(k - 1, nz, 0, p), one);
                 }
-                // Zl=[Ds, D, dX(t-1)...dX(t-k+1)]
-                Z1 = MatrixFactory.columnBind(D1, Ds1, Z.extract(0, nz, p, Z.getColumnsCount() - p));
+                // Z2=[Ds, D, dX(t-1)...dX(t-k+1)]
+                Z2 = MatrixFactory.columnBind(D1, Ds1, Z.extract(0, nz, p, Z.getColumnsCount() - p));
                 break;
             case trend:
                 if (spec == Spec.longrun) {
-                    // Zk =[X(t-k), T]
-                    Zk = MatrixFactory.columnBind(X.extract(0, nz, 0, p), T);
+                    // Z1 =[X(t-k), T]
+                    Z1 = MatrixFactory.columnBind(X.extract(0, nz, 0, p), T);
                 } else {
-                    // Zk =[X(t-1), T]
-                    Zk = MatrixFactory.columnBind(X.extract(k - 1, nz, 0, p), T);
+                    // Z1 =[X(t-1), T]
+                    Z1 = MatrixFactory.columnBind(X.extract(k - 1, nz, 0, p), T);
                 }
-                // Zl=[1, D, Ds, dX(t-1)...dX(t-k+1)]
-                Z1 = MatrixFactory.columnBind(one, D1, Ds1, Z.extract(0, nz, p, Z.getColumnsCount() - p));
+                // Z2=[1, D, Ds, dX(t-1)...dX(t-k+1)]
+                Z2 = MatrixFactory.columnBind(one, D1, Ds1, Z.extract(0, nz, p, Z.getColumnsCount() - p));
                 break;
             case none:
                 if (spec == Spec.longrun) {
-                    // Zk =[X(t-k)]
-                    Zk = X.extract(0, nz, 0, p);
+                    // Z1 =[X(t-k)]
+                    Z1 = X.extract(0, nz, 0, p);
                 } else {
-                    // Zk =[X(t-1)]
-                    Zk = X.extract(k - 1, nz, 0, p);
+                    // Z1 =[X(t-1)]
+                    Z1 = X.extract(k - 1, nz, 0, p);
                 }
-                // Zl=[1, D, Ds, dX(t-1)...dX(t-k+1)]
-                Z1 = MatrixFactory.columnBind(one, D1, Ds1, Z.extract(0, nz, p, Z.getColumnsCount() - p));
+                // Z2=[1, D, Ds, dX(t-1)...dX(t-k+1)]
+                Z2 = MatrixFactory.columnBind(one, D1, Ds1, Z.extract(0, nz, p, Z.getColumnsCount() - p));
                 break;
         }
     }
@@ -160,7 +276,7 @@ public class VECMComputer {
     }
 
     private void clear() {
-        X = Z = Z0 = Z1 = Zk = D = Ds = T = null;
+        X = Z = Z0 = Z2 = Z1 = D = Ds = T = null;
         rows = null;
     }
 

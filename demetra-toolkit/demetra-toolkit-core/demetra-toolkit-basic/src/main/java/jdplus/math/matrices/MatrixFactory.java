@@ -130,7 +130,7 @@ public class MatrixFactory {
 
     }
 
-    public static Matrix selectColumns(Matrix m, IntList selectedColumns) {
+    public static Matrix selectColumns(Matrix m, @NonNull IntList selectedColumns) {
         if (m == null) {
             return null;
         }
@@ -143,6 +143,48 @@ public class MatrixFactory {
         int scur = 0;
         for (int c = 0; c < s.ncols; ++c) {
             DataBlock mcol = m.column(selectedColumns.get(c));
+            mcol.copyTo(ps, scur);
+            scur += s.nrows;
+        }
+        return s;
+    }
+
+    public static Matrix selectRows(Matrix m, @NonNull int[] selectedRows) {
+        if (m == null) {
+            return null;
+        }
+        if (selectedRows == null) {
+            return m;
+        }
+        Matrix s = Matrix.make(selectedRows.length, m.ncols);
+        double[] ps = s.getStorage(), pm = m.getStorage();
+
+        int scur = 0;
+        DataBlockIterator cols = m.columnsIterator();
+        while (cols.hasNext()) {
+            DataBlock mcol = cols.next();
+            int mcur = mcol.getStartPosition();
+            for (int r = 0; r < s.nrows; ++r) {
+                ps[scur++] = pm[mcur + selectedRows[r]];
+            }
+        }
+        return s;
+
+    }
+
+    public static Matrix selectColumns(Matrix m, @NonNull int[] selectedColumns) {
+        if (m == null) {
+            return null;
+        }
+        if (selectedColumns == null) {
+            return m;
+        }
+        Matrix s = Matrix.make(m.nrows, selectedColumns.length);
+        double[] ps = s.getStorage();
+
+        int scur = 0;
+        for (int c = 0; c < s.ncols; ++c) {
+            DataBlock mcol = m.column(selectedColumns[c]);
             mcol.copyTo(ps, scur);
             scur += s.nrows;
         }
@@ -212,8 +254,14 @@ public class MatrixFactory {
         return D;
     }
 
-    public Matrix select(MatrixType M, final int[] selectedRows, final int[] selectedColumns) {
+    public Matrix select(Matrix M, final int[] selectedRows, final int[] selectedColumns) {
         // TODO optimization
+        if (selectedRows == null) {
+            return selectColumns(M, selectedColumns);
+        }
+        if (selectedColumns == null) {
+            return selectRows(M, selectedRows);
+        }
         Matrix m = new Matrix(selectedRows.length, selectedColumns.length);
         for (int c = 0; c < selectedRows.length; ++c) {
             for (int r = 0; r < selectedRows.length; ++r) {
