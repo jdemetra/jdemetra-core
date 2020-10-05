@@ -136,8 +136,8 @@ public class OutliersDetection {
         clear();
         int i = 0;
 
-        Matrix W = x(y.length(), X);
-        if (!fullEstimation(y, W, period, eps2)) {
+        regressors = x(y.length(), X);
+        if (!fullEstimation(y, regressors, period, eps2)) {
             return false;
         }
         initialModel = model;
@@ -146,11 +146,11 @@ public class OutliersDetection {
         // forward recursion
         while (i++ < maxIter) {
             sig = robustSigma();
-            if (!iterate(y, W, curcv)) {
+            if (!iterate(y, regressors, curcv)) {
                 break;
             }
-            W = x(y.length(), X);
-            if (!estimate(y, W, forwardEstimation)) {
+            regressors = x(y.length(), X);
+            if (!estimate(y, regressors, forwardEstimation)) {
                 break;
             }
 //            SsfFunction<BasicStructuralModel, SsfBsm2> fn = currentFunction(y, W);
@@ -158,12 +158,12 @@ public class OutliersDetection {
         }
         // backward recursion
 
-        if (!fullEstimation(y, W, period, eps)) {
+        if (!fullEstimation(y, regressors, period, eps)) {
             return false;
         }
         double tcvcur = tcriticalValue(y.length());
         do {
-            if (W == null) {
+            if (regressors == null) {
                 break;
             }
             double[] tstats = getLikelihood().tstats(0, false);
@@ -187,8 +187,8 @@ public class OutliersDetection {
             } else {
                 lsPositions.remove(jmin - aoPositions.size());
             }
-            W = x(y.length(), X);
-            if (!estimate(y, W, backwardEstimation)) {
+            regressors = x(y.length(), X);
+            if (!estimate(y, regressors, backwardEstimation)) {
                 break;
             }
         } while (!aoPositions.isEmpty() || !lsPositions.isEmpty());

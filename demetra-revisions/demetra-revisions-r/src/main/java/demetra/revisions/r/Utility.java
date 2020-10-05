@@ -31,11 +31,13 @@ import demetra.revisions.parametric.UnitRoot;
 import demetra.stats.TestResult;
 import java.time.LocalDate;
 import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixFactory;
 import jdplus.revisions.parametric.AutoCorrelationTestsComputer;
 import jdplus.revisions.parametric.BiasComputer;
 import jdplus.revisions.parametric.OlsTestsComputer;
 import jdplus.revisions.parametric.SignalNoiseComputer;
 import jdplus.revisions.parametric.UnitRootTestsComputer;
+import jdplus.stats.tests.JohansenCointegration;
 import jdplus.stats.StatUtility;
 import jdplus.stats.tests.DickeyFuller;
 
@@ -146,6 +148,45 @@ public class Utility {
                         cursor.setAndNext(df.getSer());
                         cursor.setAndNext(df.getTest());
                         cursor.setAndNext(df.getPvalue());
+                    }
+                } catch (Exception err) {
+                }
+            }
+        }
+        return rslt;
+    }
+
+    private static final int JOHANSEN = 2;
+
+    /**
+     * v(t)=a+b*v(t-gap)
+     *
+     * @param vintages Vintages
+     * @param lag Number of lags in augmented dickey-fuller test
+     * @param model
+     * @return
+     */
+    public MatrixType vecm(MatrixType vintages, int lag, String model) {
+        int n = vintages.getColumnsCount();
+        Matrix rslt = Matrix.make(n * (n - 1) / 2, JOHANSEN * lag);
+        JohansenCointegration.ECDet ecdet = JohansenCointegration.ECDet.valueOf(model);
+        JohansenCointegration computer = JohansenCointegration.builder()
+                .errorCorrectionModel(ecdet)
+                .lag(lag)
+                .build();
+        Matrix M = Matrix.make(vintages.getRowsCount(), 2);
+        for (int i = 0, k = 0; i < n; ++i) {
+            M.column(0).copy(vintages.column(i));
+            for (int j = i + 1; j < n; ++j) {
+                M.column(1).copy(vintages.column(j));
+                try {
+                    DoubleSeqCursor.OnMutable cursor = rslt.row(k++).cursor();
+                    computer.process(M, null);
+                    for (int l = lag - 1; l >= 0; --l) {
+                        cursor.setAndNext(computer.traceTest(l));
+                    }
+                    for (int l = lag - 1; l >= 0; --l) {
+                        cursor.setAndNext(computer.maxTest(l));
                     }
                 } catch (Exception err) {
                 }

@@ -25,7 +25,14 @@ public class StsOutliersDetectionTest {
     @Test
     public void testSomeMethod() {
         TsData y = TsData.ofInternal(TsPeriod.monthly(1992, 1), Data.RETAIL_BOOKSTORES);
-        StsOutliersDetection.Results rslt = StsOutliersDetection.process(y, 1, 1, -1, 1, "Trigonometric", null, 0, 0, "Score", "Point");
+        StsOutliersDetection.Results rslt = StsOutliersDetection.process(y, 1, 1, 1, "Trigonometric", null, 0, 0, "Score", "Point");
+        System.out.println(rslt.getComponents());
+        System.out.println("");
+        System.out.println(rslt.getInitialTau());
+        System.out.println("");
+        System.out.println(rslt.getRegressors());
+        System.out.println("");
+        System.out.println(rslt.getLinearized());
     }
 
     double[] sugar = new double[]{34.8, 21, 32.2, 22.4, 18.2, 15.9, 13.3, 16.7, 19, 91.5, 246.5, 258.3, 126.5, 19.7, 24.8, 16.7, 12.2, 14.3, 10.9, 14.9, 17.6, 211.7, 358.3, 201,

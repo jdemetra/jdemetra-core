@@ -14,19 +14,17 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.revisions.parametric;
+package jdplus.stats.tests;
 
 import demetra.math.Complex;
 import demetra.math.matrices.MatrixType;
 import demetra.stats.StatException;
 import demetra.util.IntList;
-import static jdplus.math.matrices.GeneralMatrix.AB;
-import static jdplus.math.matrices.GeneralMatrix.AtB;
+import jdplus.math.matrices.GeneralMatrix;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixFactory;
 import jdplus.math.matrices.SymmetricMatrix;
-import static jdplus.math.matrices.SymmetricMatrix.XtX;
 import jdplus.math.matrices.decomposition.EigenSystem;
 import jdplus.math.matrices.decomposition.IEigenSystem;
 
@@ -34,7 +32,7 @@ import jdplus.math.matrices.decomposition.IEigenSystem;
  *
  * @author PALATEJ
  */
-public class VECMComputer {
+public class JohansenCointegration {
 
     public static enum Spec {
         longrun, transitory
@@ -66,8 +64,8 @@ public class VECMComputer {
             return this;
         }
 
-        public VECMComputer build() {
-            return new VECMComputer(this);
+        public JohansenCointegration build() {
+            return new JohansenCointegration(this);
         }
     }
 
@@ -80,7 +78,7 @@ public class VECMComputer {
     private final int k;
     private final int season;
 
-    private VECMComputer(Builder builder) {
+    private JohansenCointegration(Builder builder) {
         this.spec = builder.spec;
         this.ecdet = builder.ecdet;
         this.k = builder.k;
@@ -112,21 +110,21 @@ public class VECMComputer {
 
         // actual computation
         int nz = Z0.getRowsCount();
-        Matrix M22 = XtX(Z2); // Z2'Z2
-        Matrix M20 = AtB(Z2, Z0); // Z2'Z0
-        Matrix M21 = AtB(Z2, Z1); // Z2'Z1
+        Matrix M22 = SymmetricMatrix.XtX(Z2); // Z2'Z2
+        Matrix M20 = GeneralMatrix.AtB(Z2, Z0); // Z2'Z0
+        Matrix M21 = GeneralMatrix.AtB(Z2, Z1); // Z2'Z1
         // (Z2'Z2)^(-1)
         Matrix M22inv = SymmetricMatrix.inverse(M22);
 
         // Z0 on Z2: R0=Z0-Z2*(Z2'Z2)^(-1)*Z2'Z0
-        Matrix R0 = Z0.minus(AB(Z2, AB(M22inv, M20)));
+        Matrix R0 = Z0.minus(GeneralMatrix.AB(Z2, GeneralMatrix.AB(M22inv, M20)));
         // Z1 on Z2: R1=Z1-Z2(Z2'Z2)^(-1)*Z2'Z1
-        Matrix R1 = Z1.minus(AB(Z2, AB(M22inv, M21)));
+        Matrix R1 = Z1.minus(GeneralMatrix.AB(Z2, GeneralMatrix.AB(M22inv, M21)));
 
         // R0 = ab R1 + e
-        Matrix S00 = XtX(R0);
-        Matrix S11 = XtX(R1);
-        Matrix S01 = AtB(R0, R1);
+        Matrix S00 = SymmetricMatrix.XtX(R0);
+        Matrix S11 = SymmetricMatrix.XtX(R1);
+        Matrix S01 = GeneralMatrix.AtB(R0, R1);
         S00.div(nz);
         S11.div(nz);
         S01.div(nz);
@@ -232,6 +230,7 @@ public class VECMComputer {
         MatrixType one = one(nz);
         Matrix D1 = D == null ? null : D.extract(k, nz, 0, D.getColumnsCount());
         Matrix Ds1 = Ds == null ? null : Ds.extract(k, nz, 0, Ds.getColumnsCount());
+        Matrix T1 = T == null ? null : T.extract(k, nz, 0, 1);
         switch (ecdet) {
             case cnt:
                 if (spec == Spec.longrun) {
@@ -247,10 +246,10 @@ public class VECMComputer {
             case trend:
                 if (spec == Spec.longrun) {
                     // Z1 =[X(t-k), T]
-                    Z1 = MatrixFactory.columnBind(X.extract(0, nz, 0, p), T);
+                    Z1 = MatrixFactory.columnBind(X.extract(0, nz, 0, p), T1);
                 } else {
                     // Z1 =[X(t-1), T]
-                    Z1 = MatrixFactory.columnBind(X.extract(k - 1, nz, 0, p), T);
+                    Z1 = MatrixFactory.columnBind(X.extract(k - 1, nz, 0, p), T1);
                 }
                 // Z2=[1, D, Ds, dX(t-1)...dX(t-k+1)]
                 Z2 = MatrixFactory.columnBind(one, D1, Ds1, Z.extract(0, nz, p, Z.getColumnsCount() - p));

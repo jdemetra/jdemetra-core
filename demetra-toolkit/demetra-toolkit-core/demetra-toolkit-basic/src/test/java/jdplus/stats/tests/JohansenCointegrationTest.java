@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.revisions.parametric;
+package jdplus.stats.tests;
 
 import ec.tstoolkit.random.JdkRNG;
 import java.util.Random;
@@ -26,19 +26,19 @@ import static org.junit.Assert.*;
  *
  * @author PALATEJ
  */
-public class VECMComputerTest {
+public class JohansenCointegrationTest {
     
-    public VECMComputerTest() {
+    public JohansenCointegrationTest() {
     }
 
     @Test
     public void testRandom() {
-        Matrix X = Matrix.make(10000, 5);
+        Matrix X = Matrix.make(100, 5);
         Random rnd=new Random(0);
         X.set((i, j) -> rnd.nextGaussian());
         
-        VECMComputer computer = VECMComputer.builder()
-                .errorCorrectionModel(VECMComputer.ECDet.cnt)
+        JohansenCointegration computer = JohansenCointegration.builder()
+                .errorCorrectionModel(JohansenCointegration.ECDet.trend)
                 .build();
         computer.process(X, null);
             System.out.print(computer.traceCriticalValue(0));

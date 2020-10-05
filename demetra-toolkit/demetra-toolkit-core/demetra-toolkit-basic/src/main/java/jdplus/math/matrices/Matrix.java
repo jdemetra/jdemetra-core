@@ -1042,6 +1042,28 @@ public final class Matrix implements MatrixType.Mutable {
         int beg = start + c0 * lda + r0, end = beg + n;
         return DataBlock.of(storage, beg, end, 1);
     }
+    
+    public DataBlock rowSums(){
+        if (isEmpty())
+            return DataBlock.EMPTY;
+        DataBlockIterator cols = columnsIterator();
+        DataBlock x=cols.next().deepClone();
+        while (cols.hasNext()){
+            x.add(cols.next());
+        }
+        return x;
+    }
+
+    public DataBlock columnSums(){
+        if (isEmpty())
+            return DataBlock.EMPTY;
+        DataBlockIterator rows = rowsIterator();
+        DataBlock x=rows.next().deepClone();
+        while (rows.hasNext()){
+            x.add(rows.next());
+        }
+        return x;
+    }
 
     public DataBlockIterator rowsIterator() {
         return new RCIterator(topOutside(), nrows, 1);

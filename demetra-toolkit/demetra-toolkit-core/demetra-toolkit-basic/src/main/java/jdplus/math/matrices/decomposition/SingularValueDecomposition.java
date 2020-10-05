@@ -17,12 +17,9 @@
 package jdplus.math.matrices.decomposition;
 
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.decomposition.ISingularValueDecomposition;
-import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixException;
 import jdplus.data.DataBlockIterator;
 import demetra.math.Constants;
-import jdplus.math.matrices.decomposition.ElementaryTransformations;
 import demetra.data.DoubleSeq;
 import jdplus.math.matrices.Matrix;
 
@@ -491,7 +488,7 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
      */
     @Override
     public DoubleSeq S() {
-        return DoubleSeq.copyOf(m_s);
+        return DoubleSeq.of(m_s);
     }
 
     public double norm2() {
