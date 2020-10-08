@@ -222,7 +222,7 @@ public class AugmentedSmoother {
      *
      */
     private void iterateN(int pos) {
-        if (!missing && uc != 0) {
+        if (!missing) {
             // rc(t-1)=r(t-1)+d*R(t-1) 
             // Nc(t-1)=
             // N(t-1) = Z'(t)*Z(t)/f(t) + L'(t)*N(t)*L(t)
@@ -235,18 +235,16 @@ public class AugmentedSmoother {
         }
         SymmetricMatrix.reenforceSymmetry(N);
         N.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
-        if (uc != 0) {
-            Matrix A = frslts.B(pos);
-            // Rd(t-1)+N(t-1)*A(t)
-            Matrix NA = GeneralMatrix.AB(N, A);
-            NA.add(Rd);
-            Nc.set(0);
-            vcorrection(Nc, Rd.deepClone(), NA);
-            Nc.chs();
-            Nc.add(N);
-            SymmetricMatrix.reenforceSymmetry(Nc);
-            Nc.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
-        }
+        Matrix A = frslts.B(pos);
+        // Rd(t-1)+N(t-1)*A(t)
+        Matrix NA = GeneralMatrix.AB(N, A);
+        NA.add(Rd);
+        Nc.set(0);
+        vcorrection(Nc, Rd.deepClone(), NA);
+        Nc.chs();
+        Nc.add(N);
+        SymmetricMatrix.reenforceSymmetry(Nc);
+        Nc.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
     }
 
     /**

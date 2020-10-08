@@ -40,36 +40,47 @@ public class AugmentedSmootherTest {
                 .build();
         Ssf ssf = Ssf.of(SsfArima.of(arima), SsfArima.defaultLoading());
         SsfData data = new SsfData(Data.NILE);
+        int n = data.length();
+        Matrix X = Matrix.make(n, 1);
+        X.set(36, 0, 1);
+        Ssf xssf = RegSsf.ssf(ssf, X);
         AugmentedSmoother smoother = new AugmentedSmoother();
         smoother.setCalcVariances(true);
         DefaultSmoothingResults sd = DefaultSmoothingResults.full();
-        sd.prepare(ssf.getStateDim(), 0, data.length());
-        smoother.process(ssf, data, sd);
-        double sig2=smoother.getFilteringResults().var();
-        
-        int n = data.length();
+        sd.prepare(xssf.getStateDim(), 0, data.length());
+        smoother.process(xssf, data, sd);
+        double sig2 = smoother.getFilteringResults().var();
+
         for (int i = 0; i < n; ++i) {
+            if (i == 36) {
+                continue;
+            }
 //            System.out.print(sd.smoothation(i));
             System.out.print(sd.smoothation(i) / sd.smoothationVariance(i));
             System.out.print('\t');
-            Matrix X = Matrix.make(n, 1);
-            X.set(i, 0, 1);
-            Ssf ssfx = RegSsf.ssf(ssf, X);
-            DefaultSmoothingResults sr = DkToolkit.smooth(ssfx, data, false, true);
+            Matrix W = Matrix.make(n, 2);
+            W.set(36, 0, 1);
+            W.set(i, 1, 1);
+            Ssf wssf = RegSsf.ssf(ssf, W);
+            DefaultSmoothingResults sr = DkToolkit.smooth(wssf, data, false, true);
             double last = sr.a(0).getLast();
             System.out.print(last);
             System.out.print('\t');
-            System.out.print(sd.smoothation(i)*sd.smoothation(i) / sd.smoothationVariance(i)/sig2);
+            System.out.print(sd.smoothation(i) * sd.smoothation(i) / sd.smoothationVariance(i) / sig2);
             System.out.print('\t');
             DataBlock R = DataBlock.of(sd.R(i));
             Matrix Rvar = sd.RVariance(i).deepClone();
-            System.out.print(R.get(0) / Rvar.get(0,0));
+            System.out.print(R.get(0) / Rvar.get(0, 0));
             System.out.print('\t');
-            SymmetricMatrix.lcholesky(Rvar, 1e-9);
-            LowerTriangularMatrix.solveLx(Rvar, R, 1e-9);
-            System.out.println(R.ssq()/sig2);
-            
-       }
+            try {
+                SymmetricMatrix.lcholesky(Rvar, 1e-9);
+                LowerTriangularMatrix.solveLx(Rvar, R, 1e-9);
+                System.out.println(R.ssq() / sig2);
+            } catch (Exception err) {
+                System.out.println("");
+            }
+
+        }
 
     }
 }

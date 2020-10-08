@@ -5,13 +5,10 @@
  */
 package demetra.sts.r;
 
-import demetra.data.Data;
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -24,8 +21,8 @@ public class StsOutliersDetectionTest {
 
     @Test
     public void testSomeMethod() {
-        TsData y = TsData.ofInternal(TsPeriod.monthly(1992, 1), Data.RETAIL_BOOKSTORES);
-        StsOutliersDetection.Results rslt = StsOutliersDetection.process(y, 1, 1, 1, "Trigonometric", null, 0, 0, "Score", "Point");
+        TsData y = TsData.ofInternal(TsPeriod.monthly(1974, 1), sugar);
+        StsOutliersDetection.Results rslt = StsOutliersDetection.process(y, 1, 1, 1, "HarrisonStevens", null, 0, 0, "Score", "Point");
         System.out.println(rslt.getComponents());
         System.out.println("");
         System.out.println(rslt.getInitialTau());
