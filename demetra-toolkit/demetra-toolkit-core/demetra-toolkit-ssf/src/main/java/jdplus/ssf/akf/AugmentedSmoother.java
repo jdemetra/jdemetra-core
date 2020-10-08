@@ -109,16 +109,17 @@ public class AugmentedSmoother {
     private void loadInfo(int pos) {
         err = frslts.error(pos);
         errVariance = frslts.errorVariance(pos);
+        missing = !Double.isFinite(err);
 
         E.copy(frslts.E(pos));
         // P*Z
         M.copy(frslts.M(pos));
         // T*P*Z/f
-        K.copy(frslts.M(pos));
-        dynamics.TX(pos, K);
-        K.div(errVariance);
-
-        missing = !Double.isFinite(err);
+        if (errVariance != 0) {
+            K.copy(frslts.M(pos));
+            dynamics.TX(pos, K);
+            K.div(errVariance);
+        }
         DataBlock fa = frslts.a(pos);
         hasinfo = fa != null;
         if (!hasinfo) {
@@ -200,6 +201,7 @@ public class AugmentedSmoother {
         P.sub(PNP);
         // diffuse correction
         vcorrection(P, B, V);
+        P.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
     }
 
     private void xL(int pos, DataBlock x) {
@@ -235,6 +237,7 @@ public class AugmentedSmoother {
         }
         SymmetricMatrix.reenforceSymmetry(N);
         N.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
+
         Matrix A = frslts.B(pos);
         // Rd(t-1)+N(t-1)*A(t)
         Matrix NA = GeneralMatrix.AB(N, A);
@@ -256,7 +259,7 @@ public class AugmentedSmoother {
         // rc(t-1)=r(t-1)+d*R(t-1) [=uc(t)Z(t)+rc(t)T(t)]
         dynamics.XT(pos, R);
         dynamics.TtM(pos, Rd);
-        if (!missing) {
+        if (!missing && errVariance != 0) {
             // RT
             loading.XpZd(pos, R, u);
             DataBlockIterator rcols = Rd.columnsIterator();
@@ -307,12 +310,12 @@ public class AugmentedSmoother {
                     }
                 }
             }
-        } else {
-            u = -R.dot(K);
-            // apply the same to the colums of Rd
-            U.product(K, Rd.columnsIterator());
-            U.chs();
-            uc = u + U.dot(delta);
+//        } else {
+//            u = -R.dot(K);
+//            // apply the same to the colums of Rd
+//            U.product(K, Rd.columnsIterator());
+//            U.chs();
+//            uc = u + U.dot(delta);
         }
     }
 

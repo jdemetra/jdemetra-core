@@ -97,7 +97,7 @@ public class StsOutliersDetection {
 
         static final String Y = "y", BSM0 = "initialbsm", BSM1 = "finalbsm",
                 LL0 = "initiallikelihood", LL1 = "finallikelihood", B = "b", T = "t", BVAR = "bvar", OUTLIERS = "outliers", REGRESSORS = "regressors", BNAMES = "variables",
-                CMPS = "cmps", TAU0 = "initialtau", TAU1="finaltau", LIN = "linearized";
+                CMPS = "cmps", TAU0 = "initialtau", TAU1 = "finaltau", LIN = "linearized";
 
         public static final InformationMapping<Results> getMapping() {
             return MAPPING;
@@ -134,12 +134,12 @@ public class StsOutliersDetection {
             MAPPING.set(TAU0, MatrixType.class, source -> source.getInitialTau());
             MAPPING.set(TAU1, MatrixType.class, source -> source.getFinalTau());
             MAPPING.set(REGRESSORS, MatrixType.class, source -> source.getRegressors());
-            MAPPING.set(LIN, double[].class, source->source.getLinearized().toArray());
+            MAPPING.set(LIN, double[].class, source -> source.getLinearized().toArray());
         }
     }
 
     public Results process(TsData y, int level, int slope, int noise, String seasmodel, MatrixType x,
-            double cv, double tcv, String forwardEstimation, String backwardEstimation) {
+            boolean bao, boolean bls, boolean bso, double cv, double tcv, String forwardEstimation, String backwardEstimation) {
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
         BsmSpec mspec = new BsmSpec();
         mspec.setLevelUse(of(level));
@@ -154,6 +154,9 @@ public class StsOutliersDetection {
                 .backardEstimation(be)
                 .criticalValue(cv)
                 .tcriticalValue(tcv)
+                .ao(bao)
+                .ls(bls)
+                .so(bso)
                 .build();
         if (!od.process(y.getValues(), Matrix.of(x), y.getAnnualFrequency())) {
             return null;
@@ -161,18 +164,22 @@ public class StsOutliersDetection {
 
         int[] ao = od.getAoPositions();
         int[] ls = od.getLsPositions();
+        int[] so = od.getSoPositions();
 
-        OutlierDescriptor[] outliers = new OutlierDescriptor[ao.length + ls.length];
+        OutlierDescriptor[] outliers = new OutlierDescriptor[ao.length + ls.length + so.length];
         for (int i = 0; i < ao.length; ++i) {
             outliers[i] = new OutlierDescriptor("AO", ao[i]);
         }
         for (int i = 0, j = ao.length; i < ls.length; ++i, ++j) {
             outliers[j] = new OutlierDescriptor("LS", ls[i]);
         }
+        for (int i = 0, j = ao.length + ls.length; i < so.length; ++i, ++j) {
+            outliers[j] = new OutlierDescriptor("SO", so[i]);
+        }
         AugmentedSmoother smoother = new AugmentedSmoother();
         smoother.setCalcVariances(true);
         SsfData data = new SsfData(y.getValues());
-        
+
         DiffuseConcentratedLikelihood ll0 = od.getInitialLikelihood();
         BasicStructuralModel model0 = od.getInitialModel();
         SsfBsm ssf0 = SsfBsm.of(model0);
@@ -181,7 +188,7 @@ public class StsOutliersDetection {
         int n = data.length();
         sd0.prepare(xssf.getStateDim(), 0, data.length());
         smoother.process(xssf, data, sd0);
-        
+
         double sig2 = ll0.sigma();
         Matrix tau0 = tau(n, ssf0.getStateDim(), model0, sd0, sig2);
 
@@ -194,13 +201,13 @@ public class StsOutliersDetection {
         sd.prepare(wssf.getStateDim(), 0, data.length());
         smoother.process(wssf, data, sd);
         Matrix cmps = components(n, model, sd);
-        DataBlock lin=cmps.column(0).deepClone();
+        DataBlock lin = cmps.column(0).deepClone();
         lin.add(cmps.column(1));
         lin.add(cmps.column(3));
-        
+
         sig2 = od.getLikelihood().sigma();
         Matrix tau1 = tau(n, ssf.getStateDim(), model, sd, sig2);
-        
+
         int np = mspec.getParametersCount();
 
         return Results.builder()
@@ -274,7 +281,7 @@ public class StsOutliersDetection {
                     tau.set(i, 4, ur.ssq() / sig2);
                 }
                 try {
-                     Matrix S = Rvar.extract(0, dim, 0, dim).deepClone();
+                    Matrix S = Rvar.extract(0, dim, 0, dim).deepClone();
                     DataBlock ur = R.extract(0, dim).deepClone();
                     SymmetricMatrix.lcholesky(S, 1e-9);
                     LowerTriangularMatrix.solveLx(S, ur, 1e-9);

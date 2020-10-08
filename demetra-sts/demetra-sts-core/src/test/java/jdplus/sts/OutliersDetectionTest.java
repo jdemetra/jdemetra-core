@@ -8,6 +8,7 @@ package jdplus.sts;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.sts.BsmSpec;
+import demetra.sts.Component;
 import demetra.sts.ComponentUse;
 import demetra.sts.SeasonalModel;
 import demetra.timeseries.TsPeriod;
@@ -89,8 +90,8 @@ public class OutliersDetectionTest {
                 .forwardEstimation(OutliersDetection.Estimation.Full)
                 .build();
         double[] A = Data.PROD.clone();
-        A[74] *= 1.3;
-        A[69] *= .1;
+        A[14] *= 1.3;
+        A[55] *= .7;
         DoubleSeq Y = DoubleSeq.of(A);
 
         Matrix days = Matrix.make(A.length, 7);
@@ -117,6 +118,53 @@ public class OutliersDetectionTest {
     }
 
     public static void main(String[] args) {
+        stressTest();
+    }
+
+    public static void stressTest() {
+        int K = 1000;
+        BsmSpec spec = new BsmSpec();
+        spec.setSeasUse(ComponentUse.Free);
+        spec.setSeasonalModel(SeasonalModel.HarrisonStevens);
+        spec.setSlopeUse(ComponentUse.Free);
+        spec.setLevelUse(ComponentUse.Free);
+        double[] A = Data.PROD.clone();
+        A[14] *= 1.3;
+        A[55] *= .7;
+        DoubleSeq Y = DoubleSeq.of(A);
+        Matrix days = Matrix.make(A.length, 7);
+        GenericTradingDaysFactory.fillTdMatrix(TsPeriod.monthly(1967, 1), days);
+        Matrix td = GenericTradingDaysFactory.generateContrasts(DayClustering.TD3, days);
+
+        int[] length = new int[]{60, 120, 180, 240, 300, 336};
+        for (int l = 0; l < length.length; ++l) {
+            long t0 = System.currentTimeMillis();
+            for (int k = 0; k < 10; ++k) {
+                OutliersDetection od = OutliersDetection.builder()
+                        .bsm(spec)
+                        .build();
+                od.process(Y.log().range(0, length[l]), td.extract(0, length[l], 0, td.getColumnsCount()), 12);
+            }
+            long t1 = System.currentTimeMillis();
+            System.out.println(t1 - t0);
+        }
+        for (int l = 0; l < length.length; ++l) {
+            long t0 = System.currentTimeMillis();
+            for (int k = 0; k < K; ++k) {
+                BasicStructuralModel model = new BasicStructuralModel(spec, 12);
+                forwardstep(model, Y.log().range(0, length[l]), null);// td.extract(0, length[l], 0, td.getColumnsCount()));
+//                OutliersDetection od = OutliersDetection.builder()
+//                        .bsm(spec)
+//                        .maxIter(1)
+//                        .build();
+//                od.process(Y.log().range(0, length[l]), td.extract(0, length[l], 0, td.getColumnsCount()), 12);
+            }
+            long t1 = System.currentTimeMillis();
+            System.out.println(t1 - t0);
+        }
+    }
+
+    public static void simulation() {
         int K = 100000;
         int[] NN = new int[]{/*20, 40, 60, 80, 100, 120, 180, 240, 300, */360, 420, 480, 540, 600};
         for (int h = 0; h < NN.length; ++h) {
@@ -231,4 +279,41 @@ public class OutliersDetectionTest {
 
     private static final RandomNumberGenerator RNG = JdkRNG.newRandom();
 
+    private static boolean forwardstep(BasicStructuralModel model, DoubleSeq y, Matrix W) {
+        SsfBsm ssf = SsfBsm.of(model);
+        Ssf wssf = W == null ? ssf : RegSsf.ssf(ssf, W);
+        AugmentedSmoother smoother = new AugmentedSmoother();
+        smoother.setCalcVariances(true);
+        SsfData data = new SsfData(y);
+        DefaultSmoothingResults sd = DefaultSmoothingResults.full();
+        int n = data.length();
+        sd.prepare(wssf.getStateDim(), 0, data.length());
+        smoother.process(wssf, data, sd);
+        double sig2 = smoother.getFilteringResults().var();
+        boolean isnoise = model.getVariance(Component.Noise) != 0;
+        for (int i = 0; i < n; ++i) {
+            try {
+                DataBlock R = DataBlock.of(sd.R(i));
+                Matrix Rvar = sd.RVariance(i);
+                double sao = 0, sls = 0, sall = 0;
+                sao = R.get(0) * R.get(0) / Rvar.get(0, 0) / sig2;
+                if (i > 0) {
+                    int c = isnoise ? 1 : 0;
+                    sls = R.get(c) * R.get(c) / Rvar.get(c, c) / sig2;
+                }
+                double sso = R.get(3) * R.get(3) / Rvar.get(3, 3) / sig2;
+                int[] sel = new int[]{0, 1, 3};
+                Matrix S = MatrixFactory.select(Rvar, sel, sel);
+                DataBlock ur = DataBlock.select(R, sel);
+                try {
+                    SymmetricMatrix.lcholesky(S, 1e-9);
+                    LowerTriangularMatrix.solveLx(S, ur, 1e-9);
+                    sall = ur.ssq() / sig2;
+                } catch (Exception err) {
+                }
+            } catch (Exception err) {
+            }
+        }
+        return true;
+    }
 }

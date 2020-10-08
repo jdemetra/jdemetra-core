@@ -41,8 +41,9 @@ public class AugmentedSmootherTest {
         Ssf ssf = Ssf.of(SsfArima.of(arima), SsfArima.defaultLoading());
         SsfData data = new SsfData(Data.NILE);
         int n = data.length();
-        Matrix X = Matrix.make(n, 1);
+        Matrix X = Matrix.make(n, 2);
         X.set(36, 0, 1);
+        X.set(0, 1, 1);
         Ssf xssf = RegSsf.ssf(ssf, X);
         AugmentedSmoother smoother = new AugmentedSmoother();
         smoother.setCalcVariances(true);
@@ -52,20 +53,20 @@ public class AugmentedSmootherTest {
         double sig2 = smoother.getFilteringResults().var();
 
         for (int i = 0; i < n; ++i) {
-            if (i == 36) {
-                continue;
-            }
 //            System.out.print(sd.smoothation(i));
             System.out.print(sd.smoothation(i) / sd.smoothationVariance(i));
             System.out.print('\t');
-            Matrix W = Matrix.make(n, 2);
-            W.set(36, 0, 1);
-            W.set(i, 1, 1);
-            Ssf wssf = RegSsf.ssf(ssf, W);
-            DefaultSmoothingResults sr = DkToolkit.smooth(wssf, data, false, true);
-            double last = sr.a(0).getLast();
-            System.out.print(last);
-            System.out.print('\t');
+            if (i != 36 && i != 0) {
+                Matrix W = Matrix.make(n, 3);
+                W.set(36, 0, 1);
+                W.set(0, 1, 1);
+                W.set(i, 2, 1);
+                Ssf wssf = RegSsf.ssf(ssf, W);
+                DefaultSmoothingResults sr = DkToolkit.smooth(wssf, data, false, true);
+                double last = sr.a(0).getLast();
+                System.out.print(last);
+            }
+                System.out.print('\t');
             System.out.print(sd.smoothation(i) * sd.smoothation(i) / sd.smoothationVariance(i) / sig2);
             System.out.print('\t');
             DataBlock R = DataBlock.of(sd.R(i));
