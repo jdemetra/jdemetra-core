@@ -16,7 +16,6 @@
  */
 package jdplus.regarima;
 
-import jdplus.arima.estimation.IArimaMapping;
 import jdplus.arima.IArimaModel;
 import jdplus.arima.StationaryTransformation;
 import internal.jdplus.arima.FastKalmanFilter;

@@ -130,6 +130,15 @@ public class StsOutliersDetection {
 
                 return names;
             });
+            MAPPING.set(OUTLIERS, String[].class, source -> {
+                OutlierDescriptor[] outliers = source.getOutliers();
+                int no = outliers == null ? 0 : outliers.length;
+                String[] names = new String[no];
+                for (int i = 0; i < no; ++i) {
+                    names[i] = outliers[i].toString();
+                }
+                return names;
+            });
             MAPPING.set(CMPS, MatrixType.class, source -> source.getComponents());
             MAPPING.set(TAU0, MatrixType.class, source -> source.getInitialTau());
             MAPPING.set(TAU1, MatrixType.class, source -> source.getFinalTau());
@@ -140,6 +149,7 @@ public class StsOutliersDetection {
 
     public Results process(TsData y, int level, int slope, int noise, String seasmodel, MatrixType x,
             boolean bao, boolean bls, boolean bso, double cv, double tcv, String forwardEstimation, String backwardEstimation) {
+        y=y.cleanExtremities();
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
         BsmSpec mspec = new BsmSpec();
         mspec.setLevelUse(of(level));
