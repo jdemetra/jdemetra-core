@@ -38,7 +38,32 @@ public interface ISmoothingResults extends IStateResults {
     DoubleSeq getComponent(int pos);
 
     DoubleSeq getComponentVariance(int pos);
-    
+
     boolean hasVariances();
 
+    default void saveSmoothation(int pos, double u, double uvar) {
+    }
+
+    default void saveR(int pos, DataBlock r, Matrix rvar) {
+    }
+    
+    default DoubleSeq R(int pos) {
+        throw new java.lang.UnsupportedOperationException();
+    }
+
+    default Matrix RVariance(int pos) {
+        throw new java.lang.UnsupportedOperationException();
+    }
+
+    default double smoothation(int pos) {
+        throw new java.lang.UnsupportedOperationException();
+    }
+
+    default DoubleSeq smoothations() {
+        throw new java.lang.UnsupportedOperationException();
+    }
+
+    default double smoothationVariance(int pos) {
+        throw new java.lang.UnsupportedOperationException();
+    }
 }

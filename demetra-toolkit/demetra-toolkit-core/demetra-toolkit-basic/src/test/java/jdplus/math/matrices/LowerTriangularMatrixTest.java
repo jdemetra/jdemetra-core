@@ -6,8 +6,10 @@
 package jdplus.math.matrices;
 
 import ec.tstoolkit.maths.matrices.SubMatrix;
+import ec.tstoolkit.random.JdkRNG;
 import jdplus.data.DataBlock;
 import static jdplus.math.matrices.GeneralMatrix.transpose;
+import static jdplus.math.matrices.LowerTriangularMatrix.solveLX;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -147,7 +149,7 @@ public class LowerTriangularMatrixTest {
         Matrix L = Matrix.square(10);
         L.set((i, j) -> i + 10 * j + 1);
         LowerTriangularMatrix.toLower(L);
- 
+
         Matrix M = L.extract(5, 4, 0, 4);
         LowerTriangularMatrix.toLower(L);
     }
@@ -159,30 +161,30 @@ public class LowerTriangularMatrixTest {
         Matrix M = Matrix.make(10, 5);
         M.set((i, j) -> i * i + j * j);
         Matrix N = transpose(M);
-        Matrix iL=LowerTriangularMatrix.inverse(L);
+        Matrix iL = LowerTriangularMatrix.inverse(L);
         Matrix X = GeneralMatrix.AB(iL, M);
-        Matrix Z=M.deepClone();
+        Matrix Z = M.deepClone();
         LowerTriangularMatrix.solveLX(L, Z);
         Z.sub(X);
-        assertTrue(MatrixNorms.absNorm(Z)<1e-9);
-        Z=M.deepClone(); // 10 x 5
-        X=GeneralMatrix.AtB(iL, M); // 5 x 10
-        LowerTriangularMatrix.solveLtX(L, Z); 
+        assertTrue(MatrixNorms.absNorm(Z) < 1e-9);
+        Z = M.deepClone(); // 10 x 5
+        X = GeneralMatrix.AtB(iL, M); // 5 x 10
+        LowerTriangularMatrix.solveLtX(L, Z);
         Z.sub(X);
-        assertTrue(MatrixNorms.absNorm(Z)<1e-9);
-        Z=N.deepClone(); // 5 x 10
-        X=GeneralMatrix.AtB(M, iL); // 5 x 10
-        LowerTriangularMatrix.solveXL(L, Z); 
+        assertTrue(MatrixNorms.absNorm(Z) < 1e-9);
+        Z = N.deepClone(); // 5 x 10
+        X = GeneralMatrix.AtB(M, iL); // 5 x 10
+        LowerTriangularMatrix.solveXL(L, Z);
         Z.sub(X);
-        assertTrue(MatrixNorms.absNorm(Z)<1e-9);
-        Z=N.deepClone(); // 5 x 10
-        X=GeneralMatrix.AtBt(M, iL); // 5 x 10
-        LowerTriangularMatrix.solveXLt(L, Z); 
+        assertTrue(MatrixNorms.absNorm(Z) < 1e-9);
+        Z = N.deepClone(); // 5 x 10
+        X = GeneralMatrix.AtBt(M, iL); // 5 x 10
+        LowerTriangularMatrix.solveXLt(L, Z);
         Z.sub(X);
-        assertTrue(MatrixNorms.absNorm(Z)<1e-9);
+        assertTrue(MatrixNorms.absNorm(Z) < 1e-9);
     }
 
-   @Test
+    @Test
     public void testOperations2() {
         Matrix B = Matrix.make(5, 10);
         B.set((i, j) -> i * 2 + j * 3);

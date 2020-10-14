@@ -33,7 +33,7 @@ import jdplus.math.matrices.Matrix;
 
 /**
  * Will contain the following items at position t: a(t|t-1)
- * e(t)=y(t)-Z(t)a(t|t-1), f(t) C(t)=Z(t)P(t|t-1) [P(t|t-1)], optional
+ * e(t)=y(t)-Z(t)a(t|t-1), f(t) M(t)=Z(t)P(t|t-1) [P(t|t-1)], optional
  *
  * @author Jean Palate
  */
@@ -41,13 +41,13 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
 
     private final DataBlockResults A; // state vector
     private final MatrixResults P;  // P
-    private final DataBlockResults C; // C = P*Z'
-    private final DataResults e, f; // errors, variances copyOf the errors
+    private final DataBlockResults M; // M = P*Z'
+    private final DataResults e, f; // errors, variances of the errors
     private final ResultsRange range = new ResultsRange();
 
     protected DefaultFilteringResults(boolean cov) {
         A = new DataBlockResults();
-        C = new DataBlockResults();
+        M = new DataBlockResults();
         P = cov ? new MatrixResults() : null;
         e = new DataResults();
         f = new DataResults();
@@ -73,7 +73,7 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
         int dim = ssf.getStateDim();
 
         A.prepare(dim, start, end);
-        C.prepare(dim, start, end);
+        M.prepare(dim, start, end);
         e.prepare(start, end);
         f.prepare(start, end);
         if (P != null) {
@@ -85,7 +85,7 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
     public void save(int t, UpdateInformation pe) {
         e.save(t, pe.get());
         f.save(t, pe.getVariance());
-        C.save(t, pe.M());
+        M.save(t, pe.M());
     }
 
     @Override
@@ -142,7 +142,7 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
     }
 
     public DataBlock M(int pos) {
-        return C.datablock(pos);
+        return M.datablock(pos);
     }
 
     public Matrix P(int pos) {
@@ -154,7 +154,7 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
         e.clear();
         f.clear();
         A.clear();
-        C.clear();
+        M.clear();
         if (P != null) {
             P.clear();
         }

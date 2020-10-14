@@ -18,10 +18,7 @@ package jdplus.revisions.parametric;
 
 import demetra.data.DoubleSeq;
 import demetra.revisions.parametric.UnitRoot;
-import demetra.stats.ProbabilityType;
-import jdplus.dstats.T;
 import jdplus.stats.tests.DickeyFuller;
-import jdplus.stats.tests.DickeyFullerTable;
 
 /**
  *

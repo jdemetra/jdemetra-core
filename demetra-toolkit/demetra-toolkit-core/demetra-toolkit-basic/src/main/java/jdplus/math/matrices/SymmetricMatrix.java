@@ -525,5 +525,17 @@ public class SymmetricMatrix {
         SYRK.lapply(false, 1, X, 0, M);
         fromLower(M);
     }
+    
+//    /**
+//     * Apply permutations on the given symmetric matrix.
+//     * The permutation matrix is defined by P[i, j] = P[pvt[j], j]=1
+//     * (which means that PSPt[i, j] = S[pvt[i], pvt[j]])
+//     * @param X
+//     * @param pvt 
+//     */
+//    public void PSPt(final Matrix X, final int[] pvt){
+//        // not optimized !
+//        
+//    }
 
 }

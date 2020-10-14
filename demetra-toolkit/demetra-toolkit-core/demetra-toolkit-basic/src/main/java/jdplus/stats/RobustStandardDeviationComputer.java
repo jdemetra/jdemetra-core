@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.regarima.outlier;
+package jdplus.stats;
 
 import jdplus.dstats.Normal;
 import demetra.stats.ProbabilityType;

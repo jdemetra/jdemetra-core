@@ -24,6 +24,7 @@ import jdplus.ssf.univariate.ISsf;
 import demetra.data.DoubleSeqCursor;
 import jdplus.ssf.ISsfLoading;
 import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.QuadraticForm;
 
 /**
  *
@@ -37,15 +38,15 @@ public abstract class BaseDiffuseSmoother {
     protected final boolean calcvar, rescalevar;
     protected ISmoothingResults srslts;
 
-    protected double e, f, fi;
+    protected double e, f, fi, u, uVariance;
     protected DataBlock C, Ci, Rf, Ri, tmp0, tmp1, Z;
     protected Matrix N0, N1, N2;
     protected boolean missing, hasinfo;
-    
-    protected BaseDiffuseSmoother(ISsf ssf, boolean calcvar, boolean rescalevar){
-        this.ssf=ssf;
-        this.calcvar=calcvar;
-        this.rescalevar=rescalevar;
+
+    protected BaseDiffuseSmoother(ISsf ssf, boolean calcvar, boolean rescalevar) {
+        this.ssf = ssf;
+        this.calcvar = calcvar;
+        this.rescalevar = rescalevar;
         dynamics = ssf.dynamics();
         loading = ssf.loading();
     }
@@ -112,11 +113,16 @@ public abstract class BaseDiffuseSmoother {
         tvt(pos, N0);
         tvt(pos, N1);
         tvt(pos, N2);
+        u = Double.NaN;
+        uVariance = Double.NaN;
         // reinforceSymmetry();
     }
 
     private void iterateRegularN(int pos) {
         // N(t-1) = Z'(t)*Z(t)/f(t) + L'(t)*N(t)*L(t)
+        DataBlock k = C.deepClone();
+        dynamics.TX(pos, k);
+        uVariance = 1 / f + QuadraticForm.apply(N0, k);
         tvt(pos, N0);
         XQ(pos, N0.rowsIterator());
         XQ(pos, N0.columnsIterator());
@@ -127,6 +133,9 @@ public abstract class BaseDiffuseSmoother {
     }
 
     private void iterateDiffuseN(int pos) {
+//        DataBlock k = C.deepClone();
+//        dynamics.TX(pos, k);
+//        uVariance = 1 / f + QuadraticForm.apply(N0, k);
         // Nf = Li'*Nf*Li
         // N1 = Z'Z/Fi + Li'*N1*Li - < Z'Kf'*Nf'*Li >
         // N2 = Z'Z * c + Li'*N2*Li - < Z'Kf'*N1'*Li >, c= Kf'*Nf*Kf-Ff/(Fi*Fi)
@@ -149,15 +158,15 @@ public abstract class BaseDiffuseSmoother {
         xQi(pos, tmp0);
         xQi(pos, tmp1);
 
-        DataBlockIterator n1cols=N1.columnsIterator(), n2cols=N2.columnsIterator();
-        DoubleSeqCursor z=Z.cursor();
-        double h=kn0k - f / (fi * fi);
-        while (n1cols.hasNext()){
-            double zx=z.getAndNext();
-            if (zx != 0){
-                loading.XpZd(pos, n1cols.next(), zx/fi);
-                loading.XpZd(pos, n2cols.next(), zx*h);
-            }else{
+        DataBlockIterator n1cols = N1.columnsIterator(), n2cols = N2.columnsIterator();
+        DoubleSeqCursor z = Z.cursor();
+        double h = kn0k - f / (fi * fi);
+        while (n1cols.hasNext()) {
+            double zx = z.getAndNext();
+            if (zx != 0) {
+                loading.XpZd(pos, n1cols.next(), zx / fi);
+                loading.XpZd(pos, n2cols.next(), zx * h);
+            } else {
                 n1cols.next();
                 n2cols.next();
             }
@@ -184,7 +193,7 @@ public abstract class BaseDiffuseSmoother {
             if (cur != 0) {
                 loading.XpZd(pos, row, -cur);
             }
-        } 
+        }
     }
 
     /**
@@ -206,8 +215,10 @@ public abstract class BaseDiffuseSmoother {
         dynamics.XT(pos, Ri);
         if (!missing && f != 0) {
             // RT
-            double c = e / f - Rf.dot(C);
-            loading.XpZd(pos, Rf, c);
+            u = e / f - Rf.dot(C);
+            loading.XpZd(pos, Rf, u);
+        } else {
+            u = Double.NaN;
         }
     }
 
@@ -221,8 +232,8 @@ public abstract class BaseDiffuseSmoother {
             loading.XpZd(pos, Ri, ci);
             // Rf(t-1)=c*Z(t)+Rf(t)*T(t)
             // c =  - Rf(t)T(t)*Ci/fi
-            double cf = -Rf.dot(Ci);
-            loading.XpZd(pos, Rf, cf);
+            u = -Rf.dot(Ci);
+            loading.XpZd(pos, Rf, u);
         }
     }
 

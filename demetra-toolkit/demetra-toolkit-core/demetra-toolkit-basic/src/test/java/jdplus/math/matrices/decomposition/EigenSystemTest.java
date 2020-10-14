@@ -5,21 +5,19 @@
  */
 package jdplus.math.matrices.decomposition;
 
-import jdplus.math.matrices.decomposition.IEigenSystem;
-import jdplus.math.matrices.decomposition.EigenSystem;
-import demetra.data.DoubleSeq;
 import demetra.math.Complex;
-import jdplus.math.ComplexComputer;
-import ec.tstoolkit.maths.linearfilters.SymmetricFrequencyResponse2;
+import ec.tstoolkit.random.JdkRNG;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
-import jdplus.math.ComplexMath;
 import jdplus.math.ComplexUtility;
 import jdplus.math.linearfilters.SymmetricFilter;
-import jdplus.math.linearfilters.SymmetricFrequencyResponse;
 import jdplus.math.linearfilters.internal.SymmetricFilterAlgorithms;
+import static jdplus.math.matrices.GeneralMatrix.AB;
 import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixNorms;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.polynomials.Polynomial;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -29,6 +27,23 @@ import org.junit.Test;
 public class EigenSystemTest {
 
     public EigenSystemTest() {
+    }
+
+    @Test
+    public void testVectori() {
+        Matrix X = Matrix.make(20, 15);
+        JdkRNG rng = JdkRNG.newRandom(0);
+        X.set((i, j) -> rng.nextDouble());
+        Matrix S = SymmetricMatrix.XtX(X);
+        IEigenSystem eigen = EigenSystem.create(S, true);
+        eigen.setComputingEigenVectors(true);
+        eigen.compute();
+        double[] v = eigen.getEigenVector(0);
+        Matrix W = new Matrix(v, X.getColumnsCount(), 1);
+        Matrix AB = AB(S, W);
+        Complex v0 = eigen.getEigenValues()[0];
+        W.addAY(-1 / v0.getRe(), AB);
+        assertTrue(MatrixNorms.infinityNorm(W)<1e-9);
     }
 
     @Test

@@ -21,8 +21,7 @@ import jdplus.math.matrices.SymmetricMatrix;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public class Cholesky implements SymmetricMatrix.CholeskyProcessor{
-    
+public class Cholesky implements SymmetricMatrix.CholeskyProcessor {
 
     /**
      * Upper cholesky. The lower part of L is not referenced (neither used nor
@@ -34,7 +33,7 @@ public class Cholesky implements SymmetricMatrix.CholeskyProcessor{
     public void ucholesky(Matrix U) {
         ucholesky(U, 0);
     }
-    
+
     @Override
     public void ucholesky(Matrix U, double zero) {
         int n = U.getRowsCount();
@@ -100,7 +99,7 @@ public class Cholesky implements SymmetricMatrix.CholeskyProcessor{
     }
 
     /**
-     * Lower cholesky. L can be quasi-singualar The upper part of L is not
+     * Lower cholesky. L can be quasi-singular The upper part of L is not
      * referenced (neither used nor modified)
      *
      * @param L in/out matrix
@@ -167,8 +166,9 @@ public class Cholesky implements SymmetricMatrix.CholeskyProcessor{
                         }
                     }
                 }
+                double scale = 1 / aii;
                 for (int iy = idiag + 1; iy < cend; ++iy) {
-                    pl[iy] /= aii;
+                    pl[iy] *= scale;
                 }
             }
         }

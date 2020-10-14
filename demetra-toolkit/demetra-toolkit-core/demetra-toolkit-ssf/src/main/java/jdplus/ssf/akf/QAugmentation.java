@@ -31,14 +31,14 @@ import jdplus.math.matrices.Matrix;
  */
 public class QAugmentation {
 
-    // Q is the cholesky factor copyOf the usual "Q matrix" copyOf De Jong.
-    // Q(dj) = |S   -s|
+    // Q is related to the cholesky factor of the usual "Q matrix" of De Jong.
+    // Q(dj) = |S^-1   -s|
     //         |-s'  q|
     // Q = |a 0|
     //     |b c|
     // so that we have:
     // q = b * b' + c * c
-    // S = a * a' 
+    // S^-1 = a * a' 
     // -s = a * b'
     // s' * S^-1 * s = b * a' * S^-1 * a * b' = b * b'
     // q - s' * S^-1 * s = c * c

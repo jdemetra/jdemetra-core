@@ -25,8 +25,6 @@ import jdplus.ssf.univariate.IDisturbanceSmoothingResults;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.ISsfError;
-import jdplus.ssf.ISsfLoading;
-import jdplus.ssf.SsfException;
 
 /**
  * Fast smoother based on the disturbance smoother

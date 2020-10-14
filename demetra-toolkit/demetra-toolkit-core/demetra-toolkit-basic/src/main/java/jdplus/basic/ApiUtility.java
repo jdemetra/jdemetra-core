@@ -15,15 +15,15 @@ import jdplus.math.matrices.Matrix;
  */
 @lombok.experimental.UtilityClass
 public class ApiUtility {
-    public demetra.linearmodel.LinearModel toApi(LinearModel model){
-        return new demetra.linearmodel.LinearModel(model.getY().toArray(), model.isMeanCorrection(),model.getX().unmodifiable());
-    }
-    
-    public LinearModel fromApi(demetra.linearmodel.LinearModel model){
-        return LinearModel.builder()
-                .y(DoubleSeq.of(model.getY()))
-                .meanCorrection(model.isMeanCorrection())
-                .addX(Matrix.of(model.getX()))
-                .build();
-    }
+//    public demetra.linearmodel.LinearModel toApi(LinearModel model){
+//        return new demetra.linearmodel.LinearModel(model.getY().toArray(), model.isMeanCorrection(),model.getX().unmodifiable());
+//    }
+//    
+//    public LinearModel fromApi(demetra.linearmodel.LinearModel model){
+//        return LinearModel.builder()
+//                .y(DoubleSeq.of(model.getY()))
+//                .meanCorrection(model.isMeanCorrection())
+//                .addX(Matrix.of(model.getX()))
+//                .build();
+//    }
 }

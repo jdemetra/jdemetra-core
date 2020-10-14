@@ -732,11 +732,7 @@ class SymmetricEigenSystem implements IEigenSystem {
         }
         calc();
 
-        int n = m_eivec.getRowsCount();
-        double[] dout = new double[n];
-        double[] data = EigenSystem.convertToArray(m_eivec);
-        System.arraycopy(data, idx * n, dout, 0, n);
-        return dout;
+        return m_eivec.column(idx).toArray();
     }
 
     @Override

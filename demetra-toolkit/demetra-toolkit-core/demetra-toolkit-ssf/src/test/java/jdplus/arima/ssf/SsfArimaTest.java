@@ -16,7 +16,6 @@
  */
 package jdplus.arima.ssf;
 
-import jdplus.arima.ssf.SsfArima;
 import demetra.data.Data;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;

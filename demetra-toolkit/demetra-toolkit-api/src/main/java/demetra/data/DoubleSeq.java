@@ -549,6 +549,13 @@ public interface DoubleSeq extends BaseSeq {
         }
     }
 
+    default DoubleSeq select(IntList selection) {
+        if (selection == null)
+            return this;
+        final int[] sel=selection.toArray();
+        return Doubles.of(sel.length, i->get(sel[i]));
+    }
+
     default DoubleSeq op(DoubleSeq b, DoubleBinaryOperator op) {
         double[] safeArray = toArray();
         DoubleSeqCursor cursor = b.cursor();
@@ -882,22 +889,25 @@ public interface DoubleSeq extends BaseSeq {
     static DoubleSeq onMapping(@NonNegative int length, @NonNull IntToDoubleFunction getter) {
         return new InternalDoubleSeq.MappingDoubleSeq(length, getter);
     }
-    
+
     @NonNull
-    static DoubleSeq pooled(@NonNull DoubleSeq[] seqs){
+    static DoubleSeq pooled(@NonNull DoubleSeq[] seqs) {
         // TODO improve the current solution (without necessarly copying the data)
-        if (seqs.length == 0)
+        if (seqs.length == 0) {
             return Doubles.EMPTY;
-        if (seqs.length == 1)
+        }
+        if (seqs.length == 1) {
             return seqs[0];
-        int csize=0;
-        for (int i=0; i<seqs.length; ++i)
-            csize+=seqs[i].length();
-        double[] all =new double[csize];
-        int pos=0;
-        for (int i=0; i<seqs.length; ++i){
+        }
+        int csize = 0;
+        for (int i = 0; i < seqs.length; ++i) {
+            csize += seqs[i].length();
+        }
+        double[] all = new double[csize];
+        int pos = 0;
+        for (int i = 0; i < seqs.length; ++i) {
             seqs[i].copyTo(all, pos);
-            pos+=seqs[i].length();
+            pos += seqs[i].length();
         }
         return DoubleSeq.of(all);
     }

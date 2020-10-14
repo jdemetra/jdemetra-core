@@ -144,6 +144,10 @@ public class ExactOutliersDetector implements GenericOutliersDetection<SarimaMod
     public int[][] getOutliers() {
         return outliers.toArray(new int[outliers.size()][]);
     }
+    
+    public RegArimaModel<SarimaModel> getRegArima(){
+        return regarima;
+    }
 
     public IOutlierFactory getFactory(int i) {
         return sod.getOutlierFactory(i);

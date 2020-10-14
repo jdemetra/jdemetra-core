@@ -41,8 +41,6 @@ import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import jdplus.arima.estimation.IArimaMapping;
@@ -160,7 +158,7 @@ public class FastOutliersDetector implements GenericOutliersDetection<SarimaMode
     }
 
     /**
-     * @return the outliers_
+     * @return the outliers (position/type) entries
      */
     @Override
     public int[][] getOutliers() {
@@ -178,6 +176,10 @@ public class FastOutliersDetector implements GenericOutliersDetection<SarimaMode
             types[i] = factories[i].getCode();
         }
         return types;
+    }
+    
+    public RegArimaModel<SarimaModel> getRegArima(){
+        return regarima;
     }
 
     @Override
