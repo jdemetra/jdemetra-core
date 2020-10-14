@@ -16,16 +16,24 @@
  */
 package demetra.timeseries;
 
-import demetra.data.Range;
+import demetra.time.ISO8601;
+import demetra.time.TemporalIntervalRepresentation;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalAmount;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.Value(staticConstructor = "of")
-public class CalendarPeriod implements Range<LocalDateTime>, Comparable<CalendarPeriod> {
+public class CalendarPeriod implements TimeSeriesPeriod, Comparable<CalendarPeriod> {
+
+    private static final TemporalIntervalRepresentation.StartEnd<LocalDateTime> REPRESENTATION
+            = new TemporalIntervalRepresentation.StartEnd(ISO8601.Converter.LOCAL_DATE_TIME);
 
     @lombok.NonNull
     LocalDate start, end;
@@ -42,17 +50,35 @@ public class CalendarPeriod implements Range<LocalDateTime>, Comparable<Calendar
 
     @Override
     public boolean contains(LocalDateTime element) {
-        return element.isBefore(end.atStartOfDay()) && (! element.isBefore(start.atStartOfDay()));
+        return element.isBefore(end.atStartOfDay()) && (!element.isBefore(start.atStartOfDay()));
+    }
+
+    @Override
+    public TemporalAmount getDuration() {
+        return Period.between(start, end);
+    }
+
+    @Override
+    public TemporalIntervalRepresentation getRepresentation() {
+        return REPRESENTATION;
     }
 
     @Override
     public int compareTo(CalendarPeriod t) {
-        if (start.equals(t.start) && end.isAfter(t.end))
+        if (start.equals(t.start) && end.isAfter(t.end)) {
             return 0;
-        if (! end.isAfter(t.start))
+        }
+        if (!end.isAfter(t.start)) {
             return -1;
-        if (! t.end.isAfter(start))
+        }
+        if (!t.end.isAfter(start)) {
             return 1;
+        }
         throw new TsException(TsException.INCOMPATIBLE_PERIOD);
+    }
+
+    @NonNull
+    public static CalendarPeriod parse(@NonNull CharSequence text) throws DateTimeParseException {
+        return REPRESENTATION.parse(text, (start, end) -> CalendarPeriod.of(start.toLocalDate(), end.toLocalDate()));
     }
 }

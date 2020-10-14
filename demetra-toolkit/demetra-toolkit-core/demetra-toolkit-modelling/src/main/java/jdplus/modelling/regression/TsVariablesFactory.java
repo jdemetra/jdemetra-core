@@ -16,15 +16,14 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.data.Range;
 import demetra.design.Development;
 import demetra.timeseries.regression.TsVariables;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import java.time.LocalDateTime;
 import jdplus.math.matrices.Matrix;
+import demetra.timeseries.TimeSeriesPeriod;
 
 /**
  *
@@ -68,7 +67,7 @@ class TsVariablesFactory implements RegressionVariableFactory<TsVariables> {
     }
 
     @Override
-    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>>  boolean fill(TsVariables var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesPeriod, D extends TimeSeriesDomain<P>>  boolean fill(TsVariables var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

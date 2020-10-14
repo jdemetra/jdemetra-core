@@ -5,19 +5,18 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.data.Range;
 import demetra.timeseries.regression.MovingHolidayVariable;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.Matrix;
+import demetra.timeseries.TimeSeriesPeriod;
 
 /**
  *
@@ -113,7 +112,7 @@ public class MovingHolidayFactory implements RegressionVariableFactory<MovingHol
     }
 
     @Override
-    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>> boolean fill(MovingHolidayVariable var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesPeriod, D extends TimeSeriesDomain<P>> boolean fill(MovingHolidayVariable var, D domain, Matrix buffer) {
 //        MovingHolidayProvider provider=find(var.getEvent());
 //        if (provider == null)
 //            return false;

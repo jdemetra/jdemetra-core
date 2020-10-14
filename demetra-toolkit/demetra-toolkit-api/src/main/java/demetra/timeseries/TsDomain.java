@@ -25,7 +25,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Philippe Charles
  */
 @lombok.Value(staticConstructor = "of")
-public class TsDomain implements TimeSeriesDomain<TsPeriod> {
+public class TsDomain implements TimeSeriesRecurringDomain<TsPeriod> {
 
     /**
      * Generates a domain which is a splitting of a given period in sub-periods
@@ -60,6 +60,11 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
     @Override
     public int length() {
         return getLength();
+    }
+
+    @Override
+    public TsPeriod getInterval() {
+        return startPeriod;
     }
 
     @Override
@@ -168,7 +173,7 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
         int len = length() + nstart + nend;
         return new TsDomain(startPeriod.plus(-nstart), len < 0 ? 0 : len);
     }
-    
+
     public TsDomain intersection(TsDomain other) {
         startPeriod.checkCompatibility(other.startPeriod);
 
@@ -268,17 +273,16 @@ public class TsDomain implements TimeSeriesDomain<TsPeriod> {
         int head = position - spos;
         if (head < 0) {
             head += ratio;
-            nstart=nstart.next();
+            nstart = nstart.next();
         }
         int nlength = 1 + (oldLength - head - 1) / ratio;
         return TsDomain.of(nstart, nlength);
     }
 
     /**
-     * The new domain will only contain complete periods.
-     * For instance, if the selector is from 2/1/1980 to 25/5/2000,
-     * the selector applied to a yearly domain from 1978 to 2010 will
-     * generate a yearly domain from 1981 to 1999
+     * The new domain will only contain complete periods. For instance, if the
+     * selector is from 2/1/1980 to 25/5/2000, the selector applied to a yearly
+     * domain from 1978 to 2010 will generate a yearly domain from 1981 to 1999
      *
      * @param ps
      * @return

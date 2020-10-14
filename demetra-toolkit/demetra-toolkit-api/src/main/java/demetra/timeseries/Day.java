@@ -16,16 +16,24 @@
  */
 package demetra.timeseries;
 
-import demetra.data.Range;
+import demetra.time.ISO8601;
+import demetra.time.TemporalIntervalRepresentation;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalAmount;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.Value(staticConstructor = "of")
-public class Day implements Range<LocalDateTime> {
+public class Day implements TimeSeriesPeriod {
+
+    private static final TemporalIntervalRepresentation.StartDuration<LocalDateTime, Period> REPRESENTATION
+            = new TemporalIntervalRepresentation.StartDuration(ISO8601.Converter.LOCAL_DATE_TIME, ISO8601.Converter.PERIOD);
 
     @lombok.NonNull
     LocalDate day;
@@ -43,5 +51,20 @@ public class Day implements Range<LocalDateTime> {
     @Override
     public boolean contains(LocalDateTime element) {
         return element.toLocalDate().equals(day);
+    }
+
+    @Override
+    public TemporalAmount getDuration() {
+        return Period.ofDays(1);
+    }
+
+    @Override
+    public TemporalIntervalRepresentation getRepresentation() {
+        return REPRESENTATION;
+    }
+
+    @NonNull
+    public static Day parse(@NonNull CharSequence text) throws DateTimeParseException {
+        return REPRESENTATION.parse(text, (start, duration) -> Day.of(start.toLocalDate()));
     }
 }

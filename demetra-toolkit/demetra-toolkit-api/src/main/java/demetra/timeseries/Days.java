@@ -54,13 +54,13 @@ public class Days implements TimeSeriesDomain<Day> {
 
     @Override
     public boolean contains(LocalDateTime date) {
-        LocalDate day=date.toLocalDate();
+        LocalDate day = date.toLocalDate();
         return Arrays.binarySearch(days, day) >= 0;
     }
 
     @Override
     public int indexOf(LocalDateTime date) {
-        LocalDate day=date.toLocalDate();
+        LocalDate day = date.toLocalDate();
         return Arrays.binarySearch(days, day);
     }
 

@@ -258,6 +258,15 @@ public class TsDomainTest {
                 LocalDate.of(2000, Month.DECEMBER, 31).atStartOfDay()));
         assertThat(sel.length() == 19);
     }
-    
+
+    @Test
+    public void testToISOString() {
+        assertThat(of(TsPeriod.monthly(2011, 2), 30).toISO8601())
+                .isEqualTo("R30/2011-02-01T00:00/P1M");
+
+        assertThat(of(TsPeriod.quarterly(2011, 2), 10).toISO8601())
+                .isEqualTo("R10/2011-04-01T00:00/P3M");
+    }
+
     private final TsPeriod feb2010 = TsPeriod.monthly(2010, 2);
 }

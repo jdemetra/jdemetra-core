@@ -5,7 +5,6 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.data.Range;
 import demetra.timeseries.regression.SwitchOutlier;
 import jdplus.data.DataBlock;
 import jdplus.math.linearfilters.BackFilter;
@@ -14,6 +13,7 @@ import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import jdplus.math.matrices.Matrix;
+import demetra.timeseries.TimeSeriesPeriod;
 
 /**
  *
@@ -75,7 +75,7 @@ class WOFactory implements RegressionVariableFactory<SwitchOutlier> {
     }
 
     @Override
-    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>>  boolean fill(SwitchOutlier var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesPeriod, D extends TimeSeriesDomain<P>>  boolean fill(SwitchOutlier var, D domain, Matrix buffer) {
         set(buffer.column(0), (int) domain.indexOf(var.getPosition()));
         return true;
     }

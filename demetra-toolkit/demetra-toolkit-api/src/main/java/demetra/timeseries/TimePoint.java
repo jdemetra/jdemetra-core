@@ -16,15 +16,23 @@
  */
 package demetra.timeseries;
 
-import demetra.data.Range;
+import demetra.time.ISO8601;
+import demetra.time.TemporalIntervalRepresentation;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalAmount;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.Value(staticConstructor = "of")
-public class TimePoint implements Range<LocalDateTime> {
+public class TimePoint implements TimeSeriesPeriod {
+
+    private static final TemporalIntervalRepresentation.StartEnd<LocalDateTime> REPRESENTATION
+            = new TemporalIntervalRepresentation.StartEnd(ISO8601.Converter.LOCAL_DATE_TIME);
 
     @lombok.NonNull
     LocalDateTime point;
@@ -42,5 +50,20 @@ public class TimePoint implements Range<LocalDateTime> {
     @Override
     public boolean contains(LocalDateTime element) {
         return point.equals(element);
+    }
+
+    @Override
+    public TemporalAmount getDuration() {
+        return Duration.ZERO;
+    }
+
+    @Override
+    public TemporalIntervalRepresentation getRepresentation() {
+        return REPRESENTATION;
+    }
+
+    @NonNull
+    public static TimePoint parse(@NonNull CharSequence text) throws DateTimeParseException {
+        return REPRESENTATION.parse(text, (start, end) -> TimePoint.of(start));
     }
 }

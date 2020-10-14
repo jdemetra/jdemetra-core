@@ -25,7 +25,7 @@ import demetra.data.Seq;
  * @author Philippe Charles
  * @param <P>
  */
-public interface TimeSeriesDomain<P extends Range<LocalDateTime>> extends Range<LocalDateTime>, Seq<P> {
+public interface TimeSeriesDomain<P extends TimeSeriesPeriod> extends Range<LocalDateTime>, Seq<P> {
 
     /**
      *

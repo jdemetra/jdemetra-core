@@ -16,8 +16,6 @@
  */
 package demetra.timeseries;
 
-import demetra.data.Range;
-import java.time.LocalDateTime;
 import java.util.function.ObjDoubleConsumer;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -30,7 +28,7 @@ import demetra.data.Seq;
  * @param <P> period type
  * @param <O> observation type
  */
-public interface TimeSeriesData<P extends Range<LocalDateTime>, O extends TimeSeriesObs<P>> extends Seq<O> {
+public interface TimeSeriesData<P extends TimeSeriesPeriod, O extends TimeSeriesObs<P>> extends Seq<O> {
 
     /**
      * Retrieves the time domain of this time series

@@ -16,15 +16,23 @@
  */
 package demetra.timeseries;
 
-import demetra.data.Range;
+import demetra.time.ISO8601;
+import demetra.time.TemporalIntervalRepresentation;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalAmount;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.Value(staticConstructor = "of")
-public class TimePeriod implements Range<LocalDateTime>, Comparable<TimePeriod> {
+public class TimePeriod implements TimeSeriesPeriod, Comparable<TimePeriod> {
+
+    private static final TemporalIntervalRepresentation.StartEnd<LocalDateTime> REPRESENTATION
+            = new TemporalIntervalRepresentation.StartEnd(ISO8601.Converter.LOCAL_DATE_TIME);
 
     @lombok.NonNull
     LocalDateTime start, end;
@@ -41,17 +49,35 @@ public class TimePeriod implements Range<LocalDateTime>, Comparable<TimePeriod> 
 
     @Override
     public boolean contains(LocalDateTime element) {
-        return element.isBefore(end) && (! element.isBefore(start));
+        return element.isBefore(end) && (!element.isBefore(start));
+    }
+
+    @Override
+    public TemporalAmount getDuration() {
+        return Duration.between(start, end);
+    }
+
+    @Override
+    public TemporalIntervalRepresentation getRepresentation() {
+        return REPRESENTATION;
     }
 
     @Override
     public int compareTo(TimePeriod t) {
-        if (start.equals(t.start) && end.isAfter(t.end))
+        if (start.equals(t.start) && end.isAfter(t.end)) {
             return 0;
-        if (! end.isAfter(t.start))
+        }
+        if (!end.isAfter(t.start)) {
             return -1;
-        if (! t.end.isAfter(start))
+        }
+        if (!t.end.isAfter(start)) {
             return 1;
+        }
         throw new TsException(TsException.INCOMPATIBLE_PERIOD);
+    }
+
+    @NonNull
+    public static TimePeriod parse(@NonNull CharSequence text) throws DateTimeParseException {
+        return REPRESENTATION.parse(text, (start, end) -> TimePeriod.of(start, end));
     }
 }

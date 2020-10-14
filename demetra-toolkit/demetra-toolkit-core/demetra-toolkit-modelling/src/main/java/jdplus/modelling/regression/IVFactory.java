@@ -5,12 +5,11 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.data.Range;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
-import java.time.LocalDateTime;
 import jdplus.math.matrices.Matrix;
+import demetra.timeseries.TimeSeriesPeriod;
 
 /**
  *
@@ -28,7 +27,7 @@ class IVFactory implements RegressionVariableFactory<InterventionVariable>{
     }
 
     @Override
-    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>>  boolean fill(InterventionVariable var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesPeriod, D extends TimeSeriesDomain<P>>  boolean fill(InterventionVariable var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

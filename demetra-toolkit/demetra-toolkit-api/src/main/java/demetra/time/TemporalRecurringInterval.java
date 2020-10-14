@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,19 +14,29 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries;
+package demetra.time;
 
+import demetra.data.Seq;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
+ * Framework-level interface defining repeating intervals formed by a number of
+ * repetitions and a time interval.
+ *
+ * @param <I>
+ * @see
+ * <a href="https://en.wikipedia.org/wiki/ISO_8601#Repeating_intervals">Repeating
+ * intervals in ISO_8601</a>
  *
  * @author Philippe Charles
- * @param <P> period type
  */
-public interface TimeSeriesObs<P extends TimeSeriesPeriod> {
+public interface TemporalRecurringInterval<I extends TemporalInterval<?, ?>> extends Seq<I>, ISO8601.Representable {
 
     @NonNull
-    P getPeriod();
+    I getInterval();
 
-    double getValue();
+    @Override
+    default String toISO8601() {
+        return "R" + length() + "/" + getInterval().toISO8601();
+    }
 }

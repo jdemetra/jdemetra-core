@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -16,17 +16,24 @@
  */
 package demetra.timeseries;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import java.time.LocalDate;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
 
 /**
  *
  * @author Philippe Charles
- * @param <P> period type
  */
-public interface TimeSeriesObs<P extends TimeSeriesPeriod> {
+public class CalendarPeriodTest {
+    
+    @Test
+    public void testISO() {
+        CalendarPeriod x = CalendarPeriod.of(LocalDate.of(2010, 2, 17), LocalDate.of(2010, 3, 17));
 
-    @NonNull
-    P getPeriod();
-
-    double getValue();
+        assertThat(x.toISO8601())
+                .isEqualTo("2010-02-17T00:00/2010-03-17T00:00");
+        
+        assertThat(CalendarPeriod.parse(x.toISO8601()))
+                .isEqualTo(x);
+    }
 }

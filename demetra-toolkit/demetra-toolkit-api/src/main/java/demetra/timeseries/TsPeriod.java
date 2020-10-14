@@ -16,13 +16,14 @@
  */
 package demetra.timeseries;
 
-import demetra.data.Range;
-import java.time.DayOfWeek;
+import demetra.time.TemporalIntervalRepresentation;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.time.ISO8601;
 
 /**
  *
@@ -30,7 +31,10 @@ import java.time.temporal.ChronoUnit;
  */
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder", toBuilder = true)
-public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
+public class TsPeriod implements TimeSeriesPeriod, Comparable<TsPeriod> {
+
+    private static final TemporalIntervalRepresentation.StartDuration<LocalDateTime, TsUnit> REPRESENTATION
+            = new TemporalIntervalRepresentation.StartDuration(ISO8601.Converter.LOCAL_DATE_TIME, TsUnit.CONVERTER);
 
     @lombok.NonNull
     LocalDateTime epoch;
@@ -53,6 +57,16 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
     @Override
     public boolean contains(LocalDateTime date) {
         return idAt(epoch, unit, date) == id;
+    }
+
+    @Override
+    public TemporalAmount getDuration() {
+        return unit;
+    }
+
+    @Override
+    public TemporalIntervalRepresentation getRepresentation() {
+        return REPRESENTATION;
     }
 
     @Override
@@ -104,7 +118,7 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         }
         return new TsPeriod(epoch, unit, id + count);
     }
-    
+
     public TsPeriod withEpoch(LocalDateTime epoch) {
         if (epoch.equals(this.epoch)) {
             return this;
@@ -153,11 +167,7 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
 //
     @Override
     public String toString() {
-        return toString(epoch, unit, id);
-    }
-
-    public String toShortString() {
-        return toShortString(epoch, unit, id);
+        return toISO8601();
     }
 
     public long idAt(LocalDateTime date) {
@@ -208,9 +218,10 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
 
     /**
      * Creates a quarterly period
+     *
      * @param year Year of the period
      * @param quarter Quarter of the period (in 1-4)
-     * @return 
+     * @return
      */
     public static TsPeriod quarterly(int year, int quarter) {
         return make(DEFAULT_EPOCH, TsUnit.QUARTER, LocalDate.of(year, ((quarter - 1) * 3) + 1, 1));
@@ -218,9 +229,10 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
 
     /**
      * Creates a monthly period
+     *
      * @param year Year of the period
      * @param month Month of the period (in 1-12)
-     * @return 
+     * @return
      */
     public static TsPeriod monthly(int year, int month) {
         return make(DEFAULT_EPOCH, TsUnit.MONTH, LocalDate.of(year, month, 1));
@@ -228,10 +240,11 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
 
     /**
      * Creates a period of one day
+     *
      * @param year Year of the day
      * @param month Month of the day (in 1-12)
      * @param dayOfMonth Day of month of the day (1-31)
-     * @return 
+     * @return
      */
     public static TsPeriod daily(int year, int month, int dayOfMonth) {
         return make(DEFAULT_EPOCH, TsUnit.DAY, LocalDate.of(year, month, dayOfMonth));
@@ -239,16 +252,17 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
 
     /**
      * Creates a period of seven days
+     *
      * @param year Year of the first day
      * @param month Month of the first day (in 1-12)
      * @param dayOfMonth Day of month of the first day (1-31)
-     * @return 
+     * @return
      */
     public static TsPeriod weekly(int year, int month, int dayOfMonth) {
         LocalDate start = LocalDate.of(year, month, dayOfMonth);
         int dw_start = start.getDayOfWeek().getValue();
         int dw_epoch = DEFAULT_EPOCH.getDayOfWeek().getValue();
-        return make(DEFAULT_EPOCH.plusDays(dw_start-dw_epoch), TsUnit.WEEK, start);
+        return make(DEFAULT_EPOCH.plusDays(dw_start - dw_epoch), TsUnit.WEEK, start);
     }
 
     public static TsPeriod hourly(int year, int month, int dayOfMonth, int hour) {
@@ -259,37 +273,9 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         return make(DEFAULT_EPOCH, TsUnit.MINUTE, LocalDateTime.of(year, month, dayOfMonth, hour, minute));
     }
 
-    public static TsPeriod parse(CharSequence text) throws DateTimeParseException {
-        String value = text.toString();
-
-        int idIdx = value.indexOf('#');
-        if (idIdx == -1) {
-            throw new DateTimeParseException("Text cannot be parsed to a period", text, 0);
-        }
-
-        TsUnit unit = TsUnit.parse(value.substring(0, idIdx));
-
-        int offsetIdx = value.indexOf('@', idIdx);
-        if (offsetIdx == -1) {
-            long id = parseId(value.substring(idIdx + 1));
-            return new TsPeriod(DEFAULT_EPOCH, unit, id);
-        }
-
-        long id = parseId(value.substring(idIdx + 1, offsetIdx));
-        LocalDateTime epoch = parseEpoch(value.substring(offsetIdx + 1));
-        return new TsPeriod(epoch, unit, id);
-    }
-
-    private static long parseId(String o) {
-        try {
-            return Long.parseLong(o);
-        } catch (NumberFormatException ex) {
-            throw new DateTimeParseException("Text cannot be parsed to an id", o, 0, ex);
-        }
-    }
-
-    private static LocalDateTime parseEpoch(String o) {
-        return LocalDateTime.parse(o);
+    @NonNull
+    public static TsPeriod parse(@NonNull CharSequence text) throws DateTimeParseException {
+        return REPRESENTATION.parse(text, (start, duration) -> TsPeriod.of(duration, start));
     }
 
     private static TsPeriod make(LocalDateTime epoch, TsUnit unit, LocalDate date) {
@@ -324,20 +310,6 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
 //        return (int) (id0 - id2);
 //    }
 //
-    private static String toString(LocalDateTime epoch, TsUnit unit, long id) {
-        return DEFAULT_EPOCH == epoch
-                ? String.format("TsPeriod(unit=%s, start=%s)", unit, dateAt(epoch, unit, id))
-                : String.format("TsPeriod(epoch=%s, unit=%s, start=%s)", epoch, unit, dateAt(epoch, unit, id));
-    }
-
-    private static String toShortString(LocalDateTime epoch, TsUnit unit, long id) {
-        if (DEFAULT_EPOCH.equals(epoch)) {
-            return String.format("%s#%s", unit, id);
-        }
-        String sref = epoch.format(DateTimeFormatter.ISO_DATE);
-        return String.format("%s#%s@%s", unit, id, sref);
-    }
-
     public String display() {
         if (unit.getChronoUnit().getDuration().compareTo(ChronoUnit.DAYS.getDuration()) >= 0) {
             return start().toLocalDate().toString();
@@ -346,7 +318,7 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         }
     }
 
-    public static final class Builder implements Range<LocalDateTime> {
+    public static final class Builder implements TimeSeriesPeriod {
 
         private LocalDateTime epoch = DEFAULT_EPOCH;
         private TsUnit unit = TsUnit.MONTH;
@@ -395,17 +367,23 @@ public class TsPeriod implements Range<LocalDateTime>, Comparable<TsPeriod> {
         }
 
         @Override
+        public TemporalAmount getDuration() {
+            return unit;
+        }
+
+        @Override
+        public TemporalIntervalRepresentation getRepresentation() {
+            return REPRESENTATION;
+        }
+
+        @Override
         public boolean contains(LocalDateTime date) {
             return TsPeriod.idAt(epoch, unit, date) == id;
         }
 
         @Override
         public String toString() {
-            return TsPeriod.toString(epoch, unit, id);
-        }
-
-        public String toShortString() {
-            return TsPeriod.toShortString(epoch, unit, id);
+            return toISO8601();
         }
     }
 }
