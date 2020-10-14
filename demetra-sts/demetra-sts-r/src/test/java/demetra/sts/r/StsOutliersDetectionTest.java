@@ -30,13 +30,13 @@ public class StsOutliersDetectionTest {
         Random rnd=new Random();
         X.set((i,j)->rnd.nextDouble());
         StsOutliersDetection.Results rslt = StsOutliersDetection.process(y.log(), 1, 1, 1, "HarrisonStevens", X, true, true, true, 0, 0, "Score", "Point");
-        System.out.println(rslt.getComponents());
-        System.out.println("");
-        System.out.println(rslt.getInitialTau());
-        System.out.println("");
-        System.out.println(rslt.getRegressors());
-        System.out.println("");
-        System.out.println(rslt.getLinearized());
+//        System.out.println(rslt.getComponents());
+//        System.out.println("");
+//        System.out.println(rslt.getInitialTau());
+//        System.out.println("");
+//        System.out.println(rslt.getRegressors());
+//        System.out.println("");
+//        System.out.println(rslt.getLinearized());
     }
 
     double[] sugar = new double[]{34.8, 21, 32.2, 22.4, 18.2, 15.9, 13.3, 16.7, 19, 91.5, 246.5, 258.3, 126.5, 19.7, 24.8, 16.7, 12.2, 14.3, 10.9, 14.9, 17.6, 211.7, 358.3, 201,
@@ -53,9 +53,9 @@ public class StsOutliersDetectionTest {
 
     @Test
     public void testSeasonalBreaks() {
-        TsData y = TsData.ofInternal(TsPeriod.monthly(1967, 1), sugar);
-        double[] rslt = StsOutliersDetection.seasonalBreaks(y.log(), 1, 1, 1, "HarrisonStevens", null);
-        System.out.println(DoubleSeq.of(rslt));
+        TsData y = TsData.ofInternal(TsPeriod.monthly(1974, 1), sugar);
+        double[] rslt = StsOutliersDetection.seasonalBreaks(y, 1, 1, 1, "HarrisonStevens", null);
+ //       System.out.println(DoubleSeq.of(rslt));
     }
 
 }
