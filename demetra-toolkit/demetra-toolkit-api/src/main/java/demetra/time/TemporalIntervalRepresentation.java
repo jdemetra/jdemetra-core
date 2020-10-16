@@ -16,6 +16,7 @@
  */
 package demetra.time;
 
+import demetra.design.SealedType;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
@@ -27,6 +28,11 @@ import java.util.function.BiFunction;
  *
  * @author Philippe Charles
  */
+@SealedType({
+    TemporalIntervalRepresentation.StartEnd.class,
+    TemporalIntervalRepresentation.StartDuration.class,
+    TemporalIntervalRepresentation.DurationEnd.class
+})
 public abstract class TemporalIntervalRepresentation<T extends Temporal & Comparable<? super T>, D extends TemporalAmount> {
 
     protected TemporalIntervalRepresentation() {
