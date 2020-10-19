@@ -12,7 +12,7 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import jdplus.math.matrices.Matrix;
-import demetra.timeseries.TimeSeriesPeriod;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  *
@@ -31,7 +31,7 @@ class RampFactory implements RegressionVariableFactory<Ramp> {
     }
 
     @Override
-    public <P extends TimeSeriesPeriod, D extends TimeSeriesDomain<P>>  boolean fill(Ramp var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(Ramp var, D domain, Matrix buffer) {
         data(var, domain, buffer.column(0));
         return true;
     }

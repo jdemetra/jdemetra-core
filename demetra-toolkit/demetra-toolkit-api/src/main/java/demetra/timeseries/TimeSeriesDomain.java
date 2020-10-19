@@ -22,10 +22,11 @@ import demetra.data.Seq;
 
 /**
  *
- * @author Philippe Charles
  * @param <P>
+ *
+ * @author Philippe Charles
  */
-public interface TimeSeriesDomain<P extends TimeSeriesPeriod> extends Range<LocalDateTime>, Seq<P> {
+public interface TimeSeriesDomain<P extends TimeSeriesInterval<?>> extends Range<LocalDateTime>, Seq<P> {
 
     /**
      *

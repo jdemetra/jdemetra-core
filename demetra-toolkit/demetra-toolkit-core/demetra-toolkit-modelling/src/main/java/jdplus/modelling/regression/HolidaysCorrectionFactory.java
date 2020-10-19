@@ -23,7 +23,7 @@ import demetra.timeseries.calendars.CalendarDefinition;
 import jdplus.math.matrices.MatrixFactory;
 import jdplus.math.matrices.Matrix;
 import jdplus.timeseries.calendars.HolidaysUtility;
-import demetra.timeseries.TimeSeriesPeriod;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  *
@@ -160,7 +160,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
     }
 
     @Override
-    public <P extends TimeSeriesPeriod, D extends TimeSeriesDomain<P>>  boolean fill(HolidaysCorrectedTradingDays var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(HolidaysCorrectedTradingDays var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

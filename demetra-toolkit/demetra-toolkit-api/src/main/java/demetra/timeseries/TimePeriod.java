@@ -21,7 +21,6 @@ import demetra.time.TemporalIntervalRepresentation;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.TemporalAmount;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -29,10 +28,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Jean Palate
  */
 @lombok.Value(staticConstructor = "of")
-public class TimePeriod implements TimeSeriesPeriod, Comparable<TimePeriod> {
-
-    private static final TemporalIntervalRepresentation.StartEnd<LocalDateTime> REPRESENTATION
-            = new TemporalIntervalRepresentation.StartEnd(ISO8601.Converter.LOCAL_DATE_TIME);
+public class TimePeriod implements TimeSeriesInterval<Duration>, Comparable<TimePeriod> {
 
     @lombok.NonNull
     LocalDateTime start, end;
@@ -53,13 +49,8 @@ public class TimePeriod implements TimeSeriesPeriod, Comparable<TimePeriod> {
     }
 
     @Override
-    public TemporalAmount getDuration() {
+    public Duration getDuration() {
         return Duration.between(start, end);
-    }
-
-    @Override
-    public TemporalIntervalRepresentation getRepresentation() {
-        return REPRESENTATION;
     }
 
     @Override
@@ -76,8 +67,21 @@ public class TimePeriod implements TimeSeriesPeriod, Comparable<TimePeriod> {
         throw new TsException(TsException.INCOMPATIBLE_PERIOD);
     }
 
+    @Override
+    public String toString() {
+        return toISO8601();
+    }
+
+    @Override
+    public String toISO8601() {
+        return REPRESENTATION.format(this);
+    }
+
     @NonNull
     public static TimePeriod parse(@NonNull CharSequence text) throws DateTimeParseException {
         return REPRESENTATION.parse(text, (start, end) -> TimePeriod.of(start, end));
     }
+
+    private static final TemporalIntervalRepresentation.StartEnd<LocalDateTime, Duration> REPRESENTATION
+            = new TemporalIntervalRepresentation.StartEnd(ISO8601.Converter.LOCAL_DATE_TIME);
 }

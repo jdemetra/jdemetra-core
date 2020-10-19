@@ -21,6 +21,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * @param <T>
@@ -31,7 +32,8 @@ import java.util.function.BiFunction;
 @SealedType({
     TemporalIntervalRepresentation.StartEnd.class,
     TemporalIntervalRepresentation.StartDuration.class,
-    TemporalIntervalRepresentation.DurationEnd.class
+    TemporalIntervalRepresentation.DurationEnd.class,
+    TemporalIntervalRepresentation.Duration.class
 })
 public abstract class TemporalIntervalRepresentation<T extends Temporal & Comparable<? super T>, D extends TemporalAmount> {
 
@@ -41,21 +43,29 @@ public abstract class TemporalIntervalRepresentation<T extends Temporal & Compar
     public abstract String format(TemporalInterval<T, D> interval);
 
     @lombok.AllArgsConstructor
-    public static final class StartEnd<T extends Temporal & Comparable<? super T>>
-            extends TemporalIntervalRepresentation<T, TemporalAmount> {
+    public static final class StartEnd<T extends Temporal & Comparable<? super T>, D extends TemporalAmount>
+            extends TemporalIntervalRepresentation<T, D> {
 
         @lombok.NonNull
         private final ISO8601.Converter<T> temporalConverter;
 
         @Override
-        public String format(TemporalInterval<T, TemporalAmount> interval) {
+        public String format(TemporalInterval<T, D> interval) {
             return temporalConverter.format(interval.start()) + "/" + temporalConverter.format(interval.end());
+        }
+
+        public String formatConcise(TemporalInterval<T, D> interval) {
+            CharSequence first = temporalConverter.format(interval.start());
+            CharSequence second = temporalConverter.format(interval.end());
+            return first + "/" + compact(first, second);
         }
 
         public <I extends TemporalInterval<T, ?>> I parse(CharSequence text, BiFunction<T, T, I> factory) {
             int intervalDesignatorIdx = getIntervalDesignatorIndex(text);
-            T start = temporalConverter.parse(text.subSequence(0, intervalDesignatorIdx));
-            T end = temporalConverter.parse(text.subSequence(intervalDesignatorIdx + 1, text.length()));
+            CharSequence first = text.subSequence(0, intervalDesignatorIdx);
+            CharSequence second = text.subSequence(intervalDesignatorIdx + 1, text.length());
+            T start = temporalConverter.parse(first);
+            T end = temporalConverter.parse(expand(first, second));
             return factory.apply(start, end);
         }
     }
@@ -106,6 +116,24 @@ public abstract class TemporalIntervalRepresentation<T extends Temporal & Compar
         }
     }
 
+    @lombok.AllArgsConstructor
+    public static final class Duration<T extends Temporal & Comparable<? super T>, D extends TemporalAmount>
+            extends TemporalIntervalRepresentation<T, D> {
+
+        @lombok.NonNull
+        private final ISO8601.Converter<D> durationConverter;
+
+        @Override
+        public String format(TemporalInterval<T, D> interval) {
+            return durationConverter.format(interval.getDuration()).toString();
+        }
+
+        public <I extends TemporalInterval<T, ?>> I parse(CharSequence text, Function<D, I> factory) {
+            D duration = durationConverter.parse(text);
+            return factory.apply(duration);
+        }
+    }
+
     private static int getIntervalDesignatorIndex(CharSequence text) throws DateTimeParseException {
         int intervalDesignatorIdx = indexOf(text, '/');
         if (intervalDesignatorIdx == -1) {
@@ -124,5 +152,26 @@ public abstract class TemporalIntervalRepresentation<T extends Temporal & Compar
             }
         }
         return -1;
+    }
+
+    private static CharSequence compact(CharSequence ref, CharSequence value) {
+        int anchor = -1;
+        for (int i = 0; i < ref.length(); i++) {
+            if (!Character.isDigit(ref.charAt(i))) {
+                anchor = i;
+            }
+            if (ref.charAt(i) != value.charAt(i)) {
+                return value.subSequence(anchor + 1, value.length());
+            }
+        }
+        return "";
+    }
+
+    private static CharSequence expand(CharSequence ref, CharSequence value) {
+        int diff = ref.length() - value.length();
+        if (diff <= 0) {
+            return value;
+        }
+        return ref.subSequence(0, diff).toString() + value;
     }
 }

@@ -9,7 +9,7 @@ import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import jdplus.math.matrices.Matrix;
-import demetra.timeseries.TimeSeriesPeriod;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  *
@@ -27,7 +27,7 @@ class IVFactory implements RegressionVariableFactory<InterventionVariable>{
     }
 
     @Override
-    public <P extends TimeSeriesPeriod, D extends TimeSeriesDomain<P>>  boolean fill(InterventionVariable var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(InterventionVariable var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

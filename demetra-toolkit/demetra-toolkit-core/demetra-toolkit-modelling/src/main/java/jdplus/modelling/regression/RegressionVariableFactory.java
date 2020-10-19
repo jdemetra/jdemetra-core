@@ -9,7 +9,7 @@ import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import jdplus.math.matrices.Matrix;
-import demetra.timeseries.TimeSeriesPeriod;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  *
@@ -19,5 +19,5 @@ import demetra.timeseries.TimeSeriesPeriod;
 public interface RegressionVariableFactory <X extends ITsVariable> {
     boolean fill(X var, TsPeriod start, Matrix buffer);
     
-    <P extends TimeSeriesPeriod, D extends TimeSeriesDomain<P>> boolean fill(X var, D domain, Matrix buffer);
+    <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>> boolean fill(X var, D domain, Matrix buffer);
 }

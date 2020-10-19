@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.Matrix;
-import demetra.timeseries.TimeSeriesPeriod;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  *
@@ -112,7 +112,7 @@ public class MovingHolidayFactory implements RegressionVariableFactory<MovingHol
     }
 
     @Override
-    public <P extends TimeSeriesPeriod, D extends TimeSeriesDomain<P>> boolean fill(MovingHolidayVariable var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>> boolean fill(MovingHolidayVariable var, D domain, Matrix buffer) {
 //        MovingHolidayProvider provider=find(var.getEvent());
 //        if (provider == null)
 //            return false;

@@ -13,7 +13,7 @@ import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.CalendarUtility;
 import jdplus.math.matrices.Matrix;
-import demetra.timeseries.TimeSeriesPeriod;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  *
@@ -40,7 +40,7 @@ class LPFactory implements RegressionVariableFactory<LengthOfPeriod> {
     }
 
     @Override
-    public <P extends TimeSeriesPeriod, D extends TimeSeriesDomain<P>>  boolean fill(LengthOfPeriod var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(LengthOfPeriod var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported.");
     }
 

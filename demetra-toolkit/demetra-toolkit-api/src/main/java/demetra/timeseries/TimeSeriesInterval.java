@@ -16,14 +16,16 @@
  */
 package demetra.timeseries;
 
-import demetra.time.TemporalRecurringInterval;
+import demetra.time.TemporalInterval;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAmount;
 
 /**
  *
- * @param <P>
+ * @param <D>
  *
  * @author Philippe Charles
  */
-public interface TimeSeriesRecurringDomain<P extends TimeSeriesPeriod> extends TimeSeriesDomain<P>, TemporalRecurringInterval<P> {
+public interface TimeSeriesInterval<D extends TemporalAmount> extends TemporalInterval<LocalDateTime, D> {
 
 }

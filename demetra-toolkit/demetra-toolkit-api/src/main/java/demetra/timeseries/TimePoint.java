@@ -21,7 +21,6 @@ import demetra.time.TemporalIntervalRepresentation;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.TemporalAmount;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -29,10 +28,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Jean Palate
  */
 @lombok.Value(staticConstructor = "of")
-public class TimePoint implements TimeSeriesPeriod {
-
-    private static final TemporalIntervalRepresentation.StartEnd<LocalDateTime> REPRESENTATION
-            = new TemporalIntervalRepresentation.StartEnd(ISO8601.Converter.LOCAL_DATE_TIME);
+public class TimePoint implements TimeSeriesInterval<Duration> {
 
     @lombok.NonNull
     LocalDateTime point;
@@ -53,17 +49,25 @@ public class TimePoint implements TimeSeriesPeriod {
     }
 
     @Override
-    public TemporalAmount getDuration() {
+    public Duration getDuration() {
         return Duration.ZERO;
     }
 
     @Override
-    public TemporalIntervalRepresentation getRepresentation() {
-        return REPRESENTATION;
+    public String toString() {
+        return toISO8601();
+    }
+
+    @Override
+    public String toISO8601() {
+        return REPRESENTATION.format(this);
     }
 
     @NonNull
     public static TimePoint parse(@NonNull CharSequence text) throws DateTimeParseException {
         return REPRESENTATION.parse(text, (start, end) -> TimePoint.of(start));
     }
+
+    private static final TemporalIntervalRepresentation.StartEnd<LocalDateTime, Duration> REPRESENTATION
+            = new TemporalIntervalRepresentation.StartEnd(ISO8601.Converter.LOCAL_DATE_TIME);
 }

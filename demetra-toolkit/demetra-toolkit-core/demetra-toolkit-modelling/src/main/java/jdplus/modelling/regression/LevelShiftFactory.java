@@ -13,7 +13,7 @@ import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import jdplus.math.matrices.Matrix;
-import demetra.timeseries.TimeSeriesPeriod;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  *
@@ -84,7 +84,7 @@ class LSFactory implements RegressionVariableFactory<LevelShift> {
     }
 
     @Override
-    public <P extends TimeSeriesPeriod, D extends TimeSeriesDomain<P>>  boolean fill(LevelShift var, D domain, Matrix m) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(LevelShift var, D domain, Matrix m) {
         fill(var, domain.indexOf(var.getPosition()), m.column(0));
         return true;
     }

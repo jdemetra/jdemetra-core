@@ -14,29 +14,16 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.time;
+package demetra.timeseries;
 
-import demetra.data.Seq;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.time.TemporalRecurrence;
 
 /**
- * Framework-level interface defining repeating intervals formed by a number of
- * repetitions and a time interval.
  *
  * @param <I>
- * @see
- * <a href="https://en.wikipedia.org/wiki/ISO_8601#Repeating_intervals">Repeating
- * intervals in ISO_8601</a>
  *
  * @author Philippe Charles
  */
-public interface TemporalRecurringInterval<I extends TemporalInterval<?, ?>> extends Seq<I>, ISO8601.Representable {
+public interface TimeSeriesRecurrence<I extends TimeSeriesInterval<?>> extends TimeSeriesDomain<I>, TemporalRecurrence<I> {
 
-    @NonNull
-    I getInterval();
-
-    @Override
-    default String toISO8601() {
-        return "R" + length() + "/" + getInterval().toISO8601();
-    }
 }

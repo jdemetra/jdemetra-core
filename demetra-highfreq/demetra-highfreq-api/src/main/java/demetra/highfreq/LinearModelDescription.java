@@ -8,7 +8,7 @@ package demetra.highfreq;
 import demetra.timeseries.TimeSeriesData;
 import demetra.timeseries.TimeSeriesObs;
 import demetra.timeseries.regression.Variable;
-import demetra.timeseries.TimeSeriesPeriod;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  *
@@ -18,7 +18,7 @@ import demetra.timeseries.TimeSeriesPeriod;
  */
 @lombok.Value
 @lombok.Builder
-public class LinearModelDescription<P extends TimeSeriesPeriod, O extends TimeSeriesObs<P> >  {
+public class LinearModelDescription<P extends TimeSeriesInterval<?>, O extends TimeSeriesObs<P> >  {
 
     /**
      * Original series

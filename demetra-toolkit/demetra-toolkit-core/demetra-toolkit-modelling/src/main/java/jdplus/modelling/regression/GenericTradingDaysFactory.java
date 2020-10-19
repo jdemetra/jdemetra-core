@@ -32,7 +32,7 @@ import demetra.timeseries.calendars.GenericTradingDays;
 import java.util.HashMap;
 import java.util.Map;
 import jdplus.math.matrices.MatrixWindow;
-import demetra.timeseries.TimeSeriesPeriod;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  *
@@ -134,7 +134,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
     }
 
     @Override
-    public <P extends TimeSeriesPeriod, D extends TimeSeriesDomain<P>>  boolean fill(GenericTradingDaysVariable var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(GenericTradingDaysVariable var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported.");
     }
 

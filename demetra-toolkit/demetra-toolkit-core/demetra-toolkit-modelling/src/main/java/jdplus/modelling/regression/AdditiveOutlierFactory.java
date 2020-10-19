@@ -13,7 +13,7 @@ import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import jdplus.math.matrices.Matrix;
-import demetra.timeseries.TimeSeriesPeriod;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  *
@@ -75,7 +75,7 @@ class AOFactory implements RegressionVariableFactory<AdditiveOutlier> {
     }
 
     @Override
-    public <P extends TimeSeriesPeriod, D extends TimeSeriesDomain<P>>  boolean fill(AdditiveOutlier var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(AdditiveOutlier var, D domain, Matrix buffer) {
         long pos = domain.indexOf(var.getPosition());
         if (pos >= 0) {
             buffer.set((int) pos, 0, 1);

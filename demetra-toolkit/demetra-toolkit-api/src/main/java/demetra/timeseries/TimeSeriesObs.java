@@ -23,7 +23,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Philippe Charles
  * @param <P> period type
  */
-public interface TimeSeriesObs<P extends TimeSeriesPeriod> {
+public interface TimeSeriesObs<P extends TimeSeriesInterval> {
 
     @NonNull
     P getPeriod();

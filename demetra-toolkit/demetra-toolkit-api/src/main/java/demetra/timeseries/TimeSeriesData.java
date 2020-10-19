@@ -28,7 +28,7 @@ import demetra.data.Seq;
  * @param <P> period type
  * @param <O> observation type
  */
-public interface TimeSeriesData<P extends TimeSeriesPeriod, O extends TimeSeriesObs<P>> extends Seq<O> {
+public interface TimeSeriesData<P extends TimeSeriesInterval<?>, O extends TimeSeriesObs<P>> extends Seq<O> {
 
     /**
      * Retrieves the time domain of this time series

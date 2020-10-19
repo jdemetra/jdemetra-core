@@ -25,7 +25,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Philippe Charles
  */
 @lombok.Value(staticConstructor = "of")
-public class TsDomain implements TimeSeriesRecurringDomain<TsPeriod> {
+public class TsDomain implements TimeSeriesRecurrence<TsPeriod> {
 
     /**
      * Generates a domain which is a splitting of a given period in sub-periods

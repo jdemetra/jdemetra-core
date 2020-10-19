@@ -32,16 +32,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @author Philippe Charles
  */
-public interface TemporalInterval<T extends Temporal & Comparable<? super T>, D extends TemporalAmount> extends Range<T>, ISO8601.Representable {
+public interface TemporalInterval<T extends Temporal & Comparable<? super T>, D extends TemporalAmount>
+        extends Range<T>, ISO8601.Representable {
 
     @NonNull
     D getDuration();
-
-    @NonNull
-    TemporalIntervalRepresentation getRepresentation();
-
-    @Override
-    default String toISO8601() {
-        return getRepresentation().format(this);
-    }
 }

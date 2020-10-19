@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.time.ISO8601;
 
@@ -31,10 +30,7 @@ import demetra.time.ISO8601;
  */
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder", toBuilder = true)
-public class TsPeriod implements TimeSeriesPeriod, Comparable<TsPeriod> {
-
-    private static final TemporalIntervalRepresentation.StartDuration<LocalDateTime, TsUnit> REPRESENTATION
-            = new TemporalIntervalRepresentation.StartDuration(ISO8601.Converter.LOCAL_DATE_TIME, TsUnit.CONVERTER);
+public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod> {
 
     @lombok.NonNull
     LocalDateTime epoch;
@@ -60,13 +56,8 @@ public class TsPeriod implements TimeSeriesPeriod, Comparable<TsPeriod> {
     }
 
     @Override
-    public TemporalAmount getDuration() {
+    public TsUnit getDuration() {
         return unit;
-    }
-
-    @Override
-    public TemporalIntervalRepresentation getRepresentation() {
-        return REPRESENTATION;
     }
 
     @Override
@@ -168,6 +159,11 @@ public class TsPeriod implements TimeSeriesPeriod, Comparable<TsPeriod> {
     @Override
     public String toString() {
         return toISO8601();
+    }
+
+    @Override
+    public String toISO8601() {
+        return REPRESENTATION.format(this);
     }
 
     public long idAt(LocalDateTime date) {
@@ -278,6 +274,9 @@ public class TsPeriod implements TimeSeriesPeriod, Comparable<TsPeriod> {
         return REPRESENTATION.parse(text, (start, duration) -> TsPeriod.of(duration, start));
     }
 
+    private static final TemporalIntervalRepresentation.StartDuration<LocalDateTime, TsUnit> REPRESENTATION
+            = new TemporalIntervalRepresentation.StartDuration(ISO8601.Converter.LOCAL_DATE_TIME, TsUnit.CONVERTER);
+
     private static TsPeriod make(LocalDateTime epoch, TsUnit unit, LocalDate date) {
         return new TsPeriod(epoch, unit, idAt(epoch, unit, date.atStartOfDay()));
     }
@@ -318,7 +317,7 @@ public class TsPeriod implements TimeSeriesPeriod, Comparable<TsPeriod> {
         }
     }
 
-    public static final class Builder implements TimeSeriesPeriod {
+    public static final class Builder implements TimeSeriesInterval<TsUnit> {
 
         private LocalDateTime epoch = DEFAULT_EPOCH;
         private TsUnit unit = TsUnit.MONTH;
@@ -367,13 +366,8 @@ public class TsPeriod implements TimeSeriesPeriod, Comparable<TsPeriod> {
         }
 
         @Override
-        public TemporalAmount getDuration() {
+        public TsUnit getDuration() {
             return unit;
-        }
-
-        @Override
-        public TemporalIntervalRepresentation getRepresentation() {
-            return REPRESENTATION;
         }
 
         @Override
@@ -384,6 +378,11 @@ public class TsPeriod implements TimeSeriesPeriod, Comparable<TsPeriod> {
         @Override
         public String toString() {
             return toISO8601();
+        }
+
+        @Override
+        public String toISO8601() {
+            return REPRESENTATION.format(this);
         }
     }
 }

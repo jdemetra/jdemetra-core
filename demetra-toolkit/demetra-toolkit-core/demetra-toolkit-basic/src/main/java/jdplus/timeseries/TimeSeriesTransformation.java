@@ -21,7 +21,7 @@ import jdplus.data.transformation.LogJacobian;
 import demetra.design.Development;
 import demetra.timeseries.TimeSeriesData;
 import demetra.timeseries.TimeSeriesObs;
-import demetra.timeseries.TimeSeriesPeriod;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  * Interface for transformation of a time series
@@ -32,7 +32,7 @@ import demetra.timeseries.TimeSeriesPeriod;
  * @param <S>
  */
 @Development(status = Development.Status.Release)
-public interface TimeSeriesTransformation<P extends TimeSeriesPeriod, O extends TimeSeriesObs<P>, S extends TimeSeriesData<P, O>> {
+public interface TimeSeriesTransformation<P extends TimeSeriesInterval<?>, O extends TimeSeriesObs<P>, S extends TimeSeriesData<P, O>> {
 
 
     /**

@@ -22,7 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.TemporalAmount;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -30,10 +29,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Jean Palate
  */
 @lombok.Value(staticConstructor = "of")
-public class Day implements TimeSeriesPeriod {
-
-    private static final TemporalIntervalRepresentation.StartDuration<LocalDateTime, Period> REPRESENTATION
-            = new TemporalIntervalRepresentation.StartDuration(ISO8601.Converter.LOCAL_DATE_TIME, ISO8601.Converter.PERIOD);
+public class Day implements TimeSeriesInterval<Period> {
 
     @lombok.NonNull
     LocalDate day;
@@ -54,17 +50,25 @@ public class Day implements TimeSeriesPeriod {
     }
 
     @Override
-    public TemporalAmount getDuration() {
+    public Period getDuration() {
         return Period.ofDays(1);
     }
 
     @Override
-    public TemporalIntervalRepresentation getRepresentation() {
-        return REPRESENTATION;
+    public String toString() {
+        return toISO8601();
+    }
+
+    @Override
+    public String toISO8601() {
+        return REPRESENTATION.format(this);
     }
 
     @NonNull
     public static Day parse(@NonNull CharSequence text) throws DateTimeParseException {
         return REPRESENTATION.parse(text, (start, duration) -> Day.of(start.toLocalDate()));
     }
+
+    private static final TemporalIntervalRepresentation.StartDuration<LocalDateTime, Period> REPRESENTATION
+            = new TemporalIntervalRepresentation.StartDuration(ISO8601.Converter.LOCAL_DATE_TIME, ISO8601.Converter.PERIOD);
 }

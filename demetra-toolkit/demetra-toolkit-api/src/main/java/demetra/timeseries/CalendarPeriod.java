@@ -22,7 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.TemporalAmount;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -30,10 +29,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Jean Palate
  */
 @lombok.Value(staticConstructor = "of")
-public class CalendarPeriod implements TimeSeriesPeriod, Comparable<CalendarPeriod> {
-
-    private static final TemporalIntervalRepresentation.StartEnd<LocalDateTime> REPRESENTATION
-            = new TemporalIntervalRepresentation.StartEnd(ISO8601.Converter.LOCAL_DATE_TIME);
+public class CalendarPeriod implements TimeSeriesInterval<Period>, Comparable<CalendarPeriod> {
 
     @lombok.NonNull
     LocalDate start, end;
@@ -54,13 +50,8 @@ public class CalendarPeriod implements TimeSeriesPeriod, Comparable<CalendarPeri
     }
 
     @Override
-    public TemporalAmount getDuration() {
+    public Period getDuration() {
         return Period.between(start, end);
-    }
-
-    @Override
-    public TemporalIntervalRepresentation getRepresentation() {
-        return REPRESENTATION;
     }
 
     @Override
@@ -77,8 +68,21 @@ public class CalendarPeriod implements TimeSeriesPeriod, Comparable<CalendarPeri
         throw new TsException(TsException.INCOMPATIBLE_PERIOD);
     }
 
+    @Override
+    public String toString() {
+        return toISO8601();
+    }
+
+    @Override
+    public String toISO8601() {
+        return REPRESENTATION.format(this);
+    }
+
     @NonNull
     public static CalendarPeriod parse(@NonNull CharSequence text) throws DateTimeParseException {
         return REPRESENTATION.parse(text, (start, end) -> CalendarPeriod.of(start.toLocalDate(), end.toLocalDate()));
     }
+
+    private static final TemporalIntervalRepresentation.StartEnd<LocalDateTime, Period> REPRESENTATION
+            = new TemporalIntervalRepresentation.StartEnd(ISO8601.Converter.LOCAL_DATE_TIME);
 }

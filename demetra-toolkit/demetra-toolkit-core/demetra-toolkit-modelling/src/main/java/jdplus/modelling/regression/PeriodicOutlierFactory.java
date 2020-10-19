@@ -14,7 +14,7 @@ import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import jdplus.math.matrices.Matrix;
-import demetra.timeseries.TimeSeriesPeriod;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  *
@@ -111,7 +111,7 @@ class SOFactory implements RegressionVariableFactory<PeriodicOutlier> {
     }
 
     @Override
-    public <P extends TimeSeriesPeriod, D extends TimeSeriesDomain<P>>  boolean fill(PeriodicOutlier var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(PeriodicOutlier var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported.");
     }
 
