@@ -16,8 +16,8 @@
  */
 package demetra.timeseries;
 
-import demetra.time.ISO8601;
-import demetra.time.TemporalIntervalConverter;
+import demetra.time.IsoConverter;
+import demetra.time.IsoIntervalConverter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -73,6 +73,6 @@ public class Day implements TimeSeriesInterval<Period> {
         return Day.of(start.toLocalDate());
     }
 
-    private static final TemporalIntervalConverter<Day> CONVERTER
-            = new TemporalIntervalConverter.StartDuration<>(ISO8601.Converter.LOCAL_DATE_TIME, ISO8601.Converter.PERIOD, Day::make);
+    private static final IsoIntervalConverter<Day> CONVERTER
+            = new IsoIntervalConverter.StartDuration<>(IsoConverter.LOCAL_DATE_TIME, IsoConverter.PERIOD, Day::make);
 }

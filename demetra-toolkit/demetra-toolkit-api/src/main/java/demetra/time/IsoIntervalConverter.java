@@ -29,23 +29,23 @@ import java.util.function.Function;
  * @author Philippe Charles
  */
 @SealedType({
-    TemporalIntervalConverter.StartEnd.class,
-    TemporalIntervalConverter.StartDuration.class,
-    TemporalIntervalConverter.DurationEnd.class,
-    TemporalIntervalConverter.Duration.class
+    IsoIntervalConverter.StartEnd.class,
+    IsoIntervalConverter.StartDuration.class,
+    IsoIntervalConverter.DurationEnd.class,
+    IsoIntervalConverter.Duration.class
 })
-public abstract class TemporalIntervalConverter<I extends TemporalInterval<?, ?>>
-        implements ISO8601.Converter<I> {
+public abstract class IsoIntervalConverter<I extends IsoInterval<?, ?>>
+        implements IsoConverter<I> {
 
-    protected TemporalIntervalConverter() {
+    protected IsoIntervalConverter() {
     }
 
     @lombok.AllArgsConstructor
-    public static final class StartEnd<T extends Temporal & Comparable<? super T>, I extends TemporalInterval<T, ?>>
-            extends TemporalIntervalConverter<I> {
+    public static final class StartEnd<T extends Temporal & Comparable<? super T>, I extends IsoInterval<T, ?>>
+            extends IsoIntervalConverter<I> {
 
         @lombok.NonNull
-        private final ISO8601.Converter<T> temporal;
+        private final IsoConverter<T> temporal;
 
         private boolean concise;
 
@@ -72,14 +72,14 @@ public abstract class TemporalIntervalConverter<I extends TemporalInterval<?, ?>
     }
 
     @lombok.AllArgsConstructor
-    public static final class StartDuration<T extends Temporal & Comparable<? super T>, D extends TemporalAmount, I extends TemporalInterval<T, D>>
-            extends TemporalIntervalConverter<I> {
+    public static final class StartDuration<T extends Temporal & Comparable<? super T>, D extends TemporalAmount, I extends IsoInterval<T, D>>
+            extends IsoIntervalConverter<I> {
 
         @lombok.NonNull
-        private final ISO8601.Converter<T> temporal;
+        private final IsoConverter<T> temporal;
 
         @lombok.NonNull
-        private final ISO8601.Converter<D> duration;
+        private final IsoConverter<D> duration;
 
         @lombok.NonNull
         private final BiFunction<T, D, I> interval;
@@ -102,14 +102,14 @@ public abstract class TemporalIntervalConverter<I extends TemporalInterval<?, ?>
     }
 
     @lombok.AllArgsConstructor
-    public static final class DurationEnd<T extends Temporal & Comparable<? super T>, D extends TemporalAmount, I extends TemporalInterval<T, D>>
-            extends TemporalIntervalConverter<I> {
+    public static final class DurationEnd<T extends Temporal & Comparable<? super T>, D extends TemporalAmount, I extends IsoInterval<T, D>>
+            extends IsoIntervalConverter<I> {
 
         @lombok.NonNull
-        private final ISO8601.Converter<D> duration;
+        private final IsoConverter<D> duration;
 
         @lombok.NonNull
-        private final ISO8601.Converter<T> temporal;
+        private final IsoConverter<T> temporal;
 
         @lombok.NonNull
         private final BiFunction<D, T, I> interval;
@@ -132,11 +132,11 @@ public abstract class TemporalIntervalConverter<I extends TemporalInterval<?, ?>
     }
 
     @lombok.AllArgsConstructor
-    public static final class Duration<D extends TemporalAmount, I extends TemporalInterval<?, D>>
-            extends TemporalIntervalConverter<I> {
+    public static final class Duration<D extends TemporalAmount, I extends IsoInterval<?, D>>
+            extends IsoIntervalConverter<I> {
 
         @lombok.NonNull
-        private final ISO8601.Converter<D> duration;
+        private final IsoConverter<D> duration;
 
         @lombok.NonNull
         private final Function<D, I> interval;

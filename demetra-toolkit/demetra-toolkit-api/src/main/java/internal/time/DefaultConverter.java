@@ -14,18 +14,35 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries;
+package internal.time;
 
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalAmount;
-import demetra.time.IsoInterval;
+import demetra.time.IsoConverter;
+import java.util.Objects;
+import java.util.function.Function;
 
 /**
- *
- * @param <D>
+ * @param <T>
  *
  * @author Philippe Charles
  */
-public interface TimeSeriesInterval<D extends TemporalAmount> extends IsoInterval<LocalDateTime, D> {
+@lombok.AllArgsConstructor
+public final class DefaultConverter<T> implements IsoConverter<T> {
 
+    @lombok.NonNull
+    private final Function<T, ? extends CharSequence> formatter;
+
+    @lombok.NonNull
+    private final Function<? super CharSequence, T> parser;
+
+    @Override
+    public CharSequence format(T value) {
+        Objects.requireNonNull(value);
+        return Objects.requireNonNull(formatter.apply(value));
+    }
+
+    @Override
+    public T parse(CharSequence text) {
+        Objects.requireNonNull(text);
+        return Objects.requireNonNull(parser.apply(text));
+    }
 }

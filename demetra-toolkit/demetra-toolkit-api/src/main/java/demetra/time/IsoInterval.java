@@ -16,23 +16,25 @@
  */
 package demetra.time;
 
-import demetra.data.Seq;
+import demetra.data.Range;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Framework-level interface defining repeating intervals formed by a number of
- * repetitions and a time interval.
+ * Framework-level interface defining the intervening time between two time
+ * points.
  *
- * @param <I>
- * @see
- * <a href="https://en.wikipedia.org/wiki/ISO_8601#Repeating_intervals">Repeating
+ * @param <T>
+ * @param <D>
+ * @see <a href="https://en.wikipedia.org/wiki/ISO_8601#Time_intervals">Time
  * intervals in ISO_8601</a>
  *
  * @author Philippe Charles
  */
-public interface TemporalRecurrence<I extends TemporalInterval<?, ?>>
-        extends Seq<I>, ISO8601.Representable {
+public interface IsoInterval<T extends Temporal & Comparable<? super T>, D extends TemporalAmount>
+        extends Range<T>, IsoRepresentable {
 
     @NonNull
-    I getInterval();
+    D getDuration();
 }

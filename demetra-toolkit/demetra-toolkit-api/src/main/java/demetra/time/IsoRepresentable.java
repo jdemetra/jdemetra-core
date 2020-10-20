@@ -14,18 +14,16 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries;
+package demetra.time;
 
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalAmount;
-import demetra.time.IsoInterval;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
- * @param <D>
- *
  * @author Philippe Charles
  */
-public interface TimeSeriesInterval<D extends TemporalAmount> extends IsoInterval<LocalDateTime, D> {
+public interface IsoRepresentable {
 
+    @NonNull
+    String toISO8601();
 }

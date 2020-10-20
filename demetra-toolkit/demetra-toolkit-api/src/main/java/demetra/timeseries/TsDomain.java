@@ -16,7 +16,7 @@
  */
 package demetra.timeseries;
 
-import demetra.time.TemporalRecurrenceConverter;
+import demetra.time.IsoRecurrenceConverter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import org.checkerframework.checker.index.qual.NonNegative;
@@ -368,6 +368,6 @@ public class TsDomain implements TimeSeriesRecurrence<TsPeriod> {
         return TsDomain.of(period, length);
     }
 
-    private static final TemporalRecurrenceConverter<TsPeriod, TsDomain> CONVERTER
-            = new TemporalRecurrenceConverter<>(TsPeriod.CONVERTER, TsDomain::make);
+    private static final IsoRecurrenceConverter<TsPeriod, TsDomain> CONVERTER
+            = new IsoRecurrenceConverter<>(TsPeriod.CONVERTER, TsDomain::make);
 }

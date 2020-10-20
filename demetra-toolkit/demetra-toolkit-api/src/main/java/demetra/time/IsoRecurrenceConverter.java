@@ -26,11 +26,11 @@ import java.util.function.BiFunction;
  * @author Philippe Charles
  */
 @lombok.AllArgsConstructor
-public final class TemporalRecurrenceConverter<I extends TemporalInterval<?, ?>, R extends TemporalRecurrence<I>>
-        implements ISO8601.Converter<R> {
+public final class IsoRecurrenceConverter<I extends IsoInterval<?, ?>, R extends IsoRecurrence<I>>
+        implements IsoConverter<R> {
 
     @lombok.NonNull
-    private final TemporalIntervalConverter<I> interval;
+    private final IsoIntervalConverter<I> interval;
 
     @lombok.NonNull
     private final BiFunction<Integer, I, R> recurrence;
@@ -45,7 +45,7 @@ public final class TemporalRecurrenceConverter<I extends TemporalInterval<?, ?>,
         if (text.charAt(0) != 'R') {
             throw new DateTimeParseException("Cannot found recurrence character", text, 0);
         }
-        int index = TemporalIntervalConverter.getIntervalDesignatorIndex(text);
+        int index = IsoIntervalConverter.getIntervalDesignatorIndex(text);
         CharSequence left = text.subSequence(1, index);
         CharSequence right = text.subSequence(index + 1, text.length());
         return recurrence.apply(

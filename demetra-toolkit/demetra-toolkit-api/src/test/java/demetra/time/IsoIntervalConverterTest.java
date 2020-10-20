@@ -28,7 +28,7 @@ import org.junit.Test;
  *
  * @author Philippe Charles
  */
-public class TemporalIntervalConverterTest {
+public class IsoIntervalConverterTest {
 
     private final Period P2D = Period.ofDays(2);
     private final Period P2M = Period.ofMonths(2);
@@ -40,10 +40,10 @@ public class TemporalIntervalConverterTest {
 
     @Test
     public void testStartEnd() {
-        TemporalIntervalConverter<MockedPeriod> l = new TemporalIntervalConverter.StartEnd<>(ISO8601.LocalDateConverter.LOCAL_DATE, false, MockedPeriod::startEnd);
-        TemporalIntervalConverter<MockedPeriod> b = new TemporalIntervalConverter.StartEnd<>(ISO8601.LocalDateConverter.BASIC_DATE, false, MockedPeriod::startEnd);
-        TemporalIntervalConverter<MockedPeriod> o = new TemporalIntervalConverter.StartEnd<>(ISO8601.LocalDateConverter.ORDINAL_DATE, false, MockedPeriod::startEnd);
-        TemporalIntervalConverter<MockedPeriod> w = new TemporalIntervalConverter.StartEnd<>(ISO8601.LocalDateConverter.WEEK_DATE, false, MockedPeriod::startEnd);
+        IsoIntervalConverter<MockedPeriod> l = new IsoIntervalConverter.StartEnd<>(LocalDateConverter.LOCAL_DATE, false, MockedPeriod::startEnd);
+        IsoIntervalConverter<MockedPeriod> b = new IsoIntervalConverter.StartEnd<>(LocalDateConverter.BASIC_DATE, false, MockedPeriod::startEnd);
+        IsoIntervalConverter<MockedPeriod> o = new IsoIntervalConverter.StartEnd<>(LocalDateConverter.ORDINAL_DATE, false, MockedPeriod::startEnd);
+        IsoIntervalConverter<MockedPeriod> w = new IsoIntervalConverter.StartEnd<>(LocalDateConverter.WEEK_DATE, false, MockedPeriod::startEnd);
 
         assertThat(l.format(days)).isEqualTo("2010-02-15/2010-02-17");
         assertThat(b.format(days)).isEqualTo("20100215/20100217");
@@ -114,10 +114,10 @@ public class TemporalIntervalConverterTest {
 
     @Test
     public void testStartEnd_concise() {
-        TemporalIntervalConverter<MockedPeriod> l = new TemporalIntervalConverter.StartEnd<>(ISO8601.LocalDateConverter.LOCAL_DATE, true, MockedPeriod::startEnd);
-        TemporalIntervalConverter<MockedPeriod> b = new TemporalIntervalConverter.StartEnd<>(ISO8601.LocalDateConverter.BASIC_DATE, true, MockedPeriod::startEnd);
-        TemporalIntervalConverter<MockedPeriod> o = new TemporalIntervalConverter.StartEnd<>(ISO8601.LocalDateConverter.ORDINAL_DATE, true, MockedPeriod::startEnd);
-        TemporalIntervalConverter<MockedPeriod> w = new TemporalIntervalConverter.StartEnd<>(ISO8601.LocalDateConverter.WEEK_DATE, true, MockedPeriod::startEnd);
+        IsoIntervalConverter<MockedPeriod> l = new IsoIntervalConverter.StartEnd<>(LocalDateConverter.LOCAL_DATE, true, MockedPeriod::startEnd);
+        IsoIntervalConverter<MockedPeriod> b = new IsoIntervalConverter.StartEnd<>(LocalDateConverter.BASIC_DATE, true, MockedPeriod::startEnd);
+        IsoIntervalConverter<MockedPeriod> o = new IsoIntervalConverter.StartEnd<>(LocalDateConverter.ORDINAL_DATE, true, MockedPeriod::startEnd);
+        IsoIntervalConverter<MockedPeriod> w = new IsoIntervalConverter.StartEnd<>(LocalDateConverter.WEEK_DATE, true, MockedPeriod::startEnd);
 
         assertThat(l.format(days)).isEqualTo("2010-02-15/17");
 //        assertThat(b.format(days)).isEqualTo("20100215/17");
@@ -162,10 +162,10 @@ public class TemporalIntervalConverterTest {
 
     @Test
     public void testStartDuration() {
-        TemporalIntervalConverter<MockedPeriod> l = new TemporalIntervalConverter.StartDuration<>(ISO8601.LocalDateConverter.LOCAL_DATE, ISO8601.Converter.PERIOD, MockedPeriod::startDuration);
-        TemporalIntervalConverter<MockedPeriod> b = new TemporalIntervalConverter.StartDuration<>(ISO8601.LocalDateConverter.BASIC_DATE, ISO8601.Converter.PERIOD, MockedPeriod::startDuration);
-        TemporalIntervalConverter<MockedPeriod> o = new TemporalIntervalConverter.StartDuration<>(ISO8601.LocalDateConverter.ORDINAL_DATE, ISO8601.Converter.PERIOD, MockedPeriod::startDuration);
-        TemporalIntervalConverter<MockedPeriod> w = new TemporalIntervalConverter.StartDuration<>(ISO8601.LocalDateConverter.WEEK_DATE, ISO8601.Converter.PERIOD, MockedPeriod::startDuration);
+        IsoIntervalConverter<MockedPeriod> l = new IsoIntervalConverter.StartDuration<>(LocalDateConverter.LOCAL_DATE, IsoConverter.PERIOD, MockedPeriod::startDuration);
+        IsoIntervalConverter<MockedPeriod> b = new IsoIntervalConverter.StartDuration<>(LocalDateConverter.BASIC_DATE, IsoConverter.PERIOD, MockedPeriod::startDuration);
+        IsoIntervalConverter<MockedPeriod> o = new IsoIntervalConverter.StartDuration<>(LocalDateConverter.ORDINAL_DATE, IsoConverter.PERIOD, MockedPeriod::startDuration);
+        IsoIntervalConverter<MockedPeriod> w = new IsoIntervalConverter.StartDuration<>(LocalDateConverter.WEEK_DATE, IsoConverter.PERIOD, MockedPeriod::startDuration);
 
         assertThat(l.format(days)).isEqualTo("2010-02-15/P2D");
         assertThat(b.format(days)).isEqualTo("20100215/P2D");
@@ -190,10 +190,10 @@ public class TemporalIntervalConverterTest {
 
     @Test
     public void testDurationEnd() {
-        TemporalIntervalConverter<MockedPeriod> l = new TemporalIntervalConverter.DurationEnd<>(ISO8601.Converter.PERIOD, ISO8601.LocalDateConverter.LOCAL_DATE, MockedPeriod::durationEnd);
-        TemporalIntervalConverter<MockedPeriod> b = new TemporalIntervalConverter.DurationEnd<>(ISO8601.Converter.PERIOD, ISO8601.LocalDateConverter.BASIC_DATE, MockedPeriod::durationEnd);
-        TemporalIntervalConverter<MockedPeriod> o = new TemporalIntervalConverter.DurationEnd<>(ISO8601.Converter.PERIOD, ISO8601.LocalDateConverter.ORDINAL_DATE, MockedPeriod::durationEnd);
-        TemporalIntervalConverter<MockedPeriod> w = new TemporalIntervalConverter.DurationEnd<>(ISO8601.Converter.PERIOD, ISO8601.LocalDateConverter.WEEK_DATE, MockedPeriod::durationEnd);
+        IsoIntervalConverter<MockedPeriod> l = new IsoIntervalConverter.DurationEnd<>(IsoConverter.PERIOD, LocalDateConverter.LOCAL_DATE, MockedPeriod::durationEnd);
+        IsoIntervalConverter<MockedPeriod> b = new IsoIntervalConverter.DurationEnd<>(IsoConverter.PERIOD, LocalDateConverter.BASIC_DATE, MockedPeriod::durationEnd);
+        IsoIntervalConverter<MockedPeriod> o = new IsoIntervalConverter.DurationEnd<>(IsoConverter.PERIOD, LocalDateConverter.ORDINAL_DATE, MockedPeriod::durationEnd);
+        IsoIntervalConverter<MockedPeriod> w = new IsoIntervalConverter.DurationEnd<>(IsoConverter.PERIOD, LocalDateConverter.WEEK_DATE, MockedPeriod::durationEnd);
 
         assertThat(l.format(days)).isEqualTo("P2D/2010-02-17");
         assertThat(b.format(days)).isEqualTo("P2D/20100217");
@@ -218,7 +218,7 @@ public class TemporalIntervalConverterTest {
 
     @Test
     public void testDuration() {
-        TemporalIntervalConverter<MockedPeriod> x = new TemporalIntervalConverter.Duration<>(ISO8601.Converter.PERIOD, z -> MockedPeriod.duration(z, startDate));
+        IsoIntervalConverter<MockedPeriod> x = new IsoIntervalConverter.Duration<>(IsoConverter.PERIOD, z -> MockedPeriod.duration(z, startDate));
         assertThat(x.format(days)).isEqualTo("P2D");
         assertThat(x.format(months)).isEqualTo("P2M");
 
@@ -231,7 +231,7 @@ public class TemporalIntervalConverterTest {
     }
 
     @lombok.Value
-    private static final class MockedPeriod implements TemporalInterval<LocalDate, Period> {
+    private static final class MockedPeriod implements IsoInterval<LocalDate, Period> {
 
         static MockedPeriod startEnd(LocalDate start, LocalDate end) {
             return new MockedPeriod(start, Period.between(start, end));

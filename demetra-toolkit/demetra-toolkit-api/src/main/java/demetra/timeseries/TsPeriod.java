@@ -16,13 +16,13 @@
  */
 package demetra.timeseries;
 
-import demetra.time.TemporalIntervalConverter;
+import demetra.time.IsoIntervalConverter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import demetra.time.ISO8601;
+import demetra.time.IsoConverter;
 
 /**
  *
@@ -278,8 +278,8 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
         return TsPeriod.of(duration, start);
     }
 
-    static final TemporalIntervalConverter<TsPeriod> CONVERTER
-            = new TemporalIntervalConverter.StartDuration<>(ISO8601.Converter.LOCAL_DATE_TIME, TsUnit.CONVERTER, TsPeriod::make);
+    static final IsoIntervalConverter<TsPeriod> CONVERTER
+            = new IsoIntervalConverter.StartDuration<>(IsoConverter.LOCAL_DATE_TIME, TsUnit.CONVERTER, TsPeriod::make);
 
     private static TsPeriod make(LocalDateTime epoch, TsUnit unit, LocalDate date) {
         return new TsPeriod(epoch, unit, idAt(epoch, unit, date.atStartOfDay()));
@@ -393,7 +393,7 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
             return this;
         }
 
-        private final TemporalIntervalConverter<Builder> converter
-                = new TemporalIntervalConverter.StartDuration<>(ISO8601.Converter.LOCAL_DATE_TIME, TsUnit.CONVERTER, this::apply);
+        private final IsoIntervalConverter<Builder> converter
+                = new IsoIntervalConverter.StartDuration<>(IsoConverter.LOCAL_DATE_TIME, TsUnit.CONVERTER, this::apply);
     }
 }

@@ -16,8 +16,8 @@
  */
 package demetra.timeseries;
 
-import demetra.time.ISO8601;
-import demetra.time.TemporalIntervalConverter;
+import demetra.time.IsoConverter;
+import demetra.time.IsoIntervalConverter;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -86,6 +86,6 @@ public class TimePeriod implements TimeSeriesInterval<Duration>, Comparable<Time
         return TimePeriod.of(start, end);
     }
 
-    private static final TemporalIntervalConverter<TimePeriod> CONVERTER
-            = new TemporalIntervalConverter.StartEnd<>(ISO8601.Converter.LOCAL_DATE_TIME, false, TimePeriod::make);
+    private static final IsoIntervalConverter<TimePeriod> CONVERTER
+            = new IsoIntervalConverter.StartEnd<>(IsoConverter.LOCAL_DATE_TIME, false, TimePeriod::make);
 }
