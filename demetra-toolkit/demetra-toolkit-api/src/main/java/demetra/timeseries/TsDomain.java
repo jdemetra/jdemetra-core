@@ -16,7 +16,9 @@
  */
 package demetra.timeseries;
 
+import demetra.time.TemporalRecurrenceConverter;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -346,4 +348,26 @@ public class TsDomain implements TimeSeriesRecurrence<TsPeriod> {
     private static int distance(long startId, long endId) {
         return (int) (endId - startId);
     }
+
+    @Override
+    public String toString() {
+        return toISO8601();
+    }
+
+    @Override
+    public String toISO8601() {
+        return CONVERTER.format(this).toString();
+    }
+
+    @NonNull
+    public static TsDomain parse(@NonNull CharSequence text) throws DateTimeParseException {
+        return CONVERTER.parse(text);
+    }
+
+    private static TsDomain make(Integer length, TsPeriod period) {
+        return TsDomain.of(period, length);
+    }
+
+    private static final TemporalRecurrenceConverter<TsPeriod, TsDomain> CONVERTER
+            = new TemporalRecurrenceConverter<>(TsPeriod.CONVERTER, TsDomain::make);
 }

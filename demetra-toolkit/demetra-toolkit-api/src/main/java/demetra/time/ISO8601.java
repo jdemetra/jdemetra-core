@@ -20,6 +20,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
 import java.util.function.Function;
@@ -41,20 +42,41 @@ public class ISO8601 {
     public interface Converter<T> {
 
         @NonNull
-        CharSequence format(@NonNull T x);
+        CharSequence format(@NonNull T value);
 
         @NonNull
-        T parse(@NonNull CharSequence y) throws DateTimeParseException;
+        T parse(@NonNull CharSequence text) throws DateTimeParseException;
 
         @NonNull
         static <T> Converter<T> of(@NonNull Function<T, CharSequence> formatter, @NonNull Function<CharSequence, T> parser) {
             return new DefaultConverter(formatter, parser);
         }
 
-        Converter<LocalDate> LOCAL_DATE = of(LocalDate::toString, LocalDate::parse);
         Converter<LocalDateTime> LOCAL_DATE_TIME = of(LocalDateTime::toString, LocalDateTime::parse);
+
         Converter<Period> PERIOD = of(Period::toString, Period::parse);
         Converter<Duration> DURATION = of(Duration::toString, Duration::parse);
+    }
+
+    @lombok.AllArgsConstructor
+    public enum LocalDateConverter implements Converter<LocalDate> {
+
+        LOCAL_DATE(DateTimeFormatter.ISO_DATE),
+        BASIC_DATE(DateTimeFormatter.BASIC_ISO_DATE),
+        ORDINAL_DATE(DateTimeFormatter.ISO_ORDINAL_DATE),
+        WEEK_DATE(DateTimeFormatter.ISO_WEEK_DATE);
+
+        private final DateTimeFormatter formatter;
+
+        @Override
+        public CharSequence format(LocalDate value) {
+            return formatter.format(value);
+        }
+
+        @Override
+        public LocalDate parse(CharSequence text) throws DateTimeParseException {
+            return formatter.parse(text, LocalDate::from);
+        }
     }
 
     @lombok.AllArgsConstructor

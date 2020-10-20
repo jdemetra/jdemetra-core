@@ -17,7 +17,7 @@
 package demetra.timeseries;
 
 import demetra.time.ISO8601;
-import demetra.time.TemporalIntervalRepresentation;
+import demetra.time.TemporalIntervalConverter;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -74,14 +74,18 @@ public class TimePeriod implements TimeSeriesInterval<Duration>, Comparable<Time
 
     @Override
     public String toISO8601() {
-        return REPRESENTATION.format(this);
+        return CONVERTER.format(this).toString();
     }
 
     @NonNull
     public static TimePeriod parse(@NonNull CharSequence text) throws DateTimeParseException {
-        return REPRESENTATION.parse(text, (start, end) -> TimePeriod.of(start, end));
+        return CONVERTER.parse(text);
     }
 
-    private static final TemporalIntervalRepresentation.StartEnd<LocalDateTime, Duration> REPRESENTATION
-            = new TemporalIntervalRepresentation.StartEnd(ISO8601.Converter.LOCAL_DATE_TIME);
+    private static TimePeriod make(LocalDateTime start, LocalDateTime end) {
+        return TimePeriod.of(start, end);
+    }
+
+    private static final TemporalIntervalConverter<TimePeriod> CONVERTER
+            = new TemporalIntervalConverter.StartEnd<>(ISO8601.Converter.LOCAL_DATE_TIME, false, TimePeriod::make);
 }

@@ -16,7 +16,7 @@
  */
 package demetra.timeseries;
 
-import demetra.time.TemporalIntervalRepresentation;
+import demetra.time.TemporalIntervalConverter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -163,7 +163,7 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
 
     @Override
     public String toISO8601() {
-        return REPRESENTATION.format(this);
+        return CONVERTER.format(this).toString();
     }
 
     public long idAt(LocalDateTime date) {
@@ -271,11 +271,15 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
 
     @NonNull
     public static TsPeriod parse(@NonNull CharSequence text) throws DateTimeParseException {
-        return REPRESENTATION.parse(text, (start, duration) -> TsPeriod.of(duration, start));
+        return CONVERTER.parse(text);
     }
 
-    private static final TemporalIntervalRepresentation.StartDuration<LocalDateTime, TsUnit> REPRESENTATION
-            = new TemporalIntervalRepresentation.StartDuration(ISO8601.Converter.LOCAL_DATE_TIME, TsUnit.CONVERTER);
+    private static TsPeriod make(LocalDateTime start, TsUnit duration) {
+        return TsPeriod.of(duration, start);
+    }
+
+    static final TemporalIntervalConverter<TsPeriod> CONVERTER
+            = new TemporalIntervalConverter.StartDuration<>(ISO8601.Converter.LOCAL_DATE_TIME, TsUnit.CONVERTER, TsPeriod::make);
 
     private static TsPeriod make(LocalDateTime epoch, TsUnit unit, LocalDate date) {
         return new TsPeriod(epoch, unit, idAt(epoch, unit, date.atStartOfDay()));
@@ -382,7 +386,14 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
 
         @Override
         public String toISO8601() {
-            return REPRESENTATION.format(this);
+            return converter.format(this).toString();
         }
+
+        private Builder apply(LocalDateTime start, TsUnit duration) {
+            return this;
+        }
+
+        private final TemporalIntervalConverter<Builder> converter
+                = new TemporalIntervalConverter.StartDuration<>(ISO8601.Converter.LOCAL_DATE_TIME, TsUnit.CONVERTER, this::apply);
     }
 }

@@ -268,5 +268,14 @@ public class TsDomainTest {
                 .isEqualTo("R10/2011-04-01T00:00/P3M");
     }
 
+    @Test
+    public void testParse() {
+        assertThat(TsDomain.parse("R30/2011-02-01T00:00/P1M"))
+                .isEqualTo(of(TsPeriod.monthly(2011, 2), 30));
+
+        assertThat(TsDomain.parse("R10/2011-04-01T00:00/P3M"))
+                .isEqualTo(of(TsPeriod.quarterly(2011, 2), 10));
+    }
+
     private final TsPeriod feb2010 = TsPeriod.monthly(2010, 2);
 }

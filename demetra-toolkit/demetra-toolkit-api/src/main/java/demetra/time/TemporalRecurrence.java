@@ -35,9 +35,4 @@ public interface TemporalRecurrence<I extends TemporalInterval<?, ?>>
 
     @NonNull
     I getInterval();
-
-    @Override
-    default String toISO8601() {
-        return "R" + length() + "/" + getInterval().toISO8601();
-    }
 }
