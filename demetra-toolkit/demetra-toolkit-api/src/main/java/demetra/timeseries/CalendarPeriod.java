@@ -16,16 +16,20 @@
  */
 package demetra.timeseries;
 
-import demetra.data.Range;
+import demetra.time.IsoConverter;
+import demetra.time.IsoIntervalConverter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeParseException;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.Value(staticConstructor = "of")
-public class CalendarPeriod implements Range<LocalDateTime>, Comparable<CalendarPeriod> {
+public class CalendarPeriod implements TimeSeriesInterval<Period>, Comparable<CalendarPeriod> {
 
     @lombok.NonNull
     LocalDate start, end;
@@ -42,17 +46,47 @@ public class CalendarPeriod implements Range<LocalDateTime>, Comparable<Calendar
 
     @Override
     public boolean contains(LocalDateTime element) {
-        return element.isBefore(end.atStartOfDay()) && (! element.isBefore(start.atStartOfDay()));
+        return element.isBefore(end.atStartOfDay()) && (!element.isBefore(start.atStartOfDay()));
+    }
+
+    @Override
+    public Period getDuration() {
+        return Period.between(start, end);
     }
 
     @Override
     public int compareTo(CalendarPeriod t) {
-        if (start.equals(t.start) && end.isAfter(t.end))
+        if (start.equals(t.start) && end.isAfter(t.end)) {
             return 0;
-        if (! end.isAfter(t.start))
+        }
+        if (!end.isAfter(t.start)) {
             return -1;
-        if (! t.end.isAfter(start))
+        }
+        if (!t.end.isAfter(start)) {
             return 1;
+        }
         throw new TsException(TsException.INCOMPATIBLE_PERIOD);
     }
+
+    @Override
+    public String toString() {
+        return toISO8601();
+    }
+
+    @Override
+    public String toISO8601() {
+        return CONVERTER.format(this).toString();
+    }
+
+    @NonNull
+    public static CalendarPeriod parse(@NonNull CharSequence text) throws DateTimeParseException {
+        return CONVERTER.parse(text);
+    }
+
+    private static CalendarPeriod make(LocalDateTime start, LocalDateTime end) {
+        return CalendarPeriod.of(start.toLocalDate(), end.toLocalDate());
+    }
+
+    private static final IsoIntervalConverter<CalendarPeriod> CONVERTER
+            = new IsoIntervalConverter.StartEnd<>(IsoConverter.LOCAL_DATE_TIME, false, CalendarPeriod::make);
 }

@@ -5,12 +5,11 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.data.Range;
 import demetra.timeseries.regression.Constant;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
-import java.time.LocalDateTime;
 import jdplus.math.matrices.Matrix;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  *
@@ -29,7 +28,7 @@ class ConstantFactory implements RegressionVariableFactory<Constant>{
     }
 
     @Override
-    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>>  boolean fill(Constant var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(Constant var, D domain, Matrix buffer) {
         buffer.set(1);
         return true;
     }

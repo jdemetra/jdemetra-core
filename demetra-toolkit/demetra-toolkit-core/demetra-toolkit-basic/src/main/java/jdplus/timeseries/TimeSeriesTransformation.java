@@ -17,12 +17,11 @@
 
 package jdplus.timeseries;
 
-import demetra.data.Range;
 import jdplus.data.transformation.LogJacobian;
 import demetra.design.Development;
 import demetra.timeseries.TimeSeriesData;
 import demetra.timeseries.TimeSeriesObs;
-import java.time.LocalDateTime;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  * Interface for transformation of a time series
@@ -33,7 +32,7 @@ import java.time.LocalDateTime;
  * @param <S>
  */
 @Development(status = Development.Status.Release)
-public interface TimeSeriesTransformation<P extends Range<LocalDateTime>, O extends TimeSeriesObs<P>, S extends TimeSeriesData<P, O>> {
+public interface TimeSeriesTransformation<P extends TimeSeriesInterval<?>, O extends TimeSeriesObs<P>, S extends TimeSeriesData<P, O>> {
 
 
     /**

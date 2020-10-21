@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,19 +14,27 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries;
+package demetra.time;
 
+import demetra.data.Range;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
+ * Framework-level interface defining the intervening time between two time
+ * points.
+ *
+ * @param <T>
+ * @param <D>
+ * @see <a href="https://en.wikipedia.org/wiki/ISO_8601#Time_intervals">Time
+ * intervals in ISO_8601</a>
  *
  * @author Philippe Charles
- * @param <P> period type
  */
-public interface TimeSeriesObs<P extends TimeSeriesInterval> {
+public interface IsoInterval<T extends Temporal & Comparable<? super T>, D extends TemporalAmount>
+        extends Range<T>, IsoRepresentable {
 
     @NonNull
-    P getPeriod();
-
-    double getValue();
+    D getDuration();
 }

@@ -146,7 +146,7 @@ public class TsDataTableTest {
 
     private static String computeUnit(String... periods) {
         Iterator<TsDomain> domains = Stream.of(periods).map(o -> TsDomain.of(TsPeriod.of(TsUnit.parse(o), 0), 1)).iterator();
-        return computeDomain(domains).getStartPeriod().getUnit().toIsoString();
+        return computeDomain(domains).getStartPeriod().getUnit().toISO8601();
     }
 
     private final TsData p1m_jan2010 = TsData.ofInternal(TsPeriod.monthly(2010, 1), new double[]{1.1, Double.NaN, 1.3});

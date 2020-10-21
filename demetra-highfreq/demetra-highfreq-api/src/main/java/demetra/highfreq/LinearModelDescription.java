@@ -5,12 +5,10 @@
  */
 package demetra.highfreq;
 
-import demetra.data.Range;
 import demetra.timeseries.TimeSeriesData;
 import demetra.timeseries.TimeSeriesObs;
 import demetra.timeseries.regression.Variable;
-import java.time.LocalDateTime;
-import java.util.List;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  *
@@ -20,7 +18,7 @@ import java.util.List;
  */
 @lombok.Value
 @lombok.Builder
-public class LinearModelDescription<P extends Range<LocalDateTime>, O extends TimeSeriesObs<P> >  {
+public class LinearModelDescription<P extends TimeSeriesInterval<?>, O extends TimeSeriesObs<P> >  {
 
     /**
      * Original series

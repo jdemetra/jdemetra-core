@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -16,17 +16,16 @@
  */
 package demetra.timeseries;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAmount;
+import demetra.time.IsoInterval;
 
 /**
  *
+ * @param <D>
+ *
  * @author Philippe Charles
- * @param <P> period type
  */
-public interface TimeSeriesObs<P extends TimeSeriesInterval> {
+public interface TimeSeriesInterval<D extends TemporalAmount> extends IsoInterval<LocalDateTime, D> {
 
-    @NonNull
-    P getPeriod();
-
-    double getValue();
 }

@@ -5,7 +5,6 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.data.Range;
 import demetra.timeseries.regression.LengthOfPeriod;
 import jdplus.data.DataBlock;
 import demetra.timeseries.TimeSeriesDomain;
@@ -13,8 +12,8 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.CalendarUtility;
-import java.time.LocalDateTime;
 import jdplus.math.matrices.Matrix;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  *
@@ -41,7 +40,7 @@ class LPFactory implements RegressionVariableFactory<LengthOfPeriod> {
     }
 
     @Override
-    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>>  boolean fill(LengthOfPeriod var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(LengthOfPeriod var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported.");
     }
 

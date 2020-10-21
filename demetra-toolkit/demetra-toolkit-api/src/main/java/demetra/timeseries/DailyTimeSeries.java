@@ -27,15 +27,15 @@ import demetra.data.DoubleSeq;
  * @author Jean Palate
  */
 public class DailyTimeSeries implements TimeSeriesData<Day, DayObs> {
-    
+
     private final LocalDate[] domain;
     private final DoubleSeq values;
-    
+
     public static DailyTimeSeries of(List<DayObs> data) {
         int n = data.size();
         LocalDate[] days = new LocalDate[n];
         double[] v = new double[n];
-        
+
         int pos = 0;
         for (DayObs obs : data) {
             days[pos] = obs.getDate();
@@ -43,36 +43,36 @@ public class DailyTimeSeries implements TimeSeriesData<Day, DayObs> {
         }
         return new DailyTimeSeries(days, DoubleSeq.of(v));
     }
-    
+
     private DailyTimeSeries(LocalDate[] domain, DoubleSeq values) {
         this.domain = domain;
         this.values = values;
     }
-    
+
     @Override
     public TimeSeriesDomain<Day> getDomain() {
         return Days.of(domain);
     }
-    
+
     @Override
     public DoubleSeq getValues() {
         return values;
     }
-    
+
     @Override
     public DayObs get(int index) throws IndexOutOfBoundsException {
         return DayObs.of(domain[index], values.get(index));
     }
-    
+
     @NonNull
     @Override
     public Day getPeriod(@NonNegative int index) throws IndexOutOfBoundsException {
         return Day.of(domain[index]);
     }
-    
+
     @Override
     public int length() {
         return domain.length;
     }
-    
- }
+
+}

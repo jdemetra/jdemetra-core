@@ -68,12 +68,6 @@ public class TsPeriodTest {
                 .extracting("epoch", "unit", "id")
                 .containsExactly(someReference, of(2, ChronoUnit.DECADES), 1L);
 
-        assertThat(builder()).satisfies(o -> {
-            assertThat(o.toShortString()).isEqualTo("P1M#0");
-            assertThat(o.plus(1).toShortString()).isEqualTo("P1M#1");
-            assertThat(o.plus(-2).toShortString()).isEqualTo("P1M#-1");
-        });
-
         assertThat(TsPeriod.builder().unit(DAY).epoch(someReference).id(2).build())
                 .isEqualTo(TsPeriod.monthly(1970, 1).withUnit(DAY).withEpoch(someReference).withId(2))
                 .isNotEqualTo(TsPeriod.builder().unit(DAY).id(2).epoch(someReference).build());
@@ -189,23 +183,77 @@ public class TsPeriodTest {
     }
 
     @Test
-    public void testToShortString() {
-        assertThat(of(YEAR, d2011_02_01).toShortString()).isEqualTo("P1Y#41");
-        assertThat(of(YEAR, d2011_02_01).withEpoch(someReference).next().toShortString()).isEqualTo("P1Y#30@1981-04-01");
-        assertThat(of(DAY, d2011_02_01).toShortString()).isEqualTo("P1D#15006");
-    }
-
-    @Test
     public void testToBuilder() {
         assertThat(of(DAY, d2011_02_01).toBuilder().build()).isEqualTo(of(DAY, d2011_02_01));
     }
 
     @Test
+    public void testToISOString() {
+        assertThat(monthly(2011, 2).toISO8601())
+                .isEqualTo("2011-02-01T00:00/P1M");
+
+        assertThat(weekly(2020, 4, 30).toISO8601())
+                .isEqualTo("2020-04-30T00:00/P7D");
+
+        assertThat(quarterly(2011, 2).toISO8601())
+                .isEqualTo("2011-04-01T00:00/P3M");
+
+        assertThat(minutely(2011, 2, 15, 10, 7).toISO8601())
+                .isEqualTo("2011-02-15T10:07/PT1M");
+
+        assertThat(of(YEAR, d2011_02_01).toISO8601())
+                .isEqualTo("2011-01-01T00:00/P1Y");
+
+        assertThat(of(YEAR, d2011_02_01).withEpoch(someReference).next().toISO8601())
+                .isEqualTo("2011-04-01T00:00/P1Y");
+
+        assertThat(of(DAY, d2011_02_01).toISO8601())
+                .isEqualTo("2011-02-01T00:00/P1D");
+    }
+
+    @Test
+    public void testString() {
+        assertThat(monthly(2011, 2).toISO8601())
+                .isEqualTo(monthly(2011, 2).toString());
+
+        assertThat(weekly(2020, 4, 30).toISO8601())
+                .isEqualTo(weekly(2020, 4, 30).toString());
+
+        assertThat(quarterly(2011, 2).toISO8601())
+                .isEqualTo(quarterly(2011, 2).toString());
+
+        assertThat(minutely(2011, 2, 15, 10, 7).toISO8601())
+                .isEqualTo(minutely(2011, 2, 15, 10, 7).toString());
+    }
+
+    @Test
     public void testParse() {
-        assertThatThrownBy(() -> TsPeriod.parse("hello")).isInstanceOf(DateTimeParseException.class);
-        assertThat(TsPeriod.parse("P1M#2")).isEqualTo(TsPeriod.builder().unit(MONTH).id(2).build());
-        assertThat(TsPeriod.parse("P1M#-1")).isEqualTo(TsPeriod.builder().unit(MONTH).id(-1).build());
-        assertThat(TsPeriod.parse("P1M#2@" + someReference.toString())).isEqualTo(TsPeriod.builder().unit(MONTH).epoch(someReference).id(2).build());
+        assertThatNullPointerException()
+                .isThrownBy(() -> TsPeriod.parse(null));
+
+        assertThatThrownBy(() -> TsPeriod.parse("hello"))
+                .isInstanceOf(DateTimeParseException.class);
+
+        assertThat(TsPeriod.parse("2011-02-01T00:00/P1M"))
+                .isEqualTo(monthly(2011, 2));
+
+        assertThat(TsPeriod.parse("2020-04-30T00:00/P7D"))
+                .isEqualTo(weekly(2020, 4, 30));
+
+        assertThat(TsPeriod.parse("2011-04-01T00:00/P3M"))
+                .isEqualTo(quarterly(2011, 2));
+
+        assertThat(TsPeriod.parse("2011-02-15T10:07/PT1M"))
+                .isEqualTo(minutely(2011, 2, 15, 10, 7));
+
+//        assertThat(TsPeriod.parse("P1M#2"))
+//                .isEqualTo(TsPeriod.builder().unit(MONTH).id(2).build());
+//
+//        assertThat(TsPeriod.parse("P1M#-1"))
+//                .isEqualTo(TsPeriod.builder().unit(MONTH).id(-1).build());
+//
+//        assertThat(TsPeriod.parse("P1M#2@" + someReference.toString()))
+//                .isEqualTo(TsPeriod.builder().unit(MONTH).epoch(someReference).id(2).build());
     }
 
     @Test
@@ -281,7 +329,6 @@ public class TsPeriodTest {
 //        RegularDomain hdom = RegularDomain.splitOf(lp, p.getUnit(), true);
 //        return hdom.indexOf(p);
 //    }
-
 //    @Test
 //    public void stressTestPosition() {
 //        TsPeriod p = TsPeriod.of(MONTH, d2011_02_01);
@@ -298,7 +345,6 @@ public class TsPeriodTest {
 //        t1 = System.currentTimeMillis();
 //        System.out.println(t1 - t0);
 //    }
-
     @Test
     public void testPoint() {
         LocalDateTime x = d2011_02_01_0000.plus(0, ChronoUnit.SECONDS);
@@ -306,11 +352,11 @@ public class TsPeriodTest {
         LocalDate y = d2011_02_01.plus(0, ChronoUnit.DAYS);
         assertEquals(y, d2011_02_01);
     }
-    
+
     @Test
-    public void testWeek(){
-        TsPeriod w1=TsPeriod.weekly(2020, 4, 30);
-        TsPeriod w2=TsPeriod.weekly(2020, 4, 20);
+    public void testWeek() {
+        TsPeriod w1 = TsPeriod.weekly(2020, 4, 30);
+        TsPeriod w2 = TsPeriod.weekly(2020, 4, 20);
         assertNotEquals(w1, w2);
     }
 

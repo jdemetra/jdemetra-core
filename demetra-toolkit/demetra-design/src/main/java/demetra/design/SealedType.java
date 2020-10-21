@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,19 +14,22 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries;
+package demetra.design;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * Sealed classes and interfaces restrict which other classes or interfaces may
+ * extend or implement them.
  *
  * @author Philippe Charles
- * @param <P> period type
  */
-public interface TimeSeriesObs<P extends TimeSeriesInterval> {
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.SOURCE)
+public @interface SealedType {
 
-    @NonNull
-    P getPeriod();
-
-    double getValue();
+    Class<?>[] value();
 }

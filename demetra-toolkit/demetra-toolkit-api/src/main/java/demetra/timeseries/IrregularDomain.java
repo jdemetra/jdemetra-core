@@ -16,11 +16,9 @@
  */
 package demetra.timeseries;
 
-import static demetra.timeseries.DiscreteTimeDomain.of;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  *
@@ -75,7 +73,7 @@ public class IrregularDomain implements TimeSeriesDomain<TimePeriod> {
                 ++pos;
             }
         }
-        return -pos-1;
+        return -pos - 1;
     }
 
     @Override

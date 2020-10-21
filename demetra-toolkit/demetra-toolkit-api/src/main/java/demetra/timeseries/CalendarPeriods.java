@@ -73,7 +73,7 @@ public class CalendarPeriods implements TimeSeriesDomain<CalendarPeriod> {
                 ++pos;
             }
         }
-        return -pos-1;
+        return -pos - 1;
     }
 
     @Override
