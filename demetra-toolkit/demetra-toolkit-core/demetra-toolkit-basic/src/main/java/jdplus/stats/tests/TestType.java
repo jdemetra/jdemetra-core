@@ -16,7 +16,7 @@
  */
 package jdplus.stats.tests;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * An enumeration representing the way tests are conducted

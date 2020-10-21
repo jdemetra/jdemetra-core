@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.Formatter;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntToDoubleFunction;
-import demetra.design.Development;
-import demetra.design.Immutable;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
 import demetra.math.Complex;
 import jdplus.math.ComplexComputer;
 import jdplus.math.ComplexMath;
@@ -29,7 +29,7 @@ import jdplus.math.Simplifying;
 import demetra.util.Arrays2;
 import lombok.NonNull;
 import demetra.data.DoubleSeq;
-import demetra.design.Unsafe;
+import nbbrd.design.Unsafe;
 import jdplus.math.ComplexUtility;
 
 /**

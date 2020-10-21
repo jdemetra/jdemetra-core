@@ -17,7 +17,7 @@
 
 package demetra.util;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

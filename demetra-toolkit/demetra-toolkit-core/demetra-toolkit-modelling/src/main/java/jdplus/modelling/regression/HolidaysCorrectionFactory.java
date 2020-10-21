@@ -6,7 +6,7 @@
 package jdplus.modelling.regression;
 
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.math.matrices.MatrixType;
 import demetra.timeseries.regression.HolidaysCorrectedTradingDays;
 import demetra.timeseries.regression.HolidaysCorrectedTradingDays.HolidaysCorrector;

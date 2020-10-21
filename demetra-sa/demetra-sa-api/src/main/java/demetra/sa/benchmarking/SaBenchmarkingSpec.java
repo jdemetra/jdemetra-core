@@ -16,8 +16,8 @@
  */
 package demetra.sa.benchmarking;
 
-import demetra.design.Development;
-import demetra.design.LombokWorkaround;
+import nbbrd.design.Development;
+import nbbrd.design.LombokWorkaround;
 import demetra.util.Validatable;
 
 /**

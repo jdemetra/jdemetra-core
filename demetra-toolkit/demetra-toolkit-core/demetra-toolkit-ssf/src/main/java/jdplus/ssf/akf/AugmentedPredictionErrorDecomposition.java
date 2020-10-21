@@ -16,7 +16,7 @@
  */
 package jdplus.ssf.akf;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
 import jdplus.ssf.univariate.ISsf;

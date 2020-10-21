@@ -17,7 +17,7 @@
 package jdplus.regsarima.regular;
 
 import demetra.arima.SarimaOrders;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.processing.ProcessingLog;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;

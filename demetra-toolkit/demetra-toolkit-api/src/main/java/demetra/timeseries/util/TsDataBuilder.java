@@ -16,7 +16,7 @@
  */
 package demetra.timeseries.util;
 
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import demetra.timeseries.TsData;
 import internal.timeseries.util.ByLongDataBuilder;
 import internal.timeseries.util.ByObjDataBuilder;
@@ -28,7 +28,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import demetra.design.NotThreadSafe;
+import nbbrd.design.NotThreadSafe;
 
 /**
  * Builder that collects observations in order to create an OptionalTsData.

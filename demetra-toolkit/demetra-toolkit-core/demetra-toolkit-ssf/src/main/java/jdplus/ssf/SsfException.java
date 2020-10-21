@@ -17,7 +17,7 @@
 package jdplus.ssf;
 
 import demetra.DemetraException;
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 
 /**

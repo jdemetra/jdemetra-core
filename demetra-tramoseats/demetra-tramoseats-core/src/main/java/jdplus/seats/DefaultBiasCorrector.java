@@ -16,7 +16,7 @@
  */
 package jdplus.seats;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
 import demetra.sa.DecompositionMode;

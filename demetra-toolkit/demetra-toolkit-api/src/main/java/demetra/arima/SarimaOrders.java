@@ -16,7 +16,7 @@
  */
 package demetra.arima;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * Definition of the orders of the polynomials of Box-Jenkins models.

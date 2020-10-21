@@ -16,14 +16,14 @@
  */
 package demetra.information;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.util.WildCards;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import demetra.design.ReturnNew;
+import nbbrd.design.ReturnNew;
 
 /**
  * TODO: Is it necessary?

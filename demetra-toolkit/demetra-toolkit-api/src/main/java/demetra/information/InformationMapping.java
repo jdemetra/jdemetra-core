@@ -16,8 +16,8 @@
  */
 package demetra.information;
 
-import demetra.design.Development;
-import demetra.design.ThreadSafe;
+import nbbrd.design.Development;
+import nbbrd.design.ThreadSafe;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;

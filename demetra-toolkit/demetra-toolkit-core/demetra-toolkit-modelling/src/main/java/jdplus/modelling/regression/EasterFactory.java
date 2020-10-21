@@ -17,7 +17,7 @@
 package jdplus.modelling.regression;
 
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.timeseries.regression.EasterVariable;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;

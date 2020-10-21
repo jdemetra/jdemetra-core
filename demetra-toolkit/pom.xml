@@ -15,7 +15,6 @@
     
     
     <modules>
-        <module>demetra-design</module>
         <module>demetra-data-tests</module>
         <module>demetra-toolkit-api</module>
         <module>demetra-toolkit-core</module>
@@ -32,11 +31,6 @@
     <dependencyManagement>  
         <dependencies>
             <!-- modules 3.0 > -->
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-design</artifactId>
-                <version>${jd3-toolkit.version}</version>            
-            </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-data-tests</artifactId>

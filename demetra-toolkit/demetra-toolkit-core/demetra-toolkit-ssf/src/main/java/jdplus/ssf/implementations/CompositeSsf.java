@@ -8,7 +8,7 @@ package jdplus.ssf.implementations;
 import jdplus.ssf.CompositeLoading;
 import jdplus.ssf.CompositeInitialization;
 import jdplus.ssf.CompositeDynamics;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.ISsfLoading;

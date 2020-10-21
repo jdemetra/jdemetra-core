@@ -17,7 +17,7 @@
 package demetra.arima;
 
 import demetra.data.DoubleSeq;
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * Generic ARIMA model (defined by its stationary AR, non-stationary AR, 

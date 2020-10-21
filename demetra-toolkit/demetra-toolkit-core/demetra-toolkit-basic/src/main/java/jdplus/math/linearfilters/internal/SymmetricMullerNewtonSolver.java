@@ -16,8 +16,8 @@
  */
 package jdplus.math.linearfilters.internal;
 
-import demetra.design.Development;
-import demetra.design.VisibleForTesting;
+import nbbrd.design.Development;
+import nbbrd.design.VisibleForTesting;
 import demetra.math.Complex;
 import jdplus.math.ComplexMath;
 import jdplus.math.ComplexUtility;

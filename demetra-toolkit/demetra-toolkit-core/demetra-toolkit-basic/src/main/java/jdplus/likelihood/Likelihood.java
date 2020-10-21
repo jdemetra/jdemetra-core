@@ -16,11 +16,11 @@
  */
 package jdplus.likelihood;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.eco.EcoException;
 import demetra.math.Constants;
 import demetra.data.DoubleSeq;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 
 /**
  * The Likelihood interface formalizes the likelihood of a usual gaussian

@@ -17,7 +17,7 @@
 package demetra.math.matrices;
 
 import demetra.data.BaseTable;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import java.util.stream.DoubleStream;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;

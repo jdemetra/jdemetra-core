@@ -18,7 +18,7 @@ package demetra.timeseries.regression.modelling;
 
 import demetra.arima.SarimaModel;
 import demetra.design.Algorithm;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import java.util.List;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;

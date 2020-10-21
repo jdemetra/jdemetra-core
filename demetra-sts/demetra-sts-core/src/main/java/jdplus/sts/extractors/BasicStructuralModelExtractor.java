@@ -5,7 +5,7 @@
  */
 package jdplus.sts.extractors;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.information.InformationMapping;
 import demetra.sts.Component;
 import jdplus.sts.BasicStructuralModel;

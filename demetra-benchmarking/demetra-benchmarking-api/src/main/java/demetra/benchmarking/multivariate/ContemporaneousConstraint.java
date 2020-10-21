@@ -16,7 +16,7 @@
  */
 package demetra.benchmarking.multivariate;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.util.WeightedItem;
 import demetra.util.WildCards;
 import java.util.ArrayList;

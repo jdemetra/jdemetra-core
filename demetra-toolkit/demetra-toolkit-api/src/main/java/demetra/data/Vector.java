@@ -16,7 +16,7 @@
  */
 package demetra.data;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import internal.data.InternalSeqCursor;
 import java.util.function.UnaryOperator;
 import org.checkerframework.checker.index.qual.NonNegative;

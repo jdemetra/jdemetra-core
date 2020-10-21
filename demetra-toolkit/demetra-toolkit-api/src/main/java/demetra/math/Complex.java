@@ -16,7 +16,7 @@
  */
 package demetra.math;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * Complex number

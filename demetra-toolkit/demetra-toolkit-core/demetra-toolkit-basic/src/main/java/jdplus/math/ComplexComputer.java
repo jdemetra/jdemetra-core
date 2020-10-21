@@ -18,7 +18,7 @@ package jdplus.math;
 
 import demetra.math.Complex;
 import demetra.math.ComplexType;
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * Encapsulation of some operators on complex numbers. The use of this class is

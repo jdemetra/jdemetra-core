@@ -18,7 +18,7 @@ package jdplus.data.accumulator;
 
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Robust;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import jdplus.data.normalizer.DataNormalizer;

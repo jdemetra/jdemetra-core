@@ -22,7 +22,7 @@ import jdplus.math.functions.IParametricMapping;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfBuilder;
 import jdplus.ssf.univariate.ISsfData;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import demetra.data.DoubleSeq;
 import jdplus.math.matrices.Matrix;
 import jdplus.likelihood.LikelihoodFunction;

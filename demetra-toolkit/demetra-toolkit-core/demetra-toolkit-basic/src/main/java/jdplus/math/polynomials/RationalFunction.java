@@ -16,9 +16,9 @@
  */
 package jdplus.math.polynomials;
 
-import demetra.design.Development;
-import demetra.design.Immutable;
-import demetra.design.SkipProcessing;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
+import nbbrd.design.SkipProcessing;
 import demetra.math.Complex;
 import demetra.math.Constants;
 

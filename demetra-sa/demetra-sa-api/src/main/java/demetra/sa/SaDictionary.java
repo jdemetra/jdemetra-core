@@ -17,7 +17,7 @@
 
 package demetra.sa;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * @author Jean Palate

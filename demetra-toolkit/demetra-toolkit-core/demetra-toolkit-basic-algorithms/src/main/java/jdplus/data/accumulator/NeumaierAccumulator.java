@@ -18,7 +18,7 @@ package jdplus.data.accumulator;
 
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Balanced;
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * Kahan and Babuska summation, Neumaier variant

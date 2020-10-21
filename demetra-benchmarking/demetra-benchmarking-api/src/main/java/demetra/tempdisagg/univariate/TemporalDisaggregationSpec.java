@@ -20,7 +20,7 @@ import demetra.processing.AlgorithmDescriptor;
 import demetra.data.AggregationType;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.timeseries.TimeSelector;
 import demetra.processing.ProcSpecification;
 import demetra.ssf.SsfInitialization;

@@ -17,8 +17,8 @@
 package jdplus.x13.regarima;
 
 import jdplus.data.DataBlock;
-import demetra.design.BuilderPattern;
-import demetra.design.Development;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 import demetra.math.Complex;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.regarima.IRegArimaProcessor;

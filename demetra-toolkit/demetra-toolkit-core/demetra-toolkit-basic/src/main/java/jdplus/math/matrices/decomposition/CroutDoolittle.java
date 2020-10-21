@@ -16,7 +16,7 @@
  */
 package jdplus.math.matrices.decomposition;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.math.Constants;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.matrices.Matrix;

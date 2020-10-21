@@ -16,8 +16,8 @@
  */
 package jdplus.stats.tests;
 
-import demetra.design.BuilderPattern;
-import demetra.design.Development;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 import jdplus.dstats.Chi2;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatException;

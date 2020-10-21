@@ -16,7 +16,7 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.timeseries.regression.TsVariable;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsData;

@@ -17,7 +17,7 @@
 package jdplus.data;
 
 //import ec.tstoolkit.maths.matrices.*;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.matrices.Matrix;
 import java.util.Arrays;
 

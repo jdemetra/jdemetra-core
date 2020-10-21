@@ -19,7 +19,7 @@ package jdplus.math.matrices.decomposition;
 import java.util.Iterator;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.matrices.Matrix;
 

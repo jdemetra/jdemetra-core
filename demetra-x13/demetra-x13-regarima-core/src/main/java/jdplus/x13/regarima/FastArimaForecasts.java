@@ -18,7 +18,7 @@ package jdplus.x13.regarima;
 
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.arima.estimation.ArimaForecasts;
 import demetra.data.DoubleSeq;

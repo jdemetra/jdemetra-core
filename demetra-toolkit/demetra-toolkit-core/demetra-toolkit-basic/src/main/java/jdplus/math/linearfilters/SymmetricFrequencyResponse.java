@@ -18,8 +18,8 @@ package jdplus.math.linearfilters;
 
 import jdplus.data.DataBlock;
 import demetra.util.TableOfLong;
-import demetra.design.Development;
-import demetra.design.Immutable;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
 import demetra.math.Complex;
 import jdplus.math.Simplifying;
 import jdplus.math.matrices.Matrix;

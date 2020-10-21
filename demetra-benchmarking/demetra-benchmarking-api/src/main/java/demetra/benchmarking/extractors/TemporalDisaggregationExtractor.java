@@ -8,7 +8,7 @@ package demetra.benchmarking.extractors;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.information.InformationMapping;
 import demetra.math.matrices.MatrixType;
 import demetra.tempdisagg.univariate.TemporalDisaggregationResults;

@@ -16,7 +16,7 @@
  */
 package demetra.demo;
 
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.Ts;

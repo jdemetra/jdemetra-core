@@ -17,7 +17,7 @@
 
 package jdplus.data.interpolation;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.util.IntList;
 import demetra.data.DoubleSeq;
 

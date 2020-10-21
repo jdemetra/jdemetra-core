@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider.stream;
 
-import demetra.design.ThreadSafe;
+import nbbrd.design.ThreadSafe;
 import demetra.timeseries.TsCollection;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsInformationType;

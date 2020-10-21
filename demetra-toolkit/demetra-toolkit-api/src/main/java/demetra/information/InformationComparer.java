@@ -17,7 +17,7 @@
 
 package demetra.information;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * TODO: Is it necessary?

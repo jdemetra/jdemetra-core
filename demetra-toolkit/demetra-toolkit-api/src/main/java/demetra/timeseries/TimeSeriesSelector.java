@@ -16,7 +16,7 @@
  */
 package demetra.timeseries;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import java.time.LocalDateTime;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AccessLevel;

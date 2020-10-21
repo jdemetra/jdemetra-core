@@ -16,7 +16,7 @@
  */
 package jdplus.regarima;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;

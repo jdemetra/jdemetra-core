@@ -16,7 +16,7 @@
 */
 package jdplus.math.polynomials;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * 

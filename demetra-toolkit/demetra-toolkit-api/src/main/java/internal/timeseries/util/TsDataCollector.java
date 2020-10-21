@@ -16,7 +16,7 @@
  */
 package internal.timeseries.util;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import demetra.data.AggregationType;
 import demetra.timeseries.TsUnit;

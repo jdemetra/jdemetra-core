@@ -17,8 +17,8 @@
 package jdplus.dstats;
 
 import jdplus.data.DataBlock;
-import demetra.design.Development;
-import demetra.design.Immutable;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
 import demetra.math.Constants;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;

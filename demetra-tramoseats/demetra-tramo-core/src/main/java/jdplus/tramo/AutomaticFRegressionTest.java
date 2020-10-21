@@ -16,7 +16,7 @@
  */
 package jdplus.tramo;
 
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import jdplus.dstats.F;
 import demetra.stats.ProbabilityType;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;

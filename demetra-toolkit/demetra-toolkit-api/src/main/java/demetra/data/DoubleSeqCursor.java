@@ -16,7 +16,7 @@
  */
 package demetra.data;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import internal.data.InternalBlockCursors;
 import java.util.function.DoubleUnaryOperator;
 import org.checkerframework.checker.index.qual.NonNegative;

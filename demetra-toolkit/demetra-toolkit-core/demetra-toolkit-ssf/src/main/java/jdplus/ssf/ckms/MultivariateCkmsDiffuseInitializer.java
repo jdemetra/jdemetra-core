@@ -16,7 +16,7 @@
  */
 package jdplus.ssf.ckms;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.ssf.array.LState;
 import jdplus.ssf.multivariate.IMultivariateSsf;
 import jdplus.ssf.multivariate.IMultivariateSsfData;

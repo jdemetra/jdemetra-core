@@ -17,7 +17,7 @@
 
 package jdplus.regarima;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.arima.IArimaModel;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regsarima.regular.IModelComparator;

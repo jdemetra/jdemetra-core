@@ -16,7 +16,7 @@
  */
 package jdplus.dstats;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * Describes the type of the boundary of a distribution domain.

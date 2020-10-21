@@ -16,7 +16,7 @@
  */
 package demetra.data;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import java.util.function.DoubleUnaryOperator;
 
 /**

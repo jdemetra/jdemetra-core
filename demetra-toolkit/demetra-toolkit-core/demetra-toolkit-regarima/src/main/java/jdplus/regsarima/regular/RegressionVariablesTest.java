@@ -18,8 +18,8 @@ package jdplus.regsarima.regular;
 
 import jdplus.regarima.FRegressionTest;
 import jdplus.regarima.DerivedRegressionTest;
-import demetra.design.BuilderPattern;
-import demetra.design.Development;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.timeseries.regression.Variable;

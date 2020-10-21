@@ -18,8 +18,8 @@ package jdplus.math.polynomials;
 
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Balanced;
-import demetra.design.Development;
-import demetra.design.VisibleForTesting;
+import nbbrd.design.Development;
+import nbbrd.design.VisibleForTesting;
 import demetra.math.Complex;
 import jdplus.math.ComplexComputer;
 import jdplus.math.ComplexMath;

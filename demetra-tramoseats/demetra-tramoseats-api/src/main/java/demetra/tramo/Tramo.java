@@ -17,7 +17,7 @@
 package demetra.tramo;
 
 import demetra.design.Algorithm;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.ModellingContext;
 import demetra.timeseries.regression.modelling.RegSarimaResults;

@@ -18,7 +18,7 @@ package jdplus.ssf.multivariate;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.ssf.IPredictionErrorDecomposition;
 import jdplus.likelihood.ResidualsCumulator;
 import jdplus.ssf.State;

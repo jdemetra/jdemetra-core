@@ -17,8 +17,8 @@
 package jdplus.linearmodel;
 
 import demetra.data.DoubleSeq;
-import demetra.design.BuilderPattern;
-import demetra.design.Development;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 import demetra.math.matrices.MatrixType;
 import jdplus.dstats.Chi2;
 import jdplus.stats.tests.StatisticalTest;

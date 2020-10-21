@@ -16,7 +16,7 @@
  */
 package demetra.sql.jdbc;
 
-import demetra.design.DirectImpl;
+import nbbrd.design.DirectImpl;
 import demetra.sql.HasSqlProperties;
 import internal.sql.jdbc.JdbcParam;
 import demetra.sql.SqlTableAsCubeResource;

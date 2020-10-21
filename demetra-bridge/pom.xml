@@ -42,8 +42,8 @@
             <artifactId>demetra-data-tests</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-design</artifactId>
+            <groupId>be.nbb.rd</groupId>
+            <artifactId>java-design-processor</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

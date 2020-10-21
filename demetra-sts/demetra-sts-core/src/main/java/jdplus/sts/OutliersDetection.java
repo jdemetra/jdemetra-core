@@ -7,7 +7,7 @@ package jdplus.sts;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import demetra.util.IntList;

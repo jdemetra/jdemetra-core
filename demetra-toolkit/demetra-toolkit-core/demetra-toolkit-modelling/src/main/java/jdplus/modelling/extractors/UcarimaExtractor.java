@@ -16,7 +16,7 @@
  */
 package jdplus.modelling.extractors;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.information.InformationMapping;
 import jdplus.modelling.ApiUtility;
 import jdplus.ucarima.UcarimaModel;

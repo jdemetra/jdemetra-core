@@ -20,8 +20,8 @@ import jdplus.arima.ArimaException;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
 import jdplus.arima.Spectrum;
-import demetra.design.BuilderPattern;
-import demetra.design.Development;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 import java.util.ArrayList;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

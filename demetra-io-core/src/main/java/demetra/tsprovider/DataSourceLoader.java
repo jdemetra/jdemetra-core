@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider;
 
-import demetra.design.ThreadSafe;
+import nbbrd.design.ThreadSafe;
 
 
 /**

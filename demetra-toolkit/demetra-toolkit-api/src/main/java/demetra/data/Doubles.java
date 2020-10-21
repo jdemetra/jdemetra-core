@@ -16,9 +16,9 @@
  */
 package demetra.data;
 
-import demetra.design.Development;
-import demetra.design.Immutable;
-import demetra.design.Internal;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
+import nbbrd.design.Internal;
 import java.util.function.IntToDoubleFunction;
 import java.util.stream.DoubleStream;
 import org.checkerframework.checker.index.qual.NonNegative;

@@ -16,7 +16,7 @@
  */
 package jdplus.timeseries.calendars;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.Easter;

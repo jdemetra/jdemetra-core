@@ -16,7 +16,7 @@
 */
 package jdplus.math;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * Generic specification for simplifying operations.

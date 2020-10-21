@@ -18,9 +18,9 @@ package jdplus.regarima;
 
 import jdplus.arima.IArimaModel;
 import jdplus.arima.StationaryTransformation;
-import demetra.design.BuilderPattern;
-import demetra.design.Development;
-import demetra.design.Immutable;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

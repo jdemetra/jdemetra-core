@@ -18,7 +18,7 @@
 package jdplus.regarima;
 
 import jdplus.arima.IArimaModel;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.arima.estimation.IArimaMapping;
 
 

@@ -17,8 +17,8 @@
 package jdplus.arima;
 
 import java.util.concurrent.atomic.AtomicReference;
-import demetra.design.Development;
-import demetra.design.Immutable;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.math.polynomials.Polynomial;

@@ -17,7 +17,7 @@
 package jdplus.x11.filter.endpoints;
 
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.data.DoubleSeq;
 
 /**

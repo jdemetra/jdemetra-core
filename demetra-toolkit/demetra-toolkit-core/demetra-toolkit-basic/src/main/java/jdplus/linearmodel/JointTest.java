@@ -17,7 +17,7 @@
 package jdplus.linearmodel;
 
 import jdplus.data.DataBlock;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import jdplus.dstats.F;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.matrices.LowerTriangularMatrix;

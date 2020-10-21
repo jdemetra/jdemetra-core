@@ -16,7 +16,7 @@
  */
 package demetra.arima;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.util.Validatable;

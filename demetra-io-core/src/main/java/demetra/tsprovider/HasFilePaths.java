@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider;
 
-import demetra.design.ThreadSafe;
+import nbbrd.design.ThreadSafe;
 import internal.tsprovider.InternalTsProvider;
 import demetra.io.Files2;
 import java.io.File;

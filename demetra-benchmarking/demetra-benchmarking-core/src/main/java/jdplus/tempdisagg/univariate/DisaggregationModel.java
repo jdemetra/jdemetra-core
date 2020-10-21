@@ -16,7 +16,7 @@
  */
 package jdplus.tempdisagg.univariate;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;

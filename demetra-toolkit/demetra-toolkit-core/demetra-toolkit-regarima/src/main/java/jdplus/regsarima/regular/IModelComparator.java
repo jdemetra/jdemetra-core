@@ -18,7 +18,7 @@
 
 package jdplus.regsarima.regular;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.arima.IArimaModel;
 import jdplus.regarima.RegArimaEstimation;
 import org.checkerframework.checker.nullness.qual.NonNull;

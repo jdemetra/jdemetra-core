@@ -18,7 +18,7 @@
 package demetra.sa;
 
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * Type of decomposition

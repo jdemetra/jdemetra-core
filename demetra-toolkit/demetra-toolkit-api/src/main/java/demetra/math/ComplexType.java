@@ -20,7 +20,7 @@ package demetra.math;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  *

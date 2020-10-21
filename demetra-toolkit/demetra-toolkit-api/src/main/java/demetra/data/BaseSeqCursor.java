@@ -16,8 +16,8 @@
  */
 package demetra.data;
 
-import demetra.design.Development;
-import demetra.design.NotThreadSafe;
+import nbbrd.design.Development;
+import nbbrd.design.NotThreadSafe;
 import org.checkerframework.checker.index.qual.NonNegative;
 
 /**

@@ -17,7 +17,7 @@
 package jdplus.ucarima;
 
 import jdplus.arima.LinearProcess;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.linearfilters.RationalFilter;
 
 /**

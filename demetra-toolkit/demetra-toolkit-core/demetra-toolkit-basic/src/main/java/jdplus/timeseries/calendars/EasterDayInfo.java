@@ -16,7 +16,7 @@
  */
 package jdplus.timeseries.calendars;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import java.time.DayOfWeek;
 import java.time.LocalDate;

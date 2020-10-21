@@ -17,7 +17,7 @@
 package jdplus.math.matrices;
 
 import jdplus.data.DataBlock;
-import demetra.design.Unsafe;
+import nbbrd.design.Unsafe;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.DoubleSeq;

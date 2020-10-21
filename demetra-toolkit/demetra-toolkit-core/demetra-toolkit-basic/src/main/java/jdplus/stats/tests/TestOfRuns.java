@@ -16,7 +16,7 @@
  */
 package jdplus.stats.tests;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.dstats.Chi2;
 import jdplus.dstats.Normal;
 import jdplus.stats.DescriptiveStatistics;

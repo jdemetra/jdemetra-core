@@ -17,7 +17,7 @@
 package jdplus.dstats;
 
 import demetra.stats.ProbabilityType;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import lombok.NonNull;
 import jdplus.random.RandomNumberGenerator;
 

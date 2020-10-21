@@ -16,8 +16,8 @@
  */
 package demetra.regarima;
 
-import demetra.design.Development;
-import demetra.design.LombokWorkaround;
+import nbbrd.design.Development;
+import nbbrd.design.LombokWorkaround;
 import demetra.modelling.ChangeOfRegimeSpec;
 import demetra.modelling.RegressionTestSpec;
 import demetra.util.Validatable;

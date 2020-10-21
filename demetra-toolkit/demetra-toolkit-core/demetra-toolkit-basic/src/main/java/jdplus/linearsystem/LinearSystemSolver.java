@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import jdplus.data.DataBlock;
 import demetra.design.Algorithm;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.matrices.Matrix;
 

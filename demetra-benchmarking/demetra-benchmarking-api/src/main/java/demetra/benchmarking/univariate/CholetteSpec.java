@@ -18,7 +18,7 @@ package demetra.benchmarking.univariate;
 
 import demetra.processing.AlgorithmDescriptor;
 import demetra.data.AggregationType;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.processing.ProcSpecification;
 import demetra.util.Validatable;
 

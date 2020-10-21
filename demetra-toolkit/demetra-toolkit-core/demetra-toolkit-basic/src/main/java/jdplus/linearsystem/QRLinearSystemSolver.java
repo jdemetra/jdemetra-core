@@ -18,10 +18,10 @@ package jdplus.linearsystem;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import jdplus.math.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.data.normalizer.SafeNormalizer;
 import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.math.matrices.Matrix;

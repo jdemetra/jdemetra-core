@@ -16,8 +16,8 @@
  */
 package demetra.tsprovider.util;
 
-import demetra.design.BuilderPattern;
-import demetra.design.Immutable;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Immutable;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;

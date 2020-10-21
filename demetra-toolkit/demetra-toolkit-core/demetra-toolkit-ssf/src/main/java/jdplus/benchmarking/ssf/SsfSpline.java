@@ -17,7 +17,7 @@
 package jdplus.benchmarking.ssf;
 
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.DiffuseInitialization;

@@ -17,7 +17,7 @@
 package jdplus.sa.diagnostics;
 
 import demetra.data.DoubleSeq;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import demetra.timeseries.TsData;

@@ -16,8 +16,8 @@
  */
 package demetra.x11;
 
-import demetra.design.Development;
-import demetra.design.LombokWorkaround;
+import nbbrd.design.Development;
+import nbbrd.design.LombokWorkaround;
 import demetra.sa.DecompositionMode;
 import demetra.util.Validatable;
 import java.util.List;

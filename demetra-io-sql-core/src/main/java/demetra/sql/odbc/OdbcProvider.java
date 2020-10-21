@@ -16,7 +16,7 @@
  */
 package demetra.sql.odbc;
 
-import demetra.design.DirectImpl;
+import nbbrd.design.DirectImpl;
 import demetra.sql.HasSqlProperties;
 import nbbrd.sql.odbc.OdbcConnectionSupplier;
 import internal.sql.odbc.OdbcParam;

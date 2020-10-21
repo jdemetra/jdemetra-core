@@ -18,13 +18,13 @@ package jdplus.regsarima;
 
 import demetra.data.DoubleSeq;
 import jdplus.sarima.estimation.SarimaMapping;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.internal.RegArmaEstimation;
 import jdplus.regarima.RegArmaModel;
 import jdplus.regarima.internal.RegArmaProcessor;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.math.functions.IParametricMapping;

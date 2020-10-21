@@ -16,7 +16,7 @@
  */
 package jdplus.x11.filter;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.linearfilters.FiniteFilter;
 import jdplus.math.linearfilters.HendersonFilters;
 import jdplus.math.linearfilters.IFiniteFilter;

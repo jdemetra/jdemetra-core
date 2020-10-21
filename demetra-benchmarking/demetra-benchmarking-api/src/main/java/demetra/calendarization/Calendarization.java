@@ -17,7 +17,7 @@
 package demetra.calendarization;
 
 import demetra.design.Algorithm;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import nbbrd.service.ServiceDefinition;
 import demetra.timeseries.CalendarTimeSeries;
 import nbbrd.service.Mutability;
