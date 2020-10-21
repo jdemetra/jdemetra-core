@@ -6,7 +6,6 @@
 package demetra.sts.r;
 
 import demetra.data.Data;
-import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import java.util.Random;

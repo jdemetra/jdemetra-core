@@ -21,5 +21,15 @@ package demetra.timeseries.regression;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public interface ITsModifier extends ITsVariable{
-    ITsVariable root();
+    
+    ITsVariable variable();
+    
+       default ITsVariable root() {
+        ITsVariable current = variable();
+        while (current != null && current instanceof ITsModifier) {
+            ITsModifier modifier = (ITsModifier) current;
+            current = modifier.variable();
+        }
+        return current;
+    }
 }

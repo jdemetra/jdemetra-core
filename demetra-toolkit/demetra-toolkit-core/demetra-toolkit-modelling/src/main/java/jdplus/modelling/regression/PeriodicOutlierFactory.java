@@ -97,13 +97,18 @@ public class PeriodicOutlierFactory implements IOutlierFactory {
 
 class SOFactory implements RegressionVariableFactory<PeriodicOutlier> {
 
-    static SOFactory FACTORY=new SOFactory();
+    static SOFactory FACTORY = new SOFactory();
 
-    private SOFactory(){}
+    private SOFactory() {
+    }
 
     @Override
     public boolean fill(PeriodicOutlier var, TsPeriod start, Matrix buffer) {
-        PeriodicOutlierFactory fac = new PeriodicOutlierFactory(var.getPeriod(), var.isZeroEnded());
+        int period = var.getPeriod();
+        if (period == 0) {
+            period = start.getUnit().getAnnualFrequency();
+        }
+        PeriodicOutlierFactory fac = new PeriodicOutlierFactory(period, var.isZeroEnded());
         TsPeriod p = start.withDate(var.getPosition());
         int opos = start.until(p);
         fac.fill(opos, buffer.column(0));
@@ -111,7 +116,7 @@ class SOFactory implements RegressionVariableFactory<PeriodicOutlier> {
     }
 
     @Override
-    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>>  boolean fill(PeriodicOutlier var, D domain, Matrix buffer) {
+    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>> boolean fill(PeriodicOutlier var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported.");
     }
 

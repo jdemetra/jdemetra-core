@@ -1,13 +1,13 @@
 /*
- * Copyright 2013 National Bank of Belgium
- *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Copyright 2020 National Bank of Belgium
+ * 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- *
- * http://ec.europa.eu/idabc/eupl
- *
+ * 
+ * https://joinup.ec.europa.eu/software/page/eupl
+ * 
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,27 +36,27 @@ public class EasterRelatedDay implements Holiday {
     private double weight;
     private ValidityPeriod validityPeriod;
     private boolean julian;
-    
-    public static EasterRelatedDay gregorian(int offset, double weight, ValidityPeriod validityPeriod){
+
+    public static EasterRelatedDay gregorian(int offset, double weight, ValidityPeriod validityPeriod) {
         return new EasterRelatedDay(offset, weight, validityPeriod, false);
     }
 
-    public static EasterRelatedDay gregorian(int offset){
+    public static EasterRelatedDay gregorian(int offset) {
         return new EasterRelatedDay(offset, 1, ValidityPeriod.ALWAYS, false);
     }
 
-    public static EasterRelatedDay julian(int offset, double weight, ValidityPeriod validityPeriod){
+    public static EasterRelatedDay julian(int offset, double weight, ValidityPeriod validityPeriod) {
         return new EasterRelatedDay(offset, weight, validityPeriod, true);
     }
 
-    public static EasterRelatedDay julian(int offset){
+    public static EasterRelatedDay julian(int offset) {
         return new EasterRelatedDay(offset, 1, ValidityPeriod.ALWAYS, true);
     }
 
     private EasterRelatedDay(int offset, double weight, ValidityPeriod validityPeriod, boolean julian) {
         this.weight = weight;
         this.offset = offset;
-        this.validityPeriod=validityPeriod;
+        this.validityPeriod = validityPeriod;
         this.julian = julian;
     }
 
@@ -66,6 +66,15 @@ public class EasterRelatedDay implements Holiday {
             return this;
         }
         return new EasterRelatedDay(offset, nweight, validityPeriod, julian);
+    }
+
+    @Override
+    public EasterRelatedDay forPeriod(LocalDate start, LocalDate end) {
+        if (validityPeriod.getStart() != start && validityPeriod.getEnd() != end) {
+            return new EasterRelatedDay(offset, weight, ValidityPeriod.between(start, end), julian);
+        } else {
+            return this;
+        }
     }
 
     public EasterRelatedDay plus(int ndays) {

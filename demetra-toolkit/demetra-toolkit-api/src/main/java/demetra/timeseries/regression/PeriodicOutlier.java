@@ -31,7 +31,11 @@ public class PeriodicOutlier implements IOutlier {
     public static final String PO = "PO";
 
     private LocalDateTime position;
-    private int period;
+    /**
+     * Period of the outlier. When period=0, the period is deduced from the context.
+     * Otherwise, the given period is used
+     */
+    private int period; 
     private boolean zeroEnded;
 
     @Override

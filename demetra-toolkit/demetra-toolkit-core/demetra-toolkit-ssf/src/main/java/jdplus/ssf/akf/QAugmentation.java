@@ -33,16 +33,16 @@ public class QAugmentation {
 
     // Q is related to the cholesky factor of the usual "Q matrix" of De Jong.
     // Q(dj) = |S^-1   -s|
-    //         |-s'  q|
+    //         |-s'     q|
     // Q = |a 0|
     //     |b c|
     // so that we have:
     // q = b * b' + c * c
     // S^-1 = a * a' 
     // -s = a * b'
-    // s' * S^-1 * s = b * a' * S^-1 * a * b' = b * b'
-    // q - s' * S^-1 * s = c * c
-    // s' * S^-1 = b * a' * S^-1 = b * a^-1 
+    // s' * S * s = b * a' * S * a * b' = b * b'
+    // q - s' * S * s = c * c
+    // S * s = - S * a * b' = - a'^-1 * b
     private Matrix Q, B;
     private int n, nd;
     private DeterminantalTerm det = new DeterminantalTerm();
@@ -129,7 +129,7 @@ public class QAugmentation {
         // update the state vector
         B =state.B().deepClone();
         int d = B.getColumnsCount();
-        Matrix S = a().deepClone();
+        Matrix S = a();
         // aC'=B' <-> Ca'=B <-> C=B*a'^-1
         LowerTriangularMatrix.solveXLt(S, B);
         for (int i = 0; i < d; ++i) {
