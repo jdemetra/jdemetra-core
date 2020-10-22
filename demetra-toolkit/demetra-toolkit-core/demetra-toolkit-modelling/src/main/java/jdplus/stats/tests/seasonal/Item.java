@@ -17,7 +17,7 @@
 
 package jdplus.stats.tests.seasonal;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * @author Jean Palate

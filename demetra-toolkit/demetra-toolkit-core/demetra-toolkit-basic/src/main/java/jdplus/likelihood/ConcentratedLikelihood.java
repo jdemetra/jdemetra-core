@@ -17,10 +17,10 @@
 package jdplus.likelihood;
 
 import demetra.data.DoubleSeqCursor;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.eco.EcoException;
 import demetra.data.DoubleSeq;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import jdplus.math.matrices.Matrix;
 
 /**

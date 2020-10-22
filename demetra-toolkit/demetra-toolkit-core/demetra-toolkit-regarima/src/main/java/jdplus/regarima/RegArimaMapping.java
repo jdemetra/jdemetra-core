@@ -21,7 +21,7 @@ import jdplus.data.DataBlock;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.ParamValidation;
 import demetra.data.DoubleSeq;
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * 

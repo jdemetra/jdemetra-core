@@ -16,7 +16,7 @@
  */
 package jdplus.stats.tests.seasonal;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.stats.tests.AnovaTest;
 import jdplus.stats.tests.StatisticalTest;
 import demetra.data.DoubleSeq;

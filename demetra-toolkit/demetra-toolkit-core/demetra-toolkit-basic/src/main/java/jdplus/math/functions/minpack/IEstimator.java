@@ -18,7 +18,7 @@
 
 package jdplus.math.functions.minpack;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.matrices.Matrix;
 
 /**

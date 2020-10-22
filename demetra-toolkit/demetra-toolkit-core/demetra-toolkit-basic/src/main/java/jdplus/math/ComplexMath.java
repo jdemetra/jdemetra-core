@@ -17,7 +17,7 @@
 package jdplus.math;
 
 import demetra.math.Complex;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.math.ComplexType;
 import static demetra.math.ComplexType.abs;
 import static demetra.math.ComplexType.arg;

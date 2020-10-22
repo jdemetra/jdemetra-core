@@ -18,8 +18,8 @@ package jdplus.math.linearfilters;
 
 import jdplus.math.matrices.MatrixException;
 import jdplus.data.DataBlock;
-import demetra.design.Development;
-import demetra.design.Immutable;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
 import demetra.math.Complex;
 import jdplus.math.linearfilters.internal.SymmetricFilterAlgorithms;
 import jdplus.math.polynomials.Polynomial;

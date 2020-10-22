@@ -17,7 +17,7 @@
 package jdplus.math.matrices.decomposition;
 
 import demetra.data.DoubleSeq;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.LogSign;

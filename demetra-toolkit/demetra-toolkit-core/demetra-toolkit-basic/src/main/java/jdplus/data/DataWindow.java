@@ -16,7 +16,7 @@
  */
 package jdplus.data;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  *

@@ -20,7 +20,7 @@ import jdplus.arima.ArimaException;
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.DeterminantalTerm;
 import jdplus.math.matrices.Matrix;

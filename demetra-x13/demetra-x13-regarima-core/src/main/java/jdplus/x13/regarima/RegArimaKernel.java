@@ -18,8 +18,8 @@ package jdplus.x13.regarima;
 
 import demetra.regarima.RegArimaException;
 import demetra.regarima.RegArimaSpec;
-import demetra.design.BuilderPattern;
-import demetra.design.Development;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 import demetra.math.Complex;
 import demetra.timeseries.regression.modelling.ModellingContext;
 import jdplus.regsarima.regular.ILogLevelModule;

@@ -18,7 +18,7 @@
 
 package jdplus.x11plus;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  *

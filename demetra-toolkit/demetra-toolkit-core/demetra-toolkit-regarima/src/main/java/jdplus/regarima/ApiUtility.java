@@ -20,7 +20,7 @@ import demetra.data.DoubleSeq;
 import demetra.data.MissingValueEstimation;
 import demetra.data.ParameterEstimation;
 import demetra.data.ParametersEstimation;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.math.matrices.MatrixType;
 import demetra.timeseries.regression.modelling.LinearModelEstimation;
 import java.util.List;

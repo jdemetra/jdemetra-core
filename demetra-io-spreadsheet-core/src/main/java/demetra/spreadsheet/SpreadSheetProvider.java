@@ -16,7 +16,7 @@
  */
 package demetra.spreadsheet;
 
-import demetra.design.DirectImpl;
+import nbbrd.design.DirectImpl;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.FileLoader;

@@ -18,7 +18,7 @@ package jdplus.sts.internal;
 
 import jdplus.data.DataBlock;
 import jdplus.data.normalizer.AbsMeanNormalizer;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.functions.IFunction;
 import jdplus.math.functions.IFunctionPoint;
 import jdplus.math.functions.TransformedFunction;

@@ -16,8 +16,8 @@
  */
 package demetra.data;
 
-import demetra.design.Development;
-import demetra.design.ReturnNew;
+import nbbrd.design.Development;
+import nbbrd.design.ReturnNew;
 import demetra.util.IntList;
 import demetra.util.function.BiDoublePredicate;
 import demetra.util.function.IntDoubleConsumer;

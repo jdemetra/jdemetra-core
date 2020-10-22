@@ -16,7 +16,7 @@
  */
 package jdplus.math.linearfilters;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.util.Arrays2;
 import java.text.NumberFormat;
 

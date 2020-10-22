@@ -16,7 +16,7 @@
  */
 package jdplus.ssf.akf;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.matrices.Matrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.State;

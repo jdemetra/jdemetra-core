@@ -17,8 +17,8 @@
 package jdplus.arima;
 
 import jdplus.data.DataBlock;
-import demetra.design.BuilderPattern;
-import demetra.design.Immutable;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Immutable;
 import jdplus.dstats.Normal;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.linearfilters.RationalBackFilter;

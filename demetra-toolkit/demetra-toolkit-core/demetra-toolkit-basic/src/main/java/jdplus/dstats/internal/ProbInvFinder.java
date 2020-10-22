@@ -16,8 +16,8 @@
  */
 package jdplus.dstats.internal;
 
-import demetra.design.Development;
-import demetra.design.Internal;
+import nbbrd.design.Development;
+import nbbrd.design.Internal;
 import demetra.stats.ProbabilityType;
 import jdplus.dstats.BoundaryType;
 import jdplus.dstats.ContinuousDistribution;

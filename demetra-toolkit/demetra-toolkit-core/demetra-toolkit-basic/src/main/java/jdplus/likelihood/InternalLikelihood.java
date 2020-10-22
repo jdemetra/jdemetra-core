@@ -16,8 +16,8 @@
  */
 package jdplus.likelihood;
 
-import demetra.design.Development;
-import demetra.design.Immutable;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
 import demetra.math.Constants;
 import demetra.data.DoubleSeq;
 

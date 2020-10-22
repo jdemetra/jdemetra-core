@@ -17,7 +17,7 @@
 package jdplus.sa.diagnostics;
 
 import demetra.data.AggregationType;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.modelling.ModellingDictionary;
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;

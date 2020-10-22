@@ -17,7 +17,7 @@
 package jdplus.timeseries.simplets;
 
 import jdplus.data.transformation.LogJacobian;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;

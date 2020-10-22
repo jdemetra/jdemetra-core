@@ -22,7 +22,7 @@ import jdplus.data.DataBlockIterator;
 import jdplus.data.transformation.LogJacobian;
 import demetra.data.ParameterType;
 import jdplus.data.interpolation.DataInterpolator;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.math.matrices.Matrix;

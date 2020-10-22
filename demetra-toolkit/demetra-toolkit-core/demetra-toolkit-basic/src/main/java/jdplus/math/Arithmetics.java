@@ -17,7 +17,7 @@
 package jdplus.math;
 
 import demetra.math.MathException;
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * Utilities on integer numbers

@@ -16,7 +16,7 @@
 */
 package jdplus.arima;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.linearfilters.RationalBackFilter;
 

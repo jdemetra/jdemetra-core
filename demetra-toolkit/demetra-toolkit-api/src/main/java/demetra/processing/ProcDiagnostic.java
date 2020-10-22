@@ -17,7 +17,7 @@
 
 package demetra.processing;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.information.Information;
 import demetra.information.InformationSet;
 import java.util.List;

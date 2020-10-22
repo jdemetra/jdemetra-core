@@ -18,7 +18,7 @@ package jdplus.sarima.estimation;
 
 import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.data.DataBlock;
 import jdplus.math.functions.ParamValidation;

@@ -17,7 +17,7 @@
 package jdplus.random;
 
 import demetra.design.AlgorithmImplementation;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import java.util.Date;
 
 /**

@@ -16,7 +16,7 @@
  */
 package internal.spreadsheet;
 
-import demetra.design.ThreadSafe;
+import nbbrd.design.ThreadSafe;
 import demetra.timeseries.TsData;
 import demetra.tsprovider.DataSet;
 import static demetra.tsprovider.DataSet.Kind.COLLECTION;

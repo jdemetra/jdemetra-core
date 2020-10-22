@@ -16,12 +16,12 @@
  */
 package jdplus.stats;
 
-import demetra.design.Development;
-import demetra.design.Immutable;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
 import demetra.math.Constants;
 import java.util.Arrays;
 import java.util.function.DoublePredicate;
-import demetra.design.SkipProcessing;
+import nbbrd.design.SkipProcessing;
 import demetra.data.DoubleSeq;
 
 /**

@@ -5,7 +5,7 @@
  */
 package jdplus.tramo;
 
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.RegArimaModel;

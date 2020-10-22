@@ -18,7 +18,7 @@ package jdplus.x13.regarima;
 
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.regsarima.regular.IModelEstimator;
 import jdplus.regsarima.regular.ModelDescription;

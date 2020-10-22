@@ -19,7 +19,7 @@ package jdplus.data.transformation;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
 import demetra.data.OperationType;
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  *

@@ -17,7 +17,7 @@
 package jdplus.math.functions;
 
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;

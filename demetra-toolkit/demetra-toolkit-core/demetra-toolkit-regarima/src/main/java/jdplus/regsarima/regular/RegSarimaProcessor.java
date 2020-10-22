@@ -18,7 +18,7 @@
 
 package jdplus.regsarima.regular;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 

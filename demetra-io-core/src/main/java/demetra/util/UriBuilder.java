@@ -16,7 +16,7 @@
  */
 package demetra.util;
 
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import internal.util.Strings;
 import internal.util.URLEncoder2;
 import java.io.UnsupportedEncodingException;

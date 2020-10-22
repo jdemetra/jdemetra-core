@@ -18,8 +18,8 @@ package jdplus.likelihood;
 
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
-import demetra.design.Development;
-import demetra.design.Immutable;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
 import demetra.eco.EcoException;
 import demetra.math.Constants;
 import jdplus.math.matrices.Matrix;

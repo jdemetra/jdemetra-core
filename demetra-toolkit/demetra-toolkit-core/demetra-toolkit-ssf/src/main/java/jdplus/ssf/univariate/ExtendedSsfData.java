@@ -16,7 +16,7 @@
 */
 package jdplus.ssf.univariate;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.data.DoubleSeq;
 
 

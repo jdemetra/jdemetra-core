@@ -18,10 +18,10 @@ package jdplus.sarima.estimation;
 
 import jdplus.data.normalizer.AbsMeanNormalizer;
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.matrices.Matrix;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import jdplus.leastsquares.QRSolver;
 import jdplus.ar.AutoRegressiveEstimation;
 import jdplus.sarima.SarimaModel;

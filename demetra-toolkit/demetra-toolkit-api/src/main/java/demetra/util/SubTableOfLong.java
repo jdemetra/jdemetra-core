@@ -16,8 +16,8 @@
  */
 package demetra.util;
 
-import demetra.design.Development;
-import demetra.design.PrimitiveReplacementOf;
+import nbbrd.design.Development;
+import nbbrd.design.PrimitiveReplacementOf;
 
 
 /**

@@ -16,7 +16,7 @@
  */
 package jdplus.seats.diagnostics;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  *

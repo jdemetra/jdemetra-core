@@ -17,7 +17,7 @@
 
 package demetra.modelling;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import java.time.LocalDate;
 import java.util.Objects;
 

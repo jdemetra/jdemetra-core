@@ -16,7 +16,7 @@
  */
 package jdplus.tramo;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;

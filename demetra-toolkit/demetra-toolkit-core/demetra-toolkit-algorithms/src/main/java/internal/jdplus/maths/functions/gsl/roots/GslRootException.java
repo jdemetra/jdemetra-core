@@ -17,7 +17,7 @@
 package internal.jdplus.maths.functions.gsl.roots;
 
 import demetra.DemetraException;
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  *

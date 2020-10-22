@@ -16,7 +16,7 @@
  */
 package jdplus.math.linearfilters;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.math.Complex;
 import java.util.function.DoubleFunction;
 import java.util.function.DoubleUnaryOperator;

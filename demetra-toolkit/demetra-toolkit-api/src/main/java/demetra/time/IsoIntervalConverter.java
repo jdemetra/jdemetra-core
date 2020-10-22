@@ -16,7 +16,7 @@
  */
 package demetra.time;
 
-import demetra.design.SealedType;
+import nbbrd.design.SealedType;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;

@@ -19,7 +19,7 @@ package jdplus.stats.tests;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.DoublesMath;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import demetra.math.Constants;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;

@@ -17,7 +17,7 @@
 
 
 package demetra;
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * Basic exception of JD+

@@ -5,7 +5,7 @@
  */
 package jdplus.ssf;
 
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import java.util.ArrayList;
 import java.util.List;
 

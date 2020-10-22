@@ -19,7 +19,7 @@ package demetra.timeseries.regression.modelling;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.design.Algorithm;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.timeseries.TimeSeriesDomain;
 import java.util.List;
 import java.util.function.Predicate;

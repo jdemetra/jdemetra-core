@@ -16,7 +16,7 @@
  */
 package demetra.timeseries.regression;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 

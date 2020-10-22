@@ -17,7 +17,7 @@
 package demetra.regarima;
 
 import demetra.arima.SarimaSpec;
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  *

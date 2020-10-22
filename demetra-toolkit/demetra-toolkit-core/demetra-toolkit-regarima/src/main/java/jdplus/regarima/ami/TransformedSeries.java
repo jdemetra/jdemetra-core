@@ -5,7 +5,7 @@
  */
 package jdplus.regarima.ami;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  *

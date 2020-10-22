@@ -16,7 +16,7 @@
  */
 package demetra.arima;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * Unobserved components Arima model

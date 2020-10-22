@@ -16,8 +16,8 @@
  */
 package demetra.tsprovider.grid;
 
-import demetra.design.LombokWorkaround;
-import demetra.design.MightBePromoted;
+import nbbrd.design.LombokWorkaround;
+import nbbrd.design.MightBePromoted;
 import demetra.timeseries.TsDataTable;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.Ts;

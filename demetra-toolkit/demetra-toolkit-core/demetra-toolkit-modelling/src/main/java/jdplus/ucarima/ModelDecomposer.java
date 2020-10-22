@@ -19,7 +19,7 @@ package jdplus.ucarima;
 import jdplus.arima.ArimaException;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

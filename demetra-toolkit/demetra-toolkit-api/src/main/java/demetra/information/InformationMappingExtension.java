@@ -5,7 +5,7 @@
  */
 package demetra.information;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
 

@@ -18,7 +18,7 @@
 
 package jdplus.x11.filter;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.linearfilters.LinearFilterException;
 import jdplus.math.linearfilters.SymmetricFilter;
 

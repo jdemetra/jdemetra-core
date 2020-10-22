@@ -17,7 +17,7 @@
 package jdplus.stats.tests;
 
 import demetra.data.DoubleSeq;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import demetra.stats.StatException;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;

@@ -17,13 +17,13 @@
 package jdplus.linearmodel;
 
 import jdplus.data.DataBlock;
-import demetra.design.Immutable;
+import nbbrd.design.Immutable;
 import jdplus.dstats.F;
 import jdplus.dstats.T;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.stats.tests.StatisticalTest;
 import jdplus.stats.tests.TestType;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import org.checkerframework.checker.nullness.qual.NonNull;

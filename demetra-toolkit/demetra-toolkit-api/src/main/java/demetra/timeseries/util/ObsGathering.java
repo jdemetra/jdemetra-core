@@ -17,7 +17,7 @@
 package demetra.timeseries.util;
 
 import demetra.data.AggregationType;
-import demetra.design.LombokWorkaround;
+import nbbrd.design.LombokWorkaround;
 import demetra.timeseries.TsUnit;
 
 /**

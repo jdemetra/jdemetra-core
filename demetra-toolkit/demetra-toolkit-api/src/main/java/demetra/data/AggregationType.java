@@ -16,7 +16,7 @@
  */
 package demetra.data;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * Describes the way a set of ordered observations are aggregated

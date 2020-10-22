@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider.cube;
 
-import demetra.design.ThreadSafe;
+import nbbrd.design.ThreadSafe;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.stream.Stream;

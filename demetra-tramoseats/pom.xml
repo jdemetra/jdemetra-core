@@ -34,11 +34,6 @@
             <!-- modules 3.0 > -->
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-design</artifactId>
-                <version>${jd3-toolkit.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-toolkit-api</artifactId>
                 <version>${jd3-toolkit.version}</version>            
             </dependency>

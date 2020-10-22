@@ -17,7 +17,7 @@
 package jdplus.tramo.internal;
 
 import jdplus.regsarima.ami.FastOutliersDetector;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import demetra.timeseries.regression.Variable;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import demetra.timeseries.regression.IOutlier;

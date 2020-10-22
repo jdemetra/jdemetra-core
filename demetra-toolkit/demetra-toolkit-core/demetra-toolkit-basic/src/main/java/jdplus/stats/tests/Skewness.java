@@ -16,10 +16,10 @@
  */
 package jdplus.stats.tests;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.dstats.Normal;
 import jdplus.stats.DescriptiveStatistics;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import demetra.data.DoubleSeq;
 
 

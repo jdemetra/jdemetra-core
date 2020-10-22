@@ -16,7 +16,7 @@
  */
 package jdplus.data.analysis;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.math.Complex;
 import demetra.math.Constants;
 import demetra.util.Arrays2;

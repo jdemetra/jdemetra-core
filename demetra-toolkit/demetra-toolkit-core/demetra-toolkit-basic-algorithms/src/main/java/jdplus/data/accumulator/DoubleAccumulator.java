@@ -17,7 +17,7 @@
 package jdplus.data.accumulator;
 
 import demetra.design.Algorithm;
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  *

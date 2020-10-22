@@ -17,7 +17,7 @@
 
 package demetra.timeseries.calendars;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  *

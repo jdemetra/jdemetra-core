@@ -18,7 +18,7 @@ package demetra.timeseries;
 
 import static demetra.data.AggregationType.*;
 import static demetra.timeseries.TsUnit.*;
-import demetra.design.Demo;
+import nbbrd.design.Demo;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.Test;

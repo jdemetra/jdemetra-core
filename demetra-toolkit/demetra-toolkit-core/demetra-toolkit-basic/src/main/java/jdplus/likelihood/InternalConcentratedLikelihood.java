@@ -16,11 +16,11 @@
  */
 package jdplus.likelihood;
 
-import demetra.design.Immutable;
+import nbbrd.design.Immutable;
 import demetra.math.Constants;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.matrices.Matrix;
 
 /**

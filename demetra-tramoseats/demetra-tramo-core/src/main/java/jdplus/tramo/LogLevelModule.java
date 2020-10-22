@@ -17,8 +17,8 @@
 package jdplus.tramo;
 
 import jdplus.tramo.internal.TramoUtility;
-import demetra.design.BuilderPattern;
-import demetra.design.Development;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 import demetra.modelling.TransformationType;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;

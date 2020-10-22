@@ -16,8 +16,8 @@
  */
 package demetra.likelihood;
 
-import demetra.design.BuilderPattern;
-import demetra.design.Development;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 import java.util.Formatter;
 
 /**

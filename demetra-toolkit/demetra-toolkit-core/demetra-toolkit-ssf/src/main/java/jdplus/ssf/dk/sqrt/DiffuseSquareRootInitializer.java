@@ -17,7 +17,7 @@
 package jdplus.ssf.dk.sqrt;
 
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.matrices.decomposition.ElementaryTransformations;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;

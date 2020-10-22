@@ -18,7 +18,7 @@ package demetra.timeseries;
 
 import demetra.data.AggregationType;
 import demetra.data.DoubleSeqCursor;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import internal.timeseries.InternalAggregator;
 import java.util.Objects;
 import java.util.Random;

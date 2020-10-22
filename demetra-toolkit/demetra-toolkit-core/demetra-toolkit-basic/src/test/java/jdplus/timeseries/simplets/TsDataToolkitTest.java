@@ -28,7 +28,7 @@ import jdplus.math.linearfilters.HendersonFilters;
 import jdplus.math.linearfilters.SymmetricFilter;
 import demetra.timeseries.TsDomain;
 import static jdplus.timeseries.simplets.TsDataToolkit.fitToDomain;
-import demetra.design.Demo;
+import nbbrd.design.Demo;
 import org.junit.Ignore;
 import static jdplus.timeseries.simplets.TsDataToolkit.*;
 import static jdplus.timeseries.simplets.TsDataToolkit.delta;

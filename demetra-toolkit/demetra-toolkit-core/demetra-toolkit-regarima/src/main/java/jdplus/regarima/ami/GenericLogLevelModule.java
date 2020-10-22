@@ -19,7 +19,7 @@ package jdplus.regarima.ami;
 import demetra.DemetraException;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import demetra.util.IntList;
 import jdplus.arima.ArimaModel;
 import jdplus.regarima.GlsArimaProcessor;

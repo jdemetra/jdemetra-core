@@ -18,10 +18,10 @@ package jdplus.math.matrices;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataWindow;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.math.Complex;
 import jdplus.data.analysis.FFT;
-import demetra.design.Immutable;
+import nbbrd.design.Immutable;
 import demetra.util.Arrays2;
 
 /**

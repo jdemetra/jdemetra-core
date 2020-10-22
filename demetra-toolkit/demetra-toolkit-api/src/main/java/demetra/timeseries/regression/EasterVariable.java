@@ -16,7 +16,7 @@
  */
 package demetra.timeseries.regression;
 
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import demetra.timeseries.TsException;
 
 /**

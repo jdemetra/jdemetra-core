@@ -21,7 +21,7 @@ import jdplus.arima.IArimaModel;
 import jdplus.arima.StationaryTransformation;
 import internal.jdplus.arima.AnsleyFilter;
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.matrices.decomposition.ElementaryTransformations;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;

@@ -36,9 +36,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-design</artifactId>
-            <version>${jd3-basic.version}</version>
+            <groupId>be.nbb.rd</groupId>
+            <artifactId>java-design-processor</artifactId>
             <scope>provided</scope>
         </dependency>
         

@@ -16,7 +16,7 @@
  */
 package internal.timeseries.util;
 
-import demetra.design.VisibleForTesting;
+import nbbrd.design.VisibleForTesting;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

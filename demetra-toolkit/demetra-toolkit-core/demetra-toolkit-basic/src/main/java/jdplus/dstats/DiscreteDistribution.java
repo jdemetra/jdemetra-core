@@ -16,7 +16,7 @@
  */
 package jdplus.dstats;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * Represents a discrete probability distribution (e.g. Binomial, Poisson, ...)

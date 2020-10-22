@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider.util;
 
-import demetra.design.VisibleForTesting;
+import nbbrd.design.VisibleForTesting;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;

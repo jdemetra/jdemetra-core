@@ -21,7 +21,7 @@ import demetra.timeseries.TsInformationType;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsMoniker;
 import nbbrd.service.ServiceDefinition;
-import demetra.design.ThreadSafe;
+import nbbrd.design.ThreadSafe;
 import java.io.IOException;
 import nbbrd.service.Quantifier;
 import org.checkerframework.checker.nullness.qual.NonNull;

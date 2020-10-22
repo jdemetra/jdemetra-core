@@ -16,8 +16,8 @@
  */
 package demetra.util;
 
-import demetra.design.NextJdk;
-import demetra.design.ReturnImmutable;
+import nbbrd.design.NextJdk;
+import nbbrd.design.ReturnImmutable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

@@ -17,8 +17,8 @@
 package jdplus.stats.tests.seasonal;
 
 import jdplus.data.DataBlockIterator;
-import demetra.design.BuilderPattern;
-import demetra.design.Development;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 import jdplus.dstats.Chi2;
 import jdplus.dstats.F;
 import jdplus.math.matrices.Matrix;

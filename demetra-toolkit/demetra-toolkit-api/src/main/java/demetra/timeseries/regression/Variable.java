@@ -18,7 +18,7 @@ package demetra.timeseries.regression;
 
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**

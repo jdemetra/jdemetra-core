@@ -6,7 +6,7 @@
 package jdplus.x11.extremevaluecorrector;
 
 import jdplus.data.DataBlock;
-import demetra.design.VisibleForTesting;
+import nbbrd.design.VisibleForTesting;
 import jdplus.dstats.F;
 import demetra.stats.ProbabilityType;
 import jdplus.x11.X11Context;

@@ -21,7 +21,7 @@ import jdplus.arima.StationaryTransformation;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.DataWindow;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.RationalFunction;

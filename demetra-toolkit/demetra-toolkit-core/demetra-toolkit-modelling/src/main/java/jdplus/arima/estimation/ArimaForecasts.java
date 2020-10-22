@@ -7,9 +7,9 @@ package jdplus.arima.estimation;
 
 import jdplus.arima.IArimaModel;
 import demetra.design.Algorithm;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import nbbrd.service.ServiceDefinition;
-import demetra.design.ThreadSafe;
+import nbbrd.design.ThreadSafe;
 import demetra.data.DoubleSeq;
 
 /**

@@ -17,7 +17,7 @@
 package demetra.seats;
 
 import demetra.design.Algorithm;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.service.Mutability;

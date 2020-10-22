@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider.cube;
 
-import demetra.design.ThreadSafe;
+import nbbrd.design.ThreadSafe;
 import java.io.IOException;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;

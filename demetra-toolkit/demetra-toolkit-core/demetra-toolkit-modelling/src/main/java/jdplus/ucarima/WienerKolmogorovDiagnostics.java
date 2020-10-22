@@ -21,7 +21,7 @@ import jdplus.arima.BartlettApproximation;
 import jdplus.arima.LinearProcess;
 import jdplus.arima.StationaryTransformation;
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.dstats.Normal;
 import jdplus.math.matrices.Matrix;
 import jdplus.stats.AutoCovariances;

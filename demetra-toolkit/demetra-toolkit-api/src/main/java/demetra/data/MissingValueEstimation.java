@@ -16,7 +16,7 @@
  */
 package demetra.data;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * Estimation of a missing value in an array of doubles.

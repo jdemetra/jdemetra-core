@@ -18,7 +18,7 @@
 
 package jdplus.seats;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 
 /**
