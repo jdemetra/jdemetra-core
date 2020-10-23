@@ -29,7 +29,7 @@ import demetra.util.Validatable;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public final class AutoModelSpec implements Validatable<AutoModelSpec> {
 
-    private static final AutoModelSpec DEFAULT = AutoModelSpec.builder().build();
+    public static final AutoModelSpec DEFAULT = AutoModelSpec.builder().build();
 
     public static final double DEF_CANCEL = .05, DEF_PCR = .95, DEF_UB1 = .97, DEF_UB2 = .91, DEF_TSIG = 1, DEF_PC = .12;
     public static final boolean DEF_FAL = false, DEF_AMICOMPARE = false;
