@@ -29,7 +29,8 @@ import demetra.util.Validatable;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public final class AutoModelSpec implements Validatable<AutoModelSpec> {
 
-    public static final AutoModelSpec DEFAULT = AutoModelSpec.builder().build();
+    public static final AutoModelSpec DEFAULT_DISABLED = AutoModelSpec.builder().build();
+    public static final AutoModelSpec DEFAULT_ENABLED = AutoModelSpec.builder().enabled(true).build();
 
     public static final double DEF_CANCEL = .05, DEF_PCR = .95, DEF_UB1 = .97, DEF_UB2 = .91, DEF_TSIG = 1, DEF_PC = .12;
     public static final boolean DEF_FAL = false, DEF_AMICOMPARE = false;
@@ -74,8 +75,12 @@ public final class AutoModelSpec implements Validatable<AutoModelSpec> {
         return this;
     }
 
+    /**
+     * The default is enabled, with default parameters
+     * @return 
+     */
     public boolean isDefault() {
-        return this.equals(DEFAULT);
+        return this.equals(DEFAULT_ENABLED);
     }
 
     public static class Builder implements Validatable.Builder<AutoModelSpec> {

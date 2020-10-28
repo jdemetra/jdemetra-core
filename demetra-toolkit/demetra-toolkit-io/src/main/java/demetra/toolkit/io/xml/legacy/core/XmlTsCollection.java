@@ -19,8 +19,6 @@ package demetra.toolkit.io.xml.legacy.core;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsCollection;
 import demetra.timeseries.TsMoniker;
-import demetra.toolkit.io.xml.legacy.IXmlUnmarshaller;
-import demetra.toolkit.io.xml.legacy.InPlaceXmlMarshaller;
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -256,7 +254,7 @@ public class XmlTsCollection {
         }
     }
 
-    public static final IXmlUnmarshaller<XmlTsCollection, TsCollection> TS_UNMARSHALLER = (XmlTsCollection xml) -> {
+    public static TsCollection unmarshal(XmlTsCollection xml) {
         TsCollection.Builder builder = TsCollection.builder()
                 .moniker(TsMoniker.of(xml.source, xml.identifier))
                 .name(xml.name == null ? "set" : xml.name);
@@ -265,13 +263,13 @@ public class XmlTsCollection {
         }
         if (xml.data != null) {
             for (XmlTs xs : xml.data.getTs()) {
-                builder.data(XmlTs.TS_UNMARSHALLER.unmarshal(xs));
+                builder.data(XmlTs.unmarshal(xs));
             }
         }
         return builder.build();
-    };
+    }
 
-     public static final InPlaceXmlMarshaller<XmlTsCollection, TsCollection> TS_MARSHALLER = (TsCollection v, XmlTsCollection xml) -> {
+    public static final boolean marshal(TsCollection v, XmlTsCollection xml) {
         xml.source = v.getMoniker().getSource();
         xml.identifier = v.getMoniker().getId();
         xml.name = v.getName();
@@ -283,24 +281,24 @@ public class XmlTsCollection {
             xml.data = new Data();
             for (Ts s : ldata) {
                 XmlTs xs = new XmlTs();
-                XmlTs.TS_MARSHALLER.marshal(s, xs);
+                XmlTs.marshal(s, xs);
                 xml.data.getTs().add(xs);
             }
         }
         return true;
-    };
+    }
 
     public static class Adapter extends XmlAdapter<XmlTsCollection, TsCollection> {
 
         @Override
         public TsCollection unmarshal(XmlTsCollection v) throws Exception {
-            return TS_UNMARSHALLER.unmarshal(v);
+            return XmlTsCollection.unmarshal(v);
         }
 
         @Override
         public XmlTsCollection marshal(TsCollection v) throws Exception {
             XmlTsCollection xml = new XmlTsCollection();
-            TS_MARSHALLER.marshal(v, xml);
+            XmlTsCollection.marshal(v, xml);
             return xml;
         }
     }

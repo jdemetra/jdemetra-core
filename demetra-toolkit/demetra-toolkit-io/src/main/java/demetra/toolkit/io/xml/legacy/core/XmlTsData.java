@@ -18,8 +18,6 @@ package demetra.toolkit.io.xml.legacy.core;
 
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
-import demetra.toolkit.io.xml.legacy.IXmlUnmarshaller;
-import demetra.toolkit.io.xml.legacy.InPlaceXmlMarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -146,7 +144,7 @@ public class XmlTsData
         return this.values;
     }
 
-   /**
+    /**
      * @param values the values to set
      */
     public void setValues(double[] values) {
@@ -173,12 +171,12 @@ public class XmlTsData
         this.name = value;
     }
 
-    public static final IXmlUnmarshaller<XmlTsData, TsData> UNMARSHALLER = (XmlTsData xml) -> {
-        TsPeriod start=XmlTsPeriod.of(xml.frequency,xml.firstYear, xml.firstPeriod);
+    public static TsData unmarshal(XmlTsData xml) {
+        TsPeriod start = XmlTsPeriod.of(xml.frequency, xml.firstYear, xml.firstPeriod);
         return TsData.ofInternal(start, xml.values);
-    };
+    }
 
-    public static final InPlaceXmlMarshaller<XmlTsData, TsData> MARSHALLER = (TsData v, XmlTsData xml) -> {
+    public static boolean marshal(TsData v, XmlTsData xml) {
         TsPeriod start = v.getStart();
         xml.frequency = start.getUnit().getAnnualFrequency();
         xml.firstYear = start.year();
@@ -189,23 +187,25 @@ public class XmlTsData
         }
         xml.values = v.getValues().toArray();
         return true;
-    };
+    }
 
-     public static class Adapter extends XmlAdapter<XmlTsData, TsData> {
+    public static class Adapter extends XmlAdapter<XmlTsData, TsData> {
 
         @Override
         public TsData unmarshal(XmlTsData v) throws Exception {
-            if (v == null)
+            if (v == null) {
                 return null;
-            return UNMARSHALLER.unmarshal(v);
+            }
+            return XmlTsData.unmarshal(v);
         }
 
         @Override
         public XmlTsData marshal(TsData v) throws Exception {
-            if (v == null)
+            if (v == null) {
                 return null;
+            }
             XmlTsData xml = new XmlTsData();
-            MARSHALLER.marshal(v, xml);
+            XmlTsData.marshal(v, xml);
             return xml;
         }
     }

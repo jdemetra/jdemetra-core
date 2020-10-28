@@ -15,15 +15,15 @@
  * limitations under the Licence.
  */
 
-@XmlSchema(namespace = Constants.MODELLING, elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
+@XmlSchema(namespace = XmlConstants.MODELLING, elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
         xmlns = { 
-            @XmlNs(prefix = "tss", namespaceURI = Constants.CORE), 
-            @XmlNs(prefix = "modelling", namespaceURI = Constants.MODELLING), 
+            @XmlNs(prefix = "tss", namespaceURI = XmlConstants.CORE), 
+            @XmlNs(prefix = "modelling", namespaceURI = XmlConstants.MODELLING), 
             @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") 
         })
 package demetra.toolkit.io.xml.legacy.modelling;
 
-import demetra.toolkit.io.xml.legacy.Constants;
+import demetra.toolkit.io.xml.legacy.XmlConstants;
 import javax.xml.bind.annotation.XmlNs;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlSchema;

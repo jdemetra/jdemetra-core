@@ -50,8 +50,17 @@ public class AutoModelMapping {
     }
 
     public InformationSet write(AutoModelSpec spec, boolean verbose) {
+        if (!spec.isEnabled()) {
+            return null;
+        }
         InformationSet info = new InformationSet();
-        info.add(ENABLED, spec.isEnabled());
+        if (spec.isDefault())
+            return info;
+        // ALWAYS ENABLED
+//        info.add(ENABLED, true);
+//        if (spec.isDefault()) {
+//            return info;
+//        }
         double pcr = spec.getPcr();
         if (verbose || pcr != AutoModelSpec.DEF_PCR) {
             info.add(PCR, pcr);
@@ -88,49 +97,47 @@ public class AutoModelMapping {
     }
 
     public AutoModelSpec read(InformationSet info) {
-        try {
-            AutoModelSpec.Builder builder = AutoModelSpec.builder();
-            Boolean enabled = info.get(ENABLED, Boolean.class);
-            if (enabled != null) {
-                builder.enabled(enabled);
-            }
-            Double pcr = info.get(PCR, Double.class);
-            if (pcr != null) {
-                builder.pcr(pcr);
-            }
-            Double ub1 = info.get(UB1, Double.class);
-            if (ub1 != null) {
-                builder.ub1(ub1);
-            }
-            Double ub2 = info.get(UB2, Double.class);
-            if (ub2 != null) {
-                builder.ub2(ub2);
-            }
-            Double cancel = info.get(CANCEL, Double.class);
-            if (cancel != null) {
-                builder.cancel(cancel);
-            }
-            Double pc = info.get(PC, Double.class);
-            if (pc != null) {
-                builder.pc(pc);
-            }
-            Double tsig = info.get(TSIG, Double.class);
-            if (tsig != null) {
-                builder.tsig(tsig);
-            }
-            Boolean ami = info.get(AMICOMPARE, Boolean.class);
-            if (ami != null) {
-                builder.amiCompare(ami);
-            }
-            Boolean fal = info.get(FAL, Boolean.class);
-            if (fal != null) {
-                builder.acceptDefault(fal);
-            }
-
-            return builder.build();
-        } catch (Exception err) {
-            return null;
+        if (info == null) {
+            return AutoModelSpec.DEFAULT_DISABLED;
         }
+        if (info.items().isEmpty()) {
+            return AutoModelSpec.DEFAULT_ENABLED;
+        }
+        AutoModelSpec.Builder builder = AutoModelSpec.builder().enabled(true);
+        Double pcr = info.get(PCR, Double.class);
+        if (pcr != null) {
+            builder.pcr(pcr);
+        }
+        Double ub1 = info.get(UB1, Double.class);
+        if (ub1 != null) {
+            builder.ub1(ub1);
+        }
+        Double ub2 = info.get(UB2, Double.class);
+        if (ub2 != null) {
+            builder.ub2(ub2);
+        }
+        Double cancel = info.get(CANCEL, Double.class);
+        if (cancel != null) {
+            builder.cancel(cancel);
+        }
+        Double pc = info.get(PC, Double.class);
+        if (pc != null) {
+            builder.pc(pc);
+        }
+        Double tsig = info.get(TSIG, Double.class);
+        if (tsig != null) {
+            builder.tsig(tsig);
+        }
+        Boolean ami = info.get(AMICOMPARE, Boolean.class);
+        if (ami != null) {
+            builder.amiCompare(ami);
+        }
+        Boolean fal = info.get(FAL, Boolean.class);
+        if (fal != null) {
+            builder.acceptDefault(fal);
+        }
+
+        return builder.build();
     }
 
 }

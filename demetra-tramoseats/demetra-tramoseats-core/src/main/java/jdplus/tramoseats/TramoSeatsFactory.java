@@ -254,12 +254,12 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
                     tdspec = TradingDaysSpec.stockTradingDays(ntd, RegressionTestType.None);
                 } else if (tdspec.isHolidays()) {
                     tdspec = TradingDaysSpec.holidays(tdspec.getHolidays(),
-                            tdspec.getTradingDaysType(), lp != null, RegressionTestType.None);
+                            tdspec.getTradingDaysType(), tdspec.getLengthOfPeriodType(), RegressionTestType.None);
                 } else if (tdspec.isUserDefined()) {
                     tdspec = TradingDaysSpec.userDefined(tdspec.getUserVariables(), RegressionTestType.None);
                 } else { //normal case
                     tdspec = TradingDaysSpec.td(td.dim() == 6 ? TradingDaysType.TradingDays : TradingDaysType.WorkingDays,
-                            lp != null, RegressionTestType.None);
+                            tdspec.getLengthOfPeriodType(), RegressionTestType.None);
                 }
             } else {
                 tdspec = TradingDaysSpec.none();

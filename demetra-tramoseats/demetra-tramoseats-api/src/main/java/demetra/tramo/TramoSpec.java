@@ -20,6 +20,7 @@ import demetra.design.Development;
 import demetra.design.LombokWorkaround;
 import demetra.modelling.TransformationType;
 import demetra.arima.SarimaSpec;
+import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.RegressionTestType;
 import demetra.timeseries.regression.TradingDaysType;
 import demetra.util.Validatable;
@@ -159,9 +160,16 @@ public final class TramoSpec implements Validatable<TramoSpec> {
          * Enables/disables the AMI.
          *
          * @param enableAutoModel
+         * @return 
          */
         public Builder usingAutoModel(boolean enableAutoModel) {
-            this.autoModel = autoModel.toBuilder().enabled(enableAutoModel).build();
+            if (autoModel.isEnabled() != enableAutoModel) {
+                if (enableAutoModel) {
+                    autoModel = AutoModelSpec.DEFAULT_ENABLED;
+                } else {
+                    autoModel = AutoModelSpec.DEFAULT_DISABLED;
+                }
+            }
             return this;
         }
 
@@ -173,9 +181,7 @@ public final class TramoSpec implements Validatable<TramoSpec> {
          */
         public Builder arima(@NonNull SarimaSpec sarima) {
             this.arima = sarima;
-            if (this.autoModel == null) {
-                this.autoModel = AutoModelSpec.builder().build();
-            }
+            this.autoModel = AutoModelSpec.DEFAULT_DISABLED;
 
             return this;
         }
@@ -200,16 +206,16 @@ public final class TramoSpec implements Validatable<TramoSpec> {
                 .test(true)
                 .build();
 
-        TradingDaysSpec wd = TradingDaysSpec.td(TradingDaysType.WorkingDays, 
-                true, RegressionTestType.Separate_T);
+        TradingDaysSpec wd = TradingDaysSpec.td(TradingDaysType.WorkingDays,
+                LengthOfPeriodType.LeapYear, RegressionTestType.Separate_T);
 
         TradingDaysSpec td = TradingDaysSpec.td(TradingDaysType.TradingDays,
-                true, RegressionTestType.Separate_T);
+                LengthOfPeriodType.LeapYear, RegressionTestType.Separate_T);
 
-        TradingDaysSpec dc = TradingDaysSpec.automatic(TradingDaysSpec.AutoMethod.FTest, 
+        TradingDaysSpec dc = TradingDaysSpec.automatic(TradingDaysSpec.AutoMethod.FTest,
                 TradingDaysSpec.DEF_PFTD);
-        
-         EasterSpec ec = e.toBuilder()
+
+        EasterSpec ec = e.toBuilder()
                 .type(EasterSpec.Type.IncludeEaster)
                 .test(true)
                 .build();
@@ -282,7 +288,7 @@ public final class TramoSpec implements Validatable<TramoSpec> {
                 .usingAutoModel(true)
                 .build();
     }
-    
+
     public static TramoSpec fromString(String name) {
         switch (name) {
             case "TR0":
@@ -302,6 +308,6 @@ public final class TramoSpec implements Validatable<TramoSpec> {
             default:
                 throw new TramoException();
         }
-    } 
+    }
     //</editor-fold>
 }

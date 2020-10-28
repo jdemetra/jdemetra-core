@@ -17,11 +17,9 @@
 package demetra.toolkit.io.xml.legacy.core;
 
 import demetra.timeseries.TimeSelector;
-import demetra.toolkit.io.xml.legacy.InPlaceXmlMarshaller;
 import demetra.toolkit.io.xml.legacy.XmlDateAdapter;
 import demetra.toolkit.io.xml.legacy.XmlEmptyElement;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -279,30 +277,14 @@ public class XmlPeriodSelection {
     public static class Adapter extends XmlAdapter<XmlPeriodSelection, TimeSelector> {
 
         @Override
-        public TimeSelector unmarshal(XmlPeriodSelection xml) throws Exception {
-            if (xml.all != null) {
-                return TimeSelector.all();
-            } else if (xml.none != null) {
-                return TimeSelector.none();
-            } else if (xml.from != null && xml.to != null) {
-                return TimeSelector.between(xml.from.atStartOfDay(), xml.to.atStartOfDay());
-            } else if (xml.from != null) {
-                return TimeSelector.from(xml.from.atStartOfDay());
-            } else if (xml.to != null) {
-                return TimeSelector.from(xml.to.atStartOfDay());
-            } else if (xml.first != null) {
-                return TimeSelector.first(xml.first);
-            } else if (xml.last != null) {
-                return TimeSelector.last(xml.last);
-            } else {
-                return TimeSelector.excluding(xml.excludeFirst == null ? 0 : xml.excludeFirst, xml.excludeLast == null ? 0 : xml.excludeLast);
-            }
+        public TimeSelector unmarshal(XmlPeriodSelection xml) {
+            return XmlPeriodSelection.unmarshal(xml);
         }
 
         @Override
-        public XmlPeriodSelection marshal(TimeSelector v) throws Exception {
+        public XmlPeriodSelection marshal(TimeSelector v) {
             XmlPeriodSelection xml = new XmlPeriodSelection();
-            MARSHALLER.marshal(v, xml);
+            XmlPeriodSelection.marshal(v, xml);
             return xml;
         }
     }
@@ -313,7 +295,7 @@ public class XmlPeriodSelection {
         return ADAPTER;
     }
 
-    public static final InPlaceXmlMarshaller<XmlPeriodSelection, TimeSelector> MARSHALLER = (TimeSelector v, XmlPeriodSelection xml) -> {
+    public static boolean marshal(TimeSelector v, XmlPeriodSelection xml) {
         xml.clear();
         switch (v.getType()) {
             case All:
@@ -344,6 +326,26 @@ public class XmlPeriodSelection {
                 break;
         }
         return true;
-    };
+    }
+
+    public static TimeSelector unmarshal(XmlPeriodSelection xml) {
+        if (xml.all != null) {
+            return TimeSelector.all();
+        } else if (xml.none != null) {
+            return TimeSelector.none();
+        } else if (xml.from != null && xml.to != null) {
+            return TimeSelector.between(xml.from.atStartOfDay(), xml.to.atStartOfDay());
+        } else if (xml.from != null) {
+            return TimeSelector.from(xml.from.atStartOfDay());
+        } else if (xml.to != null) {
+            return TimeSelector.from(xml.to.atStartOfDay());
+        } else if (xml.first != null) {
+            return TimeSelector.first(xml.first);
+        } else if (xml.last != null) {
+            return TimeSelector.last(xml.last);
+        } else {
+            return TimeSelector.excluding(xml.excludeFirst == null ? 0 : xml.excludeFirst, xml.excludeLast == null ? 0 : xml.excludeLast);
+        }
+    }
 
 }

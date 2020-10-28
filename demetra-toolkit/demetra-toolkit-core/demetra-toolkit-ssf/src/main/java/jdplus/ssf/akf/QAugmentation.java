@@ -42,7 +42,7 @@ public class QAugmentation {
     // -s = a * b'
     // s' * S * s = b * a' * S * a * b' = b * b'
     // q - s' * S * s = c * c
-    // S * s = - S * a * b' = - a'^-1 * b
+    // S * s = - S * a * b' = - a'^-1 * b'
     private Matrix Q, B;
     private int n, nd;
     private DeterminantalTerm det = new DeterminantalTerm();

@@ -20,7 +20,6 @@ package demetra.tramoseats.io.information;
  *
  * @author PALATEJ
  */
-@lombok.experimental.UtilityClass
-public class SeatsSpecMapiing {
+public class EstimateSpecMapping {
     
 }

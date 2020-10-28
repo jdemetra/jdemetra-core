@@ -14,22 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.toolkit.io.xml.legacy;
+package demetra.sa.io.xml.legacy;
 
 /**
  *
  * @author Jean Palate
- * @param <X> Xml class
- * @param <J> pure Java class
  */
-public interface InPlaceXmlMarshaller<X, J> {
-
-    /**
-     * Reads a java object an put its information in an xml object
-     *
-     * @param v The object being read
-     * @param xml The xml being encoded
-     * @return
-      */
-    boolean marshal(J v, X xml);
+public class XmlSaSpecification {
+    
 }

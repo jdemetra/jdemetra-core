@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Random;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.dstats.Normal;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixFactory;
@@ -26,16 +25,14 @@ import jdplus.modelling.regression.GenericTradingDaysFactory;
 import jdplus.random.JdkRNG;
 import jdplus.random.RandomNumberGenerator;
 import jdplus.ssf.akf.AugmentedSmoother;
+import jdplus.ssf.akf.SmoothationsComputer;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.dk.RandomSsfGenerator;
-import jdplus.ssf.dk.SsfFunction;
-import jdplus.ssf.dk.SsfFunctionPoint;
 import jdplus.ssf.implementations.RegSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.sts.internal.BsmMapping;
-import jdplus.sts.internal.BsmMonitor;
 import org.junit.Test;
 
 /**
@@ -152,7 +149,7 @@ public class OutliersDetectionTest {
             long t0 = System.currentTimeMillis();
             for (int k = 0; k < K; ++k) {
                 BasicStructuralModel model = new BasicStructuralModel(spec, 12);
-                forwardstep(model, Y.log().range(0, length[l]), null);// td.extract(0, length[l], 0, td.getColumnsCount()));
+                forwardstep(model, Y.log().range(0, length[l]), td.extract(0, length[l], 0, td.getColumnsCount()));
 //                OutliersDetection od = OutliersDetection.builder()
 //                        .bsm(spec)
 //                        .maxIter(1)
@@ -282,19 +279,16 @@ public class OutliersDetectionTest {
     private static boolean forwardstep(BasicStructuralModel model, DoubleSeq y, Matrix W) {
         SsfBsm ssf = SsfBsm.of(model);
         Ssf wssf = W == null ? ssf : RegSsf.ssf(ssf, W);
-        AugmentedSmoother smoother = new AugmentedSmoother();
-        smoother.setCalcVariances(true);
         SsfData data = new SsfData(y);
-        DefaultSmoothingResults sd = DefaultSmoothingResults.full();
         int n = data.length();
-        sd.prepare(wssf.getStateDim(), 0, data.length());
-        smoother.process(wssf, data, sd);
-        double sig2 = smoother.getFilteringResults().var();
+        SmoothationsComputer computer=new SmoothationsComputer();
+        computer.process(wssf, data);
+        double sig2 = computer.getFilteringResults().var();
         boolean isnoise = model.getVariance(Component.Noise) != 0;
         for (int i = 0; i < n; ++i) {
             try {
-                DataBlock R = DataBlock.of(sd.R(i));
-                Matrix Rvar = sd.RVariance(i);
+                DataBlock R = computer.R(i);
+                Matrix Rvar = computer.Rvar(i);
                 double sao = 0, sls = 0, sall = 0;
                 sao = R.get(0) * R.get(0) / Rvar.get(0, 0) / sig2;
                 if (i > 0) {

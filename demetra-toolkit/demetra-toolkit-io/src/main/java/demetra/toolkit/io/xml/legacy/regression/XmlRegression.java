@@ -76,6 +76,7 @@ public class XmlRegression {
      * {@link RegressionItemType }
      * 
      * 
+     * @return 
      */
     public List<XmlRegressionItem> getItems() {
         if (item == null) {

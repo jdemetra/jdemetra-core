@@ -27,7 +27,8 @@ import java.util.Map;
  */
 @lombok.experimental.UtilityClass
 public class ArimaMapping {
-    public static final String MEAN = "mean", MU="mu",
+
+    public static final String MEAN = "mean", MU = "mu",
             THETA = "theta", D = "d", PHI = "phi",
             BTHETA = "btheta", BD = "bd", BPHI = "bphi";
 
@@ -43,9 +44,12 @@ public class ArimaMapping {
     }
 
     public InformationSet write(SarimaSpec spec, boolean verbose) {
+        if (SarimaSpec.airline().equals(spec)) {
+            return null;
+        }
         InformationSet info = new InformationSet();
         demetra.data.Parameter[] phi = spec.getPhi();
-        if (phi.length>0) {
+        if (phi.length > 0) {
             info.add(PHI, phi);
         }
         int d = spec.getD();
@@ -53,11 +57,11 @@ public class ArimaMapping {
             info.add(D, d);
         }
         demetra.data.Parameter[] th = spec.getTheta();
-        if (th.length>0) {
+        if (th.length > 0) {
             info.add(THETA, th);
         }
         demetra.data.Parameter[] bphi = spec.getBphi();
-        if (bphi.length>0) {
+        if (bphi.length > 0) {
             info.add(BPHI, bphi);
         }
         int bd = spec.getBd();
@@ -65,32 +69,30 @@ public class ArimaMapping {
             info.add(BD, bd);
         }
         demetra.data.Parameter[] bth = spec.getBtheta();
-        if (bth.length>0) {
+        if (bth.length > 0) {
             info.add(BTHETA, bth);
         }
         return info;
     }
 
     public SarimaSpec read(InformationSet info) {
-        try {
-            // default values
-            SarimaSpec.Builder builder = SarimaSpec.builder();
-            Integer d = info.get(D, Integer.class);
-            if (d != null) {
-                builder.d(d);
-            }
-            Integer bd = info.get(BD, Integer.class);
-            if (bd != null) {
-                builder.bd(bd);
-            }
-            return builder.phi(info.get(PHI, Parameter[].class))
-                    .theta(info.get(THETA, Parameter[].class))
-                    .bphi(info.get(BPHI, Parameter[].class))
-                    .btheta(info.get(BTHETA, Parameter[].class))
-                    .build();
-        } catch (Exception err) {
-            return null;
+        if (info == null) {
+            return SarimaSpec.airline();
         }
+        // default values
+        SarimaSpec.Builder builder = SarimaSpec.builder();
+        Integer d = info.get(D, Integer.class);
+        if (d != null) {
+            builder.d(d);
+        }
+        Integer bd = info.get(BD, Integer.class);
+        if (bd != null) {
+            builder.bd(bd);
+        }
+        return builder.phi(info.get(PHI, Parameter[].class))
+                .theta(info.get(THETA, Parameter[].class))
+                .bphi(info.get(BPHI, Parameter[].class))
+                .btheta(info.get(BTHETA, Parameter[].class))
+                .build();
     }
-    
 }

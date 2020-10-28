@@ -15,14 +15,14 @@
  * limitations under the Licence.
  */
 
-@XmlSchema(namespace = Constants.CORE, elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
+@XmlSchema(namespace = XmlConstants.CORE, elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
         xmlns = { 
-            @XmlNs(prefix = "tss", namespaceURI = Constants.CORE), 
+            @XmlNs(prefix = "tss", namespaceURI = XmlConstants.CORE), 
             @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") 
         })
 package demetra.toolkit.io.xml.legacy.processing;
 
-import demetra.toolkit.io.xml.legacy.Constants;
+import demetra.toolkit.io.xml.legacy.XmlConstants;
 import javax.xml.bind.annotation.XmlNs;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlSchema;

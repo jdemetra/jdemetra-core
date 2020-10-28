@@ -20,6 +20,7 @@ import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixFactory;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.akf.AugmentedSmoother;
+import jdplus.ssf.akf.SmoothationsComputer;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;
 import jdplus.ssf.implementations.RegSsf;
@@ -142,7 +143,7 @@ public class OutliersDetection {
     public boolean process(DoubleSeq y, Matrix X, int period) {
         clear();
         int i = 0;
-        this.period=period;
+        this.period = period;
         regressors = x(y.length(), X);
         if (!fullEstimation(y, regressors, period, eps2)) {
             return false;
@@ -207,7 +208,7 @@ public class OutliersDetection {
     }
 
     private void clear() {
-        period=0;
+        period = 0;
         aoPositions.clear();
         lsPositions.clear();
         soPositions.clear();
@@ -247,14 +248,11 @@ public class OutliersDetection {
         full = false;
         SsfBsm ssf = SsfBsm.of(model);
         Ssf wssf = W == null ? ssf : RegSsf.ssf(ssf, W);
-        AugmentedSmoother smoother = new AugmentedSmoother();
-        smoother.setCalcVariances(true);
         SsfData data = new SsfData(y);
-        DefaultSmoothingResults sd = DefaultSmoothingResults.full();
         int n = data.length();
         double sig2 = sig * sig;
-        sd.prepare(wssf.getStateDim(), 0, data.length());
-        smoother.process(wssf, data, sd);
+        SmoothationsComputer computer = new SmoothationsComputer();
+        computer.process(wssf, data);
         int imax = -1;
         double smax = 0;
         int type = -1;
@@ -263,8 +261,8 @@ public class OutliersDetection {
         int scmp = SsfBsm.searchPosition(model, Component.Seasonal);
         for (int i = 0; i < n; ++i) {
             try {
-                DataBlock R = DataBlock.of(sd.R(i));
-                Matrix Rvar = sd.RVariance(i);
+                DataBlock R = computer.R(i);
+                Matrix Rvar = computer.Rvar(i);
                 double sao = 0, sls = 0, sso = 0, sall = 0;
                 IntList sel = new IntList();
                 if (ao && ncmp >= 0 && !aoPositions.contains(i)) {

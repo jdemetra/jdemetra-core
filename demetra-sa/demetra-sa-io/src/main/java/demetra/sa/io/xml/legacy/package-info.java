@@ -1,7 +1,7 @@
 /*
  * Copyright 2016 National Bank of Belgium
  * 
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or � as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
@@ -14,20 +14,14 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.toolkit.io.xml.legacy;
 
-/**
- *
- * @author Jean Palate
- * @param <X> Xml class
- * @param <J> pure Java class
- */
-public interface InPlaceXmlUnmarshaller <X, J>{
-    /**
-     * Reads an xml object an put its information in a Java object
-     * @param xml The xml being read
-     * @param v The object being initialised
-     * @return
-     */
-    boolean unmarshal(X xml, J v);
-}
+@XmlSchema(namespace = XmlConstants.SA, elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
+        xmlns = { @XmlNs(prefix = "sa", namespaceURI = XmlConstants.SA), 
+            @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema")})
+        
+package demetra.sa.io.xml.legacy;
+
+import demetra.toolkit.io.xml.legacy.XmlConstants;
+import javax.xml.bind.annotation.XmlNs;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlSchema;

@@ -17,7 +17,6 @@
 package demetra.toolkit.io.xml.legacy.core;
 
 import demetra.data.Parameter;
-import demetra.toolkit.io.xml.legacy.InPlaceXmlMarshaller;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -127,7 +126,7 @@ public class XmlParameters {
         }
     }
 
-    public static final InPlaceXmlMarshaller<XmlParameters, Parameter[]> MARSHALLER = (Parameter[] v, XmlParameters xml) -> {
+    public static boolean marshal(Parameter[] v, XmlParameters xml){
         if (v == null) {
             return true;
         }
@@ -136,28 +135,32 @@ public class XmlParameters {
         } else {
             for (int i = 0; i < v.length; ++i) {
                 XmlIndexedParameter xp = new XmlIndexedParameter();
-                XmlParameter.MARSHALLER.marshal(v[i], xp);
+                XmlParameter.marshal(v[i], xp);
                 xp.setIndex(i + 1);
                 xml.getCoefficient().add(xp);
             }
         }
         return true;
-
-    };
+    }
+    
+    public static Parameter[] unmarshal(XmlParameters v){
+           if (v == null) {
+                return null;
+            }
+            Parameter[] p = new Parameter[v.size()];
+            for (int i=0; i<p.length; ++i){
+                p[i]= XmlParameter.unmarshal(v.coefficient.get(i));
+            }
+            return p;
+        
+    }
 
     public static class Adapter extends XmlAdapter<XmlParameters, Parameter[]> {
 
         @Override
         public Parameter[] unmarshal(XmlParameters v) throws Exception {
-            if (v == null) {
-                return null;
-            }
-            Parameter[] p = new Parameter[v.size()];
-            for (int i=0; i<p.length; ++i){
-                p[i]= XmlParameter.getAdapter().unmarshal(v.coefficient.get(i));
-            }
-            return p;
-        }
+            return XmlParameters.unmarshal(v);
+         }
 
         @Override
         public XmlParameters marshal(Parameter[] v) throws Exception {
@@ -165,7 +168,7 @@ public class XmlParameters {
                 return null;
             }
             XmlParameters x = new XmlParameters();
-            MARSHALLER.marshal(v, x);
+            XmlParameters.marshal(v, x);
             return x;
         }
     };

@@ -368,10 +368,10 @@ class TramoModelBuilder implements IModelBuilder {
     }
 
     public static ILengthOfPeriodVariable leapYear(TradingDaysSpec tdspec) {
-        if (! tdspec.isAutomatic() && !tdspec.isLeapYear()) {
+        if (! tdspec.isAutomatic() && tdspec.getLengthOfPeriodType() == LengthOfPeriodType.None) {
             return null;
         } else {
-            return new LengthOfPeriod(LengthOfPeriodType.LeapYear);
+            return new LengthOfPeriod(tdspec.getLengthOfPeriodType());
         }
     }
 

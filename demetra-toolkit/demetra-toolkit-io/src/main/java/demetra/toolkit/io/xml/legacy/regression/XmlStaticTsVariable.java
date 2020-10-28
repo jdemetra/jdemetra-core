@@ -16,7 +16,6 @@
  */
 package demetra.toolkit.io.xml.legacy.regression;
 
-import demetra.timeseries.regression.TsVariable;
 import demetra.timeseries.regression.UserVariable;
 import demetra.toolkit.io.xml.legacy.core.XmlTsData;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -88,14 +87,14 @@ public class XmlStaticTsVariable
         @Override
         public UserVariable unmarshal(XmlStaticTsVariable v) {
 
-            return new UserVariable(v.tsData.getName(), XmlTsData.UNMARSHALLER.unmarshal(v.tsData));
+            return new UserVariable(v.tsData.getName(), XmlTsData.unmarshal(v.tsData));
         }
 
         @Override
         public XmlStaticTsVariable marshal(UserVariable v) {
             XmlStaticTsVariable x = new XmlStaticTsVariable();
             x.tsData = new XmlTsData();
-            XmlTsData.MARSHALLER.marshal(v.getData(), x.tsData);
+            XmlTsData.marshal(v.getData(), x.tsData);
             x.tsData.setName(v.getId());
             return x;
         }

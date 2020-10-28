@@ -16,8 +16,6 @@
  */
 package demetra.toolkit.io.xml.legacy.regression;
 
-import demetra.toolkit.io.xml.legacy.IXmlMarshaller;
-import demetra.toolkit.io.xml.legacy.IXmlUnmarshaller;
 import demetra.toolkit.io.xml.legacy.XmlDateAdapter;
 import java.time.LocalDate;
 import javax.xml.bind.annotation.XmlAccessType;

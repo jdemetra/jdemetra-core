@@ -18,8 +18,6 @@ package demetra.toolkit.io.xml.legacy.core;
 
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
-import demetra.toolkit.io.xml.legacy.InPlaceXmlMarshaller;
-import demetra.toolkit.io.xml.legacy.InPlaceXmlUnmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -79,12 +77,13 @@ public class XmlParameter {
     protected String name;
     @XmlAttribute(name = "type", required = true)
     protected ParameterType type;
-    
-    public XmlParameter(){}
-    
-    public XmlParameter(double val, ParameterType type){
-        this.value=val;
-        this.type=type;
+
+    public XmlParameter() {
+    }
+
+    public XmlParameter(double val, ParameterType type) {
+        this.value = val;
+        this.type = type;
     }
 
     /**
@@ -130,7 +129,6 @@ public class XmlParameter {
 //            this.stde = value;
 //        }
 //    }
-
 //    /**
 //     * Gets the value of the tstat property.
 //     *
@@ -150,7 +148,6 @@ public class XmlParameter {
 //    public void setTstat(Double value) {
 //        this.tstat = value;
 //    }
-
     /**
      * Gets the value of the name property.
      *
@@ -190,9 +187,9 @@ public class XmlParameter {
     public void setType(ParameterType value) {
         this.type = value;
     }
-    
-    public static final InPlaceXmlMarshaller<XmlParameter, Parameter> MARSHALLER = (Parameter v, XmlParameter xml) -> {
-        if (! Parameter.isDefined(v)) {
+
+    public static boolean marshal(Parameter v, XmlParameter xml) {
+        if (!Parameter.isDefined(v)) {
             xml.type = ParameterType.Undefined;
             return true;
         } else {
@@ -200,34 +197,39 @@ public class XmlParameter {
             xml.value = v.getValue();
             return true;
         }
-    };
+    }
 
-    
-    public static class Adapter extends XmlAdapter<XmlParameter, Parameter>{
+    public static Parameter unmarshal(XmlParameter v){
+        switch (v.type) {
+            case Initial:
+                return Parameter.initial(v.value);
+            case Fixed:
+                return Parameter.fixed(v.value);
+            case Estimated:
+                return Parameter.estimated(v.value);
+            default:
+                return Parameter.undefined();
+        }
+    }
+
+    public static class Adapter extends XmlAdapter<XmlParameter, Parameter> {
+
         @Override
         public Parameter unmarshal(XmlParameter v) throws Exception {
-            switch (v.type){
-                case Initial:
-                    return Parameter.initial(v.value);
-                case Fixed:
-                    return Parameter.fixed(v.value);
-                case Estimated:
-                    return Parameter.estimated(v.value);
-                default: return Parameter.undefined();
-            }
+            return XmlParameter.unmarshal(v);
         }
 
         @Override
         public XmlParameter marshal(Parameter v) throws Exception {
-            XmlParameter x=new XmlParameter();
-            MARSHALLER.marshal(v, x);
+            XmlParameter x = new XmlParameter();
+            XmlParameter.marshal(v, x);
             return x;
         }
     };
-    
-     private final static Adapter ADAPTER=new Adapter() ;
-    
-    public static Adapter getAdapter(){
+
+    private final static Adapter ADAPTER = new Adapter();
+
+    public static Adapter getAdapter() {
         return ADAPTER;
     }
 }

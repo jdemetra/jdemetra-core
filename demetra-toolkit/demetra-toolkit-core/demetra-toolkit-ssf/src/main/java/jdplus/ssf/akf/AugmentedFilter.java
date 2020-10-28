@@ -45,7 +45,7 @@ public class AugmentedFilter {
     private boolean missing;
     private final boolean collapsing;
     private int collapsingPos = -1;
-    private double scale;
+    //private double scale;
 
     /**
      *

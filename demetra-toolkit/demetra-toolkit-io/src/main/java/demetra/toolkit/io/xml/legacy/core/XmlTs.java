@@ -20,8 +20,6 @@ import demetra.timeseries.Ts;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsInformationType;
 import demetra.timeseries.TsMoniker;
-import demetra.toolkit.io.xml.legacy.IXmlUnmarshaller;
-import demetra.toolkit.io.xml.legacy.InPlaceXmlMarshaller;
 import java.util.Map;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -141,10 +139,10 @@ public class XmlTs
         this.identifier = value;
     }
 
-    public static final InPlaceXmlMarshaller<XmlTs, Ts> TS_MARSHALLER = (Ts v, XmlTs xml) -> {
+    public static boolean marshal(Ts v, XmlTs xml) {
         TsData data = v.getData();
-        if (! data.isEmpty()) {
-            XmlTsData.MARSHALLER.marshal(data, xml);
+        if (!data.isEmpty()) {
+            XmlTsData.marshal(data, xml);
         }
         xml.source = v.getMoniker().getSource();
         xml.identifier = v.getMoniker().getId();
@@ -152,9 +150,9 @@ public class XmlTs
         xml.metaData = v.getMeta();
 
         return true;
-    };
+    }
 
-     public static final IXmlUnmarshaller<XmlTs, Ts> TS_UNMARSHALLER = (XmlTs xml) -> {
+     public static Ts unmarshal(XmlTs xml) {
         Ts.Builder builder = Ts.builder()
                 .name(xml.name == null ? "series" : xml.name)
                 .moniker(TsMoniker.of(xml.source, xml.identifier))
@@ -163,22 +161,22 @@ public class XmlTs
             builder.meta(xml.metaData);
         }
         if (xml.values != null) {
-            builder.data(XmlTsData.UNMARSHALLER.unmarshal(xml));
+            builder.data(XmlTsData.unmarshal(xml));
         }
         return builder.build();
-    };
+    }
 
     public static class Adapter extends XmlAdapter<XmlTs, Ts> {
 
         @Override
         public Ts unmarshal(XmlTs v) throws Exception {
-            return TS_UNMARSHALLER.unmarshal(v);
+            return XmlTs.unmarshal(v);
         }
 
         @Override
         public XmlTs marshal(Ts v) throws Exception {
             XmlTs xml = new XmlTs();
-            TS_MARSHALLER.marshal(v, xml);
+            XmlTs.marshal(v, xml);
             return xml;
         }
     }
