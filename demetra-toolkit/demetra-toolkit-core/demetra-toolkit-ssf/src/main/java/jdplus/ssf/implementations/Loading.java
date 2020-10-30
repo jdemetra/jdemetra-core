@@ -798,7 +798,7 @@ public class Loading {
         }
         
         private double l(int pos){
-            return pos >=s.length? s[s.length-1] : s[pos];
+            return pos < s.length? s[pos] : s[s.length-1];
         }
 
         private double l2(int pos){

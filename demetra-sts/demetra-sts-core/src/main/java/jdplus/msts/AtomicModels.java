@@ -24,6 +24,7 @@ import jdplus.msts.internal.TdRegressionItem;
 import demetra.timeseries.TsDomain;
 import demetra.math.matrices.MatrixType;
 import jdplus.msts.internal.CumulatorItem;
+import jdplus.msts.internal.WeightedNoiseItem;
 
 /**
  *
@@ -54,6 +55,10 @@ public class AtomicModels {
 
     public StateItem noise(String name, double var, boolean fixed) {
         return new NoiseItem(name, var, fixed);
+    }
+
+    public StateItem weightedNoise(String name, double[] w, double var, boolean fixed) {
+        return new WeightedNoiseItem(name, w, var, fixed);
     }
 
     public StateItem regression(String name, MatrixType x) {
