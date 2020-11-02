@@ -22,7 +22,6 @@ import demetra.design.Development;
 import demetra.timeseries.TsException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,7 +32,7 @@ import java.util.List;
 @lombok.Value
 @lombok.AllArgsConstructor(access=lombok.AccessLevel.PRIVATE)
 @lombok.Builder
-public class InterventionVariable implements ITsVariable{
+public class InterventionVariable implements ISystemVariable{
     
     public static Builder builder() {
         return new Builder();
@@ -42,15 +41,9 @@ public class InterventionVariable implements ITsVariable{
     @BuilderPattern(InterventionVariable.class)
     public static class Builder {
         
-        private String name;
         private double delta, deltaSeasonal;
         private final List<Range<LocalDateTime>> sequences = new ArrayList<>();
         private Double coefficient;
-        
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
         
         public Builder coefficient(double cfixed) {
             this.coefficient = cfixed;
@@ -76,12 +69,11 @@ public class InterventionVariable implements ITsVariable{
             if (sequences.isEmpty()) {
                 throw new TsException(TsException.INVALID_DEFINITION);
             }
-            return new InterventionVariable(name, delta, deltaSeasonal,
+            return new InterventionVariable(delta, deltaSeasonal,
                     sequences.toArray(new Range[sequences.size()]), coefficient);
         }
     }
     
-    private String name;
     private double delta, deltaSeasonal;
     private Range<LocalDateTime>[] sequences;
     private Double coefficient;

@@ -6,7 +6,7 @@
 package jdplus.tramo.spi;
 
 import demetra.data.Data;
-import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.modelling.RegSarimaResults;
 import demetra.tramo.TramoSpec;
 import org.junit.Test;

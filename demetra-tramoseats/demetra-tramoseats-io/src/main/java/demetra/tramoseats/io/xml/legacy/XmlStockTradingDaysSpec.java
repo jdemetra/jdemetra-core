@@ -16,7 +16,7 @@
  */
 package demetra.tramoseats.io.xml.legacy;
 
-import demetra.timeseries.regression.RegressionTestType;
+import demetra.tramo.RegressionTestType;
 import demetra.tramo.TradingDaysSpec;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

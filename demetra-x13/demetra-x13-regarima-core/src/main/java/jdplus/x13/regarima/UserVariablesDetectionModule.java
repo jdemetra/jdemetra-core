@@ -18,6 +18,7 @@ package jdplus.x13.regarima;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regsarima.regular.IRegressionModule;
@@ -26,12 +27,10 @@ import jdplus.regarima.RegArimaUtility;
 import jdplus.regarima.AICcComparator;
 import jdplus.regsarima.regular.IModelComparator;
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
 import java.util.ArrayList;
 import java.util.List;
-import demetra.timeseries.regression.IUserTsVariable;
 import jdplus.regarima.RegArimaEstimation;
 
 /**
@@ -48,11 +47,11 @@ public class UserVariablesDetectionModule implements IRegressionModule {
     @BuilderPattern(UserVariablesDetectionModule.class)
     public static class Builder {
 
-        private final List<IUserTsVariable> users = new ArrayList<>();
+        private final List<ITsVariable> users = new ArrayList<>();
         private IModelComparator comparator = new AICcComparator(0);
         private double eps = 1e-5;
 
-        public Builder add(IUserTsVariable... vars) {
+        public Builder add(ITsVariable... vars) {
             for (int i = 0; i < vars.length; ++i) {
                 users.add(vars[i]);
             }
@@ -74,14 +73,14 @@ public class UserVariablesDetectionModule implements IRegressionModule {
         }
     }
 
-    private final IUserTsVariable[] users;
+    private final ITsVariable[] users;
     private IModelComparator comparator = new AICcComparator(0);
     private final double eps;
 
     private UserVariablesDetectionModule(Builder builder) {
         this.comparator = builder.comparator;
         this.eps = builder.eps;
-        this.users = builder.users.toArray(new IUserTsVariable[builder.users.size()]);
+        this.users = builder.users.toArray(new ITsVariable[builder.users.size()]);
     }
 
     @Override
@@ -94,8 +93,8 @@ public class UserVariablesDetectionModule implements IRegressionModule {
         // builds models with and without user variables 
         for (int i = 0; i < users.length; ++i) {
             ModelDescription nudesc = ModelDescription.copyOf(description);
-            final IUserTsVariable cur=users[i];
-            boolean removed = nudesc.removeVariable(var->var.getVariable().equals(cur));
+            final ITsVariable cur=users[i];
+            boolean removed = nudesc.removeVariable(var->var.getCore().equals(cur));
             ModelDescription udesc = ModelDescription.copyOf(nudesc);
             nudesc.addVariable(Variable.variable("user-"+(i+1), users[i]));
 

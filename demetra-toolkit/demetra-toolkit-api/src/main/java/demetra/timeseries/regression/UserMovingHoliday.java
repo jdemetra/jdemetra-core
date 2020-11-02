@@ -16,7 +16,6 @@
  */
 package demetra.timeseries.regression;
 
-import demetra.timeseries.regression.modelling.ModellingContext;
 import demetra.design.Development;
 import demetra.timeseries.TsData;
 

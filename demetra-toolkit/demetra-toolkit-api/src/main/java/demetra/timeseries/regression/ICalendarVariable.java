@@ -17,7 +17,8 @@
 package demetra.timeseries.regression;
 
 /**
- *
+ * Any variable related to calendars. It includes trading days variable,
+ * leap year effects, moving holidays...
  * @author Jean Palate
  */
 public interface ICalendarVariable extends ITsVariable {

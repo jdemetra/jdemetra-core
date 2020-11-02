@@ -17,7 +17,9 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import jdplus.modelling.regression.Regression;
 import demetra.data.DoubleSeq;
+import demetra.sa.ComponentType;
 import jdplus.math.matrices.Matrix;
+import jdplus.regarima.ami.Utility;
 
 /**
  *
@@ -40,7 +42,7 @@ class TradingDaysController extends ModelController {
     ProcessingResult process(RegSarimaModelling modelling, TramoContext context) {
         // find td variables
         ModelDescription desc = modelling.getDescription();
-        boolean hascal = desc.variables().anyMatch(var ->(!var.isPrespecified()) && var.isCalendar());
+        boolean hascal = desc.variables().anyMatch(var ->(!Utility.isPrespecified(var)) && (Utility.isDaysRelated(var)));
         // nothing to do if td is prespecified
         if (hascal) {
             return ProcessingResult.Unchanged;
@@ -49,7 +51,7 @@ class TradingDaysController extends ModelController {
             return ProcessingResult.Unchanged;
         }
         ModelDescription nmodel = newModel(modelling);
-        nmodel.removeVariable(var->var.isOutlier(false));
+        nmodel.removeVariable(var->Utility.isOutlier(var, false));
         // compute the corresponding airline model.
         RegSarimaModelling ncontext = RegSarimaModelling.of(nmodel);
         if (!estimate(ncontext, true)) {
@@ -94,8 +96,8 @@ class TradingDaysController extends ModelController {
 
     private ModelDescription newModel(RegSarimaModelling context) {
         ModelDescription ndesc = ModelDescription.copyOf(context.getDescription());
-        ndesc.removeVariable(var -> var.isCalendar());
-        ndesc.addVariable(Variable.variable("td", td));
+        ndesc.removeVariable(var -> Utility.isDaysRelated(var));
+        ndesc.addVariable(Variable.variable("td", td, ComponentType.CalendarEffect.name()));
         return ndesc;
     }
 

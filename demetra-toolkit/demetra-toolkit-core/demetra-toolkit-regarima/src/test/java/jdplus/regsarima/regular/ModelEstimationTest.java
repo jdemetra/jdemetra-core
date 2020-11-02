@@ -28,6 +28,7 @@ import demetra.timeseries.regression.Variable;
 import java.util.ArrayList;
 import java.util.List;
 import jdplus.data.interpolation.AverageInterpolator;
+import jdplus.regarima.ami.Utility;
 import jdplus.regsarima.RegSarimaProcessor;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -132,8 +133,8 @@ public class ModelEstimationTest {
         all.add(rslt.interpolatedSeries(false));
         all.add(rslt.linearizedSeries());
         // Test regression effects
-        TsData tde = rslt.regressionEffect(rslt.getEstimationDomain().drop(-50, -100), var -> var.isTradingDays());
-        TsData ee = rslt.regressionEffect(rslt.getEstimationDomain().drop(-50, -100), var -> var.isMovingHolidays());
+        TsData tde = rslt.regressionEffect(rslt.getEstimationDomain().drop(-50, -100), var -> Utility.isTradingDays(var));
+        TsData ee = rslt.regressionEffect(rslt.getEstimationDomain().drop(-50, -100), var -> Utility.isMovingHoliday(var));
         TsData rege = rslt.regressionEffect(rslt.getEstimationDomain().drop(-50, -100), var -> true);
         all.add(tde);
         all.add(ee);

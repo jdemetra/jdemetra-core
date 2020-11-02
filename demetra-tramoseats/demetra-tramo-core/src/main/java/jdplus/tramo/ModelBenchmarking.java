@@ -22,7 +22,7 @@ import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.arima.SarimaOrders;
-
+import jdplus.regarima.ami.Utility;
 
 /**
  *
@@ -49,16 +49,15 @@ class ModelBenchmarking extends ModelController {
         }
 
         // compute the corresponding airline model.
-        ModelDescription ndesc=ModelDescription.copyOf(modelling.getDescription()); 
+        ModelDescription ndesc = ModelDescription.copyOf(modelling.getDescription());
         ndesc.setAirline(context.seasonal);
         ndesc.setMean(context.seasonal ? modelling.getDescription().isMean() : true);
-        ndesc.removeVariable(var->var.isOutlier(false));
+        ndesc.removeVariable(var -> Utility.isOutlier(var, false));
         RegSarimaModelling nmodelling = RegSarimaModelling.of(ndesc);
 
         if (!estimate(nmodelling, true)) {
             return ProcessingResult.Failed;
         }
-
 
         ModelEstimation nmodel = nmodelling.build();
         ModelComparator mcmp = ModelComparator.builder().build();

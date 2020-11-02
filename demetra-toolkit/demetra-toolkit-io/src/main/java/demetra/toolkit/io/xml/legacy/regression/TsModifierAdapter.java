@@ -16,10 +16,10 @@
  */
 package demetra.toolkit.io.xml.legacy.regression;
 
-import demetra.timeseries.regression.ITsModifier;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
+import demetra.timeseries.regression.IModifier;
 
 /**
  *
@@ -28,7 +28,7 @@ import nbbrd.service.ServiceDefinition;
  * @param <X>
  */
 @ServiceDefinition(quantifier = Quantifier.MULTIPLE)
-public abstract class TsModifierAdapter<X extends XmlRegressionVariableModifier, V extends ITsModifier> extends XmlAdapter<X, V> {
+public abstract class TsModifierAdapter<X extends XmlRegressionVariableModifier, V extends IModifier> extends XmlAdapter<X, V> {
 
     public abstract Class<V> getValueType();
 

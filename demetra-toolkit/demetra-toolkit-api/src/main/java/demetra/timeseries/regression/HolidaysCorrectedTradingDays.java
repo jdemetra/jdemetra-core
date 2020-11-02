@@ -27,7 +27,7 @@ import demetra.math.matrices.MatrixType;
  */
 @lombok.Value
 @lombok.AllArgsConstructor
-public class HolidaysCorrectedTradingDays implements ITradingDaysVariable {
+public class HolidaysCorrectedTradingDays implements ITradingDaysVariable, ISystemVariable {
 
     public static interface HolidaysCorrector {
 

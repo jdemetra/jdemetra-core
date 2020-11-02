@@ -36,7 +36,7 @@ import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.JulianEasterVariable;
 import demetra.timeseries.regression.LengthOfPeriod;
 import demetra.timeseries.regression.LevelShift;
-import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.StockTradingDays;
 import demetra.timeseries.regression.TradingDaysType;
@@ -60,9 +60,11 @@ import jdplus.modelling.regression.TransitoryChangeFactory;
 import demetra.timeseries.regression.UserTradingDays;
 import demetra.regarima.EasterSpec.Type;
 import demetra.arima.SarimaSpec;
+import demetra.sa.ComponentType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.GenericTradingDays;
 import java.util.List;
+import jdplus.regarima.ami.Utility;
 
 /**
  *
@@ -177,7 +179,7 @@ class X13ModelBuilder implements IModelBuilder {
         if (!easter.isUsed() || easter.getTest() == RegressionTestSpec.Add) {
             return;
         }
-        add(model, easter(easter.getType(), easter.getDuration()), "easter", easter.getTest() == RegressionTestSpec.None, preadjustment);
+        add(model, easter(easter.getType(), easter.getDuration()), "easter", easter.getTest() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
     }
 
     private void initializeOutliers(ModelDescription model, List<IOutlier> outliers, Map<String, Parameter[]> preadjustment) {
@@ -188,18 +190,23 @@ class X13ModelBuilder implements IModelBuilder {
             String code = outliers.get(i).getCode();
             LocalDateTime pos = outliers.get(i).getPosition();
             IOutlier v;
+            ComponentType cmp = ComponentType.Undefined;
             switch (code) {
                 case AdditiveOutlier.CODE:
                     v = AdditiveOutlierFactory.FACTORY.make(pos);
+                    cmp = ComponentType.Irregular;
                     break;
                 case LevelShift.CODE:
                     v = LevelShiftFactory.FACTORY_ZEROENDED.make(pos);
+                    cmp = ComponentType.Trend;
                     break;
                 case PeriodicOutlier.CODE:
                     v = so.make(pos);
+                    cmp = ComponentType.Seasonal;
                     break;
                 case TransitoryChange.CODE:
                     v = tc.make(pos);
+                    cmp = ComponentType.Irregular;
                     break;
                 default:
                     v = null;
@@ -207,11 +214,14 @@ class X13ModelBuilder implements IModelBuilder {
             if (v != null) {
                 String name = IOutlier.defaultName(code, pos, model.getEstimationDomain());
                 Parameter[] c = preadjustment.get(name);
-                if (c != null) {
-                    model.addVariable(Variable.of(name, v, c));
-                } else {
-                    model.addVariable(Variable.prespecifiedVariable(name, v));
-                }
+                Variable var = Variable.builder()
+                        .name(name)
+                        .core(v)
+                        .coefficients(c)
+                        .attribute(Utility.PRESPECIFIED)
+                        .attribute(cmp.name())
+                        .build();
+                model.addVariable(var);
             }
         }
     }
@@ -299,34 +309,32 @@ class X13ModelBuilder implements IModelBuilder {
 //        }
 //    }
     private void initializeUserTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> preadjustment) {
-        add(model, userTradingDays(td, context), "td", td.getTest() == RegressionTestSpec.None, preadjustment);
+        add(model, userTradingDays(td, context), "td", td.getTest() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
     }
 
     private void initializeDefaultTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> preadjustment) {
-        add(model, defaultTradingDays(td), "td", td.getTest() == RegressionTestSpec.None, preadjustment);
-        add(model, leapYear(td), "lp", td.getTest() == RegressionTestSpec.None, preadjustment);
+        add(model, defaultTradingDays(td), "td", td.getTest() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
+        add(model, leapYear(td), "lp", td.getTest() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
     }
 
     private void initializeStockTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> preadjustment) {
-        add(model, stockTradingDays(td), "td", td.getTest() == RegressionTestSpec.None, preadjustment);
+        add(model, stockTradingDays(td), "td", td.getTest() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
     }
 
     private static ITradingDaysVariable stockTradingDays(TradingDaysSpec td) {
         return new StockTradingDays(td.getStockTradingDays());
     }
 
-    private void add(ModelDescription model, ITsVariable var, String name, boolean prespecified, Map<String, Parameter[]> preadjustment) {
+    private void add(ModelDescription model, ITsVariable var, String name, boolean prespecified, ComponentType cmp, Map<String, Parameter[]> preadjustment) {
         if (var == null) {
             return;
         }
         Parameter[] c = preadjustment.get(name);
-        if (c != null) {
-            model.addVariable(Variable.of(name, var, c));
+        if (prespecified || c != null) {
+            model.addVariable(Variable.builder().name(name).core(var).coefficients(c).attribute(Utility.PRESPECIFIED).attribute(cmp.name()).build());
         } else {
-            model.addVariable(Variable.variable(name, var));
-
+            model.addVariable(Variable.builder().name(name).core(var).coefficients(c).attribute(cmp.name()).build());
         }
-
     }
 
     public static ITradingDaysVariable tradingDays(RegArimaSpec spec, ModellingContext context) {

@@ -11,6 +11,7 @@ import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.tramo.internal.OutliersDetectionModule;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.regarima.ami.Utility;
 
 @Development(status = Development.Status.Beta)
 class ModelEstimator implements IModelEstimator {
@@ -26,7 +27,7 @@ class ModelEstimator implements IModelEstimator {
 
     @Override
     public boolean estimate(RegSarimaModelling context) {
-        context.getDescription().removeVariable(var -> var.isOutlier(false));
+        context.getDescription().removeVariable(var -> Utility.isOutlier(var, false));
         if (outliers != null) {
             outliers.process(context, va);
         }

@@ -20,7 +20,7 @@ import jdplus.tramo.internal.TramoUtility;
 import demetra.design.Development;
 import demetra.information.InformationSet;
 import demetra.modelling.TransformationType;
-import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.SeasonalityDetector;
 import jdplus.regsarima.regular.ModelDescription;
@@ -44,6 +44,7 @@ import jdplus.tramo.internal.DifferencingModule;
 import jdplus.tramo.internal.OutliersDetectionModule;
 import java.util.ArrayList;
 import java.util.List;
+import jdplus.regarima.ami.Utility;
 import jdplus.regsarima.regular.RegSarimaProcessor;
 
 /**
@@ -310,7 +311,7 @@ public class TramoKernel implements RegSarimaProcessor {
             changed = execDifferencing(modelling) == ProcessingResult.Changed;
             SarimaOrders nspec = desc.specification();
             if (pass == 1 && nspec.getDifferenceOrder() != curspec.getDifferenceOrder()) {
-                desc.removeVariable(var -> var.isOutlier(false));
+                desc.removeVariable(var -> Utility.isOutlier(var, false));
                 modelling.clearEstimation();
             }
         }
@@ -322,7 +323,7 @@ public class TramoKernel implements RegSarimaProcessor {
         }
         if (needOutliers(desc)) {
 
-            if (modelling.getDescription().removeVariable(var -> var.isOutlier(false))) {
+            if (modelling.getDescription().removeVariable(var -> Utility.isOutlier(var, false))) {
                 modelling.clearEstimation();
             }
             ProcessingResult rslt = execOutliers(modelling);
@@ -420,7 +421,7 @@ public class TramoKernel implements RegSarimaProcessor {
         if (!needAutoModelling) {
             return false;
         }
-        if (round == 2 && !desc.variables().anyMatch(var -> var.isOutlier(false))) {
+        if (round == 2 && !desc.variables().anyMatch(var -> Utility.isOutlier(var, false))) {
             return false;
         }
         SarimaOrders curspec = desc.specification();
@@ -447,7 +448,7 @@ public class TramoKernel implements RegSarimaProcessor {
         if (!needAutoModelling) {
             return false;
         }
-        if (round == 2 && !desc.variables().anyMatch(var -> var.isOutlier(false))) {
+        if (round == 2 && !desc.variables().anyMatch(var -> Utility.isOutlier(var, false))) {
             return false;
         }
         // Should be completed
@@ -555,8 +556,8 @@ public class TramoKernel implements RegSarimaProcessor {
         if (refAuto != null) {
             double plbox0 = 1 - refStats.getLjungBoxPvalue();
             double rvr0 = refStats.getSe();
-            int nout = context.getDescription().countRegressors(var -> var.isOutlier(false));
-            int refout = refAuto.getDescription().countRegressors(var -> var.isOutlier(false));
+            int nout = context.getDescription().countRegressors(var -> Utility.isOutlier(var, false));
+            int refout = refAuto.getDescription().countRegressors(var -> Utility.isOutlier(var, false));
 //            addModelInfo(stats, context, false);
             if (refout <= nout && ((plbox < .95 && plbox0 < .75 && rvr0 < rvr)
                     // 1. the previous model was significantly better
@@ -626,7 +627,7 @@ public class TramoKernel implements RegSarimaProcessor {
         if (context.seasonal) {
             nspec.setBq(1);
         }
-        desc.removeVariable(var -> var.isOutlier(false));
+        desc.removeVariable(var -> Utility.isOutlier(var, false));
         modelling.setSpecification(nspec);
 //        addArmaHistory(context);
         round = 1;

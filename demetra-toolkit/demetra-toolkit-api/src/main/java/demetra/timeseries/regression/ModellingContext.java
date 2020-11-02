@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.regression.modelling;
+package demetra.timeseries.regression;
 
 import demetra.information.InformationSet;
 import demetra.timeseries.TsDataSupplier;

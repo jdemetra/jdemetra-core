@@ -18,7 +18,7 @@ package jdplus.x13.spi;
 
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import demetra.x13.X13;
 import demetra.x13.X13Results;
 import demetra.x13.X13Spec;

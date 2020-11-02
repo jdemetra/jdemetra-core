@@ -21,6 +21,7 @@ import jdplus.dstats.F;
 import demetra.stats.ProbabilityType;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
+import demetra.sa.ComponentType;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
@@ -210,13 +211,13 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
         tmp.setAirline(true);
         tmp.setMean(true);
         if (td != null) {
-            tmp.addVariable(Variable.variable("td", td));
+            tmp.addVariable(Variable.variable("td", td, ComponentType.CalendarEffect.name()));
             if (lp != null) {
-                tmp.addVariable(Variable.variable("lp", lp));
+                tmp.addVariable(Variable.variable("lp", lp, ComponentType.CalendarEffect.name()));
             }
         }
         if (easter != null) {
-            tmp.addVariable(Variable.variable("easter", easter));
+            tmp.addVariable(Variable.variable("easter", easter, ComponentType.CalendarEffect.name()));
         }
         return tmp;
     }
@@ -224,7 +225,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
     private ProcessingResult update(ModelDescription current, ModelDescription test, ITradingDaysVariable aTd, ConcentratedLikelihoodWithMissing ll, int nhp) {
         boolean changed = false;
         if (aTd != null)
-                current.addVariable(Variable.variable("td", aTd));
+                current.addVariable(Variable.variable("td", aTd, ComponentType.CalendarEffect.name()));
         if (testMean) {
             boolean mean = Math.abs(ll.tstat(0, nhp, true)) > tmean;
             if (mean != current.isMean()) {
@@ -235,14 +236,14 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
         if (aTd!= null && lp != null) {
             int pos = test.findPosition(lp);
             if (Math.abs(ll.tstat(pos, nhp, true)) > tlp) {
-                current.addVariable(Variable.variable("lp", lp));
+                current.addVariable(Variable.variable("lp", lp, ComponentType.CalendarEffect.name()));
                 changed = true;
             }
         }
         if (easter != null) {
             int pos = test.findPosition(easter);
             if (Math.abs(ll.tstat(pos, nhp, true)) > teaster) {
-                current.addVariable(Variable.variable("easter", easter));
+                current.addVariable(Variable.variable("easter", easter, ComponentType.CalendarEffect.name()));
                 changed = true;
             }
         }

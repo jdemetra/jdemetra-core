@@ -39,6 +39,8 @@ import jdplus.stats.RobustStandardDeviationComputer;
 import java.util.ArrayList;
 import java.util.List;
 import jdplus.modelling.regression.IOutlierFactory;
+import jdplus.regarima.ami.Utility;
+import jdplus.sa.modelling.RegArimaDecomposer;
 
 /**
  *
@@ -188,13 +190,13 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         }
         // exclude pre-specified outliers
         desc.variables()
-                .filter(var -> var.isOutlier(true))
-                .map(var -> (IOutlier) var.getVariable()).forEach(
+                .filter(var ->Utility.isOutlier(var, false))
+                .map(var -> (IOutlier) var.getCore()).forEach(
                 o -> impl.exclude(domain.indexOf(o.getPosition()), outlierType(types, o.getCode())));
         // add current outliers
         desc.variables()
-                .filter(var -> var.isOutlier(false))
-                .map(var -> (IOutlier) var.getVariable()).forEach(
+                .filter(var -> Utility.isOutlier(var, false))
+                .map(var -> (IOutlier) var.getCore()).forEach(
                 o -> impl.addOutlier(domain.indexOf(o.getPosition()), outlierType(types, o.getCode())));
         return impl;
     }
@@ -210,14 +212,14 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
                 return ProcessingResult.Unchanged;
             }
             // clear current outliers and add the new ones (that could be partly the same)
-            model.removeVariable(var -> var.isOutlier(false));
+            model.removeVariable(var -> Utility.isOutlier(var, false));
             // add new outliers
             int[][] outliers = impl.getOutliers();
             for (int i = 0; i < outliers.length; ++i) {
                 int[] cur = outliers[i];
                 TsPeriod pos = domain.get(cur[0]);
                 IOutlier o = impl.getFactory(cur[1]).make(pos.start());
-                model.addVariable(Variable.variable(IOutlier.defaultName(o.getCode(), pos), o));
+                model.addVariable(Variable.variable(IOutlier.defaultName(o.getCode(), pos), o, RegArimaDecomposer.componentTypeOf(o).name()));
             }
             context.clearEstimation();
             return ProcessingResult.Changed;

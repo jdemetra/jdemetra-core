@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
  */
 @lombok.Value
 @Development(status=Development.Status.Release)
-public class LinearTrend implements IUserTsVariable {
+public class LinearTrend implements ISystemVariable {
     
     private LocalDateTime start;
 

@@ -256,7 +256,7 @@ class DisaggregationModelBuilder {
         ITsVariable[] vars=new ITsVariable[regressors.size()];
         int vpos=0;
         for (Variable var : regressors){
-            vars[vpos++]=var.getVariable();
+            vars[vpos++]=var.getCore();
         }
         hX = Regression.matrix(disaggregationDomain, vars);
 

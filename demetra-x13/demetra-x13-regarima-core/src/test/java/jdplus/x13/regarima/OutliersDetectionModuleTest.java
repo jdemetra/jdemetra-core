@@ -25,6 +25,7 @@ import static jdplus.x13.regarima.OutliersDetectionModule.EPS;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
+import jdplus.regarima.ami.Utility;
 import jdplus.regarima.outlier.ExactSingleOutlierDetector;
 import jdplus.stats.RobustStandardDeviationComputer;
 import jdplus.regarima.outlier.SingleOutlierDetector;
@@ -157,7 +158,7 @@ public class OutliersDetectionModuleTest {
             RegSarimaModelling modelling = RegSarimaModelling.of(desc);
             double va=X13Utility.calcCv(insee[i].length());
             od.process(modelling, va);
-            Variable[] outs = modelling.getDescription().variables().filter(var -> var.isOutlier()).toArray(k -> new Variable[k]);
+            Variable[] outs = modelling.getDescription().variables().filter(var -> Utility.isOutlier(var)).toArray(k -> new Variable[k]);
             int n=outs.length;
             System.out.print(on);
             System.out.print('\t');
@@ -207,7 +208,7 @@ public class OutliersDetectionModuleTest {
             desc.setSpecification(spec);
             RegSarimaModelling modelling = RegSarimaModelling.of(desc);
             od.process(modelling, 3);
-            Variable[] outs = modelling.getDescription().variables().filter(var -> var.isOutlier()).toArray(k -> new Variable[k]);
+            Variable[] outs = modelling.getDescription().variables().filter(var -> Utility.isOutlier(var)).toArray(k -> new Variable[k]);
             int n=outs.length;
             System.out.print(on);
             System.out.print('\t');

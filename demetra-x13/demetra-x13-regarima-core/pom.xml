@@ -49,6 +49,10 @@
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-toolkit-regarima</artifactId>
         </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-sa-core</artifactId>
+        </dependency>
         
         <!-- test only -->
         <dependency>

@@ -18,7 +18,7 @@ package jdplus.tramo.spi;
 
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.modelling.RegSarimaResults;
 import demetra.tramo.Tramo;
 import demetra.tramo.TramoSpec;

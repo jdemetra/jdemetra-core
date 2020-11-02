@@ -28,6 +28,7 @@ import jdplus.tramo.internal.TramoUtility;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import java.util.Arrays;
+import jdplus.regarima.ami.Utility;
 
 /**
  * @author Jean Palate
@@ -71,7 +72,7 @@ public class ModelStatistics {
                 .build();
         StatisticalTest sk = new Skewness(e).build();
         Builder builder = builder()
-                .outliersCount((int) Arrays.stream(m.getVariables()).filter(var -> var.isOutlier(false)).count())
+                .outliersCount((int) Arrays.stream(m.getVariables()).filter(var -> Utility.isOutlier(var, false)).count())
                 .observationsCount(stats.getObservationsCount())
                 .effectiveObservationsCount(stats.getEffectiveObservationsCount())
                 .bic(stats.getBICC())

@@ -36,6 +36,7 @@ import jdplus.tramo.TramoException;
 import java.util.Optional;
 import demetra.data.DoubleSeq;
 import internal.jdplus.arima.FastKalmanFilter;
+import jdplus.regarima.ami.Utility;
 import jdplus.sarima.estimation.HannanRissanen;
 import jdplus.sarima.estimation.SarimaMapping;
 
@@ -520,12 +521,12 @@ public class DifferencingModule  {
                 return airline(context);
             }
 
-            int nvars = (int) desc.variables().filter(var -> var.isOutlier(false)).count();
+            int nvars = (int) desc.variables().filter(var -> Utility.isOutlier(var, false)).count();
             DoubleSeq res = RegArimaUtility.interpolatedData(desc.regarima(), estimation.getConcentratedLikelihood());
             if (nvars > 0) {
-                Optional<Variable> first = desc.variables().filter(var -> var.isOutlier(false)).findFirst();
+                Optional<Variable> first = desc.variables().filter(var -> Utility.isOutlier(var, false)).findFirst();
                 // remove the outliers effects
-                DoubleSeq outs = RegArimaUtility.regressionEffect(desc.regarima(), estimation.getConcentratedLikelihood(), desc.findPosition(first.get().getVariable()), nvars);
+                DoubleSeq outs = RegArimaUtility.regressionEffect(desc.regarima(), estimation.getConcentratedLikelihood(), desc.findPosition(first.get().getCore()), nvars);
                 res = res.op(outs, (a, b) -> a - b);
             }
             SarimaOrders curspec = desc.specification();

@@ -17,7 +17,6 @@
 package jdplus.regsarima.regular;
 
 import demetra.arima.SarimaOrders;
-import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
@@ -38,6 +37,7 @@ import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
+import jdplus.regarima.ami.Utility;
 import jdplus.timeseries.simplets.Transformations;
 
 /**
@@ -230,7 +230,7 @@ public final class ModelEstimation {
                 int nfree = cur.freeCoefficientsCount();
                 if (nfree > 0) {
                     if (test.test(cur)) {
-                        Matrix m = Regression.matrix(domain, cur.getVariable());
+                        Matrix m = Regression.matrix(domain, cur.getCore());
                         int ic = 0;
                         DataBlockIterator cols = m.columnsIterator();
                         while (cols.hasNext()) {
@@ -257,7 +257,7 @@ public final class ModelEstimation {
                 int nfree = cur.freeCoefficientsCount();
                 if (cur.dim() > nfree) {
                     if (test.test(cur)) {
-                        Matrix m = Regression.matrix(domain, cur.getVariable());
+                        Matrix m = Regression.matrix(domain, cur.getCore());
                         int ic = 0;
                         DataBlockIterator cols = m.columnsIterator();
                         while (cols.hasNext()) {
@@ -284,7 +284,7 @@ public final class ModelEstimation {
             for (int i = 0; i < variables.length; ++i) {
                 Variable cur = variables[i];
                 if (test.test(cur)) {
-                    Matrix m = Regression.matrix(domain, cur.getVariable());
+                    Matrix m = Regression.matrix(domain, cur.getCore());
                     int ic = 0;
                     DataBlockIterator cols = m.columnsIterator();
                     while (cols.hasNext()) {
@@ -317,7 +317,7 @@ public final class ModelEstimation {
         }
         TsDomain all = interp.getDomain();
         for (int i = 0; i < variables.length; ++i) {
-            Matrix xcur = Regression.matrix(all, variables[i].getVariable());
+            Matrix xcur = Regression.matrix(all, variables[i].getCore());
             DataBlockIterator xcols = xcur.columnsIterator();
             while (xcols.hasNext()) {
                 rslt.addAY(-c.getAndNext(), xcols.next());
@@ -343,7 +343,7 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getTradingDaysEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> v.isCalendar());
+        TsData s = deterministicEffect(domain, v -> Utility.isDaysRelated(v));
         return backTransform(s, true);
     }
 
@@ -354,7 +354,7 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getEasterEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> v.isEaster());
+        TsData s = deterministicEffect(domain, v -> Utility.isEaster(v));
         return backTransform(s, false);
     }
 
@@ -365,7 +365,7 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getMovingHolidayEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> v.isMovingHolidays());
+        TsData s = deterministicEffect(domain, v -> Utility.isMovingHoliday(v));
         return backTransform(s, false);
     }
 
@@ -388,7 +388,7 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getOutliersEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> v.isOutlier());
+        TsData s = deterministicEffect(domain, v -> Utility.isOutlier(v));
         return backTransform(s, false);
     }
 
@@ -399,7 +399,7 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getOutliersEffect(TsDomain domain, boolean prespecified) {
-        TsData s = deterministicEffect(domain, v -> v.isOutlier(prespecified));
+        TsData s = deterministicEffect(domain, v -> Utility.isOutlier(v, prespecified));
         return backTransform(s, false);
     }
 
@@ -410,7 +410,7 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getCalendarEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> v.isCalendar() || v.isMovingHolidays());
+        TsData s = deterministicEffect(domain, v -> Utility.isCalendar(v));
         return backTransform(s, true);
     }
 

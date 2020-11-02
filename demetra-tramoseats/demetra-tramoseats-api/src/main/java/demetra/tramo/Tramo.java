@@ -19,7 +19,7 @@ package demetra.tramo;
 import demetra.design.Algorithm;
 import demetra.design.Development;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.modelling.RegSarimaResults;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;

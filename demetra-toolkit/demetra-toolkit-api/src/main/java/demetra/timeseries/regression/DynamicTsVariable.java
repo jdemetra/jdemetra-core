@@ -5,32 +5,25 @@
  */
 package demetra.timeseries.regression;
 
-import demetra.timeseries.TsData;
 import demetra.timeseries.TsMoniker;
 
 /**
  *
  * @author PALATEJ
  */
-public class dynamicTsVariable implements ITsVariable {
+public class DynamicTsVariable implements IUserVariable {
 
     private final TsMoniker moniker;
-    private final TsData data;
 
-    protected dynamicTsVariable(final TsMoniker moniker, final TsData data) {
+    protected DynamicTsVariable(final TsMoniker moniker) {
         this.moniker = moniker;
-        this.data = data;
     }
 
     public TsMoniker getId() {
         return moniker;
     }
 
-    public TsData getData() {
-        return data;
-    }
-
-    protected boolean equals(dynamicTsVariable obj) {
+    protected boolean equals(DynamicTsVariable obj) {
         return moniker.equals(obj.moniker);
     }
 

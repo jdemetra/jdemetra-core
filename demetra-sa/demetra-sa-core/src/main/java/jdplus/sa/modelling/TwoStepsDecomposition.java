@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.sa;
+package jdplus.sa.modelling;
 
 import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
@@ -48,8 +48,7 @@ public class TwoStepsDecomposition {
         }
     }
 
-    public SeriesDecomposition merge(RegArimaDecomposer decomposer, SeriesDecomposition sadecomp) {
-        ModelEstimation model = decomposer.getModel();
+    public SeriesDecomposition merge(ModelEstimation model, SeriesDecomposition sadecomp) {
         boolean mul = model.isLogTransformation();
         SeriesDecomposition.Builder builder = SeriesDecomposition.builder(mul ? DecompositionMode.Multiplicative : DecompositionMode.Additive);
 
@@ -66,13 +65,13 @@ public class TwoStepsDecomposition {
         TsDomain cdomain = domain.extend(nb, nf);
         TsPeriod start = domain.getStartPeriod(), bstart = cdomain.getStartPeriod(), fstart = domain.getEndPeriod();
 
-        TsData detT = decomposer.deterministicEffect(cdomain, ComponentType.Trend, false);
-        TsData detS = decomposer.deterministicEffect(cdomain, ComponentType.Seasonal, false);
-        TsData detC = decomposer.deterministicEffect(cdomain, ComponentType.CalendarEffect, false);
+        TsData detT = RegArimaDecomposer.deterministicEffect(model, cdomain, ComponentType.Trend, false);
+        TsData detS = RegArimaDecomposer.deterministicEffect(model, cdomain, ComponentType.Seasonal, false);
+        TsData detC = RegArimaDecomposer.deterministicEffect(model, cdomain, ComponentType.CalendarEffect, false);
         detS = op(mul, detS, detC);
-        TsData detI = decomposer.deterministicEffect(cdomain, ComponentType.Irregular, false);
-        TsData detY = decomposer.deterministicEffect(cdomain, ComponentType.Series, false);
-        TsData detSA = decomposer.deterministicEffect(cdomain, ComponentType.SeasonallyAdjusted, false);
+        TsData detI = RegArimaDecomposer.deterministicEffect(model, cdomain, ComponentType.Irregular, false);
+        TsData detY = RegArimaDecomposer.deterministicEffect(model, cdomain, ComponentType.Series, false);
+        TsData detSA = RegArimaDecomposer.deterministicEffect(model, cdomain, ComponentType.SeasonallyAdjusted, false);
 
         TsData y = inv_op(mul, orig, detY.range(n1, n2));
         builder.add(y, ComponentType.Series);

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdplus.sa;
+package jdplus.sa.modelling;
 
 import demetra.data.Data;
 import demetra.sa.ComponentType;
@@ -40,29 +40,25 @@ public class RegArimaDecomposerTest {
         model.setLogTransformation(true);
         model.setPreadjustment(LengthOfPeriodType.LeapYear);
         GenericTradingDaysVariable td = new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD3));
-        model.addVariable(Variable.variable("td", td));
+        model.addVariable(Variable.variable("td", td, ComponentType.CalendarEffect.name()));
         EasterVariable easter = EasterVariable.builder()
                 .duration(6)
                 .meanCorrection(EasterVariable.Correction.Theoretical)
                 .build();
-        model.addVariable(Variable.prespecifiedVariable("easter", easter));
+        model.addVariable(Variable.builder().name("easter").core(easter).attribute("prespecified").attribute(ComponentType.CalendarEffect.name()).build());
         ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.PROCESSOR);
 
-        SaVariablesMapping mapping=new SaVariablesMapping();
-        mapping.addDefault(model.variables().map(var->var.getVariable()).toArray(n->new ITsVariable[n]));
-
-        RegArimaDecomposer decomposer=RegArimaDecomposer.of(rslt, mapping);
-
+ 
         List<TsData> all = new ArrayList<>();
-        all.add(decomposer.deterministicEffect(model.getDomain(), ComponentType.Trend, false));
-        all.add(decomposer.deterministicEffect(model.getDomain(), ComponentType.CalendarEffect, false));
-        all.add(decomposer.deterministicEffect(model.getDomain(), ComponentType.Seasonal, false));
-        all.add(decomposer.deterministicEffect(model.getDomain(), ComponentType.Irregular, false));
-        all.add(decomposer.deterministicEffect(model.getDomain(), ComponentType.Undefined, false));
+        all.add(RegArimaDecomposer.deterministicEffect(rslt, model.getDomain(), ComponentType.Trend, false));
+        all.add(RegArimaDecomposer.deterministicEffect(rslt, model.getDomain(), ComponentType.CalendarEffect, false));
+        all.add(RegArimaDecomposer.deterministicEffect(rslt, model.getDomain(), ComponentType.Seasonal, false));
+        all.add(RegArimaDecomposer.deterministicEffect(rslt, model.getDomain(), ComponentType.Irregular, false));
+        all.add(RegArimaDecomposer.deterministicEffect(rslt, model.getDomain(), ComponentType.Undefined, false));
         all.add(rslt.getOriginalSeries());
         all.add(rslt.backTransform(rslt.linearizedSeries(), false));
         TsDataTable ts = TsDataTable.of(all);
-        System.out.println(ts);
+//        System.out.println(ts);
     }
     
 }

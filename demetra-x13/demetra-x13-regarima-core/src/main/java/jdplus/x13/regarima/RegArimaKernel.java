@@ -21,7 +21,7 @@ import demetra.regarima.RegArimaSpec;
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
 import demetra.math.Complex;
-import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import jdplus.regsarima.regular.ILogLevelModule;
 import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.ProcessingResult;
@@ -37,6 +37,7 @@ import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import demetra.processing.ProcessingLog;
 import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.ami.Utility;
 import jdplus.regsarima.regular.IAutoModellingModule;
 import jdplus.regsarima.regular.RegSarimaProcessor;
 
@@ -267,7 +268,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
                             ProcessingResult amrslt = autoModel.process(context);
                             defModel = amrslt == ProcessingResult.Unchanged;
                             if (!defModel) {
-                                if (context.getDescription().removeVariable(var -> var.isOutlier(false))) {
+                                if (context.getDescription().removeVariable(var -> Utility.isOutlier(var, false))) {
                                     context.clearEstimation();
                                     needOutliers = outliers != null;
                                 }
@@ -350,12 +351,12 @@ public class RegArimaKernel implements RegSarimaProcessor {
     private boolean pass2(boolean defModel, RegSarimaModelling context) {
         int ichk = 0;
         ModelDescription desc = context.getDescription();
-        int naut = (int) desc.variables().filter(v -> v.isOutlier(false)).count();
+        int naut = (int) desc.variables().filter(v -> Utility.isOutlier(v, false)).count();
 
         ModelDescription desc0 = reference.getDescription();
         RegArimaEstimation<SarimaModel> estimation0 = reference.getEstimation();
 
-        int naut0 = (int) desc0.variables().filter(v -> v.isOutlier(false)).count();
+        int naut0 = (int) desc0.variables().filter(v -> Utility.isOutlier(v, false)).count();
         SarimaOrders spec0 = desc0.specification();
         SarimaOrders spec = desc.specification();
         SarimaModel arima = desc.arima();
@@ -507,8 +508,8 @@ public class RegArimaKernel implements RegSarimaProcessor {
         if (desc.isMean()) {
             checkMu(context, false);
         }
-        if (desc.variables().filter(v -> v.isOutlier(false)).findAny().isPresent()) {
-            desc.removeVariable(v -> v.isOutlier(false));
+        if (desc.variables().filter(v -> Utility.isOutlier(v, false)).findAny().isPresent()) {
+            desc.removeVariable(v -> Utility.isOutlier(v, false));
             context.clearEstimation();
         }
         if (context.needEstimation()) {

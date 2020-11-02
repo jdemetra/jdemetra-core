@@ -18,6 +18,7 @@ package jdplus.x13.regarima;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.sa.ComponentType;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regsarima.regular.IRegressionModule;
@@ -33,6 +34,7 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.ami.Utility;
 
 /**
  *
@@ -106,23 +108,23 @@ public class CalendarEffectsDetectionModule implements IRegressionModule {
 
         // builds models with and without td
         ModelDescription ntddesc = ModelDescription.copyOf(description, null);
-        boolean removed = ntddesc.removeVariable(var->var.isTradingDays());
+        boolean removed = ntddesc.removeVariable(var->Utility.isTradingDays(var));
         if (lp != null) {
             if (ntddesc.isAdjusted()) {
                 ntddesc.setPreadjustment(LengthOfPeriodType.None);
             } else {
-                ntddesc.removeVariable(var->var.isLengthOfPeriod());
+                ntddesc.removeVariable(var->Utility.isLengthOfPeriod(var));
             }
 
         }
 
         ModelDescription tddesc = ModelDescription.copyOf(ntddesc);
-        tddesc.addVariable(Variable.variable("td", td));
+        tddesc.addVariable(Variable.variable("td", td, ComponentType.CalendarEffect.name()));
         if (lp != null) {
             if (tddesc.isLogTransformation() && adjust != LengthOfPeriodType.None) {
                 tddesc.setPreadjustment(adjust);
             } else {
-                tddesc.addVariable(Variable.variable("lp", lp));
+                tddesc.addVariable(Variable.variable("lp", lp, ComponentType.CalendarEffect.name()));
             }
         }
 

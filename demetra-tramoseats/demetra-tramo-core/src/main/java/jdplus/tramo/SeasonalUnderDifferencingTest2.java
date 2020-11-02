@@ -21,6 +21,7 @@ import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.arima.SarimaOrders;
+import jdplus.regarima.ami.Utility;
 
 
 /**
@@ -45,7 +46,7 @@ class SeasonalUnderDifferencingTest2 extends ModelController {
         if (spec.getBp() == 1) {
             
             boolean hastdmh = desc.variables()
-                    .filter(var->var.isCalendar() || var.isMovingHolidays())
+                    .filter(var->Utility.isCalendar(var))
                     .findAny()
                     .isPresent();
 

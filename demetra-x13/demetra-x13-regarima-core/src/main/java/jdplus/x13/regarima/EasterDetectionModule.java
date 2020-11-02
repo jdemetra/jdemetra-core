@@ -18,6 +18,7 @@ package jdplus.x13.regarima;
 
 import demetra.design.BuilderPattern;
 import demetra.design.Development;
+import demetra.sa.ComponentType;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
@@ -96,7 +97,7 @@ public class EasterDetectionModule implements IRegressionModule {
 
         for (int i = 0; i < n; ++i) {
             ModelDescription curDesc = ModelDescription.copyOf(refdesc);
-            curDesc.addVariable(Variable.variable("easter", easters[i]));
+            curDesc.addVariable(Variable.variable("easter", easters[i], ComponentType.CalendarEffect.name()));
             desc[i] = curDesc;
             est[i] = curDesc.estimate(processor);
         }

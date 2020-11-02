@@ -21,7 +21,7 @@ import demetra.processing.ProcDiagnostic;
 import demetra.processing.ProcResults;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import java.util.List;
 
 /**

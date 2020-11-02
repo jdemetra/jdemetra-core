@@ -16,12 +16,12 @@
  */
 package demetra.toolkit.io.xml.legacy.regression;
 
-import demetra.timeseries.regression.ITsModifier;
 import demetra.timeseries.regression.ITsVariable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+import demetra.timeseries.regression.IModifier;
 
 /**
  * 

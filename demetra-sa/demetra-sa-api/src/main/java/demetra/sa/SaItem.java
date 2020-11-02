@@ -16,7 +16,7 @@
  */
 package demetra.sa;
 
-import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -6,7 +6,7 @@
 package jdplus.tramoseats.legacy;
 
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.modelling.RegSarimaResults;
 import demetra.tramo.Tramo;
 import demetra.tramo.TramoSpec;

@@ -17,6 +17,7 @@ import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.regular.TRegressionTest;
 import jdplus.sarima.SarimaModel;
 import java.util.Optional;
+import jdplus.regarima.ami.Utility;
 
 /**
  * Remove non significant regression items. The model is not re-estimated
@@ -81,15 +82,15 @@ public class FastRegressionTest implements IRegressionModule {
         int start = regarima.isMean() ? 1 : 0;
         int nhp = tmpModel.getArimaComponent().getFreeParametersCount();
 
-        Optional<Variable> td = tmpModel.variables().filter(var -> var.isTradingDays() && !var.isPrespecified()).findFirst();
-        Optional<Variable> lp = tmpModel.variables().filter(var -> var.isLengthOfPeriod() && !var.isPrespecified()).findFirst();
-        Optional<Variable> easter = tmpModel.variables().filter(var -> var.isEaster() && !var.isPrespecified()).findFirst();
+        Optional<Variable> td = tmpModel.variables().filter(var -> Utility.isTradingDays(var) && !Utility.isPrespecified(var)).findFirst();
+        Optional<Variable> lp = tmpModel.variables().filter(var -> Utility.isLengthOfPeriod(var) && !Utility.isPrespecified(var)).findFirst();
+        Optional<Variable> easter = tmpModel.variables().filter(var -> Utility.isEaster(var) && !Utility.isPrespecified(var)).findFirst();
         // td
         boolean removetd = false;
         if (td.isPresent()) {
             Variable variable = td.get();
-            int pos = tmpModel.findPosition(variable.getVariable());
-            int dim = variable.getVariable().dim();
+            int pos = tmpModel.findPosition(variable.getCore());
+            int dim = variable.getCore().dim();
             IRegressionTest test = dim == 1 ? wdTest : tdTest;
             if (!test.accept(ll, nhp, pos, dim, null)) {
                 removetd = true;
@@ -97,27 +98,27 @@ public class FastRegressionTest implements IRegressionModule {
         }
         if (removetd && lp.isPresent()) {
             Variable variable = lp.get();
-            int pos = tmpModel.findPosition(variable.getVariable());
+            int pos = tmpModel.findPosition(variable.getCore());
             if (lpTest.accept(ll, nhp, pos, 1, null)) {
                 removetd = false;
             } else {
-                currentModel.remove(variable.getVariable());
+                currentModel.remove(variable.getCore());
                 changed = true;
             }
         }
 
         if (removetd) {
-            currentModel.remove(td.get().getVariable());
+            currentModel.remove(td.get().getCore());
             if (lp.isPresent())
-                currentModel.remove(lp.get().getVariable());
+                currentModel.remove(lp.get().getCore());
             changed = true;
         }
 
         if (easter.isPresent()) {
             Variable variable = easter.get();
-            int pos =  tmpModel.findPosition(variable.getVariable());
+            int pos =  tmpModel.findPosition(variable.getCore());
             if (!mhTest.accept(ll, nhp, pos, 1, null)) {
-                currentModel.remove(variable.getVariable());
+                currentModel.remove(variable.getCore());
                 changed = true;
             }
         }

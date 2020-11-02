@@ -16,11 +16,11 @@
  */
 package demetra.toolkit.io.xml.legacy.regression;
 
-import demetra.timeseries.regression.ITsModifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import demetra.timeseries.regression.IModifier;
 
 /**
  *
@@ -56,11 +56,11 @@ public class TsModifierAdapters {
         return adapters.stream().map(adapter -> adapter.getXmlType()).collect(Collectors.toList());
     }
 
-    public ITsModifier unmarshal(XmlRegressionVariableModifier xvar) {
+    public IModifier unmarshal(XmlRegressionVariableModifier xvar) {
         for (TsModifierAdapter adapter : adapters) {
             if (adapter.getXmlType().isInstance(xvar)) {
                 try {
-                    return (ITsModifier) adapter.unmarshal(xvar);
+                    return (IModifier) adapter.unmarshal(xvar);
                 } catch (Exception ex) {
                     return null;
                 }
@@ -69,7 +69,7 @@ public class TsModifierAdapters {
         return null;
     }
 
-    public XmlRegressionVariableModifier marshal(ITsModifier ivar) {
+    public XmlRegressionVariableModifier marshal(IModifier ivar) {
         for (TsModifierAdapter adapter : adapters) {
             if (adapter.getValueType().isInstance(ivar)) {
                 try {

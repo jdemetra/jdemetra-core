@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 @lombok.Value
 @lombok.AllArgsConstructor
 @Development(status=Development.Status.Release)
-public class PeriodicDummies implements IUserTsVariable {
+public class PeriodicDummies implements ISystemVariable {
     private int period;
     private LocalDateTime reference;
     

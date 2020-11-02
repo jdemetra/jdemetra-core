@@ -32,7 +32,7 @@ import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.JulianEasterVariable;
 import demetra.timeseries.regression.LengthOfPeriod;
 import demetra.timeseries.regression.LevelShift;
-import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.StockTradingDays;
 import demetra.timeseries.regression.TradingDaysType;
@@ -55,6 +55,7 @@ import jdplus.modelling.regression.PeriodicOutlierFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
 import demetra.timeseries.regression.UserTradingDays;
 import demetra.arima.SarimaSpec;
+import demetra.sa.ComponentType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.tramo.CalendarSpec;
@@ -64,6 +65,8 @@ import demetra.tramo.TradingDaysSpec;
 import demetra.tramo.TramoSpec;
 import demetra.tramo.TransformSpec;
 import jdplus.data.OldParameter;
+import jdplus.regarima.ami.Utility;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -83,7 +86,7 @@ class TramoModelBuilder implements IModelBuilder {
             this.context = ModellingContext.getActiveContext();
         }
     }
-    
+
     private void initializeArima(ModelDescription model) {
         int freq = model.getAnnualFrequency();
         boolean yearly = freq == 1;
@@ -175,7 +178,7 @@ class TramoModelBuilder implements IModelBuilder {
         if (!easter.isUsed() || easter.isTest()) {
             return;
         }
-        add(model, easter(spec), "easter", coefficients);
+        add(model, easter(spec), "easter", ComponentType.CalendarEffect, coefficients);
     }
 
     private void initializeOutliers(ModelDescription model, IOutlier[] outliers, Map<String, Parameter[]> coefficients) {
@@ -186,18 +189,23 @@ class TramoModelBuilder implements IModelBuilder {
             String code = outliers[i].getCode();
             LocalDateTime pos = outliers[i].getPosition();
             IOutlier v;
+            ComponentType cmp = ComponentType.Undefined;
             switch (code) {
                 case AdditiveOutlier.CODE:
                     v = AdditiveOutlierFactory.FACTORY.make(pos);
+                    cmp = ComponentType.Irregular;
                     break;
                 case LevelShift.CODE:
                     v = LevelShiftFactory.FACTORY_ZEROSTARTED.make(pos);
+                    cmp = ComponentType.Trend;
                     break;
                 case PeriodicOutlier.CODE:
                     v = so.make(pos);
+                    cmp = ComponentType.Seasonal;
                     break;
                 case TransitoryChange.CODE:
                     v = tc.make(pos);
+                    cmp = ComponentType.Irregular;
                     break;
                 default:
                     v = null;
@@ -205,11 +213,14 @@ class TramoModelBuilder implements IModelBuilder {
             if (v != null) {
                 String name = IOutlier.defaultName(code, pos, model.getEstimationDomain());
                 Parameter[] c = coefficients.get(name);
-                if (c != null) {
-                    model.addVariable(Variable.of(name, v, c));
-                } else {
-                    model.addVariable(Variable.prespecifiedVariable(name, v));
-                }
+                Variable var = Variable.builder()
+                        .name(name)
+                        .core(v)
+                        .coefficients(c)
+                        .attribute(Utility.PRESPECIFIED)
+                        .attribute(cmp.name())
+                        .build();
+                model.addVariable(var);
             }
         }
     }
@@ -266,38 +277,37 @@ class TramoModelBuilder implements IModelBuilder {
 //    }
 //
     private void initializeHolidays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> coefficients) {
-        add(model, holidays(td, context), "td", coefficients);
-        add(model, leapYear(td), "lp", coefficients);
+        add(model, holidays(td, context), "td", ComponentType.CalendarEffect, coefficients);
+        add(model, leapYear(td), "lp", ComponentType.CalendarEffect, coefficients);
     }
 
     private void initializeUserTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> coefficients) {
-        add(model, userTradingDays(td, context), "usertd", coefficients);
+        add(model, userTradingDays(td, context), "usertd", ComponentType.CalendarEffect, coefficients);
     }
 
     private void initializeDefaultTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> coefficients) {
-        add(model, defaultTradingDays(td), "td", coefficients);
-        add(model, leapYear(td), "lp", coefficients);
+        add(model, defaultTradingDays(td), "td", ComponentType.CalendarEffect, coefficients);
+        add(model, leapYear(td), "lp", ComponentType.CalendarEffect, coefficients);
     }
 
     private void initializeStockTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> coefficients) {
-        add(model, stockTradingDays(td), "td", coefficients);
+        add(model, stockTradingDays(td), "td", ComponentType.CalendarEffect, coefficients);
     }
 
     private static ITradingDaysVariable stockTradingDays(TradingDaysSpec td) {
         return new StockTradingDays(td.getStockTradingDays());
     }
 
-    private void add(ModelDescription model, ITsVariable var, String name, Map<String, Parameter[]> coefficients) {
-        if (var == null) {
-            return;
-        }
+    private void add(@NonNull ModelDescription model, @NonNull ITsVariable v, @NonNull String name, @NonNull ComponentType cmp, @NonNull Map<String, Parameter[]> coefficients) {
         Parameter[] c = name == null ? null : coefficients.get(name);
-        if (c != null) {
-            model.addVariable(Variable.of(name, var, c));
-        } else {
-            model.addVariable(Variable.prespecifiedVariable(name, var));
-        }
-
+        Variable var = Variable.builder()
+                .name(name)
+                .core(v)
+                .coefficients(c)
+                .attribute(cmp.name())
+                .attribute(Utility.PRESPECIFIED)
+                .build();
+        model.addVariable(var);
     }
 
     public static ITradingDaysVariable tradingDays(TramoSpec spec, ModellingContext context) {
@@ -368,7 +378,7 @@ class TramoModelBuilder implements IModelBuilder {
     }
 
     public static ILengthOfPeriodVariable leapYear(TradingDaysSpec tdspec) {
-        if (! tdspec.isAutomatic() && tdspec.getLengthOfPeriodType() == LengthOfPeriodType.None) {
+        if (!tdspec.isAutomatic() && tdspec.getLengthOfPeriodType() == LengthOfPeriodType.None) {
             return null;
         } else {
             return new LengthOfPeriod(tdspec.getLengthOfPeriodType());

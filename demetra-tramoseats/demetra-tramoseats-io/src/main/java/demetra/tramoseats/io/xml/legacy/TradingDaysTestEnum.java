@@ -5,7 +5,7 @@
  */
 package demetra.tramoseats.io.xml.legacy;
 
-import demetra.timeseries.regression.RegressionTestType;
+import demetra.tramo.RegressionTestType;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;

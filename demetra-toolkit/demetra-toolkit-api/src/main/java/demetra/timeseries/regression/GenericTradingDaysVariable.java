@@ -27,7 +27,7 @@ import demetra.timeseries.calendars.GenericTradingDays;
 @lombok.Value
 @lombok.AllArgsConstructor
 @Development(status=Development.Status.Release)
-public class GenericTradingDaysVariable implements ITradingDaysVariable{
+public class GenericTradingDaysVariable implements ITradingDaysVariable, ISystemVariable{
     private DayClustering clustering;
     private boolean contrast;
     private boolean normalized;

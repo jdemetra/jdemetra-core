@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.sa;
+package jdplus.sa.modelling;
 
 import demetra.data.Range;
 import demetra.sa.ComponentType;

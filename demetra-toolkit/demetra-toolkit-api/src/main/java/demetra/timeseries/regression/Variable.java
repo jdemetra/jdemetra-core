@@ -17,8 +17,10 @@
 package demetra.timeseries.regression;
 
 import demetra.data.Parameter;
-import demetra.data.ParameterType;
 import demetra.design.Development;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -27,161 +29,124 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 @Development(status = Development.Status.Release)
 @lombok.Value
-@lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-public final class Variable {
+@lombok.Builder(builderClassName = "Builder", toBuilder = true)
+public class Variable {
 
+    @lombok.NonNull
     private String name;
-    private ITsVariable variable;
-    private boolean prespecified;
+
+    @lombok.NonNull
+    private ITsVariable core;
+
     private Parameter[] coefficients;
+
+    @lombok.NonNull
+    @lombok.Singular
+    private List<String> attributes;
     
-    public int dim(){
-        return variable.dim();
+    public int dim() {
+        return core.dim();
     }
-    
-    public Parameter getCoefficient(int i){
+
+    public boolean isAttribute(String id) {
+        return attributes.contains(id);
+    }
+
+    public Parameter getCoefficient(int i) {
         return coefficients == null ? Parameter.undefined() : coefficients[i];
     }
-
-    /**
-     *
-     * @param variable Actual variable
-     * @param name
-     * @return
-     */
-    public static Variable variable(@NonNull final String name, @NonNull final ITsVariable variable) {
-        return new Variable(name, variable, false, null);
-    }
-
-    /**
-     *
-     * @param variable Actual variable
-     * @param name
-     * @return
-     */
-    public static Variable prespecifiedVariable(@NonNull final String name, @NonNull final ITsVariable variable) {
-        return new Variable(name, variable, true, null);
-    }
-
-    /**
-     *
-     * @param variable Actual variable
-     * @param name
-     * @param coeff
-     * @return
-     */
-    public static Variable preadjustmentVariable(@NonNull final String name, @NonNull final ITsVariable variable, double coeff) {
-        if (variable.dim() != 1) {
-            throw new IllegalArgumentException();
-        }
-        return new Variable(name, variable, true, new Parameter[]{Parameter.fixed(coeff)});
-    }
     
-   /**
+    /**
      *
      * @param variable Actual variable
      * @param name
-     * @param coeff
+     * @param attributes
      * @return
      */
-    public static Variable preadjustmentVariable(@NonNull final String name, @NonNull final ITsVariable variable, @NonNull double[] coeff) {
-        if (variable.dim() != coeff.length) {
-            throw new IllegalArgumentException();
+    public static Variable variable(@NonNull final String name, @NonNull final ITsVariable variable, String... attributes) {
+        if (attributes == null) {
+            return new Variable(name, variable, null, Collections.emptyList());
+        } else if (attributes.length == 1) {
+            return new Variable(name, variable, null, Collections.singletonList(attributes[0]));
+        } else {
+            List<String> att = new ArrayList<>(attributes.length);
+            for (int i = 0; i < attributes.length; ++i) {
+                att.add(attributes[i]);
+            }
+            return new Variable(name, variable, null, att);
         }
-        return new Variable(name, variable, true, Parameter.of(coeff, ParameterType.Fixed));
     }
 
-    public static Variable of(@NonNull final String name, @NonNull final ITsVariable variable, @NonNull Parameter[] coeff) {
-        if (variable.dim() != coeff.length) {
-            throw new IllegalArgumentException();
+    public int freeCoefficientsCount() {
+        if (coefficients == null) {
+            return core.dim();
+        } else {
+            return Parameter.freeParametersCount(coefficients);
         }
-        return new Variable(name, variable, true, coeff);
+    }
+
+    // main types
+    /**
+     *
+     * @return True if all coefficients are fixed, false otherwise
+     */
+    public boolean isPreadjustment() {
+        return coefficients != null && !Parameter.hasFreeParameters(coefficients);
+    }
+
+    /**
+     *
+     * @return True if all coefficients are free, false otherwise
+     */
+    public boolean isFree() {
+        return coefficients == null || Parameter.isFree(coefficients);
     }
 
     public Variable rename(String name) {
         if (name.equals(this.name)) {
             return this;
         } else {
-            return new Variable(name, variable, prespecified, coefficients);
+            return new Variable(name, core, coefficients, attributes);
         }
     }
 
     public Variable withCoefficient(Parameter coefficient) {
-        if (variable.dim() != 1) {
+        if (core.dim() != 1) {
             throw new IllegalArgumentException();
         }
-        return new Variable(name, variable, prespecified, new Parameter[]{coefficient});
+        return new Variable(name, core, new Parameter[]{coefficient}, attributes);
     }
 
     public Variable withCoefficient(Parameter[] coefficients) {
-        if (coefficients != null && variable.dim() != coefficients.length) {
+        if (coefficients != null && core.dim() != coefficients.length) {
             throw new IllegalArgumentException();
         }
-        return new Variable(name, variable, prespecified, coefficients);
+        return new Variable(name, core, coefficients, attributes);
     }
-    
-    public int freeCoefficientsCount(){
-        if (coefficients == null)
-            return variable.dim();
-        else{
-            return Parameter.freeParametersCount(coefficients);
+
+    public Variable addAttribute(String attribute) {
+        if (coefficients != null && core.dim() != coefficients.length) {
+            throw new IllegalArgumentException();
         }
+        List<String> natts;
+        if (attributes.isEmpty()) {
+            natts = Collections.singletonList(attribute);
+        } else {
+            natts = new ArrayList<>(attributes);
+            natts.add(attribute);
+        }
+        return new Variable(name, core, coefficients, natts);
     }
 
-    // main types
-    
-    /**
-     * 
-     * @return True if all coefficients are fixed, false otherwise
-     */
-    public boolean isPreadjustment(){
-        return coefficients != null && !Parameter.hasFreeParameters(coefficients);
-    }
-    
-    /**
-     * 
-     * @return True if all coefficients are free, false otherwise
-     */
-    public boolean isFree(){
-        return coefficients == null || Parameter.isFree(coefficients);
-    }
-    
-    public boolean isUser() {
-        return variable instanceof IUserTsVariable;
-    }
-
-    /**
-     * Detected outliers  (prespecified=false) or preadjusted/prespecified outliers
-     * @param prespecified
-     * @return 
-     */
-    public boolean isOutlier(boolean prespecified) {
-        return variable instanceof IOutlier
-                && (this.prespecified == prespecified || this.isPreadjustment());
-    }
-
-    public boolean isOutlier() {
-        return variable instanceof IOutlier;
-    }
-
-    public boolean isCalendar() {
-        return variable instanceof ICalendarVariable;
-    }
-
-    public boolean isTradingDays() {
-        return variable instanceof ITradingDaysVariable;
-    }
-
-    public boolean isLengthOfPeriod() {
-        return variable instanceof ILengthOfPeriodVariable;
-    }
-
-    public boolean isMovingHolidays() {
-        return variable instanceof IMovingHolidayVariable;
-    }
-
-    public boolean isEaster() {
-        return variable instanceof IEasterVariable;
+    public Variable addAttributes(String... additionalAttributes) {
+        if (coefficients != null && core.dim() != coefficients.length) {
+            throw new IllegalArgumentException();
+        }
+        List<String> natts = new ArrayList<>(attributes);
+        for (int i = 0; i < additionalAttributes.length; ++i) {
+            natts.add(additionalAttributes[i]);
+        }
+        return new Variable(name, core, coefficients, natts);
     }
 
 }

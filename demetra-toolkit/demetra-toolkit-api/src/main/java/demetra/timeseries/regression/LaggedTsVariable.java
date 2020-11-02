@@ -9,7 +9,7 @@ package demetra.timeseries.regression;
  *
  * @author PALATEJ
  */
-public class LaggedTsVariable implements ITsModifier{
+public class LaggedTsVariable implements IModifier{
     
     private final int firstlag, lastlag;
     private final ITsVariable var;

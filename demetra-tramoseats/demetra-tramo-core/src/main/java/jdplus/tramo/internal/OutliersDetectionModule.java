@@ -35,10 +35,10 @@ import demetra.timeseries.TsPeriod;
 import jdplus.regsarima.regular.IOutliersDetectionModule;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import jdplus.modelling.regression.IOutlierFactory;
+import jdplus.sa.modelling.RegArimaDecomposer;
 
 /**
  *
@@ -181,8 +181,8 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         }
         // current outliers ([fixed], pre-specified, identified)
         desc.variables()
-                .filter(var -> var.getVariable() instanceof IOutlier)
-                .map(var -> (IOutlier) var.getVariable()).forEach(
+                .filter(var -> var.getCore() instanceof IOutlier)
+                .map(var -> (IOutlier) var.getCore()).forEach(
                 o -> impl.exclude(domain.indexOf(o.getPosition()), outlierType(types, o.getCode())));
         return impl;
     }
@@ -224,7 +224,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
             int[] cur = outliers[i];
             TsPeriod pos = domain.get(cur[0]);
             IOutlier o = impl.getFactory(cur[1]).make(pos.start());
-            model.addVariable(Variable.variable(IOutlier.defaultName(o.getCode(), pos), o));
+            model.addVariable(Variable.variable(IOutlier.defaultName(o.getCode(), pos), o, RegArimaDecomposer.componentTypeOf(o).name()));
         }
         context.clearEstimation();
         return ProcessingResult.Changed;
