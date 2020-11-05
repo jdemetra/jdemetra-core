@@ -15,7 +15,6 @@
     
     <modules>
         <module>demetra-tramoseats-api</module>
-        <module>demetra-tramo-core</module>
         <module>demetra-tramoseats-core</module>
         <module>demetra-tramoseats-legacy</module>
         <module>demetra-tramoseats-io</module>
@@ -94,20 +93,10 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-sa-core</artifactId>
-                <version>${jd3-sa.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-tramoseats-api</artifactId>
                 <version>${jd3-tramoseats.version}</version>            
             </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-tramo-core</artifactId>
-                <version>${jd3-tramoseats.version}</version>            
-            </dependency>
-            <dependency>
+             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-tramoseats-core</artifactId>
                 <version>${jd3-tramoseats.version}</version>            
