@@ -26,41 +26,25 @@ import java.util.stream.Collectors;
  *
  * @author Jean Palate
  */
+@lombok.experimental.UtilityClass
 public class TsVariableAdapters {
 
-    private static final AtomicReference<TsVariableAdapters> defadapters = new AtomicReference<>();
+    private final AtomicReference<TsVariableAdapterLoader> ADAPTERS = new AtomicReference<>(new TsVariableAdapterLoader());
 
-    public static final TsVariableAdapters getDefault() {
-        defadapters.compareAndSet(null, new TsVariableAdapters());
-        return defadapters.get();
+    private List<TsVariableAdapter> adapters(){
+        return ADAPTERS.get().get();
     }
 
-    public static final void setDefault(TsVariableAdapters adapters) {
-        defadapters.set(adapters);
-    }
-
-    private final List<TsVariableAdapter> adapters = new ArrayList<>();
-
-    public TsVariableAdapters() {
-        load();
-    }
-
-    public TsVariableAdapters(TsVariableAdapter... adapters) {
-        for (int i = 0; i < adapters.length; ++i) {
-            this.adapters.add(adapters[i]);
-        }
-    }
-
-    private void load() {
-        adapters.addAll(new TsVariableAdapterLoader().get());
+    public void reload() {
+        ADAPTERS.set(new TsVariableAdapterLoader());
     }
 
     public List<Class> getXmlClasses() {
-        return adapters.stream().map(adapter -> adapter.getXmlType()).collect(Collectors.toList());
+        return adapters().stream().map(adapter -> adapter.getXmlType()).collect(Collectors.toList());
     }
 
     public ITsVariable unmarshal(XmlRegressionVariable xvar) {
-        for (TsVariableAdapter adapter : adapters) {
+        for (TsVariableAdapter adapter : adapters()) {
             if (adapter.getXmlType().isInstance(xvar)) {
                 try {
                     return (ITsVariable) adapter.unmarshal(xvar);
@@ -73,7 +57,7 @@ public class TsVariableAdapters {
     }
 
     public XmlRegressionVariable marshal(ITsVariable ivar) {
-        for (TsVariableAdapter adapter : adapters) {
+        for (TsVariableAdapter adapter : adapters()) {
             if (adapter.getImplementationType().isInstance(ivar)) {
                 try {
                     return (XmlRegressionVariable) adapter.marshal(ivar);

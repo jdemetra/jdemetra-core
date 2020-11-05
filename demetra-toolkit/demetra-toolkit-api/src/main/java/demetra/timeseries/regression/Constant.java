@@ -24,6 +24,10 @@ import demetra.design.Development;
  */
 @Development(status=Development.Status.Release)
 public class Constant implements ISystemVariable {
+    
+    public static final Constant C=new Constant();
+    
+    private Constant(){}
 
     @Override
     public int dim() {

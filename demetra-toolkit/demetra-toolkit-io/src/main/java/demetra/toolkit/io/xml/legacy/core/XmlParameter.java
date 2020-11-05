@@ -69,10 +69,10 @@ public class XmlParameter {
 
     @XmlElement(name = "Value")
     private Double value;
-//    @XmlElement(name = "Stde")
-//    protected Double stde;
-//    @XmlElement(name = "Tstat")
-//    protected Double tstat;
+    @XmlElement(name = "Stde")
+    protected Double stde;
+    @XmlElement(name = "Tstat")
+    protected Double tstat;
     @XmlAttribute(name = "name")
     protected String name;
     @XmlAttribute(name = "type", required = true)

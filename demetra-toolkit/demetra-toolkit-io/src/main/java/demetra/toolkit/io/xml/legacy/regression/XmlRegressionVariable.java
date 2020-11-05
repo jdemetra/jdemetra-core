@@ -21,17 +21,19 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
-import demetra.timeseries.regression.IModifier;
 
 /**
- * 
- *                 Base type for any regression variable. 
- *             
- * 
- * <p>Java class for RegressionVariableType complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
+ * Base type for any regression variable.
+ *
+ *
+ * <p>
+ * Java class for RegressionVariableType complex type.
+ *
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ *
  * <pre>
  * &lt;complexType name="RegressionVariableType"&gt;
  *   &lt;complexContent&gt;
@@ -40,28 +42,24 @@ import demetra.timeseries.regression.IModifier;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RegressionVariableType")
 @XmlSeeAlso({
-//    XmlModifiableRegressionVariable.class,
+    XmlModifiableRegressionVariable.class,
     XmlOutlier.class,
     XmlRamp.class,
     XmlInterventionVariable.class
 })
 public abstract class XmlRegressionVariable {
 
-    public static XmlRegressionVariable toXml(ITsVariable var){
-//        if (var instanceof ITsModifier){
-//            return XmlModifiableRegressionVariable.toXml((ITsModifier)var);
-//        }else{
-            return TsVariableAdapters.getDefault().marshal(var);
-//        }
+    public static XmlRegressionVariable toXml(ITsVariable var) {
+        return TsVariableAdapters.marshal(var);
     }
-    
-    public ITsVariable toTsVariable(){
-        return TsVariableAdapters.getDefault().unmarshal(this);
+
+    public ITsVariable toTsVariable() {
+        return TsVariableAdapters.unmarshal(this);
     }
 }

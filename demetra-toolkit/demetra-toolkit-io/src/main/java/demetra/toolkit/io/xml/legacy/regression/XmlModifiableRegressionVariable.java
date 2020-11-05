@@ -16,29 +16,37 @@
  */
 package demetra.toolkit.io.xml.legacy.regression;
 
+import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.ModifiedTsVariable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+import nbbrd.service.ServiceProvider;
+
 
 /**
- * <p>Java class for RegressionType complex type.
+ * 
+ *                 Base type for any modifiable regression variable. By design we can decide that some variables
+ *                 should not be modifiable (for instance outliers)
+ *             
+ * 
+ * <p>Java class for ModifiableRegressionVariableType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="RegressionType"&gt;
+ * &lt;complexType name="ModifiableRegressionVariableType"&gt;
  *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *     &lt;extension base="{ec/eurostat/jdemetra/core}RegressionVariableType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="Item" type="{ec/eurostat/jdemetra/core}RegressionItemType" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="Modifier" type="{ec/eurostat/jdemetra/core}RegressionVariableModifierType" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
- *     &lt;/restriction&gt;
+ *     &lt;/extension&gt;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
@@ -46,61 +54,54 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name="Regression")
-@XmlType(name = "RegressionType", propOrder = {
-    "item"
+@XmlType(name = "ModifiableRegressionVariableType", propOrder = {
+    "modifier"
 })
-public class XmlRegression {
+@XmlSeeAlso({
+    XmlGenericTradingDays.class,
+    XmlUserVariables.class,
+    XmlUserVariable.class
+})
+public abstract class XmlModifiableRegressionVariable
+    extends XmlRegressionVariable
+{
 
-    @XmlElement(name = "Item")
-    protected List<XmlRegressionItem> item;
+    @XmlElement(name = "Modifier")
+    protected List<XmlRegressionVariableModifier> modifier;
 
     /**
-     * Gets the value of the item property.
+     * Gets the value of the modifier property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the item property.
+     * This is why there is not a <CODE>set</CODE> method for the modifier property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getItem().add(newItem);
+     *    getModifier().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link RegressionItemType }
+     * {@link RegressionVariableModifierType }
      * 
      * 
      * @return 
      */
-    public List<XmlRegressionItem> getItems() {
-        if (item == null) {
-            item = new ArrayList<>();
+    
+    public int size(){
+        return modifier == null ? 0 : modifier.size();
+    }
+    
+    public List<XmlRegressionVariableModifier> getModifiers() {
+        if (modifier == null) {
+            modifier = new ArrayList<>();
         }
-        return this.item;
+        return this.modifier;
     }
-    
-    public boolean isEmpty(){
-        return item == null || item.isEmpty();
-    }
-
-   public static List<Class> xmlClasses(){
-        List<Class> xmlclvar = TsVariableAdapters.getXmlClasses();
-        List<Class> xmlclmod = TsModifierAdapters.getXmlClasses();
-        xmlclvar.addAll(xmlclmod);
-        return xmlclvar;
-    }
-    
-    public static synchronized JAXBContext context() throws JAXBException{ 
-    
-        List<Class> xmlClasses = xmlClasses();
-        xmlClasses.add(XmlRegression.class);
-        JAXBContext jaxb = JAXBContext.newInstance(xmlClasses.toArray(new Class[xmlClasses.size()]));
-        return jaxb;
-    }
+     
 }

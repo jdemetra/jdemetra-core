@@ -16,51 +16,40 @@
  */
 package demetra.toolkit.io.xml.legacy.regression;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-import demetra.timeseries.regression.IModifier;
+import demetra.timeseries.regression.ModifiedTsVariable;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  *
  * @author Jean Palate
  */
+@lombok.experimental.UtilityClass
 public class TsModifierAdapters {
 
-    private static final AtomicReference<TsModifierAdapters> defadapters= new AtomicReference<>();
+    private final AtomicReference<TsModifierAdapterLoader> ADAPTERS = new AtomicReference<>(new TsModifierAdapterLoader());
 
-
-    public static final TsModifierAdapters getDefault() {
-        defadapters.compareAndSet(null, make());
-        return defadapters.get();
+    private List<TsModifierAdapter> adapters(){
+        return ADAPTERS.get().get();
     }
 
-    public static final void setDefault(TsModifierAdapters adapters) {
-        defadapters.set(adapters);
-    }
-    
-    private static TsModifierAdapters make(){
-        TsModifierAdapters adapters=new TsModifierAdapters();
-        adapters.load();
-        return adapters;
+    public void reload() {
+        ADAPTERS.set(new TsModifierAdapterLoader());
     }
 
-    private final List<TsModifierAdapter> adapters = new ArrayList<>();
-
-    public void load() {
-        adapters.addAll(new TsModifierAdapterLoader().get());
-    }
 
     public List<Class> getXmlClasses() {
-        return adapters.stream().map(adapter -> adapter.getXmlType()).collect(Collectors.toList());
+        return adapters().stream().map(adapter -> adapter.getXmlType()).collect(Collectors.toList());
     }
 
-    public IModifier unmarshal(XmlRegressionVariableModifier xvar) {
-        for (TsModifierAdapter adapter : adapters) {
+    public ModifiedTsVariable.Modifier unmarshal(XmlRegressionVariableModifier xvar) {
+        for (TsModifierAdapter adapter : adapters()) {
             if (adapter.getXmlType().isInstance(xvar)) {
                 try {
-                    return (IModifier) adapter.unmarshal(xvar);
+                    return (ModifiedTsVariable.Modifier ) adapter.unmarshal(xvar);
                 } catch (Exception ex) {
                     return null;
                 }
@@ -69,8 +58,8 @@ public class TsModifierAdapters {
         return null;
     }
 
-    public XmlRegressionVariableModifier marshal(IModifier ivar) {
-        for (TsModifierAdapter adapter : adapters) {
+    public XmlRegressionVariableModifier marshal(ModifiedTsVariable.Modifier  ivar) {
+        for (TsModifierAdapter adapter : adapters()) {
             if (adapter.getValueType().isInstance(ivar)) {
                 try {
                     return (XmlRegressionVariableModifier) adapter.marshal(ivar);
@@ -80,5 +69,25 @@ public class TsModifierAdapters {
             }
         }
         return null;
+    }
+    
+    public List<ModifiedTsVariable.Modifier> unmarshal(List<XmlRegressionVariableModifier>  ms){
+        if (ms.isEmpty())
+            return Collections.EMPTY_LIST;
+        List<ModifiedTsVariable.Modifier> mod=new ArrayList<>();
+        for (XmlRegressionVariableModifier m : ms){
+            mod.add(unmarshal(m));
+        }
+        return mod;
+    }
+   
+    public List<XmlRegressionVariableModifier> marshal(List<ModifiedTsVariable.Modifier>  ms){
+        if (ms.isEmpty())
+            return Collections.EMPTY_LIST;
+        List<XmlRegressionVariableModifier> mod=new ArrayList<>();
+        for (ModifiedTsVariable.Modifier m : ms){
+            mod.add(marshal(m));
+        }
+        return mod;
     }
 }

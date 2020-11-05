@@ -1,12 +1,12 @@
 /*
- * Copyright 2020 National Bank of Belgium
+ * Copyright 2016 National Bank of Belgium
  * 
- * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  * 
- * https://joinup.ec.europa.eu/software/page/eupl
+ * http://ec.europa.eu/idabc/eupl
  * 
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
@@ -16,20 +16,23 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.design.Development;
+import java.time.LocalDate;
+
 /**
  *
- * @author Jean Palate <jean.palate@nbb.be>
+ * @author Jean Palate
  */
-public interface IModifier extends ITsVariable {
+@Development(status = Development.Status.Release)
+@lombok.Value
+public class Window implements ModifiedTsVariable.Modifier {
 
-    ITsVariable variable();
+    @lombok.NonNull
+    private final LocalDate start, end;
 
-    default ITsVariable root() {
-        ITsVariable current = variable();
-        while (current != null && current instanceof IModifier) {
-            IModifier modifier = (IModifier) current;
-            current = modifier.variable();
-        }
-        return current;
+    @Override
+    public int redim(int dim) {
+        return dim;
     }
+
 }

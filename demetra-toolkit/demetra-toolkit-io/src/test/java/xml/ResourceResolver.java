@@ -14,23 +14,27 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.toolkit.io.xml.legacy.regression;
+package xml;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import nbbrd.service.Quantifier;
-import nbbrd.service.ServiceDefinition;
-import demetra.timeseries.regression.ModifiedTsVariable;
+import demetra.toolkit.io.xml.legacy.core.XmlTsData;
+import java.io.InputStream;
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
 
 /**
  *
  * @author Jean Palate
- * @param <V>
- * @param <X>
  */
-@ServiceDefinition(quantifier = Quantifier.MULTIPLE)
-public abstract class TsModifierAdapter<X extends XmlRegressionVariableModifier, V extends ModifiedTsVariable.Modifier> extends XmlAdapter<X, V> {
+public class ResourceResolver  implements LSResourceResolver {
 
-    public abstract Class<V> getValueType();
+@Override
+public LSInput resolveResource(String type, String namespaceURI,
+        String publicId, String systemId, String baseURI) {
 
-    public abstract Class<X> getXmlType();
+     // note: in this sample, the XSD's are expected to be in the root of the classpath
+    InputStream resourceAsStream = XmlTsData.class.getClassLoader()
+            .getResourceAsStream(systemId);
+    return new Input(publicId, systemId, resourceAsStream);
 }
+
+ }

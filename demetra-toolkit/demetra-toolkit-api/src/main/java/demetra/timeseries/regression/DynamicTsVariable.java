@@ -11,26 +11,11 @@ import demetra.timeseries.TsMoniker;
  *
  * @author PALATEJ
  */
+@lombok.Value
 public class DynamicTsVariable implements IUserVariable {
 
     private final TsMoniker moniker;
-
-    protected DynamicTsVariable(final TsMoniker moniker) {
-        this.moniker = moniker;
-    }
-
-    public TsMoniker getId() {
-        return moniker;
-    }
-
-    protected boolean equals(DynamicTsVariable obj) {
-        return moniker.equals(obj.moniker);
-    }
-
-    protected int hash() {
-        return moniker.hashCode();
-    }
-
+ 
     @Override
     public int dim() {
         return 1;

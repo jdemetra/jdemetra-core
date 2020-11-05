@@ -14,23 +14,31 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.toolkit.io.xml.legacy.regression;
+package xml;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import nbbrd.service.Quantifier;
-import nbbrd.service.ServiceDefinition;
-import demetra.timeseries.regression.ModifiedTsVariable;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  *
  * @author Jean Palate
- * @param <V>
- * @param <X>
  */
-@ServiceDefinition(quantifier = Quantifier.MULTIPLE)
-public abstract class TsModifierAdapter<X extends XmlRegressionVariableModifier, V extends ModifiedTsVariable.Modifier> extends XmlAdapter<X, V> {
+public class SilentErrorHandler implements ErrorHandler {
 
-    public abstract Class<V> getValueType();
+    @Override
+    public void warning(SAXParseException exception) throws SAXException {
+    }
 
-    public abstract Class<X> getXmlType();
+    @Override
+    public void error(SAXParseException exception) throws SAXException {
+    }
+
+    @Override
+    public void fatalError(SAXParseException exception) throws SAXException {
+        System.out.println("\nFATAL ERROR");
+        System.out.println(exception.getMessage());
+        System.out.println(exception.getLineNumber());
+        System.out.println();
+    }
 }

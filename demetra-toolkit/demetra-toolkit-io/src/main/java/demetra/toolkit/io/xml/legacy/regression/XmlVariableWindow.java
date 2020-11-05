@@ -16,52 +16,57 @@
  */
 package demetra.toolkit.io.xml.legacy.regression;
 
-import demetra.timeseries.regression.LaggedTsVariable;
+import demetra.timeseries.regression.Window;
+import demetra.toolkit.io.xml.legacy.XmlDateAdapter;
+import java.time.LocalDate;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-//@XmlRootElement(name = XmlLaggedVariable.RNAME)
-@XmlType(name = XmlLaggedVariable.NAME)
-public class XmlLaggedVariable extends XmlRegressionVariableModifier{
+//@XmlRootElement(name = XmlVariableWindow.NAME)
+@XmlType(name = XmlVariableWindow.NAME)
+public class XmlVariableWindow extends XmlRegressionVariableModifier{
     
-    static final String RNAME = "LaggedVariable", NAME = RNAME + "Type";
+    static final String RNAME = "VariableWindow", NAME = RNAME + "Type";
 
     @XmlElement
-    public int FirstLag;
+    @XmlJavaTypeAdapter(XmlDateAdapter.class)
+    public LocalDate From;
     
     @XmlElement
-    public int LastLag;
+    @XmlJavaTypeAdapter(XmlDateAdapter.class)
+    public LocalDate To;
 
     @ServiceProvider(TsModifierAdapter.class)
-    public static class Adapter extends TsModifierAdapter<XmlLaggedVariable, LaggedTsVariable> {
+    public static class Adapter extends TsModifierAdapter<XmlVariableWindow, Window> {
 
         @Override
-        public Class<LaggedTsVariable> getValueType() {
-            return LaggedTsVariable.class;
+        public Class<Window> getValueType() {
+            return Window.class;
         }
 
         @Override
-        public Class<XmlLaggedVariable> getXmlType() {
-            return XmlLaggedVariable.class;
+        public Class<XmlVariableWindow> getXmlType() {
+            return XmlVariableWindow.class;
         }
 
         @Override
-        public LaggedTsVariable unmarshal(XmlLaggedVariable v) throws Exception {
-            LaggedTsVariable o = new LaggedTsVariable(null, v.FirstLag, v.LastLag);
+        public Window unmarshal(XmlVariableWindow v) throws Exception {
+            Window o = new Window(v.From, v.To);
             return o;
         }
 
         @Override
-        public XmlLaggedVariable marshal(LaggedTsVariable v) throws Exception {
-            XmlLaggedVariable xml = new XmlLaggedVariable();
-            xml.FirstLag = v.getFirstLag();
-            xml.LastLag=v.getLastLag();
+        public XmlVariableWindow marshal(Window v) throws Exception {
+            XmlVariableWindow xml = new XmlVariableWindow();
+            xml.From = v.getStart();
+            xml.To=v.getEnd();
             return xml;
         }
     }
