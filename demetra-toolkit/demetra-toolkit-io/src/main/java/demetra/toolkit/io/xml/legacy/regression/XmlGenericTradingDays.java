@@ -19,6 +19,9 @@ package demetra.toolkit.io.xml.legacy.regression;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
+import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.ModifiedTsVariable;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlList;
@@ -35,7 +38,7 @@ public class XmlGenericTradingDays extends XmlModifiableRegressionVariable {
 
     static final String RNAME = "GenericTradingDays", NAME = RNAME + "Type";
 
-    @XmlElement(name="DayClustering")
+    @XmlElement(name = "DayClustering")
     @XmlList
     public int[] dayClustering;
 
@@ -43,36 +46,64 @@ public class XmlGenericTradingDays extends XmlModifiableRegressionVariable {
     public boolean contrasts;
 
     @ServiceProvider(TsVariableAdapter.class)
-    public static class Adapter extends TsVariableAdapter<XmlGenericTradingDays, GenericTradingDaysVariable> {
+    public static class Adapter extends TsVariableAdapter {
 
         @Override
-        public Class<XmlGenericTradingDays> getXmlType() {
-            return XmlGenericTradingDays.class;
+        public ITsVariable unmarshal(XmlRegressionVariable xvar) throws Exception {
+            if (xvar instanceof XmlGenericTradingDays) {
+                XmlGenericTradingDays v = (XmlGenericTradingDays) xvar;
+                DayClustering clustering = DayClustering.of(v.dayClustering);
+
+                GenericTradingDays gtd;
+                if (v.contrasts) {
+                    gtd = GenericTradingDays.contrasts(clustering);
+                } else {
+                    gtd = GenericTradingDays.normalized(clustering);
+                }
+                GenericTradingDaysVariable td = new GenericTradingDaysVariable(gtd);
+                if (v.getModifiersCount() == 0) {
+                    return td;
+                } else {
+                    List<ModifiedTsVariable.Modifier> mds = TsModifierAdapters.unmarshal(v.getModifiers());
+                    return ModifiedTsVariable.builder()
+                            .variable(td)
+                            .modifiers(mds)
+                            .build();
+                }
+            } else {
+                return null;
+            }
         }
 
         @Override
-        public Class<GenericTradingDaysVariable> getImplementationType() {
-            return GenericTradingDaysVariable.class;
-        }
+        public XmlGenericTradingDays marshal(ITsVariable v) throws Exception {
+            GenericTradingDaysVariable td = null;
+            ModifiedTsVariable mv = null;
+            if (v instanceof GenericTradingDaysVariable) {
+                td = (GenericTradingDaysVariable) v;
+                mv = null;
+            } else if (v instanceof ModifiedTsVariable) {
+                mv = (ModifiedTsVariable) v;
+                if (mv.getVariable() instanceof GenericTradingDaysVariable) {
+                    td = (GenericTradingDaysVariable) mv.getVariable();
+                }
+            }
+            if (td == null)
+                return null;
 
-        @Override
-        public GenericTradingDaysVariable unmarshal(XmlGenericTradingDays v) throws Exception {
-            DayClustering clustering = DayClustering.of(v.dayClustering);
-            
-            GenericTradingDays gtd;
-            if (v.contrasts)
-                gtd= GenericTradingDays.contrasts(clustering);
-            else
-                gtd=GenericTradingDays.normalized(clustering);
-            return new GenericTradingDaysVariable(gtd);
-        }
-
-        @Override
-        public XmlGenericTradingDays marshal(GenericTradingDaysVariable v) throws Exception {
             XmlGenericTradingDays xml = new XmlGenericTradingDays();
-            xml.contrasts=v.isContrast();
-            xml.dayClustering=v.getClustering().getGroupsDefinition();
+            xml.contrasts = td.isContrast();
+            xml.dayClustering = td.getClustering().getGroupsDefinition();
+            if (mv != null){
+                List<XmlRegressionVariableModifier> xm = TsModifierAdapters.marshal(mv.getModifiers());
+                xml.getModifiers().addAll(xm);
+            }
             return xml;
+        }
+
+        @Override
+        public void xmlClasses(List<Class> lclass) {
+            lclass.add(XmlGenericTradingDays.class);
         }
 
     }

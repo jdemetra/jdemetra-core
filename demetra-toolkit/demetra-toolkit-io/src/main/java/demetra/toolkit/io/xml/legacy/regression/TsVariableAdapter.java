@@ -17,16 +17,16 @@
 package demetra.toolkit.io.xml.legacy.regression;
 
 import demetra.timeseries.regression.ITsVariable;
-import demetra.toolkit.io.xml.legacy.ExtendedXmlAdapter;
+import java.util.List;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
 
 /**
  *
  * @author Jean Palate
- * @param <V>
- * @param <X>
  */
 @ServiceDefinition(quantifier = Quantifier.MULTIPLE)
-public abstract class TsVariableAdapter<X extends XmlRegressionVariable, V extends ITsVariable> extends ExtendedXmlAdapter<X, V> {
+public abstract class TsVariableAdapter extends XmlAdapter<XmlRegressionVariable, ITsVariable> {
+       public abstract void xmlClasses(List<Class> lclass);
 }

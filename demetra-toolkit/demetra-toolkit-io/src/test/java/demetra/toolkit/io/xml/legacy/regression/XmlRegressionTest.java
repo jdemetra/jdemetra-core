@@ -83,7 +83,7 @@ public class XmlRegressionTest {
     }
 
     @Test
-//    @Ignore
+    @Ignore
     public void testMarshal() throws FileNotFoundException, JAXBException, IOException {
 
         JAXBContext jaxb = XmlRegression.context();

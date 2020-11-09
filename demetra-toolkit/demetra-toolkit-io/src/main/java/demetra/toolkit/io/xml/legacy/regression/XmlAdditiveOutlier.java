@@ -17,6 +17,8 @@
 package demetra.toolkit.io.xml.legacy.regression;
 
 import demetra.timeseries.regression.AdditiveOutlier;
+import demetra.timeseries.regression.ITsVariable;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -31,30 +33,34 @@ import nbbrd.service.ServiceProvider;
 public class XmlAdditiveOutlier extends XmlOutlier {
 
     @ServiceProvider(TsVariableAdapter.class)
-    public static class Adapter extends TsVariableAdapter<XmlAdditiveOutlier, AdditiveOutlier> {
+    public static class Adapter extends TsVariableAdapter {
 
         @Override
-        public Class<AdditiveOutlier> getImplementationType() {
-            return AdditiveOutlier.class;
+        public AdditiveOutlier unmarshal(XmlRegressionVariable x) {
+            if (x instanceof XmlAdditiveOutlier) {
+                XmlAdditiveOutlier xvar = (XmlAdditiveOutlier) x;
+                AdditiveOutlier o = new AdditiveOutlier(xvar.position.atStartOfDay());
+                return o;
+            } else {
+                return null;
+            }
         }
 
         @Override
-        public Class<XmlAdditiveOutlier> getXmlType() {
-            return XmlAdditiveOutlier.class;
+        public XmlAdditiveOutlier marshal(ITsVariable var) {
+            if (var instanceof AdditiveOutlier) {
+                AdditiveOutlier v = (AdditiveOutlier) var;
+                XmlAdditiveOutlier xml = new XmlAdditiveOutlier();
+                xml.position = v.getPosition().toLocalDate();
+                return xml;
+            } else {
+                return null;
+            }
         }
 
         @Override
-        public AdditiveOutlier unmarshal(XmlAdditiveOutlier v) throws Exception {
-            AdditiveOutlier o = new AdditiveOutlier(v.position.atStartOfDay());
-            return o;
+        public void xmlClasses(List<Class> lclass) {
+            lclass.add(XmlAdditiveOutlier.class);
         }
-
-        @Override
-        public XmlAdditiveOutlier marshal(AdditiveOutlier v) throws Exception {
-            XmlAdditiveOutlier xml = new XmlAdditiveOutlier();
-            xml.position=v.getPosition().toLocalDate();
-            return xml;
-        }
-
     }
 }

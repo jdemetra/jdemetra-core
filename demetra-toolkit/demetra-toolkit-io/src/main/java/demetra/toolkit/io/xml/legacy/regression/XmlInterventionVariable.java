@@ -17,6 +17,7 @@
 package demetra.toolkit.io.xml.legacy.regression;
 
 import demetra.data.Range;
+import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.InterventionVariable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -129,20 +130,14 @@ public class XmlInterventionVariable
     }
 
     @ServiceProvider(TsVariableAdapter.class)
-    public static class Adapter extends TsVariableAdapter<XmlInterventionVariable, InterventionVariable> {
+    public static class Adapter extends TsVariableAdapter {
 
+ 
         @Override
-        public Class<InterventionVariable> getImplementationType() {
-            return InterventionVariable.class;
-        }
-
-        @Override
-        public Class<XmlInterventionVariable> getXmlType() {
-            return XmlInterventionVariable.class;
-        }
-
-        @Override
-        public InterventionVariable unmarshal(XmlInterventionVariable v) {
+        public InterventionVariable unmarshal(XmlRegressionVariable var) {
+            if (! (var instanceof XmlInterventionVariable))
+                return null;
+            XmlInterventionVariable v=(XmlInterventionVariable) var;
             if (v.sequence == null || v.sequence.isEmpty()) {
                 return null;
             }
@@ -161,7 +156,10 @@ public class XmlInterventionVariable
         }
 
         @Override
-        public XmlInterventionVariable marshal(InterventionVariable t) {
+        public XmlInterventionVariable marshal(ITsVariable v) {
+            if (! (v instanceof InterventionVariable))
+                return null;
+            InterventionVariable t=(InterventionVariable) v;
             XmlInterventionVariable xml = new XmlInterventionVariable();
             xml.setDeltaFilter(t.getDelta());
             xml.setDeltaSeasonalFilter(t.getDeltaSeasonal());
@@ -175,6 +173,11 @@ public class XmlInterventionVariable
             }
             return xml;
         }
+
+        @Override
+        public void xmlClasses(List<Class> lclass) {
+            lclass.add(XmlInterventionVariable.class);
+         }
     }
 
     private static final Adapter ADAPTER = new Adapter();

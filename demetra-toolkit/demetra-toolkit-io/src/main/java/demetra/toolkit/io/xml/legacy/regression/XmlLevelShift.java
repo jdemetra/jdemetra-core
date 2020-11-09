@@ -16,7 +16,9 @@
  */
 package demetra.toolkit.io.xml.legacy.regression;
 
+import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.LevelShift;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -47,30 +49,33 @@ public class XmlLevelShift extends XmlOutlier {
     }
 
     @ServiceProvider(TsVariableAdapter.class)
-    public static class Adapter extends TsVariableAdapter<XmlLevelShift, LevelShift> {
+    public static class Adapter extends TsVariableAdapter {
 
         @Override
-        public Class<LevelShift> getImplementationType() {
-            return LevelShift.class;
-        }
-
-        @Override
-        public Class<XmlLevelShift> getXmlType() {
-            return XmlLevelShift.class;
-        }
-
-        @Override
-        public LevelShift unmarshal(XmlLevelShift v) throws Exception {
+        public LevelShift unmarshal(XmlRegressionVariable var) throws Exception {
+            if (!(var instanceof XmlLevelShift)) {
+                return null;
+            }
+            XmlLevelShift v = (XmlLevelShift) var;
             LevelShift o = new LevelShift(v.getPosition().atStartOfDay(), v.zeroEnded == null ? true : v.zeroEnded);
             return o;
         }
 
         @Override
-        public XmlLevelShift marshal(LevelShift v) throws Exception {
+        public XmlLevelShift marshal(ITsVariable var) throws Exception {
+            if (!(var instanceof LevelShift)) {
+                return null;
+            }
+            LevelShift v = (LevelShift) var;
             XmlLevelShift xml = new XmlLevelShift();
             xml.position = v.getPosition().toLocalDate();
             xml.zeroEnded = v.isZeroEnded();
             return xml;
+        }
+
+        @Override
+        public void xmlClasses(List<Class> lclass) {
+            lclass.add(XmlLevelShift.class);
         }
 
     }

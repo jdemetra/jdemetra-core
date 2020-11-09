@@ -16,9 +16,11 @@
  */
 package demetra.toolkit.io.xml.legacy.regression;
 
+import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.Ramp;
 import demetra.toolkit.io.xml.legacy.XmlDateAdapter;
 import java.time.LocalDate;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -124,30 +126,31 @@ public class XmlRamp
     }
 
     @ServiceProvider(TsVariableAdapter.class)
-    public static class Adapter extends TsVariableAdapter<XmlRamp, Ramp> {
+    public static class Adapter extends TsVariableAdapter {
 
         @Override
-        public Class<Ramp> getImplementationType() {
-            return Ramp.class;
-        }
-
-        @Override
-        public Class<XmlRamp> getXmlType() {
-            return XmlRamp.class;
-        }
-
-        @Override
-        public Ramp unmarshal(XmlRamp v) {
+        public Ramp unmarshal(XmlRegressionVariable var) {
+            if (!(var instanceof XmlRamp))
+                return null;
+            XmlRamp v=(XmlRamp) var;
             Ramp o = new Ramp(v.from.atStartOfDay(), v.to.atStartOfDay());
             return o;
         }
 
         @Override
-        public XmlRamp marshal(Ramp v) {
+        public XmlRamp marshal(ITsVariable var) {
+            if (! (var instanceof Ramp))
+                return null;
+            Ramp v=(Ramp) var;
             XmlRamp xml = new XmlRamp();
             xml.from = v.getStart().toLocalDate();
             xml.to = v.getEnd().toLocalDate();
             return xml;
+        }
+
+        @Override
+        public void xmlClasses(List<Class> lclass) {
+            lclass.add(XmlRamp.class);
         }
     }
     

@@ -16,7 +16,9 @@
  */
 package demetra.toolkit.io.xml.legacy.regression;
 
+import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.TransitoryChange;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -38,7 +40,7 @@ public class XmlTransitoryChange extends XmlOutlier {
 
     public double getFactor() {
         if (factor == null) {
-            return  0.7D;
+            return 0.7D;
         } else {
             return factor;
         }
@@ -59,33 +61,36 @@ public class XmlTransitoryChange extends XmlOutlier {
     public void setMonthlyFactor(Boolean value) {
         this.monthlyFactor = value;
     }
-    
+
     @ServiceProvider(TsVariableAdapter.class)
-    public static class Adapter extends TsVariableAdapter<XmlTransitoryChange, TransitoryChange> {
+    public static class Adapter extends TsVariableAdapter {
 
         @Override
-        public Class<TransitoryChange> getImplementationType() {
-            return TransitoryChange.class;
-        }
-
-        @Override
-        public Class<XmlTransitoryChange> getXmlType() {
-            return XmlTransitoryChange.class;
-        }
-
-        @Override
-        public TransitoryChange unmarshal(XmlTransitoryChange v) throws Exception {
+        public TransitoryChange unmarshal(XmlRegressionVariable var) throws Exception {
+            if (!(var instanceof XmlTransitoryChange)) {
+                return null;
+            }
+            XmlTransitoryChange v = (XmlTransitoryChange) var;
             TransitoryChange o = new TransitoryChange(v.position.atStartOfDay(), v.factor);
             return o;
         }
 
         @Override
-        public XmlTransitoryChange marshal(TransitoryChange v) throws Exception {
+        public XmlTransitoryChange marshal(ITsVariable var) throws Exception {
+            if (!(var instanceof TransitoryChange)) {
+                return null;
+            }
+            TransitoryChange v = (TransitoryChange) var;
             XmlTransitoryChange xml = new XmlTransitoryChange();
             xml.position = v.getPosition().toLocalDate();
             xml.factor = v.getRate();
 //            xml.monthlyFactor = v.isMonthlyCoefficient();
             return xml;
+        }
+
+        @Override
+        public void xmlClasses(List<Class> lclass) {
+            lclass.add(XmlTransitoryChange.class);
         }
 
     }

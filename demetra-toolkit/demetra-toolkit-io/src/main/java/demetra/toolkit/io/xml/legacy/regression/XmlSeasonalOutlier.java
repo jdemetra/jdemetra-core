@@ -16,7 +16,9 @@
  */
 package demetra.toolkit.io.xml.legacy.regression;
 
+import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.PeriodicOutlier;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -47,30 +49,32 @@ public class XmlSeasonalOutlier extends XmlOutlier {
     }
 
     @ServiceProvider(TsVariableAdapter.class)
-    public static class Adapter extends TsVariableAdapter<XmlSeasonalOutlier, PeriodicOutlier> {
+    public static class Adapter extends TsVariableAdapter{
+
 
         @Override
-        public Class<PeriodicOutlier> getImplementationType() {
-            return PeriodicOutlier.class;
-        }
-
-        @Override
-        public Class<XmlSeasonalOutlier> getXmlType() {
-            return XmlSeasonalOutlier.class;
-        }
-
-        @Override
-        public PeriodicOutlier unmarshal(XmlSeasonalOutlier v) throws Exception {
+        public PeriodicOutlier unmarshal(XmlRegressionVariable var) throws Exception {
+            if (!(var instanceof XmlSeasonalOutlier))
+                return null;
+            XmlSeasonalOutlier v=(XmlSeasonalOutlier) var;
             PeriodicOutlier o = new PeriodicOutlier(v.position.atStartOfDay(), 0, v.zeroEnded != null ? v.zeroEnded : true);
             return o;
         }
 
         @Override
-        public XmlSeasonalOutlier marshal(PeriodicOutlier v) throws Exception {
+        public XmlSeasonalOutlier marshal(ITsVariable var) throws Exception {
+            if (! (var instanceof PeriodicOutlier))
+                return null;
+            PeriodicOutlier v=(PeriodicOutlier) var;
             XmlSeasonalOutlier xml = new XmlSeasonalOutlier();
             xml.position = v.getPosition().toLocalDate();
             xml.zeroEnded = v.isZeroEnded();
             return xml;
+        }
+
+        @Override
+        public void xmlClasses(List<Class> lclass) {
+            lclass.add(XmlSeasonalOutlier.class);
         }
 
     }

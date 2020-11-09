@@ -16,9 +16,11 @@
  */
 package demetra.toolkit.io.xml.legacy.regression;
 
+import demetra.timeseries.regression.ModifiedTsVariable;
 import demetra.timeseries.regression.Window;
 import demetra.toolkit.io.xml.legacy.XmlDateAdapter;
 import java.time.LocalDate;
+import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -31,43 +33,46 @@ import nbbrd.service.ServiceProvider;
  */
 //@XmlRootElement(name = XmlVariableWindow.NAME)
 @XmlType(name = XmlVariableWindow.NAME)
-public class XmlVariableWindow extends XmlRegressionVariableModifier{
-    
+public class XmlVariableWindow extends XmlRegressionVariableModifier {
+
     static final String RNAME = "VariableWindow", NAME = RNAME + "Type";
 
     @XmlElement
     @XmlJavaTypeAdapter(XmlDateAdapter.class)
     public LocalDate From;
-    
+
     @XmlElement
     @XmlJavaTypeAdapter(XmlDateAdapter.class)
     public LocalDate To;
 
     @ServiceProvider(TsModifierAdapter.class)
-    public static class Adapter extends TsModifierAdapter<XmlVariableWindow, Window> {
+    public static class Adapter extends TsModifierAdapter {
 
         @Override
-        public Class<Window> getValueType() {
-            return Window.class;
-        }
-
-        @Override
-        public Class<XmlVariableWindow> getXmlType() {
-            return XmlVariableWindow.class;
-        }
-
-        @Override
-        public Window unmarshal(XmlVariableWindow v) throws Exception {
+        public Window unmarshal(XmlRegressionVariableModifier var) throws Exception {
+            if (!(var instanceof XmlVariableWindow)) {
+                return null;
+            }
+            XmlVariableWindow v = (XmlVariableWindow) var;
             Window o = new Window(v.From, v.To);
             return o;
         }
 
         @Override
-        public XmlVariableWindow marshal(Window v) throws Exception {
+        public XmlVariableWindow marshal(ModifiedTsVariable.Modifier var) throws Exception {
+            if (!(var instanceof Window)) {
+                return null;
+            }
+            Window v = (Window) var;
             XmlVariableWindow xml = new XmlVariableWindow();
             xml.From = v.getStart();
-            xml.To=v.getEnd();
+            xml.To = v.getEnd();
             return xml;
         }
+
+        @Override
+        public void xmlClasses(List<Class> lclass) {
+            lclass.add(XmlVariableWindow.class);
+         }
     }
 }

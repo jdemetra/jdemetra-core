@@ -93,7 +93,7 @@ public abstract class XmlModifiableRegressionVariable
      * @return 
      */
     
-    public int size(){
+    public int getModifiersCount(){
         return modifier == null ? 0 : modifier.size();
     }
     

@@ -20,6 +20,8 @@ import demetra.timeseries.regression.ITsVariable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +33,7 @@ public class TsVariableAdapters {
 
     private final AtomicReference<TsVariableAdapterLoader> ADAPTERS = new AtomicReference<>(new TsVariableAdapterLoader());
 
-    private List<TsVariableAdapter> adapters(){
+    private List<TsVariableAdapter> adapters() {
         return ADAPTERS.get().get();
     }
 
@@ -40,17 +42,21 @@ public class TsVariableAdapters {
     }
 
     public List<Class> getXmlClasses() {
-        return adapters().stream().map(adapter -> adapter.getXmlType()).collect(Collectors.toList());
+        List<Class> xmlClasses = new ArrayList<>();
+        for (TsVariableAdapter adapter : adapters()) {
+            adapter.xmlClasses(xmlClasses);
+        }
+        return xmlClasses;
     }
 
     public ITsVariable unmarshal(XmlRegressionVariable xvar) {
         for (TsVariableAdapter adapter : adapters()) {
-            if (adapter.getXmlType().isInstance(xvar)) {
-                try {
-                    return (ITsVariable) adapter.unmarshal(xvar);
-                } catch (Exception ex) {
-                    return null;
+            try {
+                ITsVariable rslt = adapter.unmarshal(xvar);
+                if (rslt != null) {
+                    return rslt;
                 }
+            } catch (Exception ex) {
             }
         }
         return null;
@@ -58,12 +64,12 @@ public class TsVariableAdapters {
 
     public XmlRegressionVariable marshal(ITsVariable ivar) {
         for (TsVariableAdapter adapter : adapters()) {
-            if (adapter.getImplementationType().isInstance(ivar)) {
-                try {
-                    return (XmlRegressionVariable) adapter.marshal(ivar);
-                } catch (Exception ex) {
-                    return null;
+            try {
+                XmlRegressionVariable rslt = adapter.marshal(ivar);
+                if (rslt != null) {
+                    return rslt;
                 }
+            } catch (Exception ex) {
             }
         }
         return null;

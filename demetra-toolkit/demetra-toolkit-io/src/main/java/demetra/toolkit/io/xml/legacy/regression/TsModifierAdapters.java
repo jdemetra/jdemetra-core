@@ -32,7 +32,7 @@ public class TsModifierAdapters {
 
     private final AtomicReference<TsModifierAdapterLoader> ADAPTERS = new AtomicReference<>(new TsModifierAdapterLoader());
 
-    private List<TsModifierAdapter> adapters(){
+    private List<TsModifierAdapter> adapters() {
         return ADAPTERS.get().get();
     }
 
@@ -40,52 +40,57 @@ public class TsModifierAdapters {
         ADAPTERS.set(new TsModifierAdapterLoader());
     }
 
-
     public List<Class> getXmlClasses() {
-        return adapters().stream().map(adapter -> adapter.getXmlType()).collect(Collectors.toList());
+        List<Class> lxml = new ArrayList<>();
+        for (TsModifierAdapter adapter : adapters()) {
+            adapter.xmlClasses(lxml);
+        }
+        return lxml;
     }
 
     public ModifiedTsVariable.Modifier unmarshal(XmlRegressionVariableModifier xvar) {
         for (TsModifierAdapter adapter : adapters()) {
-            if (adapter.getXmlType().isInstance(xvar)) {
-                try {
-                    return (ModifiedTsVariable.Modifier ) adapter.unmarshal(xvar);
-                } catch (Exception ex) {
-                    return null;
+            try {
+                ModifiedTsVariable.Modifier rslt = adapter.unmarshal(xvar);
+                if (rslt != null) {
+                    return rslt;
                 }
+            } catch (Exception ex) {
             }
         }
         return null;
     }
 
-    public XmlRegressionVariableModifier marshal(ModifiedTsVariable.Modifier  ivar) {
+    public XmlRegressionVariableModifier marshal(ModifiedTsVariable.Modifier ivar) {
         for (TsModifierAdapter adapter : adapters()) {
-            if (adapter.getValueType().isInstance(ivar)) {
-                try {
-                    return (XmlRegressionVariableModifier) adapter.marshal(ivar);
-                } catch (Exception ex) {
-                    return null;
+            try {
+                XmlRegressionVariableModifier rslt = adapter.marshal(ivar);
+                if (rslt != null) {
+                    return rslt;
                 }
+            } catch (Exception ex) {
             }
         }
         return null;
     }
-    
-    public List<ModifiedTsVariable.Modifier> unmarshal(List<XmlRegressionVariableModifier>  ms){
-        if (ms.isEmpty())
-            return Collections.EMPTY_LIST;
-        List<ModifiedTsVariable.Modifier> mod=new ArrayList<>();
-        for (XmlRegressionVariableModifier m : ms){
+
+    public List<ModifiedTsVariable.Modifier> unmarshal(List<XmlRegressionVariableModifier> ms) {
+        if (ms.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<ModifiedTsVariable.Modifier> mod = new ArrayList<>();
+        for (XmlRegressionVariableModifier m : ms) {
             mod.add(unmarshal(m));
         }
         return mod;
     }
-   
-    public List<XmlRegressionVariableModifier> marshal(List<ModifiedTsVariable.Modifier>  ms){
-        if (ms.isEmpty())
-            return Collections.EMPTY_LIST;
-        List<XmlRegressionVariableModifier> mod=new ArrayList<>();
-        for (ModifiedTsVariable.Modifier m : ms){
+
+    public List<XmlRegressionVariableModifier> marshal(List<ModifiedTsVariable.Modifier> ms) {
+        if (ms.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<XmlRegressionVariableModifier> mod = new ArrayList<>();
+        for (ModifiedTsVariable.Modifier m : ms) {
             mod.add(marshal(m));
         }
         return mod;
