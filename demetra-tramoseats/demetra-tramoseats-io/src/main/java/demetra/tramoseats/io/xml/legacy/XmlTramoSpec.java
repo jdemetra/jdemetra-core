@@ -243,8 +243,8 @@ public class XmlTramoSpec
     public static TramoSpec unmarshal(XmlTramoSpec xml) {
         TramoSpec.Builder builder = TramoSpec.builder();
         TransformSpec.Builder tbuilder = TransformSpec.builder();
-        XmlSeriesSpec.unmarshal(xml.series, tbuilder);
-        XmlTransformationSpec.unmarshal(xml.transformation, tbuilder);
+        tbuilder=XmlSeriesSpec.unmarshal(xml.series, tbuilder);
+        tbuilder=XmlTransformationSpec.unmarshal(xml.transformation, tbuilder);
 
         if (xml.arima != null) {
             builder = builder.arima(XmlArimaSpec.unmarshal(xml.arima));

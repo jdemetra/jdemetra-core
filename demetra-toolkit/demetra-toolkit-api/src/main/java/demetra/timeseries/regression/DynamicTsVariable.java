@@ -5,6 +5,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TsData;
 import demetra.timeseries.TsMoniker;
 
 /**
@@ -14,7 +15,10 @@ import demetra.timeseries.TsMoniker;
 @lombok.Value
 public class DynamicTsVariable implements IUserVariable {
 
+    @lombok.NonNull
     private final TsMoniker moniker;
+    private final TsData data;
+    
  
     @Override
     public int dim() {

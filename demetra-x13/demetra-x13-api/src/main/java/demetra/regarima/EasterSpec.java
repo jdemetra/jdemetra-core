@@ -31,7 +31,7 @@ import demetra.util.Validatable;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public final class EasterSpec implements Validatable<EasterSpec> {
 
-    private static final EasterSpec DEFAULT = EasterSpec.builder().build();
+    public static final EasterSpec DEFAULT_UNUSED = EasterSpec.builder().build();
 
     public final static int DEF_EASTERDUR = 8;
 
@@ -62,7 +62,7 @@ public final class EasterSpec implements Validatable<EasterSpec> {
     }
 
     public boolean isDefault() {
-        return this.equals(DEFAULT);
+        return this.equals(DEFAULT_UNUSED);
     }
     
     public boolean isUsed() {
@@ -70,7 +70,7 @@ public final class EasterSpec implements Validatable<EasterSpec> {
     }
     
     public static EasterSpec none(){
-        return DEFAULT;
+        return DEFAULT_UNUSED;
     }
 
     public static class Builder implements Validatable.Builder<EasterSpec> {

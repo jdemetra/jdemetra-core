@@ -161,7 +161,7 @@ class X13ModelBuilder implements IModelBuilder {
     }
 
     private void initializeTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> preadjustment) {
-        if (!td.isUsed() || td.getTest() == RegressionTestSpec.Add) {
+        if (!td.isUsed() || td.getRegressionTestType() == RegressionTestSpec.Add) {
             return;
         }
         if (td.isStockTradingDays()) {
@@ -309,16 +309,16 @@ class X13ModelBuilder implements IModelBuilder {
 //        }
 //    }
     private void initializeUserTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> preadjustment) {
-        add(model, userTradingDays(td, context), "td", td.getTest() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
+        add(model, userTradingDays(td, context), "td", td.getRegressionTestType() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
     }
 
     private void initializeDefaultTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> preadjustment) {
-        add(model, defaultTradingDays(td), "td", td.getTest() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
-        add(model, leapYear(td), "lp", td.getTest() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
+        add(model, defaultTradingDays(td), "td", td.getRegressionTestType() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
+        add(model, leapYear(td), "lp", td.getRegressionTestType() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
     }
 
     private void initializeStockTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> preadjustment) {
-        add(model, stockTradingDays(td), "td", td.getTest() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
+        add(model, stockTradingDays(td), "td", td.getRegressionTestType() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
     }
 
     private static ITradingDaysVariable stockTradingDays(TradingDaysSpec td) {
@@ -371,10 +371,10 @@ class X13ModelBuilder implements IModelBuilder {
     }
 
     private static ITradingDaysVariable defaultTradingDays(TradingDaysSpec td) {
-        if (td.getType() == TradingDaysType.None) {
+        if (td.getTradingDaysType() == TradingDaysType.None) {
             return null;
         }
-        TradingDaysType tdType = td.getType();
+        TradingDaysType tdType = td.getTradingDaysType();
         DayClustering dc = tdType == (TradingDaysType.TradingDays) ? DayClustering.TD7 : DayClustering.TD2;
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         return new GenericTradingDaysVariable(gtd);
@@ -386,10 +386,10 @@ class X13ModelBuilder implements IModelBuilder {
     }
 
     public static ILengthOfPeriodVariable leapYear(TradingDaysSpec tdspec) {
-        if (tdspec.getLengthOfPeriod() == LengthOfPeriodType.None) {
+        if (tdspec.getLengthOfPeriodType() == LengthOfPeriodType.None) {
             return null;
         } else {
-            return new LengthOfPeriod(tdspec.getLengthOfPeriod());
+            return new LengthOfPeriod(tdspec.getLengthOfPeriodType());
         }
     }
 

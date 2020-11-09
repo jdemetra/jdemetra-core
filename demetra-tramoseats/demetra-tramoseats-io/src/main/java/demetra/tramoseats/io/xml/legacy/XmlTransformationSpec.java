@@ -107,16 +107,16 @@ public class XmlTransformationSpec {
         this.auto = value;
     }
 
-    public static boolean unmarshal(XmlTransformationSpec xml, TransformSpec.Builder builder) {
+    public static TransformSpec.Builder unmarshal(XmlTransformationSpec xml, TransformSpec.Builder builder) {
         if (xml.log != null) {
-            builder.function(TransformationType.Log);
+            builder=builder.function(TransformationType.Log);
         } else if (xml.auto != null) {
-            builder.function(TransformationType.Auto);
+            builder=builder.function(TransformationType.Auto);
             if (xml.auto.fct != null) {
-                builder.fct(xml.auto.fct);
+                builder=builder.fct(xml.auto.fct);
             }
         }
-        return true;
+        return builder;
     }
     
     public static XmlTransformationSpec marshal(TransformSpec v){

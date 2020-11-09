@@ -16,6 +16,7 @@
  */
 package demetra.toolkit.io.xml.legacy.regression;
 
+import demetra.timeseries.regression.IOutlier;
 import demetra.toolkit.io.xml.legacy.XmlDateAdapter;
 import java.time.LocalDate;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -38,7 +39,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     XmlAdditiveOutlier.class, XmlLevelShift.class, XmlTransitoryChange.class, XmlSeasonalOutlier.class
 })
 public abstract class XmlOutlier extends XmlRegressionVariable {
-
 
     @XmlElement(name = "Position", required = true)
     @XmlJavaTypeAdapter(XmlDateAdapter.class)
@@ -76,4 +76,34 @@ public abstract class XmlOutlier extends XmlRegressionVariable {
         this.preSpecified = preSpecified;
     }
 
+    public static final IOutlier unmarshal(XmlOutlier xml) {
+        IOutlier rslt = XmlAdditiveOutlier.ADAPTER.unmarshal(xml);
+        if (rslt != null) {
+            return rslt;
+        }
+        rslt = XmlLevelShift.ADAPTER.unmarshal(xml);
+        if (rslt != null) {
+            return rslt;
+        }
+        rslt = XmlTransitoryChange.ADAPTER.unmarshal(xml);
+        if (rslt != null) {
+            return rslt;
+        }
+        return XmlSeasonalOutlier.ADAPTER.unmarshal(xml);
+    }
+
+    public static final XmlOutlier marshal(IOutlier v) {
+        switch (v.getCode()) {
+            case "AO":
+                return XmlAdditiveOutlier.ADAPTER.marshal(v);
+            case "LS":
+                return XmlLevelShift.ADAPTER.marshal(v);
+            case "TC":
+                return XmlTransitoryChange.ADAPTER.marshal(v);
+            case "SO":
+                return XmlSeasonalOutlier.ADAPTER.marshal(v);
+            default:
+                return null;
+        }
+    }
 }

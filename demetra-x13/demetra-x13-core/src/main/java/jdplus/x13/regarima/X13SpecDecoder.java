@@ -78,7 +78,7 @@ final class X13SpecDecoder {
             builder.logLevel(LogLevelModule.builder()
                     .aiccLogCorrection(tspec.getAicDiff())
                     .estimationPrecision(espec.getTol())
-                    .preadjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriod() : LengthOfPeriodType.None)
+                    .preadjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriodType() : LengthOfPeriodType.None)
                     .build());
         }
     }
@@ -131,11 +131,11 @@ final class X13SpecDecoder {
     private void readRegression(final RegArimaSpec spec, ModellingContext context) {
         TradingDaysSpec tdspec = spec.getRegression().getTradingDays();
         AICcComparator comparator = new AICcComparator(spec.getRegression().getAicDiff());
-        if (tdspec.getTest() != RegressionTestSpec.None) {
+        if (tdspec.getRegressionTestType()!= RegressionTestSpec.None) {
             CalendarEffectsDetectionModule cal = CalendarEffectsDetectionModule.builder()
                     .tradingDays(X13ModelBuilder.tradingDays(spec, context))
                     .leapYear(X13ModelBuilder.leapYear(tdspec))
-                    .adjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriod() : LengthOfPeriodType.None)
+                    .adjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriodType() : LengthOfPeriodType.None)
                     .modelComparator(comparator)
                     .build();
             builder.calendarTest(cal);
@@ -160,7 +160,7 @@ final class X13SpecDecoder {
         }
 
         RegressionVariablesTest.Builder rbuilder = RegressionVariablesTest.builder();
-        if (tdspec.getTest() != RegressionTestSpec.None) {
+        if (tdspec.getRegressionTestType()!= RegressionTestSpec.None) {
             rbuilder.tdTest(RegressionVariablesTest.CVAL, true);
         }
         if (espec != null && espec.getTest() != RegressionTestSpec.None) {

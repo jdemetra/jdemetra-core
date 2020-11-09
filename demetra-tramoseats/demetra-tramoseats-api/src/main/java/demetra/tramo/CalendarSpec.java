@@ -43,7 +43,7 @@ public final class CalendarSpec implements Validatable<CalendarSpec> {
     public static Builder builder() {
         return new Builder()
                 .tradingDays(TradingDaysSpec.none())
-                .easter(EasterSpec.DEFAULT);
+                .easter(EasterSpec.DEFAULT_UNUSED);
     }
 
     public boolean isUsed() {

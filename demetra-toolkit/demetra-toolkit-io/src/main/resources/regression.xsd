@@ -108,6 +108,7 @@ limitations under the Licence.
         <xs:complexContent>
             <xs:extension base="tss:OutlierType">
                 <xs:attribute name="zeroEnded" type="xs:boolean" use="optional" default="true"/>
+                <xs:attribute name="period" type="xs:integer" use="optional" default="0"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

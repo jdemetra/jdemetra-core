@@ -30,7 +30,7 @@ import demetra.util.Validatable;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public final class BasicSpec implements Validatable<BasicSpec> {
 
-    private static final BasicSpec DEFAULT = BasicSpec.builder().build();
+    public static final BasicSpec DEFAULT = BasicSpec.builder().build();
 
     @lombok.NonNull
     private TimeSelector span;

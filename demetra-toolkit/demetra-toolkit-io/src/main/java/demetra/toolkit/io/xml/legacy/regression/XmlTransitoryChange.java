@@ -66,7 +66,7 @@ public class XmlTransitoryChange extends XmlOutlier {
     public static class Adapter extends TsVariableAdapter {
 
         @Override
-        public TransitoryChange unmarshal(XmlRegressionVariable var) throws Exception {
+        public TransitoryChange unmarshal(XmlRegressionVariable var) {
             if (!(var instanceof XmlTransitoryChange)) {
                 return null;
             }
@@ -76,7 +76,7 @@ public class XmlTransitoryChange extends XmlOutlier {
         }
 
         @Override
-        public XmlTransitoryChange marshal(ITsVariable var) throws Exception {
+        public XmlTransitoryChange marshal(ITsVariable var) {
             if (!(var instanceof TransitoryChange)) {
                 return null;
             }
@@ -92,6 +92,7 @@ public class XmlTransitoryChange extends XmlOutlier {
         public void xmlClasses(List<Class> lclass) {
             lclass.add(XmlTransitoryChange.class);
         }
-
     }
+    
+    public static final Adapter ADAPTER=new Adapter();
 }

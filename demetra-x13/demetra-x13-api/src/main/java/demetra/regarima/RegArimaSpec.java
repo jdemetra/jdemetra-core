@@ -129,9 +129,9 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
                 .build();
 
         OutlierSpec o = OutlierSpec.builder()
-                .type(SingleOutlierSpec.builder().type("AO").build())
-                .type(SingleOutlierSpec.builder().type("TC").build())
-                .type(SingleOutlierSpec.builder().type("LS").build())
+                .type(new SingleOutlierSpec("AO", 0))
+                .type(new SingleOutlierSpec("TC",0))
+                .type(new SingleOutlierSpec("LS", 0))
                 .build();
 
         RG0 = RegArimaSpec.builder()

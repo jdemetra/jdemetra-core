@@ -58,7 +58,7 @@ public class EasterSpecMapping {
 
     public EasterSpec read(InformationSet info) {
         if (info == null) {
-            return EasterSpec.DEFAULT;
+            return EasterSpec.DEFAULT_UNUSED;
         }
         EasterSpec.Builder builder = EasterSpec.builder();
         Integer d = info.get(DURATION, Integer.class);

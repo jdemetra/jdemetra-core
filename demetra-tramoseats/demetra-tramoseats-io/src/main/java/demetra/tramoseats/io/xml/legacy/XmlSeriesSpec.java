@@ -84,16 +84,16 @@ public class XmlSeriesSpec
         return xml;
     }
 
-    public static boolean unmarshal(XmlSeriesSpec xml, TransformSpec.Builder builder) {
+    public static TransformSpec.Builder unmarshal(XmlSeriesSpec xml, TransformSpec.Builder builder) {
         if (xml == null) {
-            return true;
+            return builder;
         }
         if (xml.preliminaryChecks != null) {
-            builder.preliminaryCheck(xml.preliminaryChecks);
+            builder = builder.preliminaryCheck(xml.preliminaryChecks);
         }
         if (xml.span != null) {
-            builder.span(XmlPeriodSelection.unmarshal(xml.span));
+            builder = builder.span(XmlPeriodSelection.unmarshal(xml.span));
         }
-        return true;
+        return builder;
     }
 }

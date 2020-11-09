@@ -52,7 +52,7 @@ public class XmlLevelShift extends XmlOutlier {
     public static class Adapter extends TsVariableAdapter {
 
         @Override
-        public LevelShift unmarshal(XmlRegressionVariable var) throws Exception {
+        public LevelShift unmarshal(XmlRegressionVariable var) {
             if (!(var instanceof XmlLevelShift)) {
                 return null;
             }
@@ -62,7 +62,7 @@ public class XmlLevelShift extends XmlOutlier {
         }
 
         @Override
-        public XmlLevelShift marshal(ITsVariable var) throws Exception {
+        public XmlLevelShift marshal(ITsVariable var)  {
             if (!(var instanceof LevelShift)) {
                 return null;
             }
@@ -79,4 +79,6 @@ public class XmlLevelShift extends XmlOutlier {
         }
 
     }
+    
+    public static final Adapter ADAPTER=new Adapter();
 }

@@ -36,6 +36,9 @@ public class XmlSeasonalOutlier extends XmlOutlier {
     @XmlAttribute(name = "zeroEnded")
     protected Boolean zeroEnded;
 
+    @XmlAttribute(name = "period")
+    protected Integer period;
+
     public boolean isZeroEnded() {
         if (zeroEnded == null) {
             return true;
@@ -48,26 +51,43 @@ public class XmlSeasonalOutlier extends XmlOutlier {
         this.zeroEnded = value;
     }
 
-    @ServiceProvider(TsVariableAdapter.class)
-    public static class Adapter extends TsVariableAdapter{
+    public int getPeriod() {
+        if (period == null) {
+            return 0;
+        } else {
+            return period;
+        }
+    }
 
+    public void setPeriod(Integer value) {
+        if (value != null && value != 0) {
+            this.period = value;
+        }else
+            this.period=null;
+    }
+
+    @ServiceProvider(TsVariableAdapter.class)
+    public static class Adapter extends TsVariableAdapter {
 
         @Override
-        public PeriodicOutlier unmarshal(XmlRegressionVariable var) throws Exception {
-            if (!(var instanceof XmlSeasonalOutlier))
+        public PeriodicOutlier unmarshal(XmlRegressionVariable var){
+            if (!(var instanceof XmlSeasonalOutlier)) {
                 return null;
-            XmlSeasonalOutlier v=(XmlSeasonalOutlier) var;
-            PeriodicOutlier o = new PeriodicOutlier(v.position.atStartOfDay(), 0, v.zeroEnded != null ? v.zeroEnded : true);
+            }
+            XmlSeasonalOutlier v = (XmlSeasonalOutlier) var;
+            PeriodicOutlier o = new PeriodicOutlier(v.position.atStartOfDay(), v.getPeriod(), v.zeroEnded != null ? v.zeroEnded : true);
             return o;
         }
 
         @Override
-        public XmlSeasonalOutlier marshal(ITsVariable var) throws Exception {
-            if (! (var instanceof PeriodicOutlier))
+        public XmlSeasonalOutlier marshal(ITsVariable var){
+            if (!(var instanceof PeriodicOutlier)) {
                 return null;
-            PeriodicOutlier v=(PeriodicOutlier) var;
+            }
+            PeriodicOutlier v = (PeriodicOutlier) var;
             XmlSeasonalOutlier xml = new XmlSeasonalOutlier();
             xml.position = v.getPosition().toLocalDate();
+            xml.setPeriod(v.getPeriod());
             xml.zeroEnded = v.isZeroEnded();
             return xml;
         }
@@ -78,4 +98,6 @@ public class XmlSeasonalOutlier extends XmlOutlier {
         }
 
     }
+
+    public static final Adapter ADAPTER=new Adapter();
 }

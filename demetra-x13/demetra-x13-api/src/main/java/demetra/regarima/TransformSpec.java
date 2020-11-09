@@ -32,7 +32,7 @@ import demetra.util.Validatable;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public final class TransformSpec implements Validatable<TransformSpec> {
 
-    private static final TransformSpec DEFAULT = TransformSpec.builder().build();
+    public static final TransformSpec DEFAULT = TransformSpec.builder().build();
     
     private TransformationType function;
     private LengthOfPeriodType adjust;

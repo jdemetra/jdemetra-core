@@ -1,0 +1,722 @@
+<?xml version="1.0"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<xs:schema version="0.1.0"
+           targetNamespace="ec/eurostat/jdemetra/sa/x13"
+           xmlns:tss="ec/eurostat/jdemetra/core"
+           xmlns:sa="ec/eurostat/jdemetra/sa"
+           xmlns:sabench="ec/eurostat/jdemetra/sa/benchmarking"
+           xmlns:x13="ec/eurostat/jdemetra/sa/x13"
+           xmlns:modelling="ec/eurostat/jdemetra/modelling"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+    <xs:import schemaLocation="processing.xsd" namespace="ec/eurostat/jdemetra/core"/>
+    <xs:import schemaLocation="regarima.xsd" namespace="ec/eurostat/jdemetra/core"/>
+    <xs:import schemaLocation="sacore.xsd" namespace="ec/eurostat/jdemetra/sa"/>
+    <xs:import schemaLocation="sabenchmarking.xsd" namespace="ec/eurostat/jdemetra/sa/benchmarking"/>
+    <xs:import schemaLocation="modelling.xsd" namespace="ec/eurostat/jdemetra/modelling"/>
+
+
+    <!--Enums-->
+
+    <xs:simpleType name="OutliersDetectionMethodEnum">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base ="xs:NMTOKEN">
+            <xs:enumeration value="AddOne"/>
+            <xs:enumeration value ="AddAll"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="RegressionTestEnum">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base ="xs:NMTOKEN">
+            <xs:enumeration value="None"/>
+            <xs:enumeration value="Add"/>
+            <xs:enumeration value ="Remove"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="SeasonalFilterEnum">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base ="xs:NMTOKEN">
+            <xs:enumeration value="S3x1"/>
+            <xs:enumeration value="S3x3"/>
+            <xs:enumeration value="S3x5"/>
+            <xs:enumeration value="S3x9"/>
+            <xs:enumeration value="S3x15"/>
+            <xs:enumeration value="Msr"/>
+            <xs:enumeration value="X11default"/>
+            <xs:enumeration value="Undefined"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="SeasonalFilters">
+        <xs:list itemType="x13:SeasonalFilterEnum"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="CalendarSigmaEnum">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base ="xs:NMTOKEN">
+            <xs:enumeration value="Signif"/>
+            <xs:enumeration value="All"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <!--Series-->
+
+    <xs:complexType name="SeriesSpecType">
+        <xs:complexContent>
+            <xs:extension base="modelling:SeriesSpecType">
+                <xs:sequence>
+                    <xs:element name="PreliminaryChecks" type="xs:boolean" default="true" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <!--Transformation-->
+
+    <xs:complexType name="AutoTransformationSpecType">
+        <xs:sequence>
+            <xs:element name="AicDiff" type="xs:double" minOccurs="0" default="-2">
+                <xs:annotation>
+                    <xs:documentation>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:group name="TransformationSpecGroup">
+        <xs:choice>
+            <xs:element name="Log"/>
+            <xs:element name="Auto" type ="x13:AutoTransformationSpecType"/>
+        </xs:choice>
+    </xs:group>
+
+    <xs:complexType name="TransformationSpecType">
+        <xs:complexContent>
+            <xs:extension base="modelling:TransformationSpecType">
+                <xs:sequence>
+                    <xs:group ref="x13:TransformationSpecGroup" minOccurs="0"/>
+                    <xs:element name="Adjust" type="tss:LengthOfPeriodEnum" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!--Estimation-->
+
+    <xs:complexType name="EstimationSpecType">
+        <xs:complexContent>
+            <xs:extension base="modelling:EstimationSpecType">
+                <xs:sequence>
+                    <xs:element name="Precision" type="xs:double" minOccurs="0" default="0.0000001"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!--Regression-->
+
+
+    <xs:group name="RegressionTestGroup">
+        <xs:choice>
+            <xs:element name="Aic" type="modelling:AicTestType"/>
+            <xs:element name="Chi2" type="modelling:Chi2TestType"/>
+            <xs:element name="T" type="modelling:TTestType"/>
+        </xs:choice>
+    </xs:group>
+    
+    <xs:complexType name="RegressionVariablesTest">
+        <xs:sequence>
+            <xs:element name="Variables" type="xs:NMTOKENS"/>
+            <xs:group ref="x13:RegressionTestGroup" id="Test"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="RegressionSpecType">
+        <xs:complexContent>
+            <xs:extension base="modelling:RegressionSpecType">
+                <xs:sequence>
+                    <xs:element name="Test" type="x13:RegressionVariablesTest" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!--Arima modelling-->
+
+    <xs:complexType name="AutoModellingSpecType">
+        <xs:sequence>
+            <xs:element name="LjungBoxLimit" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Acceptance criterion for the confidence intervals of the Ljung-Box Q statistic. 
+                        If the LjungBox Q statistics for the residuals of a final model is greater than LjungBox limit, 
+                        the model is rejected, the outlier critical value is reduced, and model and outlier identification (if specified) is redone with a reduced value.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:double">
+                        <xs:minInclusive value="0.8" />
+                        <xs:maxExclusive value="1" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="ArmaLimit" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        The threshold value for t-statistics of ARMA coefficients and constant term used for the final test of model parsimony. 
+                        If the highest order ARMA coefficient has a t-value less than this value in magnitude, the order of the model is reduced. 
+                        Also if the constant term has a t-value less than ArmaLimit in magnitude, it is removed from the set of regressors.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:double">
+                        <xs:minInclusive value="0.5" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="UB1" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        The threshold value for the initial unit root test in the automatic differencing procedure. 
+                        When one of the roots in the estimation of the ARIMA(2,0,0)(1,0,0) plus mean model, 
+                        performed in the first step of the automatic model identification procedure, 
+                        is larger than First unit root limit in modulus, it is set equal to unity.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:double">
+                        <xs:minInclusive value="0.8" />
+                        <xs:maxExclusive value="1" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="UB2" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        When one of the roots in the estimation of the ARIMA(1,0,1)(1,0,1) plus mean model, 
+                        which is performed in the second step of the automatic model identification procedure, 
+                        is larger than Second unit root limit in modulus, it is checked if there is a common factor 
+                        in the corresponding AR and MA polynomials of the ARMA model that can be cancelled 
+                        (see Cancelation limit)). If there is no cancellation, the AR root is set equal to unity (i.e. the differencing order changes).
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:double">
+                        <xs:minInclusive value="0.7" />
+                        <xs:maxExclusive value="1" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="URFinal" minOccurs="0" default="1.05">
+                <xs:annotation>
+                    <xs:documentation>
+                        The threshold value for the final unit root test. 
+                        If the magnitude of an AR root for the final model is less than this number, 
+                        a unit root is assumed, the order of the AR polynomial is reduced by one, 
+                        and the appropriate order of the differencing (non-seasonal, seasonal) is increased.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:double">
+                        <xs:minInclusive value="1" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="Cancel" default="0.1" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        If the difference in moduli of an AR and an MA roots (when estimating ARIMA(1,0,1)(1,0,1) models in the second step of the automatic identification of the differencing orders) 
+                        is smaller than Cancelation limit, the two roots are assumed equal and cancel out.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:double">
+                        <xs:minExclusive value="0.0" />
+                        <xs:maxInclusive value="0.2" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="ReducedCV" minOccurs="0" default="0.14286">
+                <xs:annotation>
+                    <xs:documentation>
+                        The percentage by which the outlier’s critical value will be reduced when an identified model is found to have a Ljung-Box statistic with an unacceptable confidence coefficient. 
+                        The parameter should be between 0 and 1, and will only be active when automatic outlier identification is enabled. 
+                        The reduced critical value will be set to (1−ReduceCV)×CV, where CV is the original critical value.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:double" >
+                        <xs:minInclusive value="0.1" />
+                        <xs:maxInclusive value="0.3" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="AcceptDefault" type="xs:boolean" minOccurs="0" default="false">
+                <xs:annotation>
+                    <xs:documentation>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Mixed" type="xs:boolean" minOccurs="0" default="true">
+                <xs:annotation>
+                    <xs:documentation>
+                        Controls whether ARIMA models with nonseasonal AR and MA terms or seasonal AR and MA terms 
+                        will be considered in the automatic model identification procedure. 
+                        When this option is disabled, a model with AR and MA terms in both the seasonal and nonseasonal parts of the model can be acceptable, 
+                        provided there are not AR and MA terms in either the seasonal or non-seasonal.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Balanced" type="xs:boolean" minOccurs="0" default="false">
+                <xs:annotation>
+                    <xs:documentation>
+                        Controls whether the automatic model identification procedure will have a preference for balanced models 
+                        (i.e. models for which the order of the combined AR and differencing operator is equal to the order of the combined MA operator).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!--CalendarSpec-->
+
+    <xs:complexType name="DefaultTradingDaysSpecType">
+        <xs:complexContent>
+            <xs:extension base="modelling:DefaultTradingDaysSpecType">
+                <xs:sequence>
+                    <xs:element name ="AutoAdjust" type="xs:boolean" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Option for an automatic correction for the leap year effect (see Adjust). 
+                                It is used only in case of automatic transformation.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name ="Test" type="trs:TradingDaysTestEnum" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="StockTradingDaysSpecType">
+        <xs:complexContent>
+            <xs:extension base="modelling:StockTradingDaysSpecType">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="TradingDaysSpecType">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="Default" type="x13:DefaultTradingDaysSpecType"/>
+                <xs:element name="Stock" type="x13:StockTradingDaysSpecType"/>
+                <xs:element name="User" type="modelling:UserTradingDaysSpecType"/>
+            </xs:choice>
+            <xs:element name="Test" type="x13:RegressionTestEnum" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="EasterSpecType">
+        <xs:complexContent>
+            <xs:extension base="modelling:EasterSpecType">
+                <xs:sequence>
+                    <xs:element name="Test" type="x13:RegressionTestEnum" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="CalendarSpecType">
+        <xs:complexContent>
+            <xs:extension base="modelling:CalendarSpecType">
+                <xs:sequence>
+                    <xs:element name="TradingDays" type="x13:TradingDaysSpecType" minOccurs="0"/>
+                    <xs:element name="Easter" type="x13:EasterSpecType" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <!--OutlierSpec-->
+
+    <xs:complexType name="SingleOutlierSpecType">
+        <xs:sequence>
+            <xs:element name="Type" type="xs:NMTOKEN"/>
+            <xs:element name="CriticalValue" minOccurs="0">
+                <xs:simpleType>
+                    <xs:restriction base="xs:double">
+                        <xs:minInclusive value="2" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="OutlierSpecType">
+        <xs:complexContent>
+            <xs:extension base="modelling:OutlierSpecType">
+                <xs:sequence>
+                    <xs:choice>
+                        <xs:sequence>
+                            <xs:element name="Types" type="xs:NMTOKENS"/>
+                            <xs:element name="CriticalValue" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>
+                                        It is used to set the critical value for outlier
+                                        detection. If defined, the critical values of the single outlier specification
+                                        are unused.
+                                    </xs:documentation>
+                                </xs:annotation>
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:double">
+                                        <xs:minInclusive value="2" />
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:element name="Outlier" type="x13:SingleOutlierSpecType" maxOccurs="unbounded"/>
+                    </xs:choice>
+                    <xs:element name="DeltaTC" default="0.7" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Tramo code: DELTATC. It affects only the TC outlier, which is equal to an
+                                impulse divided by (1 - tcrate B).
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:double">
+                                <xs:minExclusive value="0" />
+                                <xs:maxExclusive value="1" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="Method" type="x13:OutliersDetectionMethodEnum" default="AddOne" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Determines how the program successively adds detected outliers to the model. 
+                                At present only the AddOne method is supported.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <!-- RegArima specification-->
+
+    <xs:complexType name="RegArimaSpecificationType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="modelling:ModellingSpecificationType">
+                <xs:sequence>
+                    <xs:element name="Series" type="x13:SeriesSpecType" minOccurs="0"/>
+                    <xs:element name="Transformation" type="x13:TransformationSpecType" minOccurs="0"/>
+                    <xs:element name="Estimation" type="x13:EstimationSpecType" minOccurs="0"/>
+                    <xs:element name="Regression" type="x13:RegressionSpecType" minOccurs="0"/>
+                    <xs:element name="Calendar" type="x13:CalendarSpecType" minOccurs="0"/>
+                    <xs:element name="Outliers" type="x13:OutlierSpecType" minOccurs="0"/>
+                    <xs:choice>
+                        <xs:element name="Arima" type="modelling:ArimaSpecType" minOccurs="0"/>
+                        <xs:element name="AutoModelling" type="x13:AutoModellingSpecType" minOccurs="0"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:simpleType name="RegArimaSpecificationEnum">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="RG0"/>
+            <xs:enumeration value="RG1"/>
+            <xs:enumeration value="RG2c"/>
+            <xs:enumeration value="RG3"/>
+            <xs:enumeration value="RG4c"/>
+            <xs:enumeration value="RG5c"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:group name="RegArimaSpecificationGroup">
+        <xs:choice>
+            <xs:element name="Specification" type="x13:RegArimaSpecificationType"/>
+            <xs:element name="DefaultSpecification" type="x13:RegArimaSpecificationEnum"/>
+        </xs:choice>
+    </xs:group>
+
+
+    <!--X11-->
+
+    <xs:complexType name="X11SpecType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Mode" type="sa:DecompositionEnum"/>
+            <xs:element name="Seasonal" type="xs:boolean" minOccurs="0" default="true">
+                <xs:annotation>
+                    <xs:documentation>
+                        When marked, the program computes a seasonal component.
+                        Otherwise, the seasonal component is not estimated and its values are all
+                        set to 0 (additive decomposition) or 1 (multiplicative decomposition).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name ="Forecasts" type="xs:int" minOccurs="0" default="-1"/>
+            <xs:element name ="Backcasts" type="xs:int" minOccurs="0" default ="0"/>
+            <xs:element name="LowerSigma" minOccurs="0" default="1.5">
+                <xs:annotation>
+                    <xs:documentation>
+                        Lower bound of SIGMA parameter.
+                        Default value is 1.5.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base ="xs:double">
+                        <xs:minExclusive value="0.5"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="UpperSigma" minOccurs="0" default="2.5">
+                <xs:annotation>
+                    <xs:documentation>
+                        Upper bound of SIGMA parameter. Should be higher than lsigma.
+                        Default value is 2.5.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base ="xs:double">
+                        <xs:minExclusive value="0.5"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="SeasonalMA" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Specifies which seasonal moving average (i.e. seasonal filter) will be used to estimate the seasonal factors for the entire series. 
+                        The program can choose the final seasonal filter automatically (Msr).
+                        The same filter can be used for all the periods (Filter) or different filters can be specified for each period (Filters)
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:choice>
+                        <xs:element name="Filter" type="x13:SeasonalFilterEnum"/>
+                        <xs:element name="Filters" type="x13:SeasonalFilters"/>
+                    </xs:choice>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="TrendMA" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Length of the Henderson filter used for trend.
+                        Should be 0 or any odd number between 1 and 99.
+                        If 0, the length is automatically identified by the software.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:unsignedInt">
+                        <xs:maxInclusive value="99"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:choice minOccurs="0">
+                <xs:element name ="CalendarSigma" type="x13:CalendarSigmaEnum">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Specifies if the standard errors used for extreme values detection and adjustment are computed separately for each calendar month/quarter(All)
+                            or only if Cochran’s hypothesis test determines that the irregular component is heteroskedastic by calendar month/quarter (signif) 
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name ="SigmaVec" type="tss:UnsignedInts">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Specifies that the standard errors used for extreme values detection are computed separately for two complementary sets of calendar months/quarters 
+                            The vector specifies the group of each period (1 or 2)
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:choice>
+            <xs:element name="ExcludeForecasts" type="xs:boolean" minOccurs="0" default="false">
+                <xs:annotation>
+                    <xs:documentation>
+                        If excludeforecasts=yes, forecasts and backcasts from the regARIMA model are not used in the generation of extreme values
+                        in the seasonal adjustment routines. The default is excludefcst=no, 
+                        which allows the full forecast and backcast extended series to be used in the extreme value process.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="RegArimaAtomicRequestType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Series" type="tss:TsType"/>
+            <xs:group  ref="x13:RegArimaSpecificationGroup"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="RegArimaRequestType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="x13:RegArimaAtomicRequestType">
+                <xs:sequence>
+                    <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0"/>
+                    <xs:element name="OutputFilter" type="tss:Tokens"/>
+                </xs:sequence>
+                <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="RegArimaRequestsType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Item" type="x13:RegArimaAtomicRequestType" maxOccurs="unbounded"/>
+            <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0"/>
+            <xs:element name="OutputFilter" type="tss:Tokens"/>
+        </xs:sequence>
+        <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="parallelProcessing" type="xs:boolean" use="optional" default="true"/>
+    </xs:complexType>
+
+
+    <!-- X13 specification-->
+
+    <xs:complexType name="X13SpecificationType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="sa:SaSpecificationType">
+                <xs:sequence>
+                    <xs:element name="Preprocessing" type="x13:RegArimaSpecificationType" minOccurs="0"/>
+                    <xs:element name="Decomposition" type="x13:X11SpecType"/>
+                    <xs:element name="Benchmarking" type="sabench:CholetteType" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:simpleType name="X13SpecificationEnum">
+        <xs:annotation>
+            <xs:documentation>
+                Information on the way a parameter should be used or interpreted.
+                A fixed parameter is an "a priori" value, which doesn't result from an estimation procedure.
+                An initial parameter is a parameter that should be used as a starting value in estimation procedures.
+                An estimated parameter is the results of an estimation procedure.
+                A derived parameter has been computed from other (usually estimated)
+                parameters.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="RSA0"/>
+            <xs:enumeration value="RSA1"/>
+            <xs:enumeration value="RSA2c"/>
+            <xs:enumeration value="RSA3"/>
+            <xs:enumeration value="RSA4c"/>
+            <xs:enumeration value="RSA5c"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <xs:group name="X13SpecificationGroup">
+        <xs:choice>
+            <xs:element name="Specification" type="x13:X13SpecificationType"/>
+            <xs:element name="DefaultSpecification" type="x13:X13SpecificationEnum"/>
+        </xs:choice>
+    </xs:group>
+
+    <xs:complexType name="X13AtomicRequestType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Series" type="tss:TsType"/>
+            <xs:group  ref="x13:X13SpecificationGroup"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="X13RequestType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="x13:X13AtomicRequestType">
+                <xs:sequence>
+                    <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0"/>
+                    <xs:element name="OutputFilter" type="tss:Tokens" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="X13RequestsType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Item" type="x13:X13AtomicRequestType" maxOccurs="unbounded"/>
+            <xs:element name="Context" type="tss:ProcessingContextType" minOccurs="0"/>
+            <xs:element name="OutputFilter" type="tss:Tokens" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="flat" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="parallelProcessing" type="xs:boolean" use="optional" default="true"/>
+    </xs:complexType>
+
+    <xs:element name="RegArimaSpecification" type="x13:RegArimaSpecificationType"/>
+    <xs:element name="RegArimaRequest" type="x13:RegArimaRequestType"/>
+    <xs:element name="RegArimaRequests" type="x13:RegArimaRequestsType"/>
+    <xs:element name="X13Specification" type="x13:X13SpecificationType"/>
+    <xs:element name="X13Request" type="x13:X13RequestType"/>
+    <xs:element name="X13Requests" type="x13:X13RequestsType"/>
+
+
+</xs:schema>

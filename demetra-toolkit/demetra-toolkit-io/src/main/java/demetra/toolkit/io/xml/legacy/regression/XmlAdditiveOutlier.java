@@ -63,4 +63,6 @@ public class XmlAdditiveOutlier extends XmlOutlier {
             lclass.add(XmlAdditiveOutlier.class);
         }
     }
+    
+    public static final Adapter ADAPTER=new Adapter();
 }

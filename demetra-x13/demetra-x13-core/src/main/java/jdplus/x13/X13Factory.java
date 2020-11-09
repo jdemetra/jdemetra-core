@@ -228,17 +228,17 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
         EasterSpec espec = regression.getEaster();
         TradingDaysSpec tdspec = regression.getTradingDays();
 
-        if (tdspec.isUsed() && (tdspec.getTest() != RegressionTestSpec.None)) {
+        if (tdspec.isUsed() && (tdspec.getRegressionTestType()!= RegressionTestSpec.None)) {
             // leap year
             LengthOfPeriodType lp = LengthOfPeriodType.None;
             TradingDaysType td = TradingDaysType.None;
             Optional<Variable> flp = Arrays.stream(variables).filter(v -> Utility.isLengthOfPeriod(v)).findFirst();
             if (flp.isPresent()) {
-                lp = tdspec.getLengthOfPeriod();
+                lp = tdspec.getLengthOfPeriodType();
             }
             Optional<Variable> ftd = Arrays.stream(variables).filter(v -> Utility.isTradingDays(v)).findFirst();
             if (ftd.isPresent()) {
-                td = tdspec.getType();
+                td = tdspec.getTradingDaysType();
             }
 
             if (lp != null || td != null) {

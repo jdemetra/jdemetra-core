@@ -68,7 +68,7 @@ public class XmlDefaultTradingDaysSpec
      *
      */
     public RegressionTestType getTest() {
-        return test;
+        return test == null ? RegressionTestType.None : test;
     }
 
     /**

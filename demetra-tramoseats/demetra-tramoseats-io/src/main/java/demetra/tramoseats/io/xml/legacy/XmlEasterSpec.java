@@ -105,6 +105,15 @@ public class XmlEasterSpec
             this.option = value;
         }
     }
+    
+    public static XmlEasterSpec marshal(EasterSpec v ){
+        if (! v.isDefined())
+            return null;
+        XmlEasterSpec xml=new XmlEasterSpec();
+        marshal(v, xml);
+        return xml;
+    }
+    
 
     public static boolean marshal(EasterSpec v, XmlEasterSpec xml){
         if (v.isDefault()) {
@@ -120,6 +129,8 @@ public class XmlEasterSpec
     }
 
     public static EasterSpec unmarshal(XmlEasterSpec xml){
+        if (xml == null)
+            return EasterSpec.DEFAULT_UNUSED;
         EasterSpec.Builder builder = EasterSpec.builder();
         if (xml.julian != null) {
             builder=builder.julian(xml.julian);

@@ -295,8 +295,16 @@ public class XmlPeriodSelection {
         return ADAPTER;
     }
 
+    public static XmlPeriodSelection marshal(TimeSelector v) {
+        if (v == null || v.getType() == TimeSelector.SelectionType.All) {
+            return null;
+        }
+        XmlPeriodSelection xml = new XmlPeriodSelection();
+        marshal(v, xml);
+        return xml;
+    }
+
     public static boolean marshal(TimeSelector v, XmlPeriodSelection xml) {
-        xml.clear();
         switch (v.getType()) {
             case All:
                 xml.all = new XmlEmptyElement();
