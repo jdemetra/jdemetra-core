@@ -21,7 +21,7 @@ import jdplus.data.DataBlock;
 import jdplus.data.LogSign;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Legacy;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.polynomials.Polynomial;

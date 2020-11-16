@@ -16,7 +16,7 @@
  */
 package jdplus.x13.diagnostics;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  *

@@ -19,7 +19,7 @@ package jdplus.dstats;
 import jdplus.dstats.internal.ProbInvFinder;
 import jdplus.dstats.internal.SpecialFunctions;
 import demetra.stats.ProbabilityType;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.random.RandomNumberGenerator;
 
 

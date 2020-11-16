@@ -23,7 +23,7 @@ import demetra.regarima.RegArimaSpec;
 import demetra.regarima.TradingDaysSpec;
 import demetra.regarima.TransformSpec;
 import jdplus.data.interpolation.AverageInterpolator;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.information.InformationSet;
 import demetra.modelling.RegressionTestSpec;
 import demetra.modelling.TransformationType;

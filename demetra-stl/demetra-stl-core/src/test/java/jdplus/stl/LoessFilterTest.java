@@ -16,10 +16,6 @@
  */
 package jdplus.stl;
 
-import jdplus.stl.IDataGetter;
-import jdplus.stl.LoessSpecification;
-import jdplus.stl.LoessFilter;
-import jdplus.stl.IDataSelector;
 import demetra.data.Data;
 import org.junit.Test;
 import org.junit.Ignore;

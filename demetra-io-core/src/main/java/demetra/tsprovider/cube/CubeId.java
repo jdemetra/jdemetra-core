@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider.cube;
 
-import demetra.design.Immutable;
+import nbbrd.design.Immutable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;

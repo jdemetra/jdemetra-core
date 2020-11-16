@@ -17,7 +17,7 @@
 package jdplus.x11.extremevaluecorrector;
 
 import demetra.data.DoubleSeq;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.x11.X11Context;
 import java.util.Arrays;
 

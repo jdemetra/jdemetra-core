@@ -16,7 +16,7 @@
 */
 package jdplus.math.linearfilters.internal;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.math.Complex;
 import jdplus.math.ComplexMath;
 import jdplus.math.linearfilters.BackFilter;

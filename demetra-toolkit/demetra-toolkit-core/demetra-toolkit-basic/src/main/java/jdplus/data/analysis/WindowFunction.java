@@ -16,7 +16,7 @@
  */
 package jdplus.data.analysis;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 

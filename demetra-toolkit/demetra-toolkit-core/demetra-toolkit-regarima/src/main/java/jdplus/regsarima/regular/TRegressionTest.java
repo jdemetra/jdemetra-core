@@ -16,7 +16,7 @@
  */
 package jdplus.regsarima.regular;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.information.InformationSet;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 

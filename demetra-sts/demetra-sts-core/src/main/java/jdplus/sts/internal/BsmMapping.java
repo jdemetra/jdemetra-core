@@ -18,7 +18,7 @@ package jdplus.sts.internal;
 
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.ParamValidation;
 import demetra.sts.Component;

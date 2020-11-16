@@ -16,7 +16,7 @@
  */
 package jdplus.tramo.internal;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.outlier.CriticalValueComputer;
 import jdplus.regsarima.GlsSarimaProcessor;

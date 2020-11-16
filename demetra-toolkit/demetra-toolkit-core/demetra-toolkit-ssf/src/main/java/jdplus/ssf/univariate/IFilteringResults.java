@@ -17,7 +17,7 @@
 package jdplus.ssf.univariate;
 
 import jdplus.ssf.UpdateInformation;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.ssf.IStateResults;
 
 /**

@@ -17,9 +17,9 @@
 package jdplus.tramo.internal;
 
 import jdplus.data.DataBlock;
-import demetra.design.BuilderPattern;
-import demetra.design.Development;
-import demetra.design.VisibleForTesting;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
+import nbbrd.design.VisibleForTesting;
 import demetra.math.Complex;
 import jdplus.math.linearfilters.BackFilter;
 import demetra.timeseries.regression.Variable;

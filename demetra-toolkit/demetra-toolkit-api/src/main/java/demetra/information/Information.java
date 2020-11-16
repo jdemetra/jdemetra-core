@@ -16,8 +16,8 @@
  */
 package demetra.information;
 
-import demetra.design.Immutable;
-import demetra.design.Development;
+import nbbrd.design.Immutable;
+import nbbrd.design.Development;
 
 /**
  * Generic class to handle named values (pair of {name, object}.

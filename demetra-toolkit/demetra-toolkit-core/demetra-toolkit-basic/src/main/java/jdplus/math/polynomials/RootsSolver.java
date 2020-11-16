@@ -19,7 +19,7 @@ package jdplus.math.polynomials;
 import demetra.design.Algorithm;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.math.Complex;
 
 /**

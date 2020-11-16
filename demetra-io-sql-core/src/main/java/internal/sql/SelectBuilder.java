@@ -16,7 +16,7 @@
  */
 package internal.sql;
 
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

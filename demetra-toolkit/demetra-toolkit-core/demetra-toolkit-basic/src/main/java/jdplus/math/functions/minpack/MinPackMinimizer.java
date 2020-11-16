@@ -17,7 +17,7 @@
 
 package jdplus.math.functions.minpack;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.functions.ssq.ISsqFunction;
 import jdplus.math.functions.ssq.ISsqFunctionPoint;
 import jdplus.math.matrices.Matrix;

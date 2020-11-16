@@ -18,7 +18,7 @@ package demetra.timeseries;
 
 import demetra.data.AggregationType;
 import demetra.data.DoubleSeqCursor;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import internal.timeseries.InternalAggregator;
 import java.util.Objects;
 import java.util.Random;
@@ -215,9 +215,8 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
     }
 
     /**
-     * Extract a time series from beg (included) to end (excluded)
-     * The series could be smaller (or empty) if the range is outside the given
-     * series
+     * Extract a time series from beg (included) to end (excluded) The series
+     * could be smaller (or empty) if the range is outside the given series
      *
      * @param beg Index of the start
      * @param end Index of the end
@@ -234,8 +233,8 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
     }
 
     /**
-     * Extract a time series from start (included) to start+n (excluded)
-     * The series could be smaller (or empty) if the range is outside the given
+     * Extract a time series from start (included) to start+n (excluded) The
+     * series could be smaller (or empty) if the range is outside the given
      * series
      *
      * @param start Index of the start

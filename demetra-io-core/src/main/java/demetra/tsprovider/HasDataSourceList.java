@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider;
 
-import demetra.design.ThreadSafe;
+import nbbrd.design.ThreadSafe;
 import internal.tsprovider.InternalTsProvider;
 import java.util.List;
 import java.util.WeakHashMap;

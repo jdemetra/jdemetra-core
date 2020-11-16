@@ -18,8 +18,8 @@
 
 package jdplus.arima;
 
-import demetra.design.Development;
-import demetra.design.Immutable;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
 import jdplus.math.linearfilters.BackFilter;
 
 

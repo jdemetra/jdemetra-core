@@ -17,8 +17,8 @@
 package demetra.seats;
 
 import demetra.arima.SarimaSpec;
-import demetra.design.Development;
-import demetra.design.LombokWorkaround;
+import nbbrd.design.Development;
+import nbbrd.design.LombokWorkaround;
 import demetra.timeseries.TsData;
 import demetra.util.Validatable;
 

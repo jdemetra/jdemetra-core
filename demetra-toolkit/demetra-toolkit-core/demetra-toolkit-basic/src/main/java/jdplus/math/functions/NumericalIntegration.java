@@ -6,7 +6,7 @@
 package jdplus.math.functions;
 
 import demetra.design.Algorithm;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import internal.jdplus.maths.functions.gsl.integration.NumericalIntegrationProcessor;
 import java.util.function.DoubleUnaryOperator;
 import nbbrd.service.Mutability;

@@ -27,9 +27,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-design</artifactId>
-            <version>${jd3-toolkit.version}</version>
+            <groupId>be.nbb.rd</groupId>
+            <artifactId>java-design-processor</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
@@ -64,11 +64,6 @@
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-tramoseats-api</artifactId>
-            <version>${jd3-tramoseats.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tramo-core</artifactId>
             <version>${jd3-tramoseats.version}</version>
         </dependency>
         <dependency>

@@ -17,7 +17,7 @@
 package jdplus.data.accumulator;
 
 import demetra.data.DoubleSeq;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.math.Constants;
 
 /**

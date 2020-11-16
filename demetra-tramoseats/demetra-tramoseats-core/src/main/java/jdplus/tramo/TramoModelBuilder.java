@@ -18,7 +18,7 @@ package jdplus.tramo;
 
 import demetra.data.Parameter;
 import jdplus.data.interpolation.AverageInterpolator;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.information.InformationSet;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.regression.Variable;

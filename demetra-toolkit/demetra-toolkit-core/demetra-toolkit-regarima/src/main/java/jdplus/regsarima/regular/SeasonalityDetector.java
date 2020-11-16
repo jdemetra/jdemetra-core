@@ -17,7 +17,7 @@
 package jdplus.regsarima.regular;
 
 import demetra.data.DoubleSeq;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import java.util.function.IntSupplier;
 

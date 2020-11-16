@@ -17,7 +17,7 @@
 package jdplus.x13.regarima;
 
 import jdplus.regsarima.ami.ExactOutliersDetector;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import demetra.timeseries.regression.Variable;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import demetra.timeseries.regression.IOutlier;

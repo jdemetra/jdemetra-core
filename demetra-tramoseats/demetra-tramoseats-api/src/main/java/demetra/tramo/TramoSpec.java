@@ -16,8 +16,8 @@
  */
 package demetra.tramo;
 
-import demetra.design.Development;
-import demetra.design.LombokWorkaround;
+import nbbrd.design.Development;
+import nbbrd.design.LombokWorkaround;
 import demetra.modelling.TransformationType;
 import demetra.arima.SarimaSpec;
 import demetra.timeseries.calendars.LengthOfPeriodType;

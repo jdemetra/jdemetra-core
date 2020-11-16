@@ -6,7 +6,7 @@
 package demetra.x11;
 
 import demetra.design.Algorithm;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import nbbrd.service.ServiceDefinition;
 import demetra.timeseries.TsData;
 import nbbrd.service.Mutability;

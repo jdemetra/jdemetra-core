@@ -17,12 +17,12 @@
 package jdplus.linearmodel;
 
 import jdplus.data.DataBlock;
-import demetra.design.Immutable;
+import nbbrd.design.Immutable;
 import java.util.ArrayList;
 import jdplus.data.DataBlockIterator;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeqCursor;
-import demetra.design.Internal;
+import nbbrd.design.Internal;
 import demetra.data.DoubleSeq;
 import jdplus.math.matrices.Matrix;
 import demetra.math.matrices.MatrixType;

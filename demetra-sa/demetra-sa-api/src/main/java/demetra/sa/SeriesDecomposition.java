@@ -16,8 +16,8 @@ package demetra.sa;
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-import demetra.design.Development;
-import demetra.design.Immutable;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
 import demetra.modelling.ComponentInformation;
 import java.util.Collections;
 import java.util.EnumMap;

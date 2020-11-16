@@ -17,7 +17,7 @@
 package demetra.toolkit.extractors;
 
 import demetra.arima.ArimaModel;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.information.InformationMapping;
 
 /**

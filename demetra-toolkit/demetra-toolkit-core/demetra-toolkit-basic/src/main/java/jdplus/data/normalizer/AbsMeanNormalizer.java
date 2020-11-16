@@ -20,7 +20,7 @@ package jdplus.data.normalizer;
 
 import jdplus.data.DataBlock;
 import demetra.design.AlgorithmImplementation;
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * Normalization based on the mean of the absolute values. 

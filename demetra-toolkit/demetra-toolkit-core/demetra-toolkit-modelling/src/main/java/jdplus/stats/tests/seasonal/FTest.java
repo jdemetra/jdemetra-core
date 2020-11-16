@@ -17,7 +17,7 @@
 package jdplus.stats.tests.seasonal;
 
 import demetra.data.DoubleSeq;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import demetra.timeseries.regression.PeriodicContrasts;
 import demetra.timeseries.regression.PeriodicDummies;
 import jdplus.linearmodel.JointTest;

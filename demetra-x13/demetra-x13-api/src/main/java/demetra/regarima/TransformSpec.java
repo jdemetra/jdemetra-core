@@ -17,8 +17,8 @@
 
 package demetra.regarima;
 
-import demetra.design.Development;
-import demetra.design.LombokWorkaround;
+import nbbrd.design.Development;
+import nbbrd.design.LombokWorkaround;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.util.Validatable;

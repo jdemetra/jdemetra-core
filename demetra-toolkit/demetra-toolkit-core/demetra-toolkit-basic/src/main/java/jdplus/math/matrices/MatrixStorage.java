@@ -18,7 +18,7 @@ package jdplus.math.matrices;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  *

@@ -17,8 +17,8 @@
 package demetra.timeseries.regression;
 
 import demetra.data.Range;
-import demetra.design.BuilderPattern;
-import demetra.design.Development;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 import demetra.timeseries.TsException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

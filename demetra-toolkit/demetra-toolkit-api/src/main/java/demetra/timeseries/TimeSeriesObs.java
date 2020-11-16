@@ -16,8 +16,6 @@
  */
 package demetra.timeseries;
 
-import demetra.data.Range;
-import java.time.LocalDateTime;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -25,7 +23,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Philippe Charles
  * @param <P> period type
  */
-public interface TimeSeriesObs<P extends Range<LocalDateTime>> {
+public interface TimeSeriesObs<P extends TimeSeriesInterval> {
 
     @NonNull
     P getPeriod();

@@ -5,7 +5,6 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.data.Range;
 import demetra.timeseries.regression.TransitoryChange;
 import jdplus.data.DataBlock;
 import jdplus.math.linearfilters.BackFilter;
@@ -14,6 +13,7 @@ import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import jdplus.math.matrices.Matrix;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  *
@@ -84,7 +84,7 @@ class TCFactory implements RegressionVariableFactory<TransitoryChange> {
     }
 
     @Override
-    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>>  boolean fill(TransitoryChange var, D domain, Matrix m) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(TransitoryChange var, D domain, Matrix m) {
         fill(var, domain.indexOf(var.getPosition()), m.column(0));
         return true;
     }

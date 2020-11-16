@@ -16,9 +16,9 @@
  */
 package jdplus.tramo.internal;
 
-import demetra.design.BuilderPattern;
-import demetra.design.Development;
-import demetra.design.VisibleForTesting;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
+import nbbrd.design.VisibleForTesting;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import demetra.arima.SarmaOrders;

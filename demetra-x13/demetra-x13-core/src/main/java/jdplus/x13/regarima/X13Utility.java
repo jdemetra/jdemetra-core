@@ -16,7 +16,7 @@
  */
 package jdplus.x13.regarima;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.arima.estimation.ResidualsComputer;
 import jdplus.data.DataBlock;
 import jdplus.regarima.IRegArimaProcessor;

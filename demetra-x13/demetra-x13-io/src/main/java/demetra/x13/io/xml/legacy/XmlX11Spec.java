@@ -474,7 +474,7 @@ public class XmlX11Spec {
             if (filters.size() == 1) {
                 sma.filter = filters.get(0);
             } else {
-                sma.filters = filters.toArray(q -> new SeasonalFilterOption[q]);
+                sma.filters = filters.toArray(new SeasonalFilterOption[filters.size()]);
             }
             xml.setSeasonalMA(sma);
         }

@@ -18,7 +18,7 @@
 package jdplus.stats.tests.seasonal;
 
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import java.util.Arrays;
 import demetra.data.DoubleSeq;
 

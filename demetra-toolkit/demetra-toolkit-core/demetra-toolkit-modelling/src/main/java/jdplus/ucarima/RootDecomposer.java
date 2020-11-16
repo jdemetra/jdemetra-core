@@ -18,7 +18,7 @@ package jdplus.ucarima;
 
 import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.math.linearfilters.SymmetricFrequencyResponse;

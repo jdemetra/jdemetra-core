@@ -20,7 +20,7 @@ import jdplus.dstats.Normal;
 import demetra.stats.ProbabilityType;
 import java.util.Arrays;
 import demetra.data.DoubleSeq;
-import demetra.design.Immutable;
+import nbbrd.design.Immutable;
 
 /**
  *

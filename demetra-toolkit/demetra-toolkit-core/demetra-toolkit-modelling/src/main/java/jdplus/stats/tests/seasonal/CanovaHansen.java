@@ -7,7 +7,7 @@ package jdplus.stats.tests.seasonal;
 
 import jdplus.data.analysis.TrigonometricSeries;
 import jdplus.data.analysis.WindowFunction;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;

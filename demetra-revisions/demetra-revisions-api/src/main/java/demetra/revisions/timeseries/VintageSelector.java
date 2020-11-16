@@ -16,7 +16,7 @@
  */
 package demetra.revisions.timeseries;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import lombok.AccessLevel;
 
 /**

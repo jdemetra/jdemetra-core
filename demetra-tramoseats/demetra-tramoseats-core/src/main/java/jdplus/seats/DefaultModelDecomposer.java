@@ -17,7 +17,7 @@
 package jdplus.seats;
 
 import demetra.arima.SarimaOrders;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.seats.DecompositionSpec;
 import demetra.seats.DecompositionSpec.ModelApproximationMode;
 import demetra.seats.SeatsSpec;

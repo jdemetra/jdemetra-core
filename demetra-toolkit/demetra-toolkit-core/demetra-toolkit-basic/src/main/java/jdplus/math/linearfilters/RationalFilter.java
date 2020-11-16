@@ -17,9 +17,9 @@
 package jdplus.math.linearfilters;
 
 import jdplus.data.DataBlock;
-import demetra.design.Development;
-import demetra.design.Immutable;
-import demetra.design.SkipProcessing;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
+import nbbrd.design.SkipProcessing;
 import demetra.util.Arrays2;
 import demetra.math.Complex;
 import jdplus.math.matrices.MatrixException;

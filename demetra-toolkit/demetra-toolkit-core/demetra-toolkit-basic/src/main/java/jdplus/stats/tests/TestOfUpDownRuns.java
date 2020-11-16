@@ -17,7 +17,7 @@
 package jdplus.stats.tests;
 
 import demetra.data.DoubleSeqCursor;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.dstats.Chi2;
 import jdplus.dstats.Normal;
 import demetra.stats.StatException;

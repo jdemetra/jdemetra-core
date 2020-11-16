@@ -18,8 +18,8 @@ package jdplus.data.analysis;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
-import demetra.design.BuilderPattern;
-import demetra.design.Development;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 import demetra.math.Constants;
 import jdplus.stats.AutoCovariances;
 

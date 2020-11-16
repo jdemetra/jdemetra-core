@@ -18,7 +18,7 @@ package jdplus.regsarima.regular;
 
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.polynomials.UnitRoots;
 import jdplus.arima.estimation.IArimaMapping;

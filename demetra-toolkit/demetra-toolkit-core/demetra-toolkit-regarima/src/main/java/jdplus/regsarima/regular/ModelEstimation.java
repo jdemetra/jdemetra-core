@@ -21,7 +21,7 @@ import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
 import demetra.timeseries.regression.Variable;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.sarima.SarimaModel;
 import demetra.timeseries.TsData;

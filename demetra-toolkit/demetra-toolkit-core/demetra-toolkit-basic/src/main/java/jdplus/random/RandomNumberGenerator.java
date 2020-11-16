@@ -17,7 +17,7 @@
 package jdplus.random;
 
 import demetra.design.Algorithm;
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * Random number generator (RNG).

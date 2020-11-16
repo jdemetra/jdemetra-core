@@ -18,7 +18,7 @@ package jdplus.ssf.univariate;
 
 import jdplus.ssf.UpdateInformation;
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.likelihood.Likelihood;
 import jdplus.ssf.IPredictionErrorDecomposition;
 import jdplus.likelihood.ResidualsCumulator;

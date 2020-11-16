@@ -16,7 +16,7 @@
  */
 package demetra.data;
 
-import demetra.design.Demo;
+import nbbrd.design.Demo;
 import java.util.stream.DoubleStream;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;

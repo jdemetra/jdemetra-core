@@ -20,7 +20,7 @@ import jdplus.arima.ArimaException;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.math.matrices.MatrixException;

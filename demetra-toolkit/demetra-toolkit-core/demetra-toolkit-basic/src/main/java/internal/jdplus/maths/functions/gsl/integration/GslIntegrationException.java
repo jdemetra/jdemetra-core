@@ -17,7 +17,7 @@
 package internal.jdplus.maths.functions.gsl.integration;
 
 import demetra.DemetraException;
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 @Development(status = Development.Status.Alpha)
 public class GslIntegrationException extends DemetraException {

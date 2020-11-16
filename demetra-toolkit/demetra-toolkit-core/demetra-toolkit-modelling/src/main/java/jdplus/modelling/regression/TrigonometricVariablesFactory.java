@@ -16,14 +16,12 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.data.Range;
 import demetra.timeseries.regression.TrigonometricVariables;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
-import java.time.LocalDateTime;
 import jdplus.math.matrices.Matrix;
+import demetra.timeseries.TimeSeriesInterval;
 
 /**
  * Computes trigonometric variables: sin(wt), cos(wt) at given frequencies if w
@@ -82,7 +80,7 @@ public class TrigonometricVariablesFactory implements RegressionVariableFactory<
     }
 
     @Override
-    public <P extends Range<LocalDateTime>, D extends TimeSeriesDomain<P>>  boolean fill(TrigonometricVariables var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(TrigonometricVariables var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

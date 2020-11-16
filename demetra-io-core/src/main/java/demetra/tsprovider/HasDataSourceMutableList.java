@@ -16,7 +16,7 @@
  */
 package demetra.tsprovider;
 
-import demetra.design.ThreadSafe;
+import nbbrd.design.ThreadSafe;
 import internal.tsprovider.InternalTsProvider;
 import java.util.LinkedHashSet;
 import java.util.function.Consumer;

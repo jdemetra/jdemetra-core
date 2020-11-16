@@ -16,8 +16,8 @@
  */
 package demetra.tramoseats;
 
-import demetra.design.Development;
-import demetra.design.LombokWorkaround;
+import nbbrd.design.Development;
+import nbbrd.design.LombokWorkaround;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.sa.ComponentType;
 import demetra.sa.SaSpecification;

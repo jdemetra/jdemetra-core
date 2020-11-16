@@ -5,7 +5,7 @@
  */
 package demetra.timeseries.regression.modelling;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  *

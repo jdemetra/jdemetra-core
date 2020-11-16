@@ -16,9 +16,9 @@
  */
 package jdplus.x13.regarima;
 
-import demetra.design.BuilderPattern;
-import demetra.design.Development;
 import demetra.sa.ComponentType;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;

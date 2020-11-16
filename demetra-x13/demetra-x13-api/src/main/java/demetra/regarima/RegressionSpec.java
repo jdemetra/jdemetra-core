@@ -17,8 +17,8 @@
 package demetra.regarima;
 
 import demetra.data.Parameter;
-import demetra.design.Development;
-import demetra.design.LombokWorkaround;
+import nbbrd.design.Development;
+import nbbrd.design.LombokWorkaround;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.Ramp;

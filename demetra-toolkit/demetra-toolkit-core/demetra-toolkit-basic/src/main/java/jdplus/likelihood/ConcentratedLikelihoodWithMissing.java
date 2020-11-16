@@ -16,8 +16,8 @@
  */
 package jdplus.likelihood;
 
-import demetra.design.Immutable;
-import demetra.design.BuilderPattern;
+import nbbrd.design.Immutable;
+import nbbrd.design.BuilderPattern;
 import demetra.math.Constants;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;

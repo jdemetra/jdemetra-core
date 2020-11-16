@@ -16,7 +16,7 @@
  */
 package jdplus.tramo;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;

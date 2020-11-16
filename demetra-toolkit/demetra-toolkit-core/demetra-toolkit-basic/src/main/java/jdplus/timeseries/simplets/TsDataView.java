@@ -17,8 +17,8 @@
 package jdplus.timeseries.simplets;
 
 import demetra.timeseries.TsData;
-import demetra.design.Development;
-import demetra.design.Immutable;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TimeSelector;

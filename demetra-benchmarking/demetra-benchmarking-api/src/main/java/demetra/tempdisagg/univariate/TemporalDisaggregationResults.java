@@ -17,7 +17,7 @@
 package demetra.tempdisagg.univariate;
 
 import demetra.data.DoubleSeq;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.functions.ObjectiveFunctionPoint;
 import demetra.math.matrices.MatrixType;

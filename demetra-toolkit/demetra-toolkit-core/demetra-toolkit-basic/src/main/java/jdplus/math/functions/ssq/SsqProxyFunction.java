@@ -18,7 +18,7 @@
 
 package jdplus.math.functions.ssq;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.functions.IFunction;
 import jdplus.math.functions.IFunctionPoint;
 import jdplus.math.functions.IParametersDomain;

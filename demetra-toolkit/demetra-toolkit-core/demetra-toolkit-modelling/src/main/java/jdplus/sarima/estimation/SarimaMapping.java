@@ -18,7 +18,7 @@ package jdplus.sarima.estimation;
 
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.functions.FunctionException;
 import jdplus.math.functions.ParamValidation;
 import jdplus.math.polynomials.Polynomial;

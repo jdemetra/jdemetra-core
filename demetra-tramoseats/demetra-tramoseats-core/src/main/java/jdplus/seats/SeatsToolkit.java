@@ -16,7 +16,7 @@
  */
 package jdplus.seats;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.seats.DecompositionSpec;
 import demetra.seats.SeatsSpec;
 import jdplus.regsarima.GlsSarimaProcessor;

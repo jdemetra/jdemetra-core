@@ -17,7 +17,7 @@
 package jdplus.math.functions.ssq;
 
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.functions.IFunction;
 import java.util.ArrayList;
 import java.util.List;

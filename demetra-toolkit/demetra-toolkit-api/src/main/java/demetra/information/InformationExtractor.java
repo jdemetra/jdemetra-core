@@ -16,7 +16,7 @@
  */
 package demetra.information;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.util.WildCards;
 import java.util.Map;
 import java.util.function.BiFunction;

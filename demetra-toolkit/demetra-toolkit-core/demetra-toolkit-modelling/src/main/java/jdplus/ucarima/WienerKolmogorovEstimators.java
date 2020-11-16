@@ -22,7 +22,7 @@ import jdplus.arima.AutoCovarianceFunction;
 import jdplus.arima.IArimaModel;
 import jdplus.arima.LinearProcess;
 import jdplus.arima.StationaryTransformation;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.linearfilters.ForeFilter;
 import jdplus.math.linearfilters.RationalBackFilter;

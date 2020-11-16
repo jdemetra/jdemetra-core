@@ -16,7 +16,7 @@
  */
 package demetra.calendarization;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
 import demetra.timeseries.TsUnit;

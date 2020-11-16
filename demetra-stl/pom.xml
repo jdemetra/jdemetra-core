@@ -29,12 +29,12 @@
             <!-- modules 3.0 > -->
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-design</artifactId>
+                <artifactId>demetra-toolkit-api</artifactId>
                 <version>${jd3-toolkit.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-toolkit-api</artifactId>
+                <artifactId>demetra-toolkit-api-advanced</artifactId>
                 <version>${jd3-toolkit.version}</version>            
             </dependency>
             <dependency>
@@ -45,26 +45,6 @@
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-toolkit-basic</artifactId>
-                <version>${jd3-toolkit.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-toolkit-ssf</artifactId>
-                <version>${jd3-toolkit.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-toolkit-modelling</artifactId>
-                <version>${jd3-toolkit.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-toolkit-regarima</artifactId>
-                <version>${jd3-toolkit.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-toolkit-r</artifactId>
                 <version>${jd3-toolkit.version}</version>            
             </dependency>
             <dependency>

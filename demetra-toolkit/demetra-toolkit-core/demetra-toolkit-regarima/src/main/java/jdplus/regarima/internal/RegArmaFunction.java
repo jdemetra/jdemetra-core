@@ -18,7 +18,7 @@ package jdplus.regarima.internal;
 
 import jdplus.regarima.RegArmaModel;
 import jdplus.arima.IArimaModel;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.DefaultLikelihoodEvaluation;
 import jdplus.math.functions.IFunction;

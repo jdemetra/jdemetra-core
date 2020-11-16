@@ -16,7 +16,7 @@
  */
 package jdplus.tramo.internal;
 
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.regsarima.regular.IArmaModule;

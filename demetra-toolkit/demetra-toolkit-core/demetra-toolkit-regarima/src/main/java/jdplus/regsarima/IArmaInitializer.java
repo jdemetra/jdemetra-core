@@ -19,7 +19,7 @@
 package jdplus.regsarima;
 
 import jdplus.regarima.RegArmaModel;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.sarima.SarimaModel;
 
 /**

@@ -22,7 +22,7 @@ import jdplus.arima.CrossCovarianceFunction;
 import jdplus.arima.IArimaModel;
 import jdplus.arima.LinearProcess;
 import jdplus.arima.StationaryTransformation;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.math.Complex;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.linearfilters.FiniteFilter;

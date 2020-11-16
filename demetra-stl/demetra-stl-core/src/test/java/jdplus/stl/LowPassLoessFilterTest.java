@@ -16,11 +16,6 @@
  */
 package jdplus.stl;
 
-import jdplus.stl.IDataGetter;
-import jdplus.stl.LowPassLoessFilter;
-import jdplus.stl.SeasonalLoessFilter;
-import jdplus.stl.LoessSpecification;
-import jdplus.stl.IDataSelector;
 import demetra.data.Data;
 import org.junit.Test;
 import static org.junit.Assert.*;

@@ -17,7 +17,7 @@
 package jdplus.math.linearfilters;
 
 import jdplus.data.DataBlock;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;

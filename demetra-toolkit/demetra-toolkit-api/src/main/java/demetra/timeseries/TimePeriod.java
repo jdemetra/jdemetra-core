@@ -16,15 +16,19 @@
  */
 package demetra.timeseries;
 
-import demetra.data.Range;
+import demetra.time.IsoConverter;
+import demetra.time.IsoIntervalConverter;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.Value(staticConstructor = "of")
-public class TimePeriod implements Range<LocalDateTime>, Comparable<TimePeriod> {
+public class TimePeriod implements TimeSeriesInterval<Duration>, Comparable<TimePeriod> {
 
     @lombok.NonNull
     LocalDateTime start, end;
@@ -41,17 +45,47 @@ public class TimePeriod implements Range<LocalDateTime>, Comparable<TimePeriod> 
 
     @Override
     public boolean contains(LocalDateTime element) {
-        return element.isBefore(end) && (! element.isBefore(start));
+        return element.isBefore(end) && (!element.isBefore(start));
+    }
+
+    @Override
+    public Duration getDuration() {
+        return Duration.between(start, end);
     }
 
     @Override
     public int compareTo(TimePeriod t) {
-        if (start.equals(t.start) && end.isAfter(t.end))
+        if (start.equals(t.start) && end.isAfter(t.end)) {
             return 0;
-        if (! end.isAfter(t.start))
+        }
+        if (!end.isAfter(t.start)) {
             return -1;
-        if (! t.end.isAfter(start))
+        }
+        if (!t.end.isAfter(start)) {
             return 1;
+        }
         throw new TsException(TsException.INCOMPATIBLE_PERIOD);
     }
+
+    @Override
+    public String toString() {
+        return toISO8601();
+    }
+
+    @Override
+    public String toISO8601() {
+        return CONVERTER.format(this).toString();
+    }
+
+    @NonNull
+    public static TimePeriod parse(@NonNull CharSequence text) throws DateTimeParseException {
+        return CONVERTER.parse(text);
+    }
+
+    private static TimePeriod make(LocalDateTime start, LocalDateTime end) {
+        return TimePeriod.of(start, end);
+    }
+
+    private static final IsoIntervalConverter<TimePeriod> CONVERTER
+            = new IsoIntervalConverter.StartEnd<>(IsoConverter.LOCAL_DATE_TIME, false, TimePeriod::make);
 }

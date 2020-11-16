@@ -21,7 +21,7 @@ import jdplus.arima.estimation.IArimaMapping;
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import jdplus.likelihood.LogLikelihoodFunction;

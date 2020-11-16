@@ -16,7 +16,7 @@
  */
 package jdplus.seats;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.processing.ProcessingLog;
 import demetra.seats.SeatsModelSpec;
 import demetra.seats.SeatsException;

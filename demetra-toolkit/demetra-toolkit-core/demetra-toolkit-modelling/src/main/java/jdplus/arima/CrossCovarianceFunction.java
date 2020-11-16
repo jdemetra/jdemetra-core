@@ -16,9 +16,9 @@
 */
 package jdplus.arima;
 
-import demetra.design.Development;
-import demetra.design.Immutable;
-import demetra.design.SkipProcessing;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
+import nbbrd.design.SkipProcessing;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.linearfilters.FiniteFilter;
 import jdplus.math.linearfilters.ForeFilter;

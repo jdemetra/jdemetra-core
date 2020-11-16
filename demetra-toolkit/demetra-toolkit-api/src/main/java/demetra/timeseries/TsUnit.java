@@ -16,6 +16,8 @@
  */
 package demetra.timeseries;
 
+import demetra.time.IsoConverter;
+import demetra.time.IsoRepresentable;
 import java.time.Duration;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
@@ -39,13 +41,15 @@ import lombok.AccessLevel;
  */
 @lombok.Value
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class TsUnit implements TemporalAmount {
+public class TsUnit implements TemporalAmount, IsoRepresentable {
+
+    static final IsoConverter<TsUnit> CONVERTER = IsoConverter.of(TsUnit::parse);
 
     @NonNegative
-    private long amount;
+    long amount;
 
     @lombok.NonNull
-    private ChronoUnit chronoUnit;
+    ChronoUnit chronoUnit;
 
     public boolean contains(TsUnit other) {
         return other.ratioOf(this) > 0;
@@ -93,10 +97,11 @@ public class TsUnit implements TemporalAmount {
 
     @Override
     public String toString() {
-        return toIsoString();
+        return toISO8601();
     }
 
-    public String toIsoString() {
+    @Override
+    public String toISO8601() {
         switch (chronoUnit) {
             case FOREVER:
                 return "";

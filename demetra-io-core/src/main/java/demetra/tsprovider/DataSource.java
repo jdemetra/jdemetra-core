@@ -16,8 +16,8 @@
  */
 package demetra.tsprovider;
 
-import demetra.design.Immutable;
-import demetra.design.VisibleForTesting;
+import nbbrd.design.Immutable;
+import nbbrd.design.VisibleForTesting;
 import demetra.tsprovider.util.IConfig;
 import demetra.util.UriBuilder;
 import java.net.URI;

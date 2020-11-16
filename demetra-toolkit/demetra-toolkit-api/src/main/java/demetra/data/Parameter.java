@@ -16,7 +16,7 @@
  */
 package demetra.data;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 /**
  * // TODO Rename to Parameter (which should disappear)

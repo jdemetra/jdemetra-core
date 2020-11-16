@@ -17,7 +17,7 @@
 package jdplus.ucarima;
 
 import jdplus.arima.ArimaModel;
-import demetra.design.Development;
+import nbbrd.design.Development;
 
 
 /**

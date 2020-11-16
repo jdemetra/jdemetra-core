@@ -19,7 +19,7 @@
 package jdplus.regsarima.regular;
 
 import jdplus.regsarima.regular.ModelDescription;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.information.InformationSet;
 import demetra.timeseries.TsData;
 

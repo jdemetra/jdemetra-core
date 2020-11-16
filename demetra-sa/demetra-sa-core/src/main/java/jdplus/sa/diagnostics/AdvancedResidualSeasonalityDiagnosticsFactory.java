@@ -16,7 +16,7 @@
  */
 package jdplus.sa.diagnostics;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.processing.Diagnostics;
 import demetra.processing.DiagnosticsFactory;
 import demetra.sa.SaDiagnosticsFactory;

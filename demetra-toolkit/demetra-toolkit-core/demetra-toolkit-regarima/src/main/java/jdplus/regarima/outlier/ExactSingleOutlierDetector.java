@@ -22,7 +22,7 @@ import jdplus.arima.estimation.ResidualsComputer;
 import internal.jdplus.arima.AnsleyFilter;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArmaModel;

@@ -23,7 +23,7 @@ import internal.jdplus.arima.AnsleyFilter;
 import internal.jdplus.arima.KalmanFilter;
 import jdplus.data.DataBlock;
 import demetra.design.Algorithm;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.data.DoubleSeq;
 
 

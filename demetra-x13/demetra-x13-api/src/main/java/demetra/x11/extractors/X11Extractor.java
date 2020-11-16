@@ -5,7 +5,7 @@
  */
 package demetra.x11.extractors;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.information.InformationMapping;
 import demetra.x11.X11Results;
 

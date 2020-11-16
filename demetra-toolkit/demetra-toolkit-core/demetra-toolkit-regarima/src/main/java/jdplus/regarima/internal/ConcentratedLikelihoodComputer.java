@@ -19,7 +19,7 @@ package jdplus.regarima.internal;
 import jdplus.arima.IArimaModel;
 import internal.jdplus.arima.KalmanFilter;
 import jdplus.data.DataBlock;
-import demetra.design.Immutable;
+import nbbrd.design.Immutable;
 import demetra.eco.EcoException;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.matrices.Matrix;

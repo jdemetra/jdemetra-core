@@ -16,7 +16,7 @@
  */
 package demetra.timeseries.calendars;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import java.time.DayOfWeek;
 import java.util.Arrays;
 

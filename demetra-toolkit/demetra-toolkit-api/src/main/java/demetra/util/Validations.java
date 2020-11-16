@@ -16,7 +16,7 @@
  */
 package demetra.util;
 
-import demetra.design.MightBePromoted;
+import nbbrd.design.MightBePromoted;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.IntFunction;

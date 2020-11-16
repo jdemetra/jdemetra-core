@@ -16,7 +16,7 @@
  */
 package demetra.regarima;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.modelling.ChangeOfRegimeSpec;
 import demetra.modelling.RegressionTestSpec;
 import demetra.timeseries.calendars.LengthOfPeriodType;

@@ -86,19 +86,19 @@ public class TsUnitTest {
 
     @Test
     public void testToIsoString() {
-        assertThat(UNDEFINED.toIsoString()).isEmpty();
-        assertThat(TsUnit.of(1, MILLENNIA).toIsoString()).isEqualTo("P1000Y");
-        assertThat(CENTURY.toIsoString()).isEqualTo("P100Y");
-        assertThat(DECADE.toIsoString()).isEqualTo("P10Y");
-        assertThat(YEAR.toIsoString()).isEqualTo("P1Y");
-        assertThat(HALF_YEAR.toIsoString()).isEqualTo("P6M");
-        assertThat(QUARTER.toIsoString()).isEqualTo("P3M");
-        assertThat(MONTH.toIsoString()).isEqualTo("P1M");
-        assertThat(WEEK.toIsoString()).isEqualTo("P7D");
-        assertThat(DAY.toIsoString()).isEqualTo("P1D");
-        assertThat(HOUR.toIsoString()).isEqualTo("PT1H");
-        assertThat(MINUTE.toIsoString()).isEqualTo("PT1M");
-        assertThat(SECOND.toIsoString()).isEqualTo("PT1S");
+        assertThat(UNDEFINED.toISO8601()).isEmpty();
+        assertThat(TsUnit.of(1, MILLENNIA).toISO8601()).isEqualTo("P1000Y");
+        assertThat(CENTURY.toISO8601()).isEqualTo("P100Y");
+        assertThat(DECADE.toISO8601()).isEqualTo("P10Y");
+        assertThat(YEAR.toISO8601()).isEqualTo("P1Y");
+        assertThat(HALF_YEAR.toISO8601()).isEqualTo("P6M");
+        assertThat(QUARTER.toISO8601()).isEqualTo("P3M");
+        assertThat(MONTH.toISO8601()).isEqualTo("P1M");
+        assertThat(WEEK.toISO8601()).isEqualTo("P7D");
+        assertThat(DAY.toISO8601()).isEqualTo("P1D");
+        assertThat(HOUR.toISO8601()).isEqualTo("PT1H");
+        assertThat(MINUTE.toISO8601()).isEqualTo("PT1M");
+        assertThat(SECOND.toISO8601()).isEqualTo("PT1S");
     }
 
     @Test
@@ -157,6 +157,6 @@ public class TsUnitTest {
     };
 
     private static String gcd(String a, String b) {
-        return TsUnit.gcd(TsUnit.parse(a), TsUnit.parse(b)).toIsoString();
+        return TsUnit.gcd(TsUnit.parse(a), TsUnit.parse(b)).toISO8601();
     }
 }

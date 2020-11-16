@@ -16,11 +16,11 @@
  */
 package demetra.sql;
 
-import demetra.design.ThreadSafe;
+import nbbrd.design.ThreadSafe;
 import internal.sql.SqlTableAsCubeUtil;
 import internal.sql.SelectBuilder;
 import internal.sql.ResultSetFunc;
-import demetra.design.VisibleForTesting;
+import nbbrd.design.VisibleForTesting;
 import static internal.sql.ResultSetFunc.onDate;
 import static internal.sql.ResultSetFunc.onGetString;
 import static internal.sql.ResultSetFunc.onGetStringArray;

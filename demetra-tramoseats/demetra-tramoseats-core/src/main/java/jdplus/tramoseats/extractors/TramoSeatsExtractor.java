@@ -5,7 +5,7 @@
  */
 package jdplus.tramoseats.extractors;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import demetra.modelling.ComponentInformation;

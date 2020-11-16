@@ -16,9 +16,9 @@
  */
 package jdplus.likelihood;
 
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import demetra.data.DoubleSeq;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.likelihood.LikelihoodStatistics;
 import jdplus.math.matrices.Matrix;
 

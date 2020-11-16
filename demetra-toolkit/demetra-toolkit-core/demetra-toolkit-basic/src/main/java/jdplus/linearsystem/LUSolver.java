@@ -18,9 +18,9 @@ package jdplus.linearsystem;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import demetra.design.BuilderPattern;
+import nbbrd.design.BuilderPattern;
 import demetra.design.AlgorithmImplementation;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.math.Constants;
 import jdplus.data.normalizer.SafeNormalizer;
 import jdplus.math.matrices.decomposition.LUDecomposition;

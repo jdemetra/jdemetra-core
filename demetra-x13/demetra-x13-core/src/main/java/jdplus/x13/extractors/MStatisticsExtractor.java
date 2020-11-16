@@ -16,7 +16,7 @@
  */
 package jdplus.x13.extractors;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.information.InformationMapping;
 import java.util.function.Function;
 import jdplus.x13.Mstatistics;

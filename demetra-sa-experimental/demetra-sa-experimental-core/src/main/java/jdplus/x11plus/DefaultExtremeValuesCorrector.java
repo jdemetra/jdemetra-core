@@ -16,7 +16,7 @@
  */
 package jdplus.x11plus;
 
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.sa.DecompositionMode;
 import java.util.Arrays;
 import demetra.data.DoubleSeq;

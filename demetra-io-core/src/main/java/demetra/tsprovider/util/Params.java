@@ -255,7 +255,7 @@ public class Params {
                 @NonNull String aggregationKey,
                 @NonNull String skipKey) {
             this.defaultValue = defaultValue;
-            this.unit = onString(defaultValue.getUnit().toIsoString(), frequencyKey);
+            this.unit = onString(defaultValue.getUnit().toISO8601(), frequencyKey);
             this.aggregationType = onEnum(defaultValue.getAggregationType(), aggregationKey);
             this.skipMissingValues = onBoolean(defaultValue.isSkipMissingValues(), skipKey);
         }
@@ -297,7 +297,7 @@ public class Params {
 
         private void setFreq(IConfig.Builder<?, S> builder, TsUnit value) {
             String freq = unitToFreq(value);
-            unit.set(builder, freq != null ? freq : value.toIsoString());
+            unit.set(builder, freq != null ? freq : value.toISO8601());
         }
     }
 

@@ -17,7 +17,7 @@
 package demetra.tsprovider.legacy;
 
 import demetra.design.DemetraPlusLegacy;
-import demetra.design.Immutable;
+import nbbrd.design.Immutable;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Iterator;

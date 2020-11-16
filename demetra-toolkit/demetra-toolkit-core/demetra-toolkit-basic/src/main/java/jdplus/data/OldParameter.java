@@ -18,7 +18,7 @@ package jdplus.data;
 
 import java.util.Formatter;
 import java.util.Objects;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.data.ParameterType;
 
 /**

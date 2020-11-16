@@ -6,7 +6,7 @@
 package jdplus.tramoseats.extractors;
 
 import demetra.data.DoubleSeq;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.information.InformationMapping;
 import demetra.modelling.ComponentInformation;
 import demetra.modelling.ModellingDictionary;

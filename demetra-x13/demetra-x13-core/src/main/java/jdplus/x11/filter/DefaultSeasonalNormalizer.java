@@ -17,7 +17,7 @@
 package jdplus.x11.filter;
 
 import demetra.data.DoubleSeq;
-import demetra.design.Development;
+import nbbrd.design.Development;
 import demetra.x11.SeasonalFilterOption;
 import jdplus.x11.X11Context;
 import jdplus.x11.filter.endpoints.CopyEndPoints;
