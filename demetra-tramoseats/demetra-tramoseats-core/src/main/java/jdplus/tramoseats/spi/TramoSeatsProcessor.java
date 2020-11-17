@@ -18,7 +18,7 @@ package jdplus.tramoseats.spi;
 
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import demetra.tramoseats.TramoSeats;
 import demetra.tramoseats.TramoSeatsResults;
 import demetra.tramoseats.TramoSeatsSpec;

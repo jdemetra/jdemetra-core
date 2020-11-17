@@ -13,10 +13,9 @@
 
     <modules>
         <module>demetra-x13-api</module>
-        <module>demetra-x13-regarima-core</module>
         <module>demetra-x13-core</module>
-        <module>demetra-x13-x11</module>
-        <module>demetra-x13-r</module>
+         <module>demetra-x13-r</module>
+        <module>demetra-x13-io</module>
     </modules>
 
     <properties>
@@ -56,6 +55,11 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-toolkit-io</artifactId>
+                <version>${jd3-toolkit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-toolkit-regarima</artifactId>
                 <version>${jd3-toolkit.version}</version>
             </dependency>
@@ -71,6 +75,11 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-sa-io</artifactId>
+                <version>${jd3-sa.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-sa-core</artifactId>
                 <version>${jd3-sa.version}</version>            
             </dependency>
@@ -81,17 +90,7 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-x13-regarima</artifactId>
-                <version>${jd3-x13.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-x13-core</artifactId>
-                <version>${jd3-x13.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-x13-x11</artifactId>
                 <version>${jd3-x13.version}</version>
             </dependency>
             <!-- < modules 3.0 -->

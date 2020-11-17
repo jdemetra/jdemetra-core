@@ -19,6 +19,7 @@ package demetra.timeseries.calendars;
 
 import nbbrd.design.Development;
 import demetra.timeseries.ValidityPeriod;
+import java.time.LocalDate;
 
 
 /**
@@ -109,7 +110,18 @@ public class PrespecifiedHoliday implements Holiday {
     }
 
     @Override
-    public Holiday reweight(double newWeight) {
+    public PrespecifiedHoliday reweight(double newWeight) {
         return new PrespecifiedHoliday(event, offset, newWeight, validityPeriod, julian);
     }
+    
+    @Override
+    public PrespecifiedHoliday forPeriod(LocalDate start, LocalDate end) {
+        if (validityPeriod.getStart() != start && validityPeriod.getEnd() != end) {
+            return new PrespecifiedHoliday(event, offset, weight, ValidityPeriod.between(start, end), julian);
+        } else {
+            return this;
+        }
+    }
+
+    
 }

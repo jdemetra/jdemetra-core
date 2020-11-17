@@ -27,7 +27,7 @@ public class AutoModelSpecTest {
 
     @Test
     public void testDefault() {
-        assertTrue(AutoModelSpec.builder().build().isDefault());
+        assertTrue(AutoModelSpec.builder().enabled(true).build().isDefault());
     }
     
     @Test

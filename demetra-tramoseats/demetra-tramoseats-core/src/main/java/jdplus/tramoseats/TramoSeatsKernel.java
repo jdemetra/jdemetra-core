@@ -13,18 +13,12 @@ import demetra.sa.ComponentType;
 import demetra.sa.SeriesDecomposition;
 import demetra.seats.SeatsModelSpec;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.ITsVariable;
-import demetra.timeseries.regression.Variable;
-import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TransformSpec;
 import demetra.tramoseats.TramoSeatsSpec;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
 import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.sa.RegArimaDecomposer;
-import jdplus.sa.SaVariablesMapping;
-import jdplus.sa.TwoStepsDecomposition;
+import jdplus.sa.modelling.RegArimaDecomposer;
+import jdplus.sa.modelling.TwoStepsDecomposition;
 import jdplus.sarima.SarimaModel;
 import jdplus.seats.SeatsKernel;
 import jdplus.seats.SeatsResults;
@@ -52,14 +46,13 @@ public class TramoSeatsKernel {
 
     private PreliminaryChecks preliminary;
     private TramoKernel tramo;
-    private Map<String, ComponentType> samapping;
     private SeatsKernel seats;
 
     public static TramoSeatsKernel of(TramoSeatsSpec spec, ModellingContext context) {
         PreliminaryChecks check = of(spec);
         TramoKernel tramo = TramoKernel.of(spec.getTramo(), context);
         SeatsKernel seats = new SeatsKernel(SeatsToolkit.of(spec.getSeats()));
-        return new TramoSeatsKernel(check, tramo, spec.getSamapping(), seats);
+        return new TramoSeatsKernel(check, tramo, seats);
     }
 
     public TramoSeatsResults process(TsData s, ProcessingLog log) {
@@ -68,33 +61,19 @@ public class TramoSeatsKernel {
         // Step 1. Tramo
         ModelEstimation preprocessing = tramo.process(sc, log);
         // Step 2. Link between tramo and seats
-        SaVariablesMapping nmapping = new SaVariablesMapping();
-        nmapping.addDefault(Arrays
-                .stream(preprocessing.getVariables())
-                .map(var -> var.getVariable())
-                .toArray(q -> new ITsVariable[q]));
-        Variable[] variables = preprocessing.getVariables();
-        samapping.entrySet().forEach((ks) -> {
-            Optional<Variable> fvar = Arrays.stream(variables).filter(v->v.getName().equals(ks.getKey())).findFirst();
-            if (fvar.isPresent()) {
-                nmapping.put(fvar.get().getVariable(), ks.getValue()); // Will override default behaviour
-            }
-        });
-        RegArimaDecomposer decomposer = RegArimaDecomposer.of(preprocessing, nmapping);
-        SeatsModelSpec smodel = of(decomposer);
+        SeatsModelSpec smodel = of(preprocessing);
         // Step 3. Seats
         SeatsResults srslts = seats.process(smodel, log);
         // Step 4. Final decomposition
-        SeriesDecomposition finals = TwoStepsDecomposition.merge(decomposer, srslts.getFinalComponents());
+        SeriesDecomposition finals = TwoStepsDecomposition.merge(preprocessing, srslts.getFinalComponents());
         // Step 5. Diagnostics
         return new TramoSeatsResults(preprocessing, srslts, finals);
     }
 
-    private static SeatsModelSpec of(RegArimaDecomposer decomposer) {
-        ModelEstimation model = decomposer.getModel();
+    private static SeatsModelSpec of(ModelEstimation model) {
         TsData series = model.interpolatedSeries(false);
         TsData det = model.getDeterministicEffect(series.getDomain());
-        TsData yreg = decomposer.deterministicEffect(series.getDomain(), ComponentType.Series, false);
+        TsData yreg = RegArimaDecomposer.deterministicEffect(model, series.getDomain(), ComponentType.Series, false);
         if (model.isLogTransformation()) {
             series = TsData.divide(series, TsData.divide(det, yreg));
         } else {

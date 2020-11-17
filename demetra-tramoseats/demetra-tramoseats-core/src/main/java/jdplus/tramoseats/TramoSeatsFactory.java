@@ -19,7 +19,7 @@ import demetra.seats.DecompositionSpec;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITradingDaysVariable;
-import demetra.timeseries.regression.RegressionTestType;
+import demetra.tramo.RegressionTestType;
 import demetra.timeseries.regression.TradingDaysType;
 import demetra.timeseries.regression.Variable;
 import demetra.tramo.AutoModelSpec;
@@ -42,6 +42,7 @@ import demetra.timeseries.TsData;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import jdplus.regarima.ami.Utility;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnostics;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsFactory;
@@ -231,7 +232,7 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
             rbuilder.coefficient(variables[i].getName(), variables[i].getCoefficients());
         }
         // add new outliers in the list of pre-specified outliers
-        Arrays.stream(variables).filter(v -> v.isOutlier(false)).forEach(v -> rbuilder.outlier((IOutlier) v.getVariable()));
+        Arrays.stream(variables).filter(v -> Utility.isOutlier(v, false)).forEach(v -> rbuilder.outlier((IOutlier) v.getCore()));
         // calendar effects
         EasterSpec espec = regression.getCalendar().getEaster();
         TradingDaysSpec tdspec = regression.getCalendar().getTradingDays();
@@ -240,13 +241,13 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
             // leap year
             ILengthOfPeriodVariable lp = null;
             ITradingDaysVariable td = null;
-            Optional<Variable> flp = Arrays.stream(variables).filter(v -> v.isLengthOfPeriod()).findFirst();
+            Optional<Variable> flp = Arrays.stream(variables).filter(v -> Utility.isLengthOfPeriod(v)).findFirst();
             if (flp.isPresent()) {
-                lp = (ILengthOfPeriodVariable) flp.get().getVariable();
+                lp = (ILengthOfPeriodVariable) flp.get().getCore();
             }
-            Optional<Variable> ftd = Arrays.stream(variables).filter(v -> v.isTradingDays()).findFirst();
+            Optional<Variable> ftd = Arrays.stream(variables).filter(v -> Utility.isTradingDays(v)).findFirst();
             if (ftd.isPresent()) {
-                td = (ITradingDaysVariable) ftd.get().getVariable();
+                td = (ITradingDaysVariable) ftd.get().getCore();
             }
             if (lp != null || td != null) {
                 if (tdspec.isStockTradingDays()) {
@@ -254,12 +255,12 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
                     tdspec = TradingDaysSpec.stockTradingDays(ntd, RegressionTestType.None);
                 } else if (tdspec.isHolidays()) {
                     tdspec = TradingDaysSpec.holidays(tdspec.getHolidays(),
-                            tdspec.getTradingDaysType(), lp != null, RegressionTestType.None);
+                            tdspec.getTradingDaysType(), tdspec.getLengthOfPeriodType(), RegressionTestType.None);
                 } else if (tdspec.isUserDefined()) {
                     tdspec = TradingDaysSpec.userDefined(tdspec.getUserVariables(), RegressionTestType.None);
                 } else { //normal case
                     tdspec = TradingDaysSpec.td(td.dim() == 6 ? TradingDaysType.TradingDays : TradingDaysType.WorkingDays,
-                            lp != null, RegressionTestType.None);
+                            tdspec.getLengthOfPeriodType(), RegressionTestType.None);
                 }
             } else {
                 tdspec = TradingDaysSpec.none();
@@ -267,7 +268,7 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
         }
 
         if (espec.isUsed() && espec.isTest()) {
-            Optional<Variable> fe = Arrays.stream(variables).filter(v -> v.isEaster()).findFirst();
+            Optional<Variable> fe = Arrays.stream(variables).filter(v -> Utility.isEaster(v)).findFirst();
             if (fe.isPresent()) {
                 espec = espec.toBuilder()
                         .test(false)

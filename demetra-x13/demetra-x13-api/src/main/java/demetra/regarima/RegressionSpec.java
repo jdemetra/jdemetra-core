@@ -22,6 +22,7 @@ import nbbrd.design.LombokWorkaround;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.Ramp;
+import demetra.timeseries.regression.TsContextVariable;
 import demetra.timeseries.regression.UserVariable;
 import java.util.*;
 import demetra.util.Validatable;
@@ -49,7 +50,7 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
     @lombok.Singular
     private List<IOutlier> outliers;
     @lombok.Singular
-    private List<UserVariable> userDefinedVariables;
+    private List<TsContextVariable> userDefinedVariables;
     @lombok.Singular
     private List<InterventionVariable> interventionVariables;
     @lombok.Singular
@@ -75,6 +76,18 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
 
     public int getOutliersCount() {
         return outliers.size();
+    }
+
+    public int getRampsCount() {
+        return ramps.size();
+    }
+
+    public int getInterventionVariablesCount() {
+        return interventionVariables.size();
+    }
+
+    public int getUserDefinedVariablesCount() {
+        return userDefinedVariables.size();
     }
 
     public boolean isDefault() {

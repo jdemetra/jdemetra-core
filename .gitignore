@@ -7,12 +7,10 @@
 /demetra-toolkit/demetra-toolkit-core/demetra-toolkit-modelling/target/
 /demetra-toolkit/demetra-toolkit-core/demetra-toolkit-ssf/target/
 /demetra-toolkit/demetra-toolkit-core/demetra-toolkit-regarima/target/
-/demetra-tramoseats/demetra-tramoseats-api/target/
-/demetra-tramoseats/demetra-tramo-core/target/
-/demetra-tramoseats/demetra-tramoseats-core/target/
 /demetra-x13/demetra-x13-api/target/
-/demetra-x13/demetra-x13-regarima-core/target/
 /demetra-x13/demetra-x13-core/target/
+/demetra-x13/demetra-x13-r/target/
+/demetra-x13/demetra-x13-io/target/
 /demetra-dfm/demetra-dfm-api/target/
 /demetra-dfm/demetra-dfm-core/target/
 /demetra-benchmarking/demetra-benchmarking-api/target/
@@ -39,7 +37,6 @@ demetra-io-core/target/
 /demetra-sa-experimental/demetra-sigex-core/target/
 /demetra-benchmarking/demetra-benchmarking-r/target/
 /demetra-toolkit/demetra-toolkit-r/target/
-/demetra-x13/demetra-x13-x11/target/
 /demetra-sts/demetra-sts-r/target/
 /demetra-toolkit/demetra-toolkit-api-advanced/target/
 /demetra-highfreq/demetra-highfreq-r/target/
@@ -56,9 +53,11 @@ demetra-io-core/target/
 /demetra-businesscycle/demetra-businesscycle-io/target/
 /demetra-businesscycle/demetra-businesscycle-r/target/
 /demetra-businesscycle/demetra-businesscycle-api/target/
-/demetra-tramoseats/demetra-tramoseats-legacy/target/
+/demetra-tramoseats/demetra-tramoseats-api/target/
+/demetra-tramoseats/demetra-tramoseats-core/target/
 /demetra-tramoseats/demetra-tramoseats-io/target/
 /demetra-tramoseats/demetra-tramoseats-r/target/
+/demetra-tramoseats/demetra-tramoseats-legacy/target/
 /demetra-sa/demetra-sa-io/target/
 /demetra-revisions/demetra-revisions-api/target/
 /demetra-revisions/demetra-revisions-core/target/
@@ -70,4 +69,3 @@ demetra-io-core/target/
 /demetra-calendars/demetra-calendars-r/target/
 /demetra-stl/demetra-stl-r/target/
 /demetra-sa/demetra-sa-r/target/
-/demetra-x13/demetra-x13-r/target/

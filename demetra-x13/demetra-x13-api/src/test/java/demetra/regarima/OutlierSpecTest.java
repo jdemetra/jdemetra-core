@@ -31,10 +31,7 @@ public class OutlierSpecTest {
                 .build();
         assertTrue(spec.getDefaultCriticalValue() == 0);
         spec = spec.toBuilder()
-                .type(SingleOutlierSpec.builder()
-                        .criticalValue(2)
-                        .type("AO")
-                        .build())
+                .type(new SingleOutlierSpec("AO", 2))
                 .build();
         
         assertNotNull(spec.getTypes());

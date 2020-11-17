@@ -39,7 +39,7 @@ public final class TransformSpec implements Validatable<TransformSpec> {
     private boolean preliminaryCheck;
     private TransformationType function;
 
-    private static final TransformSpec DEFAULT = TransformSpec.builder().build();
+    public static final TransformSpec DEFAULT = TransformSpec.builder().build();
 
     @LombokWorkaround
     public static Builder builder() {

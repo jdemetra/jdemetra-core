@@ -37,9 +37,9 @@ public final class OutlierSpec implements Validatable<OutlierSpec> {
         AddAll
     }
 
-    private static final OutlierSpec DEFAULT = OutlierSpec.builder().build();
+    public static final OutlierSpec DEFAULT_UNUSED = OutlierSpec.builder().build();
 
-    public static final double DEF_TCRATE = .7, DEF_VA = 4.0;
+    public static final double DEF_TCRATE = .7;
     public static final int DEF_NMAX = 30;
 
     @lombok.Singular
@@ -64,7 +64,6 @@ public final class OutlierSpec implements Validatable<OutlierSpec> {
 
     @Override
     public OutlierSpec validate() throws IllegalArgumentException {
-        types.forEach(SingleOutlierSpec::validate);
         return this;
     }
 
@@ -86,7 +85,7 @@ public final class OutlierSpec implements Validatable<OutlierSpec> {
     }
 
     public boolean isDefault() {
-        return this.equals(DEFAULT);
+        return this.equals(DEFAULT_UNUSED);
     }
 
     public static class Builder implements Validatable.Builder<OutlierSpec> {
@@ -104,9 +103,7 @@ public final class OutlierSpec implements Validatable<OutlierSpec> {
             }
 
             for (int i = 0; i < types.size(); i++) {
-                types.set(i, types.get(i).toBuilder()
-                        .criticalValue(defaultCriticalValue)
-                        .build());
+                types.set(i, new SingleOutlierSpec(types.get(i).getType(), defaultCriticalValue));
             }
 
             this.defaultCriticalValue = defaultCriticalValue;

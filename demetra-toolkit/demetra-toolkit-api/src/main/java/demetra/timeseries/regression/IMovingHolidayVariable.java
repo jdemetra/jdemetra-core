@@ -23,7 +23,7 @@ import nbbrd.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public interface IMovingHolidayVariable extends ITsVariable {
+public interface IMovingHolidayVariable extends ICalendarVariable {
 
     @Override
     default int dim(){

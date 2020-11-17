@@ -25,23 +25,9 @@ import demetra.util.Validatable;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
-public final class SingleOutlierSpec implements Validatable<SingleOutlierSpec> {
-
-    private static final SingleOutlierSpec DEFAULT = SingleOutlierSpec.builder().build();
+public final class SingleOutlierSpec {
 
     private String type;
     private double criticalValue;
 
-    @Override
-    public SingleOutlierSpec validate() throws IllegalArgumentException {
-        return this;
-    }
-
-    public boolean isDefault() {
-        return this.equals(DEFAULT);
-    }
-
-    public static class Builder implements Validatable.Builder<SingleOutlierSpec> {
-    }
 }

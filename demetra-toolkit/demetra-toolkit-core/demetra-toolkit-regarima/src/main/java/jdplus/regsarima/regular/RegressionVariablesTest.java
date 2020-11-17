@@ -27,6 +27,7 @@ import demetra.timeseries.regression.ITsVariable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import jdplus.regarima.ami.Utility;
 
 /**
  * See the Fortran routine pass0.f
@@ -119,9 +120,9 @@ public class RegressionVariablesTest {
         List<ITsVariable> tdtoremove = new ArrayList<>();
         boolean usetd = false, uselp = false;
         if (tdTest != null) {
-            List<Variable> ltd = desc.variables().filter(v -> v.isTradingDays()).collect(Collectors.toList());
+            List<Variable> ltd = desc.variables().filter(v -> Utility.isTradingDays(v)).collect(Collectors.toList());
             for (Variable cur : ltd) {
-                ITsVariable var = cur.getVariable();
+                ITsVariable var = cur.getCore();
                 int pos = desc.findPosition(var);
                 int nregs = var.dim();
                 if (!tdTest.accept(ll, -1, pos, nregs, null)
@@ -131,9 +132,9 @@ public class RegressionVariablesTest {
                     usetd = true;
                 }
             }
-            List<Variable> llp = desc.variables().filter(v -> v.isLengthOfPeriod()).collect(Collectors.toList());
+            List<Variable> llp = desc.variables().filter(v -> Utility.isLengthOfPeriod(v)).collect(Collectors.toList());
             for (Variable cur : llp) {
-                ITsVariable var = cur.getVariable();
+                ITsVariable var = cur.getCore();
                 int pos = desc.findPosition(var);
                 if (!tdTest.accept(ll, -1, pos, 1, null)) {
                     tdtoremove.add(var);
@@ -144,9 +145,9 @@ public class RegressionVariablesTest {
         }
         if (mhTest != null) {
             List<ITsVariable> mhtoremove = new ArrayList<>();
-            List<Variable> lmh = desc.variables().filter(v -> v.isMovingHolidays()).collect(Collectors.toList());
+            List<Variable> lmh = desc.variables().filter(v -> Utility.isMovingHoliday(v)).collect(Collectors.toList());
             for (Variable cur : lmh) {
-                ITsVariable var = cur.getVariable();
+                ITsVariable var = cur.getCore();
                 int pos = desc.findPosition(var);
                 if (!mhTest.accept(ll, -1, pos, 1, null)) {
                     mhtoremove.add(var);

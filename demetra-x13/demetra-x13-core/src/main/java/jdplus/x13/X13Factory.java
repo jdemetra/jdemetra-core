@@ -39,6 +39,7 @@ import demetra.timeseries.TsData;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import jdplus.regarima.ami.Utility;
 import jdplus.regarima.diagnostics.OutOfSampleDiagnosticsConfiguration;
 import jdplus.regarima.diagnostics.OutliersDiagnosticsConfiguration;
 import jdplus.regarima.diagnostics.ResidualsDiagnosticsConfiguration;
@@ -222,22 +223,22 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
             rbuilder.coefficient(variables[i].getName(), variables[i].getCoefficients());
         }
         // add new outliers in the list of pre-specified outliers
-        Arrays.stream(variables).filter(v -> v.isOutlier(false)).forEach(v -> rbuilder.outlier((IOutlier) v.getVariable()));
+        Arrays.stream(variables).filter(v -> Utility.isOutlier(v, false)).forEach(v -> rbuilder.outlier((IOutlier) v.getCore()));
         // calendar effects
         EasterSpec espec = regression.getEaster();
         TradingDaysSpec tdspec = regression.getTradingDays();
 
-        if (tdspec.isUsed() && (tdspec.getTest() != RegressionTestSpec.None)) {
+        if (tdspec.isUsed() && (tdspec.getRegressionTestType()!= RegressionTestSpec.None)) {
             // leap year
             LengthOfPeriodType lp = LengthOfPeriodType.None;
             TradingDaysType td = TradingDaysType.None;
-            Optional<Variable> flp = Arrays.stream(variables).filter(v -> v.isLengthOfPeriod()).findFirst();
+            Optional<Variable> flp = Arrays.stream(variables).filter(v -> Utility.isLengthOfPeriod(v)).findFirst();
             if (flp.isPresent()) {
-                lp = tdspec.getLengthOfPeriod();
+                lp = tdspec.getLengthOfPeriodType();
             }
-            Optional<Variable> ftd = Arrays.stream(variables).filter(v -> v.isTradingDays()).findFirst();
+            Optional<Variable> ftd = Arrays.stream(variables).filter(v -> Utility.isTradingDays(v)).findFirst();
             if (ftd.isPresent()) {
-                td = tdspec.getType();
+                td = tdspec.getTradingDaysType();
             }
 
             if (lp != null || td != null) {
@@ -258,9 +259,9 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
         }
 
         if (espec.isUsed() && espec.getTest() != RegressionTestSpec.None) {
-            Optional<Variable> fe = Arrays.stream(variables).filter(v -> v.isEaster()).findFirst();
+            Optional<Variable> fe = Arrays.stream(variables).filter(v -> Utility.isEaster(v)).findFirst();
             if (fe.isPresent()) {
-                EasterVariable evar = (EasterVariable) fe.get().getVariable();
+                EasterVariable evar = (EasterVariable) fe.get().getCore();
                 espec = espec.toBuilder()
                         .test(RegressionTestSpec.None)
                         .duration(evar.getDuration())

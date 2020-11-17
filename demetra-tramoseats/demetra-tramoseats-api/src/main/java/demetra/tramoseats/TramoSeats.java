@@ -19,7 +19,7 @@ package demetra.tramoseats;
 import demetra.design.Algorithm;
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.service.Mutability;

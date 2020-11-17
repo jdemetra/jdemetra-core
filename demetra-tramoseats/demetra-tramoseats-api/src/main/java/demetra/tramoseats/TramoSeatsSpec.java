@@ -51,9 +51,6 @@ public final class TramoSeatsSpec implements Validatable<TramoSeatsSpec>, SaSpec
     @lombok.NonNull
     private TramoSpec tramo;
     
-    @lombok.Singular("map")
-    private Map<String, ComponentType> samapping;
-    
     @lombok.NonNull
     private DecompositionSpec seats;
     @lombok.NonNull

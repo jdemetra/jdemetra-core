@@ -49,6 +49,7 @@ import demetra.timeseries.TsException;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
+import jdplus.regarima.ami.Utility;
 
 /**
  *
@@ -156,11 +157,11 @@ public final class ModelDescription {
             return;
         }
         List<Variable> vars = new ArrayList<>();
-        variables.stream().filter(v -> v.isUser()).forEachOrdered(v -> vars.add(v));
-        variables.stream().filter(v -> v.isCalendar()).forEachOrdered(v -> vars.add(v));
-        variables.stream().filter(v -> v.isMovingHolidays()).forEachOrdered(v -> vars.add(v));
-        variables.stream().filter(v -> v.isOutlier(true)).forEachOrdered(v -> vars.add(v));
-        variables.stream().filter(v -> v.isOutlier(false)).forEachOrdered(v -> vars.add(v));
+        variables.stream().filter(v -> Utility.isUser(v)).forEachOrdered(v -> vars.add(v));
+        variables.stream().filter(v -> Utility.isDaysRelated(v)).forEachOrdered(v -> vars.add(v));
+        variables.stream().filter(v -> Utility.isMovingHoliday(v)).forEachOrdered(v -> vars.add(v));
+        variables.stream().filter(v -> Utility.isOutlier(v, true)).forEachOrdered(v -> vars.add(v));
+        variables.stream().filter(v -> Utility.isOutlier(v, false)).forEachOrdered(v -> vars.add(v));
         variables.clear();
         variables.addAll(vars);
         sortedVariables = true;
@@ -187,7 +188,7 @@ public final class ModelDescription {
                 final TsDomain domain = tmp.getDomain();
                 variables.forEach(v -> {
                     if (!v.isFree()) {
-                        Matrix m = Regression.matrix(domain, v.getVariable());
+                        Matrix m = Regression.matrix(domain, v.getCore());
                         DataBlockIterator columns = m.columnsIterator();
                         int cur = 0;
                         while (columns.hasNext()) {
@@ -261,7 +262,7 @@ public final class ModelDescription {
                 .arima(arima.getModel());
         for (Variable v : variables) {
             if (!v.isPreadjustment()) {
-                Matrix x = Regression.matrix(domain, v.getVariable());
+                Matrix x = Regression.matrix(domain, v.getCore());
                 DataBlockIterator columns = x.columnsIterator();
                 int ic = 0;
                 while (columns.hasNext()) {
@@ -289,7 +290,7 @@ public final class ModelDescription {
 
     public Variable variable(ITsVariable v) {
         Optional<Variable> search = variables.stream()
-                .filter(var -> var.getVariable() == v)
+                .filter(var -> var.getCore() == v)
                 .findFirst();
         return search.isPresent() ? search.get() : null;
     }
@@ -308,7 +309,7 @@ public final class ModelDescription {
 
     public boolean remove(ITsVariable v) {
         Optional<Variable> search = variables.stream()
-                .filter(var -> var.getVariable() == v)
+                .filter(var -> var.getCore() == v)
                 .findFirst();
         if (search.isPresent()) {
             variables.remove(search.get());
@@ -349,7 +350,6 @@ public final class ModelDescription {
     public boolean isAdjusted() {
         return logTransformation && lpTransformation != LengthOfPeriodType.None;
     }
-
 
     /**
      * @return the original_
@@ -450,7 +450,7 @@ public final class ModelDescription {
     public int countRegressors(Predicate<Variable> pred) {
         return variables()
                 .filter(pred)
-                .mapToInt(var -> var.getVariable().dim()).sum();
+                .mapToInt(var -> var.getCore().dim()).sum();
     }
 
     public void setPreadjustment(LengthOfPeriodType lengthOfPeriodType) {
@@ -492,7 +492,7 @@ public final class ModelDescription {
     }
 
     public boolean removeVariable(Predicate<Variable> pred) {
-        if (variables.removeIf(pred.and(var -> !var.isPrespecified()))) {
+        if (variables.removeIf(pred.and(var -> !Utility.isPrespecified(var)))) {
             return true;
         } else {
             return false;
@@ -555,28 +555,30 @@ public final class ModelDescription {
 
     /**
      * Position of the variable in the generated regarima model, The returned
-     * position take into account an eventual mean correction. 
+     * position take into account an eventual mean correction.
      *
      * @param variable
-     * @return -1 if not found, otherwise the position of the first 
+     * @return -1 if not found, otherwise the position of the first
      * free coefficient of the considered variable, corrected for the presence
      * of a mean correction (which is always the first one).
      */
     public int findPosition(ITsVariable variable) {
         sortVariables();
         int pos = 0;
-        boolean found=false;
+        boolean found = false;
         for (Variable var : variables) {
             if (!var.isPreadjustment()) {
-                if (var.getVariable() == variable) {
-                    found=true;
+                if (var.getCore() == variable) {
+                    found = true;
                     break;
-                }else
-                    pos+=var.freeCoefficientsCount();
+                } else {
+                    pos += var.freeCoefficientsCount();
+                }
             }
         }
-        if (! found)
+        if (!found) {
             return -1;
+        }
         return mean ? pos + 1 : pos;
     }
 

@@ -34,9 +34,9 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
 
     private String holidays;
     private String[] userVariables;
-    private TradingDaysType type;
-    private LengthOfPeriodType lengthOfPeriod;
-    private RegressionTestSpec test;
+    private TradingDaysType tradingDaysType;
+    private LengthOfPeriodType lengthOfPeriodType;
+    private RegressionTestSpec regressionTestType;
     private boolean autoAdjust;
     private int stockTradingDays;
     private ChangeOfRegimeSpec changeOfRegime;
@@ -75,11 +75,11 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     }
 
     public boolean isUsed() {
-        return type != TradingDaysType.None || userVariables != null || stockTradingDays != 0;
+        return tradingDaysType != TradingDaysType.None || userVariables != null || stockTradingDays != 0;
     }
 
     boolean isDefined() {
-        return isUsed() && test == RegressionTestSpec.None;
+        return isUsed() && regressionTestType == RegressionTestSpec.None;
     }
 
     public boolean isStockTradingDays() {
@@ -91,7 +91,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     }
 
     public boolean isDefaultTradingDays() {
-        return userVariables == null && holidays==null && stockTradingDays ==0 && type != TradingDaysType.None;
+        return userVariables == null && holidays==null && stockTradingDays ==0 && tradingDaysType != TradingDaysType.None;
     }
 
     public boolean isHolidays() {
@@ -103,11 +103,11 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
         if (isStockTradingDays()) {
             return true;
         }
-        if (test != RegressionTestSpec.None) {
-            return type != TradingDaysType.None && lengthOfPeriod != LengthOfPeriodType.None;
+        if (regressionTestType != RegressionTestSpec.None) {
+            return tradingDaysType != TradingDaysType.None && lengthOfPeriodType != LengthOfPeriodType.None;
         }
-        if (type == TradingDaysType.None) {
-            return lengthOfPeriod == LengthOfPeriodType.None;
+        if (tradingDaysType == TradingDaysType.None) {
+            return lengthOfPeriodType == LengthOfPeriodType.None;
         }
         return true;
     }

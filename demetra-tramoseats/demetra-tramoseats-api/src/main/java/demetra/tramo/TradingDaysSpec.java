@@ -16,8 +16,8 @@
  */
 package demetra.tramo;
 
+import demetra.timeseries.calendars.LengthOfPeriodType;
 import nbbrd.design.Development;
-import demetra.timeseries.regression.RegressionTestType;
 import demetra.timeseries.regression.TradingDaysType;
 import demetra.util.Validatable;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -31,11 +31,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
 
     private static final TradingDaysSpec NONE = new TradingDaysSpec(null, null, TradingDaysType.None,
-            false, RegressionTestType.None, 0, AutoMethod.Unused, 0);
+            LengthOfPeriodType.None, RegressionTestType.None, 0, AutoMethod.Unused, 0);
 
     public static TradingDaysSpec stockTradingDays(int w, RegressionTestType type) {
         return new TradingDaysSpec(null, null, TradingDaysType.TradingDays,
-                false, type, w, AutoMethod.Unused, 0);
+                LengthOfPeriodType.None, type, w, AutoMethod.Unused, 0);
     }
 
     public static TradingDaysSpec none() {
@@ -44,7 +44,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
 
     public static TradingDaysSpec userDefined(@NonNull String[] vars, RegressionTestType type) {
         return new TradingDaysSpec(null, vars, TradingDaysType.None,
-                false, type, 0, AutoMethod.Unused, 0);
+                LengthOfPeriodType.None, type, 0, AutoMethod.Unused, 0);
     }
 
     public static TradingDaysSpec automaticHolidays(String holidays, AutoMethod automaticMethod, double probabilityForFTest) {
@@ -52,7 +52,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(holidays, null, TradingDaysType.TradingDays,
-                true, RegressionTestType.None, 0, automaticMethod, probabilityForFTest);
+                LengthOfPeriodType.LeapYear, RegressionTestType.None, 0, automaticMethod, probabilityForFTest);
     }
 
     public static TradingDaysSpec automatic(AutoMethod automaticMethod, double probabilityForFTest) {
@@ -60,23 +60,23 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(null, null, TradingDaysType.TradingDays,
-                true, RegressionTestType.None, 0, automaticMethod, probabilityForFTest);
+                LengthOfPeriodType.LeapYear, RegressionTestType.None, 0, automaticMethod, probabilityForFTest);
     }
 
-    public static TradingDaysSpec holidays(String holidays, TradingDaysType type, boolean leapyear, RegressionTestType regtype) {
+    public static TradingDaysSpec holidays(String holidays, TradingDaysType type, LengthOfPeriodType lp, RegressionTestType regtype) {
         if (type == TradingDaysType.None) {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(holidays, null, type,
-                leapyear, regtype, 0, AutoMethod.Unused, 0);
+                lp, regtype, 0, AutoMethod.Unused, 0);
     }
 
-    public static TradingDaysSpec td(TradingDaysType type, boolean leapyear, RegressionTestType regtype) {
+    public static TradingDaysSpec td(TradingDaysType type, LengthOfPeriodType lp, RegressionTestType regtype) {
         if (type == TradingDaysType.None) {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(null, null, type,
-                leapyear, regtype, 0, AutoMethod.Unused, 0);
+                lp, regtype, 0, AutoMethod.Unused, 0);
     }
     
     public static enum AutoMethod {
@@ -90,7 +90,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     private String holidays;
     private String[] userVariables;
     private TradingDaysType tradingDaysType;
-    private boolean leapYear;
+    private LengthOfPeriodType lengthOfPeriodType;
     private RegressionTestType regressionTestType;
     private int stockTradingDays;
     private AutoMethod automaticMethod;
@@ -111,7 +111,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
 
     public boolean isDefined() {
         return userVariables != null || (stockTradingDays != 0 && regressionTestType == RegressionTestType.None)
-                || ((leapYear || tradingDaysType != TradingDaysType.None)
+                || ((lengthOfPeriodType != LengthOfPeriodType.None || tradingDaysType != TradingDaysType.None)
                 && (regressionTestType == RegressionTestType.None && automaticMethod == AutoMethod.Unused));
     }
 
@@ -140,10 +140,10 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
             return true;
         }
         if (regressionTestType.isUsed()) {
-            return tradingDaysType != TradingDaysType.None && leapYear;
+            return tradingDaysType != TradingDaysType.None && lengthOfPeriodType!=LengthOfPeriodType.None;
         }
         if (tradingDaysType == TradingDaysType.None) {
-            return !leapYear;
+            return lengthOfPeriodType==LengthOfPeriodType.None;
         }
         return true;
     }

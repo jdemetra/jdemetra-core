@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema version="0.1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="ec/eurostat/jdemetra/core"
+           xmlns:tss="ec/eurostat/jdemetra/core"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+    <xs:include schemaLocation="core.xsd"/>
+
+
+    <xs:complexType name="ARIMA_ModelType" abstract="true">
+        <xs:annotation>
+            <xs:documentation>
+                Arima model.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="name" type="xs:string" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="Default_ARIMA_ModelType">
+        <xs:annotation>
+            <xs:documentation>
+                Description of an Arima model, defined by auto-regressive polynomials (stationary and non stationary)
+                and moving average polynmials.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:ARIMA_ModelType">
+                <xs:sequence>
+                    <xs:element name="AR" type="tss:ParametersType" minOccurs="0"/>
+                    <xs:element name="D" type="tss:ParametersType" minOccurs="0"/>
+                    <xs:element name="MA" type="tss:ParametersType" minOccurs="0"/>
+                    <xs:element name="InnovationVariance" type="xs:double" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SARIMA_OrdersType">
+        <xs:sequence>
+            <xs:element name="P" type="xs:unsignedShort">
+                <xs:annotation>
+                    <xs:documentation>
+                        Regular auto-regressive order
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="D" type="xs:unsignedShort">
+                <xs:annotation>
+                    <xs:documentation>
+                        Regular differencing order.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Q"  type="xs:unsignedShort">
+                <xs:annotation>
+                    <xs:documentation>
+                        Regular moving average order.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="BP" type="xs:unsignedShort">
+                <xs:annotation>
+                    <xs:documentation>
+                        Seasonal auto-regressive order.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="BD" type="xs:unsignedShort">
+                <xs:annotation>
+                    <xs:documentation>
+                        Seasonal auto-regressive order.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="BQ" type="xs:unsignedShort">
+                <xs:annotation>
+                    <xs:documentation>
+                        Seasonal moving average order.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:group name="SARIMA_Polynomials">
+        <xs:sequence>
+            <xs:element name="AR" type="tss:ParametersType" minOccurs="0"/>
+            <xs:element name="D" type="xs:unsignedInt" minOccurs="0"/>
+            <xs:element name="MA" type="tss:ParametersType" minOccurs="0"/>
+            <xs:element name="BAR" type="tss:ParametersType" minOccurs="0"/>
+            <xs:element name="BD" type="xs:unsignedInt" minOccurs="0"/>
+            <xs:element name="BMA" type="tss:ParametersType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:group>
+
+    <xs:complexType name="SARIMA_PolynomialsType">
+        <xs:annotation>
+            <xs:documentation>
+                Description of the polynomials of a Box and Jenkins seasonal Arima model:
+                auto-regressive (stationary and non stationary)
+                and moving average regular and seasonal polynmials (+ differencing orders).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="tss:SARIMA_Polynomials"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="SARIMA_ModelType">
+        <xs:annotation>
+            <xs:documentation>
+                Description of a Box and Jenkins seasonal Arima model, defined by auto-regressive (stationary and non stationary)
+                and moving average regular and seasonal polynmials.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tss:ARIMA_ModelType">
+                <xs:sequence>
+                    <xs:element name="S" type="xs:unsignedInt"/>
+                    <xs:group ref="tss:SARIMA_Polynomials"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="UCARIMA_ModelType">
+        <xs:annotation>
+            <xs:documentation>
+                An UCARIMA model is a list of arima models with independent innovation variances.
+                The sum of the models may be added.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Sum" type="tss:ARIMA_ModelType" minOccurs="0"/>
+            <xs:element name="Component" type="tss:ARIMA_ModelType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="Arima" type="tss:Default_ARIMA_ModelType"/>
+    <xs:element name="Sarima" type="tss:SARIMA_ModelType"/>
+    <xs:element name="Ucarima" type="tss:UCARIMA_ModelType"/>
+
+</xs:schema>

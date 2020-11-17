@@ -24,8 +24,7 @@ import demetra.sa.DecompositionMode;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.regression.ITsVariable;
-import demetra.timeseries.regression.modelling.ModellingContext;
+import demetra.timeseries.regression.ModellingContext;
 import jdplus.x11.X11Kernel;
 import demetra.x11.X11Results;
 import demetra.x11.X11Spec;
@@ -35,9 +34,10 @@ import demetra.x13.X13Spec;
 import jdplus.x13.regarima.FastArimaForecasts;
 import jdplus.x13.regarima.RegArimaKernel;
 import java.util.Arrays;
+import jdplus.regarima.ami.Utility;
 import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.sa.RegArimaDecomposer;
-import jdplus.sa.SaVariablesMapping;
+import jdplus.sa.modelling.RegArimaDecomposer;
+import jdplus.sa.modelling.SaVariablesMapping;
 import jdplus.sarima.SarimaModel;
 import jdplus.x11.X11Utility;
 
@@ -78,13 +78,6 @@ public class X13Kernel {
         // Step 1. Preprocessing
         ModelEstimation preprocessing = regarima.process(sc, log);
         // Step 2. Link between regarima and x11
-        SaVariablesMapping nmapping = new SaVariablesMapping();
-        nmapping.addDefault(Arrays
-                .stream(preprocessing.getVariables())
-                .map(var -> var.getVariable())
-                .toArray(q -> new ITsVariable[q]));
-        nmapping.put(samapping);
-        RegArimaDecomposer decomposer = RegArimaDecomposer.of(preprocessing, nmapping);
         int nb = spec.getBackcastHorizon();
         if (nb < 0) {
             nb = -nb * s.getAnnualFrequency();
@@ -94,7 +87,7 @@ public class X13Kernel {
             nf = -nf * s.getAnnualFrequency();
         }
         X13Preadjustment.Builder builder = X13Preadjustment.builder();
-        TsData alin = initialStep(decomposer, nb, nf, builder);
+        TsData alin = initialStep(preprocessing, nb, nf, builder);
         X13Preadjustment preadjustment = builder.build();
         // Step 3. X11
         X11Kernel x11 = new X11Kernel();
@@ -105,8 +98,7 @@ public class X13Kernel {
         return new X13Results(preprocessing, preadjustment, xr, finals, mstats);
     }
 
-    private TsData initialStep(RegArimaDecomposer decomposer, int nb, int nf, X13Preadjustment.Builder astep) {
-        ModelEstimation model = decomposer.getModel();
+    private TsData initialStep(ModelEstimation model, int nb, int nf, X13Preadjustment.Builder astep) {
         boolean mul = model.isLogTransformation();
         TsData series = model.interpolatedSeries(false);
         int n = series.length();
@@ -118,15 +110,15 @@ public class X13Kernel {
         TsData mh = model.getMovingHolidayEffect(domain);
         TsData td = model.getTradingDaysEffect(domain);
 
-        TsData pt = decomposer.deterministicEffect(domain, ComponentType.Trend, false, v -> v.isOutlier());
-        TsData ps = decomposer.deterministicEffect(domain, ComponentType.Seasonal, false, v -> v.isOutlier());
-        TsData pi = decomposer.deterministicEffect(domain, ComponentType.Irregular, false, v -> v.isOutlier());
-        TsData ut = decomposer.deterministicEffect(domain, ComponentType.Trend, false, v -> v.isUser());
-        TsData us = decomposer.deterministicEffect(domain, ComponentType.Seasonal, false, v -> v.isUser());
-        TsData ui = decomposer.deterministicEffect(domain, ComponentType.Irregular, false, v -> v.isUser());
-        TsData usa = decomposer.deterministicEffect(domain, ComponentType.SeasonallyAdjusted, false, v -> v.isUser());
-        TsData user = decomposer.deterministicEffect(domain, ComponentType.Series, false, v -> v.isUser());
-        TsData uu = decomposer.deterministicEffect(domain, ComponentType.Undefined, false, v -> v.isUser());
+        TsData pt = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Trend, false, v -> Utility.isOutlier(v));
+        TsData ps = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Seasonal, false, v -> Utility.isOutlier(v));
+        TsData pi = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Irregular, false, v -> Utility.isOutlier(v));
+        TsData ut = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Trend, false, v -> Utility.isUser(v));
+        TsData us = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Seasonal, false, v -> Utility.isUser(v));
+        TsData ui = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Irregular, false, v -> Utility.isUser(v));
+        TsData usa = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.SeasonallyAdjusted, false, v -> Utility.isUser(v));
+        TsData user = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Series, false, v -> Utility.isUser(v));
+        TsData uu = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Undefined, false, v -> Utility.isUser(v));
         TsData p = mul ? TsData.multiply(pt, ps, pi) : TsData.add(pt, ps, pi);
 
         pt = mul ? TsData.multiply(pt, ut) : TsData.add(pt, ut);

@@ -25,7 +25,7 @@ import demetra.timeseries.TsException;
  */
 @lombok.Value
 @lombok.AllArgsConstructor(access=lombok.AccessLevel.PRIVATE)
-public class EasterVariable implements IEasterVariable{
+public class EasterVariable implements IEasterVariable, ISystemVariable{
     
     public static enum Correction {
         Simple,

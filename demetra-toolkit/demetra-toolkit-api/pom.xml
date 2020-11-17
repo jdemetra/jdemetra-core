@@ -24,12 +24,12 @@
         </dependency>
         <dependency>
             <groupId>be.nbb.rd</groupId>
-            <artifactId>java-service-processor</artifactId>
+            <artifactId>java-design-processor</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>be.nbb.rd</groupId>
-            <artifactId>java-design-processor</artifactId>
+            <artifactId>java-service-processor</artifactId>
             <scope>provided</scope>
         </dependency>
         

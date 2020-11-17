@@ -197,6 +197,11 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
         return Parameter.hasParameters(phi, ParameterType.Estimated) || Parameter.hasParameters(bphi, ParameterType.Estimated)
                 || !Parameter.hasParameters(theta, ParameterType.Estimated) || Parameter.hasParameters(btheta, ParameterType.Estimated);
     }
+    
+    public boolean isUndefined(){
+        return Parameter.isDefault(phi) && Parameter.isDefault(theta)
+                && Parameter.isDefault(bphi) && Parameter.isDefault(btheta);
+    }
 
     public SarimaSpec resetParameters() {
         if (!hasEstimatedParameters()) {

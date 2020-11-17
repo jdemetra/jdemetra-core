@@ -83,7 +83,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
 
         List<Variable> vars = new ArrayList<>();
         if (spec.isConstant()) {
-            vars.add(Variable.variable("C", new Constant()));
+            vars.add(Variable.variable("C", Constant.C));
         }
         if (spec.isTrend()) {
             vars.add(Variable.variable("Trend", new LinearTrend(hdomain.start())));
@@ -102,7 +102,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
     private DisaggregationModel createModel(TsData aggregatedSeries, TsDomain hdomain, TemporalDisaggregationSpec spec) {
         List<Variable> vars = new ArrayList<>();
         if (spec.isConstant()) {
-            vars.add(Variable.variable("C", new Constant()));
+            vars.add(Variable.variable("C", Constant.C));
         }
         if (spec.isTrend()) {
             vars.add(Variable.variable("Trend", new LinearTrend(hdomain.start())));

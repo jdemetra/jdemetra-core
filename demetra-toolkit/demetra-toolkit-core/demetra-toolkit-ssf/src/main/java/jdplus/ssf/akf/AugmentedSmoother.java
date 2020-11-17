@@ -351,7 +351,7 @@ public class AugmentedSmoother {
     private void calcSmoothedDiffuseEffects() {
         // computes the smoothed diffuse effects and their covariance...
         QAugmentation q = frslts.getAugmentation();
-        // delta = S(s+B'*R), psi = Psi= S - S*B'*N*B*S 
+        // delta = S(s+B'*R), psi = S - S*B'*N*B*S 
         // delta = a'^-1*a^-1(-a*b' + B'*R)
         // delta = - (b * a^-1)' + a'^-1*a^-1*B'*r = a'^-1 * (a^-1*B'*r - b)
         // Psi = = a'^-1*(I - a^-1*B'*N*B*a'^-1)* a^-1

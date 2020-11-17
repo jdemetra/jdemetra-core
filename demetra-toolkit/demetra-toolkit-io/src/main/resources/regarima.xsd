@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<xs:schema version="0.1.0"
+           targetNamespace="ec/eurostat/jdemetra/core"
+           xmlns:tss="ec/eurostat/jdemetra/core"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+    <xs:include schemaLocation="core.xsd"/>
+    <xs:include schemaLocation="arima.xsd"/>
+    <xs:include schemaLocation="regression.xsd"/>
+
+    <xs:complexType name="RegArimaModelType">
+        <xs:annotation>
+            <xs:documentation>
+                Usual RegArima model, where the arima model is a usual Box-Jenkins seasonal model.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Transformations" type="tss:SeriesTransformationsType" minOccurs="0"/>
+            <xs:element name="Regression" type="tss:RegressionType" minOccurs="0"/>
+            <xs:element name ="Arima" type="tss:SARIMA_ModelType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GenericRegArimaModelType">
+        <xs:annotation>
+            <xs:documentation>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Transformations" type="tss:SeriesTransformationsType" minOccurs="0"/>
+            <xs:element name="Regression" type="tss:RegressionType" minOccurs="0"/>
+            <xs:element name ="Arima" type="tss:ARIMA_ModelType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

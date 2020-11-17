@@ -20,12 +20,12 @@ import nbbrd.design.Development;
 import java.time.LocalDateTime;
 
 /**
- *
+ * 
  * @author palatej
  */
 @lombok.Value
 @Development(status=Development.Status.Release)
-public class AdditiveOutlier implements IOutlier {
+public class AdditiveOutlier implements IOutlier, ISystemVariable {
     
     public static final String CODE = "AO";
 

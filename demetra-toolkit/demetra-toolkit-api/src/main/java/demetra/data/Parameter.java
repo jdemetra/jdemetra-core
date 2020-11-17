@@ -217,7 +217,7 @@ public class Parameter {
             return true;
         }
         for (int i = 0; i < p.length; ++i) {
-            if (p[i]==UNDEFINED) {
+            if (p[i]!=UNDEFINED) {
                 return false;
             }
         }

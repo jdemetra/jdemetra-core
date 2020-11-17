@@ -22,7 +22,7 @@ import nbbrd.design.LombokWorkaround;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.Ramp;
-import demetra.timeseries.regression.UserVariable;
+import demetra.timeseries.regression.TsContextVariable;
 import demetra.util.Validatable;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,7 +46,7 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
     @lombok.Singular
     private List<InterventionVariable> interventionVariables;
     @lombok.Singular
-    private List<UserVariable> userDefinedVariables;
+    private List<TsContextVariable> userDefinedVariables;
 
     // the maps with the coefficients use short names...
     @lombok.Singular

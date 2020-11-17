@@ -68,11 +68,6 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tramo-core</artifactId>
-            <version>${jd3-tramoseats.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-tramoseats-core</artifactId>
             <version>${jd3-tramoseats.version}</version>
         </dependency>
@@ -84,11 +79,6 @@
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-x13-core</artifactId>
-            <version>${jd3-x13.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-x13-regarima</artifactId>
             <version>${jd3-x13.version}</version>
         </dependency>
         <dependency>

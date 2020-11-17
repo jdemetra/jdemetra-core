@@ -23,7 +23,11 @@ import nbbrd.design.Development;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @Development(status=Development.Status.Release)
-public class Constant implements IUserTsVariable {
+public class Constant implements ISystemVariable {
+    
+    public static final Constant C=new Constant();
+    
+    private Constant(){}
 
     @Override
     public int dim() {
