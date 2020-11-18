@@ -16,9 +16,10 @@
  */
 package demetra.timeseries;
 
+import java.util.Map;
+import nbbrd.design.LombokWorkaround;
 import internal.timeseries.util.TsDataBuilderUtil;
 import internal.timeseries.LombokHelper;
-import java.util.Map;
 
 /**
  *
@@ -29,40 +30,45 @@ import java.util.Map;
 public class Ts implements TsResource<TsData> {
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    private TsMoniker moniker = TsMoniker.NULL;
+    private TsMoniker moniker;
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    private TsInformationType type = TsInformationType.UserDefined;
+    private TsInformationType type;
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    private String name = "";
+    private String name;
 
     @lombok.NonNull
     @lombok.Singular("meta")
     private Map<String, String> meta;
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    private TsData data = TsDataBuilderUtil.NO_DATA;
+    private TsData data;
+
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .moniker(TsMoniker.NULL)
+                .type(TsInformationType.UserDefined)
+                .name("")
+                .data(TsDataBuilderUtil.NO_DATA);
+    }
 
     public static class Builder implements TsResource {
 
         @Override
         public TsMoniker getMoniker() {
-            return LombokHelper.getValue(moniker$value, moniker$set, Ts::$default$moniker);
+            return moniker;
         }
 
         @Override
         public TsInformationType getType() {
-            return LombokHelper.getValue(type$value, type$set, Ts::$default$type);
+            return type;
         }
 
         @Override
         public String getName() {
-            return LombokHelper.getValue(name$value, name$set, Ts::$default$name);
+            return name;
         }
 
         @Override
@@ -72,7 +78,7 @@ public class Ts implements TsResource<TsData> {
 
         @Override
         public TsData getData() {
-            return LombokHelper.getValue(data$value, data$set, Ts::$default$data);
+            return data;
         }
     }
 }

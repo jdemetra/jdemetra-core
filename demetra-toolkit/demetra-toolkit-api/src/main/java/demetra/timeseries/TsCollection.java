@@ -16,10 +16,11 @@
  */
 package demetra.timeseries;
 
-import internal.timeseries.LombokHelper;
 import java.util.List;
 import java.util.Map;
+import nbbrd.design.LombokWorkaround;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import internal.timeseries.LombokHelper;
 
 /**
  *
@@ -30,16 +31,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public class TsCollection implements TsResource<List<Ts>> {
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    private TsMoniker moniker = TsMoniker.NULL;
+    private TsMoniker moniker;
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    private TsInformationType type = TsInformationType.UserDefined;
+    private TsInformationType type;
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    private String name = "";
+    private String name;
 
     @lombok.Singular("meta")
     private Map<String, String> meta;
@@ -47,28 +45,36 @@ public class TsCollection implements TsResource<List<Ts>> {
     @lombok.Singular("data")
     private List<Ts> data;
 
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .moniker(TsMoniker.NULL)
+                .type(TsInformationType.UserDefined)
+                .name("");
+    }
+
     public static final TsCollection EMPTY = TsCollection.builder().build();
 
     @NonNull
     public static TsCollection of(@NonNull Ts ts) {
         return builder().data(ts).build();
     }
-    
+
     public static class Builder implements TsResource {
 
         @Override
         public TsMoniker getMoniker() {
-            return LombokHelper.getValue(moniker$value, moniker$set, TsCollection::$default$moniker);
+            return moniker;
         }
 
         @Override
         public TsInformationType getType() {
-            return LombokHelper.getValue(type$value, type$set, TsCollection::$default$type);
+            return type;
         }
 
         @Override
         public String getName() {
-            return LombokHelper.getValue(name$value, name$set, TsCollection::$default$name);
+            return name;
         }
 
         @Override

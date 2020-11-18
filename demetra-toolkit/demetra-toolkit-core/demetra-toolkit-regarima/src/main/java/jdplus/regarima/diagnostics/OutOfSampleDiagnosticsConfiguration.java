@@ -13,46 +13,34 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package jdplus.regarima.diagnostics;
 
+import nbbrd.design.LombokWorkaround;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
-public class OutOfSampleDiagnosticsConfiguration{
+@lombok.Builder(builderClassName = "Builder")
+public class OutOfSampleDiagnosticsConfiguration {
 
-    public static final double BAD = .01, UNC = .1, LENGTH=1.5;
-    public static OutOfSampleDiagnosticsConfiguration DEFAULT=builder().build();
+    public static final double BAD = .01, UNC = .1, LENGTH = 1.5;
+    public static OutOfSampleDiagnosticsConfiguration DEFAULT = builder().build();
 
     private double badThreshold;
     private double uncertainThreshold;
     private boolean diagnosticOnMean, diagnosticOnVariance;
     private double outOfSampleLength;
 
-//    @lombok.Builder.Default
-//    private double badThreshold=BAD;
-//    @lombok.Builder.Default
-//    private double uncertainThreshold=UNC;
-//    @lombok.Builder.Default
-//    private boolean diagnosticOnMean=true, diagnosticOnVariance=false;
-//    @lombok.Builder.Default
-//    private double outOfSampleLength=LENGTH;
-
-    
-    public static Builder builder(){
-        Builder builder = new Builder();        
-        builder.badThreshold = BAD;
-        builder.uncertainThreshold=UNC;
-        builder.diagnosticOnMean=true;
-        builder.diagnosticOnVariance=false;
-        builder.outOfSampleLength=LENGTH;
-        return builder;
-   }
-    
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .badThreshold(BAD)
+                .uncertainThreshold(UNC)
+                .diagnosticOnMean(true)
+                .diagnosticOnVariance(false)
+                .outOfSampleLength(LENGTH);
+    }
 }
-
