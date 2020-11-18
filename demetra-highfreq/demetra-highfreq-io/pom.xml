@@ -7,31 +7,8 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>demetra-highfreq-io</artifactId>
-    <packaging>jar</packaging>
     <name>JD3 - HighFreq - IO</name>
     <dependencies>
-        <!-- compile only -->
-        <dependency>
-            <groupId>org.checkerframework</groupId>
-            <artifactId>checker-qual</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>be.nbb.rd</groupId>
-            <artifactId>java-service-processor</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>be.nbb.rd</groupId>
-            <artifactId>java-design-processor</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- compile and runtime -->
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
@@ -46,16 +23,6 @@
             <artifactId>demetra-toolkit-io</artifactId>
         </dependency>
         <!-- test only -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-data-tests</artifactId>
