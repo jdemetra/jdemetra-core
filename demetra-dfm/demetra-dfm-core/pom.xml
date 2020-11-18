@@ -9,15 +9,9 @@
     </parent>
     
     <artifactId>demetra-dfm-core</artifactId>
-    <packaging>jar</packaging>
     <name>JD3 - DFM - Core</name>
     
     <dependencies>
-        <dependency>
-            <groupId>be.nbb.rd</groupId>
-            <artifactId>java-design-processor</artifactId>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-toolkit-api</artifactId>
@@ -33,16 +27,6 @@
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-dfm-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>

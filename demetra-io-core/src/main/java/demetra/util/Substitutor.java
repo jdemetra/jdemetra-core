@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import nbbrd.design.LombokWorkaround;
 
 /**
  *
@@ -55,12 +56,17 @@ public final class Substitutor {
     private Function<? super String, ? extends Object> mapper;
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    private String prefix = "${";
+    private String prefix;
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    private String suffix = "}";
+    private String suffix;
+
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .prefix("${")
+                .suffix("}");
+    }
 
     @NonNull
     public String replace(@NonNull CharSequence input) {

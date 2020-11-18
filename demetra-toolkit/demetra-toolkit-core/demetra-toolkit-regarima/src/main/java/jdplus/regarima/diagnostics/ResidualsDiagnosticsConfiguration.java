@@ -14,57 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package jdplus.regarima.diagnostics;
 
+import nbbrd.design.LombokWorkaround;
 
 /**
  *
  * @author Jean Palate
  */
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder(builderClassName = "Builder")
 @lombok.Value
-public class ResidualsDiagnosticsConfiguration{
-    public static final double NBAD = .01, NUNC = .1,
-        TDSEV = .001, TDBAD = .01, TDUNC = .1,
-        SSEV = .001, SBAD = .01, SUNC = .1;
-    
-    public static final ResidualsDiagnosticsConfiguration DEFAULT=builder().build();
+public class ResidualsDiagnosticsConfiguration {
 
-//    @lombok.Builder.Default
-//    private double normalityBad = NBAD;
-//    @lombok.Builder.Default
-//    private double normalityUncertain = NUNC;
-//    @lombok.Builder.Default
-//    private double specTDSevere = TDSEV;
-//    @lombok.Builder.Default
-//    private double specTDBad = TDBAD;
-//    @lombok.Builder.Default
-//    private double specTDUncertain = TDUNC;
-//    @lombok.Builder.Default
-//    private double specSeasSevere = SSEV;
-//    @lombok.Builder.Default
-//    private double specSeasBad = SBAD;
-//    @lombok.Builder.Default
-//    private double specSeasUncertain = SUNC;
-    
+    public static final double NBAD = .01, NUNC = .1,
+            TDSEV = .001, TDBAD = .01, TDUNC = .1,
+            SSEV = .001, SBAD = .01, SUNC = .1;
+
+    public static final ResidualsDiagnosticsConfiguration DEFAULT = builder().build();
+
     private double badThresholdForNormality, uncertainThresholdForNormality;
-    private double severeThresholdForTradingDaysPeak, badThresholdForTradingDaysPeak, 
+    private double severeThresholdForTradingDaysPeak, badThresholdForTradingDaysPeak,
             uncertainThresholdForTradingDaysPeak;
-    private double severeThresholdeForSeasonalPeaks, 
-            badThresholdeForSeasonalPeaks, 
+    private double severeThresholdeForSeasonalPeaks,
+            badThresholdeForSeasonalPeaks,
             uncertainThresholdeForSeasonalPeaks;
 
-    public static Builder builder(){
-        Builder builder = new Builder();        
-        builder.badThresholdForNormality = NBAD;
-        builder.uncertainThresholdForNormality=NUNC;
-        builder.severeThresholdForTradingDaysPeak=TDSEV;
-        builder.badThresholdForTradingDaysPeak=TDBAD;
-        builder.uncertainThresholdForTradingDaysPeak=TDUNC;
-        builder.severeThresholdeForSeasonalPeaks=SSEV;
-        builder.badThresholdeForSeasonalPeaks=SBAD;
-        builder.uncertainThresholdeForSeasonalPeaks=SUNC;
-        return builder;
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .badThresholdForNormality(NBAD)
+                .uncertainThresholdForNormality(NUNC)
+                .severeThresholdForTradingDaysPeak(TDSEV)
+                .badThresholdForTradingDaysPeak(TDBAD)
+                .uncertainThresholdForTradingDaysPeak(TDUNC)
+                .severeThresholdeForSeasonalPeaks(SSEV)
+                .badThresholdeForSeasonalPeaks(SBAD)
+                .uncertainThresholdeForSeasonalPeaks(SUNC);
     }
 }

@@ -1,37 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-calendars</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>demetra-calendars-io</artifactId>
-    <packaging>jar</packaging>
-    <name>JD3 - Calendars - IO</name>
-    <dependencies>
-        <!-- compile only -->
-        <dependency>
-            <groupId>org.checkerframework</groupId>
-            <artifactId>checker-qual</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>be.nbb.rd</groupId>
-            <artifactId>java-service-processor</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>be.nbb.rd</groupId>
-            <artifactId>java-design-processor</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
+    <artifactId>demetra-calendars-io</artifactId>
+    <name>JD3 - Calendars - IO</name>
+
+    <dependencies>
         <!-- compile and runtime -->
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
@@ -46,16 +26,6 @@
             <artifactId>demetra-toolkit-io</artifactId>
         </dependency>
         <!-- test only -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-data-tests</artifactId>
