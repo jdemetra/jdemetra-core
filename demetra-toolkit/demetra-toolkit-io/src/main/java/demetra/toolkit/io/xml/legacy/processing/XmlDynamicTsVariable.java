@@ -16,7 +16,9 @@
  */
 package demetra.toolkit.io.xml.legacy.processing;
 
+import demetra.timeseries.TsData;
 import demetra.timeseries.TsMoniker;
+import demetra.timeseries.regression.DynamicTsDataSupplier;
 import demetra.timeseries.regression.DynamicTsVariable;
 import demetra.toolkit.io.xml.legacy.core.XmlTsData;
 import demetra.toolkit.io.xml.legacy.core.XmlTsMoniker;
@@ -110,25 +112,26 @@ public class XmlDynamicTsVariable
         this.tsData = value;
     }
 
-    public static class Adapter extends XmlAdapter<XmlDynamicTsVariable, DynamicTsVariable> {
+    public static class Adapter extends XmlAdapter<XmlDynamicTsVariable, DynamicTsDataSupplier> {
 
         @Override
-        public DynamicTsVariable unmarshal(XmlDynamicTsVariable v) {
+        public DynamicTsDataSupplier unmarshal(XmlDynamicTsVariable v) {
             if (v.tsData != null) {
-                return new DynamicTsVariable(v.moniker, XmlTsData.unmarshal(v.tsData));
+                return new DynamicTsDataSupplier(v.moniker, XmlTsData.unmarshal(v.tsData));
             } else {
-                return new DynamicTsVariable(v.moniker, null);
+                return new DynamicTsDataSupplier(v.moniker, null);
             }
         }
 
         @Override
-        public XmlDynamicTsVariable marshal(DynamicTsVariable v) {
+        public XmlDynamicTsVariable marshal(DynamicTsDataSupplier v) {
             XmlDynamicTsVariable x = new XmlDynamicTsVariable();
-            if (v.getData()!= null) {
+            TsData data = v.get();
+            if (data != null) {
                 x.tsData = new XmlTsData();
-                XmlTsData.marshal(v.getData(), x.tsData);
+                XmlTsData.marshal(data, x.tsData);
             }
-            x.moniker=v.getMoniker();
+            x.moniker = v.getMoniker();
             return x;
         }
     }

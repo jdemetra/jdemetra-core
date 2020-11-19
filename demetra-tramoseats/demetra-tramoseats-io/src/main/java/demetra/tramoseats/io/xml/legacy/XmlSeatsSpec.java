@@ -319,7 +319,13 @@ public class XmlSeatsSpec
         return builder.build();
     }
 
-    public static boolean marshal(@NonNull DecompositionSpec v, @NonNull XmlSeatsSpec xml){
+    public static XmlSeatsSpec marshal(@NonNull DecompositionSpec v){
+        XmlSeatsSpec xml=new XmlSeatsSpec();
+        marshal(v, xml);
+        return xml;
+     }
+ 
+     public static boolean marshal(@NonNull DecompositionSpec v, @NonNull XmlSeatsSpec xml){
         if (v.isDefault()) {
             return true;
         }

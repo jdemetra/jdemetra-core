@@ -18,7 +18,6 @@ package demetra.timeseries.regression;
 
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
-import demetra.timeseries.TsDataSupplier;
 import java.util.Arrays;
 
 /**

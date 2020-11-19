@@ -16,6 +16,7 @@
  */
 package demetra.toolkit.io.xml.legacy.processing;
 
+import demetra.timeseries.regression.StaticTsDataSupplier;
 import demetra.timeseries.regression.UserVariable;
 import demetra.toolkit.io.xml.legacy.core.XmlTsData;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -82,16 +83,16 @@ public class XmlStaticTsVariable
         this.tsData = value;
     }
 
-    public static class Adapter extends XmlAdapter<XmlStaticTsVariable, UserVariable> {
+    public static class Adapter extends XmlAdapter<XmlStaticTsVariable, StaticTsDataSupplier> {
 
         @Override
-        public UserVariable unmarshal(XmlStaticTsVariable v) {
+        public StaticTsDataSupplier unmarshal(XmlStaticTsVariable v) {
 
-            return new UserVariable(v.tsData.getName(), XmlTsData.unmarshal(v.tsData));
+            return new StaticTsDataSupplier(XmlTsData.unmarshal(v.tsData));
         }
 
         @Override
-        public XmlStaticTsVariable marshal(UserVariable v) {
+        public XmlStaticTsVariable marshal(StaticTsDataSupplier v) {
             XmlStaticTsVariable x = new XmlStaticTsVariable();
             x.tsData = new XmlTsData();
             XmlTsData.marshal(v.getData(), x.tsData);

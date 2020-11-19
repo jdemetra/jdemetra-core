@@ -194,7 +194,7 @@ public final class TramoSpec implements Validatable<TramoSpec> {
     }
 
     static {
-        TR0 = TramoSpec.builder().build();
+        TR0 = TramoSpec.DEFAULT;
 
         TransformSpec tr = TransformSpec.builder()
                 .function(TransformationType.Auto)

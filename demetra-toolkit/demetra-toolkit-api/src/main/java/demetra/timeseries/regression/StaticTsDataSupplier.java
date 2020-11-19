@@ -16,30 +16,22 @@
  */
 package demetra.timeseries.regression;
 
-import nbbrd.design.Development;
-import demetra.timeseries.TsDataSupplier;
-import demetra.util.DefaultNameValidator;
-import demetra.util.INameValidator;
-import demetra.util.NameManager;
+import demetra.timeseries.TsData;
 
 /**
  *
- * @author Jean Palate
+ * @author PALATEJ
  */
-@Development(status=Development.Status.Release)
-public class TsSuppliers extends NameManager<TsDataSupplier> {
-
-    public static final String X = "x_";
-
-    public TsSuppliers() {
-        super(TsDataSupplier.class, X, new DefaultNameValidator(".+-*/"));
+@lombok.Value
+@lombok.EqualsAndHashCode(callSuper=false)
+public class StaticTsDataSupplier extends TsDataSupplier{
+    
+    @lombok.NonNull
+    TsData data;
+    
+    @Override
+    public TsData get() {
+        return data;
     }
-
-    public TsSuppliers(String prefix, INameValidator validator) {
-        super(TsDataSupplier.class, prefix, validator);
-    }
-
-    public boolean isEmpty() {
-        return getCount() < 1;
-    }
+    
 }

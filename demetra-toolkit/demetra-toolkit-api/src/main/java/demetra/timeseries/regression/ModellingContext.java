@@ -17,7 +17,6 @@
 package demetra.timeseries.regression;
 
 import demetra.information.InformationSet;
-import demetra.timeseries.TsDataSupplier;
 import demetra.timeseries.calendars.CalendarManager;
 import demetra.util.DefaultNameValidator;
 import demetra.util.INameValidator;
@@ -28,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import demetra.timeseries.calendars.CalendarDefinition;
-import demetra.timeseries.regression.TsSuppliers;
+import demetra.timeseries.regression.TsDataSuppliers;
 
 /**
  *
@@ -43,7 +42,7 @@ public class ModellingContext  {
     private static AtomicReference<ModellingContext> DEF_CONTEXT=new AtomicReference<>(null);
 
     public ModellingContext() {
-        map.put(TsSuppliers.class, new NameManager(TsSuppliers.class, "Variables_", new DefaultNameValidator(".")));
+        map.put(TsDataSuppliers.class, new NameManager(TsDataSuppliers.class, "Variables_", new DefaultNameValidator(".")));
         map.put(CalendarDefinition.class, new CalendarManager());
     }
  
@@ -51,26 +50,26 @@ public class ModellingContext  {
         return (CalendarManager) map.get(CalendarDefinition.class);
     }
 
-    public NameManager<TsSuppliers> getTsVariableManagers() {
-        return map.get(TsSuppliers.class);
+    public NameManager<TsDataSuppliers> getTsVariableManagers() {
+        return map.get(TsDataSuppliers.class);
     }
 
-    public TsSuppliers getTsVariables(String family) {
-        Object obj = map.get(TsSuppliers.class);
+    public TsDataSuppliers getTsVariables(String family) {
+        Object obj = map.get(TsDataSuppliers.class);
         if (obj == null) {
             return null;
         }
-        NameManager<TsSuppliers> mgr = (NameManager<TsSuppliers>) obj;
+        NameManager<TsDataSuppliers> mgr = (NameManager<TsDataSuppliers>) obj;
         return mgr.get(family);
     }
 
     public TsDataSupplier getTsVariable(String family, String var) {
-        Object obj = map.get(TsSuppliers.class);
+        Object obj = map.get(TsDataSuppliers.class);
         if (obj == null) {
             return null;
         }
-        NameManager<TsSuppliers> mgr = (NameManager<TsSuppliers>) obj;
-        TsSuppliers vars = mgr.get(family);
+        NameManager<TsDataSuppliers> mgr = (NameManager<TsDataSuppliers>) obj;
+        TsDataSuppliers vars = mgr.get(family);
         if (vars == null) {
             return null;
         }
@@ -91,10 +90,10 @@ public class ModellingContext  {
 
     public List<String> getTsVariableDictionary() {
         ArrayList<String> all = new ArrayList<>();
-        NameManager<TsSuppliers> mgrs = getTsVariableManagers();
+        NameManager<TsDataSuppliers> mgrs = getTsVariableManagers();
         String[] groups = mgrs.getNames();
         for (int i = 0; i < groups.length; ++i) {
-            TsSuppliers tv = mgrs.get(groups[i]);
+            TsDataSuppliers tv = mgrs.get(groups[i]);
             String[] vars = tv.getNames();
             for (int j = 0; j < vars.length; ++j) {
                 all.add(InformationSet.item(groups[i], vars[j]));
@@ -150,6 +149,6 @@ public class ModellingContext  {
 
     public void resetDefault() {
         map.clear();
-        map.put(TsSuppliers.class, new NameManager(TsSuppliers.class, "Variables_", new DefaultNameValidator(".")));
+        map.put(TsDataSuppliers.class, new NameManager(TsDataSuppliers.class, "Variables_", new DefaultNameValidator(".")));
     }
 }

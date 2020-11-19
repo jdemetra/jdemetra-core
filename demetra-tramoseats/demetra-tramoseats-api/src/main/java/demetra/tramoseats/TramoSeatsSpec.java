@@ -46,7 +46,7 @@ public final class TramoSeatsSpec implements Validatable<TramoSeatsSpec>, SaSpec
         return DESCRIPTOR;
     }
 
-    private static final TramoSeatsSpec DEFAULT = TramoSeatsSpec.builder().build();
+    public static final TramoSeatsSpec DEFAULT = TramoSeatsSpec.builder().build();
 
     @lombok.NonNull
     private TramoSpec tramo;
@@ -69,7 +69,7 @@ public final class TramoSeatsSpec implements Validatable<TramoSeatsSpec>, SaSpec
         return new Builder()
                 .tramo(TramoSpec.DEFAULT)
                 .seats(DecompositionSpec.DEFAULT)
-                .benchmarking(SaBenchmarkingSpec.DEFAULT);
+                .benchmarking(SaBenchmarkingSpec.DEFAULT_DISABLED);
     }
 
     public boolean isDefault() {
@@ -88,11 +88,8 @@ public final class TramoSeatsSpec implements Validatable<TramoSeatsSpec>, SaSpec
     }
 
     static {
-        RSA0 = TramoSeatsSpec.builder()
-                .tramo(TramoSpec.TR0)
-                .seats(DecompositionSpec.DEFAULT)
-                .build();
-
+        RSA0 = TramoSeatsSpec.DEFAULT;
+ 
         RSA1 = TramoSeatsSpec.builder()
                 .tramo(TramoSpec.TR1)
                 .seats(DecompositionSpec.DEFAULT)

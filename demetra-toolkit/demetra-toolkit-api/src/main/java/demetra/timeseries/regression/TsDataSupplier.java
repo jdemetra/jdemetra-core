@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,26 +14,15 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries;
+package demetra.timeseries.regression;
 
+import demetra.timeseries.TsData;
 import java.util.function.Supplier;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
- * @author Jean Palate
+ * @author PALATEJ
  */
-@FunctionalInterface
-public interface TsDataSupplier extends Supplier<TsData>{
-    public static TsDataSupplier of(@NonNull TsData s){
-        return ()->s;
-    }
-    
-    public static TsDataSupplier ofDynamic(@NonNull TsData initial, @NonNull Supplier<TsData> supplier){
-        return () -> {
-            TsData ndata = supplier.get();
-            return ndata == null ? initial : ndata;
-        };
-    }
+public abstract class TsDataSupplier implements Supplier<TsData>{
     
 }

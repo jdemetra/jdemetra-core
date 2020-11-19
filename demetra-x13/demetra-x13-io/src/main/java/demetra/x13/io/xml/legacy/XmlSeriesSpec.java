@@ -105,7 +105,7 @@ public class XmlSeriesSpec
     
     public static final BasicSpec unmarshal(XmlSeriesSpec xml) {
         if (xml == null)
-            return BasicSpec.DEFAULT;
+            return BasicSpec.DEFAULT_ENABLED;
         BasicSpec.Builder builder = BasicSpec.builder();
         if (xml.preliminaryChecks != null)
             builder.preliminaryCheck(xml.preliminaryChecks);
