@@ -4,18 +4,14 @@
 
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
-        <artifactId>demetra-parent</artifactId>
+        <artifactId>demetra-tsp</artifactId>
         <version>3.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>demetra-io-legacy-core</artifactId>
+    <artifactId>demetra-tsp-legacy-core</artifactId>
 
-    <name>JD3 - IO - Legacy</name>
+    <name>JD3 - TSP - Legacy</name>
     <description>A TS Provider that handles old sources.</description>
-
-    <properties>
-        <jd3-basic.version>1.0.0-SNAPSHOT</jd3-basic.version>
-    </properties>
 
     <dependencies>
         <!-- TMP -->
@@ -26,15 +22,13 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-bridge</artifactId>
-            <version>${jd3-basic.version}</version>
+            <artifactId>demetra-tsp-bridge</artifactId>
         </dependency>
         
         <!-- compile and runtime -->       
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-io-core</artifactId>
-            <version>${demetra.version}</version>
+            <artifactId>demetra-tsp-api</artifactId>
         </dependency>
 
         <!-- test only -->
