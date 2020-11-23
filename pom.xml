@@ -22,7 +22,7 @@
     <properties>
         <!-- dependencies -->
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
-        <jd2.version>2.2.4-SNAPSHOT</jd2.version>
+        <jd2.version>2.2.3</jd2.version>
         <java-io-util.version>0.0.8</java-io-util.version>
     </properties>
   
@@ -38,12 +38,7 @@
         <module>demetra-sa-experimental</module>
         <module>demetra-businesscycle</module>
         <module>jdr</module>
-        <module>demetra-io-core</module>
-        <module>demetra-io-legacy-core</module>
-        <module>demetra-io-spreadsheet-core</module>
-        <module>demetra-io-sql-core</module>
-        <module>demetra-io-text-core</module>
-        <module>demetra-bridge</module>
+        <module>demetra-tsp</module>
         <module>demetra-revisions</module>
         <module>demetra-calendars</module>
     </modules>
@@ -324,39 +319,6 @@
             </build>
         </profile>
         
-        <!-- Deploy SNAPSHOTS to jfrog with sources -->
-        <profile>
-            <id>deploy-snapshots</id>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>oss-jfrog-artifactory</id>
-                    <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
-                </snapshotRepository>
-            </distributionManagement>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <version>3.0.0-M1</version>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>3.2.1</version>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
         <!-- Fix missing Java EE Modules in JDK11 -->
         <profile>
             <id>fix-missing-modules-jdk11</id>
@@ -384,39 +346,6 @@
                 </dependency>                
             </dependencies>
         </profile>
-
-        <!-- Deploy RELEASES to jfrog with sources -->
-        <profile>
-            <id>deploy-releases</id>
-            <distributionManagement>
-                <repository>
-                    <id>oss-jfrog-artifactory</id>
-                    <url>https://oss.jfrog.org/artifactory/oss-release-local</url>
-                </repository>
-            </distributionManagement>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <version>3.0.0-M1</version>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>3.2.1</version>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
     
     <repositories>
@@ -425,13 +354,6 @@
             <url>https://oss.jfrog.org/artifactory/oss-release-local</url>
             <snapshots>
                 <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>oss-jfrog-artifactory-snapshots</id>
-            <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
-            <snapshots>
-                <enabled>true</enabled>
             </snapshots>
         </repository>
     </repositories>
