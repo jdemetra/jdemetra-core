@@ -36,7 +36,8 @@ import lombok.NonNull;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public final class RegArimaSpec implements Validatable<RegArimaSpec> {
 
-    private static final RegArimaSpec DEFAULT = RegArimaSpec.builder().build();
+    public static final RegArimaSpec DEFAULT_ENABLED = RegArimaSpec.builder().build();
+    public static final RegArimaSpec DEFAULT_DISABLED = RegArimaSpec.builder().basic(BasicSpec.DEFAULT_ENABLED).build();
 
     private BasicSpec basic;
     private TransformSpec transform;
@@ -75,7 +76,7 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
     }
 
     public boolean isDefault() {
-        return this.equals(DEFAULT);
+        return this.equals(DEFAULT_ENABLED);
     }
 
     public static class Builder implements Validatable.Builder<RegArimaSpec> {
@@ -134,8 +135,7 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
                 .type(new SingleOutlierSpec("LS", 0))
                 .build();
 
-        RG0 = RegArimaSpec.builder()
-                .build();
+        RG0 = RegArimaSpec.DEFAULT_ENABLED;
 
         RG1 = RegArimaSpec.builder()
                 .transform(tr)

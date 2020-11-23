@@ -1,7 +1,7 @@
 /*
- * Copyright 2018 National Bank of Belgium
+ * Copyright 2016 National Bank of Belgium
  * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
@@ -14,30 +14,20 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries;
+package demetra.sa.io.xml.legacy.benchmarking;
 
-import java.util.Map;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
 
-/**
- *
- * @author Philippe Charles
- * @param <DATA>
- */
-public interface TsResource<DATA> {
 
-    @NonNull
-    TsMoniker getMoniker();
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "BenchmarkingMethodType")
+@XmlSeeAlso({
+    XmlUnivariateCholetteMethod.class
+})
+public abstract class XmlBenchmarkingMethod {
 
-    @NonNull
-    TsInformationType getType();
 
-    @NonNull
-    String getName();
-
-    @NonNull
-    Map<String, String> getMeta();
-
-    @NonNull
-    DATA getData();
 }

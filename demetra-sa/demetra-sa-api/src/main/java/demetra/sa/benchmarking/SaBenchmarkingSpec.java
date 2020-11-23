@@ -61,7 +61,8 @@ public final class SaBenchmarkingSpec implements Validatable<SaBenchmarkingSpec>
     @lombok.NonNull
     private BiasCorrection biasCorrection;
 
-    public static final SaBenchmarkingSpec DEFAULT = SaBenchmarkingSpec.builder().build();
+    public static final SaBenchmarkingSpec DEFAULT_DISABLED = SaBenchmarkingSpec.builder().build();
+    public static final SaBenchmarkingSpec DEFAULT_ENABLED = SaBenchmarkingSpec.builder().enabled(true).build();
 
     @LombokWorkaround
     public static Builder builder() {
@@ -77,10 +78,6 @@ public final class SaBenchmarkingSpec implements Validatable<SaBenchmarkingSpec>
     @Override
     public SaBenchmarkingSpec validate() throws IllegalArgumentException {
         return this;
-    }
-
-    public boolean isDefault() {
-        return this.equals(DEFAULT);
     }
 
     public static class Builder implements Validatable.Builder<SaBenchmarkingSpec> {

@@ -243,8 +243,8 @@ public class XmlTramoSpec
     public static TramoSpec unmarshal(XmlTramoSpec xml) {
         TramoSpec.Builder builder = TramoSpec.builder();
         TransformSpec.Builder tbuilder = TransformSpec.builder();
-        tbuilder=XmlSeriesSpec.unmarshal(xml.series, tbuilder);
-        tbuilder=XmlTransformationSpec.unmarshal(xml.transformation, tbuilder);
+        tbuilder = XmlSeriesSpec.unmarshal(xml.series, tbuilder);
+        tbuilder = XmlTransformationSpec.unmarshal(xml.transformation, tbuilder);
 
         if (xml.arima != null) {
             builder = builder.arima(XmlArimaSpec.unmarshal(xml.arima));
@@ -260,6 +260,12 @@ public class XmlTramoSpec
                 .estimate(XmlEstimationSpec.unmarshal(xml.estimation))
                 .outliers(XmlOutliersSpec.unmarshal(xml.outliers))
                 .build();
+    }
+
+    public static XmlTramoSpec marshal(TramoSpec v) {
+        XmlTramoSpec xml = new XmlTramoSpec();
+        marshal(v, xml);
+        return xml;
     }
 
     public static boolean marshal(TramoSpec v, XmlTramoSpec xml) {

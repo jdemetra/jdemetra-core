@@ -41,7 +41,7 @@ import javax.xml.bind.annotation.XmlType;
     "arima",
     "autoModelling"
 })
-public class XmlRegArimaSpecification extends XmlModellingSpecification {
+public class XmlRegArimaSpec extends XmlModellingSpecification {
 
     @XmlElement(name = "Series")
     protected XmlSeriesSpec series;
@@ -124,7 +124,9 @@ public class XmlRegArimaSpecification extends XmlModellingSpecification {
         this.autoModelling = autoModelling;
     }
 
-    public static final RegArimaSpec unmarshal(XmlRegArimaSpecification xml) {
+    public static final RegArimaSpec unmarshal(XmlRegArimaSpec xml) {
+        if (xml == null)
+            return RegArimaSpec.DEFAULT_DISABLED;
         RegressionSpec.Builder rbuilder = XmlRegressionSpec.unmarshal(xml.regression, RegressionSpec.builder());
         if (xml.calendar != null) {
             rbuilder = rbuilder.tradingDays(XmlTradingDaysSpec.unmarshal(xml.calendar.tradingDays))
@@ -141,8 +143,10 @@ public class XmlRegArimaSpecification extends XmlModellingSpecification {
                 .build();
     }
 
-    public static final XmlRegArimaSpecification marshal(RegArimaSpec v) {
-        XmlRegArimaSpecification xml=new XmlRegArimaSpecification();
+    public static final XmlRegArimaSpec marshal(RegArimaSpec v) {
+        if (! v.getBasic().isPreProcessing())
+            return null;
+        XmlRegArimaSpec xml=new XmlRegArimaSpec();
         xml.series = XmlSeriesSpec.marshal(v.getBasic());
         xml.transformation = XmlTransformationSpec.marshal(v.getTransform());
         xml.estimation = XmlEstimationSpec.marshal(v.getEstimate());

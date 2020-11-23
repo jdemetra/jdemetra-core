@@ -55,9 +55,9 @@ public class X13Spec implements Validatable<X13Spec>, SaSpecification {
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
-                .regArima(RegArimaSpec.builder().build())
-                .x11(X11Spec.builder().build())
-                .benchmarking(SaBenchmarkingSpec.builder().build());
+                .regArima(RegArimaSpec.DEFAULT_ENABLED)
+                .x11(X11Spec.DEFAULT)
+                .benchmarking(SaBenchmarkingSpec.DEFAULT_DISABLED);
     }
 
     public boolean isDefault() {
