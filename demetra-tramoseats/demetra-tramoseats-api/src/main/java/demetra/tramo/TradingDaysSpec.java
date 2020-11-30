@@ -18,7 +18,7 @@ package demetra.tramo;
 
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import nbbrd.design.Development;
-import demetra.timeseries.regression.TradingDaysType;
+import demetra.timeseries.calendars.TradingDaysType;
 import demetra.util.Validatable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

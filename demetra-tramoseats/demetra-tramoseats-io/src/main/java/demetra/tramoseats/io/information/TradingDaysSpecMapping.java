@@ -19,7 +19,7 @@ package demetra.tramoseats.io.information;
 import demetra.information.InformationSet;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.tramo.RegressionTestType;
-import demetra.timeseries.regression.TradingDaysType;
+import demetra.timeseries.calendars.TradingDaysType;
 import demetra.tramo.TradingDaysSpec;
 import java.util.Map;
 

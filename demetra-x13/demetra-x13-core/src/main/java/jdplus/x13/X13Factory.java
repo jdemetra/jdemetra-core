@@ -24,7 +24,7 @@ import demetra.sa.SaSpecification;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.EasterVariable;
 import demetra.timeseries.regression.IOutlier;
-import demetra.timeseries.regression.TradingDaysType;
+import demetra.timeseries.calendars.TradingDaysType;
 import demetra.timeseries.regression.Variable;
 import demetra.x11.X11Results;
 import demetra.x11.X11Spec;
