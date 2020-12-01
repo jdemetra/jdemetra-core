@@ -18,7 +18,9 @@ package demetra.tramoseats.r;
 
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
+import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TramoSpec;
+import demetra.util.r.Dictionary;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import jdplus.regarima.extractors.ModelEstimationExtractor;
@@ -60,4 +62,10 @@ public class Tramo {
         return new Results(estimation);
     }
     
+    public Results process(TsData series, TramoSpec spec, Dictionary dic){
+        ModellingContext context=dic == null ? null : dic.toContext();
+        TramoKernel tramo= TramoKernel.of(spec, context);
+        ModelEstimation estimation = tramo.process(series, null);
+        return new Results(estimation);
+    }
 }

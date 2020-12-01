@@ -17,10 +17,10 @@
 package demetra.timeseries.r;
 
 import demetra.data.AggregationType;
-import demetra.timeseries.TsPeriod;
-import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
+import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 
 /**
