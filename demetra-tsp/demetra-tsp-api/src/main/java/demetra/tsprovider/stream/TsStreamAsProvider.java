@@ -24,7 +24,7 @@ import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.HasDataMoniker;
 import demetra.timeseries.TsMoniker;
-import demetra.tsprovider.TsProvider;
+import demetra.timeseries.TsProvider;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import java.io.IOException;
 import java.io.UncheckedIOException;
