@@ -18,7 +18,7 @@ package demetra.bridge;
 
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsCollection;
-import demetra.tsprovider.TsProvider;
+import demetra.timeseries.TsProvider;
 import ec.tss.ITsProvider;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;

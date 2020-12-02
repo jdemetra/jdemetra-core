@@ -22,7 +22,7 @@ import demetra.tsprovider.DataSourceLoader;
 import demetra.tsprovider.HasDataMoniker;
 import demetra.tsprovider.HasDataSourceBean;
 import demetra.tsprovider.HasDataSourceMutableList;
-import demetra.tsprovider.TsProvider;
+import demetra.timeseries.TsProvider;
 import demetra.tsprovider.cube.CubeAccessor;
 import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.CubeSupport;

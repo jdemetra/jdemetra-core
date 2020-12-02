@@ -14,12 +14,8 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.tsprovider;
+package demetra.timeseries;
 
-import demetra.timeseries.TsCollection;
-import demetra.timeseries.TsInformationType;
-import demetra.timeseries.Ts;
-import demetra.timeseries.TsMoniker;
 import nbbrd.service.ServiceDefinition;
 import nbbrd.design.ThreadSafe;
 import java.io.IOException;

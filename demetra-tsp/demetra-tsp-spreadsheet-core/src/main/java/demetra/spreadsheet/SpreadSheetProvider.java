@@ -16,6 +16,7 @@
  */
 package demetra.spreadsheet;
 
+import demetra.timeseries.TsProvider;
 import nbbrd.design.DirectImpl;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
@@ -25,7 +26,6 @@ import demetra.tsprovider.HasDataMoniker;
 import demetra.tsprovider.HasDataSourceBean;
 import demetra.tsprovider.HasDataSourceMutableList;
 import demetra.tsprovider.HasFilePaths;
-import demetra.tsprovider.TsProvider;
 import demetra.tsprovider.stream.TsStreamAsProvider;
 import demetra.tsprovider.grid.GridReader;
 import demetra.tsprovider.util.FallbackDataMoniker;
