@@ -49,7 +49,7 @@ public class SeatsKernelTest {
 
         SeatsToolkit toolkit = SeatsToolkit.of(cmps);
         SeatsKernel kernel = new SeatsKernel(toolkit);
-        ProcessingLog log = new ProcessingLog();
+        ProcessingLog log = ProcessingLog.dummy();
         SeatsResults rslt = kernel.process(model, log);
         assertTrue(rslt != null);
 //        log.all().forEach(v -> System.out.println(v));
@@ -71,7 +71,7 @@ public class SeatsKernelTest {
 
         SeatsToolkit toolkit = SeatsToolkit.of(cmps);
         SeatsKernel kernel = new SeatsKernel(toolkit);
-        ProcessingLog log = new ProcessingLog();
+        ProcessingLog log = ProcessingLog.dummy();
         SeatsResults rslt = kernel.process(model, log);
         assertTrue(rslt != null);
 //        log.all().forEach(v -> System.out.println(v));
@@ -97,7 +97,7 @@ public class SeatsKernelTest {
 
         SeatsToolkit toolkit = SeatsToolkit.of(cmps);
         SeatsKernel kernel = new SeatsKernel(toolkit);
-        ProcessingLog log = new ProcessingLog();
+        ProcessingLog log = ProcessingLog.dummy();
         SeatsResults rslt = kernel.process(model, log);
         assertTrue(rslt != null);
 //        log.all().forEach(v -> System.out.println(v));

@@ -38,7 +38,7 @@ public class RegSarimaModelling {
     private final ProcessingLog log;
     
     public static RegSarimaModelling of(ModelDescription desc){
-        return new RegSarimaModelling(desc, null, null);
+        return new RegSarimaModelling(desc, null, ProcessingLog.dummy());
     }
 
     public static RegSarimaModelling of(ModelDescription desc, ProcessingLog log){
@@ -47,7 +47,7 @@ public class RegSarimaModelling {
 
     public static RegSarimaModelling copyOf(RegSarimaModelling modelling){
         return new RegSarimaModelling(ModelDescription.copyOf(modelling.description),
-        modelling.estimation, null);
+        modelling.estimation, ProcessingLog.dummy());
     }
 
     public void estimate(IRegArimaProcessor<SarimaModel> processor) {

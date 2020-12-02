@@ -16,6 +16,7 @@
  */
 package jdplus.x13.regarima.spi;
 
+import demetra.processing.DefaultProcessingLog;
 import demetra.processing.ProcessingLog;
 import demetra.regarima.RegArima;
 import demetra.regarima.RegArimaSpec;
@@ -38,7 +39,7 @@ public class RegArimaComputer implements RegArima.Processor{
     @Override
     public RegSarimaResults process(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems) {
         RegArimaKernel processor = RegArimaKernel.of(spec, context);
-        ProcessingLog log=new ProcessingLog();
+        DefaultProcessingLog log=new DefaultProcessingLog();
         ModelEstimation rslt = processor.process(series, log);
         // TODO: fill details
         return RegSarimaResults.builder()

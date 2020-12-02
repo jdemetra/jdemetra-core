@@ -17,6 +17,7 @@
 package jdplus.x13;
 
 import demetra.data.Data;
+import demetra.processing.DefaultProcessingLog;
 import demetra.processing.ProcessingLog;
 import demetra.x13.X13Spec;
 import ec.tstoolkit.algorithm.CompositeResults;
@@ -45,7 +46,7 @@ public class MstatisticsTest {
     
     private void process(int bdrop, int edrop){
         X13Kernel x13=X13Kernel.of(X13Spec.RSA4, null);
-        ProcessingLog log=new ProcessingLog();
+        DefaultProcessingLog log=new DefaultProcessingLog();
         X13Results rslt = x13.process(Data.TS_PROD.drop(bdrop, edrop), log);
         Mstatistics m=rslt.getMstatistics();
         

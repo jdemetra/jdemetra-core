@@ -39,7 +39,7 @@ import demetra.timeseries.regression.LevelShift;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.StockTradingDays;
-import demetra.timeseries.regression.TradingDaysType;
+import demetra.timeseries.calendars.TradingDaysType;
 import demetra.timeseries.regression.TransitoryChange;
 import jdplus.regsarima.regular.IModelBuilder;
 import jdplus.regsarima.regular.ModelDescription;

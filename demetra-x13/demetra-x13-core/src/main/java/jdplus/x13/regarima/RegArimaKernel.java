@@ -207,6 +207,8 @@ public class RegArimaKernel implements RegSarimaProcessor {
 
     @Override
     public ModelEstimation process(TsData originalTs, ProcessingLog log) {
+        if (log == null)
+            log=ProcessingLog.dummy();
         clear();
         ModelDescription desc = modelBuilder.build(originalTs, null);
         if (desc == null) {

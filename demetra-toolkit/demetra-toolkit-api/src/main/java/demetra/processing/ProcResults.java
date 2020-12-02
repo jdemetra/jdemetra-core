@@ -58,6 +58,10 @@ public interface ProcResults {
      * @return null if this information is not available
      */
     <T> T getData(String id, Class<T> tclass);
+    
+    default Object getData(String id){
+        return getData(id, Object.class);
+    }
 
     /**
      * Gets all information corresponding to the given pattern and with the

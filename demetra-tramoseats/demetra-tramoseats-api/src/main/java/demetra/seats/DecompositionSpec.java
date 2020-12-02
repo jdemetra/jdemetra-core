@@ -67,8 +67,7 @@ public final class DecompositionSpec implements Validatable<DecompositionSpec> {
                 .biasCorrection(BiasCorrection.Legacy)
                 .method(ComponentsEstimationMethod.Burman)
                 .forecastCount(DEF_FORECASTS)
-                .backcastCount(DEF_BACKCASTS)
-                ;
+                .backcastCount(DEF_BACKCASTS);
         
         
     }

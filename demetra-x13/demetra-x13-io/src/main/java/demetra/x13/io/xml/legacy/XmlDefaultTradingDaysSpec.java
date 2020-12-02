@@ -19,7 +19,7 @@ package demetra.x13.io.xml.legacy;
 import demetra.modelling.RegressionTestSpec;
 import demetra.regarima.TradingDaysSpec;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.regression.TradingDaysType;
+import demetra.timeseries.calendars.TradingDaysType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;

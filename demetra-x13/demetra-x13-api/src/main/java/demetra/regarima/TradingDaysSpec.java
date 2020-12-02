@@ -20,7 +20,7 @@ import nbbrd.design.Development;
 import demetra.modelling.ChangeOfRegimeSpec;
 import demetra.modelling.RegressionTestSpec;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.regression.TradingDaysType;
+import demetra.timeseries.calendars.TradingDaysType;
 import demetra.util.Validatable;
 import lombok.NonNull;
 

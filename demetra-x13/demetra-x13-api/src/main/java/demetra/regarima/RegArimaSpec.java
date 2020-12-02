@@ -22,7 +22,7 @@ import nbbrd.design.LombokWorkaround;
 import demetra.modelling.RegressionTestSpec;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.regression.TradingDaysType;
+import demetra.timeseries.calendars.TradingDaysType;
 import demetra.util.Validatable;
 import lombok.NonNull;
 

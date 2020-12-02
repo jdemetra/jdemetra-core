@@ -16,6 +16,7 @@
  */
 package jdplus.tramoseats.spi;
 
+import demetra.processing.DefaultProcessingLog;
 import demetra.processing.ProcessingLog;
 import demetra.seats.Seats;
 import demetra.seats.SeatsResults;
@@ -37,7 +38,7 @@ public class SeatsProcessor implements Seats.Processor{
         // TODO Handling of additional items
         SeatsToolkit toolkit=SeatsToolkit.of(spec.getDecompositionSpec());
         SeatsKernel kernel=new SeatsKernel(toolkit);
-        ProcessingLog log =new ProcessingLog();
+        DefaultProcessingLog log =new DefaultProcessingLog();
         jdplus.seats.SeatsResults rslts = kernel.process(spec.getModelSpec(), log);
         return ApiUtility.toApi(rslts);
     }

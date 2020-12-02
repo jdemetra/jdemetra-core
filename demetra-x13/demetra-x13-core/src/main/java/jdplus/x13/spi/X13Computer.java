@@ -16,6 +16,7 @@
  */
 package jdplus.x13.spi;
 
+import demetra.processing.DefaultProcessingLog;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
@@ -38,7 +39,7 @@ public class X13Computer implements X13.Processor {
     @Override
     public X13Results process(TsData series, X13Spec spec, ModellingContext context, List<String> additionalItems) {
         X13Kernel x13 = X13Kernel.of(spec, context);
-        ProcessingLog log = new ProcessingLog();
+        DefaultProcessingLog log = new DefaultProcessingLog();
         jdplus.x13.X13Results rslt = x13.process(series, log);
         // Handling of additional items
         X13Results.Builder builder = X13Results.builder();

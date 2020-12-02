@@ -20,7 +20,7 @@ import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.tramo.RegressionTestType;
-import demetra.timeseries.regression.TradingDaysType;
+import demetra.timeseries.calendars.TradingDaysType;
 import demetra.timeseries.regression.Variable;
 import demetra.tramo.AutoModelSpec;
 import demetra.tramo.CalendarSpec;

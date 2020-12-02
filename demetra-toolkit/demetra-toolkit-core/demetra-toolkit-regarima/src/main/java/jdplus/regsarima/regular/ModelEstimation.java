@@ -58,7 +58,7 @@ public final class ModelEstimation {
 
     // Missing values correspond to the positions in the domain of the series !
     private final int[] missing;
-    private final Variable[] variables;
+    private final @lombok.NonNull Variable[] variables;
 
     private RegArimaModel<SarimaModel> model;
     private ConcentratedLikelihoodWithMissing concentratedLikelihood;

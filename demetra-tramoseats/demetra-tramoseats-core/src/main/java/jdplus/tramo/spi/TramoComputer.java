@@ -16,6 +16,7 @@
  */
 package jdplus.tramo.spi;
 
+import demetra.processing.DefaultProcessingLog;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
@@ -37,7 +38,7 @@ public class TramoComputer implements Tramo.Processor{
     @Override
     public RegSarimaResults process(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems) {
         jdplus.tramo.TramoKernel processor = jdplus.tramo.TramoKernel.of(spec, context);
-        ProcessingLog log=new ProcessingLog();
+        DefaultProcessingLog log=new DefaultProcessingLog();
         ModelEstimation rslt = processor.process(series, log);
         // TODO: fill details
         return RegSarimaResults.builder()
