@@ -29,11 +29,11 @@ public class TramoSeatsFactoryTest {
     @Test
     public void testUpdateSpec() {
         TramoSeatsKernel ts = TramoSeatsKernel.of(TramoSeatsSpec.RSAfull, null);
-        ProcessingLog log = new ProcessingLog();
+        ProcessingLog log = ProcessingLog.dummy();
         TramoSeatsResults rslt = ts.process(Data.TS_PROD, log);
         assertTrue(rslt.getFinals() != null);
         TramoSeatsSpec nspec = TramoSeatsFactory.INSTANCE.of(TramoSeatsSpec.RSAfull, rslt);
-        log = new ProcessingLog();
+        log = ProcessingLog.dummy();
         System.out.println(nspec);
         ts = TramoSeatsKernel.of(nspec, null);
         TramoSeatsResults rslt2 = ts.process(Data.TS_PROD, log);
@@ -46,7 +46,7 @@ public class TramoSeatsFactoryTest {
     
     @Test
     public void testProcessor(){
-        ProcessingLog log=new ProcessingLog();
+        ProcessingLog log=ProcessingLog.dummy();
         TramoSeatsResults rslts = (TramoSeatsResults) TramoSeatsFactory.INSTANCE.processor(TramoSeatsSpec.RSAfull).process(Data.TS_PROD, null, log);
         
     }

@@ -56,6 +56,8 @@ public class TramoSeatsKernel {
     }
 
     public TramoSeatsResults process(TsData s, ProcessingLog log) {
+        if (log == null)
+            log=ProcessingLog.dummy();
         // Step 0. Preliminary checks
         TsData sc = preliminary.check(s, log);
         // Step 1. Tramo

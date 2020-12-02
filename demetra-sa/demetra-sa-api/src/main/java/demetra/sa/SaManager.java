@@ -17,6 +17,7 @@
 package demetra.sa;
 
 import demetra.information.InformationSet;
+import demetra.processing.DefaultProcessingLog;
 import demetra.processing.ProcDiagnostic;
 import demetra.processing.ProcResults;
 import demetra.processing.ProcessingLog;
@@ -48,13 +49,13 @@ public class SaManager {
         for (SaProcessingFactory fac : all){
             SaSpecification dspec=fac.decode(spec);
             if (dspec != null){
-                ProcessingLog log= new ProcessingLog();
+                ProcessingLog log= new DefaultProcessingLog();
                 SaProcessor processor = fac.processor(dspec);
                 ProcResults rslt = processor.process(def.getTs().getData(), context, log);
                 InformationSet diagnostics = fac.diagnosticsOf(rslt);
                 return SaEstimation.builder()
                         .results(rslt)
-                        .log(verbose ? log : null)
+                        .log(verbose ? log : ProcessingLog.dummy())
                         .diagnostics(diagnostics)
                         .quality(ProcDiagnostic.summary(diagnostics))
                         .build();

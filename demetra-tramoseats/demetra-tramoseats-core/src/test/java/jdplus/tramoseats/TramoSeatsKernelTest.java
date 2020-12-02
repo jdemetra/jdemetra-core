@@ -24,7 +24,7 @@ public class TramoSeatsKernelTest {
     @Test
     public void testProd() {
         TramoSeatsKernel ts = TramoSeatsKernel.of(TramoSeatsSpec.RSAfull, null);
-        ProcessingLog log=new ProcessingLog();
+        ProcessingLog log=ProcessingLog.dummy();
         TramoSeatsResults rslt = ts.process(Data.TS_PROD, log);
         assertTrue(rslt.getFinals() != null);
         System.out.println(rslt.getFinals());

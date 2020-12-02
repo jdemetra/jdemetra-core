@@ -17,6 +17,7 @@
 package jdplus.x13;
 
 import demetra.data.Data;
+import demetra.processing.DefaultProcessingLog;
 import demetra.processing.ProcQuality;
 import demetra.processing.ProcessingLog;
 import demetra.sa.SaDefinition;
@@ -40,11 +41,11 @@ public class X13FactoryTest {
     @Test
     public void testUpdatePoint() {
         X13Kernel x13=X13Kernel.of(X13Spec.RSA4, null);
-        ProcessingLog log=new ProcessingLog();
+        ProcessingLog log=ProcessingLog.dummy();
         X13Results rslt = x13.process(Data.TS_PROD, log);
         assertTrue(rslt.getFinals() != null);
         X13Spec nspec = X13Factory.INSTANCE.of(X13Spec.RSA4, rslt);
-        log = new ProcessingLog();
+        log = new DefaultProcessingLog();
         System.out.println(nspec);
         x13 = X13Kernel.of(nspec, null);
         X13Results rslt2 = x13.process(Data.TS_PROD, log);

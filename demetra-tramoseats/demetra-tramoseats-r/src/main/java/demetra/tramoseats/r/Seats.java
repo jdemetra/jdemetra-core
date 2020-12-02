@@ -8,6 +8,7 @@ package demetra.tramoseats.r;
 import demetra.arima.SarimaSpec;
 import demetra.data.DoubleSeq;
 import demetra.information.InformationMapping;
+import demetra.processing.DefaultProcessingLog;
 import demetra.processing.ProcResults;
 import demetra.processing.ProcessingLog;
 import demetra.seats.DecompositionSpec;
@@ -79,7 +80,7 @@ public class Seats {
 
         SeatsToolkit toolkit = SeatsToolkit.of(dspec);
         SeatsKernel kernel = new SeatsKernel(toolkit);
-        ProcessingLog plog = new ProcessingLog();
+        ProcessingLog plog = new DefaultProcessingLog();
         return new Results(kernel.process(model, plog));
     }
 

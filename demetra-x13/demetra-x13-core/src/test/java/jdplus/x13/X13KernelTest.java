@@ -27,7 +27,7 @@ public class X13KernelTest {
     @Test
     public void testProd() {
         X13Kernel x13=X13Kernel.of(X13Spec.RSA4, null);
-        ProcessingLog log=new ProcessingLog();
+        ProcessingLog log=ProcessingLog.dummy();
         X13Results rslt = x13.process(Data.TS_PROD, log);
         
         List<TsData> all=new ArrayList<>();

@@ -210,18 +210,16 @@ public class TramoKernel implements RegSarimaProcessor {
 
     @Override
     public ModelEstimation process(TsData originalTs, ProcessingLog log) {
-        if (log != null) {
-            log.push(TRAMO);
-        }
+        if (log == null)
+            log=ProcessingLog.dummy();
+        log.push(TRAMO);
         ModelDescription desc = build(originalTs, null);
         if (desc == null) {
             throw new TramoException("Initialization failed");
         }
         RegSarimaModelling modelling = RegSarimaModelling.of(desc, log);
         ModelEstimation rslt = ami(modelling, log);
-        if (log != null) {
-            log.pop();
-        }
+        log.pop();
         return rslt;
     }
 

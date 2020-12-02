@@ -31,7 +31,7 @@ import jdplus.sarima.SarimaModel;
 
 /**
  * Identification of log/level transformation
- * 
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
@@ -51,19 +51,21 @@ public class LogLevelModule implements ILogLevelModule {
         private LengthOfPeriodType preadjust = LengthOfPeriodType.None;
 
         /**
-         * When a pre-adjustment is specified, the model in logs is computed as follows:
+         * When a pre-adjustment is specified, the model in logs is computed as
+         * follows:
          * - if the regression variables contain a length of period/leap year,
-         * this variable (which must be named "lp") is removed and the specified 
+         * this variable (which must be named "lp") is removed and the specified
          * pre-adjustment is used instead.
-         * - otherwise, the model is not modified (same model for logs and levels)
-         * 
-         * The likelihood is automatically adjusted to take into account 
+         * - otherwise, the model is not modified (same model for logs and
+         * levels)
+         *
+         * The likelihood is automatically adjusted to take into account
          * possible transformations
-         * 
+         *
          * This feature is new in JD+ 3.0
-         * 
+         *
          * @param preadjust
-         * @return 
+         * @return
          * @since ("3.0")
          */
         public Builder preadjust(LengthOfPeriodType preadjust) {
@@ -75,8 +77,9 @@ public class LogLevelModule implements ILogLevelModule {
          * Precision used in the estimation of the models (1e-5 by default).
          * In most cases, the precision can be smaller than for the estimation
          * of the final model.
+         *
          * @param eps
-         * @return 
+         * @return
          */
         public Builder estimationPrecision(double eps) {
             this.precision = eps;
@@ -87,8 +90,9 @@ public class LogLevelModule implements ILogLevelModule {
          * Correction on the AICc of the model in logs.
          * Negative corrections will favour logs (-2 by default)
          * Same as aiccdiff in the original fortran program
-         * @param aiccdiff 
-         * @return 
+         *
+         * @param aiccdiff
+         * @return
          */
         public Builder aiccLogCorrection(double aiccdiff) {
             this.aiccdiff = aiccdiff;
@@ -137,9 +141,7 @@ public class LogLevelModule implements ILogLevelModule {
         clear();
         ProcessingLog logs = modelling.getLog();
         try {
-            if (logs != null) {
-                logs.push(LL);
-            }
+            logs.push(LL);
             ModelDescription model = modelling.getDescription();
             if (model.getSeries().getValues().anyMatch(z -> z <= 0)) {
                 return ProcessingResult.Failed;
@@ -155,15 +157,11 @@ public class LogLevelModule implements ILogLevelModule {
             log = logmodel.estimate(processor);
             if (level != null) {
                 aiccLevel = level.statistics().getAICC();
-                if (logs != null) {
-                    logs.info("level", level.statistics());
-                }
+                logs.info("level", level.statistics());
             }
             if (log != null) {
                 aiccLog = log.statistics().getAICC();
-                if (logs != null) {
-                    logs.info("level", level.statistics());
-                }
+                logs.info("level", level.statistics());
             }
             if (isChoosingLog()) {
                 modelling.set(logmodel, log);
@@ -172,10 +170,7 @@ public class LogLevelModule implements ILogLevelModule {
                 return ProcessingResult.Unchanged;
             }
         } finally {
-            if (logs != null) {
-                logs.pop();
-            }
-
+            logs.pop();
         }
     }
 

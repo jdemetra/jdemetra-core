@@ -26,7 +26,6 @@ import demetra.seats.DecompositionSpec;
 import demetra.seats.SeatsSpec;
 import demetra.tramo.TramoSpec;
 import demetra.util.Validatable;
-import java.util.Map;
 
 /**
  *
@@ -119,6 +118,34 @@ public final class TramoSeatsSpec implements Validatable<TramoSeatsSpec>, SaSpec
                 .tramo(TramoSpec.TRfull)
                 .seats(DecompositionSpec.DEFAULT)
                 .build();
+    }
+
+    public static TramoSeatsSpec fromString(String name) {
+        switch (name) {
+            case "RSA0":
+            case "rsa0":
+                return RSA0;
+            case "RSA1":
+            case "rsa1":
+                return RSA1;
+            case "RSA2":
+            case "rsa2":
+                return RSA2;
+            case "RSA3":
+            case "rsa3":
+                return RSA3;
+            case "RSA4":
+            case "rsa4":
+                return RSA4;
+            case "RSA5":
+            case "rsa5":
+                return RSA5;
+            case "RSAfull":
+            case "rsafull":
+                return RSAfull;
+            default:
+                throw new TramoSeatsException();
+        }
     }
     //</editor-fold>
 }

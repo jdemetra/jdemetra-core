@@ -58,14 +58,14 @@ public class Tramo {
     public Results process(TsData series, String defSpec){
         TramoSpec spec=TramoSpec.fromString(defSpec);
         TramoKernel tramo= TramoKernel.of(spec, null);
-        ModelEstimation estimation = tramo.process(series, null);
+        ModelEstimation estimation = tramo.process(series.cleanExtremities(), null);
         return new Results(estimation);
     }
     
     public Results process(TsData series, TramoSpec spec, Dictionary dic){
         ModellingContext context=dic == null ? null : dic.toContext();
         TramoKernel tramo= TramoKernel.of(spec, context);
-        ModelEstimation estimation = tramo.process(series, null);
+        ModelEstimation estimation = tramo.process(series.cleanExtremities(), null);
         return new Results(estimation);
     }
 }

@@ -291,18 +291,25 @@ public final class TramoSpec implements Validatable<TramoSpec> {
     public static TramoSpec fromString(String name) {
         switch (name) {
             case "TR0":
+            case "tr0":
                 return TR0;
             case "TR1":
+            case "tr1":
                 return TR1;
             case "TR2":
+            case "tr2":
                 return TR2;
             case "TR3":
+            case "tr3":
                 return TR3;
             case "TR4":
+            case "tr4":
                 return TR4;
             case "TR5":
+            case "tr5":
                 return TR5;
             case "TRfull":
+            case "trfull":
                 return TRfull;
             default:
                 throw new TramoException();

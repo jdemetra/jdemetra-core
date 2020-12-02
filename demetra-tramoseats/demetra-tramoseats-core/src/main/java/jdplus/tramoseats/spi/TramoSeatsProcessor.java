@@ -16,7 +16,7 @@
  */
 package jdplus.tramoseats.spi;
 
-import demetra.processing.ProcessingLog;
+import demetra.processing.DefaultProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramoseats.TramoSeats;
@@ -37,7 +37,7 @@ public class TramoSeatsProcessor implements TramoSeats.Processor {
     @Override
     public TramoSeatsResults process(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> additionalItems) {
         TramoSeatsKernel tramoseats = TramoSeatsKernel.of(spec, context);
-        ProcessingLog log = new ProcessingLog();
+        DefaultProcessingLog log = new DefaultProcessingLog();
         jdplus.tramoseats.TramoSeatsResults rslt = tramoseats.process(series, log);
         // Handling of additional items
         TramoSeatsResults.Builder builder = TramoSeatsResults.builder();

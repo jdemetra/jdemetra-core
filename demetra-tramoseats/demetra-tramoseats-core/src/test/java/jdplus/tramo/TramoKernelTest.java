@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
-import org.junit.Ignore;
 import demetra.data.Doubles;
+import demetra.processing.DefaultProcessingLog;
 import demetra.processing.ProcessingLog;
 import demetra.tramo.CalendarSpec;
 import demetra.tramo.RegressionSpec;
@@ -110,7 +110,7 @@ public class TramoKernelTest {
 
     @Test
     public void testProd() {
-        ProcessingLog log=new ProcessingLog();
+        DefaultProcessingLog log=new DefaultProcessingLog();
         TramoKernel processor = TramoKernel.of(TramoSpec.TRfull, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(data));
