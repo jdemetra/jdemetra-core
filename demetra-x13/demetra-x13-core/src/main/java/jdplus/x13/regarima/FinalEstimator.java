@@ -56,6 +56,7 @@ public class FinalEstimator implements IModelEstimator {
                         .minimizer(LevenbergMarquardtMinimizer.builder())
                         .precision(eps)
                         .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
+                        .computeExactFinalDerivatives(true)
                         .build();
                 context.getDescription().getArimaComponent().clearFreeParameters();
                 context.estimate(processor);

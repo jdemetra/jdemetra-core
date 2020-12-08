@@ -395,7 +395,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         RegArimaEstimation finalRslt = RegArimaEstimation.<SarimaModel>builder()
                 .model(nmodel)
                 .concentratedLikelihood(ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nmodel))
-                .max(new LogLikelihoodFunction.Point(llFunction(regs, mapping), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()))
+                .max(new LogLikelihoodFunction.Point(llFunction(regs, mapping), rslt.getParameters(), rslt.getScore(), rslt.getInformation()))
                 .build();
         return finalProcessing ? finalProcessing(finalRslt, mapping) : finalRslt;
     }

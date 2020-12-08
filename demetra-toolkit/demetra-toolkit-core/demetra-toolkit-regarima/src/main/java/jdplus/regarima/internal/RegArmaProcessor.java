@@ -19,13 +19,12 @@ package jdplus.regarima.internal;
 import jdplus.regarima.RegArmaModel;
 import jdplus.arima.IArimaModel;
 import jdplus.math.functions.IFunctionDerivatives;
-import jdplus.math.functions.IParametricMapping;
-import jdplus.math.functions.NumericalDerivatives;
-import jdplus.math.functions.ssq.SsqProxyFunctionPoint;
 import jdplus.math.matrices.Matrix;
 import jdplus.arima.estimation.IArimaMapping;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
+import jdplus.data.DataBlock;
+import jdplus.likelihood.DefaultLikelihoodEvaluation;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 
 /**
@@ -54,16 +53,36 @@ public class RegArmaProcessor {
 
         boolean ok = minimizer.minimize(fn.ssqEvaluate(start));
         RegArmaSsqFunction.Evaluation<S> rslt = (RegArmaSsqFunction.Evaluation<S>) minimizer.getResult();
-        double objective = rslt.getSsqE();
+        double objective;
         Matrix hessian;
         double[] gradient;
         if (fast) {
             gradient = minimizer.gradientAtMinimum().toArray();
             hessian = minimizer.curvatureAtMinimum();
+            objective = rslt.getSsqE();
         } else {
-            IFunctionDerivatives derivatives = new NumericalDerivatives(new SsqProxyFunctionPoint(rslt), false);
-            hessian = derivatives.hessian();
+            // we have to compute the Hessian of the Arma model build on the residuals
+            // otherwise, we might under-estimate the T-Stats.
+            // the differences are usually very small;
+            // it is normal: coeff and params are asymptotically independent...
+            DataBlock res = model.asLinearModel().calcResiduals(rslt.getLikelihood().allCoefficients());
+            int nm = model.getMissingCount();
+            Matrix xm = Matrix.EMPTY;
+            if (nm > 0) {
+                Matrix x = model.getX();
+                xm = x.extract(0, x.getRowsCount(), 0, nm);
+            }
+            RegArmaFunction fnr = RegArmaFunction.builder(res)
+                    .variables(xm)
+                    .missingCount(nm)
+                    .mapping(mapping)
+                    .likelihoodEvaluation(DefaultLikelihoodEvaluation.deviance())
+                    .build();
+            RegArmaFunction.Evaluation eval = fnr.evaluate(rslt.getParameters());
+            IFunctionDerivatives derivatives = eval.derivatives();
             gradient = derivatives.gradient().toArray();
+            hessian = derivatives.hessian();
+            objective = eval.getValue();
         }
         hessian.mul((.5 * ndf) / objective);
         for (int i = 0; i < gradient.length; ++i) {
@@ -72,4 +91,5 @@ public class RegArmaProcessor {
         RegArmaModel<S> nmodel = RegArmaModel.of(model, rslt.arma);
         return new RegArmaEstimation<>(rslt.getParameters().toArray(), gradient, hessian);
     }
+
 }

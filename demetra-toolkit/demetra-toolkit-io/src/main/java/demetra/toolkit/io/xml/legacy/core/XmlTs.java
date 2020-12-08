@@ -146,7 +146,7 @@ public class XmlTs
         }
         xml.source = v.getMoniker().getSource();
         xml.identifier = v.getMoniker().getId();
-        xml.name = v.getName();
+        xml.description = v.getName();
         xml.metaData = v.getMeta();
 
         return true;
@@ -154,7 +154,7 @@ public class XmlTs
 
      public static Ts unmarshal(XmlTs xml) {
         Ts.Builder builder = Ts.builder()
-                .name(xml.name == null ? "series" : xml.name)
+                .name(xml.description == null ? "series" : xml.description)
                 .moniker(TsMoniker.of(xml.source, xml.identifier))
                 .type(xml.values != null ? TsInformationType.UserDefined : TsInformationType.None);
         if (xml.metaData != null) {

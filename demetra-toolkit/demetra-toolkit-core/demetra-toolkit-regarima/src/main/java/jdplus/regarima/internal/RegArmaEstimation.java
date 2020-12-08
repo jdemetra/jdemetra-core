@@ -16,7 +16,6 @@
  */
 package jdplus.regarima.internal;
 
-import jdplus.regarima.RegArmaModel;
 import jdplus.arima.IArimaModel;
 import jdplus.math.matrices.Matrix;
 
@@ -28,17 +27,8 @@ import jdplus.math.matrices.Matrix;
 @lombok.Value
 public class RegArmaEstimation<S extends IArimaModel> {
 
-//    /**
-//     * Differenced model
-//     */
-//    private RegArmaModel<S> model;
-//    /**
-//     * Objective function
-//     */
-//    private double objective;
-//    private boolean converged;
     private double[] parameters;
-    private double[] gradient;
-    private Matrix hessian;
+    private double[] score;
+    private Matrix information;
 //    private int degreesOfFreedom;
 }

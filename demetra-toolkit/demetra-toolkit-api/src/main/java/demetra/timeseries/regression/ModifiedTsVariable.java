@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
 import nbbrd.design.Development;
 import java.util.List;
 
@@ -27,7 +28,7 @@ import java.util.List;
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder", toBuilder = true)
 public class ModifiedTsVariable implements ITsVariable {
-
+    
     public static interface Modifier {
 
         /**
@@ -38,13 +39,13 @@ public class ModifiedTsVariable implements ITsVariable {
          */
         int redim(int dim);
     }
-
+    
     @lombok.NonNull
     ITsVariable variable;
     @lombok.Singular
     @lombok.NonNull
     List<Modifier> modifiers;
-
+    
     @Override
     public int dim() {
         int d = variable.dim();
@@ -53,5 +54,10 @@ public class ModifiedTsVariable implements ITsVariable {
         }
         return d;
     }
-
+    
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(D context) {
+        return variable.description(context);
+    }
+    
 }

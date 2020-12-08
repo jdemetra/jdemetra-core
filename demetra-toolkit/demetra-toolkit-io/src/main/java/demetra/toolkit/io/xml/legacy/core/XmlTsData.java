@@ -82,7 +82,7 @@ public class XmlTsData
     @XmlList
     protected double[] values;
     @XmlAttribute(name = "name")
-    protected String name;
+    protected String description;
 
     /**
      * Gets the value of the frequency property.
@@ -158,7 +158,7 @@ public class XmlTsData
      *
      */
     public String getName() {
-        return name;
+        return description;
     }
 
     /**
@@ -168,7 +168,7 @@ public class XmlTsData
      *
      */
     public void setName(String value) {
-        this.name = value;
+        this.description = value;
     }
 
     public static TsData unmarshal(XmlTsData xml) {

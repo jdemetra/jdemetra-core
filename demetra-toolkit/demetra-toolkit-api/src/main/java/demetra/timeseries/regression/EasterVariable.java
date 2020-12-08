@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
 import nbbrd.design.BuilderPattern;
 import demetra.timeseries.TsException;
 
@@ -82,4 +83,8 @@ public class EasterVariable implements IEasterVariable, ISystemVariable{
     private final int duration, endPosition;
     private final Correction meanCorrection;
     
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(D context){
+        return "easter";
+    }
 }

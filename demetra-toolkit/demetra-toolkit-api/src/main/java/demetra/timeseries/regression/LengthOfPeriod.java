@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
 import nbbrd.design.Development;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 
@@ -28,4 +29,8 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 public class LengthOfPeriod implements ILengthOfPeriodVariable {
     private LengthOfPeriodType type;
     
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(D context){
+        return type == LengthOfPeriodType.LeapYear ? "leap year" : "length of period";
+    }
 }

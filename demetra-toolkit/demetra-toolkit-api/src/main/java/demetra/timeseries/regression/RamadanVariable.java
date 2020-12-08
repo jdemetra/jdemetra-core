@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
 import nbbrd.design.Development;
 
 /**
@@ -25,4 +26,8 @@ import nbbrd.design.Development;
 @Development(status=Development.Status.Preliminary)
 public class RamadanVariable implements IMovingHolidayVariable{
     
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(D context) {
+        return "ramadan";
+    }
 }

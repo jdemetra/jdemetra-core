@@ -20,7 +20,6 @@ import demetra.timeseries.regression.Variable;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.transformation.LogJacobian;
-import demetra.data.ParameterType;
 import jdplus.data.interpolation.DataInterpolator;
 import nbbrd.design.Development;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;

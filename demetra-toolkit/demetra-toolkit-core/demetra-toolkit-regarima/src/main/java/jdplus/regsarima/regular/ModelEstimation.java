@@ -28,7 +28,11 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.regression.TrendConstant;
+import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
@@ -88,26 +92,35 @@ public final class ModelEstimation {
 
         SarimaComponent arima = description.getArimaComponent();
         freeParametersCount = arima.getParametersCount();
-        this.variables = description.variables().toArray(q -> new Variable[q]);
-        // fill the free coefficients
+        List<Variable> vars = description.variables().sequential().collect(Collectors.toList());
+        int nvars=(int) vars.size();
+        if (description.isMean())
+            ++nvars;
+        this.variables=new Variable[nvars];
         DoubleSeqCursor cursor = estimation.getConcentratedLikelihood().coefficients().cursor();
-        for (int i = 0; i < variables.length; ++i) {
-            int nfree = variables[i].freeCoefficientsCount();
-            if (nfree == variables[i].dim()) {
+        int k=0;
+        if (description.isMean()){
+            this.variables[k++]=Variable.variable("const", new TrendConstant(arima.getD(), arima.getBd()));
+        }
+        // fill the free coefficients
+        for (Variable var : vars) {
+            int nfree = var.freeCoefficientsCount();
+            if (nfree == var.dim()) {
                 Parameter[] p = new Parameter[nfree];
                 for (int j = 0; j < nfree; ++j) {
                     p[j] = Parameter.estimated(cursor.getAndNext());
                 }
-                variables[i] = variables[i].withCoefficient(p);
+                variables[k++] = var.withCoefficient(p);
             } else if (nfree > 0) {
-                Parameter[] p = variables[i].getCoefficients();
+                Parameter[] p = var.getCoefficients();
                 for (int j = 0; j < p.length; ++j) {
                     if (p[j].isFree()) {
                         p[j] = Parameter.estimated(cursor.getAndNext());
                     }
                 }
-                variables[i] = variables[i].withCoefficient(p);
-            }
+                variables[k++] = var.withCoefficient(p);
+            }else
+                 variables[k++] = var;
         }
 
         this.model = estimation.getModel();
@@ -312,11 +325,13 @@ public final class ModelEstimation {
         }
         DataBlock rslt = DataBlock.of(interp.getValues());
         DoubleSeqCursor c = concentratedLikelihood.coefficients().cursor();
+        int j=0;
         if (model.isMean()) {
             c.skip(1);
+            ++j;
         }
         TsDomain all = interp.getDomain();
-        for (int i = 0; i < variables.length; ++i) {
+        for (int i = j; i < variables.length; ++i) {
             Matrix xcur = Regression.matrix(all, variables[i].getCore());
             DataBlockIterator xcols = xcur.columnsIterator();
             while (xcols.hasNext()) {

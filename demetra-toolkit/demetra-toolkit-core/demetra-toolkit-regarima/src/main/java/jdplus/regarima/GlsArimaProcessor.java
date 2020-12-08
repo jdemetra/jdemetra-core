@@ -164,7 +164,7 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
         return RegArimaEstimation.<M>builder()
                 .model(nregs)
                 .concentratedLikelihood(ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nregs))
-                .max(new LogLikelihoodFunction.Point(RegArimaEstimation.concentratedLogLikelihoodFunction(mapping, regs), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()))
+                .max(new LogLikelihoodFunction.Point(RegArimaEstimation.concentratedLogLikelihoodFunction(mapping, regs), rslt.getParameters(), rslt.getScore(), rslt.getInformation()))
                 .build();
     }
 

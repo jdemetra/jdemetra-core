@@ -33,11 +33,12 @@ public class TramoTest {
 
     @Test
     public void testFull() {
-        Tramo.Results rslt = Tramo.process(Data.TS_PROD, "TRfull");
+        Tramo.Results rslt = Tramo.process(Data.TS_PROD, "TR5");
         assertTrue(rslt.getData("span.n", Integer.class) == Data.TS_PROD.length());
         System.out.println(DoubleSeq.of(rslt.getData("sarima.parameters", double[].class)));
         
         SarimaModel model = rslt.getData("model", SarimaModel.class);
+        String[] desc = rslt.getData("regression.description", String[].class);
         System.out.println(model);
     }
     

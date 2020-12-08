@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
 import nbbrd.design.Development;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
@@ -26,19 +27,25 @@ import java.time.LocalDateTime;
  */
 @lombok.Value
 @lombok.AllArgsConstructor
-@Development(status=Development.Status.Release)
+@Development(status = Development.Status.Release)
 public class PeriodicContrasts implements ISystemVariable {
+
     private int period;
     private LocalDateTime reference;
-    
-    public PeriodicContrasts(int period){
-        this.period=period;
-        this.reference=TsPeriod.DEFAULT_EPOCH;
+
+    public PeriodicContrasts(int period) {
+        this.period = period;
+        this.reference = TsPeriod.DEFAULT_EPOCH;
     }
 
     @Override
     public int dim() {
-        return period-1;
+        return period - 1;
     }
-    
+
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(D context) {
+        return "contrast";
+    }
+
 }

@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
 import nbbrd.design.Development;
 
 /**
@@ -32,6 +33,11 @@ public class Constant implements ISystemVariable {
     @Override
     public int dim() {
         return 1;
+    }
+
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(D context){
+        return "constant";
     }
 
 }

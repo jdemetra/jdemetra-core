@@ -38,15 +38,17 @@ import jdplus.math.matrices.Matrix;
  * @author Jean Palate
  * @param <S>
  */
-@Development(status=Development.Status.Alpha)
+@Development(status = Development.Status.Alpha)
 class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
 
     @BuilderPattern(RegArmaSsqFunction.class)
     static class SsqBuilder<S extends IArimaModel> {
 
         // algorithms
-        private boolean ml = true;
         private ConcentratedLikelihoodComputer cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER;
+        private ToDoubleFunction<Likelihood> eval = DefaultLikelihoodEvaluation.deviance();
+        private Function<Likelihood, DoubleSeq> errors = DefaultLikelihoodEvaluation.v();
+
         private boolean mt = false;
         // model
         private final DoubleSeq dy;
@@ -70,7 +72,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
         }
 
         SsqBuilder mapping(IArimaMapping<S> mapping) {
-            this.mapping=mapping;
+            this.mapping = mapping;
             return this;
         }
 
@@ -80,7 +82,23 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
         }
 
         SsqBuilder maximumLikelihood(boolean ml) {
-            this.ml = ml;
+            if (ml) {
+                this.eval = DefaultLikelihoodEvaluation.deviance();
+                this.errors = DefaultLikelihoodEvaluation.v();
+            } else {
+                this.eval = DefaultLikelihoodEvaluation.ssq();
+                this.errors = DefaultLikelihoodEvaluation.errors();
+            }
+            return this;
+        }
+
+        SsqBuilder likelihoodEvaluation(ToDoubleFunction<Likelihood> eval) {
+            this.eval = eval;
+            return this;
+        }
+
+        SsqBuilder errors(Function<Likelihood, DoubleSeq> errors) {
+            this.errors = errors;
             return this;
         }
 
@@ -90,16 +108,14 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
         }
 
         public RegArmaSsqFunction<S> build() {
-            return new RegArmaSsqFunction<>(dy, x, nmissing, mapping, cll,
-                    ml ? DefaultLikelihoodEvaluation.v() : DefaultLikelihoodEvaluation.errors(),
-                    ml ? DefaultLikelihoodEvaluation.deviance() : DefaultLikelihoodEvaluation.ssq(), mt);
+            return new RegArmaSsqFunction<>(dy, x, nmissing, mapping, cll, errors, eval, mt);
         }
     }
 
-    public static <S extends IArimaModel> SsqBuilder<S> builder(DoubleSeq y){
+    public static <S extends IArimaModel> SsqBuilder<S> builder(DoubleSeq y) {
         return new SsqBuilder<>(y);
     }
-    
+
     // model
     final DoubleSeq dy;
     final Matrix x;

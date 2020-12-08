@@ -33,6 +33,11 @@ public interface IOutlier extends ITsVariable {
     default int dim(){
         return 1;
     }
+    
+    @Override
+    default <D extends TimeSeriesDomain<?>> String description(D context){
+        return defaultName(getCode(), getPosition(), context);
+    }
 
     public static <D extends TimeSeriesDomain<?>> String defaultName(String code, LocalDateTime pos, D context) {
         StringBuilder builder = new StringBuilder();
