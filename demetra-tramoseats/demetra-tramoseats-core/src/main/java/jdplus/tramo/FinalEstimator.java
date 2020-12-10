@@ -115,6 +115,7 @@ class FinalEstimator implements IModelEstimator {
                 RegSarimaProcessor processor = RegSarimaProcessor.builder()
                         .minimizer(LevenbergMarquardtMinimizer.builder())
                         .precision(eps)
+                        .computeExactFinalDerivatives(true)
 //                        .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
                         .build();
                 context.estimate(processor);

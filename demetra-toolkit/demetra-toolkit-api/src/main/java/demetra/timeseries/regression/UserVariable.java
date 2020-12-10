@@ -27,17 +27,21 @@ import demetra.timeseries.TsData;
 @Development(status = Development.Status.Release)
 public class UserVariable extends TsVariable implements IUserVariable {
 
-    public static UserVariable of(String id, ModellingContext context) {
+    public static UserVariable of(String id, String desc, ModellingContext context) {
        TsData data = data(id, context);
         if (data == null) {
             return null;
         } else {
-            return new UserVariable(id, data);
+            return new UserVariable(id, data, desc);
         }
     }
 
     public UserVariable(String id, TsData data){
-        super(id, data);
+        super(id, data, null);
+    }
+
+    public UserVariable(String id, TsData data, String desc){
+        super(id, data, desc);
     }
     
     @Override

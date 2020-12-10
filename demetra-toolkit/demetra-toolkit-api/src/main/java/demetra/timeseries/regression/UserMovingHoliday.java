@@ -26,18 +26,18 @@ import demetra.timeseries.TsData;
 @Development(status = Development.Status.Release)
 public class UserMovingHoliday extends TsVariable implements IMovingHolidayVariable {
 
-    public static UserMovingHoliday of(String id, ModellingContext context) {
+    public static UserMovingHoliday of(String id, String desc, ModellingContext context) {
         TsData data = data(id, context);
         if (data == null) {
             return null;
         } else {
-            return new UserMovingHoliday(id, data);
+            return new UserMovingHoliday(id, data, desc);
         }
     }
 
 
-    private UserMovingHoliday(String id, TsData data) {
-        super(id, data);
+    private UserMovingHoliday(String id, TsData data, String desc) {
+        super(id, data, desc);
     }
 
     @Override

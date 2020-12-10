@@ -27,6 +27,7 @@ import jdplus.math.functions.IParametersDomain;
 import jdplus.math.functions.IParametricMapping;
 import java.util.function.ToDoubleFunction;
 import demetra.data.DoubleSeq;
+import jdplus.arima.estimation.IArimaMapping;
 import jdplus.likelihood.Likelihood;
 import jdplus.math.matrices.Matrix;
 
@@ -41,15 +42,15 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
     public static class Builder<S extends IArimaModel> {
 
         // algorithms
-        private boolean ml = true;
         private ConcentratedLikelihoodComputer cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER;
+        private ToDoubleFunction<Likelihood> eval = DefaultLikelihoodEvaluation.deviance();
         private boolean mt = false;
         // model
         private final DoubleSeq dy;
         private Matrix x;
         private int nmissing;
         // mapping
-        private IParametricMapping<S> mapping;
+        private IArimaMapping<S> mapping;
 
         private Builder(final DoubleSeq dy) {
             this.dy = dy;
@@ -60,7 +61,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
             return this;
         }
 
-        public Builder nmissing(int nm) {
+        public Builder missingCount(int nm) {
             this.nmissing = nm;
             return this;
         }
@@ -70,20 +71,28 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
             return this;
         }
 
-        public Builder maximumLikelihood(boolean ml) {
-            this.ml = ml;
-            return this;
-        }
-
         public Builder likelihoodComputer(ConcentratedLikelihoodComputer computer) {
             this.cll = computer;
             return this;
         }
 
-        public RegArmaFunction<S> build() {
-            return new RegArmaFunction<>(dy, x, nmissing, mapping, cll,
-                    ml ? DefaultLikelihoodEvaluation.logSsq() : DefaultLikelihoodEvaluation.ml(), mt);
+        public Builder mapping(IArimaMapping<S> mapping) {
+            this.mapping = mapping;
+            return this;
         }
+
+        public Builder likelihoodEvaluation(ToDoubleFunction<Likelihood> eval) {
+            this.eval = eval;
+            return this;
+        }
+
+        public RegArmaFunction<S> build() {
+            return new RegArmaFunction<>(dy, x, nmissing, mapping, cll, eval, mt);
+        }
+    }
+
+    public static <S extends IArimaModel> Builder<S> builder(DoubleSeq y) {
+        return new Builder<>(y);
     }
 
     // model
@@ -100,7 +109,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
     private RegArmaFunction(final DoubleSeq dy,
             final Matrix x,
             final int nm,
-            final IParametricMapping<S> mapping,
+            final IArimaMapping<S> mapping,
             final ConcentratedLikelihoodComputer cll,
             final ToDoubleFunction<Likelihood> ll,
             final boolean mt) {
@@ -119,7 +128,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
     }
 
     @Override
-    public IFunctionPoint evaluate(DoubleSeq parameters) {
+    public Evaluation<S> evaluate(DoubleSeq parameters) {
         return new Evaluation(this, parameters);
     }
 

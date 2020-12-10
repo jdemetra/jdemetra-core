@@ -128,6 +128,16 @@ public class RegArmaModel<M extends IArimaModel> {
      */
     Matrix x;
     
+    /**
+     * Gets the regression model.
+     * It contains all the variables including the additive outliers corresponding to missing values
+     * and the mean.
+     * The order is
+     * - AO for missing
+     * - Mean
+     * - Other regression variables
+     * @return 
+     */
     public LinearModel asLinearModel(){
         // the mean is in X. Don't repeat it in the linear model
         return new LinearModel(y.toArray(), false, Matrix.of(x));

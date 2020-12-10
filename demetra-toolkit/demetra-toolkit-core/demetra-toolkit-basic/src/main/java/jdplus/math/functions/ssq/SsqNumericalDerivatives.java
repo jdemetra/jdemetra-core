@@ -33,9 +33,9 @@ import jdplus.math.matrices.Matrix;
  */
 @Development(status = Development.Status.Alpha)
 public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
-    
+
     private static final int NTHREADS = Runtime.getRuntime().availableProcessors();
-    
+
     private DoubleSeq[] m_ep, m_em, m_de;
     private double[] m_epsp;
     private double[] m_epsm;
@@ -54,7 +54,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
     public SsqNumericalDerivatives(ISsqFunctionPoint point) {
         this(point, false, false);
     }
-    
+
     public SsqNumericalDerivatives(ISsqFunctionPoint point, boolean sym, boolean mt) {
         m_sym = sym;
         m_mt = mt;
@@ -72,7 +72,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
             boolean sym) {
         this(point, sym, false);
     }
-    
+
     private void calcgrad() {
         int n = m_pt.length();
         m_grad = new double[n];
@@ -115,9 +115,9 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
         int ne = m_ecur.length();
         for (int i = 0; i < n; ++i) {
             DoubleSeq ep = m_ep[i];
-            DoubleSeq em = m_ep[i];
             DataBlock de = DataBlock.make(ne);
             if (m_sym) {
+                DoubleSeq em = m_em[i];
                 final double eps = m_epsp[i] - m_epsm[i];
                 de.set(ep, em, (x, y) -> (x - y) / eps);
             } else {
@@ -128,7 +128,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
             m_de[i] = de;
         }
     }
-    
+
     private void calch() {
         if (m_grad == null) {
             calcgrad();
@@ -145,13 +145,13 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
             for (int j = 0; j < i; ++j) {
                 DoubleSeq dei = m_de[i];
                 DoubleSeq dej = m_de[j];
-                double z=2 * dei.dot(dej);
+                double z = 2 * dei.dot(dej);
                 m_h.set(i, j, z);
                 m_h.set(j, i, z);
             }
         }
     }
-    
+
     private void checkepsilon(int i) {
         double eps = m_epsp[i];
         if (eps == 0) {
@@ -189,7 +189,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
         }
         m_epsp[i] = 0;
     }
-    
+
     private void checkmepsilon(int i) {
         double eps = -m_epsp[i];
         DataBlock pcur = DataBlock.of(m_pt);
@@ -201,10 +201,10 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
     }
 
     @Override
-    public IFunction getFunction(){
+    public IFunction getFunction() {
         return fn.asFunction();
     }
-    
+
     /**
      * Computes d e(t,p)/dp(i)
      *
@@ -218,7 +218,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
         }
         return m_de[idx];
     }
-    
+
     private DoubleSeq err(int i, double dx) {
         try {
             if (dx == 0) {
@@ -275,7 +275,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
         }
         h.copy(m_h);
     }
-    
+
     private List<Callable<Void>> createTasks(int n, boolean sym) {
         List<Callable<Void>> result = new ArrayList<>();
         for (int i = 0; i < n; ++i) {
@@ -288,20 +288,20 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
         }
         return result;
     }
-    
+
     private class Err implements Callable<Void> {
-        
+
         DoubleSeq[] rslt;
         int pos;
         double eps;
-        
+
         private Err(DoubleSeq[] rslt, int pos, double eps) {
             this.rslt = rslt;
             this.pos = pos;
             this.eps = eps;
-            
+
         }
-        
+
         @Override
         public Void call() throws Exception {
             try {
@@ -314,7 +314,7 @@ public class SsqNumericalDerivatives implements ISsqFunctionDerivatives {
             }
             return null;
         }
-        
+
     }
-    
+
 }

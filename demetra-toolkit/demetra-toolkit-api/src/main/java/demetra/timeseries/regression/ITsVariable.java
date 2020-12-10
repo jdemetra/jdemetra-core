@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -30,6 +31,17 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public interface ITsVariable {
 
     int dim();
+    
+    <D extends TimeSeriesDomain<?>> String description(D context);
+    
+    default <D extends TimeSeriesDomain<?>> String description(int idx, D context){
+        if (dim() == 1)
+            return description(context);
+        else{
+            StringBuilder builder=new StringBuilder();
+            return builder.append(description(context)).append('-').append(idx+1).toString();
+        }
+    }
 
     public static int dim(@NonNull ITsVariable... vars) {
         return dim(Arrays.stream(vars));

@@ -17,6 +17,7 @@
 package demetra.timeseries.regression;
 
 import demetra.data.Range;
+import demetra.timeseries.TimeSeriesDomain;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import demetra.timeseries.TsException;
@@ -85,4 +86,10 @@ public class InterventionVariable implements ISystemVariable{
     public boolean isFixed() {
         return coefficient != null;
     }
+    
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(D context){
+        return "iv";
+    }
+    
 }

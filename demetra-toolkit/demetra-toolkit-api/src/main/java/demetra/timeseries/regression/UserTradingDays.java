@@ -17,7 +17,6 @@
 package demetra.timeseries.regression;
 
 import nbbrd.design.Development;
-import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 
 /**
@@ -27,17 +26,25 @@ import demetra.timeseries.TsData;
 @Development(status = Development.Status.Release)
 public class UserTradingDays extends TsVariables implements ITradingDaysVariable {
 
-    public static UserTradingDays of(String[] id, ModellingContext context) {
+    public static UserTradingDays of(String[] id, ModellingContext context, String[] desc) {
         TsData[] data = data(id, context);
         if (data == null) {
             return null;
         } else {
-            return new UserTradingDays(id, data);
+            return new UserTradingDays(id, data, desc);
         }
     }
 
+    public static UserTradingDays of(String[] id, ModellingContext context) {
+        return of(id, context, null);
+    }
+
     public UserTradingDays(String[] id, TsData[] data) {
-        super(id, data);
+        super("td", id, data, null);
+    }
+
+    public UserTradingDays(String[] id, TsData[] data, String[] desc) {
+        super("td", id, data, desc);
     }
 
     @Override

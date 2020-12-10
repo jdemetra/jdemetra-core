@@ -112,8 +112,8 @@ public class TramoKernelTest {
     public void testProd() {
         DefaultProcessingLog log=new DefaultProcessingLog();
         TramoKernel processor = TramoKernel.of(TramoSpec.TRfull, null);
-        TsPeriod start = TsPeriod.monthly(1967, 1);
-        TsData s = TsData.of(start, Doubles.of(data));
+        TsPeriod start = TsPeriod.monthly(1992, 1);
+        TsData s = TsData.of(start, Doubles.of(Data.RETAIL_BOOKSTORES));
         ModelEstimation rslt = processor.process(s, log);
         System.out.println("JD3");
         System.out.println(rslt.getStatistics().getAdjustedLogLikelihood());
@@ -123,7 +123,7 @@ public class TramoKernelTest {
     @Test
     public void testProdLegacy() {
         IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
-        ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
+        ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1992, 0, Data.RETAIL_BOOKSTORES, true);
         ec.tstoolkit.modelling.arima.PreprocessingModel rslt = processor.process(s, null);
         System.out.println("Legacy");
         System.out.println(rslt.estimation.getStatistics().adjustedLogLikelihood);

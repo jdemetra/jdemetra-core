@@ -16,6 +16,7 @@
  */
 package demetra.tramoseats.r;
 
+import demetra.math.matrices.MatrixType;
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
@@ -23,7 +24,10 @@ import demetra.tramo.TramoSpec;
 import demetra.util.r.Dictionary;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import jdplus.math.matrices.Matrix;
 import jdplus.regarima.extractors.ModelEstimationExtractor;
+import jdplus.regsarima.regular.CheckLast;
+import jdplus.regsarima.regular.Forecast;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.tramo.TramoKernel;
 
@@ -67,5 +71,46 @@ public class Tramo {
         TramoKernel tramo= TramoKernel.of(spec, context);
         ModelEstimation estimation = tramo.process(series.cleanExtremities(), null);
         return new Results(estimation);
+    }
+
+    public MatrixType terror(TsData series, String defSpec, int nback){
+        TramoSpec spec=TramoSpec.fromString(defSpec);
+        return terror(series, spec, null, nback);
+    }
+    
+    public MatrixType terror(TsData series, TramoSpec spec, Dictionary dic, int nback){
+        ModellingContext context=dic == null ? null : dic.toContext();
+        TramoKernel kernel=TramoKernel.of(spec, context);
+        CheckLast cl=new CheckLast(kernel, nback);
+        if (! cl.check(series.cleanExtremities()))
+            return null;
+        Matrix R=Matrix.make(nback, 7);
+        R.column(0).copy(cl.getActualValues());
+        R.column(1).copy(cl.getForecastsValues());
+        R.column(2).copy(cl.getAbsoluteErrors());
+        R.column(3).copyFrom(cl.getScores(), 0);
+        R.column(4).copy(cl.getRawValues());
+        R.column(5).copyFrom(cl.getRawForecasts(), 0);
+        R.column(6).copyFrom(cl.getRawForecastsStdev(), 0);
+        return R;
+    }
+   
+    public MatrixType forecast(TsData series, String defSpec, int nf){
+        TramoSpec spec=TramoSpec.fromString(defSpec);
+        return forecast(series, spec, null, nf);
+    }
+    
+    public MatrixType forecast(TsData series, TramoSpec spec, Dictionary dic, int nf){
+        ModellingContext context=dic == null ? null : dic.toContext();
+        TramoKernel kernel=TramoKernel.of(spec, context);
+        Forecast f=new Forecast(kernel, nf);
+        if (! f.process(series.cleanExtremities()))
+                return null;
+        Matrix R=Matrix.make(nf, 4);
+        R.column(0).copy(f.getForecasts());
+        R.column(1).copy(f.getForecastsStdev());
+        R.column(2).copy(f.getRawForecasts());
+        R.column(3).copy(f.getRawForecastsStdev());
+        return R;
     }
 }

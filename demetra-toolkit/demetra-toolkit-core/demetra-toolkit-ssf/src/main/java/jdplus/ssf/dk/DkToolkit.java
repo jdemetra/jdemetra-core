@@ -481,12 +481,12 @@ public class DkToolkit {
                     CkmsFilter ffilter = new CkmsFilter(ff);
                     ffilter.process(ssf, data, dr);
                     ResultsRange range = new ResultsRange(0, data.length());
-                    return new DkFilter(ssf, fr, range);
+                    return new DkFilter(ssf, fr, range, true);
                 } else {
                     OrdinaryFilter filter = new OrdinaryFilter(initializer);
                     filter.process(ssf, data, dr);
                     ResultsRange range = new ResultsRange(0, data.length());
-                    return new DkFilter(ssf, fr, range);
+                    return new DkFilter(ssf, fr, range, true);
                 }
             } else {
                 DefaultDiffuseFilteringResults fr = DefaultDiffuseFilteringResults.light();
@@ -498,12 +498,12 @@ public class DkToolkit {
                     CkmsFilter ffilter = new CkmsFilter(ff);
                     ffilter.process(ssf, data, dr);
                     ResultsRange range = new ResultsRange(0, data.length());
-                    return new DkFilter(ssf, fr, range);
+                    return new DkFilter(ssf, fr, range, true);
                 } else {
                     OrdinaryFilter filter = new OrdinaryFilter(initializer);
                     filter.process(ssf, data, dr);
                     ResultsRange range = new ResultsRange(0, data.length());
-                    return new DkFilter(ssf, fr, range);
+                    return new DkFilter(ssf, fr, range, true);
                 }
             }
         }

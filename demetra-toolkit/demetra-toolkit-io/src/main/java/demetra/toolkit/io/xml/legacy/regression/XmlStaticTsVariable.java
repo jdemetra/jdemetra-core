@@ -87,7 +87,7 @@ public class XmlStaticTsVariable
         @Override
         public UserVariable unmarshal(XmlStaticTsVariable v) {
 
-            return new UserVariable(v.tsData.getName(), XmlTsData.unmarshal(v.tsData));
+            return new UserVariable(v.getName(), XmlTsData.unmarshal(v.tsData), v.tsData.getName());
         }
 
         @Override
@@ -95,7 +95,8 @@ public class XmlStaticTsVariable
             XmlStaticTsVariable x = new XmlStaticTsVariable();
             x.tsData = new XmlTsData();
             XmlTsData.marshal(v.getData(), x.tsData);
-            x.tsData.setName(v.getId());
+            x.tsData.setName(v.description(null));
+            x.name=v.getId();
             return x;
         }
     }

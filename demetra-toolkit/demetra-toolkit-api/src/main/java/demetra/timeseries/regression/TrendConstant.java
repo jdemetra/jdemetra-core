@@ -6,27 +6,27 @@
 package demetra.timeseries.regression;
 
 import demetra.timeseries.TimeSeriesDomain;
-import demetra.timeseries.calendars.HolidayPattern;
+import java.time.LocalDateTime;
+import nbbrd.design.Development;
 
 /**
  *
- * @author palatej
+ * @author PALATEJ
  */
 @lombok.Value
-public class MovingHolidayVariable implements IMovingHolidayVariable{
-
-    @lombok.NonNull
-    String event;
-    HolidayPattern pattern;
+@Development(status=Development.Status.Release)
+public class TrendConstant implements ISystemVariable {
+    
+    private int d, bd;
 
     @Override
     public int dim() {
         return 1;
     }
-    
-    @Override
+
+     @Override
     public <D extends TimeSeriesDomain<?>> String description(D context){
-        return "event";
+        return "const";
     }
-    
+   
 }

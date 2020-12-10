@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
 import nbbrd.design.Development;
 
 /**
@@ -28,4 +29,8 @@ public class JulianEasterVariable implements IEasterVariable{
     private int duration;
     private boolean gregorianDates;
     
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(D context){
+        return "julian easter";
+    }
 }

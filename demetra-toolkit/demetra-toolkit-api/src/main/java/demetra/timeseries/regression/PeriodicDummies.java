@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
 import nbbrd.design.Development;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
@@ -41,4 +42,8 @@ public class PeriodicDummies implements ISystemVariable {
         return period;
     }
     
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(D context) {
+        return "dummy";
+    }
 }

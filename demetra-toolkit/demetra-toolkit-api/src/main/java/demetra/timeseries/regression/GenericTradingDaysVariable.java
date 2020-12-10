@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
 import nbbrd.design.Development;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
@@ -26,21 +27,55 @@ import demetra.timeseries.calendars.GenericTradingDays;
  */
 @lombok.Value
 @lombok.AllArgsConstructor
-@Development(status=Development.Status.Release)
-public class GenericTradingDaysVariable implements ITradingDaysVariable, ISystemVariable{
+@Development(status = Development.Status.Release)
+public class GenericTradingDaysVariable implements ITradingDaysVariable, ISystemVariable {
+
     private DayClustering clustering;
     private boolean contrast;
     private boolean normalized;
-    
-    public GenericTradingDaysVariable(GenericTradingDays td){
-        this.clustering=td.getClustering();
-        this.contrast=td.isContrast();
-        this.normalized=td.isNormalized();                
+
+    public GenericTradingDaysVariable(GenericTradingDays td) {
+        this.clustering = td.getClustering();
+        this.contrast = td.isContrast();
+        this.normalized = td.isNormalized();
     }
-    
+
     @Override
-    public int dim(){
-        int n=clustering.getGroupsCount();
-        return contrast ? n-1 : n;
+    public int dim() {
+        int n = clustering.getGroupsCount();
+        return contrast ? n - 1 : n;
     }
+
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(D context) {
+        return "td";
+    }
+
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(int idx, D context){
+        return description(clustering, idx);
+    }
+
+    static final String[] WD = new String[]{"week", "week-end"};
+    static final String[] TD = new String[]{"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
+    static final String[] TD3 = new String[]{"week", "saturday", "sunday"};
+    static final String[] TD3c = new String[]{"mon-thu", "fri-sat", "sunday"};
+    static final String[] TD4 = new String[]{"mon-thu", "friday", "saturday", "sunday"};
+
+    static String description(DayClustering dc, int idx) {
+        if (dc.equals(DayClustering.TD2)) {
+            return WD[idx];
+        } else if (dc.equals(DayClustering.TD7)) {
+            return TD[idx];
+        } else if (dc.equals(DayClustering.TD3)) {
+            return TD3[idx];
+        } else if (dc.equals(DayClustering.TD3c)) {
+            return TD3c[idx];
+        } else if (dc.equals(DayClustering.TD4)) {
+            return TD4[idx];
+        } else {
+            return "td-" + (idx + 1);
+        }
+    }
+
 }

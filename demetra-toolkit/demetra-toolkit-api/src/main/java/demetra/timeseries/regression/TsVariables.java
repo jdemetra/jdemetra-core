@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import java.util.Arrays;
@@ -27,7 +28,7 @@ import java.util.Arrays;
 @Development(status = Development.Status.Release)
 public class TsVariables implements ITsVariable {
 
-    protected static TsData[] data(String[] id, ModellingContext context) {
+    protected static TsData[] data(String[] id,  ModellingContext context) {
         TsData[] data = new TsData[id.length];
         for (int i = 0; i < id.length; ++i) {
             TsDataSupplier supplier = context.getTsVariable(id[i]);
@@ -43,17 +44,31 @@ public class TsVariables implements ITsVariable {
         return data;
     }
 
+    private final String gdesc;
     private final String[] id;
     private final TsData[] data;
+    private final String[] desc;
 
-    protected TsVariables(String[] id, TsData[] data) {
+    protected TsVariables(String gdesc, String[] id, TsData[] data, String[] desc) {
+        this.gdesc=gdesc;
         this.id = id.clone();
         this.data = data;
+        this.desc=desc;
     }
 
     @Override
     public int dim() {
         return id.length;
+    }
+    
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(D context) {
+        return gdesc;
+    }
+
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(int idx, D context){
+        return desc == null ? gdesc+(idx+1) : desc[idx];
     }
     
     public String getId(int i){
@@ -71,4 +86,6 @@ public class TsVariables implements ITsVariable {
     protected int hash(){
         return Arrays.hashCode(id);
     }
+    
+    
 }

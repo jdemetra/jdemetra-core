@@ -80,7 +80,7 @@ public class ResidualsDiagnostics implements Diagnostics {
                     .k(RegArimaUtility.defaultLjungBoxLength(period))
                     .ks(2)
                     .seasonal(period > 1)
-                    .hyperParametersCount(regarima.getFreeParametersCount())
+                    .hyperParametersCount(regarima.getFreeArimaParametersCount())
                     .build();
             periodogram = Periodogram.of(res);
             return true;

@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 
@@ -37,10 +38,17 @@ public abstract class TsVariable implements ITsVariable {
 
     private final String id;
     private final TsData data;
+    private String desc;
 
-    protected TsVariable(final String id, final TsData data) {
+    protected TsVariable(final String id, final TsData data, final String desc) {
         this.id = id;
         this.data = data;
+        this.desc=desc;
+    }
+
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(D context) {
+        return desc == null ? id : desc;
     }
 
     public String getId() {

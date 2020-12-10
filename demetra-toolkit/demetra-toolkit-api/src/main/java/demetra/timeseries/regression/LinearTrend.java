@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
 import nbbrd.design.Development;
 import java.time.LocalDateTime;
 
@@ -34,5 +35,10 @@ public class LinearTrend implements ISystemVariable {
         return 1;
     }
 
+     @Override
+    public <D extends TimeSeriesDomain<?>> String description(D context){
+        return "trend";
+    }
+   
 }
 

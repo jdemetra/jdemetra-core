@@ -48,7 +48,7 @@ import jdplus.sarima.SarimaModel;
 public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
     public static final RegSarimaProcessor PROCESSOR = new Builder()
-            .precision(1e-12)
+            .precision(1e-9)
             .startingPoint(StartingPoint.Multiple)
             .build();
 
@@ -395,7 +395,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         RegArimaEstimation finalRslt = RegArimaEstimation.<SarimaModel>builder()
                 .model(nmodel)
                 .concentratedLikelihood(ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nmodel))
-                .max(new LogLikelihoodFunction.Point(llFunction(regs, mapping), rslt.getParameters(), rslt.getGradient(), rslt.getHessian()))
+                .max(new LogLikelihoodFunction.Point(llFunction(regs, mapping), rslt.getParameters(), rslt.getScore(), rslt.getInformation()))
                 .build();
         return finalProcessing ? finalProcessing(finalRslt, mapping) : finalRslt;
     }

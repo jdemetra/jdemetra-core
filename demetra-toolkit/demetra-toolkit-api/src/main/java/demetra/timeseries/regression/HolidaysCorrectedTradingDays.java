@@ -20,6 +20,7 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.math.matrices.MatrixType;
+import demetra.timeseries.TimeSeriesDomain;
 
 /**
  *
@@ -60,5 +61,16 @@ public class HolidaysCorrectedTradingDays implements ITradingDaysVariable, ISyst
         int n = clustering.getGroupsCount();
         return contrast ? n - 1 : n;
     }
+    
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(D context){
+        return "td";
+    }
+    
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(int idx, D context){
+        return GenericTradingDaysVariable.description(clustering, idx);
+    }
+    
 
 }

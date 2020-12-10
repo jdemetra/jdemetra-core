@@ -64,7 +64,7 @@ public class ModelStatistics {
         int p = m.getAnnualFrequency();
         int n = TramoUtility.calcLBLength(p);
         int nres = e.length();
-        int nhp=m.getFreeParametersCount();
+        int nhp=m.getFreeArimaParametersCount();
         IntToDoubleFunction acf = AutoCovariances.autoCorrelationFunction(e, 0);
         StatisticalTest lb = new LjungBox(acf, nres)
                 .autoCorrelationsCount(n)

@@ -16,6 +16,8 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
+import demetra.timeseries.calendars.DayClustering;
 import nbbrd.design.Development;
 
 /**
@@ -37,4 +39,13 @@ public class StockTradingDays implements ITradingDaysVariable{
         return 6;
     }
 
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(D context) {
+        return "td";
+    }
+    
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(int idx, D context){
+        return GenericTradingDaysVariable.description(DayClustering.TD7, idx);
+    }
 }

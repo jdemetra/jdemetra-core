@@ -181,7 +181,7 @@ public final class ConcentratedLikelihoodWithMissing implements ConcentratedLike
 
     /**
      * Returns all the coefficients, including the missing values
-     *
+     * 
      * @return
      */
     public DoubleSeq allCoefficients() {
