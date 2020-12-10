@@ -8,11 +8,17 @@ jobs:
       fail-fast: false
       matrix:
         java: [ 8, 11 ]
-        os: [ ubuntu-latest, macOS-latest, windows-latest ]
+        os: [ ubuntu-latest, windows-latest ]
         experimental: [ false ]
         include:
           - java: '>11'
             os: ubuntu-latest
+            experimental: true
+          - java: '8'
+            os: macOS-latest
+            experimental: true
+          - java: '11'
+            os: macOS-latest
             experimental: true
 
     name: JDK${{ matrix.java }} on ${{ matrix.os }}
