@@ -36,6 +36,14 @@ public class TramoSeats {
     @lombok.Value
     public static class Results implements ProcResults{
         private TramoSeatsResults core;
+        
+        public Tramo.Results preprocessing(){
+            return new Tramo.Results(core.getPreprocessing());
+        }
+
+        public Seats.Results decomposition(){
+            return new Seats.Results(core.getDecomposition());
+        }
 
         @Override
         public boolean contains(String id) {
