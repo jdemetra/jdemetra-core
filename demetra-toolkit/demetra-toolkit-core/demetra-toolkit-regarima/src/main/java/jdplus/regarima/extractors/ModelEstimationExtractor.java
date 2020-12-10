@@ -119,7 +119,7 @@ public class ModelEstimationExtractor {
         MAPPING.delegate(LIKELIHOOD, LikelihoodStatisticsExtractor.getMapping(), source -> source.getStatistics());
         MAPPING.set(InformationExtractor.concatenate(MAX, PCOVAR), MatrixType.class, source -> source.getArimaCovariance());
         MAPPING.set(InformationExtractor.concatenate(MAX, PCORR), MatrixType.class, source -> {
-            Matrix cov = source.getConcentratedLikelihood().covariance(source.getFreeArimaParametersCount(), true).deepClone();
+            Matrix cov = source.getArimaCovariance();
             DataBlock diag = cov.diagonal();
             for (int i = 0; i < cov.getRowsCount(); ++i) {
                 double vi = diag.get(i);

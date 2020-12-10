@@ -23,6 +23,8 @@ import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.EasterVariable;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
+import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.LengthOfPeriod;
 import demetra.timeseries.regression.Variable;
 import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.Regression;
@@ -37,7 +39,7 @@ import static org.junit.Assert.*;
  * @author PALATEJ
  */
 public class RegArimaForecastsTest {
-    
+
     public RegArimaForecastsTest() {
     }
 
@@ -45,22 +47,25 @@ public class RegArimaForecastsTest {
     public void testSomeMethod() {
         ModelDescription model = new ModelDescription(Data.TS_PROD, null);
         model.setAirline(true);
-        model.setLogTransformation(true);
-        model.setPreadjustment(LengthOfPeriodType.LeapYear);
-        GenericTradingDaysVariable td = new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD3));
+        model.setMean(true);
+//        model.setLogTransformation(true);
+//        model.setPreadjustment(LengthOfPeriodType.LeapYear);
+        GenericTradingDaysVariable td = new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD7));
+        LengthOfPeriod lp=new LengthOfPeriod(LengthOfPeriodType.LeapYear);
         model.addVariable(Variable.variable("td", td));
         EasterVariable easter = EasterVariable.builder()
-                .duration(6)
-                .meanCorrection(EasterVariable.Correction.Theoretical)
+                .duration(8)
+                .meanCorrection(EasterVariable.Correction.PreComputed)
+                .endPosition(-1)
                 .build();
+        model.addVariable(Variable.variable("lp", lp));
         model.addVariable(Variable.variable("easter", easter));
         ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.PROCESSOR);
-        
-        model.variables();
-        TsDomain fdom=TsDomain.of(model.getEstimationDomain().getEndPeriod(), 20);
-        Matrix matrix = Regression.matrix(fdom, td, easter);
-        
+
+        TsDomain fdom = TsDomain.of(model.getEstimationDomain().getEndPeriod(), 24);
+        Matrix matrix = Regression.matrix(fdom, model.variables().map(v->v.getCore()).toArray(n->new ITsVariable[n]));
+
         RegArimaForecasts.Result f = RegArimaForecasts.calcForecast(rslt.getModel(), rslt.getConcentratedLikelihood(), matrix, true, 2);
     }
-    
+
 }

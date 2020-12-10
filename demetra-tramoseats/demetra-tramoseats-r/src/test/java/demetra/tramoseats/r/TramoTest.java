@@ -19,6 +19,8 @@ package demetra.tramoseats.r;
 import demetra.arima.SarimaModel;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
+import demetra.math.matrices.MatrixType;
+import demetra.tramo.TramoSpec;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -27,7 +29,7 @@ import static org.junit.Assert.*;
  * @author palatej
  */
 public class TramoTest {
-    
+
     public TramoTest() {
     }
 
@@ -35,11 +37,40 @@ public class TramoTest {
     public void testFull() {
         Tramo.Results rslt = Tramo.process(Data.TS_PROD, "TR5");
         assertTrue(rslt.getData("span.n", Integer.class) == Data.TS_PROD.length());
-        System.out.println(DoubleSeq.of(rslt.getData("sarima.parameters", double[].class)));
-        
+//        System.out.println(DoubleSeq.of(rslt.getData("sarima.parameters", double[].class)));
+
         SarimaModel model = rslt.getData("model", SarimaModel.class);
         String[] desc = rslt.getData("regression.description", String[].class);
-        System.out.println(model);
+//        System.out.println(model);
+        assertTrue(desc != null);
+    }
+
+    @Test
+    public void testTerror0() {
+        MatrixType terror = Tramo.terror(Data.TS_PROD, TramoSpec.TR0, null, 12);
+        assertTrue(terror != null);
+ //       System.out.println(terror);
+    }
+
+    @Test
+    public void testTerror() {
+        MatrixType terror = Tramo.terror(Data.TS_PROD, TramoSpec.TRfull, null, 12);
+        assertTrue(terror != null);
+ //       System.out.println(terror);
+    }
+    
+   @Test
+    public void testForecast0() {
+        MatrixType terror = Tramo.forecast(Data.TS_PROD, TramoSpec.TR0, null, 12);
+        assertTrue(terror != null);
+        System.out.println(terror);
+    }
+
+    @Test
+    public void testForecast() {
+        MatrixType terror = Tramo.forecast(Data.TS_PROD, TramoSpec.TRfull, null, 12);
+        assertTrue(terror != null);
+ //       System.out.println(terror);
     }
     
 }

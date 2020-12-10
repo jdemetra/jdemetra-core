@@ -17,7 +17,6 @@
 package jdplus.regarima;
 
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleSeqCursor;
 import java.util.List;
 import jdplus.arima.IArimaModel;
 import jdplus.arima.ssf.SsfArima;
@@ -27,8 +26,6 @@ import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.ssf.ResultsRange;
-import jdplus.ssf.ckms.CkmsDiffuseInitializer;
-import jdplus.ssf.ckms.CkmsFilter;
 import jdplus.ssf.dk.DkFilter;
 import jdplus.ssf.dk.sqrt.DefaultDiffuseSquareRootFilteringResults;
 import jdplus.ssf.dk.sqrt.DiffuseSquareRootInitializer;
@@ -49,8 +46,12 @@ public class RegArimaForecasts {
         double[] forecasts, forecastsStdev;
     }
 
-    public <M extends IArimaModel> Result calcForecast(final RegArimaModel<M> regarima, final ConcentratedLikelihoodWithMissing cl, final Matrix Xf, boolean unbiased, int nhp) {
+    public <M extends IArimaModel> Result calcForecast(final RegArimaModel<M> regarima, final ConcentratedLikelihoodWithMissing cl, final int nf, boolean unbiased, int nhp) {
+        // use dummy matrix
+        return calcForecast(regarima, cl, Matrix.make(nf, 1), unbiased, nhp);
+    }
 
+    public <M extends IArimaModel> Result calcForecast(final RegArimaModel<M> regarima, final ConcentratedLikelihoodWithMissing cl, final Matrix Xf, boolean unbiased, int nhp) {
         DoubleSeq y = regarima.getY();
         int nf = Xf.getRowsCount(), n = y.length();
         int nall = n + nf;
@@ -74,12 +75,9 @@ public class RegArimaForecasts {
         OrdinaryFilter of = new OrdinaryFilter(initializer);
         of.process(ssf, new SsfData(yall), fr);
         ResultsRange range = new ResultsRange(0, nall);
-        DkFilter filter = new DkFilter(ssf, fr, range);
+        DkFilter filter = new DkFilter(ssf, fr, range, false);
 
-        int nx = Xf.getColumnsCount();
-        if (regarima.isMean()) {
-            ++nx;
-        }
+        int nx = regarima.getVariablesCount();
 
         // get forecasts of the series
         double[] f = new double[nf];
@@ -105,15 +103,16 @@ public class RegArimaForecasts {
                 xall.column(j++).copyFrom(xm, 0);
             }
             List<DoubleSeq> x = regarima.getX();
-            xall.extract(n, nf, j, nx - j).copy(Xf);
-            for (DoubleSeq xcur : x) {
-                xall.column(j++).range(0, n).copy(xcur);
+            if (!x.isEmpty()) {
+                xall.extract(n, nf, j, nx - j).copy(Xf);
+
+                for (DoubleSeq xcur : x) {
+                    xall.column(j++).range(0, n).copy(xcur);
+                }
             }
 
-            Matrix dx = xall.extract(n, nf, 0, nx).deepClone();
-
             filter.filter(xall);
-            dx.sub(xall.extract(n, nf, 0, nx));
+            Matrix dx = xall.extract(n, nf, 0, nx);
 
             DataBlockIterator xrows = dx.rowsIterator();
             j = 0;

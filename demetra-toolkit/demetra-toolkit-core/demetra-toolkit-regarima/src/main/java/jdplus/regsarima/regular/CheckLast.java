@@ -7,12 +7,20 @@ package jdplus.regsarima.regular;
 
 import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.Variable;
+import java.util.Arrays;
+import jdplus.math.matrices.Matrix;
+import jdplus.modelling.regression.Regression;
+import jdplus.regarima.RegArimaForecasts;
 
 /**
  *
  * @author PALATEJ
  */
 public class CheckLast {
+
     private final RegSarimaProcessor kernel;
     private final int nback;
     private TsData y, fy, oforecasts;
@@ -26,7 +34,7 @@ public class CheckLast {
      */
     public CheckLast(RegSarimaProcessor kernel, int nback) {
         this.kernel = kernel;
-        this.nback=nback;
+        this.nback = nback;
     }
 
     /**
@@ -38,45 +46,46 @@ public class CheckLast {
      * outliers.
      */
     public boolean check(TsData data) {
+        try {
+            clear();
+            if (!testSeries(data)) {
+                return false;
+            }
+            ModelEstimation model = kernel.process(data.drop(0, nback), null);
+            if (model == null) {
+                return false;
+            }
 
-        clear();
-        if (!testSeries(data)) {
+            Variable[] variables = model.getVariables();
+            // drop mean if any
+            if (model.getModel().isMean()){
+                variables=Arrays.copyOfRange(variables, 1, variables.length);
+            }
+            TsDomain fdom = TsDomain.of(model.getEstimationDomain().getEndPeriod(), nback);
+            ITsVariable[] vars = new ITsVariable[variables.length];
+            for (int i = 0; i < vars.length; ++i) {
+                vars[i] = variables[i].getCore();
+            }
+            Matrix matrix = Regression.matrix(fdom, vars);
+            RegArimaForecasts.Result fcasts;
+            if (matrix.isEmpty()) {
+                fcasts = RegArimaForecasts.calcForecast(model.getModel(), model.getConcentratedLikelihood(),
+                        nback, true, model.getFreeArimaParametersCount());
+            } else {
+                fcasts = RegArimaForecasts.calcForecast(model.getModel(), model.getConcentratedLikelihood(),
+                        matrix, true, model.getFreeArimaParametersCount());
+            }
+            f=fcasts.getForecasts();
+            ef=fcasts.getForecastsStdev();
+            
+            y=TsData.fitToDomain(data, fdom);
+            fy=model.transform(y, true);
+            TsData tf=TsData.ofInternal(fdom.getStartPeriod(), f);
+            oforecasts=model.backTransform(tf, true);
+             return true;
+        } catch (Exception err) {
             return false;
         }
-        ModelEstimation model = kernel.process(data.drop(0, nback), null);
-        if (model == null) {
-            return false;
-        }
-
-//         TsVariableList vars = model_.description.buildRegressionVariables();
-//        TsDomain fdomain = new TsDomain(model_.description.getSeriesDomain().getEnd(), nback);
-//        List<DataBlock> x = vars.all().data(fdomain);
-//
-//        forecasts_ = new Forecasts();
-//
-//        RegArimaEstimation<SarimaModel> estimation
-//                = new RegArimaEstimation<>(model_.estimation.getRegArima(), model_.estimation.getLikelihood());
-//
-//        try {
-//            forecasts_.calcForecast(estimation, x, nback, model_.description.getArimaComponent().getFreeParametersCount());
-//        } catch (RuntimeException err) {
-//            return false;
-//        }
-//
-//        y = data.fittoDomain(fdomain);
-//        fy = y.clone();
-//        oforecasts = new TsData(fdomain);
-//        for (int i = 0; i < oforecasts.getLength(); ++i) {
-//            oforecasts.set(i, forecasts_.forecast(i));
-//        }
-//        model_.backTransform(oforecasts, true, true);
-//
-//        List<ITsDataTransformation> transformations = model_.description.transformations();
-//        for (ITsDataTransformation tr : transformations) {
-//            tr.transform(fy, null);
-//        }
-//
-        return true;
     }
 
     /**
@@ -88,7 +97,7 @@ public class CheckLast {
      * @return An array with the (transformed) data at the end of the series.
      * The number of data depends on the "backCount" property
      */
-    public DoubleSeq getValues() {
+    public DoubleSeq getRawValues() {
         return fy.getValues();
     }
 
@@ -103,7 +112,8 @@ public class CheckLast {
     }
 
     /**
-     * Gets the absolute errors (=observed-forecasts). 
+     * Gets the absolute errors (=observed-forecasts).
+     *
      * @return An array with the absolute errors. The
      * number of data depends on the "backCount" property
      */
@@ -142,13 +152,14 @@ public class CheckLast {
 
     /**
      * Alias for getScores
-     * @return 
+     *
+     * @return
      */
     public double[] getRelativeErrors() {
         return getScores();
     }
 
-        /**
+    /**
      * Gets the score of the last observations, defined as the ratio between the
      * forecast error (= observed-predicted) and the standard error of the
      * forecast.
@@ -163,16 +174,24 @@ public class CheckLast {
         }
         return (fy.getValue(i) - f[i]) / ef[i];
     }
-    
+
     /**
      * Alias for getScore
+     *
      * @param i
-     * @return 
+     * @return
      */
-    public double getRelativeError(int i){
+    public double getRelativeError(int i) {
         return getScore(i);
     }
+    
+    public double[] getRawForecasts(){
+        return f;
+    }
 
+    public double[] getRawForecastsStdev(){
+        return ef;
+    }
     /**
      * Gets the number of last observations that will be considered
      *
@@ -181,7 +200,6 @@ public class CheckLast {
     public int getBackCount() {
         return nback;
     }
-
 
     public boolean testSeries(final TsData y) {
         if (y == null) {
@@ -196,7 +214,7 @@ public class CheckLast {
         if (nrepeat > MAX_REPEAT_COUNT * nz / 100) {
             return false;
         }
-        int nm = y.getValues().count(z->! Double.isFinite(z));
+        int nm = y.getValues().count(z -> !Double.isFinite(z));
         if (nm > MAX_MISSING_COUNT * nz / 100) {
             return false;
         }

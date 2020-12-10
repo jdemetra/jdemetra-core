@@ -31,18 +31,14 @@ import demetra.data.DoubleSeq;
  *
  * @author Jean Palate
  */
-public class DkFilter  {
+public class DkFilter {
 
     private final BaseDiffuseFilteringResults frslts;
     private final ISsf ssf;
     private final ISsfLoading loading;
     private final ISsfDynamics dynamics;
     private final int start, end, enddiffuse;
-    private boolean normalized = true;
-
-    public void setNormalized(boolean normalized) {
-        this.normalized = normalized;
-    }
+    private final boolean normalized;
 
     public boolean isnormalized() {
         return normalized;
@@ -60,7 +56,7 @@ public class DkFilter  {
         return new FastDiffuseFilter1().filter(x, normalized);
     }
 
-    public DkFilter(ISsf ssf, BaseDiffuseFilteringResults frslts, ResultsRange range) {
+    public DkFilter(ISsf ssf, BaseDiffuseFilteringResults frslts, ResultsRange range, boolean normalized) {
         this.frslts = frslts;
         this.ssf = ssf;
         loading = ssf.loading();
@@ -68,6 +64,7 @@ public class DkFilter  {
         start = range.getStart();
         end = range.getEnd();
         enddiffuse = frslts.getEndDiffusePosition();
+        this.normalized = normalized;
     }
 
     public void apply(DoubleSeq in, DataBlock out) {
@@ -131,17 +128,17 @@ public class DkFilter  {
                     while (scols.hasNext()) {
                         DataBlock scol = scols.next();
                         scol.addAY(reader.getAndNext() / w, K);
-                        dynamics.TX(i, scol);
                     }
                 }
             }
             if (f > 0) {
                 if (normalized) {
                     row.mul(1 / Math.sqrt(f));
-                } else {
-                    row.apply(q -> q == 0 ? 0 : Double.NaN);
                 }
+            } else {
+                row.apply(q -> Math.abs(q) > State.ZERO ? Double.NaN : 0);
             }
+
             scols.reset();
             while (scols.hasNext()) {
                 dynamics.TX(i, scols.next());

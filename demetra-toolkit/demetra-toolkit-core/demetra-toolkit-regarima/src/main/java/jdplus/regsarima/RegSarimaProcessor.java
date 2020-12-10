@@ -48,7 +48,7 @@ import jdplus.sarima.SarimaModel;
 public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
 
     public static final RegSarimaProcessor PROCESSOR = new Builder()
-            .precision(1e-12)
+            .precision(1e-9)
             .startingPoint(StartingPoint.Multiple)
             .build();
 

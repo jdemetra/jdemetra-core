@@ -32,7 +32,6 @@ import demetra.timeseries.regression.TrendConstant;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
@@ -51,8 +50,8 @@ import jdplus.timeseries.simplets.Transformations;
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
 public final class ModelEstimation {
-    
-    private static final boolean[] EB=new boolean[0];
+
+    private static final boolean[] EB = new boolean[0];
 
     private final TsData originalSeries;
     @lombok.Getter(lombok.AccessLevel.NONE)
@@ -64,7 +63,8 @@ public final class ModelEstimation {
 
     // Missing values correspond to the positions in the domain of the series !
     private final int[] missing;
-    private final @lombok.NonNull Variable[] variables;
+    private final @lombok.NonNull
+    Variable[] variables;
 
     private RegArimaModel<SarimaModel> model;
     private ConcentratedLikelihoodWithMissing concentratedLikelihood;
@@ -73,7 +73,7 @@ public final class ModelEstimation {
     private boolean[] fixedArimaParameters;
     private double[] arimaParameters, arimaScore;
     private Matrix arimaCovariance;
-    
+
     private LikelihoodStatistics statistics;
 
     public static ModelEstimation of(ModelDescription builder, IRegArimaProcessor<SarimaModel> processor) {
@@ -94,17 +94,18 @@ public final class ModelEstimation {
         this.estimationDomain = description.getEstimationDomain();
 
         SarimaComponent arima = description.getArimaComponent();
-        int free = arima.getFreeParametersCount(), all=arima.getParametersCount();
-        
+        int free = arima.getFreeParametersCount(), all = arima.getParametersCount();
+
         List<Variable> vars = description.variables().sequential().collect(Collectors.toList());
-        int nvars=(int) vars.size();
-        if (description.isMean())
+        int nvars = (int) vars.size();
+        if (description.isMean()) {
             ++nvars;
-        this.variables=new Variable[nvars];
+        }
+        this.variables = new Variable[nvars];
         DoubleSeqCursor cursor = estimation.getConcentratedLikelihood().coefficients().cursor();
-        int k=0;
-        if (description.isMean()){
-            this.variables[k++]=Variable.variable("const", new TrendConstant(arima.getD(), arima.getBd()));
+        int k = 0;
+        if (description.isMean()) {
+            this.variables[k++] = Variable.variable("const", new TrendConstant(arima.getD(), arima.getBd()));
         }
         // fill the free coefficients
         for (Variable var : vars) {
@@ -123,24 +124,24 @@ public final class ModelEstimation {
                     }
                 }
                 variables[k++] = var.withCoefficient(p);
-            }else
-                 variables[k++] = var;
+            } else {
+                variables[k++] = var;
+            }
         }
 
         this.model = estimation.getModel();
         this.concentratedLikelihood = estimation.getConcentratedLikelihood();
         this.statistics = estimation.statistics();
 
-        
         LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = estimation.getMax();
-        freeArimaParametersCount=arima.getFreeParametersCount();
+        freeArimaParametersCount = arima.getFreeParametersCount();
         if (max == null) {
             this.arimaParameters = Doubles.EMPTYARRAY;
             this.arimaScore = Doubles.EMPTYARRAY;
             this.arimaCovariance = Matrix.EMPTY;
-            this.fixedArimaParameters=EB;
+            this.fixedArimaParameters = EB;
         } else {
-            this.fixedArimaParameters=arima.fixedConstraints();
+            this.fixedArimaParameters = arima.fixedConstraints();
             if (arima.getFixedParametersCount() == 0) {
                 this.arimaParameters = max.getParameters();
                 this.arimaScore = max.getScore();
@@ -332,7 +333,7 @@ public final class ModelEstimation {
         }
         DataBlock rslt = DataBlock.of(interp.getValues());
         DoubleSeqCursor c = concentratedLikelihood.coefficients().cursor();
-        int j=0;
+        int j = 0;
         if (model.isMean()) {
             c.skip(1);
             ++j;
@@ -348,12 +349,39 @@ public final class ModelEstimation {
         return TsData.ofInternal(interp.getStart(), rslt);
     }
 
+    /**
+     * Back-Transforms a series, so that it become comparable to the original
+     * one
+     *
+     * @param s The transformed series (in logs for instance)
+     * @param includeLp Specifies if a correction for leap year must be applied
+     * @return
+     */
     public TsData backTransform(TsData s, boolean includeLp) {
         if (logTransformation) {
             s = s.exp();
+            if (includeLp && lpTransformation != LengthOfPeriodType.None) {
+                s = Transformations.lengthOfPeriod(lpTransformation).converse().transform(s, null);
+            }
         }
-        if (includeLp && lpTransformation != LengthOfPeriodType.None) {
-            s = Transformations.lengthOfPeriod(lpTransformation).converse().transform(s, null);
+        return s;
+    }
+
+    /**
+     * Transforms a series with the same operations as those applied to the
+     * original series
+     *
+     * @param s The series to be transformed
+     * @param includeLp Specifies if a correction for leap year must be
+     * applied
+     * @return
+     */
+    public TsData transform(TsData s, boolean includeLp) {
+        if (logTransformation) {
+            if (includeLp && lpTransformation != LengthOfPeriodType.None) {
+                s = Transformations.lengthOfPeriod(lpTransformation).transform(s, null);
+            }
+            s = s.log();
         }
         return s;
     }
@@ -446,5 +474,5 @@ public final class ModelEstimation {
         TsData s = deterministicEffect(domain, v -> true);
         return backTransform(s, true);
     }
-    
+
 }

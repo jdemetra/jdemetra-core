@@ -191,8 +191,7 @@ public final class RegArimaModel<M extends IArimaModel> {
 
     /**
      * Gets the number of variables, including the mean but without the missing
-     * values
-     * estimated by additive outliers.
+     * values estimated by additive outliers.
      *
      * @return
      */
