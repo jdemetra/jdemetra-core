@@ -29,7 +29,6 @@ import jdplus.sarima.SarimaModel;
 import java.util.List;
 import java.util.function.Function;
 import demetra.data.DoubleSeq;
-import jdplus.likelihood.LogLikelihoodFunction.Point;
 
 /**
  * RegArimaEstimation. Main results

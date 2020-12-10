@@ -36,10 +36,11 @@ public class RegressionUtility {
     public static class Processor implements RegressionVariables.Processor {
 
         @Override
-        public <D extends TimeSeriesDomain> MatrixType matrix(D d, ITsVariable... itvs) {
+        public <D extends TimeSeriesDomain> Matrix matrix(D d, ITsVariable... itvs) {
             return Regression.matrix(d, itvs);
         }
-
     }
+    
+    private final Processor PROCESSOR=new Processor();
 
 }

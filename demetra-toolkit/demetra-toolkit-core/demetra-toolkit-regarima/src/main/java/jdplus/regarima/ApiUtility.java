@@ -122,13 +122,13 @@ public class ApiUtility {
                 .variables(estimation.getVariables())
                 .stochasticComponent(jdplus.modelling.ApiUtility.toApi(estimation.getModel().arima(), null))
                 .coefficients(estimation.getConcentratedLikelihood().coefficients().toArray())
-                .coefficientsCovariance(estimation.getConcentratedLikelihood().covariance(estimation.getFreeParametersCount(), true))
-                .parameters(estimation.getParameters())
-                .score(estimation.getScore())
-                .parametersCovariance(estimation.getParametersCovariance().unmodifiable())
+                .coefficientsCovariance(estimation.getConcentratedLikelihood().covariance(estimation.getFreeArimaParametersCount(), true))
+                .parameters(estimation.getArimaParameters())
+                .score(estimation.getArimaScore())
+                .parametersCovariance(estimation.getArimaCovariance().unmodifiable())
                 .missing(missing(estimation))
                 .statistics(estimation.getStatistics())
-                .freeParametersCount(estimation.getFreeParametersCount())
+                .freeParametersCount(estimation.getFreeArimaParametersCount())
                 .build();
     }
 

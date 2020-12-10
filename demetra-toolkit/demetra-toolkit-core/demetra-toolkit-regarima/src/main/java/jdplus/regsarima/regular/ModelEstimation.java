@@ -51,6 +51,8 @@ import jdplus.timeseries.simplets.Transformations;
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
 public final class ModelEstimation {
+    
+    private static final boolean[] EB=new boolean[0];
 
     private final TsData originalSeries;
     @lombok.Getter(lombok.AccessLevel.NONE)
@@ -67,11 +69,12 @@ public final class ModelEstimation {
     private RegArimaModel<SarimaModel> model;
     private ConcentratedLikelihoodWithMissing concentratedLikelihood;
 
-    private double[] parameters, score;
-    private Matrix parametersCovariance;
+    private int freeArimaParametersCount;
+    private boolean[] fixedArimaParameters;
+    private double[] arimaParameters, arimaScore;
+    private Matrix arimaCovariance;
+    
     private LikelihoodStatistics statistics;
-
-    private int freeParametersCount;
 
     public static ModelEstimation of(ModelDescription builder, IRegArimaProcessor<SarimaModel> processor) {
         return new ModelEstimation(builder, builder.estimate(processor));
@@ -91,7 +94,8 @@ public final class ModelEstimation {
         this.estimationDomain = description.getEstimationDomain();
 
         SarimaComponent arima = description.getArimaComponent();
-        freeParametersCount = arima.getParametersCount();
+        int free = arima.getFreeParametersCount(), all=arima.getParametersCount();
+        
         List<Variable> vars = description.variables().sequential().collect(Collectors.toList());
         int nvars=(int) vars.size();
         if (description.isMean())
@@ -127,23 +131,26 @@ public final class ModelEstimation {
         this.concentratedLikelihood = estimation.getConcentratedLikelihood();
         this.statistics = estimation.statistics();
 
+        
         LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = estimation.getMax();
+        freeArimaParametersCount=arima.getFreeParametersCount();
         if (max == null) {
-            this.parameters = Doubles.EMPTYARRAY;
-            this.score = Doubles.EMPTYARRAY;
-            this.parametersCovariance = Matrix.EMPTY;
+            this.arimaParameters = Doubles.EMPTYARRAY;
+            this.arimaScore = Doubles.EMPTYARRAY;
+            this.arimaCovariance = Matrix.EMPTY;
+            this.fixedArimaParameters=EB;
         } else {
+            this.fixedArimaParameters=arima.fixedConstraints();
             if (arima.getFixedParametersCount() == 0) {
-                this.parameters = max.getParameters();
-                this.score = max.getScore();
-                this.parametersCovariance = max.asymptoticCovariance();
+                this.arimaParameters = max.getParameters();
+                this.arimaScore = max.getScore();
+                this.arimaCovariance = max.asymptoticCovariance();
             } else {
                 // expand parameters, score, pcov;
-                boolean[] fc = arima.fixedConstraints();
-                this.parameters = arima.parameters();
-                expand(max.getParameters(), fc, this.parameters);
-                this.score = expand(max.getScore(), fc, Double.NaN);
-                this.parametersCovariance = expand(max.asymptoticCovariance(), fc);
+                this.arimaParameters = arima.parameters();
+                expand(max.getParameters(), fixedArimaParameters, this.arimaParameters);
+                this.arimaScore = expand(max.getScore(), fixedArimaParameters, Double.NaN);
+                this.arimaCovariance = expand(max.asymptoticCovariance(), fixedArimaParameters);
             }
         }
     }
@@ -439,5 +446,5 @@ public final class ModelEstimation {
         TsData s = deterministicEffect(domain, v -> true);
         return backTransform(s, true);
     }
-
+    
 }

@@ -34,7 +34,6 @@ import jdplus.ssf.ckms.CkmsState;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.OrdinaryFilter;
-import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.implementations.Loading;
 import jdplus.ssf.UpdateInformation;
 import demetra.data.DoubleSeqCursor;
@@ -43,6 +42,7 @@ import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
 import jdplus.ssf.univariate.ISsfMeasurement;
 import jdplus.math.matrices.Matrix;
+import jdplus.ssf.univariate.Ssf;
 
 /**
  *
@@ -51,8 +51,8 @@ import jdplus.math.matrices.Matrix;
 @Development(status = Development.Status.Beta)
 @lombok.experimental.UtilityClass
 public class SsfArima {
-    
-    public ISsfLoading defaultLoading(){
+
+    public ISsfLoading defaultLoading() {
         return Loading.fromPosition(0);
     }
 
@@ -63,7 +63,11 @@ public class SsfArima {
             return ofNonStationary(arima);
         }
     }
-   
+
+    public Ssf ssf(IArimaModel arima) {
+        return Ssf.of(of(arima), defaultLoading());
+    }
+
     public CkmsFilter.IFastFilterInitializer fastInitializer(IArimaModel arima) {
         return (CkmsState state, UpdateInformation upd, ISsf ssf, ISsfData data) -> {
             if (arima.isStationary()) {
@@ -84,7 +88,7 @@ public class SsfArima {
         upd.setVariance(values[0]);
         return 0;
     }
-    
+
     private int dInitialize(CkmsState state, UpdateInformation upd, IArimaModel arima, ISsf ssf, ISsfData data) {
         return new CkmsDiffuseInitializer(diffuseInitializer(arima)).initializeFilter(state, upd, ssf, data);
     }
@@ -128,7 +132,7 @@ public class SsfArima {
         if (var == 0) {
             throw new SsfException(SsfException.STOCH);
         }
-        ArmaInitialization initialization=new ArmaInitialization(arima);
+        ArmaInitialization initialization = new ArmaInitialization(arima);
         ISsfDynamics dynamics = new ArimaDynamics(initialization.data);
         return new StateComponent(initialization, dynamics);
     }
@@ -138,7 +142,7 @@ public class SsfArima {
         if (var == 0) {
             throw new SsfException(SsfException.STOCH);
         }
-        ArimaInitialization initialization=new ArimaInitialization(arima);
+        ArimaInitialization initialization = new ArimaInitialization(arima);
         ISsfDynamics dynamics = new ArimaDynamics(initialization.data);
         ISsfLoading loading = Loading.fromPosition(0);
         return new StateComponent(initialization, dynamics);
@@ -468,7 +472,7 @@ public class SsfArima {
         public boolean areInnovationsTimeInvariant() {
             return true;
         }
-        
+
         @Override
         public int getInnovationsDim() {
             return 1;

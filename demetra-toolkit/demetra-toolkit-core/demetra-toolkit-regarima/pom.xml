@@ -25,6 +25,10 @@
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-toolkit-modelling</artifactId>
         </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-toolkit-ssf</artifactId>
+        </dependency>
         <!-- test only -->
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>

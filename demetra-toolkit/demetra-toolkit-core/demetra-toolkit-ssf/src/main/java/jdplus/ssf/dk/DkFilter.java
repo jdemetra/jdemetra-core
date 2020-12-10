@@ -138,7 +138,6 @@ public class DkFilter  {
             if (f > 0) {
                 if (normalized) {
                     row.mul(1 / Math.sqrt(f));
-
                 } else {
                     row.apply(q -> q == 0 ? 0 : Double.NaN);
                 }
@@ -147,10 +146,8 @@ public class DkFilter  {
             while (scols.hasNext()) {
                 dynamics.TX(i, scols.next());
             }
-            row.set(Double.NaN);
-            //  
+//            row.set(Double.NaN);
         }
-
     }
 
     class FastDiffuseFilter1 {
