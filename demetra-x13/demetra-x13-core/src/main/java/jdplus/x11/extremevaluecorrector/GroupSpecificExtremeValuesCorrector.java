@@ -6,7 +6,7 @@
 package jdplus.x11.extremevaluecorrector;
 
 import jdplus.data.DataBlock;
-import demetra.x11.SigmavecOption;
+import demetra.x11.SigmaVecOption;
 import demetra.data.DoubleSeq;
 
 /**
@@ -15,9 +15,9 @@ import demetra.data.DoubleSeq;
  */
 public class GroupSpecificExtremeValuesCorrector extends PeriodSpecificExtremeValuesCorrector {
 
-    private final SigmavecOption[] sigmavecOption_;
+    private final SigmaVecOption[] sigmavecOption_;
 
-    public GroupSpecificExtremeValuesCorrector(SigmavecOption[] sigmavecOption) {
+    public GroupSpecificExtremeValuesCorrector(SigmaVecOption[] sigmavecOption) {
         super();
         sigmavecOption_ = sigmavecOption;
     }
@@ -40,7 +40,7 @@ public class GroupSpecificExtremeValuesCorrector extends PeriodSpecificExtremeVa
         for (int i = 0; i < period; i++) {
             int j = ((period - start) % period + i) % period;
             DataBlock dbPeriod = db.extract(j, -1, period);
-            if (sigmavecOption_[i].equals(SigmavecOption.Group1)) {
+            if (sigmavecOption_[i].equals(SigmaVecOption.Group1)) {
                 for (int k = 0; k < dbPeriod.length(); k++) {
                     double x = dbPeriod.get(k);
                     if (!Double.isNaN(x)) {
@@ -52,7 +52,7 @@ public class GroupSpecificExtremeValuesCorrector extends PeriodSpecificExtremeVa
                     }
                 }
 
-            } else if (sigmavecOption_[i].equals(SigmavecOption.Group2)) {
+            } else if (sigmavecOption_[i].equals(SigmaVecOption.Group2)) {
                 for (int k = 0; k < dbPeriod.length(); k++) {
                     double x = dbPeriod.get(k);
                     if (!Double.isNaN(x)) {
@@ -72,9 +72,9 @@ public class GroupSpecificExtremeValuesCorrector extends PeriodSpecificExtremeVa
         stdvGroup2 = Math.sqrt(eGroup2 / nGroup2);
 
         for (int i = 0; i < np; i++) {
-            if (sigmavecOption_[i].equals(SigmavecOption.Group1)) {
+            if (sigmavecOption_[i].equals(SigmaVecOption.Group1)) {
                 stdev[i] = stdvGroup1;
-            } else if (sigmavecOption_[i].equals(SigmavecOption.Group2)) {
+            } else if (sigmavecOption_[i].equals(SigmaVecOption.Group2)) {
                 stdev[i] = stdvGroup2;
             }
 

@@ -118,25 +118,25 @@ public class X13Spec implements Validatable<X13Spec>, SaSpecification {
     }
 
     public static X13Spec fromString(String name) {
-        if (name.equals("X11")) {
+        if (name.equalsIgnoreCase("X11") || name.equalsIgnoreCase("X11")) {
             return RSAX11;
         }
-        if (name.equals("RSA0")) {
+        if (name.equalsIgnoreCase("RSA0") || name.equalsIgnoreCase("RSA0")) {
             return RSA0;
         }
-        if (name.equals("RSA1")) {
+        if (name.equalsIgnoreCase("RSA1") || name.equalsIgnoreCase("RSA1")) {
             return RSA1;
         }
-        if (name.equals("RSA2c")) {
+        if (name.equalsIgnoreCase("RSA2c") || name.equalsIgnoreCase("RSA2")) {
             return RSA2;
         }
-        if (name.equals("RSA3")) {
+        if (name.equalsIgnoreCase("RSA3") || name.equalsIgnoreCase("RSA3")) {
             return RSA3;
         }
-        if (name.equals("RSA4c")) {
+        if (name.equalsIgnoreCase("RSA4c") || name.equalsIgnoreCase("RSA4")) {
             return RSA4;
         }
-        if (name.equals("RSA5c")) {
+        if (name.equalsIgnoreCase("RSA5c") || name.equalsIgnoreCase("RSA5")) {
             return RSA5;
         }
         throw new X13Exception();

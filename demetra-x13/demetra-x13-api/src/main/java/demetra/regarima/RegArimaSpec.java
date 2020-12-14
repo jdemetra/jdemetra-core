@@ -170,16 +170,25 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
     public static RegArimaSpec fromString(String name) {
         switch (name) {
             case "RG0":
+            case "rg0":
                 return RG0;
             case "RG1":
+            case "rg1":
                 return RG1;
             case "RG2c":
+            case "rg2c":
+            case "rg2":
                 return RG2;
             case "RG3":
+            case "rg3":
                 return RG3;
             case "RG4c":
+            case "rg4c":
+            case "rg4":
                 return RG4;
             case "RG5c":
+            case "rg5c":
+            case "rg5":
                 return RG5;
             default:
                 throw new RegArimaException();

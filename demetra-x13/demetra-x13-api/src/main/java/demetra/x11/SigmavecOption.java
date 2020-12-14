@@ -12,7 +12,7 @@ import nbbrd.design.Development;
  * @author Christiane Hofer
  */
 @Development(status = Development.Status.Beta)
-public enum SigmavecOption {
+public enum SigmaVecOption {
 
     Group1,
     Group2;

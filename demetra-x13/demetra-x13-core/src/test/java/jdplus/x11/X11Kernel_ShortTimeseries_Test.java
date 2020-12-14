@@ -11,7 +11,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.x11.CalendarSigmaOption;
 import demetra.x11.SeasonalFilterOption;
-import demetra.x11.SigmavecOption;
+import demetra.x11.SigmaVecOption;
 import ec.satoolkit.x11.X11Specification;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
@@ -543,15 +543,15 @@ public class X11Kernel_ShortTimeseries_Test {
     private void testKernel(String modeName, String[] seasonalFilterOptionName, int filterLength, int frequency, double[] values) {
 
         jdplus.x11.X11Kernel instanceKernel = new X11Kernel();
-        List<SigmavecOption> sigmavecOptions = new ArrayList<>();
+        List<SigmaVecOption> sigmavecOptions = new ArrayList<>();
 
         for (int i = 0; i < frequency; i++) {
-            sigmavecOptions.add(SigmavecOption.Group1);//has to be removed
+            sigmavecOptions.add(SigmaVecOption.Group1);//has to be removed
         }
         demetra.x11.X11Spec spec = demetra.x11.X11Spec.builder()
                 .mode(DecompositionMode.valueOf(modeName))
                 .hendersonFilterLength(filterLength)
-                .sigmavec(sigmavecOptions)
+                .sigmaVec(sigmavecOptions)
                 .calendarSigma(CalendarSigmaOption.All)
                 .upperSigma(2.1)
                 .lowerSigma(2.0)

@@ -8,7 +8,7 @@ package demetra.x13.io.xml.legacy;
 import demetra.sa.DecompositionMode;
 import demetra.x11.CalendarSigmaOption;
 import demetra.x11.SeasonalFilterOption;
-import demetra.x11.SigmavecOption;
+import demetra.x11.SigmaVecOption;
 import demetra.x11.X11Spec;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -482,7 +482,7 @@ public class XmlX11Spec {
         if (cs != CalendarSigmaOption.None) {
             xml.setCalendarSigma(cs);
             if (cs == CalendarSigmaOption.Select) {
-                xml.setSigmaVec(convert(v.getSigmavec()));
+                xml.setSigmaVec(convert(v.getSigmaVec()));
             }
         }
         return true;
@@ -526,7 +526,7 @@ public class XmlX11Spec {
         if (xml.calendarSigma != null) {
             builder = builder.calendarSigma(xml.calendarSigma);
             if (xml.sigmaVec != null) {
-                builder = builder.sigmavec(convert(xml.sigmaVec));
+                builder = builder.sigmaVec(convert(xml.sigmaVec));
             }
         }
         return builder.build();
@@ -534,13 +534,13 @@ public class XmlX11Spec {
 
     ;
     
-    private static int[] convert(List<SigmavecOption> sv) {
+    private static int[] convert(List<SigmaVecOption> sv) {
         if (sv.isEmpty()) {
             return null;
         }
         int[] v = new int[sv.size()];
         for (int i = 0; i < sv.size(); ++i) {
-            if (sv.get(i) == SigmavecOption.Group1) {
+            if (sv.get(i) == SigmaVecOption.Group1) {
                 v[i] = 1;
             } else {
                 v[i] = 2;
@@ -549,16 +549,16 @@ public class XmlX11Spec {
         return v;
     }
 
-    private static List<SigmavecOption> convert(int[] v) {
+    private static List<SigmaVecOption> convert(int[] v) {
         if (v == null || v.length == 0) {
             return Collections.emptyList();
         }
-        List<SigmavecOption> l = new ArrayList<>();
+        List<SigmaVecOption> l = new ArrayList<>();
         for (int i = 0; i < v.length; ++i) {
             if (v[i] == 1) {
-                l.add(SigmavecOption.Group1);
+                l.add(SigmaVecOption.Group1);
             } else {
-                l.add(SigmavecOption.Group2);
+                l.add(SigmaVecOption.Group2);
             }
         }
         return l;

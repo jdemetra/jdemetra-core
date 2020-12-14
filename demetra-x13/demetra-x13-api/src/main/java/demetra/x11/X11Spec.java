@@ -47,7 +47,8 @@ public final class X11Spec implements Validatable<X11Spec> {
      * Lower sigma value for extreme values detection [sigmalim option in
      * X12-arima].
      *
-     * @param lowerSigma Lower sigma value for extreme values detection. lowerSigma
+     * @param lowerSigma Lower sigma value for extreme values detection.
+     * lowerSigma
      * should be lower than upperSigma and higher than .5.
      */
     private double lowerSigma;
@@ -97,7 +98,7 @@ public final class X11Spec implements Validatable<X11Spec> {
      * error calculation used for outlier detection in the X11 part
      */
     private CalendarSigmaOption calendarSigma;
-    private List<SigmavecOption> sigmavec;
+    private List<SigmaVecOption> sigmaVec;
     private boolean excludeForecast;
     private BiasCorrection bias;
 
@@ -134,10 +135,10 @@ public final class X11Spec implements Validatable<X11Spec> {
                 || (hendersonFilterLength != 0 && hendersonFilterLength % 2 == 0)) {
             throw new IllegalArgumentException("Invalid henderson length");
         }
-        if (!calendarSigma.equals(CalendarSigmaOption.Signif) && sigmavec != null) {
+        if (!calendarSigma.equals(CalendarSigmaOption.Signif) && sigmaVec != null) {
             throw new X11Exception("Sigmavec mustn't be used without CalendarSigmaOption Signif");
         }
-        if (calendarSigma.equals(CalendarSigmaOption.Signif) && sigmavec == null) {
+        if (calendarSigma.equals(CalendarSigmaOption.Signif) && sigmaVec == null) {
             throw new X11Exception("SigmavecOptions not set for CalendarSigmaOption Signif");
         }
         return this;

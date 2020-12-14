@@ -10,7 +10,7 @@ import demetra.sa.DecompositionMode;
 import demetra.timeseries.TsData;
 import demetra.x11.CalendarSigmaOption;
 import demetra.x11.SeasonalFilterOption;
-import demetra.x11.SigmavecOption;
+import demetra.x11.SigmaVecOption;
 import demetra.x11.X11Exception;
 import demetra.x11.X11Spec;
 import jdplus.x11.extremevaluecorrector.Cochran;
@@ -46,7 +46,7 @@ public class X11Context {
     SeasonalFilterOption[] finalSeasonalFilter;
     double lowerSigma, upperSigma;
     CalendarSigmaOption calendarSigma;
-    SigmavecOption[] sigmavecOptions;
+    SigmaVecOption[] sigmavecOptions;
     int forecastHorizon;
     int backcastHorizon;
     int firstPeriod;
@@ -93,7 +93,7 @@ public class X11Context {
                 .lowerSigma(spec.getLowerSigma())
                 .upperSigma(spec.getUpperSigma())
                 .calendarSigma(spec.getCalendarSigma())
-                .sigmavecOptions(spec.getSigmavec() == null ? null : spec.getSigmavec().toArray(new SigmavecOption[0]))
+                .sigmavecOptions(spec.getSigmaVec() == null ? null : spec.getSigmaVec().toArray(new SigmaVecOption[0]))
                 .excludefcast(spec.isExcludeForecast())
                 .forecastHorizon(spec.getForecastHorizon())
                 .backcastHorizon(spec.getBackcastHorizon())

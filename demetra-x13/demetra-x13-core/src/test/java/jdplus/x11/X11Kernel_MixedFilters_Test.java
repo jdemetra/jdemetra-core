@@ -11,7 +11,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.x11.CalendarSigmaOption;
 import demetra.x11.SeasonalFilterOption;
-import demetra.x11.SigmavecOption;
+import demetra.x11.SigmaVecOption;
 import ec.satoolkit.x11.X11Specification;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
@@ -266,16 +266,16 @@ public class X11Kernel_MixedFilters_Test {
         oldSpec.setForecastHorizon(0);
         oldSpec.setBiasCorrection(ec.satoolkit.x11.BiasCorrection.Legacy);
 
-        ArrayList<SigmavecOption> sigmavecOptions_new = new ArrayList<>();
+        ArrayList<SigmaVecOption> sigmavecOptions_new = new ArrayList<>();
         for (int i = 0; i < frequency; i++) {
-            sigmavecOptions_new.add(SigmavecOption.Group1);
+            sigmavecOptions_new.add(SigmaVecOption.Group1);
         }
         if (calendarSigmaOption.equals(CalendarSigmaOption.Select.name())) {
             ec.satoolkit.x11.SigmavecOption[] sigmavecOptions_old = new ec.satoolkit.x11.SigmavecOption[frequency];
             for (int i = 1; i < frequency; i++) {
                 sigmavecOptions_old[i] = ec.satoolkit.x11.SigmavecOption.Group1;
             }
-            sigmavecOptions_new.set(0, SigmavecOption.Group2);
+            sigmavecOptions_new.set(0, SigmaVecOption.Group2);
             sigmavecOptions_old[0] = ec.satoolkit.x11.SigmavecOption.Group2;
             oldSpec.setSigmavec(sigmavecOptions_old);
         }
@@ -284,7 +284,7 @@ public class X11Kernel_MixedFilters_Test {
                 .mode(DecompositionMode.valueOf(modeName))
                 .hendersonFilterLength(filterLength)
                 .calendarSigma(CalendarSigmaOption.valueOf(calendarSigmaOption))
-                .sigmavec(sigmavecOptions_new)
+                .sigmaVec(sigmavecOptions_new)
                 .upperSigma(uSigma)
                 .lowerSigma(lSigma)
                 .filters(getNewSeasonalFilter(seasonalFilterOptionName))
