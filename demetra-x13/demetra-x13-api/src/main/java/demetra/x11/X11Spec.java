@@ -98,23 +98,24 @@ public final class X11Spec implements Validatable<X11Spec> {
      * error calculation used for outlier detection in the X11 part
      */
     private CalendarSigmaOption calendarSigma;
+    @lombok.Singular("calendarSigma")
     private List<SigmaVecOption> sigmaVec;
+    
     private boolean excludeForecast;
     private BiasCorrection bias;
 
     public static final X11Spec DEFAULT_UNDEFINED = X11Spec.builder()
-            .filter(SeasonalFilterOption.Msr)
             .forecastHorizon(-1)
             .mode(DecompositionMode.Undefined)
             .build();
 
     public static final X11Spec DEFAULT = X11Spec.builder()
-            .filter(SeasonalFilterOption.Msr)
             .build();
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
+                .filter(SeasonalFilterOption.Msr)
                 .calendarSigma(CalendarSigmaOption.None)
                 .excludeForecast(false)
                 .bias(BiasCorrection.Legacy)
@@ -140,10 +141,10 @@ public final class X11Spec implements Validatable<X11Spec> {
                 || (hendersonFilterLength != 0 && hendersonFilterLength % 2 == 0)) {
             throw new IllegalArgumentException("Invalid henderson length");
         }
-        if (!calendarSigma.equals(CalendarSigmaOption.Signif) && sigmaVec != null) {
+        if (!calendarSigma.equals(CalendarSigmaOption.Signif) && ! sigmaVec.isEmpty()) {
             throw new X11Exception("Sigmavec mustn't be used without CalendarSigmaOption Signif");
         }
-        if (calendarSigma.equals(CalendarSigmaOption.Signif) && sigmaVec == null) {
+        if (calendarSigma.equals(CalendarSigmaOption.Signif) && sigmaVec.isEmpty()) {
             throw new X11Exception("SigmavecOptions not set for CalendarSigmaOption Signif");
         }
         return this;
