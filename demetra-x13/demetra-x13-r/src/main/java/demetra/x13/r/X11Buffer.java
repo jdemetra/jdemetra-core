@@ -93,21 +93,21 @@ public class X11Buffer {
     public static int filter(SeasonalFilterOption option) {
         switch (option) {
             case Msr:
-                return -1;
-            case Stable:
-                return -2;
-            case X11Default:
-                return -3;
-            case S3X1:
                 return 1;
-            case S3X3:
+            case Stable:
                 return 2;
-            case S3X5:
+            case X11Default:
                 return 3;
-            case S3X9:
+            case S3X1:
                 return 4;
-            case S3X15:
+            case S3X3:
                 return 5;
+            case S3X5:
+                return 6;
+            case S3X9:
+                return 7;
+            case S3X15:
+                return 8;
             default:
                 return 0;
         }
@@ -142,25 +142,25 @@ public class X11Buffer {
 
     public static SeasonalFilterOption filter(int option) {
         switch (option) {
-            case -1:
-                return SeasonalFilterOption.Msr;
-            case -2:
-                return SeasonalFilterOption.Stable;
-            case -3:
-                return SeasonalFilterOption.X11Default;
             case 1:
-                return SeasonalFilterOption.S3X1;
+                return SeasonalFilterOption.Msr;
             case 2:
-                return SeasonalFilterOption.S3X3;
+                return SeasonalFilterOption.Stable;
             case 3:
-                return SeasonalFilterOption.S3X5;
+                return SeasonalFilterOption.X11Default;
             case 4:
-                return SeasonalFilterOption.S3X9;
+                return SeasonalFilterOption.S3X1;
             case 5:
+                return SeasonalFilterOption.S3X3;
+            case 6:
+                return SeasonalFilterOption.S3X5;
+            case 7:
+                return SeasonalFilterOption.S3X9;
+            case 8:
                 return SeasonalFilterOption.S3X15;
             default:
                 return null;
-        }
+        }                  
     }
 
     public static int vsigma(SigmaVecOption option) {

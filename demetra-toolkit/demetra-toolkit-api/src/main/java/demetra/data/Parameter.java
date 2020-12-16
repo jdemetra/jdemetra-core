@@ -142,6 +142,13 @@ public class Parameter {
             }
         }
     }
+    
+    public static Parameter of(double val, ParameterType t){
+        if (t == ParameterType.Undefined)
+            return UNDEFINED;
+        else
+            return new Parameter(val, t);
+    }
 
     public static Parameter undefined() {
         return UNDEFINED;
