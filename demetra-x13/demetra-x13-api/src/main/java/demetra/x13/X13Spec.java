@@ -56,7 +56,7 @@ public class X13Spec implements Validatable<X13Spec>, SaSpecification {
     public static Builder builder() {
         return new Builder()
                 .regArima(RegArimaSpec.DEFAULT_ENABLED)
-                .x11(X11Spec.DEFAULT)
+                .x11(X11Spec.DEFAULT_UNDEFINED)
                 .benchmarking(SaBenchmarkingSpec.DEFAULT_DISABLED);
     }
 
@@ -93,27 +93,27 @@ public class X13Spec implements Validatable<X13Spec>, SaSpecification {
                 .build();
         RSA0 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG0)
-                .x11(X11Spec.DEFAULT)
+                .x11(X11Spec.DEFAULT_UNDEFINED)
                 .build();
         RSA1 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG1)
-                .x11(X11Spec.DEFAULT)
+                .x11(X11Spec.DEFAULT_UNDEFINED)
                 .build();
         RSA2 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG2)
-                .x11(X11Spec.DEFAULT)
+                .x11(X11Spec.DEFAULT_UNDEFINED)
                 .build();
         RSA3 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG3)
-                .x11(X11Spec.DEFAULT)
+                .x11(X11Spec.DEFAULT_UNDEFINED)
                 .build();
         RSA4 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG4)
-                .x11(X11Spec.DEFAULT)
+                .x11(X11Spec.DEFAULT_UNDEFINED)
                 .build();
         RSA5 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG5)
-                .x11(X11Spec.DEFAULT)
+                .x11(X11Spec.DEFAULT_UNDEFINED)
                 .build();
     }
 

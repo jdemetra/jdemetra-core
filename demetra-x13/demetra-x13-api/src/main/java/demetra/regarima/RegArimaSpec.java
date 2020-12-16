@@ -17,14 +17,14 @@
 package demetra.regarima;
 
 import demetra.arima.SarimaSpec;
-import nbbrd.design.Development;
-import nbbrd.design.LombokWorkaround;
 import demetra.modelling.RegressionTestSpec;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.util.Validatable;
 import lombok.NonNull;
+import nbbrd.design.Development;
+import nbbrd.design.LombokWorkaround;
 
 /**
  *
@@ -104,7 +104,7 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
 
     static {
         RGDISABLED = RegArimaSpec.builder()
-                .basic(BasicSpec.builder().preProcessing(false).build())
+                .basic(BasicSpec.builder().preprocessing(false).build())
                 .build();
 
         TransformSpec tr = TransformSpec.builder()

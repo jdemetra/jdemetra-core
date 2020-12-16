@@ -13,8 +13,6 @@ import nbbrd.design.Development;
  */
 @Development(status = Development.Status.Beta)
 public enum SigmaVecOption {
-
     Group1,
     Group2;
-
 }

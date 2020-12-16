@@ -16,11 +16,11 @@
  */
 package demetra.x11;
 
-import nbbrd.design.Development;
-import nbbrd.design.LombokWorkaround;
 import demetra.sa.DecompositionMode;
 import demetra.util.Validatable;
 import java.util.List;
+import nbbrd.design.Development;
+import nbbrd.design.LombokWorkaround;
 
 /**
  *
@@ -102,9 +102,14 @@ public final class X11Spec implements Validatable<X11Spec> {
     private boolean excludeForecast;
     private BiasCorrection bias;
 
-    public static final X11Spec DEFAULT = X11Spec.builder()
+    public static final X11Spec DEFAULT_UNDEFINED = X11Spec.builder()
             .filter(SeasonalFilterOption.Msr)
             .forecastHorizon(-1)
+            .mode(DecompositionMode.Undefined)
+            .build();
+
+    public static final X11Spec DEFAULT = X11Spec.builder()
+            .filter(SeasonalFilterOption.Msr)
             .build();
 
     @LombokWorkaround
@@ -119,11 +124,11 @@ public final class X11Spec implements Validatable<X11Spec> {
                 .seasonal(true)
                 .lowerSigma(DEFAULT_LOWER_SIGMA)
                 .upperSigma(DEFAULT_UPPER_SIGMA)
-                .mode(DecompositionMode.Undefined);
+                .mode(DecompositionMode.Multiplicative);
     }
 
     public boolean isDefault() {
-        return this.equals(DEFAULT);
+        return this.equals(DEFAULT_UNDEFINED);
     }
 
     @Override

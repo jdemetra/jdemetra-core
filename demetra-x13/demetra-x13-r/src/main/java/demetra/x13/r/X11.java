@@ -5,11 +5,8 @@
  */
 package demetra.x13.r;
 
-import demetra.arima.SarimaSpec;
 import demetra.information.InformationMapping;
-import demetra.processing.DefaultProcessingLog;
 import demetra.processing.ProcResults;
-import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.x11.X11Results;
 import demetra.x11.X11Spec;
@@ -53,11 +50,8 @@ public class X11 {
     }
 
     public Results process(TsData series, X11Spec spec) {
-
-
         X11Kernel kernel = new X11Kernel();
-        ProcessingLog plog = new DefaultProcessingLog();
-        return new Results(kernel.process(series, spec));
+        return new Results(kernel.process(series.cleanExtremities(), spec));
     }
 
 }

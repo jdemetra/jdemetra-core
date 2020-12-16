@@ -30,7 +30,7 @@ public class BasicSpecTest {
     public void testDefault() {
         assertTrue(BasicSpec.builder()
                 .span(TimeSelector.all())
-                .preProcessing(true)
+                .preprocessing(true)
                 .build().isDefault());
     }
     

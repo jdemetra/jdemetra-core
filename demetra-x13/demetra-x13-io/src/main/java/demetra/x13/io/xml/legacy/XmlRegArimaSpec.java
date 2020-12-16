@@ -144,7 +144,7 @@ public class XmlRegArimaSpec extends XmlModellingSpecification {
     }
 
     public static final XmlRegArimaSpec marshal(RegArimaSpec v) {
-        if (! v.getBasic().isPreProcessing())
+        if (! v.getBasic().isPreprocessing())
             return null;
         XmlRegArimaSpec xml=new XmlRegArimaSpec();
         xml.series = XmlSeriesSpec.marshal(v.getBasic());
