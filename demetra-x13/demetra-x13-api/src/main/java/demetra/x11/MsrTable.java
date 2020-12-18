@@ -118,8 +118,7 @@ public final class MsrTable {
     /**
      * The property returns the global Moving Seasonality Ratio. This is a
      * weighted sum of the per-period ratios. Weighting is done using the number
-     * of years per
-     * period.
+     * of years per period.
      *
      * @return
      */
@@ -157,7 +156,7 @@ public final class MsrTable {
      * @param idx >The position of the period (between 0 and period)
      * @return
      */
-    public double getRMS(int idx) {
+    public double getMsr(int idx) {
         return ri[idx] / rs[idx];
     }
 }

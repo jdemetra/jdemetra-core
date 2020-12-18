@@ -26,6 +26,10 @@ public class X11 {
     public static class Results implements ProcResults {
 
         private X11Results core;
+        
+        public X11ResultsBuffer buffer(){
+            return new X11ResultsBuffer(core);
+        }
 
         @Override
         public boolean contains(String id) {

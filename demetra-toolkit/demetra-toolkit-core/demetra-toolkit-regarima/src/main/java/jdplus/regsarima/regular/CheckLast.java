@@ -118,7 +118,7 @@ public class CheckLast {
      * number of data depends on the "backCount" property
      */
     public DoubleSeq getAbsoluteErrors() {
-        return TsData.subtract(oforecasts, y).getValues();
+        return TsData.subtract(y, oforecasts).getValues();
     }
 
     /**

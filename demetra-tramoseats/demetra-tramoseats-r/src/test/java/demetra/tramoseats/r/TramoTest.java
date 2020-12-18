@@ -45,20 +45,7 @@ public class TramoTest {
         assertTrue(desc != null);
     }
 
-    @Test
-    public void testTerror0() {
-        MatrixType terror = Tramo.terror(Data.TS_PROD, TramoSpec.TR0, null, 12);
-        assertTrue(terror != null);
- //       System.out.println(terror);
-    }
-
-    @Test
-    public void testTerror() {
-        MatrixType terror = Tramo.terror(Data.TS_PROD, TramoSpec.TRfull, null, 12);
-        assertTrue(terror != null);
- //       System.out.println(terror);
-    }
-    
+     
    @Test
     public void testForecast0() {
         MatrixType terror = Tramo.forecast(Data.TS_PROD, TramoSpec.TR0, null, 12);
