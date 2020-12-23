@@ -33,6 +33,9 @@ public final class X11Spec implements Validatable<X11Spec> {
 
     public static final double DEFAULT_LOWER_SIGMA = 1.5, DEFAULT_UPPER_SIGMA = 2.5;
     public static final int DEFAULT_FORECAST_HORIZON = 0, DEFAULT_BACKCAST_HORIZON = 0;
+    
+    private static final SeasonalFilterOption[] MSR=new SeasonalFilterOption[]{SeasonalFilterOption.Msr};
+
 
     /**
      * Decomposition mode of X11
@@ -40,8 +43,7 @@ public final class X11Spec implements Validatable<X11Spec> {
     private DecompositionMode mode;
     private boolean seasonal;
 
-    @lombok.Singular
-    private List<SeasonalFilterOption> filters;
+    private SeasonalFilterOption[] filters;
 
     /**
      * Lower sigma value for extreme values detection [sigmalim option in
@@ -98,9 +100,8 @@ public final class X11Spec implements Validatable<X11Spec> {
      * error calculation used for outlier detection in the X11 part
      */
     private CalendarSigmaOption calendarSigma;
-    @lombok.Singular("calendarSigma")
-    private List<SigmaVecOption> sigmaVec;
-    
+    private SigmaVecOption[] sigmaVec;
+
     private boolean excludeForecast;
     private BiasCorrection bias;
 
@@ -115,7 +116,7 @@ public final class X11Spec implements Validatable<X11Spec> {
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
-                .filter(SeasonalFilterOption.Msr)
+                .filters(MSR)
                 .calendarSigma(CalendarSigmaOption.None)
                 .excludeForecast(false)
                 .bias(BiasCorrection.Legacy)
@@ -141,10 +142,10 @@ public final class X11Spec implements Validatable<X11Spec> {
                 || (hendersonFilterLength != 0 && hendersonFilterLength % 2 == 0)) {
             throw new IllegalArgumentException("Invalid henderson length");
         }
-        if (!calendarSigma.equals(CalendarSigmaOption.Signif) && ! sigmaVec.isEmpty()) {
+        if (!calendarSigma.equals(CalendarSigmaOption.Signif) && sigmaVec != null) {
             throw new X11Exception("Sigmavec mustn't be used without CalendarSigmaOption Signif");
         }
-        if (calendarSigma.equals(CalendarSigmaOption.Signif) && sigmaVec.isEmpty()) {
+        if (calendarSigma.equals(CalendarSigmaOption.Signif) && sigmaVec == null) {
             throw new X11Exception("SigmavecOptions not set for CalendarSigmaOption Signif");
         }
         return this;

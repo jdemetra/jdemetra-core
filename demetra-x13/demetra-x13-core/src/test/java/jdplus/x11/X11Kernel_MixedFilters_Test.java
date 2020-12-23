@@ -266,16 +266,16 @@ public class X11Kernel_MixedFilters_Test {
         oldSpec.setForecastHorizon(0);
         oldSpec.setBiasCorrection(ec.satoolkit.x11.BiasCorrection.Legacy);
 
-        ArrayList<SigmaVecOption> sigmavecOptions_new = new ArrayList<>();
+        SigmaVecOption[] sigmavecOptions_new = new SigmaVecOption[frequency];
         for (int i = 0; i < frequency; i++) {
-            sigmavecOptions_new.add(SigmaVecOption.Group1);
+            sigmavecOptions_new[i]=SigmaVecOption.Group1;
         }
         if (calendarSigmaOption.equals(CalendarSigmaOption.Select.name())) {
             ec.satoolkit.x11.SigmavecOption[] sigmavecOptions_old = new ec.satoolkit.x11.SigmavecOption[frequency];
             for (int i = 1; i < frequency; i++) {
                 sigmavecOptions_old[i] = ec.satoolkit.x11.SigmavecOption.Group1;
             }
-            sigmavecOptions_new.set(0, SigmaVecOption.Group2);
+            sigmavecOptions_new[0]= SigmaVecOption.Group2;
             sigmavecOptions_old[0] = ec.satoolkit.x11.SigmavecOption.Group2;
             oldSpec.setSigmavec(sigmavecOptions_old);
         }
@@ -401,10 +401,10 @@ public class X11Kernel_MixedFilters_Test {
         Assert.assertArrayEquals("Error in D13 for Start:" + Integer.toString(start), expected_D13, actual_D13, DELTA);
     }
 
-    private List<SeasonalFilterOption> getNewSeasonalFilter(String[] filter) {
-        List<SeasonalFilterOption> result = new ArrayList<>();
-        for (String f : filter) {
-            result.add(SeasonalFilterOption.valueOf(f));
+    private SeasonalFilterOption[] getNewSeasonalFilter(String[] filter) {
+        SeasonalFilterOption[] result = new SeasonalFilterOption[filter.length];
+        for (int i=0; i<filter.length; ++i) {
+            result[i]=SeasonalFilterOption.valueOf(filter[i]);
         }
         return result;
     }

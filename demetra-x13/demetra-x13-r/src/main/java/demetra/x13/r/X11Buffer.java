@@ -11,7 +11,6 @@ import demetra.x11.CalendarSigmaOption;
 import demetra.x11.SeasonalFilterOption;
 import demetra.x11.SigmaVecOption;
 import demetra.x11.X11Spec;
-import java.util.List;
 
 /**
  *
@@ -41,10 +40,12 @@ public class X11Buffer {
         buffer[NFCASTS] = spec.getForecastHorizon();
         buffer[NBCASTS] = spec.getBackcastHorizon();
         buffer[CSIG] = calendarSigma(spec.getCalendarSigma());
-        List<SigmaVecOption> sv = spec.getSigmaVec();
+        SigmaVecOption[] sv = spec.getSigmaVec();
         i = 0;
-        for (SigmaVecOption s : sv) {
-            buffer[SIGV + (i++)] = vsigma(s);
+        if (sv != null) {
+            for (SigmaVecOption s : sv) {
+                buffer[SIGV + (i++)] = vsigma(s);
+            }
         }
         buffer[EXFCASTS] = spec.isExcludeForecast() ? 1 : 0;
         buffer[BIAS] = bias(spec.getBias());
@@ -160,7 +161,7 @@ public class X11Buffer {
                 return SeasonalFilterOption.S3X15;
             default:
                 return null;
-        }                  
+        }
     }
 
     public static int vsigma(SigmaVecOption option) {
@@ -217,35 +218,42 @@ public class X11Buffer {
     }
 
     public X11Spec build() {
+        int i = 0;
+        while (i < MAXFREQ && buffer[FILTER + i] != 0) {
+            i++;
+        }
+        SeasonalFilterOption[] sf = new SeasonalFilterOption[i];
+        for (int j = 0; j < sf.length; ++j) {
+            int f = (int) buffer[FILTER + j];
+            sf[j] = filter(f);
+        }
+
+        i = 0;
+        while (i < MAXFREQ && buffer[SIGV + i] != 0) {
+            i++;
+        }
+        SigmaVecOption[] sv = null;
+        if (i != 0) {
+            sv = new SigmaVecOption[i];
+            for (int j = 0; j < sf.length; ++j) {
+                int v = (int) buffer[SIGV + j];
+                sv[j] = vsigma(v);
+            }
+        }
+
         X11Spec.Builder builder = X11Spec.builder()
                 .mode(decompositionMode())
+                .filters(sf)
                 .seasonal(seasonal())
-                .clearFilters()
-                .clearSigmaVec()
                 .lowerSigma(buffer[LSIG])
                 .upperSigma(buffer[USIG])
                 .hendersonFilterLength((int) buffer[HEND])
                 .forecastHorizon((int) buffer[NFCASTS])
                 .backcastHorizon((int) buffer[NBCASTS])
                 .calendarSigma(calendarSigma())
+                .sigmaVec(sv)
                 .excludeForecast(excludeForecasts())
                 .bias(bias());
-
-        for (int i = 0; i < MAXFREQ; ++i) {
-            int f = (int) buffer[FILTER + i];
-            if (f == 0) {
-                break;
-            }
-            builder.filter(filter(f));
-        }
-
-        for (int i = 0; i < MAXFREQ; ++i) {
-            int v = (int) buffer[SIGV + i];
-            if (v == 0) {
-                break;
-            }
-            builder.calendarSigma(vsigma(v));
-        }
 
         return builder.build();
     }

@@ -16,9 +16,7 @@ import ec.satoolkit.x11.X11Specification;
 import ec.satoolkit.x11.X11Toolkit;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -33,7 +31,7 @@ public class X11KernelTest {
     private static final double[] HKAS = {50508, 74818, 66373, 53389, 57510, 49773, 53081, 72693, 63200, 77488, 58083, 64406, 80570, 88216, 82398, 90517, 120915, 115933, 140733, 162072, 162353, 181499, 164299, 163697, 125311};
 
     private static final double DELTA = 10E-9;
-    private List<SeasonalFilterOption> seasonalFilterOptions;
+    private SeasonalFilterOption[] seasonalFilterOptions;
 
     @Test
     public void testProcess_LogAdd() {
@@ -192,10 +190,10 @@ public class X11KernelTest {
     private void testX11Kernel(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values, String calendarSigma, int forecastHorizon) {
         jdplus.x11.X11Kernel instanceKernel = new X11Kernel();
         demetra.timeseries.TsData tsData = demetra.timeseries.TsData.ofInternal(TsPeriod.of(TsUnit.ofAnnualFrequency(frequency), 0), values);
-        seasonalFilterOptions = new ArrayList<>();
+        seasonalFilterOptions = new SeasonalFilterOption[frequency];
 
         for (int i = 0; i < frequency; i++) {
-            seasonalFilterOptions.add(SeasonalFilterOption.valueOf(seasonalFilterOptionName));
+            seasonalFilterOptions[i]=SeasonalFilterOption.valueOf(seasonalFilterOptionName);
         }
 
         demetra.x11.X11Spec spec = demetra.x11.X11Spec.builder()

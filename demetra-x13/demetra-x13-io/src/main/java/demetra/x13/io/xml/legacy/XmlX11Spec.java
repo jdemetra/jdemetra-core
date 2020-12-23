@@ -468,13 +468,13 @@ public class XmlX11Spec {
         xml.setTrendMA(v.getHendersonFilterLength());
         xml.setExcludeForecasts(v.isExcludeForecast());
         xml.setSeasonal(v.isSeasonal());
-        List<SeasonalFilterOption> filters = v.getFilters();
-        if (!filters.isEmpty()) {
+        SeasonalFilterOption[] filters = v.getFilters();
+        if (filters != null) {
             SeasonalMA sma = new SeasonalMA();
-            if (filters.size() == 1) {
-                sma.filter = filters.get(0);
+            if (filters.length == 1) {
+                sma.filter = filters[0];
             } else {
-                sma.filters = filters.toArray(new SeasonalFilterOption[filters.size()]);
+                sma.filters = filters;
             }
             xml.setSeasonalMA(sma);
         }
@@ -510,11 +510,9 @@ public class XmlX11Spec {
         }
         if (xml.seasonalMA != null) {
             if (xml.seasonalMA.filter != null) {
-                builder = builder.filter(xml.seasonalMA.filter);
+                builder = builder.filters(new SeasonalFilterOption[]{xml.seasonalMA.filter});
             } else if (xml.seasonalMA.filters != null) {
-                for (int i = 0; i < xml.seasonalMA.filters.length; ++i) {
-                    builder = builder.filter(xml.seasonalMA.filters[i]);
-                }
+                builder = builder.filters(xml.seasonalMA.filters);
             }
         }
         if (xml.lowerSigma != null) {
@@ -534,13 +532,13 @@ public class XmlX11Spec {
 
     ;
     
-    private static int[] convert(List<SigmaVecOption> sv) {
-        if (sv.isEmpty()) {
+    private static int[] convert(SigmaVecOption[] sv) {
+        if (sv == null || sv.length == 0) {
             return null;
         }
-        int[] v = new int[sv.size()];
-        for (int i = 0; i < sv.size(); ++i) {
-            if (sv.get(i) == SigmaVecOption.Group1) {
+        int[] v = new int[sv.length];
+        for (int i = 0; i < sv.length; ++i) {
+            if (sv[i] == SigmaVecOption.Group1) {
                 v[i] = 1;
             } else {
                 v[i] = 2;
@@ -549,16 +547,16 @@ public class XmlX11Spec {
         return v;
     }
 
-    private static List<SigmaVecOption> convert(int[] v) {
+    private static SigmaVecOption[] convert(int[] v) {
         if (v == null || v.length == 0) {
-            return Collections.emptyList();
+            return null;
         }
-        List<SigmaVecOption> l = new ArrayList<>();
+        SigmaVecOption[] l = new SigmaVecOption[v.length];
         for (int i = 0; i < v.length; ++i) {
             if (v[i] == 1) {
-                l.add(SigmaVecOption.Group1);
+                l[i] = SigmaVecOption.Group1;
             } else {
-                l.add(SigmaVecOption.Group2);
+                l[i] = SigmaVecOption.Group2;
             }
         }
         return l;

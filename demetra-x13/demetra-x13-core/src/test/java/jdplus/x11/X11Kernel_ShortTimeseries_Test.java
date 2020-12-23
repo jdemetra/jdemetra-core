@@ -543,10 +543,10 @@ public class X11Kernel_ShortTimeseries_Test {
     private void testKernel(String modeName, String[] seasonalFilterOptionName, int filterLength, int frequency, double[] values) {
 
         jdplus.x11.X11Kernel instanceKernel = new X11Kernel();
-        List<SigmaVecOption> sigmavecOptions = new ArrayList<>();
+        SigmaVecOption[] sigmavecOptions = new SigmaVecOption[frequency];
 
         for (int i = 0; i < frequency; i++) {
-            sigmavecOptions.add(SigmaVecOption.Group1);//has to be removed
+            sigmavecOptions[i]=SigmaVecOption.Group1;//has to be removed
         }
         demetra.x11.X11Spec spec = demetra.x11.X11Spec.builder()
                 .mode(DecompositionMode.valueOf(modeName))
@@ -655,10 +655,10 @@ public class X11Kernel_ShortTimeseries_Test {
         Assert.assertArrayEquals("Error in D13", expected_D13, actual_D13, DELTA);
     }
 
-    private List<SeasonalFilterOption> getNewSeasonalFilter(String[] filter) {
-        List<SeasonalFilterOption> result = new ArrayList<>();
-        for (String f : filter) {
-            result.add(SeasonalFilterOption.valueOf(f));
+    private SeasonalFilterOption[] getNewSeasonalFilter(String[] filter) {
+        SeasonalFilterOption[] result = new SeasonalFilterOption[filter.length];
+        for (int i=0; i<filter.length; ++i) {
+            result[i]=SeasonalFilterOption.valueOf(filter[i]);
         }
         return result;
     }

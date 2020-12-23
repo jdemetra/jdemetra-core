@@ -87,7 +87,6 @@ public class X13Spec implements Validatable<X13Spec>, SaSpecification {
                 .regArima(RegArimaSpec.RGDISABLED)
                 .x11(X11Spec.builder()
                         .mode(DecompositionMode.Multiplicative)
-                        .filter(SeasonalFilterOption.Msr)
                         .forecastHorizon(0)
                         .build())
                 .build();
