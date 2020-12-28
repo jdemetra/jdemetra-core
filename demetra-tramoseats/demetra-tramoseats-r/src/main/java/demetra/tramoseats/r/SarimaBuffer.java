@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.x13.r;
+package demetra.tramoseats.r;
 
 import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
@@ -28,7 +28,7 @@ import demetra.util.r.Buffers;
  */
 public class SarimaBuffer extends Buffer<SarimaSpec>{
 
-    private static final int MAXR = 6, MAXS = 1, D = 0, BD = D + 1,
+    private static final int MAXR = 3, MAXS = 1, D = 0, BD = D + 1,
             PHI = BD + 1, JPHI = PHI + MAXR, THETA = JPHI + MAXR, JTHETA = THETA + MAXR,
             BPHI = JTHETA + MAXR, JBPHI = BPHI + MAXS, BTHETA = JBPHI + MAXS, JBTHETA = BTHETA + MAXS, SIZE = JBTHETA + MAXS;
 

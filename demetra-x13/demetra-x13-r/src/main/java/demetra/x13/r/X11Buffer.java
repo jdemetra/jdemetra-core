@@ -1,11 +1,23 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2020 National Bank of Belgium
+ * 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ * 
+ * https://joinup.ec.europa.eu/software/page/eupl
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package demetra.x13.r;
 
 import demetra.sa.DecompositionMode;
+import demetra.util.r.Buffer;
 import demetra.x11.BiasCorrection;
 import demetra.x11.CalendarSigmaOption;
 import demetra.x11.SeasonalFilterOption;
@@ -16,48 +28,43 @@ import demetra.x11.X11Spec;
  *
  * @author PALATEJ
  */
-public class X11Buffer {
+public class X11Buffer extends Buffer<X11Spec>{
 
     private static final int MAXFREQ = 12, MODE = 0, SEASONAL = MODE + 1, FILTER = SEASONAL + 1,
             LSIG = FILTER + MAXFREQ, USIG = LSIG + 1, HEND = USIG + 1, NFCASTS = HEND + 1, NBCASTS = NFCASTS + 1,
             CSIG = NBCASTS + 1, SIGV = CSIG + 1, EXFCASTS = SIGV + MAXFREQ, BIAS = EXFCASTS + 1, SIZE = BIAS + 1;
 
-    private final double[] buffer;
-
-    public X11Buffer(X11Spec spec) {
-        buffer = new double[SIZE];
+    public static X11Buffer of(X11Spec spec) {
+        double[] input = new double[SIZE];
         // fill the buffer
-        buffer[MODE] = decompositionMode(spec.getMode());
-        buffer[SEASONAL] = spec.isSeasonal() ? 1 : 0;
+        input[MODE] = decompositionMode(spec.getMode());
+        input[SEASONAL] = spec.isSeasonal() ? 1 : 0;
         int i = 0;
         for (SeasonalFilterOption filter : spec.getFilters()) {
-            buffer[FILTER + (i++)] = filter(filter);
+            input[FILTER + (i++)] = filter(filter);
 
         }
-        buffer[LSIG] = spec.getLowerSigma();
-        buffer[USIG] = spec.getUpperSigma();
-        buffer[HEND] = spec.getHendersonFilterLength();
-        buffer[NFCASTS] = spec.getForecastHorizon();
-        buffer[NBCASTS] = spec.getBackcastHorizon();
-        buffer[CSIG] = calendarSigma(spec.getCalendarSigma());
+        input[LSIG] = spec.getLowerSigma();
+        input[USIG] = spec.getUpperSigma();
+        input[HEND] = spec.getHendersonFilterLength();
+        input[NFCASTS] = spec.getForecastHorizon();
+        input[NBCASTS] = spec.getBackcastHorizon();
+        input[CSIG] = calendarSigma(spec.getCalendarSigma());
         SigmaVecOption[] sv = spec.getSigmaVec();
         i = 0;
         if (sv != null) {
             for (SigmaVecOption s : sv) {
-                buffer[SIGV + (i++)] = vsigma(s);
+                input[SIGV + (i++)] = vsigma(s);
             }
         }
-        buffer[EXFCASTS] = spec.isExcludeForecast() ? 1 : 0;
-        buffer[BIAS] = bias(spec.getBias());
+        input[EXFCASTS] = spec.isExcludeForecast() ? 1 : 0;
+        input[BIAS] = bias(spec.getBias());
+        
+        return new X11Buffer(input);
     }
 
     public X11Buffer(double[] data) {
-        buffer = new double[SIZE];
-        System.arraycopy(data, 0, buffer, 0, data.length);
-    }
-
-    public double[] data() {
-        return buffer;
+        super(data);
     }
 
     public DecompositionMode decompositionMode() { // ordinal
@@ -217,6 +224,7 @@ public class X11Buffer {
         return buffer[EXFCASTS] != 0;
     }
 
+    @Override
     public X11Spec build() {
         int i = 0;
         while (i < MAXFREQ && buffer[FILTER + i] != 0) {
