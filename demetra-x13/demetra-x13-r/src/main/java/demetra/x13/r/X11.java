@@ -21,6 +21,9 @@ import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.x11.X11Results;
 import demetra.x11.X11Spec;
+import demetra.x13.io.protobuf.X13Protos;
+import demetra.x13.io.protobuf.X13ProtosUtility;
+import java.io.ByteArrayOutputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import jdplus.x11.X11Kernel;
@@ -67,6 +70,10 @@ public class X11 {
     public Results process(TsData series, X11Spec spec) {
         X11Kernel kernel = new X11Kernel();
         return new Results(kernel.process(series.cleanExtremities(), spec));
+    }
+    
+    public byte[] toBuffer(X11Spec spec){
+        return X13ProtosUtility.toBuffer(spec);
     }
 
 }
