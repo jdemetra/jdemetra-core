@@ -14,20 +14,308 @@ public final class ToolkitProtos {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
+  /**
+   * Protobuf enum {@code jd3.SelectionType}
+   */
+  public enum SelectionType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>SPAN_UNSPECIFIED = 0;</code>
+     */
+    SPAN_UNSPECIFIED(0),
+    /**
+     * <code>SPAN_ALL = 1;</code>
+     */
+    SPAN_ALL(1),
+    /**
+     * <code>SPAN_FROM = 2;</code>
+     */
+    SPAN_FROM(2),
+    /**
+     * <code>SPAN_TO = 3;</code>
+     */
+    SPAN_TO(3),
+    /**
+     * <code>SPAN_BETWEEN = 4;</code>
+     */
+    SPAN_BETWEEN(4),
+    /**
+     * <code>SPAN_LAST = 5;</code>
+     */
+    SPAN_LAST(5),
+    /**
+     * <code>SPAN_FIRST = 6;</code>
+     */
+    SPAN_FIRST(6),
+    /**
+     * <code>SPAN_EXCLUDING = 7;</code>
+     */
+    SPAN_EXCLUDING(7),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>SPAN_UNSPECIFIED = 0;</code>
+     */
+    public static final int SPAN_UNSPECIFIED_VALUE = 0;
+    /**
+     * <code>SPAN_ALL = 1;</code>
+     */
+    public static final int SPAN_ALL_VALUE = 1;
+    /**
+     * <code>SPAN_FROM = 2;</code>
+     */
+    public static final int SPAN_FROM_VALUE = 2;
+    /**
+     * <code>SPAN_TO = 3;</code>
+     */
+    public static final int SPAN_TO_VALUE = 3;
+    /**
+     * <code>SPAN_BETWEEN = 4;</code>
+     */
+    public static final int SPAN_BETWEEN_VALUE = 4;
+    /**
+     * <code>SPAN_LAST = 5;</code>
+     */
+    public static final int SPAN_LAST_VALUE = 5;
+    /**
+     * <code>SPAN_FIRST = 6;</code>
+     */
+    public static final int SPAN_FIRST_VALUE = 6;
+    /**
+     * <code>SPAN_EXCLUDING = 7;</code>
+     */
+    public static final int SPAN_EXCLUDING_VALUE = 7;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static SelectionType valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static SelectionType forNumber(int value) {
+      switch (value) {
+        case 0: return SPAN_UNSPECIFIED;
+        case 1: return SPAN_ALL;
+        case 2: return SPAN_FROM;
+        case 3: return SPAN_TO;
+        case 4: return SPAN_BETWEEN;
+        case 5: return SPAN_LAST;
+        case 6: return SPAN_FIRST;
+        case 7: return SPAN_EXCLUDING;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<SelectionType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        SelectionType> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<SelectionType>() {
+            public SelectionType findValueByNumber(int number) {
+              return SelectionType.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final SelectionType[] VALUES = values();
+
+    public static SelectionType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private SelectionType(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:jd3.SelectionType)
+  }
+
+  /**
+   * Protobuf enum {@code jd3.ParameterType}
+   */
+  public enum ParameterType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>PARAMETER_UNSPECIFIED = 0;</code>
+     */
+    PARAMETER_UNSPECIFIED(0),
+    /**
+     * <code>PARAMETER_FIXED = 1;</code>
+     */
+    PARAMETER_FIXED(1),
+    /**
+     * <code>PARAMETER_INITIAL = 2;</code>
+     */
+    PARAMETER_INITIAL(2),
+    /**
+     * <code>PARAMETER_ESTIMATED = 3;</code>
+     */
+    PARAMETER_ESTIMATED(3),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>PARAMETER_UNSPECIFIED = 0;</code>
+     */
+    public static final int PARAMETER_UNSPECIFIED_VALUE = 0;
+    /**
+     * <code>PARAMETER_FIXED = 1;</code>
+     */
+    public static final int PARAMETER_FIXED_VALUE = 1;
+    /**
+     * <code>PARAMETER_INITIAL = 2;</code>
+     */
+    public static final int PARAMETER_INITIAL_VALUE = 2;
+    /**
+     * <code>PARAMETER_ESTIMATED = 3;</code>
+     */
+    public static final int PARAMETER_ESTIMATED_VALUE = 3;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static ParameterType valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static ParameterType forNumber(int value) {
+      switch (value) {
+        case 0: return PARAMETER_UNSPECIFIED;
+        case 1: return PARAMETER_FIXED;
+        case 2: return PARAMETER_INITIAL;
+        case 3: return PARAMETER_ESTIMATED;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<ParameterType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        ParameterType> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<ParameterType>() {
+            public ParameterType findValueByNumber(int number) {
+              return ParameterType.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor().getEnumTypes().get(1);
+    }
+
+    private static final ParameterType[] VALUES = values();
+
+    public static ParameterType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private ParameterType(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:jd3.ParameterType)
+  }
+
   public interface TimeSelectorOrBuilder extends
       // @@protoc_insertion_point(interface_extends:jd3.TimeSelector)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.jd3.TimeSelector.SelectionType Type = 1;</code>
+     * <code>.jd3.SelectionType Type = 1;</code>
      * @return The enum numeric value on the wire for type.
      */
     int getTypeValue();
     /**
-     * <code>.jd3.TimeSelector.SelectionType Type = 1;</code>
+     * <code>.jd3.SelectionType Type = 1;</code>
      * @return The type.
      */
-    demetra.toolkit.io.protobuf.ToolkitProtos.TimeSelector.SelectionType getType();
+    demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType getType();
 
     /**
      * <code>int32 n0 = 2;</code>
@@ -173,185 +461,23 @@ public final class ToolkitProtos {
               demetra.toolkit.io.protobuf.ToolkitProtos.TimeSelector.class, demetra.toolkit.io.protobuf.ToolkitProtos.TimeSelector.Builder.class);
     }
 
-    /**
-     * Protobuf enum {@code jd3.TimeSelector.SelectionType}
-     */
-    public enum SelectionType
-        implements com.google.protobuf.ProtocolMessageEnum {
-      /**
-       * <code>NONE = 0;</code>
-       */
-      NONE(0),
-      /**
-       * <code>ALL = 1;</code>
-       */
-      ALL(1),
-      /**
-       * <code>FROM = 2;</code>
-       */
-      FROM(2),
-      /**
-       * <code>TO = 3;</code>
-       */
-      TO(3),
-      /**
-       * <code>BETWEEN = 4;</code>
-       */
-      BETWEEN(4),
-      /**
-       * <code>LAST = 5;</code>
-       */
-      LAST(5),
-      /**
-       * <code>FIRST = 6;</code>
-       */
-      FIRST(6),
-      /**
-       * <code>EXCLUDING = 7;</code>
-       */
-      EXCLUDING(7),
-      UNRECOGNIZED(-1),
-      ;
-
-      /**
-       * <code>NONE = 0;</code>
-       */
-      public static final int NONE_VALUE = 0;
-      /**
-       * <code>ALL = 1;</code>
-       */
-      public static final int ALL_VALUE = 1;
-      /**
-       * <code>FROM = 2;</code>
-       */
-      public static final int FROM_VALUE = 2;
-      /**
-       * <code>TO = 3;</code>
-       */
-      public static final int TO_VALUE = 3;
-      /**
-       * <code>BETWEEN = 4;</code>
-       */
-      public static final int BETWEEN_VALUE = 4;
-      /**
-       * <code>LAST = 5;</code>
-       */
-      public static final int LAST_VALUE = 5;
-      /**
-       * <code>FIRST = 6;</code>
-       */
-      public static final int FIRST_VALUE = 6;
-      /**
-       * <code>EXCLUDING = 7;</code>
-       */
-      public static final int EXCLUDING_VALUE = 7;
-
-
-      public final int getNumber() {
-        if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalArgumentException(
-              "Can't get the number of an unknown enum value.");
-        }
-        return value;
-      }
-
-      /**
-       * @param value The numeric wire value of the corresponding enum entry.
-       * @return The enum associated with the given numeric wire value.
-       * @deprecated Use {@link #forNumber(int)} instead.
-       */
-      @java.lang.Deprecated
-      public static SelectionType valueOf(int value) {
-        return forNumber(value);
-      }
-
-      /**
-       * @param value The numeric wire value of the corresponding enum entry.
-       * @return The enum associated with the given numeric wire value.
-       */
-      public static SelectionType forNumber(int value) {
-        switch (value) {
-          case 0: return NONE;
-          case 1: return ALL;
-          case 2: return FROM;
-          case 3: return TO;
-          case 4: return BETWEEN;
-          case 5: return LAST;
-          case 6: return FIRST;
-          case 7: return EXCLUDING;
-          default: return null;
-        }
-      }
-
-      public static com.google.protobuf.Internal.EnumLiteMap<SelectionType>
-          internalGetValueMap() {
-        return internalValueMap;
-      }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          SelectionType> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<SelectionType>() {
-              public SelectionType findValueByNumber(int number) {
-                return SelectionType.forNumber(number);
-              }
-            };
-
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
-        if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalStateException(
-              "Can't get the descriptor of an unrecognized enum value.");
-        }
-        return getDescriptor().getValues().get(ordinal());
-      }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
-        return getDescriptor();
-      }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
-        return demetra.toolkit.io.protobuf.ToolkitProtos.TimeSelector.getDescriptor().getEnumTypes().get(0);
-      }
-
-      private static final SelectionType[] VALUES = values();
-
-      public static SelectionType valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-        if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
-        }
-        if (desc.getIndex() == -1) {
-          return UNRECOGNIZED;
-        }
-        return VALUES[desc.getIndex()];
-      }
-
-      private final int value;
-
-      private SelectionType(int value) {
-        this.value = value;
-      }
-
-      // @@protoc_insertion_point(enum_scope:jd3.TimeSelector.SelectionType)
-    }
-
     public static final int TYPE_FIELD_NUMBER = 1;
     private int type_;
     /**
-     * <code>.jd3.TimeSelector.SelectionType Type = 1;</code>
+     * <code>.jd3.SelectionType Type = 1;</code>
      * @return The enum numeric value on the wire for type.
      */
     @java.lang.Override public int getTypeValue() {
       return type_;
     }
     /**
-     * <code>.jd3.TimeSelector.SelectionType Type = 1;</code>
+     * <code>.jd3.SelectionType Type = 1;</code>
      * @return The type.
      */
-    @java.lang.Override public demetra.toolkit.io.protobuf.ToolkitProtos.TimeSelector.SelectionType getType() {
+    @java.lang.Override public demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType getType() {
       @SuppressWarnings("deprecation")
-      demetra.toolkit.io.protobuf.ToolkitProtos.TimeSelector.SelectionType result = demetra.toolkit.io.protobuf.ToolkitProtos.TimeSelector.SelectionType.valueOf(type_);
-      return result == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TimeSelector.SelectionType.UNRECOGNIZED : result;
+      demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType result = demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType.valueOf(type_);
+      return result == null ? demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType.UNRECOGNIZED : result;
     }
 
     public static final int N0_FIELD_NUMBER = 2;
@@ -466,7 +592,7 @@ public final class ToolkitProtos {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (type_ != demetra.toolkit.io.protobuf.ToolkitProtos.TimeSelector.SelectionType.NONE.getNumber()) {
+      if (type_ != demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType.SPAN_UNSPECIFIED.getNumber()) {
         output.writeEnum(1, type_);
       }
       if (n0_ != 0) {
@@ -490,7 +616,7 @@ public final class ToolkitProtos {
       if (size != -1) return size;
 
       size = 0;
-      if (type_ != demetra.toolkit.io.protobuf.ToolkitProtos.TimeSelector.SelectionType.NONE.getNumber()) {
+      if (type_ != demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType.SPAN_UNSPECIFIED.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(1, type_);
       }
@@ -823,14 +949,14 @@ public final class ToolkitProtos {
 
       private int type_ = 0;
       /**
-       * <code>.jd3.TimeSelector.SelectionType Type = 1;</code>
+       * <code>.jd3.SelectionType Type = 1;</code>
        * @return The enum numeric value on the wire for type.
        */
       @java.lang.Override public int getTypeValue() {
         return type_;
       }
       /**
-       * <code>.jd3.TimeSelector.SelectionType Type = 1;</code>
+       * <code>.jd3.SelectionType Type = 1;</code>
        * @param value The enum numeric value on the wire for type to set.
        * @return This builder for chaining.
        */
@@ -841,21 +967,21 @@ public final class ToolkitProtos {
         return this;
       }
       /**
-       * <code>.jd3.TimeSelector.SelectionType Type = 1;</code>
+       * <code>.jd3.SelectionType Type = 1;</code>
        * @return The type.
        */
       @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.TimeSelector.SelectionType getType() {
+      public demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType getType() {
         @SuppressWarnings("deprecation")
-        demetra.toolkit.io.protobuf.ToolkitProtos.TimeSelector.SelectionType result = demetra.toolkit.io.protobuf.ToolkitProtos.TimeSelector.SelectionType.valueOf(type_);
-        return result == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TimeSelector.SelectionType.UNRECOGNIZED : result;
+        demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType result = demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType.valueOf(type_);
+        return result == null ? demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType.UNRECOGNIZED : result;
       }
       /**
-       * <code>.jd3.TimeSelector.SelectionType Type = 1;</code>
+       * <code>.jd3.SelectionType Type = 1;</code>
        * @param value The type to set.
        * @return This builder for chaining.
        */
-      public Builder setType(demetra.toolkit.io.protobuf.ToolkitProtos.TimeSelector.SelectionType value) {
+      public Builder setType(demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -865,7 +991,7 @@ public final class ToolkitProtos {
         return this;
       }
       /**
-       * <code>.jd3.TimeSelector.SelectionType Type = 1;</code>
+       * <code>.jd3.SelectionType Type = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearType() {
@@ -1141,11 +1267,613 @@ public final class ToolkitProtos {
 
   }
 
+  public interface ParameterOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:jd3.Parameter)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>double value = 1;</code>
+     * @return The value.
+     */
+    double getValue();
+
+    /**
+     * <code>.jd3.ParameterType type = 2;</code>
+     * @return The enum numeric value on the wire for type.
+     */
+    int getTypeValue();
+    /**
+     * <code>.jd3.ParameterType type = 2;</code>
+     * @return The type.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType getType();
+  }
+  /**
+   * Protobuf type {@code jd3.Parameter}
+   */
+  public static final class Parameter extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:jd3.Parameter)
+      ParameterOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Parameter.newBuilder() to construct.
+    private Parameter(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Parameter() {
+      type_ = 0;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new Parameter();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Parameter(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 9: {
+
+              value_ = input.readDouble();
+              break;
+            }
+            case 16: {
+              int rawValue = input.readEnum();
+
+              type_ = rawValue;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_Parameter_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_Parameter_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.class, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder.class);
+    }
+
+    public static final int VALUE_FIELD_NUMBER = 1;
+    private double value_;
+    /**
+     * <code>double value = 1;</code>
+     * @return The value.
+     */
+    @java.lang.Override
+    public double getValue() {
+      return value_;
+    }
+
+    public static final int TYPE_FIELD_NUMBER = 2;
+    private int type_;
+    /**
+     * <code>.jd3.ParameterType type = 2;</code>
+     * @return The enum numeric value on the wire for type.
+     */
+    @java.lang.Override public int getTypeValue() {
+      return type_;
+    }
+    /**
+     * <code>.jd3.ParameterType type = 2;</code>
+     * @return The type.
+     */
+    @java.lang.Override public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType getType() {
+      @SuppressWarnings("deprecation")
+      demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType result = demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType.valueOf(type_);
+      return result == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType.UNRECOGNIZED : result;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (value_ != 0D) {
+        output.writeDouble(1, value_);
+      }
+      if (type_ != demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType.PARAMETER_UNSPECIFIED.getNumber()) {
+        output.writeEnum(2, type_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (value_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(1, value_);
+      }
+      if (type_ != demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType.PARAMETER_UNSPECIFIED.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(2, type_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.toolkit.io.protobuf.ToolkitProtos.Parameter)) {
+        return super.equals(obj);
+      }
+      demetra.toolkit.io.protobuf.ToolkitProtos.Parameter other = (demetra.toolkit.io.protobuf.ToolkitProtos.Parameter) obj;
+
+      if (java.lang.Double.doubleToLongBits(getValue())
+          != java.lang.Double.doubleToLongBits(
+              other.getValue())) return false;
+      if (type_ != other.type_) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getValue()));
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + type_;
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Parameter parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Parameter parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Parameter parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Parameter parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Parameter parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Parameter parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Parameter parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Parameter parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Parameter parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Parameter parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Parameter parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Parameter parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code jd3.Parameter}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:jd3.Parameter)
+        demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_Parameter_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_Parameter_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.class, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder.class);
+      }
+
+      // Construct using demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        value_ = 0D;
+
+        type_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_Parameter_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getDefaultInstanceForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter build() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.Parameter result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter buildPartial() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.Parameter result = new demetra.toolkit.io.protobuf.ToolkitProtos.Parameter(this);
+        result.value_ = value_;
+        result.type_ = type_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.toolkit.io.protobuf.ToolkitProtos.Parameter) {
+          return mergeFrom((demetra.toolkit.io.protobuf.ToolkitProtos.Parameter)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter other) {
+        if (other == demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance()) return this;
+        if (other.getValue() != 0D) {
+          setValue(other.getValue());
+        }
+        if (other.type_ != 0) {
+          setTypeValue(other.getTypeValue());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.toolkit.io.protobuf.ToolkitProtos.Parameter parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.toolkit.io.protobuf.ToolkitProtos.Parameter) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private double value_ ;
+      /**
+       * <code>double value = 1;</code>
+       * @return The value.
+       */
+      @java.lang.Override
+      public double getValue() {
+        return value_;
+      }
+      /**
+       * <code>double value = 1;</code>
+       * @param value The value to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValue(double value) {
+        
+        value_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double value = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValue() {
+        
+        value_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private int type_ = 0;
+      /**
+       * <code>.jd3.ParameterType type = 2;</code>
+       * @return The enum numeric value on the wire for type.
+       */
+      @java.lang.Override public int getTypeValue() {
+        return type_;
+      }
+      /**
+       * <code>.jd3.ParameterType type = 2;</code>
+       * @param value The enum numeric value on the wire for type to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTypeValue(int value) {
+        
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.jd3.ParameterType type = 2;</code>
+       * @return The type.
+       */
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType getType() {
+        @SuppressWarnings("deprecation")
+        demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType result = demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType.valueOf(type_);
+        return result == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.jd3.ParameterType type = 2;</code>
+       * @param value The type to set.
+       * @return This builder for chaining.
+       */
+      public Builder setType(demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        type_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.jd3.ParameterType type = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearType() {
+        
+        type_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:jd3.Parameter)
+    }
+
+    // @@protoc_insertion_point(class_scope:jd3.Parameter)
+    private static final demetra.toolkit.io.protobuf.ToolkitProtos.Parameter DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.toolkit.io.protobuf.ToolkitProtos.Parameter();
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Parameter>
+        PARSER = new com.google.protobuf.AbstractParser<Parameter>() {
+      @java.lang.Override
+      public Parameter parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Parameter(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Parameter> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Parameter> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_jd3_TimeSelector_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_jd3_TimeSelector_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_jd3_Parameter_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_jd3_Parameter_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1155,14 +1883,19 @@ public final class ToolkitProtos {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rtoolkit.proto\022\003jd3\"\324\001\n\014TimeSelector\022-\n" +
-      "\004Type\030\001 \001(\0162\037.jd3.TimeSelector.Selection" +
-      "Type\022\n\n\002n0\030\002 \001(\005\022\n\n\002n1\030\003 \001(\005\022\n\n\002d0\030\004 \001(\t" +
-      "\022\n\n\002d1\030\005 \001(\t\"e\n\rSelectionType\022\010\n\004NONE\020\000\022" +
-      "\007\n\003ALL\020\001\022\010\n\004FROM\020\002\022\006\n\002TO\020\003\022\013\n\007BETWEEN\020\004\022" +
-      "\010\n\004LAST\020\005\022\t\n\005FIRST\020\006\022\r\n\tEXCLUDING\020\007B,\n\033d" +
-      "emetra.toolkit.io.protobufB\rToolkitProto" +
-      "sb\006proto3"
+      "\n\rtoolkit.proto\022\003jd3\"`\n\014TimeSelector\022 \n\004" +
+      "Type\030\001 \001(\0162\022.jd3.SelectionType\022\n\n\002n0\030\002 \001" +
+      "(\005\022\n\n\002n1\030\003 \001(\005\022\n\n\002d0\030\004 \001(\t\022\n\n\002d1\030\005 \001(\t\"<" +
+      "\n\tParameter\022\r\n\005value\030\001 \001(\001\022 \n\004type\030\002 \001(\016" +
+      "2\022.jd3.ParameterType*\224\001\n\rSelectionType\022\024" +
+      "\n\020SPAN_UNSPECIFIED\020\000\022\014\n\010SPAN_ALL\020\001\022\r\n\tSP" +
+      "AN_FROM\020\002\022\013\n\007SPAN_TO\020\003\022\020\n\014SPAN_BETWEEN\020\004" +
+      "\022\r\n\tSPAN_LAST\020\005\022\016\n\nSPAN_FIRST\020\006\022\022\n\016SPAN_" +
+      "EXCLUDING\020\007*o\n\rParameterType\022\031\n\025PARAMETE" +
+      "R_UNSPECIFIED\020\000\022\023\n\017PARAMETER_FIXED\020\001\022\025\n\021" +
+      "PARAMETER_INITIAL\020\002\022\027\n\023PARAMETER_ESTIMAT" +
+      "ED\020\003B,\n\033demetra.toolkit.io.protobufB\rToo" +
+      "lkitProtosb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1174,6 +1907,12 @@ public final class ToolkitProtos {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_TimeSelector_descriptor,
         new java.lang.String[] { "Type", "N0", "N1", "D0", "D1", });
+    internal_static_jd3_Parameter_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_jd3_Parameter_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_jd3_Parameter_descriptor,
+        new java.lang.String[] { "Value", "Type", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -14,16 +14,16 @@ import static org.junit.Assert.*;
  *
  * @author PALATEJ
  */
-public class X13ProtosUtilityTest {
+public class X11ProtoTest {
 
-    public X13ProtosUtilityTest() {
+    public X11ProtoTest() {
     }
 
     @Test
     public void testX11Spec() throws InvalidProtocolBufferException {
         X11Spec spec = X11Spec.DEFAULT;
-        byte[] bytes = X13ProtosUtility.toBuffer(spec);
-        X11Spec nspec = X13ProtosUtility.x11SpecOf(bytes);
+        byte[] bytes = X11Proto.toBuffer(spec);
+        X11Spec nspec = X11Proto.of(bytes);
         assertTrue(spec.equals(nspec));
     }
 
