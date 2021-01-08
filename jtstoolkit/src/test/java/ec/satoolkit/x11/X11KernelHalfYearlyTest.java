@@ -18,6 +18,7 @@ import org.junit.Test;
 import utilities.CompareTsData;
 
 import static utilities.MathNatives.isMathExpIntrinsifiedByVM;
+import static utilities.MathNatives.isMathLogIntrinsifiedByVM;
 
 /**
  *
@@ -28,6 +29,7 @@ public class X11KernelHalfYearlyTest {
     @Test
     public void HKAS_LogAddTest() {
         Assume.assumeTrue("This test expects Math#exp(double) to be intrinsified", isMathExpIntrinsifiedByVM());
+        Assume.assumeTrue("This test expects Math#log(double) to be intrinsified", isMathLogIntrinsifiedByVM());
 
         TsData ts = DataHalfYearly.HKAS;
         X13Specification x13spec = SpecHalfYearly.getSpecHKAS();
@@ -44,6 +46,7 @@ public class X11KernelHalfYearlyTest {
     @Test
     public void HKASTest() {
         Assume.assumeTrue("This test expects Math#exp(double) to be intrinsified", isMathExpIntrinsifiedByVM());
+        Assume.assumeTrue("This test expects Math#log(double) to be intrinsified", isMathLogIntrinsifiedByVM());
 
         TsData ts = DataHalfYearly.HKAS;
         X13Specification x13spec = SpecHalfYearly.getSpecHKAS();
