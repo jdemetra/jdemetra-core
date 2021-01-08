@@ -21,7 +21,7 @@ public class OutlierProto {
     public void fill(OutlierSpec spec, X13Protos.RegArimaSpec.OutlierSpec.Builder builder) {
         builder.setSpan(ToolkitProtosUtility.convert(spec.getSpan()))
                 .setDefva(spec.getDefaultCriticalValue())
-                .setMonthlytcrate(spec.getMonthlyTCRate())
+                .setMonthlyTcRate(spec.getMonthlyTCRate())
                 .setMaxiter(spec.getMaxIter())
                 .setMethod(spec.getMethod() == OutlierSpec.Method.AddAll ? OutlierMethod.OUTLIER_ADDALL : OutlierMethod.OUTLIER_ADDONE)
                 .setLsrun(spec.getLsRun());
@@ -41,10 +41,6 @@ public class OutlierProto {
         return builder.build();
     }
 
-    public byte[] toBuffer(OutlierSpec spec) {
-        return convert(spec).toByteArray();
-    }
-
     public OutlierSpec convert(X13Protos.RegArimaSpec.OutlierSpec spec) {
         OutlierSpec.Builder builder = OutlierSpec.builder();
         
@@ -57,16 +53,10 @@ public class OutlierProto {
         return builder
                 .span(ToolkitProtosUtility.convert(spec.getSpan()))
                 .defaultCriticalValue(spec.getDefva())
-                .monthlyTCRate(spec.getMonthlytcrate())
+                .monthlyTCRate(spec.getMonthlyTcRate())
                 .maxIter(spec.getMaxiter())
                 .method(spec.getMethod() == OutlierMethod.OUTLIER_ADDALL ? OutlierSpec.Method.AddAll : OutlierSpec.Method.AddOne)
                 .lsRun(spec.getLsrun())
                 .build();
     }
-
-    public OutlierSpec of(byte[] bytes) throws InvalidProtocolBufferException {
-        X13Protos.RegArimaSpec.OutlierSpec spec = X13Protos.RegArimaSpec.OutlierSpec.parseFrom(bytes);
-        return convert(spec);
-    }
-    
 }

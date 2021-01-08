@@ -38,10 +38,6 @@ public class AutoModelProto {
         return builder.build();
     }
 
-    public byte[] toBuffer(AutoModelSpec spec) {
-        return convert(spec).toByteArray();
-    }
-
     public AutoModelSpec convert(X13Protos.RegArimaSpec.AutoModelSpec spec) {
         return AutoModelSpec.builder()
                 .enabled(spec.getEnabled())
@@ -61,9 +57,4 @@ public class AutoModelProto {
 
     }
 
-    public AutoModelSpec of(byte[] bytes) throws InvalidProtocolBufferException {
-        X13Protos.RegArimaSpec.AutoModelSpec spec = X13Protos.RegArimaSpec.AutoModelSpec.parseFrom(bytes);
-        return convert(spec);
-    }
-    
 }

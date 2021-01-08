@@ -26,10 +26,6 @@ public class EstimateProto {
         return builder.build();
     }
 
-    public byte[] toBuffer(EstimateSpec spec) {
-        return convert(spec).toByteArray();
-    }
-
     public EstimateSpec convert(X13Protos.RegArimaSpec.EstimateSpec spec) {
         return EstimateSpec.builder()
                 .span(ToolkitProtosUtility.convert(spec.getSpan()))
@@ -37,9 +33,4 @@ public class EstimateProto {
                 .build();
     }
 
-    public EstimateSpec of(byte[] bytes) throws InvalidProtocolBufferException {
-        X13Protos.RegArimaSpec.EstimateSpec spec = X13Protos.RegArimaSpec.EstimateSpec.parseFrom(bytes);
-        return convert(spec);
-    }
-    
 }

@@ -16,11 +16,15 @@
  */
 package demetra.tramoseats.r;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.math.matrices.MatrixType;
 import demetra.processing.ProcResults;
+import demetra.regarima.io.protobuf.RegArimaEstimationProto;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TramoSpec;
+import demetra.tramoseats.io.protobuf.TramoProto;
+import demetra.tramoseats.io.protobuf.TramoSeatsProtos;
 import demetra.util.r.Dictionary;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -39,6 +43,10 @@ public class Tramo {
     @lombok.Value
     public static class Results implements ProcResults{
         private ModelEstimation core;
+
+        public byte[] buffer() {
+            return RegArimaEstimationProto.convert(core).toByteArray();
+        }
 
         @Override
         public boolean contains(String id) {
@@ -90,4 +98,18 @@ public class Tramo {
         R.column(3).copy(f.getRawForecastsStdev());
         return R;
     }
+    
+    public byte[] toBuffer(TramoSpec spec) {
+        return TramoProto.convert(spec).toByteArray();
+    }
+
+    public TramoSpec of(byte[] buffer) {
+       try {
+            TramoSeatsProtos.TramoSpec spec = TramoSeatsProtos.TramoSpec.parseFrom(buffer);
+            return TramoProto.convert(spec);
+        } catch (InvalidProtocolBufferException ex) {
+            return null;
+        }
+    }
+    
 }

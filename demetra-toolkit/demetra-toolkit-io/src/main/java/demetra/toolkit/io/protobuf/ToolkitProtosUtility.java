@@ -18,7 +18,13 @@ package demetra.toolkit.io.protobuf;
 
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
+import demetra.data.Utility;
+import demetra.likelihood.LikelihoodStatistics;
+import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TimeSelector;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsPeriod;
+import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -179,6 +185,65 @@ public class ToolkitProtosUtility {
         }
     }
 
+    public TsData convert(ToolkitProtos.TsData s) {
+        int p = s.getPeriod(), y = s.getStartYear(), m = s.getStartPeriod();
+        int n = s.getValueCount();
+        double[] data = new double[n];
+        for (int i = 0; i < n; ++i) {
+            data[i] = s.getValue(i);
+        }
+        return ts(p, y, m, data);
+    }
+
+    public ToolkitProtos.TsData convert(TsData s) {
+        TsPeriod start = s.getStart();
+        return ToolkitProtos.TsData.newBuilder()
+                .setPeriod(s.getAnnualFrequency())
+                .setStartYear(start.year())
+                .setStartPeriod(start.annualPosition())
+                .addAllValue(Utility.asIterable(s.getValues()))
+                .build();
+    }
+    
+    public ToolkitProtos.Matrix convert(MatrixType m){
+        return ToolkitProtos.Matrix.newBuilder()
+                .setNrows(m.getRowsCount())
+                .setNcols(m.getColumnsCount())
+                .addAllValue(Utility.asIterable(m.toArray()))
+                .build();
+    }
+    
+    public ToolkitProtos.LikelihoodStatistics convert(LikelihoodStatistics ls){
+        return ToolkitProtos.LikelihoodStatistics.newBuilder()
+                .setNobs(ls.getObservationsCount())
+                .setNeffectiveobs(ls.getEffectiveObservationsCount())
+                .setNparams(ls.getEstimatedParametersCount())
+                .setDegreesOfFreedom(ls.getEffectiveObservationsCount()-ls.getEstimatedParametersCount())
+                .setLogLikelihood(ls.getLogLikelihood())
+                .setAdjustedLogLikelihood(ls.getAdjustedLogLikelihood())
+                .setAic(ls.getAIC())
+                .setAicc(ls.getAICC())
+                .setBic(ls.getBIC())
+                .setBicc(ls.getBICC())
+                .setBic2(ls.getBIC2())
+                .setHannanQuinn(ls.getHannanQuinn())
+                .setSsq(ls.getSsqErr())
+                .build();
+                
+    }
+
     private final Parameter[] EMPTY_P = new Parameter[0];
 
+    TsData ts(int freq, int year, int start, double[] data) {
+        switch (freq) {
+            case 1:
+                return TsData.ofInternal(TsPeriod.yearly(year), data);
+            case 12:
+                return TsData.ofInternal(TsPeriod.monthly(year, start), data);
+            default:
+                int c = 12 / freq;
+                TsPeriod pstart = TsPeriod.of(TsUnit.ofAnnualFrequency(freq), LocalDate.of(year, (start - 1) * c + 1, 1));
+                return TsData.ofInternal(pstart, data);
+        }
+    }
 }

@@ -33,7 +33,8 @@ public final class OutlierSpec implements Validatable<OutlierSpec> {
     public static final double DEF_DELTATC = .7;
     public static final boolean DEF_EML = false;
 
-    public static final OutlierSpec DEFAULT = OutlierSpec.builder().build();
+    public static final OutlierSpec DEFAULT_DISABLED = OutlierSpec.builder().build();
+    public static final OutlierSpec DEFAULT_ENABLED = OutlierSpec.builder().ao(true).ls(true).tc(true).build();
 
     private boolean ao, ls, tc, so;
     private double deltaTC;
@@ -52,7 +53,7 @@ public final class OutlierSpec implements Validatable<OutlierSpec> {
     }
 
     public boolean isDefault() {
-        return this.equals(DEFAULT);
+        return this.equals(DEFAULT_DISABLED);
     }
 
     public boolean isUsed() {

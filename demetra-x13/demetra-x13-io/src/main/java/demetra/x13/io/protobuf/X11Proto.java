@@ -24,9 +24,9 @@ public class X11Proto {
                 .setUsig(spec.getUpperSigma())
                 .setHenderson(spec.getHendersonFilterLength())
                 .setNfcasts(spec.getForecastHorizon())
-                .setNbcasts(spec.getForecastHorizon())
+                .setNbcasts(spec.getBackcastHorizon())
                 .setSigma(X13ProtosUtility.convert(spec.getCalendarSigma()))
-                .setExcudefcasts(spec.isExcludeForecast())
+                .setExcludeFcasts(spec.isExcludeForecast())
                 .setBias(X13ProtosUtility.convert(spec.getBias()));
         SeasonalFilterOption[] filters = spec.getFilters();
         for (int i = 0; i < filters.length; ++i) {
@@ -46,10 +46,6 @@ public class X11Proto {
         return builder.build();
     }
 
-    public byte[] toBuffer(X11Spec spec) {
-        return convert(spec).toByteArray();
-    }
-
     public X11Spec convert(X13Protos.X11Spec x11) {
         X11Spec.Builder builder = X11Spec.builder()
                 .mode(X13ProtosUtility.convert(x11.getMode()))
@@ -60,7 +56,7 @@ public class X11Proto {
                 .forecastHorizon(x11.getNfcasts())
                 .backcastHorizon(x11.getNbcasts())
                 .calendarSigma(X13ProtosUtility.convert(x11.getSigma()))
-                .excludeForecast(x11.getExcudefcasts())
+                .excludeForecast(x11.getExcludeFcasts())
                 .bias(X13ProtosUtility.convert(x11.getBias()));
         int n = x11.getSfiltersCount();
         if (n > 0) {
@@ -82,9 +78,5 @@ public class X11Proto {
         return builder.build();
     }
 
-    public X11Spec of(byte[] bytes) throws InvalidProtocolBufferException {
-        X13Protos.X11Spec x11 = X13Protos.X11Spec.parseFrom(bytes);
-        return convert(x11);
-    }
-    
+   
 }

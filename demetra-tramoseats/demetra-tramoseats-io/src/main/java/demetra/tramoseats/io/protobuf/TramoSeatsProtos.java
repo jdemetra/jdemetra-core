@@ -649,7 +649,7 @@ public final class TramoSeatsProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>double xlBoundary = 1;</code>
+     * <code>double xl_boundary = 1;</code>
      * @return The xlBoundary.
      */
     double getXlBoundary();
@@ -672,28 +672,28 @@ public final class TramoSeatsProtos {
     double getSeastolerance();
 
     /**
-     * <code>double trendboundary = 4;</code>
-     * @return The trendboundary.
+     * <code>double trend_boundary = 4;</code>
+     * @return The trendBoundary.
      */
-    double getTrendboundary();
+    double getTrendBoundary();
 
     /**
-     * <code>double seasBoundary = 5;</code>
+     * <code>double seas_boundary = 5;</code>
      * @return The seasBoundary.
      */
     double getSeasBoundary();
 
     /**
-     * <code>double seasBoundaryAtPi = 6;</code>
+     * <code>double seas_boundary_at_pi = 6;</code>
      * @return The seasBoundaryAtPi.
      */
     double getSeasBoundaryAtPi();
 
     /**
-     * <code>bool biascorrection = 7;</code>
-     * @return The biascorrection.
+     * <code>bool bias_correction = 7;</code>
+     * @return The biasCorrection.
      */
-    boolean getBiascorrection();
+    boolean getBiasCorrection();
 
     /**
      * <code>int32 nfcasts = 8;</code>
@@ -783,7 +783,7 @@ public final class TramoSeatsProtos {
             }
             case 33: {
 
-              trendboundary_ = input.readDouble();
+              trendBoundary_ = input.readDouble();
               break;
             }
             case 41: {
@@ -798,7 +798,7 @@ public final class TramoSeatsProtos {
             }
             case 56: {
 
-              biascorrection_ = input.readBool();
+              biasCorrection_ = input.readBool();
               break;
             }
             case 64: {
@@ -849,10 +849,10 @@ public final class TramoSeatsProtos {
               demetra.tramoseats.io.protobuf.TramoSeatsProtos.DecompositionSpec.class, demetra.tramoseats.io.protobuf.TramoSeatsProtos.DecompositionSpec.Builder.class);
     }
 
-    public static final int XLBOUNDARY_FIELD_NUMBER = 1;
+    public static final int XL_BOUNDARY_FIELD_NUMBER = 1;
     private double xlBoundary_;
     /**
-     * <code>double xlBoundary = 1;</code>
+     * <code>double xl_boundary = 1;</code>
      * @return The xlBoundary.
      */
     @java.lang.Override
@@ -890,21 +890,21 @@ public final class TramoSeatsProtos {
       return seastolerance_;
     }
 
-    public static final int TRENDBOUNDARY_FIELD_NUMBER = 4;
-    private double trendboundary_;
+    public static final int TREND_BOUNDARY_FIELD_NUMBER = 4;
+    private double trendBoundary_;
     /**
-     * <code>double trendboundary = 4;</code>
-     * @return The trendboundary.
+     * <code>double trend_boundary = 4;</code>
+     * @return The trendBoundary.
      */
     @java.lang.Override
-    public double getTrendboundary() {
-      return trendboundary_;
+    public double getTrendBoundary() {
+      return trendBoundary_;
     }
 
-    public static final int SEASBOUNDARY_FIELD_NUMBER = 5;
+    public static final int SEAS_BOUNDARY_FIELD_NUMBER = 5;
     private double seasBoundary_;
     /**
-     * <code>double seasBoundary = 5;</code>
+     * <code>double seas_boundary = 5;</code>
      * @return The seasBoundary.
      */
     @java.lang.Override
@@ -912,10 +912,10 @@ public final class TramoSeatsProtos {
       return seasBoundary_;
     }
 
-    public static final int SEASBOUNDARYATPI_FIELD_NUMBER = 6;
+    public static final int SEAS_BOUNDARY_AT_PI_FIELD_NUMBER = 6;
     private double seasBoundaryAtPi_;
     /**
-     * <code>double seasBoundaryAtPi = 6;</code>
+     * <code>double seas_boundary_at_pi = 6;</code>
      * @return The seasBoundaryAtPi.
      */
     @java.lang.Override
@@ -923,15 +923,15 @@ public final class TramoSeatsProtos {
       return seasBoundaryAtPi_;
     }
 
-    public static final int BIASCORRECTION_FIELD_NUMBER = 7;
-    private boolean biascorrection_;
+    public static final int BIAS_CORRECTION_FIELD_NUMBER = 7;
+    private boolean biasCorrection_;
     /**
-     * <code>bool biascorrection = 7;</code>
-     * @return The biascorrection.
+     * <code>bool bias_correction = 7;</code>
+     * @return The biasCorrection.
      */
     @java.lang.Override
-    public boolean getBiascorrection() {
-      return biascorrection_;
+    public boolean getBiasCorrection() {
+      return biasCorrection_;
     }
 
     public static final int NFCASTS_FIELD_NUMBER = 8;
@@ -998,8 +998,8 @@ public final class TramoSeatsProtos {
       if (seastolerance_ != 0D) {
         output.writeDouble(3, seastolerance_);
       }
-      if (trendboundary_ != 0D) {
-        output.writeDouble(4, trendboundary_);
+      if (trendBoundary_ != 0D) {
+        output.writeDouble(4, trendBoundary_);
       }
       if (seasBoundary_ != 0D) {
         output.writeDouble(5, seasBoundary_);
@@ -1007,8 +1007,8 @@ public final class TramoSeatsProtos {
       if (seasBoundaryAtPi_ != 0D) {
         output.writeDouble(6, seasBoundaryAtPi_);
       }
-      if (biascorrection_ != false) {
-        output.writeBool(7, biascorrection_);
+      if (biasCorrection_ != false) {
+        output.writeBool(7, biasCorrection_);
       }
       if (nfcasts_ != 0) {
         output.writeInt32(8, nfcasts_);
@@ -1040,9 +1040,9 @@ public final class TramoSeatsProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(3, seastolerance_);
       }
-      if (trendboundary_ != 0D) {
+      if (trendBoundary_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(4, trendboundary_);
+          .computeDoubleSize(4, trendBoundary_);
       }
       if (seasBoundary_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
@@ -1052,9 +1052,9 @@ public final class TramoSeatsProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(6, seasBoundaryAtPi_);
       }
-      if (biascorrection_ != false) {
+      if (biasCorrection_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(7, biascorrection_);
+          .computeBoolSize(7, biasCorrection_);
       }
       if (nfcasts_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -1090,17 +1090,17 @@ public final class TramoSeatsProtos {
       if (java.lang.Double.doubleToLongBits(getSeastolerance())
           != java.lang.Double.doubleToLongBits(
               other.getSeastolerance())) return false;
-      if (java.lang.Double.doubleToLongBits(getTrendboundary())
+      if (java.lang.Double.doubleToLongBits(getTrendBoundary())
           != java.lang.Double.doubleToLongBits(
-              other.getTrendboundary())) return false;
+              other.getTrendBoundary())) return false;
       if (java.lang.Double.doubleToLongBits(getSeasBoundary())
           != java.lang.Double.doubleToLongBits(
               other.getSeasBoundary())) return false;
       if (java.lang.Double.doubleToLongBits(getSeasBoundaryAtPi())
           != java.lang.Double.doubleToLongBits(
               other.getSeasBoundaryAtPi())) return false;
-      if (getBiascorrection()
-          != other.getBiascorrection()) return false;
+      if (getBiasCorrection()
+          != other.getBiasCorrection()) return false;
       if (getNfcasts()
           != other.getNfcasts()) return false;
       if (getNbcasts()
@@ -1117,7 +1117,7 @@ public final class TramoSeatsProtos {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + XLBOUNDARY_FIELD_NUMBER;
+      hash = (37 * hash) + XL_BOUNDARY_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           java.lang.Double.doubleToLongBits(getXlBoundary()));
       hash = (37 * hash) + APPROXIMATION_FIELD_NUMBER;
@@ -1125,18 +1125,18 @@ public final class TramoSeatsProtos {
       hash = (37 * hash) + SEASTOLERANCE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           java.lang.Double.doubleToLongBits(getSeastolerance()));
-      hash = (37 * hash) + TRENDBOUNDARY_FIELD_NUMBER;
+      hash = (37 * hash) + TREND_BOUNDARY_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          java.lang.Double.doubleToLongBits(getTrendboundary()));
-      hash = (37 * hash) + SEASBOUNDARY_FIELD_NUMBER;
+          java.lang.Double.doubleToLongBits(getTrendBoundary()));
+      hash = (37 * hash) + SEAS_BOUNDARY_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           java.lang.Double.doubleToLongBits(getSeasBoundary()));
-      hash = (37 * hash) + SEASBOUNDARYATPI_FIELD_NUMBER;
+      hash = (37 * hash) + SEAS_BOUNDARY_AT_PI_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           java.lang.Double.doubleToLongBits(getSeasBoundaryAtPi()));
-      hash = (37 * hash) + BIASCORRECTION_FIELD_NUMBER;
+      hash = (37 * hash) + BIAS_CORRECTION_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getBiascorrection());
+          getBiasCorrection());
       hash = (37 * hash) + NFCASTS_FIELD_NUMBER;
       hash = (53 * hash) + getNfcasts();
       hash = (37 * hash) + NBCASTS_FIELD_NUMBER;
@@ -1282,13 +1282,13 @@ public final class TramoSeatsProtos {
 
         seastolerance_ = 0D;
 
-        trendboundary_ = 0D;
+        trendBoundary_ = 0D;
 
         seasBoundary_ = 0D;
 
         seasBoundaryAtPi_ = 0D;
 
-        biascorrection_ = false;
+        biasCorrection_ = false;
 
         nfcasts_ = 0;
 
@@ -1325,10 +1325,10 @@ public final class TramoSeatsProtos {
         result.xlBoundary_ = xlBoundary_;
         result.approximation_ = approximation_;
         result.seastolerance_ = seastolerance_;
-        result.trendboundary_ = trendboundary_;
+        result.trendBoundary_ = trendBoundary_;
         result.seasBoundary_ = seasBoundary_;
         result.seasBoundaryAtPi_ = seasBoundaryAtPi_;
-        result.biascorrection_ = biascorrection_;
+        result.biasCorrection_ = biasCorrection_;
         result.nfcasts_ = nfcasts_;
         result.nbcasts_ = nbcasts_;
         result.algorithm_ = algorithm_;
@@ -1389,8 +1389,8 @@ public final class TramoSeatsProtos {
         if (other.getSeastolerance() != 0D) {
           setSeastolerance(other.getSeastolerance());
         }
-        if (other.getTrendboundary() != 0D) {
-          setTrendboundary(other.getTrendboundary());
+        if (other.getTrendBoundary() != 0D) {
+          setTrendBoundary(other.getTrendBoundary());
         }
         if (other.getSeasBoundary() != 0D) {
           setSeasBoundary(other.getSeasBoundary());
@@ -1398,8 +1398,8 @@ public final class TramoSeatsProtos {
         if (other.getSeasBoundaryAtPi() != 0D) {
           setSeasBoundaryAtPi(other.getSeasBoundaryAtPi());
         }
-        if (other.getBiascorrection() != false) {
-          setBiascorrection(other.getBiascorrection());
+        if (other.getBiasCorrection() != false) {
+          setBiasCorrection(other.getBiasCorrection());
         }
         if (other.getNfcasts() != 0) {
           setNfcasts(other.getNfcasts());
@@ -1441,7 +1441,7 @@ public final class TramoSeatsProtos {
 
       private double xlBoundary_ ;
       /**
-       * <code>double xlBoundary = 1;</code>
+       * <code>double xl_boundary = 1;</code>
        * @return The xlBoundary.
        */
       @java.lang.Override
@@ -1449,7 +1449,7 @@ public final class TramoSeatsProtos {
         return xlBoundary_;
       }
       /**
-       * <code>double xlBoundary = 1;</code>
+       * <code>double xl_boundary = 1;</code>
        * @param value The xlBoundary to set.
        * @return This builder for chaining.
        */
@@ -1460,7 +1460,7 @@ public final class TramoSeatsProtos {
         return this;
       }
       /**
-       * <code>double xlBoundary = 1;</code>
+       * <code>double xl_boundary = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearXlBoundary() {
@@ -1555,40 +1555,40 @@ public final class TramoSeatsProtos {
         return this;
       }
 
-      private double trendboundary_ ;
+      private double trendBoundary_ ;
       /**
-       * <code>double trendboundary = 4;</code>
-       * @return The trendboundary.
+       * <code>double trend_boundary = 4;</code>
+       * @return The trendBoundary.
        */
       @java.lang.Override
-      public double getTrendboundary() {
-        return trendboundary_;
+      public double getTrendBoundary() {
+        return trendBoundary_;
       }
       /**
-       * <code>double trendboundary = 4;</code>
-       * @param value The trendboundary to set.
+       * <code>double trend_boundary = 4;</code>
+       * @param value The trendBoundary to set.
        * @return This builder for chaining.
        */
-      public Builder setTrendboundary(double value) {
+      public Builder setTrendBoundary(double value) {
         
-        trendboundary_ = value;
+        trendBoundary_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>double trendboundary = 4;</code>
+       * <code>double trend_boundary = 4;</code>
        * @return This builder for chaining.
        */
-      public Builder clearTrendboundary() {
+      public Builder clearTrendBoundary() {
         
-        trendboundary_ = 0D;
+        trendBoundary_ = 0D;
         onChanged();
         return this;
       }
 
       private double seasBoundary_ ;
       /**
-       * <code>double seasBoundary = 5;</code>
+       * <code>double seas_boundary = 5;</code>
        * @return The seasBoundary.
        */
       @java.lang.Override
@@ -1596,7 +1596,7 @@ public final class TramoSeatsProtos {
         return seasBoundary_;
       }
       /**
-       * <code>double seasBoundary = 5;</code>
+       * <code>double seas_boundary = 5;</code>
        * @param value The seasBoundary to set.
        * @return This builder for chaining.
        */
@@ -1607,7 +1607,7 @@ public final class TramoSeatsProtos {
         return this;
       }
       /**
-       * <code>double seasBoundary = 5;</code>
+       * <code>double seas_boundary = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearSeasBoundary() {
@@ -1619,7 +1619,7 @@ public final class TramoSeatsProtos {
 
       private double seasBoundaryAtPi_ ;
       /**
-       * <code>double seasBoundaryAtPi = 6;</code>
+       * <code>double seas_boundary_at_pi = 6;</code>
        * @return The seasBoundaryAtPi.
        */
       @java.lang.Override
@@ -1627,7 +1627,7 @@ public final class TramoSeatsProtos {
         return seasBoundaryAtPi_;
       }
       /**
-       * <code>double seasBoundaryAtPi = 6;</code>
+       * <code>double seas_boundary_at_pi = 6;</code>
        * @param value The seasBoundaryAtPi to set.
        * @return This builder for chaining.
        */
@@ -1638,7 +1638,7 @@ public final class TramoSeatsProtos {
         return this;
       }
       /**
-       * <code>double seasBoundaryAtPi = 6;</code>
+       * <code>double seas_boundary_at_pi = 6;</code>
        * @return This builder for chaining.
        */
       public Builder clearSeasBoundaryAtPi() {
@@ -1648,33 +1648,33 @@ public final class TramoSeatsProtos {
         return this;
       }
 
-      private boolean biascorrection_ ;
+      private boolean biasCorrection_ ;
       /**
-       * <code>bool biascorrection = 7;</code>
-       * @return The biascorrection.
+       * <code>bool bias_correction = 7;</code>
+       * @return The biasCorrection.
        */
       @java.lang.Override
-      public boolean getBiascorrection() {
-        return biascorrection_;
+      public boolean getBiasCorrection() {
+        return biasCorrection_;
       }
       /**
-       * <code>bool biascorrection = 7;</code>
-       * @param value The biascorrection to set.
+       * <code>bool bias_correction = 7;</code>
+       * @param value The biasCorrection to set.
        * @return This builder for chaining.
        */
-      public Builder setBiascorrection(boolean value) {
+      public Builder setBiasCorrection(boolean value) {
         
-        biascorrection_ = value;
+        biasCorrection_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>bool biascorrection = 7;</code>
+       * <code>bool bias_correction = 7;</code>
        * @return This builder for chaining.
        */
-      public Builder clearBiascorrection() {
+      public Builder clearBiasCorrection() {
         
-        biascorrection_ = false;
+        biasCorrection_ = false;
         onChanged();
         return this;
       }
@@ -3473,6 +3473,12 @@ public final class TramoSeatsProtos {
        * @return The tcrate.
        */
       double getTcrate();
+
+      /**
+       * <code>bool ml = 9;</code>
+       * @return The ml.
+       */
+      boolean getMl();
     }
     /**
      * Protobuf type {@code tramoseats.TramoSpec.OutlierSpec}
@@ -3565,6 +3571,11 @@ public final class TramoSeatsProtos {
               case 65: {
 
                 tcrate_ = input.readDouble();
+                break;
+              }
+              case 72: {
+
+                ml_ = input.readBool();
                 break;
               }
               default: {
@@ -3702,6 +3713,17 @@ public final class TramoSeatsProtos {
         return tcrate_;
       }
 
+      public static final int ML_FIELD_NUMBER = 9;
+      private boolean ml_;
+      /**
+       * <code>bool ml = 9;</code>
+       * @return The ml.
+       */
+      @java.lang.Override
+      public boolean getMl() {
+        return ml_;
+      }
+
       private byte memoizedIsInitialized = -1;
       @java.lang.Override
       public final boolean isInitialized() {
@@ -3739,6 +3761,9 @@ public final class TramoSeatsProtos {
         }
         if (tcrate_ != 0D) {
           output.writeDouble(8, tcrate_);
+        }
+        if (ml_ != false) {
+          output.writeBool(9, ml_);
         }
         unknownFields.writeTo(output);
       }
@@ -3781,6 +3806,10 @@ public final class TramoSeatsProtos {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(8, tcrate_);
         }
+        if (ml_ != false) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(9, ml_);
+        }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
         return size;
@@ -3817,6 +3846,8 @@ public final class TramoSeatsProtos {
         if (java.lang.Double.doubleToLongBits(getTcrate())
             != java.lang.Double.doubleToLongBits(
                 other.getTcrate())) return false;
+        if (getMl()
+            != other.getMl()) return false;
         if (!unknownFields.equals(other.unknownFields)) return false;
         return true;
       }
@@ -3853,6 +3884,9 @@ public final class TramoSeatsProtos {
         hash = (37 * hash) + TCRATE_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
             java.lang.Double.doubleToLongBits(getTcrate()));
+        hash = (37 * hash) + ML_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+            getMl());
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
         return hash;
@@ -4006,6 +4040,8 @@ public final class TramoSeatsProtos {
 
           tcrate_ = 0D;
 
+          ml_ = false;
+
           return this;
         }
 
@@ -4044,6 +4080,7 @@ public final class TramoSeatsProtos {
           result.so_ = so_;
           result.va_ = va_;
           result.tcrate_ = tcrate_;
+          result.ml_ = ml_;
           onBuilt();
           return result;
         }
@@ -4115,6 +4152,9 @@ public final class TramoSeatsProtos {
           }
           if (other.getTcrate() != 0D) {
             setTcrate(other.getTcrate());
+          }
+          if (other.getMl() != false) {
+            setMl(other.getMl());
           }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
@@ -4480,6 +4520,37 @@ public final class TramoSeatsProtos {
           onChanged();
           return this;
         }
+
+        private boolean ml_ ;
+        /**
+         * <code>bool ml = 9;</code>
+         * @return The ml.
+         */
+        @java.lang.Override
+        public boolean getMl() {
+          return ml_;
+        }
+        /**
+         * <code>bool ml = 9;</code>
+         * @param value The ml to set.
+         * @return This builder for chaining.
+         */
+        public Builder setMl(boolean value) {
+          
+          ml_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>bool ml = 9;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearMl() {
+          
+          ml_ = false;
+          onChanged();
+          return this;
+        }
         @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -4580,16 +4651,16 @@ public final class TramoSeatsProtos {
       double getTsig();
 
       /**
-       * <code>bool acceptdef = 8;</code>
-       * @return The acceptdef.
+       * <code>bool accept_def = 8;</code>
+       * @return The acceptDef.
        */
-      boolean getAcceptdef();
+      boolean getAcceptDef();
 
       /**
-       * <code>bool amicompare = 9;</code>
-       * @return The amicompare.
+       * <code>bool ami_compare = 9;</code>
+       * @return The amiCompare.
        */
-      boolean getAmicompare();
+      boolean getAmiCompare();
     }
     /**
      * Protobuf type {@code tramoseats.TramoSpec.AutoModelSpec}
@@ -4673,12 +4744,12 @@ public final class TramoSeatsProtos {
               }
               case 64: {
 
-                acceptdef_ = input.readBool();
+                acceptDef_ = input.readBool();
                 break;
               }
               case 72: {
 
-                amicompare_ = input.readBool();
+                amiCompare_ = input.readBool();
                 break;
               }
               default: {
@@ -4790,26 +4861,26 @@ public final class TramoSeatsProtos {
         return tsig_;
       }
 
-      public static final int ACCEPTDEF_FIELD_NUMBER = 8;
-      private boolean acceptdef_;
+      public static final int ACCEPT_DEF_FIELD_NUMBER = 8;
+      private boolean acceptDef_;
       /**
-       * <code>bool acceptdef = 8;</code>
-       * @return The acceptdef.
+       * <code>bool accept_def = 8;</code>
+       * @return The acceptDef.
        */
       @java.lang.Override
-      public boolean getAcceptdef() {
-        return acceptdef_;
+      public boolean getAcceptDef() {
+        return acceptDef_;
       }
 
-      public static final int AMICOMPARE_FIELD_NUMBER = 9;
-      private boolean amicompare_;
+      public static final int AMI_COMPARE_FIELD_NUMBER = 9;
+      private boolean amiCompare_;
       /**
-       * <code>bool amicompare = 9;</code>
-       * @return The amicompare.
+       * <code>bool ami_compare = 9;</code>
+       * @return The amiCompare.
        */
       @java.lang.Override
-      public boolean getAmicompare() {
-        return amicompare_;
+      public boolean getAmiCompare() {
+        return amiCompare_;
       }
 
       private byte memoizedIsInitialized = -1;
@@ -4847,11 +4918,11 @@ public final class TramoSeatsProtos {
         if (tsig_ != 0D) {
           output.writeDouble(7, tsig_);
         }
-        if (acceptdef_ != false) {
-          output.writeBool(8, acceptdef_);
+        if (acceptDef_ != false) {
+          output.writeBool(8, acceptDef_);
         }
-        if (amicompare_ != false) {
-          output.writeBool(9, amicompare_);
+        if (amiCompare_ != false) {
+          output.writeBool(9, amiCompare_);
         }
         unknownFields.writeTo(output);
       }
@@ -4890,13 +4961,13 @@ public final class TramoSeatsProtos {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(7, tsig_);
         }
-        if (acceptdef_ != false) {
+        if (acceptDef_ != false) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(8, acceptdef_);
+            .computeBoolSize(8, acceptDef_);
         }
-        if (amicompare_ != false) {
+        if (amiCompare_ != false) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(9, amicompare_);
+            .computeBoolSize(9, amiCompare_);
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -4933,10 +5004,10 @@ public final class TramoSeatsProtos {
         if (java.lang.Double.doubleToLongBits(getTsig())
             != java.lang.Double.doubleToLongBits(
                 other.getTsig())) return false;
-        if (getAcceptdef()
-            != other.getAcceptdef()) return false;
-        if (getAmicompare()
-            != other.getAmicompare()) return false;
+        if (getAcceptDef()
+            != other.getAcceptDef()) return false;
+        if (getAmiCompare()
+            != other.getAmiCompare()) return false;
         if (!unknownFields.equals(other.unknownFields)) return false;
         return true;
       }
@@ -4969,12 +5040,12 @@ public final class TramoSeatsProtos {
         hash = (37 * hash) + TSIG_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
             java.lang.Double.doubleToLongBits(getTsig()));
-        hash = (37 * hash) + ACCEPTDEF_FIELD_NUMBER;
+        hash = (37 * hash) + ACCEPT_DEF_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getAcceptdef());
-        hash = (37 * hash) + AMICOMPARE_FIELD_NUMBER;
+            getAcceptDef());
+        hash = (37 * hash) + AMI_COMPARE_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getAmicompare());
+            getAmiCompare());
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
         return hash;
@@ -5122,9 +5193,9 @@ public final class TramoSeatsProtos {
 
           tsig_ = 0D;
 
-          acceptdef_ = false;
+          acceptDef_ = false;
 
-          amicompare_ = false;
+          amiCompare_ = false;
 
           return this;
         }
@@ -5159,8 +5230,8 @@ public final class TramoSeatsProtos {
           result.pcr_ = pcr_;
           result.pc_ = pc_;
           result.tsig_ = tsig_;
-          result.acceptdef_ = acceptdef_;
-          result.amicompare_ = amicompare_;
+          result.acceptDef_ = acceptDef_;
+          result.amiCompare_ = amiCompare_;
           onBuilt();
           return result;
         }
@@ -5230,11 +5301,11 @@ public final class TramoSeatsProtos {
           if (other.getTsig() != 0D) {
             setTsig(other.getTsig());
           }
-          if (other.getAcceptdef() != false) {
-            setAcceptdef(other.getAcceptdef());
+          if (other.getAcceptDef() != false) {
+            setAcceptDef(other.getAcceptDef());
           }
-          if (other.getAmicompare() != false) {
-            setAmicompare(other.getAmicompare());
+          if (other.getAmiCompare() != false) {
+            setAmiCompare(other.getAmiCompare());
           }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
@@ -5482,64 +5553,64 @@ public final class TramoSeatsProtos {
           return this;
         }
 
-        private boolean acceptdef_ ;
+        private boolean acceptDef_ ;
         /**
-         * <code>bool acceptdef = 8;</code>
-         * @return The acceptdef.
+         * <code>bool accept_def = 8;</code>
+         * @return The acceptDef.
          */
         @java.lang.Override
-        public boolean getAcceptdef() {
-          return acceptdef_;
+        public boolean getAcceptDef() {
+          return acceptDef_;
         }
         /**
-         * <code>bool acceptdef = 8;</code>
-         * @param value The acceptdef to set.
+         * <code>bool accept_def = 8;</code>
+         * @param value The acceptDef to set.
          * @return This builder for chaining.
          */
-        public Builder setAcceptdef(boolean value) {
+        public Builder setAcceptDef(boolean value) {
           
-          acceptdef_ = value;
+          acceptDef_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>bool acceptdef = 8;</code>
+         * <code>bool accept_def = 8;</code>
          * @return This builder for chaining.
          */
-        public Builder clearAcceptdef() {
+        public Builder clearAcceptDef() {
           
-          acceptdef_ = false;
+          acceptDef_ = false;
           onChanged();
           return this;
         }
 
-        private boolean amicompare_ ;
+        private boolean amiCompare_ ;
         /**
-         * <code>bool amicompare = 9;</code>
-         * @return The amicompare.
+         * <code>bool ami_compare = 9;</code>
+         * @return The amiCompare.
          */
         @java.lang.Override
-        public boolean getAmicompare() {
-          return amicompare_;
+        public boolean getAmiCompare() {
+          return amiCompare_;
         }
         /**
-         * <code>bool amicompare = 9;</code>
-         * @param value The amicompare to set.
+         * <code>bool ami_compare = 9;</code>
+         * @param value The amiCompare to set.
          * @return This builder for chaining.
          */
-        public Builder setAmicompare(boolean value) {
+        public Builder setAmiCompare(boolean value) {
           
-          amicompare_ = value;
+          amiCompare_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>bool amicompare = 9;</code>
+         * <code>bool ami_compare = 9;</code>
          * @return This builder for chaining.
          */
-        public Builder clearAmicompare() {
+        public Builder clearAmiCompare() {
           
-          amicompare_ = false;
+          amiCompare_ = false;
           onChanged();
           return this;
         }
@@ -14887,76 +14958,77 @@ public final class TramoSeatsProtos {
   static {
     java.lang.String[] descriptorData = {
       "\n\020tramoseats.proto\022\ntramoseats\032\rtoolkit." +
-      "proto\032\016regarima.proto\032\010sa.proto\"\245\002\n\021Deco" +
-      "mpositionSpec\022\022\n\nxlBoundary\030\001 \001(\001\0225\n\rapp" +
-      "roximation\030\002 \001(\0162\036.tramoseats.SeatsAppro" +
-      "ximation\022\025\n\rseastolerance\030\003 \001(\001\022\025\n\rtrend" +
-      "boundary\030\004 \001(\001\022\024\n\014seasBoundary\030\005 \001(\001\022\030\n\020" +
-      "seasBoundaryAtPi\030\006 \001(\001\022\026\n\016biascorrection" +
-      "\030\007 \001(\010\022\017\n\007nfcasts\030\010 \001(\005\022\017\n\007nbcasts\030\t \001(\005" +
-      "\022-\n\talgorithm\030\n \001(\0162\032.tramoseats.SeatsAl" +
-      "gorithm\"\245\r\n\tTramoSpec\022.\n\005basic\030\001 \001(\0132\037.t" +
-      "ramoseats.TramoSpec.BasicSpec\0226\n\ttransfo" +
-      "rm\030\002 \001(\0132#.tramoseats.TramoSpec.Transfor" +
-      "mSpec\0222\n\007outlier\030\003 \001(\0132!.tramoseats.Tram" +
-      "oSpec.OutlierSpec\022#\n\005arima\030\004 \001(\0132\024.regar" +
-      "ima.SarimaSpec\0226\n\tautomodel\030\005 \001(\0132#.tram" +
-      "oseats.TramoSpec.AutoModelSpec\0228\n\nregres" +
-      "sion\030\006 \001(\0132$.tramoseats.TramoSpec.Regres" +
-      "sionSpec\0224\n\010estimate\030\007 \001(\0132\".tramoseats." +
-      "TramoSpec.EstimateSpec\032G\n\tBasicSpec\022\037\n\004s" +
-      "pan\030\001 \001(\0132\021.jd3.TimeSelector\022\031\n\021prelimin" +
-      "ary_check\030\003 \001(\010\032N\n\rTransformSpec\0220\n\016tran" +
-      "sformation\030\001 \001(\0162\030.regarima.Transformati" +
-      "on\022\013\n\003fct\030\002 \001(\001\032\213\001\n\013OutlierSpec\022\017\n\007enabl" +
-      "ed\030\001 \001(\010\022\037\n\004span\030\002 \001(\0132\021.jd3.TimeSelecto" +
-      "r\022\n\n\002ao\030\003 \001(\010\022\n\n\002ls\030\004 \001(\010\022\n\n\002tc\030\005 \001(\010\022\n\n" +
-      "\002so\030\006 \001(\010\022\n\n\002va\030\007 \001(\001\022\016\n\006tcrate\030\010 \001(\001\032\230\001" +
-      "\n\rAutoModelSpec\022\017\n\007enabled\030\001 \001(\010\022\016\n\006canc" +
-      "el\030\002 \001(\001\022\013\n\003ub1\030\003 \001(\001\022\013\n\003ub2\030\004 \001(\001\022\013\n\003pc" +
-      "r\030\005 \001(\001\022\n\n\002pc\030\006 \001(\001\022\014\n\004tsig\030\007 \001(\001\022\021\n\tacc" +
-      "eptdef\030\010 \001(\010\022\022\n\namicompare\030\t \001(\010\032b\n\nEast" +
-      "erSpec\022$\n\004type\030\001 \001(\0162\026.tramoseats.Easter" +
-      "Type\022\020\n\010duration\030\002 \001(\005\022\016\n\006julian\030\003 \001(\010\022\014" +
-      "\n\004test\030\004 \001(\010\032\360\001\n\017TradingDaysSpec\022!\n\002td\030\001" +
-      " \001(\0162\025.regarima.TradingDays\022$\n\002lp\030\002 \001(\0162" +
-      "\030.regarima.LengthOfPeriod\022\020\n\010holidays\030\003 " +
-      "\001(\t\022\r\n\005users\030\004 \003(\t\022\t\n\001w\030\005 \001(\005\022)\n\004test\030\006 " +
-      "\001(\0162\033.tramoseats.TradingDaysTest\022.\n\004auto" +
-      "\030\007 \001(\0162 .tramoseats.AutomaticTradingDays" +
-      "\022\r\n\005ptest\030\010 \001(\001\032\276\003\n\016RegressionSpec\022\014\n\004me" +
-      "an\030\001 \001(\010\0221\n\002td\030\002 \001(\0132%.tramoseats.TramoS" +
-      "pec.TradingDaysSpec\0220\n\006easter\030\003 \001(\0132 .tr" +
-      "amoseats.TramoSpec.EasterSpec\022#\n\010outlier" +
-      "s\030\004 \003(\0132\021.regarima.Outlier\022!\n\005users\030\005 \003(" +
-      "\0132\022.regarima.Variable\0225\n\rinterventions\030\006" +
-      " \003(\0132\036.regarima.InterventionVariable\022\035\n\005" +
-      "ramps\030\007 \003(\0132\016.regarima.Ramp\022Q\n\016preadujst" +
-      "ments\030\010 \003(\01329.tramoseats.TramoSpec.Regre" +
-      "ssionSpec.PrespecifiedVariable\032H\n\024Prespe" +
-      "cifiedVariable\022\014\n\004name\030\001 \001(\t\022\"\n\nparamete" +
-      "rs\030\002 \003(\0132\016.jd3.Parameter\032U\n\014EstimateSpec" +
-      "\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeSelector\022\n\n\002ml\030" +
-      "\002 \001(\010\022\013\n\003tol\030\003 \001(\001\022\013\n\003ubp\030\004 \001(\001\"\206\001\n\004Spec" +
-      "\022$\n\005tramo\030\001 \001(\0132\025.tramoseats.TramoSpec\022," +
-      "\n\005seats\030\002 \001(\0132\035.tramoseats.Decomposition" +
-      "Spec\022*\n\014benchmarking\030\003 \001(\0132\024.sa.Benchmar" +
-      "kingSpec*n\n\022SeatsApproximation\022\031\n\025SEATS_" +
-      "APP_UNSPECIFIED\020\000\022\022\n\016SEATS_APP_NONE\020\001\022\024\n" +
-      "\020SEATS_APP_LEGACY\020\002\022\023\n\017SEATS_APP_NOISY\020\003" +
-      "*_\n\016SeatsAlgorithm\022\031\n\025SEATS_ALG_UNSPECIF" +
-      "IED\020\000\022\024\n\020SEATS_ALG_BURMAN\020\001\022\034\n\030SEATS_ALG" +
-      "_KALMANSMOOTHER\020\002*h\n\024AutomaticTradingDay" +
-      "s\022\027\n\023TD_AUTO_UNSPECIFIED\020\000\022\016\n\nTD_AUTO_NO" +
-      "\020\001\022\021\n\rTD_AUTO_FTEST\020\002\022\024\n\020TD_AUTO_WALDTES" +
-      "T\020\003*g\n\017TradingDaysTest\022\027\n\023TD_TEST_UNSPEC" +
-      "IFIED\020\000\022\016\n\nTD_TEST_NO\020\001\022\026\n\022TD_TEST_SEPAR" +
-      "ATE_T\020\002\022\023\n\017TD_TEST_JOINT_F\020\003*\206\001\n\nEasterT" +
-      "ype\022\026\n\022EASTER_UNSPECIFIED\020\000\022\021\n\rEASTER_UN" +
-      "USED\020\001\022\023\n\017EASTER_STANDARD\020\002\022\030\n\024EASTER_IN" +
-      "CLUDEEASTER\020\003\022\036\n\032EASTER_INCLUDEEASTERMON" +
-      "DAY\020\004B2\n\036demetra.tramoseats.io.protobufB" +
-      "\020TramoSeatsProtosP\000P\001P\002b\006proto3"
+      "proto\032\016regarima.proto\032\010sa.proto\"\254\002\n\021Deco" +
+      "mpositionSpec\022\023\n\013xl_boundary\030\001 \001(\001\0225\n\rap" +
+      "proximation\030\002 \001(\0162\036.tramoseats.SeatsAppr" +
+      "oximation\022\025\n\rseastolerance\030\003 \001(\001\022\026\n\016tren" +
+      "d_boundary\030\004 \001(\001\022\025\n\rseas_boundary\030\005 \001(\001\022" +
+      "\033\n\023seas_boundary_at_pi\030\006 \001(\001\022\027\n\017bias_cor" +
+      "rection\030\007 \001(\010\022\017\n\007nfcasts\030\010 \001(\005\022\017\n\007nbcast" +
+      "s\030\t \001(\005\022-\n\talgorithm\030\n \001(\0162\032.tramoseats." +
+      "SeatsAlgorithm\"\263\r\n\tTramoSpec\022.\n\005basic\030\001 " +
+      "\001(\0132\037.tramoseats.TramoSpec.BasicSpec\0226\n\t" +
+      "transform\030\002 \001(\0132#.tramoseats.TramoSpec.T" +
+      "ransformSpec\0222\n\007outlier\030\003 \001(\0132!.tramosea" +
+      "ts.TramoSpec.OutlierSpec\022#\n\005arima\030\004 \001(\0132" +
+      "\024.regarima.SarimaSpec\0226\n\tautomodel\030\005 \001(\013" +
+      "2#.tramoseats.TramoSpec.AutoModelSpec\0228\n" +
+      "\nregression\030\006 \001(\0132$.tramoseats.TramoSpec" +
+      ".RegressionSpec\0224\n\010estimate\030\007 \001(\0132\".tram" +
+      "oseats.TramoSpec.EstimateSpec\032G\n\tBasicSp" +
+      "ec\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeSelector\022\031\n\021p" +
+      "reliminary_check\030\003 \001(\010\032N\n\rTransformSpec\022" +
+      "0\n\016transformation\030\001 \001(\0162\030.regarima.Trans" +
+      "formation\022\013\n\003fct\030\002 \001(\001\032\227\001\n\013OutlierSpec\022\017" +
+      "\n\007enabled\030\001 \001(\010\022\037\n\004span\030\002 \001(\0132\021.jd3.Time" +
+      "Selector\022\n\n\002ao\030\003 \001(\010\022\n\n\002ls\030\004 \001(\010\022\n\n\002tc\030\005" +
+      " \001(\010\022\n\n\002so\030\006 \001(\010\022\n\n\002va\030\007 \001(\001\022\016\n\006tcrate\030\010" +
+      " \001(\001\022\n\n\002ml\030\t \001(\010\032\232\001\n\rAutoModelSpec\022\017\n\007en" +
+      "abled\030\001 \001(\010\022\016\n\006cancel\030\002 \001(\001\022\013\n\003ub1\030\003 \001(\001" +
+      "\022\013\n\003ub2\030\004 \001(\001\022\013\n\003pcr\030\005 \001(\001\022\n\n\002pc\030\006 \001(\001\022\014" +
+      "\n\004tsig\030\007 \001(\001\022\022\n\naccept_def\030\010 \001(\010\022\023\n\013ami_" +
+      "compare\030\t \001(\010\032b\n\nEasterSpec\022$\n\004type\030\001 \001(" +
+      "\0162\026.tramoseats.EasterType\022\020\n\010duration\030\002 " +
+      "\001(\005\022\016\n\006julian\030\003 \001(\010\022\014\n\004test\030\004 \001(\010\032\360\001\n\017Tr" +
+      "adingDaysSpec\022!\n\002td\030\001 \001(\0162\025.regarima.Tra" +
+      "dingDays\022$\n\002lp\030\002 \001(\0162\030.regarima.LengthOf" +
+      "Period\022\020\n\010holidays\030\003 \001(\t\022\r\n\005users\030\004 \003(\t\022" +
+      "\t\n\001w\030\005 \001(\005\022)\n\004test\030\006 \001(\0162\033.tramoseats.Tr" +
+      "adingDaysTest\022.\n\004auto\030\007 \001(\0162 .tramoseats" +
+      ".AutomaticTradingDays\022\r\n\005ptest\030\010 \001(\001\032\276\003\n" +
+      "\016RegressionSpec\022\014\n\004mean\030\001 \001(\010\0221\n\002td\030\002 \001(" +
+      "\0132%.tramoseats.TramoSpec.TradingDaysSpec" +
+      "\0220\n\006easter\030\003 \001(\0132 .tramoseats.TramoSpec." +
+      "EasterSpec\022#\n\010outliers\030\004 \003(\0132\021.regarima." +
+      "Outlier\022!\n\005users\030\005 \003(\0132\022.regarima.Variab" +
+      "le\0225\n\rinterventions\030\006 \003(\0132\036.regarima.Int" +
+      "erventionVariable\022\035\n\005ramps\030\007 \003(\0132\016.regar" +
+      "ima.Ramp\022Q\n\016preadujstments\030\010 \003(\01329.tramo" +
+      "seats.TramoSpec.RegressionSpec.Prespecif" +
+      "iedVariable\032H\n\024PrespecifiedVariable\022\014\n\004n" +
+      "ame\030\001 \001(\t\022\"\n\nparameters\030\002 \003(\0132\016.jd3.Para" +
+      "meter\032U\n\014EstimateSpec\022\037\n\004span\030\001 \001(\0132\021.jd" +
+      "3.TimeSelector\022\n\n\002ml\030\002 \001(\010\022\013\n\003tol\030\003 \001(\001\022" +
+      "\013\n\003ubp\030\004 \001(\001\"\206\001\n\004Spec\022$\n\005tramo\030\001 \001(\0132\025.t" +
+      "ramoseats.TramoSpec\022,\n\005seats\030\002 \001(\0132\035.tra" +
+      "moseats.DecompositionSpec\022*\n\014benchmarkin" +
+      "g\030\003 \001(\0132\024.sa.BenchmarkingSpec*n\n\022SeatsAp" +
+      "proximation\022\031\n\025SEATS_APP_UNSPECIFIED\020\000\022\022" +
+      "\n\016SEATS_APP_NONE\020\001\022\024\n\020SEATS_APP_LEGACY\020\002" +
+      "\022\023\n\017SEATS_APP_NOISY\020\003*_\n\016SeatsAlgorithm\022" +
+      "\031\n\025SEATS_ALG_UNSPECIFIED\020\000\022\024\n\020SEATS_ALG_" +
+      "BURMAN\020\001\022\034\n\030SEATS_ALG_KALMANSMOOTHER\020\002*h" +
+      "\n\024AutomaticTradingDays\022\027\n\023TD_AUTO_UNSPEC" +
+      "IFIED\020\000\022\016\n\nTD_AUTO_NO\020\001\022\021\n\rTD_AUTO_FTEST" +
+      "\020\002\022\024\n\020TD_AUTO_WALDTEST\020\003*g\n\017TradingDaysT" +
+      "est\022\027\n\023TD_TEST_UNSPECIFIED\020\000\022\016\n\nTD_TEST_" +
+      "NO\020\001\022\026\n\022TD_TEST_SEPARATE_T\020\002\022\023\n\017TD_TEST_" +
+      "JOINT_F\020\003*\206\001\n\nEasterType\022\026\n\022EASTER_UNSPE" +
+      "CIFIED\020\000\022\021\n\rEASTER_UNUSED\020\001\022\023\n\017EASTER_ST" +
+      "ANDARD\020\002\022\030\n\024EASTER_INCLUDEEASTER\020\003\022\036\n\032EA" +
+      "STER_INCLUDEEASTERMONDAY\020\004B2\n\036demetra.tr" +
+      "amoseats.io.protobufB\020TramoSeatsProtosP\000" +
+      "P\001P\002b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -14970,7 +15042,7 @@ public final class TramoSeatsProtos {
     internal_static_tramoseats_DecompositionSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tramoseats_DecompositionSpec_descriptor,
-        new java.lang.String[] { "XlBoundary", "Approximation", "Seastolerance", "Trendboundary", "SeasBoundary", "SeasBoundaryAtPi", "Biascorrection", "Nfcasts", "Nbcasts", "Algorithm", });
+        new java.lang.String[] { "XlBoundary", "Approximation", "Seastolerance", "TrendBoundary", "SeasBoundary", "SeasBoundaryAtPi", "BiasCorrection", "Nfcasts", "Nbcasts", "Algorithm", });
     internal_static_tramoseats_TramoSpec_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_tramoseats_TramoSpec_fieldAccessorTable = new
@@ -14994,13 +15066,13 @@ public final class TramoSeatsProtos {
     internal_static_tramoseats_TramoSpec_OutlierSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tramoseats_TramoSpec_OutlierSpec_descriptor,
-        new java.lang.String[] { "Enabled", "Span", "Ao", "Ls", "Tc", "So", "Va", "Tcrate", });
+        new java.lang.String[] { "Enabled", "Span", "Ao", "Ls", "Tc", "So", "Va", "Tcrate", "Ml", });
     internal_static_tramoseats_TramoSpec_AutoModelSpec_descriptor =
       internal_static_tramoseats_TramoSpec_descriptor.getNestedTypes().get(3);
     internal_static_tramoseats_TramoSpec_AutoModelSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tramoseats_TramoSpec_AutoModelSpec_descriptor,
-        new java.lang.String[] { "Enabled", "Cancel", "Ub1", "Ub2", "Pcr", "Pc", "Tsig", "Acceptdef", "Amicompare", });
+        new java.lang.String[] { "Enabled", "Cancel", "Ub1", "Ub2", "Pcr", "Pc", "Tsig", "AcceptDef", "AmiCompare", });
     internal_static_tramoseats_TramoSpec_EasterSpec_descriptor =
       internal_static_tramoseats_TramoSpec_descriptor.getNestedTypes().get(4);
     internal_static_tramoseats_TramoSpec_EasterSpec_fieldAccessorTable = new

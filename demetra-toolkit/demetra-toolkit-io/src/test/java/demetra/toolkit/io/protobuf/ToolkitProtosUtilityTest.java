@@ -16,9 +16,12 @@
  */
 package demetra.toolkit.io.protobuf;
 
+import demetra.data.Data;
 import demetra.timeseries.TimeSelector;
+import demetra.timeseries.TsData;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import jdplus.math.matrices.Matrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -51,6 +54,26 @@ public class ToolkitProtosUtilityTest {
         TimeSelector excluding = TimeSelector.excluding(5, 10);
         convert = ToolkitProtosUtility.convert(ToolkitProtosUtility.convert(excluding));
         assertTrue(excluding.equals(convert));
+    }
+    
+    @Test
+    public void testMatrix(){
+        Matrix M=Matrix.make(10, 20);
+        M.set((r, c)->r+c);
+        ToolkitProtos.Matrix m = ToolkitProtosUtility.convert(M);
+        int n = m.getValueCount();
+        assertTrue(n == M.getRowsCount()*M.getColumnsCount());
+        assertTrue(m.getValue(n-1) == M.get(M.getRowsCount()-1, M.getColumnsCount()-1));
+    }
+    
+    @Test
+    public void testTsData(){
+        TsData s=Data.TS_ABS_RETAIL;
+        ToolkitProtos.TsData data = ToolkitProtosUtility.convert(s);
+        int n=s.length();
+        assertTrue(data.getValueCount() == n);
+        assertTrue(data.getValue(n-1) == s.getValue(n-1));
+        
     }
 
 }

@@ -1864,6 +1864,3938 @@ public final class ToolkitProtos {
 
   }
 
+  public interface TsDataOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:jd3.TsData)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string name = 1;</code>
+     * @return The name.
+     */
+    java.lang.String getName();
+    /**
+     * <code>string name = 1;</code>
+     * @return The bytes for name.
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
+
+    /**
+     * <code>int32 period = 2;</code>
+     * @return The period.
+     */
+    int getPeriod();
+
+    /**
+     * <code>int32 start_year = 3;</code>
+     * @return The startYear.
+     */
+    int getStartYear();
+
+    /**
+     * <code>int32 start_period = 4;</code>
+     * @return The startPeriod.
+     */
+    int getStartPeriod();
+
+    /**
+     * <code>repeated double value = 5;</code>
+     * @return A list containing the value.
+     */
+    java.util.List<java.lang.Double> getValueList();
+    /**
+     * <code>repeated double value = 5;</code>
+     * @return The count of value.
+     */
+    int getValueCount();
+    /**
+     * <code>repeated double value = 5;</code>
+     * @param index The index of the element to return.
+     * @return The value at the given index.
+     */
+    double getValue(int index);
+  }
+  /**
+   * Protobuf type {@code jd3.TsData}
+   */
+  public static final class TsData extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:jd3.TsData)
+      TsDataOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use TsData.newBuilder() to construct.
+    private TsData(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private TsData() {
+      name_ = "";
+      value_ = emptyDoubleList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new TsData();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private TsData(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              name_ = s;
+              break;
+            }
+            case 16: {
+
+              period_ = input.readInt32();
+              break;
+            }
+            case 24: {
+
+              startYear_ = input.readInt32();
+              break;
+            }
+            case 32: {
+
+              startPeriod_ = input.readInt32();
+              break;
+            }
+            case 41: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                value_ = newDoubleList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              value_.addDouble(input.readDouble());
+              break;
+            }
+            case 42: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                value_ = newDoubleList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                value_.addDouble(input.readDouble());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          value_.makeImmutable(); // C
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_TsData_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_TsData_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.class, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder.class);
+    }
+
+    public static final int NAME_FIELD_NUMBER = 1;
+    private volatile java.lang.Object name_;
+    /**
+     * <code>string name = 1;</code>
+     * @return The name.
+     */
+    @java.lang.Override
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string name = 1;</code>
+     * @return The bytes for name.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PERIOD_FIELD_NUMBER = 2;
+    private int period_;
+    /**
+     * <code>int32 period = 2;</code>
+     * @return The period.
+     */
+    @java.lang.Override
+    public int getPeriod() {
+      return period_;
+    }
+
+    public static final int START_YEAR_FIELD_NUMBER = 3;
+    private int startYear_;
+    /**
+     * <code>int32 start_year = 3;</code>
+     * @return The startYear.
+     */
+    @java.lang.Override
+    public int getStartYear() {
+      return startYear_;
+    }
+
+    public static final int START_PERIOD_FIELD_NUMBER = 4;
+    private int startPeriod_;
+    /**
+     * <code>int32 start_period = 4;</code>
+     * @return The startPeriod.
+     */
+    @java.lang.Override
+    public int getStartPeriod() {
+      return startPeriod_;
+    }
+
+    public static final int VALUE_FIELD_NUMBER = 5;
+    private com.google.protobuf.Internal.DoubleList value_;
+    /**
+     * <code>repeated double value = 5;</code>
+     * @return A list containing the value.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Double>
+        getValueList() {
+      return value_;
+    }
+    /**
+     * <code>repeated double value = 5;</code>
+     * @return The count of value.
+     */
+    public int getValueCount() {
+      return value_.size();
+    }
+    /**
+     * <code>repeated double value = 5;</code>
+     * @param index The index of the element to return.
+     * @return The value at the given index.
+     */
+    public double getValue(int index) {
+      return value_.getDouble(index);
+    }
+    private int valueMemoizedSerializedSize = -1;
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (!getNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
+      }
+      if (period_ != 0) {
+        output.writeInt32(2, period_);
+      }
+      if (startYear_ != 0) {
+        output.writeInt32(3, startYear_);
+      }
+      if (startPeriod_ != 0) {
+        output.writeInt32(4, startPeriod_);
+      }
+      if (getValueList().size() > 0) {
+        output.writeUInt32NoTag(42);
+        output.writeUInt32NoTag(valueMemoizedSerializedSize);
+      }
+      for (int i = 0; i < value_.size(); i++) {
+        output.writeDoubleNoTag(value_.getDouble(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+      }
+      if (period_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, period_);
+      }
+      if (startYear_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, startYear_);
+      }
+      if (startPeriod_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, startPeriod_);
+      }
+      {
+        int dataSize = 0;
+        dataSize = 8 * getValueList().size();
+        size += dataSize;
+        if (!getValueList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        valueMemoizedSerializedSize = dataSize;
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.toolkit.io.protobuf.ToolkitProtos.TsData)) {
+        return super.equals(obj);
+      }
+      demetra.toolkit.io.protobuf.ToolkitProtos.TsData other = (demetra.toolkit.io.protobuf.ToolkitProtos.TsData) obj;
+
+      if (!getName()
+          .equals(other.getName())) return false;
+      if (getPeriod()
+          != other.getPeriod()) return false;
+      if (getStartYear()
+          != other.getStartYear()) return false;
+      if (getStartPeriod()
+          != other.getStartPeriod()) return false;
+      if (!getValueList()
+          .equals(other.getValueList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + PERIOD_FIELD_NUMBER;
+      hash = (53 * hash) + getPeriod();
+      hash = (37 * hash) + START_YEAR_FIELD_NUMBER;
+      hash = (53 * hash) + getStartYear();
+      hash = (37 * hash) + START_PERIOD_FIELD_NUMBER;
+      hash = (53 * hash) + getStartPeriod();
+      if (getValueCount() > 0) {
+        hash = (37 * hash) + VALUE_FIELD_NUMBER;
+        hash = (53 * hash) + getValueList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsData parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsData parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsData parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsData parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsData parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsData parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsData parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsData parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsData parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsData parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsData parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsData parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.toolkit.io.protobuf.ToolkitProtos.TsData prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code jd3.TsData}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:jd3.TsData)
+        demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_TsData_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_TsData_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.toolkit.io.protobuf.ToolkitProtos.TsData.class, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder.class);
+      }
+
+      // Construct using demetra.toolkit.io.protobuf.ToolkitProtos.TsData.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        name_ = "";
+
+        period_ = 0;
+
+        startYear_ = 0;
+
+        startPeriod_ = 0;
+
+        value_ = emptyDoubleList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_TsData_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getDefaultInstanceForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData build() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.TsData result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData buildPartial() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.TsData result = new demetra.toolkit.io.protobuf.ToolkitProtos.TsData(this);
+        int from_bitField0_ = bitField0_;
+        result.name_ = name_;
+        result.period_ = period_;
+        result.startYear_ = startYear_;
+        result.startPeriod_ = startPeriod_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          value_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.value_ = value_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.toolkit.io.protobuf.ToolkitProtos.TsData) {
+          return mergeFrom((demetra.toolkit.io.protobuf.ToolkitProtos.TsData)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.toolkit.io.protobuf.ToolkitProtos.TsData other) {
+        if (other == demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance()) return this;
+        if (!other.getName().isEmpty()) {
+          name_ = other.name_;
+          onChanged();
+        }
+        if (other.getPeriod() != 0) {
+          setPeriod(other.getPeriod());
+        }
+        if (other.getStartYear() != 0) {
+          setStartYear(other.getStartYear());
+        }
+        if (other.getStartPeriod() != 0) {
+          setStartPeriod(other.getStartPeriod());
+        }
+        if (!other.value_.isEmpty()) {
+          if (value_.isEmpty()) {
+            value_ = other.value_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureValueIsMutable();
+            value_.addAll(other.value_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.toolkit.io.protobuf.ToolkitProtos.TsData parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.toolkit.io.protobuf.ToolkitProtos.TsData) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object name_ = "";
+      /**
+       * <code>string name = 1;</code>
+       * @return The name.
+       */
+      public java.lang.String getName() {
+        java.lang.Object ref = name_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          name_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string name = 1;</code>
+       * @return The bytes for name.
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        java.lang.Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string name = 1;</code>
+       * @param value The name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string name = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearName() {
+        
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string name = 1;</code>
+       * @param value The bytes for name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int period_ ;
+      /**
+       * <code>int32 period = 2;</code>
+       * @return The period.
+       */
+      @java.lang.Override
+      public int getPeriod() {
+        return period_;
+      }
+      /**
+       * <code>int32 period = 2;</code>
+       * @param value The period to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPeriod(int value) {
+        
+        period_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 period = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPeriod() {
+        
+        period_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int startYear_ ;
+      /**
+       * <code>int32 start_year = 3;</code>
+       * @return The startYear.
+       */
+      @java.lang.Override
+      public int getStartYear() {
+        return startYear_;
+      }
+      /**
+       * <code>int32 start_year = 3;</code>
+       * @param value The startYear to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStartYear(int value) {
+        
+        startYear_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 start_year = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearStartYear() {
+        
+        startYear_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int startPeriod_ ;
+      /**
+       * <code>int32 start_period = 4;</code>
+       * @return The startPeriod.
+       */
+      @java.lang.Override
+      public int getStartPeriod() {
+        return startPeriod_;
+      }
+      /**
+       * <code>int32 start_period = 4;</code>
+       * @param value The startPeriod to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStartPeriod(int value) {
+        
+        startPeriod_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 start_period = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearStartPeriod() {
+        
+        startPeriod_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.Internal.DoubleList value_ = emptyDoubleList();
+      private void ensureValueIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          value_ = mutableCopy(value_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <code>repeated double value = 5;</code>
+       * @return A list containing the value.
+       */
+      public java.util.List<java.lang.Double>
+          getValueList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(value_) : value_;
+      }
+      /**
+       * <code>repeated double value = 5;</code>
+       * @return The count of value.
+       */
+      public int getValueCount() {
+        return value_.size();
+      }
+      /**
+       * <code>repeated double value = 5;</code>
+       * @param index The index of the element to return.
+       * @return The value at the given index.
+       */
+      public double getValue(int index) {
+        return value_.getDouble(index);
+      }
+      /**
+       * <code>repeated double value = 5;</code>
+       * @param index The index to set the value at.
+       * @param value The value to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValue(
+          int index, double value) {
+        ensureValueIsMutable();
+        value_.setDouble(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated double value = 5;</code>
+       * @param value The value to add.
+       * @return This builder for chaining.
+       */
+      public Builder addValue(double value) {
+        ensureValueIsMutable();
+        value_.addDouble(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated double value = 5;</code>
+       * @param values The value to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllValue(
+          java.lang.Iterable<? extends java.lang.Double> values) {
+        ensureValueIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, value_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated double value = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValue() {
+        value_ = emptyDoubleList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:jd3.TsData)
+    }
+
+    // @@protoc_insertion_point(class_scope:jd3.TsData)
+    private static final demetra.toolkit.io.protobuf.ToolkitProtos.TsData DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.toolkit.io.protobuf.ToolkitProtos.TsData();
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsData getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<TsData>
+        PARSER = new com.google.protobuf.AbstractParser<TsData>() {
+      @java.lang.Override
+      public TsData parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new TsData(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<TsData> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<TsData> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MatrixOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:jd3.Matrix)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string name = 1;</code>
+     * @return The name.
+     */
+    java.lang.String getName();
+    /**
+     * <code>string name = 1;</code>
+     * @return The bytes for name.
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
+
+    /**
+     * <code>int32 nrows = 2;</code>
+     * @return The nrows.
+     */
+    int getNrows();
+
+    /**
+     * <code>int32 ncols = 3;</code>
+     * @return The ncols.
+     */
+    int getNcols();
+
+    /**
+     * <code>repeated double value = 4;</code>
+     * @return A list containing the value.
+     */
+    java.util.List<java.lang.Double> getValueList();
+    /**
+     * <code>repeated double value = 4;</code>
+     * @return The count of value.
+     */
+    int getValueCount();
+    /**
+     * <code>repeated double value = 4;</code>
+     * @param index The index of the element to return.
+     * @return The value at the given index.
+     */
+    double getValue(int index);
+  }
+  /**
+   * Protobuf type {@code jd3.Matrix}
+   */
+  public static final class Matrix extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:jd3.Matrix)
+      MatrixOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Matrix.newBuilder() to construct.
+    private Matrix(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Matrix() {
+      name_ = "";
+      value_ = emptyDoubleList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new Matrix();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Matrix(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              name_ = s;
+              break;
+            }
+            case 16: {
+
+              nrows_ = input.readInt32();
+              break;
+            }
+            case 24: {
+
+              ncols_ = input.readInt32();
+              break;
+            }
+            case 33: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                value_ = newDoubleList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              value_.addDouble(input.readDouble());
+              break;
+            }
+            case 34: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                value_ = newDoubleList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                value_.addDouble(input.readDouble());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          value_.makeImmutable(); // C
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_Matrix_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_Matrix_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.class, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder.class);
+    }
+
+    public static final int NAME_FIELD_NUMBER = 1;
+    private volatile java.lang.Object name_;
+    /**
+     * <code>string name = 1;</code>
+     * @return The name.
+     */
+    @java.lang.Override
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string name = 1;</code>
+     * @return The bytes for name.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int NROWS_FIELD_NUMBER = 2;
+    private int nrows_;
+    /**
+     * <code>int32 nrows = 2;</code>
+     * @return The nrows.
+     */
+    @java.lang.Override
+    public int getNrows() {
+      return nrows_;
+    }
+
+    public static final int NCOLS_FIELD_NUMBER = 3;
+    private int ncols_;
+    /**
+     * <code>int32 ncols = 3;</code>
+     * @return The ncols.
+     */
+    @java.lang.Override
+    public int getNcols() {
+      return ncols_;
+    }
+
+    public static final int VALUE_FIELD_NUMBER = 4;
+    private com.google.protobuf.Internal.DoubleList value_;
+    /**
+     * <code>repeated double value = 4;</code>
+     * @return A list containing the value.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Double>
+        getValueList() {
+      return value_;
+    }
+    /**
+     * <code>repeated double value = 4;</code>
+     * @return The count of value.
+     */
+    public int getValueCount() {
+      return value_.size();
+    }
+    /**
+     * <code>repeated double value = 4;</code>
+     * @param index The index of the element to return.
+     * @return The value at the given index.
+     */
+    public double getValue(int index) {
+      return value_.getDouble(index);
+    }
+    private int valueMemoizedSerializedSize = -1;
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (!getNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
+      }
+      if (nrows_ != 0) {
+        output.writeInt32(2, nrows_);
+      }
+      if (ncols_ != 0) {
+        output.writeInt32(3, ncols_);
+      }
+      if (getValueList().size() > 0) {
+        output.writeUInt32NoTag(34);
+        output.writeUInt32NoTag(valueMemoizedSerializedSize);
+      }
+      for (int i = 0; i < value_.size(); i++) {
+        output.writeDoubleNoTag(value_.getDouble(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
+      }
+      if (nrows_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, nrows_);
+      }
+      if (ncols_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, ncols_);
+      }
+      {
+        int dataSize = 0;
+        dataSize = 8 * getValueList().size();
+        size += dataSize;
+        if (!getValueList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        valueMemoizedSerializedSize = dataSize;
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.toolkit.io.protobuf.ToolkitProtos.Matrix)) {
+        return super.equals(obj);
+      }
+      demetra.toolkit.io.protobuf.ToolkitProtos.Matrix other = (demetra.toolkit.io.protobuf.ToolkitProtos.Matrix) obj;
+
+      if (!getName()
+          .equals(other.getName())) return false;
+      if (getNrows()
+          != other.getNrows()) return false;
+      if (getNcols()
+          != other.getNcols()) return false;
+      if (!getValueList()
+          .equals(other.getValueList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + NROWS_FIELD_NUMBER;
+      hash = (53 * hash) + getNrows();
+      hash = (37 * hash) + NCOLS_FIELD_NUMBER;
+      hash = (53 * hash) + getNcols();
+      if (getValueCount() > 0) {
+        hash = (37 * hash) + VALUE_FIELD_NUMBER;
+        hash = (53 * hash) + getValueList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Matrix parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Matrix parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Matrix parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Matrix parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Matrix parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Matrix parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Matrix parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Matrix parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Matrix parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Matrix parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Matrix parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Matrix parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code jd3.Matrix}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:jd3.Matrix)
+        demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_Matrix_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_Matrix_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.class, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder.class);
+      }
+
+      // Construct using demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        name_ = "";
+
+        nrows_ = 0;
+
+        ncols_ = 0;
+
+        value_ = emptyDoubleList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_Matrix_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getDefaultInstanceForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix build() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.Matrix result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix buildPartial() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.Matrix result = new demetra.toolkit.io.protobuf.ToolkitProtos.Matrix(this);
+        int from_bitField0_ = bitField0_;
+        result.name_ = name_;
+        result.nrows_ = nrows_;
+        result.ncols_ = ncols_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          value_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.value_ = value_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.toolkit.io.protobuf.ToolkitProtos.Matrix) {
+          return mergeFrom((demetra.toolkit.io.protobuf.ToolkitProtos.Matrix)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix other) {
+        if (other == demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance()) return this;
+        if (!other.getName().isEmpty()) {
+          name_ = other.name_;
+          onChanged();
+        }
+        if (other.getNrows() != 0) {
+          setNrows(other.getNrows());
+        }
+        if (other.getNcols() != 0) {
+          setNcols(other.getNcols());
+        }
+        if (!other.value_.isEmpty()) {
+          if (value_.isEmpty()) {
+            value_ = other.value_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureValueIsMutable();
+            value_.addAll(other.value_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.toolkit.io.protobuf.ToolkitProtos.Matrix parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.toolkit.io.protobuf.ToolkitProtos.Matrix) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object name_ = "";
+      /**
+       * <code>string name = 1;</code>
+       * @return The name.
+       */
+      public java.lang.String getName() {
+        java.lang.Object ref = name_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          name_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string name = 1;</code>
+       * @return The bytes for name.
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        java.lang.Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string name = 1;</code>
+       * @param value The name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string name = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearName() {
+        
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string name = 1;</code>
+       * @param value The bytes for name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int nrows_ ;
+      /**
+       * <code>int32 nrows = 2;</code>
+       * @return The nrows.
+       */
+      @java.lang.Override
+      public int getNrows() {
+        return nrows_;
+      }
+      /**
+       * <code>int32 nrows = 2;</code>
+       * @param value The nrows to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNrows(int value) {
+        
+        nrows_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 nrows = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNrows() {
+        
+        nrows_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int ncols_ ;
+      /**
+       * <code>int32 ncols = 3;</code>
+       * @return The ncols.
+       */
+      @java.lang.Override
+      public int getNcols() {
+        return ncols_;
+      }
+      /**
+       * <code>int32 ncols = 3;</code>
+       * @param value The ncols to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNcols(int value) {
+        
+        ncols_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 ncols = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNcols() {
+        
+        ncols_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.Internal.DoubleList value_ = emptyDoubleList();
+      private void ensureValueIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          value_ = mutableCopy(value_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <code>repeated double value = 4;</code>
+       * @return A list containing the value.
+       */
+      public java.util.List<java.lang.Double>
+          getValueList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(value_) : value_;
+      }
+      /**
+       * <code>repeated double value = 4;</code>
+       * @return The count of value.
+       */
+      public int getValueCount() {
+        return value_.size();
+      }
+      /**
+       * <code>repeated double value = 4;</code>
+       * @param index The index of the element to return.
+       * @return The value at the given index.
+       */
+      public double getValue(int index) {
+        return value_.getDouble(index);
+      }
+      /**
+       * <code>repeated double value = 4;</code>
+       * @param index The index to set the value at.
+       * @param value The value to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValue(
+          int index, double value) {
+        ensureValueIsMutable();
+        value_.setDouble(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated double value = 4;</code>
+       * @param value The value to add.
+       * @return This builder for chaining.
+       */
+      public Builder addValue(double value) {
+        ensureValueIsMutable();
+        value_.addDouble(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated double value = 4;</code>
+       * @param values The value to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllValue(
+          java.lang.Iterable<? extends java.lang.Double> values) {
+        ensureValueIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, value_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated double value = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValue() {
+        value_ = emptyDoubleList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:jd3.Matrix)
+    }
+
+    // @@protoc_insertion_point(class_scope:jd3.Matrix)
+    private static final demetra.toolkit.io.protobuf.ToolkitProtos.Matrix DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.toolkit.io.protobuf.ToolkitProtos.Matrix();
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Matrix>
+        PARSER = new com.google.protobuf.AbstractParser<Matrix>() {
+      @java.lang.Override
+      public Matrix parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Matrix(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Matrix> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Matrix> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface StatisticalTestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:jd3.StatisticalTest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>double value = 1;</code>
+     * @return The value.
+     */
+    double getValue();
+
+    /**
+     * <code>double pvalue = 2;</code>
+     * @return The pvalue.
+     */
+    double getPvalue();
+
+    /**
+     * <code>string description = 3;</code>
+     * @return The description.
+     */
+    java.lang.String getDescription();
+    /**
+     * <code>string description = 3;</code>
+     * @return The bytes for description.
+     */
+    com.google.protobuf.ByteString
+        getDescriptionBytes();
+  }
+  /**
+   * Protobuf type {@code jd3.StatisticalTest}
+   */
+  public static final class StatisticalTest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:jd3.StatisticalTest)
+      StatisticalTestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use StatisticalTest.newBuilder() to construct.
+    private StatisticalTest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private StatisticalTest() {
+      description_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new StatisticalTest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private StatisticalTest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 9: {
+
+              value_ = input.readDouble();
+              break;
+            }
+            case 17: {
+
+              pvalue_ = input.readDouble();
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              description_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_StatisticalTest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_StatisticalTest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.class, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder.class);
+    }
+
+    public static final int VALUE_FIELD_NUMBER = 1;
+    private double value_;
+    /**
+     * <code>double value = 1;</code>
+     * @return The value.
+     */
+    @java.lang.Override
+    public double getValue() {
+      return value_;
+    }
+
+    public static final int PVALUE_FIELD_NUMBER = 2;
+    private double pvalue_;
+    /**
+     * <code>double pvalue = 2;</code>
+     * @return The pvalue.
+     */
+    @java.lang.Override
+    public double getPvalue() {
+      return pvalue_;
+    }
+
+    public static final int DESCRIPTION_FIELD_NUMBER = 3;
+    private volatile java.lang.Object description_;
+    /**
+     * <code>string description = 3;</code>
+     * @return The description.
+     */
+    @java.lang.Override
+    public java.lang.String getDescription() {
+      java.lang.Object ref = description_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        description_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string description = 3;</code>
+     * @return The bytes for description.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDescriptionBytes() {
+      java.lang.Object ref = description_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        description_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (value_ != 0D) {
+        output.writeDouble(1, value_);
+      }
+      if (pvalue_ != 0D) {
+        output.writeDouble(2, pvalue_);
+      }
+      if (!getDescriptionBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, description_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (value_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(1, value_);
+      }
+      if (pvalue_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(2, pvalue_);
+      }
+      if (!getDescriptionBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, description_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest)) {
+        return super.equals(obj);
+      }
+      demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest other = (demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest) obj;
+
+      if (java.lang.Double.doubleToLongBits(getValue())
+          != java.lang.Double.doubleToLongBits(
+              other.getValue())) return false;
+      if (java.lang.Double.doubleToLongBits(getPvalue())
+          != java.lang.Double.doubleToLongBits(
+              other.getPvalue())) return false;
+      if (!getDescription()
+          .equals(other.getDescription())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getValue()));
+      hash = (37 * hash) + PVALUE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getPvalue()));
+      hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
+      hash = (53 * hash) + getDescription().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code jd3.StatisticalTest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:jd3.StatisticalTest)
+        demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_StatisticalTest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_StatisticalTest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.class, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder.class);
+      }
+
+      // Construct using demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        value_ = 0D;
+
+        pvalue_ = 0D;
+
+        description_ = "";
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_StatisticalTest_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getDefaultInstanceForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest build() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest buildPartial() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest result = new demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest(this);
+        result.value_ = value_;
+        result.pvalue_ = pvalue_;
+        result.description_ = description_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest) {
+          return mergeFrom((demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest other) {
+        if (other == demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance()) return this;
+        if (other.getValue() != 0D) {
+          setValue(other.getValue());
+        }
+        if (other.getPvalue() != 0D) {
+          setPvalue(other.getPvalue());
+        }
+        if (!other.getDescription().isEmpty()) {
+          description_ = other.description_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private double value_ ;
+      /**
+       * <code>double value = 1;</code>
+       * @return The value.
+       */
+      @java.lang.Override
+      public double getValue() {
+        return value_;
+      }
+      /**
+       * <code>double value = 1;</code>
+       * @param value The value to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValue(double value) {
+        
+        value_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double value = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValue() {
+        
+        value_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double pvalue_ ;
+      /**
+       * <code>double pvalue = 2;</code>
+       * @return The pvalue.
+       */
+      @java.lang.Override
+      public double getPvalue() {
+        return pvalue_;
+      }
+      /**
+       * <code>double pvalue = 2;</code>
+       * @param value The pvalue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPvalue(double value) {
+        
+        pvalue_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double pvalue = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPvalue() {
+        
+        pvalue_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object description_ = "";
+      /**
+       * <code>string description = 3;</code>
+       * @return The description.
+       */
+      public java.lang.String getDescription() {
+        java.lang.Object ref = description_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          description_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string description = 3;</code>
+       * @return The bytes for description.
+       */
+      public com.google.protobuf.ByteString
+          getDescriptionBytes() {
+        java.lang.Object ref = description_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          description_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string description = 3;</code>
+       * @param value The description to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDescription(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        description_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string description = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDescription() {
+        
+        description_ = getDefaultInstance().getDescription();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string description = 3;</code>
+       * @param value The bytes for description to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDescriptionBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        description_ = value;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:jd3.StatisticalTest)
+    }
+
+    // @@protoc_insertion_point(class_scope:jd3.StatisticalTest)
+    private static final demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest();
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<StatisticalTest>
+        PARSER = new com.google.protobuf.AbstractParser<StatisticalTest>() {
+      @java.lang.Override
+      public StatisticalTest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new StatisticalTest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<StatisticalTest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<StatisticalTest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface LikelihoodStatisticsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:jd3.LikelihoodStatistics)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>int32 nobs = 1;</code>
+     * @return The nobs.
+     */
+    int getNobs();
+
+    /**
+     * <code>int32 neffectiveobs = 2;</code>
+     * @return The neffectiveobs.
+     */
+    int getNeffectiveobs();
+
+    /**
+     * <code>int32 nparams = 3;</code>
+     * @return The nparams.
+     */
+    int getNparams();
+
+    /**
+     * <code>int32 degrees_of_freedom = 4;</code>
+     * @return The degreesOfFreedom.
+     */
+    int getDegreesOfFreedom();
+
+    /**
+     * <code>double log_likelihood = 5;</code>
+     * @return The logLikelihood.
+     */
+    double getLogLikelihood();
+
+    /**
+     * <code>double adjusted_log_likelihood = 6;</code>
+     * @return The adjustedLogLikelihood.
+     */
+    double getAdjustedLogLikelihood();
+
+    /**
+     * <code>double aic = 7;</code>
+     * @return The aic.
+     */
+    double getAic();
+
+    /**
+     * <code>double aicc = 8;</code>
+     * @return The aicc.
+     */
+    double getAicc();
+
+    /**
+     * <code>double bic = 9;</code>
+     * @return The bic.
+     */
+    double getBic();
+
+    /**
+     * <code>double bicc = 10;</code>
+     * @return The bicc.
+     */
+    double getBicc();
+
+    /**
+     * <code>double bic2 = 11;</code>
+     * @return The bic2.
+     */
+    double getBic2();
+
+    /**
+     * <code>double hannan_quinn = 12;</code>
+     * @return The hannanQuinn.
+     */
+    double getHannanQuinn();
+
+    /**
+     * <code>double ssq = 13;</code>
+     * @return The ssq.
+     */
+    double getSsq();
+  }
+  /**
+   * Protobuf type {@code jd3.LikelihoodStatistics}
+   */
+  public static final class LikelihoodStatistics extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:jd3.LikelihoodStatistics)
+      LikelihoodStatisticsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use LikelihoodStatistics.newBuilder() to construct.
+    private LikelihoodStatistics(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private LikelihoodStatistics() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new LikelihoodStatistics();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private LikelihoodStatistics(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              nobs_ = input.readInt32();
+              break;
+            }
+            case 16: {
+
+              neffectiveobs_ = input.readInt32();
+              break;
+            }
+            case 24: {
+
+              nparams_ = input.readInt32();
+              break;
+            }
+            case 32: {
+
+              degreesOfFreedom_ = input.readInt32();
+              break;
+            }
+            case 41: {
+
+              logLikelihood_ = input.readDouble();
+              break;
+            }
+            case 49: {
+
+              adjustedLogLikelihood_ = input.readDouble();
+              break;
+            }
+            case 57: {
+
+              aic_ = input.readDouble();
+              break;
+            }
+            case 65: {
+
+              aicc_ = input.readDouble();
+              break;
+            }
+            case 73: {
+
+              bic_ = input.readDouble();
+              break;
+            }
+            case 81: {
+
+              bicc_ = input.readDouble();
+              break;
+            }
+            case 89: {
+
+              bic2_ = input.readDouble();
+              break;
+            }
+            case 97: {
+
+              hannanQuinn_ = input.readDouble();
+              break;
+            }
+            case 105: {
+
+              ssq_ = input.readDouble();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_LikelihoodStatistics_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_LikelihoodStatistics_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.class, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder.class);
+    }
+
+    public static final int NOBS_FIELD_NUMBER = 1;
+    private int nobs_;
+    /**
+     * <code>int32 nobs = 1;</code>
+     * @return The nobs.
+     */
+    @java.lang.Override
+    public int getNobs() {
+      return nobs_;
+    }
+
+    public static final int NEFFECTIVEOBS_FIELD_NUMBER = 2;
+    private int neffectiveobs_;
+    /**
+     * <code>int32 neffectiveobs = 2;</code>
+     * @return The neffectiveobs.
+     */
+    @java.lang.Override
+    public int getNeffectiveobs() {
+      return neffectiveobs_;
+    }
+
+    public static final int NPARAMS_FIELD_NUMBER = 3;
+    private int nparams_;
+    /**
+     * <code>int32 nparams = 3;</code>
+     * @return The nparams.
+     */
+    @java.lang.Override
+    public int getNparams() {
+      return nparams_;
+    }
+
+    public static final int DEGREES_OF_FREEDOM_FIELD_NUMBER = 4;
+    private int degreesOfFreedom_;
+    /**
+     * <code>int32 degrees_of_freedom = 4;</code>
+     * @return The degreesOfFreedom.
+     */
+    @java.lang.Override
+    public int getDegreesOfFreedom() {
+      return degreesOfFreedom_;
+    }
+
+    public static final int LOG_LIKELIHOOD_FIELD_NUMBER = 5;
+    private double logLikelihood_;
+    /**
+     * <code>double log_likelihood = 5;</code>
+     * @return The logLikelihood.
+     */
+    @java.lang.Override
+    public double getLogLikelihood() {
+      return logLikelihood_;
+    }
+
+    public static final int ADJUSTED_LOG_LIKELIHOOD_FIELD_NUMBER = 6;
+    private double adjustedLogLikelihood_;
+    /**
+     * <code>double adjusted_log_likelihood = 6;</code>
+     * @return The adjustedLogLikelihood.
+     */
+    @java.lang.Override
+    public double getAdjustedLogLikelihood() {
+      return adjustedLogLikelihood_;
+    }
+
+    public static final int AIC_FIELD_NUMBER = 7;
+    private double aic_;
+    /**
+     * <code>double aic = 7;</code>
+     * @return The aic.
+     */
+    @java.lang.Override
+    public double getAic() {
+      return aic_;
+    }
+
+    public static final int AICC_FIELD_NUMBER = 8;
+    private double aicc_;
+    /**
+     * <code>double aicc = 8;</code>
+     * @return The aicc.
+     */
+    @java.lang.Override
+    public double getAicc() {
+      return aicc_;
+    }
+
+    public static final int BIC_FIELD_NUMBER = 9;
+    private double bic_;
+    /**
+     * <code>double bic = 9;</code>
+     * @return The bic.
+     */
+    @java.lang.Override
+    public double getBic() {
+      return bic_;
+    }
+
+    public static final int BICC_FIELD_NUMBER = 10;
+    private double bicc_;
+    /**
+     * <code>double bicc = 10;</code>
+     * @return The bicc.
+     */
+    @java.lang.Override
+    public double getBicc() {
+      return bicc_;
+    }
+
+    public static final int BIC2_FIELD_NUMBER = 11;
+    private double bic2_;
+    /**
+     * <code>double bic2 = 11;</code>
+     * @return The bic2.
+     */
+    @java.lang.Override
+    public double getBic2() {
+      return bic2_;
+    }
+
+    public static final int HANNAN_QUINN_FIELD_NUMBER = 12;
+    private double hannanQuinn_;
+    /**
+     * <code>double hannan_quinn = 12;</code>
+     * @return The hannanQuinn.
+     */
+    @java.lang.Override
+    public double getHannanQuinn() {
+      return hannanQuinn_;
+    }
+
+    public static final int SSQ_FIELD_NUMBER = 13;
+    private double ssq_;
+    /**
+     * <code>double ssq = 13;</code>
+     * @return The ssq.
+     */
+    @java.lang.Override
+    public double getSsq() {
+      return ssq_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (nobs_ != 0) {
+        output.writeInt32(1, nobs_);
+      }
+      if (neffectiveobs_ != 0) {
+        output.writeInt32(2, neffectiveobs_);
+      }
+      if (nparams_ != 0) {
+        output.writeInt32(3, nparams_);
+      }
+      if (degreesOfFreedom_ != 0) {
+        output.writeInt32(4, degreesOfFreedom_);
+      }
+      if (logLikelihood_ != 0D) {
+        output.writeDouble(5, logLikelihood_);
+      }
+      if (adjustedLogLikelihood_ != 0D) {
+        output.writeDouble(6, adjustedLogLikelihood_);
+      }
+      if (aic_ != 0D) {
+        output.writeDouble(7, aic_);
+      }
+      if (aicc_ != 0D) {
+        output.writeDouble(8, aicc_);
+      }
+      if (bic_ != 0D) {
+        output.writeDouble(9, bic_);
+      }
+      if (bicc_ != 0D) {
+        output.writeDouble(10, bicc_);
+      }
+      if (bic2_ != 0D) {
+        output.writeDouble(11, bic2_);
+      }
+      if (hannanQuinn_ != 0D) {
+        output.writeDouble(12, hannanQuinn_);
+      }
+      if (ssq_ != 0D) {
+        output.writeDouble(13, ssq_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (nobs_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, nobs_);
+      }
+      if (neffectiveobs_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, neffectiveobs_);
+      }
+      if (nparams_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, nparams_);
+      }
+      if (degreesOfFreedom_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, degreesOfFreedom_);
+      }
+      if (logLikelihood_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(5, logLikelihood_);
+      }
+      if (adjustedLogLikelihood_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(6, adjustedLogLikelihood_);
+      }
+      if (aic_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(7, aic_);
+      }
+      if (aicc_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(8, aicc_);
+      }
+      if (bic_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(9, bic_);
+      }
+      if (bicc_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(10, bicc_);
+      }
+      if (bic2_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(11, bic2_);
+      }
+      if (hannanQuinn_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(12, hannanQuinn_);
+      }
+      if (ssq_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(13, ssq_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics)) {
+        return super.equals(obj);
+      }
+      demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics other = (demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics) obj;
+
+      if (getNobs()
+          != other.getNobs()) return false;
+      if (getNeffectiveobs()
+          != other.getNeffectiveobs()) return false;
+      if (getNparams()
+          != other.getNparams()) return false;
+      if (getDegreesOfFreedom()
+          != other.getDegreesOfFreedom()) return false;
+      if (java.lang.Double.doubleToLongBits(getLogLikelihood())
+          != java.lang.Double.doubleToLongBits(
+              other.getLogLikelihood())) return false;
+      if (java.lang.Double.doubleToLongBits(getAdjustedLogLikelihood())
+          != java.lang.Double.doubleToLongBits(
+              other.getAdjustedLogLikelihood())) return false;
+      if (java.lang.Double.doubleToLongBits(getAic())
+          != java.lang.Double.doubleToLongBits(
+              other.getAic())) return false;
+      if (java.lang.Double.doubleToLongBits(getAicc())
+          != java.lang.Double.doubleToLongBits(
+              other.getAicc())) return false;
+      if (java.lang.Double.doubleToLongBits(getBic())
+          != java.lang.Double.doubleToLongBits(
+              other.getBic())) return false;
+      if (java.lang.Double.doubleToLongBits(getBicc())
+          != java.lang.Double.doubleToLongBits(
+              other.getBicc())) return false;
+      if (java.lang.Double.doubleToLongBits(getBic2())
+          != java.lang.Double.doubleToLongBits(
+              other.getBic2())) return false;
+      if (java.lang.Double.doubleToLongBits(getHannanQuinn())
+          != java.lang.Double.doubleToLongBits(
+              other.getHannanQuinn())) return false;
+      if (java.lang.Double.doubleToLongBits(getSsq())
+          != java.lang.Double.doubleToLongBits(
+              other.getSsq())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + NOBS_FIELD_NUMBER;
+      hash = (53 * hash) + getNobs();
+      hash = (37 * hash) + NEFFECTIVEOBS_FIELD_NUMBER;
+      hash = (53 * hash) + getNeffectiveobs();
+      hash = (37 * hash) + NPARAMS_FIELD_NUMBER;
+      hash = (53 * hash) + getNparams();
+      hash = (37 * hash) + DEGREES_OF_FREEDOM_FIELD_NUMBER;
+      hash = (53 * hash) + getDegreesOfFreedom();
+      hash = (37 * hash) + LOG_LIKELIHOOD_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getLogLikelihood()));
+      hash = (37 * hash) + ADJUSTED_LOG_LIKELIHOOD_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getAdjustedLogLikelihood()));
+      hash = (37 * hash) + AIC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getAic()));
+      hash = (37 * hash) + AICC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getAicc()));
+      hash = (37 * hash) + BIC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBic()));
+      hash = (37 * hash) + BICC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBicc()));
+      hash = (37 * hash) + BIC2_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBic2()));
+      hash = (37 * hash) + HANNAN_QUINN_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getHannanQuinn()));
+      hash = (37 * hash) + SSQ_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getSsq()));
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code jd3.LikelihoodStatistics}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:jd3.LikelihoodStatistics)
+        demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_LikelihoodStatistics_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_LikelihoodStatistics_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.class, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder.class);
+      }
+
+      // Construct using demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        nobs_ = 0;
+
+        neffectiveobs_ = 0;
+
+        nparams_ = 0;
+
+        degreesOfFreedom_ = 0;
+
+        logLikelihood_ = 0D;
+
+        adjustedLogLikelihood_ = 0D;
+
+        aic_ = 0D;
+
+        aicc_ = 0D;
+
+        bic_ = 0D;
+
+        bicc_ = 0D;
+
+        bic2_ = 0D;
+
+        hannanQuinn_ = 0D;
+
+        ssq_ = 0D;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_LikelihoodStatistics_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getDefaultInstanceForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics build() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics buildPartial() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics result = new demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics(this);
+        result.nobs_ = nobs_;
+        result.neffectiveobs_ = neffectiveobs_;
+        result.nparams_ = nparams_;
+        result.degreesOfFreedom_ = degreesOfFreedom_;
+        result.logLikelihood_ = logLikelihood_;
+        result.adjustedLogLikelihood_ = adjustedLogLikelihood_;
+        result.aic_ = aic_;
+        result.aicc_ = aicc_;
+        result.bic_ = bic_;
+        result.bicc_ = bicc_;
+        result.bic2_ = bic2_;
+        result.hannanQuinn_ = hannanQuinn_;
+        result.ssq_ = ssq_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics) {
+          return mergeFrom((demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics other) {
+        if (other == demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance()) return this;
+        if (other.getNobs() != 0) {
+          setNobs(other.getNobs());
+        }
+        if (other.getNeffectiveobs() != 0) {
+          setNeffectiveobs(other.getNeffectiveobs());
+        }
+        if (other.getNparams() != 0) {
+          setNparams(other.getNparams());
+        }
+        if (other.getDegreesOfFreedom() != 0) {
+          setDegreesOfFreedom(other.getDegreesOfFreedom());
+        }
+        if (other.getLogLikelihood() != 0D) {
+          setLogLikelihood(other.getLogLikelihood());
+        }
+        if (other.getAdjustedLogLikelihood() != 0D) {
+          setAdjustedLogLikelihood(other.getAdjustedLogLikelihood());
+        }
+        if (other.getAic() != 0D) {
+          setAic(other.getAic());
+        }
+        if (other.getAicc() != 0D) {
+          setAicc(other.getAicc());
+        }
+        if (other.getBic() != 0D) {
+          setBic(other.getBic());
+        }
+        if (other.getBicc() != 0D) {
+          setBicc(other.getBicc());
+        }
+        if (other.getBic2() != 0D) {
+          setBic2(other.getBic2());
+        }
+        if (other.getHannanQuinn() != 0D) {
+          setHannanQuinn(other.getHannanQuinn());
+        }
+        if (other.getSsq() != 0D) {
+          setSsq(other.getSsq());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int nobs_ ;
+      /**
+       * <code>int32 nobs = 1;</code>
+       * @return The nobs.
+       */
+      @java.lang.Override
+      public int getNobs() {
+        return nobs_;
+      }
+      /**
+       * <code>int32 nobs = 1;</code>
+       * @param value The nobs to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNobs(int value) {
+        
+        nobs_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 nobs = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNobs() {
+        
+        nobs_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int neffectiveobs_ ;
+      /**
+       * <code>int32 neffectiveobs = 2;</code>
+       * @return The neffectiveobs.
+       */
+      @java.lang.Override
+      public int getNeffectiveobs() {
+        return neffectiveobs_;
+      }
+      /**
+       * <code>int32 neffectiveobs = 2;</code>
+       * @param value The neffectiveobs to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNeffectiveobs(int value) {
+        
+        neffectiveobs_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 neffectiveobs = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNeffectiveobs() {
+        
+        neffectiveobs_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int nparams_ ;
+      /**
+       * <code>int32 nparams = 3;</code>
+       * @return The nparams.
+       */
+      @java.lang.Override
+      public int getNparams() {
+        return nparams_;
+      }
+      /**
+       * <code>int32 nparams = 3;</code>
+       * @param value The nparams to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNparams(int value) {
+        
+        nparams_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 nparams = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNparams() {
+        
+        nparams_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int degreesOfFreedom_ ;
+      /**
+       * <code>int32 degrees_of_freedom = 4;</code>
+       * @return The degreesOfFreedom.
+       */
+      @java.lang.Override
+      public int getDegreesOfFreedom() {
+        return degreesOfFreedom_;
+      }
+      /**
+       * <code>int32 degrees_of_freedom = 4;</code>
+       * @param value The degreesOfFreedom to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDegreesOfFreedom(int value) {
+        
+        degreesOfFreedom_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 degrees_of_freedom = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDegreesOfFreedom() {
+        
+        degreesOfFreedom_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private double logLikelihood_ ;
+      /**
+       * <code>double log_likelihood = 5;</code>
+       * @return The logLikelihood.
+       */
+      @java.lang.Override
+      public double getLogLikelihood() {
+        return logLikelihood_;
+      }
+      /**
+       * <code>double log_likelihood = 5;</code>
+       * @param value The logLikelihood to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLogLikelihood(double value) {
+        
+        logLikelihood_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double log_likelihood = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLogLikelihood() {
+        
+        logLikelihood_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double adjustedLogLikelihood_ ;
+      /**
+       * <code>double adjusted_log_likelihood = 6;</code>
+       * @return The adjustedLogLikelihood.
+       */
+      @java.lang.Override
+      public double getAdjustedLogLikelihood() {
+        return adjustedLogLikelihood_;
+      }
+      /**
+       * <code>double adjusted_log_likelihood = 6;</code>
+       * @param value The adjustedLogLikelihood to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAdjustedLogLikelihood(double value) {
+        
+        adjustedLogLikelihood_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double adjusted_log_likelihood = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAdjustedLogLikelihood() {
+        
+        adjustedLogLikelihood_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double aic_ ;
+      /**
+       * <code>double aic = 7;</code>
+       * @return The aic.
+       */
+      @java.lang.Override
+      public double getAic() {
+        return aic_;
+      }
+      /**
+       * <code>double aic = 7;</code>
+       * @param value The aic to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAic(double value) {
+        
+        aic_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double aic = 7;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAic() {
+        
+        aic_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double aicc_ ;
+      /**
+       * <code>double aicc = 8;</code>
+       * @return The aicc.
+       */
+      @java.lang.Override
+      public double getAicc() {
+        return aicc_;
+      }
+      /**
+       * <code>double aicc = 8;</code>
+       * @param value The aicc to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAicc(double value) {
+        
+        aicc_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double aicc = 8;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAicc() {
+        
+        aicc_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double bic_ ;
+      /**
+       * <code>double bic = 9;</code>
+       * @return The bic.
+       */
+      @java.lang.Override
+      public double getBic() {
+        return bic_;
+      }
+      /**
+       * <code>double bic = 9;</code>
+       * @param value The bic to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBic(double value) {
+        
+        bic_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double bic = 9;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBic() {
+        
+        bic_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double bicc_ ;
+      /**
+       * <code>double bicc = 10;</code>
+       * @return The bicc.
+       */
+      @java.lang.Override
+      public double getBicc() {
+        return bicc_;
+      }
+      /**
+       * <code>double bicc = 10;</code>
+       * @param value The bicc to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBicc(double value) {
+        
+        bicc_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double bicc = 10;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBicc() {
+        
+        bicc_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double bic2_ ;
+      /**
+       * <code>double bic2 = 11;</code>
+       * @return The bic2.
+       */
+      @java.lang.Override
+      public double getBic2() {
+        return bic2_;
+      }
+      /**
+       * <code>double bic2 = 11;</code>
+       * @param value The bic2 to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBic2(double value) {
+        
+        bic2_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double bic2 = 11;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBic2() {
+        
+        bic2_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double hannanQuinn_ ;
+      /**
+       * <code>double hannan_quinn = 12;</code>
+       * @return The hannanQuinn.
+       */
+      @java.lang.Override
+      public double getHannanQuinn() {
+        return hannanQuinn_;
+      }
+      /**
+       * <code>double hannan_quinn = 12;</code>
+       * @param value The hannanQuinn to set.
+       * @return This builder for chaining.
+       */
+      public Builder setHannanQuinn(double value) {
+        
+        hannanQuinn_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double hannan_quinn = 12;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearHannanQuinn() {
+        
+        hannanQuinn_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double ssq_ ;
+      /**
+       * <code>double ssq = 13;</code>
+       * @return The ssq.
+       */
+      @java.lang.Override
+      public double getSsq() {
+        return ssq_;
+      }
+      /**
+       * <code>double ssq = 13;</code>
+       * @param value The ssq to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSsq(double value) {
+        
+        ssq_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double ssq = 13;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSsq() {
+        
+        ssq_ = 0D;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:jd3.LikelihoodStatistics)
+    }
+
+    // @@protoc_insertion_point(class_scope:jd3.LikelihoodStatistics)
+    private static final demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics();
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<LikelihoodStatistics>
+        PARSER = new com.google.protobuf.AbstractParser<LikelihoodStatistics>() {
+      @java.lang.Override
+      public LikelihoodStatistics parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new LikelihoodStatistics(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<LikelihoodStatistics> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<LikelihoodStatistics> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_jd3_TimeSelector_descriptor;
   private static final 
@@ -1874,6 +5806,26 @@ public final class ToolkitProtos {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_jd3_Parameter_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_jd3_TsData_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_jd3_TsData_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_jd3_Matrix_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_jd3_Matrix_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_jd3_StatisticalTest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_jd3_StatisticalTest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_jd3_LikelihoodStatistics_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_jd3_LikelihoodStatistics_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1887,15 +5839,28 @@ public final class ToolkitProtos {
       "Type\030\001 \001(\0162\022.jd3.SelectionType\022\n\n\002n0\030\002 \001" +
       "(\005\022\n\n\002n1\030\003 \001(\005\022\n\n\002d0\030\004 \001(\t\022\n\n\002d1\030\005 \001(\t\"<" +
       "\n\tParameter\022\r\n\005value\030\001 \001(\001\022 \n\004type\030\002 \001(\016" +
-      "2\022.jd3.ParameterType*\224\001\n\rSelectionType\022\024" +
-      "\n\020SPAN_UNSPECIFIED\020\000\022\014\n\010SPAN_ALL\020\001\022\r\n\tSP" +
-      "AN_FROM\020\002\022\013\n\007SPAN_TO\020\003\022\020\n\014SPAN_BETWEEN\020\004" +
-      "\022\r\n\tSPAN_LAST\020\005\022\016\n\nSPAN_FIRST\020\006\022\022\n\016SPAN_" +
-      "EXCLUDING\020\007*o\n\rParameterType\022\031\n\025PARAMETE" +
-      "R_UNSPECIFIED\020\000\022\023\n\017PARAMETER_FIXED\020\001\022\025\n\021" +
-      "PARAMETER_INITIAL\020\002\022\027\n\023PARAMETER_ESTIMAT" +
-      "ED\020\003B,\n\033demetra.toolkit.io.protobufB\rToo" +
-      "lkitProtosb\006proto3"
+      "2\022.jd3.ParameterType\"_\n\006TsData\022\014\n\004name\030\001" +
+      " \001(\t\022\016\n\006period\030\002 \001(\005\022\022\n\nstart_year\030\003 \001(\005" +
+      "\022\024\n\014start_period\030\004 \001(\005\022\r\n\005value\030\005 \003(\001\"C\n" +
+      "\006Matrix\022\014\n\004name\030\001 \001(\t\022\r\n\005nrows\030\002 \001(\005\022\r\n\005" +
+      "ncols\030\003 \001(\005\022\r\n\005value\030\004 \003(\001\"E\n\017Statistica" +
+      "lTest\022\r\n\005value\030\001 \001(\001\022\016\n\006pvalue\030\002 \001(\001\022\023\n\013" +
+      "description\030\003 \001(\t\"\210\002\n\024LikelihoodStatisti" +
+      "cs\022\014\n\004nobs\030\001 \001(\005\022\025\n\rneffectiveobs\030\002 \001(\005\022" +
+      "\017\n\007nparams\030\003 \001(\005\022\032\n\022degrees_of_freedom\030\004" +
+      " \001(\005\022\026\n\016log_likelihood\030\005 \001(\001\022\037\n\027adjusted" +
+      "_log_likelihood\030\006 \001(\001\022\013\n\003aic\030\007 \001(\001\022\014\n\004ai" +
+      "cc\030\010 \001(\001\022\013\n\003bic\030\t \001(\001\022\014\n\004bicc\030\n \001(\001\022\014\n\004b" +
+      "ic2\030\013 \001(\001\022\024\n\014hannan_quinn\030\014 \001(\001\022\013\n\003ssq\030\r" +
+      " \001(\001*\224\001\n\rSelectionType\022\024\n\020SPAN_UNSPECIFI" +
+      "ED\020\000\022\014\n\010SPAN_ALL\020\001\022\r\n\tSPAN_FROM\020\002\022\013\n\007SPA" +
+      "N_TO\020\003\022\020\n\014SPAN_BETWEEN\020\004\022\r\n\tSPAN_LAST\020\005\022" +
+      "\016\n\nSPAN_FIRST\020\006\022\022\n\016SPAN_EXCLUDING\020\007*o\n\rP" +
+      "arameterType\022\031\n\025PARAMETER_UNSPECIFIED\020\000\022" +
+      "\023\n\017PARAMETER_FIXED\020\001\022\025\n\021PARAMETER_INITIA" +
+      "L\020\002\022\027\n\023PARAMETER_ESTIMATED\020\003B,\n\033demetra." +
+      "toolkit.io.protobufB\rToolkitProtosb\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1913,6 +5878,30 @@ public final class ToolkitProtos {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_Parameter_descriptor,
         new java.lang.String[] { "Value", "Type", });
+    internal_static_jd3_TsData_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_jd3_TsData_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_jd3_TsData_descriptor,
+        new java.lang.String[] { "Name", "Period", "StartYear", "StartPeriod", "Value", });
+    internal_static_jd3_Matrix_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_jd3_Matrix_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_jd3_Matrix_descriptor,
+        new java.lang.String[] { "Name", "Nrows", "Ncols", "Value", });
+    internal_static_jd3_StatisticalTest_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_jd3_StatisticalTest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_jd3_StatisticalTest_descriptor,
+        new java.lang.String[] { "Value", "Pvalue", "Description", });
+    internal_static_jd3_LikelihoodStatistics_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_jd3_LikelihoodStatistics_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_jd3_LikelihoodStatistics_descriptor,
+        new java.lang.String[] { "Nobs", "Neffectiveobs", "Nparams", "DegreesOfFreedom", "LogLikelihood", "AdjustedLogLikelihood", "Aic", "Aicc", "Bic", "Bicc", "Bic2", "HannanQuinn", "Ssq", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

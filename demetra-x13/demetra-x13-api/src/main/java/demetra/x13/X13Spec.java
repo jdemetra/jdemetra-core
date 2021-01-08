@@ -47,7 +47,9 @@ public class X13Spec implements Validatable<X13Spec>, SaSpecification {
     }
     private static final X13Spec DEFAULT = X13Spec.builder().build();
 
+    @lombok.NonNull
     private RegArimaSpec regArima;
+    @lombok.NonNull
     private X11Spec x11;
     @lombok.NonNull
     private SaBenchmarkingSpec benchmarking;

@@ -26,7 +26,7 @@ import org.junit.Test;
  * @author PALATEJ
  */
 public class X11Test {
-    
+
     public X11Test() {
     }
 
@@ -36,7 +36,7 @@ public class X11Test {
         MatrixType data = rslt.getData("all", MatrixType.class);
 //        System.out.println(data);
     }
-    
+
     @Test
     public void testBF() {
         X11Spec spec = X11Spec.builder()
@@ -45,6 +45,8 @@ public class X11Test {
                 .build();
         X11.Results rslt = X11.process(Data.TS_PROD, spec);
         MatrixType data = rslt.getData("all", MatrixType.class);
+        byte[] buffer = rslt.buffer();
+        System.out.println(buffer.length);
 //        System.out.println(data);
     }
 }

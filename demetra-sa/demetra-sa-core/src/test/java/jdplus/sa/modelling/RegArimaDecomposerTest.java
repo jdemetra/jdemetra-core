@@ -14,7 +14,6 @@ import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.EasterVariable;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
-import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.Variable;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +21,6 @@ import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ModelEstimation;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

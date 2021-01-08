@@ -22,8 +22,7 @@ public class X11ProtoTest {
     @Test
     public void testX11Spec() throws InvalidProtocolBufferException {
         X11Spec spec = X11Spec.DEFAULT;
-        byte[] bytes = X11Proto.toBuffer(spec);
-        X11Spec nspec = X11Proto.of(bytes);
+        X11Spec nspec = X11Proto.convert(X11Proto.convert(spec));
         assertTrue(spec.equals(nspec));
     }
 

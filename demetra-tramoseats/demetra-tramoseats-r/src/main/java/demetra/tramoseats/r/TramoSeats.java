@@ -16,10 +16,13 @@
  */
 package demetra.tramoseats.r;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramoseats.TramoSeatsSpec;
+import demetra.tramoseats.io.protobuf.SpecProto;
+import demetra.tramoseats.io.protobuf.TramoSeatsProtos;
 import demetra.util.r.Dictionary;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -77,4 +80,16 @@ public class TramoSeats {
         return new Results(estimation);
     }
     
+    public byte[] toBuffer(TramoSeatsSpec spec) {
+        return SpecProto.convert(spec).toByteArray();
+    }
+
+    public TramoSeatsSpec of(byte[] buffer) {
+        try {
+            TramoSeatsProtos.Spec spec = TramoSeatsProtos.Spec.parseFrom(buffer);
+            return SpecProto.convert(spec);
+        } catch (InvalidProtocolBufferException ex) {
+            return null;
+        }
+    }
 }

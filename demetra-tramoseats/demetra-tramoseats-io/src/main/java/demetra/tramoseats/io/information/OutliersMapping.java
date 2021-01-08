@@ -90,7 +90,7 @@ public class OutliersMapping {
 
     public OutlierSpec read(InformationSet info) {
         if (info == null) {
-            return OutlierSpec.DEFAULT;
+            return OutlierSpec.DEFAULT_DISABLED;
         }
 
         OutlierSpec.Builder builder = OutlierSpec.builder();

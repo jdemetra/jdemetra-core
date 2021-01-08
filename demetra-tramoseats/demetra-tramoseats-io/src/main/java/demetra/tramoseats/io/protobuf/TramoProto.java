@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.x13.io.protobuf;
+package demetra.tramoseats.io.protobuf;
 
-import demetra.regarima.RegArimaSpec;
+import demetra.tramo.TramoSpec;
 import demetra.regarima.io.protobuf.RegArimaProtosUtility;
 
 /**
@@ -13,11 +13,11 @@ import demetra.regarima.io.protobuf.RegArimaProtosUtility;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class RegArimaProto {
+public class TramoProto {
 
-    public X13Protos.RegArimaSpec convert(RegArimaSpec spec) {
-        return X13Protos.RegArimaSpec.newBuilder()
-                .setBasic(BasicProto.convert(spec.getBasic()))
+    public TramoSeatsProtos.TramoSpec convert(TramoSpec spec) {
+        return TramoSeatsProtos.TramoSpec.newBuilder()
+                .setBasic(BasicProto.convert(spec.getTransform()))
                 .setTransform(TransformProto.convert(spec.getTransform()))
                 .setOutlier(OutlierProto.convert(spec.getOutliers()))
                 .setArima(RegArimaProtosUtility.convert(spec.getArima()))
@@ -27,14 +27,13 @@ public class RegArimaProto {
                 .build();
     }
 
-    public RegArimaSpec convert(X13Protos.RegArimaSpec spec) {
-        return RegArimaSpec.builder()
-                .basic(BasicProto.convert(spec.getBasic()))
-                .transform(TransformProto.convert(spec.getTransform()))
+    public TramoSpec convert(TramoSeatsProtos.TramoSpec spec) {
+        return TramoSpec.builder()
+                .transform(TransformProto.convert(spec.getBasic(), spec.getTransform()))
                 .outliers(OutlierProto.convert(spec.getOutlier()))
                 .arima(RegArimaProtosUtility.convert(spec.getArima()))
                 .autoModel(AutoModelProto.convert(spec.getAutomodel()))
-                .regression(RegressionProto.convert(spec.getRegression(), spec.getOutlier().getMonthlyTcRate()))
+                .regression(RegressionProto.convert(spec.getRegression(), spec.getOutlier().getTcrate()))
                 .estimate(EstimateProto.convert(spec.getEstimate()))
                 .build();
     }

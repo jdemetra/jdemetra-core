@@ -708,6 +708,141 @@ public final class X13Protos {
   }
 
   /**
+   * Protobuf enum {@code x13.EasterType}
+   */
+  public enum EasterType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>EASTER_UNSPECIFIED = 0;</code>
+     */
+    EASTER_UNSPECIFIED(0),
+    /**
+     * <code>EASTER_UNUSED = 1;</code>
+     */
+    EASTER_UNUSED(1),
+    /**
+     * <code>EASTER_STANDARD = 2;</code>
+     */
+    EASTER_STANDARD(2),
+    /**
+     * <code>EASTER_JULIAN = 3;</code>
+     */
+    EASTER_JULIAN(3),
+    /**
+     * <code>EASTER_SC = 4;</code>
+     */
+    EASTER_SC(4),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>EASTER_UNSPECIFIED = 0;</code>
+     */
+    public static final int EASTER_UNSPECIFIED_VALUE = 0;
+    /**
+     * <code>EASTER_UNUSED = 1;</code>
+     */
+    public static final int EASTER_UNUSED_VALUE = 1;
+    /**
+     * <code>EASTER_STANDARD = 2;</code>
+     */
+    public static final int EASTER_STANDARD_VALUE = 2;
+    /**
+     * <code>EASTER_JULIAN = 3;</code>
+     */
+    public static final int EASTER_JULIAN_VALUE = 3;
+    /**
+     * <code>EASTER_SC = 4;</code>
+     */
+    public static final int EASTER_SC_VALUE = 4;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static EasterType valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static EasterType forNumber(int value) {
+      switch (value) {
+        case 0: return EASTER_UNSPECIFIED;
+        case 1: return EASTER_UNUSED;
+        case 2: return EASTER_STANDARD;
+        case 3: return EASTER_JULIAN;
+        case 4: return EASTER_SC;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<EasterType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        EasterType> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<EasterType>() {
+            public EasterType findValueByNumber(int number) {
+              return EasterType.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return demetra.x13.io.protobuf.X13Protos.getDescriptor().getEnumTypes().get(5);
+    }
+
+    private static final EasterType[] VALUES = values();
+
+    public static EasterType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private EasterType(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:x13.EasterType)
+  }
+
+  /**
    * Protobuf enum {@code x13.RegressionTest}
    */
   public enum RegressionTest
@@ -807,7 +942,7 @@ public final class X13Protos {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return demetra.x13.io.protobuf.X13Protos.getDescriptor().getEnumTypes().get(5);
+      return demetra.x13.io.protobuf.X13Protos.getDescriptor().getEnumTypes().get(6);
     }
 
     private static final RegressionTest[] VALUES = values();
@@ -942,10 +1077,10 @@ public final class X13Protos {
     int getVsigmas(int index);
 
     /**
-     * <code>bool excudefcasts = 11;</code>
-     * @return The excudefcasts.
+     * <code>bool exclude_fcasts = 11;</code>
+     * @return The excludeFcasts.
      */
-    boolean getExcudefcasts();
+    boolean getExcludeFcasts();
 
     /**
      * <code>.x13.BiasCorrection bias = 12;</code>
@@ -1097,7 +1232,7 @@ public final class X13Protos {
             }
             case 88: {
 
-              excudefcasts_ = input.readBool();
+              excludeFcasts_ = input.readBool();
               break;
             }
             case 96: {
@@ -1334,15 +1469,15 @@ public final class X13Protos {
     }
     private int vsigmasMemoizedSerializedSize = -1;
 
-    public static final int EXCUDEFCASTS_FIELD_NUMBER = 11;
-    private boolean excudefcasts_;
+    public static final int EXCLUDE_FCASTS_FIELD_NUMBER = 11;
+    private boolean excludeFcasts_;
     /**
-     * <code>bool excudefcasts = 11;</code>
-     * @return The excudefcasts.
+     * <code>bool exclude_fcasts = 11;</code>
+     * @return The excludeFcasts.
      */
     @java.lang.Override
-    public boolean getExcudefcasts() {
-      return excudefcasts_;
+    public boolean getExcludeFcasts() {
+      return excludeFcasts_;
     }
 
     public static final int BIAS_FIELD_NUMBER = 12;
@@ -1417,8 +1552,8 @@ public final class X13Protos {
       for (int i = 0; i < vsigmas_.size(); i++) {
         output.writeInt32NoTag(vsigmas_.getInt(i));
       }
-      if (excudefcasts_ != false) {
-        output.writeBool(11, excudefcasts_);
+      if (excludeFcasts_ != false) {
+        output.writeBool(11, excludeFcasts_);
       }
       if (bias_ != demetra.x13.io.protobuf.X13Protos.BiasCorrection.BIAS_UNSPECIFIED.getNumber()) {
         output.writeEnum(12, bias_);
@@ -1490,9 +1625,9 @@ public final class X13Protos {
         }
         vsigmasMemoizedSerializedSize = dataSize;
       }
-      if (excudefcasts_ != false) {
+      if (excludeFcasts_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(11, excudefcasts_);
+          .computeBoolSize(11, excludeFcasts_);
       }
       if (bias_ != demetra.x13.io.protobuf.X13Protos.BiasCorrection.BIAS_UNSPECIFIED.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
@@ -1532,8 +1667,8 @@ public final class X13Protos {
       if (sigma_ != other.sigma_) return false;
       if (!getVsigmasList()
           .equals(other.getVsigmasList())) return false;
-      if (getExcudefcasts()
-          != other.getExcudefcasts()) return false;
+      if (getExcludeFcasts()
+          != other.getExcludeFcasts()) return false;
       if (bias_ != other.bias_) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -1573,9 +1708,9 @@ public final class X13Protos {
         hash = (37 * hash) + VSIGMAS_FIELD_NUMBER;
         hash = (53 * hash) + getVsigmasList().hashCode();
       }
-      hash = (37 * hash) + EXCUDEFCASTS_FIELD_NUMBER;
+      hash = (37 * hash) + EXCLUDE_FCASTS_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getExcudefcasts());
+          getExcludeFcasts());
       hash = (37 * hash) + BIAS_FIELD_NUMBER;
       hash = (53 * hash) + bias_;
       hash = (29 * hash) + unknownFields.hashCode();
@@ -1731,7 +1866,7 @@ public final class X13Protos {
 
         vsigmas_ = emptyIntList();
         bitField0_ = (bitField0_ & ~0x00000002);
-        excudefcasts_ = false;
+        excludeFcasts_ = false;
 
         bias_ = 0;
 
@@ -1780,7 +1915,7 @@ public final class X13Protos {
           bitField0_ = (bitField0_ & ~0x00000002);
         }
         result.vsigmas_ = vsigmas_;
-        result.excudefcasts_ = excudefcasts_;
+        result.excludeFcasts_ = excludeFcasts_;
         result.bias_ = bias_;
         onBuilt();
         return result;
@@ -1874,8 +2009,8 @@ public final class X13Protos {
           }
           onChanged();
         }
-        if (other.getExcudefcasts() != false) {
-          setExcudefcasts(other.getExcudefcasts());
+        if (other.getExcludeFcasts() != false) {
+          setExcludeFcasts(other.getExcludeFcasts());
         }
         if (other.bias_ != 0) {
           setBiasValue(other.getBiasValue());
@@ -2423,33 +2558,33 @@ public final class X13Protos {
         return this;
       }
 
-      private boolean excudefcasts_ ;
+      private boolean excludeFcasts_ ;
       /**
-       * <code>bool excudefcasts = 11;</code>
-       * @return The excudefcasts.
+       * <code>bool exclude_fcasts = 11;</code>
+       * @return The excludeFcasts.
        */
       @java.lang.Override
-      public boolean getExcudefcasts() {
-        return excudefcasts_;
+      public boolean getExcludeFcasts() {
+        return excludeFcasts_;
       }
       /**
-       * <code>bool excudefcasts = 11;</code>
-       * @param value The excudefcasts to set.
+       * <code>bool exclude_fcasts = 11;</code>
+       * @param value The excludeFcasts to set.
        * @return This builder for chaining.
        */
-      public Builder setExcudefcasts(boolean value) {
+      public Builder setExcludeFcasts(boolean value) {
         
-        excudefcasts_ = value;
+        excludeFcasts_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>bool excudefcasts = 11;</code>
+       * <code>bool exclude_fcasts = 11;</code>
        * @return This builder for chaining.
        */
-      public Builder clearExcudefcasts() {
+      public Builder clearExcludeFcasts() {
         
-        excudefcasts_ = false;
+        excludeFcasts_ = false;
         onChanged();
         return this;
       }
@@ -4365,10 +4500,10 @@ public final class X13Protos {
       demetra.x13.io.protobuf.X13Protos.OutlierMethod getMethod();
 
       /**
-       * <code>double monthlytcrate = 5;</code>
-       * @return The monthlytcrate.
+       * <code>double monthly_tc_rate = 5;</code>
+       * @return The monthlyTcRate.
        */
-      double getMonthlytcrate();
+      double getMonthlyTcRate();
 
       /**
        * <code>int32 maxiter = 6;</code>
@@ -4465,7 +4600,7 @@ public final class X13Protos {
               }
               case 41: {
 
-                monthlytcrate_ = input.readDouble();
+                monthlyTcRate_ = input.readDouble();
                 break;
               }
               case 48: {
@@ -5249,15 +5384,15 @@ public final class X13Protos {
         return result == null ? demetra.x13.io.protobuf.X13Protos.OutlierMethod.UNRECOGNIZED : result;
       }
 
-      public static final int MONTHLYTCRATE_FIELD_NUMBER = 5;
-      private double monthlytcrate_;
+      public static final int MONTHLY_TC_RATE_FIELD_NUMBER = 5;
+      private double monthlyTcRate_;
       /**
-       * <code>double monthlytcrate = 5;</code>
-       * @return The monthlytcrate.
+       * <code>double monthly_tc_rate = 5;</code>
+       * @return The monthlyTcRate.
        */
       @java.lang.Override
-      public double getMonthlytcrate() {
-        return monthlytcrate_;
+      public double getMonthlyTcRate() {
+        return monthlyTcRate_;
       }
 
       public static final int MAXITER_FIELD_NUMBER = 6;
@@ -5308,8 +5443,8 @@ public final class X13Protos {
         if (method_ != demetra.x13.io.protobuf.X13Protos.OutlierMethod.OUTLIER_UNSPECIFIED.getNumber()) {
           output.writeEnum(4, method_);
         }
-        if (monthlytcrate_ != 0D) {
-          output.writeDouble(5, monthlytcrate_);
+        if (monthlyTcRate_ != 0D) {
+          output.writeDouble(5, monthlyTcRate_);
         }
         if (maxiter_ != 0) {
           output.writeInt32(6, maxiter_);
@@ -5342,9 +5477,9 @@ public final class X13Protos {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(4, method_);
         }
-        if (monthlytcrate_ != 0D) {
+        if (monthlyTcRate_ != 0D) {
           size += com.google.protobuf.CodedOutputStream
-            .computeDoubleSize(5, monthlytcrate_);
+            .computeDoubleSize(5, monthlyTcRate_);
         }
         if (maxiter_ != 0) {
           size += com.google.protobuf.CodedOutputStream
@@ -5380,9 +5515,9 @@ public final class X13Protos {
             != java.lang.Double.doubleToLongBits(
                 other.getDefva())) return false;
         if (method_ != other.method_) return false;
-        if (java.lang.Double.doubleToLongBits(getMonthlytcrate())
+        if (java.lang.Double.doubleToLongBits(getMonthlyTcRate())
             != java.lang.Double.doubleToLongBits(
-                other.getMonthlytcrate())) return false;
+                other.getMonthlyTcRate())) return false;
         if (getMaxiter()
             != other.getMaxiter()) return false;
         if (getLsrun()
@@ -5411,9 +5546,9 @@ public final class X13Protos {
             java.lang.Double.doubleToLongBits(getDefva()));
         hash = (37 * hash) + METHOD_FIELD_NUMBER;
         hash = (53 * hash) + method_;
-        hash = (37 * hash) + MONTHLYTCRATE_FIELD_NUMBER;
+        hash = (37 * hash) + MONTHLY_TC_RATE_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-            java.lang.Double.doubleToLongBits(getMonthlytcrate()));
+            java.lang.Double.doubleToLongBits(getMonthlyTcRate()));
         hash = (37 * hash) + MAXITER_FIELD_NUMBER;
         hash = (53 * hash) + getMaxiter();
         hash = (37 * hash) + LSRUN_FIELD_NUMBER;
@@ -5568,7 +5703,7 @@ public final class X13Protos {
 
           method_ = 0;
 
-          monthlytcrate_ = 0D;
+          monthlyTcRate_ = 0D;
 
           maxiter_ = 0;
 
@@ -5617,7 +5752,7 @@ public final class X13Protos {
           }
           result.defva_ = defva_;
           result.method_ = method_;
-          result.monthlytcrate_ = monthlytcrate_;
+          result.monthlyTcRate_ = monthlyTcRate_;
           result.maxiter_ = maxiter_;
           result.lsrun_ = lsrun_;
           onBuilt();
@@ -5703,8 +5838,8 @@ public final class X13Protos {
           if (other.method_ != 0) {
             setMethodValue(other.getMethodValue());
           }
-          if (other.getMonthlytcrate() != 0D) {
-            setMonthlytcrate(other.getMonthlytcrate());
+          if (other.getMonthlyTcRate() != 0D) {
+            setMonthlyTcRate(other.getMonthlyTcRate());
           }
           if (other.getMaxiter() != 0) {
             setMaxiter(other.getMaxiter());
@@ -6186,33 +6321,33 @@ public final class X13Protos {
           return this;
         }
 
-        private double monthlytcrate_ ;
+        private double monthlyTcRate_ ;
         /**
-         * <code>double monthlytcrate = 5;</code>
-         * @return The monthlytcrate.
+         * <code>double monthly_tc_rate = 5;</code>
+         * @return The monthlyTcRate.
          */
         @java.lang.Override
-        public double getMonthlytcrate() {
-          return monthlytcrate_;
+        public double getMonthlyTcRate() {
+          return monthlyTcRate_;
         }
         /**
-         * <code>double monthlytcrate = 5;</code>
-         * @param value The monthlytcrate to set.
+         * <code>double monthly_tc_rate = 5;</code>
+         * @param value The monthlyTcRate to set.
          * @return This builder for chaining.
          */
-        public Builder setMonthlytcrate(double value) {
+        public Builder setMonthlyTcRate(double value) {
           
-          monthlytcrate_ = value;
+          monthlyTcRate_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>double monthlytcrate = 5;</code>
+         * <code>double monthly_tc_rate = 5;</code>
          * @return This builder for chaining.
          */
-        public Builder clearMonthlytcrate() {
+        public Builder clearMonthlyTcRate() {
           
-          monthlytcrate_ = 0D;
+          monthlyTcRate_ = 0D;
           onChanged();
           return this;
         }
@@ -7685,10 +7820,15 @@ public final class X13Protos {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>bool automatic = 1;</code>
-       * @return The automatic.
+       * <code>.x13.EasterType type = 1;</code>
+       * @return The enum numeric value on the wire for type.
        */
-      boolean getAutomatic();
+      int getTypeValue();
+      /**
+       * <code>.x13.EasterType type = 1;</code>
+       * @return The type.
+       */
+      demetra.x13.io.protobuf.X13Protos.EasterType getType();
 
       /**
        * <code>int32 duration = 2;</code>
@@ -7706,12 +7846,6 @@ public final class X13Protos {
        * @return The test.
        */
       demetra.x13.io.protobuf.X13Protos.RegressionTest getTest();
-
-      /**
-       * <code>bool julian = 4;</code>
-       * @return The julian.
-       */
-      boolean getJulian();
     }
     /**
      * Protobuf type {@code x13.RegArimaSpec.EasterSpec}
@@ -7726,6 +7860,7 @@ public final class X13Protos {
         super(builder);
       }
       private EasterSpec() {
+        type_ = 0;
         test_ = 0;
       }
 
@@ -7760,8 +7895,9 @@ public final class X13Protos {
                 done = true;
                 break;
               case 8: {
+                int rawValue = input.readEnum();
 
-                automatic_ = input.readBool();
+                type_ = rawValue;
                 break;
               }
               case 16: {
@@ -7773,11 +7909,6 @@ public final class X13Protos {
                 int rawValue = input.readEnum();
 
                 test_ = rawValue;
-                break;
-              }
-              case 32: {
-
-                julian_ = input.readBool();
                 break;
               }
               default: {
@@ -7812,15 +7943,23 @@ public final class X13Protos {
                 demetra.x13.io.protobuf.X13Protos.RegArimaSpec.EasterSpec.class, demetra.x13.io.protobuf.X13Protos.RegArimaSpec.EasterSpec.Builder.class);
       }
 
-      public static final int AUTOMATIC_FIELD_NUMBER = 1;
-      private boolean automatic_;
+      public static final int TYPE_FIELD_NUMBER = 1;
+      private int type_;
       /**
-       * <code>bool automatic = 1;</code>
-       * @return The automatic.
+       * <code>.x13.EasterType type = 1;</code>
+       * @return The enum numeric value on the wire for type.
        */
-      @java.lang.Override
-      public boolean getAutomatic() {
-        return automatic_;
+      @java.lang.Override public int getTypeValue() {
+        return type_;
+      }
+      /**
+       * <code>.x13.EasterType type = 1;</code>
+       * @return The type.
+       */
+      @java.lang.Override public demetra.x13.io.protobuf.X13Protos.EasterType getType() {
+        @SuppressWarnings("deprecation")
+        demetra.x13.io.protobuf.X13Protos.EasterType result = demetra.x13.io.protobuf.X13Protos.EasterType.valueOf(type_);
+        return result == null ? demetra.x13.io.protobuf.X13Protos.EasterType.UNRECOGNIZED : result;
       }
 
       public static final int DURATION_FIELD_NUMBER = 2;
@@ -7853,17 +7992,6 @@ public final class X13Protos {
         return result == null ? demetra.x13.io.protobuf.X13Protos.RegressionTest.UNRECOGNIZED : result;
       }
 
-      public static final int JULIAN_FIELD_NUMBER = 4;
-      private boolean julian_;
-      /**
-       * <code>bool julian = 4;</code>
-       * @return The julian.
-       */
-      @java.lang.Override
-      public boolean getJulian() {
-        return julian_;
-      }
-
       private byte memoizedIsInitialized = -1;
       @java.lang.Override
       public final boolean isInitialized() {
@@ -7878,17 +8006,14 @@ public final class X13Protos {
       @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (automatic_ != false) {
-          output.writeBool(1, automatic_);
+        if (type_ != demetra.x13.io.protobuf.X13Protos.EasterType.EASTER_UNSPECIFIED.getNumber()) {
+          output.writeEnum(1, type_);
         }
         if (duration_ != 0) {
           output.writeInt32(2, duration_);
         }
         if (test_ != demetra.x13.io.protobuf.X13Protos.RegressionTest.TEST_UNSPECIFIED.getNumber()) {
           output.writeEnum(3, test_);
-        }
-        if (julian_ != false) {
-          output.writeBool(4, julian_);
         }
         unknownFields.writeTo(output);
       }
@@ -7899,9 +8024,9 @@ public final class X13Protos {
         if (size != -1) return size;
 
         size = 0;
-        if (automatic_ != false) {
+        if (type_ != demetra.x13.io.protobuf.X13Protos.EasterType.EASTER_UNSPECIFIED.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(1, automatic_);
+            .computeEnumSize(1, type_);
         }
         if (duration_ != 0) {
           size += com.google.protobuf.CodedOutputStream
@@ -7910,10 +8035,6 @@ public final class X13Protos {
         if (test_ != demetra.x13.io.protobuf.X13Protos.RegressionTest.TEST_UNSPECIFIED.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(3, test_);
-        }
-        if (julian_ != false) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(4, julian_);
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -7930,13 +8051,10 @@ public final class X13Protos {
         }
         demetra.x13.io.protobuf.X13Protos.RegArimaSpec.EasterSpec other = (demetra.x13.io.protobuf.X13Protos.RegArimaSpec.EasterSpec) obj;
 
-        if (getAutomatic()
-            != other.getAutomatic()) return false;
+        if (type_ != other.type_) return false;
         if (getDuration()
             != other.getDuration()) return false;
         if (test_ != other.test_) return false;
-        if (getJulian()
-            != other.getJulian()) return false;
         if (!unknownFields.equals(other.unknownFields)) return false;
         return true;
       }
@@ -7948,16 +8066,12 @@ public final class X13Protos {
         }
         int hash = 41;
         hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + AUTOMATIC_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getAutomatic());
+        hash = (37 * hash) + TYPE_FIELD_NUMBER;
+        hash = (53 * hash) + type_;
         hash = (37 * hash) + DURATION_FIELD_NUMBER;
         hash = (53 * hash) + getDuration();
         hash = (37 * hash) + TEST_FIELD_NUMBER;
         hash = (53 * hash) + test_;
-        hash = (37 * hash) + JULIAN_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getJulian());
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
         return hash;
@@ -8091,13 +8205,11 @@ public final class X13Protos {
         @java.lang.Override
         public Builder clear() {
           super.clear();
-          automatic_ = false;
+          type_ = 0;
 
           duration_ = 0;
 
           test_ = 0;
-
-          julian_ = false;
 
           return this;
         }
@@ -8125,10 +8237,9 @@ public final class X13Protos {
         @java.lang.Override
         public demetra.x13.io.protobuf.X13Protos.RegArimaSpec.EasterSpec buildPartial() {
           demetra.x13.io.protobuf.X13Protos.RegArimaSpec.EasterSpec result = new demetra.x13.io.protobuf.X13Protos.RegArimaSpec.EasterSpec(this);
-          result.automatic_ = automatic_;
+          result.type_ = type_;
           result.duration_ = duration_;
           result.test_ = test_;
-          result.julian_ = julian_;
           onBuilt();
           return result;
         }
@@ -8177,17 +8288,14 @@ public final class X13Protos {
 
         public Builder mergeFrom(demetra.x13.io.protobuf.X13Protos.RegArimaSpec.EasterSpec other) {
           if (other == demetra.x13.io.protobuf.X13Protos.RegArimaSpec.EasterSpec.getDefaultInstance()) return this;
-          if (other.getAutomatic() != false) {
-            setAutomatic(other.getAutomatic());
+          if (other.type_ != 0) {
+            setTypeValue(other.getTypeValue());
           }
           if (other.getDuration() != 0) {
             setDuration(other.getDuration());
           }
           if (other.test_ != 0) {
             setTestValue(other.getTestValue());
-          }
-          if (other.getJulian() != false) {
-            setJulian(other.getJulian());
           }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
@@ -8218,33 +8326,56 @@ public final class X13Protos {
           return this;
         }
 
-        private boolean automatic_ ;
+        private int type_ = 0;
         /**
-         * <code>bool automatic = 1;</code>
-         * @return The automatic.
+         * <code>.x13.EasterType type = 1;</code>
+         * @return The enum numeric value on the wire for type.
          */
-        @java.lang.Override
-        public boolean getAutomatic() {
-          return automatic_;
+        @java.lang.Override public int getTypeValue() {
+          return type_;
         }
         /**
-         * <code>bool automatic = 1;</code>
-         * @param value The automatic to set.
+         * <code>.x13.EasterType type = 1;</code>
+         * @param value The enum numeric value on the wire for type to set.
          * @return This builder for chaining.
          */
-        public Builder setAutomatic(boolean value) {
+        public Builder setTypeValue(int value) {
           
-          automatic_ = value;
+          type_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>bool automatic = 1;</code>
+         * <code>.x13.EasterType type = 1;</code>
+         * @return The type.
+         */
+        @java.lang.Override
+        public demetra.x13.io.protobuf.X13Protos.EasterType getType() {
+          @SuppressWarnings("deprecation")
+          demetra.x13.io.protobuf.X13Protos.EasterType result = demetra.x13.io.protobuf.X13Protos.EasterType.valueOf(type_);
+          return result == null ? demetra.x13.io.protobuf.X13Protos.EasterType.UNRECOGNIZED : result;
+        }
+        /**
+         * <code>.x13.EasterType type = 1;</code>
+         * @param value The type to set.
          * @return This builder for chaining.
          */
-        public Builder clearAutomatic() {
+        public Builder setType(demetra.x13.io.protobuf.X13Protos.EasterType value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
           
-          automatic_ = false;
+          type_ = value.getNumber();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>.x13.EasterType type = 1;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearType() {
+          
+          type_ = 0;
           onChanged();
           return this;
         }
@@ -8330,37 +8461,6 @@ public final class X13Protos {
         public Builder clearTest() {
           
           test_ = 0;
-          onChanged();
-          return this;
-        }
-
-        private boolean julian_ ;
-        /**
-         * <code>bool julian = 4;</code>
-         * @return The julian.
-         */
-        @java.lang.Override
-        public boolean getJulian() {
-          return julian_;
-        }
-        /**
-         * <code>bool julian = 4;</code>
-         * @param value The julian to set.
-         * @return This builder for chaining.
-         */
-        public Builder setJulian(boolean value) {
-          
-          julian_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>bool julian = 4;</code>
-         * @return This builder for chaining.
-         */
-        public Builder clearJulian() {
-          
-          julian_ = false;
           onChanged();
           return this;
         }
@@ -16725,43 +16825,43 @@ public final class X13Protos {
   static {
     java.lang.String[] descriptorData = {
       "\n\tx13.proto\022\003x13\032\rtoolkit.proto\032\016regarim" +
-      "a.proto\032\010sa.proto\"\246\002\n\007X11Spec\022$\n\004mode\030\001 " +
+      "a.proto\032\010sa.proto\"\250\002\n\007X11Spec\022$\n\004mode\030\001 " +
       "\001(\0162\026.x13.DecompositionMode\022\020\n\010seasonal\030" +
       "\002 \001(\010\022\021\n\thenderson\030\003 \001(\005\022%\n\010sfilters\030\004 \003" +
       "(\0162\023.x13.SeasonalFilter\022\014\n\004lsig\030\005 \001(\001\022\014\n" +
       "\004usig\030\006 \001(\001\022\017\n\007nfcasts\030\007 \001(\005\022\017\n\007nbcasts\030" +
       "\010 \001(\005\022!\n\005sigma\030\t \001(\0162\022.x13.CalendarSigma" +
-      "\022\017\n\007vsigmas\030\n \003(\005\022\024\n\014excudefcasts\030\013 \001(\010\022" +
-      "!\n\004bias\030\014 \001(\0162\023.x13.BiasCorrection\"\252\016\n\014R" +
-      "egArimaSpec\022*\n\005basic\030\001 \001(\0132\033.x13.RegArim" +
-      "aSpec.BasicSpec\0222\n\ttransform\030\002 \001(\0132\037.x13" +
-      ".RegArimaSpec.TransformSpec\022.\n\007outlier\030\003" +
-      " \001(\0132\035.x13.RegArimaSpec.OutlierSpec\022#\n\005a" +
-      "rima\030\004 \001(\0132\024.regarima.SarimaSpec\0222\n\tauto" +
-      "model\030\005 \001(\0132\037.x13.RegArimaSpec.AutoModel" +
-      "Spec\0224\n\nregression\030\006 \001(\0132 .x13.RegArimaS" +
-      "pec.RegressionSpec\0220\n\010estimate\030\007 \001(\0132\036.x" +
-      "13.RegArimaSpec.EstimateSpec\032^\n\tBasicSpe" +
-      "c\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeSelector\022\025\n\rpr" +
-      "eprocessing\030\002 \001(\010\022\031\n\021preliminary_check\030\003" +
-      " \001(\010\032|\n\rTransformSpec\0220\n\016transformation\030" +
-      "\001 \001(\0162\030.regarima.Transformation\022(\n\006adjus" +
-      "t\030\002 \001(\0162\030.regarima.LengthOfPeriod\022\017\n\007aic" +
-      "diff\030\003 \001(\001\032\360\001\n\013OutlierSpec\0224\n\010outliers\030\001" +
-      " \003(\0132\".x13.RegArimaSpec.OutlierSpec.Type" +
-      "\022\037\n\004span\030\002 \001(\0132\021.jd3.TimeSelector\022\r\n\005def" +
-      "va\030\003 \001(\001\022\"\n\006method\030\004 \001(\0162\022.x13.OutlierMe" +
-      "thod\022\025\n\rmonthlytcrate\030\005 \001(\001\022\017\n\007maxiter\030\006" +
-      " \001(\005\022\r\n\005lsrun\030\007 \001(\005\032 \n\004Type\022\014\n\004code\030\001 \001(" +
-      "\t\022\n\n\002va\030\002 \001(\001\032\335\001\n\rAutoModelSpec\022\017\n\007enabl" +
-      "ed\030\001 \001(\010\022\020\n\010ljungbox\030\002 \001(\001\022\014\n\004tsig\030\003 \001(\001" +
-      "\022\016\n\006predcv\030\004 \001(\001\022\017\n\007ubfinal\030\005 \001(\001\022\013\n\003ub1" +
-      "\030\006 \001(\001\022\013\n\003ub2\030\007 \001(\001\022\016\n\006cancel\030\010 \001(\001\022\013\n\003f" +
-      "ct\030\t \001(\001\022\021\n\tacceptdef\030\n \001(\010\022\017\n\007checkmu\030\013" +
-      " \001(\010\022\r\n\005mixed\030\014 \001(\010\022\020\n\010balanced\030\r \001(\010\032d\n" +
-      "\nEasterSpec\022\021\n\tautomatic\030\001 \001(\010\022\020\n\010durati" +
-      "on\030\002 \001(\005\022!\n\004test\030\003 \001(\0162\023.x13.RegressionT" +
-      "est\022\016\n\006julian\030\004 \001(\010\032\276\001\n\017TradingDaysSpec\022" +
+      "\022\017\n\007vsigmas\030\n \003(\005\022\026\n\016exclude_fcasts\030\013 \001(" +
+      "\010\022!\n\004bias\030\014 \001(\0162\023.x13.BiasCorrection\"\250\016\n" +
+      "\014RegArimaSpec\022*\n\005basic\030\001 \001(\0132\033.x13.RegAr" +
+      "imaSpec.BasicSpec\0222\n\ttransform\030\002 \001(\0132\037.x" +
+      "13.RegArimaSpec.TransformSpec\022.\n\007outlier" +
+      "\030\003 \001(\0132\035.x13.RegArimaSpec.OutlierSpec\022#\n" +
+      "\005arima\030\004 \001(\0132\024.regarima.SarimaSpec\0222\n\tau" +
+      "tomodel\030\005 \001(\0132\037.x13.RegArimaSpec.AutoMod" +
+      "elSpec\0224\n\nregression\030\006 \001(\0132 .x13.RegArim" +
+      "aSpec.RegressionSpec\0220\n\010estimate\030\007 \001(\0132\036" +
+      ".x13.RegArimaSpec.EstimateSpec\032^\n\tBasicS" +
+      "pec\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeSelector\022\025\n\r" +
+      "preprocessing\030\002 \001(\010\022\031\n\021preliminary_check" +
+      "\030\003 \001(\010\032|\n\rTransformSpec\0220\n\016transformatio" +
+      "n\030\001 \001(\0162\030.regarima.Transformation\022(\n\006adj" +
+      "ust\030\002 \001(\0162\030.regarima.LengthOfPeriod\022\017\n\007a" +
+      "icdiff\030\003 \001(\001\032\362\001\n\013OutlierSpec\0224\n\010outliers" +
+      "\030\001 \003(\0132\".x13.RegArimaSpec.OutlierSpec.Ty" +
+      "pe\022\037\n\004span\030\002 \001(\0132\021.jd3.TimeSelector\022\r\n\005d" +
+      "efva\030\003 \001(\001\022\"\n\006method\030\004 \001(\0162\022.x13.Outlier" +
+      "Method\022\027\n\017monthly_tc_rate\030\005 \001(\001\022\017\n\007maxit" +
+      "er\030\006 \001(\005\022\r\n\005lsrun\030\007 \001(\005\032 \n\004Type\022\014\n\004code\030" +
+      "\001 \001(\t\022\n\n\002va\030\002 \001(\001\032\335\001\n\rAutoModelSpec\022\017\n\007e" +
+      "nabled\030\001 \001(\010\022\020\n\010ljungbox\030\002 \001(\001\022\014\n\004tsig\030\003" +
+      " \001(\001\022\016\n\006predcv\030\004 \001(\001\022\017\n\007ubfinal\030\005 \001(\001\022\013\n" +
+      "\003ub1\030\006 \001(\001\022\013\n\003ub2\030\007 \001(\001\022\016\n\006cancel\030\010 \001(\001\022" +
+      "\013\n\003fct\030\t \001(\001\022\021\n\tacceptdef\030\n \001(\010\022\017\n\007check" +
+      "mu\030\013 \001(\010\022\r\n\005mixed\030\014 \001(\010\022\020\n\010balanced\030\r \001(" +
+      "\010\032`\n\nEasterSpec\022\035\n\004type\030\001 \001(\0162\017.x13.East" +
+      "erType\022\020\n\010duration\030\002 \001(\005\022!\n\004test\030\003 \001(\0162\023" +
+      ".x13.RegressionTest\032\276\001\n\017TradingDaysSpec\022" +
       "!\n\002td\030\001 \001(\0162\025.regarima.TradingDays\022$\n\002lp" +
       "\030\002 \001(\0162\030.regarima.LengthOfPeriod\022\020\n\010holi" +
       "days\030\003 \001(\t\022\r\n\005users\030\004 \003(\t\022\t\n\001w\030\005 \001(\005\022!\n\004" +
@@ -16798,10 +16898,13 @@ public final class X13Protos {
       "\020\001\022\017\n\013BIAS_LEGACY\020\002\022\017\n\013BIAS_SMOOTH\020\003\022\016\n\n" +
       "BIAS_RATIO\020\004*P\n\rOutlierMethod\022\027\n\023OUTLIER" +
       "_UNSPECIFIED\020\000\022\022\n\016OUTLIER_ADDONE\020\001\022\022\n\016OU" +
-      "TLIER_ADDALL\020\002*R\n\016RegressionTest\022\024\n\020TEST" +
-      "_UNSPECIFIED\020\000\022\013\n\007TEST_NO\020\001\022\014\n\010TEST_ADD\020" +
-      "\002\022\017\n\013TEST_REMOVE\020\003B$\n\027demetra.x13.io.pro" +
-      "tobufB\tX13ProtosP\000P\001P\002b\006proto3"
+      "TLIER_ADDALL\020\002*n\n\nEasterType\022\026\n\022EASTER_U" +
+      "NSPECIFIED\020\000\022\021\n\rEASTER_UNUSED\020\001\022\023\n\017EASTE" +
+      "R_STANDARD\020\002\022\021\n\rEASTER_JULIAN\020\003\022\r\n\tEASTE" +
+      "R_SC\020\004*R\n\016RegressionTest\022\024\n\020TEST_UNSPECI" +
+      "FIED\020\000\022\013\n\007TEST_NO\020\001\022\014\n\010TEST_ADD\020\002\022\017\n\013TES" +
+      "T_REMOVE\020\003B$\n\027demetra.x13.io.protobufB\tX" +
+      "13ProtosP\000P\001P\002b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -16815,7 +16918,7 @@ public final class X13Protos {
     internal_static_x13_X11Spec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_x13_X11Spec_descriptor,
-        new java.lang.String[] { "Mode", "Seasonal", "Henderson", "Sfilters", "Lsig", "Usig", "Nfcasts", "Nbcasts", "Sigma", "Vsigmas", "Excudefcasts", "Bias", });
+        new java.lang.String[] { "Mode", "Seasonal", "Henderson", "Sfilters", "Lsig", "Usig", "Nfcasts", "Nbcasts", "Sigma", "Vsigmas", "ExcludeFcasts", "Bias", });
     internal_static_x13_RegArimaSpec_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_x13_RegArimaSpec_fieldAccessorTable = new
@@ -16839,7 +16942,7 @@ public final class X13Protos {
     internal_static_x13_RegArimaSpec_OutlierSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_x13_RegArimaSpec_OutlierSpec_descriptor,
-        new java.lang.String[] { "Outliers", "Span", "Defva", "Method", "Monthlytcrate", "Maxiter", "Lsrun", });
+        new java.lang.String[] { "Outliers", "Span", "Defva", "Method", "MonthlyTcRate", "Maxiter", "Lsrun", });
     internal_static_x13_RegArimaSpec_OutlierSpec_Type_descriptor =
       internal_static_x13_RegArimaSpec_OutlierSpec_descriptor.getNestedTypes().get(0);
     internal_static_x13_RegArimaSpec_OutlierSpec_Type_fieldAccessorTable = new
@@ -16857,7 +16960,7 @@ public final class X13Protos {
     internal_static_x13_RegArimaSpec_EasterSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_x13_RegArimaSpec_EasterSpec_descriptor,
-        new java.lang.String[] { "Automatic", "Duration", "Test", "Julian", });
+        new java.lang.String[] { "Type", "Duration", "Test", });
     internal_static_x13_RegArimaSpec_TradingDaysSpec_descriptor =
       internal_static_x13_RegArimaSpec_descriptor.getNestedTypes().get(5);
     internal_static_x13_RegArimaSpec_TradingDaysSpec_fieldAccessorTable = new

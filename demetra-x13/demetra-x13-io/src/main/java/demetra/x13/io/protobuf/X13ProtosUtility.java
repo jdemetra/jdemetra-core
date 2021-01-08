@@ -6,6 +6,7 @@
 package demetra.x13.io.protobuf;
 
 import demetra.modelling.RegressionTestSpec;
+import demetra.regarima.EasterSpec;
 import demetra.sa.DecompositionMode;
 import demetra.x11.BiasCorrection;
 import demetra.x11.CalendarSigmaOption;
@@ -19,6 +20,8 @@ import demetra.x11.SeasonalFilterOption;
 public class X13ProtosUtility {
 
     public X13Protos.DecompositionMode convert(DecompositionMode mode) {
+        if (mode == null)
+            return X13Protos.DecompositionMode.UNKNOWN;
         switch (mode) {
             case Additive:
                 return X13Protos.DecompositionMode.ADDITIVE;
@@ -145,19 +148,50 @@ public class X13ProtosUtility {
     }
 
     public X13Protos.RegressionTest convert(RegressionTestSpec test) {
-        switch (test){
-            case Add: return X13Protos.RegressionTest.TEST_ADD;
-            case Remove: return X13Protos.RegressionTest.TEST_REMOVE;
-            default: return X13Protos.RegressionTest.TEST_NO;
+        switch (test) {
+            case Add:
+                return X13Protos.RegressionTest.TEST_ADD;
+            case Remove:
+                return X13Protos.RegressionTest.TEST_REMOVE;
+            default:
+                return X13Protos.RegressionTest.TEST_NO;
         }
     }
-    
-    public  RegressionTestSpec convert(X13Protos.RegressionTest test) {
-        switch (test){
-            case TEST_ADD: return RegressionTestSpec.Add;
-            case TEST_REMOVE: return RegressionTestSpec.Remove;
-            default: return RegressionTestSpec.None;
+
+    public RegressionTestSpec convert(X13Protos.RegressionTest test) {
+        switch (test) {
+            case TEST_ADD:
+                return RegressionTestSpec.Add;
+            case TEST_REMOVE:
+                return RegressionTestSpec.Remove;
+            default:
+                return RegressionTestSpec.None;
         }
     }
-    
+
+    public EasterSpec.Type convert(X13Protos.EasterType type) {
+        switch (type) {
+            case EASTER_STANDARD:
+                return EasterSpec.Type.Easter;
+            case EASTER_JULIAN:
+                return EasterSpec.Type.JulianEaster;
+            case EASTER_SC:
+                return EasterSpec.Type.SCEaster;
+            default:
+                return EasterSpec.Type.Unused;
+        }
+    }
+
+    public X13Protos.EasterType convert(EasterSpec.Type type) {
+        switch (type) {
+            case Easter:
+                return X13Protos.EasterType.EASTER_STANDARD;
+            case JulianEaster:
+                return X13Protos.EasterType.EASTER_JULIAN;
+            case SCEaster:
+                return X13Protos.EasterType.EASTER_SC;
+            default:
+                return X13Protos.EasterType.EASTER_UNUSED;
+        }
+    }
 }

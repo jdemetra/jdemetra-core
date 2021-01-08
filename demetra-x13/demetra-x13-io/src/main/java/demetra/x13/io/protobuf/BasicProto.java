@@ -28,10 +28,6 @@ public class BasicProto {
         return builder.build();
     }
 
-    public byte[] toBuffer(BasicSpec spec) {
-        return convert(spec).toByteArray();
-    }
-
     public BasicSpec convert(X13Protos.RegArimaSpec.BasicSpec spec) {
         return BasicSpec.builder()
                 .span(ToolkitProtosUtility.convert(spec.getSpan()))
@@ -40,10 +36,4 @@ public class BasicProto {
                 .build();
 
     }
-
-    public BasicSpec of(byte[] bytes) throws InvalidProtocolBufferException {
-        X13Protos.RegArimaSpec.BasicSpec spec = X13Protos.RegArimaSpec.BasicSpec.parseFrom(bytes);
-        return convert(spec);
-    }
-
 }

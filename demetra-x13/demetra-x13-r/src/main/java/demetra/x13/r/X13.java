@@ -16,11 +16,14 @@
  */
 package demetra.x13.r;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.util.r.Dictionary;
 import demetra.x13.X13Spec;
+import demetra.x13.io.protobuf.SpecProto;
+import demetra.x13.io.protobuf.X13Protos;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import jdplus.x13.X13Kernel;
@@ -33,15 +36,17 @@ import jdplus.x13.extractors.X13Extractor;
  */
 @lombok.experimental.UtilityClass
 public class X13 {
+
     @lombok.Value
-    public static class Results implements ProcResults{
+    public static class Results implements ProcResults {
+
         private X13Results core;
-        
-        public RegArima.Results preprocessing(){
+
+        public RegArima.Results preprocessing() {
             return new RegArima.Results(core.getPreprocessing());
         }
 
-        public X11.Results decomposition(){
+        public X11.Results decomposition() {
             return new X11.Results(core.getDecomposition());
         }
 
@@ -62,19 +67,31 @@ public class X13 {
             return X13Extractor.getMapping().getData(core, id, tclass);
         }
     }
-    
-    public Results process(TsData series, String defSpec){
-        X13Spec spec=X13Spec.fromString(defSpec);
-        X13Kernel kernel= X13Kernel.of(spec, null);
+
+    public Results process(TsData series, String defSpec) {
+        X13Spec spec = X13Spec.fromString(defSpec);
+        X13Kernel kernel = X13Kernel.of(spec, null);
         X13Results estimation = kernel.process(series.cleanExtremities(), null);
         return new Results(estimation);
     }
-    
-    public Results process(TsData series, X13Spec spec, Dictionary dic){
-        ModellingContext context=dic == null ? null : dic.toContext();
-        X13Kernel kernel= X13Kernel.of(spec, context);
+
+    public Results process(TsData series, X13Spec spec, Dictionary dic) {
+        ModellingContext context = dic == null ? null : dic.toContext();
+        X13Kernel kernel = X13Kernel.of(spec, context);
         X13Results estimation = kernel.process(series.cleanExtremities(), null);
         return new Results(estimation);
     }
-    
+
+    public byte[] toBuffer(X13Spec spec) {
+        return SpecProto.convert(spec).toByteArray();
+    }
+
+    public X13Spec of(byte[] buffer) {
+        try {
+            X13Protos.Spec spec = X13Protos.Spec.parseFrom(buffer);
+            return SpecProto.convert(spec);
+        } catch (InvalidProtocolBufferException ex) {
+            return null;
+        }
+    }
 }

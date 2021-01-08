@@ -15,6 +15,159 @@ public final class SaProtos {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   /**
+   * Protobuf enum {@code sa.ComponentType}
+   */
+  public enum ComponentType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>Undefined = 0;</code>
+     */
+    Undefined(0),
+    /**
+     * <code>Series = 1;</code>
+     */
+    Series(1),
+    /**
+     * <code>Trend = 2;</code>
+     */
+    Trend(2),
+    /**
+     * <code>Seasonal = 3;</code>
+     */
+    Seasonal(3),
+    /**
+     * <code>SeasonallyAdjusted = 4;</code>
+     */
+    SeasonallyAdjusted(4),
+    /**
+     * <code>Irregular = 5;</code>
+     */
+    Irregular(5),
+    /**
+     * <code>CalendarEffect = 6;</code>
+     */
+    CalendarEffect(6),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>Undefined = 0;</code>
+     */
+    public static final int Undefined_VALUE = 0;
+    /**
+     * <code>Series = 1;</code>
+     */
+    public static final int Series_VALUE = 1;
+    /**
+     * <code>Trend = 2;</code>
+     */
+    public static final int Trend_VALUE = 2;
+    /**
+     * <code>Seasonal = 3;</code>
+     */
+    public static final int Seasonal_VALUE = 3;
+    /**
+     * <code>SeasonallyAdjusted = 4;</code>
+     */
+    public static final int SeasonallyAdjusted_VALUE = 4;
+    /**
+     * <code>Irregular = 5;</code>
+     */
+    public static final int Irregular_VALUE = 5;
+    /**
+     * <code>CalendarEffect = 6;</code>
+     */
+    public static final int CalendarEffect_VALUE = 6;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static ComponentType valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static ComponentType forNumber(int value) {
+      switch (value) {
+        case 0: return Undefined;
+        case 1: return Series;
+        case 2: return Trend;
+        case 3: return Seasonal;
+        case 4: return SeasonallyAdjusted;
+        case 5: return Irregular;
+        case 6: return CalendarEffect;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<ComponentType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        ComponentType> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<ComponentType>() {
+            public ComponentType findValueByNumber(int number) {
+              return ComponentType.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return demetra.sa.io.protobuf.SaProtos.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final ComponentType[] VALUES = values();
+
+    public static ComponentType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private ComponentType(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:sa.ComponentType)
+  }
+
+  /**
    * Protobuf enum {@code sa.BenchmarkingTarget}
    */
   public enum BenchmarkingTarget
@@ -105,7 +258,7 @@ public final class SaProtos {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return demetra.sa.io.protobuf.SaProtos.getDescriptor().getEnumTypes().get(0);
+      return demetra.sa.io.protobuf.SaProtos.getDescriptor().getEnumTypes().get(1);
     }
 
     private static final BenchmarkingTarget[] VALUES = values();
@@ -231,7 +384,7 @@ public final class SaProtos {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return demetra.sa.io.protobuf.SaProtos.getDescriptor().getEnumTypes().get(1);
+      return demetra.sa.io.protobuf.SaProtos.getDescriptor().getEnumTypes().get(2);
     }
 
     private static final BenchmarkingBias[] VALUES = values();
@@ -1193,14 +1346,17 @@ public final class SaProtos {
       "nabled\030\001 \001(\010\022&\n\006target\030\002 \001(\0162\026.sa.Benchm" +
       "arkingTarget\022\016\n\006lambda\030\003 \001(\001\022\013\n\003rho\030\004 \001(" +
       "\001\022\"\n\004bias\030\005 \001(\0162\024.sa.BenchmarkingBias\022\020\n" +
-      "\010forecast\030\006 \001(\010*p\n\022BenchmarkingTarget\022\034\n" +
-      "\030BENCH_TARGET_UNSPECIFIED\020\000\022\031\n\025BENCH_TAR" +
-      "GET_ORIGINAL\020\001\022!\n\035BENCH_TARGET_CALENDARA" +
-      "DJUSTED\020\002*{\n\020BenchmarkingBias\022\032\n\026BENCH_B" +
-      "IAS_UNSPECIFIED\020\000\022\023\n\017BENCH_BIAS_NONE\020\001\022\027" +
-      "\n\023BENCH_BIAS_ADDITIVE\020\002\022\035\n\031BENCH_BIAS_MU" +
-      "LTIPLICATIVE\020\003B\"\n\026demetra.sa.io.protobuf" +
-      "B\010SaProtosb\006proto3"
+      "\010forecast\030\006 \001(\010*~\n\rComponentType\022\r\n\tUnde" +
+      "fined\020\000\022\n\n\006Series\020\001\022\t\n\005Trend\020\002\022\014\n\010Season" +
+      "al\020\003\022\026\n\022SeasonallyAdjusted\020\004\022\r\n\tIrregula" +
+      "r\020\005\022\022\n\016CalendarEffect\020\006*p\n\022BenchmarkingT" +
+      "arget\022\034\n\030BENCH_TARGET_UNSPECIFIED\020\000\022\031\n\025B" +
+      "ENCH_TARGET_ORIGINAL\020\001\022!\n\035BENCH_TARGET_C" +
+      "ALENDARADJUSTED\020\002*{\n\020BenchmarkingBias\022\032\n" +
+      "\026BENCH_BIAS_UNSPECIFIED\020\000\022\023\n\017BENCH_BIAS_" +
+      "NONE\020\001\022\027\n\023BENCH_BIAS_ADDITIVE\020\002\022\035\n\031BENCH" +
+      "_BIAS_MULTIPLICATIVE\020\003B\"\n\026demetra.sa.io." +
+      "protobufB\010SaProtosb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

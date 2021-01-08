@@ -16,9 +16,8 @@ import demetra.regarima.EasterSpec;
 public class EasterProto {
 
     public void fill(EasterSpec spec, X13Protos.RegArimaSpec.EasterSpec.Builder builder) {
-        builder.setAutomatic(spec.isAutomatic())
+        builder.setType(X13ProtosUtility.convert(spec.getType()))
                 .setDuration(spec.getDuration())
-                .setJulian(spec.getType() == EasterSpec.Type.JulianEaster)
                 .setTest(X13ProtosUtility.convert(spec.getTest()));
     }
 
@@ -34,9 +33,9 @@ public class EasterProto {
 
     public EasterSpec convert(X13Protos.RegArimaSpec.EasterSpec spec) {
         return EasterSpec.builder()
-                .automatic(spec.getAutomatic())
+                .automatic(spec.getDuration() == 0)
                 .duration(spec.getDuration())
-                .type(spec.getJulian() ? EasterSpec.Type.JulianEaster : EasterSpec.Type.Easter)
+                .type(X13ProtosUtility.convert(spec.getType()))
                 .test(X13ProtosUtility.convert(spec.getTest()))
                 .build();
 

@@ -16,12 +16,16 @@
  */
 package demetra.x13.r;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.math.matrices.MatrixType;
 import demetra.processing.ProcResults;
 import demetra.regarima.RegArimaSpec;
+import demetra.regarima.io.protobuf.RegArimaEstimationProto;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.util.r.Dictionary;
+import demetra.x13.io.protobuf.RegArimaProto;
+import demetra.x13.io.protobuf.X13Protos;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import jdplus.math.matrices.Matrix;
@@ -39,6 +43,10 @@ public class RegArima {
     @lombok.Value
     public static class Results implements ProcResults{
         private ModelEstimation core;
+
+        public byte[] buffer() {
+            return RegArimaEstimationProto.convert(core).toByteArray();
+        }
 
         @Override
         public boolean contains(String id) {
@@ -90,4 +98,19 @@ public class RegArima {
         R.column(3).copy(f.getRawForecastsStdev());
         return R;
     }
+    
+       public byte[] toBuffer(RegArimaSpec spec) {
+        return RegArimaProto.convert(spec).toByteArray();
+    }
+
+    public RegArimaSpec of(byte[] buffer) {
+       try {
+            X13Protos.RegArimaSpec spec = X13Protos.RegArimaSpec.parseFrom(buffer);
+            return RegArimaProto.convert(spec);
+        } catch (InvalidProtocolBufferException ex) {
+            return null;
+        }
+    }
+    
+
 }

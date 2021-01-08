@@ -2467,13 +2467,13 @@ public final class RegArimaProtos {
         getNameBytes();
 
     /**
-     * <code>int32 firstLag = 2;</code>
+     * <code>int32 first_lag = 2;</code>
      * @return The firstLag.
      */
     int getFirstLag();
 
     /**
-     * <code>int32 lastLag = 3;</code>
+     * <code>int32 last_lag = 3;</code>
      * @return The lastLag.
      */
     int getLastLag();
@@ -2649,10 +2649,10 @@ public final class RegArimaProtos {
       }
     }
 
-    public static final int FIRSTLAG_FIELD_NUMBER = 2;
+    public static final int FIRST_LAG_FIELD_NUMBER = 2;
     private int firstLag_;
     /**
-     * <code>int32 firstLag = 2;</code>
+     * <code>int32 first_lag = 2;</code>
      * @return The firstLag.
      */
     @java.lang.Override
@@ -2660,10 +2660,10 @@ public final class RegArimaProtos {
       return firstLag_;
     }
 
-    public static final int LASTLAG_FIELD_NUMBER = 3;
+    public static final int LAST_LAG_FIELD_NUMBER = 3;
     private int lastLag_;
     /**
-     * <code>int32 lastLag = 3;</code>
+     * <code>int32 last_lag = 3;</code>
      * @return The lastLag.
      */
     @java.lang.Override
@@ -2796,9 +2796,9 @@ public final class RegArimaProtos {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + NAME_FIELD_NUMBER;
       hash = (53 * hash) + getName().hashCode();
-      hash = (37 * hash) + FIRSTLAG_FIELD_NUMBER;
+      hash = (37 * hash) + FIRST_LAG_FIELD_NUMBER;
       hash = (53 * hash) + getFirstLag();
-      hash = (37 * hash) + LASTLAG_FIELD_NUMBER;
+      hash = (37 * hash) + LAST_LAG_FIELD_NUMBER;
       hash = (53 * hash) + getLastLag();
       if (getAttributesCount() > 0) {
         hash = (37 * hash) + ATTRIBUTES_FIELD_NUMBER;
@@ -3156,7 +3156,7 @@ public final class RegArimaProtos {
 
       private int firstLag_ ;
       /**
-       * <code>int32 firstLag = 2;</code>
+       * <code>int32 first_lag = 2;</code>
        * @return The firstLag.
        */
       @java.lang.Override
@@ -3164,7 +3164,7 @@ public final class RegArimaProtos {
         return firstLag_;
       }
       /**
-       * <code>int32 firstLag = 2;</code>
+       * <code>int32 first_lag = 2;</code>
        * @param value The firstLag to set.
        * @return This builder for chaining.
        */
@@ -3175,7 +3175,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>int32 firstLag = 2;</code>
+       * <code>int32 first_lag = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearFirstLag() {
@@ -3187,7 +3187,7 @@ public final class RegArimaProtos {
 
       private int lastLag_ ;
       /**
-       * <code>int32 lastLag = 3;</code>
+       * <code>int32 last_lag = 3;</code>
        * @return The lastLag.
        */
       @java.lang.Override
@@ -3195,7 +3195,7 @@ public final class RegArimaProtos {
         return lastLag_;
       }
       /**
-       * <code>int32 lastLag = 3;</code>
+       * <code>int32 last_lag = 3;</code>
        * @param value The lastLag to set.
        * @return This builder for chaining.
        */
@@ -3206,7 +3206,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>int32 lastLag = 3;</code>
+       * <code>int32 last_lag = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearLastLag() {
@@ -6513,22 +6513,22 @@ public final class RegArimaProtos {
       "meter\022\t\n\001d\030\002 \001(\005\022\035\n\005theta\030\003 \003(\0132\016.jd3.Pa" +
       "rameter\022\034\n\004bphi\030\004 \003(\0132\016.jd3.Parameter\022\n\n" +
       "\002bd\030\005 \001(\005\022\036\n\006btheta\030\006 \003(\0132\016.jd3.Paramete" +
-      "r\"O\n\010Variable\022\014\n\004name\030\001 \001(\t\022\020\n\010firstLag\030" +
-      "\002 \001(\005\022\017\n\007lastLag\030\003 \001(\005\022\022\n\nattributes\030\004 \003" +
-      "(\t\"\"\n\004Ramp\022\r\n\005start\030\001 \001(\t\022\013\n\003end\030\002 \001(\t\")" +
-      "\n\007Outlier\022\014\n\004code\030\001 \001(\t\022\020\n\010position\030\002 \001(" +
-      "\t\"\241\001\n\024InterventionVariable\022:\n\tsequences\030" +
-      "\001 \003(\0132\'.regarima.InterventionVariable.Se" +
-      "quence\022\r\n\005delta\030\002 \001(\001\022\026\n\016seasonal_delta\030" +
-      "\003 \001(\001\032&\n\010Sequence\022\r\n\005start\030\001 \001(\t\022\013\n\003end\030" +
-      "\002 \001(\t*K\n\016Transformation\022\022\n\016FN_UNSPECIFIE" +
-      "D\020\000\022\014\n\010FN_LEVEL\020\001\022\n\n\006FN_LOG\020\002\022\013\n\007FN_AUTO" +
-      "\020\n*Y\n\016LengthOfPeriod\022\022\n\016LP_UNSPECIFIED\020\000" +
-      "\022\013\n\007LP_NONE\020\001\022\017\n\013LP_LEAPYEAR\020\002\022\025\n\021LP_LEN" +
-      "GTHOFPERIOD\020\003*R\n\013TradingDays\022\022\n\016TD_UNSPE" +
-      "CIFIED\020\000\022\013\n\007TD_NONE\020\001\022\013\n\007TD_WEEK\020\002\022\010\n\004TD" +
-      "_3\020\003\022\013\n\007TD_FULL\020\006B.\n\034demetra.regarima.io" +
-      ".protobufB\016RegArimaProtosP\000b\006proto3"
+      "r\"Q\n\010Variable\022\014\n\004name\030\001 \001(\t\022\021\n\tfirst_lag" +
+      "\030\002 \001(\005\022\020\n\010last_lag\030\003 \001(\005\022\022\n\nattributes\030\004" +
+      " \003(\t\"\"\n\004Ramp\022\r\n\005start\030\001 \001(\t\022\013\n\003end\030\002 \001(\t" +
+      "\")\n\007Outlier\022\014\n\004code\030\001 \001(\t\022\020\n\010position\030\002 " +
+      "\001(\t\"\241\001\n\024InterventionVariable\022:\n\tsequence" +
+      "s\030\001 \003(\0132\'.regarima.InterventionVariable." +
+      "Sequence\022\r\n\005delta\030\002 \001(\001\022\026\n\016seasonal_delt" +
+      "a\030\003 \001(\001\032&\n\010Sequence\022\r\n\005start\030\001 \001(\t\022\013\n\003en" +
+      "d\030\002 \001(\t*K\n\016Transformation\022\022\n\016FN_UNSPECIF" +
+      "IED\020\000\022\014\n\010FN_LEVEL\020\001\022\n\n\006FN_LOG\020\002\022\013\n\007FN_AU" +
+      "TO\020\n*Y\n\016LengthOfPeriod\022\022\n\016LP_UNSPECIFIED" +
+      "\020\000\022\013\n\007LP_NONE\020\001\022\017\n\013LP_LEAPYEAR\020\002\022\025\n\021LP_L" +
+      "ENGTHOFPERIOD\020\003*R\n\013TradingDays\022\022\n\016TD_UNS" +
+      "PECIFIED\020\000\022\013\n\007TD_NONE\020\001\022\013\n\007TD_WEEK\020\002\022\010\n\004" +
+      "TD_3\020\003\022\013\n\007TD_FULL\020\006B.\n\034demetra.regarima." +
+      "io.protobufB\016RegArimaProtosP\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

@@ -29,6 +29,7 @@ import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import jdplus.regsarima.regular.ModelEstimation;
 
 /**
  *
@@ -198,4 +199,16 @@ public class RegArimaProtosUtility {
         }
         return builder.build();
     }
+    
+    
+    
+    public RegArimaResultsProtos.RegArimaEstimation convert(ModelEstimation model){
+        RegArimaResultsProtos.RegArimaEstimation.Builder builder = RegArimaResultsProtos.RegArimaEstimation.newBuilder();
+        builder.setTransformation(model.isLogTransformation() ? RegArimaProtos.Transformation.FN_LOG : RegArimaProtos.Transformation.FN_LEVEL)
+                .setCovariance(ToolkitProtosUtility.convert(model.getArimaCovariance()))
+                .setLikelihood(ToolkitProtosUtility.convert(model.getStatistics()));
+        
+        return builder.build();
+    }
+    
 }
