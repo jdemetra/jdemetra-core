@@ -13,8 +13,11 @@ import ec.tstoolkit.algorithm.SequentialProcessing;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 import utilities.CompareTsData;
+
+import static utilities.MathNatives.isMathExpIntrinsifiedByVM;
 
 /**
  *
@@ -24,6 +27,8 @@ public class X11KernelHalfYearlyTest {
 
     @Test
     public void HKAS_LogAddTest() {
+        Assume.assumeTrue("This test expects Math#exp(double) to be intrinsified", isMathExpIntrinsifiedByVM());
+
         TsData ts = DataHalfYearly.HKAS;
         X13Specification x13spec = SpecHalfYearly.getSpecHKAS();
         x13spec.getX11Specification().setMode(DecompositionMode.LogAdditive);
@@ -38,6 +43,8 @@ public class X11KernelHalfYearlyTest {
 
     @Test
     public void HKASTest() {
+        Assume.assumeTrue("This test expects Math#exp(double) to be intrinsified", isMathExpIntrinsifiedByVM());
+
         TsData ts = DataHalfYearly.HKAS;
         X13Specification x13spec = SpecHalfYearly.getSpecHKAS();
         SequentialProcessing<TsData> processing = X13ProcessingFactory.instance.generateProcessing(x13spec);
