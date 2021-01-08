@@ -180,7 +180,7 @@ public class X13UserdefinedVariablesInDTablesMainResults {
     ProcessingContext makeContext() {
 
         if (context == null) {
-            context = ProcessingContext.getActiveContext();
+            context = new ProcessingContext();
             NameManager<TsVariables> activeMgr = context.getTsVariableManagers();
             TsVariables mgr = new TsVariables();
             mgr.set("x_1", tsvUser); //ok
