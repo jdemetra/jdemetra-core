@@ -307,12 +307,12 @@ public final class ToolkitProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.jd3.SelectionType Type = 1;</code>
+     * <code>.jd3.SelectionType type = 1;</code>
      * @return The enum numeric value on the wire for type.
      */
     int getTypeValue();
     /**
-     * <code>.jd3.SelectionType Type = 1;</code>
+     * <code>.jd3.SelectionType type = 1;</code>
      * @return The type.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType getType();
@@ -464,14 +464,14 @@ public final class ToolkitProtos {
     public static final int TYPE_FIELD_NUMBER = 1;
     private int type_;
     /**
-     * <code>.jd3.SelectionType Type = 1;</code>
+     * <code>.jd3.SelectionType type = 1;</code>
      * @return The enum numeric value on the wire for type.
      */
     @java.lang.Override public int getTypeValue() {
       return type_;
     }
     /**
-     * <code>.jd3.SelectionType Type = 1;</code>
+     * <code>.jd3.SelectionType type = 1;</code>
      * @return The type.
      */
     @java.lang.Override public demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType getType() {
@@ -949,14 +949,14 @@ public final class ToolkitProtos {
 
       private int type_ = 0;
       /**
-       * <code>.jd3.SelectionType Type = 1;</code>
+       * <code>.jd3.SelectionType type = 1;</code>
        * @return The enum numeric value on the wire for type.
        */
       @java.lang.Override public int getTypeValue() {
         return type_;
       }
       /**
-       * <code>.jd3.SelectionType Type = 1;</code>
+       * <code>.jd3.SelectionType type = 1;</code>
        * @param value The enum numeric value on the wire for type to set.
        * @return This builder for chaining.
        */
@@ -967,7 +967,7 @@ public final class ToolkitProtos {
         return this;
       }
       /**
-       * <code>.jd3.SelectionType Type = 1;</code>
+       * <code>.jd3.SelectionType type = 1;</code>
        * @return The type.
        */
       @java.lang.Override
@@ -977,7 +977,7 @@ public final class ToolkitProtos {
         return result == null ? demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType.UNRECOGNIZED : result;
       }
       /**
-       * <code>.jd3.SelectionType Type = 1;</code>
+       * <code>.jd3.SelectionType type = 1;</code>
        * @param value The type to set.
        * @return This builder for chaining.
        */
@@ -991,7 +991,7 @@ public final class ToolkitProtos {
         return this;
       }
       /**
-       * <code>.jd3.SelectionType Type = 1;</code>
+       * <code>.jd3.SelectionType type = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearType() {
@@ -5836,7 +5836,7 @@ public final class ToolkitProtos {
   static {
     java.lang.String[] descriptorData = {
       "\n\rtoolkit.proto\022\003jd3\"`\n\014TimeSelector\022 \n\004" +
-      "Type\030\001 \001(\0162\022.jd3.SelectionType\022\n\n\002n0\030\002 \001" +
+      "type\030\001 \001(\0162\022.jd3.SelectionType\022\n\n\002n0\030\002 \001" +
       "(\005\022\n\n\002n1\030\003 \001(\005\022\n\n\002d0\030\004 \001(\t\022\n\n\002d1\030\005 \001(\t\"<" +
       "\n\tParameter\022\r\n\005value\030\001 \001(\001\022 \n\004type\030\002 \001(\016" +
       "2\022.jd3.ParameterType\"_\n\006TsData\022\014\n\004name\030\001" +

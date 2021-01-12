@@ -200,8 +200,6 @@ public class RegArimaProtosUtility {
         return builder.build();
     }
     
-    
-    
     public RegArimaResultsProtos.RegArimaEstimation convert(ModelEstimation model){
         RegArimaResultsProtos.RegArimaEstimation.Builder builder = RegArimaResultsProtos.RegArimaEstimation.newBuilder();
         builder.setTransformation(model.isLogTransformation() ? RegArimaProtos.Transformation.FN_LOG : RegArimaProtos.Transformation.FN_LEVEL)
