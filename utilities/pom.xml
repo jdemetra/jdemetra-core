@@ -16,7 +16,7 @@
     <properties>
         <slf4j.version>1.7.30</slf4j.version>
         <guava.version>24.1.1-jre</guava.version>
-        <java-io-util.version>0.0.8</java-io-util.version>
+        <java-io-util.version>0.0.9</java-io-util.version>
     </properties>
 
     <dependencyManagement>
