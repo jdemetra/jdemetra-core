@@ -19,13 +19,16 @@ package demetra.tramoseats.r;
 import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
+import demetra.data.Utility;
 import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
+import demetra.outliers.io.protobuf.OutliersProtos;
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
+import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -59,6 +62,37 @@ public class TramoOutliersDetection {
     @lombok.Builder
     public static class Results implements ProcResults {
 
+        public byte[] buffer() {
+            SarimaOrders orders = initialArima.orders();
+            int nx = x == null ? 0 : x.getColumnsCount();
+            OutliersProtos.RegArimaSolution.Builder builder = OutliersProtos.RegArimaSolution.newBuilder()
+                    .addArimaOrders(orders.getP())
+                    .addArimaOrders(orders.getD())
+                    .addArimaOrders(orders.getQ())
+                    .addArimaOrders(orders.getBp())
+                    .addArimaOrders(orders.getBd())
+                    .addArimaOrders(orders.getBq())
+                    .addAllArimaInitial(Utility.asIterable(initialArima.parameters()))
+                    .addAllArimaFinal(Utility.asIterable(finalArima.parameters()))
+                    .addAllCoefficients(Utility.asIterable(coefficients))
+                    .setCovariance(ToolkitProtosUtility.convert(coefficientsCovariance))
+                    .setRegressors(ToolkitProtosUtility.convert(regressors))
+                    .setInitialLikelihood(ToolkitProtosUtility.convert(initialLikelihood))
+                    .setFinalLikelihood(ToolkitProtosUtility.convert(finalLikelihood))
+                    .addAllResiduals(Utility.asIterable(residuals));
+            DoubleSeq diag = coefficientsCovariance.diagonal();
+            for (int i = 0, j = nx; i < outliers.length; ++i, ++j) {
+                builder.addOutliers(
+                        OutliersProtos.Outlier.newBuilder()
+                                .setCode(outliers[i].getCode())
+                                .setPosition(outliers[i].getPosition())
+                                .setCoefficient(coefficients[j])
+                                .setStde(Math.sqrt(diag.get(j)))
+                                .build());
+            }
+            return builder.build().toByteArray();
+        }
+
         SarimaModel initialArima, finalArima;
 
         DoubleSeq y;
@@ -69,6 +103,7 @@ public class TramoOutliersDetection {
         MatrixType coefficientsCovariance;
         MatrixType regressors;
         DoubleSeq linearized;
+        DoubleSeq residuals;
 
         LikelihoodStatistics initialLikelihood, finalLikelihood;
 
@@ -156,7 +191,7 @@ public class TramoOutliersDetection {
 
     public Results process(TsData y, int[] order, int[] seasonal, boolean mean, MatrixType x,
             boolean bao, boolean bls, boolean btc, boolean bso, double cv, boolean ml) {
-        y=y.cleanExtremities();
+        y = y.cleanExtremities();
 
         SarimaOrders spec = new SarimaOrders(y.getAnnualFrequency());
         spec.setP(order[0]);
@@ -232,6 +267,7 @@ public class TramoOutliersDetection {
                 .x(x)
                 .y(y.getValues())
                 .linearized(RegArimaUtility.linearizedData(estimation1.getModel(), estimation1.getConcentratedLikelihood()))
+                .residuals(estimation1.getConcentratedLikelihood().e())
                 .build();
     }
 

@@ -2477,31 +2477,6 @@ public final class RegArimaProtos {
      * @return The lastLag.
      */
     int getLastLag();
-
-    /**
-     * <code>repeated string attributes = 4;</code>
-     * @return A list containing the attributes.
-     */
-    java.util.List<java.lang.String>
-        getAttributesList();
-    /**
-     * <code>repeated string attributes = 4;</code>
-     * @return The count of attributes.
-     */
-    int getAttributesCount();
-    /**
-     * <code>repeated string attributes = 4;</code>
-     * @param index The index of the element to return.
-     * @return The attributes at the given index.
-     */
-    java.lang.String getAttributes(int index);
-    /**
-     * <code>repeated string attributes = 4;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the attributes at the given index.
-     */
-    com.google.protobuf.ByteString
-        getAttributesBytes(int index);
   }
   /**
    * Protobuf type {@code regarima.Variable}
@@ -2517,7 +2492,6 @@ public final class RegArimaProtos {
     }
     private Variable() {
       name_ = "";
-      attributes_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
 
     @java.lang.Override
@@ -2540,7 +2514,6 @@ public final class RegArimaProtos {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
-      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -2567,15 +2540,6 @@ public final class RegArimaProtos {
               lastLag_ = input.readInt32();
               break;
             }
-            case 34: {
-              java.lang.String s = input.readStringRequireUtf8();
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                attributes_ = new com.google.protobuf.LazyStringArrayList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              attributes_.add(s);
-              break;
-            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -2591,9 +2555,6 @@ public final class RegArimaProtos {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          attributes_ = attributes_.getUnmodifiableView();
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -2671,41 +2632,6 @@ public final class RegArimaProtos {
       return lastLag_;
     }
 
-    public static final int ATTRIBUTES_FIELD_NUMBER = 4;
-    private com.google.protobuf.LazyStringList attributes_;
-    /**
-     * <code>repeated string attributes = 4;</code>
-     * @return A list containing the attributes.
-     */
-    public com.google.protobuf.ProtocolStringList
-        getAttributesList() {
-      return attributes_;
-    }
-    /**
-     * <code>repeated string attributes = 4;</code>
-     * @return The count of attributes.
-     */
-    public int getAttributesCount() {
-      return attributes_.size();
-    }
-    /**
-     * <code>repeated string attributes = 4;</code>
-     * @param index The index of the element to return.
-     * @return The attributes at the given index.
-     */
-    public java.lang.String getAttributes(int index) {
-      return attributes_.get(index);
-    }
-    /**
-     * <code>repeated string attributes = 4;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the attributes at the given index.
-     */
-    public com.google.protobuf.ByteString
-        getAttributesBytes(int index) {
-      return attributes_.getByteString(index);
-    }
-
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -2729,9 +2655,6 @@ public final class RegArimaProtos {
       if (lastLag_ != 0) {
         output.writeInt32(3, lastLag_);
       }
-      for (int i = 0; i < attributes_.size(); i++) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, attributes_.getRaw(i));
-      }
       unknownFields.writeTo(output);
     }
 
@@ -2751,14 +2674,6 @@ public final class RegArimaProtos {
       if (lastLag_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, lastLag_);
-      }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < attributes_.size(); i++) {
-          dataSize += computeStringSizeNoTag(attributes_.getRaw(i));
-        }
-        size += dataSize;
-        size += 1 * getAttributesList().size();
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2781,8 +2696,6 @@ public final class RegArimaProtos {
           != other.getFirstLag()) return false;
       if (getLastLag()
           != other.getLastLag()) return false;
-      if (!getAttributesList()
-          .equals(other.getAttributesList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2800,10 +2713,6 @@ public final class RegArimaProtos {
       hash = (53 * hash) + getFirstLag();
       hash = (37 * hash) + LAST_LAG_FIELD_NUMBER;
       hash = (53 * hash) + getLastLag();
-      if (getAttributesCount() > 0) {
-        hash = (37 * hash) + ATTRIBUTES_FIELD_NUMBER;
-        hash = (53 * hash) + getAttributesList().hashCode();
-      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2943,8 +2852,6 @@ public final class RegArimaProtos {
 
         lastLag_ = 0;
 
-        attributes_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
 
@@ -2971,15 +2878,9 @@ public final class RegArimaProtos {
       @java.lang.Override
       public demetra.regarima.io.protobuf.RegArimaProtos.Variable buildPartial() {
         demetra.regarima.io.protobuf.RegArimaProtos.Variable result = new demetra.regarima.io.protobuf.RegArimaProtos.Variable(this);
-        int from_bitField0_ = bitField0_;
         result.name_ = name_;
         result.firstLag_ = firstLag_;
         result.lastLag_ = lastLag_;
-        if (((bitField0_ & 0x00000001) != 0)) {
-          attributes_ = attributes_.getUnmodifiableView();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.attributes_ = attributes_;
         onBuilt();
         return result;
       }
@@ -3038,16 +2939,6 @@ public final class RegArimaProtos {
         if (other.getLastLag() != 0) {
           setLastLag(other.getLastLag());
         }
-        if (!other.attributes_.isEmpty()) {
-          if (attributes_.isEmpty()) {
-            attributes_ = other.attributes_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureAttributesIsMutable();
-            attributes_.addAll(other.attributes_);
-          }
-          onChanged();
-        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -3076,7 +2967,6 @@ public final class RegArimaProtos {
         }
         return this;
       }
-      private int bitField0_;
 
       private java.lang.Object name_ = "";
       /**
@@ -3212,116 +3102,6 @@ public final class RegArimaProtos {
       public Builder clearLastLag() {
         
         lastLag_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.LazyStringList attributes_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      private void ensureAttributesIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          attributes_ = new com.google.protobuf.LazyStringArrayList(attributes_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-      /**
-       * <code>repeated string attributes = 4;</code>
-       * @return A list containing the attributes.
-       */
-      public com.google.protobuf.ProtocolStringList
-          getAttributesList() {
-        return attributes_.getUnmodifiableView();
-      }
-      /**
-       * <code>repeated string attributes = 4;</code>
-       * @return The count of attributes.
-       */
-      public int getAttributesCount() {
-        return attributes_.size();
-      }
-      /**
-       * <code>repeated string attributes = 4;</code>
-       * @param index The index of the element to return.
-       * @return The attributes at the given index.
-       */
-      public java.lang.String getAttributes(int index) {
-        return attributes_.get(index);
-      }
-      /**
-       * <code>repeated string attributes = 4;</code>
-       * @param index The index of the value to return.
-       * @return The bytes of the attributes at the given index.
-       */
-      public com.google.protobuf.ByteString
-          getAttributesBytes(int index) {
-        return attributes_.getByteString(index);
-      }
-      /**
-       * <code>repeated string attributes = 4;</code>
-       * @param index The index to set the value at.
-       * @param value The attributes to set.
-       * @return This builder for chaining.
-       */
-      public Builder setAttributes(
-          int index, java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureAttributesIsMutable();
-        attributes_.set(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string attributes = 4;</code>
-       * @param value The attributes to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAttributes(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureAttributesIsMutable();
-        attributes_.add(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string attributes = 4;</code>
-       * @param values The attributes to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllAttributes(
-          java.lang.Iterable<java.lang.String> values) {
-        ensureAttributesIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, attributes_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string attributes = 4;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearAttributes() {
-        attributes_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string attributes = 4;</code>
-       * @param value The bytes of the attributes to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAttributesBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        ensureAttributesIsMutable();
-        attributes_.add(value);
         onChanged();
         return this;
       }
@@ -6513,22 +6293,22 @@ public final class RegArimaProtos {
       "meter\022\t\n\001d\030\002 \001(\005\022\035\n\005theta\030\003 \003(\0132\016.jd3.Pa" +
       "rameter\022\034\n\004bphi\030\004 \003(\0132\016.jd3.Parameter\022\n\n" +
       "\002bd\030\005 \001(\005\022\036\n\006btheta\030\006 \003(\0132\016.jd3.Paramete" +
-      "r\"Q\n\010Variable\022\014\n\004name\030\001 \001(\t\022\021\n\tfirst_lag" +
-      "\030\002 \001(\005\022\020\n\010last_lag\030\003 \001(\005\022\022\n\nattributes\030\004" +
-      " \003(\t\"\"\n\004Ramp\022\r\n\005start\030\001 \001(\t\022\013\n\003end\030\002 \001(\t" +
-      "\")\n\007Outlier\022\014\n\004code\030\001 \001(\t\022\020\n\010position\030\002 " +
-      "\001(\t\"\241\001\n\024InterventionVariable\022:\n\tsequence" +
-      "s\030\001 \003(\0132\'.regarima.InterventionVariable." +
-      "Sequence\022\r\n\005delta\030\002 \001(\001\022\026\n\016seasonal_delt" +
-      "a\030\003 \001(\001\032&\n\010Sequence\022\r\n\005start\030\001 \001(\t\022\013\n\003en" +
-      "d\030\002 \001(\t*K\n\016Transformation\022\022\n\016FN_UNSPECIF" +
-      "IED\020\000\022\014\n\010FN_LEVEL\020\001\022\n\n\006FN_LOG\020\002\022\013\n\007FN_AU" +
-      "TO\020\n*Y\n\016LengthOfPeriod\022\022\n\016LP_UNSPECIFIED" +
-      "\020\000\022\013\n\007LP_NONE\020\001\022\017\n\013LP_LEAPYEAR\020\002\022\025\n\021LP_L" +
-      "ENGTHOFPERIOD\020\003*R\n\013TradingDays\022\022\n\016TD_UNS" +
-      "PECIFIED\020\000\022\013\n\007TD_NONE\020\001\022\013\n\007TD_WEEK\020\002\022\010\n\004" +
-      "TD_3\020\003\022\013\n\007TD_FULL\020\006B.\n\034demetra.regarima." +
-      "io.protobufB\016RegArimaProtosP\000b\006proto3"
+      "r\"=\n\010Variable\022\014\n\004name\030\001 \001(\t\022\021\n\tfirst_lag" +
+      "\030\002 \001(\005\022\020\n\010last_lag\030\003 \001(\005\"\"\n\004Ramp\022\r\n\005star" +
+      "t\030\001 \001(\t\022\013\n\003end\030\002 \001(\t\")\n\007Outlier\022\014\n\004code\030" +
+      "\001 \001(\t\022\020\n\010position\030\002 \001(\t\"\241\001\n\024Intervention" +
+      "Variable\022:\n\tsequences\030\001 \003(\0132\'.regarima.I" +
+      "nterventionVariable.Sequence\022\r\n\005delta\030\002 " +
+      "\001(\001\022\026\n\016seasonal_delta\030\003 \001(\001\032&\n\010Sequence\022" +
+      "\r\n\005start\030\001 \001(\t\022\013\n\003end\030\002 \001(\t*K\n\016Transform" +
+      "ation\022\022\n\016FN_UNSPECIFIED\020\000\022\014\n\010FN_LEVEL\020\001\022" +
+      "\n\n\006FN_LOG\020\002\022\013\n\007FN_AUTO\020\n*Y\n\016LengthOfPeri" +
+      "od\022\022\n\016LP_UNSPECIFIED\020\000\022\013\n\007LP_NONE\020\001\022\017\n\013L" +
+      "P_LEAPYEAR\020\002\022\025\n\021LP_LENGTHOFPERIOD\020\003*R\n\013T" +
+      "radingDays\022\022\n\016TD_UNSPECIFIED\020\000\022\013\n\007TD_NON" +
+      "E\020\001\022\013\n\007TD_WEEK\020\002\022\010\n\004TD_3\020\003\022\013\n\007TD_FULL\020\006B" +
+      ".\n\034demetra.regarima.io.protobufB\016RegArim" +
+      "aProtosP\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -6546,7 +6326,7 @@ public final class RegArimaProtos {
     internal_static_regarima_Variable_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_regarima_Variable_descriptor,
-        new java.lang.String[] { "Name", "FirstLag", "LastLag", "Attributes", });
+        new java.lang.String[] { "Name", "FirstLag", "LastLag", });
     internal_static_regarima_Ramp_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_regarima_Ramp_fieldAccessorTable = new

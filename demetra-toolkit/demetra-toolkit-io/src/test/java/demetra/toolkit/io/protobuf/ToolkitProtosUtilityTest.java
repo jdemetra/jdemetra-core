@@ -61,9 +61,9 @@ public class ToolkitProtosUtilityTest {
         Matrix M=Matrix.make(10, 20);
         M.set((r, c)->r+c);
         ToolkitProtos.Matrix m = ToolkitProtosUtility.convert(M);
-        int n = m.getValueCount();
+        int n = m.getValuesCount();
         assertTrue(n == M.getRowsCount()*M.getColumnsCount());
-        assertTrue(m.getValue(n-1) == M.get(M.getRowsCount()-1, M.getColumnsCount()-1));
+        assertTrue(m.getValues(n-1) == M.get(M.getRowsCount()-1, M.getColumnsCount()-1));
     }
     
     @Test
@@ -71,8 +71,8 @@ public class ToolkitProtosUtilityTest {
         TsData s=Data.TS_ABS_RETAIL;
         ToolkitProtos.TsData data = ToolkitProtosUtility.convert(s);
         int n=s.length();
-        assertTrue(data.getValueCount() == n);
-        assertTrue(data.getValue(n-1) == s.getValue(n-1));
+        assertTrue(data.getValuesCount() == n);
+        assertTrue(data.getValues(n-1) == s.getValue(n-1));
         
     }
 

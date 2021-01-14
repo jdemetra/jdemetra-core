@@ -187,10 +187,10 @@ public class ToolkitProtosUtility {
 
     public TsData convert(ToolkitProtos.TsData s) {
         int p = s.getPeriod(), y = s.getStartYear(), m = s.getStartPeriod();
-        int n = s.getValueCount();
+        int n = s.getValuesCount();
         double[] data = new double[n];
         for (int i = 0; i < n; ++i) {
-            data[i] = s.getValue(i);
+            data[i] = s.getValues(i);
         }
         return ts(p, y, m, data);
     }
@@ -201,7 +201,7 @@ public class ToolkitProtosUtility {
                 .setPeriod(s.getAnnualFrequency())
                 .setStartYear(start.year())
                 .setStartPeriod(start.annualPosition())
-                .addAllValue(Utility.asIterable(s.getValues()))
+                .addAllValues(Utility.asIterable(s.getValues()))
                 .build();
     }
     
@@ -209,7 +209,7 @@ public class ToolkitProtosUtility {
         return ToolkitProtos.Matrix.newBuilder()
                 .setNrows(m.getRowsCount())
                 .setNcols(m.getColumnsCount())
-                .addAllValue(Utility.asIterable(m.toArray()))
+                .addAllValues(Utility.asIterable(m.toArray()))
                 .build();
     }
     

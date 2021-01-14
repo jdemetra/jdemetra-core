@@ -210,33 +210,33 @@ public final class X13ResultsProtos {
     demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getD13OrBuilder();
 
     /**
-     * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
-     * @return A list containing the finalSeasonalFilter.
+     * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
+     * @return A list containing the finalSeasonalFilters.
      */
-    java.util.List<demetra.x13.io.protobuf.X13Protos.SeasonalFilter> getFinalSeasonalFilterList();
+    java.util.List<demetra.x13.io.protobuf.X13Protos.SeasonalFilter> getFinalSeasonalFiltersList();
     /**
-     * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
-     * @return The count of finalSeasonalFilter.
+     * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
+     * @return The count of finalSeasonalFilters.
      */
-    int getFinalSeasonalFilterCount();
+    int getFinalSeasonalFiltersCount();
     /**
-     * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
+     * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
      * @param index The index of the element to return.
-     * @return The finalSeasonalFilter at the given index.
+     * @return The finalSeasonalFilters at the given index.
      */
-    demetra.x13.io.protobuf.X13Protos.SeasonalFilter getFinalSeasonalFilter(int index);
+    demetra.x13.io.protobuf.X13Protos.SeasonalFilter getFinalSeasonalFilters(int index);
     /**
-     * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
-     * @return A list containing the enum numeric values on the wire for finalSeasonalFilter.
+     * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
+     * @return A list containing the enum numeric values on the wire for finalSeasonalFilters.
      */
     java.util.List<java.lang.Integer>
-    getFinalSeasonalFilterValueList();
+    getFinalSeasonalFiltersValueList();
     /**
-     * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
+     * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
      * @param index The index of the value to return.
-     * @return The enum numeric value on the wire of finalSeasonalFilter at the given index.
+     * @return The enum numeric value on the wire of finalSeasonalFilters at the given index.
      */
-    int getFinalSeasonalFilterValue(int index);
+    int getFinalSeasonalFiltersValue(int index);
 
     /**
      * <code>int32 final_henderson_filter = 15;</code>
@@ -654,7 +654,7 @@ public final class X13ResultsProtos {
     }
     private X11Results() {
       mode_ = 0;
-      finalSeasonalFilter_ = java.util.Collections.emptyList();
+      finalSeasonalFilters_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -853,10 +853,10 @@ public final class X13ResultsProtos {
             case 112: {
               int rawValue = input.readEnum();
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                finalSeasonalFilter_ = new java.util.ArrayList<java.lang.Integer>();
+                finalSeasonalFilters_ = new java.util.ArrayList<java.lang.Integer>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              finalSeasonalFilter_.add(rawValue);
+              finalSeasonalFilters_.add(rawValue);
               break;
             }
             case 114: {
@@ -865,10 +865,10 @@ public final class X13ResultsProtos {
               while(input.getBytesUntilLimit() > 0) {
                 int rawValue = input.readEnum();
                 if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                  finalSeasonalFilter_ = new java.util.ArrayList<java.lang.Integer>();
+                  finalSeasonalFilters_ = new java.util.ArrayList<java.lang.Integer>();
                   mutable_bitField0_ |= 0x00000001;
                 }
-                finalSeasonalFilter_.add(rawValue);
+                finalSeasonalFilters_.add(rawValue);
               }
               input.popLimit(oldLimit);
               break;
@@ -1237,7 +1237,7 @@ public final class X13ResultsProtos {
             e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          finalSeasonalFilter_ = java.util.Collections.unmodifiableList(finalSeasonalFilter_);
+          finalSeasonalFilters_ = java.util.Collections.unmodifiableList(finalSeasonalFilters_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -1587,10 +1587,10 @@ public final class X13ResultsProtos {
       return getD13();
     }
 
-    public static final int FINAL_SEASONAL_FILTER_FIELD_NUMBER = 14;
-    private java.util.List<java.lang.Integer> finalSeasonalFilter_;
+    public static final int FINAL_SEASONAL_FILTERS_FIELD_NUMBER = 14;
+    private java.util.List<java.lang.Integer> finalSeasonalFilters_;
     private static final com.google.protobuf.Internal.ListAdapter.Converter<
-        java.lang.Integer, demetra.x13.io.protobuf.X13Protos.SeasonalFilter> finalSeasonalFilter_converter_ =
+        java.lang.Integer, demetra.x13.io.protobuf.X13Protos.SeasonalFilter> finalSeasonalFilters_converter_ =
             new com.google.protobuf.Internal.ListAdapter.Converter<
                 java.lang.Integer, demetra.x13.io.protobuf.X13Protos.SeasonalFilter>() {
               public demetra.x13.io.protobuf.X13Protos.SeasonalFilter convert(java.lang.Integer from) {
@@ -1600,50 +1600,50 @@ public final class X13ResultsProtos {
               }
             };
     /**
-     * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
-     * @return A list containing the finalSeasonalFilter.
+     * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
+     * @return A list containing the finalSeasonalFilters.
      */
     @java.lang.Override
-    public java.util.List<demetra.x13.io.protobuf.X13Protos.SeasonalFilter> getFinalSeasonalFilterList() {
+    public java.util.List<demetra.x13.io.protobuf.X13Protos.SeasonalFilter> getFinalSeasonalFiltersList() {
       return new com.google.protobuf.Internal.ListAdapter<
-          java.lang.Integer, demetra.x13.io.protobuf.X13Protos.SeasonalFilter>(finalSeasonalFilter_, finalSeasonalFilter_converter_);
+          java.lang.Integer, demetra.x13.io.protobuf.X13Protos.SeasonalFilter>(finalSeasonalFilters_, finalSeasonalFilters_converter_);
     }
     /**
-     * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
-     * @return The count of finalSeasonalFilter.
+     * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
+     * @return The count of finalSeasonalFilters.
      */
     @java.lang.Override
-    public int getFinalSeasonalFilterCount() {
-      return finalSeasonalFilter_.size();
+    public int getFinalSeasonalFiltersCount() {
+      return finalSeasonalFilters_.size();
     }
     /**
-     * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
+     * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
      * @param index The index of the element to return.
-     * @return The finalSeasonalFilter at the given index.
+     * @return The finalSeasonalFilters at the given index.
      */
     @java.lang.Override
-    public demetra.x13.io.protobuf.X13Protos.SeasonalFilter getFinalSeasonalFilter(int index) {
-      return finalSeasonalFilter_converter_.convert(finalSeasonalFilter_.get(index));
+    public demetra.x13.io.protobuf.X13Protos.SeasonalFilter getFinalSeasonalFilters(int index) {
+      return finalSeasonalFilters_converter_.convert(finalSeasonalFilters_.get(index));
     }
     /**
-     * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
-     * @return A list containing the enum numeric values on the wire for finalSeasonalFilter.
+     * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
+     * @return A list containing the enum numeric values on the wire for finalSeasonalFilters.
      */
     @java.lang.Override
     public java.util.List<java.lang.Integer>
-    getFinalSeasonalFilterValueList() {
-      return finalSeasonalFilter_;
+    getFinalSeasonalFiltersValueList() {
+      return finalSeasonalFilters_;
     }
     /**
-     * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
+     * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
      * @param index The index of the value to return.
-     * @return The enum numeric value on the wire of finalSeasonalFilter at the given index.
+     * @return The enum numeric value on the wire of finalSeasonalFilters at the given index.
      */
     @java.lang.Override
-    public int getFinalSeasonalFilterValue(int index) {
-      return finalSeasonalFilter_.get(index);
+    public int getFinalSeasonalFiltersValue(int index) {
+      return finalSeasonalFilters_.get(index);
     }
-    private int finalSeasonalFilterMemoizedSerializedSize;
+    private int finalSeasonalFiltersMemoizedSerializedSize;
 
     public static final int FINAL_HENDERSON_FILTER_FIELD_NUMBER = 15;
     private int finalHendersonFilter_;
@@ -2397,12 +2397,12 @@ public final class X13ResultsProtos {
       if (d13_ != null) {
         output.writeMessage(13, getD13());
       }
-      if (getFinalSeasonalFilterList().size() > 0) {
+      if (getFinalSeasonalFiltersList().size() > 0) {
         output.writeUInt32NoTag(114);
-        output.writeUInt32NoTag(finalSeasonalFilterMemoizedSerializedSize);
+        output.writeUInt32NoTag(finalSeasonalFiltersMemoizedSerializedSize);
       }
-      for (int i = 0; i < finalSeasonalFilter_.size(); i++) {
-        output.writeEnumNoTag(finalSeasonalFilter_.get(i));
+      for (int i = 0; i < finalSeasonalFilters_.size(); i++) {
+        output.writeEnumNoTag(finalSeasonalFilters_.get(i));
       }
       if (finalHendersonFilter_ != 0) {
         output.writeInt32(15, finalHendersonFilter_);
@@ -2551,15 +2551,15 @@ public final class X13ResultsProtos {
       }
       {
         int dataSize = 0;
-        for (int i = 0; i < finalSeasonalFilter_.size(); i++) {
+        for (int i = 0; i < finalSeasonalFilters_.size(); i++) {
           dataSize += com.google.protobuf.CodedOutputStream
-            .computeEnumSizeNoTag(finalSeasonalFilter_.get(i));
+            .computeEnumSizeNoTag(finalSeasonalFilters_.get(i));
         }
         size += dataSize;
-        if (!getFinalSeasonalFilterList().isEmpty()) {  size += 1;
+        if (!getFinalSeasonalFiltersList().isEmpty()) {  size += 1;
           size += com.google.protobuf.CodedOutputStream
             .computeUInt32SizeNoTag(dataSize);
-        }finalSeasonalFilterMemoizedSerializedSize = dataSize;
+        }finalSeasonalFiltersMemoizedSerializedSize = dataSize;
       }
       if (finalHendersonFilter_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -2749,7 +2749,7 @@ public final class X13ResultsProtos {
         if (!getD13()
             .equals(other.getD13())) return false;
       }
-      if (!finalSeasonalFilter_.equals(other.finalSeasonalFilter_)) return false;
+      if (!finalSeasonalFilters_.equals(other.finalSeasonalFilters_)) return false;
       if (getFinalHendersonFilter()
           != other.getFinalHendersonFilter()) return false;
       if (java.lang.Double.doubleToLongBits(getIcratio())
@@ -2946,9 +2946,9 @@ public final class X13ResultsProtos {
         hash = (37 * hash) + D13_FIELD_NUMBER;
         hash = (53 * hash) + getD13().hashCode();
       }
-      if (getFinalSeasonalFilterCount() > 0) {
-        hash = (37 * hash) + FINAL_SEASONAL_FILTER_FIELD_NUMBER;
-        hash = (53 * hash) + finalSeasonalFilter_.hashCode();
+      if (getFinalSeasonalFiltersCount() > 0) {
+        hash = (37 * hash) + FINAL_SEASONAL_FILTERS_FIELD_NUMBER;
+        hash = (53 * hash) + finalSeasonalFilters_.hashCode();
       }
       hash = (37 * hash) + FINAL_HENDERSON_FILTER_FIELD_NUMBER;
       hash = (53 * hash) + getFinalHendersonFilter();
@@ -3266,7 +3266,7 @@ public final class X13ResultsProtos {
           d13_ = null;
           d13Builder_ = null;
         }
-        finalSeasonalFilter_ = java.util.Collections.emptyList();
+        finalSeasonalFilters_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         finalHendersonFilter_ = 0;
 
@@ -3517,10 +3517,10 @@ public final class X13ResultsProtos {
           result.d13_ = d13Builder_.build();
         }
         if (((bitField0_ & 0x00000001) != 0)) {
-          finalSeasonalFilter_ = java.util.Collections.unmodifiableList(finalSeasonalFilter_);
+          finalSeasonalFilters_ = java.util.Collections.unmodifiableList(finalSeasonalFilters_);
           bitField0_ = (bitField0_ & ~0x00000001);
         }
-        result.finalSeasonalFilter_ = finalSeasonalFilter_;
+        result.finalSeasonalFilters_ = finalSeasonalFilters_;
         result.finalHendersonFilter_ = finalHendersonFilter_;
         result.icratio_ = icratio_;
         if (b1Builder_ == null) {
@@ -3740,13 +3740,13 @@ public final class X13ResultsProtos {
         if (other.hasD13()) {
           mergeD13(other.getD13());
         }
-        if (!other.finalSeasonalFilter_.isEmpty()) {
-          if (finalSeasonalFilter_.isEmpty()) {
-            finalSeasonalFilter_ = other.finalSeasonalFilter_;
+        if (!other.finalSeasonalFilters_.isEmpty()) {
+          if (finalSeasonalFilters_.isEmpty()) {
+            finalSeasonalFilters_ = other.finalSeasonalFilters_;
             bitField0_ = (bitField0_ & ~0x00000001);
           } else {
-            ensureFinalSeasonalFilterIsMutable();
-            finalSeasonalFilter_.addAll(other.finalSeasonalFilter_);
+            ensureFinalSeasonalFiltersIsMutable();
+            finalSeasonalFilters_.addAll(other.finalSeasonalFilters_);
           }
           onChanged();
         }
@@ -5346,141 +5346,141 @@ public final class X13ResultsProtos {
         return d13Builder_;
       }
 
-      private java.util.List<java.lang.Integer> finalSeasonalFilter_ =
+      private java.util.List<java.lang.Integer> finalSeasonalFilters_ =
         java.util.Collections.emptyList();
-      private void ensureFinalSeasonalFilterIsMutable() {
+      private void ensureFinalSeasonalFiltersIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          finalSeasonalFilter_ = new java.util.ArrayList<java.lang.Integer>(finalSeasonalFilter_);
+          finalSeasonalFilters_ = new java.util.ArrayList<java.lang.Integer>(finalSeasonalFilters_);
           bitField0_ |= 0x00000001;
         }
       }
       /**
-       * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
-       * @return A list containing the finalSeasonalFilter.
+       * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
+       * @return A list containing the finalSeasonalFilters.
        */
-      public java.util.List<demetra.x13.io.protobuf.X13Protos.SeasonalFilter> getFinalSeasonalFilterList() {
+      public java.util.List<demetra.x13.io.protobuf.X13Protos.SeasonalFilter> getFinalSeasonalFiltersList() {
         return new com.google.protobuf.Internal.ListAdapter<
-            java.lang.Integer, demetra.x13.io.protobuf.X13Protos.SeasonalFilter>(finalSeasonalFilter_, finalSeasonalFilter_converter_);
+            java.lang.Integer, demetra.x13.io.protobuf.X13Protos.SeasonalFilter>(finalSeasonalFilters_, finalSeasonalFilters_converter_);
       }
       /**
-       * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
-       * @return The count of finalSeasonalFilter.
+       * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
+       * @return The count of finalSeasonalFilters.
        */
-      public int getFinalSeasonalFilterCount() {
-        return finalSeasonalFilter_.size();
+      public int getFinalSeasonalFiltersCount() {
+        return finalSeasonalFilters_.size();
       }
       /**
-       * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
+       * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
        * @param index The index of the element to return.
-       * @return The finalSeasonalFilter at the given index.
+       * @return The finalSeasonalFilters at the given index.
        */
-      public demetra.x13.io.protobuf.X13Protos.SeasonalFilter getFinalSeasonalFilter(int index) {
-        return finalSeasonalFilter_converter_.convert(finalSeasonalFilter_.get(index));
+      public demetra.x13.io.protobuf.X13Protos.SeasonalFilter getFinalSeasonalFilters(int index) {
+        return finalSeasonalFilters_converter_.convert(finalSeasonalFilters_.get(index));
       }
       /**
-       * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
+       * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
        * @param index The index to set the value at.
-       * @param value The finalSeasonalFilter to set.
+       * @param value The finalSeasonalFilters to set.
        * @return This builder for chaining.
        */
-      public Builder setFinalSeasonalFilter(
+      public Builder setFinalSeasonalFilters(
           int index, demetra.x13.io.protobuf.X13Protos.SeasonalFilter value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureFinalSeasonalFilterIsMutable();
-        finalSeasonalFilter_.set(index, value.getNumber());
+        ensureFinalSeasonalFiltersIsMutable();
+        finalSeasonalFilters_.set(index, value.getNumber());
         onChanged();
         return this;
       }
       /**
-       * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
-       * @param value The finalSeasonalFilter to add.
+       * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
+       * @param value The finalSeasonalFilters to add.
        * @return This builder for chaining.
        */
-      public Builder addFinalSeasonalFilter(demetra.x13.io.protobuf.X13Protos.SeasonalFilter value) {
+      public Builder addFinalSeasonalFilters(demetra.x13.io.protobuf.X13Protos.SeasonalFilter value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureFinalSeasonalFilterIsMutable();
-        finalSeasonalFilter_.add(value.getNumber());
+        ensureFinalSeasonalFiltersIsMutable();
+        finalSeasonalFilters_.add(value.getNumber());
         onChanged();
         return this;
       }
       /**
-       * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
-       * @param values The finalSeasonalFilter to add.
+       * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
+       * @param values The finalSeasonalFilters to add.
        * @return This builder for chaining.
        */
-      public Builder addAllFinalSeasonalFilter(
+      public Builder addAllFinalSeasonalFilters(
           java.lang.Iterable<? extends demetra.x13.io.protobuf.X13Protos.SeasonalFilter> values) {
-        ensureFinalSeasonalFilterIsMutable();
+        ensureFinalSeasonalFiltersIsMutable();
         for (demetra.x13.io.protobuf.X13Protos.SeasonalFilter value : values) {
-          finalSeasonalFilter_.add(value.getNumber());
+          finalSeasonalFilters_.add(value.getNumber());
         }
         onChanged();
         return this;
       }
       /**
-       * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
+       * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
        * @return This builder for chaining.
        */
-      public Builder clearFinalSeasonalFilter() {
-        finalSeasonalFilter_ = java.util.Collections.emptyList();
+      public Builder clearFinalSeasonalFilters() {
+        finalSeasonalFilters_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
-       * @return A list containing the enum numeric values on the wire for finalSeasonalFilter.
+       * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
+       * @return A list containing the enum numeric values on the wire for finalSeasonalFilters.
        */
       public java.util.List<java.lang.Integer>
-      getFinalSeasonalFilterValueList() {
-        return java.util.Collections.unmodifiableList(finalSeasonalFilter_);
+      getFinalSeasonalFiltersValueList() {
+        return java.util.Collections.unmodifiableList(finalSeasonalFilters_);
       }
       /**
-       * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
+       * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
        * @param index The index of the value to return.
-       * @return The enum numeric value on the wire of finalSeasonalFilter at the given index.
+       * @return The enum numeric value on the wire of finalSeasonalFilters at the given index.
        */
-      public int getFinalSeasonalFilterValue(int index) {
-        return finalSeasonalFilter_.get(index);
+      public int getFinalSeasonalFiltersValue(int index) {
+        return finalSeasonalFilters_.get(index);
       }
       /**
-       * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
+       * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
        * @param index The index of the value to return.
-       * @return The enum numeric value on the wire of finalSeasonalFilter at the given index.
+       * @return The enum numeric value on the wire of finalSeasonalFilters at the given index.
        * @return This builder for chaining.
        */
-      public Builder setFinalSeasonalFilterValue(
+      public Builder setFinalSeasonalFiltersValue(
           int index, int value) {
-        ensureFinalSeasonalFilterIsMutable();
-        finalSeasonalFilter_.set(index, value);
+        ensureFinalSeasonalFiltersIsMutable();
+        finalSeasonalFilters_.set(index, value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
-       * @param value The enum numeric value on the wire for finalSeasonalFilter to add.
+       * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
+       * @param value The enum numeric value on the wire for finalSeasonalFilters to add.
        * @return This builder for chaining.
        */
-      public Builder addFinalSeasonalFilterValue(int value) {
-        ensureFinalSeasonalFilterIsMutable();
-        finalSeasonalFilter_.add(value);
+      public Builder addFinalSeasonalFiltersValue(int value) {
+        ensureFinalSeasonalFiltersIsMutable();
+        finalSeasonalFilters_.add(value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated .x13.SeasonalFilter final_seasonal_filter = 14;</code>
-       * @param values The enum numeric values on the wire for finalSeasonalFilter to add.
+       * <code>repeated .x13.SeasonalFilter final_seasonal_filters = 14;</code>
+       * @param values The enum numeric values on the wire for finalSeasonalFilters to add.
        * @return This builder for chaining.
        */
-      public Builder addAllFinalSeasonalFilterValue(
+      public Builder addAllFinalSeasonalFiltersValue(
           java.lang.Iterable<java.lang.Integer> values) {
-        ensureFinalSeasonalFilterIsMutable();
+        ensureFinalSeasonalFiltersIsMutable();
         for (int value : values) {
-          finalSeasonalFilter_.add(value);
+          finalSeasonalFilters_.add(value);
         }
         onChanged();
         return this;
@@ -8709,7 +8709,7 @@ public final class X13ResultsProtos {
   static {
     java.lang.String[] descriptorData = {
       "\n\021x13_results.proto\022\003x13\032\rtoolkit.proto\032" +
-      "\016regarima.proto\032\010sa.proto\032\tx13.proto\"\333\010\n" +
+      "\016regarima.proto\032\010sa.proto\032\tx13.proto\"\334\010\n" +
       "\nX11Results\022$\n\004mode\030\001 \001(\0162\026.x13.Decompos" +
       "itionMode\022\027\n\002d1\030\002 \001(\0132\013.jd3.TsData\022\027\n\002d2" +
       "\030\003 \001(\0132\013.jd3.TsData\022\027\n\002d4\030\004 \001(\0132\013.jd3.Ts" +
@@ -8718,28 +8718,28 @@ public final class X13ResultsProtos {
       "\027\n\002d8\030\010 \001(\0132\013.jd3.TsData\022\027\n\002d9\030\t \001(\0132\013.j" +
       "d3.TsData\022\030\n\003d10\030\n \001(\0132\013.jd3.TsData\022\030\n\003d" +
       "11\030\013 \001(\0132\013.jd3.TsData\022\030\n\003d12\030\014 \001(\0132\013.jd3" +
-      ".TsData\022\030\n\003d13\030\r \001(\0132\013.jd3.TsData\0222\n\025fin" +
-      "al_seasonal_filter\030\016 \003(\0162\023.x13.SeasonalF" +
-      "ilter\022\036\n\026final_henderson_filter\030\017 \001(\005\022\017\n" +
-      "\007icratio\030\020 \001(\001\022\027\n\002b1\030\024 \001(\0132\013.jd3.TsData\022" +
-      "\027\n\002b2\030\025 \001(\0132\013.jd3.TsData\022\027\n\002b3\030\026 \001(\0132\013.j" +
-      "d3.TsData\022\027\n\002b4\030\027 \001(\0132\013.jd3.TsData\022\027\n\002b5" +
-      "\030\030 \001(\0132\013.jd3.TsData\022\027\n\002b6\030\031 \001(\0132\013.jd3.Ts" +
-      "Data\022\027\n\002b7\030\032 \001(\0132\013.jd3.TsData\022\027\n\002b8\030\033 \001(" +
-      "\0132\013.jd3.TsData\022\027\n\002b9\030\034 \001(\0132\013.jd3.TsData\022" +
-      "\030\n\003b10\030\035 \001(\0132\013.jd3.TsData\022\030\n\003b11\030\036 \001(\0132\013" +
-      ".jd3.TsData\022\030\n\003b13\030\037 \001(\0132\013.jd3.TsData\022\030\n" +
-      "\003b17\030  \001(\0132\013.jd3.TsData\022\030\n\003b20\030! \001(\0132\013.j" +
-      "d3.TsData\022\027\n\002c1\030( \001(\0132\013.jd3.TsData\022\027\n\002c2" +
-      "\030) \001(\0132\013.jd3.TsData\022\027\n\002c4\030* \001(\0132\013.jd3.Ts" +
-      "Data\022\027\n\002c5\030+ \001(\0132\013.jd3.TsData\022\027\n\002c6\030, \001(" +
-      "\0132\013.jd3.TsData\022\027\n\002c7\030- \001(\0132\013.jd3.TsData\022" +
-      "\027\n\002c9\030. \001(\0132\013.jd3.TsData\022\030\n\003c10\030/ \001(\0132\013." +
-      "jd3.TsData\022\030\n\003c11\0300 \001(\0132\013.jd3.TsData\022\030\n\003" +
-      "c13\0301 \001(\0132\013.jd3.TsData\022\030\n\003c17\0302 \001(\0132\013.jd" +
-      "3.TsData\022\030\n\003c20\0303 \001(\0132\013.jd3.TsDataB+\n\027de" +
-      "metra.x13.io.protobufB\020X13ResultsProtosP" +
-      "\000P\001P\002P\003b\006proto3"
+      ".TsData\022\030\n\003d13\030\r \001(\0132\013.jd3.TsData\0223\n\026fin" +
+      "al_seasonal_filters\030\016 \003(\0162\023.x13.Seasonal" +
+      "Filter\022\036\n\026final_henderson_filter\030\017 \001(\005\022\017" +
+      "\n\007icratio\030\020 \001(\001\022\027\n\002b1\030\024 \001(\0132\013.jd3.TsData" +
+      "\022\027\n\002b2\030\025 \001(\0132\013.jd3.TsData\022\027\n\002b3\030\026 \001(\0132\013." +
+      "jd3.TsData\022\027\n\002b4\030\027 \001(\0132\013.jd3.TsData\022\027\n\002b" +
+      "5\030\030 \001(\0132\013.jd3.TsData\022\027\n\002b6\030\031 \001(\0132\013.jd3.T" +
+      "sData\022\027\n\002b7\030\032 \001(\0132\013.jd3.TsData\022\027\n\002b8\030\033 \001" +
+      "(\0132\013.jd3.TsData\022\027\n\002b9\030\034 \001(\0132\013.jd3.TsData" +
+      "\022\030\n\003b10\030\035 \001(\0132\013.jd3.TsData\022\030\n\003b11\030\036 \001(\0132" +
+      "\013.jd3.TsData\022\030\n\003b13\030\037 \001(\0132\013.jd3.TsData\022\030" +
+      "\n\003b17\030  \001(\0132\013.jd3.TsData\022\030\n\003b20\030! \001(\0132\013." +
+      "jd3.TsData\022\027\n\002c1\030( \001(\0132\013.jd3.TsData\022\027\n\002c" +
+      "2\030) \001(\0132\013.jd3.TsData\022\027\n\002c4\030* \001(\0132\013.jd3.T" +
+      "sData\022\027\n\002c5\030+ \001(\0132\013.jd3.TsData\022\027\n\002c6\030, \001" +
+      "(\0132\013.jd3.TsData\022\027\n\002c7\030- \001(\0132\013.jd3.TsData" +
+      "\022\027\n\002c9\030. \001(\0132\013.jd3.TsData\022\030\n\003c10\030/ \001(\0132\013" +
+      ".jd3.TsData\022\030\n\003c11\0300 \001(\0132\013.jd3.TsData\022\030\n" +
+      "\003c13\0301 \001(\0132\013.jd3.TsData\022\030\n\003c17\0302 \001(\0132\013.j" +
+      "d3.TsData\022\030\n\003c20\0303 \001(\0132\013.jd3.TsDataB+\n\027d" +
+      "emetra.x13.io.protobufB\020X13ResultsProtos" +
+      "P\000P\001P\002P\003b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -8754,7 +8754,7 @@ public final class X13ResultsProtos {
     internal_static_x13_X11Results_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_x13_X11Results_descriptor,
-        new java.lang.String[] { "Mode", "D1", "D2", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11", "D12", "D13", "FinalSeasonalFilter", "FinalHendersonFilter", "Icratio", "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10", "B11", "B13", "B17", "B20", "C1", "C2", "C4", "C5", "C6", "C7", "C9", "C10", "C11", "C13", "C17", "C20", });
+        new java.lang.String[] { "Mode", "D1", "D2", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11", "D12", "D13", "FinalSeasonalFilters", "FinalHendersonFilter", "Icratio", "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10", "B11", "B13", "B17", "B20", "C1", "C2", "C4", "C5", "C6", "C7", "C9", "C10", "C11", "C13", "C17", "C20", });
     demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor();
     demetra.regarima.io.protobuf.RegArimaProtos.getDescriptor();
     demetra.sa.io.protobuf.SaProtos.getDescriptor();

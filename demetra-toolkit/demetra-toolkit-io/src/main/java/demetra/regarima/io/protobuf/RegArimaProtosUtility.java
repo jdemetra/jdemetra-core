@@ -144,14 +144,12 @@ public class RegArimaProtosUtility {
                 .setName(v.getName())
                 .setFirstLag(v.getFirstLag())
                 .setLastLag(v.getLastLag())
-                .addAllAttributes(v.getAttributes())
                 .build();
     }
 
     public TsContextVariable convert(RegArimaProtos.Variable v) {
         return TsContextVariable.builder()
                 .name(v.getName())
-                .attributes(v.getAttributesList())
                 .firstLag(v.getFirstLag())
                 .lastLag(v.getLastLag())
                 .build();
@@ -199,14 +197,5 @@ public class RegArimaProtosUtility {
         }
         return builder.build();
     }
-    
-    public RegArimaResultsProtos.RegArimaEstimation convert(ModelEstimation model){
-        RegArimaResultsProtos.RegArimaEstimation.Builder builder = RegArimaResultsProtos.RegArimaEstimation.newBuilder();
-        builder.setTransformation(model.isLogTransformation() ? RegArimaProtos.Transformation.FN_LOG : RegArimaProtos.Transformation.FN_LEVEL)
-                .setCovariance(ToolkitProtosUtility.convert(model.getArimaCovariance()))
-                .setLikelihood(ToolkitProtosUtility.convert(model.getStatistics()));
-        
-        return builder.build();
-    }
-    
+   
 }
