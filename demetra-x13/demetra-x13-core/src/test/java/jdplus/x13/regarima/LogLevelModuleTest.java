@@ -18,6 +18,7 @@ package jdplus.x13.regarima;
 
 import demetra.data.Data;
 import demetra.sa.ComponentType;
+import demetra.sa.SaDictionary;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
@@ -134,8 +135,8 @@ public class LogLevelModuleTest {
             boolean log0 = m0.getDescription().isLogTransformation();
             ModelDescription model1 = new ModelDescription(insee[i], null);
             model1.setAirline(true);
-            model1.addVariable(Variable.builder().name("lp").core(new LengthOfPeriod(LengthOfPeriodType.LeapYear)).attribute(ComponentType.CalendarEffect.name()).build());
-            model1.addVariable(Variable.builder().name("td").core(new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD7))).attribute(ComponentType.CalendarEffect.name()).build());
+            model1.addVariable(Variable.builder().name("lp").core(new LengthOfPeriod(LengthOfPeriodType.LeapYear)).attribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()).build());
+            model1.addVariable(Variable.builder().name("td").core(new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD7))).attribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()).build());
             RegSarimaModelling m1 = RegSarimaModelling.of(model1);
             ll.process(m1);
             boolean log1 = m1.getDescription().isLogTransformation();

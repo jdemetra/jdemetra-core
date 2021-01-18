@@ -7,6 +7,7 @@ package jdplus.sa.modelling;
 
 import demetra.data.Data;
 import demetra.sa.ComponentType;
+import demetra.sa.SaDictionary;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDataTable;
 import demetra.timeseries.calendars.DayClustering;
@@ -38,12 +39,12 @@ public class RegArimaDecomposerTest {
         model.setLogTransformation(true);
         model.setPreadjustment(LengthOfPeriodType.LeapYear);
         GenericTradingDaysVariable td = new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD3));
-        model.addVariable(Variable.variable("td", td, ComponentType.CalendarEffect.name()));
+        model.addVariable(Variable.variable("td", td).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
         EasterVariable easter = EasterVariable.builder()
                 .duration(6)
                 .meanCorrection(EasterVariable.Correction.Theoretical)
                 .build();
-        model.addVariable(Variable.builder().name("easter").core(easter).attribute("prespecified").attribute(ComponentType.CalendarEffect.name()).build());
+        model.addVariable(Variable.builder().name("easter").core(easter).attribute("prespecified", "true").attribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()).build());
         ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.PROCESSOR);
 
  

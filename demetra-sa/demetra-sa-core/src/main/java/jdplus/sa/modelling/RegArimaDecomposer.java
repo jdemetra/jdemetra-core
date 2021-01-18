@@ -18,6 +18,7 @@ package jdplus.sa.modelling;
 
 import demetra.data.Range;
 import demetra.sa.ComponentType;
+import demetra.sa.SaDictionary;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.AdditiveOutlier;
@@ -60,7 +61,7 @@ public class RegArimaDecomposer {
      * @return
      */
     public TsData deterministicEffect(ModelEstimation model, TsDomain domain, ComponentType type, boolean transformed) {
-        TsData f = model.deterministicEffect(domain, v -> v.isAttribute(type.name()));
+        TsData f = model.deterministicEffect(domain, v -> v.isAttribute(SaDictionary.REGEFFECT, type.name()));
         if (!transformed) {
             f = model.backTransform(f, type == ComponentType.CalendarEffect);
         }
@@ -83,7 +84,7 @@ public class RegArimaDecomposer {
      * @return
      */
     public TsData deterministicEffect(ModelEstimation model, TsDomain domain, ComponentType type, boolean transformed, Predicate<Variable> test) {
-        TsData f = model.deterministicEffect(domain, v -> test.test(v) && v.isAttribute(type.name()));
+        TsData f = model.deterministicEffect(domain, v -> test.test(v) && v.isAttribute(SaDictionary.REGEFFECT, type.name()));
         if (!transformed) {
             f = model.backTransform(f, false);
         }

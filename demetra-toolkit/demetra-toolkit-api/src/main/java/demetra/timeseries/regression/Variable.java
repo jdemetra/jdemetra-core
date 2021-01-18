@@ -19,7 +19,9 @@ package demetra.timeseries.regression;
 import demetra.data.Parameter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import nbbrd.design.Development;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -42,20 +44,25 @@ public class Variable {
 
     @lombok.NonNull
     @lombok.Singular
-    private List<String> attributes;
-    
+    private Map<String, String> attributes;
+
     public int dim() {
         return core.dim();
     }
 
-    public boolean isAttribute(String id) {
-        return attributes.contains(id);
+    public boolean hasAttribute(String id) {
+        return attributes.containsKey(id);
+    }
+
+    public boolean isAttribute(String key, String value) {
+        String val = attributes.get(key);
+        return val != null && val.equals(value);
     }
 
     public Parameter getCoefficient(int i) {
         return coefficients == null ? Parameter.undefined() : coefficients[i];
     }
-    
+
     /**
      *
      * @param variable Actual variable
@@ -63,18 +70,16 @@ public class Variable {
      * @param attributes
      * @return
      */
-    public static Variable variable(@NonNull final String name, @NonNull final ITsVariable variable, String... attributes) {
+    public static Variable variable(@NonNull final String name, @NonNull final ITsVariable variable, Map<String, String> attributes) {
         if (attributes == null) {
-            return new Variable(name, variable, null, Collections.emptyList());
-        } else if (attributes.length == 1) {
-            return new Variable(name, variable, null, Collections.singletonList(attributes[0]));
+            return new Variable(name, variable, null, Collections.emptyMap());
         } else {
-            List<String> att = new ArrayList<>(attributes.length);
-            for (int i = 0; i < attributes.length; ++i) {
-                att.add(attributes[i]);
-            }
-            return new Variable(name, variable, null, att);
+            return new Variable(name, variable, null, Collections.unmodifiableMap(attributes));
         }
+    }
+
+    public static Variable variable(@NonNull final String name, @NonNull final ITsVariable variable) {
+        return new Variable(name, variable, null, Collections.emptyMap());
     }
 
     public int freeCoefficientsCount() {
@@ -124,29 +129,23 @@ public class Variable {
         return new Variable(name, core, coefficients, attributes);
     }
 
-    public Variable addAttribute(String attribute) {
-        if (coefficients != null && core.dim() != coefficients.length) {
-            throw new IllegalArgumentException();
-        }
-        List<String> natts;
-        if (attributes.isEmpty()) {
-            natts = Collections.singletonList(attribute);
-        } else {
-            natts = new ArrayList<>(attributes);
-            natts.add(attribute);
-        }
-        return new Variable(name, core, coefficients, natts);
+    public Variable addAttribute(String key, String value) {
+        Map<String, String> natts;
+        natts = new HashMap<>(attributes);
+        natts.put(key, value);
+        return new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
     }
 
-    public Variable addAttributes(String... additionalAttributes) {
-        if (coefficients != null && core.dim() != coefficients.length) {
-            throw new IllegalArgumentException();
+    public Variable addAttributes(Map<String, String> additionalAttributes) {
+        if (additionalAttributes.isEmpty()) {
+            return this;
         }
-        List<String> natts = new ArrayList<>(attributes);
-        for (int i = 0; i < additionalAttributes.length; ++i) {
-            natts.add(additionalAttributes[i]);
+        if (attributes.isEmpty()) {
+            return new Variable(name, core, coefficients, Collections.unmodifiableMap(additionalAttributes));
         }
-        return new Variable(name, core, coefficients, natts);
+        Map<String, String> natts = new HashMap<>(attributes);
+        natts.putAll(additionalAttributes);
+        return new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
     }
 
 }

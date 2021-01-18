@@ -17,6 +17,7 @@
 package jdplus.tramo;
 
 import demetra.sa.ComponentType;
+import demetra.sa.SaDictionary;
 import jdplus.regsarima.regular.TRegressionTest;
 import jdplus.regarima.FRegressionTest;
 import jdplus.regsarima.regular.IRegressionTest;
@@ -159,13 +160,13 @@ public class DefaultRegressionTest implements IRegressionModule {
         ModelDescription model = ModelDescription.copyOf(current.getDescription());
         // add td, lp and easter
         if (td != null) {
-            model.addVariable(Variable.variable("td", td, ComponentType.CalendarEffect.name()));
+            model.addVariable(Variable.variable("td", td).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
         }
         if (lp != null) {
-            model.addVariable(Variable.variable("lp", lp, ComponentType.CalendarEffect.name()));
+            model.addVariable(Variable.variable("lp", lp).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
         }
         if (easter != null) {
-            model.addVariable(Variable.variable("easter", easter, ComponentType.CalendarEffect.name()));
+            model.addVariable(Variable.variable("easter", easter).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
         }
         return model;
     }
@@ -194,7 +195,7 @@ public class DefaultRegressionTest implements IRegressionModule {
                 IRegressionTest test = dim == 1 ? wdTest : tdTest;
                 if (test.accept(ll, nhp, pos, dim, null)) {
                     usetd = true;
-                    currentModel.addVariable(Variable.variable("td", td, ComponentType.CalendarEffect.name()));
+                    currentModel.addVariable(Variable.variable("td", td).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
                     changed = true;
                 }
             }
@@ -204,7 +205,7 @@ public class DefaultRegressionTest implements IRegressionModule {
             if (variable != null && !Utility.isPrespecified(variable)) {
                 int pos = tmpModel.findPosition(variable.getCore());
                 if (usetd && lpTest.accept(ll, nhp, pos, 1, null)) {
-                    currentModel.addVariable(Variable.variable("lp", lp, ComponentType.CalendarEffect.name()));
+                    currentModel.addVariable(Variable.variable("lp", lp).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
                     changed = true;
                 }
             }
@@ -215,7 +216,7 @@ public class DefaultRegressionTest implements IRegressionModule {
             if (variable != null && !Utility.isPrespecified(variable)) {
                 int pos = tmpModel.findPosition(variable.getCore());
                 if (mhTest.accept(ll, nhp, pos, 1, null)) {
-                    currentModel.addVariable(Variable.variable("easter", easter, ComponentType.CalendarEffect.name()));
+                    currentModel.addVariable(Variable.variable("easter", easter).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
                     changed = true;
                 }
             }

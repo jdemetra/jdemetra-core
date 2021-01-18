@@ -20,64 +20,64 @@ public final class SaProtos {
   public enum ComponentType
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>Undefined = 0;</code>
+     * <code>UNDEFINED = 0;</code>
      */
-    Undefined(0),
+    UNDEFINED(0),
     /**
-     * <code>Series = 1;</code>
+     * <code>SERIES = 1;</code>
      */
-    Series(1),
+    SERIES(1),
     /**
-     * <code>Trend = 2;</code>
+     * <code>TREND = 2;</code>
      */
-    Trend(2),
+    TREND(2),
     /**
-     * <code>Seasonal = 3;</code>
+     * <code>SEASONAL = 3;</code>
      */
-    Seasonal(3),
+    SEASONAL(3),
     /**
-     * <code>SeasonallyAdjusted = 4;</code>
+     * <code>SEASONALLYADJUSTED = 4;</code>
      */
-    SeasonallyAdjusted(4),
+    SEASONALLYADJUSTED(4),
     /**
-     * <code>Irregular = 5;</code>
+     * <code>IRREGULAR = 5;</code>
      */
-    Irregular(5),
+    IRREGULAR(5),
     /**
-     * <code>CalendarEffect = 6;</code>
+     * <code>CALENDAR = 6;</code>
      */
-    CalendarEffect(6),
+    CALENDAR(6),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>Undefined = 0;</code>
+     * <code>UNDEFINED = 0;</code>
      */
-    public static final int Undefined_VALUE = 0;
+    public static final int UNDEFINED_VALUE = 0;
     /**
-     * <code>Series = 1;</code>
+     * <code>SERIES = 1;</code>
      */
-    public static final int Series_VALUE = 1;
+    public static final int SERIES_VALUE = 1;
     /**
-     * <code>Trend = 2;</code>
+     * <code>TREND = 2;</code>
      */
-    public static final int Trend_VALUE = 2;
+    public static final int TREND_VALUE = 2;
     /**
-     * <code>Seasonal = 3;</code>
+     * <code>SEASONAL = 3;</code>
      */
-    public static final int Seasonal_VALUE = 3;
+    public static final int SEASONAL_VALUE = 3;
     /**
-     * <code>SeasonallyAdjusted = 4;</code>
+     * <code>SEASONALLYADJUSTED = 4;</code>
      */
-    public static final int SeasonallyAdjusted_VALUE = 4;
+    public static final int SEASONALLYADJUSTED_VALUE = 4;
     /**
-     * <code>Irregular = 5;</code>
+     * <code>IRREGULAR = 5;</code>
      */
-    public static final int Irregular_VALUE = 5;
+    public static final int IRREGULAR_VALUE = 5;
     /**
-     * <code>CalendarEffect = 6;</code>
+     * <code>CALENDAR = 6;</code>
      */
-    public static final int CalendarEffect_VALUE = 6;
+    public static final int CALENDAR_VALUE = 6;
 
 
     public final int getNumber() {
@@ -104,13 +104,13 @@ public final class SaProtos {
      */
     public static ComponentType forNumber(int value) {
       switch (value) {
-        case 0: return Undefined;
-        case 1: return Series;
-        case 2: return Trend;
-        case 3: return Seasonal;
-        case 4: return SeasonallyAdjusted;
-        case 5: return Irregular;
-        case 6: return CalendarEffect;
+        case 0: return UNDEFINED;
+        case 1: return SERIES;
+        case 2: return TREND;
+        case 3: return SEASONAL;
+        case 4: return SEASONALLYADJUSTED;
+        case 5: return IRREGULAR;
+        case 6: return CALENDAR;
         default: return null;
       }
     }
@@ -165,6 +165,156 @@ public final class SaProtos {
     }
 
     // @@protoc_insertion_point(enum_scope:sa.ComponentType)
+  }
+
+  /**
+   * Protobuf enum {@code sa.DecompositionMode}
+   */
+  public enum DecompositionMode
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>UNKNOWN = 0;</code>
+     */
+    UNKNOWN(0),
+    /**
+     * <pre>
+     * Y = T + S + I) 
+     * </pre>
+     *
+     * <code>ADDITIVE = 1;</code>
+     */
+    ADDITIVE(1),
+    /**
+     * <pre>
+     * Y = T * S * I) 
+     * </pre>
+     *
+     * <code>MULTIPLICATIVE = 2;</code>
+     */
+    MULTIPLICATIVE(2),
+    /**
+     * <pre>
+     * Y = T * (S + I - 1) 
+     * </pre>
+     *
+     * <code>PSEUDOADDITIVE = 3;</code>
+     */
+    PSEUDOADDITIVE(3),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>UNKNOWN = 0;</code>
+     */
+    public static final int UNKNOWN_VALUE = 0;
+    /**
+     * <pre>
+     * Y = T + S + I) 
+     * </pre>
+     *
+     * <code>ADDITIVE = 1;</code>
+     */
+    public static final int ADDITIVE_VALUE = 1;
+    /**
+     * <pre>
+     * Y = T * S * I) 
+     * </pre>
+     *
+     * <code>MULTIPLICATIVE = 2;</code>
+     */
+    public static final int MULTIPLICATIVE_VALUE = 2;
+    /**
+     * <pre>
+     * Y = T * (S + I - 1) 
+     * </pre>
+     *
+     * <code>PSEUDOADDITIVE = 3;</code>
+     */
+    public static final int PSEUDOADDITIVE_VALUE = 3;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static DecompositionMode valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static DecompositionMode forNumber(int value) {
+      switch (value) {
+        case 0: return UNKNOWN;
+        case 1: return ADDITIVE;
+        case 2: return MULTIPLICATIVE;
+        case 3: return PSEUDOADDITIVE;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<DecompositionMode>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        DecompositionMode> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<DecompositionMode>() {
+            public DecompositionMode findValueByNumber(int number) {
+              return DecompositionMode.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return demetra.sa.io.protobuf.SaProtos.getDescriptor().getEnumTypes().get(1);
+    }
+
+    private static final DecompositionMode[] VALUES = values();
+
+    public static DecompositionMode valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private DecompositionMode(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:sa.DecompositionMode)
   }
 
   /**
@@ -258,7 +408,7 @@ public final class SaProtos {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return demetra.sa.io.protobuf.SaProtos.getDescriptor().getEnumTypes().get(1);
+      return demetra.sa.io.protobuf.SaProtos.getDescriptor().getEnumTypes().get(2);
     }
 
     private static final BenchmarkingTarget[] VALUES = values();
@@ -384,7 +534,7 @@ public final class SaProtos {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return demetra.sa.io.protobuf.SaProtos.getDescriptor().getEnumTypes().get(2);
+      return demetra.sa.io.protobuf.SaProtos.getDescriptor().getEnumTypes().get(3);
     }
 
     private static final BenchmarkingBias[] VALUES = values();
@@ -408,6 +558,1977 @@ public final class SaProtos {
     }
 
     // @@protoc_insertion_point(enum_scope:sa.BenchmarkingBias)
+  }
+
+  public interface ComponentOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:sa.Component)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.sa.ComponentType type = 1;</code>
+     * @return The enum numeric value on the wire for type.
+     */
+    int getTypeValue();
+    /**
+     * <code>.sa.ComponentType type = 1;</code>
+     * @return The type.
+     */
+    demetra.sa.io.protobuf.SaProtos.ComponentType getType();
+
+    /**
+     * <code>.jd3.TsData data = 2;</code>
+     * @return Whether the data field is set.
+     */
+    boolean hasData();
+    /**
+     * <code>.jd3.TsData data = 2;</code>
+     * @return The data.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsData getData();
+    /**
+     * <code>.jd3.TsData data = 2;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getDataOrBuilder();
+
+    /**
+     * <code>.jd3.TsData stde = 3;</code>
+     * @return Whether the stde field is set.
+     */
+    boolean hasStde();
+    /**
+     * <code>.jd3.TsData stde = 3;</code>
+     * @return The stde.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsData getStde();
+    /**
+     * <code>.jd3.TsData stde = 3;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getStdeOrBuilder();
+
+    /**
+     * <code>int32 nbcasts = 6;</code>
+     * @return The nbcasts.
+     */
+    int getNbcasts();
+
+    /**
+     * <code>int32 nfcasts = 7;</code>
+     * @return The nfcasts.
+     */
+    int getNfcasts();
+  }
+  /**
+   * Protobuf type {@code sa.Component}
+   */
+  public static final class Component extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:sa.Component)
+      ComponentOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Component.newBuilder() to construct.
+    private Component(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Component() {
+      type_ = 0;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new Component();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Component(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              int rawValue = input.readEnum();
+
+              type_ = rawValue;
+              break;
+            }
+            case 18: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder subBuilder = null;
+              if (data_ != null) {
+                subBuilder = data_.toBuilder();
+              }
+              data_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.TsData.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(data_);
+                data_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 26: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder subBuilder = null;
+              if (stde_ != null) {
+                subBuilder = stde_.toBuilder();
+              }
+              stde_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.TsData.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(stde_);
+                stde_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 48: {
+
+              nbcasts_ = input.readInt32();
+              break;
+            }
+            case 56: {
+
+              nfcasts_ = input.readInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.sa.io.protobuf.SaProtos.internal_static_sa_Component_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.sa.io.protobuf.SaProtos.internal_static_sa_Component_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.sa.io.protobuf.SaProtos.Component.class, demetra.sa.io.protobuf.SaProtos.Component.Builder.class);
+    }
+
+    public static final int TYPE_FIELD_NUMBER = 1;
+    private int type_;
+    /**
+     * <code>.sa.ComponentType type = 1;</code>
+     * @return The enum numeric value on the wire for type.
+     */
+    @java.lang.Override public int getTypeValue() {
+      return type_;
+    }
+    /**
+     * <code>.sa.ComponentType type = 1;</code>
+     * @return The type.
+     */
+    @java.lang.Override public demetra.sa.io.protobuf.SaProtos.ComponentType getType() {
+      @SuppressWarnings("deprecation")
+      demetra.sa.io.protobuf.SaProtos.ComponentType result = demetra.sa.io.protobuf.SaProtos.ComponentType.valueOf(type_);
+      return result == null ? demetra.sa.io.protobuf.SaProtos.ComponentType.UNRECOGNIZED : result;
+    }
+
+    public static final int DATA_FIELD_NUMBER = 2;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.TsData data_;
+    /**
+     * <code>.jd3.TsData data = 2;</code>
+     * @return Whether the data field is set.
+     */
+    @java.lang.Override
+    public boolean hasData() {
+      return data_ != null;
+    }
+    /**
+     * <code>.jd3.TsData data = 2;</code>
+     * @return The data.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getData() {
+      return data_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : data_;
+    }
+    /**
+     * <code>.jd3.TsData data = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getDataOrBuilder() {
+      return getData();
+    }
+
+    public static final int STDE_FIELD_NUMBER = 3;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.TsData stde_;
+    /**
+     * <code>.jd3.TsData stde = 3;</code>
+     * @return Whether the stde field is set.
+     */
+    @java.lang.Override
+    public boolean hasStde() {
+      return stde_ != null;
+    }
+    /**
+     * <code>.jd3.TsData stde = 3;</code>
+     * @return The stde.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getStde() {
+      return stde_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : stde_;
+    }
+    /**
+     * <code>.jd3.TsData stde = 3;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getStdeOrBuilder() {
+      return getStde();
+    }
+
+    public static final int NBCASTS_FIELD_NUMBER = 6;
+    private int nbcasts_;
+    /**
+     * <code>int32 nbcasts = 6;</code>
+     * @return The nbcasts.
+     */
+    @java.lang.Override
+    public int getNbcasts() {
+      return nbcasts_;
+    }
+
+    public static final int NFCASTS_FIELD_NUMBER = 7;
+    private int nfcasts_;
+    /**
+     * <code>int32 nfcasts = 7;</code>
+     * @return The nfcasts.
+     */
+    @java.lang.Override
+    public int getNfcasts() {
+      return nfcasts_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (type_ != demetra.sa.io.protobuf.SaProtos.ComponentType.UNDEFINED.getNumber()) {
+        output.writeEnum(1, type_);
+      }
+      if (data_ != null) {
+        output.writeMessage(2, getData());
+      }
+      if (stde_ != null) {
+        output.writeMessage(3, getStde());
+      }
+      if (nbcasts_ != 0) {
+        output.writeInt32(6, nbcasts_);
+      }
+      if (nfcasts_ != 0) {
+        output.writeInt32(7, nfcasts_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (type_ != demetra.sa.io.protobuf.SaProtos.ComponentType.UNDEFINED.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, type_);
+      }
+      if (data_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getData());
+      }
+      if (stde_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getStde());
+      }
+      if (nbcasts_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(6, nbcasts_);
+      }
+      if (nfcasts_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(7, nfcasts_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.sa.io.protobuf.SaProtos.Component)) {
+        return super.equals(obj);
+      }
+      demetra.sa.io.protobuf.SaProtos.Component other = (demetra.sa.io.protobuf.SaProtos.Component) obj;
+
+      if (type_ != other.type_) return false;
+      if (hasData() != other.hasData()) return false;
+      if (hasData()) {
+        if (!getData()
+            .equals(other.getData())) return false;
+      }
+      if (hasStde() != other.hasStde()) return false;
+      if (hasStde()) {
+        if (!getStde()
+            .equals(other.getStde())) return false;
+      }
+      if (getNbcasts()
+          != other.getNbcasts()) return false;
+      if (getNfcasts()
+          != other.getNfcasts()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + type_;
+      if (hasData()) {
+        hash = (37 * hash) + DATA_FIELD_NUMBER;
+        hash = (53 * hash) + getData().hashCode();
+      }
+      if (hasStde()) {
+        hash = (37 * hash) + STDE_FIELD_NUMBER;
+        hash = (53 * hash) + getStde().hashCode();
+      }
+      hash = (37 * hash) + NBCASTS_FIELD_NUMBER;
+      hash = (53 * hash) + getNbcasts();
+      hash = (37 * hash) + NFCASTS_FIELD_NUMBER;
+      hash = (53 * hash) + getNfcasts();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.sa.io.protobuf.SaProtos.Component parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.Component parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.Component parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.Component parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.Component parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.Component parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.Component parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.Component parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.Component parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.Component parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.Component parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.Component parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.sa.io.protobuf.SaProtos.Component prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code sa.Component}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:sa.Component)
+        demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.sa.io.protobuf.SaProtos.internal_static_sa_Component_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.sa.io.protobuf.SaProtos.internal_static_sa_Component_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.sa.io.protobuf.SaProtos.Component.class, demetra.sa.io.protobuf.SaProtos.Component.Builder.class);
+      }
+
+      // Construct using demetra.sa.io.protobuf.SaProtos.Component.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        type_ = 0;
+
+        if (dataBuilder_ == null) {
+          data_ = null;
+        } else {
+          data_ = null;
+          dataBuilder_ = null;
+        }
+        if (stdeBuilder_ == null) {
+          stde_ = null;
+        } else {
+          stde_ = null;
+          stdeBuilder_ = null;
+        }
+        nbcasts_ = 0;
+
+        nfcasts_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.sa.io.protobuf.SaProtos.internal_static_sa_Component_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.sa.io.protobuf.SaProtos.Component getDefaultInstanceForType() {
+        return demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.sa.io.protobuf.SaProtos.Component build() {
+        demetra.sa.io.protobuf.SaProtos.Component result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.sa.io.protobuf.SaProtos.Component buildPartial() {
+        demetra.sa.io.protobuf.SaProtos.Component result = new demetra.sa.io.protobuf.SaProtos.Component(this);
+        result.type_ = type_;
+        if (dataBuilder_ == null) {
+          result.data_ = data_;
+        } else {
+          result.data_ = dataBuilder_.build();
+        }
+        if (stdeBuilder_ == null) {
+          result.stde_ = stde_;
+        } else {
+          result.stde_ = stdeBuilder_.build();
+        }
+        result.nbcasts_ = nbcasts_;
+        result.nfcasts_ = nfcasts_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.sa.io.protobuf.SaProtos.Component) {
+          return mergeFrom((demetra.sa.io.protobuf.SaProtos.Component)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.sa.io.protobuf.SaProtos.Component other) {
+        if (other == demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance()) return this;
+        if (other.type_ != 0) {
+          setTypeValue(other.getTypeValue());
+        }
+        if (other.hasData()) {
+          mergeData(other.getData());
+        }
+        if (other.hasStde()) {
+          mergeStde(other.getStde());
+        }
+        if (other.getNbcasts() != 0) {
+          setNbcasts(other.getNbcasts());
+        }
+        if (other.getNfcasts() != 0) {
+          setNfcasts(other.getNfcasts());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.sa.io.protobuf.SaProtos.Component parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.sa.io.protobuf.SaProtos.Component) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int type_ = 0;
+      /**
+       * <code>.sa.ComponentType type = 1;</code>
+       * @return The enum numeric value on the wire for type.
+       */
+      @java.lang.Override public int getTypeValue() {
+        return type_;
+      }
+      /**
+       * <code>.sa.ComponentType type = 1;</code>
+       * @param value The enum numeric value on the wire for type to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTypeValue(int value) {
+        
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.sa.ComponentType type = 1;</code>
+       * @return The type.
+       */
+      @java.lang.Override
+      public demetra.sa.io.protobuf.SaProtos.ComponentType getType() {
+        @SuppressWarnings("deprecation")
+        demetra.sa.io.protobuf.SaProtos.ComponentType result = demetra.sa.io.protobuf.SaProtos.ComponentType.valueOf(type_);
+        return result == null ? demetra.sa.io.protobuf.SaProtos.ComponentType.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.sa.ComponentType type = 1;</code>
+       * @param value The type to set.
+       * @return This builder for chaining.
+       */
+      public Builder setType(demetra.sa.io.protobuf.SaProtos.ComponentType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        type_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.sa.ComponentType type = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearType() {
+        
+        type_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.TsData data_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> dataBuilder_;
+      /**
+       * <code>.jd3.TsData data = 2;</code>
+       * @return Whether the data field is set.
+       */
+      public boolean hasData() {
+        return dataBuilder_ != null || data_ != null;
+      }
+      /**
+       * <code>.jd3.TsData data = 2;</code>
+       * @return The data.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getData() {
+        if (dataBuilder_ == null) {
+          return data_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : data_;
+        } else {
+          return dataBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.TsData data = 2;</code>
+       */
+      public Builder setData(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (dataBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          data_ = value;
+          onChanged();
+        } else {
+          dataBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData data = 2;</code>
+       */
+      public Builder setData(
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder builderForValue) {
+        if (dataBuilder_ == null) {
+          data_ = builderForValue.build();
+          onChanged();
+        } else {
+          dataBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData data = 2;</code>
+       */
+      public Builder mergeData(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (dataBuilder_ == null) {
+          if (data_ != null) {
+            data_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.newBuilder(data_).mergeFrom(value).buildPartial();
+          } else {
+            data_ = value;
+          }
+          onChanged();
+        } else {
+          dataBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData data = 2;</code>
+       */
+      public Builder clearData() {
+        if (dataBuilder_ == null) {
+          data_ = null;
+          onChanged();
+        } else {
+          data_ = null;
+          dataBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData data = 2;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder getDataBuilder() {
+        
+        onChanged();
+        return getDataFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.TsData data = 2;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getDataOrBuilder() {
+        if (dataBuilder_ != null) {
+          return dataBuilder_.getMessageOrBuilder();
+        } else {
+          return data_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : data_;
+        }
+      }
+      /**
+       * <code>.jd3.TsData data = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> 
+          getDataFieldBuilder() {
+        if (dataBuilder_ == null) {
+          dataBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder>(
+                  getData(),
+                  getParentForChildren(),
+                  isClean());
+          data_ = null;
+        }
+        return dataBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.TsData stde_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> stdeBuilder_;
+      /**
+       * <code>.jd3.TsData stde = 3;</code>
+       * @return Whether the stde field is set.
+       */
+      public boolean hasStde() {
+        return stdeBuilder_ != null || stde_ != null;
+      }
+      /**
+       * <code>.jd3.TsData stde = 3;</code>
+       * @return The stde.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getStde() {
+        if (stdeBuilder_ == null) {
+          return stde_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : stde_;
+        } else {
+          return stdeBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.TsData stde = 3;</code>
+       */
+      public Builder setStde(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (stdeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          stde_ = value;
+          onChanged();
+        } else {
+          stdeBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData stde = 3;</code>
+       */
+      public Builder setStde(
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder builderForValue) {
+        if (stdeBuilder_ == null) {
+          stde_ = builderForValue.build();
+          onChanged();
+        } else {
+          stdeBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData stde = 3;</code>
+       */
+      public Builder mergeStde(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (stdeBuilder_ == null) {
+          if (stde_ != null) {
+            stde_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.newBuilder(stde_).mergeFrom(value).buildPartial();
+          } else {
+            stde_ = value;
+          }
+          onChanged();
+        } else {
+          stdeBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData stde = 3;</code>
+       */
+      public Builder clearStde() {
+        if (stdeBuilder_ == null) {
+          stde_ = null;
+          onChanged();
+        } else {
+          stde_ = null;
+          stdeBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData stde = 3;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder getStdeBuilder() {
+        
+        onChanged();
+        return getStdeFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.TsData stde = 3;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getStdeOrBuilder() {
+        if (stdeBuilder_ != null) {
+          return stdeBuilder_.getMessageOrBuilder();
+        } else {
+          return stde_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : stde_;
+        }
+      }
+      /**
+       * <code>.jd3.TsData stde = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> 
+          getStdeFieldBuilder() {
+        if (stdeBuilder_ == null) {
+          stdeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder>(
+                  getStde(),
+                  getParentForChildren(),
+                  isClean());
+          stde_ = null;
+        }
+        return stdeBuilder_;
+      }
+
+      private int nbcasts_ ;
+      /**
+       * <code>int32 nbcasts = 6;</code>
+       * @return The nbcasts.
+       */
+      @java.lang.Override
+      public int getNbcasts() {
+        return nbcasts_;
+      }
+      /**
+       * <code>int32 nbcasts = 6;</code>
+       * @param value The nbcasts to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNbcasts(int value) {
+        
+        nbcasts_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 nbcasts = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNbcasts() {
+        
+        nbcasts_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int nfcasts_ ;
+      /**
+       * <code>int32 nfcasts = 7;</code>
+       * @return The nfcasts.
+       */
+      @java.lang.Override
+      public int getNfcasts() {
+        return nfcasts_;
+      }
+      /**
+       * <code>int32 nfcasts = 7;</code>
+       * @param value The nfcasts to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNfcasts(int value) {
+        
+        nfcasts_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 nfcasts = 7;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNfcasts() {
+        
+        nfcasts_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:sa.Component)
+    }
+
+    // @@protoc_insertion_point(class_scope:sa.Component)
+    private static final demetra.sa.io.protobuf.SaProtos.Component DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.sa.io.protobuf.SaProtos.Component();
+    }
+
+    public static demetra.sa.io.protobuf.SaProtos.Component getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Component>
+        PARSER = new com.google.protobuf.AbstractParser<Component>() {
+      @java.lang.Override
+      public Component parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Component(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Component> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Component> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.sa.io.protobuf.SaProtos.Component getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface SaDecompositionOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:sa.SaDecomposition)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.sa.DecompositionMode mode = 1;</code>
+     * @return The enum numeric value on the wire for mode.
+     */
+    int getModeValue();
+    /**
+     * <code>.sa.DecompositionMode mode = 1;</code>
+     * @return The mode.
+     */
+    demetra.sa.io.protobuf.SaProtos.DecompositionMode getMode();
+
+    /**
+     * <code>repeated .sa.Component components = 2;</code>
+     */
+    java.util.List<demetra.sa.io.protobuf.SaProtos.Component> 
+        getComponentsList();
+    /**
+     * <code>repeated .sa.Component components = 2;</code>
+     */
+    demetra.sa.io.protobuf.SaProtos.Component getComponents(int index);
+    /**
+     * <code>repeated .sa.Component components = 2;</code>
+     */
+    int getComponentsCount();
+    /**
+     * <code>repeated .sa.Component components = 2;</code>
+     */
+    java.util.List<? extends demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> 
+        getComponentsOrBuilderList();
+    /**
+     * <code>repeated .sa.Component components = 2;</code>
+     */
+    demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getComponentsOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code sa.SaDecomposition}
+   */
+  public static final class SaDecomposition extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:sa.SaDecomposition)
+      SaDecompositionOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use SaDecomposition.newBuilder() to construct.
+    private SaDecomposition(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private SaDecomposition() {
+      mode_ = 0;
+      components_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new SaDecomposition();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private SaDecomposition(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              int rawValue = input.readEnum();
+
+              mode_ = rawValue;
+              break;
+            }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                components_ = new java.util.ArrayList<demetra.sa.io.protobuf.SaProtos.Component>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              components_.add(
+                  input.readMessage(demetra.sa.io.protobuf.SaProtos.Component.parser(), extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          components_ = java.util.Collections.unmodifiableList(components_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.sa.io.protobuf.SaProtos.internal_static_sa_SaDecomposition_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.sa.io.protobuf.SaProtos.internal_static_sa_SaDecomposition_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.sa.io.protobuf.SaProtos.SaDecomposition.class, demetra.sa.io.protobuf.SaProtos.SaDecomposition.Builder.class);
+    }
+
+    public static final int MODE_FIELD_NUMBER = 1;
+    private int mode_;
+    /**
+     * <code>.sa.DecompositionMode mode = 1;</code>
+     * @return The enum numeric value on the wire for mode.
+     */
+    @java.lang.Override public int getModeValue() {
+      return mode_;
+    }
+    /**
+     * <code>.sa.DecompositionMode mode = 1;</code>
+     * @return The mode.
+     */
+    @java.lang.Override public demetra.sa.io.protobuf.SaProtos.DecompositionMode getMode() {
+      @SuppressWarnings("deprecation")
+      demetra.sa.io.protobuf.SaProtos.DecompositionMode result = demetra.sa.io.protobuf.SaProtos.DecompositionMode.valueOf(mode_);
+      return result == null ? demetra.sa.io.protobuf.SaProtos.DecompositionMode.UNRECOGNIZED : result;
+    }
+
+    public static final int COMPONENTS_FIELD_NUMBER = 2;
+    private java.util.List<demetra.sa.io.protobuf.SaProtos.Component> components_;
+    /**
+     * <code>repeated .sa.Component components = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<demetra.sa.io.protobuf.SaProtos.Component> getComponentsList() {
+      return components_;
+    }
+    /**
+     * <code>repeated .sa.Component components = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> 
+        getComponentsOrBuilderList() {
+      return components_;
+    }
+    /**
+     * <code>repeated .sa.Component components = 2;</code>
+     */
+    @java.lang.Override
+    public int getComponentsCount() {
+      return components_.size();
+    }
+    /**
+     * <code>repeated .sa.Component components = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.sa.io.protobuf.SaProtos.Component getComponents(int index) {
+      return components_.get(index);
+    }
+    /**
+     * <code>repeated .sa.Component components = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getComponentsOrBuilder(
+        int index) {
+      return components_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (mode_ != demetra.sa.io.protobuf.SaProtos.DecompositionMode.UNKNOWN.getNumber()) {
+        output.writeEnum(1, mode_);
+      }
+      for (int i = 0; i < components_.size(); i++) {
+        output.writeMessage(2, components_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (mode_ != demetra.sa.io.protobuf.SaProtos.DecompositionMode.UNKNOWN.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, mode_);
+      }
+      for (int i = 0; i < components_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, components_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.sa.io.protobuf.SaProtos.SaDecomposition)) {
+        return super.equals(obj);
+      }
+      demetra.sa.io.protobuf.SaProtos.SaDecomposition other = (demetra.sa.io.protobuf.SaProtos.SaDecomposition) obj;
+
+      if (mode_ != other.mode_) return false;
+      if (!getComponentsList()
+          .equals(other.getComponentsList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + MODE_FIELD_NUMBER;
+      hash = (53 * hash) + mode_;
+      if (getComponentsCount() > 0) {
+        hash = (37 * hash) + COMPONENTS_FIELD_NUMBER;
+        hash = (53 * hash) + getComponentsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.sa.io.protobuf.SaProtos.SaDecomposition parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.SaDecomposition parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.SaDecomposition parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.SaDecomposition parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.SaDecomposition parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.SaDecomposition parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.SaDecomposition parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.SaDecomposition parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.SaDecomposition parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.SaDecomposition parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.SaDecomposition parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.SaDecomposition parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.sa.io.protobuf.SaProtos.SaDecomposition prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code sa.SaDecomposition}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:sa.SaDecomposition)
+        demetra.sa.io.protobuf.SaProtos.SaDecompositionOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.sa.io.protobuf.SaProtos.internal_static_sa_SaDecomposition_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.sa.io.protobuf.SaProtos.internal_static_sa_SaDecomposition_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.sa.io.protobuf.SaProtos.SaDecomposition.class, demetra.sa.io.protobuf.SaProtos.SaDecomposition.Builder.class);
+      }
+
+      // Construct using demetra.sa.io.protobuf.SaProtos.SaDecomposition.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getComponentsFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        mode_ = 0;
+
+        if (componentsBuilder_ == null) {
+          components_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          componentsBuilder_.clear();
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.sa.io.protobuf.SaProtos.internal_static_sa_SaDecomposition_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.sa.io.protobuf.SaProtos.SaDecomposition getDefaultInstanceForType() {
+        return demetra.sa.io.protobuf.SaProtos.SaDecomposition.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.sa.io.protobuf.SaProtos.SaDecomposition build() {
+        demetra.sa.io.protobuf.SaProtos.SaDecomposition result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.sa.io.protobuf.SaProtos.SaDecomposition buildPartial() {
+        demetra.sa.io.protobuf.SaProtos.SaDecomposition result = new demetra.sa.io.protobuf.SaProtos.SaDecomposition(this);
+        int from_bitField0_ = bitField0_;
+        result.mode_ = mode_;
+        if (componentsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            components_ = java.util.Collections.unmodifiableList(components_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.components_ = components_;
+        } else {
+          result.components_ = componentsBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.sa.io.protobuf.SaProtos.SaDecomposition) {
+          return mergeFrom((demetra.sa.io.protobuf.SaProtos.SaDecomposition)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.sa.io.protobuf.SaProtos.SaDecomposition other) {
+        if (other == demetra.sa.io.protobuf.SaProtos.SaDecomposition.getDefaultInstance()) return this;
+        if (other.mode_ != 0) {
+          setModeValue(other.getModeValue());
+        }
+        if (componentsBuilder_ == null) {
+          if (!other.components_.isEmpty()) {
+            if (components_.isEmpty()) {
+              components_ = other.components_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureComponentsIsMutable();
+              components_.addAll(other.components_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.components_.isEmpty()) {
+            if (componentsBuilder_.isEmpty()) {
+              componentsBuilder_.dispose();
+              componentsBuilder_ = null;
+              components_ = other.components_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              componentsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getComponentsFieldBuilder() : null;
+            } else {
+              componentsBuilder_.addAllMessages(other.components_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.sa.io.protobuf.SaProtos.SaDecomposition parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.sa.io.protobuf.SaProtos.SaDecomposition) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int mode_ = 0;
+      /**
+       * <code>.sa.DecompositionMode mode = 1;</code>
+       * @return The enum numeric value on the wire for mode.
+       */
+      @java.lang.Override public int getModeValue() {
+        return mode_;
+      }
+      /**
+       * <code>.sa.DecompositionMode mode = 1;</code>
+       * @param value The enum numeric value on the wire for mode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setModeValue(int value) {
+        
+        mode_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.sa.DecompositionMode mode = 1;</code>
+       * @return The mode.
+       */
+      @java.lang.Override
+      public demetra.sa.io.protobuf.SaProtos.DecompositionMode getMode() {
+        @SuppressWarnings("deprecation")
+        demetra.sa.io.protobuf.SaProtos.DecompositionMode result = demetra.sa.io.protobuf.SaProtos.DecompositionMode.valueOf(mode_);
+        return result == null ? demetra.sa.io.protobuf.SaProtos.DecompositionMode.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.sa.DecompositionMode mode = 1;</code>
+       * @param value The mode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMode(demetra.sa.io.protobuf.SaProtos.DecompositionMode value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        mode_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.sa.DecompositionMode mode = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMode() {
+        
+        mode_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<demetra.sa.io.protobuf.SaProtos.Component> components_ =
+        java.util.Collections.emptyList();
+      private void ensureComponentsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          components_ = new java.util.ArrayList<demetra.sa.io.protobuf.SaProtos.Component>(components_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> componentsBuilder_;
+
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public java.util.List<demetra.sa.io.protobuf.SaProtos.Component> getComponentsList() {
+        if (componentsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(components_);
+        } else {
+          return componentsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public int getComponentsCount() {
+        if (componentsBuilder_ == null) {
+          return components_.size();
+        } else {
+          return componentsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public demetra.sa.io.protobuf.SaProtos.Component getComponents(int index) {
+        if (componentsBuilder_ == null) {
+          return components_.get(index);
+        } else {
+          return componentsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public Builder setComponents(
+          int index, demetra.sa.io.protobuf.SaProtos.Component value) {
+        if (componentsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureComponentsIsMutable();
+          components_.set(index, value);
+          onChanged();
+        } else {
+          componentsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public Builder setComponents(
+          int index, demetra.sa.io.protobuf.SaProtos.Component.Builder builderForValue) {
+        if (componentsBuilder_ == null) {
+          ensureComponentsIsMutable();
+          components_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          componentsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public Builder addComponents(demetra.sa.io.protobuf.SaProtos.Component value) {
+        if (componentsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureComponentsIsMutable();
+          components_.add(value);
+          onChanged();
+        } else {
+          componentsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public Builder addComponents(
+          int index, demetra.sa.io.protobuf.SaProtos.Component value) {
+        if (componentsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureComponentsIsMutable();
+          components_.add(index, value);
+          onChanged();
+        } else {
+          componentsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public Builder addComponents(
+          demetra.sa.io.protobuf.SaProtos.Component.Builder builderForValue) {
+        if (componentsBuilder_ == null) {
+          ensureComponentsIsMutable();
+          components_.add(builderForValue.build());
+          onChanged();
+        } else {
+          componentsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public Builder addComponents(
+          int index, demetra.sa.io.protobuf.SaProtos.Component.Builder builderForValue) {
+        if (componentsBuilder_ == null) {
+          ensureComponentsIsMutable();
+          components_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          componentsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public Builder addAllComponents(
+          java.lang.Iterable<? extends demetra.sa.io.protobuf.SaProtos.Component> values) {
+        if (componentsBuilder_ == null) {
+          ensureComponentsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, components_);
+          onChanged();
+        } else {
+          componentsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public Builder clearComponents() {
+        if (componentsBuilder_ == null) {
+          components_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          componentsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public Builder removeComponents(int index) {
+        if (componentsBuilder_ == null) {
+          ensureComponentsIsMutable();
+          components_.remove(index);
+          onChanged();
+        } else {
+          componentsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public demetra.sa.io.protobuf.SaProtos.Component.Builder getComponentsBuilder(
+          int index) {
+        return getComponentsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getComponentsOrBuilder(
+          int index) {
+        if (componentsBuilder_ == null) {
+          return components_.get(index);  } else {
+          return componentsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public java.util.List<? extends demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> 
+           getComponentsOrBuilderList() {
+        if (componentsBuilder_ != null) {
+          return componentsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(components_);
+        }
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public demetra.sa.io.protobuf.SaProtos.Component.Builder addComponentsBuilder() {
+        return getComponentsFieldBuilder().addBuilder(
+            demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public demetra.sa.io.protobuf.SaProtos.Component.Builder addComponentsBuilder(
+          int index) {
+        return getComponentsFieldBuilder().addBuilder(
+            index, demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .sa.Component components = 2;</code>
+       */
+      public java.util.List<demetra.sa.io.protobuf.SaProtos.Component.Builder> 
+           getComponentsBuilderList() {
+        return getComponentsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> 
+          getComponentsFieldBuilder() {
+        if (componentsBuilder_ == null) {
+          componentsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder>(
+                  components_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          components_ = null;
+        }
+        return componentsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:sa.SaDecomposition)
+    }
+
+    // @@protoc_insertion_point(class_scope:sa.SaDecomposition)
+    private static final demetra.sa.io.protobuf.SaProtos.SaDecomposition DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.sa.io.protobuf.SaProtos.SaDecomposition();
+    }
+
+    public static demetra.sa.io.protobuf.SaProtos.SaDecomposition getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SaDecomposition>
+        PARSER = new com.google.protobuf.AbstractParser<SaDecomposition>() {
+      @java.lang.Override
+      public SaDecomposition parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SaDecomposition(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<SaDecomposition> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SaDecomposition> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.sa.io.protobuf.SaProtos.SaDecomposition getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
   public interface BenchmarkingSpecOrBuilder extends
@@ -1329,6 +3450,16 @@ public final class SaProtos {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_sa_Component_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_sa_Component_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_sa_SaDecomposition_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_sa_SaDecomposition_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_sa_BenchmarkingSpec_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -1342,32 +3473,54 @@ public final class SaProtos {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\010sa.proto\022\002sa\"\236\001\n\020BenchmarkingSpec\022\017\n\007e" +
-      "nabled\030\001 \001(\010\022&\n\006target\030\002 \001(\0162\026.sa.Benchm" +
-      "arkingTarget\022\016\n\006lambda\030\003 \001(\001\022\013\n\003rho\030\004 \001(" +
-      "\001\022\"\n\004bias\030\005 \001(\0162\024.sa.BenchmarkingBias\022\020\n" +
-      "\010forecast\030\006 \001(\010*~\n\rComponentType\022\r\n\tUnde" +
-      "fined\020\000\022\n\n\006Series\020\001\022\t\n\005Trend\020\002\022\014\n\010Season" +
-      "al\020\003\022\026\n\022SeasonallyAdjusted\020\004\022\r\n\tIrregula" +
-      "r\020\005\022\022\n\016CalendarEffect\020\006*p\n\022BenchmarkingT" +
-      "arget\022\034\n\030BENCH_TARGET_UNSPECIFIED\020\000\022\031\n\025B" +
-      "ENCH_TARGET_ORIGINAL\020\001\022!\n\035BENCH_TARGET_C" +
-      "ALENDARADJUSTED\020\002*{\n\020BenchmarkingBias\022\032\n" +
-      "\026BENCH_BIAS_UNSPECIFIED\020\000\022\023\n\017BENCH_BIAS_" +
-      "NONE\020\001\022\027\n\023BENCH_BIAS_ADDITIVE\020\002\022\035\n\031BENCH" +
-      "_BIAS_MULTIPLICATIVE\020\003B\"\n\026demetra.sa.io." +
-      "protobufB\010SaProtosb\006proto3"
+      "\n\010sa.proto\022\002sa\032\rtoolkit.proto\"\204\001\n\tCompon" +
+      "ent\022\037\n\004type\030\001 \001(\0162\021.sa.ComponentType\022\031\n\004" +
+      "data\030\002 \001(\0132\013.jd3.TsData\022\031\n\004stde\030\003 \001(\0132\013." +
+      "jd3.TsData\022\017\n\007nbcasts\030\006 \001(\005\022\017\n\007nfcasts\030\007" +
+      " \001(\005\"Y\n\017SaDecomposition\022#\n\004mode\030\001 \001(\0162\025." +
+      "sa.DecompositionMode\022!\n\ncomponents\030\002 \003(\013" +
+      "2\r.sa.Component\"\236\001\n\020BenchmarkingSpec\022\017\n\007" +
+      "enabled\030\001 \001(\010\022&\n\006target\030\002 \001(\0162\026.sa.Bench" +
+      "markingTarget\022\016\n\006lambda\030\003 \001(\001\022\013\n\003rho\030\004 \001" +
+      "(\001\022\"\n\004bias\030\005 \001(\0162\024.sa.BenchmarkingBias\022\020" +
+      "\n\010forecast\030\006 \001(\010*x\n\rComponentType\022\r\n\tUND" +
+      "EFINED\020\000\022\n\n\006SERIES\020\001\022\t\n\005TREND\020\002\022\014\n\010SEASO" +
+      "NAL\020\003\022\026\n\022SEASONALLYADJUSTED\020\004\022\r\n\tIRREGUL" +
+      "AR\020\005\022\014\n\010CALENDAR\020\006*V\n\021DecompositionMode\022" +
+      "\013\n\007UNKNOWN\020\000\022\014\n\010ADDITIVE\020\001\022\022\n\016MULTIPLICA" +
+      "TIVE\020\002\022\022\n\016PSEUDOADDITIVE\020\003*p\n\022Benchmarki" +
+      "ngTarget\022\034\n\030BENCH_TARGET_UNSPECIFIED\020\000\022\031" +
+      "\n\025BENCH_TARGET_ORIGINAL\020\001\022!\n\035BENCH_TARGE" +
+      "T_CALENDARADJUSTED\020\002*{\n\020BenchmarkingBias" +
+      "\022\032\n\026BENCH_BIAS_UNSPECIFIED\020\000\022\023\n\017BENCH_BI" +
+      "AS_NONE\020\001\022\027\n\023BENCH_BIAS_ADDITIVE\020\002\022\035\n\031BE" +
+      "NCH_BIAS_MULTIPLICATIVE\020\003B\"\n\026demetra.sa." +
+      "io.protobufB\010SaProtosP\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor(),
         });
-    internal_static_sa_BenchmarkingSpec_descriptor =
+    internal_static_sa_Component_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_sa_Component_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_sa_Component_descriptor,
+        new java.lang.String[] { "Type", "Data", "Stde", "Nbcasts", "Nfcasts", });
+    internal_static_sa_SaDecomposition_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_sa_SaDecomposition_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_sa_SaDecomposition_descriptor,
+        new java.lang.String[] { "Mode", "Components", });
+    internal_static_sa_BenchmarkingSpec_descriptor =
+      getDescriptor().getMessageTypes().get(2);
     internal_static_sa_BenchmarkingSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_sa_BenchmarkingSpec_descriptor,
         new java.lang.String[] { "Enabled", "Target", "Lambda", "Rho", "Bias", "Forecast", });
+    demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

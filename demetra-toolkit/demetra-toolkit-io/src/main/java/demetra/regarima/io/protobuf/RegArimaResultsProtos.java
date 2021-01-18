@@ -1597,29 +1597,38 @@ public final class RegArimaResultsProtos {
     demetra.regarima.io.protobuf.RegArimaResultsProtos.VariableType getVarType();
 
     /**
-     * <code>repeated string metadata = 3;</code>
-     * @return A list containing the metadata.
-     */
-    java.util.List<java.lang.String>
-        getMetadataList();
-    /**
-     * <code>repeated string metadata = 3;</code>
-     * @return The count of metadata.
+     * <code>map&lt;string, string&gt; metadata = 3;</code>
      */
     int getMetadataCount();
     /**
-     * <code>repeated string metadata = 3;</code>
-     * @param index The index of the element to return.
-     * @return The metadata at the given index.
+     * <code>map&lt;string, string&gt; metadata = 3;</code>
      */
-    java.lang.String getMetadata(int index);
+    boolean containsMetadata(
+        java.lang.String key);
     /**
-     * <code>repeated string metadata = 3;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the metadata at the given index.
+     * Use {@link #getMetadataMap()} instead.
      */
-    com.google.protobuf.ByteString
-        getMetadataBytes(int index);
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.String>
+    getMetadata();
+    /**
+     * <code>map&lt;string, string&gt; metadata = 3;</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getMetadataMap();
+    /**
+     * <code>map&lt;string, string&gt; metadata = 3;</code>
+     */
+
+    java.lang.String getMetadataOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue);
+    /**
+     * <code>map&lt;string, string&gt; metadata = 3;</code>
+     */
+
+    java.lang.String getMetadataOrThrow(
+        java.lang.String key);
 
     /**
      * <code>double coefficient = 4;</code>
@@ -1654,7 +1663,6 @@ public final class RegArimaResultsProtos {
     private RegressionVariable() {
       name_ = "";
       varType_ = 0;
-      metadata_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
 
     @java.lang.Override
@@ -1701,12 +1709,16 @@ public final class RegArimaResultsProtos {
               break;
             }
             case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                metadata_ = new com.google.protobuf.LazyStringArrayList();
+                metadata_ = com.google.protobuf.MapField.newMapField(
+                    MetadataDefaultEntryHolder.defaultEntry);
                 mutable_bitField0_ |= 0x00000001;
               }
-              metadata_.add(s);
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+              metadata__ = input.readMessage(
+                  MetadataDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              metadata_.getMutableMap().put(
+                  metadata__.getKey(), metadata__.getValue());
               break;
             }
             case 33: {
@@ -1739,9 +1751,6 @@ public final class RegArimaResultsProtos {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          metadata_ = metadata_.getUnmodifiableView();
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -1751,6 +1760,18 @@ public final class RegArimaResultsProtos {
       return demetra.regarima.io.protobuf.RegArimaResultsProtos.internal_static_regarima_RegressionVariable_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 3:
+          return internalGetMetadata();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -1817,38 +1838,84 @@ public final class RegArimaResultsProtos {
     }
 
     public static final int METADATA_FIELD_NUMBER = 3;
-    private com.google.protobuf.LazyStringList metadata_;
-    /**
-     * <code>repeated string metadata = 3;</code>
-     * @return A list containing the metadata.
-     */
-    public com.google.protobuf.ProtocolStringList
-        getMetadataList() {
+    private static final class MetadataDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  demetra.regarima.io.protobuf.RegArimaResultsProtos.internal_static_regarima_RegressionVariable_MetadataEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> metadata_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetMetadata() {
+      if (metadata_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            MetadataDefaultEntryHolder.defaultEntry);
+      }
       return metadata_;
     }
-    /**
-     * <code>repeated string metadata = 3;</code>
-     * @return The count of metadata.
-     */
+
     public int getMetadataCount() {
-      return metadata_.size();
+      return internalGetMetadata().getMap().size();
     }
     /**
-     * <code>repeated string metadata = 3;</code>
-     * @param index The index of the element to return.
-     * @return The metadata at the given index.
+     * <code>map&lt;string, string&gt; metadata = 3;</code>
      */
-    public java.lang.String getMetadata(int index) {
-      return metadata_.get(index);
+
+    @java.lang.Override
+    public boolean containsMetadata(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      return internalGetMetadata().getMap().containsKey(key);
     }
     /**
-     * <code>repeated string metadata = 3;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the metadata at the given index.
+     * Use {@link #getMetadataMap()} instead.
      */
-    public com.google.protobuf.ByteString
-        getMetadataBytes(int index) {
-      return metadata_.getByteString(index);
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.String> getMetadata() {
+      return getMetadataMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; metadata = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
+      return internalGetMetadata().getMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; metadata = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getMetadataOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetMetadata().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, string&gt; metadata = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getMetadataOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetMetadata().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
     }
 
     public static final int COEFFICIENT_FIELD_NUMBER = 4;
@@ -1904,9 +1971,12 @@ public final class RegArimaResultsProtos {
       if (varType_ != demetra.regarima.io.protobuf.RegArimaResultsProtos.VariableType.VAR_UNSPECIFIED.getNumber()) {
         output.writeEnum(2, varType_);
       }
-      for (int i = 0; i < metadata_.size(); i++) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, metadata_.getRaw(i));
-      }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetMetadata(),
+          MetadataDefaultEntryHolder.defaultEntry,
+          3);
       if (coefficient_ != 0D) {
         output.writeDouble(4, coefficient_);
       }
@@ -1932,13 +2002,15 @@ public final class RegArimaResultsProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(2, varType_);
       }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < metadata_.size(); i++) {
-          dataSize += computeStringSizeNoTag(metadata_.getRaw(i));
-        }
-        size += dataSize;
-        size += 1 * getMetadataList().size();
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetMetadata().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        metadata__ = MetadataDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(3, metadata__);
       }
       if (coefficient_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
@@ -1970,8 +2042,8 @@ public final class RegArimaResultsProtos {
       if (!getName()
           .equals(other.getName())) return false;
       if (varType_ != other.varType_) return false;
-      if (!getMetadataList()
-          .equals(other.getMetadataList())) return false;
+      if (!internalGetMetadata().equals(
+          other.internalGetMetadata())) return false;
       if (java.lang.Double.doubleToLongBits(getCoefficient())
           != java.lang.Double.doubleToLongBits(
               other.getCoefficient())) return false;
@@ -1996,9 +2068,9 @@ public final class RegArimaResultsProtos {
       hash = (53 * hash) + getName().hashCode();
       hash = (37 * hash) + VAR_TYPE_FIELD_NUMBER;
       hash = (53 * hash) + varType_;
-      if (getMetadataCount() > 0) {
+      if (!internalGetMetadata().getMap().isEmpty()) {
         hash = (37 * hash) + METADATA_FIELD_NUMBER;
-        hash = (53 * hash) + getMetadataList().hashCode();
+        hash = (53 * hash) + internalGetMetadata().hashCode();
       }
       hash = (37 * hash) + COEFFICIENT_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
@@ -2116,6 +2188,28 @@ public final class RegArimaResultsProtos {
         return demetra.regarima.io.protobuf.RegArimaResultsProtos.internal_static_regarima_RegressionVariable_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetMetadata();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetMutableMetadata();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -2146,8 +2240,7 @@ public final class RegArimaResultsProtos {
 
         varType_ = 0;
 
-        metadata_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000001);
+        internalGetMutableMetadata().clear();
         coefficient_ = 0D;
 
         stde_ = 0D;
@@ -2183,11 +2276,8 @@ public final class RegArimaResultsProtos {
         int from_bitField0_ = bitField0_;
         result.name_ = name_;
         result.varType_ = varType_;
-        if (((bitField0_ & 0x00000001) != 0)) {
-          metadata_ = metadata_.getUnmodifiableView();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.metadata_ = metadata_;
+        result.metadata_ = internalGetMetadata();
+        result.metadata_.makeImmutable();
         result.coefficient_ = coefficient_;
         result.stde_ = stde_;
         result.pvalue_ = pvalue_;
@@ -2246,16 +2336,8 @@ public final class RegArimaResultsProtos {
         if (other.varType_ != 0) {
           setVarTypeValue(other.getVarTypeValue());
         }
-        if (!other.metadata_.isEmpty()) {
-          if (metadata_.isEmpty()) {
-            metadata_ = other.metadata_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureMetadataIsMutable();
-            metadata_.addAll(other.metadata_);
-          }
-          onChanged();
-        }
+        internalGetMutableMetadata().mergeFrom(
+            other.internalGetMetadata());
         if (other.getCoefficient() != 0D) {
           setCoefficient(other.getCoefficient());
         }
@@ -2425,113 +2507,131 @@ public final class RegArimaResultsProtos {
         return this;
       }
 
-      private com.google.protobuf.LazyStringList metadata_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      private void ensureMetadataIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          metadata_ = new com.google.protobuf.LazyStringArrayList(metadata_);
-          bitField0_ |= 0x00000001;
-         }
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> metadata_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMetadata() {
+        if (metadata_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              MetadataDefaultEntryHolder.defaultEntry);
+        }
+        return metadata_;
       }
-      /**
-       * <code>repeated string metadata = 3;</code>
-       * @return A list containing the metadata.
-       */
-      public com.google.protobuf.ProtocolStringList
-          getMetadataList() {
-        return metadata_.getUnmodifiableView();
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMutableMetadata() {
+        onChanged();;
+        if (metadata_ == null) {
+          metadata_ = com.google.protobuf.MapField.newMapField(
+              MetadataDefaultEntryHolder.defaultEntry);
+        }
+        if (!metadata_.isMutable()) {
+          metadata_ = metadata_.copy();
+        }
+        return metadata_;
       }
-      /**
-       * <code>repeated string metadata = 3;</code>
-       * @return The count of metadata.
-       */
+
       public int getMetadataCount() {
-        return metadata_.size();
+        return internalGetMetadata().getMap().size();
       }
       /**
-       * <code>repeated string metadata = 3;</code>
-       * @param index The index of the element to return.
-       * @return The metadata at the given index.
+       * <code>map&lt;string, string&gt; metadata = 3;</code>
        */
-      public java.lang.String getMetadata(int index) {
-        return metadata_.get(index);
+
+      @java.lang.Override
+      public boolean containsMetadata(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        return internalGetMetadata().getMap().containsKey(key);
       }
       /**
-       * <code>repeated string metadata = 3;</code>
-       * @param index The index of the value to return.
-       * @return The bytes of the metadata at the given index.
+       * Use {@link #getMetadataMap()} instead.
        */
-      public com.google.protobuf.ByteString
-          getMetadataBytes(int index) {
-        return metadata_.getByteString(index);
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getMetadata() {
+        return getMetadataMap();
       }
       /**
-       * <code>repeated string metadata = 3;</code>
-       * @param index The index to set the value at.
-       * @param value The metadata to set.
-       * @return This builder for chaining.
+       * <code>map&lt;string, string&gt; metadata = 3;</code>
        */
-      public Builder setMetadata(
-          int index, java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureMetadataIsMutable();
-        metadata_.set(index, value);
-        onChanged();
-        return this;
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
+        return internalGetMetadata().getMap();
       }
       /**
-       * <code>repeated string metadata = 3;</code>
-       * @param value The metadata to add.
-       * @return This builder for chaining.
+       * <code>map&lt;string, string&gt; metadata = 3;</code>
        */
-      public Builder addMetadata(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureMetadataIsMutable();
-        metadata_.add(value);
-        onChanged();
-        return this;
+      @java.lang.Override
+
+      public java.lang.String getMetadataOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetMetadata().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
       }
       /**
-       * <code>repeated string metadata = 3;</code>
-       * @param values The metadata to add.
-       * @return This builder for chaining.
+       * <code>map&lt;string, string&gt; metadata = 3;</code>
        */
-      public Builder addAllMetadata(
-          java.lang.Iterable<java.lang.String> values) {
-        ensureMetadataIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, metadata_);
-        onChanged();
-        return this;
+      @java.lang.Override
+
+      public java.lang.String getMetadataOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetMetadata().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
       }
-      /**
-       * <code>repeated string metadata = 3;</code>
-       * @return This builder for chaining.
-       */
+
       public Builder clearMetadata() {
-        metadata_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
+        internalGetMutableMetadata().getMutableMap()
+            .clear();
         return this;
       }
       /**
-       * <code>repeated string metadata = 3;</code>
-       * @param value The bytes of the metadata to add.
-       * @return This builder for chaining.
+       * <code>map&lt;string, string&gt; metadata = 3;</code>
        */
-      public Builder addMetadataBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        ensureMetadataIsMutable();
-        metadata_.add(value);
-        onChanged();
+
+      public Builder removeMetadata(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableMetadata().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String>
+      getMutableMetadata() {
+        return internalGetMutableMetadata().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; metadata = 3;</code>
+       */
+      public Builder putMetadata(
+          java.lang.String key,
+          java.lang.String value) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (value == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableMetadata().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; metadata = 3;</code>
+       */
+
+      public Builder putAllMetadata(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        internalGetMutableMetadata().getMutableMap()
+            .putAll(values);
         return this;
       }
 
@@ -6355,6 +6455,11 @@ public final class RegArimaResultsProtos {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_regarima_RegressionVariable_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_regarima_RegressionVariable_MetadataEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_regarima_RegressionVariable_MetadataEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_regarima_OutlierEstimation_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -6383,30 +6488,32 @@ public final class RegArimaResultsProtos {
       "period\030\001 \001(\005\022\t\n\001p\030\002 \001(\005\022\t\n\001d\030\003 \001(\005\022\t\n\001q\030" +
       "\004 \001(\005\022\n\n\002bp\030\005 \001(\005\022\n\n\002bd\030\006 \001(\005\022\n\n\002bq\030\007 \001(" +
       "\005\022\022\n\nparameters\030\010 \003(\001\022\037\n\ncovariance\030\t \001(" +
-      "\0132\013.jd3.Matrix\"\221\001\n\022RegressionVariable\022\014\n" +
+      "\0132\013.jd3.Matrix\"\356\001\n\022RegressionVariable\022\014\n" +
       "\004name\030\001 \001(\t\022(\n\010var_type\030\002 \001(\0162\026.regarima" +
-      ".VariableType\022\020\n\010metadata\030\003 \003(\t\022\023\n\013coeff" +
-      "icient\030\004 \001(\001\022\014\n\004stde\030\005 \001(\001\022\016\n\006pvalue\030\006 \001" +
-      "(\001\"l\n\021OutlierEstimation\022\014\n\004code\030\001 \001(\t\022\020\n" +
-      "\010position\030\002 \001(\005\022\024\n\014prespecified\030\003 \001(\010\022\023\n" +
-      "\013coefficient\030\n \001(\001\022\014\n\004stde\030\013 \001(\001\"B\n\021Miss" +
-      "ingEstimation\022\020\n\010position\030\001 \001(\005\022\r\n\005value" +
-      "\030\n \001(\001\022\014\n\004stde\030\013 \001(\001\"\337\002\n\022RegArimaEstimat" +
-      "ion\0220\n\016transformation\030\001 \001(\0162\030.regarima.T" +
-      "ransformation\022/\n\rpreadjustment\030\002 \001(\0162\030.r" +
-      "egarima.LengthOfPeriod\022-\n\nlikelihood\030\004 \001" +
-      "(\0132\031.jd3.LikelihoodStatistics\022 \n\006sarima\030" +
-      "\005 \001(\0132\020.regarima.Sarima\022/\n\tvariables\030\006 \003" +
-      "(\0132\034.regarima.RegressionVariable\022\024\n\014coef" +
-      "ficients\030\007 \003(\001\022\037\n\ncovariance\030\010 \001(\0132\013.jd3" +
-      ".Matrix\022-\n\010missings\030\n \003(\0132\033.regarima.Mis" +
-      "singEstimation*\264\001\n\014VariableType\022\023\n\017VAR_U" +
-      "NSPECIFIED\020\000\022\014\n\010VAR_MEAN\020\001\022\n\n\006VAR_TD\020\n\022\n" +
-      "\n\006VAR_LP\020\013\022\016\n\nVAR_EASTER\020\014\022\n\n\006VAR_AO\020\024\022\n" +
-      "\n\006VAR_LS\020\025\022\n\n\006VAR_TC\020\026\022\n\n\006VAR_SO\020\027\022\017\n\013VA" +
-      "R_OUTLIER\020\035\022\n\n\006VAR_IV\020\036\022\014\n\010VAR_RAMP\020(B5\n" +
-      "\034demetra.regarima.io.protobufB\025RegArimaR" +
-      "esultsProtosP\000P\001b\006proto3"
+      ".VariableType\022<\n\010metadata\030\003 \003(\0132*.regari" +
+      "ma.RegressionVariable.MetadataEntry\022\023\n\013c" +
+      "oefficient\030\004 \001(\001\022\014\n\004stde\030\005 \001(\001\022\016\n\006pvalue" +
+      "\030\006 \001(\001\032/\n\rMetadataEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005" +
+      "value\030\002 \001(\t:\0028\001\"l\n\021OutlierEstimation\022\014\n\004" +
+      "code\030\001 \001(\t\022\020\n\010position\030\002 \001(\005\022\024\n\014prespeci" +
+      "fied\030\003 \001(\010\022\023\n\013coefficient\030\n \001(\001\022\014\n\004stde\030" +
+      "\013 \001(\001\"B\n\021MissingEstimation\022\020\n\010position\030\001" +
+      " \001(\005\022\r\n\005value\030\n \001(\001\022\014\n\004stde\030\013 \001(\001\"\337\002\n\022Re" +
+      "gArimaEstimation\0220\n\016transformation\030\001 \001(\016" +
+      "2\030.regarima.Transformation\022/\n\rpreadjustm" +
+      "ent\030\002 \001(\0162\030.regarima.LengthOfPeriod\022-\n\nl" +
+      "ikelihood\030\004 \001(\0132\031.jd3.LikelihoodStatisti" +
+      "cs\022 \n\006sarima\030\005 \001(\0132\020.regarima.Sarima\022/\n\t" +
+      "variables\030\006 \003(\0132\034.regarima.RegressionVar" +
+      "iable\022\024\n\014coefficients\030\007 \003(\001\022\037\n\ncovarianc" +
+      "e\030\010 \001(\0132\013.jd3.Matrix\022-\n\010missings\030\n \003(\0132\033" +
+      ".regarima.MissingEstimation*\264\001\n\014Variable" +
+      "Type\022\023\n\017VAR_UNSPECIFIED\020\000\022\014\n\010VAR_MEAN\020\001\022" +
+      "\n\n\006VAR_TD\020\n\022\n\n\006VAR_LP\020\013\022\016\n\nVAR_EASTER\020\014\022" +
+      "\n\n\006VAR_AO\020\024\022\n\n\006VAR_LS\020\025\022\n\n\006VAR_TC\020\026\022\n\n\006V" +
+      "AR_SO\020\027\022\017\n\013VAR_OUTLIER\020\035\022\n\n\006VAR_IV\020\036\022\014\n\010" +
+      "VAR_RAMP\020(B5\n\034demetra.regarima.io.protob" +
+      "ufB\025RegArimaResultsProtosP\000P\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -6426,6 +6533,12 @@ public final class RegArimaResultsProtos {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_regarima_RegressionVariable_descriptor,
         new java.lang.String[] { "Name", "VarType", "Metadata", "Coefficient", "Stde", "Pvalue", });
+    internal_static_regarima_RegressionVariable_MetadataEntry_descriptor =
+      internal_static_regarima_RegressionVariable_descriptor.getNestedTypes().get(0);
+    internal_static_regarima_RegressionVariable_MetadataEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_regarima_RegressionVariable_MetadataEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_regarima_OutlierEstimation_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_regarima_OutlierEstimation_fieldAccessorTable = new

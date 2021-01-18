@@ -2477,6 +2477,40 @@ public final class RegArimaProtos {
      * @return The lastLag.
      */
     int getLastLag();
+
+    /**
+     * <code>map&lt;string, string&gt; metadata = 4;</code>
+     */
+    int getMetadataCount();
+    /**
+     * <code>map&lt;string, string&gt; metadata = 4;</code>
+     */
+    boolean containsMetadata(
+        java.lang.String key);
+    /**
+     * Use {@link #getMetadataMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.String>
+    getMetadata();
+    /**
+     * <code>map&lt;string, string&gt; metadata = 4;</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getMetadataMap();
+    /**
+     * <code>map&lt;string, string&gt; metadata = 4;</code>
+     */
+
+    java.lang.String getMetadataOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue);
+    /**
+     * <code>map&lt;string, string&gt; metadata = 4;</code>
+     */
+
+    java.lang.String getMetadataOrThrow(
+        java.lang.String key);
   }
   /**
    * Protobuf type {@code regarima.Variable}
@@ -2514,6 +2548,7 @@ public final class RegArimaProtos {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -2540,6 +2575,19 @@ public final class RegArimaProtos {
               lastLag_ = input.readInt32();
               break;
             }
+            case 34: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                metadata_ = com.google.protobuf.MapField.newMapField(
+                    MetadataDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000001;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+              metadata__ = input.readMessage(
+                  MetadataDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              metadata_.getMutableMap().put(
+                  metadata__.getKey(), metadata__.getValue());
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -2564,6 +2612,18 @@ public final class RegArimaProtos {
       return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_Variable_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 4:
+          return internalGetMetadata();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -2632,6 +2692,87 @@ public final class RegArimaProtos {
       return lastLag_;
     }
 
+    public static final int METADATA_FIELD_NUMBER = 4;
+    private static final class MetadataDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_Variable_MetadataEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> metadata_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetMetadata() {
+      if (metadata_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            MetadataDefaultEntryHolder.defaultEntry);
+      }
+      return metadata_;
+    }
+
+    public int getMetadataCount() {
+      return internalGetMetadata().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, string&gt; metadata = 4;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsMetadata(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      return internalGetMetadata().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getMetadataMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.String> getMetadata() {
+      return getMetadataMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; metadata = 4;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
+      return internalGetMetadata().getMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; metadata = 4;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getMetadataOrDefault(
+        java.lang.String key,
+        java.lang.String defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetMetadata().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, string&gt; metadata = 4;</code>
+     */
+    @java.lang.Override
+
+    public java.lang.String getMetadataOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetMetadata().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -2655,6 +2796,12 @@ public final class RegArimaProtos {
       if (lastLag_ != 0) {
         output.writeInt32(3, lastLag_);
       }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetMetadata(),
+          MetadataDefaultEntryHolder.defaultEntry,
+          4);
       unknownFields.writeTo(output);
     }
 
@@ -2674,6 +2821,16 @@ public final class RegArimaProtos {
       if (lastLag_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, lastLag_);
+      }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetMetadata().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        metadata__ = MetadataDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(4, metadata__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2696,6 +2853,8 @@ public final class RegArimaProtos {
           != other.getFirstLag()) return false;
       if (getLastLag()
           != other.getLastLag()) return false;
+      if (!internalGetMetadata().equals(
+          other.internalGetMetadata())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2713,6 +2872,10 @@ public final class RegArimaProtos {
       hash = (53 * hash) + getFirstLag();
       hash = (37 * hash) + LAST_LAG_FIELD_NUMBER;
       hash = (53 * hash) + getLastLag();
+      if (!internalGetMetadata().getMap().isEmpty()) {
+        hash = (37 * hash) + METADATA_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetMetadata().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2820,6 +2983,28 @@ public final class RegArimaProtos {
         return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_Variable_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 4:
+            return internalGetMetadata();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 4:
+            return internalGetMutableMetadata();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -2852,6 +3037,7 @@ public final class RegArimaProtos {
 
         lastLag_ = 0;
 
+        internalGetMutableMetadata().clear();
         return this;
       }
 
@@ -2878,9 +3064,12 @@ public final class RegArimaProtos {
       @java.lang.Override
       public demetra.regarima.io.protobuf.RegArimaProtos.Variable buildPartial() {
         demetra.regarima.io.protobuf.RegArimaProtos.Variable result = new demetra.regarima.io.protobuf.RegArimaProtos.Variable(this);
+        int from_bitField0_ = bitField0_;
         result.name_ = name_;
         result.firstLag_ = firstLag_;
         result.lastLag_ = lastLag_;
+        result.metadata_ = internalGetMetadata();
+        result.metadata_.makeImmutable();
         onBuilt();
         return result;
       }
@@ -2939,6 +3128,8 @@ public final class RegArimaProtos {
         if (other.getLastLag() != 0) {
           setLastLag(other.getLastLag());
         }
+        internalGetMutableMetadata().mergeFrom(
+            other.internalGetMetadata());
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -2967,6 +3158,7 @@ public final class RegArimaProtos {
         }
         return this;
       }
+      private int bitField0_;
 
       private java.lang.Object name_ = "";
       /**
@@ -3103,6 +3295,134 @@ public final class RegArimaProtos {
         
         lastLag_ = 0;
         onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> metadata_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMetadata() {
+        if (metadata_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              MetadataDefaultEntryHolder.defaultEntry);
+        }
+        return metadata_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetMutableMetadata() {
+        onChanged();;
+        if (metadata_ == null) {
+          metadata_ = com.google.protobuf.MapField.newMapField(
+              MetadataDefaultEntryHolder.defaultEntry);
+        }
+        if (!metadata_.isMutable()) {
+          metadata_ = metadata_.copy();
+        }
+        return metadata_;
+      }
+
+      public int getMetadataCount() {
+        return internalGetMetadata().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, string&gt; metadata = 4;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsMetadata(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        return internalGetMetadata().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getMetadataMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getMetadata() {
+        return getMetadataMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; metadata = 4;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
+        return internalGetMetadata().getMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; metadata = 4;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getMetadataOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetMetadata().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, string&gt; metadata = 4;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getMetadataOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetMetadata().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearMetadata() {
+        internalGetMutableMetadata().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; metadata = 4;</code>
+       */
+
+      public Builder removeMetadata(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableMetadata().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String>
+      getMutableMetadata() {
+        return internalGetMutableMetadata().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; metadata = 4;</code>
+       */
+      public Builder putMetadata(
+          java.lang.String key,
+          java.lang.String value) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (value == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableMetadata().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; metadata = 4;</code>
+       */
+
+      public Builder putAllMetadata(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        internalGetMutableMetadata().getMutableMap()
+            .putAll(values);
         return this;
       }
       @java.lang.Override
@@ -6260,6 +6580,11 @@ public final class RegArimaProtos {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_regarima_Variable_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_regarima_Variable_MetadataEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_regarima_Variable_MetadataEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_regarima_Ramp_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -6293,22 +6618,24 @@ public final class RegArimaProtos {
       "meter\022\t\n\001d\030\002 \001(\005\022\035\n\005theta\030\003 \003(\0132\016.jd3.Pa" +
       "rameter\022\034\n\004bphi\030\004 \003(\0132\016.jd3.Parameter\022\n\n" +
       "\002bd\030\005 \001(\005\022\036\n\006btheta\030\006 \003(\0132\016.jd3.Paramete" +
-      "r\"=\n\010Variable\022\014\n\004name\030\001 \001(\t\022\021\n\tfirst_lag" +
-      "\030\002 \001(\005\022\020\n\010last_lag\030\003 \001(\005\"\"\n\004Ramp\022\r\n\005star" +
-      "t\030\001 \001(\t\022\013\n\003end\030\002 \001(\t\")\n\007Outlier\022\014\n\004code\030" +
-      "\001 \001(\t\022\020\n\010position\030\002 \001(\t\"\241\001\n\024Intervention" +
-      "Variable\022:\n\tsequences\030\001 \003(\0132\'.regarima.I" +
-      "nterventionVariable.Sequence\022\r\n\005delta\030\002 " +
-      "\001(\001\022\026\n\016seasonal_delta\030\003 \001(\001\032&\n\010Sequence\022" +
-      "\r\n\005start\030\001 \001(\t\022\013\n\003end\030\002 \001(\t*K\n\016Transform" +
-      "ation\022\022\n\016FN_UNSPECIFIED\020\000\022\014\n\010FN_LEVEL\020\001\022" +
-      "\n\n\006FN_LOG\020\002\022\013\n\007FN_AUTO\020\n*Y\n\016LengthOfPeri" +
-      "od\022\022\n\016LP_UNSPECIFIED\020\000\022\013\n\007LP_NONE\020\001\022\017\n\013L" +
-      "P_LEAPYEAR\020\002\022\025\n\021LP_LENGTHOFPERIOD\020\003*R\n\013T" +
-      "radingDays\022\022\n\016TD_UNSPECIFIED\020\000\022\013\n\007TD_NON" +
-      "E\020\001\022\013\n\007TD_WEEK\020\002\022\010\n\004TD_3\020\003\022\013\n\007TD_FULL\020\006B" +
-      ".\n\034demetra.regarima.io.protobufB\016RegArim" +
-      "aProtosP\000b\006proto3"
+      "r\"\242\001\n\010Variable\022\014\n\004name\030\001 \001(\t\022\021\n\tfirst_la" +
+      "g\030\002 \001(\005\022\020\n\010last_lag\030\003 \001(\005\0222\n\010metadata\030\004 " +
+      "\003(\0132 .regarima.Variable.MetadataEntry\032/\n" +
+      "\rMetadataEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001" +
+      "(\t:\0028\001\"\"\n\004Ramp\022\r\n\005start\030\001 \001(\t\022\013\n\003end\030\002 \001" +
+      "(\t\")\n\007Outlier\022\014\n\004code\030\001 \001(\t\022\020\n\010position\030" +
+      "\002 \001(\t\"\241\001\n\024InterventionVariable\022:\n\tsequen" +
+      "ces\030\001 \003(\0132\'.regarima.InterventionVariabl" +
+      "e.Sequence\022\r\n\005delta\030\002 \001(\001\022\026\n\016seasonal_de" +
+      "lta\030\003 \001(\001\032&\n\010Sequence\022\r\n\005start\030\001 \001(\t\022\013\n\003" +
+      "end\030\002 \001(\t*K\n\016Transformation\022\022\n\016FN_UNSPEC" +
+      "IFIED\020\000\022\014\n\010FN_LEVEL\020\001\022\n\n\006FN_LOG\020\002\022\013\n\007FN_" +
+      "AUTO\020\n*Y\n\016LengthOfPeriod\022\022\n\016LP_UNSPECIFI" +
+      "ED\020\000\022\013\n\007LP_NONE\020\001\022\017\n\013LP_LEAPYEAR\020\002\022\025\n\021LP" +
+      "_LENGTHOFPERIOD\020\003*R\n\013TradingDays\022\022\n\016TD_U" +
+      "NSPECIFIED\020\000\022\013\n\007TD_NONE\020\001\022\013\n\007TD_WEEK\020\002\022\010" +
+      "\n\004TD_3\020\003\022\013\n\007TD_FULL\020\006B.\n\034demetra.regarim" +
+      "a.io.protobufB\016RegArimaProtosP\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -6326,7 +6653,13 @@ public final class RegArimaProtos {
     internal_static_regarima_Variable_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_regarima_Variable_descriptor,
-        new java.lang.String[] { "Name", "FirstLag", "LastLag", });
+        new java.lang.String[] { "Name", "FirstLag", "LastLag", "Metadata", });
+    internal_static_regarima_Variable_MetadataEntry_descriptor =
+      internal_static_regarima_Variable_descriptor.getNestedTypes().get(0);
+    internal_static_regarima_Variable_MetadataEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_regarima_Variable_MetadataEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_regarima_Ramp_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_regarima_Ramp_fieldAccessorTable = new

@@ -98,7 +98,7 @@ public class RegArimaEstimationProto {
                         .setCoefficient(val)
                         .setStde(e)
                         .setPvalue(e == 0 ? Double.NaN : 2 * tstat.getProbability(Math.abs(val / e), ProbabilityType.Upper))
-                        .addAllMetadata(vars[i].getAttributes())
+                        .putAllMetadata(vars[i].getAttributes())
                         .build();
                 builder.addVariables(v);
             }
