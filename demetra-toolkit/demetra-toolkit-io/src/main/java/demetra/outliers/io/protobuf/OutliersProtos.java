@@ -852,34 +852,34 @@ public final class OutliersProtos {
     double getArimaFinal(int index);
 
     /**
-     * <code>.jd3.LikelihoodStatistics initial_likelihood = 4;</code>
-     * @return Whether the initialLikelihood field is set.
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+     * @return Whether the likelihoodInitial field is set.
      */
-    boolean hasInitialLikelihood();
+    boolean hasLikelihoodInitial();
     /**
-     * <code>.jd3.LikelihoodStatistics initial_likelihood = 4;</code>
-     * @return The initialLikelihood.
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+     * @return The likelihoodInitial.
      */
-    demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getInitialLikelihood();
+    demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodInitial();
     /**
-     * <code>.jd3.LikelihoodStatistics initial_likelihood = 4;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
      */
-    demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getInitialLikelihoodOrBuilder();
+    demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodInitialOrBuilder();
 
     /**
-     * <code>.jd3.LikelihoodStatistics final_likelihood = 5;</code>
-     * @return Whether the finalLikelihood field is set.
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+     * @return Whether the likelihoodFinal field is set.
      */
-    boolean hasFinalLikelihood();
+    boolean hasLikelihoodFinal();
     /**
-     * <code>.jd3.LikelihoodStatistics final_likelihood = 5;</code>
-     * @return The finalLikelihood.
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+     * @return The likelihoodFinal.
      */
-    demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getFinalLikelihood();
+    demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodFinal();
     /**
-     * <code>.jd3.LikelihoodStatistics final_likelihood = 5;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
      */
-    demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getFinalLikelihoodOrBuilder();
+    demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodFinalOrBuilder();
 
     /**
      * <code>repeated .outliers.Outlier outliers = 6;</code>
@@ -1086,26 +1086,26 @@ public final class OutliersProtos {
             }
             case 34: {
               demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder subBuilder = null;
-              if (initialLikelihood_ != null) {
-                subBuilder = initialLikelihood_.toBuilder();
+              if (likelihoodInitial_ != null) {
+                subBuilder = likelihoodInitial_.toBuilder();
               }
-              initialLikelihood_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.parser(), extensionRegistry);
+              likelihoodInitial_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.parser(), extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(initialLikelihood_);
-                initialLikelihood_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(likelihoodInitial_);
+                likelihoodInitial_ = subBuilder.buildPartial();
               }
 
               break;
             }
             case 42: {
               demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder subBuilder = null;
-              if (finalLikelihood_ != null) {
-                subBuilder = finalLikelihood_.toBuilder();
+              if (likelihoodFinal_ != null) {
+                subBuilder = likelihoodFinal_.toBuilder();
               }
-              finalLikelihood_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.parser(), extensionRegistry);
+              likelihoodFinal_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.parser(), extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(finalLikelihood_);
-                finalLikelihood_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(likelihoodFinal_);
+                likelihoodFinal_ = subBuilder.buildPartial();
               }
 
               break;
@@ -1321,56 +1321,56 @@ public final class OutliersProtos {
     }
     private int arimaFinalMemoizedSerializedSize = -1;
 
-    public static final int INITIAL_LIKELIHOOD_FIELD_NUMBER = 4;
-    private demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics initialLikelihood_;
+    public static final int LIKELIHOOD_INITIAL_FIELD_NUMBER = 4;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics likelihoodInitial_;
     /**
-     * <code>.jd3.LikelihoodStatistics initial_likelihood = 4;</code>
-     * @return Whether the initialLikelihood field is set.
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+     * @return Whether the likelihoodInitial field is set.
      */
     @java.lang.Override
-    public boolean hasInitialLikelihood() {
-      return initialLikelihood_ != null;
+    public boolean hasLikelihoodInitial() {
+      return likelihoodInitial_ != null;
     }
     /**
-     * <code>.jd3.LikelihoodStatistics initial_likelihood = 4;</code>
-     * @return The initialLikelihood.
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+     * @return The likelihoodInitial.
      */
     @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getInitialLikelihood() {
-      return initialLikelihood_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : initialLikelihood_;
+    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodInitial() {
+      return likelihoodInitial_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : likelihoodInitial_;
     }
     /**
-     * <code>.jd3.LikelihoodStatistics initial_likelihood = 4;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
      */
     @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getInitialLikelihoodOrBuilder() {
-      return getInitialLikelihood();
+    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodInitialOrBuilder() {
+      return getLikelihoodInitial();
     }
 
-    public static final int FINAL_LIKELIHOOD_FIELD_NUMBER = 5;
-    private demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics finalLikelihood_;
+    public static final int LIKELIHOOD_FINAL_FIELD_NUMBER = 5;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics likelihoodFinal_;
     /**
-     * <code>.jd3.LikelihoodStatistics final_likelihood = 5;</code>
-     * @return Whether the finalLikelihood field is set.
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+     * @return Whether the likelihoodFinal field is set.
      */
     @java.lang.Override
-    public boolean hasFinalLikelihood() {
-      return finalLikelihood_ != null;
+    public boolean hasLikelihoodFinal() {
+      return likelihoodFinal_ != null;
     }
     /**
-     * <code>.jd3.LikelihoodStatistics final_likelihood = 5;</code>
-     * @return The finalLikelihood.
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+     * @return The likelihoodFinal.
      */
     @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getFinalLikelihood() {
-      return finalLikelihood_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : finalLikelihood_;
+    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodFinal() {
+      return likelihoodFinal_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : likelihoodFinal_;
     }
     /**
-     * <code>.jd3.LikelihoodStatistics final_likelihood = 5;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
      */
     @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getFinalLikelihoodOrBuilder() {
-      return getFinalLikelihood();
+    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodFinalOrBuilder() {
+      return getLikelihoodFinal();
     }
 
     public static final int OUTLIERS_FIELD_NUMBER = 6;
@@ -1557,11 +1557,11 @@ public final class OutliersProtos {
       for (int i = 0; i < arimaFinal_.size(); i++) {
         output.writeDoubleNoTag(arimaFinal_.getDouble(i));
       }
-      if (initialLikelihood_ != null) {
-        output.writeMessage(4, getInitialLikelihood());
+      if (likelihoodInitial_ != null) {
+        output.writeMessage(4, getLikelihoodInitial());
       }
-      if (finalLikelihood_ != null) {
-        output.writeMessage(5, getFinalLikelihood());
+      if (likelihoodFinal_ != null) {
+        output.writeMessage(5, getLikelihoodFinal());
       }
       for (int i = 0; i < outliers_.size(); i++) {
         output.writeMessage(6, outliers_.get(i));
@@ -1631,13 +1631,13 @@ public final class OutliersProtos {
         }
         arimaFinalMemoizedSerializedSize = dataSize;
       }
-      if (initialLikelihood_ != null) {
+      if (likelihoodInitial_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getInitialLikelihood());
+          .computeMessageSize(4, getLikelihoodInitial());
       }
-      if (finalLikelihood_ != null) {
+      if (likelihoodFinal_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getFinalLikelihood());
+          .computeMessageSize(5, getLikelihoodFinal());
       }
       for (int i = 0; i < outliers_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
@@ -1694,15 +1694,15 @@ public final class OutliersProtos {
           .equals(other.getArimaInitialList())) return false;
       if (!getArimaFinalList()
           .equals(other.getArimaFinalList())) return false;
-      if (hasInitialLikelihood() != other.hasInitialLikelihood()) return false;
-      if (hasInitialLikelihood()) {
-        if (!getInitialLikelihood()
-            .equals(other.getInitialLikelihood())) return false;
+      if (hasLikelihoodInitial() != other.hasLikelihoodInitial()) return false;
+      if (hasLikelihoodInitial()) {
+        if (!getLikelihoodInitial()
+            .equals(other.getLikelihoodInitial())) return false;
       }
-      if (hasFinalLikelihood() != other.hasFinalLikelihood()) return false;
-      if (hasFinalLikelihood()) {
-        if (!getFinalLikelihood()
-            .equals(other.getFinalLikelihood())) return false;
+      if (hasLikelihoodFinal() != other.hasLikelihoodFinal()) return false;
+      if (hasLikelihoodFinal()) {
+        if (!getLikelihoodFinal()
+            .equals(other.getLikelihoodFinal())) return false;
       }
       if (!getOutliersList()
           .equals(other.getOutliersList())) return false;
@@ -1743,13 +1743,13 @@ public final class OutliersProtos {
         hash = (37 * hash) + ARIMA_FINAL_FIELD_NUMBER;
         hash = (53 * hash) + getArimaFinalList().hashCode();
       }
-      if (hasInitialLikelihood()) {
-        hash = (37 * hash) + INITIAL_LIKELIHOOD_FIELD_NUMBER;
-        hash = (53 * hash) + getInitialLikelihood().hashCode();
+      if (hasLikelihoodInitial()) {
+        hash = (37 * hash) + LIKELIHOOD_INITIAL_FIELD_NUMBER;
+        hash = (53 * hash) + getLikelihoodInitial().hashCode();
       }
-      if (hasFinalLikelihood()) {
-        hash = (37 * hash) + FINAL_LIKELIHOOD_FIELD_NUMBER;
-        hash = (53 * hash) + getFinalLikelihood().hashCode();
+      if (hasLikelihoodFinal()) {
+        hash = (37 * hash) + LIKELIHOOD_FINAL_FIELD_NUMBER;
+        hash = (53 * hash) + getLikelihoodFinal().hashCode();
       }
       if (getOutliersCount() > 0) {
         hash = (37 * hash) + OUTLIERS_FIELD_NUMBER;
@@ -1911,17 +1911,17 @@ public final class OutliersProtos {
         bitField0_ = (bitField0_ & ~0x00000002);
         arimaFinal_ = emptyDoubleList();
         bitField0_ = (bitField0_ & ~0x00000004);
-        if (initialLikelihoodBuilder_ == null) {
-          initialLikelihood_ = null;
+        if (likelihoodInitialBuilder_ == null) {
+          likelihoodInitial_ = null;
         } else {
-          initialLikelihood_ = null;
-          initialLikelihoodBuilder_ = null;
+          likelihoodInitial_ = null;
+          likelihoodInitialBuilder_ = null;
         }
-        if (finalLikelihoodBuilder_ == null) {
-          finalLikelihood_ = null;
+        if (likelihoodFinalBuilder_ == null) {
+          likelihoodFinal_ = null;
         } else {
-          finalLikelihood_ = null;
-          finalLikelihoodBuilder_ = null;
+          likelihoodFinal_ = null;
+          likelihoodFinalBuilder_ = null;
         }
         if (outliersBuilder_ == null) {
           outliers_ = java.util.Collections.emptyList();
@@ -1987,15 +1987,15 @@ public final class OutliersProtos {
           bitField0_ = (bitField0_ & ~0x00000004);
         }
         result.arimaFinal_ = arimaFinal_;
-        if (initialLikelihoodBuilder_ == null) {
-          result.initialLikelihood_ = initialLikelihood_;
+        if (likelihoodInitialBuilder_ == null) {
+          result.likelihoodInitial_ = likelihoodInitial_;
         } else {
-          result.initialLikelihood_ = initialLikelihoodBuilder_.build();
+          result.likelihoodInitial_ = likelihoodInitialBuilder_.build();
         }
-        if (finalLikelihoodBuilder_ == null) {
-          result.finalLikelihood_ = finalLikelihood_;
+        if (likelihoodFinalBuilder_ == null) {
+          result.likelihoodFinal_ = likelihoodFinal_;
         } else {
-          result.finalLikelihood_ = finalLikelihoodBuilder_.build();
+          result.likelihoodFinal_ = likelihoodFinalBuilder_.build();
         }
         if (outliersBuilder_ == null) {
           if (((bitField0_ & 0x00000008) != 0)) {
@@ -2104,11 +2104,11 @@ public final class OutliersProtos {
           }
           onChanged();
         }
-        if (other.hasInitialLikelihood()) {
-          mergeInitialLikelihood(other.getInitialLikelihood());
+        if (other.hasLikelihoodInitial()) {
+          mergeLikelihoodInitial(other.getLikelihoodInitial());
         }
-        if (other.hasFinalLikelihood()) {
-          mergeFinalLikelihood(other.getFinalLikelihood());
+        if (other.hasLikelihoodFinal()) {
+          mergeLikelihoodFinal(other.getLikelihoodFinal());
         }
         if (outliersBuilder_ == null) {
           if (!other.outliers_.isEmpty()) {
@@ -2429,242 +2429,242 @@ public final class OutliersProtos {
         return this;
       }
 
-      private demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics initialLikelihood_;
+      private demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics likelihoodInitial_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder> initialLikelihoodBuilder_;
+          demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder> likelihoodInitialBuilder_;
       /**
-       * <code>.jd3.LikelihoodStatistics initial_likelihood = 4;</code>
-       * @return Whether the initialLikelihood field is set.
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+       * @return Whether the likelihoodInitial field is set.
        */
-      public boolean hasInitialLikelihood() {
-        return initialLikelihoodBuilder_ != null || initialLikelihood_ != null;
+      public boolean hasLikelihoodInitial() {
+        return likelihoodInitialBuilder_ != null || likelihoodInitial_ != null;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics initial_likelihood = 4;</code>
-       * @return The initialLikelihood.
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+       * @return The likelihoodInitial.
        */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getInitialLikelihood() {
-        if (initialLikelihoodBuilder_ == null) {
-          return initialLikelihood_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : initialLikelihood_;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodInitial() {
+        if (likelihoodInitialBuilder_ == null) {
+          return likelihoodInitial_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : likelihoodInitial_;
         } else {
-          return initialLikelihoodBuilder_.getMessage();
+          return likelihoodInitialBuilder_.getMessage();
         }
       }
       /**
-       * <code>.jd3.LikelihoodStatistics initial_likelihood = 4;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
        */
-      public Builder setInitialLikelihood(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics value) {
-        if (initialLikelihoodBuilder_ == null) {
+      public Builder setLikelihoodInitial(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics value) {
+        if (likelihoodInitialBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          initialLikelihood_ = value;
+          likelihoodInitial_ = value;
           onChanged();
         } else {
-          initialLikelihoodBuilder_.setMessage(value);
+          likelihoodInitialBuilder_.setMessage(value);
         }
 
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics initial_likelihood = 4;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
        */
-      public Builder setInitialLikelihood(
+      public Builder setLikelihoodInitial(
           demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder builderForValue) {
-        if (initialLikelihoodBuilder_ == null) {
-          initialLikelihood_ = builderForValue.build();
+        if (likelihoodInitialBuilder_ == null) {
+          likelihoodInitial_ = builderForValue.build();
           onChanged();
         } else {
-          initialLikelihoodBuilder_.setMessage(builderForValue.build());
+          likelihoodInitialBuilder_.setMessage(builderForValue.build());
         }
 
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics initial_likelihood = 4;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
        */
-      public Builder mergeInitialLikelihood(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics value) {
-        if (initialLikelihoodBuilder_ == null) {
-          if (initialLikelihood_ != null) {
-            initialLikelihood_ =
-              demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.newBuilder(initialLikelihood_).mergeFrom(value).buildPartial();
+      public Builder mergeLikelihoodInitial(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics value) {
+        if (likelihoodInitialBuilder_ == null) {
+          if (likelihoodInitial_ != null) {
+            likelihoodInitial_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.newBuilder(likelihoodInitial_).mergeFrom(value).buildPartial();
           } else {
-            initialLikelihood_ = value;
+            likelihoodInitial_ = value;
           }
           onChanged();
         } else {
-          initialLikelihoodBuilder_.mergeFrom(value);
+          likelihoodInitialBuilder_.mergeFrom(value);
         }
 
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics initial_likelihood = 4;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
        */
-      public Builder clearInitialLikelihood() {
-        if (initialLikelihoodBuilder_ == null) {
-          initialLikelihood_ = null;
+      public Builder clearLikelihoodInitial() {
+        if (likelihoodInitialBuilder_ == null) {
+          likelihoodInitial_ = null;
           onChanged();
         } else {
-          initialLikelihood_ = null;
-          initialLikelihoodBuilder_ = null;
+          likelihoodInitial_ = null;
+          likelihoodInitialBuilder_ = null;
         }
 
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics initial_likelihood = 4;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
        */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder getInitialLikelihoodBuilder() {
+      public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder getLikelihoodInitialBuilder() {
         
         onChanged();
-        return getInitialLikelihoodFieldBuilder().getBuilder();
+        return getLikelihoodInitialFieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.LikelihoodStatistics initial_likelihood = 4;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
        */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getInitialLikelihoodOrBuilder() {
-        if (initialLikelihoodBuilder_ != null) {
-          return initialLikelihoodBuilder_.getMessageOrBuilder();
+      public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodInitialOrBuilder() {
+        if (likelihoodInitialBuilder_ != null) {
+          return likelihoodInitialBuilder_.getMessageOrBuilder();
         } else {
-          return initialLikelihood_ == null ?
-              demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : initialLikelihood_;
+          return likelihoodInitial_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : likelihoodInitial_;
         }
       }
       /**
-       * <code>.jd3.LikelihoodStatistics initial_likelihood = 4;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder> 
-          getInitialLikelihoodFieldBuilder() {
-        if (initialLikelihoodBuilder_ == null) {
-          initialLikelihoodBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          getLikelihoodInitialFieldBuilder() {
+        if (likelihoodInitialBuilder_ == null) {
+          likelihoodInitialBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder>(
-                  getInitialLikelihood(),
+                  getLikelihoodInitial(),
                   getParentForChildren(),
                   isClean());
-          initialLikelihood_ = null;
+          likelihoodInitial_ = null;
         }
-        return initialLikelihoodBuilder_;
+        return likelihoodInitialBuilder_;
       }
 
-      private demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics finalLikelihood_;
+      private demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics likelihoodFinal_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder> finalLikelihoodBuilder_;
+          demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder> likelihoodFinalBuilder_;
       /**
-       * <code>.jd3.LikelihoodStatistics final_likelihood = 5;</code>
-       * @return Whether the finalLikelihood field is set.
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+       * @return Whether the likelihoodFinal field is set.
        */
-      public boolean hasFinalLikelihood() {
-        return finalLikelihoodBuilder_ != null || finalLikelihood_ != null;
+      public boolean hasLikelihoodFinal() {
+        return likelihoodFinalBuilder_ != null || likelihoodFinal_ != null;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics final_likelihood = 5;</code>
-       * @return The finalLikelihood.
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+       * @return The likelihoodFinal.
        */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getFinalLikelihood() {
-        if (finalLikelihoodBuilder_ == null) {
-          return finalLikelihood_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : finalLikelihood_;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodFinal() {
+        if (likelihoodFinalBuilder_ == null) {
+          return likelihoodFinal_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : likelihoodFinal_;
         } else {
-          return finalLikelihoodBuilder_.getMessage();
+          return likelihoodFinalBuilder_.getMessage();
         }
       }
       /**
-       * <code>.jd3.LikelihoodStatistics final_likelihood = 5;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
        */
-      public Builder setFinalLikelihood(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics value) {
-        if (finalLikelihoodBuilder_ == null) {
+      public Builder setLikelihoodFinal(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics value) {
+        if (likelihoodFinalBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          finalLikelihood_ = value;
+          likelihoodFinal_ = value;
           onChanged();
         } else {
-          finalLikelihoodBuilder_.setMessage(value);
+          likelihoodFinalBuilder_.setMessage(value);
         }
 
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics final_likelihood = 5;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
        */
-      public Builder setFinalLikelihood(
+      public Builder setLikelihoodFinal(
           demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder builderForValue) {
-        if (finalLikelihoodBuilder_ == null) {
-          finalLikelihood_ = builderForValue.build();
+        if (likelihoodFinalBuilder_ == null) {
+          likelihoodFinal_ = builderForValue.build();
           onChanged();
         } else {
-          finalLikelihoodBuilder_.setMessage(builderForValue.build());
+          likelihoodFinalBuilder_.setMessage(builderForValue.build());
         }
 
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics final_likelihood = 5;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
        */
-      public Builder mergeFinalLikelihood(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics value) {
-        if (finalLikelihoodBuilder_ == null) {
-          if (finalLikelihood_ != null) {
-            finalLikelihood_ =
-              demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.newBuilder(finalLikelihood_).mergeFrom(value).buildPartial();
+      public Builder mergeLikelihoodFinal(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics value) {
+        if (likelihoodFinalBuilder_ == null) {
+          if (likelihoodFinal_ != null) {
+            likelihoodFinal_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.newBuilder(likelihoodFinal_).mergeFrom(value).buildPartial();
           } else {
-            finalLikelihood_ = value;
+            likelihoodFinal_ = value;
           }
           onChanged();
         } else {
-          finalLikelihoodBuilder_.mergeFrom(value);
+          likelihoodFinalBuilder_.mergeFrom(value);
         }
 
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics final_likelihood = 5;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
        */
-      public Builder clearFinalLikelihood() {
-        if (finalLikelihoodBuilder_ == null) {
-          finalLikelihood_ = null;
+      public Builder clearLikelihoodFinal() {
+        if (likelihoodFinalBuilder_ == null) {
+          likelihoodFinal_ = null;
           onChanged();
         } else {
-          finalLikelihood_ = null;
-          finalLikelihoodBuilder_ = null;
+          likelihoodFinal_ = null;
+          likelihoodFinalBuilder_ = null;
         }
 
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics final_likelihood = 5;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
        */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder getFinalLikelihoodBuilder() {
+      public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder getLikelihoodFinalBuilder() {
         
         onChanged();
-        return getFinalLikelihoodFieldBuilder().getBuilder();
+        return getLikelihoodFinalFieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.LikelihoodStatistics final_likelihood = 5;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
        */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getFinalLikelihoodOrBuilder() {
-        if (finalLikelihoodBuilder_ != null) {
-          return finalLikelihoodBuilder_.getMessageOrBuilder();
+      public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodFinalOrBuilder() {
+        if (likelihoodFinalBuilder_ != null) {
+          return likelihoodFinalBuilder_.getMessageOrBuilder();
         } else {
-          return finalLikelihood_ == null ?
-              demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : finalLikelihood_;
+          return likelihoodFinal_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : likelihoodFinal_;
         }
       }
       /**
-       * <code>.jd3.LikelihoodStatistics final_likelihood = 5;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder> 
-          getFinalLikelihoodFieldBuilder() {
-        if (finalLikelihoodBuilder_ == null) {
-          finalLikelihoodBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          getLikelihoodFinalFieldBuilder() {
+        if (likelihoodFinalBuilder_ == null) {
+          likelihoodFinalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder>(
-                  getFinalLikelihood(),
+                  getLikelihoodFinal(),
                   getParentForChildren(),
                   isClean());
-          finalLikelihood_ = null;
+          likelihoodFinal_ = null;
         }
-        return finalLikelihoodBuilder_;
+        return likelihoodFinalBuilder_;
       }
 
       private java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier> outliers_ =
@@ -3379,9 +3379,9 @@ public final class OutliersProtos {
       " \001(\005\022\023\n\013coefficient\030\n \001(\001\022\014\n\004stde\030\013 \001(\001\"" +
       "\320\002\n\020RegArimaSolution\022\024\n\014arima_orders\030\001 \003" +
       "(\005\022\025\n\rarima_initial\030\002 \003(\001\022\023\n\013arima_final" +
-      "\030\003 \003(\001\0225\n\022initial_likelihood\030\004 \001(\0132\031.jd3" +
-      ".LikelihoodStatistics\0223\n\020final_likelihoo" +
-      "d\030\005 \001(\0132\031.jd3.LikelihoodStatistics\022#\n\010ou" +
+      "\030\003 \003(\001\0225\n\022likelihood_initial\030\004 \001(\0132\031.jd3" +
+      ".LikelihoodStatistics\0223\n\020likelihood_fina" +
+      "l\030\005 \001(\0132\031.jd3.LikelihoodStatistics\022#\n\010ou" +
       "tliers\030\006 \003(\0132\021.outliers.Outlier\022\024\n\014coeff" +
       "icients\030\007 \003(\001\022\037\n\ncovariance\030\010 \001(\0132\013.jd3." +
       "Matrix\022\037\n\nregressors\030\t \001(\0132\013.jd3.Matrix\022" +
@@ -3404,7 +3404,7 @@ public final class OutliersProtos {
     internal_static_outliers_RegArimaSolution_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_outliers_RegArimaSolution_descriptor,
-        new java.lang.String[] { "ArimaOrders", "ArimaInitial", "ArimaFinal", "InitialLikelihood", "FinalLikelihood", "Outliers", "Coefficients", "Covariance", "Regressors", "Residuals", });
+        new java.lang.String[] { "ArimaOrders", "ArimaInitial", "ArimaFinal", "LikelihoodInitial", "LikelihoodFinal", "Outliers", "Coefficients", "Covariance", "Regressors", "Residuals", });
     demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor();
   }
 

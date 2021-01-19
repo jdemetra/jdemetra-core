@@ -7,17 +7,22 @@ package demetra.sts.r;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
+import demetra.data.Utility;
 import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
+import demetra.outliers.io.protobuf.OutliersProtos;
 import demetra.processing.ProcResults;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import demetra.sts.ComponentUse;
 import demetra.sts.SeasonalModel;
+import demetra.sts.io.protobuf.StsProtosUtility;
+import demetra.sts.outliers.io.protobuf.StsOutliersProtos;
 import demetra.timeseries.TsData;
 import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
+import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import jdplus.data.DataBlock;
@@ -47,6 +52,33 @@ public class StsOutliersDetection {
     @lombok.Builder
     public static class Results implements ProcResults {
 
+        public byte[] buffer() {
+            int nx = x == null ? 0 : x.getColumnsCount();
+            StsOutliersProtos.StsSolution.Builder builder = StsOutliersProtos.StsSolution.newBuilder()
+                    .setBsmInitial(StsProtosUtility.convert(initialBsm))
+                    .setBsmFinal(StsProtosUtility.convert(finalBsm))
+                    .addAllCoefficients(Utility.asIterable(coefficients))
+                    .setCovariance(ToolkitProtosUtility.convert(coefficientsCovariance))
+                    .setRegressors(ToolkitProtosUtility.convert(regressors))
+                    .setLikelihoodInitial(ToolkitProtosUtility.convert(initialLikelihood))
+                    .setLikelihoodFinal(ToolkitProtosUtility.convert(finalLikelihood))
+                    .setComponents(ToolkitProtosUtility.convert(components))
+                    .setTauInitial(ToolkitProtosUtility.convert(initialTau))
+                    .setTauFinal(ToolkitProtosUtility.convert(finalTau))
+                    .addAllResiduals(Utility.asIterable(residuals));
+            DoubleSeq diag = coefficientsCovariance.diagonal();
+            for (int i = 0, j = nx; i < outliers.length; ++i, ++j) {
+                builder.addOutliers(
+                        OutliersProtos.Outlier.newBuilder()
+                                .setCode(outliers[i].getCode())
+                                .setPosition(outliers[i].getPosition())
+                                .setCoefficient(coefficients[j])
+                                .setStde(Math.sqrt(diag.get(j)))
+                                .build());
+            }
+            return builder.build().toByteArray();
+        }
+
         BasicStructuralModel initialBsm, finalBsm;
 
         DoubleSeq y;
@@ -58,6 +90,7 @@ public class StsOutliersDetection {
         MatrixType regressors;
         MatrixType components;
         DoubleSeq linearized;
+        DoubleSeq residuals;
         MatrixType initialTau, finalTau;
 
         LikelihoodStatistics initialLikelihood, finalLikelihood;
@@ -149,7 +182,7 @@ public class StsOutliersDetection {
 
     public Results process(TsData y, int level, int slope, int noise, String seasmodel, MatrixType x,
             boolean bao, boolean bls, boolean bso, double cv, double tcv, String forwardEstimation, String backwardEstimation) {
-        y=y.cleanExtremities();
+        y = y.cleanExtremities();
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
         BsmSpec mspec = new BsmSpec();
         mspec.setLevelUse(of(level));
@@ -235,6 +268,7 @@ public class StsOutliersDetection {
                 .initialTau(tau0)
                 .finalTau(tau1)
                 .linearized(lin)
+                .residuals(ll.e())
                 .build();
     }
 

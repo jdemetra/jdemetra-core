@@ -77,8 +77,8 @@ public class TramoOutliersDetection {
                     .addAllCoefficients(Utility.asIterable(coefficients))
                     .setCovariance(ToolkitProtosUtility.convert(coefficientsCovariance))
                     .setRegressors(ToolkitProtosUtility.convert(regressors))
-                    .setInitialLikelihood(ToolkitProtosUtility.convert(initialLikelihood))
-                    .setFinalLikelihood(ToolkitProtosUtility.convert(finalLikelihood))
+                    .setLikelihoodInitial(ToolkitProtosUtility.convert(initialLikelihood))
+                    .setLikelihoodFinal(ToolkitProtosUtility.convert(finalLikelihood))
                     .addAllResiduals(Utility.asIterable(residuals));
             DoubleSeq diag = coefficientsCovariance.diagonal();
             for (int i = 0, j = nx; i < outliers.length; ++i, ++j) {
