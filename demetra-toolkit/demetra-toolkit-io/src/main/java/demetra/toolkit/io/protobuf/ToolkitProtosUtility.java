@@ -206,6 +206,8 @@ public class ToolkitProtosUtility {
     }
     
     public ToolkitProtos.Matrix convert(MatrixType m){
+        if (m == null)
+            return ToolkitProtos.Matrix.getDefaultInstance();
         return ToolkitProtos.Matrix.newBuilder()
                 .setNrows(m.getRowsCount())
                 .setNcols(m.getColumnsCount())

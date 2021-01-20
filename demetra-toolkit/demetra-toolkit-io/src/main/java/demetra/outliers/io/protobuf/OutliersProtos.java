@@ -801,169 +801,152 @@ public final class OutliersProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>repeated int32 arima_orders = 1;</code>
-     * @return A list containing the arimaOrders.
-     */
-    java.util.List<java.lang.Integer> getArimaOrdersList();
-    /**
-     * <code>repeated int32 arima_orders = 1;</code>
-     * @return The count of arimaOrders.
-     */
-    int getArimaOrdersCount();
-    /**
-     * <code>repeated int32 arima_orders = 1;</code>
-     * @param index The index of the element to return.
-     * @return The arimaOrders at the given index.
-     */
-    int getArimaOrders(int index);
-
-    /**
-     * <code>repeated double arima_initial = 2;</code>
+     * <code>repeated double arima_initial = 1;</code>
      * @return A list containing the arimaInitial.
      */
     java.util.List<java.lang.Double> getArimaInitialList();
     /**
-     * <code>repeated double arima_initial = 2;</code>
+     * <code>repeated double arima_initial = 1;</code>
      * @return The count of arimaInitial.
      */
     int getArimaInitialCount();
     /**
-     * <code>repeated double arima_initial = 2;</code>
+     * <code>repeated double arima_initial = 1;</code>
      * @param index The index of the element to return.
      * @return The arimaInitial at the given index.
      */
     double getArimaInitial(int index);
 
     /**
-     * <code>repeated double arima_final = 3;</code>
+     * <code>repeated double arima_final = 2;</code>
      * @return A list containing the arimaFinal.
      */
     java.util.List<java.lang.Double> getArimaFinalList();
     /**
-     * <code>repeated double arima_final = 3;</code>
+     * <code>repeated double arima_final = 2;</code>
      * @return The count of arimaFinal.
      */
     int getArimaFinalCount();
     /**
-     * <code>repeated double arima_final = 3;</code>
+     * <code>repeated double arima_final = 2;</code>
      * @param index The index of the element to return.
      * @return The arimaFinal at the given index.
      */
     double getArimaFinal(int index);
 
     /**
-     * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
      * @return Whether the likelihoodInitial field is set.
      */
     boolean hasLikelihoodInitial();
     /**
-     * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
      * @return The likelihoodInitial.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodInitial();
     /**
-     * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodInitialOrBuilder();
 
     /**
-     * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
      * @return Whether the likelihoodFinal field is set.
      */
     boolean hasLikelihoodFinal();
     /**
-     * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
      * @return The likelihoodFinal.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodFinal();
     /**
-     * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodFinalOrBuilder();
 
     /**
-     * <code>repeated .outliers.Outlier outliers = 6;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier> 
         getOutliersList();
     /**
-     * <code>repeated .outliers.Outlier outliers = 6;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     demetra.outliers.io.protobuf.OutliersProtos.Outlier getOutliers(int index);
     /**
-     * <code>repeated .outliers.Outlier outliers = 6;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     int getOutliersCount();
     /**
-     * <code>repeated .outliers.Outlier outliers = 6;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     java.util.List<? extends demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder> 
         getOutliersOrBuilderList();
     /**
-     * <code>repeated .outliers.Outlier outliers = 6;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder getOutliersOrBuilder(
         int index);
 
     /**
-     * <code>repeated double coefficients = 7;</code>
+     * <code>repeated double coefficients = 6;</code>
      * @return A list containing the coefficients.
      */
     java.util.List<java.lang.Double> getCoefficientsList();
     /**
-     * <code>repeated double coefficients = 7;</code>
+     * <code>repeated double coefficients = 6;</code>
      * @return The count of coefficients.
      */
     int getCoefficientsCount();
     /**
-     * <code>repeated double coefficients = 7;</code>
+     * <code>repeated double coefficients = 6;</code>
      * @param index The index of the element to return.
      * @return The coefficients at the given index.
      */
     double getCoefficients(int index);
 
     /**
-     * <code>.jd3.Matrix covariance = 8;</code>
+     * <code>.jd3.Matrix covariance = 7;</code>
      * @return Whether the covariance field is set.
      */
     boolean hasCovariance();
     /**
-     * <code>.jd3.Matrix covariance = 8;</code>
+     * <code>.jd3.Matrix covariance = 7;</code>
      * @return The covariance.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getCovariance();
     /**
-     * <code>.jd3.Matrix covariance = 8;</code>
+     * <code>.jd3.Matrix covariance = 7;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getCovarianceOrBuilder();
 
     /**
-     * <code>.jd3.Matrix regressors = 9;</code>
+     * <code>.jd3.Matrix regressors = 8;</code>
      * @return Whether the regressors field is set.
      */
     boolean hasRegressors();
     /**
-     * <code>.jd3.Matrix regressors = 9;</code>
+     * <code>.jd3.Matrix regressors = 8;</code>
      * @return The regressors.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getRegressors();
     /**
-     * <code>.jd3.Matrix regressors = 9;</code>
+     * <code>.jd3.Matrix regressors = 8;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getRegressorsOrBuilder();
 
     /**
-     * <code>repeated double residuals = 12;</code>
+     * <code>repeated double residuals = 9;</code>
      * @return A list containing the residuals.
      */
     java.util.List<java.lang.Double> getResidualsList();
     /**
-     * <code>repeated double residuals = 12;</code>
+     * <code>repeated double residuals = 9;</code>
      * @return The count of residuals.
      */
     int getResidualsCount();
     /**
-     * <code>repeated double residuals = 12;</code>
+     * <code>repeated double residuals = 9;</code>
      * @param index The index of the element to return.
      * @return The residuals at the given index.
      */
@@ -982,7 +965,6 @@ public final class OutliersProtos {
       super(builder);
     }
     private RegArimaSolution() {
-      arimaOrders_ = emptyIntList();
       arimaInitial_ = emptyDoubleList();
       arimaFinal_ = emptyDoubleList();
       outliers_ = java.util.Collections.emptyList();
@@ -1021,41 +1003,20 @@ public final class OutliersProtos {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 9: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                arimaOrders_ = newIntList();
+                arimaInitial_ = newDoubleList();
                 mutable_bitField0_ |= 0x00000001;
               }
-              arimaOrders_.addInt(input.readInt32());
+              arimaInitial_.addDouble(input.readDouble());
               break;
             }
             case 10: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
               if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
-                arimaOrders_ = newIntList();
+                arimaInitial_ = newDoubleList();
                 mutable_bitField0_ |= 0x00000001;
-              }
-              while (input.getBytesUntilLimit() > 0) {
-                arimaOrders_.addInt(input.readInt32());
-              }
-              input.popLimit(limit);
-              break;
-            }
-            case 17: {
-              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                arimaInitial_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000002;
-              }
-              arimaInitial_.addDouble(input.readDouble());
-              break;
-            }
-            case 18: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000002) != 0) && input.getBytesUntilLimit() > 0) {
-                arimaInitial_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000002;
               }
               while (input.getBytesUntilLimit() > 0) {
                 arimaInitial_.addDouble(input.readDouble());
@@ -1063,20 +1024,20 @@ public final class OutliersProtos {
               input.popLimit(limit);
               break;
             }
-            case 25: {
-              if (!((mutable_bitField0_ & 0x00000004) != 0)) {
+            case 17: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
                 arimaFinal_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000004;
+                mutable_bitField0_ |= 0x00000002;
               }
               arimaFinal_.addDouble(input.readDouble());
               break;
             }
-            case 26: {
+            case 18: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000004) != 0) && input.getBytesUntilLimit() > 0) {
+              if (!((mutable_bitField0_ & 0x00000002) != 0) && input.getBytesUntilLimit() > 0) {
                 arimaFinal_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000004;
+                mutable_bitField0_ |= 0x00000002;
               }
               while (input.getBytesUntilLimit() > 0) {
                 arimaFinal_.addDouble(input.readDouble());
@@ -1084,7 +1045,7 @@ public final class OutliersProtos {
               input.popLimit(limit);
               break;
             }
-            case 34: {
+            case 26: {
               demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder subBuilder = null;
               if (likelihoodInitial_ != null) {
                 subBuilder = likelihoodInitial_.toBuilder();
@@ -1097,7 +1058,7 @@ public final class OutliersProtos {
 
               break;
             }
-            case 42: {
+            case 34: {
               demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder subBuilder = null;
               if (likelihoodFinal_ != null) {
                 subBuilder = likelihoodFinal_.toBuilder();
@@ -1110,29 +1071,29 @@ public final class OutliersProtos {
 
               break;
             }
-            case 50: {
-              if (!((mutable_bitField0_ & 0x00000008) != 0)) {
+            case 42: {
+              if (!((mutable_bitField0_ & 0x00000004) != 0)) {
                 outliers_ = new java.util.ArrayList<demetra.outliers.io.protobuf.OutliersProtos.Outlier>();
-                mutable_bitField0_ |= 0x00000008;
+                mutable_bitField0_ |= 0x00000004;
               }
               outliers_.add(
                   input.readMessage(demetra.outliers.io.protobuf.OutliersProtos.Outlier.parser(), extensionRegistry));
               break;
             }
-            case 57: {
-              if (!((mutable_bitField0_ & 0x00000010) != 0)) {
+            case 49: {
+              if (!((mutable_bitField0_ & 0x00000008) != 0)) {
                 coefficients_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000010;
+                mutable_bitField0_ |= 0x00000008;
               }
               coefficients_.addDouble(input.readDouble());
               break;
             }
-            case 58: {
+            case 50: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000010) != 0) && input.getBytesUntilLimit() > 0) {
+              if (!((mutable_bitField0_ & 0x00000008) != 0) && input.getBytesUntilLimit() > 0) {
                 coefficients_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000010;
+                mutable_bitField0_ |= 0x00000008;
               }
               while (input.getBytesUntilLimit() > 0) {
                 coefficients_.addDouble(input.readDouble());
@@ -1140,7 +1101,7 @@ public final class OutliersProtos {
               input.popLimit(limit);
               break;
             }
-            case 66: {
+            case 58: {
               demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder subBuilder = null;
               if (covariance_ != null) {
                 subBuilder = covariance_.toBuilder();
@@ -1153,7 +1114,7 @@ public final class OutliersProtos {
 
               break;
             }
-            case 74: {
+            case 66: {
               demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder subBuilder = null;
               if (regressors_ != null) {
                 subBuilder = regressors_.toBuilder();
@@ -1166,20 +1127,20 @@ public final class OutliersProtos {
 
               break;
             }
-            case 97: {
-              if (!((mutable_bitField0_ & 0x00000020) != 0)) {
+            case 73: {
+              if (!((mutable_bitField0_ & 0x00000010) != 0)) {
                 residuals_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000020;
+                mutable_bitField0_ |= 0x00000010;
               }
               residuals_.addDouble(input.readDouble());
               break;
             }
-            case 98: {
+            case 74: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000020) != 0) && input.getBytesUntilLimit() > 0) {
+              if (!((mutable_bitField0_ & 0x00000010) != 0) && input.getBytesUntilLimit() > 0) {
                 residuals_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000020;
+                mutable_bitField0_ |= 0x00000010;
               }
               while (input.getBytesUntilLimit() > 0) {
                 residuals_.addDouble(input.readDouble());
@@ -1203,21 +1164,18 @@ public final class OutliersProtos {
             e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          arimaOrders_.makeImmutable(); // C
-        }
-        if (((mutable_bitField0_ & 0x00000002) != 0)) {
           arimaInitial_.makeImmutable(); // C
         }
-        if (((mutable_bitField0_ & 0x00000004) != 0)) {
+        if (((mutable_bitField0_ & 0x00000002) != 0)) {
           arimaFinal_.makeImmutable(); // C
         }
-        if (((mutable_bitField0_ & 0x00000008) != 0)) {
+        if (((mutable_bitField0_ & 0x00000004) != 0)) {
           outliers_ = java.util.Collections.unmodifiableList(outliers_);
         }
-        if (((mutable_bitField0_ & 0x00000010) != 0)) {
+        if (((mutable_bitField0_ & 0x00000008) != 0)) {
           coefficients_.makeImmutable(); // C
         }
-        if (((mutable_bitField0_ & 0x00000020) != 0)) {
+        if (((mutable_bitField0_ & 0x00000010) != 0)) {
           residuals_.makeImmutable(); // C
         }
         this.unknownFields = unknownFields.build();
@@ -1237,38 +1195,10 @@ public final class OutliersProtos {
               demetra.outliers.io.protobuf.OutliersProtos.RegArimaSolution.class, demetra.outliers.io.protobuf.OutliersProtos.RegArimaSolution.Builder.class);
     }
 
-    public static final int ARIMA_ORDERS_FIELD_NUMBER = 1;
-    private com.google.protobuf.Internal.IntList arimaOrders_;
-    /**
-     * <code>repeated int32 arima_orders = 1;</code>
-     * @return A list containing the arimaOrders.
-     */
-    @java.lang.Override
-    public java.util.List<java.lang.Integer>
-        getArimaOrdersList() {
-      return arimaOrders_;
-    }
-    /**
-     * <code>repeated int32 arima_orders = 1;</code>
-     * @return The count of arimaOrders.
-     */
-    public int getArimaOrdersCount() {
-      return arimaOrders_.size();
-    }
-    /**
-     * <code>repeated int32 arima_orders = 1;</code>
-     * @param index The index of the element to return.
-     * @return The arimaOrders at the given index.
-     */
-    public int getArimaOrders(int index) {
-      return arimaOrders_.getInt(index);
-    }
-    private int arimaOrdersMemoizedSerializedSize = -1;
-
-    public static final int ARIMA_INITIAL_FIELD_NUMBER = 2;
+    public static final int ARIMA_INITIAL_FIELD_NUMBER = 1;
     private com.google.protobuf.Internal.DoubleList arimaInitial_;
     /**
-     * <code>repeated double arima_initial = 2;</code>
+     * <code>repeated double arima_initial = 1;</code>
      * @return A list containing the arimaInitial.
      */
     @java.lang.Override
@@ -1277,14 +1207,14 @@ public final class OutliersProtos {
       return arimaInitial_;
     }
     /**
-     * <code>repeated double arima_initial = 2;</code>
+     * <code>repeated double arima_initial = 1;</code>
      * @return The count of arimaInitial.
      */
     public int getArimaInitialCount() {
       return arimaInitial_.size();
     }
     /**
-     * <code>repeated double arima_initial = 2;</code>
+     * <code>repeated double arima_initial = 1;</code>
      * @param index The index of the element to return.
      * @return The arimaInitial at the given index.
      */
@@ -1293,10 +1223,10 @@ public final class OutliersProtos {
     }
     private int arimaInitialMemoizedSerializedSize = -1;
 
-    public static final int ARIMA_FINAL_FIELD_NUMBER = 3;
+    public static final int ARIMA_FINAL_FIELD_NUMBER = 2;
     private com.google.protobuf.Internal.DoubleList arimaFinal_;
     /**
-     * <code>repeated double arima_final = 3;</code>
+     * <code>repeated double arima_final = 2;</code>
      * @return A list containing the arimaFinal.
      */
     @java.lang.Override
@@ -1305,14 +1235,14 @@ public final class OutliersProtos {
       return arimaFinal_;
     }
     /**
-     * <code>repeated double arima_final = 3;</code>
+     * <code>repeated double arima_final = 2;</code>
      * @return The count of arimaFinal.
      */
     public int getArimaFinalCount() {
       return arimaFinal_.size();
     }
     /**
-     * <code>repeated double arima_final = 3;</code>
+     * <code>repeated double arima_final = 2;</code>
      * @param index The index of the element to return.
      * @return The arimaFinal at the given index.
      */
@@ -1321,10 +1251,10 @@ public final class OutliersProtos {
     }
     private int arimaFinalMemoizedSerializedSize = -1;
 
-    public static final int LIKELIHOOD_INITIAL_FIELD_NUMBER = 4;
+    public static final int LIKELIHOOD_INITIAL_FIELD_NUMBER = 3;
     private demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics likelihoodInitial_;
     /**
-     * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
      * @return Whether the likelihoodInitial field is set.
      */
     @java.lang.Override
@@ -1332,7 +1262,7 @@ public final class OutliersProtos {
       return likelihoodInitial_ != null;
     }
     /**
-     * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
      * @return The likelihoodInitial.
      */
     @java.lang.Override
@@ -1340,17 +1270,17 @@ public final class OutliersProtos {
       return likelihoodInitial_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : likelihoodInitial_;
     }
     /**
-     * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodInitialOrBuilder() {
       return getLikelihoodInitial();
     }
 
-    public static final int LIKELIHOOD_FINAL_FIELD_NUMBER = 5;
+    public static final int LIKELIHOOD_FINAL_FIELD_NUMBER = 4;
     private demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics likelihoodFinal_;
     /**
-     * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
      * @return Whether the likelihoodFinal field is set.
      */
     @java.lang.Override
@@ -1358,7 +1288,7 @@ public final class OutliersProtos {
       return likelihoodFinal_ != null;
     }
     /**
-     * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
      * @return The likelihoodFinal.
      */
     @java.lang.Override
@@ -1366,24 +1296,24 @@ public final class OutliersProtos {
       return likelihoodFinal_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : likelihoodFinal_;
     }
     /**
-     * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodFinalOrBuilder() {
       return getLikelihoodFinal();
     }
 
-    public static final int OUTLIERS_FIELD_NUMBER = 6;
+    public static final int OUTLIERS_FIELD_NUMBER = 5;
     private java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier> outliers_;
     /**
-     * <code>repeated .outliers.Outlier outliers = 6;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     @java.lang.Override
     public java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier> getOutliersList() {
       return outliers_;
     }
     /**
-     * <code>repeated .outliers.Outlier outliers = 6;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     @java.lang.Override
     public java.util.List<? extends demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder> 
@@ -1391,21 +1321,21 @@ public final class OutliersProtos {
       return outliers_;
     }
     /**
-     * <code>repeated .outliers.Outlier outliers = 6;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     @java.lang.Override
     public int getOutliersCount() {
       return outliers_.size();
     }
     /**
-     * <code>repeated .outliers.Outlier outliers = 6;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     @java.lang.Override
     public demetra.outliers.io.protobuf.OutliersProtos.Outlier getOutliers(int index) {
       return outliers_.get(index);
     }
     /**
-     * <code>repeated .outliers.Outlier outliers = 6;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     @java.lang.Override
     public demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder getOutliersOrBuilder(
@@ -1413,10 +1343,10 @@ public final class OutliersProtos {
       return outliers_.get(index);
     }
 
-    public static final int COEFFICIENTS_FIELD_NUMBER = 7;
+    public static final int COEFFICIENTS_FIELD_NUMBER = 6;
     private com.google.protobuf.Internal.DoubleList coefficients_;
     /**
-     * <code>repeated double coefficients = 7;</code>
+     * <code>repeated double coefficients = 6;</code>
      * @return A list containing the coefficients.
      */
     @java.lang.Override
@@ -1425,14 +1355,14 @@ public final class OutliersProtos {
       return coefficients_;
     }
     /**
-     * <code>repeated double coefficients = 7;</code>
+     * <code>repeated double coefficients = 6;</code>
      * @return The count of coefficients.
      */
     public int getCoefficientsCount() {
       return coefficients_.size();
     }
     /**
-     * <code>repeated double coefficients = 7;</code>
+     * <code>repeated double coefficients = 6;</code>
      * @param index The index of the element to return.
      * @return The coefficients at the given index.
      */
@@ -1441,10 +1371,10 @@ public final class OutliersProtos {
     }
     private int coefficientsMemoizedSerializedSize = -1;
 
-    public static final int COVARIANCE_FIELD_NUMBER = 8;
+    public static final int COVARIANCE_FIELD_NUMBER = 7;
     private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix covariance_;
     /**
-     * <code>.jd3.Matrix covariance = 8;</code>
+     * <code>.jd3.Matrix covariance = 7;</code>
      * @return Whether the covariance field is set.
      */
     @java.lang.Override
@@ -1452,7 +1382,7 @@ public final class OutliersProtos {
       return covariance_ != null;
     }
     /**
-     * <code>.jd3.Matrix covariance = 8;</code>
+     * <code>.jd3.Matrix covariance = 7;</code>
      * @return The covariance.
      */
     @java.lang.Override
@@ -1460,17 +1390,17 @@ public final class OutliersProtos {
       return covariance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : covariance_;
     }
     /**
-     * <code>.jd3.Matrix covariance = 8;</code>
+     * <code>.jd3.Matrix covariance = 7;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getCovarianceOrBuilder() {
       return getCovariance();
     }
 
-    public static final int REGRESSORS_FIELD_NUMBER = 9;
+    public static final int REGRESSORS_FIELD_NUMBER = 8;
     private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix regressors_;
     /**
-     * <code>.jd3.Matrix regressors = 9;</code>
+     * <code>.jd3.Matrix regressors = 8;</code>
      * @return Whether the regressors field is set.
      */
     @java.lang.Override
@@ -1478,7 +1408,7 @@ public final class OutliersProtos {
       return regressors_ != null;
     }
     /**
-     * <code>.jd3.Matrix regressors = 9;</code>
+     * <code>.jd3.Matrix regressors = 8;</code>
      * @return The regressors.
      */
     @java.lang.Override
@@ -1486,17 +1416,17 @@ public final class OutliersProtos {
       return regressors_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : regressors_;
     }
     /**
-     * <code>.jd3.Matrix regressors = 9;</code>
+     * <code>.jd3.Matrix regressors = 8;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getRegressorsOrBuilder() {
       return getRegressors();
     }
 
-    public static final int RESIDUALS_FIELD_NUMBER = 12;
+    public static final int RESIDUALS_FIELD_NUMBER = 9;
     private com.google.protobuf.Internal.DoubleList residuals_;
     /**
-     * <code>repeated double residuals = 12;</code>
+     * <code>repeated double residuals = 9;</code>
      * @return A list containing the residuals.
      */
     @java.lang.Override
@@ -1505,14 +1435,14 @@ public final class OutliersProtos {
       return residuals_;
     }
     /**
-     * <code>repeated double residuals = 12;</code>
+     * <code>repeated double residuals = 9;</code>
      * @return The count of residuals.
      */
     public int getResidualsCount() {
       return residuals_.size();
     }
     /**
-     * <code>repeated double residuals = 12;</code>
+     * <code>repeated double residuals = 9;</code>
      * @param index The index of the element to return.
      * @return The residuals at the given index.
      */
@@ -1536,51 +1466,44 @@ public final class OutliersProtos {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (getArimaOrdersList().size() > 0) {
-        output.writeUInt32NoTag(10);
-        output.writeUInt32NoTag(arimaOrdersMemoizedSerializedSize);
-      }
-      for (int i = 0; i < arimaOrders_.size(); i++) {
-        output.writeInt32NoTag(arimaOrders_.getInt(i));
-      }
       if (getArimaInitialList().size() > 0) {
-        output.writeUInt32NoTag(18);
+        output.writeUInt32NoTag(10);
         output.writeUInt32NoTag(arimaInitialMemoizedSerializedSize);
       }
       for (int i = 0; i < arimaInitial_.size(); i++) {
         output.writeDoubleNoTag(arimaInitial_.getDouble(i));
       }
       if (getArimaFinalList().size() > 0) {
-        output.writeUInt32NoTag(26);
+        output.writeUInt32NoTag(18);
         output.writeUInt32NoTag(arimaFinalMemoizedSerializedSize);
       }
       for (int i = 0; i < arimaFinal_.size(); i++) {
         output.writeDoubleNoTag(arimaFinal_.getDouble(i));
       }
       if (likelihoodInitial_ != null) {
-        output.writeMessage(4, getLikelihoodInitial());
+        output.writeMessage(3, getLikelihoodInitial());
       }
       if (likelihoodFinal_ != null) {
-        output.writeMessage(5, getLikelihoodFinal());
+        output.writeMessage(4, getLikelihoodFinal());
       }
       for (int i = 0; i < outliers_.size(); i++) {
-        output.writeMessage(6, outliers_.get(i));
+        output.writeMessage(5, outliers_.get(i));
       }
       if (getCoefficientsList().size() > 0) {
-        output.writeUInt32NoTag(58);
+        output.writeUInt32NoTag(50);
         output.writeUInt32NoTag(coefficientsMemoizedSerializedSize);
       }
       for (int i = 0; i < coefficients_.size(); i++) {
         output.writeDoubleNoTag(coefficients_.getDouble(i));
       }
       if (covariance_ != null) {
-        output.writeMessage(8, getCovariance());
+        output.writeMessage(7, getCovariance());
       }
       if (regressors_ != null) {
-        output.writeMessage(9, getRegressors());
+        output.writeMessage(8, getRegressors());
       }
       if (getResidualsList().size() > 0) {
-        output.writeUInt32NoTag(98);
+        output.writeUInt32NoTag(74);
         output.writeUInt32NoTag(residualsMemoizedSerializedSize);
       }
       for (int i = 0; i < residuals_.size(); i++) {
@@ -1595,20 +1518,6 @@ public final class OutliersProtos {
       if (size != -1) return size;
 
       size = 0;
-      {
-        int dataSize = 0;
-        for (int i = 0; i < arimaOrders_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(arimaOrders_.getInt(i));
-        }
-        size += dataSize;
-        if (!getArimaOrdersList().isEmpty()) {
-          size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
-        }
-        arimaOrdersMemoizedSerializedSize = dataSize;
-      }
       {
         int dataSize = 0;
         dataSize = 8 * getArimaInitialList().size();
@@ -1633,15 +1542,15 @@ public final class OutliersProtos {
       }
       if (likelihoodInitial_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getLikelihoodInitial());
+          .computeMessageSize(3, getLikelihoodInitial());
       }
       if (likelihoodFinal_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getLikelihoodFinal());
+          .computeMessageSize(4, getLikelihoodFinal());
       }
       for (int i = 0; i < outliers_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, outliers_.get(i));
+          .computeMessageSize(5, outliers_.get(i));
       }
       {
         int dataSize = 0;
@@ -1656,11 +1565,11 @@ public final class OutliersProtos {
       }
       if (covariance_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(8, getCovariance());
+          .computeMessageSize(7, getCovariance());
       }
       if (regressors_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(9, getRegressors());
+          .computeMessageSize(8, getRegressors());
       }
       {
         int dataSize = 0;
@@ -1688,8 +1597,6 @@ public final class OutliersProtos {
       }
       demetra.outliers.io.protobuf.OutliersProtos.RegArimaSolution other = (demetra.outliers.io.protobuf.OutliersProtos.RegArimaSolution) obj;
 
-      if (!getArimaOrdersList()
-          .equals(other.getArimaOrdersList())) return false;
       if (!getArimaInitialList()
           .equals(other.getArimaInitialList())) return false;
       if (!getArimaFinalList()
@@ -1731,10 +1638,6 @@ public final class OutliersProtos {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (getArimaOrdersCount() > 0) {
-        hash = (37 * hash) + ARIMA_ORDERS_FIELD_NUMBER;
-        hash = (53 * hash) + getArimaOrdersList().hashCode();
-      }
       if (getArimaInitialCount() > 0) {
         hash = (37 * hash) + ARIMA_INITIAL_FIELD_NUMBER;
         hash = (53 * hash) + getArimaInitialList().hashCode();
@@ -1905,12 +1808,10 @@ public final class OutliersProtos {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        arimaOrders_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00000001);
         arimaInitial_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000001);
         arimaFinal_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000002);
         if (likelihoodInitialBuilder_ == null) {
           likelihoodInitial_ = null;
         } else {
@@ -1925,12 +1826,12 @@ public final class OutliersProtos {
         }
         if (outliersBuilder_ == null) {
           outliers_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000004);
         } else {
           outliersBuilder_.clear();
         }
         coefficients_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000008);
         if (covarianceBuilder_ == null) {
           covariance_ = null;
         } else {
@@ -1944,7 +1845,7 @@ public final class OutliersProtos {
           regressorsBuilder_ = null;
         }
         residuals_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -1973,18 +1874,13 @@ public final class OutliersProtos {
         demetra.outliers.io.protobuf.OutliersProtos.RegArimaSolution result = new demetra.outliers.io.protobuf.OutliersProtos.RegArimaSolution(this);
         int from_bitField0_ = bitField0_;
         if (((bitField0_ & 0x00000001) != 0)) {
-          arimaOrders_.makeImmutable();
+          arimaInitial_.makeImmutable();
           bitField0_ = (bitField0_ & ~0x00000001);
         }
-        result.arimaOrders_ = arimaOrders_;
-        if (((bitField0_ & 0x00000002) != 0)) {
-          arimaInitial_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000002);
-        }
         result.arimaInitial_ = arimaInitial_;
-        if (((bitField0_ & 0x00000004) != 0)) {
+        if (((bitField0_ & 0x00000002) != 0)) {
           arimaFinal_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000002);
         }
         result.arimaFinal_ = arimaFinal_;
         if (likelihoodInitialBuilder_ == null) {
@@ -1998,17 +1894,17 @@ public final class OutliersProtos {
           result.likelihoodFinal_ = likelihoodFinalBuilder_.build();
         }
         if (outliersBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) != 0)) {
+          if (((bitField0_ & 0x00000004) != 0)) {
             outliers_ = java.util.Collections.unmodifiableList(outliers_);
-            bitField0_ = (bitField0_ & ~0x00000008);
+            bitField0_ = (bitField0_ & ~0x00000004);
           }
           result.outliers_ = outliers_;
         } else {
           result.outliers_ = outliersBuilder_.build();
         }
-        if (((bitField0_ & 0x00000010) != 0)) {
+        if (((bitField0_ & 0x00000008) != 0)) {
           coefficients_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000010);
+          bitField0_ = (bitField0_ & ~0x00000008);
         }
         result.coefficients_ = coefficients_;
         if (covarianceBuilder_ == null) {
@@ -2021,9 +1917,9 @@ public final class OutliersProtos {
         } else {
           result.regressors_ = regressorsBuilder_.build();
         }
-        if (((bitField0_ & 0x00000020) != 0)) {
+        if (((bitField0_ & 0x00000010) != 0)) {
           residuals_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000020);
+          bitField0_ = (bitField0_ & ~0x00000010);
         }
         result.residuals_ = residuals_;
         onBuilt();
@@ -2074,20 +1970,10 @@ public final class OutliersProtos {
 
       public Builder mergeFrom(demetra.outliers.io.protobuf.OutliersProtos.RegArimaSolution other) {
         if (other == demetra.outliers.io.protobuf.OutliersProtos.RegArimaSolution.getDefaultInstance()) return this;
-        if (!other.arimaOrders_.isEmpty()) {
-          if (arimaOrders_.isEmpty()) {
-            arimaOrders_ = other.arimaOrders_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureArimaOrdersIsMutable();
-            arimaOrders_.addAll(other.arimaOrders_);
-          }
-          onChanged();
-        }
         if (!other.arimaInitial_.isEmpty()) {
           if (arimaInitial_.isEmpty()) {
             arimaInitial_ = other.arimaInitial_;
-            bitField0_ = (bitField0_ & ~0x00000002);
+            bitField0_ = (bitField0_ & ~0x00000001);
           } else {
             ensureArimaInitialIsMutable();
             arimaInitial_.addAll(other.arimaInitial_);
@@ -2097,7 +1983,7 @@ public final class OutliersProtos {
         if (!other.arimaFinal_.isEmpty()) {
           if (arimaFinal_.isEmpty()) {
             arimaFinal_ = other.arimaFinal_;
-            bitField0_ = (bitField0_ & ~0x00000004);
+            bitField0_ = (bitField0_ & ~0x00000002);
           } else {
             ensureArimaFinalIsMutable();
             arimaFinal_.addAll(other.arimaFinal_);
@@ -2114,7 +2000,7 @@ public final class OutliersProtos {
           if (!other.outliers_.isEmpty()) {
             if (outliers_.isEmpty()) {
               outliers_ = other.outliers_;
-              bitField0_ = (bitField0_ & ~0x00000008);
+              bitField0_ = (bitField0_ & ~0x00000004);
             } else {
               ensureOutliersIsMutable();
               outliers_.addAll(other.outliers_);
@@ -2127,7 +2013,7 @@ public final class OutliersProtos {
               outliersBuilder_.dispose();
               outliersBuilder_ = null;
               outliers_ = other.outliers_;
-              bitField0_ = (bitField0_ & ~0x00000008);
+              bitField0_ = (bitField0_ & ~0x00000004);
               outliersBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getOutliersFieldBuilder() : null;
@@ -2139,7 +2025,7 @@ public final class OutliersProtos {
         if (!other.coefficients_.isEmpty()) {
           if (coefficients_.isEmpty()) {
             coefficients_ = other.coefficients_;
-            bitField0_ = (bitField0_ & ~0x00000010);
+            bitField0_ = (bitField0_ & ~0x00000008);
           } else {
             ensureCoefficientsIsMutable();
             coefficients_.addAll(other.coefficients_);
@@ -2155,7 +2041,7 @@ public final class OutliersProtos {
         if (!other.residuals_.isEmpty()) {
           if (residuals_.isEmpty()) {
             residuals_ = other.residuals_;
-            bitField0_ = (bitField0_ & ~0x00000020);
+            bitField0_ = (bitField0_ & ~0x00000010);
           } else {
             ensureResidualsIsMutable();
             residuals_.addAll(other.residuals_);
@@ -2192,110 +2078,31 @@ public final class OutliersProtos {
       }
       private int bitField0_;
 
-      private com.google.protobuf.Internal.IntList arimaOrders_ = emptyIntList();
-      private void ensureArimaOrdersIsMutable() {
+      private com.google.protobuf.Internal.DoubleList arimaInitial_ = emptyDoubleList();
+      private void ensureArimaInitialIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          arimaOrders_ = mutableCopy(arimaOrders_);
+          arimaInitial_ = mutableCopy(arimaInitial_);
           bitField0_ |= 0x00000001;
          }
       }
       /**
-       * <code>repeated int32 arima_orders = 1;</code>
-       * @return A list containing the arimaOrders.
-       */
-      public java.util.List<java.lang.Integer>
-          getArimaOrdersList() {
-        return ((bitField0_ & 0x00000001) != 0) ?
-                 java.util.Collections.unmodifiableList(arimaOrders_) : arimaOrders_;
-      }
-      /**
-       * <code>repeated int32 arima_orders = 1;</code>
-       * @return The count of arimaOrders.
-       */
-      public int getArimaOrdersCount() {
-        return arimaOrders_.size();
-      }
-      /**
-       * <code>repeated int32 arima_orders = 1;</code>
-       * @param index The index of the element to return.
-       * @return The arimaOrders at the given index.
-       */
-      public int getArimaOrders(int index) {
-        return arimaOrders_.getInt(index);
-      }
-      /**
-       * <code>repeated int32 arima_orders = 1;</code>
-       * @param index The index to set the value at.
-       * @param value The arimaOrders to set.
-       * @return This builder for chaining.
-       */
-      public Builder setArimaOrders(
-          int index, int value) {
-        ensureArimaOrdersIsMutable();
-        arimaOrders_.setInt(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated int32 arima_orders = 1;</code>
-       * @param value The arimaOrders to add.
-       * @return This builder for chaining.
-       */
-      public Builder addArimaOrders(int value) {
-        ensureArimaOrdersIsMutable();
-        arimaOrders_.addInt(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated int32 arima_orders = 1;</code>
-       * @param values The arimaOrders to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllArimaOrders(
-          java.lang.Iterable<? extends java.lang.Integer> values) {
-        ensureArimaOrdersIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, arimaOrders_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated int32 arima_orders = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearArimaOrders() {
-        arimaOrders_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.Internal.DoubleList arimaInitial_ = emptyDoubleList();
-      private void ensureArimaInitialIsMutable() {
-        if (!((bitField0_ & 0x00000002) != 0)) {
-          arimaInitial_ = mutableCopy(arimaInitial_);
-          bitField0_ |= 0x00000002;
-         }
-      }
-      /**
-       * <code>repeated double arima_initial = 2;</code>
+       * <code>repeated double arima_initial = 1;</code>
        * @return A list containing the arimaInitial.
        */
       public java.util.List<java.lang.Double>
           getArimaInitialList() {
-        return ((bitField0_ & 0x00000002) != 0) ?
+        return ((bitField0_ & 0x00000001) != 0) ?
                  java.util.Collections.unmodifiableList(arimaInitial_) : arimaInitial_;
       }
       /**
-       * <code>repeated double arima_initial = 2;</code>
+       * <code>repeated double arima_initial = 1;</code>
        * @return The count of arimaInitial.
        */
       public int getArimaInitialCount() {
         return arimaInitial_.size();
       }
       /**
-       * <code>repeated double arima_initial = 2;</code>
+       * <code>repeated double arima_initial = 1;</code>
        * @param index The index of the element to return.
        * @return The arimaInitial at the given index.
        */
@@ -2303,7 +2110,7 @@ public final class OutliersProtos {
         return arimaInitial_.getDouble(index);
       }
       /**
-       * <code>repeated double arima_initial = 2;</code>
+       * <code>repeated double arima_initial = 1;</code>
        * @param index The index to set the value at.
        * @param value The arimaInitial to set.
        * @return This builder for chaining.
@@ -2316,7 +2123,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated double arima_initial = 2;</code>
+       * <code>repeated double arima_initial = 1;</code>
        * @param value The arimaInitial to add.
        * @return This builder for chaining.
        */
@@ -2327,7 +2134,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated double arima_initial = 2;</code>
+       * <code>repeated double arima_initial = 1;</code>
        * @param values The arimaInitial to add.
        * @return This builder for chaining.
        */
@@ -2340,41 +2147,41 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated double arima_initial = 2;</code>
+       * <code>repeated double arima_initial = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearArimaInitial() {
         arimaInitial_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
       }
 
       private com.google.protobuf.Internal.DoubleList arimaFinal_ = emptyDoubleList();
       private void ensureArimaFinalIsMutable() {
-        if (!((bitField0_ & 0x00000004) != 0)) {
+        if (!((bitField0_ & 0x00000002) != 0)) {
           arimaFinal_ = mutableCopy(arimaFinal_);
-          bitField0_ |= 0x00000004;
+          bitField0_ |= 0x00000002;
          }
       }
       /**
-       * <code>repeated double arima_final = 3;</code>
+       * <code>repeated double arima_final = 2;</code>
        * @return A list containing the arimaFinal.
        */
       public java.util.List<java.lang.Double>
           getArimaFinalList() {
-        return ((bitField0_ & 0x00000004) != 0) ?
+        return ((bitField0_ & 0x00000002) != 0) ?
                  java.util.Collections.unmodifiableList(arimaFinal_) : arimaFinal_;
       }
       /**
-       * <code>repeated double arima_final = 3;</code>
+       * <code>repeated double arima_final = 2;</code>
        * @return The count of arimaFinal.
        */
       public int getArimaFinalCount() {
         return arimaFinal_.size();
       }
       /**
-       * <code>repeated double arima_final = 3;</code>
+       * <code>repeated double arima_final = 2;</code>
        * @param index The index of the element to return.
        * @return The arimaFinal at the given index.
        */
@@ -2382,7 +2189,7 @@ public final class OutliersProtos {
         return arimaFinal_.getDouble(index);
       }
       /**
-       * <code>repeated double arima_final = 3;</code>
+       * <code>repeated double arima_final = 2;</code>
        * @param index The index to set the value at.
        * @param value The arimaFinal to set.
        * @return This builder for chaining.
@@ -2395,7 +2202,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated double arima_final = 3;</code>
+       * <code>repeated double arima_final = 2;</code>
        * @param value The arimaFinal to add.
        * @return This builder for chaining.
        */
@@ -2406,7 +2213,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated double arima_final = 3;</code>
+       * <code>repeated double arima_final = 2;</code>
        * @param values The arimaFinal to add.
        * @return This builder for chaining.
        */
@@ -2419,12 +2226,12 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated double arima_final = 3;</code>
+       * <code>repeated double arima_final = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearArimaFinal() {
         arimaFinal_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
       }
@@ -2433,14 +2240,14 @@ public final class OutliersProtos {
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder> likelihoodInitialBuilder_;
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        * @return Whether the likelihoodInitial field is set.
        */
       public boolean hasLikelihoodInitial() {
         return likelihoodInitialBuilder_ != null || likelihoodInitial_ != null;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        * @return The likelihoodInitial.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodInitial() {
@@ -2451,7 +2258,7 @@ public final class OutliersProtos {
         }
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        */
       public Builder setLikelihoodInitial(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics value) {
         if (likelihoodInitialBuilder_ == null) {
@@ -2467,7 +2274,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        */
       public Builder setLikelihoodInitial(
           demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder builderForValue) {
@@ -2481,7 +2288,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        */
       public Builder mergeLikelihoodInitial(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics value) {
         if (likelihoodInitialBuilder_ == null) {
@@ -2499,7 +2306,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        */
       public Builder clearLikelihoodInitial() {
         if (likelihoodInitialBuilder_ == null) {
@@ -2513,7 +2320,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder getLikelihoodInitialBuilder() {
         
@@ -2521,7 +2328,7 @@ public final class OutliersProtos {
         return getLikelihoodInitialFieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodInitialOrBuilder() {
         if (likelihoodInitialBuilder_ != null) {
@@ -2532,7 +2339,7 @@ public final class OutliersProtos {
         }
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 4;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder> 
@@ -2552,14 +2359,14 @@ public final class OutliersProtos {
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder> likelihoodFinalBuilder_;
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        * @return Whether the likelihoodFinal field is set.
        */
       public boolean hasLikelihoodFinal() {
         return likelihoodFinalBuilder_ != null || likelihoodFinal_ != null;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        * @return The likelihoodFinal.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodFinal() {
@@ -2570,7 +2377,7 @@ public final class OutliersProtos {
         }
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        */
       public Builder setLikelihoodFinal(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics value) {
         if (likelihoodFinalBuilder_ == null) {
@@ -2586,7 +2393,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        */
       public Builder setLikelihoodFinal(
           demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder builderForValue) {
@@ -2600,7 +2407,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        */
       public Builder mergeLikelihoodFinal(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics value) {
         if (likelihoodFinalBuilder_ == null) {
@@ -2618,7 +2425,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        */
       public Builder clearLikelihoodFinal() {
         if (likelihoodFinalBuilder_ == null) {
@@ -2632,7 +2439,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder getLikelihoodFinalBuilder() {
         
@@ -2640,7 +2447,7 @@ public final class OutliersProtos {
         return getLikelihoodFinalFieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodFinalOrBuilder() {
         if (likelihoodFinalBuilder_ != null) {
@@ -2651,7 +2458,7 @@ public final class OutliersProtos {
         }
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 5;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder> 
@@ -2670,9 +2477,9 @@ public final class OutliersProtos {
       private java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier> outliers_ =
         java.util.Collections.emptyList();
       private void ensureOutliersIsMutable() {
-        if (!((bitField0_ & 0x00000008) != 0)) {
+        if (!((bitField0_ & 0x00000004) != 0)) {
           outliers_ = new java.util.ArrayList<demetra.outliers.io.protobuf.OutliersProtos.Outlier>(outliers_);
-          bitField0_ |= 0x00000008;
+          bitField0_ |= 0x00000004;
          }
       }
 
@@ -2680,7 +2487,7 @@ public final class OutliersProtos {
           demetra.outliers.io.protobuf.OutliersProtos.Outlier, demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder, demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder> outliersBuilder_;
 
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier> getOutliersList() {
         if (outliersBuilder_ == null) {
@@ -2690,7 +2497,7 @@ public final class OutliersProtos {
         }
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public int getOutliersCount() {
         if (outliersBuilder_ == null) {
@@ -2700,7 +2507,7 @@ public final class OutliersProtos {
         }
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public demetra.outliers.io.protobuf.OutliersProtos.Outlier getOutliers(int index) {
         if (outliersBuilder_ == null) {
@@ -2710,7 +2517,7 @@ public final class OutliersProtos {
         }
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public Builder setOutliers(
           int index, demetra.outliers.io.protobuf.OutliersProtos.Outlier value) {
@@ -2727,7 +2534,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public Builder setOutliers(
           int index, demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder builderForValue) {
@@ -2741,7 +2548,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public Builder addOutliers(demetra.outliers.io.protobuf.OutliersProtos.Outlier value) {
         if (outliersBuilder_ == null) {
@@ -2757,7 +2564,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public Builder addOutliers(
           int index, demetra.outliers.io.protobuf.OutliersProtos.Outlier value) {
@@ -2774,7 +2581,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public Builder addOutliers(
           demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder builderForValue) {
@@ -2788,7 +2595,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public Builder addOutliers(
           int index, demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder builderForValue) {
@@ -2802,7 +2609,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public Builder addAllOutliers(
           java.lang.Iterable<? extends demetra.outliers.io.protobuf.OutliersProtos.Outlier> values) {
@@ -2817,12 +2624,12 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public Builder clearOutliers() {
         if (outliersBuilder_ == null) {
           outliers_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000004);
           onChanged();
         } else {
           outliersBuilder_.clear();
@@ -2830,7 +2637,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public Builder removeOutliers(int index) {
         if (outliersBuilder_ == null) {
@@ -2843,14 +2650,14 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder getOutliersBuilder(
           int index) {
         return getOutliersFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder getOutliersOrBuilder(
           int index) {
@@ -2860,7 +2667,7 @@ public final class OutliersProtos {
         }
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public java.util.List<? extends demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder> 
            getOutliersOrBuilderList() {
@@ -2871,14 +2678,14 @@ public final class OutliersProtos {
         }
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder addOutliersBuilder() {
         return getOutliersFieldBuilder().addBuilder(
             demetra.outliers.io.protobuf.OutliersProtos.Outlier.getDefaultInstance());
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder addOutliersBuilder(
           int index) {
@@ -2886,7 +2693,7 @@ public final class OutliersProtos {
             index, demetra.outliers.io.protobuf.OutliersProtos.Outlier.getDefaultInstance());
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 6;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
        */
       public java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder> 
            getOutliersBuilderList() {
@@ -2899,7 +2706,7 @@ public final class OutliersProtos {
           outliersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               demetra.outliers.io.protobuf.OutliersProtos.Outlier, demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder, demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder>(
                   outliers_,
-                  ((bitField0_ & 0x00000008) != 0),
+                  ((bitField0_ & 0x00000004) != 0),
                   getParentForChildren(),
                   isClean());
           outliers_ = null;
@@ -2909,29 +2716,29 @@ public final class OutliersProtos {
 
       private com.google.protobuf.Internal.DoubleList coefficients_ = emptyDoubleList();
       private void ensureCoefficientsIsMutable() {
-        if (!((bitField0_ & 0x00000010) != 0)) {
+        if (!((bitField0_ & 0x00000008) != 0)) {
           coefficients_ = mutableCopy(coefficients_);
-          bitField0_ |= 0x00000010;
+          bitField0_ |= 0x00000008;
          }
       }
       /**
-       * <code>repeated double coefficients = 7;</code>
+       * <code>repeated double coefficients = 6;</code>
        * @return A list containing the coefficients.
        */
       public java.util.List<java.lang.Double>
           getCoefficientsList() {
-        return ((bitField0_ & 0x00000010) != 0) ?
+        return ((bitField0_ & 0x00000008) != 0) ?
                  java.util.Collections.unmodifiableList(coefficients_) : coefficients_;
       }
       /**
-       * <code>repeated double coefficients = 7;</code>
+       * <code>repeated double coefficients = 6;</code>
        * @return The count of coefficients.
        */
       public int getCoefficientsCount() {
         return coefficients_.size();
       }
       /**
-       * <code>repeated double coefficients = 7;</code>
+       * <code>repeated double coefficients = 6;</code>
        * @param index The index of the element to return.
        * @return The coefficients at the given index.
        */
@@ -2939,7 +2746,7 @@ public final class OutliersProtos {
         return coefficients_.getDouble(index);
       }
       /**
-       * <code>repeated double coefficients = 7;</code>
+       * <code>repeated double coefficients = 6;</code>
        * @param index The index to set the value at.
        * @param value The coefficients to set.
        * @return This builder for chaining.
@@ -2952,7 +2759,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated double coefficients = 7;</code>
+       * <code>repeated double coefficients = 6;</code>
        * @param value The coefficients to add.
        * @return This builder for chaining.
        */
@@ -2963,7 +2770,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated double coefficients = 7;</code>
+       * <code>repeated double coefficients = 6;</code>
        * @param values The coefficients to add.
        * @return This builder for chaining.
        */
@@ -2976,12 +2783,12 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated double coefficients = 7;</code>
+       * <code>repeated double coefficients = 6;</code>
        * @return This builder for chaining.
        */
       public Builder clearCoefficients() {
         coefficients_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000008);
         onChanged();
         return this;
       }
@@ -2990,14 +2797,14 @@ public final class OutliersProtos {
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> covarianceBuilder_;
       /**
-       * <code>.jd3.Matrix covariance = 8;</code>
+       * <code>.jd3.Matrix covariance = 7;</code>
        * @return Whether the covariance field is set.
        */
       public boolean hasCovariance() {
         return covarianceBuilder_ != null || covariance_ != null;
       }
       /**
-       * <code>.jd3.Matrix covariance = 8;</code>
+       * <code>.jd3.Matrix covariance = 7;</code>
        * @return The covariance.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getCovariance() {
@@ -3008,7 +2815,7 @@ public final class OutliersProtos {
         }
       }
       /**
-       * <code>.jd3.Matrix covariance = 8;</code>
+       * <code>.jd3.Matrix covariance = 7;</code>
        */
       public Builder setCovariance(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
         if (covarianceBuilder_ == null) {
@@ -3024,7 +2831,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.Matrix covariance = 8;</code>
+       * <code>.jd3.Matrix covariance = 7;</code>
        */
       public Builder setCovariance(
           demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder builderForValue) {
@@ -3038,7 +2845,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.Matrix covariance = 8;</code>
+       * <code>.jd3.Matrix covariance = 7;</code>
        */
       public Builder mergeCovariance(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
         if (covarianceBuilder_ == null) {
@@ -3056,7 +2863,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.Matrix covariance = 8;</code>
+       * <code>.jd3.Matrix covariance = 7;</code>
        */
       public Builder clearCovariance() {
         if (covarianceBuilder_ == null) {
@@ -3070,7 +2877,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.Matrix covariance = 8;</code>
+       * <code>.jd3.Matrix covariance = 7;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder getCovarianceBuilder() {
         
@@ -3078,7 +2885,7 @@ public final class OutliersProtos {
         return getCovarianceFieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.Matrix covariance = 8;</code>
+       * <code>.jd3.Matrix covariance = 7;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getCovarianceOrBuilder() {
         if (covarianceBuilder_ != null) {
@@ -3089,7 +2896,7 @@ public final class OutliersProtos {
         }
       }
       /**
-       * <code>.jd3.Matrix covariance = 8;</code>
+       * <code>.jd3.Matrix covariance = 7;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> 
@@ -3109,14 +2916,14 @@ public final class OutliersProtos {
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> regressorsBuilder_;
       /**
-       * <code>.jd3.Matrix regressors = 9;</code>
+       * <code>.jd3.Matrix regressors = 8;</code>
        * @return Whether the regressors field is set.
        */
       public boolean hasRegressors() {
         return regressorsBuilder_ != null || regressors_ != null;
       }
       /**
-       * <code>.jd3.Matrix regressors = 9;</code>
+       * <code>.jd3.Matrix regressors = 8;</code>
        * @return The regressors.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getRegressors() {
@@ -3127,7 +2934,7 @@ public final class OutliersProtos {
         }
       }
       /**
-       * <code>.jd3.Matrix regressors = 9;</code>
+       * <code>.jd3.Matrix regressors = 8;</code>
        */
       public Builder setRegressors(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
         if (regressorsBuilder_ == null) {
@@ -3143,7 +2950,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.Matrix regressors = 9;</code>
+       * <code>.jd3.Matrix regressors = 8;</code>
        */
       public Builder setRegressors(
           demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder builderForValue) {
@@ -3157,7 +2964,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.Matrix regressors = 9;</code>
+       * <code>.jd3.Matrix regressors = 8;</code>
        */
       public Builder mergeRegressors(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
         if (regressorsBuilder_ == null) {
@@ -3175,7 +2982,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.Matrix regressors = 9;</code>
+       * <code>.jd3.Matrix regressors = 8;</code>
        */
       public Builder clearRegressors() {
         if (regressorsBuilder_ == null) {
@@ -3189,7 +2996,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.Matrix regressors = 9;</code>
+       * <code>.jd3.Matrix regressors = 8;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder getRegressorsBuilder() {
         
@@ -3197,7 +3004,7 @@ public final class OutliersProtos {
         return getRegressorsFieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.Matrix regressors = 9;</code>
+       * <code>.jd3.Matrix regressors = 8;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getRegressorsOrBuilder() {
         if (regressorsBuilder_ != null) {
@@ -3208,7 +3015,7 @@ public final class OutliersProtos {
         }
       }
       /**
-       * <code>.jd3.Matrix regressors = 9;</code>
+       * <code>.jd3.Matrix regressors = 8;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> 
@@ -3226,29 +3033,29 @@ public final class OutliersProtos {
 
       private com.google.protobuf.Internal.DoubleList residuals_ = emptyDoubleList();
       private void ensureResidualsIsMutable() {
-        if (!((bitField0_ & 0x00000020) != 0)) {
+        if (!((bitField0_ & 0x00000010) != 0)) {
           residuals_ = mutableCopy(residuals_);
-          bitField0_ |= 0x00000020;
+          bitField0_ |= 0x00000010;
          }
       }
       /**
-       * <code>repeated double residuals = 12;</code>
+       * <code>repeated double residuals = 9;</code>
        * @return A list containing the residuals.
        */
       public java.util.List<java.lang.Double>
           getResidualsList() {
-        return ((bitField0_ & 0x00000020) != 0) ?
+        return ((bitField0_ & 0x00000010) != 0) ?
                  java.util.Collections.unmodifiableList(residuals_) : residuals_;
       }
       /**
-       * <code>repeated double residuals = 12;</code>
+       * <code>repeated double residuals = 9;</code>
        * @return The count of residuals.
        */
       public int getResidualsCount() {
         return residuals_.size();
       }
       /**
-       * <code>repeated double residuals = 12;</code>
+       * <code>repeated double residuals = 9;</code>
        * @param index The index of the element to return.
        * @return The residuals at the given index.
        */
@@ -3256,7 +3063,7 @@ public final class OutliersProtos {
         return residuals_.getDouble(index);
       }
       /**
-       * <code>repeated double residuals = 12;</code>
+       * <code>repeated double residuals = 9;</code>
        * @param index The index to set the value at.
        * @param value The residuals to set.
        * @return This builder for chaining.
@@ -3269,7 +3076,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated double residuals = 12;</code>
+       * <code>repeated double residuals = 9;</code>
        * @param value The residuals to add.
        * @return This builder for chaining.
        */
@@ -3280,7 +3087,7 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated double residuals = 12;</code>
+       * <code>repeated double residuals = 9;</code>
        * @param values The residuals to add.
        * @return This builder for chaining.
        */
@@ -3293,12 +3100,12 @@ public final class OutliersProtos {
         return this;
       }
       /**
-       * <code>repeated double residuals = 12;</code>
+       * <code>repeated double residuals = 9;</code>
        * @return This builder for chaining.
        */
       public Builder clearResiduals() {
         residuals_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000010);
         onChanged();
         return this;
       }
@@ -3377,16 +3184,16 @@ public final class OutliersProtos {
       "\n\016outliers.proto\022\010outliers\032\rtoolkit.prot" +
       "o\"L\n\007Outlier\022\014\n\004code\030\001 \001(\t\022\020\n\010position\030\002" +
       " \001(\005\022\023\n\013coefficient\030\n \001(\001\022\014\n\004stde\030\013 \001(\001\"" +
-      "\320\002\n\020RegArimaSolution\022\024\n\014arima_orders\030\001 \003" +
-      "(\005\022\025\n\rarima_initial\030\002 \003(\001\022\023\n\013arima_final" +
-      "\030\003 \003(\001\0225\n\022likelihood_initial\030\004 \001(\0132\031.jd3" +
-      ".LikelihoodStatistics\0223\n\020likelihood_fina" +
-      "l\030\005 \001(\0132\031.jd3.LikelihoodStatistics\022#\n\010ou" +
-      "tliers\030\006 \003(\0132\021.outliers.Outlier\022\024\n\014coeff" +
-      "icients\030\007 \003(\001\022\037\n\ncovariance\030\010 \001(\0132\013.jd3." +
-      "Matrix\022\037\n\nregressors\030\t \001(\0132\013.jd3.Matrix\022" +
-      "\021\n\tresiduals\030\014 \003(\001B.\n\034demetra.outliers.i" +
-      "o.protobufB\016OutliersProtosP\000b\006proto3"
+      "\272\002\n\020RegArimaSolution\022\025\n\rarima_initial\030\001 " +
+      "\003(\001\022\023\n\013arima_final\030\002 \003(\001\0225\n\022likelihood_i" +
+      "nitial\030\003 \001(\0132\031.jd3.LikelihoodStatistics\022" +
+      "3\n\020likelihood_final\030\004 \001(\0132\031.jd3.Likeliho" +
+      "odStatistics\022#\n\010outliers\030\005 \003(\0132\021.outlier" +
+      "s.Outlier\022\024\n\014coefficients\030\006 \003(\001\022\037\n\ncovar" +
+      "iance\030\007 \001(\0132\013.jd3.Matrix\022\037\n\nregressors\030\010" +
+      " \001(\0132\013.jd3.Matrix\022\021\n\tresiduals\030\t \003(\001B.\n\034" +
+      "demetra.outliers.io.protobufB\016OutliersPr" +
+      "otosP\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3404,7 +3211,7 @@ public final class OutliersProtos {
     internal_static_outliers_RegArimaSolution_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_outliers_RegArimaSolution_descriptor,
-        new java.lang.String[] { "ArimaOrders", "ArimaInitial", "ArimaFinal", "LikelihoodInitial", "LikelihoodFinal", "Outliers", "Coefficients", "Covariance", "Regressors", "Residuals", });
+        new java.lang.String[] { "ArimaInitial", "ArimaFinal", "LikelihoodInitial", "LikelihoodFinal", "Outliers", "Coefficients", "Covariance", "Regressors", "Residuals", });
     demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor();
   }
 

@@ -44,9 +44,9 @@ public class AugmentedFilterInitializer implements OrdinaryFilter.Initializer {
         AugmentedState astate = akf.getState();
         state.copy(astate);
         int nd = akf.getCollapsingPosition();
-        if (nd < 0) {
-            throw new SsfException("Initialization by the augmented filter failed ");
-        }
+//        if (nd < 0) {
+//            throw new SsfException("Initialization by the augmented filter failed ");
+//        }
 
         return nd;
     }

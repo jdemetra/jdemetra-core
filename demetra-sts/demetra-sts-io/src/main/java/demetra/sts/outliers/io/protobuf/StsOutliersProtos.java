@@ -19,197 +19,201 @@ public final class StsOutliersProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.sts.BasicStructuralModel bsm_initial = 1;</code>
-     * @return Whether the bsmInitial field is set.
+     * <code>repeated double bsm_initial = 1;</code>
+     * @return A list containing the bsmInitial.
      */
-    boolean hasBsmInitial();
+    java.util.List<java.lang.Double> getBsmInitialList();
     /**
-     * <code>.sts.BasicStructuralModel bsm_initial = 1;</code>
-     * @return The bsmInitial.
+     * <code>repeated double bsm_initial = 1;</code>
+     * @return The count of bsmInitial.
      */
-    demetra.sts.io.protobuf.StsProtos.BasicStructuralModel getBsmInitial();
+    int getBsmInitialCount();
     /**
-     * <code>.sts.BasicStructuralModel bsm_initial = 1;</code>
+     * <code>repeated double bsm_initial = 1;</code>
+     * @param index The index of the element to return.
+     * @return The bsmInitial at the given index.
      */
-    demetra.sts.io.protobuf.StsProtos.BasicStructuralModelOrBuilder getBsmInitialOrBuilder();
+    double getBsmInitial(int index);
 
     /**
-     * <code>.sts.BasicStructuralModel bsm_final = 2;</code>
-     * @return Whether the bsmFinal field is set.
+     * <code>repeated double bsm_final = 2;</code>
+     * @return A list containing the bsmFinal.
      */
-    boolean hasBsmFinal();
+    java.util.List<java.lang.Double> getBsmFinalList();
     /**
-     * <code>.sts.BasicStructuralModel bsm_final = 2;</code>
-     * @return The bsmFinal.
+     * <code>repeated double bsm_final = 2;</code>
+     * @return The count of bsmFinal.
      */
-    demetra.sts.io.protobuf.StsProtos.BasicStructuralModel getBsmFinal();
+    int getBsmFinalCount();
     /**
-     * <code>.sts.BasicStructuralModel bsm_final = 2;</code>
+     * <code>repeated double bsm_final = 2;</code>
+     * @param index The index of the element to return.
+     * @return The bsmFinal at the given index.
      */
-    demetra.sts.io.protobuf.StsProtos.BasicStructuralModelOrBuilder getBsmFinalOrBuilder();
+    double getBsmFinal(int index);
 
     /**
-     * <code>repeated .outliers.Outlier outliers = 3;</code>
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
+     * @return Whether the likelihoodInitial field is set.
+     */
+    boolean hasLikelihoodInitial();
+    /**
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
+     * @return The likelihoodInitial.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodInitial();
+    /**
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodInitialOrBuilder();
+
+    /**
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
+     * @return Whether the likelihoodFinal field is set.
+     */
+    boolean hasLikelihoodFinal();
+    /**
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
+     * @return The likelihoodFinal.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodFinal();
+    /**
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodFinalOrBuilder();
+
+    /**
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier> 
         getOutliersList();
     /**
-     * <code>repeated .outliers.Outlier outliers = 3;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     demetra.outliers.io.protobuf.OutliersProtos.Outlier getOutliers(int index);
     /**
-     * <code>repeated .outliers.Outlier outliers = 3;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     int getOutliersCount();
     /**
-     * <code>repeated .outliers.Outlier outliers = 3;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     java.util.List<? extends demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder> 
         getOutliersOrBuilderList();
     /**
-     * <code>repeated .outliers.Outlier outliers = 3;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder getOutliersOrBuilder(
         int index);
 
     /**
-     * <code>repeated double coefficients = 4;</code>
+     * <code>repeated double coefficients = 6;</code>
      * @return A list containing the coefficients.
      */
     java.util.List<java.lang.Double> getCoefficientsList();
     /**
-     * <code>repeated double coefficients = 4;</code>
+     * <code>repeated double coefficients = 6;</code>
      * @return The count of coefficients.
      */
     int getCoefficientsCount();
     /**
-     * <code>repeated double coefficients = 4;</code>
+     * <code>repeated double coefficients = 6;</code>
      * @param index The index of the element to return.
      * @return The coefficients at the given index.
      */
     double getCoefficients(int index);
 
     /**
-     * <code>.jd3.Matrix covariance = 5;</code>
+     * <code>.jd3.Matrix covariance = 7;</code>
      * @return Whether the covariance field is set.
      */
     boolean hasCovariance();
     /**
-     * <code>.jd3.Matrix covariance = 5;</code>
+     * <code>.jd3.Matrix covariance = 7;</code>
      * @return The covariance.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getCovariance();
     /**
-     * <code>.jd3.Matrix covariance = 5;</code>
+     * <code>.jd3.Matrix covariance = 7;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getCovarianceOrBuilder();
 
     /**
-     * <code>.jd3.Matrix regressors = 6;</code>
+     * <code>.jd3.Matrix regressors = 8;</code>
      * @return Whether the regressors field is set.
      */
     boolean hasRegressors();
     /**
-     * <code>.jd3.Matrix regressors = 6;</code>
+     * <code>.jd3.Matrix regressors = 8;</code>
      * @return The regressors.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getRegressors();
     /**
-     * <code>.jd3.Matrix regressors = 6;</code>
+     * <code>.jd3.Matrix regressors = 8;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getRegressorsOrBuilder();
 
     /**
-     * <code>.jd3.Matrix components = 7;</code>
-     * @return Whether the components field is set.
-     */
-    boolean hasComponents();
-    /**
-     * <code>.jd3.Matrix components = 7;</code>
-     * @return The components.
-     */
-    demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getComponents();
-    /**
-     * <code>.jd3.Matrix components = 7;</code>
-     */
-    demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getComponentsOrBuilder();
-
-    /**
-     * <code>.jd3.Matrix tau_initial = 8;</code>
-     * @return Whether the tauInitial field is set.
-     */
-    boolean hasTauInitial();
-    /**
-     * <code>.jd3.Matrix tau_initial = 8;</code>
-     * @return The tauInitial.
-     */
-    demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getTauInitial();
-    /**
-     * <code>.jd3.Matrix tau_initial = 8;</code>
-     */
-    demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getTauInitialOrBuilder();
-
-    /**
-     * <code>.jd3.Matrix tau_final = 9;</code>
-     * @return Whether the tauFinal field is set.
-     */
-    boolean hasTauFinal();
-    /**
-     * <code>.jd3.Matrix tau_final = 9;</code>
-     * @return The tauFinal.
-     */
-    demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getTauFinal();
-    /**
-     * <code>.jd3.Matrix tau_final = 9;</code>
-     */
-    demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getTauFinalOrBuilder();
-
-    /**
-     * <code>.jd3.LikelihoodStatistics likelihood_initial = 10;</code>
-     * @return Whether the likelihoodInitial field is set.
-     */
-    boolean hasLikelihoodInitial();
-    /**
-     * <code>.jd3.LikelihoodStatistics likelihood_initial = 10;</code>
-     * @return The likelihoodInitial.
-     */
-    demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodInitial();
-    /**
-     * <code>.jd3.LikelihoodStatistics likelihood_initial = 10;</code>
-     */
-    demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodInitialOrBuilder();
-
-    /**
-     * <code>.jd3.LikelihoodStatistics likelihood_final = 11;</code>
-     * @return Whether the likelihoodFinal field is set.
-     */
-    boolean hasLikelihoodFinal();
-    /**
-     * <code>.jd3.LikelihoodStatistics likelihood_final = 11;</code>
-     * @return The likelihoodFinal.
-     */
-    demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodFinal();
-    /**
-     * <code>.jd3.LikelihoodStatistics likelihood_final = 11;</code>
-     */
-    demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodFinalOrBuilder();
-
-    /**
-     * <code>repeated double residuals = 12;</code>
+     * <code>repeated double residuals = 9;</code>
      * @return A list containing the residuals.
      */
     java.util.List<java.lang.Double> getResidualsList();
     /**
-     * <code>repeated double residuals = 12;</code>
+     * <code>repeated double residuals = 9;</code>
      * @return The count of residuals.
      */
     int getResidualsCount();
     /**
-     * <code>repeated double residuals = 12;</code>
+     * <code>repeated double residuals = 9;</code>
      * @param index The index of the element to return.
      * @return The residuals at the given index.
      */
     double getResiduals(int index);
+
+    /**
+     * <code>.jd3.Matrix components = 10;</code>
+     * @return Whether the components field is set.
+     */
+    boolean hasComponents();
+    /**
+     * <code>.jd3.Matrix components = 10;</code>
+     * @return The components.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getComponents();
+    /**
+     * <code>.jd3.Matrix components = 10;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getComponentsOrBuilder();
+
+    /**
+     * <code>.jd3.Matrix tau_initial = 11;</code>
+     * @return Whether the tauInitial field is set.
+     */
+    boolean hasTauInitial();
+    /**
+     * <code>.jd3.Matrix tau_initial = 11;</code>
+     * @return The tauInitial.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getTauInitial();
+    /**
+     * <code>.jd3.Matrix tau_initial = 11;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getTauInitialOrBuilder();
+
+    /**
+     * <code>.jd3.Matrix tau_final = 12;</code>
+     * @return Whether the tauFinal field is set.
+     */
+    boolean hasTauFinal();
+    /**
+     * <code>.jd3.Matrix tau_final = 12;</code>
+     * @return The tauFinal.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getTauFinal();
+    /**
+     * <code>.jd3.Matrix tau_final = 12;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getTauFinalOrBuilder();
   }
   /**
    * Protobuf type {@code outliers.StsSolution}
@@ -224,6 +228,8 @@ public final class StsOutliersProtos {
       super(builder);
     }
     private StsSolution() {
+      bsmInitial_ = emptyDoubleList();
+      bsmFinal_ = emptyDoubleList();
       outliers_ = java.util.Collections.emptyList();
       coefficients_ = emptyDoubleList();
       residuals_ = emptyDoubleList();
@@ -260,128 +266,49 @@ public final class StsOutliersProtos {
             case 0:
               done = true;
               break;
-            case 10: {
-              demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.Builder subBuilder = null;
-              if (bsmInitial_ != null) {
-                subBuilder = bsmInitial_.toBuilder();
-              }
-              bsmInitial_ = input.readMessage(demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(bsmInitial_);
-                bsmInitial_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 18: {
-              demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.Builder subBuilder = null;
-              if (bsmFinal_ != null) {
-                subBuilder = bsmFinal_.toBuilder();
-              }
-              bsmFinal_ = input.readMessage(demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(bsmFinal_);
-                bsmFinal_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 26: {
+            case 9: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                outliers_ = new java.util.ArrayList<demetra.outliers.io.protobuf.OutliersProtos.Outlier>();
+                bsmInitial_ = newDoubleList();
                 mutable_bitField0_ |= 0x00000001;
               }
-              outliers_.add(
-                  input.readMessage(demetra.outliers.io.protobuf.OutliersProtos.Outlier.parser(), extensionRegistry));
+              bsmInitial_.addDouble(input.readDouble());
               break;
             }
-            case 33: {
-              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                coefficients_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000002;
-              }
-              coefficients_.addDouble(input.readDouble());
-              break;
-            }
-            case 34: {
+            case 10: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000002) != 0) && input.getBytesUntilLimit() > 0) {
-                coefficients_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000002;
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                bsmInitial_ = newDoubleList();
+                mutable_bitField0_ |= 0x00000001;
               }
               while (input.getBytesUntilLimit() > 0) {
-                coefficients_.addDouble(input.readDouble());
+                bsmInitial_.addDouble(input.readDouble());
               }
               input.popLimit(limit);
               break;
             }
-            case 42: {
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder subBuilder = null;
-              if (covariance_ != null) {
-                subBuilder = covariance_.toBuilder();
+            case 17: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                bsmFinal_ = newDoubleList();
+                mutable_bitField0_ |= 0x00000002;
               }
-              covariance_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(covariance_);
-                covariance_ = subBuilder.buildPartial();
-              }
-
+              bsmFinal_.addDouble(input.readDouble());
               break;
             }
-            case 50: {
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder subBuilder = null;
-              if (regressors_ != null) {
-                subBuilder = regressors_.toBuilder();
+            case 18: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000002) != 0) && input.getBytesUntilLimit() > 0) {
+                bsmFinal_ = newDoubleList();
+                mutable_bitField0_ |= 0x00000002;
               }
-              regressors_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(regressors_);
-                regressors_ = subBuilder.buildPartial();
+              while (input.getBytesUntilLimit() > 0) {
+                bsmFinal_.addDouble(input.readDouble());
               }
-
+              input.popLimit(limit);
               break;
             }
-            case 58: {
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder subBuilder = null;
-              if (components_ != null) {
-                subBuilder = components_.toBuilder();
-              }
-              components_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(components_);
-                components_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 66: {
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder subBuilder = null;
-              if (tauInitial_ != null) {
-                subBuilder = tauInitial_.toBuilder();
-              }
-              tauInitial_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(tauInitial_);
-                tauInitial_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 74: {
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder subBuilder = null;
-              if (tauFinal_ != null) {
-                subBuilder = tauFinal_.toBuilder();
-              }
-              tauFinal_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(tauFinal_);
-                tauFinal_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 82: {
+            case 26: {
               demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder subBuilder = null;
               if (likelihoodInitial_ != null) {
                 subBuilder = likelihoodInitial_.toBuilder();
@@ -394,7 +321,7 @@ public final class StsOutliersProtos {
 
               break;
             }
-            case 90: {
+            case 34: {
               demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder subBuilder = null;
               if (likelihoodFinal_ != null) {
                 subBuilder = likelihoodFinal_.toBuilder();
@@ -407,25 +334,120 @@ public final class StsOutliersProtos {
 
               break;
             }
-            case 97: {
+            case 42: {
               if (!((mutable_bitField0_ & 0x00000004) != 0)) {
-                residuals_ = newDoubleList();
+                outliers_ = new java.util.ArrayList<demetra.outliers.io.protobuf.OutliersProtos.Outlier>();
                 mutable_bitField0_ |= 0x00000004;
+              }
+              outliers_.add(
+                  input.readMessage(demetra.outliers.io.protobuf.OutliersProtos.Outlier.parser(), extensionRegistry));
+              break;
+            }
+            case 49: {
+              if (!((mutable_bitField0_ & 0x00000008) != 0)) {
+                coefficients_ = newDoubleList();
+                mutable_bitField0_ |= 0x00000008;
+              }
+              coefficients_.addDouble(input.readDouble());
+              break;
+            }
+            case 50: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000008) != 0) && input.getBytesUntilLimit() > 0) {
+                coefficients_ = newDoubleList();
+                mutable_bitField0_ |= 0x00000008;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                coefficients_.addDouble(input.readDouble());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            case 58: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder subBuilder = null;
+              if (covariance_ != null) {
+                subBuilder = covariance_.toBuilder();
+              }
+              covariance_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(covariance_);
+                covariance_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 66: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder subBuilder = null;
+              if (regressors_ != null) {
+                subBuilder = regressors_.toBuilder();
+              }
+              regressors_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(regressors_);
+                regressors_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 73: {
+              if (!((mutable_bitField0_ & 0x00000010) != 0)) {
+                residuals_ = newDoubleList();
+                mutable_bitField0_ |= 0x00000010;
               }
               residuals_.addDouble(input.readDouble());
               break;
             }
-            case 98: {
+            case 74: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000004) != 0) && input.getBytesUntilLimit() > 0) {
+              if (!((mutable_bitField0_ & 0x00000010) != 0) && input.getBytesUntilLimit() > 0) {
                 residuals_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000004;
+                mutable_bitField0_ |= 0x00000010;
               }
               while (input.getBytesUntilLimit() > 0) {
                 residuals_.addDouble(input.readDouble());
               }
               input.popLimit(limit);
+              break;
+            }
+            case 82: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder subBuilder = null;
+              if (components_ != null) {
+                subBuilder = components_.toBuilder();
+              }
+              components_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(components_);
+                components_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 90: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder subBuilder = null;
+              if (tauInitial_ != null) {
+                subBuilder = tauInitial_.toBuilder();
+              }
+              tauInitial_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(tauInitial_);
+                tauInitial_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 98: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder subBuilder = null;
+              if (tauFinal_ != null) {
+                subBuilder = tauFinal_.toBuilder();
+              }
+              tauFinal_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(tauFinal_);
+                tauFinal_ = subBuilder.buildPartial();
+              }
+
               break;
             }
             default: {
@@ -444,12 +466,18 @@ public final class StsOutliersProtos {
             e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          outliers_ = java.util.Collections.unmodifiableList(outliers_);
+          bsmInitial_.makeImmutable(); // C
         }
         if (((mutable_bitField0_ & 0x00000002) != 0)) {
-          coefficients_.makeImmutable(); // C
+          bsmFinal_.makeImmutable(); // C
         }
         if (((mutable_bitField0_ & 0x00000004) != 0)) {
+          outliers_ = java.util.Collections.unmodifiableList(outliers_);
+        }
+        if (((mutable_bitField0_ & 0x00000008) != 0)) {
+          coefficients_.makeImmutable(); // C
+        }
+        if (((mutable_bitField0_ & 0x00000010) != 0)) {
           residuals_.makeImmutable(); // C
         }
         this.unknownFields = unknownFields.build();
@@ -470,68 +498,124 @@ public final class StsOutliersProtos {
     }
 
     public static final int BSM_INITIAL_FIELD_NUMBER = 1;
-    private demetra.sts.io.protobuf.StsProtos.BasicStructuralModel bsmInitial_;
+    private com.google.protobuf.Internal.DoubleList bsmInitial_;
     /**
-     * <code>.sts.BasicStructuralModel bsm_initial = 1;</code>
-     * @return Whether the bsmInitial field is set.
+     * <code>repeated double bsm_initial = 1;</code>
+     * @return A list containing the bsmInitial.
      */
     @java.lang.Override
-    public boolean hasBsmInitial() {
-      return bsmInitial_ != null;
+    public java.util.List<java.lang.Double>
+        getBsmInitialList() {
+      return bsmInitial_;
     }
     /**
-     * <code>.sts.BasicStructuralModel bsm_initial = 1;</code>
-     * @return The bsmInitial.
+     * <code>repeated double bsm_initial = 1;</code>
+     * @return The count of bsmInitial.
      */
-    @java.lang.Override
-    public demetra.sts.io.protobuf.StsProtos.BasicStructuralModel getBsmInitial() {
-      return bsmInitial_ == null ? demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.getDefaultInstance() : bsmInitial_;
+    public int getBsmInitialCount() {
+      return bsmInitial_.size();
     }
     /**
-     * <code>.sts.BasicStructuralModel bsm_initial = 1;</code>
+     * <code>repeated double bsm_initial = 1;</code>
+     * @param index The index of the element to return.
+     * @return The bsmInitial at the given index.
      */
-    @java.lang.Override
-    public demetra.sts.io.protobuf.StsProtos.BasicStructuralModelOrBuilder getBsmInitialOrBuilder() {
-      return getBsmInitial();
+    public double getBsmInitial(int index) {
+      return bsmInitial_.getDouble(index);
     }
+    private int bsmInitialMemoizedSerializedSize = -1;
 
     public static final int BSM_FINAL_FIELD_NUMBER = 2;
-    private demetra.sts.io.protobuf.StsProtos.BasicStructuralModel bsmFinal_;
+    private com.google.protobuf.Internal.DoubleList bsmFinal_;
     /**
-     * <code>.sts.BasicStructuralModel bsm_final = 2;</code>
-     * @return Whether the bsmFinal field is set.
+     * <code>repeated double bsm_final = 2;</code>
+     * @return A list containing the bsmFinal.
      */
     @java.lang.Override
-    public boolean hasBsmFinal() {
-      return bsmFinal_ != null;
+    public java.util.List<java.lang.Double>
+        getBsmFinalList() {
+      return bsmFinal_;
     }
     /**
-     * <code>.sts.BasicStructuralModel bsm_final = 2;</code>
-     * @return The bsmFinal.
+     * <code>repeated double bsm_final = 2;</code>
+     * @return The count of bsmFinal.
      */
-    @java.lang.Override
-    public demetra.sts.io.protobuf.StsProtos.BasicStructuralModel getBsmFinal() {
-      return bsmFinal_ == null ? demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.getDefaultInstance() : bsmFinal_;
+    public int getBsmFinalCount() {
+      return bsmFinal_.size();
     }
     /**
-     * <code>.sts.BasicStructuralModel bsm_final = 2;</code>
+     * <code>repeated double bsm_final = 2;</code>
+     * @param index The index of the element to return.
+     * @return The bsmFinal at the given index.
+     */
+    public double getBsmFinal(int index) {
+      return bsmFinal_.getDouble(index);
+    }
+    private int bsmFinalMemoizedSerializedSize = -1;
+
+    public static final int LIKELIHOOD_INITIAL_FIELD_NUMBER = 3;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics likelihoodInitial_;
+    /**
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
+     * @return Whether the likelihoodInitial field is set.
      */
     @java.lang.Override
-    public demetra.sts.io.protobuf.StsProtos.BasicStructuralModelOrBuilder getBsmFinalOrBuilder() {
-      return getBsmFinal();
+    public boolean hasLikelihoodInitial() {
+      return likelihoodInitial_ != null;
+    }
+    /**
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
+     * @return The likelihoodInitial.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodInitial() {
+      return likelihoodInitial_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : likelihoodInitial_;
+    }
+    /**
+     * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodInitialOrBuilder() {
+      return getLikelihoodInitial();
     }
 
-    public static final int OUTLIERS_FIELD_NUMBER = 3;
+    public static final int LIKELIHOOD_FINAL_FIELD_NUMBER = 4;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics likelihoodFinal_;
+    /**
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
+     * @return Whether the likelihoodFinal field is set.
+     */
+    @java.lang.Override
+    public boolean hasLikelihoodFinal() {
+      return likelihoodFinal_ != null;
+    }
+    /**
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
+     * @return The likelihoodFinal.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodFinal() {
+      return likelihoodFinal_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : likelihoodFinal_;
+    }
+    /**
+     * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodFinalOrBuilder() {
+      return getLikelihoodFinal();
+    }
+
+    public static final int OUTLIERS_FIELD_NUMBER = 5;
     private java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier> outliers_;
     /**
-     * <code>repeated .outliers.Outlier outliers = 3;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     @java.lang.Override
     public java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier> getOutliersList() {
       return outliers_;
     }
     /**
-     * <code>repeated .outliers.Outlier outliers = 3;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     @java.lang.Override
     public java.util.List<? extends demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder> 
@@ -539,21 +623,21 @@ public final class StsOutliersProtos {
       return outliers_;
     }
     /**
-     * <code>repeated .outliers.Outlier outliers = 3;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     @java.lang.Override
     public int getOutliersCount() {
       return outliers_.size();
     }
     /**
-     * <code>repeated .outliers.Outlier outliers = 3;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     @java.lang.Override
     public demetra.outliers.io.protobuf.OutliersProtos.Outlier getOutliers(int index) {
       return outliers_.get(index);
     }
     /**
-     * <code>repeated .outliers.Outlier outliers = 3;</code>
+     * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
     @java.lang.Override
     public demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder getOutliersOrBuilder(
@@ -561,10 +645,10 @@ public final class StsOutliersProtos {
       return outliers_.get(index);
     }
 
-    public static final int COEFFICIENTS_FIELD_NUMBER = 4;
+    public static final int COEFFICIENTS_FIELD_NUMBER = 6;
     private com.google.protobuf.Internal.DoubleList coefficients_;
     /**
-     * <code>repeated double coefficients = 4;</code>
+     * <code>repeated double coefficients = 6;</code>
      * @return A list containing the coefficients.
      */
     @java.lang.Override
@@ -573,14 +657,14 @@ public final class StsOutliersProtos {
       return coefficients_;
     }
     /**
-     * <code>repeated double coefficients = 4;</code>
+     * <code>repeated double coefficients = 6;</code>
      * @return The count of coefficients.
      */
     public int getCoefficientsCount() {
       return coefficients_.size();
     }
     /**
-     * <code>repeated double coefficients = 4;</code>
+     * <code>repeated double coefficients = 6;</code>
      * @param index The index of the element to return.
      * @return The coefficients at the given index.
      */
@@ -589,10 +673,10 @@ public final class StsOutliersProtos {
     }
     private int coefficientsMemoizedSerializedSize = -1;
 
-    public static final int COVARIANCE_FIELD_NUMBER = 5;
+    public static final int COVARIANCE_FIELD_NUMBER = 7;
     private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix covariance_;
     /**
-     * <code>.jd3.Matrix covariance = 5;</code>
+     * <code>.jd3.Matrix covariance = 7;</code>
      * @return Whether the covariance field is set.
      */
     @java.lang.Override
@@ -600,7 +684,7 @@ public final class StsOutliersProtos {
       return covariance_ != null;
     }
     /**
-     * <code>.jd3.Matrix covariance = 5;</code>
+     * <code>.jd3.Matrix covariance = 7;</code>
      * @return The covariance.
      */
     @java.lang.Override
@@ -608,17 +692,17 @@ public final class StsOutliersProtos {
       return covariance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : covariance_;
     }
     /**
-     * <code>.jd3.Matrix covariance = 5;</code>
+     * <code>.jd3.Matrix covariance = 7;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getCovarianceOrBuilder() {
       return getCovariance();
     }
 
-    public static final int REGRESSORS_FIELD_NUMBER = 6;
+    public static final int REGRESSORS_FIELD_NUMBER = 8;
     private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix regressors_;
     /**
-     * <code>.jd3.Matrix regressors = 6;</code>
+     * <code>.jd3.Matrix regressors = 8;</code>
      * @return Whether the regressors field is set.
      */
     @java.lang.Override
@@ -626,7 +710,7 @@ public final class StsOutliersProtos {
       return regressors_ != null;
     }
     /**
-     * <code>.jd3.Matrix regressors = 6;</code>
+     * <code>.jd3.Matrix regressors = 8;</code>
      * @return The regressors.
      */
     @java.lang.Override
@@ -634,147 +718,17 @@ public final class StsOutliersProtos {
       return regressors_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : regressors_;
     }
     /**
-     * <code>.jd3.Matrix regressors = 6;</code>
+     * <code>.jd3.Matrix regressors = 8;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getRegressorsOrBuilder() {
       return getRegressors();
     }
 
-    public static final int COMPONENTS_FIELD_NUMBER = 7;
-    private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix components_;
-    /**
-     * <code>.jd3.Matrix components = 7;</code>
-     * @return Whether the components field is set.
-     */
-    @java.lang.Override
-    public boolean hasComponents() {
-      return components_ != null;
-    }
-    /**
-     * <code>.jd3.Matrix components = 7;</code>
-     * @return The components.
-     */
-    @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getComponents() {
-      return components_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : components_;
-    }
-    /**
-     * <code>.jd3.Matrix components = 7;</code>
-     */
-    @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getComponentsOrBuilder() {
-      return getComponents();
-    }
-
-    public static final int TAU_INITIAL_FIELD_NUMBER = 8;
-    private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix tauInitial_;
-    /**
-     * <code>.jd3.Matrix tau_initial = 8;</code>
-     * @return Whether the tauInitial field is set.
-     */
-    @java.lang.Override
-    public boolean hasTauInitial() {
-      return tauInitial_ != null;
-    }
-    /**
-     * <code>.jd3.Matrix tau_initial = 8;</code>
-     * @return The tauInitial.
-     */
-    @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getTauInitial() {
-      return tauInitial_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : tauInitial_;
-    }
-    /**
-     * <code>.jd3.Matrix tau_initial = 8;</code>
-     */
-    @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getTauInitialOrBuilder() {
-      return getTauInitial();
-    }
-
-    public static final int TAU_FINAL_FIELD_NUMBER = 9;
-    private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix tauFinal_;
-    /**
-     * <code>.jd3.Matrix tau_final = 9;</code>
-     * @return Whether the tauFinal field is set.
-     */
-    @java.lang.Override
-    public boolean hasTauFinal() {
-      return tauFinal_ != null;
-    }
-    /**
-     * <code>.jd3.Matrix tau_final = 9;</code>
-     * @return The tauFinal.
-     */
-    @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getTauFinal() {
-      return tauFinal_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : tauFinal_;
-    }
-    /**
-     * <code>.jd3.Matrix tau_final = 9;</code>
-     */
-    @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getTauFinalOrBuilder() {
-      return getTauFinal();
-    }
-
-    public static final int LIKELIHOOD_INITIAL_FIELD_NUMBER = 10;
-    private demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics likelihoodInitial_;
-    /**
-     * <code>.jd3.LikelihoodStatistics likelihood_initial = 10;</code>
-     * @return Whether the likelihoodInitial field is set.
-     */
-    @java.lang.Override
-    public boolean hasLikelihoodInitial() {
-      return likelihoodInitial_ != null;
-    }
-    /**
-     * <code>.jd3.LikelihoodStatistics likelihood_initial = 10;</code>
-     * @return The likelihoodInitial.
-     */
-    @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodInitial() {
-      return likelihoodInitial_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : likelihoodInitial_;
-    }
-    /**
-     * <code>.jd3.LikelihoodStatistics likelihood_initial = 10;</code>
-     */
-    @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodInitialOrBuilder() {
-      return getLikelihoodInitial();
-    }
-
-    public static final int LIKELIHOOD_FINAL_FIELD_NUMBER = 11;
-    private demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics likelihoodFinal_;
-    /**
-     * <code>.jd3.LikelihoodStatistics likelihood_final = 11;</code>
-     * @return Whether the likelihoodFinal field is set.
-     */
-    @java.lang.Override
-    public boolean hasLikelihoodFinal() {
-      return likelihoodFinal_ != null;
-    }
-    /**
-     * <code>.jd3.LikelihoodStatistics likelihood_final = 11;</code>
-     * @return The likelihoodFinal.
-     */
-    @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodFinal() {
-      return likelihoodFinal_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : likelihoodFinal_;
-    }
-    /**
-     * <code>.jd3.LikelihoodStatistics likelihood_final = 11;</code>
-     */
-    @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodFinalOrBuilder() {
-      return getLikelihoodFinal();
-    }
-
-    public static final int RESIDUALS_FIELD_NUMBER = 12;
+    public static final int RESIDUALS_FIELD_NUMBER = 9;
     private com.google.protobuf.Internal.DoubleList residuals_;
     /**
-     * <code>repeated double residuals = 12;</code>
+     * <code>repeated double residuals = 9;</code>
      * @return A list containing the residuals.
      */
     @java.lang.Override
@@ -783,14 +737,14 @@ public final class StsOutliersProtos {
       return residuals_;
     }
     /**
-     * <code>repeated double residuals = 12;</code>
+     * <code>repeated double residuals = 9;</code>
      * @return The count of residuals.
      */
     public int getResidualsCount() {
       return residuals_.size();
     }
     /**
-     * <code>repeated double residuals = 12;</code>
+     * <code>repeated double residuals = 9;</code>
      * @param index The index of the element to return.
      * @return The residuals at the given index.
      */
@@ -798,6 +752,84 @@ public final class StsOutliersProtos {
       return residuals_.getDouble(index);
     }
     private int residualsMemoizedSerializedSize = -1;
+
+    public static final int COMPONENTS_FIELD_NUMBER = 10;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix components_;
+    /**
+     * <code>.jd3.Matrix components = 10;</code>
+     * @return Whether the components field is set.
+     */
+    @java.lang.Override
+    public boolean hasComponents() {
+      return components_ != null;
+    }
+    /**
+     * <code>.jd3.Matrix components = 10;</code>
+     * @return The components.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getComponents() {
+      return components_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : components_;
+    }
+    /**
+     * <code>.jd3.Matrix components = 10;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getComponentsOrBuilder() {
+      return getComponents();
+    }
+
+    public static final int TAU_INITIAL_FIELD_NUMBER = 11;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix tauInitial_;
+    /**
+     * <code>.jd3.Matrix tau_initial = 11;</code>
+     * @return Whether the tauInitial field is set.
+     */
+    @java.lang.Override
+    public boolean hasTauInitial() {
+      return tauInitial_ != null;
+    }
+    /**
+     * <code>.jd3.Matrix tau_initial = 11;</code>
+     * @return The tauInitial.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getTauInitial() {
+      return tauInitial_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : tauInitial_;
+    }
+    /**
+     * <code>.jd3.Matrix tau_initial = 11;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getTauInitialOrBuilder() {
+      return getTauInitial();
+    }
+
+    public static final int TAU_FINAL_FIELD_NUMBER = 12;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix tauFinal_;
+    /**
+     * <code>.jd3.Matrix tau_final = 12;</code>
+     * @return Whether the tauFinal field is set.
+     */
+    @java.lang.Override
+    public boolean hasTauFinal() {
+      return tauFinal_ != null;
+    }
+    /**
+     * <code>.jd3.Matrix tau_final = 12;</code>
+     * @return The tauFinal.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getTauFinal() {
+      return tauFinal_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : tauFinal_;
+    }
+    /**
+     * <code>.jd3.Matrix tau_final = 12;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getTauFinalOrBuilder() {
+      return getTauFinal();
+    }
 
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
@@ -814,49 +846,57 @@ public final class StsOutliersProtos {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (bsmInitial_ != null) {
-        output.writeMessage(1, getBsmInitial());
+      if (getBsmInitialList().size() > 0) {
+        output.writeUInt32NoTag(10);
+        output.writeUInt32NoTag(bsmInitialMemoizedSerializedSize);
       }
-      if (bsmFinal_ != null) {
-        output.writeMessage(2, getBsmFinal());
+      for (int i = 0; i < bsmInitial_.size(); i++) {
+        output.writeDoubleNoTag(bsmInitial_.getDouble(i));
+      }
+      if (getBsmFinalList().size() > 0) {
+        output.writeUInt32NoTag(18);
+        output.writeUInt32NoTag(bsmFinalMemoizedSerializedSize);
+      }
+      for (int i = 0; i < bsmFinal_.size(); i++) {
+        output.writeDoubleNoTag(bsmFinal_.getDouble(i));
+      }
+      if (likelihoodInitial_ != null) {
+        output.writeMessage(3, getLikelihoodInitial());
+      }
+      if (likelihoodFinal_ != null) {
+        output.writeMessage(4, getLikelihoodFinal());
       }
       for (int i = 0; i < outliers_.size(); i++) {
-        output.writeMessage(3, outliers_.get(i));
+        output.writeMessage(5, outliers_.get(i));
       }
       if (getCoefficientsList().size() > 0) {
-        output.writeUInt32NoTag(34);
+        output.writeUInt32NoTag(50);
         output.writeUInt32NoTag(coefficientsMemoizedSerializedSize);
       }
       for (int i = 0; i < coefficients_.size(); i++) {
         output.writeDoubleNoTag(coefficients_.getDouble(i));
       }
       if (covariance_ != null) {
-        output.writeMessage(5, getCovariance());
+        output.writeMessage(7, getCovariance());
       }
       if (regressors_ != null) {
-        output.writeMessage(6, getRegressors());
-      }
-      if (components_ != null) {
-        output.writeMessage(7, getComponents());
-      }
-      if (tauInitial_ != null) {
-        output.writeMessage(8, getTauInitial());
-      }
-      if (tauFinal_ != null) {
-        output.writeMessage(9, getTauFinal());
-      }
-      if (likelihoodInitial_ != null) {
-        output.writeMessage(10, getLikelihoodInitial());
-      }
-      if (likelihoodFinal_ != null) {
-        output.writeMessage(11, getLikelihoodFinal());
+        output.writeMessage(8, getRegressors());
       }
       if (getResidualsList().size() > 0) {
-        output.writeUInt32NoTag(98);
+        output.writeUInt32NoTag(74);
         output.writeUInt32NoTag(residualsMemoizedSerializedSize);
       }
       for (int i = 0; i < residuals_.size(); i++) {
         output.writeDoubleNoTag(residuals_.getDouble(i));
+      }
+      if (components_ != null) {
+        output.writeMessage(10, getComponents());
+      }
+      if (tauInitial_ != null) {
+        output.writeMessage(11, getTauInitial());
+      }
+      if (tauFinal_ != null) {
+        output.writeMessage(12, getTauFinal());
       }
       unknownFields.writeTo(output);
     }
@@ -867,17 +907,39 @@ public final class StsOutliersProtos {
       if (size != -1) return size;
 
       size = 0;
-      if (bsmInitial_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getBsmInitial());
+      {
+        int dataSize = 0;
+        dataSize = 8 * getBsmInitialList().size();
+        size += dataSize;
+        if (!getBsmInitialList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        bsmInitialMemoizedSerializedSize = dataSize;
       }
-      if (bsmFinal_ != null) {
+      {
+        int dataSize = 0;
+        dataSize = 8 * getBsmFinalList().size();
+        size += dataSize;
+        if (!getBsmFinalList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        bsmFinalMemoizedSerializedSize = dataSize;
+      }
+      if (likelihoodInitial_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getBsmFinal());
+          .computeMessageSize(3, getLikelihoodInitial());
+      }
+      if (likelihoodFinal_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, getLikelihoodFinal());
       }
       for (int i = 0; i < outliers_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, outliers_.get(i));
+          .computeMessageSize(5, outliers_.get(i));
       }
       {
         int dataSize = 0;
@@ -892,31 +954,11 @@ public final class StsOutliersProtos {
       }
       if (covariance_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getCovariance());
+          .computeMessageSize(7, getCovariance());
       }
       if (regressors_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, getRegressors());
-      }
-      if (components_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, getComponents());
-      }
-      if (tauInitial_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(8, getTauInitial());
-      }
-      if (tauFinal_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(9, getTauFinal());
-      }
-      if (likelihoodInitial_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(10, getLikelihoodInitial());
-      }
-      if (likelihoodFinal_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(11, getLikelihoodFinal());
+          .computeMessageSize(8, getRegressors());
       }
       {
         int dataSize = 0;
@@ -928,6 +970,18 @@ public final class StsOutliersProtos {
               .computeInt32SizeNoTag(dataSize);
         }
         residualsMemoizedSerializedSize = dataSize;
+      }
+      if (components_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(10, getComponents());
+      }
+      if (tauInitial_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(11, getTauInitial());
+      }
+      if (tauFinal_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(12, getTauFinal());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -944,15 +998,19 @@ public final class StsOutliersProtos {
       }
       demetra.sts.outliers.io.protobuf.StsOutliersProtos.StsSolution other = (demetra.sts.outliers.io.protobuf.StsOutliersProtos.StsSolution) obj;
 
-      if (hasBsmInitial() != other.hasBsmInitial()) return false;
-      if (hasBsmInitial()) {
-        if (!getBsmInitial()
-            .equals(other.getBsmInitial())) return false;
+      if (!getBsmInitialList()
+          .equals(other.getBsmInitialList())) return false;
+      if (!getBsmFinalList()
+          .equals(other.getBsmFinalList())) return false;
+      if (hasLikelihoodInitial() != other.hasLikelihoodInitial()) return false;
+      if (hasLikelihoodInitial()) {
+        if (!getLikelihoodInitial()
+            .equals(other.getLikelihoodInitial())) return false;
       }
-      if (hasBsmFinal() != other.hasBsmFinal()) return false;
-      if (hasBsmFinal()) {
-        if (!getBsmFinal()
-            .equals(other.getBsmFinal())) return false;
+      if (hasLikelihoodFinal() != other.hasLikelihoodFinal()) return false;
+      if (hasLikelihoodFinal()) {
+        if (!getLikelihoodFinal()
+            .equals(other.getLikelihoodFinal())) return false;
       }
       if (!getOutliersList()
           .equals(other.getOutliersList())) return false;
@@ -968,6 +1026,8 @@ public final class StsOutliersProtos {
         if (!getRegressors()
             .equals(other.getRegressors())) return false;
       }
+      if (!getResidualsList()
+          .equals(other.getResidualsList())) return false;
       if (hasComponents() != other.hasComponents()) return false;
       if (hasComponents()) {
         if (!getComponents()
@@ -983,18 +1043,6 @@ public final class StsOutliersProtos {
         if (!getTauFinal()
             .equals(other.getTauFinal())) return false;
       }
-      if (hasLikelihoodInitial() != other.hasLikelihoodInitial()) return false;
-      if (hasLikelihoodInitial()) {
-        if (!getLikelihoodInitial()
-            .equals(other.getLikelihoodInitial())) return false;
-      }
-      if (hasLikelihoodFinal() != other.hasLikelihoodFinal()) return false;
-      if (hasLikelihoodFinal()) {
-        if (!getLikelihoodFinal()
-            .equals(other.getLikelihoodFinal())) return false;
-      }
-      if (!getResidualsList()
-          .equals(other.getResidualsList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1006,13 +1054,21 @@ public final class StsOutliersProtos {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasBsmInitial()) {
+      if (getBsmInitialCount() > 0) {
         hash = (37 * hash) + BSM_INITIAL_FIELD_NUMBER;
-        hash = (53 * hash) + getBsmInitial().hashCode();
+        hash = (53 * hash) + getBsmInitialList().hashCode();
       }
-      if (hasBsmFinal()) {
+      if (getBsmFinalCount() > 0) {
         hash = (37 * hash) + BSM_FINAL_FIELD_NUMBER;
-        hash = (53 * hash) + getBsmFinal().hashCode();
+        hash = (53 * hash) + getBsmFinalList().hashCode();
+      }
+      if (hasLikelihoodInitial()) {
+        hash = (37 * hash) + LIKELIHOOD_INITIAL_FIELD_NUMBER;
+        hash = (53 * hash) + getLikelihoodInitial().hashCode();
+      }
+      if (hasLikelihoodFinal()) {
+        hash = (37 * hash) + LIKELIHOOD_FINAL_FIELD_NUMBER;
+        hash = (53 * hash) + getLikelihoodFinal().hashCode();
       }
       if (getOutliersCount() > 0) {
         hash = (37 * hash) + OUTLIERS_FIELD_NUMBER;
@@ -1030,6 +1086,10 @@ public final class StsOutliersProtos {
         hash = (37 * hash) + REGRESSORS_FIELD_NUMBER;
         hash = (53 * hash) + getRegressors().hashCode();
       }
+      if (getResidualsCount() > 0) {
+        hash = (37 * hash) + RESIDUALS_FIELD_NUMBER;
+        hash = (53 * hash) + getResidualsList().hashCode();
+      }
       if (hasComponents()) {
         hash = (37 * hash) + COMPONENTS_FIELD_NUMBER;
         hash = (53 * hash) + getComponents().hashCode();
@@ -1041,18 +1101,6 @@ public final class StsOutliersProtos {
       if (hasTauFinal()) {
         hash = (37 * hash) + TAU_FINAL_FIELD_NUMBER;
         hash = (53 * hash) + getTauFinal().hashCode();
-      }
-      if (hasLikelihoodInitial()) {
-        hash = (37 * hash) + LIKELIHOOD_INITIAL_FIELD_NUMBER;
-        hash = (53 * hash) + getLikelihoodInitial().hashCode();
-      }
-      if (hasLikelihoodFinal()) {
-        hash = (37 * hash) + LIKELIHOOD_FINAL_FIELD_NUMBER;
-        hash = (53 * hash) + getLikelihoodFinal().hashCode();
-      }
-      if (getResidualsCount() > 0) {
-        hash = (37 * hash) + RESIDUALS_FIELD_NUMBER;
-        hash = (53 * hash) + getResidualsList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -1188,26 +1236,30 @@ public final class StsOutliersProtos {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        if (bsmInitialBuilder_ == null) {
-          bsmInitial_ = null;
+        bsmInitial_ = emptyDoubleList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        bsmFinal_ = emptyDoubleList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        if (likelihoodInitialBuilder_ == null) {
+          likelihoodInitial_ = null;
         } else {
-          bsmInitial_ = null;
-          bsmInitialBuilder_ = null;
+          likelihoodInitial_ = null;
+          likelihoodInitialBuilder_ = null;
         }
-        if (bsmFinalBuilder_ == null) {
-          bsmFinal_ = null;
+        if (likelihoodFinalBuilder_ == null) {
+          likelihoodFinal_ = null;
         } else {
-          bsmFinal_ = null;
-          bsmFinalBuilder_ = null;
+          likelihoodFinal_ = null;
+          likelihoodFinalBuilder_ = null;
         }
         if (outliersBuilder_ == null) {
           outliers_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
+          bitField0_ = (bitField0_ & ~0x00000004);
         } else {
           outliersBuilder_.clear();
         }
         coefficients_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000008);
         if (covarianceBuilder_ == null) {
           covariance_ = null;
         } else {
@@ -1220,6 +1272,8 @@ public final class StsOutliersProtos {
           regressors_ = null;
           regressorsBuilder_ = null;
         }
+        residuals_ = emptyDoubleList();
+        bitField0_ = (bitField0_ & ~0x00000010);
         if (componentsBuilder_ == null) {
           components_ = null;
         } else {
@@ -1238,20 +1292,6 @@ public final class StsOutliersProtos {
           tauFinal_ = null;
           tauFinalBuilder_ = null;
         }
-        if (likelihoodInitialBuilder_ == null) {
-          likelihoodInitial_ = null;
-        } else {
-          likelihoodInitial_ = null;
-          likelihoodInitialBuilder_ = null;
-        }
-        if (likelihoodFinalBuilder_ == null) {
-          likelihoodFinal_ = null;
-        } else {
-          likelihoodFinal_ = null;
-          likelihoodFinalBuilder_ = null;
-        }
-        residuals_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -1279,28 +1319,38 @@ public final class StsOutliersProtos {
       public demetra.sts.outliers.io.protobuf.StsOutliersProtos.StsSolution buildPartial() {
         demetra.sts.outliers.io.protobuf.StsOutliersProtos.StsSolution result = new demetra.sts.outliers.io.protobuf.StsOutliersProtos.StsSolution(this);
         int from_bitField0_ = bitField0_;
-        if (bsmInitialBuilder_ == null) {
-          result.bsmInitial_ = bsmInitial_;
-        } else {
-          result.bsmInitial_ = bsmInitialBuilder_.build();
+        if (((bitField0_ & 0x00000001) != 0)) {
+          bsmInitial_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
         }
-        if (bsmFinalBuilder_ == null) {
-          result.bsmFinal_ = bsmFinal_;
+        result.bsmInitial_ = bsmInitial_;
+        if (((bitField0_ & 0x00000002) != 0)) {
+          bsmFinal_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.bsmFinal_ = bsmFinal_;
+        if (likelihoodInitialBuilder_ == null) {
+          result.likelihoodInitial_ = likelihoodInitial_;
         } else {
-          result.bsmFinal_ = bsmFinalBuilder_.build();
+          result.likelihoodInitial_ = likelihoodInitialBuilder_.build();
+        }
+        if (likelihoodFinalBuilder_ == null) {
+          result.likelihoodFinal_ = likelihoodFinal_;
+        } else {
+          result.likelihoodFinal_ = likelihoodFinalBuilder_.build();
         }
         if (outliersBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
+          if (((bitField0_ & 0x00000004) != 0)) {
             outliers_ = java.util.Collections.unmodifiableList(outliers_);
-            bitField0_ = (bitField0_ & ~0x00000001);
+            bitField0_ = (bitField0_ & ~0x00000004);
           }
           result.outliers_ = outliers_;
         } else {
           result.outliers_ = outliersBuilder_.build();
         }
-        if (((bitField0_ & 0x00000002) != 0)) {
+        if (((bitField0_ & 0x00000008) != 0)) {
           coefficients_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000002);
+          bitField0_ = (bitField0_ & ~0x00000008);
         }
         result.coefficients_ = coefficients_;
         if (covarianceBuilder_ == null) {
@@ -1313,6 +1363,11 @@ public final class StsOutliersProtos {
         } else {
           result.regressors_ = regressorsBuilder_.build();
         }
+        if (((bitField0_ & 0x00000010) != 0)) {
+          residuals_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000010);
+        }
+        result.residuals_ = residuals_;
         if (componentsBuilder_ == null) {
           result.components_ = components_;
         } else {
@@ -1328,21 +1383,6 @@ public final class StsOutliersProtos {
         } else {
           result.tauFinal_ = tauFinalBuilder_.build();
         }
-        if (likelihoodInitialBuilder_ == null) {
-          result.likelihoodInitial_ = likelihoodInitial_;
-        } else {
-          result.likelihoodInitial_ = likelihoodInitialBuilder_.build();
-        }
-        if (likelihoodFinalBuilder_ == null) {
-          result.likelihoodFinal_ = likelihoodFinal_;
-        } else {
-          result.likelihoodFinal_ = likelihoodFinalBuilder_.build();
-        }
-        if (((bitField0_ & 0x00000004) != 0)) {
-          residuals_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000004);
-        }
-        result.residuals_ = residuals_;
         onBuilt();
         return result;
       }
@@ -1391,17 +1431,37 @@ public final class StsOutliersProtos {
 
       public Builder mergeFrom(demetra.sts.outliers.io.protobuf.StsOutliersProtos.StsSolution other) {
         if (other == demetra.sts.outliers.io.protobuf.StsOutliersProtos.StsSolution.getDefaultInstance()) return this;
-        if (other.hasBsmInitial()) {
-          mergeBsmInitial(other.getBsmInitial());
+        if (!other.bsmInitial_.isEmpty()) {
+          if (bsmInitial_.isEmpty()) {
+            bsmInitial_ = other.bsmInitial_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureBsmInitialIsMutable();
+            bsmInitial_.addAll(other.bsmInitial_);
+          }
+          onChanged();
         }
-        if (other.hasBsmFinal()) {
-          mergeBsmFinal(other.getBsmFinal());
+        if (!other.bsmFinal_.isEmpty()) {
+          if (bsmFinal_.isEmpty()) {
+            bsmFinal_ = other.bsmFinal_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureBsmFinalIsMutable();
+            bsmFinal_.addAll(other.bsmFinal_);
+          }
+          onChanged();
+        }
+        if (other.hasLikelihoodInitial()) {
+          mergeLikelihoodInitial(other.getLikelihoodInitial());
+        }
+        if (other.hasLikelihoodFinal()) {
+          mergeLikelihoodFinal(other.getLikelihoodFinal());
         }
         if (outliersBuilder_ == null) {
           if (!other.outliers_.isEmpty()) {
             if (outliers_.isEmpty()) {
               outliers_ = other.outliers_;
-              bitField0_ = (bitField0_ & ~0x00000001);
+              bitField0_ = (bitField0_ & ~0x00000004);
             } else {
               ensureOutliersIsMutable();
               outliers_.addAll(other.outliers_);
@@ -1414,7 +1474,7 @@ public final class StsOutliersProtos {
               outliersBuilder_.dispose();
               outliersBuilder_ = null;
               outliers_ = other.outliers_;
-              bitField0_ = (bitField0_ & ~0x00000001);
+              bitField0_ = (bitField0_ & ~0x00000004);
               outliersBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getOutliersFieldBuilder() : null;
@@ -1426,7 +1486,7 @@ public final class StsOutliersProtos {
         if (!other.coefficients_.isEmpty()) {
           if (coefficients_.isEmpty()) {
             coefficients_ = other.coefficients_;
-            bitField0_ = (bitField0_ & ~0x00000002);
+            bitField0_ = (bitField0_ & ~0x00000008);
           } else {
             ensureCoefficientsIsMutable();
             coefficients_.addAll(other.coefficients_);
@@ -1439,6 +1499,16 @@ public final class StsOutliersProtos {
         if (other.hasRegressors()) {
           mergeRegressors(other.getRegressors());
         }
+        if (!other.residuals_.isEmpty()) {
+          if (residuals_.isEmpty()) {
+            residuals_ = other.residuals_;
+            bitField0_ = (bitField0_ & ~0x00000010);
+          } else {
+            ensureResidualsIsMutable();
+            residuals_.addAll(other.residuals_);
+          }
+          onChanged();
+        }
         if (other.hasComponents()) {
           mergeComponents(other.getComponents());
         }
@@ -1447,22 +1517,6 @@ public final class StsOutliersProtos {
         }
         if (other.hasTauFinal()) {
           mergeTauFinal(other.getTauFinal());
-        }
-        if (other.hasLikelihoodInitial()) {
-          mergeLikelihoodInitial(other.getLikelihoodInitial());
-        }
-        if (other.hasLikelihoodFinal()) {
-          mergeLikelihoodFinal(other.getLikelihoodFinal());
-        }
-        if (!other.residuals_.isEmpty()) {
-          if (residuals_.isEmpty()) {
-            residuals_ = other.residuals_;
-            bitField0_ = (bitField0_ & ~0x00000004);
-          } else {
-            ensureResidualsIsMutable();
-            residuals_.addAll(other.residuals_);
-          }
-          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1494,1170 +1548,176 @@ public final class StsOutliersProtos {
       }
       private int bitField0_;
 
-      private demetra.sts.io.protobuf.StsProtos.BasicStructuralModel bsmInitial_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sts.io.protobuf.StsProtos.BasicStructuralModel, demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.Builder, demetra.sts.io.protobuf.StsProtos.BasicStructuralModelOrBuilder> bsmInitialBuilder_;
-      /**
-       * <code>.sts.BasicStructuralModel bsm_initial = 1;</code>
-       * @return Whether the bsmInitial field is set.
-       */
-      public boolean hasBsmInitial() {
-        return bsmInitialBuilder_ != null || bsmInitial_ != null;
-      }
-      /**
-       * <code>.sts.BasicStructuralModel bsm_initial = 1;</code>
-       * @return The bsmInitial.
-       */
-      public demetra.sts.io.protobuf.StsProtos.BasicStructuralModel getBsmInitial() {
-        if (bsmInitialBuilder_ == null) {
-          return bsmInitial_ == null ? demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.getDefaultInstance() : bsmInitial_;
-        } else {
-          return bsmInitialBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.sts.BasicStructuralModel bsm_initial = 1;</code>
-       */
-      public Builder setBsmInitial(demetra.sts.io.protobuf.StsProtos.BasicStructuralModel value) {
-        if (bsmInitialBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          bsmInitial_ = value;
-          onChanged();
-        } else {
-          bsmInitialBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.sts.BasicStructuralModel bsm_initial = 1;</code>
-       */
-      public Builder setBsmInitial(
-          demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.Builder builderForValue) {
-        if (bsmInitialBuilder_ == null) {
-          bsmInitial_ = builderForValue.build();
-          onChanged();
-        } else {
-          bsmInitialBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.sts.BasicStructuralModel bsm_initial = 1;</code>
-       */
-      public Builder mergeBsmInitial(demetra.sts.io.protobuf.StsProtos.BasicStructuralModel value) {
-        if (bsmInitialBuilder_ == null) {
-          if (bsmInitial_ != null) {
-            bsmInitial_ =
-              demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.newBuilder(bsmInitial_).mergeFrom(value).buildPartial();
-          } else {
-            bsmInitial_ = value;
-          }
-          onChanged();
-        } else {
-          bsmInitialBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.sts.BasicStructuralModel bsm_initial = 1;</code>
-       */
-      public Builder clearBsmInitial() {
-        if (bsmInitialBuilder_ == null) {
-          bsmInitial_ = null;
-          onChanged();
-        } else {
-          bsmInitial_ = null;
-          bsmInitialBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.sts.BasicStructuralModel bsm_initial = 1;</code>
-       */
-      public demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.Builder getBsmInitialBuilder() {
-        
-        onChanged();
-        return getBsmInitialFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.sts.BasicStructuralModel bsm_initial = 1;</code>
-       */
-      public demetra.sts.io.protobuf.StsProtos.BasicStructuralModelOrBuilder getBsmInitialOrBuilder() {
-        if (bsmInitialBuilder_ != null) {
-          return bsmInitialBuilder_.getMessageOrBuilder();
-        } else {
-          return bsmInitial_ == null ?
-              demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.getDefaultInstance() : bsmInitial_;
-        }
-      }
-      /**
-       * <code>.sts.BasicStructuralModel bsm_initial = 1;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sts.io.protobuf.StsProtos.BasicStructuralModel, demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.Builder, demetra.sts.io.protobuf.StsProtos.BasicStructuralModelOrBuilder> 
-          getBsmInitialFieldBuilder() {
-        if (bsmInitialBuilder_ == null) {
-          bsmInitialBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.sts.io.protobuf.StsProtos.BasicStructuralModel, demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.Builder, demetra.sts.io.protobuf.StsProtos.BasicStructuralModelOrBuilder>(
-                  getBsmInitial(),
-                  getParentForChildren(),
-                  isClean());
-          bsmInitial_ = null;
-        }
-        return bsmInitialBuilder_;
-      }
-
-      private demetra.sts.io.protobuf.StsProtos.BasicStructuralModel bsmFinal_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sts.io.protobuf.StsProtos.BasicStructuralModel, demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.Builder, demetra.sts.io.protobuf.StsProtos.BasicStructuralModelOrBuilder> bsmFinalBuilder_;
-      /**
-       * <code>.sts.BasicStructuralModel bsm_final = 2;</code>
-       * @return Whether the bsmFinal field is set.
-       */
-      public boolean hasBsmFinal() {
-        return bsmFinalBuilder_ != null || bsmFinal_ != null;
-      }
-      /**
-       * <code>.sts.BasicStructuralModel bsm_final = 2;</code>
-       * @return The bsmFinal.
-       */
-      public demetra.sts.io.protobuf.StsProtos.BasicStructuralModel getBsmFinal() {
-        if (bsmFinalBuilder_ == null) {
-          return bsmFinal_ == null ? demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.getDefaultInstance() : bsmFinal_;
-        } else {
-          return bsmFinalBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.sts.BasicStructuralModel bsm_final = 2;</code>
-       */
-      public Builder setBsmFinal(demetra.sts.io.protobuf.StsProtos.BasicStructuralModel value) {
-        if (bsmFinalBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          bsmFinal_ = value;
-          onChanged();
-        } else {
-          bsmFinalBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.sts.BasicStructuralModel bsm_final = 2;</code>
-       */
-      public Builder setBsmFinal(
-          demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.Builder builderForValue) {
-        if (bsmFinalBuilder_ == null) {
-          bsmFinal_ = builderForValue.build();
-          onChanged();
-        } else {
-          bsmFinalBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.sts.BasicStructuralModel bsm_final = 2;</code>
-       */
-      public Builder mergeBsmFinal(demetra.sts.io.protobuf.StsProtos.BasicStructuralModel value) {
-        if (bsmFinalBuilder_ == null) {
-          if (bsmFinal_ != null) {
-            bsmFinal_ =
-              demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.newBuilder(bsmFinal_).mergeFrom(value).buildPartial();
-          } else {
-            bsmFinal_ = value;
-          }
-          onChanged();
-        } else {
-          bsmFinalBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.sts.BasicStructuralModel bsm_final = 2;</code>
-       */
-      public Builder clearBsmFinal() {
-        if (bsmFinalBuilder_ == null) {
-          bsmFinal_ = null;
-          onChanged();
-        } else {
-          bsmFinal_ = null;
-          bsmFinalBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.sts.BasicStructuralModel bsm_final = 2;</code>
-       */
-      public demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.Builder getBsmFinalBuilder() {
-        
-        onChanged();
-        return getBsmFinalFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.sts.BasicStructuralModel bsm_final = 2;</code>
-       */
-      public demetra.sts.io.protobuf.StsProtos.BasicStructuralModelOrBuilder getBsmFinalOrBuilder() {
-        if (bsmFinalBuilder_ != null) {
-          return bsmFinalBuilder_.getMessageOrBuilder();
-        } else {
-          return bsmFinal_ == null ?
-              demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.getDefaultInstance() : bsmFinal_;
-        }
-      }
-      /**
-       * <code>.sts.BasicStructuralModel bsm_final = 2;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sts.io.protobuf.StsProtos.BasicStructuralModel, demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.Builder, demetra.sts.io.protobuf.StsProtos.BasicStructuralModelOrBuilder> 
-          getBsmFinalFieldBuilder() {
-        if (bsmFinalBuilder_ == null) {
-          bsmFinalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.sts.io.protobuf.StsProtos.BasicStructuralModel, demetra.sts.io.protobuf.StsProtos.BasicStructuralModel.Builder, demetra.sts.io.protobuf.StsProtos.BasicStructuralModelOrBuilder>(
-                  getBsmFinal(),
-                  getParentForChildren(),
-                  isClean());
-          bsmFinal_ = null;
-        }
-        return bsmFinalBuilder_;
-      }
-
-      private java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier> outliers_ =
-        java.util.Collections.emptyList();
-      private void ensureOutliersIsMutable() {
+      private com.google.protobuf.Internal.DoubleList bsmInitial_ = emptyDoubleList();
+      private void ensureBsmInitialIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          outliers_ = new java.util.ArrayList<demetra.outliers.io.protobuf.OutliersProtos.Outlier>(outliers_);
+          bsmInitial_ = mutableCopy(bsmInitial_);
           bitField0_ |= 0x00000001;
          }
       }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          demetra.outliers.io.protobuf.OutliersProtos.Outlier, demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder, demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder> outliersBuilder_;
-
       /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
+       * <code>repeated double bsm_initial = 1;</code>
+       * @return A list containing the bsmInitial.
        */
-      public java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier> getOutliersList() {
-        if (outliersBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(outliers_);
-        } else {
-          return outliersBuilder_.getMessageList();
-        }
+      public java.util.List<java.lang.Double>
+          getBsmInitialList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(bsmInitial_) : bsmInitial_;
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
+       * <code>repeated double bsm_initial = 1;</code>
+       * @return The count of bsmInitial.
        */
-      public int getOutliersCount() {
-        if (outliersBuilder_ == null) {
-          return outliers_.size();
-        } else {
-          return outliersBuilder_.getCount();
-        }
+      public int getBsmInitialCount() {
+        return bsmInitial_.size();
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
+       * <code>repeated double bsm_initial = 1;</code>
+       * @param index The index of the element to return.
+       * @return The bsmInitial at the given index.
        */
-      public demetra.outliers.io.protobuf.OutliersProtos.Outlier getOutliers(int index) {
-        if (outliersBuilder_ == null) {
-          return outliers_.get(index);
-        } else {
-          return outliersBuilder_.getMessage(index);
-        }
+      public double getBsmInitial(int index) {
+        return bsmInitial_.getDouble(index);
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
+       * <code>repeated double bsm_initial = 1;</code>
+       * @param index The index to set the value at.
+       * @param value The bsmInitial to set.
+       * @return This builder for chaining.
        */
-      public Builder setOutliers(
-          int index, demetra.outliers.io.protobuf.OutliersProtos.Outlier value) {
-        if (outliersBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureOutliersIsMutable();
-          outliers_.set(index, value);
-          onChanged();
-        } else {
-          outliersBuilder_.setMessage(index, value);
-        }
+      public Builder setBsmInitial(
+          int index, double value) {
+        ensureBsmInitialIsMutable();
+        bsmInitial_.setDouble(index, value);
+        onChanged();
         return this;
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
+       * <code>repeated double bsm_initial = 1;</code>
+       * @param value The bsmInitial to add.
+       * @return This builder for chaining.
        */
-      public Builder setOutliers(
-          int index, demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder builderForValue) {
-        if (outliersBuilder_ == null) {
-          ensureOutliersIsMutable();
-          outliers_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          outliersBuilder_.setMessage(index, builderForValue.build());
-        }
+      public Builder addBsmInitial(double value) {
+        ensureBsmInitialIsMutable();
+        bsmInitial_.addDouble(value);
+        onChanged();
         return this;
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
+       * <code>repeated double bsm_initial = 1;</code>
+       * @param values The bsmInitial to add.
+       * @return This builder for chaining.
        */
-      public Builder addOutliers(demetra.outliers.io.protobuf.OutliersProtos.Outlier value) {
-        if (outliersBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureOutliersIsMutable();
-          outliers_.add(value);
-          onChanged();
-        } else {
-          outliersBuilder_.addMessage(value);
-        }
+      public Builder addAllBsmInitial(
+          java.lang.Iterable<? extends java.lang.Double> values) {
+        ensureBsmInitialIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, bsmInitial_);
+        onChanged();
         return this;
       }
       /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
+       * <code>repeated double bsm_initial = 1;</code>
+       * @return This builder for chaining.
        */
-      public Builder addOutliers(
-          int index, demetra.outliers.io.protobuf.OutliersProtos.Outlier value) {
-        if (outliersBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureOutliersIsMutable();
-          outliers_.add(index, value);
-          onChanged();
-        } else {
-          outliersBuilder_.addMessage(index, value);
-        }
+      public Builder clearBsmInitial() {
+        bsmInitial_ = emptyDoubleList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
         return this;
-      }
-      /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
-       */
-      public Builder addOutliers(
-          demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder builderForValue) {
-        if (outliersBuilder_ == null) {
-          ensureOutliersIsMutable();
-          outliers_.add(builderForValue.build());
-          onChanged();
-        } else {
-          outliersBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
-       */
-      public Builder addOutliers(
-          int index, demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder builderForValue) {
-        if (outliersBuilder_ == null) {
-          ensureOutliersIsMutable();
-          outliers_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          outliersBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
-       */
-      public Builder addAllOutliers(
-          java.lang.Iterable<? extends demetra.outliers.io.protobuf.OutliersProtos.Outlier> values) {
-        if (outliersBuilder_ == null) {
-          ensureOutliersIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, outliers_);
-          onChanged();
-        } else {
-          outliersBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
-       */
-      public Builder clearOutliers() {
-        if (outliersBuilder_ == null) {
-          outliers_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          outliersBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
-       */
-      public Builder removeOutliers(int index) {
-        if (outliersBuilder_ == null) {
-          ensureOutliersIsMutable();
-          outliers_.remove(index);
-          onChanged();
-        } else {
-          outliersBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
-       */
-      public demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder getOutliersBuilder(
-          int index) {
-        return getOutliersFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
-       */
-      public demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder getOutliersOrBuilder(
-          int index) {
-        if (outliersBuilder_ == null) {
-          return outliers_.get(index);  } else {
-          return outliersBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
-       */
-      public java.util.List<? extends demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder> 
-           getOutliersOrBuilderList() {
-        if (outliersBuilder_ != null) {
-          return outliersBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(outliers_);
-        }
-      }
-      /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
-       */
-      public demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder addOutliersBuilder() {
-        return getOutliersFieldBuilder().addBuilder(
-            demetra.outliers.io.protobuf.OutliersProtos.Outlier.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
-       */
-      public demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder addOutliersBuilder(
-          int index) {
-        return getOutliersFieldBuilder().addBuilder(
-            index, demetra.outliers.io.protobuf.OutliersProtos.Outlier.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .outliers.Outlier outliers = 3;</code>
-       */
-      public java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder> 
-           getOutliersBuilderList() {
-        return getOutliersFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          demetra.outliers.io.protobuf.OutliersProtos.Outlier, demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder, demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder> 
-          getOutliersFieldBuilder() {
-        if (outliersBuilder_ == null) {
-          outliersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              demetra.outliers.io.protobuf.OutliersProtos.Outlier, demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder, demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder>(
-                  outliers_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
-          outliers_ = null;
-        }
-        return outliersBuilder_;
       }
 
-      private com.google.protobuf.Internal.DoubleList coefficients_ = emptyDoubleList();
-      private void ensureCoefficientsIsMutable() {
+      private com.google.protobuf.Internal.DoubleList bsmFinal_ = emptyDoubleList();
+      private void ensureBsmFinalIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
-          coefficients_ = mutableCopy(coefficients_);
+          bsmFinal_ = mutableCopy(bsmFinal_);
           bitField0_ |= 0x00000002;
          }
       }
       /**
-       * <code>repeated double coefficients = 4;</code>
-       * @return A list containing the coefficients.
+       * <code>repeated double bsm_final = 2;</code>
+       * @return A list containing the bsmFinal.
        */
       public java.util.List<java.lang.Double>
-          getCoefficientsList() {
+          getBsmFinalList() {
         return ((bitField0_ & 0x00000002) != 0) ?
-                 java.util.Collections.unmodifiableList(coefficients_) : coefficients_;
+                 java.util.Collections.unmodifiableList(bsmFinal_) : bsmFinal_;
       }
       /**
-       * <code>repeated double coefficients = 4;</code>
-       * @return The count of coefficients.
+       * <code>repeated double bsm_final = 2;</code>
+       * @return The count of bsmFinal.
        */
-      public int getCoefficientsCount() {
-        return coefficients_.size();
+      public int getBsmFinalCount() {
+        return bsmFinal_.size();
       }
       /**
-       * <code>repeated double coefficients = 4;</code>
+       * <code>repeated double bsm_final = 2;</code>
        * @param index The index of the element to return.
-       * @return The coefficients at the given index.
+       * @return The bsmFinal at the given index.
        */
-      public double getCoefficients(int index) {
-        return coefficients_.getDouble(index);
+      public double getBsmFinal(int index) {
+        return bsmFinal_.getDouble(index);
       }
       /**
-       * <code>repeated double coefficients = 4;</code>
+       * <code>repeated double bsm_final = 2;</code>
        * @param index The index to set the value at.
-       * @param value The coefficients to set.
+       * @param value The bsmFinal to set.
        * @return This builder for chaining.
        */
-      public Builder setCoefficients(
+      public Builder setBsmFinal(
           int index, double value) {
-        ensureCoefficientsIsMutable();
-        coefficients_.setDouble(index, value);
+        ensureBsmFinalIsMutable();
+        bsmFinal_.setDouble(index, value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated double coefficients = 4;</code>
-       * @param value The coefficients to add.
+       * <code>repeated double bsm_final = 2;</code>
+       * @param value The bsmFinal to add.
        * @return This builder for chaining.
        */
-      public Builder addCoefficients(double value) {
-        ensureCoefficientsIsMutable();
-        coefficients_.addDouble(value);
+      public Builder addBsmFinal(double value) {
+        ensureBsmFinalIsMutable();
+        bsmFinal_.addDouble(value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated double coefficients = 4;</code>
-       * @param values The coefficients to add.
+       * <code>repeated double bsm_final = 2;</code>
+       * @param values The bsmFinal to add.
        * @return This builder for chaining.
        */
-      public Builder addAllCoefficients(
+      public Builder addAllBsmFinal(
           java.lang.Iterable<? extends java.lang.Double> values) {
-        ensureCoefficientsIsMutable();
+        ensureBsmFinalIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, coefficients_);
+            values, bsmFinal_);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated double coefficients = 4;</code>
+       * <code>repeated double bsm_final = 2;</code>
        * @return This builder for chaining.
        */
-      public Builder clearCoefficients() {
-        coefficients_ = emptyDoubleList();
+      public Builder clearBsmFinal() {
+        bsmFinal_ = emptyDoubleList();
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
-      }
-
-      private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix covariance_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> covarianceBuilder_;
-      /**
-       * <code>.jd3.Matrix covariance = 5;</code>
-       * @return Whether the covariance field is set.
-       */
-      public boolean hasCovariance() {
-        return covarianceBuilder_ != null || covariance_ != null;
-      }
-      /**
-       * <code>.jd3.Matrix covariance = 5;</code>
-       * @return The covariance.
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getCovariance() {
-        if (covarianceBuilder_ == null) {
-          return covariance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : covariance_;
-        } else {
-          return covarianceBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.jd3.Matrix covariance = 5;</code>
-       */
-      public Builder setCovariance(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
-        if (covarianceBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          covariance_ = value;
-          onChanged();
-        } else {
-          covarianceBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix covariance = 5;</code>
-       */
-      public Builder setCovariance(
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder builderForValue) {
-        if (covarianceBuilder_ == null) {
-          covariance_ = builderForValue.build();
-          onChanged();
-        } else {
-          covarianceBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix covariance = 5;</code>
-       */
-      public Builder mergeCovariance(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
-        if (covarianceBuilder_ == null) {
-          if (covariance_ != null) {
-            covariance_ =
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.newBuilder(covariance_).mergeFrom(value).buildPartial();
-          } else {
-            covariance_ = value;
-          }
-          onChanged();
-        } else {
-          covarianceBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix covariance = 5;</code>
-       */
-      public Builder clearCovariance() {
-        if (covarianceBuilder_ == null) {
-          covariance_ = null;
-          onChanged();
-        } else {
-          covariance_ = null;
-          covarianceBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix covariance = 5;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder getCovarianceBuilder() {
-        
-        onChanged();
-        return getCovarianceFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.jd3.Matrix covariance = 5;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getCovarianceOrBuilder() {
-        if (covarianceBuilder_ != null) {
-          return covarianceBuilder_.getMessageOrBuilder();
-        } else {
-          return covariance_ == null ?
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : covariance_;
-        }
-      }
-      /**
-       * <code>.jd3.Matrix covariance = 5;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> 
-          getCovarianceFieldBuilder() {
-        if (covarianceBuilder_ == null) {
-          covarianceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder>(
-                  getCovariance(),
-                  getParentForChildren(),
-                  isClean());
-          covariance_ = null;
-        }
-        return covarianceBuilder_;
-      }
-
-      private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix regressors_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> regressorsBuilder_;
-      /**
-       * <code>.jd3.Matrix regressors = 6;</code>
-       * @return Whether the regressors field is set.
-       */
-      public boolean hasRegressors() {
-        return regressorsBuilder_ != null || regressors_ != null;
-      }
-      /**
-       * <code>.jd3.Matrix regressors = 6;</code>
-       * @return The regressors.
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getRegressors() {
-        if (regressorsBuilder_ == null) {
-          return regressors_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : regressors_;
-        } else {
-          return regressorsBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.jd3.Matrix regressors = 6;</code>
-       */
-      public Builder setRegressors(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
-        if (regressorsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          regressors_ = value;
-          onChanged();
-        } else {
-          regressorsBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix regressors = 6;</code>
-       */
-      public Builder setRegressors(
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder builderForValue) {
-        if (regressorsBuilder_ == null) {
-          regressors_ = builderForValue.build();
-          onChanged();
-        } else {
-          regressorsBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix regressors = 6;</code>
-       */
-      public Builder mergeRegressors(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
-        if (regressorsBuilder_ == null) {
-          if (regressors_ != null) {
-            regressors_ =
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.newBuilder(regressors_).mergeFrom(value).buildPartial();
-          } else {
-            regressors_ = value;
-          }
-          onChanged();
-        } else {
-          regressorsBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix regressors = 6;</code>
-       */
-      public Builder clearRegressors() {
-        if (regressorsBuilder_ == null) {
-          regressors_ = null;
-          onChanged();
-        } else {
-          regressors_ = null;
-          regressorsBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix regressors = 6;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder getRegressorsBuilder() {
-        
-        onChanged();
-        return getRegressorsFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.jd3.Matrix regressors = 6;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getRegressorsOrBuilder() {
-        if (regressorsBuilder_ != null) {
-          return regressorsBuilder_.getMessageOrBuilder();
-        } else {
-          return regressors_ == null ?
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : regressors_;
-        }
-      }
-      /**
-       * <code>.jd3.Matrix regressors = 6;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> 
-          getRegressorsFieldBuilder() {
-        if (regressorsBuilder_ == null) {
-          regressorsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder>(
-                  getRegressors(),
-                  getParentForChildren(),
-                  isClean());
-          regressors_ = null;
-        }
-        return regressorsBuilder_;
-      }
-
-      private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix components_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> componentsBuilder_;
-      /**
-       * <code>.jd3.Matrix components = 7;</code>
-       * @return Whether the components field is set.
-       */
-      public boolean hasComponents() {
-        return componentsBuilder_ != null || components_ != null;
-      }
-      /**
-       * <code>.jd3.Matrix components = 7;</code>
-       * @return The components.
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getComponents() {
-        if (componentsBuilder_ == null) {
-          return components_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : components_;
-        } else {
-          return componentsBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.jd3.Matrix components = 7;</code>
-       */
-      public Builder setComponents(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
-        if (componentsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          components_ = value;
-          onChanged();
-        } else {
-          componentsBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix components = 7;</code>
-       */
-      public Builder setComponents(
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder builderForValue) {
-        if (componentsBuilder_ == null) {
-          components_ = builderForValue.build();
-          onChanged();
-        } else {
-          componentsBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix components = 7;</code>
-       */
-      public Builder mergeComponents(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
-        if (componentsBuilder_ == null) {
-          if (components_ != null) {
-            components_ =
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.newBuilder(components_).mergeFrom(value).buildPartial();
-          } else {
-            components_ = value;
-          }
-          onChanged();
-        } else {
-          componentsBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix components = 7;</code>
-       */
-      public Builder clearComponents() {
-        if (componentsBuilder_ == null) {
-          components_ = null;
-          onChanged();
-        } else {
-          components_ = null;
-          componentsBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix components = 7;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder getComponentsBuilder() {
-        
-        onChanged();
-        return getComponentsFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.jd3.Matrix components = 7;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getComponentsOrBuilder() {
-        if (componentsBuilder_ != null) {
-          return componentsBuilder_.getMessageOrBuilder();
-        } else {
-          return components_ == null ?
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : components_;
-        }
-      }
-      /**
-       * <code>.jd3.Matrix components = 7;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> 
-          getComponentsFieldBuilder() {
-        if (componentsBuilder_ == null) {
-          componentsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder>(
-                  getComponents(),
-                  getParentForChildren(),
-                  isClean());
-          components_ = null;
-        }
-        return componentsBuilder_;
-      }
-
-      private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix tauInitial_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> tauInitialBuilder_;
-      /**
-       * <code>.jd3.Matrix tau_initial = 8;</code>
-       * @return Whether the tauInitial field is set.
-       */
-      public boolean hasTauInitial() {
-        return tauInitialBuilder_ != null || tauInitial_ != null;
-      }
-      /**
-       * <code>.jd3.Matrix tau_initial = 8;</code>
-       * @return The tauInitial.
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getTauInitial() {
-        if (tauInitialBuilder_ == null) {
-          return tauInitial_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : tauInitial_;
-        } else {
-          return tauInitialBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.jd3.Matrix tau_initial = 8;</code>
-       */
-      public Builder setTauInitial(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
-        if (tauInitialBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          tauInitial_ = value;
-          onChanged();
-        } else {
-          tauInitialBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix tau_initial = 8;</code>
-       */
-      public Builder setTauInitial(
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder builderForValue) {
-        if (tauInitialBuilder_ == null) {
-          tauInitial_ = builderForValue.build();
-          onChanged();
-        } else {
-          tauInitialBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix tau_initial = 8;</code>
-       */
-      public Builder mergeTauInitial(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
-        if (tauInitialBuilder_ == null) {
-          if (tauInitial_ != null) {
-            tauInitial_ =
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.newBuilder(tauInitial_).mergeFrom(value).buildPartial();
-          } else {
-            tauInitial_ = value;
-          }
-          onChanged();
-        } else {
-          tauInitialBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix tau_initial = 8;</code>
-       */
-      public Builder clearTauInitial() {
-        if (tauInitialBuilder_ == null) {
-          tauInitial_ = null;
-          onChanged();
-        } else {
-          tauInitial_ = null;
-          tauInitialBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix tau_initial = 8;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder getTauInitialBuilder() {
-        
-        onChanged();
-        return getTauInitialFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.jd3.Matrix tau_initial = 8;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getTauInitialOrBuilder() {
-        if (tauInitialBuilder_ != null) {
-          return tauInitialBuilder_.getMessageOrBuilder();
-        } else {
-          return tauInitial_ == null ?
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : tauInitial_;
-        }
-      }
-      /**
-       * <code>.jd3.Matrix tau_initial = 8;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> 
-          getTauInitialFieldBuilder() {
-        if (tauInitialBuilder_ == null) {
-          tauInitialBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder>(
-                  getTauInitial(),
-                  getParentForChildren(),
-                  isClean());
-          tauInitial_ = null;
-        }
-        return tauInitialBuilder_;
-      }
-
-      private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix tauFinal_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> tauFinalBuilder_;
-      /**
-       * <code>.jd3.Matrix tau_final = 9;</code>
-       * @return Whether the tauFinal field is set.
-       */
-      public boolean hasTauFinal() {
-        return tauFinalBuilder_ != null || tauFinal_ != null;
-      }
-      /**
-       * <code>.jd3.Matrix tau_final = 9;</code>
-       * @return The tauFinal.
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getTauFinal() {
-        if (tauFinalBuilder_ == null) {
-          return tauFinal_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : tauFinal_;
-        } else {
-          return tauFinalBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.jd3.Matrix tau_final = 9;</code>
-       */
-      public Builder setTauFinal(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
-        if (tauFinalBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          tauFinal_ = value;
-          onChanged();
-        } else {
-          tauFinalBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix tau_final = 9;</code>
-       */
-      public Builder setTauFinal(
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder builderForValue) {
-        if (tauFinalBuilder_ == null) {
-          tauFinal_ = builderForValue.build();
-          onChanged();
-        } else {
-          tauFinalBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix tau_final = 9;</code>
-       */
-      public Builder mergeTauFinal(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
-        if (tauFinalBuilder_ == null) {
-          if (tauFinal_ != null) {
-            tauFinal_ =
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.newBuilder(tauFinal_).mergeFrom(value).buildPartial();
-          } else {
-            tauFinal_ = value;
-          }
-          onChanged();
-        } else {
-          tauFinalBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix tau_final = 9;</code>
-       */
-      public Builder clearTauFinal() {
-        if (tauFinalBuilder_ == null) {
-          tauFinal_ = null;
-          onChanged();
-        } else {
-          tauFinal_ = null;
-          tauFinalBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix tau_final = 9;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder getTauFinalBuilder() {
-        
-        onChanged();
-        return getTauFinalFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.jd3.Matrix tau_final = 9;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getTauFinalOrBuilder() {
-        if (tauFinalBuilder_ != null) {
-          return tauFinalBuilder_.getMessageOrBuilder();
-        } else {
-          return tauFinal_ == null ?
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : tauFinal_;
-        }
-      }
-      /**
-       * <code>.jd3.Matrix tau_final = 9;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> 
-          getTauFinalFieldBuilder() {
-        if (tauFinalBuilder_ == null) {
-          tauFinalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder>(
-                  getTauFinal(),
-                  getParentForChildren(),
-                  isClean());
-          tauFinal_ = null;
-        }
-        return tauFinalBuilder_;
       }
 
       private demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics likelihoodInitial_;
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder> likelihoodInitialBuilder_;
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 10;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        * @return Whether the likelihoodInitial field is set.
        */
       public boolean hasLikelihoodInitial() {
         return likelihoodInitialBuilder_ != null || likelihoodInitial_ != null;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 10;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        * @return The likelihoodInitial.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodInitial() {
@@ -2668,7 +1728,7 @@ public final class StsOutliersProtos {
         }
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 10;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        */
       public Builder setLikelihoodInitial(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics value) {
         if (likelihoodInitialBuilder_ == null) {
@@ -2684,7 +1744,7 @@ public final class StsOutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 10;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        */
       public Builder setLikelihoodInitial(
           demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder builderForValue) {
@@ -2698,7 +1758,7 @@ public final class StsOutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 10;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        */
       public Builder mergeLikelihoodInitial(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics value) {
         if (likelihoodInitialBuilder_ == null) {
@@ -2716,7 +1776,7 @@ public final class StsOutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 10;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        */
       public Builder clearLikelihoodInitial() {
         if (likelihoodInitialBuilder_ == null) {
@@ -2730,7 +1790,7 @@ public final class StsOutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 10;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder getLikelihoodInitialBuilder() {
         
@@ -2738,7 +1798,7 @@ public final class StsOutliersProtos {
         return getLikelihoodInitialFieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 10;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodInitialOrBuilder() {
         if (likelihoodInitialBuilder_ != null) {
@@ -2749,7 +1809,7 @@ public final class StsOutliersProtos {
         }
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_initial = 10;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder> 
@@ -2769,14 +1829,14 @@ public final class StsOutliersProtos {
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder> likelihoodFinalBuilder_;
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 11;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        * @return Whether the likelihoodFinal field is set.
        */
       public boolean hasLikelihoodFinal() {
         return likelihoodFinalBuilder_ != null || likelihoodFinal_ != null;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 11;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        * @return The likelihoodFinal.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodFinal() {
@@ -2787,7 +1847,7 @@ public final class StsOutliersProtos {
         }
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 11;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        */
       public Builder setLikelihoodFinal(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics value) {
         if (likelihoodFinalBuilder_ == null) {
@@ -2803,7 +1863,7 @@ public final class StsOutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 11;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        */
       public Builder setLikelihoodFinal(
           demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder builderForValue) {
@@ -2817,7 +1877,7 @@ public final class StsOutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 11;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        */
       public Builder mergeLikelihoodFinal(demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics value) {
         if (likelihoodFinalBuilder_ == null) {
@@ -2835,7 +1895,7 @@ public final class StsOutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 11;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        */
       public Builder clearLikelihoodFinal() {
         if (likelihoodFinalBuilder_ == null) {
@@ -2849,7 +1909,7 @@ public final class StsOutliersProtos {
         return this;
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 11;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder getLikelihoodFinalBuilder() {
         
@@ -2857,7 +1917,7 @@ public final class StsOutliersProtos {
         return getLikelihoodFinalFieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 11;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodFinalOrBuilder() {
         if (likelihoodFinalBuilder_ != null) {
@@ -2868,7 +1928,7 @@ public final class StsOutliersProtos {
         }
       }
       /**
-       * <code>.jd3.LikelihoodStatistics likelihood_final = 11;</code>
+       * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder> 
@@ -2884,31 +1944,588 @@ public final class StsOutliersProtos {
         return likelihoodFinalBuilder_;
       }
 
-      private com.google.protobuf.Internal.DoubleList residuals_ = emptyDoubleList();
-      private void ensureResidualsIsMutable() {
+      private java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier> outliers_ =
+        java.util.Collections.emptyList();
+      private void ensureOutliersIsMutable() {
         if (!((bitField0_ & 0x00000004) != 0)) {
-          residuals_ = mutableCopy(residuals_);
+          outliers_ = new java.util.ArrayList<demetra.outliers.io.protobuf.OutliersProtos.Outlier>(outliers_);
           bitField0_ |= 0x00000004;
          }
       }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          demetra.outliers.io.protobuf.OutliersProtos.Outlier, demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder, demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder> outliersBuilder_;
+
       /**
-       * <code>repeated double residuals = 12;</code>
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier> getOutliersList() {
+        if (outliersBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(outliers_);
+        } else {
+          return outliersBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public int getOutliersCount() {
+        if (outliersBuilder_ == null) {
+          return outliers_.size();
+        } else {
+          return outliersBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public demetra.outliers.io.protobuf.OutliersProtos.Outlier getOutliers(int index) {
+        if (outliersBuilder_ == null) {
+          return outliers_.get(index);
+        } else {
+          return outliersBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public Builder setOutliers(
+          int index, demetra.outliers.io.protobuf.OutliersProtos.Outlier value) {
+        if (outliersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOutliersIsMutable();
+          outliers_.set(index, value);
+          onChanged();
+        } else {
+          outliersBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public Builder setOutliers(
+          int index, demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder builderForValue) {
+        if (outliersBuilder_ == null) {
+          ensureOutliersIsMutable();
+          outliers_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          outliersBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public Builder addOutliers(demetra.outliers.io.protobuf.OutliersProtos.Outlier value) {
+        if (outliersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOutliersIsMutable();
+          outliers_.add(value);
+          onChanged();
+        } else {
+          outliersBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public Builder addOutliers(
+          int index, demetra.outliers.io.protobuf.OutliersProtos.Outlier value) {
+        if (outliersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOutliersIsMutable();
+          outliers_.add(index, value);
+          onChanged();
+        } else {
+          outliersBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public Builder addOutliers(
+          demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder builderForValue) {
+        if (outliersBuilder_ == null) {
+          ensureOutliersIsMutable();
+          outliers_.add(builderForValue.build());
+          onChanged();
+        } else {
+          outliersBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public Builder addOutliers(
+          int index, demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder builderForValue) {
+        if (outliersBuilder_ == null) {
+          ensureOutliersIsMutable();
+          outliers_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          outliersBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public Builder addAllOutliers(
+          java.lang.Iterable<? extends demetra.outliers.io.protobuf.OutliersProtos.Outlier> values) {
+        if (outliersBuilder_ == null) {
+          ensureOutliersIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, outliers_);
+          onChanged();
+        } else {
+          outliersBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public Builder clearOutliers() {
+        if (outliersBuilder_ == null) {
+          outliers_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onChanged();
+        } else {
+          outliersBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public Builder removeOutliers(int index) {
+        if (outliersBuilder_ == null) {
+          ensureOutliersIsMutable();
+          outliers_.remove(index);
+          onChanged();
+        } else {
+          outliersBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder getOutliersBuilder(
+          int index) {
+        return getOutliersFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder getOutliersOrBuilder(
+          int index) {
+        if (outliersBuilder_ == null) {
+          return outliers_.get(index);  } else {
+          return outliersBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public java.util.List<? extends demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder> 
+           getOutliersOrBuilderList() {
+        if (outliersBuilder_ != null) {
+          return outliersBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(outliers_);
+        }
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder addOutliersBuilder() {
+        return getOutliersFieldBuilder().addBuilder(
+            demetra.outliers.io.protobuf.OutliersProtos.Outlier.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder addOutliersBuilder(
+          int index) {
+        return getOutliersFieldBuilder().addBuilder(
+            index, demetra.outliers.io.protobuf.OutliersProtos.Outlier.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .outliers.Outlier outliers = 5;</code>
+       */
+      public java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder> 
+           getOutliersBuilderList() {
+        return getOutliersFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          demetra.outliers.io.protobuf.OutliersProtos.Outlier, demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder, demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder> 
+          getOutliersFieldBuilder() {
+        if (outliersBuilder_ == null) {
+          outliersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              demetra.outliers.io.protobuf.OutliersProtos.Outlier, demetra.outliers.io.protobuf.OutliersProtos.Outlier.Builder, demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder>(
+                  outliers_,
+                  ((bitField0_ & 0x00000004) != 0),
+                  getParentForChildren(),
+                  isClean());
+          outliers_ = null;
+        }
+        return outliersBuilder_;
+      }
+
+      private com.google.protobuf.Internal.DoubleList coefficients_ = emptyDoubleList();
+      private void ensureCoefficientsIsMutable() {
+        if (!((bitField0_ & 0x00000008) != 0)) {
+          coefficients_ = mutableCopy(coefficients_);
+          bitField0_ |= 0x00000008;
+         }
+      }
+      /**
+       * <code>repeated double coefficients = 6;</code>
+       * @return A list containing the coefficients.
+       */
+      public java.util.List<java.lang.Double>
+          getCoefficientsList() {
+        return ((bitField0_ & 0x00000008) != 0) ?
+                 java.util.Collections.unmodifiableList(coefficients_) : coefficients_;
+      }
+      /**
+       * <code>repeated double coefficients = 6;</code>
+       * @return The count of coefficients.
+       */
+      public int getCoefficientsCount() {
+        return coefficients_.size();
+      }
+      /**
+       * <code>repeated double coefficients = 6;</code>
+       * @param index The index of the element to return.
+       * @return The coefficients at the given index.
+       */
+      public double getCoefficients(int index) {
+        return coefficients_.getDouble(index);
+      }
+      /**
+       * <code>repeated double coefficients = 6;</code>
+       * @param index The index to set the value at.
+       * @param value The coefficients to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCoefficients(
+          int index, double value) {
+        ensureCoefficientsIsMutable();
+        coefficients_.setDouble(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated double coefficients = 6;</code>
+       * @param value The coefficients to add.
+       * @return This builder for chaining.
+       */
+      public Builder addCoefficients(double value) {
+        ensureCoefficientsIsMutable();
+        coefficients_.addDouble(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated double coefficients = 6;</code>
+       * @param values The coefficients to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllCoefficients(
+          java.lang.Iterable<? extends java.lang.Double> values) {
+        ensureCoefficientsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, coefficients_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated double coefficients = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCoefficients() {
+        coefficients_ = emptyDoubleList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix covariance_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> covarianceBuilder_;
+      /**
+       * <code>.jd3.Matrix covariance = 7;</code>
+       * @return Whether the covariance field is set.
+       */
+      public boolean hasCovariance() {
+        return covarianceBuilder_ != null || covariance_ != null;
+      }
+      /**
+       * <code>.jd3.Matrix covariance = 7;</code>
+       * @return The covariance.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getCovariance() {
+        if (covarianceBuilder_ == null) {
+          return covariance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : covariance_;
+        } else {
+          return covarianceBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.Matrix covariance = 7;</code>
+       */
+      public Builder setCovariance(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
+        if (covarianceBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          covariance_ = value;
+          onChanged();
+        } else {
+          covarianceBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix covariance = 7;</code>
+       */
+      public Builder setCovariance(
+          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder builderForValue) {
+        if (covarianceBuilder_ == null) {
+          covariance_ = builderForValue.build();
+          onChanged();
+        } else {
+          covarianceBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix covariance = 7;</code>
+       */
+      public Builder mergeCovariance(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
+        if (covarianceBuilder_ == null) {
+          if (covariance_ != null) {
+            covariance_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.newBuilder(covariance_).mergeFrom(value).buildPartial();
+          } else {
+            covariance_ = value;
+          }
+          onChanged();
+        } else {
+          covarianceBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix covariance = 7;</code>
+       */
+      public Builder clearCovariance() {
+        if (covarianceBuilder_ == null) {
+          covariance_ = null;
+          onChanged();
+        } else {
+          covariance_ = null;
+          covarianceBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix covariance = 7;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder getCovarianceBuilder() {
+        
+        onChanged();
+        return getCovarianceFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Matrix covariance = 7;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getCovarianceOrBuilder() {
+        if (covarianceBuilder_ != null) {
+          return covarianceBuilder_.getMessageOrBuilder();
+        } else {
+          return covariance_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : covariance_;
+        }
+      }
+      /**
+       * <code>.jd3.Matrix covariance = 7;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> 
+          getCovarianceFieldBuilder() {
+        if (covarianceBuilder_ == null) {
+          covarianceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder>(
+                  getCovariance(),
+                  getParentForChildren(),
+                  isClean());
+          covariance_ = null;
+        }
+        return covarianceBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix regressors_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> regressorsBuilder_;
+      /**
+       * <code>.jd3.Matrix regressors = 8;</code>
+       * @return Whether the regressors field is set.
+       */
+      public boolean hasRegressors() {
+        return regressorsBuilder_ != null || regressors_ != null;
+      }
+      /**
+       * <code>.jd3.Matrix regressors = 8;</code>
+       * @return The regressors.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getRegressors() {
+        if (regressorsBuilder_ == null) {
+          return regressors_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : regressors_;
+        } else {
+          return regressorsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.Matrix regressors = 8;</code>
+       */
+      public Builder setRegressors(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
+        if (regressorsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          regressors_ = value;
+          onChanged();
+        } else {
+          regressorsBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix regressors = 8;</code>
+       */
+      public Builder setRegressors(
+          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder builderForValue) {
+        if (regressorsBuilder_ == null) {
+          regressors_ = builderForValue.build();
+          onChanged();
+        } else {
+          regressorsBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix regressors = 8;</code>
+       */
+      public Builder mergeRegressors(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
+        if (regressorsBuilder_ == null) {
+          if (regressors_ != null) {
+            regressors_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.newBuilder(regressors_).mergeFrom(value).buildPartial();
+          } else {
+            regressors_ = value;
+          }
+          onChanged();
+        } else {
+          regressorsBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix regressors = 8;</code>
+       */
+      public Builder clearRegressors() {
+        if (regressorsBuilder_ == null) {
+          regressors_ = null;
+          onChanged();
+        } else {
+          regressors_ = null;
+          regressorsBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix regressors = 8;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder getRegressorsBuilder() {
+        
+        onChanged();
+        return getRegressorsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Matrix regressors = 8;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getRegressorsOrBuilder() {
+        if (regressorsBuilder_ != null) {
+          return regressorsBuilder_.getMessageOrBuilder();
+        } else {
+          return regressors_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : regressors_;
+        }
+      }
+      /**
+       * <code>.jd3.Matrix regressors = 8;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> 
+          getRegressorsFieldBuilder() {
+        if (regressorsBuilder_ == null) {
+          regressorsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder>(
+                  getRegressors(),
+                  getParentForChildren(),
+                  isClean());
+          regressors_ = null;
+        }
+        return regressorsBuilder_;
+      }
+
+      private com.google.protobuf.Internal.DoubleList residuals_ = emptyDoubleList();
+      private void ensureResidualsIsMutable() {
+        if (!((bitField0_ & 0x00000010) != 0)) {
+          residuals_ = mutableCopy(residuals_);
+          bitField0_ |= 0x00000010;
+         }
+      }
+      /**
+       * <code>repeated double residuals = 9;</code>
        * @return A list containing the residuals.
        */
       public java.util.List<java.lang.Double>
           getResidualsList() {
-        return ((bitField0_ & 0x00000004) != 0) ?
+        return ((bitField0_ & 0x00000010) != 0) ?
                  java.util.Collections.unmodifiableList(residuals_) : residuals_;
       }
       /**
-       * <code>repeated double residuals = 12;</code>
+       * <code>repeated double residuals = 9;</code>
        * @return The count of residuals.
        */
       public int getResidualsCount() {
         return residuals_.size();
       }
       /**
-       * <code>repeated double residuals = 12;</code>
+       * <code>repeated double residuals = 9;</code>
        * @param index The index of the element to return.
        * @return The residuals at the given index.
        */
@@ -2916,7 +2533,7 @@ public final class StsOutliersProtos {
         return residuals_.getDouble(index);
       }
       /**
-       * <code>repeated double residuals = 12;</code>
+       * <code>repeated double residuals = 9;</code>
        * @param index The index to set the value at.
        * @param value The residuals to set.
        * @return This builder for chaining.
@@ -2929,7 +2546,7 @@ public final class StsOutliersProtos {
         return this;
       }
       /**
-       * <code>repeated double residuals = 12;</code>
+       * <code>repeated double residuals = 9;</code>
        * @param value The residuals to add.
        * @return This builder for chaining.
        */
@@ -2940,7 +2557,7 @@ public final class StsOutliersProtos {
         return this;
       }
       /**
-       * <code>repeated double residuals = 12;</code>
+       * <code>repeated double residuals = 9;</code>
        * @param values The residuals to add.
        * @return This builder for chaining.
        */
@@ -2953,14 +2570,371 @@ public final class StsOutliersProtos {
         return this;
       }
       /**
-       * <code>repeated double residuals = 12;</code>
+       * <code>repeated double residuals = 9;</code>
        * @return This builder for chaining.
        */
       public Builder clearResiduals() {
         residuals_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000010);
         onChanged();
         return this;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix components_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> componentsBuilder_;
+      /**
+       * <code>.jd3.Matrix components = 10;</code>
+       * @return Whether the components field is set.
+       */
+      public boolean hasComponents() {
+        return componentsBuilder_ != null || components_ != null;
+      }
+      /**
+       * <code>.jd3.Matrix components = 10;</code>
+       * @return The components.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getComponents() {
+        if (componentsBuilder_ == null) {
+          return components_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : components_;
+        } else {
+          return componentsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.Matrix components = 10;</code>
+       */
+      public Builder setComponents(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
+        if (componentsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          components_ = value;
+          onChanged();
+        } else {
+          componentsBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix components = 10;</code>
+       */
+      public Builder setComponents(
+          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder builderForValue) {
+        if (componentsBuilder_ == null) {
+          components_ = builderForValue.build();
+          onChanged();
+        } else {
+          componentsBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix components = 10;</code>
+       */
+      public Builder mergeComponents(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
+        if (componentsBuilder_ == null) {
+          if (components_ != null) {
+            components_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.newBuilder(components_).mergeFrom(value).buildPartial();
+          } else {
+            components_ = value;
+          }
+          onChanged();
+        } else {
+          componentsBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix components = 10;</code>
+       */
+      public Builder clearComponents() {
+        if (componentsBuilder_ == null) {
+          components_ = null;
+          onChanged();
+        } else {
+          components_ = null;
+          componentsBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix components = 10;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder getComponentsBuilder() {
+        
+        onChanged();
+        return getComponentsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Matrix components = 10;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getComponentsOrBuilder() {
+        if (componentsBuilder_ != null) {
+          return componentsBuilder_.getMessageOrBuilder();
+        } else {
+          return components_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : components_;
+        }
+      }
+      /**
+       * <code>.jd3.Matrix components = 10;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> 
+          getComponentsFieldBuilder() {
+        if (componentsBuilder_ == null) {
+          componentsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder>(
+                  getComponents(),
+                  getParentForChildren(),
+                  isClean());
+          components_ = null;
+        }
+        return componentsBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix tauInitial_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> tauInitialBuilder_;
+      /**
+       * <code>.jd3.Matrix tau_initial = 11;</code>
+       * @return Whether the tauInitial field is set.
+       */
+      public boolean hasTauInitial() {
+        return tauInitialBuilder_ != null || tauInitial_ != null;
+      }
+      /**
+       * <code>.jd3.Matrix tau_initial = 11;</code>
+       * @return The tauInitial.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getTauInitial() {
+        if (tauInitialBuilder_ == null) {
+          return tauInitial_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : tauInitial_;
+        } else {
+          return tauInitialBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.Matrix tau_initial = 11;</code>
+       */
+      public Builder setTauInitial(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
+        if (tauInitialBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          tauInitial_ = value;
+          onChanged();
+        } else {
+          tauInitialBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix tau_initial = 11;</code>
+       */
+      public Builder setTauInitial(
+          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder builderForValue) {
+        if (tauInitialBuilder_ == null) {
+          tauInitial_ = builderForValue.build();
+          onChanged();
+        } else {
+          tauInitialBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix tau_initial = 11;</code>
+       */
+      public Builder mergeTauInitial(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
+        if (tauInitialBuilder_ == null) {
+          if (tauInitial_ != null) {
+            tauInitial_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.newBuilder(tauInitial_).mergeFrom(value).buildPartial();
+          } else {
+            tauInitial_ = value;
+          }
+          onChanged();
+        } else {
+          tauInitialBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix tau_initial = 11;</code>
+       */
+      public Builder clearTauInitial() {
+        if (tauInitialBuilder_ == null) {
+          tauInitial_ = null;
+          onChanged();
+        } else {
+          tauInitial_ = null;
+          tauInitialBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix tau_initial = 11;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder getTauInitialBuilder() {
+        
+        onChanged();
+        return getTauInitialFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Matrix tau_initial = 11;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getTauInitialOrBuilder() {
+        if (tauInitialBuilder_ != null) {
+          return tauInitialBuilder_.getMessageOrBuilder();
+        } else {
+          return tauInitial_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : tauInitial_;
+        }
+      }
+      /**
+       * <code>.jd3.Matrix tau_initial = 11;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> 
+          getTauInitialFieldBuilder() {
+        if (tauInitialBuilder_ == null) {
+          tauInitialBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder>(
+                  getTauInitial(),
+                  getParentForChildren(),
+                  isClean());
+          tauInitial_ = null;
+        }
+        return tauInitialBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix tauFinal_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> tauFinalBuilder_;
+      /**
+       * <code>.jd3.Matrix tau_final = 12;</code>
+       * @return Whether the tauFinal field is set.
+       */
+      public boolean hasTauFinal() {
+        return tauFinalBuilder_ != null || tauFinal_ != null;
+      }
+      /**
+       * <code>.jd3.Matrix tau_final = 12;</code>
+       * @return The tauFinal.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getTauFinal() {
+        if (tauFinalBuilder_ == null) {
+          return tauFinal_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : tauFinal_;
+        } else {
+          return tauFinalBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.Matrix tau_final = 12;</code>
+       */
+      public Builder setTauFinal(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
+        if (tauFinalBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          tauFinal_ = value;
+          onChanged();
+        } else {
+          tauFinalBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix tau_final = 12;</code>
+       */
+      public Builder setTauFinal(
+          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder builderForValue) {
+        if (tauFinalBuilder_ == null) {
+          tauFinal_ = builderForValue.build();
+          onChanged();
+        } else {
+          tauFinalBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix tau_final = 12;</code>
+       */
+      public Builder mergeTauFinal(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
+        if (tauFinalBuilder_ == null) {
+          if (tauFinal_ != null) {
+            tauFinal_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.newBuilder(tauFinal_).mergeFrom(value).buildPartial();
+          } else {
+            tauFinal_ = value;
+          }
+          onChanged();
+        } else {
+          tauFinalBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix tau_final = 12;</code>
+       */
+      public Builder clearTauFinal() {
+        if (tauFinalBuilder_ == null) {
+          tauFinal_ = null;
+          onChanged();
+        } else {
+          tauFinal_ = null;
+          tauFinalBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Matrix tau_final = 12;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder getTauFinalBuilder() {
+        
+        onChanged();
+        return getTauFinalFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Matrix tau_final = 12;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getTauFinalOrBuilder() {
+        if (tauFinalBuilder_ != null) {
+          return tauFinalBuilder_.getMessageOrBuilder();
+        } else {
+          return tauFinal_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : tauFinal_;
+        }
+      }
+      /**
+       * <code>.jd3.Matrix tau_final = 12;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> 
+          getTauFinalFieldBuilder() {
+        if (tauFinalBuilder_ == null) {
+          tauFinalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder>(
+                  getTauFinal(),
+                  getParentForChildren(),
+                  isClean());
+          tauFinal_ = null;
+        }
+        return tauFinalBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -3030,21 +3004,19 @@ public final class StsOutliersProtos {
   static {
     java.lang.String[] descriptorData = {
       "\n\022outliers_sts.proto\022\010outliers\032\rtoolkit." +
-      "proto\032\016outliers.proto\032\tsts.proto\"\312\003\n\013Sts" +
-      "Solution\022.\n\013bsm_initial\030\001 \001(\0132\031.sts.Basi" +
-      "cStructuralModel\022,\n\tbsm_final\030\002 \001(\0132\031.st" +
-      "s.BasicStructuralModel\022#\n\010outliers\030\003 \003(\013" +
-      "2\021.outliers.Outlier\022\024\n\014coefficients\030\004 \003(" +
-      "\001\022\037\n\ncovariance\030\005 \001(\0132\013.jd3.Matrix\022\037\n\nre" +
-      "gressors\030\006 \001(\0132\013.jd3.Matrix\022\037\n\ncomponent" +
-      "s\030\007 \001(\0132\013.jd3.Matrix\022 \n\013tau_initial\030\010 \001(" +
-      "\0132\013.jd3.Matrix\022\036\n\ttau_final\030\t \001(\0132\013.jd3." +
-      "Matrix\0225\n\022likelihood_initial\030\n \001(\0132\031.jd3" +
-      ".LikelihoodStatistics\0223\n\020likelihood_fina" +
-      "l\030\013 \001(\0132\031.jd3.LikelihoodStatistics\022\021\n\tre" +
-      "siduals\030\014 \003(\001B5\n demetra.sts.outliers.io" +
-      ".protobufB\021StsOutliersProtosP\000P\001P\002b\006prot" +
-      "o3"
+      "proto\032\016outliers.proto\032\tsts.proto\"\224\003\n\013Sts" +
+      "Solution\022\023\n\013bsm_initial\030\001 \003(\001\022\021\n\tbsm_fin" +
+      "al\030\002 \003(\001\0225\n\022likelihood_initial\030\003 \001(\0132\031.j" +
+      "d3.LikelihoodStatistics\0223\n\020likelihood_fi" +
+      "nal\030\004 \001(\0132\031.jd3.LikelihoodStatistics\022#\n\010" +
+      "outliers\030\005 \003(\0132\021.outliers.Outlier\022\024\n\014coe" +
+      "fficients\030\006 \003(\001\022\037\n\ncovariance\030\007 \001(\0132\013.jd" +
+      "3.Matrix\022\037\n\nregressors\030\010 \001(\0132\013.jd3.Matri" +
+      "x\022\021\n\tresiduals\030\t \003(\001\022\037\n\ncomponents\030\n \001(\013" +
+      "2\013.jd3.Matrix\022 \n\013tau_initial\030\013 \001(\0132\013.jd3" +
+      ".Matrix\022\036\n\ttau_final\030\014 \001(\0132\013.jd3.MatrixB" +
+      "5\n demetra.sts.outliers.io.protobufB\021Sts" +
+      "OutliersProtosP\000P\001P\002b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3058,7 +3030,7 @@ public final class StsOutliersProtos {
     internal_static_outliers_StsSolution_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_outliers_StsSolution_descriptor,
-        new java.lang.String[] { "BsmInitial", "BsmFinal", "Outliers", "Coefficients", "Covariance", "Regressors", "Components", "TauInitial", "TauFinal", "LikelihoodInitial", "LikelihoodFinal", "Residuals", });
+        new java.lang.String[] { "BsmInitial", "BsmFinal", "LikelihoodInitial", "LikelihoodFinal", "Outliers", "Coefficients", "Covariance", "Regressors", "Residuals", "Components", "TauInitial", "TauFinal", });
     demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor();
     demetra.outliers.io.protobuf.OutliersProtos.getDescriptor();
     demetra.sts.io.protobuf.StsProtos.getDescriptor();

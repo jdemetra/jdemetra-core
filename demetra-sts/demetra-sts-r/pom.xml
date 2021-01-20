@@ -51,10 +51,6 @@
             <artifactId>demetra-data-tests</artifactId>
             <scope>test</scope>
         </dependency>
-       <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-sts-io</artifactId>
-        </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-toolkit-io</artifactId>

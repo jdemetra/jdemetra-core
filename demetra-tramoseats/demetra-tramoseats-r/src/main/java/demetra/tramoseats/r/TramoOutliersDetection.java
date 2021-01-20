@@ -66,12 +66,6 @@ public class TramoOutliersDetection {
             SarimaOrders orders = initialArima.orders();
             int nx = x == null ? 0 : x.getColumnsCount();
             OutliersProtos.RegArimaSolution.Builder builder = OutliersProtos.RegArimaSolution.newBuilder()
-                    .addArimaOrders(orders.getP())
-                    .addArimaOrders(orders.getD())
-                    .addArimaOrders(orders.getQ())
-                    .addArimaOrders(orders.getBp())
-                    .addArimaOrders(orders.getBd())
-                    .addArimaOrders(orders.getBq())
                     .addAllArimaInitial(Utility.asIterable(initialArima.parameters()))
                     .addAllArimaFinal(Utility.asIterable(finalArima.parameters()))
                     .addAllCoefficients(Utility.asIterable(coefficients))
@@ -198,9 +192,9 @@ public class TramoOutliersDetection {
         spec.setD(order[1]);
         spec.setQ(order[2]);
         if (seasonal != null) {
-            spec.setBp(order[0]);
-            spec.setBd(order[1]);
-            spec.setBq(order[2]);
+            spec.setBp(seasonal[0]);
+            spec.setBd(seasonal[1]);
+            spec.setBq(seasonal[2]);
         }
 
         SarimaModel arima = SarimaModel.builder(spec)
