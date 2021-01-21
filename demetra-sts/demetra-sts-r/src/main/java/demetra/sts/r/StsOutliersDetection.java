@@ -183,9 +183,13 @@ public class StsOutliersDetection {
         }
     }
 
-    public Results process(TsData y, int level, int slope, int noise, String seasmodel, MatrixType x,
+    public Results process(TsData ts, int level, int slope, int noise, String seasmodel, MatrixType x,
             boolean bao, boolean bls, boolean bso, double cv, double tcv, String forwardEstimation, String backwardEstimation) {
-        y = y.cleanExtremities();
+        TsData y = ts.cleanExtremities();
+        if (x != null && ts.length() != y.length()){
+            int start=ts.getStart().until(y.getStart());
+            x=x.extract(start, y.length(), 0, x.getColumnsCount());
+        }
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
         BsmSpec spec = new BsmSpec();
         spec.setLevelUse(of(level));

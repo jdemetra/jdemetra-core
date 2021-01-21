@@ -183,10 +183,13 @@ public class TramoOutliersDetection {
         }
     }
 
-    public Results process(TsData y, int[] order, int[] seasonal, boolean mean, MatrixType x,
+    public Results process(TsData ts, int[] order, int[] seasonal, boolean mean, MatrixType x,
             boolean bao, boolean bls, boolean btc, boolean bso, double cv, boolean ml) {
-        y = y.cleanExtremities();
-
+        TsData y = ts.cleanExtremities();
+        if (x != null && ts.length() != y.length()){
+            int start=ts.getStart().until(y.getStart());
+            x=x.extract(start, y.length(), 0, x.getColumnsCount());
+        }
         SarimaOrders spec = new SarimaOrders(y.getAnnualFrequency());
         spec.setP(order[0]);
         spec.setD(order[1]);

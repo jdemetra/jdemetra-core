@@ -5,7 +5,12 @@
  */
 package demetra.sa.io.protobuf;
 
+import demetra.modelling.ComponentInformation;
+import demetra.sa.ComponentType;
+import demetra.sa.SeriesDecomposition;
 import demetra.sa.benchmarking.SaBenchmarkingSpec;
+import demetra.timeseries.TsData;
+import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 
 /**
  *
@@ -82,6 +87,56 @@ public class SaProtosUtility {
         SaProtos.BenchmarkingSpec.Builder builder = SaProtos.BenchmarkingSpec.newBuilder();
         fill(spec, builder);
         return builder.build();
+    }
+
+    public SaProtos.SaDecomposition convert(SeriesDecomposition decomp) {
+        SaProtos.SaDecomposition.Builder builder = SaProtos.SaDecomposition.newBuilder();
+        // Series
+
+        return builder
+                .addComponents(convert(decomp, ComponentType.Series))
+                .addComponents(convert(decomp, ComponentType.SeasonallyAdjusted))
+                .addComponents(convert(decomp, ComponentType.Trend))
+                .addComponents(convert(decomp, ComponentType.Seasonal))
+                .addComponents(convert(decomp, ComponentType.Irregular))
+                .build();
+    }
+
+    public SaProtos.Component convert(SeriesDecomposition decomp, ComponentType type) {
+        TsData s = decomp.getSeries(type, ComponentInformation.Value);
+        TsData fs = decomp.getSeries(type, ComponentInformation.Forecast);
+        TsData bs = decomp.getSeries(type, ComponentInformation.Backcast);
+        TsData es = decomp.getSeries(type, ComponentInformation.Stdev);
+        TsData efs = decomp.getSeries(type, ComponentInformation.StdevForecast);
+        TsData ebs = decomp.getSeries(type, ComponentInformation.StdevBackcast);
+
+        TsData S = TsData.concatenate(bs, s, fs);
+        TsData ES = TsData.concatenate(ebs, es, efs);
+
+        return SaProtos.Component.newBuilder()
+                .setType(convert(type))
+                .setData(ToolkitProtosUtility.convert(S))
+                .setStde(ToolkitProtosUtility.convert(ES))
+                .setNbcasts(bs == null ? 0 : bs.length())
+                .setNfcasts(fs == null ? 0 : fs.length())
+                .build();
+    }
+
+    public SaProtos.ComponentType convert(ComponentType type) {
+        switch (type) {
+            case Series:
+                return SaProtos.ComponentType.SERIES;
+            case SeasonallyAdjusted:
+                return SaProtos.ComponentType.SEASONALLYADJUSTED;
+            case Trend:
+                return SaProtos.ComponentType.TREND;
+            case Seasonal:
+                return SaProtos.ComponentType.SEASONAL;
+            case Irregular:
+                return SaProtos.ComponentType.IRREGULAR;
+            default:
+                return SaProtos.ComponentType.UNDEFINED;
+        }
     }
 
 }
