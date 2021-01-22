@@ -38,6 +38,8 @@ import java.io.Reader;
  * @author Jean Palate
  */
 public class MatrixSerializer {
+    
+    public static final double ND = -99999;
 
     public static MatrixType read(File file, String separators) throws FileNotFoundException, IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -110,6 +112,11 @@ public class MatrixSerializer {
                 Number n = fmt.parse(items[i]);
                 data[i] = n.doubleValue();
             } catch (ParseException ex) {
+                data[i] = Double.NaN;
+            }
+        }
+        for (int i=0; i<data.length; ++i){
+            if (data[i] == ND){
                 data[i] = Double.NaN;
             }
         }

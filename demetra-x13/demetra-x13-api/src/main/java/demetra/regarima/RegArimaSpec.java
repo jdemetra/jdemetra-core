@@ -177,6 +177,7 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
                 return RG1;
             case "RG2c":
             case "rg2c":
+            case "RG2":
             case "rg2":
                 return RG2;
             case "RG3":
@@ -184,10 +185,12 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
                 return RG3;
             case "RG4c":
             case "rg4c":
+            case "RG4":
             case "rg4":
                 return RG4;
             case "RG5c":
             case "rg5c":
+            case "RG5":
             case "rg5":
                 return RG5;
             default:

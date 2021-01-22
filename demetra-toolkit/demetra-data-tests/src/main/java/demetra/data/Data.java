@@ -493,4 +493,18 @@ public class Data {
         }
     }
 
+    public static final TsData[] retail_us() {
+        try {
+            File file = copyToTempFile(Data.class.getResource("/retail.txt"));
+            MatrixType retail = MatrixSerializer.read(file);
+            TsData[] all = new TsData[retail.getColumnsCount()];
+            TsPeriod start = TsPeriod.monthly(1992, 1);
+            for (int i = 0; i < all.length; ++i) {
+                all[i] = TsData.of(start, Doubles.of(retail.column(i))).cleanExtremities();
+            }
+            return all;
+        } catch (IOException ex) {
+            return null;
+        }
+    }
 }
