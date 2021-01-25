@@ -23,6 +23,7 @@ import demetra.timeseries.regression.ModellingContext;
 import demetra.tramoseats.TramoSeatsSpec;
 import demetra.tramoseats.io.protobuf.SpecProto;
 import demetra.tramoseats.io.protobuf.TramoSeatsProtos;
+import demetra.tramoseats.io.protobuf.TramoSeatsResultsProto;
 import demetra.util.r.Dictionary;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -40,6 +41,10 @@ public class TramoSeats {
     public static class Results implements ProcResults{
         private TramoSeatsResults core;
         
+        public byte[] buffer() {
+            return TramoSeatsResultsProto.convert(core).toByteArray();
+        }
+
         public Tramo.Results preprocessing(){
             return new Tramo.Results(core.getPreprocessing());
         }

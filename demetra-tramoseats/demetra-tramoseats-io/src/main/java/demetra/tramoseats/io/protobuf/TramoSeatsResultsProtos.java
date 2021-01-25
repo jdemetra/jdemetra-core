@@ -2519,19 +2519,19 @@ public final class TramoSeatsResultsProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.regarima.RegArimaEstimation regarima = 1;</code>
-     * @return Whether the regarima field is set.
+     * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+     * @return Whether the preprocessing field is set.
      */
-    boolean hasRegarima();
+    boolean hasPreprocessing();
     /**
-     * <code>.regarima.RegArimaEstimation regarima = 1;</code>
-     * @return The regarima.
+     * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+     * @return The preprocessing.
      */
-    demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation getRegarima();
+    demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation getPreprocessing();
     /**
-     * <code>.regarima.RegArimaEstimation regarima = 1;</code>
+     * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
      */
-    demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimationOrBuilder getRegarimaOrBuilder();
+    demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimationOrBuilder getPreprocessingOrBuilder();
 
     /**
      * <code>.tramoseats.SeatsResults decomposition = 2;</code>
@@ -2610,13 +2610,13 @@ public final class TramoSeatsResultsProtos {
               break;
             case 10: {
               demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.Builder subBuilder = null;
-              if (regarima_ != null) {
-                subBuilder = regarima_.toBuilder();
+              if (preprocessing_ != null) {
+                subBuilder = preprocessing_.toBuilder();
               }
-              regarima_ = input.readMessage(demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.parser(), extensionRegistry);
+              preprocessing_ = input.readMessage(demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.parser(), extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(regarima_);
-                regarima_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(preprocessing_);
+                preprocessing_ = subBuilder.buildPartial();
               }
 
               break;
@@ -2679,30 +2679,30 @@ public final class TramoSeatsResultsProtos {
               demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults.class, demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults.Builder.class);
     }
 
-    public static final int REGARIMA_FIELD_NUMBER = 1;
-    private demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation regarima_;
+    public static final int PREPROCESSING_FIELD_NUMBER = 1;
+    private demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation preprocessing_;
     /**
-     * <code>.regarima.RegArimaEstimation regarima = 1;</code>
-     * @return Whether the regarima field is set.
+     * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+     * @return Whether the preprocessing field is set.
      */
     @java.lang.Override
-    public boolean hasRegarima() {
-      return regarima_ != null;
+    public boolean hasPreprocessing() {
+      return preprocessing_ != null;
     }
     /**
-     * <code>.regarima.RegArimaEstimation regarima = 1;</code>
-     * @return The regarima.
+     * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+     * @return The preprocessing.
      */
     @java.lang.Override
-    public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation getRegarima() {
-      return regarima_ == null ? demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.getDefaultInstance() : regarima_;
+    public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation getPreprocessing() {
+      return preprocessing_ == null ? demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.getDefaultInstance() : preprocessing_;
     }
     /**
-     * <code>.regarima.RegArimaEstimation regarima = 1;</code>
+     * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
      */
     @java.lang.Override
-    public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimationOrBuilder getRegarimaOrBuilder() {
-      return getRegarima();
+    public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimationOrBuilder getPreprocessingOrBuilder() {
+      return getPreprocessing();
     }
 
     public static final int DECOMPOSITION_FIELD_NUMBER = 2;
@@ -2771,8 +2771,8 @@ public final class TramoSeatsResultsProtos {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (regarima_ != null) {
-        output.writeMessage(1, getRegarima());
+      if (preprocessing_ != null) {
+        output.writeMessage(1, getPreprocessing());
       }
       if (decomposition_ != null) {
         output.writeMessage(2, getDecomposition());
@@ -2789,9 +2789,9 @@ public final class TramoSeatsResultsProtos {
       if (size != -1) return size;
 
       size = 0;
-      if (regarima_ != null) {
+      if (preprocessing_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getRegarima());
+          .computeMessageSize(1, getPreprocessing());
       }
       if (decomposition_ != null) {
         size += com.google.protobuf.CodedOutputStream
@@ -2816,10 +2816,10 @@ public final class TramoSeatsResultsProtos {
       }
       demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults other = (demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults) obj;
 
-      if (hasRegarima() != other.hasRegarima()) return false;
-      if (hasRegarima()) {
-        if (!getRegarima()
-            .equals(other.getRegarima())) return false;
+      if (hasPreprocessing() != other.hasPreprocessing()) return false;
+      if (hasPreprocessing()) {
+        if (!getPreprocessing()
+            .equals(other.getPreprocessing())) return false;
       }
       if (hasDecomposition() != other.hasDecomposition()) return false;
       if (hasDecomposition()) {
@@ -2842,9 +2842,9 @@ public final class TramoSeatsResultsProtos {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasRegarima()) {
-        hash = (37 * hash) + REGARIMA_FIELD_NUMBER;
-        hash = (53 * hash) + getRegarima().hashCode();
+      if (hasPreprocessing()) {
+        hash = (37 * hash) + PREPROCESSING_FIELD_NUMBER;
+        hash = (53 * hash) + getPreprocessing().hashCode();
       }
       if (hasDecomposition()) {
         hash = (37 * hash) + DECOMPOSITION_FIELD_NUMBER;
@@ -2987,11 +2987,11 @@ public final class TramoSeatsResultsProtos {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        if (regarimaBuilder_ == null) {
-          regarima_ = null;
+        if (preprocessingBuilder_ == null) {
+          preprocessing_ = null;
         } else {
-          regarima_ = null;
-          regarimaBuilder_ = null;
+          preprocessing_ = null;
+          preprocessingBuilder_ = null;
         }
         if (decompositionBuilder_ == null) {
           decomposition_ = null;
@@ -3031,10 +3031,10 @@ public final class TramoSeatsResultsProtos {
       @java.lang.Override
       public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults buildPartial() {
         demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults result = new demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults(this);
-        if (regarimaBuilder_ == null) {
-          result.regarima_ = regarima_;
+        if (preprocessingBuilder_ == null) {
+          result.preprocessing_ = preprocessing_;
         } else {
-          result.regarima_ = regarimaBuilder_.build();
+          result.preprocessing_ = preprocessingBuilder_.build();
         }
         if (decompositionBuilder_ == null) {
           result.decomposition_ = decomposition_;
@@ -3094,8 +3094,8 @@ public final class TramoSeatsResultsProtos {
 
       public Builder mergeFrom(demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults other) {
         if (other == demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults.getDefaultInstance()) return this;
-        if (other.hasRegarima()) {
-          mergeRegarima(other.getRegarima());
+        if (other.hasPreprocessing()) {
+          mergePreprocessing(other.getPreprocessing());
         }
         if (other.hasDecomposition()) {
           mergeDecomposition(other.getDecomposition());
@@ -3132,123 +3132,123 @@ public final class TramoSeatsResultsProtos {
         return this;
       }
 
-      private demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation regarima_;
+      private demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation preprocessing_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.Builder, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimationOrBuilder> regarimaBuilder_;
+          demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.Builder, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimationOrBuilder> preprocessingBuilder_;
       /**
-       * <code>.regarima.RegArimaEstimation regarima = 1;</code>
-       * @return Whether the regarima field is set.
+       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+       * @return Whether the preprocessing field is set.
        */
-      public boolean hasRegarima() {
-        return regarimaBuilder_ != null || regarima_ != null;
+      public boolean hasPreprocessing() {
+        return preprocessingBuilder_ != null || preprocessing_ != null;
       }
       /**
-       * <code>.regarima.RegArimaEstimation regarima = 1;</code>
-       * @return The regarima.
+       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+       * @return The preprocessing.
        */
-      public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation getRegarima() {
-        if (regarimaBuilder_ == null) {
-          return regarima_ == null ? demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.getDefaultInstance() : regarima_;
+      public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation getPreprocessing() {
+        if (preprocessingBuilder_ == null) {
+          return preprocessing_ == null ? demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.getDefaultInstance() : preprocessing_;
         } else {
-          return regarimaBuilder_.getMessage();
+          return preprocessingBuilder_.getMessage();
         }
       }
       /**
-       * <code>.regarima.RegArimaEstimation regarima = 1;</code>
+       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
        */
-      public Builder setRegarima(demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation value) {
-        if (regarimaBuilder_ == null) {
+      public Builder setPreprocessing(demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation value) {
+        if (preprocessingBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          regarima_ = value;
+          preprocessing_ = value;
           onChanged();
         } else {
-          regarimaBuilder_.setMessage(value);
+          preprocessingBuilder_.setMessage(value);
         }
 
         return this;
       }
       /**
-       * <code>.regarima.RegArimaEstimation regarima = 1;</code>
+       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
        */
-      public Builder setRegarima(
+      public Builder setPreprocessing(
           demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.Builder builderForValue) {
-        if (regarimaBuilder_ == null) {
-          regarima_ = builderForValue.build();
+        if (preprocessingBuilder_ == null) {
+          preprocessing_ = builderForValue.build();
           onChanged();
         } else {
-          regarimaBuilder_.setMessage(builderForValue.build());
+          preprocessingBuilder_.setMessage(builderForValue.build());
         }
 
         return this;
       }
       /**
-       * <code>.regarima.RegArimaEstimation regarima = 1;</code>
+       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
        */
-      public Builder mergeRegarima(demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation value) {
-        if (regarimaBuilder_ == null) {
-          if (regarima_ != null) {
-            regarima_ =
-              demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.newBuilder(regarima_).mergeFrom(value).buildPartial();
+      public Builder mergePreprocessing(demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation value) {
+        if (preprocessingBuilder_ == null) {
+          if (preprocessing_ != null) {
+            preprocessing_ =
+              demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.newBuilder(preprocessing_).mergeFrom(value).buildPartial();
           } else {
-            regarima_ = value;
+            preprocessing_ = value;
           }
           onChanged();
         } else {
-          regarimaBuilder_.mergeFrom(value);
+          preprocessingBuilder_.mergeFrom(value);
         }
 
         return this;
       }
       /**
-       * <code>.regarima.RegArimaEstimation regarima = 1;</code>
+       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
        */
-      public Builder clearRegarima() {
-        if (regarimaBuilder_ == null) {
-          regarima_ = null;
+      public Builder clearPreprocessing() {
+        if (preprocessingBuilder_ == null) {
+          preprocessing_ = null;
           onChanged();
         } else {
-          regarima_ = null;
-          regarimaBuilder_ = null;
+          preprocessing_ = null;
+          preprocessingBuilder_ = null;
         }
 
         return this;
       }
       /**
-       * <code>.regarima.RegArimaEstimation regarima = 1;</code>
+       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
        */
-      public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.Builder getRegarimaBuilder() {
+      public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.Builder getPreprocessingBuilder() {
         
         onChanged();
-        return getRegarimaFieldBuilder().getBuilder();
+        return getPreprocessingFieldBuilder().getBuilder();
       }
       /**
-       * <code>.regarima.RegArimaEstimation regarima = 1;</code>
+       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
        */
-      public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimationOrBuilder getRegarimaOrBuilder() {
-        if (regarimaBuilder_ != null) {
-          return regarimaBuilder_.getMessageOrBuilder();
+      public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimationOrBuilder getPreprocessingOrBuilder() {
+        if (preprocessingBuilder_ != null) {
+          return preprocessingBuilder_.getMessageOrBuilder();
         } else {
-          return regarima_ == null ?
-              demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.getDefaultInstance() : regarima_;
+          return preprocessing_ == null ?
+              demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.getDefaultInstance() : preprocessing_;
         }
       }
       /**
-       * <code>.regarima.RegArimaEstimation regarima = 1;</code>
+       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.Builder, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimationOrBuilder> 
-          getRegarimaFieldBuilder() {
-        if (regarimaBuilder_ == null) {
-          regarimaBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          getPreprocessingFieldBuilder() {
+        if (preprocessingBuilder_ == null) {
+          preprocessingBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.Builder, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimationOrBuilder>(
-                  getRegarima(),
+                  getPreprocessing(),
                   getParentForChildren(),
                   isClean());
-          regarima_ = null;
+          preprocessing_ = null;
         }
-        return regarimaBuilder_;
+        return preprocessingBuilder_;
       }
 
       private demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.SeatsResults decomposition_;
@@ -3566,28 +3566,30 @@ public final class TramoSeatsResultsProtos {
   static {
     java.lang.String[] descriptorData = {
       "\n\030tramoseats_results.proto\022\ntramoseats\032\r" +
-      "toolkit.proto\032\010sa.proto\032\026regarima_result" +
-      "s.proto\"]\n\026CanonicalDecomposition\022\036\n\005mod" +
-      "el\030\001 \001(\0132\017.jd3.ArimaModel\022#\n\ncomponents\030" +
-      "\002 \003(\0132\017.jd3.ArimaModel\"\210\002\n\014SeatsResults\022" +
-      "&\n\rinitial_model\030\001 \001(\0132\017.jd3.ArimaModel\022" +
-      "$\n\013final_model\030\002 \001(\0132\017.jd3.ArimaModel\022\014\n" +
-      "\004mean\030\003 \001(\010\022C\n\027canonical_decomposition\030\004" +
-      " \001(\0132\".tramoseats.CanonicalDecomposition" +
-      "\022.\n\021stochastic_series\030\005 \001(\0132\023.sa.SaDecom" +
-      "position\022\'\n\ncomponents\030\006 \001(\0132\023.sa.SaDeco" +
-      "mposition\"\230\001\n\021TramoSeatsResults\022.\n\010regar" +
-      "ima\030\001 \001(\0132\034.regarima.RegArimaEstimation\022" +
-      "/\n\rdecomposition\030\002 \001(\0132\030.tramoseats.Seat" +
-      "sResults\022\"\n\005final\030\003 \001(\0132\023.sa.SaDecomposi" +
-      "tionB9\n\036demetra.tramoseats.io.protobufB\027" +
-      "TramoSeatsResultsProtosP\000P\001P\002b\006proto3"
+      "toolkit.proto\032\010sa.proto\032\016regarima.proto\032" +
+      "\026regarima_results.proto\"]\n\026CanonicalDeco" +
+      "mposition\022\036\n\005model\030\001 \001(\0132\017.jd3.ArimaMode" +
+      "l\022#\n\ncomponents\030\002 \003(\0132\017.jd3.ArimaModel\"\210" +
+      "\002\n\014SeatsResults\022&\n\rinitial_model\030\001 \001(\0132\017" +
+      ".jd3.ArimaModel\022$\n\013final_model\030\002 \001(\0132\017.j" +
+      "d3.ArimaModel\022\014\n\004mean\030\003 \001(\010\022C\n\027canonical" +
+      "_decomposition\030\004 \001(\0132\".tramoseats.Canoni" +
+      "calDecomposition\022.\n\021stochastic_series\030\005 " +
+      "\001(\0132\023.sa.SaDecomposition\022\'\n\ncomponents\030\006" +
+      " \001(\0132\023.sa.SaDecomposition\"\235\001\n\021TramoSeats" +
+      "Results\0223\n\rpreprocessing\030\001 \001(\0132\034.regarim" +
+      "a.RegArimaEstimation\022/\n\rdecomposition\030\002 " +
+      "\001(\0132\030.tramoseats.SeatsResults\022\"\n\005final\030\003" +
+      " \001(\0132\023.sa.SaDecompositionB9\n\036demetra.tra" +
+      "moseats.io.protobufB\027TramoSeatsResultsPr" +
+      "otosP\000P\001P\002P\003b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor(),
           demetra.sa.io.protobuf.SaProtos.getDescriptor(),
+          demetra.regarima.io.protobuf.RegArimaProtos.getDescriptor(),
           demetra.regarima.io.protobuf.RegArimaResultsProtos.getDescriptor(),
         });
     internal_static_tramoseats_CanonicalDecomposition_descriptor =
@@ -3607,9 +3609,10 @@ public final class TramoSeatsResultsProtos {
     internal_static_tramoseats_TramoSeatsResults_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tramoseats_TramoSeatsResults_descriptor,
-        new java.lang.String[] { "Regarima", "Decomposition", "Final", });
+        new java.lang.String[] { "Preprocessing", "Decomposition", "Final", });
     demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor();
     demetra.sa.io.protobuf.SaProtos.getDescriptor();
+    demetra.regarima.io.protobuf.RegArimaProtos.getDescriptor();
     demetra.regarima.io.protobuf.RegArimaResultsProtos.getDescriptor();
   }
 

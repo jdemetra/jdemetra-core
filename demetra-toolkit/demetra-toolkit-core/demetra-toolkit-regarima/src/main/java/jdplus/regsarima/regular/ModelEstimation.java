@@ -299,9 +299,6 @@ public final class ModelEstimation {
         DataBlock all = DataBlock.make(domain.getLength());
         if (variables.length > 0) {
             DoubleSeqCursor cursor = concentratedLikelihood.coefficients().cursor();
-            if (model.isMean()) {
-                cursor.skip(1);
-            }
             for (int i = 0; i < variables.length; ++i) {
                 Variable cur = variables[i];
                 if (test.test(cur)) {
@@ -471,7 +468,7 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getDeterministicEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> true);
+        TsData s = deterministicEffect(domain, v -> ! (v.getCore() instanceof TrendConstant));
         return backTransform(s, true);
     }
 

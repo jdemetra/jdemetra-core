@@ -28,6 +28,7 @@ import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import jdplus.arima.IArimaModel;
 
 /**
  *
@@ -196,11 +197,14 @@ public class ToolkitProtosUtility {
     }
 
     public ToolkitProtos.TsData convert(TsData s) {
+        if (s == null || s.isEmpty())
+            return ToolkitProtos.TsData.getDefaultInstance();
+            
         TsPeriod start = s.getStart();
         return ToolkitProtos.TsData.newBuilder()
                 .setPeriod(s.getAnnualFrequency())
                 .setStartYear(start.year())
-                .setStartPeriod(start.annualPosition())
+                .setStartPeriod(start.annualPosition()+1)
                 .addAllValues(Utility.asIterable(s.getValues()))
                 .build();
     }
@@ -232,6 +236,17 @@ public class ToolkitProtosUtility {
                 .setSsq(ls.getSsqErr())
                 .build();
                 
+    }
+    
+    public ToolkitProtos.ArimaModel convert(IArimaModel arima, String name){
+        if (arima == null)
+            return ToolkitProtos.ArimaModel.getDefaultInstance();
+        return ToolkitProtos.ArimaModel.newBuilder()
+                .addAllAr(Utility.asIterable(arima.getStationaryAr().asPolynomial().coefficients()))
+                .addAllDelta(Utility.asIterable(arima.getNonStationaryAr().asPolynomial().coefficients()))
+                .addAllMa(Utility.asIterable(arima.getMa().asPolynomial().coefficients()))
+                .setInnovationVariance(arima.getInnovationVariance())
+                .setName(name).build();
     }
 
     private final Parameter[] EMPTY_P = new Parameter[0];
