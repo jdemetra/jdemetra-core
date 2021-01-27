@@ -16,6 +16,7 @@
  */
 package demetra.tramoseats.io.protobuf;
 
+import demetra.sa.ComponentType;
 import demetra.sa.io.protobuf.SaProtosUtility;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import jdplus.seats.SeatsResults;
@@ -33,7 +34,7 @@ public class SeatsResultsProto {
         TramoSeatsResultsProtos.CanonicalDecomposition.Builder builder = TramoSeatsResultsProtos.CanonicalDecomposition.newBuilder()
                 .setModel(ToolkitProtosUtility.convert(ucm.getModel(), "model"));
 
-        if (ucm.getComponentsCount() == 3) {
+        if (ucm.getComponentsCount() == 4) {
             return builder.addComponents(ToolkitProtosUtility.convert(ucm.getComponent(0), "trend"))
                     .addComponents(ToolkitProtosUtility.convert(ucm.getComplement(1), "seasonallyadjusted"))
                     .addComponents(ToolkitProtosUtility.convert(ucm.getComponent(1), "seasonal"))
@@ -52,12 +53,14 @@ public class SeatsResultsProto {
     public TramoSeatsResultsProtos.SeatsResults convert(SeatsResults seats) {
 
         return TramoSeatsResultsProtos.SeatsResults.newBuilder()
-                .setInitialModel(ToolkitProtosUtility.convert(seats.getOriginalModel(), "originalmodel"))
-                .setFinalModel(ToolkitProtosUtility.convert(seats.getFinalModel(), "seatsmodel"))
+                .setSeatsModel(ToolkitProtosUtility.convert(seats.getFinalModel(), "seatsmodel"))
                 .setMean(seats.isMeanCorrection())
                 .setCanonicalDecomposition(convert(seats.getUcarimaModel()))
-                .setStochasticSeries(SaProtosUtility.convert(seats.getInitialComponents()))
-                .setComponents(SaProtosUtility.convert(seats.getFinalComponents()))
+                .addStochasticSeries(SaProtosUtility.convert(seats.getInitialComponents(), ComponentType.Series))
+                .addStochasticSeries(SaProtosUtility.convert(seats.getInitialComponents(), ComponentType.SeasonallyAdjusted))
+                .addStochasticSeries(SaProtosUtility.convert(seats.getInitialComponents(), ComponentType.Trend))
+                .addStochasticSeries(SaProtosUtility.convert(seats.getInitialComponents(), ComponentType.Seasonal))
+                .addStochasticSeries(SaProtosUtility.convert(seats.getInitialComponents(), ComponentType.Irregular))
                 .build();
     }
 }

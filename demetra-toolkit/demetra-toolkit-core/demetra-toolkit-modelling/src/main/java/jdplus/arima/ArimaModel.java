@@ -368,6 +368,8 @@ public final class ArimaModel extends AbstractArimaModel {
                 }
             }
         }
+        if (fac == null)
+            throw new ArimaException(ArimaException.INVALID);
         return fac.factor;
     }
 

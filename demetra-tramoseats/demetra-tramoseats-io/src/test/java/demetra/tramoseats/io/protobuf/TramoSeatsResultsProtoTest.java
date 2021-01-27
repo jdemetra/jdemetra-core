@@ -23,8 +23,8 @@ import demetra.timeseries.TsPeriod;
 import demetra.tramoseats.TramoSeatsSpec;
 import jdplus.tramoseats.TramoSeatsKernel;
 import jdplus.tramoseats.TramoSeatsResults;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -47,8 +47,8 @@ public class TramoSeatsResultsProtoTest {
     @Test
     public void test0() {
         TsPeriod start=TsPeriod.monthly(1992,1);
-        TsData s=TsData.ofInternal(start, Data.RETAIL_MOTORDEALERS);
-        TramoSeatsKernel ts = TramoSeatsKernel.of(TramoSeatsSpec.RSAfull, null);
+        TsData s=TsData.ofInternal(start, Data.RETAIL_HARDWARESTORE);
+        TramoSeatsKernel ts = TramoSeatsKernel.of(TramoSeatsSpec.RSA4, null);
         ProcessingLog log=ProcessingLog.dummy();
         TramoSeatsResults rslt = ts.process(s, log);
         TramoSeatsResultsProtos.TramoSeatsResults pb = TramoSeatsResultsProto.convert(rslt);

@@ -28,7 +28,6 @@ import jdplus.math.polynomials.Polynomial;
 import jdplus.ucarima.UcarimaModel;
 import jdplus.ucarima.WienerKolmogorovEstimators;
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.DoublesMath;
 import jdplus.arima.ssf.ExactArimaForecasts;
@@ -127,9 +126,9 @@ public class BurmanEstimates {
         for (int i = 0; i < ucm.getComponentsCount(); ++i) {
             calc(i);
         }
-        if (bmean) {
-            completeCasts();
-        }
+//        if (bmean) {
+//            completeCasts();
+//        }
     }
 
     private final int nfcasts, nbcasts;
@@ -151,15 +150,44 @@ public class BurmanEstimates {
 
     private void calc(final int cmp) {
         int n = data.length();
-        if (cmp == mcmp && isTrendConstant()) {
-            estimates[cmp] = DoubleSeq.onMapping(n, i -> mean);
-            forecasts[cmp] = DoubleSeq.onMapping(nfcasts, i -> mean);
-            backcasts[cmp] = DoubleSeq.onMapping(nbcasts, i -> mean);
-            return;
-        } else if (g[cmp] == null) {
+
+        double fmu = 0, bmu = 0;
+        double mc = 0;
+        if (mcmp == cmp) {
+            // special cases: 
+            // 1. trend constant
+            // 2. no unit root in the AR polynomial of the trend. 
+            // correction when the meancorrectedcmp doesn't contain unit
+            BackFilter sur = ucm.getComponent(cmp).getNonStationaryAr();
+            // no unit root
+            if (sur.isIdentity()) {
+                // Solution: we remove the mean from the series and we add it to the trend
+                mc = data.average();
+                for (int i = 0; i < z.length; ++i) {
+                    z[i] -= mc;
+                }
+            } else if (mean != 0) {
+                bmu = mean;
+                fmu =  sur.get(0)*sur.get(sur.getDegree())< 0 ? -mean : mean;
+//                BackFilter sar = ucm.getComponent(cmp).getStationaryAr();
+//                BackFilter mar = ucm.getModel().getStationaryAr();
+//                BackFilter mur = ucm.getModel().getNonStationaryAr();
+//                Polynomial nur = mur.asPolynomial().divide(sur.asPolynomial());
+//                mu /= nur.evaluateAt(1);
+//                Polynomial nar = mar.asPolynomial().divide(sar.asPolynomial());
+//                mu /= mur.asPolynomial().evaluateAt(1);
+                if (isTrendConstant()) {
+                    double c = mean;
+                    estimates[cmp] = DoubleSeq.onMapping(n, i -> c);
+                    forecasts[cmp] = DoubleSeq.onMapping(nfcasts, i -> c);
+                    backcasts[cmp] = DoubleSeq.onMapping(nbcasts, i -> c);
+                    return;
+                }
+            }
+        }
+        if (g[cmp] == null) {
             return;
         }
-
         // qstar is the order of the ma polynomial
         // pstar is the order of the ar polynomial
         int qstar = ma.length - 1;
@@ -192,10 +220,8 @@ public class BurmanEstimates {
         for (int i = 0, j = nf + n + qstar - pstar; i < pstar; ++i, ++j) {
             ww[i] = w1[j];
         }
-        if (cmp == mcmp && mean != 0) {
-            for (int i = pstar; i < ww.length; ++i) {
-                ww[i] = mean / 2;
-            }
+        for (int i = pstar; i < ww.length; ++i) {
+            ww[i] = fmu / 2;
         }
         lu.solve(DataBlock.of(ww));
 
@@ -205,7 +231,7 @@ public class BurmanEstimates {
         for (int i = 0, j = start; i < rstar; ++i, ++j) {
             x1[j] = ww[i];
         }
-        // backward iteration: MA(F) w = x1
+        // backward iteration:  w = (m+MA(F))x1 <-> w(t)-m = MA(f)x1 
         end = nf - 2 * qstar;
         for (int i = start - 1; i >= end; --i) {
             double s = w1[i];
@@ -235,10 +261,8 @@ public class BurmanEstimates {
         for (int i = 0, j = nf + pstar - qstar; i < pstar; ++i) {
             ww[i] = w2[--j];
         }
-        if (cmp == mcmp && mean != 0) {
-            for (int i = pstar; i < ww.length; ++i) {
-                ww[i] = mean / 2;
-            }
+        for (int i = pstar; i < ww.length; ++i) {
+            ww[i] = bmu / 2;
         }
         lu.solve(DataBlock.of(ww));
         // ww contains estimates of the signal for t= -2q* to p*-q* (in reverse order)
@@ -269,11 +293,15 @@ public class BurmanEstimates {
             rslt[j] = x1[i] + x2[i];
         }
         estimates[cmp] = DoubleSeq.of(rslt, nbc, n);
-        if (!bmean || cmp != mcmp) {
-            double[] car = ucm.getComponent(cmp).getAr().asPolynomial().toArray();
+        double[] car = ucm.getComponent(cmp).getAr().asPolynomial().toArray();
+        if (mc != 0) {
+            for (int i = 0; i < rslt.length; ++i) {
+                rslt[i] += mc;
+            }
+        } else {
             // complete backcasts
             for (int j = nbc - 2 * qstar - 1; j >= 0; --j) {
-                double s = 0;
+                double s = fmu;
                 for (int k = 1; k < car.length; ++k) {
                     s -= car[k] * rslt[j + k];
                 }
@@ -281,18 +309,18 @@ public class BurmanEstimates {
             }
             // complete forecasts
             for (int j = nbc + n + 2 * qstar; j < rslt.length; ++j) {
-                double s = 0;
+                double s = bmu;
                 for (int k = 1; k < car.length; ++k) {
                     s -= car[k] * rslt[j - k];
                 }
                 rslt[j] = s;
             }
-            if (nfcasts > 0) {
-                forecasts[cmp] = DoubleSeq.of(rslt, n + nbc, nfcasts);
-            }
-            if (nbcasts > 0) {
-                backcasts[cmp] = DoubleSeq.of(rslt, nbc - nbcasts, nbcasts);
-            }
+        }
+        if (nfcasts > 0) {
+            forecasts[cmp] = DoubleSeq.of(rslt, n + nbc, nfcasts);
+        }
+        if (nbcasts > 0) {
+            backcasts[cmp] = DoubleSeq.of(rslt, nbc - nbcasts, nbcasts);
         }
     }
 

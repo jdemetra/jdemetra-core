@@ -213,8 +213,8 @@ public class UcarimaModel implements Cloneable {
     public IArimaModel getModel() {
         return model;
     }
-    
-    private ArimaModel of(ArimaModel m){
+
+    private ArimaModel of(ArimaModel m) {
         return new ArimaModel(m.getStationaryAr(), m.getNonStationaryAr(), m.getMa(), m.getInnovationVariance());
     }
 
@@ -286,8 +286,8 @@ public class UcarimaModel implements Cloneable {
      * negative (-1 by default).
      * @param adjustModel If the sum of the removed noises is negative and the
      * adjustModel parameter is true, the aggregated model is increased by the
-     * opposite of that "negative noise". Otherwise, an exception is thrown.
-     * @return The new decomposition.
+     * opposite of that "negative noise". Otherwise, a null is returned.
+     * @return The new decomposition (or null if the decomposition cannot be done).
      */
     public UcarimaModel setVarianceMax(int ncmp, boolean adjustModel) {
         double var = 0;
@@ -320,8 +320,12 @@ public class UcarimaModel implements Cloneable {
             }
         }
         IArimaModel nmodel = model;
-        if (var < 0 && adjustModel) {
-            nmodel = ArimaModel.add(-var, ArimaModel.of(model));
+        if (var < 0) {
+            if (adjustModel) {
+                nmodel = ArimaModel.add(-var, ArimaModel.of(model));
+            } else {
+                return null;
+            }
         } else {
             ncmps[ncmp] = ncmps[ncmp].plus(var);
         }

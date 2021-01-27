@@ -22,7 +22,7 @@ import nbbrd.design.Development;
 import demetra.likelihood.LikelihoodStatistics;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
-import jdplus.regsarima.GlsSarimaProcessor;
+import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.sarima.SarimaModel;
 
 
@@ -38,7 +38,7 @@ public class DefaultModelEstimator implements IModelEstimator {
     public DefaultModelEstimator(IModelValidator validator, IRegArimaProcessor<SarimaModel> processor){
         this.validator=validator;
         if (processor == null)
-            this.processor=GlsSarimaProcessor.builder().build();
+            this.processor=RegSarimaProcessor.PROCESSOR;
         else
             this.processor=processor;
     }

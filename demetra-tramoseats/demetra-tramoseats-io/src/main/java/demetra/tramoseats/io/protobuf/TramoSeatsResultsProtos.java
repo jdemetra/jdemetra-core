@@ -1015,85 +1015,64 @@ public final class TramoSeatsResultsProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.jd3.ArimaModel initial_model = 1;</code>
-     * @return Whether the initialModel field is set.
+     * <code>.jd3.ArimaModel seats_model = 1;</code>
+     * @return Whether the seatsModel field is set.
      */
-    boolean hasInitialModel();
+    boolean hasSeatsModel();
     /**
-     * <code>.jd3.ArimaModel initial_model = 1;</code>
-     * @return The initialModel.
+     * <code>.jd3.ArimaModel seats_model = 1;</code>
+     * @return The seatsModel.
      */
-    demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel getInitialModel();
+    demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel getSeatsModel();
     /**
-     * <code>.jd3.ArimaModel initial_model = 1;</code>
+     * <code>.jd3.ArimaModel seats_model = 1;</code>
      */
-    demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder getInitialModelOrBuilder();
+    demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder getSeatsModelOrBuilder();
 
     /**
-     * <code>.jd3.ArimaModel final_model = 2;</code>
-     * @return Whether the finalModel field is set.
-     */
-    boolean hasFinalModel();
-    /**
-     * <code>.jd3.ArimaModel final_model = 2;</code>
-     * @return The finalModel.
-     */
-    demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel getFinalModel();
-    /**
-     * <code>.jd3.ArimaModel final_model = 2;</code>
-     */
-    demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder getFinalModelOrBuilder();
-
-    /**
-     * <code>bool mean = 3;</code>
+     * <code>bool mean = 2;</code>
      * @return The mean.
      */
     boolean getMean();
 
     /**
-     * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 4;</code>
+     * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 3;</code>
      * @return Whether the canonicalDecomposition field is set.
      */
     boolean hasCanonicalDecomposition();
     /**
-     * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 4;</code>
+     * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 3;</code>
      * @return The canonicalDecomposition.
      */
     demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecomposition getCanonicalDecomposition();
     /**
-     * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 4;</code>
+     * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 3;</code>
      */
     demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecompositionOrBuilder getCanonicalDecompositionOrBuilder();
 
     /**
-     * <code>.sa.SaDecomposition stochastic_series = 5;</code>
-     * @return Whether the stochasticSeries field is set.
+     * <code>repeated .sa.Component stochastic_series = 5;</code>
      */
-    boolean hasStochasticSeries();
+    java.util.List<demetra.sa.io.protobuf.SaProtos.Component> 
+        getStochasticSeriesList();
     /**
-     * <code>.sa.SaDecomposition stochastic_series = 5;</code>
-     * @return The stochasticSeries.
+     * <code>repeated .sa.Component stochastic_series = 5;</code>
      */
-    demetra.sa.io.protobuf.SaProtos.SaDecomposition getStochasticSeries();
+    demetra.sa.io.protobuf.SaProtos.Component getStochasticSeries(int index);
     /**
-     * <code>.sa.SaDecomposition stochastic_series = 5;</code>
+     * <code>repeated .sa.Component stochastic_series = 5;</code>
      */
-    demetra.sa.io.protobuf.SaProtos.SaDecompositionOrBuilder getStochasticSeriesOrBuilder();
-
+    int getStochasticSeriesCount();
     /**
-     * <code>.sa.SaDecomposition components = 6;</code>
-     * @return Whether the components field is set.
+     * <code>repeated .sa.Component stochastic_series = 5;</code>
      */
-    boolean hasComponents();
+    java.util.List<? extends demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> 
+        getStochasticSeriesOrBuilderList();
     /**
-     * <code>.sa.SaDecomposition components = 6;</code>
-     * @return The components.
+     * <code>repeated .sa.Component stochastic_series = 5;</code>
      */
-    demetra.sa.io.protobuf.SaProtos.SaDecomposition getComponents();
-    /**
-     * <code>.sa.SaDecomposition components = 6;</code>
-     */
-    demetra.sa.io.protobuf.SaProtos.SaDecompositionOrBuilder getComponentsOrBuilder();
+    demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getStochasticSeriesOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code tramoseats.SeatsResults}
@@ -1108,6 +1087,7 @@ public final class TramoSeatsResultsProtos {
       super(builder);
     }
     private SeatsResults() {
+      stochasticSeries_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -1130,6 +1110,7 @@ public final class TramoSeatsResultsProtos {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -1142,36 +1123,23 @@ public final class TramoSeatsResultsProtos {
               break;
             case 10: {
               demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.Builder subBuilder = null;
-              if (initialModel_ != null) {
-                subBuilder = initialModel_.toBuilder();
+              if (seatsModel_ != null) {
+                subBuilder = seatsModel_.toBuilder();
               }
-              initialModel_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.parser(), extensionRegistry);
+              seatsModel_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.parser(), extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(initialModel_);
-                initialModel_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(seatsModel_);
+                seatsModel_ = subBuilder.buildPartial();
               }
 
               break;
             }
-            case 18: {
-              demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.Builder subBuilder = null;
-              if (finalModel_ != null) {
-                subBuilder = finalModel_.toBuilder();
-              }
-              finalModel_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(finalModel_);
-                finalModel_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 24: {
+            case 16: {
 
               mean_ = input.readBool();
               break;
             }
-            case 34: {
+            case 26: {
               demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecomposition.Builder subBuilder = null;
               if (canonicalDecomposition_ != null) {
                 subBuilder = canonicalDecomposition_.toBuilder();
@@ -1185,29 +1153,12 @@ public final class TramoSeatsResultsProtos {
               break;
             }
             case 42: {
-              demetra.sa.io.protobuf.SaProtos.SaDecomposition.Builder subBuilder = null;
-              if (stochasticSeries_ != null) {
-                subBuilder = stochasticSeries_.toBuilder();
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                stochasticSeries_ = new java.util.ArrayList<demetra.sa.io.protobuf.SaProtos.Component>();
+                mutable_bitField0_ |= 0x00000001;
               }
-              stochasticSeries_ = input.readMessage(demetra.sa.io.protobuf.SaProtos.SaDecomposition.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(stochasticSeries_);
-                stochasticSeries_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 50: {
-              demetra.sa.io.protobuf.SaProtos.SaDecomposition.Builder subBuilder = null;
-              if (components_ != null) {
-                subBuilder = components_.toBuilder();
-              }
-              components_ = input.readMessage(demetra.sa.io.protobuf.SaProtos.SaDecomposition.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(components_);
-                components_ = subBuilder.buildPartial();
-              }
-
+              stochasticSeries_.add(
+                  input.readMessage(demetra.sa.io.protobuf.SaProtos.Component.parser(), extensionRegistry));
               break;
             }
             default: {
@@ -1225,6 +1176,9 @@ public final class TramoSeatsResultsProtos {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          stochasticSeries_ = java.util.Collections.unmodifiableList(stochasticSeries_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -1242,62 +1196,36 @@ public final class TramoSeatsResultsProtos {
               demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.SeatsResults.class, demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.SeatsResults.Builder.class);
     }
 
-    public static final int INITIAL_MODEL_FIELD_NUMBER = 1;
-    private demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel initialModel_;
+    public static final int SEATS_MODEL_FIELD_NUMBER = 1;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel seatsModel_;
     /**
-     * <code>.jd3.ArimaModel initial_model = 1;</code>
-     * @return Whether the initialModel field is set.
+     * <code>.jd3.ArimaModel seats_model = 1;</code>
+     * @return Whether the seatsModel field is set.
      */
     @java.lang.Override
-    public boolean hasInitialModel() {
-      return initialModel_ != null;
+    public boolean hasSeatsModel() {
+      return seatsModel_ != null;
     }
     /**
-     * <code>.jd3.ArimaModel initial_model = 1;</code>
-     * @return The initialModel.
+     * <code>.jd3.ArimaModel seats_model = 1;</code>
+     * @return The seatsModel.
      */
     @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel getInitialModel() {
-      return initialModel_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.getDefaultInstance() : initialModel_;
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel getSeatsModel() {
+      return seatsModel_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.getDefaultInstance() : seatsModel_;
     }
     /**
-     * <code>.jd3.ArimaModel initial_model = 1;</code>
+     * <code>.jd3.ArimaModel seats_model = 1;</code>
      */
     @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder getInitialModelOrBuilder() {
-      return getInitialModel();
-    }
-
-    public static final int FINAL_MODEL_FIELD_NUMBER = 2;
-    private demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel finalModel_;
-    /**
-     * <code>.jd3.ArimaModel final_model = 2;</code>
-     * @return Whether the finalModel field is set.
-     */
-    @java.lang.Override
-    public boolean hasFinalModel() {
-      return finalModel_ != null;
-    }
-    /**
-     * <code>.jd3.ArimaModel final_model = 2;</code>
-     * @return The finalModel.
-     */
-    @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel getFinalModel() {
-      return finalModel_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.getDefaultInstance() : finalModel_;
-    }
-    /**
-     * <code>.jd3.ArimaModel final_model = 2;</code>
-     */
-    @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder getFinalModelOrBuilder() {
-      return getFinalModel();
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder getSeatsModelOrBuilder() {
+      return getSeatsModel();
     }
 
-    public static final int MEAN_FIELD_NUMBER = 3;
+    public static final int MEAN_FIELD_NUMBER = 2;
     private boolean mean_;
     /**
-     * <code>bool mean = 3;</code>
+     * <code>bool mean = 2;</code>
      * @return The mean.
      */
     @java.lang.Override
@@ -1305,10 +1233,10 @@ public final class TramoSeatsResultsProtos {
       return mean_;
     }
 
-    public static final int CANONICAL_DECOMPOSITION_FIELD_NUMBER = 4;
+    public static final int CANONICAL_DECOMPOSITION_FIELD_NUMBER = 3;
     private demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecomposition canonicalDecomposition_;
     /**
-     * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 4;</code>
+     * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 3;</code>
      * @return Whether the canonicalDecomposition field is set.
      */
     @java.lang.Override
@@ -1316,7 +1244,7 @@ public final class TramoSeatsResultsProtos {
       return canonicalDecomposition_ != null;
     }
     /**
-     * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 4;</code>
+     * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 3;</code>
      * @return The canonicalDecomposition.
      */
     @java.lang.Override
@@ -1324,7 +1252,7 @@ public final class TramoSeatsResultsProtos {
       return canonicalDecomposition_ == null ? demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecomposition.getDefaultInstance() : canonicalDecomposition_;
     }
     /**
-     * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 4;</code>
+     * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 3;</code>
      */
     @java.lang.Override
     public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecompositionOrBuilder getCanonicalDecompositionOrBuilder() {
@@ -1332,55 +1260,43 @@ public final class TramoSeatsResultsProtos {
     }
 
     public static final int STOCHASTIC_SERIES_FIELD_NUMBER = 5;
-    private demetra.sa.io.protobuf.SaProtos.SaDecomposition stochasticSeries_;
+    private java.util.List<demetra.sa.io.protobuf.SaProtos.Component> stochasticSeries_;
     /**
-     * <code>.sa.SaDecomposition stochastic_series = 5;</code>
-     * @return Whether the stochasticSeries field is set.
+     * <code>repeated .sa.Component stochastic_series = 5;</code>
      */
     @java.lang.Override
-    public boolean hasStochasticSeries() {
-      return stochasticSeries_ != null;
+    public java.util.List<demetra.sa.io.protobuf.SaProtos.Component> getStochasticSeriesList() {
+      return stochasticSeries_;
     }
     /**
-     * <code>.sa.SaDecomposition stochastic_series = 5;</code>
-     * @return The stochasticSeries.
+     * <code>repeated .sa.Component stochastic_series = 5;</code>
      */
     @java.lang.Override
-    public demetra.sa.io.protobuf.SaProtos.SaDecomposition getStochasticSeries() {
-      return stochasticSeries_ == null ? demetra.sa.io.protobuf.SaProtos.SaDecomposition.getDefaultInstance() : stochasticSeries_;
+    public java.util.List<? extends demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> 
+        getStochasticSeriesOrBuilderList() {
+      return stochasticSeries_;
     }
     /**
-     * <code>.sa.SaDecomposition stochastic_series = 5;</code>
+     * <code>repeated .sa.Component stochastic_series = 5;</code>
      */
     @java.lang.Override
-    public demetra.sa.io.protobuf.SaProtos.SaDecompositionOrBuilder getStochasticSeriesOrBuilder() {
-      return getStochasticSeries();
-    }
-
-    public static final int COMPONENTS_FIELD_NUMBER = 6;
-    private demetra.sa.io.protobuf.SaProtos.SaDecomposition components_;
-    /**
-     * <code>.sa.SaDecomposition components = 6;</code>
-     * @return Whether the components field is set.
-     */
-    @java.lang.Override
-    public boolean hasComponents() {
-      return components_ != null;
+    public int getStochasticSeriesCount() {
+      return stochasticSeries_.size();
     }
     /**
-     * <code>.sa.SaDecomposition components = 6;</code>
-     * @return The components.
+     * <code>repeated .sa.Component stochastic_series = 5;</code>
      */
     @java.lang.Override
-    public demetra.sa.io.protobuf.SaProtos.SaDecomposition getComponents() {
-      return components_ == null ? demetra.sa.io.protobuf.SaProtos.SaDecomposition.getDefaultInstance() : components_;
+    public demetra.sa.io.protobuf.SaProtos.Component getStochasticSeries(int index) {
+      return stochasticSeries_.get(index);
     }
     /**
-     * <code>.sa.SaDecomposition components = 6;</code>
+     * <code>repeated .sa.Component stochastic_series = 5;</code>
      */
     @java.lang.Override
-    public demetra.sa.io.protobuf.SaProtos.SaDecompositionOrBuilder getComponentsOrBuilder() {
-      return getComponents();
+    public demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getStochasticSeriesOrBuilder(
+        int index) {
+      return stochasticSeries_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1397,23 +1313,17 @@ public final class TramoSeatsResultsProtos {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (initialModel_ != null) {
-        output.writeMessage(1, getInitialModel());
-      }
-      if (finalModel_ != null) {
-        output.writeMessage(2, getFinalModel());
+      if (seatsModel_ != null) {
+        output.writeMessage(1, getSeatsModel());
       }
       if (mean_ != false) {
-        output.writeBool(3, mean_);
+        output.writeBool(2, mean_);
       }
       if (canonicalDecomposition_ != null) {
-        output.writeMessage(4, getCanonicalDecomposition());
+        output.writeMessage(3, getCanonicalDecomposition());
       }
-      if (stochasticSeries_ != null) {
-        output.writeMessage(5, getStochasticSeries());
-      }
-      if (components_ != null) {
-        output.writeMessage(6, getComponents());
+      for (int i = 0; i < stochasticSeries_.size(); i++) {
+        output.writeMessage(5, stochasticSeries_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -1424,29 +1334,21 @@ public final class TramoSeatsResultsProtos {
       if (size != -1) return size;
 
       size = 0;
-      if (initialModel_ != null) {
+      if (seatsModel_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getInitialModel());
-      }
-      if (finalModel_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getFinalModel());
+          .computeMessageSize(1, getSeatsModel());
       }
       if (mean_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, mean_);
+          .computeBoolSize(2, mean_);
       }
       if (canonicalDecomposition_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getCanonicalDecomposition());
+          .computeMessageSize(3, getCanonicalDecomposition());
       }
-      if (stochasticSeries_ != null) {
+      for (int i = 0; i < stochasticSeries_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getStochasticSeries());
-      }
-      if (components_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, getComponents());
+          .computeMessageSize(5, stochasticSeries_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1463,15 +1365,10 @@ public final class TramoSeatsResultsProtos {
       }
       demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.SeatsResults other = (demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.SeatsResults) obj;
 
-      if (hasInitialModel() != other.hasInitialModel()) return false;
-      if (hasInitialModel()) {
-        if (!getInitialModel()
-            .equals(other.getInitialModel())) return false;
-      }
-      if (hasFinalModel() != other.hasFinalModel()) return false;
-      if (hasFinalModel()) {
-        if (!getFinalModel()
-            .equals(other.getFinalModel())) return false;
+      if (hasSeatsModel() != other.hasSeatsModel()) return false;
+      if (hasSeatsModel()) {
+        if (!getSeatsModel()
+            .equals(other.getSeatsModel())) return false;
       }
       if (getMean()
           != other.getMean()) return false;
@@ -1480,16 +1377,8 @@ public final class TramoSeatsResultsProtos {
         if (!getCanonicalDecomposition()
             .equals(other.getCanonicalDecomposition())) return false;
       }
-      if (hasStochasticSeries() != other.hasStochasticSeries()) return false;
-      if (hasStochasticSeries()) {
-        if (!getStochasticSeries()
-            .equals(other.getStochasticSeries())) return false;
-      }
-      if (hasComponents() != other.hasComponents()) return false;
-      if (hasComponents()) {
-        if (!getComponents()
-            .equals(other.getComponents())) return false;
-      }
+      if (!getStochasticSeriesList()
+          .equals(other.getStochasticSeriesList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1501,13 +1390,9 @@ public final class TramoSeatsResultsProtos {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasInitialModel()) {
-        hash = (37 * hash) + INITIAL_MODEL_FIELD_NUMBER;
-        hash = (53 * hash) + getInitialModel().hashCode();
-      }
-      if (hasFinalModel()) {
-        hash = (37 * hash) + FINAL_MODEL_FIELD_NUMBER;
-        hash = (53 * hash) + getFinalModel().hashCode();
+      if (hasSeatsModel()) {
+        hash = (37 * hash) + SEATS_MODEL_FIELD_NUMBER;
+        hash = (53 * hash) + getSeatsModel().hashCode();
       }
       hash = (37 * hash) + MEAN_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
@@ -1516,13 +1401,9 @@ public final class TramoSeatsResultsProtos {
         hash = (37 * hash) + CANONICAL_DECOMPOSITION_FIELD_NUMBER;
         hash = (53 * hash) + getCanonicalDecomposition().hashCode();
       }
-      if (hasStochasticSeries()) {
+      if (getStochasticSeriesCount() > 0) {
         hash = (37 * hash) + STOCHASTIC_SERIES_FIELD_NUMBER;
-        hash = (53 * hash) + getStochasticSeries().hashCode();
-      }
-      if (hasComponents()) {
-        hash = (37 * hash) + COMPONENTS_FIELD_NUMBER;
-        hash = (53 * hash) + getComponents().hashCode();
+        hash = (53 * hash) + getStochasticSeriesList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -1652,22 +1533,17 @@ public final class TramoSeatsResultsProtos {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getStochasticSeriesFieldBuilder();
         }
       }
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        if (initialModelBuilder_ == null) {
-          initialModel_ = null;
+        if (seatsModelBuilder_ == null) {
+          seatsModel_ = null;
         } else {
-          initialModel_ = null;
-          initialModelBuilder_ = null;
-        }
-        if (finalModelBuilder_ == null) {
-          finalModel_ = null;
-        } else {
-          finalModel_ = null;
-          finalModelBuilder_ = null;
+          seatsModel_ = null;
+          seatsModelBuilder_ = null;
         }
         mean_ = false;
 
@@ -1678,16 +1554,10 @@ public final class TramoSeatsResultsProtos {
           canonicalDecompositionBuilder_ = null;
         }
         if (stochasticSeriesBuilder_ == null) {
-          stochasticSeries_ = null;
+          stochasticSeries_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
         } else {
-          stochasticSeries_ = null;
-          stochasticSeriesBuilder_ = null;
-        }
-        if (componentsBuilder_ == null) {
-          components_ = null;
-        } else {
-          components_ = null;
-          componentsBuilder_ = null;
+          stochasticSeriesBuilder_.clear();
         }
         return this;
       }
@@ -1715,15 +1585,11 @@ public final class TramoSeatsResultsProtos {
       @java.lang.Override
       public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.SeatsResults buildPartial() {
         demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.SeatsResults result = new demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.SeatsResults(this);
-        if (initialModelBuilder_ == null) {
-          result.initialModel_ = initialModel_;
+        int from_bitField0_ = bitField0_;
+        if (seatsModelBuilder_ == null) {
+          result.seatsModel_ = seatsModel_;
         } else {
-          result.initialModel_ = initialModelBuilder_.build();
-        }
-        if (finalModelBuilder_ == null) {
-          result.finalModel_ = finalModel_;
-        } else {
-          result.finalModel_ = finalModelBuilder_.build();
+          result.seatsModel_ = seatsModelBuilder_.build();
         }
         result.mean_ = mean_;
         if (canonicalDecompositionBuilder_ == null) {
@@ -1732,14 +1598,13 @@ public final class TramoSeatsResultsProtos {
           result.canonicalDecomposition_ = canonicalDecompositionBuilder_.build();
         }
         if (stochasticSeriesBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            stochasticSeries_ = java.util.Collections.unmodifiableList(stochasticSeries_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
           result.stochasticSeries_ = stochasticSeries_;
         } else {
           result.stochasticSeries_ = stochasticSeriesBuilder_.build();
-        }
-        if (componentsBuilder_ == null) {
-          result.components_ = components_;
-        } else {
-          result.components_ = componentsBuilder_.build();
         }
         onBuilt();
         return result;
@@ -1789,11 +1654,8 @@ public final class TramoSeatsResultsProtos {
 
       public Builder mergeFrom(demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.SeatsResults other) {
         if (other == demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.SeatsResults.getDefaultInstance()) return this;
-        if (other.hasInitialModel()) {
-          mergeInitialModel(other.getInitialModel());
-        }
-        if (other.hasFinalModel()) {
-          mergeFinalModel(other.getFinalModel());
+        if (other.hasSeatsModel()) {
+          mergeSeatsModel(other.getSeatsModel());
         }
         if (other.getMean() != false) {
           setMean(other.getMean());
@@ -1801,11 +1663,31 @@ public final class TramoSeatsResultsProtos {
         if (other.hasCanonicalDecomposition()) {
           mergeCanonicalDecomposition(other.getCanonicalDecomposition());
         }
-        if (other.hasStochasticSeries()) {
-          mergeStochasticSeries(other.getStochasticSeries());
-        }
-        if (other.hasComponents()) {
-          mergeComponents(other.getComponents());
+        if (stochasticSeriesBuilder_ == null) {
+          if (!other.stochasticSeries_.isEmpty()) {
+            if (stochasticSeries_.isEmpty()) {
+              stochasticSeries_ = other.stochasticSeries_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureStochasticSeriesIsMutable();
+              stochasticSeries_.addAll(other.stochasticSeries_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.stochasticSeries_.isEmpty()) {
+            if (stochasticSeriesBuilder_.isEmpty()) {
+              stochasticSeriesBuilder_.dispose();
+              stochasticSeriesBuilder_ = null;
+              stochasticSeries_ = other.stochasticSeries_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              stochasticSeriesBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getStochasticSeriesFieldBuilder() : null;
+            } else {
+              stochasticSeriesBuilder_.addAllMessages(other.stochasticSeries_);
+            }
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1835,248 +1717,130 @@ public final class TramoSeatsResultsProtos {
         }
         return this;
       }
+      private int bitField0_;
 
-      private demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel initialModel_;
+      private demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel seatsModel_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel, demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder> initialModelBuilder_;
+          demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel, demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder> seatsModelBuilder_;
       /**
-       * <code>.jd3.ArimaModel initial_model = 1;</code>
-       * @return Whether the initialModel field is set.
+       * <code>.jd3.ArimaModel seats_model = 1;</code>
+       * @return Whether the seatsModel field is set.
        */
-      public boolean hasInitialModel() {
-        return initialModelBuilder_ != null || initialModel_ != null;
+      public boolean hasSeatsModel() {
+        return seatsModelBuilder_ != null || seatsModel_ != null;
       }
       /**
-       * <code>.jd3.ArimaModel initial_model = 1;</code>
-       * @return The initialModel.
+       * <code>.jd3.ArimaModel seats_model = 1;</code>
+       * @return The seatsModel.
        */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel getInitialModel() {
-        if (initialModelBuilder_ == null) {
-          return initialModel_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.getDefaultInstance() : initialModel_;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel getSeatsModel() {
+        if (seatsModelBuilder_ == null) {
+          return seatsModel_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.getDefaultInstance() : seatsModel_;
         } else {
-          return initialModelBuilder_.getMessage();
+          return seatsModelBuilder_.getMessage();
         }
       }
       /**
-       * <code>.jd3.ArimaModel initial_model = 1;</code>
+       * <code>.jd3.ArimaModel seats_model = 1;</code>
        */
-      public Builder setInitialModel(demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel value) {
-        if (initialModelBuilder_ == null) {
+      public Builder setSeatsModel(demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel value) {
+        if (seatsModelBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          initialModel_ = value;
+          seatsModel_ = value;
           onChanged();
         } else {
-          initialModelBuilder_.setMessage(value);
+          seatsModelBuilder_.setMessage(value);
         }
 
         return this;
       }
       /**
-       * <code>.jd3.ArimaModel initial_model = 1;</code>
+       * <code>.jd3.ArimaModel seats_model = 1;</code>
        */
-      public Builder setInitialModel(
+      public Builder setSeatsModel(
           demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.Builder builderForValue) {
-        if (initialModelBuilder_ == null) {
-          initialModel_ = builderForValue.build();
+        if (seatsModelBuilder_ == null) {
+          seatsModel_ = builderForValue.build();
           onChanged();
         } else {
-          initialModelBuilder_.setMessage(builderForValue.build());
+          seatsModelBuilder_.setMessage(builderForValue.build());
         }
 
         return this;
       }
       /**
-       * <code>.jd3.ArimaModel initial_model = 1;</code>
+       * <code>.jd3.ArimaModel seats_model = 1;</code>
        */
-      public Builder mergeInitialModel(demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel value) {
-        if (initialModelBuilder_ == null) {
-          if (initialModel_ != null) {
-            initialModel_ =
-              demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.newBuilder(initialModel_).mergeFrom(value).buildPartial();
+      public Builder mergeSeatsModel(demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel value) {
+        if (seatsModelBuilder_ == null) {
+          if (seatsModel_ != null) {
+            seatsModel_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.newBuilder(seatsModel_).mergeFrom(value).buildPartial();
           } else {
-            initialModel_ = value;
+            seatsModel_ = value;
           }
           onChanged();
         } else {
-          initialModelBuilder_.mergeFrom(value);
+          seatsModelBuilder_.mergeFrom(value);
         }
 
         return this;
       }
       /**
-       * <code>.jd3.ArimaModel initial_model = 1;</code>
+       * <code>.jd3.ArimaModel seats_model = 1;</code>
        */
-      public Builder clearInitialModel() {
-        if (initialModelBuilder_ == null) {
-          initialModel_ = null;
+      public Builder clearSeatsModel() {
+        if (seatsModelBuilder_ == null) {
+          seatsModel_ = null;
           onChanged();
         } else {
-          initialModel_ = null;
-          initialModelBuilder_ = null;
+          seatsModel_ = null;
+          seatsModelBuilder_ = null;
         }
 
         return this;
       }
       /**
-       * <code>.jd3.ArimaModel initial_model = 1;</code>
+       * <code>.jd3.ArimaModel seats_model = 1;</code>
        */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.Builder getInitialModelBuilder() {
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.Builder getSeatsModelBuilder() {
         
         onChanged();
-        return getInitialModelFieldBuilder().getBuilder();
+        return getSeatsModelFieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.ArimaModel initial_model = 1;</code>
+       * <code>.jd3.ArimaModel seats_model = 1;</code>
        */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder getInitialModelOrBuilder() {
-        if (initialModelBuilder_ != null) {
-          return initialModelBuilder_.getMessageOrBuilder();
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder getSeatsModelOrBuilder() {
+        if (seatsModelBuilder_ != null) {
+          return seatsModelBuilder_.getMessageOrBuilder();
         } else {
-          return initialModel_ == null ?
-              demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.getDefaultInstance() : initialModel_;
+          return seatsModel_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.getDefaultInstance() : seatsModel_;
         }
       }
       /**
-       * <code>.jd3.ArimaModel initial_model = 1;</code>
+       * <code>.jd3.ArimaModel seats_model = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel, demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder> 
-          getInitialModelFieldBuilder() {
-        if (initialModelBuilder_ == null) {
-          initialModelBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          getSeatsModelFieldBuilder() {
+        if (seatsModelBuilder_ == null) {
+          seatsModelBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel, demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder>(
-                  getInitialModel(),
+                  getSeatsModel(),
                   getParentForChildren(),
                   isClean());
-          initialModel_ = null;
+          seatsModel_ = null;
         }
-        return initialModelBuilder_;
-      }
-
-      private demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel finalModel_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel, demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder> finalModelBuilder_;
-      /**
-       * <code>.jd3.ArimaModel final_model = 2;</code>
-       * @return Whether the finalModel field is set.
-       */
-      public boolean hasFinalModel() {
-        return finalModelBuilder_ != null || finalModel_ != null;
-      }
-      /**
-       * <code>.jd3.ArimaModel final_model = 2;</code>
-       * @return The finalModel.
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel getFinalModel() {
-        if (finalModelBuilder_ == null) {
-          return finalModel_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.getDefaultInstance() : finalModel_;
-        } else {
-          return finalModelBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.jd3.ArimaModel final_model = 2;</code>
-       */
-      public Builder setFinalModel(demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel value) {
-        if (finalModelBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          finalModel_ = value;
-          onChanged();
-        } else {
-          finalModelBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.ArimaModel final_model = 2;</code>
-       */
-      public Builder setFinalModel(
-          demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.Builder builderForValue) {
-        if (finalModelBuilder_ == null) {
-          finalModel_ = builderForValue.build();
-          onChanged();
-        } else {
-          finalModelBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.ArimaModel final_model = 2;</code>
-       */
-      public Builder mergeFinalModel(demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel value) {
-        if (finalModelBuilder_ == null) {
-          if (finalModel_ != null) {
-            finalModel_ =
-              demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.newBuilder(finalModel_).mergeFrom(value).buildPartial();
-          } else {
-            finalModel_ = value;
-          }
-          onChanged();
-        } else {
-          finalModelBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.ArimaModel final_model = 2;</code>
-       */
-      public Builder clearFinalModel() {
-        if (finalModelBuilder_ == null) {
-          finalModel_ = null;
-          onChanged();
-        } else {
-          finalModel_ = null;
-          finalModelBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.ArimaModel final_model = 2;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.Builder getFinalModelBuilder() {
-        
-        onChanged();
-        return getFinalModelFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.jd3.ArimaModel final_model = 2;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder getFinalModelOrBuilder() {
-        if (finalModelBuilder_ != null) {
-          return finalModelBuilder_.getMessageOrBuilder();
-        } else {
-          return finalModel_ == null ?
-              demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.getDefaultInstance() : finalModel_;
-        }
-      }
-      /**
-       * <code>.jd3.ArimaModel final_model = 2;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel, demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder> 
-          getFinalModelFieldBuilder() {
-        if (finalModelBuilder_ == null) {
-          finalModelBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel, demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder>(
-                  getFinalModel(),
-                  getParentForChildren(),
-                  isClean());
-          finalModel_ = null;
-        }
-        return finalModelBuilder_;
+        return seatsModelBuilder_;
       }
 
       private boolean mean_ ;
       /**
-       * <code>bool mean = 3;</code>
+       * <code>bool mean = 2;</code>
        * @return The mean.
        */
       @java.lang.Override
@@ -2084,7 +1848,7 @@ public final class TramoSeatsResultsProtos {
         return mean_;
       }
       /**
-       * <code>bool mean = 3;</code>
+       * <code>bool mean = 2;</code>
        * @param value The mean to set.
        * @return This builder for chaining.
        */
@@ -2095,7 +1859,7 @@ public final class TramoSeatsResultsProtos {
         return this;
       }
       /**
-       * <code>bool mean = 3;</code>
+       * <code>bool mean = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearMean() {
@@ -2109,14 +1873,14 @@ public final class TramoSeatsResultsProtos {
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecomposition, demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecomposition.Builder, demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecompositionOrBuilder> canonicalDecompositionBuilder_;
       /**
-       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 4;</code>
+       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 3;</code>
        * @return Whether the canonicalDecomposition field is set.
        */
       public boolean hasCanonicalDecomposition() {
         return canonicalDecompositionBuilder_ != null || canonicalDecomposition_ != null;
       }
       /**
-       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 4;</code>
+       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 3;</code>
        * @return The canonicalDecomposition.
        */
       public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecomposition getCanonicalDecomposition() {
@@ -2127,7 +1891,7 @@ public final class TramoSeatsResultsProtos {
         }
       }
       /**
-       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 4;</code>
+       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 3;</code>
        */
       public Builder setCanonicalDecomposition(demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecomposition value) {
         if (canonicalDecompositionBuilder_ == null) {
@@ -2143,7 +1907,7 @@ public final class TramoSeatsResultsProtos {
         return this;
       }
       /**
-       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 4;</code>
+       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 3;</code>
        */
       public Builder setCanonicalDecomposition(
           demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecomposition.Builder builderForValue) {
@@ -2157,7 +1921,7 @@ public final class TramoSeatsResultsProtos {
         return this;
       }
       /**
-       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 4;</code>
+       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 3;</code>
        */
       public Builder mergeCanonicalDecomposition(demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecomposition value) {
         if (canonicalDecompositionBuilder_ == null) {
@@ -2175,7 +1939,7 @@ public final class TramoSeatsResultsProtos {
         return this;
       }
       /**
-       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 4;</code>
+       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 3;</code>
        */
       public Builder clearCanonicalDecomposition() {
         if (canonicalDecompositionBuilder_ == null) {
@@ -2189,7 +1953,7 @@ public final class TramoSeatsResultsProtos {
         return this;
       }
       /**
-       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 4;</code>
+       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 3;</code>
        */
       public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecomposition.Builder getCanonicalDecompositionBuilder() {
         
@@ -2197,7 +1961,7 @@ public final class TramoSeatsResultsProtos {
         return getCanonicalDecompositionFieldBuilder().getBuilder();
       }
       /**
-       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 4;</code>
+       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 3;</code>
        */
       public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecompositionOrBuilder getCanonicalDecompositionOrBuilder() {
         if (canonicalDecompositionBuilder_ != null) {
@@ -2208,7 +1972,7 @@ public final class TramoSeatsResultsProtos {
         }
       }
       /**
-       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 4;</code>
+       * <code>.tramoseats.CanonicalDecomposition canonical_decomposition = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecomposition, demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecomposition.Builder, demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.CanonicalDecompositionOrBuilder> 
@@ -2224,242 +1988,244 @@ public final class TramoSeatsResultsProtos {
         return canonicalDecompositionBuilder_;
       }
 
-      private demetra.sa.io.protobuf.SaProtos.SaDecomposition stochasticSeries_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sa.io.protobuf.SaProtos.SaDecomposition, demetra.sa.io.protobuf.SaProtos.SaDecomposition.Builder, demetra.sa.io.protobuf.SaProtos.SaDecompositionOrBuilder> stochasticSeriesBuilder_;
-      /**
-       * <code>.sa.SaDecomposition stochastic_series = 5;</code>
-       * @return Whether the stochasticSeries field is set.
-       */
-      public boolean hasStochasticSeries() {
-        return stochasticSeriesBuilder_ != null || stochasticSeries_ != null;
+      private java.util.List<demetra.sa.io.protobuf.SaProtos.Component> stochasticSeries_ =
+        java.util.Collections.emptyList();
+      private void ensureStochasticSeriesIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          stochasticSeries_ = new java.util.ArrayList<demetra.sa.io.protobuf.SaProtos.Component>(stochasticSeries_);
+          bitField0_ |= 0x00000001;
+         }
       }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> stochasticSeriesBuilder_;
+
       /**
-       * <code>.sa.SaDecomposition stochastic_series = 5;</code>
-       * @return The stochasticSeries.
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
        */
-      public demetra.sa.io.protobuf.SaProtos.SaDecomposition getStochasticSeries() {
+      public java.util.List<demetra.sa.io.protobuf.SaProtos.Component> getStochasticSeriesList() {
         if (stochasticSeriesBuilder_ == null) {
-          return stochasticSeries_ == null ? demetra.sa.io.protobuf.SaProtos.SaDecomposition.getDefaultInstance() : stochasticSeries_;
+          return java.util.Collections.unmodifiableList(stochasticSeries_);
         } else {
-          return stochasticSeriesBuilder_.getMessage();
+          return stochasticSeriesBuilder_.getMessageList();
         }
       }
       /**
-       * <code>.sa.SaDecomposition stochastic_series = 5;</code>
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
        */
-      public Builder setStochasticSeries(demetra.sa.io.protobuf.SaProtos.SaDecomposition value) {
+      public int getStochasticSeriesCount() {
+        if (stochasticSeriesBuilder_ == null) {
+          return stochasticSeries_.size();
+        } else {
+          return stochasticSeriesBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
+       */
+      public demetra.sa.io.protobuf.SaProtos.Component getStochasticSeries(int index) {
+        if (stochasticSeriesBuilder_ == null) {
+          return stochasticSeries_.get(index);
+        } else {
+          return stochasticSeriesBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
+       */
+      public Builder setStochasticSeries(
+          int index, demetra.sa.io.protobuf.SaProtos.Component value) {
         if (stochasticSeriesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          stochasticSeries_ = value;
+          ensureStochasticSeriesIsMutable();
+          stochasticSeries_.set(index, value);
           onChanged();
         } else {
-          stochasticSeriesBuilder_.setMessage(value);
+          stochasticSeriesBuilder_.setMessage(index, value);
         }
-
         return this;
       }
       /**
-       * <code>.sa.SaDecomposition stochastic_series = 5;</code>
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
        */
       public Builder setStochasticSeries(
-          demetra.sa.io.protobuf.SaProtos.SaDecomposition.Builder builderForValue) {
+          int index, demetra.sa.io.protobuf.SaProtos.Component.Builder builderForValue) {
         if (stochasticSeriesBuilder_ == null) {
-          stochasticSeries_ = builderForValue.build();
+          ensureStochasticSeriesIsMutable();
+          stochasticSeries_.set(index, builderForValue.build());
           onChanged();
         } else {
-          stochasticSeriesBuilder_.setMessage(builderForValue.build());
+          stochasticSeriesBuilder_.setMessage(index, builderForValue.build());
         }
-
         return this;
       }
       /**
-       * <code>.sa.SaDecomposition stochastic_series = 5;</code>
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
        */
-      public Builder mergeStochasticSeries(demetra.sa.io.protobuf.SaProtos.SaDecomposition value) {
+      public Builder addStochasticSeries(demetra.sa.io.protobuf.SaProtos.Component value) {
         if (stochasticSeriesBuilder_ == null) {
-          if (stochasticSeries_ != null) {
-            stochasticSeries_ =
-              demetra.sa.io.protobuf.SaProtos.SaDecomposition.newBuilder(stochasticSeries_).mergeFrom(value).buildPartial();
-          } else {
-            stochasticSeries_ = value;
+          if (value == null) {
+            throw new NullPointerException();
           }
+          ensureStochasticSeriesIsMutable();
+          stochasticSeries_.add(value);
           onChanged();
         } else {
-          stochasticSeriesBuilder_.mergeFrom(value);
+          stochasticSeriesBuilder_.addMessage(value);
         }
-
         return this;
       }
       /**
-       * <code>.sa.SaDecomposition stochastic_series = 5;</code>
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
+       */
+      public Builder addStochasticSeries(
+          int index, demetra.sa.io.protobuf.SaProtos.Component value) {
+        if (stochasticSeriesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureStochasticSeriesIsMutable();
+          stochasticSeries_.add(index, value);
+          onChanged();
+        } else {
+          stochasticSeriesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
+       */
+      public Builder addStochasticSeries(
+          demetra.sa.io.protobuf.SaProtos.Component.Builder builderForValue) {
+        if (stochasticSeriesBuilder_ == null) {
+          ensureStochasticSeriesIsMutable();
+          stochasticSeries_.add(builderForValue.build());
+          onChanged();
+        } else {
+          stochasticSeriesBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
+       */
+      public Builder addStochasticSeries(
+          int index, demetra.sa.io.protobuf.SaProtos.Component.Builder builderForValue) {
+        if (stochasticSeriesBuilder_ == null) {
+          ensureStochasticSeriesIsMutable();
+          stochasticSeries_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          stochasticSeriesBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
+       */
+      public Builder addAllStochasticSeries(
+          java.lang.Iterable<? extends demetra.sa.io.protobuf.SaProtos.Component> values) {
+        if (stochasticSeriesBuilder_ == null) {
+          ensureStochasticSeriesIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, stochasticSeries_);
+          onChanged();
+        } else {
+          stochasticSeriesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
        */
       public Builder clearStochasticSeries() {
         if (stochasticSeriesBuilder_ == null) {
-          stochasticSeries_ = null;
+          stochasticSeries_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
           onChanged();
         } else {
-          stochasticSeries_ = null;
-          stochasticSeriesBuilder_ = null;
+          stochasticSeriesBuilder_.clear();
         }
-
         return this;
       }
       /**
-       * <code>.sa.SaDecomposition stochastic_series = 5;</code>
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
        */
-      public demetra.sa.io.protobuf.SaProtos.SaDecomposition.Builder getStochasticSeriesBuilder() {
-        
-        onChanged();
-        return getStochasticSeriesFieldBuilder().getBuilder();
+      public Builder removeStochasticSeries(int index) {
+        if (stochasticSeriesBuilder_ == null) {
+          ensureStochasticSeriesIsMutable();
+          stochasticSeries_.remove(index);
+          onChanged();
+        } else {
+          stochasticSeriesBuilder_.remove(index);
+        }
+        return this;
       }
       /**
-       * <code>.sa.SaDecomposition stochastic_series = 5;</code>
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
        */
-      public demetra.sa.io.protobuf.SaProtos.SaDecompositionOrBuilder getStochasticSeriesOrBuilder() {
-        if (stochasticSeriesBuilder_ != null) {
-          return stochasticSeriesBuilder_.getMessageOrBuilder();
-        } else {
-          return stochasticSeries_ == null ?
-              demetra.sa.io.protobuf.SaProtos.SaDecomposition.getDefaultInstance() : stochasticSeries_;
+      public demetra.sa.io.protobuf.SaProtos.Component.Builder getStochasticSeriesBuilder(
+          int index) {
+        return getStochasticSeriesFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
+       */
+      public demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getStochasticSeriesOrBuilder(
+          int index) {
+        if (stochasticSeriesBuilder_ == null) {
+          return stochasticSeries_.get(index);  } else {
+          return stochasticSeriesBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>.sa.SaDecomposition stochastic_series = 5;</code>
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sa.io.protobuf.SaProtos.SaDecomposition, demetra.sa.io.protobuf.SaProtos.SaDecomposition.Builder, demetra.sa.io.protobuf.SaProtos.SaDecompositionOrBuilder> 
+      public java.util.List<? extends demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> 
+           getStochasticSeriesOrBuilderList() {
+        if (stochasticSeriesBuilder_ != null) {
+          return stochasticSeriesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(stochasticSeries_);
+        }
+      }
+      /**
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
+       */
+      public demetra.sa.io.protobuf.SaProtos.Component.Builder addStochasticSeriesBuilder() {
+        return getStochasticSeriesFieldBuilder().addBuilder(
+            demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
+       */
+      public demetra.sa.io.protobuf.SaProtos.Component.Builder addStochasticSeriesBuilder(
+          int index) {
+        return getStochasticSeriesFieldBuilder().addBuilder(
+            index, demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .sa.Component stochastic_series = 5;</code>
+       */
+      public java.util.List<demetra.sa.io.protobuf.SaProtos.Component.Builder> 
+           getStochasticSeriesBuilderList() {
+        return getStochasticSeriesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> 
           getStochasticSeriesFieldBuilder() {
         if (stochasticSeriesBuilder_ == null) {
-          stochasticSeriesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.sa.io.protobuf.SaProtos.SaDecomposition, demetra.sa.io.protobuf.SaProtos.SaDecomposition.Builder, demetra.sa.io.protobuf.SaProtos.SaDecompositionOrBuilder>(
-                  getStochasticSeries(),
+          stochasticSeriesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder>(
+                  stochasticSeries_,
+                  ((bitField0_ & 0x00000001) != 0),
                   getParentForChildren(),
                   isClean());
           stochasticSeries_ = null;
         }
         return stochasticSeriesBuilder_;
-      }
-
-      private demetra.sa.io.protobuf.SaProtos.SaDecomposition components_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sa.io.protobuf.SaProtos.SaDecomposition, demetra.sa.io.protobuf.SaProtos.SaDecomposition.Builder, demetra.sa.io.protobuf.SaProtos.SaDecompositionOrBuilder> componentsBuilder_;
-      /**
-       * <code>.sa.SaDecomposition components = 6;</code>
-       * @return Whether the components field is set.
-       */
-      public boolean hasComponents() {
-        return componentsBuilder_ != null || components_ != null;
-      }
-      /**
-       * <code>.sa.SaDecomposition components = 6;</code>
-       * @return The components.
-       */
-      public demetra.sa.io.protobuf.SaProtos.SaDecomposition getComponents() {
-        if (componentsBuilder_ == null) {
-          return components_ == null ? demetra.sa.io.protobuf.SaProtos.SaDecomposition.getDefaultInstance() : components_;
-        } else {
-          return componentsBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.sa.SaDecomposition components = 6;</code>
-       */
-      public Builder setComponents(demetra.sa.io.protobuf.SaProtos.SaDecomposition value) {
-        if (componentsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          components_ = value;
-          onChanged();
-        } else {
-          componentsBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.sa.SaDecomposition components = 6;</code>
-       */
-      public Builder setComponents(
-          demetra.sa.io.protobuf.SaProtos.SaDecomposition.Builder builderForValue) {
-        if (componentsBuilder_ == null) {
-          components_ = builderForValue.build();
-          onChanged();
-        } else {
-          componentsBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.sa.SaDecomposition components = 6;</code>
-       */
-      public Builder mergeComponents(demetra.sa.io.protobuf.SaProtos.SaDecomposition value) {
-        if (componentsBuilder_ == null) {
-          if (components_ != null) {
-            components_ =
-              demetra.sa.io.protobuf.SaProtos.SaDecomposition.newBuilder(components_).mergeFrom(value).buildPartial();
-          } else {
-            components_ = value;
-          }
-          onChanged();
-        } else {
-          componentsBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.sa.SaDecomposition components = 6;</code>
-       */
-      public Builder clearComponents() {
-        if (componentsBuilder_ == null) {
-          components_ = null;
-          onChanged();
-        } else {
-          components_ = null;
-          componentsBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.sa.SaDecomposition components = 6;</code>
-       */
-      public demetra.sa.io.protobuf.SaProtos.SaDecomposition.Builder getComponentsBuilder() {
-        
-        onChanged();
-        return getComponentsFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.sa.SaDecomposition components = 6;</code>
-       */
-      public demetra.sa.io.protobuf.SaProtos.SaDecompositionOrBuilder getComponentsOrBuilder() {
-        if (componentsBuilder_ != null) {
-          return componentsBuilder_.getMessageOrBuilder();
-        } else {
-          return components_ == null ?
-              demetra.sa.io.protobuf.SaProtos.SaDecomposition.getDefaultInstance() : components_;
-        }
-      }
-      /**
-       * <code>.sa.SaDecomposition components = 6;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sa.io.protobuf.SaProtos.SaDecomposition, demetra.sa.io.protobuf.SaProtos.SaDecomposition.Builder, demetra.sa.io.protobuf.SaProtos.SaDecompositionOrBuilder> 
-          getComponentsFieldBuilder() {
-        if (componentsBuilder_ == null) {
-          componentsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.sa.io.protobuf.SaProtos.SaDecomposition, demetra.sa.io.protobuf.SaProtos.SaDecomposition.Builder, demetra.sa.io.protobuf.SaProtos.SaDecompositionOrBuilder>(
-                  getComponents(),
-                  getParentForChildren(),
-                  isClean());
-          components_ = null;
-        }
-        return componentsBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -3569,20 +3335,18 @@ public final class TramoSeatsResultsProtos {
       "toolkit.proto\032\010sa.proto\032\016regarima.proto\032" +
       "\026regarima_results.proto\"]\n\026CanonicalDeco" +
       "mposition\022\036\n\005model\030\001 \001(\0132\017.jd3.ArimaMode" +
-      "l\022#\n\ncomponents\030\002 \003(\0132\017.jd3.ArimaModel\"\210" +
-      "\002\n\014SeatsResults\022&\n\rinitial_model\030\001 \001(\0132\017" +
-      ".jd3.ArimaModel\022$\n\013final_model\030\002 \001(\0132\017.j" +
-      "d3.ArimaModel\022\014\n\004mean\030\003 \001(\010\022C\n\027canonical" +
-      "_decomposition\030\004 \001(\0132\".tramoseats.Canoni" +
-      "calDecomposition\022.\n\021stochastic_series\030\005 " +
-      "\001(\0132\023.sa.SaDecomposition\022\'\n\ncomponents\030\006" +
-      " \001(\0132\023.sa.SaDecomposition\"\235\001\n\021TramoSeats" +
-      "Results\0223\n\rpreprocessing\030\001 \001(\0132\034.regarim" +
-      "a.RegArimaEstimation\022/\n\rdecomposition\030\002 " +
-      "\001(\0132\030.tramoseats.SeatsResults\022\"\n\005final\030\003" +
-      " \001(\0132\023.sa.SaDecompositionB9\n\036demetra.tra" +
-      "moseats.io.protobufB\027TramoSeatsResultsPr" +
-      "otosP\000P\001P\002P\003b\006proto3"
+      "l\022#\n\ncomponents\030\002 \003(\0132\017.jd3.ArimaModel\"\261" +
+      "\001\n\014SeatsResults\022$\n\013seats_model\030\001 \001(\0132\017.j" +
+      "d3.ArimaModel\022\014\n\004mean\030\002 \001(\010\022C\n\027canonical" +
+      "_decomposition\030\003 \001(\0132\".tramoseats.Canoni" +
+      "calDecomposition\022(\n\021stochastic_series\030\005 " +
+      "\003(\0132\r.sa.Component\"\235\001\n\021TramoSeatsResults" +
+      "\0223\n\rpreprocessing\030\001 \001(\0132\034.regarima.RegAr" +
+      "imaEstimation\022/\n\rdecomposition\030\002 \001(\0132\030.t" +
+      "ramoseats.SeatsResults\022\"\n\005final\030\003 \001(\0132\023." +
+      "sa.SaDecompositionB9\n\036demetra.tramoseats" +
+      ".io.protobufB\027TramoSeatsResultsProtosP\000P" +
+      "\001P\002P\003b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3603,7 +3367,7 @@ public final class TramoSeatsResultsProtos {
     internal_static_tramoseats_SeatsResults_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tramoseats_SeatsResults_descriptor,
-        new java.lang.String[] { "InitialModel", "FinalModel", "Mean", "CanonicalDecomposition", "StochasticSeries", "Components", });
+        new java.lang.String[] { "SeatsModel", "Mean", "CanonicalDecomposition", "StochasticSeries", });
     internal_static_tramoseats_TramoSeatsResults_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_tramoseats_TramoSeatsResults_fieldAccessorTable = new
