@@ -17,6 +17,8 @@
 package demetra.regarima.io.protobuf;
 
 import demetra.arima.SarimaOrders;
+import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.Parameter;
 import demetra.data.Utility;
 import demetra.stats.ProbabilityType;
@@ -60,7 +62,8 @@ public class RegArimaEstimationProto {
                 .setBd(orders.getBd())
                 .setBq(orders.getBq())
                 .addAllParameters(Utility.asIterable(model.getArimaParameters()))
-                .setCovariance(ToolkitProtosUtility.convert(model.getArimaCovariance()));
+                .setCovariance(ToolkitProtosUtility.convert(model.getArimaCovariance()))
+                .addAllScore(Utility.asIterable(model.getArimaScore()));
         return builder.build();
     }
 
@@ -71,14 +74,17 @@ public class RegArimaEstimationProto {
         Matrix cov = model.getConcentratedLikelihood().covariance(model.getFreeArimaParametersCount(), true);
         TsDomain domain = model.getOriginalSeries().getDomain();
 
-        builder.setTransformation(model.isLogTransformation() ? RegArimaProtos.Transformation.FN_LOG : RegArimaProtos.Transformation.FN_LEVEL)
-                .setPreadjustment(RegArimaProtosUtility.convert(model.getLpTransformation()))
-                .setCovariance(ToolkitProtosUtility.convert(model.getConcentratedLikelihood().covariance(model.getFreeArimaParametersCount(), true)))
+        builder.addAllY(Utility.asIterable(model.getModel().getY()))
+                .setX(ToolkitProtosUtility.convert(model.getModel().variables()))
                 .setSarima(arima(model))
                 .setLikelihood(ToolkitProtosUtility.convert(model.getStatistics()))
+                .addAllResiduals(Utility.asIterable(model.fullResiduals().getValues()))
                 .addAllCoefficients(Utility.asIterable(model.getConcentratedLikelihood().coefficients()))
-                .setCovariance(ToolkitProtosUtility.convert(cov));
+                .setCovariance(ToolkitProtosUtility.convert(cov))
+                .setTransformation(model.isLogTransformation() ? RegArimaProtos.Transformation.FN_LOG : RegArimaProtos.Transformation.FN_LEVEL)
+                .setPreadjustment(RegArimaProtosUtility.convert(model.getLpTransformation()));
 
+        // variables
         DataBlock diag = cov.diagonal();
         T tstat = new T(model.getConcentratedLikelihood().degreesOfFreedom() - model.getFreeArimaParametersCount());
         for (int i = 0, j = 0; i < vars.length; ++i) {
@@ -102,8 +108,24 @@ public class RegArimaEstimationProto {
                         .build();
                 builder.addVariables(v);
             }
-
         }
+        // missing
+        int[] missing = model.getModel().missing();
+        if (missing.length > 0) {
+            DoubleSeq y = model.getModel().getY();
+            DoubleSeqCursor ccursor = model.getConcentratedLikelihood().missingCorrections().cursor();
+            DoubleSeqCursor vcursor = model.getConcentratedLikelihood().missingUnscaledVariances().cursor();
+            double var = model.getConcentratedLikelihood().ssq() / (model.getConcentratedLikelihood().degreesOfFreedom() - model.getFreeArimaParametersCount());
+            for (int i = 0; i < missing.length; ++i) {
+                RegArimaResultsProtos.MissingEstimation me = RegArimaResultsProtos.MissingEstimation.newBuilder()
+                        .setPosition(missing[i])
+                        .setValue(y.get(missing[i]) + ccursor.getAndNext())
+                        .setStde(Math.sqrt(vcursor.getAndNext() * var))
+                        .build();
+                builder.addMissings(me);
+            }
+        }
+
         return builder.build();
     }
 
@@ -145,4 +167,3 @@ public class RegArimaEstimationProto {
     }
 
 }
-

@@ -24,6 +24,7 @@ import demetra.util.r.Dictionary;
 import demetra.x13.X13Spec;
 import demetra.x13.io.protobuf.SpecProto;
 import demetra.x13.io.protobuf.X13Protos;
+import demetra.x13.io.protobuf.X13ResultsProto;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import jdplus.x13.X13Kernel;
@@ -42,6 +43,10 @@ public class X13 {
 
         private X13Results core;
 
+        public byte[] buffer() {
+            return X13ResultsProto.convert(core).toByteArray();
+        }
+        
         public RegArima.Results preprocessing() {
             return new RegArima.Results(core.getPreprocessing());
         }

@@ -56,11 +56,7 @@ public class SeatsResultsProto {
                 .setSeatsModel(ToolkitProtosUtility.convert(seats.getFinalModel(), "seatsmodel"))
                 .setMean(seats.isMeanCorrection())
                 .setCanonicalDecomposition(convert(seats.getUcarimaModel()))
-                .addStochasticSeries(SaProtosUtility.convert(seats.getInitialComponents(), ComponentType.Series))
-                .addStochasticSeries(SaProtosUtility.convert(seats.getInitialComponents(), ComponentType.SeasonallyAdjusted))
-                .addStochasticSeries(SaProtosUtility.convert(seats.getInitialComponents(), ComponentType.Trend))
-                .addStochasticSeries(SaProtosUtility.convert(seats.getInitialComponents(), ComponentType.Seasonal))
-                .addStochasticSeries(SaProtosUtility.convert(seats.getInitialComponents(), ComponentType.Irregular))
+                .setStochastics(SaProtosUtility.convert(seats.getInitialComponents()))
                 .build();
     }
 }

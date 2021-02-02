@@ -94,11 +94,11 @@ public class SaProtosUtility {
         // Series
 
         return builder
-                .addComponents(convert(decomp, ComponentType.Series))
-                .addComponents(convert(decomp, ComponentType.SeasonallyAdjusted))
-                .addComponents(convert(decomp, ComponentType.Trend))
-                .addComponents(convert(decomp, ComponentType.Seasonal))
-                .addComponents(convert(decomp, ComponentType.Irregular))
+                .setSeries(convert(decomp, ComponentType.Series))
+                .setSeasonallyAdjusted(convert(decomp, ComponentType.SeasonallyAdjusted))
+                .setTrend(convert(decomp, ComponentType.Trend))
+                .setSeasonal(convert(decomp, ComponentType.Seasonal))
+                .setIrregular(convert(decomp, ComponentType.Irregular))
                 .build();
     }
 
@@ -114,7 +114,6 @@ public class SaProtosUtility {
         TsData ES = TsData.concatenate(ebs, es, efs);
 
         return SaProtos.Component.newBuilder()
-                .setType(convert(type))
                 .setData(ToolkitProtosUtility.convert(S))
                 .setStde(ToolkitProtosUtility.convert(ES))
                 .setNbcasts(bs == null ? 0 : bs.length())
@@ -138,5 +137,6 @@ public class SaProtosUtility {
                 return SaProtos.ComponentType.UNDEFINED;
         }
     }
+    
 
 }

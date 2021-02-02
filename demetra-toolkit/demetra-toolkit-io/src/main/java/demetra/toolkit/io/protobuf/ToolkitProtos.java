@@ -1864,6 +1864,634 @@ public final class ToolkitProtos {
 
   }
 
+  public interface TsPeriodOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:jd3.TsPeriod)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>int32 annual_frequency = 1;</code>
+     * @return The annualFrequency.
+     */
+    int getAnnualFrequency();
+
+    /**
+     * <code>int32 year = 2;</code>
+     * @return The year.
+     */
+    int getYear();
+
+    /**
+     * <code>int32 pos = 3;</code>
+     * @return The pos.
+     */
+    int getPos();
+  }
+  /**
+   * Protobuf type {@code jd3.TsPeriod}
+   */
+  public static final class TsPeriod extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:jd3.TsPeriod)
+      TsPeriodOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use TsPeriod.newBuilder() to construct.
+    private TsPeriod(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private TsPeriod() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new TsPeriod();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private TsPeriod(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              annualFrequency_ = input.readInt32();
+              break;
+            }
+            case 16: {
+
+              year_ = input.readInt32();
+              break;
+            }
+            case 24: {
+
+              pos_ = input.readInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_TsPeriod_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_TsPeriod_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod.class, demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod.Builder.class);
+    }
+
+    public static final int ANNUAL_FREQUENCY_FIELD_NUMBER = 1;
+    private int annualFrequency_;
+    /**
+     * <code>int32 annual_frequency = 1;</code>
+     * @return The annualFrequency.
+     */
+    @java.lang.Override
+    public int getAnnualFrequency() {
+      return annualFrequency_;
+    }
+
+    public static final int YEAR_FIELD_NUMBER = 2;
+    private int year_;
+    /**
+     * <code>int32 year = 2;</code>
+     * @return The year.
+     */
+    @java.lang.Override
+    public int getYear() {
+      return year_;
+    }
+
+    public static final int POS_FIELD_NUMBER = 3;
+    private int pos_;
+    /**
+     * <code>int32 pos = 3;</code>
+     * @return The pos.
+     */
+    @java.lang.Override
+    public int getPos() {
+      return pos_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (annualFrequency_ != 0) {
+        output.writeInt32(1, annualFrequency_);
+      }
+      if (year_ != 0) {
+        output.writeInt32(2, year_);
+      }
+      if (pos_ != 0) {
+        output.writeInt32(3, pos_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (annualFrequency_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, annualFrequency_);
+      }
+      if (year_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, year_);
+      }
+      if (pos_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, pos_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod)) {
+        return super.equals(obj);
+      }
+      demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod other = (demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod) obj;
+
+      if (getAnnualFrequency()
+          != other.getAnnualFrequency()) return false;
+      if (getYear()
+          != other.getYear()) return false;
+      if (getPos()
+          != other.getPos()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ANNUAL_FREQUENCY_FIELD_NUMBER;
+      hash = (53 * hash) + getAnnualFrequency();
+      hash = (37 * hash) + YEAR_FIELD_NUMBER;
+      hash = (53 * hash) + getYear();
+      hash = (37 * hash) + POS_FIELD_NUMBER;
+      hash = (53 * hash) + getPos();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code jd3.TsPeriod}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:jd3.TsPeriod)
+        demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriodOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_TsPeriod_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_TsPeriod_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod.class, demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod.Builder.class);
+      }
+
+      // Construct using demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        annualFrequency_ = 0;
+
+        year_ = 0;
+
+        pos_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_TsPeriod_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod getDefaultInstanceForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod build() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod buildPartial() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod result = new demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod(this);
+        result.annualFrequency_ = annualFrequency_;
+        result.year_ = year_;
+        result.pos_ = pos_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod) {
+          return mergeFrom((demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod other) {
+        if (other == demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod.getDefaultInstance()) return this;
+        if (other.getAnnualFrequency() != 0) {
+          setAnnualFrequency(other.getAnnualFrequency());
+        }
+        if (other.getYear() != 0) {
+          setYear(other.getYear());
+        }
+        if (other.getPos() != 0) {
+          setPos(other.getPos());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int annualFrequency_ ;
+      /**
+       * <code>int32 annual_frequency = 1;</code>
+       * @return The annualFrequency.
+       */
+      @java.lang.Override
+      public int getAnnualFrequency() {
+        return annualFrequency_;
+      }
+      /**
+       * <code>int32 annual_frequency = 1;</code>
+       * @param value The annualFrequency to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAnnualFrequency(int value) {
+        
+        annualFrequency_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 annual_frequency = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAnnualFrequency() {
+        
+        annualFrequency_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int year_ ;
+      /**
+       * <code>int32 year = 2;</code>
+       * @return The year.
+       */
+      @java.lang.Override
+      public int getYear() {
+        return year_;
+      }
+      /**
+       * <code>int32 year = 2;</code>
+       * @param value The year to set.
+       * @return This builder for chaining.
+       */
+      public Builder setYear(int value) {
+        
+        year_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 year = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearYear() {
+        
+        year_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int pos_ ;
+      /**
+       * <code>int32 pos = 3;</code>
+       * @return The pos.
+       */
+      @java.lang.Override
+      public int getPos() {
+        return pos_;
+      }
+      /**
+       * <code>int32 pos = 3;</code>
+       * @param value The pos to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPos(int value) {
+        
+        pos_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 pos = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPos() {
+        
+        pos_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:jd3.TsPeriod)
+    }
+
+    // @@protoc_insertion_point(class_scope:jd3.TsPeriod)
+    private static final demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod();
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<TsPeriod>
+        PARSER = new com.google.protobuf.AbstractParser<TsPeriod>() {
+      @java.lang.Override
+      public TsPeriod parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new TsPeriod(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<TsPeriod> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<TsPeriod> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsPeriod getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface TsDataOrBuilder extends
       // @@protoc_insertion_point(interface_extends:jd3.TsData)
       com.google.protobuf.MessageOrBuilder {
@@ -1881,10 +2509,10 @@ public final class ToolkitProtos {
         getNameBytes();
 
     /**
-     * <code>int32 period = 2;</code>
-     * @return The period.
+     * <code>int32 annual_frequency = 2;</code>
+     * @return The annualFrequency.
      */
-    int getPeriod();
+    int getAnnualFrequency();
 
     /**
      * <code>int32 start_year = 3;</code>
@@ -1971,7 +2599,7 @@ public final class ToolkitProtos {
             }
             case 16: {
 
-              period_ = input.readInt32();
+              annualFrequency_ = input.readInt32();
               break;
             }
             case 24: {
@@ -2078,15 +2706,15 @@ public final class ToolkitProtos {
       }
     }
 
-    public static final int PERIOD_FIELD_NUMBER = 2;
-    private int period_;
+    public static final int ANNUAL_FREQUENCY_FIELD_NUMBER = 2;
+    private int annualFrequency_;
     /**
-     * <code>int32 period = 2;</code>
-     * @return The period.
+     * <code>int32 annual_frequency = 2;</code>
+     * @return The annualFrequency.
      */
     @java.lang.Override
-    public int getPeriod() {
-      return period_;
+    public int getAnnualFrequency() {
+      return annualFrequency_;
     }
 
     public static final int START_YEAR_FIELD_NUMBER = 3;
@@ -2157,8 +2785,8 @@ public final class ToolkitProtos {
       if (!getNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
       }
-      if (period_ != 0) {
-        output.writeInt32(2, period_);
+      if (annualFrequency_ != 0) {
+        output.writeInt32(2, annualFrequency_);
       }
       if (startYear_ != 0) {
         output.writeInt32(3, startYear_);
@@ -2185,9 +2813,9 @@ public final class ToolkitProtos {
       if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
       }
-      if (period_ != 0) {
+      if (annualFrequency_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, period_);
+          .computeInt32Size(2, annualFrequency_);
       }
       if (startYear_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -2225,8 +2853,8 @@ public final class ToolkitProtos {
 
       if (!getName()
           .equals(other.getName())) return false;
-      if (getPeriod()
-          != other.getPeriod()) return false;
+      if (getAnnualFrequency()
+          != other.getAnnualFrequency()) return false;
       if (getStartYear()
           != other.getStartYear()) return false;
       if (getStartPeriod()
@@ -2246,8 +2874,8 @@ public final class ToolkitProtos {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + NAME_FIELD_NUMBER;
       hash = (53 * hash) + getName().hashCode();
-      hash = (37 * hash) + PERIOD_FIELD_NUMBER;
-      hash = (53 * hash) + getPeriod();
+      hash = (37 * hash) + ANNUAL_FREQUENCY_FIELD_NUMBER;
+      hash = (53 * hash) + getAnnualFrequency();
       hash = (37 * hash) + START_YEAR_FIELD_NUMBER;
       hash = (53 * hash) + getStartYear();
       hash = (37 * hash) + START_PERIOD_FIELD_NUMBER;
@@ -2391,7 +3019,7 @@ public final class ToolkitProtos {
         super.clear();
         name_ = "";
 
-        period_ = 0;
+        annualFrequency_ = 0;
 
         startYear_ = 0;
 
@@ -2427,7 +3055,7 @@ public final class ToolkitProtos {
         demetra.toolkit.io.protobuf.ToolkitProtos.TsData result = new demetra.toolkit.io.protobuf.ToolkitProtos.TsData(this);
         int from_bitField0_ = bitField0_;
         result.name_ = name_;
-        result.period_ = period_;
+        result.annualFrequency_ = annualFrequency_;
         result.startYear_ = startYear_;
         result.startPeriod_ = startPeriod_;
         if (((bitField0_ & 0x00000001) != 0)) {
@@ -2487,8 +3115,8 @@ public final class ToolkitProtos {
           name_ = other.name_;
           onChanged();
         }
-        if (other.getPeriod() != 0) {
-          setPeriod(other.getPeriod());
+        if (other.getAnnualFrequency() != 0) {
+          setAnnualFrequency(other.getAnnualFrequency());
         }
         if (other.getStartYear() != 0) {
           setStartYear(other.getStartYear());
@@ -2612,33 +3240,33 @@ public final class ToolkitProtos {
         return this;
       }
 
-      private int period_ ;
+      private int annualFrequency_ ;
       /**
-       * <code>int32 period = 2;</code>
-       * @return The period.
+       * <code>int32 annual_frequency = 2;</code>
+       * @return The annualFrequency.
        */
       @java.lang.Override
-      public int getPeriod() {
-        return period_;
+      public int getAnnualFrequency() {
+        return annualFrequency_;
       }
       /**
-       * <code>int32 period = 2;</code>
-       * @param value The period to set.
+       * <code>int32 annual_frequency = 2;</code>
+       * @param value The annualFrequency to set.
        * @return This builder for chaining.
        */
-      public Builder setPeriod(int value) {
+      public Builder setAnnualFrequency(int value) {
         
-        period_ = value;
+        annualFrequency_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 period = 2;</code>
+       * <code>int32 annual_frequency = 2;</code>
        * @return This builder for chaining.
        */
-      public Builder clearPeriod() {
+      public Builder clearAnnualFrequency() {
         
-        period_ = 0;
+        annualFrequency_ = 0;
         onChanged();
         return this;
       }
@@ -7794,6 +8422,3506 @@ public final class ToolkitProtos {
 
   }
 
+  public interface NIIDTestsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:jd3.NIIDTests)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * Normality 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest mean = 1;</code>
+     * @return Whether the mean field is set.
+     */
+    boolean hasMean();
+    /**
+     * <pre>
+     * Normality 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest mean = 1;</code>
+     * @return The mean.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getMean();
+    /**
+     * <pre>
+     * Normality 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest mean = 1;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getMeanOrBuilder();
+
+    /**
+     * <code>.jd3.StatisticalTest skewness = 2;</code>
+     * @return Whether the skewness field is set.
+     */
+    boolean hasSkewness();
+    /**
+     * <code>.jd3.StatisticalTest skewness = 2;</code>
+     * @return The skewness.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getSkewness();
+    /**
+     * <code>.jd3.StatisticalTest skewness = 2;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getSkewnessOrBuilder();
+
+    /**
+     * <code>.jd3.StatisticalTest kurtosis = 3;</code>
+     * @return Whether the kurtosis field is set.
+     */
+    boolean hasKurtosis();
+    /**
+     * <code>.jd3.StatisticalTest kurtosis = 3;</code>
+     * @return The kurtosis.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getKurtosis();
+    /**
+     * <code>.jd3.StatisticalTest kurtosis = 3;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getKurtosisOrBuilder();
+
+    /**
+     * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
+     * @return Whether the doornikHansen field is set.
+     */
+    boolean hasDoornikHansen();
+    /**
+     * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
+     * @return The doornikHansen.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getDoornikHansen();
+    /**
+     * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getDoornikHansenOrBuilder();
+
+    /**
+     * <pre>
+     * Independence 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest ljung_box = 5;</code>
+     * @return Whether the ljungBox field is set.
+     */
+    boolean hasLjungBox();
+    /**
+     * <pre>
+     * Independence 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest ljung_box = 5;</code>
+     * @return The ljungBox.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getLjungBox();
+    /**
+     * <pre>
+     * Independence 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest ljung_box = 5;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getLjungBoxOrBuilder();
+
+    /**
+     * <code>.jd3.StatisticalTest box_pierce = 6;</code>
+     * @return Whether the boxPierce field is set.
+     */
+    boolean hasBoxPierce();
+    /**
+     * <code>.jd3.StatisticalTest box_pierce = 6;</code>
+     * @return The boxPierce.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getBoxPierce();
+    /**
+     * <code>.jd3.StatisticalTest box_pierce = 6;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getBoxPierceOrBuilder();
+
+    /**
+     * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
+     * @return Whether the seasonalLjungBox field is set.
+     */
+    boolean hasSeasonalLjungBox();
+    /**
+     * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
+     * @return The seasonalLjungBox.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getSeasonalLjungBox();
+    /**
+     * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getSeasonalLjungBoxOrBuilder();
+
+    /**
+     * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
+     * @return Whether the seasonalBoxPierce field is set.
+     */
+    boolean hasSeasonalBoxPierce();
+    /**
+     * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
+     * @return The seasonalBoxPierce.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getSeasonalBoxPierce();
+    /**
+     * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getSeasonalBoxPierceOrBuilder();
+
+    /**
+     * <pre>
+     * Randomness 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest runs_number = 9;</code>
+     * @return Whether the runsNumber field is set.
+     */
+    boolean hasRunsNumber();
+    /**
+     * <pre>
+     * Randomness 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest runs_number = 9;</code>
+     * @return The runsNumber.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getRunsNumber();
+    /**
+     * <pre>
+     * Randomness 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest runs_number = 9;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getRunsNumberOrBuilder();
+
+    /**
+     * <code>.jd3.StatisticalTest runs_length = 10;</code>
+     * @return Whether the runsLength field is set.
+     */
+    boolean hasRunsLength();
+    /**
+     * <code>.jd3.StatisticalTest runs_length = 10;</code>
+     * @return The runsLength.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getRunsLength();
+    /**
+     * <code>.jd3.StatisticalTest runs_length = 10;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getRunsLengthOrBuilder();
+
+    /**
+     * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
+     * @return Whether the upDownRunsNumber field is set.
+     */
+    boolean hasUpDownRunsNumber();
+    /**
+     * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
+     * @return The upDownRunsNumber.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getUpDownRunsNumber();
+    /**
+     * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getUpDownRunsNumberOrBuilder();
+
+    /**
+     * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
+     * @return Whether the upDownRunsLength field is set.
+     */
+    boolean hasUpDownRunsLength();
+    /**
+     * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
+     * @return The upDownRunsLength.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getUpDownRunsLength();
+    /**
+     * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getUpDownRunsLengthOrBuilder();
+
+    /**
+     * <pre>
+     * Linearity 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
+     * @return Whether the ljungBoxOnSquares field is set.
+     */
+    boolean hasLjungBoxOnSquares();
+    /**
+     * <pre>
+     * Linearity 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
+     * @return The ljungBoxOnSquares.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getLjungBoxOnSquares();
+    /**
+     * <pre>
+     * Linearity 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getLjungBoxOnSquaresOrBuilder();
+
+    /**
+     * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
+     * @return Whether the boxPierceOnSquares field is set.
+     */
+    boolean hasBoxPierceOnSquares();
+    /**
+     * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
+     * @return The boxPierceOnSquares.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getBoxPierceOnSquares();
+    /**
+     * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getBoxPierceOnSquaresOrBuilder();
+  }
+  /**
+   * Protobuf type {@code jd3.NIIDTests}
+   */
+  public static final class NIIDTests extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:jd3.NIIDTests)
+      NIIDTestsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use NIIDTests.newBuilder() to construct.
+    private NIIDTests(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private NIIDTests() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new NIIDTests();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private NIIDTests(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder subBuilder = null;
+              if (mean_ != null) {
+                subBuilder = mean_.toBuilder();
+              }
+              mean_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(mean_);
+                mean_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 18: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder subBuilder = null;
+              if (skewness_ != null) {
+                subBuilder = skewness_.toBuilder();
+              }
+              skewness_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(skewness_);
+                skewness_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 26: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder subBuilder = null;
+              if (kurtosis_ != null) {
+                subBuilder = kurtosis_.toBuilder();
+              }
+              kurtosis_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(kurtosis_);
+                kurtosis_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 34: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder subBuilder = null;
+              if (doornikHansen_ != null) {
+                subBuilder = doornikHansen_.toBuilder();
+              }
+              doornikHansen_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(doornikHansen_);
+                doornikHansen_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 42: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder subBuilder = null;
+              if (ljungBox_ != null) {
+                subBuilder = ljungBox_.toBuilder();
+              }
+              ljungBox_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(ljungBox_);
+                ljungBox_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 50: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder subBuilder = null;
+              if (boxPierce_ != null) {
+                subBuilder = boxPierce_.toBuilder();
+              }
+              boxPierce_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(boxPierce_);
+                boxPierce_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 58: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder subBuilder = null;
+              if (seasonalLjungBox_ != null) {
+                subBuilder = seasonalLjungBox_.toBuilder();
+              }
+              seasonalLjungBox_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(seasonalLjungBox_);
+                seasonalLjungBox_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 66: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder subBuilder = null;
+              if (seasonalBoxPierce_ != null) {
+                subBuilder = seasonalBoxPierce_.toBuilder();
+              }
+              seasonalBoxPierce_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(seasonalBoxPierce_);
+                seasonalBoxPierce_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 74: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder subBuilder = null;
+              if (runsNumber_ != null) {
+                subBuilder = runsNumber_.toBuilder();
+              }
+              runsNumber_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(runsNumber_);
+                runsNumber_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 82: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder subBuilder = null;
+              if (runsLength_ != null) {
+                subBuilder = runsLength_.toBuilder();
+              }
+              runsLength_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(runsLength_);
+                runsLength_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 90: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder subBuilder = null;
+              if (upDownRunsNumber_ != null) {
+                subBuilder = upDownRunsNumber_.toBuilder();
+              }
+              upDownRunsNumber_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(upDownRunsNumber_);
+                upDownRunsNumber_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 98: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder subBuilder = null;
+              if (upDownRunsLength_ != null) {
+                subBuilder = upDownRunsLength_.toBuilder();
+              }
+              upDownRunsLength_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(upDownRunsLength_);
+                upDownRunsLength_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 106: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder subBuilder = null;
+              if (ljungBoxOnSquares_ != null) {
+                subBuilder = ljungBoxOnSquares_.toBuilder();
+              }
+              ljungBoxOnSquares_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(ljungBoxOnSquares_);
+                ljungBoxOnSquares_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 114: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder subBuilder = null;
+              if (boxPierceOnSquares_ != null) {
+                subBuilder = boxPierceOnSquares_.toBuilder();
+              }
+              boxPierceOnSquares_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(boxPierceOnSquares_);
+                boxPierceOnSquares_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_NIIDTests_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_NIIDTests_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.class, demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.Builder.class);
+    }
+
+    public static final int MEAN_FIELD_NUMBER = 1;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest mean_;
+    /**
+     * <pre>
+     * Normality 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest mean = 1;</code>
+     * @return Whether the mean field is set.
+     */
+    @java.lang.Override
+    public boolean hasMean() {
+      return mean_ != null;
+    }
+    /**
+     * <pre>
+     * Normality 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest mean = 1;</code>
+     * @return The mean.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getMean() {
+      return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : mean_;
+    }
+    /**
+     * <pre>
+     * Normality 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest mean = 1;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getMeanOrBuilder() {
+      return getMean();
+    }
+
+    public static final int SKEWNESS_FIELD_NUMBER = 2;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest skewness_;
+    /**
+     * <code>.jd3.StatisticalTest skewness = 2;</code>
+     * @return Whether the skewness field is set.
+     */
+    @java.lang.Override
+    public boolean hasSkewness() {
+      return skewness_ != null;
+    }
+    /**
+     * <code>.jd3.StatisticalTest skewness = 2;</code>
+     * @return The skewness.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getSkewness() {
+      return skewness_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : skewness_;
+    }
+    /**
+     * <code>.jd3.StatisticalTest skewness = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getSkewnessOrBuilder() {
+      return getSkewness();
+    }
+
+    public static final int KURTOSIS_FIELD_NUMBER = 3;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest kurtosis_;
+    /**
+     * <code>.jd3.StatisticalTest kurtosis = 3;</code>
+     * @return Whether the kurtosis field is set.
+     */
+    @java.lang.Override
+    public boolean hasKurtosis() {
+      return kurtosis_ != null;
+    }
+    /**
+     * <code>.jd3.StatisticalTest kurtosis = 3;</code>
+     * @return The kurtosis.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getKurtosis() {
+      return kurtosis_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : kurtosis_;
+    }
+    /**
+     * <code>.jd3.StatisticalTest kurtosis = 3;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getKurtosisOrBuilder() {
+      return getKurtosis();
+    }
+
+    public static final int DOORNIK_HANSEN_FIELD_NUMBER = 4;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest doornikHansen_;
+    /**
+     * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
+     * @return Whether the doornikHansen field is set.
+     */
+    @java.lang.Override
+    public boolean hasDoornikHansen() {
+      return doornikHansen_ != null;
+    }
+    /**
+     * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
+     * @return The doornikHansen.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getDoornikHansen() {
+      return doornikHansen_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : doornikHansen_;
+    }
+    /**
+     * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getDoornikHansenOrBuilder() {
+      return getDoornikHansen();
+    }
+
+    public static final int LJUNG_BOX_FIELD_NUMBER = 5;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest ljungBox_;
+    /**
+     * <pre>
+     * Independence 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest ljung_box = 5;</code>
+     * @return Whether the ljungBox field is set.
+     */
+    @java.lang.Override
+    public boolean hasLjungBox() {
+      return ljungBox_ != null;
+    }
+    /**
+     * <pre>
+     * Independence 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest ljung_box = 5;</code>
+     * @return The ljungBox.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getLjungBox() {
+      return ljungBox_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : ljungBox_;
+    }
+    /**
+     * <pre>
+     * Independence 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest ljung_box = 5;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getLjungBoxOrBuilder() {
+      return getLjungBox();
+    }
+
+    public static final int BOX_PIERCE_FIELD_NUMBER = 6;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest boxPierce_;
+    /**
+     * <code>.jd3.StatisticalTest box_pierce = 6;</code>
+     * @return Whether the boxPierce field is set.
+     */
+    @java.lang.Override
+    public boolean hasBoxPierce() {
+      return boxPierce_ != null;
+    }
+    /**
+     * <code>.jd3.StatisticalTest box_pierce = 6;</code>
+     * @return The boxPierce.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getBoxPierce() {
+      return boxPierce_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : boxPierce_;
+    }
+    /**
+     * <code>.jd3.StatisticalTest box_pierce = 6;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getBoxPierceOrBuilder() {
+      return getBoxPierce();
+    }
+
+    public static final int SEASONAL_LJUNG_BOX_FIELD_NUMBER = 7;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest seasonalLjungBox_;
+    /**
+     * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
+     * @return Whether the seasonalLjungBox field is set.
+     */
+    @java.lang.Override
+    public boolean hasSeasonalLjungBox() {
+      return seasonalLjungBox_ != null;
+    }
+    /**
+     * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
+     * @return The seasonalLjungBox.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getSeasonalLjungBox() {
+      return seasonalLjungBox_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : seasonalLjungBox_;
+    }
+    /**
+     * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getSeasonalLjungBoxOrBuilder() {
+      return getSeasonalLjungBox();
+    }
+
+    public static final int SEASONAL_BOX_PIERCE_FIELD_NUMBER = 8;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest seasonalBoxPierce_;
+    /**
+     * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
+     * @return Whether the seasonalBoxPierce field is set.
+     */
+    @java.lang.Override
+    public boolean hasSeasonalBoxPierce() {
+      return seasonalBoxPierce_ != null;
+    }
+    /**
+     * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
+     * @return The seasonalBoxPierce.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getSeasonalBoxPierce() {
+      return seasonalBoxPierce_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : seasonalBoxPierce_;
+    }
+    /**
+     * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getSeasonalBoxPierceOrBuilder() {
+      return getSeasonalBoxPierce();
+    }
+
+    public static final int RUNS_NUMBER_FIELD_NUMBER = 9;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest runsNumber_;
+    /**
+     * <pre>
+     * Randomness 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest runs_number = 9;</code>
+     * @return Whether the runsNumber field is set.
+     */
+    @java.lang.Override
+    public boolean hasRunsNumber() {
+      return runsNumber_ != null;
+    }
+    /**
+     * <pre>
+     * Randomness 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest runs_number = 9;</code>
+     * @return The runsNumber.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getRunsNumber() {
+      return runsNumber_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : runsNumber_;
+    }
+    /**
+     * <pre>
+     * Randomness 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest runs_number = 9;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getRunsNumberOrBuilder() {
+      return getRunsNumber();
+    }
+
+    public static final int RUNS_LENGTH_FIELD_NUMBER = 10;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest runsLength_;
+    /**
+     * <code>.jd3.StatisticalTest runs_length = 10;</code>
+     * @return Whether the runsLength field is set.
+     */
+    @java.lang.Override
+    public boolean hasRunsLength() {
+      return runsLength_ != null;
+    }
+    /**
+     * <code>.jd3.StatisticalTest runs_length = 10;</code>
+     * @return The runsLength.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getRunsLength() {
+      return runsLength_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : runsLength_;
+    }
+    /**
+     * <code>.jd3.StatisticalTest runs_length = 10;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getRunsLengthOrBuilder() {
+      return getRunsLength();
+    }
+
+    public static final int UP_DOWN_RUNS_NUMBER_FIELD_NUMBER = 11;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest upDownRunsNumber_;
+    /**
+     * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
+     * @return Whether the upDownRunsNumber field is set.
+     */
+    @java.lang.Override
+    public boolean hasUpDownRunsNumber() {
+      return upDownRunsNumber_ != null;
+    }
+    /**
+     * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
+     * @return The upDownRunsNumber.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getUpDownRunsNumber() {
+      return upDownRunsNumber_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : upDownRunsNumber_;
+    }
+    /**
+     * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getUpDownRunsNumberOrBuilder() {
+      return getUpDownRunsNumber();
+    }
+
+    public static final int UP_DOWN_RUNS_LENGTH_FIELD_NUMBER = 12;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest upDownRunsLength_;
+    /**
+     * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
+     * @return Whether the upDownRunsLength field is set.
+     */
+    @java.lang.Override
+    public boolean hasUpDownRunsLength() {
+      return upDownRunsLength_ != null;
+    }
+    /**
+     * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
+     * @return The upDownRunsLength.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getUpDownRunsLength() {
+      return upDownRunsLength_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : upDownRunsLength_;
+    }
+    /**
+     * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getUpDownRunsLengthOrBuilder() {
+      return getUpDownRunsLength();
+    }
+
+    public static final int LJUNG_BOX_ON_SQUARES_FIELD_NUMBER = 13;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest ljungBoxOnSquares_;
+    /**
+     * <pre>
+     * Linearity 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
+     * @return Whether the ljungBoxOnSquares field is set.
+     */
+    @java.lang.Override
+    public boolean hasLjungBoxOnSquares() {
+      return ljungBoxOnSquares_ != null;
+    }
+    /**
+     * <pre>
+     * Linearity 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
+     * @return The ljungBoxOnSquares.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getLjungBoxOnSquares() {
+      return ljungBoxOnSquares_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : ljungBoxOnSquares_;
+    }
+    /**
+     * <pre>
+     * Linearity 
+     * </pre>
+     *
+     * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getLjungBoxOnSquaresOrBuilder() {
+      return getLjungBoxOnSquares();
+    }
+
+    public static final int BOX_PIERCE_ON_SQUARES_FIELD_NUMBER = 14;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest boxPierceOnSquares_;
+    /**
+     * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
+     * @return Whether the boxPierceOnSquares field is set.
+     */
+    @java.lang.Override
+    public boolean hasBoxPierceOnSquares() {
+      return boxPierceOnSquares_ != null;
+    }
+    /**
+     * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
+     * @return The boxPierceOnSquares.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getBoxPierceOnSquares() {
+      return boxPierceOnSquares_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : boxPierceOnSquares_;
+    }
+    /**
+     * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getBoxPierceOnSquaresOrBuilder() {
+      return getBoxPierceOnSquares();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (mean_ != null) {
+        output.writeMessage(1, getMean());
+      }
+      if (skewness_ != null) {
+        output.writeMessage(2, getSkewness());
+      }
+      if (kurtosis_ != null) {
+        output.writeMessage(3, getKurtosis());
+      }
+      if (doornikHansen_ != null) {
+        output.writeMessage(4, getDoornikHansen());
+      }
+      if (ljungBox_ != null) {
+        output.writeMessage(5, getLjungBox());
+      }
+      if (boxPierce_ != null) {
+        output.writeMessage(6, getBoxPierce());
+      }
+      if (seasonalLjungBox_ != null) {
+        output.writeMessage(7, getSeasonalLjungBox());
+      }
+      if (seasonalBoxPierce_ != null) {
+        output.writeMessage(8, getSeasonalBoxPierce());
+      }
+      if (runsNumber_ != null) {
+        output.writeMessage(9, getRunsNumber());
+      }
+      if (runsLength_ != null) {
+        output.writeMessage(10, getRunsLength());
+      }
+      if (upDownRunsNumber_ != null) {
+        output.writeMessage(11, getUpDownRunsNumber());
+      }
+      if (upDownRunsLength_ != null) {
+        output.writeMessage(12, getUpDownRunsLength());
+      }
+      if (ljungBoxOnSquares_ != null) {
+        output.writeMessage(13, getLjungBoxOnSquares());
+      }
+      if (boxPierceOnSquares_ != null) {
+        output.writeMessage(14, getBoxPierceOnSquares());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (mean_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getMean());
+      }
+      if (skewness_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getSkewness());
+      }
+      if (kurtosis_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getKurtosis());
+      }
+      if (doornikHansen_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, getDoornikHansen());
+      }
+      if (ljungBox_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, getLjungBox());
+      }
+      if (boxPierce_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, getBoxPierce());
+      }
+      if (seasonalLjungBox_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, getSeasonalLjungBox());
+      }
+      if (seasonalBoxPierce_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(8, getSeasonalBoxPierce());
+      }
+      if (runsNumber_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(9, getRunsNumber());
+      }
+      if (runsLength_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(10, getRunsLength());
+      }
+      if (upDownRunsNumber_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(11, getUpDownRunsNumber());
+      }
+      if (upDownRunsLength_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(12, getUpDownRunsLength());
+      }
+      if (ljungBoxOnSquares_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(13, getLjungBoxOnSquares());
+      }
+      if (boxPierceOnSquares_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(14, getBoxPierceOnSquares());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests)) {
+        return super.equals(obj);
+      }
+      demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests other = (demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests) obj;
+
+      if (hasMean() != other.hasMean()) return false;
+      if (hasMean()) {
+        if (!getMean()
+            .equals(other.getMean())) return false;
+      }
+      if (hasSkewness() != other.hasSkewness()) return false;
+      if (hasSkewness()) {
+        if (!getSkewness()
+            .equals(other.getSkewness())) return false;
+      }
+      if (hasKurtosis() != other.hasKurtosis()) return false;
+      if (hasKurtosis()) {
+        if (!getKurtosis()
+            .equals(other.getKurtosis())) return false;
+      }
+      if (hasDoornikHansen() != other.hasDoornikHansen()) return false;
+      if (hasDoornikHansen()) {
+        if (!getDoornikHansen()
+            .equals(other.getDoornikHansen())) return false;
+      }
+      if (hasLjungBox() != other.hasLjungBox()) return false;
+      if (hasLjungBox()) {
+        if (!getLjungBox()
+            .equals(other.getLjungBox())) return false;
+      }
+      if (hasBoxPierce() != other.hasBoxPierce()) return false;
+      if (hasBoxPierce()) {
+        if (!getBoxPierce()
+            .equals(other.getBoxPierce())) return false;
+      }
+      if (hasSeasonalLjungBox() != other.hasSeasonalLjungBox()) return false;
+      if (hasSeasonalLjungBox()) {
+        if (!getSeasonalLjungBox()
+            .equals(other.getSeasonalLjungBox())) return false;
+      }
+      if (hasSeasonalBoxPierce() != other.hasSeasonalBoxPierce()) return false;
+      if (hasSeasonalBoxPierce()) {
+        if (!getSeasonalBoxPierce()
+            .equals(other.getSeasonalBoxPierce())) return false;
+      }
+      if (hasRunsNumber() != other.hasRunsNumber()) return false;
+      if (hasRunsNumber()) {
+        if (!getRunsNumber()
+            .equals(other.getRunsNumber())) return false;
+      }
+      if (hasRunsLength() != other.hasRunsLength()) return false;
+      if (hasRunsLength()) {
+        if (!getRunsLength()
+            .equals(other.getRunsLength())) return false;
+      }
+      if (hasUpDownRunsNumber() != other.hasUpDownRunsNumber()) return false;
+      if (hasUpDownRunsNumber()) {
+        if (!getUpDownRunsNumber()
+            .equals(other.getUpDownRunsNumber())) return false;
+      }
+      if (hasUpDownRunsLength() != other.hasUpDownRunsLength()) return false;
+      if (hasUpDownRunsLength()) {
+        if (!getUpDownRunsLength()
+            .equals(other.getUpDownRunsLength())) return false;
+      }
+      if (hasLjungBoxOnSquares() != other.hasLjungBoxOnSquares()) return false;
+      if (hasLjungBoxOnSquares()) {
+        if (!getLjungBoxOnSquares()
+            .equals(other.getLjungBoxOnSquares())) return false;
+      }
+      if (hasBoxPierceOnSquares() != other.hasBoxPierceOnSquares()) return false;
+      if (hasBoxPierceOnSquares()) {
+        if (!getBoxPierceOnSquares()
+            .equals(other.getBoxPierceOnSquares())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasMean()) {
+        hash = (37 * hash) + MEAN_FIELD_NUMBER;
+        hash = (53 * hash) + getMean().hashCode();
+      }
+      if (hasSkewness()) {
+        hash = (37 * hash) + SKEWNESS_FIELD_NUMBER;
+        hash = (53 * hash) + getSkewness().hashCode();
+      }
+      if (hasKurtosis()) {
+        hash = (37 * hash) + KURTOSIS_FIELD_NUMBER;
+        hash = (53 * hash) + getKurtosis().hashCode();
+      }
+      if (hasDoornikHansen()) {
+        hash = (37 * hash) + DOORNIK_HANSEN_FIELD_NUMBER;
+        hash = (53 * hash) + getDoornikHansen().hashCode();
+      }
+      if (hasLjungBox()) {
+        hash = (37 * hash) + LJUNG_BOX_FIELD_NUMBER;
+        hash = (53 * hash) + getLjungBox().hashCode();
+      }
+      if (hasBoxPierce()) {
+        hash = (37 * hash) + BOX_PIERCE_FIELD_NUMBER;
+        hash = (53 * hash) + getBoxPierce().hashCode();
+      }
+      if (hasSeasonalLjungBox()) {
+        hash = (37 * hash) + SEASONAL_LJUNG_BOX_FIELD_NUMBER;
+        hash = (53 * hash) + getSeasonalLjungBox().hashCode();
+      }
+      if (hasSeasonalBoxPierce()) {
+        hash = (37 * hash) + SEASONAL_BOX_PIERCE_FIELD_NUMBER;
+        hash = (53 * hash) + getSeasonalBoxPierce().hashCode();
+      }
+      if (hasRunsNumber()) {
+        hash = (37 * hash) + RUNS_NUMBER_FIELD_NUMBER;
+        hash = (53 * hash) + getRunsNumber().hashCode();
+      }
+      if (hasRunsLength()) {
+        hash = (37 * hash) + RUNS_LENGTH_FIELD_NUMBER;
+        hash = (53 * hash) + getRunsLength().hashCode();
+      }
+      if (hasUpDownRunsNumber()) {
+        hash = (37 * hash) + UP_DOWN_RUNS_NUMBER_FIELD_NUMBER;
+        hash = (53 * hash) + getUpDownRunsNumber().hashCode();
+      }
+      if (hasUpDownRunsLength()) {
+        hash = (37 * hash) + UP_DOWN_RUNS_LENGTH_FIELD_NUMBER;
+        hash = (53 * hash) + getUpDownRunsLength().hashCode();
+      }
+      if (hasLjungBoxOnSquares()) {
+        hash = (37 * hash) + LJUNG_BOX_ON_SQUARES_FIELD_NUMBER;
+        hash = (53 * hash) + getLjungBoxOnSquares().hashCode();
+      }
+      if (hasBoxPierceOnSquares()) {
+        hash = (37 * hash) + BOX_PIERCE_ON_SQUARES_FIELD_NUMBER;
+        hash = (53 * hash) + getBoxPierceOnSquares().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code jd3.NIIDTests}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:jd3.NIIDTests)
+        demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTestsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_NIIDTests_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_NIIDTests_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.class, demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.Builder.class);
+      }
+
+      // Construct using demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (meanBuilder_ == null) {
+          mean_ = null;
+        } else {
+          mean_ = null;
+          meanBuilder_ = null;
+        }
+        if (skewnessBuilder_ == null) {
+          skewness_ = null;
+        } else {
+          skewness_ = null;
+          skewnessBuilder_ = null;
+        }
+        if (kurtosisBuilder_ == null) {
+          kurtosis_ = null;
+        } else {
+          kurtosis_ = null;
+          kurtosisBuilder_ = null;
+        }
+        if (doornikHansenBuilder_ == null) {
+          doornikHansen_ = null;
+        } else {
+          doornikHansen_ = null;
+          doornikHansenBuilder_ = null;
+        }
+        if (ljungBoxBuilder_ == null) {
+          ljungBox_ = null;
+        } else {
+          ljungBox_ = null;
+          ljungBoxBuilder_ = null;
+        }
+        if (boxPierceBuilder_ == null) {
+          boxPierce_ = null;
+        } else {
+          boxPierce_ = null;
+          boxPierceBuilder_ = null;
+        }
+        if (seasonalLjungBoxBuilder_ == null) {
+          seasonalLjungBox_ = null;
+        } else {
+          seasonalLjungBox_ = null;
+          seasonalLjungBoxBuilder_ = null;
+        }
+        if (seasonalBoxPierceBuilder_ == null) {
+          seasonalBoxPierce_ = null;
+        } else {
+          seasonalBoxPierce_ = null;
+          seasonalBoxPierceBuilder_ = null;
+        }
+        if (runsNumberBuilder_ == null) {
+          runsNumber_ = null;
+        } else {
+          runsNumber_ = null;
+          runsNumberBuilder_ = null;
+        }
+        if (runsLengthBuilder_ == null) {
+          runsLength_ = null;
+        } else {
+          runsLength_ = null;
+          runsLengthBuilder_ = null;
+        }
+        if (upDownRunsNumberBuilder_ == null) {
+          upDownRunsNumber_ = null;
+        } else {
+          upDownRunsNumber_ = null;
+          upDownRunsNumberBuilder_ = null;
+        }
+        if (upDownRunsLengthBuilder_ == null) {
+          upDownRunsLength_ = null;
+        } else {
+          upDownRunsLength_ = null;
+          upDownRunsLengthBuilder_ = null;
+        }
+        if (ljungBoxOnSquaresBuilder_ == null) {
+          ljungBoxOnSquares_ = null;
+        } else {
+          ljungBoxOnSquares_ = null;
+          ljungBoxOnSquaresBuilder_ = null;
+        }
+        if (boxPierceOnSquaresBuilder_ == null) {
+          boxPierceOnSquares_ = null;
+        } else {
+          boxPierceOnSquares_ = null;
+          boxPierceOnSquaresBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_NIIDTests_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests getDefaultInstanceForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests build() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests buildPartial() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests result = new demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests(this);
+        if (meanBuilder_ == null) {
+          result.mean_ = mean_;
+        } else {
+          result.mean_ = meanBuilder_.build();
+        }
+        if (skewnessBuilder_ == null) {
+          result.skewness_ = skewness_;
+        } else {
+          result.skewness_ = skewnessBuilder_.build();
+        }
+        if (kurtosisBuilder_ == null) {
+          result.kurtosis_ = kurtosis_;
+        } else {
+          result.kurtosis_ = kurtosisBuilder_.build();
+        }
+        if (doornikHansenBuilder_ == null) {
+          result.doornikHansen_ = doornikHansen_;
+        } else {
+          result.doornikHansen_ = doornikHansenBuilder_.build();
+        }
+        if (ljungBoxBuilder_ == null) {
+          result.ljungBox_ = ljungBox_;
+        } else {
+          result.ljungBox_ = ljungBoxBuilder_.build();
+        }
+        if (boxPierceBuilder_ == null) {
+          result.boxPierce_ = boxPierce_;
+        } else {
+          result.boxPierce_ = boxPierceBuilder_.build();
+        }
+        if (seasonalLjungBoxBuilder_ == null) {
+          result.seasonalLjungBox_ = seasonalLjungBox_;
+        } else {
+          result.seasonalLjungBox_ = seasonalLjungBoxBuilder_.build();
+        }
+        if (seasonalBoxPierceBuilder_ == null) {
+          result.seasonalBoxPierce_ = seasonalBoxPierce_;
+        } else {
+          result.seasonalBoxPierce_ = seasonalBoxPierceBuilder_.build();
+        }
+        if (runsNumberBuilder_ == null) {
+          result.runsNumber_ = runsNumber_;
+        } else {
+          result.runsNumber_ = runsNumberBuilder_.build();
+        }
+        if (runsLengthBuilder_ == null) {
+          result.runsLength_ = runsLength_;
+        } else {
+          result.runsLength_ = runsLengthBuilder_.build();
+        }
+        if (upDownRunsNumberBuilder_ == null) {
+          result.upDownRunsNumber_ = upDownRunsNumber_;
+        } else {
+          result.upDownRunsNumber_ = upDownRunsNumberBuilder_.build();
+        }
+        if (upDownRunsLengthBuilder_ == null) {
+          result.upDownRunsLength_ = upDownRunsLength_;
+        } else {
+          result.upDownRunsLength_ = upDownRunsLengthBuilder_.build();
+        }
+        if (ljungBoxOnSquaresBuilder_ == null) {
+          result.ljungBoxOnSquares_ = ljungBoxOnSquares_;
+        } else {
+          result.ljungBoxOnSquares_ = ljungBoxOnSquaresBuilder_.build();
+        }
+        if (boxPierceOnSquaresBuilder_ == null) {
+          result.boxPierceOnSquares_ = boxPierceOnSquares_;
+        } else {
+          result.boxPierceOnSquares_ = boxPierceOnSquaresBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests) {
+          return mergeFrom((demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests other) {
+        if (other == demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.getDefaultInstance()) return this;
+        if (other.hasMean()) {
+          mergeMean(other.getMean());
+        }
+        if (other.hasSkewness()) {
+          mergeSkewness(other.getSkewness());
+        }
+        if (other.hasKurtosis()) {
+          mergeKurtosis(other.getKurtosis());
+        }
+        if (other.hasDoornikHansen()) {
+          mergeDoornikHansen(other.getDoornikHansen());
+        }
+        if (other.hasLjungBox()) {
+          mergeLjungBox(other.getLjungBox());
+        }
+        if (other.hasBoxPierce()) {
+          mergeBoxPierce(other.getBoxPierce());
+        }
+        if (other.hasSeasonalLjungBox()) {
+          mergeSeasonalLjungBox(other.getSeasonalLjungBox());
+        }
+        if (other.hasSeasonalBoxPierce()) {
+          mergeSeasonalBoxPierce(other.getSeasonalBoxPierce());
+        }
+        if (other.hasRunsNumber()) {
+          mergeRunsNumber(other.getRunsNumber());
+        }
+        if (other.hasRunsLength()) {
+          mergeRunsLength(other.getRunsLength());
+        }
+        if (other.hasUpDownRunsNumber()) {
+          mergeUpDownRunsNumber(other.getUpDownRunsNumber());
+        }
+        if (other.hasUpDownRunsLength()) {
+          mergeUpDownRunsLength(other.getUpDownRunsLength());
+        }
+        if (other.hasLjungBoxOnSquares()) {
+          mergeLjungBoxOnSquares(other.getLjungBoxOnSquares());
+        }
+        if (other.hasBoxPierceOnSquares()) {
+          mergeBoxPierceOnSquares(other.getBoxPierceOnSquares());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest mean_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> meanBuilder_;
+      /**
+       * <pre>
+       * Normality 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest mean = 1;</code>
+       * @return Whether the mean field is set.
+       */
+      public boolean hasMean() {
+        return meanBuilder_ != null || mean_ != null;
+      }
+      /**
+       * <pre>
+       * Normality 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest mean = 1;</code>
+       * @return The mean.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getMean() {
+        if (meanBuilder_ == null) {
+          return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : mean_;
+        } else {
+          return meanBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * Normality 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest mean = 1;</code>
+       */
+      public Builder setMean(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (meanBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          mean_ = value;
+          onChanged();
+        } else {
+          meanBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * Normality 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest mean = 1;</code>
+       */
+      public Builder setMean(
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder builderForValue) {
+        if (meanBuilder_ == null) {
+          mean_ = builderForValue.build();
+          onChanged();
+        } else {
+          meanBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * Normality 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest mean = 1;</code>
+       */
+      public Builder mergeMean(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (meanBuilder_ == null) {
+          if (mean_ != null) {
+            mean_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder(mean_).mergeFrom(value).buildPartial();
+          } else {
+            mean_ = value;
+          }
+          onChanged();
+        } else {
+          meanBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * Normality 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest mean = 1;</code>
+       */
+      public Builder clearMean() {
+        if (meanBuilder_ == null) {
+          mean_ = null;
+          onChanged();
+        } else {
+          mean_ = null;
+          meanBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * Normality 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest mean = 1;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder getMeanBuilder() {
+        
+        onChanged();
+        return getMeanFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * Normality 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest mean = 1;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getMeanOrBuilder() {
+        if (meanBuilder_ != null) {
+          return meanBuilder_.getMessageOrBuilder();
+        } else {
+          return mean_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : mean_;
+        }
+      }
+      /**
+       * <pre>
+       * Normality 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest mean = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> 
+          getMeanFieldBuilder() {
+        if (meanBuilder_ == null) {
+          meanBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder>(
+                  getMean(),
+                  getParentForChildren(),
+                  isClean());
+          mean_ = null;
+        }
+        return meanBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest skewness_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> skewnessBuilder_;
+      /**
+       * <code>.jd3.StatisticalTest skewness = 2;</code>
+       * @return Whether the skewness field is set.
+       */
+      public boolean hasSkewness() {
+        return skewnessBuilder_ != null || skewness_ != null;
+      }
+      /**
+       * <code>.jd3.StatisticalTest skewness = 2;</code>
+       * @return The skewness.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getSkewness() {
+        if (skewnessBuilder_ == null) {
+          return skewness_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : skewness_;
+        } else {
+          return skewnessBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest skewness = 2;</code>
+       */
+      public Builder setSkewness(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (skewnessBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          skewness_ = value;
+          onChanged();
+        } else {
+          skewnessBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest skewness = 2;</code>
+       */
+      public Builder setSkewness(
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder builderForValue) {
+        if (skewnessBuilder_ == null) {
+          skewness_ = builderForValue.build();
+          onChanged();
+        } else {
+          skewnessBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest skewness = 2;</code>
+       */
+      public Builder mergeSkewness(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (skewnessBuilder_ == null) {
+          if (skewness_ != null) {
+            skewness_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder(skewness_).mergeFrom(value).buildPartial();
+          } else {
+            skewness_ = value;
+          }
+          onChanged();
+        } else {
+          skewnessBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest skewness = 2;</code>
+       */
+      public Builder clearSkewness() {
+        if (skewnessBuilder_ == null) {
+          skewness_ = null;
+          onChanged();
+        } else {
+          skewness_ = null;
+          skewnessBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest skewness = 2;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder getSkewnessBuilder() {
+        
+        onChanged();
+        return getSkewnessFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.StatisticalTest skewness = 2;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getSkewnessOrBuilder() {
+        if (skewnessBuilder_ != null) {
+          return skewnessBuilder_.getMessageOrBuilder();
+        } else {
+          return skewness_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : skewness_;
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest skewness = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> 
+          getSkewnessFieldBuilder() {
+        if (skewnessBuilder_ == null) {
+          skewnessBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder>(
+                  getSkewness(),
+                  getParentForChildren(),
+                  isClean());
+          skewness_ = null;
+        }
+        return skewnessBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest kurtosis_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> kurtosisBuilder_;
+      /**
+       * <code>.jd3.StatisticalTest kurtosis = 3;</code>
+       * @return Whether the kurtosis field is set.
+       */
+      public boolean hasKurtosis() {
+        return kurtosisBuilder_ != null || kurtosis_ != null;
+      }
+      /**
+       * <code>.jd3.StatisticalTest kurtosis = 3;</code>
+       * @return The kurtosis.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getKurtosis() {
+        if (kurtosisBuilder_ == null) {
+          return kurtosis_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : kurtosis_;
+        } else {
+          return kurtosisBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest kurtosis = 3;</code>
+       */
+      public Builder setKurtosis(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (kurtosisBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          kurtosis_ = value;
+          onChanged();
+        } else {
+          kurtosisBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest kurtosis = 3;</code>
+       */
+      public Builder setKurtosis(
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder builderForValue) {
+        if (kurtosisBuilder_ == null) {
+          kurtosis_ = builderForValue.build();
+          onChanged();
+        } else {
+          kurtosisBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest kurtosis = 3;</code>
+       */
+      public Builder mergeKurtosis(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (kurtosisBuilder_ == null) {
+          if (kurtosis_ != null) {
+            kurtosis_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder(kurtosis_).mergeFrom(value).buildPartial();
+          } else {
+            kurtosis_ = value;
+          }
+          onChanged();
+        } else {
+          kurtosisBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest kurtosis = 3;</code>
+       */
+      public Builder clearKurtosis() {
+        if (kurtosisBuilder_ == null) {
+          kurtosis_ = null;
+          onChanged();
+        } else {
+          kurtosis_ = null;
+          kurtosisBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest kurtosis = 3;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder getKurtosisBuilder() {
+        
+        onChanged();
+        return getKurtosisFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.StatisticalTest kurtosis = 3;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getKurtosisOrBuilder() {
+        if (kurtosisBuilder_ != null) {
+          return kurtosisBuilder_.getMessageOrBuilder();
+        } else {
+          return kurtosis_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : kurtosis_;
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest kurtosis = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> 
+          getKurtosisFieldBuilder() {
+        if (kurtosisBuilder_ == null) {
+          kurtosisBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder>(
+                  getKurtosis(),
+                  getParentForChildren(),
+                  isClean());
+          kurtosis_ = null;
+        }
+        return kurtosisBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest doornikHansen_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> doornikHansenBuilder_;
+      /**
+       * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
+       * @return Whether the doornikHansen field is set.
+       */
+      public boolean hasDoornikHansen() {
+        return doornikHansenBuilder_ != null || doornikHansen_ != null;
+      }
+      /**
+       * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
+       * @return The doornikHansen.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getDoornikHansen() {
+        if (doornikHansenBuilder_ == null) {
+          return doornikHansen_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : doornikHansen_;
+        } else {
+          return doornikHansenBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
+       */
+      public Builder setDoornikHansen(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (doornikHansenBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          doornikHansen_ = value;
+          onChanged();
+        } else {
+          doornikHansenBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
+       */
+      public Builder setDoornikHansen(
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder builderForValue) {
+        if (doornikHansenBuilder_ == null) {
+          doornikHansen_ = builderForValue.build();
+          onChanged();
+        } else {
+          doornikHansenBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
+       */
+      public Builder mergeDoornikHansen(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (doornikHansenBuilder_ == null) {
+          if (doornikHansen_ != null) {
+            doornikHansen_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder(doornikHansen_).mergeFrom(value).buildPartial();
+          } else {
+            doornikHansen_ = value;
+          }
+          onChanged();
+        } else {
+          doornikHansenBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
+       */
+      public Builder clearDoornikHansen() {
+        if (doornikHansenBuilder_ == null) {
+          doornikHansen_ = null;
+          onChanged();
+        } else {
+          doornikHansen_ = null;
+          doornikHansenBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder getDoornikHansenBuilder() {
+        
+        onChanged();
+        return getDoornikHansenFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getDoornikHansenOrBuilder() {
+        if (doornikHansenBuilder_ != null) {
+          return doornikHansenBuilder_.getMessageOrBuilder();
+        } else {
+          return doornikHansen_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : doornikHansen_;
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> 
+          getDoornikHansenFieldBuilder() {
+        if (doornikHansenBuilder_ == null) {
+          doornikHansenBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder>(
+                  getDoornikHansen(),
+                  getParentForChildren(),
+                  isClean());
+          doornikHansen_ = null;
+        }
+        return doornikHansenBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest ljungBox_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> ljungBoxBuilder_;
+      /**
+       * <pre>
+       * Independence 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box = 5;</code>
+       * @return Whether the ljungBox field is set.
+       */
+      public boolean hasLjungBox() {
+        return ljungBoxBuilder_ != null || ljungBox_ != null;
+      }
+      /**
+       * <pre>
+       * Independence 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box = 5;</code>
+       * @return The ljungBox.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getLjungBox() {
+        if (ljungBoxBuilder_ == null) {
+          return ljungBox_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : ljungBox_;
+        } else {
+          return ljungBoxBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * Independence 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box = 5;</code>
+       */
+      public Builder setLjungBox(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (ljungBoxBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ljungBox_ = value;
+          onChanged();
+        } else {
+          ljungBoxBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * Independence 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box = 5;</code>
+       */
+      public Builder setLjungBox(
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder builderForValue) {
+        if (ljungBoxBuilder_ == null) {
+          ljungBox_ = builderForValue.build();
+          onChanged();
+        } else {
+          ljungBoxBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * Independence 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box = 5;</code>
+       */
+      public Builder mergeLjungBox(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (ljungBoxBuilder_ == null) {
+          if (ljungBox_ != null) {
+            ljungBox_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder(ljungBox_).mergeFrom(value).buildPartial();
+          } else {
+            ljungBox_ = value;
+          }
+          onChanged();
+        } else {
+          ljungBoxBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * Independence 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box = 5;</code>
+       */
+      public Builder clearLjungBox() {
+        if (ljungBoxBuilder_ == null) {
+          ljungBox_ = null;
+          onChanged();
+        } else {
+          ljungBox_ = null;
+          ljungBoxBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * Independence 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box = 5;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder getLjungBoxBuilder() {
+        
+        onChanged();
+        return getLjungBoxFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * Independence 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box = 5;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getLjungBoxOrBuilder() {
+        if (ljungBoxBuilder_ != null) {
+          return ljungBoxBuilder_.getMessageOrBuilder();
+        } else {
+          return ljungBox_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : ljungBox_;
+        }
+      }
+      /**
+       * <pre>
+       * Independence 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box = 5;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> 
+          getLjungBoxFieldBuilder() {
+        if (ljungBoxBuilder_ == null) {
+          ljungBoxBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder>(
+                  getLjungBox(),
+                  getParentForChildren(),
+                  isClean());
+          ljungBox_ = null;
+        }
+        return ljungBoxBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest boxPierce_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> boxPierceBuilder_;
+      /**
+       * <code>.jd3.StatisticalTest box_pierce = 6;</code>
+       * @return Whether the boxPierce field is set.
+       */
+      public boolean hasBoxPierce() {
+        return boxPierceBuilder_ != null || boxPierce_ != null;
+      }
+      /**
+       * <code>.jd3.StatisticalTest box_pierce = 6;</code>
+       * @return The boxPierce.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getBoxPierce() {
+        if (boxPierceBuilder_ == null) {
+          return boxPierce_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : boxPierce_;
+        } else {
+          return boxPierceBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest box_pierce = 6;</code>
+       */
+      public Builder setBoxPierce(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (boxPierceBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          boxPierce_ = value;
+          onChanged();
+        } else {
+          boxPierceBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest box_pierce = 6;</code>
+       */
+      public Builder setBoxPierce(
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder builderForValue) {
+        if (boxPierceBuilder_ == null) {
+          boxPierce_ = builderForValue.build();
+          onChanged();
+        } else {
+          boxPierceBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest box_pierce = 6;</code>
+       */
+      public Builder mergeBoxPierce(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (boxPierceBuilder_ == null) {
+          if (boxPierce_ != null) {
+            boxPierce_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder(boxPierce_).mergeFrom(value).buildPartial();
+          } else {
+            boxPierce_ = value;
+          }
+          onChanged();
+        } else {
+          boxPierceBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest box_pierce = 6;</code>
+       */
+      public Builder clearBoxPierce() {
+        if (boxPierceBuilder_ == null) {
+          boxPierce_ = null;
+          onChanged();
+        } else {
+          boxPierce_ = null;
+          boxPierceBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest box_pierce = 6;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder getBoxPierceBuilder() {
+        
+        onChanged();
+        return getBoxPierceFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.StatisticalTest box_pierce = 6;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getBoxPierceOrBuilder() {
+        if (boxPierceBuilder_ != null) {
+          return boxPierceBuilder_.getMessageOrBuilder();
+        } else {
+          return boxPierce_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : boxPierce_;
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest box_pierce = 6;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> 
+          getBoxPierceFieldBuilder() {
+        if (boxPierceBuilder_ == null) {
+          boxPierceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder>(
+                  getBoxPierce(),
+                  getParentForChildren(),
+                  isClean());
+          boxPierce_ = null;
+        }
+        return boxPierceBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest seasonalLjungBox_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> seasonalLjungBoxBuilder_;
+      /**
+       * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
+       * @return Whether the seasonalLjungBox field is set.
+       */
+      public boolean hasSeasonalLjungBox() {
+        return seasonalLjungBoxBuilder_ != null || seasonalLjungBox_ != null;
+      }
+      /**
+       * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
+       * @return The seasonalLjungBox.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getSeasonalLjungBox() {
+        if (seasonalLjungBoxBuilder_ == null) {
+          return seasonalLjungBox_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : seasonalLjungBox_;
+        } else {
+          return seasonalLjungBoxBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
+       */
+      public Builder setSeasonalLjungBox(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (seasonalLjungBoxBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          seasonalLjungBox_ = value;
+          onChanged();
+        } else {
+          seasonalLjungBoxBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
+       */
+      public Builder setSeasonalLjungBox(
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder builderForValue) {
+        if (seasonalLjungBoxBuilder_ == null) {
+          seasonalLjungBox_ = builderForValue.build();
+          onChanged();
+        } else {
+          seasonalLjungBoxBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
+       */
+      public Builder mergeSeasonalLjungBox(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (seasonalLjungBoxBuilder_ == null) {
+          if (seasonalLjungBox_ != null) {
+            seasonalLjungBox_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder(seasonalLjungBox_).mergeFrom(value).buildPartial();
+          } else {
+            seasonalLjungBox_ = value;
+          }
+          onChanged();
+        } else {
+          seasonalLjungBoxBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
+       */
+      public Builder clearSeasonalLjungBox() {
+        if (seasonalLjungBoxBuilder_ == null) {
+          seasonalLjungBox_ = null;
+          onChanged();
+        } else {
+          seasonalLjungBox_ = null;
+          seasonalLjungBoxBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder getSeasonalLjungBoxBuilder() {
+        
+        onChanged();
+        return getSeasonalLjungBoxFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getSeasonalLjungBoxOrBuilder() {
+        if (seasonalLjungBoxBuilder_ != null) {
+          return seasonalLjungBoxBuilder_.getMessageOrBuilder();
+        } else {
+          return seasonalLjungBox_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : seasonalLjungBox_;
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> 
+          getSeasonalLjungBoxFieldBuilder() {
+        if (seasonalLjungBoxBuilder_ == null) {
+          seasonalLjungBoxBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder>(
+                  getSeasonalLjungBox(),
+                  getParentForChildren(),
+                  isClean());
+          seasonalLjungBox_ = null;
+        }
+        return seasonalLjungBoxBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest seasonalBoxPierce_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> seasonalBoxPierceBuilder_;
+      /**
+       * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
+       * @return Whether the seasonalBoxPierce field is set.
+       */
+      public boolean hasSeasonalBoxPierce() {
+        return seasonalBoxPierceBuilder_ != null || seasonalBoxPierce_ != null;
+      }
+      /**
+       * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
+       * @return The seasonalBoxPierce.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getSeasonalBoxPierce() {
+        if (seasonalBoxPierceBuilder_ == null) {
+          return seasonalBoxPierce_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : seasonalBoxPierce_;
+        } else {
+          return seasonalBoxPierceBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
+       */
+      public Builder setSeasonalBoxPierce(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (seasonalBoxPierceBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          seasonalBoxPierce_ = value;
+          onChanged();
+        } else {
+          seasonalBoxPierceBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
+       */
+      public Builder setSeasonalBoxPierce(
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder builderForValue) {
+        if (seasonalBoxPierceBuilder_ == null) {
+          seasonalBoxPierce_ = builderForValue.build();
+          onChanged();
+        } else {
+          seasonalBoxPierceBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
+       */
+      public Builder mergeSeasonalBoxPierce(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (seasonalBoxPierceBuilder_ == null) {
+          if (seasonalBoxPierce_ != null) {
+            seasonalBoxPierce_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder(seasonalBoxPierce_).mergeFrom(value).buildPartial();
+          } else {
+            seasonalBoxPierce_ = value;
+          }
+          onChanged();
+        } else {
+          seasonalBoxPierceBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
+       */
+      public Builder clearSeasonalBoxPierce() {
+        if (seasonalBoxPierceBuilder_ == null) {
+          seasonalBoxPierce_ = null;
+          onChanged();
+        } else {
+          seasonalBoxPierce_ = null;
+          seasonalBoxPierceBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder getSeasonalBoxPierceBuilder() {
+        
+        onChanged();
+        return getSeasonalBoxPierceFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getSeasonalBoxPierceOrBuilder() {
+        if (seasonalBoxPierceBuilder_ != null) {
+          return seasonalBoxPierceBuilder_.getMessageOrBuilder();
+        } else {
+          return seasonalBoxPierce_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : seasonalBoxPierce_;
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> 
+          getSeasonalBoxPierceFieldBuilder() {
+        if (seasonalBoxPierceBuilder_ == null) {
+          seasonalBoxPierceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder>(
+                  getSeasonalBoxPierce(),
+                  getParentForChildren(),
+                  isClean());
+          seasonalBoxPierce_ = null;
+        }
+        return seasonalBoxPierceBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest runsNumber_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> runsNumberBuilder_;
+      /**
+       * <pre>
+       * Randomness 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest runs_number = 9;</code>
+       * @return Whether the runsNumber field is set.
+       */
+      public boolean hasRunsNumber() {
+        return runsNumberBuilder_ != null || runsNumber_ != null;
+      }
+      /**
+       * <pre>
+       * Randomness 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest runs_number = 9;</code>
+       * @return The runsNumber.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getRunsNumber() {
+        if (runsNumberBuilder_ == null) {
+          return runsNumber_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : runsNumber_;
+        } else {
+          return runsNumberBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * Randomness 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest runs_number = 9;</code>
+       */
+      public Builder setRunsNumber(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (runsNumberBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          runsNumber_ = value;
+          onChanged();
+        } else {
+          runsNumberBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * Randomness 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest runs_number = 9;</code>
+       */
+      public Builder setRunsNumber(
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder builderForValue) {
+        if (runsNumberBuilder_ == null) {
+          runsNumber_ = builderForValue.build();
+          onChanged();
+        } else {
+          runsNumberBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * Randomness 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest runs_number = 9;</code>
+       */
+      public Builder mergeRunsNumber(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (runsNumberBuilder_ == null) {
+          if (runsNumber_ != null) {
+            runsNumber_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder(runsNumber_).mergeFrom(value).buildPartial();
+          } else {
+            runsNumber_ = value;
+          }
+          onChanged();
+        } else {
+          runsNumberBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * Randomness 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest runs_number = 9;</code>
+       */
+      public Builder clearRunsNumber() {
+        if (runsNumberBuilder_ == null) {
+          runsNumber_ = null;
+          onChanged();
+        } else {
+          runsNumber_ = null;
+          runsNumberBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * Randomness 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest runs_number = 9;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder getRunsNumberBuilder() {
+        
+        onChanged();
+        return getRunsNumberFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * Randomness 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest runs_number = 9;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getRunsNumberOrBuilder() {
+        if (runsNumberBuilder_ != null) {
+          return runsNumberBuilder_.getMessageOrBuilder();
+        } else {
+          return runsNumber_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : runsNumber_;
+        }
+      }
+      /**
+       * <pre>
+       * Randomness 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest runs_number = 9;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> 
+          getRunsNumberFieldBuilder() {
+        if (runsNumberBuilder_ == null) {
+          runsNumberBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder>(
+                  getRunsNumber(),
+                  getParentForChildren(),
+                  isClean());
+          runsNumber_ = null;
+        }
+        return runsNumberBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest runsLength_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> runsLengthBuilder_;
+      /**
+       * <code>.jd3.StatisticalTest runs_length = 10;</code>
+       * @return Whether the runsLength field is set.
+       */
+      public boolean hasRunsLength() {
+        return runsLengthBuilder_ != null || runsLength_ != null;
+      }
+      /**
+       * <code>.jd3.StatisticalTest runs_length = 10;</code>
+       * @return The runsLength.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getRunsLength() {
+        if (runsLengthBuilder_ == null) {
+          return runsLength_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : runsLength_;
+        } else {
+          return runsLengthBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest runs_length = 10;</code>
+       */
+      public Builder setRunsLength(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (runsLengthBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          runsLength_ = value;
+          onChanged();
+        } else {
+          runsLengthBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest runs_length = 10;</code>
+       */
+      public Builder setRunsLength(
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder builderForValue) {
+        if (runsLengthBuilder_ == null) {
+          runsLength_ = builderForValue.build();
+          onChanged();
+        } else {
+          runsLengthBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest runs_length = 10;</code>
+       */
+      public Builder mergeRunsLength(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (runsLengthBuilder_ == null) {
+          if (runsLength_ != null) {
+            runsLength_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder(runsLength_).mergeFrom(value).buildPartial();
+          } else {
+            runsLength_ = value;
+          }
+          onChanged();
+        } else {
+          runsLengthBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest runs_length = 10;</code>
+       */
+      public Builder clearRunsLength() {
+        if (runsLengthBuilder_ == null) {
+          runsLength_ = null;
+          onChanged();
+        } else {
+          runsLength_ = null;
+          runsLengthBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest runs_length = 10;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder getRunsLengthBuilder() {
+        
+        onChanged();
+        return getRunsLengthFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.StatisticalTest runs_length = 10;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getRunsLengthOrBuilder() {
+        if (runsLengthBuilder_ != null) {
+          return runsLengthBuilder_.getMessageOrBuilder();
+        } else {
+          return runsLength_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : runsLength_;
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest runs_length = 10;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> 
+          getRunsLengthFieldBuilder() {
+        if (runsLengthBuilder_ == null) {
+          runsLengthBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder>(
+                  getRunsLength(),
+                  getParentForChildren(),
+                  isClean());
+          runsLength_ = null;
+        }
+        return runsLengthBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest upDownRunsNumber_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> upDownRunsNumberBuilder_;
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
+       * @return Whether the upDownRunsNumber field is set.
+       */
+      public boolean hasUpDownRunsNumber() {
+        return upDownRunsNumberBuilder_ != null || upDownRunsNumber_ != null;
+      }
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
+       * @return The upDownRunsNumber.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getUpDownRunsNumber() {
+        if (upDownRunsNumberBuilder_ == null) {
+          return upDownRunsNumber_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : upDownRunsNumber_;
+        } else {
+          return upDownRunsNumberBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
+       */
+      public Builder setUpDownRunsNumber(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (upDownRunsNumberBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          upDownRunsNumber_ = value;
+          onChanged();
+        } else {
+          upDownRunsNumberBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
+       */
+      public Builder setUpDownRunsNumber(
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder builderForValue) {
+        if (upDownRunsNumberBuilder_ == null) {
+          upDownRunsNumber_ = builderForValue.build();
+          onChanged();
+        } else {
+          upDownRunsNumberBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
+       */
+      public Builder mergeUpDownRunsNumber(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (upDownRunsNumberBuilder_ == null) {
+          if (upDownRunsNumber_ != null) {
+            upDownRunsNumber_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder(upDownRunsNumber_).mergeFrom(value).buildPartial();
+          } else {
+            upDownRunsNumber_ = value;
+          }
+          onChanged();
+        } else {
+          upDownRunsNumberBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
+       */
+      public Builder clearUpDownRunsNumber() {
+        if (upDownRunsNumberBuilder_ == null) {
+          upDownRunsNumber_ = null;
+          onChanged();
+        } else {
+          upDownRunsNumber_ = null;
+          upDownRunsNumberBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder getUpDownRunsNumberBuilder() {
+        
+        onChanged();
+        return getUpDownRunsNumberFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getUpDownRunsNumberOrBuilder() {
+        if (upDownRunsNumberBuilder_ != null) {
+          return upDownRunsNumberBuilder_.getMessageOrBuilder();
+        } else {
+          return upDownRunsNumber_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : upDownRunsNumber_;
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> 
+          getUpDownRunsNumberFieldBuilder() {
+        if (upDownRunsNumberBuilder_ == null) {
+          upDownRunsNumberBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder>(
+                  getUpDownRunsNumber(),
+                  getParentForChildren(),
+                  isClean());
+          upDownRunsNumber_ = null;
+        }
+        return upDownRunsNumberBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest upDownRunsLength_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> upDownRunsLengthBuilder_;
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
+       * @return Whether the upDownRunsLength field is set.
+       */
+      public boolean hasUpDownRunsLength() {
+        return upDownRunsLengthBuilder_ != null || upDownRunsLength_ != null;
+      }
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
+       * @return The upDownRunsLength.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getUpDownRunsLength() {
+        if (upDownRunsLengthBuilder_ == null) {
+          return upDownRunsLength_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : upDownRunsLength_;
+        } else {
+          return upDownRunsLengthBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
+       */
+      public Builder setUpDownRunsLength(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (upDownRunsLengthBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          upDownRunsLength_ = value;
+          onChanged();
+        } else {
+          upDownRunsLengthBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
+       */
+      public Builder setUpDownRunsLength(
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder builderForValue) {
+        if (upDownRunsLengthBuilder_ == null) {
+          upDownRunsLength_ = builderForValue.build();
+          onChanged();
+        } else {
+          upDownRunsLengthBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
+       */
+      public Builder mergeUpDownRunsLength(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (upDownRunsLengthBuilder_ == null) {
+          if (upDownRunsLength_ != null) {
+            upDownRunsLength_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder(upDownRunsLength_).mergeFrom(value).buildPartial();
+          } else {
+            upDownRunsLength_ = value;
+          }
+          onChanged();
+        } else {
+          upDownRunsLengthBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
+       */
+      public Builder clearUpDownRunsLength() {
+        if (upDownRunsLengthBuilder_ == null) {
+          upDownRunsLength_ = null;
+          onChanged();
+        } else {
+          upDownRunsLength_ = null;
+          upDownRunsLengthBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder getUpDownRunsLengthBuilder() {
+        
+        onChanged();
+        return getUpDownRunsLengthFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getUpDownRunsLengthOrBuilder() {
+        if (upDownRunsLengthBuilder_ != null) {
+          return upDownRunsLengthBuilder_.getMessageOrBuilder();
+        } else {
+          return upDownRunsLength_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : upDownRunsLength_;
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> 
+          getUpDownRunsLengthFieldBuilder() {
+        if (upDownRunsLengthBuilder_ == null) {
+          upDownRunsLengthBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder>(
+                  getUpDownRunsLength(),
+                  getParentForChildren(),
+                  isClean());
+          upDownRunsLength_ = null;
+        }
+        return upDownRunsLengthBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest ljungBoxOnSquares_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> ljungBoxOnSquaresBuilder_;
+      /**
+       * <pre>
+       * Linearity 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
+       * @return Whether the ljungBoxOnSquares field is set.
+       */
+      public boolean hasLjungBoxOnSquares() {
+        return ljungBoxOnSquaresBuilder_ != null || ljungBoxOnSquares_ != null;
+      }
+      /**
+       * <pre>
+       * Linearity 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
+       * @return The ljungBoxOnSquares.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getLjungBoxOnSquares() {
+        if (ljungBoxOnSquaresBuilder_ == null) {
+          return ljungBoxOnSquares_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : ljungBoxOnSquares_;
+        } else {
+          return ljungBoxOnSquaresBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * Linearity 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
+       */
+      public Builder setLjungBoxOnSquares(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (ljungBoxOnSquaresBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ljungBoxOnSquares_ = value;
+          onChanged();
+        } else {
+          ljungBoxOnSquaresBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * Linearity 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
+       */
+      public Builder setLjungBoxOnSquares(
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder builderForValue) {
+        if (ljungBoxOnSquaresBuilder_ == null) {
+          ljungBoxOnSquares_ = builderForValue.build();
+          onChanged();
+        } else {
+          ljungBoxOnSquaresBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * Linearity 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
+       */
+      public Builder mergeLjungBoxOnSquares(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (ljungBoxOnSquaresBuilder_ == null) {
+          if (ljungBoxOnSquares_ != null) {
+            ljungBoxOnSquares_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder(ljungBoxOnSquares_).mergeFrom(value).buildPartial();
+          } else {
+            ljungBoxOnSquares_ = value;
+          }
+          onChanged();
+        } else {
+          ljungBoxOnSquaresBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * Linearity 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
+       */
+      public Builder clearLjungBoxOnSquares() {
+        if (ljungBoxOnSquaresBuilder_ == null) {
+          ljungBoxOnSquares_ = null;
+          onChanged();
+        } else {
+          ljungBoxOnSquares_ = null;
+          ljungBoxOnSquaresBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * Linearity 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder getLjungBoxOnSquaresBuilder() {
+        
+        onChanged();
+        return getLjungBoxOnSquaresFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * Linearity 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getLjungBoxOnSquaresOrBuilder() {
+        if (ljungBoxOnSquaresBuilder_ != null) {
+          return ljungBoxOnSquaresBuilder_.getMessageOrBuilder();
+        } else {
+          return ljungBoxOnSquares_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : ljungBoxOnSquares_;
+        }
+      }
+      /**
+       * <pre>
+       * Linearity 
+       * </pre>
+       *
+       * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> 
+          getLjungBoxOnSquaresFieldBuilder() {
+        if (ljungBoxOnSquaresBuilder_ == null) {
+          ljungBoxOnSquaresBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder>(
+                  getLjungBoxOnSquares(),
+                  getParentForChildren(),
+                  isClean());
+          ljungBoxOnSquares_ = null;
+        }
+        return ljungBoxOnSquaresBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest boxPierceOnSquares_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> boxPierceOnSquaresBuilder_;
+      /**
+       * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
+       * @return Whether the boxPierceOnSquares field is set.
+       */
+      public boolean hasBoxPierceOnSquares() {
+        return boxPierceOnSquaresBuilder_ != null || boxPierceOnSquares_ != null;
+      }
+      /**
+       * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
+       * @return The boxPierceOnSquares.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getBoxPierceOnSquares() {
+        if (boxPierceOnSquaresBuilder_ == null) {
+          return boxPierceOnSquares_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : boxPierceOnSquares_;
+        } else {
+          return boxPierceOnSquaresBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
+       */
+      public Builder setBoxPierceOnSquares(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (boxPierceOnSquaresBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          boxPierceOnSquares_ = value;
+          onChanged();
+        } else {
+          boxPierceOnSquaresBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
+       */
+      public Builder setBoxPierceOnSquares(
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder builderForValue) {
+        if (boxPierceOnSquaresBuilder_ == null) {
+          boxPierceOnSquares_ = builderForValue.build();
+          onChanged();
+        } else {
+          boxPierceOnSquaresBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
+       */
+      public Builder mergeBoxPierceOnSquares(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (boxPierceOnSquaresBuilder_ == null) {
+          if (boxPierceOnSquares_ != null) {
+            boxPierceOnSquares_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder(boxPierceOnSquares_).mergeFrom(value).buildPartial();
+          } else {
+            boxPierceOnSquares_ = value;
+          }
+          onChanged();
+        } else {
+          boxPierceOnSquaresBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
+       */
+      public Builder clearBoxPierceOnSquares() {
+        if (boxPierceOnSquaresBuilder_ == null) {
+          boxPierceOnSquares_ = null;
+          onChanged();
+        } else {
+          boxPierceOnSquares_ = null;
+          boxPierceOnSquaresBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder getBoxPierceOnSquaresBuilder() {
+        
+        onChanged();
+        return getBoxPierceOnSquaresFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getBoxPierceOnSquaresOrBuilder() {
+        if (boxPierceOnSquaresBuilder_ != null) {
+          return boxPierceOnSquaresBuilder_.getMessageOrBuilder();
+        } else {
+          return boxPierceOnSquares_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : boxPierceOnSquares_;
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> 
+          getBoxPierceOnSquaresFieldBuilder() {
+        if (boxPierceOnSquaresBuilder_ == null) {
+          boxPierceOnSquaresBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder>(
+                  getBoxPierceOnSquares(),
+                  getParentForChildren(),
+                  isClean());
+          boxPierceOnSquares_ = null;
+        }
+        return boxPierceOnSquaresBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:jd3.NIIDTests)
+    }
+
+    // @@protoc_insertion_point(class_scope:jd3.NIIDTests)
+    private static final demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests();
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<NIIDTests>
+        PARSER = new com.google.protobuf.AbstractParser<NIIDTests>() {
+      @java.lang.Override
+      public NIIDTests parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new NIIDTests(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<NIIDTests> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<NIIDTests> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_jd3_TimeSelector_descriptor;
   private static final 
@@ -7804,6 +11932,11 @@ public final class ToolkitProtos {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_jd3_Parameter_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_jd3_TsPeriod_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_jd3_TsPeriod_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_jd3_TsData_descriptor;
   private static final 
@@ -7834,6 +11967,11 @@ public final class ToolkitProtos {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_jd3_ArimaModel_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_jd3_NIIDTests_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_jd3_NIIDTests_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -7847,32 +11985,50 @@ public final class ToolkitProtos {
       "type\030\001 \001(\0162\022.jd3.SelectionType\022\n\n\002n0\030\002 \001" +
       "(\005\022\n\n\002n1\030\003 \001(\005\022\n\n\002d0\030\004 \001(\t\022\n\n\002d1\030\005 \001(\t\"<" +
       "\n\tParameter\022\r\n\005value\030\001 \001(\001\022 \n\004type\030\002 \001(\016" +
-      "2\022.jd3.ParameterType\"`\n\006TsData\022\014\n\004name\030\001" +
-      " \001(\t\022\016\n\006period\030\002 \001(\005\022\022\n\nstart_year\030\003 \001(\005" +
-      "\022\024\n\014start_period\030\004 \001(\005\022\016\n\006values\030\005 \003(\001\"D" +
-      "\n\006Matrix\022\014\n\004name\030\001 \001(\t\022\r\n\005nrows\030\002 \001(\005\022\r\n" +
-      "\005ncols\030\003 \001(\005\022\016\n\006values\030\004 \003(\001\"E\n\017Statisti" +
-      "calTest\022\r\n\005value\030\001 \001(\001\022\016\n\006pvalue\030\002 \001(\001\022\023" +
-      "\n\013description\030\003 \001(\t\"P\n\023ParameterEstimati" +
-      "on\022\014\n\004name\030\001 \001(\t\022\r\n\005value\030\002 \001(\001\022\014\n\004stde\030" +
-      "\003 \001(\001\022\016\n\006pvalue\030\004 \001(\001\"\210\002\n\024LikelihoodStat" +
-      "istics\022\014\n\004nobs\030\001 \001(\005\022\025\n\rneffectiveobs\030\002 " +
-      "\001(\005\022\017\n\007nparams\030\003 \001(\005\022\032\n\022degrees_of_freed" +
-      "om\030\004 \001(\005\022\026\n\016log_likelihood\030\005 \001(\001\022\037\n\027adju" +
-      "sted_log_likelihood\030\006 \001(\001\022\013\n\003aic\030\007 \001(\001\022\014" +
-      "\n\004aicc\030\010 \001(\001\022\013\n\003bic\030\t \001(\001\022\014\n\004bicc\030\n \001(\001\022" +
-      "\014\n\004bic2\030\013 \001(\001\022\024\n\014hannan_quinn\030\014 \001(\001\022\013\n\003s" +
-      "sq\030\r \001(\001\"^\n\nArimaModel\022\014\n\004name\030\001 \001(\t\022\033\n\023" +
-      "innovation_variance\030\002 \001(\001\022\n\n\002ar\030\003 \003(\001\022\r\n" +
-      "\005delta\030\004 \003(\001\022\n\n\002ma\030\005 \003(\001*\224\001\n\rSelectionTy" +
-      "pe\022\024\n\020SPAN_UNSPECIFIED\020\000\022\014\n\010SPAN_ALL\020\001\022\r" +
-      "\n\tSPAN_FROM\020\002\022\013\n\007SPAN_TO\020\003\022\020\n\014SPAN_BETWE" +
-      "EN\020\004\022\r\n\tSPAN_LAST\020\005\022\016\n\nSPAN_FIRST\020\006\022\022\n\016S" +
-      "PAN_EXCLUDING\020\007*o\n\rParameterType\022\031\n\025PARA" +
-      "METER_UNSPECIFIED\020\000\022\023\n\017PARAMETER_FIXED\020\001" +
-      "\022\025\n\021PARAMETER_INITIAL\020\002\022\027\n\023PARAMETER_EST" +
-      "IMATED\020\003B,\n\033demetra.toolkit.io.protobufB" +
-      "\rToolkitProtosb\006proto3"
+      "2\022.jd3.ParameterType\"?\n\010TsPeriod\022\030\n\020annu" +
+      "al_frequency\030\001 \001(\005\022\014\n\004year\030\002 \001(\005\022\013\n\003pos\030" +
+      "\003 \001(\005\"j\n\006TsData\022\014\n\004name\030\001 \001(\t\022\030\n\020annual_" +
+      "frequency\030\002 \001(\005\022\022\n\nstart_year\030\003 \001(\005\022\024\n\014s" +
+      "tart_period\030\004 \001(\005\022\016\n\006values\030\005 \003(\001\"D\n\006Mat" +
+      "rix\022\014\n\004name\030\001 \001(\t\022\r\n\005nrows\030\002 \001(\005\022\r\n\005ncol" +
+      "s\030\003 \001(\005\022\016\n\006values\030\004 \003(\001\"E\n\017StatisticalTe" +
+      "st\022\r\n\005value\030\001 \001(\001\022\016\n\006pvalue\030\002 \001(\001\022\023\n\013des" +
+      "cription\030\003 \001(\t\"P\n\023ParameterEstimation\022\014\n" +
+      "\004name\030\001 \001(\t\022\r\n\005value\030\002 \001(\001\022\014\n\004stde\030\003 \001(\001" +
+      "\022\016\n\006pvalue\030\004 \001(\001\"\210\002\n\024LikelihoodStatistic" +
+      "s\022\014\n\004nobs\030\001 \001(\005\022\025\n\rneffectiveobs\030\002 \001(\005\022\017" +
+      "\n\007nparams\030\003 \001(\005\022\032\n\022degrees_of_freedom\030\004 " +
+      "\001(\005\022\026\n\016log_likelihood\030\005 \001(\001\022\037\n\027adjusted_" +
+      "log_likelihood\030\006 \001(\001\022\013\n\003aic\030\007 \001(\001\022\014\n\004aic" +
+      "c\030\010 \001(\001\022\013\n\003bic\030\t \001(\001\022\014\n\004bicc\030\n \001(\001\022\014\n\004bi" +
+      "c2\030\013 \001(\001\022\024\n\014hannan_quinn\030\014 \001(\001\022\013\n\003ssq\030\r " +
+      "\001(\001\"^\n\nArimaModel\022\014\n\004name\030\001 \001(\t\022\033\n\023innov" +
+      "ation_variance\030\002 \001(\001\022\n\n\002ar\030\003 \003(\001\022\r\n\005delt" +
+      "a\030\004 \003(\001\022\n\n\002ma\030\005 \003(\001\"\212\005\n\tNIIDTests\022\"\n\004mea" +
+      "n\030\001 \001(\0132\024.jd3.StatisticalTest\022&\n\010skewnes" +
+      "s\030\002 \001(\0132\024.jd3.StatisticalTest\022&\n\010kurtosi" +
+      "s\030\003 \001(\0132\024.jd3.StatisticalTest\022,\n\016doornik" +
+      "_hansen\030\004 \001(\0132\024.jd3.StatisticalTest\022\'\n\tl" +
+      "jung_box\030\005 \001(\0132\024.jd3.StatisticalTest\022(\n\n" +
+      "box_pierce\030\006 \001(\0132\024.jd3.StatisticalTest\0220" +
+      "\n\022seasonal_ljung_box\030\007 \001(\0132\024.jd3.Statist" +
+      "icalTest\0221\n\023seasonal_box_pierce\030\010 \001(\0132\024." +
+      "jd3.StatisticalTest\022)\n\013runs_number\030\t \001(\013" +
+      "2\024.jd3.StatisticalTest\022)\n\013runs_length\030\n " +
+      "\001(\0132\024.jd3.StatisticalTest\0221\n\023up_down_run" +
+      "s_number\030\013 \001(\0132\024.jd3.StatisticalTest\0221\n\023" +
+      "up_down_runs_length\030\014 \001(\0132\024.jd3.Statisti" +
+      "calTest\0222\n\024ljung_box_on_squares\030\r \001(\0132\024." +
+      "jd3.StatisticalTest\0223\n\025box_pierce_on_squ" +
+      "ares\030\016 \001(\0132\024.jd3.StatisticalTest*\224\001\n\rSel" +
+      "ectionType\022\024\n\020SPAN_UNSPECIFIED\020\000\022\014\n\010SPAN" +
+      "_ALL\020\001\022\r\n\tSPAN_FROM\020\002\022\013\n\007SPAN_TO\020\003\022\020\n\014SP" +
+      "AN_BETWEEN\020\004\022\r\n\tSPAN_LAST\020\005\022\016\n\nSPAN_FIRS" +
+      "T\020\006\022\022\n\016SPAN_EXCLUDING\020\007*o\n\rParameterType" +
+      "\022\031\n\025PARAMETER_UNSPECIFIED\020\000\022\023\n\017PARAMETER" +
+      "_FIXED\020\001\022\025\n\021PARAMETER_INITIAL\020\002\022\027\n\023PARAM" +
+      "ETER_ESTIMATED\020\003B,\n\033demetra.toolkit.io.p" +
+      "rotobufB\rToolkitProtosb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -7890,42 +12046,54 @@ public final class ToolkitProtos {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_Parameter_descriptor,
         new java.lang.String[] { "Value", "Type", });
-    internal_static_jd3_TsData_descriptor =
+    internal_static_jd3_TsPeriod_descriptor =
       getDescriptor().getMessageTypes().get(2);
+    internal_static_jd3_TsPeriod_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_jd3_TsPeriod_descriptor,
+        new java.lang.String[] { "AnnualFrequency", "Year", "Pos", });
+    internal_static_jd3_TsData_descriptor =
+      getDescriptor().getMessageTypes().get(3);
     internal_static_jd3_TsData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_TsData_descriptor,
-        new java.lang.String[] { "Name", "Period", "StartYear", "StartPeriod", "Values", });
+        new java.lang.String[] { "Name", "AnnualFrequency", "StartYear", "StartPeriod", "Values", });
     internal_static_jd3_Matrix_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_jd3_Matrix_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_Matrix_descriptor,
         new java.lang.String[] { "Name", "Nrows", "Ncols", "Values", });
     internal_static_jd3_StatisticalTest_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_jd3_StatisticalTest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_StatisticalTest_descriptor,
         new java.lang.String[] { "Value", "Pvalue", "Description", });
     internal_static_jd3_ParameterEstimation_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_jd3_ParameterEstimation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ParameterEstimation_descriptor,
         new java.lang.String[] { "Name", "Value", "Stde", "Pvalue", });
     internal_static_jd3_LikelihoodStatistics_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_jd3_LikelihoodStatistics_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_LikelihoodStatistics_descriptor,
         new java.lang.String[] { "Nobs", "Neffectiveobs", "Nparams", "DegreesOfFreedom", "LogLikelihood", "AdjustedLogLikelihood", "Aic", "Aicc", "Bic", "Bicc", "Bic2", "HannanQuinn", "Ssq", });
     internal_static_jd3_ArimaModel_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_jd3_ArimaModel_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ArimaModel_descriptor,
         new java.lang.String[] { "Name", "InnovationVariance", "Ar", "Delta", "Ma", });
+    internal_static_jd3_NIIDTests_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_jd3_NIIDTests_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_jd3_NIIDTests_descriptor,
+        new java.lang.String[] { "Mean", "Skewness", "Kurtosis", "DoornikHansen", "LjungBox", "BoxPierce", "SeasonalLjungBox", "SeasonalBoxPierce", "RunsNumber", "RunsLength", "UpDownRunsNumber", "UpDownRunsLength", "LjungBoxOnSquares", "BoxPierceOnSquares", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

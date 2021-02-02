@@ -17,6 +17,7 @@
 package jdplus.regsarima.regular;
 
 import demetra.arima.SarimaOrders;
+import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
@@ -28,6 +29,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.regression.TrendConstant;
 import java.util.List;
 import java.util.function.Predicate;
@@ -40,6 +42,7 @@ import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
+import jdplus.regarima.RegArimaUtility;
 import jdplus.regarima.ami.Utility;
 import jdplus.timeseries.simplets.Transformations;
 
@@ -381,6 +384,12 @@ public final class ModelEstimation {
             s = s.log();
         }
         return s;
+    }
+    
+    public TsData fullResiduals(){
+        DoubleSeq res = RegArimaUtility.fullResiduals(model, concentratedLikelihood);
+        TsPeriod start=transformedSeries.getEnd().plus(-res.length());
+        return TsData.ofInternal(start, res);
     }
 
     /**

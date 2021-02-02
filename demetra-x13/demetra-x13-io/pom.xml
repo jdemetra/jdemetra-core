@@ -23,6 +23,10 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-x13-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-toolkit-io</artifactId>
         </dependency>
         <dependency>

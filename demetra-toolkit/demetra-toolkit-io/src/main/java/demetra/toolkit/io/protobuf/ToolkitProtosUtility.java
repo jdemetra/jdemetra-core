@@ -29,6 +29,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import jdplus.arima.IArimaModel;
+import jdplus.stats.tests.NiidTests;
+import jdplus.stats.tests.StatisticalTest;
 
 /**
  *
@@ -187,7 +189,7 @@ public class ToolkitProtosUtility {
     }
 
     public TsData convert(ToolkitProtos.TsData s) {
-        int p = s.getPeriod(), y = s.getStartYear(), m = s.getStartPeriod();
+        int p = s.getAnnualFrequency(), y = s.getStartYear(), m = s.getStartPeriod();
         int n = s.getValuesCount();
         double[] data = new double[n];
         for (int i = 0; i < n; ++i) {
@@ -197,34 +199,36 @@ public class ToolkitProtosUtility {
     }
 
     public ToolkitProtos.TsData convert(TsData s) {
-        if (s == null || s.isEmpty())
+        if (s == null || s.isEmpty()) {
             return ToolkitProtos.TsData.getDefaultInstance();
-            
+        }
+
         TsPeriod start = s.getStart();
         return ToolkitProtos.TsData.newBuilder()
-                .setPeriod(s.getAnnualFrequency())
+                .setAnnualFrequency(s.getAnnualFrequency())
                 .setStartYear(start.year())
-                .setStartPeriod(start.annualPosition()+1)
+                .setStartPeriod(start.annualPosition() + 1)
                 .addAllValues(Utility.asIterable(s.getValues()))
                 .build();
     }
-    
-    public ToolkitProtos.Matrix convert(MatrixType m){
-        if (m == null)
+
+    public ToolkitProtos.Matrix convert(MatrixType m) {
+        if (m == null) {
             return ToolkitProtos.Matrix.getDefaultInstance();
+        }
         return ToolkitProtos.Matrix.newBuilder()
                 .setNrows(m.getRowsCount())
                 .setNcols(m.getColumnsCount())
                 .addAllValues(Utility.asIterable(m.toArray()))
                 .build();
     }
-    
-    public ToolkitProtos.LikelihoodStatistics convert(LikelihoodStatistics ls){
+
+    public ToolkitProtos.LikelihoodStatistics convert(LikelihoodStatistics ls) {
         return ToolkitProtos.LikelihoodStatistics.newBuilder()
                 .setNobs(ls.getObservationsCount())
                 .setNeffectiveobs(ls.getEffectiveObservationsCount())
                 .setNparams(ls.getEstimatedParametersCount())
-                .setDegreesOfFreedom(ls.getEffectiveObservationsCount()-ls.getEstimatedParametersCount())
+                .setDegreesOfFreedom(ls.getEffectiveObservationsCount() - ls.getEstimatedParametersCount())
                 .setLogLikelihood(ls.getLogLikelihood())
                 .setAdjustedLogLikelihood(ls.getAdjustedLogLikelihood())
                 .setAic(ls.getAIC())
@@ -235,18 +239,54 @@ public class ToolkitProtosUtility {
                 .setHannanQuinn(ls.getHannanQuinn())
                 .setSsq(ls.getSsqErr())
                 .build();
-                
+
     }
-    
-    public ToolkitProtos.ArimaModel convert(IArimaModel arima, String name){
-        if (arima == null)
+
+    public ToolkitProtos.ArimaModel convert(IArimaModel arima, String name) {
+        if (arima == null) {
             return ToolkitProtos.ArimaModel.getDefaultInstance();
+        }
         return ToolkitProtos.ArimaModel.newBuilder()
                 .addAllAr(Utility.asIterable(arima.getStationaryAr().asPolynomial().coefficients()))
                 .addAllDelta(Utility.asIterable(arima.getNonStationaryAr().asPolynomial().coefficients()))
                 .addAllMa(Utility.asIterable(arima.getMa().asPolynomial().coefficients()))
                 .setInnovationVariance(arima.getInnovationVariance())
                 .setName(name).build();
+    }
+
+    public ToolkitProtos.StatisticalTest convert(StatisticalTest test) {
+        if (test == null) {
+            return ToolkitProtos.StatisticalTest.getDefaultInstance();
+        } else {
+            return ToolkitProtos.StatisticalTest.newBuilder()
+                    .setValue(test.getValue())
+                    .setPvalue(test.getPValue())
+                    .setDescription(test.getDistribution().toString())
+                    .build();
+        }
+    }
+
+    public ToolkitProtos.NIIDTests convert(NiidTests tests) {
+        if (tests == null) {
+            return ToolkitProtos.NIIDTests.getDefaultInstance();
+        } else {
+            return ToolkitProtos.NIIDTests.newBuilder()
+                    .setMean(convert(tests.meanTest()))
+                    .setSkewness(convert(tests.skewness()))
+                    .setKurtosis(convert(tests.kurtosis()))
+                    .setDoornikHansen(convert(tests.normalityTest()))
+                    .setBoxPierce(convert(tests.boxPierce()))
+                    .setLjungBox(convert(tests.ljungBox()))
+                    .setSeasonalBoxPierce(convert(tests.seasonalBoxPierce()))
+                    .setSeasonalLjungBox(convert(tests.seasonalLjungBox()))
+                    .setRunsNumber(convert(tests.runsNumber()))
+                    .setRunsLength(convert(tests.runsLength()))
+                    .setUpDownRunsNumber(convert(tests.upAndDownRunsNumbber()))
+                    .setUpDownRunsLength(convert(tests.upAndDownRunsLength()))
+                    .setBoxPierceOnSquares(convert(tests.boxPierceOnSquare()))
+                    .setLjungBoxOnSquares(convert(tests.ljungBoxOnSquare()))
+                    .build();
+        }
     }
 
     private final Parameter[] EMPTY_P = new Parameter[0];

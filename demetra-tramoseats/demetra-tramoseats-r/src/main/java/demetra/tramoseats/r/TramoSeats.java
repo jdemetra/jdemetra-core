@@ -94,6 +94,7 @@ public class TramoSeats {
             TramoSeatsProtos.Spec spec = TramoSeatsProtos.Spec.parseFrom(buffer);
             return SpecProto.convert(spec);
         } catch (InvalidProtocolBufferException ex) {
+            System.out.println(ex.getMessage());
             return null;
         }
     }
