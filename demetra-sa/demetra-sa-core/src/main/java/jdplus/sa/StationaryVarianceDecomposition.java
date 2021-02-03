@@ -168,6 +168,8 @@ public class StationaryVarianceDecomposition {
             Calc = Cal;
             Pc = others;
         }
+        Calc = cleanup(Cal);
+        Pc = cleanup(Pc);
 
         TsData lt = trendComputer.calcLongTermTrend(stCc);
         stCc = TsData.subtract(stCc, lt);
@@ -272,4 +274,11 @@ public class StationaryVarianceDecomposition {
         return builder.toString();
     }
 
+    private TsData cleanup(TsData s) {
+        if (s.getValues().allMatch(x -> Math.abs(x) < 1e-15)) {
+            return null;
+        } else {
+            return s;
+        }
+    }
 }

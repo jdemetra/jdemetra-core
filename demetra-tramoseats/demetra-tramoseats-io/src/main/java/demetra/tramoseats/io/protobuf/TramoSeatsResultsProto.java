@@ -17,7 +17,9 @@
 package demetra.tramoseats.io.protobuf;
 
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
+import demetra.sa.io.protobuf.SaProtos;
 import demetra.sa.io.protobuf.SaProtosUtility;
+import jdplus.sa.StationaryVarianceDecomposition;
 import jdplus.tramoseats.TramoSeatsResults;
 
 /**
@@ -31,7 +33,22 @@ public class TramoSeatsResultsProto {
         TramoSeatsResultsProtos.TramoSeatsResults.Builder builder = TramoSeatsResultsProtos.TramoSeatsResults.newBuilder();
         builder.setPreprocessing(RegArimaEstimationProto.convert(rslts.getPreprocessing()))
                 .setDecomposition(SeatsResultsProto.convert(rslts.getDecomposition()))
-                .setFinal(SaProtosUtility.convert(rslts.getFinals()));
+                .setFinal(SaProtosUtility.convert(rslts.getFinals()))
+                .setVarianceDecomposition(convert(rslts.getDiagnostics().getVarianceDecomposition()))
+                ;
         return builder.build();
+    }
+    
+    public SaProtos.VarianceDecomposition convert(StationaryVarianceDecomposition var){
+        return SaProtos.VarianceDecomposition.newBuilder()
+                .setCycle(var.getVarC())
+                .setSeasonal(var.getVarS())
+                .setIrregular(var.getVarI())
+                .setCalendar(var.getVarTD())
+                .setOthers(var.getVarP())
+                .setTotal(var.getVarTotal())
+                .build();
+                
+        
     }
 }

@@ -2158,19 +2158,19 @@ public final class TramoSeatsResultsProtos {
     demetra.sa.io.protobuf.SaProtos.SaDecompositionOrBuilder getFinalOrBuilder();
 
     /**
-     * <code>.sa.VarianceDecomposition variance_decomposiiton = 4;</code>
-     * @return Whether the varianceDecomposiiton field is set.
+     * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
+     * @return Whether the varianceDecomposition field is set.
      */
-    boolean hasVarianceDecomposiiton();
+    boolean hasVarianceDecomposition();
     /**
-     * <code>.sa.VarianceDecomposition variance_decomposiiton = 4;</code>
-     * @return The varianceDecomposiiton.
+     * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
+     * @return The varianceDecomposition.
      */
-    demetra.sa.io.protobuf.SaProtos.VarianceDecomposition getVarianceDecomposiiton();
+    demetra.sa.io.protobuf.SaProtos.VarianceDecomposition getVarianceDecomposition();
     /**
-     * <code>.sa.VarianceDecomposition variance_decomposiiton = 4;</code>
+     * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
      */
-    demetra.sa.io.protobuf.SaProtos.VarianceDecompositionOrBuilder getVarianceDecomposiitonOrBuilder();
+    demetra.sa.io.protobuf.SaProtos.VarianceDecompositionOrBuilder getVarianceDecompositionOrBuilder();
   }
   /**
    * Protobuf type {@code tramoseats.TramoSeatsResults}
@@ -2258,13 +2258,13 @@ public final class TramoSeatsResultsProtos {
             }
             case 34: {
               demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.Builder subBuilder = null;
-              if (varianceDecomposiiton_ != null) {
-                subBuilder = varianceDecomposiiton_.toBuilder();
+              if (varianceDecomposition_ != null) {
+                subBuilder = varianceDecomposition_.toBuilder();
               }
-              varianceDecomposiiton_ = input.readMessage(demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.parser(), extensionRegistry);
+              varianceDecomposition_ = input.readMessage(demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.parser(), extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(varianceDecomposiiton_);
-                varianceDecomposiiton_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(varianceDecomposition_);
+                varianceDecomposition_ = subBuilder.buildPartial();
               }
 
               break;
@@ -2379,30 +2379,30 @@ public final class TramoSeatsResultsProtos {
       return getFinal();
     }
 
-    public static final int VARIANCE_DECOMPOSIITON_FIELD_NUMBER = 4;
-    private demetra.sa.io.protobuf.SaProtos.VarianceDecomposition varianceDecomposiiton_;
+    public static final int VARIANCE_DECOMPOSITION_FIELD_NUMBER = 4;
+    private demetra.sa.io.protobuf.SaProtos.VarianceDecomposition varianceDecomposition_;
     /**
-     * <code>.sa.VarianceDecomposition variance_decomposiiton = 4;</code>
-     * @return Whether the varianceDecomposiiton field is set.
+     * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
+     * @return Whether the varianceDecomposition field is set.
      */
     @java.lang.Override
-    public boolean hasVarianceDecomposiiton() {
-      return varianceDecomposiiton_ != null;
+    public boolean hasVarianceDecomposition() {
+      return varianceDecomposition_ != null;
     }
     /**
-     * <code>.sa.VarianceDecomposition variance_decomposiiton = 4;</code>
-     * @return The varianceDecomposiiton.
+     * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
+     * @return The varianceDecomposition.
      */
     @java.lang.Override
-    public demetra.sa.io.protobuf.SaProtos.VarianceDecomposition getVarianceDecomposiiton() {
-      return varianceDecomposiiton_ == null ? demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.getDefaultInstance() : varianceDecomposiiton_;
+    public demetra.sa.io.protobuf.SaProtos.VarianceDecomposition getVarianceDecomposition() {
+      return varianceDecomposition_ == null ? demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.getDefaultInstance() : varianceDecomposition_;
     }
     /**
-     * <code>.sa.VarianceDecomposition variance_decomposiiton = 4;</code>
+     * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
      */
     @java.lang.Override
-    public demetra.sa.io.protobuf.SaProtos.VarianceDecompositionOrBuilder getVarianceDecomposiitonOrBuilder() {
-      return getVarianceDecomposiiton();
+    public demetra.sa.io.protobuf.SaProtos.VarianceDecompositionOrBuilder getVarianceDecompositionOrBuilder() {
+      return getVarianceDecomposition();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2428,8 +2428,8 @@ public final class TramoSeatsResultsProtos {
       if (final_ != null) {
         output.writeMessage(3, getFinal());
       }
-      if (varianceDecomposiiton_ != null) {
-        output.writeMessage(4, getVarianceDecomposiiton());
+      if (varianceDecomposition_ != null) {
+        output.writeMessage(4, getVarianceDecomposition());
       }
       unknownFields.writeTo(output);
     }
@@ -2452,9 +2452,9 @@ public final class TramoSeatsResultsProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, getFinal());
       }
-      if (varianceDecomposiiton_ != null) {
+      if (varianceDecomposition_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getVarianceDecomposiiton());
+          .computeMessageSize(4, getVarianceDecomposition());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2486,10 +2486,10 @@ public final class TramoSeatsResultsProtos {
         if (!getFinal()
             .equals(other.getFinal())) return false;
       }
-      if (hasVarianceDecomposiiton() != other.hasVarianceDecomposiiton()) return false;
-      if (hasVarianceDecomposiiton()) {
-        if (!getVarianceDecomposiiton()
-            .equals(other.getVarianceDecomposiiton())) return false;
+      if (hasVarianceDecomposition() != other.hasVarianceDecomposition()) return false;
+      if (hasVarianceDecomposition()) {
+        if (!getVarianceDecomposition()
+            .equals(other.getVarianceDecomposition())) return false;
       }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -2514,9 +2514,9 @@ public final class TramoSeatsResultsProtos {
         hash = (37 * hash) + FINAL_FIELD_NUMBER;
         hash = (53 * hash) + getFinal().hashCode();
       }
-      if (hasVarianceDecomposiiton()) {
-        hash = (37 * hash) + VARIANCE_DECOMPOSIITON_FIELD_NUMBER;
-        hash = (53 * hash) + getVarianceDecomposiiton().hashCode();
+      if (hasVarianceDecomposition()) {
+        hash = (37 * hash) + VARIANCE_DECOMPOSITION_FIELD_NUMBER;
+        hash = (53 * hash) + getVarianceDecomposition().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -2669,11 +2669,11 @@ public final class TramoSeatsResultsProtos {
           final_ = null;
           finalBuilder_ = null;
         }
-        if (varianceDecomposiitonBuilder_ == null) {
-          varianceDecomposiiton_ = null;
+        if (varianceDecompositionBuilder_ == null) {
+          varianceDecomposition_ = null;
         } else {
-          varianceDecomposiiton_ = null;
-          varianceDecomposiitonBuilder_ = null;
+          varianceDecomposition_ = null;
+          varianceDecompositionBuilder_ = null;
         }
         return this;
       }
@@ -2716,10 +2716,10 @@ public final class TramoSeatsResultsProtos {
         } else {
           result.final_ = finalBuilder_.build();
         }
-        if (varianceDecomposiitonBuilder_ == null) {
-          result.varianceDecomposiiton_ = varianceDecomposiiton_;
+        if (varianceDecompositionBuilder_ == null) {
+          result.varianceDecomposition_ = varianceDecomposition_;
         } else {
-          result.varianceDecomposiiton_ = varianceDecomposiitonBuilder_.build();
+          result.varianceDecomposition_ = varianceDecompositionBuilder_.build();
         }
         onBuilt();
         return result;
@@ -2778,8 +2778,8 @@ public final class TramoSeatsResultsProtos {
         if (other.hasFinal()) {
           mergeFinal(other.getFinal());
         }
-        if (other.hasVarianceDecomposiiton()) {
-          mergeVarianceDecomposiiton(other.getVarianceDecomposiiton());
+        if (other.hasVarianceDecomposition()) {
+          mergeVarianceDecomposition(other.getVarianceDecomposition());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -3167,123 +3167,123 @@ public final class TramoSeatsResultsProtos {
         return finalBuilder_;
       }
 
-      private demetra.sa.io.protobuf.SaProtos.VarianceDecomposition varianceDecomposiiton_;
+      private demetra.sa.io.protobuf.SaProtos.VarianceDecomposition varianceDecomposition_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sa.io.protobuf.SaProtos.VarianceDecomposition, demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.Builder, demetra.sa.io.protobuf.SaProtos.VarianceDecompositionOrBuilder> varianceDecomposiitonBuilder_;
+          demetra.sa.io.protobuf.SaProtos.VarianceDecomposition, demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.Builder, demetra.sa.io.protobuf.SaProtos.VarianceDecompositionOrBuilder> varianceDecompositionBuilder_;
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposiiton = 4;</code>
-       * @return Whether the varianceDecomposiiton field is set.
+       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
+       * @return Whether the varianceDecomposition field is set.
        */
-      public boolean hasVarianceDecomposiiton() {
-        return varianceDecomposiitonBuilder_ != null || varianceDecomposiiton_ != null;
+      public boolean hasVarianceDecomposition() {
+        return varianceDecompositionBuilder_ != null || varianceDecomposition_ != null;
       }
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposiiton = 4;</code>
-       * @return The varianceDecomposiiton.
+       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
+       * @return The varianceDecomposition.
        */
-      public demetra.sa.io.protobuf.SaProtos.VarianceDecomposition getVarianceDecomposiiton() {
-        if (varianceDecomposiitonBuilder_ == null) {
-          return varianceDecomposiiton_ == null ? demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.getDefaultInstance() : varianceDecomposiiton_;
+      public demetra.sa.io.protobuf.SaProtos.VarianceDecomposition getVarianceDecomposition() {
+        if (varianceDecompositionBuilder_ == null) {
+          return varianceDecomposition_ == null ? demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.getDefaultInstance() : varianceDecomposition_;
         } else {
-          return varianceDecomposiitonBuilder_.getMessage();
+          return varianceDecompositionBuilder_.getMessage();
         }
       }
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposiiton = 4;</code>
+       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
        */
-      public Builder setVarianceDecomposiiton(demetra.sa.io.protobuf.SaProtos.VarianceDecomposition value) {
-        if (varianceDecomposiitonBuilder_ == null) {
+      public Builder setVarianceDecomposition(demetra.sa.io.protobuf.SaProtos.VarianceDecomposition value) {
+        if (varianceDecompositionBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          varianceDecomposiiton_ = value;
+          varianceDecomposition_ = value;
           onChanged();
         } else {
-          varianceDecomposiitonBuilder_.setMessage(value);
+          varianceDecompositionBuilder_.setMessage(value);
         }
 
         return this;
       }
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposiiton = 4;</code>
+       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
        */
-      public Builder setVarianceDecomposiiton(
+      public Builder setVarianceDecomposition(
           demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.Builder builderForValue) {
-        if (varianceDecomposiitonBuilder_ == null) {
-          varianceDecomposiiton_ = builderForValue.build();
+        if (varianceDecompositionBuilder_ == null) {
+          varianceDecomposition_ = builderForValue.build();
           onChanged();
         } else {
-          varianceDecomposiitonBuilder_.setMessage(builderForValue.build());
+          varianceDecompositionBuilder_.setMessage(builderForValue.build());
         }
 
         return this;
       }
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposiiton = 4;</code>
+       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
        */
-      public Builder mergeVarianceDecomposiiton(demetra.sa.io.protobuf.SaProtos.VarianceDecomposition value) {
-        if (varianceDecomposiitonBuilder_ == null) {
-          if (varianceDecomposiiton_ != null) {
-            varianceDecomposiiton_ =
-              demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.newBuilder(varianceDecomposiiton_).mergeFrom(value).buildPartial();
+      public Builder mergeVarianceDecomposition(demetra.sa.io.protobuf.SaProtos.VarianceDecomposition value) {
+        if (varianceDecompositionBuilder_ == null) {
+          if (varianceDecomposition_ != null) {
+            varianceDecomposition_ =
+              demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.newBuilder(varianceDecomposition_).mergeFrom(value).buildPartial();
           } else {
-            varianceDecomposiiton_ = value;
+            varianceDecomposition_ = value;
           }
           onChanged();
         } else {
-          varianceDecomposiitonBuilder_.mergeFrom(value);
+          varianceDecompositionBuilder_.mergeFrom(value);
         }
 
         return this;
       }
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposiiton = 4;</code>
+       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
        */
-      public Builder clearVarianceDecomposiiton() {
-        if (varianceDecomposiitonBuilder_ == null) {
-          varianceDecomposiiton_ = null;
+      public Builder clearVarianceDecomposition() {
+        if (varianceDecompositionBuilder_ == null) {
+          varianceDecomposition_ = null;
           onChanged();
         } else {
-          varianceDecomposiiton_ = null;
-          varianceDecomposiitonBuilder_ = null;
+          varianceDecomposition_ = null;
+          varianceDecompositionBuilder_ = null;
         }
 
         return this;
       }
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposiiton = 4;</code>
+       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
        */
-      public demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.Builder getVarianceDecomposiitonBuilder() {
+      public demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.Builder getVarianceDecompositionBuilder() {
         
         onChanged();
-        return getVarianceDecomposiitonFieldBuilder().getBuilder();
+        return getVarianceDecompositionFieldBuilder().getBuilder();
       }
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposiiton = 4;</code>
+       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
        */
-      public demetra.sa.io.protobuf.SaProtos.VarianceDecompositionOrBuilder getVarianceDecomposiitonOrBuilder() {
-        if (varianceDecomposiitonBuilder_ != null) {
-          return varianceDecomposiitonBuilder_.getMessageOrBuilder();
+      public demetra.sa.io.protobuf.SaProtos.VarianceDecompositionOrBuilder getVarianceDecompositionOrBuilder() {
+        if (varianceDecompositionBuilder_ != null) {
+          return varianceDecompositionBuilder_.getMessageOrBuilder();
         } else {
-          return varianceDecomposiiton_ == null ?
-              demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.getDefaultInstance() : varianceDecomposiiton_;
+          return varianceDecomposition_ == null ?
+              demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.getDefaultInstance() : varianceDecomposition_;
         }
       }
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposiiton = 4;</code>
+       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.sa.io.protobuf.SaProtos.VarianceDecomposition, demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.Builder, demetra.sa.io.protobuf.SaProtos.VarianceDecompositionOrBuilder> 
-          getVarianceDecomposiitonFieldBuilder() {
-        if (varianceDecomposiitonBuilder_ == null) {
-          varianceDecomposiitonBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          getVarianceDecompositionFieldBuilder() {
+        if (varianceDecompositionBuilder_ == null) {
+          varianceDecompositionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               demetra.sa.io.protobuf.SaProtos.VarianceDecomposition, demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.Builder, demetra.sa.io.protobuf.SaProtos.VarianceDecompositionOrBuilder>(
-                  getVarianceDecomposiiton(),
+                  getVarianceDecomposition(),
                   getParentForChildren(),
                   isClean());
-          varianceDecomposiiton_ = null;
+          varianceDecomposition_ = null;
         }
-        return varianceDecomposiitonBuilder_;
+        return varianceDecompositionBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -3376,7 +3376,7 @@ public final class TramoSeatsResultsProtos {
       "imaEstimation\022/\n\rdecomposition\030\002 \001(\0132\030.t" +
       "ramoseats.SeatsResults\022\"\n\005final\030\003 \001(\0132\023." +
       "sa.SaDecomposition\0229\n\026variance_decomposi" +
-      "iton\030\004 \001(\0132\031.sa.VarianceDecompositionB9\n" +
+      "tion\030\004 \001(\0132\031.sa.VarianceDecompositionB9\n" +
       "\036demetra.tramoseats.io.protobufB\027TramoSe" +
       "atsResultsProtosP\000P\001P\002P\003b\006proto3"
     };
@@ -3405,7 +3405,7 @@ public final class TramoSeatsResultsProtos {
     internal_static_tramoseats_TramoSeatsResults_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tramoseats_TramoSeatsResults_descriptor,
-        new java.lang.String[] { "Preprocessing", "Decomposition", "Final", "VarianceDecomposiiton", });
+        new java.lang.String[] { "Preprocessing", "Decomposition", "Final", "VarianceDecomposition", });
     demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor();
     demetra.sa.io.protobuf.SaProtos.getDescriptor();
     demetra.regarima.io.protobuf.RegArimaProtos.getDescriptor();

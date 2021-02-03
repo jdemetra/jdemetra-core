@@ -8,6 +8,7 @@ package jdplus.tramoseats;
 import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
+import demetra.modelling.ComponentInformation;
 import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
 import demetra.sa.SeriesDecomposition;
@@ -17,6 +18,7 @@ import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TransformSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.sa.StationaryVarianceDecomposition;
 import jdplus.sa.modelling.RegArimaDecomposer;
 import jdplus.sa.modelling.TwoStepsDecomposition;
 import jdplus.sarima.SarimaModel;
@@ -56,8 +58,9 @@ public class TramoSeatsKernel {
     }
 
     public TramoSeatsResults process(TsData s, ProcessingLog log) {
-        if (log == null)
-            log=ProcessingLog.dummy();
+        if (log == null) {
+            log = ProcessingLog.dummy();
+        }
         // Step 0. Preliminary checks
         TsData sc = preliminary.check(s, log);
         // Step 1. Tramo
@@ -68,8 +71,35 @@ public class TramoSeatsKernel {
         SeatsResults srslts = seats.process(smodel, log);
         // Step 4. Final decomposition
         SeriesDecomposition finals = TwoStepsDecomposition.merge(preprocessing, srslts.getFinalComponents());
+
         // Step 5. Diagnostics
-        return new TramoSeatsResults(preprocessing, srslts, finals);
+        StationaryVarianceDecomposition var = new StationaryVarianceDecomposition();
+        boolean mul = preprocessing.isLogTransformation();
+        TsData y = preprocessing.interpolatedSeries(false),
+                t = srslts.getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.Value),
+                seas = srslts.getFinalComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Value),
+                irr = srslts.getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.Value),
+                cal = preprocessing.getCalendarEffect(y.getDomain());
+
+        TsData others;
+        if (mul) {
+            TsData all = TsData.multiply(t, seas, irr, cal);
+            others = TsData.divide(y, all);
+        } else {
+            TsData all = TsData.add(t, seas, irr, cal);
+            others = TsData.subtract(y, all);
+        }
+
+        boolean bvar = var.process(y, t, seas, irr, cal, others, mul);
+        TramoSeatsDiagnostics diags = TramoSeatsDiagnostics.builder()
+                .varianceDecomposition(bvar ? var : null)
+                .build();
+        return TramoSeatsResults.builder()
+                .preprocessing(preprocessing)
+                .decomposition(srslts)
+                .finals(finals)
+                .diagnostics(diags)
+                .build();
     }
 
     private static SeatsModelSpec of(ModelEstimation model) {

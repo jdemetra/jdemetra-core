@@ -321,20 +321,23 @@ public class X13Kernel {
         }
         decomp.d11final(d11c);
 
-        TsData d16;
-        if (spec.getMode() == DecompositionMode.PseudoAdditive) {
-            TsData tmp = TsData.divide(a1, d12);
-            tmp = TsData.subtract(tmp, d13);
-            d16 = tmp.add(1).commit();
-        } else {
-            d16 = op(mode, a1, d11c);
-        }
+        TsData a6=astep.getA6(), a7=astep.getA7();
+        TsData d18=invOp(mode, a6, a7);
+        
+        TsData d16=invOp(mode, d10c, d18);
+//        if (spec.getMode() == DecompositionMode.PseudoAdditive) {
+//            TsData tmp = TsData.divide(a1, d12);
+//            tmp = TsData.subtract(tmp, d13);
+//            d16 = tmp.add(1).commit();
+//        } else {
+//            d16 = op(mode, a1, d11c);
+//        }
         if (fd != null) {
             decomp.d16a(TsData.fitToDomain(d16, fd));
             d16 = TsData.fitToDomain(d16, d);
         }
         decomp.d16(d16);
-        TsData d18=op(mode, d16, d10c);
+//        TsData d18=op(mode, d16, d10c);
         if (fd != null) {
             decomp.d18a(TsData.fitToDomain(d18, fd));
             d18= TsData.fitToDomain(d18, d);

@@ -17,6 +17,7 @@
 package demetra.x13.io.protobuf;
 
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
+import demetra.sa.io.protobuf.SaProtos;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import demetra.x13.X13Finals;
 import jdplus.x13.Mstatistics;
@@ -55,7 +56,8 @@ public class X13ResultsProto {
         builder.setPreprocessing(RegArimaEstimationProto.convert(rslts.getPreprocessing()))
                 .setDecomposition(X11ResultsProto.convert(rslts.getDecomposition()))
                 .setFinal(convert(rslts.getFinals()))
-                .setMstatistics(convert(rslts.getMstatistics()));
+                .setMstatistics(convert(rslts.getMstatistics()))
+                .setVarianceDecomposition(of(rslts.getMstatistics()));
         return builder.build();
     }
     
@@ -74,6 +76,17 @@ public class X13ResultsProto {
                 .setM11(mstats.getM(11))
                 .setQ(mstats.getQ())
                 .setQm2(mstats.getQm2())
+                .build();
+    }
+
+    public SaProtos.VarianceDecomposition of(Mstatistics mstatistics) {
+        return SaProtos.VarianceDecomposition.newBuilder()
+                .setCycle(mstatistics.getVarC())
+                .setSeasonal(mstatistics.getVarS())
+                .setIrregular(mstatistics.getVarI())
+                .setCalendar(mstatistics.getVarTD())
+                .setOthers(mstatistics.getVarP())
+                .setTotal(mstatistics.getVarTotal())
                 .build();
     }
 }
