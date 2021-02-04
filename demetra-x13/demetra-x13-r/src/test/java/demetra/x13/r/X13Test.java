@@ -27,7 +27,7 @@ public class X13Test {
 //                System.out.println(outliers[i]);
 //            }
 //        }
-        assertTrue(rslt.getCore().getMstatistics().getVarTD() ==0);
+        assertTrue(rslt.buffer().length>0);
     }
     
 }

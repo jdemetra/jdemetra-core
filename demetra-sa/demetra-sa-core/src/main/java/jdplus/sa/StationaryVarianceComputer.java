@@ -20,7 +20,9 @@ package jdplus.sa;
 
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import demetra.sa.StationaryVarianceDecomposition;
 import demetra.timeseries.TsData;
+import demetra.util.Validatable.Builder;
 import java.text.DecimalFormat;
 import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
@@ -42,14 +44,17 @@ import jdplus.ucarima.ssf.SsfUcarima;
  *
  * @author Jean Palate
  */
-public class StationaryVarianceDecomposition {
+public class StationaryVarianceComputer {
+
 
     public static interface ILongTermTrendComputer {
 
         TsData calcLongTermTrend(TsData s);
     }
-
-    public static class LinearTrendComputer implements ILongTermTrendComputer {
+    
+    public static final ILongTermTrendComputer LINEARTREND=new LinearTrendComputer(), HP=new HPTrendComputer();
+    
+    private static class LinearTrendComputer implements ILongTermTrendComputer {
 
         @Override
         public TsData calcLongTermTrend(TsData s) {
@@ -118,22 +123,16 @@ public class StationaryVarianceDecomposition {
             return builder.toString();
         }
     }
+    
+    public final ILongTermTrendComputer trendComputer;
 
-    private double varC, varS, varI, varP, varCal;
-    private final ILongTermTrendComputer trendComputer;
-
-    public StationaryVarianceDecomposition() {
-        trendComputer = new HPTrendComputer();
+    public StationaryVarianceComputer(){
+        trendComputer=LINEARTREND;
     }
-
-    public StationaryVarianceDecomposition(final ILongTermTrendComputer trendComputer) {
-        this.trendComputer = trendComputer;
+            
+    public StationaryVarianceComputer(ILongTermTrendComputer trendComputer){
+        this.trendComputer=trendComputer;
     }
-
-    public ILongTermTrendComputer getTrendComputer() {
-        return this.trendComputer;
-    }
-
     /**
      * Computes the stationary variance decomposition
      *
@@ -146,9 +145,9 @@ public class StationaryVarianceDecomposition {
      * @param mul Indicates that the decomposition is multiplicative or not
      * @return True if the decomposition was successful, false otherwise
      */
-    public boolean process(final TsData O, final TsData T, final TsData S, final TsData I, final TsData Cal, final TsData others, final boolean mul) {
+    public StationaryVarianceDecomposition build(final TsData O, final TsData T, final TsData S, final TsData I, final TsData Cal, final TsData others, final boolean mul) {
         if (O == null) {
-            return false;
+            return null;
         }
         TsData stOc, stCc, Sc, Ic, Calc, Pc;
         if (mul) {
@@ -168,7 +167,7 @@ public class StationaryVarianceDecomposition {
             Calc = Cal;
             Pc = others;
         }
-        Calc = cleanup(Cal);
+        Calc = cleanup(Calc);
         Pc = cleanup(Pc);
 
         TsData lt = trendComputer.calcLongTermTrend(stCc);
@@ -179,6 +178,8 @@ public class StationaryVarianceDecomposition {
         DescriptiveStatistics stats = DescriptiveStatistics.of(stOc.getValues());
         double varO = stats.getVar();
 
+        double varC, varS, varI, varP, varCal; 
+        
         if (stCc != null) {
             stats = DescriptiveStatistics.of(stCc.getValues());
             varC = stats.getVar();
@@ -217,65 +218,27 @@ public class StationaryVarianceDecomposition {
         varC /= varO;
         varI /= varO;
 
-        return true;
+        return StationaryVarianceDecomposition.builder()
+                .trendType(type())
+                .C(varC)
+                .S(varS)
+                .I(varI)
+                .P(varP)
+                .Calendar(varCal)
+                .build();
     }
 
-//    public boolean process(IProcResults results) {
-//        TsData O = results.getData(ModellingDictionary.YC, TsData.class);
-//        TsData T = results.getData(ModellingDictionary.T_CMP, TsData.class);
-//        TsData S = results.getData(ModellingDictionary.S_CMP, TsData.class);
-//        TsData I = results.getData(ModellingDictionary.I_CMP, TsData.class);
-//        TsData Cal = results.getData(ModellingDictionary.CAL, TsData.class);
-//        TsData D = results.getData(ModellingDictionary.DET, TsData.class);
-//        DecompositionMode m = results.getData(ModellingDictionary.MODE, DecompositionMode.class);
-//        boolean mul = m != null ? m != DecompositionMode.Additive : false;
-//        TsData P = mul ? TsData.divide(D, Cal) : TsData.subtract(D, Cal);
-//        return process(O, T, S, I, Cal, P, mul);
-//    }
-//
-    public double getVarI() {
-        return varI;
-    }
-
-    public double getVarS() {
-        return varS;
-    }
-
-    public double getVarC() {
-        return varC;
-    }
-
-    public double getVarP() {
-        return varP;
-    }
-
-    public double getVarTD() {
-        return varCal;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public double getVarTotal() {
-        return varC + varS + varI + varP + varCal;
-    }
-    private static final String nl = System.lineSeparator();
-
-    @Override
-    public String toString() {
-        DecimalFormat dg1 = new DecimalFormat("0.#");
-        StringBuilder builder = new StringBuilder();
-        builder.append("C: ").append(dg1.format(varC * 100)).append(nl);
-        builder.append("S: ").append(dg1.format(varS * 100)).append(nl);
-        builder.append("I: ").append(dg1.format(varI * 100)).append(nl);
-        builder.append("TD+Hol: ").append(dg1.format(varCal * 100)).append(nl);
-        builder.append("P: ").append(dg1.format(varP * 100)).append(nl);
-        return builder.toString();
-    }
+    private StationaryVarianceDecomposition.TrendType type() {
+        if (trendComputer instanceof LinearTrendComputer)
+            return StationaryVarianceDecomposition.TrendType.Linear;
+        else if (trendComputer instanceof HPTrendComputer)
+            return StationaryVarianceDecomposition.TrendType.HodrickPrescott;
+        else
+            return StationaryVarianceDecomposition.TrendType.Other;
+     }
 
     private TsData cleanup(TsData s) {
-        if (s.getValues().allMatch(x -> Math.abs(x) < 1e-15)) {
+        if (s.getValues().allMatch(x -> Math.abs(x) < 1e-12)) {
             return null;
         } else {
             return s;

@@ -35,7 +35,6 @@ public class TramoSeatsResults implements ProcResults {
     private ModelEstimation preprocessing;
     private SeatsResults decomposition;
     private SeriesDecomposition finals;
-    private TramoSeatsDiagnostics diagnostics;
 
     @Override
     public boolean contains(String id) {

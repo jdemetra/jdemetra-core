@@ -13511,6 +13511,627 @@ public final class X13ResultsProtos {
 
   }
 
+  public interface DiagnosticsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:x13.Diagnostics)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.x13.MStatistics mstatistics = 1;</code>
+     * @return Whether the mstatistics field is set.
+     */
+    boolean hasMstatistics();
+    /**
+     * <code>.x13.MStatistics mstatistics = 1;</code>
+     * @return The mstatistics.
+     */
+    demetra.x13.io.protobuf.X13ResultsProtos.MStatistics getMstatistics();
+    /**
+     * <code>.x13.MStatistics mstatistics = 1;</code>
+     */
+    demetra.x13.io.protobuf.X13ResultsProtos.MStatisticsOrBuilder getMstatisticsOrBuilder();
+  }
+  /**
+   * Protobuf type {@code x13.Diagnostics}
+   */
+  public static final class Diagnostics extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:x13.Diagnostics)
+      DiagnosticsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Diagnostics.newBuilder() to construct.
+    private Diagnostics(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Diagnostics() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new Diagnostics();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Diagnostics(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.Builder subBuilder = null;
+              if (mstatistics_ != null) {
+                subBuilder = mstatistics_.toBuilder();
+              }
+              mstatistics_ = input.readMessage(demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(mstatistics_);
+                mstatistics_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.x13.io.protobuf.X13ResultsProtos.internal_static_x13_Diagnostics_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.x13.io.protobuf.X13ResultsProtos.internal_static_x13_Diagnostics_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.class, demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.Builder.class);
+    }
+
+    public static final int MSTATISTICS_FIELD_NUMBER = 1;
+    private demetra.x13.io.protobuf.X13ResultsProtos.MStatistics mstatistics_;
+    /**
+     * <code>.x13.MStatistics mstatistics = 1;</code>
+     * @return Whether the mstatistics field is set.
+     */
+    @java.lang.Override
+    public boolean hasMstatistics() {
+      return mstatistics_ != null;
+    }
+    /**
+     * <code>.x13.MStatistics mstatistics = 1;</code>
+     * @return The mstatistics.
+     */
+    @java.lang.Override
+    public demetra.x13.io.protobuf.X13ResultsProtos.MStatistics getMstatistics() {
+      return mstatistics_ == null ? demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.getDefaultInstance() : mstatistics_;
+    }
+    /**
+     * <code>.x13.MStatistics mstatistics = 1;</code>
+     */
+    @java.lang.Override
+    public demetra.x13.io.protobuf.X13ResultsProtos.MStatisticsOrBuilder getMstatisticsOrBuilder() {
+      return getMstatistics();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (mstatistics_ != null) {
+        output.writeMessage(1, getMstatistics());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (mstatistics_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getMstatistics());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics)) {
+        return super.equals(obj);
+      }
+      demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics other = (demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics) obj;
+
+      if (hasMstatistics() != other.hasMstatistics()) return false;
+      if (hasMstatistics()) {
+        if (!getMstatistics()
+            .equals(other.getMstatistics())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasMstatistics()) {
+        hash = (37 * hash) + MSTATISTICS_FIELD_NUMBER;
+        hash = (53 * hash) + getMstatistics().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code x13.Diagnostics}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:x13.Diagnostics)
+        demetra.x13.io.protobuf.X13ResultsProtos.DiagnosticsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.x13.io.protobuf.X13ResultsProtos.internal_static_x13_Diagnostics_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.x13.io.protobuf.X13ResultsProtos.internal_static_x13_Diagnostics_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.class, demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.Builder.class);
+      }
+
+      // Construct using demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (mstatisticsBuilder_ == null) {
+          mstatistics_ = null;
+        } else {
+          mstatistics_ = null;
+          mstatisticsBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.x13.io.protobuf.X13ResultsProtos.internal_static_x13_Diagnostics_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics getDefaultInstanceForType() {
+        return demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics build() {
+        demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics buildPartial() {
+        demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics result = new demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics(this);
+        if (mstatisticsBuilder_ == null) {
+          result.mstatistics_ = mstatistics_;
+        } else {
+          result.mstatistics_ = mstatisticsBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics) {
+          return mergeFrom((demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics other) {
+        if (other == demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.getDefaultInstance()) return this;
+        if (other.hasMstatistics()) {
+          mergeMstatistics(other.getMstatistics());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private demetra.x13.io.protobuf.X13ResultsProtos.MStatistics mstatistics_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.x13.io.protobuf.X13ResultsProtos.MStatistics, demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.Builder, demetra.x13.io.protobuf.X13ResultsProtos.MStatisticsOrBuilder> mstatisticsBuilder_;
+      /**
+       * <code>.x13.MStatistics mstatistics = 1;</code>
+       * @return Whether the mstatistics field is set.
+       */
+      public boolean hasMstatistics() {
+        return mstatisticsBuilder_ != null || mstatistics_ != null;
+      }
+      /**
+       * <code>.x13.MStatistics mstatistics = 1;</code>
+       * @return The mstatistics.
+       */
+      public demetra.x13.io.protobuf.X13ResultsProtos.MStatistics getMstatistics() {
+        if (mstatisticsBuilder_ == null) {
+          return mstatistics_ == null ? demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.getDefaultInstance() : mstatistics_;
+        } else {
+          return mstatisticsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.x13.MStatistics mstatistics = 1;</code>
+       */
+      public Builder setMstatistics(demetra.x13.io.protobuf.X13ResultsProtos.MStatistics value) {
+        if (mstatisticsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          mstatistics_ = value;
+          onChanged();
+        } else {
+          mstatisticsBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.x13.MStatistics mstatistics = 1;</code>
+       */
+      public Builder setMstatistics(
+          demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.Builder builderForValue) {
+        if (mstatisticsBuilder_ == null) {
+          mstatistics_ = builderForValue.build();
+          onChanged();
+        } else {
+          mstatisticsBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.x13.MStatistics mstatistics = 1;</code>
+       */
+      public Builder mergeMstatistics(demetra.x13.io.protobuf.X13ResultsProtos.MStatistics value) {
+        if (mstatisticsBuilder_ == null) {
+          if (mstatistics_ != null) {
+            mstatistics_ =
+              demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.newBuilder(mstatistics_).mergeFrom(value).buildPartial();
+          } else {
+            mstatistics_ = value;
+          }
+          onChanged();
+        } else {
+          mstatisticsBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.x13.MStatistics mstatistics = 1;</code>
+       */
+      public Builder clearMstatistics() {
+        if (mstatisticsBuilder_ == null) {
+          mstatistics_ = null;
+          onChanged();
+        } else {
+          mstatistics_ = null;
+          mstatisticsBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.x13.MStatistics mstatistics = 1;</code>
+       */
+      public demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.Builder getMstatisticsBuilder() {
+        
+        onChanged();
+        return getMstatisticsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.x13.MStatistics mstatistics = 1;</code>
+       */
+      public demetra.x13.io.protobuf.X13ResultsProtos.MStatisticsOrBuilder getMstatisticsOrBuilder() {
+        if (mstatisticsBuilder_ != null) {
+          return mstatisticsBuilder_.getMessageOrBuilder();
+        } else {
+          return mstatistics_ == null ?
+              demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.getDefaultInstance() : mstatistics_;
+        }
+      }
+      /**
+       * <code>.x13.MStatistics mstatistics = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.x13.io.protobuf.X13ResultsProtos.MStatistics, demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.Builder, demetra.x13.io.protobuf.X13ResultsProtos.MStatisticsOrBuilder> 
+          getMstatisticsFieldBuilder() {
+        if (mstatisticsBuilder_ == null) {
+          mstatisticsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.x13.io.protobuf.X13ResultsProtos.MStatistics, demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.Builder, demetra.x13.io.protobuf.X13ResultsProtos.MStatisticsOrBuilder>(
+                  getMstatistics(),
+                  getParentForChildren(),
+                  isClean());
+          mstatistics_ = null;
+        }
+        return mstatisticsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:x13.Diagnostics)
+    }
+
+    // @@protoc_insertion_point(class_scope:x13.Diagnostics)
+    private static final demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics();
+    }
+
+    public static demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Diagnostics>
+        PARSER = new com.google.protobuf.AbstractParser<Diagnostics>() {
+      @java.lang.Override
+      public Diagnostics parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Diagnostics(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Diagnostics> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Diagnostics> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface X13ResultsOrBuilder extends
       // @@protoc_insertion_point(interface_extends:x13.X13Results)
       com.google.protobuf.MessageOrBuilder {
@@ -13561,34 +14182,34 @@ public final class X13ResultsProtos {
     demetra.x13.io.protobuf.X13ResultsProtos.X13FinalsOrBuilder getFinalOrBuilder();
 
     /**
-     * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
-     * @return Whether the varianceDecomposition field is set.
+     * <code>.x13.Diagnostics diagnostics_x13 = 4;</code>
+     * @return Whether the diagnosticsX13 field is set.
      */
-    boolean hasVarianceDecomposition();
+    boolean hasDiagnosticsX13();
     /**
-     * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
-     * @return The varianceDecomposition.
+     * <code>.x13.Diagnostics diagnostics_x13 = 4;</code>
+     * @return The diagnosticsX13.
      */
-    demetra.sa.io.protobuf.SaProtos.VarianceDecomposition getVarianceDecomposition();
+    demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics getDiagnosticsX13();
     /**
-     * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
+     * <code>.x13.Diagnostics diagnostics_x13 = 4;</code>
      */
-    demetra.sa.io.protobuf.SaProtos.VarianceDecompositionOrBuilder getVarianceDecompositionOrBuilder();
+    demetra.x13.io.protobuf.X13ResultsProtos.DiagnosticsOrBuilder getDiagnosticsX13OrBuilder();
 
     /**
-     * <code>.x13.MStatistics mstatistics = 10;</code>
-     * @return Whether the mstatistics field is set.
+     * <code>.sa.Diagnostics diagnostics_sa = 5;</code>
+     * @return Whether the diagnosticsSa field is set.
      */
-    boolean hasMstatistics();
+    boolean hasDiagnosticsSa();
     /**
-     * <code>.x13.MStatistics mstatistics = 10;</code>
-     * @return The mstatistics.
+     * <code>.sa.Diagnostics diagnostics_sa = 5;</code>
+     * @return The diagnosticsSa.
      */
-    demetra.x13.io.protobuf.X13ResultsProtos.MStatistics getMstatistics();
+    demetra.sa.io.protobuf.SaProtos.Diagnostics getDiagnosticsSa();
     /**
-     * <code>.x13.MStatistics mstatistics = 10;</code>
+     * <code>.sa.Diagnostics diagnostics_sa = 5;</code>
      */
-    demetra.x13.io.protobuf.X13ResultsProtos.MStatisticsOrBuilder getMstatisticsOrBuilder();
+    demetra.sa.io.protobuf.SaProtos.DiagnosticsOrBuilder getDiagnosticsSaOrBuilder();
   }
   /**
    * Protobuf type {@code x13.X13Results}
@@ -13675,27 +14296,27 @@ public final class X13ResultsProtos {
               break;
             }
             case 34: {
-              demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.Builder subBuilder = null;
-              if (varianceDecomposition_ != null) {
-                subBuilder = varianceDecomposition_.toBuilder();
+              demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.Builder subBuilder = null;
+              if (diagnosticsX13_ != null) {
+                subBuilder = diagnosticsX13_.toBuilder();
               }
-              varianceDecomposition_ = input.readMessage(demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.parser(), extensionRegistry);
+              diagnosticsX13_ = input.readMessage(demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.parser(), extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(varianceDecomposition_);
-                varianceDecomposition_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(diagnosticsX13_);
+                diagnosticsX13_ = subBuilder.buildPartial();
               }
 
               break;
             }
-            case 82: {
-              demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.Builder subBuilder = null;
-              if (mstatistics_ != null) {
-                subBuilder = mstatistics_.toBuilder();
+            case 42: {
+              demetra.sa.io.protobuf.SaProtos.Diagnostics.Builder subBuilder = null;
+              if (diagnosticsSa_ != null) {
+                subBuilder = diagnosticsSa_.toBuilder();
               }
-              mstatistics_ = input.readMessage(demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.parser(), extensionRegistry);
+              diagnosticsSa_ = input.readMessage(demetra.sa.io.protobuf.SaProtos.Diagnostics.parser(), extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(mstatistics_);
-                mstatistics_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(diagnosticsSa_);
+                diagnosticsSa_ = subBuilder.buildPartial();
               }
 
               break;
@@ -13810,56 +14431,56 @@ public final class X13ResultsProtos {
       return getFinal();
     }
 
-    public static final int VARIANCE_DECOMPOSITION_FIELD_NUMBER = 4;
-    private demetra.sa.io.protobuf.SaProtos.VarianceDecomposition varianceDecomposition_;
+    public static final int DIAGNOSTICS_X13_FIELD_NUMBER = 4;
+    private demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics diagnosticsX13_;
     /**
-     * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
-     * @return Whether the varianceDecomposition field is set.
+     * <code>.x13.Diagnostics diagnostics_x13 = 4;</code>
+     * @return Whether the diagnosticsX13 field is set.
      */
     @java.lang.Override
-    public boolean hasVarianceDecomposition() {
-      return varianceDecomposition_ != null;
+    public boolean hasDiagnosticsX13() {
+      return diagnosticsX13_ != null;
     }
     /**
-     * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
-     * @return The varianceDecomposition.
+     * <code>.x13.Diagnostics diagnostics_x13 = 4;</code>
+     * @return The diagnosticsX13.
      */
     @java.lang.Override
-    public demetra.sa.io.protobuf.SaProtos.VarianceDecomposition getVarianceDecomposition() {
-      return varianceDecomposition_ == null ? demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.getDefaultInstance() : varianceDecomposition_;
+    public demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics getDiagnosticsX13() {
+      return diagnosticsX13_ == null ? demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.getDefaultInstance() : diagnosticsX13_;
     }
     /**
-     * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
+     * <code>.x13.Diagnostics diagnostics_x13 = 4;</code>
      */
     @java.lang.Override
-    public demetra.sa.io.protobuf.SaProtos.VarianceDecompositionOrBuilder getVarianceDecompositionOrBuilder() {
-      return getVarianceDecomposition();
+    public demetra.x13.io.protobuf.X13ResultsProtos.DiagnosticsOrBuilder getDiagnosticsX13OrBuilder() {
+      return getDiagnosticsX13();
     }
 
-    public static final int MSTATISTICS_FIELD_NUMBER = 10;
-    private demetra.x13.io.protobuf.X13ResultsProtos.MStatistics mstatistics_;
+    public static final int DIAGNOSTICS_SA_FIELD_NUMBER = 5;
+    private demetra.sa.io.protobuf.SaProtos.Diagnostics diagnosticsSa_;
     /**
-     * <code>.x13.MStatistics mstatistics = 10;</code>
-     * @return Whether the mstatistics field is set.
+     * <code>.sa.Diagnostics diagnostics_sa = 5;</code>
+     * @return Whether the diagnosticsSa field is set.
      */
     @java.lang.Override
-    public boolean hasMstatistics() {
-      return mstatistics_ != null;
+    public boolean hasDiagnosticsSa() {
+      return diagnosticsSa_ != null;
     }
     /**
-     * <code>.x13.MStatistics mstatistics = 10;</code>
-     * @return The mstatistics.
+     * <code>.sa.Diagnostics diagnostics_sa = 5;</code>
+     * @return The diagnosticsSa.
      */
     @java.lang.Override
-    public demetra.x13.io.protobuf.X13ResultsProtos.MStatistics getMstatistics() {
-      return mstatistics_ == null ? demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.getDefaultInstance() : mstatistics_;
+    public demetra.sa.io.protobuf.SaProtos.Diagnostics getDiagnosticsSa() {
+      return diagnosticsSa_ == null ? demetra.sa.io.protobuf.SaProtos.Diagnostics.getDefaultInstance() : diagnosticsSa_;
     }
     /**
-     * <code>.x13.MStatistics mstatistics = 10;</code>
+     * <code>.sa.Diagnostics diagnostics_sa = 5;</code>
      */
     @java.lang.Override
-    public demetra.x13.io.protobuf.X13ResultsProtos.MStatisticsOrBuilder getMstatisticsOrBuilder() {
-      return getMstatistics();
+    public demetra.sa.io.protobuf.SaProtos.DiagnosticsOrBuilder getDiagnosticsSaOrBuilder() {
+      return getDiagnosticsSa();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -13885,11 +14506,11 @@ public final class X13ResultsProtos {
       if (final_ != null) {
         output.writeMessage(3, getFinal());
       }
-      if (varianceDecomposition_ != null) {
-        output.writeMessage(4, getVarianceDecomposition());
+      if (diagnosticsX13_ != null) {
+        output.writeMessage(4, getDiagnosticsX13());
       }
-      if (mstatistics_ != null) {
-        output.writeMessage(10, getMstatistics());
+      if (diagnosticsSa_ != null) {
+        output.writeMessage(5, getDiagnosticsSa());
       }
       unknownFields.writeTo(output);
     }
@@ -13912,13 +14533,13 @@ public final class X13ResultsProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, getFinal());
       }
-      if (varianceDecomposition_ != null) {
+      if (diagnosticsX13_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getVarianceDecomposition());
+          .computeMessageSize(4, getDiagnosticsX13());
       }
-      if (mstatistics_ != null) {
+      if (diagnosticsSa_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(10, getMstatistics());
+          .computeMessageSize(5, getDiagnosticsSa());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -13950,15 +14571,15 @@ public final class X13ResultsProtos {
         if (!getFinal()
             .equals(other.getFinal())) return false;
       }
-      if (hasVarianceDecomposition() != other.hasVarianceDecomposition()) return false;
-      if (hasVarianceDecomposition()) {
-        if (!getVarianceDecomposition()
-            .equals(other.getVarianceDecomposition())) return false;
+      if (hasDiagnosticsX13() != other.hasDiagnosticsX13()) return false;
+      if (hasDiagnosticsX13()) {
+        if (!getDiagnosticsX13()
+            .equals(other.getDiagnosticsX13())) return false;
       }
-      if (hasMstatistics() != other.hasMstatistics()) return false;
-      if (hasMstatistics()) {
-        if (!getMstatistics()
-            .equals(other.getMstatistics())) return false;
+      if (hasDiagnosticsSa() != other.hasDiagnosticsSa()) return false;
+      if (hasDiagnosticsSa()) {
+        if (!getDiagnosticsSa()
+            .equals(other.getDiagnosticsSa())) return false;
       }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -13983,13 +14604,13 @@ public final class X13ResultsProtos {
         hash = (37 * hash) + FINAL_FIELD_NUMBER;
         hash = (53 * hash) + getFinal().hashCode();
       }
-      if (hasVarianceDecomposition()) {
-        hash = (37 * hash) + VARIANCE_DECOMPOSITION_FIELD_NUMBER;
-        hash = (53 * hash) + getVarianceDecomposition().hashCode();
+      if (hasDiagnosticsX13()) {
+        hash = (37 * hash) + DIAGNOSTICS_X13_FIELD_NUMBER;
+        hash = (53 * hash) + getDiagnosticsX13().hashCode();
       }
-      if (hasMstatistics()) {
-        hash = (37 * hash) + MSTATISTICS_FIELD_NUMBER;
-        hash = (53 * hash) + getMstatistics().hashCode();
+      if (hasDiagnosticsSa()) {
+        hash = (37 * hash) + DIAGNOSTICS_SA_FIELD_NUMBER;
+        hash = (53 * hash) + getDiagnosticsSa().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -14142,17 +14763,17 @@ public final class X13ResultsProtos {
           final_ = null;
           finalBuilder_ = null;
         }
-        if (varianceDecompositionBuilder_ == null) {
-          varianceDecomposition_ = null;
+        if (diagnosticsX13Builder_ == null) {
+          diagnosticsX13_ = null;
         } else {
-          varianceDecomposition_ = null;
-          varianceDecompositionBuilder_ = null;
+          diagnosticsX13_ = null;
+          diagnosticsX13Builder_ = null;
         }
-        if (mstatisticsBuilder_ == null) {
-          mstatistics_ = null;
+        if (diagnosticsSaBuilder_ == null) {
+          diagnosticsSa_ = null;
         } else {
-          mstatistics_ = null;
-          mstatisticsBuilder_ = null;
+          diagnosticsSa_ = null;
+          diagnosticsSaBuilder_ = null;
         }
         return this;
       }
@@ -14195,15 +14816,15 @@ public final class X13ResultsProtos {
         } else {
           result.final_ = finalBuilder_.build();
         }
-        if (varianceDecompositionBuilder_ == null) {
-          result.varianceDecomposition_ = varianceDecomposition_;
+        if (diagnosticsX13Builder_ == null) {
+          result.diagnosticsX13_ = diagnosticsX13_;
         } else {
-          result.varianceDecomposition_ = varianceDecompositionBuilder_.build();
+          result.diagnosticsX13_ = diagnosticsX13Builder_.build();
         }
-        if (mstatisticsBuilder_ == null) {
-          result.mstatistics_ = mstatistics_;
+        if (diagnosticsSaBuilder_ == null) {
+          result.diagnosticsSa_ = diagnosticsSa_;
         } else {
-          result.mstatistics_ = mstatisticsBuilder_.build();
+          result.diagnosticsSa_ = diagnosticsSaBuilder_.build();
         }
         onBuilt();
         return result;
@@ -14262,11 +14883,11 @@ public final class X13ResultsProtos {
         if (other.hasFinal()) {
           mergeFinal(other.getFinal());
         }
-        if (other.hasVarianceDecomposition()) {
-          mergeVarianceDecomposition(other.getVarianceDecomposition());
+        if (other.hasDiagnosticsX13()) {
+          mergeDiagnosticsX13(other.getDiagnosticsX13());
         }
-        if (other.hasMstatistics()) {
-          mergeMstatistics(other.getMstatistics());
+        if (other.hasDiagnosticsSa()) {
+          mergeDiagnosticsSa(other.getDiagnosticsSa());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -14654,242 +15275,242 @@ public final class X13ResultsProtos {
         return finalBuilder_;
       }
 
-      private demetra.sa.io.protobuf.SaProtos.VarianceDecomposition varianceDecomposition_;
+      private demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics diagnosticsX13_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sa.io.protobuf.SaProtos.VarianceDecomposition, demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.Builder, demetra.sa.io.protobuf.SaProtos.VarianceDecompositionOrBuilder> varianceDecompositionBuilder_;
+          demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics, demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.Builder, demetra.x13.io.protobuf.X13ResultsProtos.DiagnosticsOrBuilder> diagnosticsX13Builder_;
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
-       * @return Whether the varianceDecomposition field is set.
+       * <code>.x13.Diagnostics diagnostics_x13 = 4;</code>
+       * @return Whether the diagnosticsX13 field is set.
        */
-      public boolean hasVarianceDecomposition() {
-        return varianceDecompositionBuilder_ != null || varianceDecomposition_ != null;
+      public boolean hasDiagnosticsX13() {
+        return diagnosticsX13Builder_ != null || diagnosticsX13_ != null;
       }
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
-       * @return The varianceDecomposition.
+       * <code>.x13.Diagnostics diagnostics_x13 = 4;</code>
+       * @return The diagnosticsX13.
        */
-      public demetra.sa.io.protobuf.SaProtos.VarianceDecomposition getVarianceDecomposition() {
-        if (varianceDecompositionBuilder_ == null) {
-          return varianceDecomposition_ == null ? demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.getDefaultInstance() : varianceDecomposition_;
+      public demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics getDiagnosticsX13() {
+        if (diagnosticsX13Builder_ == null) {
+          return diagnosticsX13_ == null ? demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.getDefaultInstance() : diagnosticsX13_;
         } else {
-          return varianceDecompositionBuilder_.getMessage();
+          return diagnosticsX13Builder_.getMessage();
         }
       }
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
+       * <code>.x13.Diagnostics diagnostics_x13 = 4;</code>
        */
-      public Builder setVarianceDecomposition(demetra.sa.io.protobuf.SaProtos.VarianceDecomposition value) {
-        if (varianceDecompositionBuilder_ == null) {
+      public Builder setDiagnosticsX13(demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics value) {
+        if (diagnosticsX13Builder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          varianceDecomposition_ = value;
+          diagnosticsX13_ = value;
           onChanged();
         } else {
-          varianceDecompositionBuilder_.setMessage(value);
+          diagnosticsX13Builder_.setMessage(value);
         }
 
         return this;
       }
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
+       * <code>.x13.Diagnostics diagnostics_x13 = 4;</code>
        */
-      public Builder setVarianceDecomposition(
-          demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.Builder builderForValue) {
-        if (varianceDecompositionBuilder_ == null) {
-          varianceDecomposition_ = builderForValue.build();
+      public Builder setDiagnosticsX13(
+          demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.Builder builderForValue) {
+        if (diagnosticsX13Builder_ == null) {
+          diagnosticsX13_ = builderForValue.build();
           onChanged();
         } else {
-          varianceDecompositionBuilder_.setMessage(builderForValue.build());
+          diagnosticsX13Builder_.setMessage(builderForValue.build());
         }
 
         return this;
       }
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
+       * <code>.x13.Diagnostics diagnostics_x13 = 4;</code>
        */
-      public Builder mergeVarianceDecomposition(demetra.sa.io.protobuf.SaProtos.VarianceDecomposition value) {
-        if (varianceDecompositionBuilder_ == null) {
-          if (varianceDecomposition_ != null) {
-            varianceDecomposition_ =
-              demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.newBuilder(varianceDecomposition_).mergeFrom(value).buildPartial();
+      public Builder mergeDiagnosticsX13(demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics value) {
+        if (diagnosticsX13Builder_ == null) {
+          if (diagnosticsX13_ != null) {
+            diagnosticsX13_ =
+              demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.newBuilder(diagnosticsX13_).mergeFrom(value).buildPartial();
           } else {
-            varianceDecomposition_ = value;
+            diagnosticsX13_ = value;
           }
           onChanged();
         } else {
-          varianceDecompositionBuilder_.mergeFrom(value);
+          diagnosticsX13Builder_.mergeFrom(value);
         }
 
         return this;
       }
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
+       * <code>.x13.Diagnostics diagnostics_x13 = 4;</code>
        */
-      public Builder clearVarianceDecomposition() {
-        if (varianceDecompositionBuilder_ == null) {
-          varianceDecomposition_ = null;
+      public Builder clearDiagnosticsX13() {
+        if (diagnosticsX13Builder_ == null) {
+          diagnosticsX13_ = null;
           onChanged();
         } else {
-          varianceDecomposition_ = null;
-          varianceDecompositionBuilder_ = null;
+          diagnosticsX13_ = null;
+          diagnosticsX13Builder_ = null;
         }
 
         return this;
       }
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
+       * <code>.x13.Diagnostics diagnostics_x13 = 4;</code>
        */
-      public demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.Builder getVarianceDecompositionBuilder() {
+      public demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.Builder getDiagnosticsX13Builder() {
         
         onChanged();
-        return getVarianceDecompositionFieldBuilder().getBuilder();
+        return getDiagnosticsX13FieldBuilder().getBuilder();
       }
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
+       * <code>.x13.Diagnostics diagnostics_x13 = 4;</code>
        */
-      public demetra.sa.io.protobuf.SaProtos.VarianceDecompositionOrBuilder getVarianceDecompositionOrBuilder() {
-        if (varianceDecompositionBuilder_ != null) {
-          return varianceDecompositionBuilder_.getMessageOrBuilder();
+      public demetra.x13.io.protobuf.X13ResultsProtos.DiagnosticsOrBuilder getDiagnosticsX13OrBuilder() {
+        if (diagnosticsX13Builder_ != null) {
+          return diagnosticsX13Builder_.getMessageOrBuilder();
         } else {
-          return varianceDecomposition_ == null ?
-              demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.getDefaultInstance() : varianceDecomposition_;
+          return diagnosticsX13_ == null ?
+              demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.getDefaultInstance() : diagnosticsX13_;
         }
       }
       /**
-       * <code>.sa.VarianceDecomposition variance_decomposition = 4;</code>
+       * <code>.x13.Diagnostics diagnostics_x13 = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sa.io.protobuf.SaProtos.VarianceDecomposition, demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.Builder, demetra.sa.io.protobuf.SaProtos.VarianceDecompositionOrBuilder> 
-          getVarianceDecompositionFieldBuilder() {
-        if (varianceDecompositionBuilder_ == null) {
-          varianceDecompositionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.sa.io.protobuf.SaProtos.VarianceDecomposition, demetra.sa.io.protobuf.SaProtos.VarianceDecomposition.Builder, demetra.sa.io.protobuf.SaProtos.VarianceDecompositionOrBuilder>(
-                  getVarianceDecomposition(),
+          demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics, demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.Builder, demetra.x13.io.protobuf.X13ResultsProtos.DiagnosticsOrBuilder> 
+          getDiagnosticsX13FieldBuilder() {
+        if (diagnosticsX13Builder_ == null) {
+          diagnosticsX13Builder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics, demetra.x13.io.protobuf.X13ResultsProtos.Diagnostics.Builder, demetra.x13.io.protobuf.X13ResultsProtos.DiagnosticsOrBuilder>(
+                  getDiagnosticsX13(),
                   getParentForChildren(),
                   isClean());
-          varianceDecomposition_ = null;
+          diagnosticsX13_ = null;
         }
-        return varianceDecompositionBuilder_;
+        return diagnosticsX13Builder_;
       }
 
-      private demetra.x13.io.protobuf.X13ResultsProtos.MStatistics mstatistics_;
+      private demetra.sa.io.protobuf.SaProtos.Diagnostics diagnosticsSa_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.x13.io.protobuf.X13ResultsProtos.MStatistics, demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.Builder, demetra.x13.io.protobuf.X13ResultsProtos.MStatisticsOrBuilder> mstatisticsBuilder_;
+          demetra.sa.io.protobuf.SaProtos.Diagnostics, demetra.sa.io.protobuf.SaProtos.Diagnostics.Builder, demetra.sa.io.protobuf.SaProtos.DiagnosticsOrBuilder> diagnosticsSaBuilder_;
       /**
-       * <code>.x13.MStatistics mstatistics = 10;</code>
-       * @return Whether the mstatistics field is set.
+       * <code>.sa.Diagnostics diagnostics_sa = 5;</code>
+       * @return Whether the diagnosticsSa field is set.
        */
-      public boolean hasMstatistics() {
-        return mstatisticsBuilder_ != null || mstatistics_ != null;
+      public boolean hasDiagnosticsSa() {
+        return diagnosticsSaBuilder_ != null || diagnosticsSa_ != null;
       }
       /**
-       * <code>.x13.MStatistics mstatistics = 10;</code>
-       * @return The mstatistics.
+       * <code>.sa.Diagnostics diagnostics_sa = 5;</code>
+       * @return The diagnosticsSa.
        */
-      public demetra.x13.io.protobuf.X13ResultsProtos.MStatistics getMstatistics() {
-        if (mstatisticsBuilder_ == null) {
-          return mstatistics_ == null ? demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.getDefaultInstance() : mstatistics_;
+      public demetra.sa.io.protobuf.SaProtos.Diagnostics getDiagnosticsSa() {
+        if (diagnosticsSaBuilder_ == null) {
+          return diagnosticsSa_ == null ? demetra.sa.io.protobuf.SaProtos.Diagnostics.getDefaultInstance() : diagnosticsSa_;
         } else {
-          return mstatisticsBuilder_.getMessage();
+          return diagnosticsSaBuilder_.getMessage();
         }
       }
       /**
-       * <code>.x13.MStatistics mstatistics = 10;</code>
+       * <code>.sa.Diagnostics diagnostics_sa = 5;</code>
        */
-      public Builder setMstatistics(demetra.x13.io.protobuf.X13ResultsProtos.MStatistics value) {
-        if (mstatisticsBuilder_ == null) {
+      public Builder setDiagnosticsSa(demetra.sa.io.protobuf.SaProtos.Diagnostics value) {
+        if (diagnosticsSaBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          mstatistics_ = value;
+          diagnosticsSa_ = value;
           onChanged();
         } else {
-          mstatisticsBuilder_.setMessage(value);
+          diagnosticsSaBuilder_.setMessage(value);
         }
 
         return this;
       }
       /**
-       * <code>.x13.MStatistics mstatistics = 10;</code>
+       * <code>.sa.Diagnostics diagnostics_sa = 5;</code>
        */
-      public Builder setMstatistics(
-          demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.Builder builderForValue) {
-        if (mstatisticsBuilder_ == null) {
-          mstatistics_ = builderForValue.build();
+      public Builder setDiagnosticsSa(
+          demetra.sa.io.protobuf.SaProtos.Diagnostics.Builder builderForValue) {
+        if (diagnosticsSaBuilder_ == null) {
+          diagnosticsSa_ = builderForValue.build();
           onChanged();
         } else {
-          mstatisticsBuilder_.setMessage(builderForValue.build());
+          diagnosticsSaBuilder_.setMessage(builderForValue.build());
         }
 
         return this;
       }
       /**
-       * <code>.x13.MStatistics mstatistics = 10;</code>
+       * <code>.sa.Diagnostics diagnostics_sa = 5;</code>
        */
-      public Builder mergeMstatistics(demetra.x13.io.protobuf.X13ResultsProtos.MStatistics value) {
-        if (mstatisticsBuilder_ == null) {
-          if (mstatistics_ != null) {
-            mstatistics_ =
-              demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.newBuilder(mstatistics_).mergeFrom(value).buildPartial();
+      public Builder mergeDiagnosticsSa(demetra.sa.io.protobuf.SaProtos.Diagnostics value) {
+        if (diagnosticsSaBuilder_ == null) {
+          if (diagnosticsSa_ != null) {
+            diagnosticsSa_ =
+              demetra.sa.io.protobuf.SaProtos.Diagnostics.newBuilder(diagnosticsSa_).mergeFrom(value).buildPartial();
           } else {
-            mstatistics_ = value;
+            diagnosticsSa_ = value;
           }
           onChanged();
         } else {
-          mstatisticsBuilder_.mergeFrom(value);
+          diagnosticsSaBuilder_.mergeFrom(value);
         }
 
         return this;
       }
       /**
-       * <code>.x13.MStatistics mstatistics = 10;</code>
+       * <code>.sa.Diagnostics diagnostics_sa = 5;</code>
        */
-      public Builder clearMstatistics() {
-        if (mstatisticsBuilder_ == null) {
-          mstatistics_ = null;
+      public Builder clearDiagnosticsSa() {
+        if (diagnosticsSaBuilder_ == null) {
+          diagnosticsSa_ = null;
           onChanged();
         } else {
-          mstatistics_ = null;
-          mstatisticsBuilder_ = null;
+          diagnosticsSa_ = null;
+          diagnosticsSaBuilder_ = null;
         }
 
         return this;
       }
       /**
-       * <code>.x13.MStatistics mstatistics = 10;</code>
+       * <code>.sa.Diagnostics diagnostics_sa = 5;</code>
        */
-      public demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.Builder getMstatisticsBuilder() {
+      public demetra.sa.io.protobuf.SaProtos.Diagnostics.Builder getDiagnosticsSaBuilder() {
         
         onChanged();
-        return getMstatisticsFieldBuilder().getBuilder();
+        return getDiagnosticsSaFieldBuilder().getBuilder();
       }
       /**
-       * <code>.x13.MStatistics mstatistics = 10;</code>
+       * <code>.sa.Diagnostics diagnostics_sa = 5;</code>
        */
-      public demetra.x13.io.protobuf.X13ResultsProtos.MStatisticsOrBuilder getMstatisticsOrBuilder() {
-        if (mstatisticsBuilder_ != null) {
-          return mstatisticsBuilder_.getMessageOrBuilder();
+      public demetra.sa.io.protobuf.SaProtos.DiagnosticsOrBuilder getDiagnosticsSaOrBuilder() {
+        if (diagnosticsSaBuilder_ != null) {
+          return diagnosticsSaBuilder_.getMessageOrBuilder();
         } else {
-          return mstatistics_ == null ?
-              demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.getDefaultInstance() : mstatistics_;
+          return diagnosticsSa_ == null ?
+              demetra.sa.io.protobuf.SaProtos.Diagnostics.getDefaultInstance() : diagnosticsSa_;
         }
       }
       /**
-       * <code>.x13.MStatistics mstatistics = 10;</code>
+       * <code>.sa.Diagnostics diagnostics_sa = 5;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.x13.io.protobuf.X13ResultsProtos.MStatistics, demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.Builder, demetra.x13.io.protobuf.X13ResultsProtos.MStatisticsOrBuilder> 
-          getMstatisticsFieldBuilder() {
-        if (mstatisticsBuilder_ == null) {
-          mstatisticsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.x13.io.protobuf.X13ResultsProtos.MStatistics, demetra.x13.io.protobuf.X13ResultsProtos.MStatistics.Builder, demetra.x13.io.protobuf.X13ResultsProtos.MStatisticsOrBuilder>(
-                  getMstatistics(),
+          demetra.sa.io.protobuf.SaProtos.Diagnostics, demetra.sa.io.protobuf.SaProtos.Diagnostics.Builder, demetra.sa.io.protobuf.SaProtos.DiagnosticsOrBuilder> 
+          getDiagnosticsSaFieldBuilder() {
+        if (diagnosticsSaBuilder_ == null) {
+          diagnosticsSaBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.sa.io.protobuf.SaProtos.Diagnostics, demetra.sa.io.protobuf.SaProtos.Diagnostics.Builder, demetra.sa.io.protobuf.SaProtos.DiagnosticsOrBuilder>(
+                  getDiagnosticsSa(),
                   getParentForChildren(),
                   isClean());
-          mstatistics_ = null;
+          diagnosticsSa_ = null;
         }
-        return mstatisticsBuilder_;
+        return diagnosticsSaBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -14960,6 +15581,11 @@ public final class X13ResultsProtos {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_x13_X13Finals_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_x13_Diagnostics_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_x13_Diagnostics_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_x13_X13Results_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -15018,13 +15644,14 @@ public final class X13ResultsProtos {
       ".jd3.TsData\022\031\n\004d18a\030\013 \001(\0132\013.jd3.TsData\022\027" +
       "\n\002e1\030\014 \001(\0132\013.jd3.TsData\022\027\n\002e2\030\r \001(\0132\013.jd" +
       "3.TsData\022\027\n\002e3\030\016 \001(\0132\013.jd3.TsData\022\030\n\003e11" +
-      "\030\017 \001(\0132\013.jd3.TsData\"\352\001\n\nX13Results\0223\n\rpr" +
-      "eprocessing\030\001 \001(\0132\034.regarima.RegArimaEst" +
-      "imation\022&\n\rdecomposition\030\002 \001(\0132\017.x13.X11" +
-      "Results\022\035\n\005final\030\003 \001(\0132\016.x13.X13Finals\0229" +
-      "\n\026variance_decomposition\030\004 \001(\0132\031.sa.Vari" +
-      "anceDecomposition\022%\n\013mstatistics\030\n \001(\0132\020" +
-      ".x13.MStatisticsB+\n\027demetra.x13.io.proto" +
+      "\030\017 \001(\0132\013.jd3.TsData\"4\n\013Diagnostics\022%\n\013ms" +
+      "tatistics\030\001 \001(\0132\020.x13.MStatistics\"\334\001\n\nX1" +
+      "3Results\0223\n\rpreprocessing\030\001 \001(\0132\034.regari" +
+      "ma.RegArimaEstimation\022&\n\rdecomposition\030\002" +
+      " \001(\0132\017.x13.X11Results\022\035\n\005final\030\003 \001(\0132\016.x" +
+      "13.X13Finals\022)\n\017diagnostics_x13\030\004 \001(\0132\020." +
+      "x13.Diagnostics\022\'\n\016diagnostics_sa\030\005 \001(\0132" +
+      "\017.sa.DiagnosticsB+\n\027demetra.x13.io.proto" +
       "bufB\020X13ResultsProtosP\000P\001P\002P\003P\004b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
@@ -15054,12 +15681,18 @@ public final class X13ResultsProtos {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_x13_X13Finals_descriptor,
         new java.lang.String[] { "D10Final", "D11Final", "D12Final", "D13Final", "D16", "D18", "D10A", "D11A", "D12A", "D16A", "D18A", "E1", "E2", "E3", "E11", });
-    internal_static_x13_X13Results_descriptor =
+    internal_static_x13_Diagnostics_descriptor =
       getDescriptor().getMessageTypes().get(3);
+    internal_static_x13_Diagnostics_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_x13_Diagnostics_descriptor,
+        new java.lang.String[] { "Mstatistics", });
+    internal_static_x13_X13Results_descriptor =
+      getDescriptor().getMessageTypes().get(4);
     internal_static_x13_X13Results_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_x13_X13Results_descriptor,
-        new java.lang.String[] { "Preprocessing", "Decomposition", "Final", "VarianceDecomposition", "Mstatistics", });
+        new java.lang.String[] { "Preprocessing", "Decomposition", "Final", "DiagnosticsX13", "DiagnosticsSa", });
     demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor();
     demetra.regarima.io.protobuf.RegArimaProtos.getDescriptor();
     demetra.sa.io.protobuf.SaProtos.getDescriptor();

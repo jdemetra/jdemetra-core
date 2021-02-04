@@ -44,6 +44,7 @@ import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.regarima.ami.Utility;
+import jdplus.stats.tests.NiidTests;
 import jdplus.timeseries.simplets.Transformations;
 
 /**
@@ -390,6 +391,15 @@ public final class ModelEstimation {
         DoubleSeq res = RegArimaUtility.fullResiduals(model, concentratedLikelihood);
         TsPeriod start=transformedSeries.getEnd().plus(-res.length());
         return TsData.ofInternal(start, res);
+    }
+    
+    public NiidTests residualsTests(){
+        DoubleSeq res = RegArimaUtility.fullResiduals(model, concentratedLikelihood);
+        return NiidTests.builder()
+                .data(res)
+                .period(originalSeries.getAnnualFrequency())
+                .hyperParametersCount(freeArimaParametersCount)
+                .build();
     }
 
     /**

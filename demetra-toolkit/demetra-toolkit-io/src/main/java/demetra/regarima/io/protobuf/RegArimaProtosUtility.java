@@ -29,6 +29,7 @@ import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import jdplus.regsarima.regular.ModelEstimation;
 
 /**
  *
@@ -195,6 +196,12 @@ public class RegArimaProtosUtility {
             builder.add(start.atStartOfDay(), end.atStartOfDay());
         }
         return builder.build();
+    }
+    
+    public RegArimaResultsProtos.Diagnostics of(ModelEstimation model){
+        return RegArimaResultsProtos.Diagnostics.newBuilder()
+                .setResidualsTests(ToolkitProtosUtility.convert(model.residualsTests()))
+                .build();
     }
    
 }

@@ -126,7 +126,9 @@ public class RegArimaEstimationProto {
             }
         }
 
-        return builder.build();
+        return builder
+                .setDiagnostics(RegArimaProtosUtility.of(model))
+                .build();
     }
 
     public RegArimaResultsProtos.VariableType type(ITsVariable var) {

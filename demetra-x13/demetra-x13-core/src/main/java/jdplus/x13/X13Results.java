@@ -36,7 +36,6 @@ public class X13Results implements ProcResults {
     private X13Preadjustment preadjustment;
     private X11Results decomposition;
     private X13Finals finals;
-    private Mstatistics mstatistics;
 
     @Override
     public boolean contains(String id) {

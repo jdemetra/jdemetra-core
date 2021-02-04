@@ -11,14 +11,20 @@ import demetra.data.ParameterType;
 import demetra.modelling.ComponentInformation;
 import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
+import demetra.sa.DefaultSaDiagnostics;
 import demetra.sa.SeriesDecomposition;
+import demetra.sa.StationaryVarianceDecomposition;
 import demetra.seats.SeatsModelSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TransformSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.sa.StationaryVarianceDecomposition;
+import jdplus.sa.StationaryVarianceComputer;
+import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnostics;
+import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
+import jdplus.sa.diagnostics.ResidualTradingDaysDiagnostics;
+import jdplus.sa.diagnostics.ResidualTradingDaysDiagnosticsConfiguration;
 import jdplus.sa.modelling.RegArimaDecomposer;
 import jdplus.sa.modelling.TwoStepsDecomposition;
 import jdplus.sarima.SarimaModel;
@@ -73,32 +79,10 @@ public class TramoSeatsKernel {
         SeriesDecomposition finals = TwoStepsDecomposition.merge(preprocessing, srslts.getFinalComponents());
 
         // Step 5. Diagnostics
-        StationaryVarianceDecomposition var = new StationaryVarianceDecomposition();
-        boolean mul = preprocessing.isLogTransformation();
-        TsData y = preprocessing.interpolatedSeries(false),
-                t = srslts.getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.Value),
-                seas = srslts.getFinalComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Value),
-                irr = srslts.getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.Value),
-                cal = preprocessing.getCalendarEffect(y.getDomain());
-
-        TsData others;
-        if (mul) {
-            TsData all = TsData.multiply(t, seas, irr, cal);
-            others = TsData.divide(y, all);
-        } else {
-            TsData all = TsData.add(t, seas, irr, cal);
-            others = TsData.subtract(y, all);
-        }
-
-        boolean bvar = var.process(y, t, seas, irr, cal, others, mul);
-        TramoSeatsDiagnostics diags = TramoSeatsDiagnostics.builder()
-                .varianceDecomposition(bvar ? var : null)
-                .build();
         return TramoSeatsResults.builder()
                 .preprocessing(preprocessing)
                 .decomposition(srslts)
                 .finals(finals)
-                .diagnostics(diags)
                 .build();
     }
 
@@ -129,5 +113,6 @@ public class TramoSeatsKernel {
                 .sarimaSpec(sarima)
                 .build();
     }
+
 
 }

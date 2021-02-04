@@ -159,6 +159,10 @@ public class NiidTests {
         this.data2 = DoubleSeq.of(d2);
         this.stat2 = DescriptiveStatistics.of(data2);
     }
+    
+    public DoubleSeq data(){
+        return data;
+    }
 
     /**
      *

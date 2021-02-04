@@ -47,8 +47,8 @@ public class TramoSeatsResultsProtoTest {
     @Test
     public void test0() {
         TsPeriod start=TsPeriod.monthly(1992,1);
-        TsData s=TsData.ofInternal(start, Data.RETAIL_HARDWARESTORE);
-        TramoSeatsKernel ts = TramoSeatsKernel.of(TramoSeatsSpec.RSA4, null);
+        TsData s=TsData.ofInternal(start, Data.RETAIL_BEERWINEANDLIQUORSTORES);
+        TramoSeatsKernel ts = TramoSeatsKernel.of(TramoSeatsSpec.RSAfull, null);
         ProcessingLog log=ProcessingLog.dummy();
         TramoSeatsResults rslt = ts.process(s, log);
         TramoSeatsResultsProtos.TramoSeatsResults pb = TramoSeatsResultsProto.convert(rslt);

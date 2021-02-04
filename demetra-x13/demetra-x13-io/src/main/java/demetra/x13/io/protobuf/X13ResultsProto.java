@@ -18,9 +18,11 @@ package demetra.x13.io.protobuf;
 
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
 import demetra.sa.io.protobuf.SaProtos;
+import demetra.sa.io.protobuf.SaProtosUtility;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import demetra.x13.X13Finals;
 import jdplus.x13.Mstatistics;
+import jdplus.x13.X13Diagnostics;
 import jdplus.x13.X13Results;
 
 /**
@@ -53,11 +55,14 @@ public class X13ResultsProto {
     
     public X13ResultsProtos.X13Results convert(X13Results rslts) {
         X13ResultsProtos.X13Results.Builder builder = X13ResultsProtos.X13Results.newBuilder();
+        X13Diagnostics diags=X13Diagnostics.of(rslts);
         builder.setPreprocessing(RegArimaEstimationProto.convert(rslts.getPreprocessing()))
                 .setDecomposition(X11ResultsProto.convert(rslts.getDecomposition()))
                 .setFinal(convert(rslts.getFinals()))
-                .setMstatistics(convert(rslts.getMstatistics()))
-                .setVarianceDecomposition(of(rslts.getMstatistics()));
+                .setDiagnosticsX13(X13ResultsProtos.Diagnostics.newBuilder()
+                        .setMstatistics(convert(diags.getMstatistics()))
+                        .build())
+                .setDiagnosticsSa(SaProtosUtility.of(diags.getSaDiagnostics()));
         return builder.build();
     }
     

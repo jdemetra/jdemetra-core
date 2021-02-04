@@ -17,9 +17,11 @@
 package demetra.tramoseats.io.protobuf;
 
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
+import demetra.sa.DefaultSaDiagnostics;
 import demetra.sa.io.protobuf.SaProtos;
 import demetra.sa.io.protobuf.SaProtosUtility;
-import jdplus.sa.StationaryVarianceDecomposition;
+import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
+import jdplus.tramoseats.TramoSeatsDiagnostics;
 import jdplus.tramoseats.TramoSeatsResults;
 
 /**
@@ -29,26 +31,15 @@ import jdplus.tramoseats.TramoSeatsResults;
 @lombok.experimental.UtilityClass
 public class TramoSeatsResultsProto {
 
+
     public TramoSeatsResultsProtos.TramoSeatsResults convert(TramoSeatsResults rslts) {
         TramoSeatsResultsProtos.TramoSeatsResults.Builder builder = TramoSeatsResultsProtos.TramoSeatsResults.newBuilder();
+        TramoSeatsDiagnostics diags = TramoSeatsDiagnostics.of(rslts);
         builder.setPreprocessing(RegArimaEstimationProto.convert(rslts.getPreprocessing()))
                 .setDecomposition(SeatsResultsProto.convert(rslts.getDecomposition()))
                 .setFinal(SaProtosUtility.convert(rslts.getFinals()))
-                .setVarianceDecomposition(convert(rslts.getDiagnostics().getVarianceDecomposition()))
-                ;
+                .setDiagnosticsSa(SaProtosUtility.of(diags.getSaDiagnostics()));
         return builder.build();
     }
-    
-    public SaProtos.VarianceDecomposition convert(StationaryVarianceDecomposition var){
-        return SaProtos.VarianceDecomposition.newBuilder()
-                .setCycle(var.getVarC())
-                .setSeasonal(var.getVarS())
-                .setIrregular(var.getVarI())
-                .setCalendar(var.getVarTD())
-                .setOthers(var.getVarP())
-                .setTotal(var.getVarTotal())
-                .build();
-                
-        
-    }
-}
+
+ }

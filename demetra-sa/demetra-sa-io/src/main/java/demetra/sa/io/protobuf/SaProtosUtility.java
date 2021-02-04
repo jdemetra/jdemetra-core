@@ -5,9 +5,12 @@
  */
 package demetra.sa.io.protobuf;
 
+import demetra.data.Utility;
 import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
+import demetra.sa.DefaultSaDiagnostics;
 import demetra.sa.SeriesDecomposition;
+import demetra.sa.StationaryVarianceDecomposition;
 import demetra.sa.benchmarking.SaBenchmarkingSpec;
 import demetra.timeseries.TsData;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
@@ -113,12 +116,15 @@ public class SaProtosUtility {
         TsData S = TsData.concatenate(bs, s, fs);
         TsData ES = TsData.concatenate(ebs, es, efs);
 
-        return SaProtos.Component.newBuilder()
+        SaProtos.Component.Builder builder = SaProtos.Component.newBuilder()
                 .setData(ToolkitProtosUtility.convert(S))
-                .setStde(ToolkitProtosUtility.convert(ES))
                 .setNbcasts(bs == null ? 0 : bs.length())
-                .setNfcasts(fs == null ? 0 : fs.length())
-                .build();
+                .setNfcasts(fs == null ? 0 : fs.length());
+        if (ES != null) {
+            builder.addAllStde(Utility.asIterable(ES.getValues()));
+        }
+
+        return builder.build();
     }
 
     public SaProtos.ComponentType convert(ComponentType type) {
@@ -137,6 +143,29 @@ public class SaProtosUtility {
                 return SaProtos.ComponentType.UNDEFINED;
         }
     }
-    
+
+    public SaProtos.VarianceDecomposition convert(StationaryVarianceDecomposition var) {
+        return SaProtos.VarianceDecomposition.newBuilder()
+                .setCycle(var.getC())
+                .setSeasonal(var.getS())
+                .setIrregular(var.getI())
+                .setCalendar(var.getCalendar())
+                .setOthers(var.getP())
+                .setTotal(var.total())
+                .build();
+    }
+
+    public SaProtos.Diagnostics of(DefaultSaDiagnostics saDiags) {
+        return SaProtos.Diagnostics.newBuilder()
+                .setSeasonalFtestOnIrregular(ToolkitProtosUtility.convert(saDiags.getSeasonalFTestOnI()))
+                .setSeasonalFtestOnSa(ToolkitProtosUtility.convert(saDiags.getSeasonalFTestOnSa()))
+                .setSeasonalQtestOnIrregular(ToolkitProtosUtility.convert(saDiags.getSeasonalQsTestOnI()))
+                .setSeasonalQtestOnSa(ToolkitProtosUtility.convert(saDiags.getSeasonalQsTestOnSa()))
+                .setTdFtestOnIrregular(ToolkitProtosUtility.convert(saDiags.getTdFTestOnI()))
+                .setTdFtestOnSa(ToolkitProtosUtility.convert(saDiags.getTdFTestOnSa()))
+                .setVarianceDecomposition(SaProtosUtility.convert(saDiags.getVarianceDecomposition()))
+                .build();
+
+    }
 
 }

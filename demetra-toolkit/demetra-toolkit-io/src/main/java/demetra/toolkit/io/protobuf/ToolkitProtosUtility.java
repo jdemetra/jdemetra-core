@@ -21,6 +21,7 @@ import demetra.data.ParameterType;
 import demetra.data.Utility;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
+import demetra.stats.TestResult;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
@@ -262,6 +263,18 @@ public class ToolkitProtosUtility {
                     .setValue(test.getValue())
                     .setPvalue(test.getPValue())
                     .setDescription(test.getDistribution().toString())
+                    .build();
+        }
+    }
+
+    public ToolkitProtos.StatisticalTest convert(TestResult test) {
+        if (test == null) {
+            return ToolkitProtos.StatisticalTest.getDefaultInstance();
+        } else {
+            return ToolkitProtos.StatisticalTest.newBuilder()
+                    .setValue(test.getValue())
+                    .setPvalue(test.getPvalue())
+                    .setDescription(test.getDescription())
                     .build();
         }
     }

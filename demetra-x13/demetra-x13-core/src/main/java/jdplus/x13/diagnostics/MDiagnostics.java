@@ -31,11 +31,10 @@ public class MDiagnostics implements Diagnostics {
 
     public double[] stats;
     private double bad = MDiagnosticsConfiguration.BAD, severe = MDiagnosticsConfiguration.SEVERE;
-    private boolean all = true;
 
     public static MDiagnostics of(MDiagnosticsConfiguration config, X13Results rslts) {
         try {
-            Mstatistics stats = rslts.getMstatistics();
+            Mstatistics stats = Mstatistics.of(rslts.getPreadjustment(), rslts.getDecomposition(), rslts.getFinals());
             if (stats == null) {
                 return null;
             }
@@ -49,7 +48,6 @@ public class MDiagnostics implements Diagnostics {
     private MDiagnostics(MDiagnosticsConfiguration config, Mstatistics mstats) {
         bad = config.getBadThreshold();
         severe = config.getSevereThreshold();
-        all = config.isAll();
 
         int nm = mstats.getMCount();
         stats = new double[nm + 2];
