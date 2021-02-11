@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.data;
+package demetra.likelihood;
 
 import nbbrd.design.Development;
 
 /**
- * TODO Is it necessary?
+ * TODO Is it necessary? ParametersEstimation is perhaps more relevant.
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value

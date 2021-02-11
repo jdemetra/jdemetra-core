@@ -16,7 +16,7 @@
  */
 package demetra.timeseries.regression.modelling;
 
-import demetra.data.MissingValueEstimation;
+import demetra.likelihood.MissingValueEstimation;
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 National Bank of Belgium.
+ * Copyright 2021 National Bank of Belgium.
  *
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,28 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.data;
+package demetra.likelihood;
 
 import nbbrd.design.Development;
-import demetra.math.matrices.MatrixType;
 
 /**
- * TODO Is it necessary?
+ * Estimation of a missing value in an array of doubles in the context of 
+ * maximum likelihood estimation
  * @author Jean Palate <jean.palate@nbb.be>
+ * 
  */
 @lombok.Value
-@Development(status = Development.Status.Preliminary)
-public class ParametersEstimation {
+@Development(status = Development.Status.Release)
+public class MissingValueEstimation {
+    
     /**
-     * Values of the parameters
+     * 0-based position of the missing value in the array
      */
-    private double[] values;
+    private int position;
     /**
-     * Covariance of the parameters
+     * Estimated value
      */
-    private MatrixType covariance;
+    private double value;
     /**
-     * Any suitable information/description
+     * Standard deviation of the estimated value
      */
-    private String description;
+    private double standardError;
+   
 }

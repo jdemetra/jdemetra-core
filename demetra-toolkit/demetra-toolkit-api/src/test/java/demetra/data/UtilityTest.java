@@ -20,7 +20,7 @@ public class UtilityTest {
     @Test
     public void testIterable() {
         DoubleSeq seq=DoubleSeq.of(1,2,3,4,5,6,7,8,9,10);
-        Iterable<Double> iter = Utility.asIterable(seq);
+        Iterable<Double> iter = Iterables.of(seq);
         int n=0;
         for (double s : iter){
             ++n;

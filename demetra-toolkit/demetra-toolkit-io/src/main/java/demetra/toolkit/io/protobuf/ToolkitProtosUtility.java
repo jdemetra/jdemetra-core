@@ -18,7 +18,7 @@ package demetra.toolkit.io.protobuf;
 
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
-import demetra.data.Utility;
+import demetra.data.Iterables;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.stats.TestResult;
@@ -209,7 +209,7 @@ public class ToolkitProtosUtility {
                 .setAnnualFrequency(s.getAnnualFrequency())
                 .setStartYear(start.year())
                 .setStartPeriod(start.annualPosition() + 1)
-                .addAllValues(Utility.asIterable(s.getValues()))
+                .addAllValues(Iterables.of(s.getValues()))
                 .build();
     }
 
@@ -220,7 +220,7 @@ public class ToolkitProtosUtility {
         return ToolkitProtos.Matrix.newBuilder()
                 .setNrows(m.getRowsCount())
                 .setNcols(m.getColumnsCount())
-                .addAllValues(Utility.asIterable(m.toArray()))
+                .addAllValues(Iterables.of(m.toArray()))
                 .build();
     }
 
@@ -248,9 +248,9 @@ public class ToolkitProtosUtility {
             return ToolkitProtos.ArimaModel.getDefaultInstance();
         }
         return ToolkitProtos.ArimaModel.newBuilder()
-                .addAllAr(Utility.asIterable(arima.getStationaryAr().asPolynomial().coefficients()))
-                .addAllDelta(Utility.asIterable(arima.getNonStationaryAr().asPolynomial().coefficients()))
-                .addAllMa(Utility.asIterable(arima.getMa().asPolynomial().coefficients()))
+                .addAllAr(Iterables.of(arima.getStationaryAr().asPolynomial().coefficients()))
+                .addAllDelta(Iterables.of(arima.getNonStationaryAr().asPolynomial().coefficients()))
+                .addAllMa(Iterables.of(arima.getMa().asPolynomial().coefficients()))
                 .setInnovationVariance(arima.getInnovationVariance())
                 .setName(name).build();
     }

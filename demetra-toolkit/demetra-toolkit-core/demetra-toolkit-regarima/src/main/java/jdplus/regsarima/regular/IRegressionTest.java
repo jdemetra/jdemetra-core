@@ -36,8 +36,7 @@ public interface IRegressionTest {
      * @param ireg The position of the first tested variable 
      * (excluding missing values identified by additive outliers). The first position
      * @param nregs The number of tested variables
-     * @param info To put additional information, if need be.
      * @return 
      */
-    boolean accept(ConcentratedLikelihoodWithMissing ll, int nhp, int ireg, int nregs, InformationSet info);
+    boolean accept(ConcentratedLikelihoodWithMissing ll, int nhp, int ireg, int nregs);
 }

@@ -46,7 +46,7 @@ public class DerivedRegressionTest implements IRegressionTest {
     }
 
     @Override
-    public boolean accept(ConcentratedLikelihoodWithMissing ll, int nhp, int ireg, int nregs, InformationSet info) {
+    public boolean accept(ConcentratedLikelihoodWithMissing ll, int nhp, int ireg, int nregs) {
         vcur=-ll.coefficients().extract(ireg, nregs).sum();
         
         Matrix V=Matrix.of(ll.unscaledCovariance().extract(ireg, nregs, ireg, nregs));

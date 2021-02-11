@@ -20,7 +20,7 @@ import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Parameter;
-import demetra.data.Utility;
+import demetra.data.Iterables;
 import demetra.stats.ProbabilityType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.AdditiveOutlier;
@@ -61,9 +61,9 @@ public class RegArimaEstimationProto {
                 .setBp(orders.getBp())
                 .setBd(orders.getBd())
                 .setBq(orders.getBq())
-                .addAllParameters(Utility.asIterable(model.getArimaParameters()))
+                .addAllParameters(Iterables.of(model.getArimaParameters()))
                 .setCovariance(ToolkitProtosUtility.convert(model.getArimaCovariance()))
-                .addAllScore(Utility.asIterable(model.getArimaScore()));
+                .addAllScore(Iterables.of(model.getArimaScore()));
         return builder.build();
     }
 
@@ -74,12 +74,12 @@ public class RegArimaEstimationProto {
         Matrix cov = model.getConcentratedLikelihood().covariance(model.getFreeArimaParametersCount(), true);
         TsDomain domain = model.getOriginalSeries().getDomain();
 
-        builder.addAllY(Utility.asIterable(model.getModel().getY()))
+        builder.addAllY(Iterables.of(model.getModel().getY()))
                 .setX(ToolkitProtosUtility.convert(model.getModel().variables()))
                 .setSarima(arima(model))
                 .setLikelihood(ToolkitProtosUtility.convert(model.getStatistics()))
-                .addAllResiduals(Utility.asIterable(model.fullResiduals().getValues()))
-                .addAllCoefficients(Utility.asIterable(model.getConcentratedLikelihood().coefficients()))
+                .addAllResiduals(Iterables.of(model.fullResiduals().getValues()))
+                .addAllCoefficients(Iterables.of(model.getConcentratedLikelihood().coefficients()))
                 .setCovariance(ToolkitProtosUtility.convert(cov))
                 .setTransformation(model.isLogTransformation() ? RegArimaProtos.Transformation.FN_LOG : RegArimaProtos.Transformation.FN_LEVEL)
                 .setPreadjustment(RegArimaProtosUtility.convert(model.getLpTransformation()));

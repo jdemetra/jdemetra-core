@@ -125,8 +125,8 @@ public class RegressionVariablesTest {
                 ITsVariable var = cur.getCore();
                 int pos = desc.findPosition(var);
                 int nregs = var.dim();
-                if (!tdTest.accept(ll, -1, pos, nregs, null)
-                        && (nregs <= 1 || derivedTest == null || !derivedTest.accept(ll, -1, pos, nregs, null))) {
+                if (!tdTest.accept(ll, -1, pos, nregs)
+                        && (nregs <= 1 || derivedTest == null || !derivedTest.accept(ll, -1, pos, nregs))) {
                     tdtoremove.add(var);
                 } else {
                     usetd = true;
@@ -136,7 +136,7 @@ public class RegressionVariablesTest {
             for (Variable cur : llp) {
                 ITsVariable var = cur.getCore();
                 int pos = desc.findPosition(var);
-                if (!tdTest.accept(ll, -1, pos, 1, null)) {
+                if (!tdTest.accept(ll, -1, pos, 1)) {
                     tdtoremove.add(var);
                 } else {
                     uselp = true;
@@ -149,7 +149,7 @@ public class RegressionVariablesTest {
             for (Variable cur : lmh) {
                 ITsVariable var = cur.getCore();
                 int pos = desc.findPosition(var);
-                if (!mhTest.accept(ll, -1, pos, 1, null)) {
+                if (!mhTest.accept(ll, -1, pos, 1)) {
                     mhtoremove.add(var);
                     changed = true;
                 }
@@ -170,7 +170,7 @@ public class RegressionVariablesTest {
         }
 
         if (meanTest != null && desc.isMean()) {
-            if (!meanTest.accept(ll, -1, 0, 1, null)) {
+            if (!meanTest.accept(ll, -1, 0, 1)) {
                 desc.setMean(false);
                 changed = true;
             }

@@ -19,7 +19,7 @@ package demetra.x13.r;
 import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.Utility;
+import demetra.data.Iterables;
 import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
@@ -65,17 +65,16 @@ public class RegArimaOutliersDetection {
     public static class Results implements ProcResults {
 
         public byte[] buffer() {
-            SarimaOrders orders = initialArima.orders();
             int nx = x == null ? 0 : x.getColumnsCount();
             OutliersProtos.RegArimaSolution.Builder builder = OutliersProtos.RegArimaSolution.newBuilder()
-                    .addAllArimaInitial(Utility.asIterable(initialArima.parameters()))
-                    .addAllArimaFinal(Utility.asIterable(finalArima.parameters()))
-                    .addAllCoefficients(Utility.asIterable(coefficients))
+                    .addAllArimaInitial(Iterables.of(initialArima.parameters()))
+                    .addAllArimaFinal(Iterables.of(finalArima.parameters()))
+                    .addAllCoefficients(Iterables.of(coefficients))
                     .setCovariance(ToolkitProtosUtility.convert(coefficientsCovariance))
                     .setRegressors(ToolkitProtosUtility.convert(regressors))
                     .setLikelihoodInitial(ToolkitProtosUtility.convert(initialLikelihood))
                     .setLikelihoodFinal(ToolkitProtosUtility.convert(finalLikelihood))
-                    .addAllResiduals(Utility.asIterable(residuals));
+                    .addAllResiduals(Iterables.of(residuals));
             
             DoubleSeq diag = coefficientsCovariance.diagonal();
             for (int i = 0, j = nx; i < outliers.length; ++i, ++j) {

@@ -14,23 +14,34 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.data;
+package demetra.likelihood;
 
 import nbbrd.design.Development;
+import demetra.math.matrices.MatrixType;
 
 /**
- * Describes an element cursor.
- *
- * @author Philippe Charles
- * @param <E>
+ * Estimated parameters in the context of maximum likelihood estimation
+ * @author Jean Palate <jean.palate@nbb.be>
  */
+@lombok.Value
 @Development(status = Development.Status.Release)
-public interface SeqCursor<E> extends BaseSeqCursor {
-
+public class ParametersEstimation {
     /**
-     * Returns the current element and advances the cursor.
-     *
-     * @return
+     * Estimated values of the parameters
      */
-    E getAndNext() throws IndexOutOfBoundsException;
+    @lombok.NonNull
+    private double[] values;
+    /**
+     * Covariance of the parameters.
+     * Pre-specified parameters should have a variance equal to 0
+     */
+    private MatrixType covariance;
+    /**
+     * Score of the parameter (in the context of maximum likelihood
+     */
+    private double[] scores;
+    /**
+     * Any suitable information/description
+     */
+    private String description;
 }

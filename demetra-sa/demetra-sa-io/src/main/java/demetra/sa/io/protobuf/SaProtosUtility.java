@@ -5,7 +5,7 @@
  */
 package demetra.sa.io.protobuf;
 
-import demetra.data.Utility;
+import demetra.data.Iterables;
 import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
 import demetra.sa.DefaultSaDiagnostics;
@@ -121,7 +121,7 @@ public class SaProtosUtility {
                 .setNbcasts(bs == null ? 0 : bs.length())
                 .setNfcasts(fs == null ? 0 : fs.length());
         if (ES != null) {
-            builder.addAllStde(Utility.asIterable(ES.getValues()));
+            builder.addAllStde(Iterables.of(ES.getValues()));
         }
 
         return builder.build();

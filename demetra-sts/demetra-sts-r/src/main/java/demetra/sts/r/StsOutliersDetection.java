@@ -7,7 +7,7 @@ package demetra.sts.r;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.Utility;
+import demetra.data.Iterables;
 import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
@@ -56,9 +56,9 @@ public class StsOutliersDetection {
             int nx = x == null ? 0 : x.getColumnsCount();
             BsmMapping mapping=new BsmMapping(spec, period);
             StsOutliersProtos.StsSolution.Builder builder = StsOutliersProtos.StsSolution.newBuilder()
-                    .addAllBsmInitial(Utility.asIterable(mapping.map(initialBsm)))
-                    .addAllBsmFinal(Utility.asIterable(mapping.map(finalBsm)))
-                    .addAllCoefficients(Utility.asIterable(coefficients))
+                    .addAllBsmInitial(Iterables.of(mapping.map(initialBsm)))
+                    .addAllBsmFinal(Iterables.of(mapping.map(finalBsm)))
+                    .addAllCoefficients(Iterables.of(coefficients))
                     .setCovariance(ToolkitProtosUtility.convert(coefficientsCovariance))
                     .setRegressors(ToolkitProtosUtility.convert(regressors))
                     .setLikelihoodInitial(ToolkitProtosUtility.convert(initialLikelihood))
@@ -66,7 +66,7 @@ public class StsOutliersDetection {
                     .setComponents(ToolkitProtosUtility.convert(components))
                     .setTauInitial(ToolkitProtosUtility.convert(initialTau))
                     .setTauFinal(ToolkitProtosUtility.convert(finalTau))
-                    .addAllResiduals(Utility.asIterable(residuals));
+                    .addAllResiduals(Iterables.of(residuals));
             DoubleSeq diag = coefficientsCovariance.diagonal();
             for (int i = 0, j = nx; i < outliers.length; ++i, ++j) {
                 builder.addOutliers(

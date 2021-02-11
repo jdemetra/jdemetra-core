@@ -35,15 +35,17 @@ public class SeatsResultsProto {
                 .setModel(ToolkitProtosUtility.convert(ucm.getModel(), "model"));
 
         if (ucm.getComponentsCount() == 4) {
-            return builder.addComponents(ToolkitProtosUtility.convert(ucm.getComponent(0), "trend"))
+            return builder
                     .addComponents(ToolkitProtosUtility.convert(ucm.getComplement(1), "seasonallyadjusted"))
+                    .addComponents(ToolkitProtosUtility.convert(ucm.getComponent(0), "trend"))
                     .addComponents(ToolkitProtosUtility.convert(ucm.getComponent(1), "seasonal"))
                     .addComponents(ToolkitProtosUtility.convert(ucm.getComponent(2), "transitory"))
                     .addComponents(ToolkitProtosUtility.convert(ucm.getComponent(3), "irregular"))
                     .build();
         } else {
-            return builder.addComponents(ToolkitProtosUtility.convert(ucm.getComponent(0), "trend"))
+            return builder
                     .addComponents(ToolkitProtosUtility.convert(ucm.getComplement(1), "seasonallyadjusted"))
+                    .addComponents(ToolkitProtosUtility.convert(ucm.getComponent(0), "trend"))
                     .addComponents(ToolkitProtosUtility.convert(ucm.getComponent(1), "seasonal"))
                     .addComponents(ToolkitProtosUtility.convert(ucm.getComponent(2), "irregular"))
                     .build();

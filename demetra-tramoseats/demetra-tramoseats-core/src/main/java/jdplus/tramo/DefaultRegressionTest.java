@@ -193,7 +193,7 @@ public class DefaultRegressionTest implements IRegressionModule {
                 int pos = tmpModel.findPosition(variable.getCore());
                 int dim = variable.getCore().dim();
                 IRegressionTest test = dim == 1 ? wdTest : tdTest;
-                if (test.accept(ll, nhp, pos, dim, null)) {
+                if (test.accept(ll, nhp, pos, dim)) {
                     usetd = true;
                     currentModel.addVariable(Variable.variable("td", td).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
                     changed = true;
@@ -204,7 +204,7 @@ public class DefaultRegressionTest implements IRegressionModule {
             Variable variable = tmpModel.variable(lp);
             if (variable != null && !Utility.isPrespecified(variable)) {
                 int pos = tmpModel.findPosition(variable.getCore());
-                if (usetd && lpTest.accept(ll, nhp, pos, 1, null)) {
+                if (usetd && lpTest.accept(ll, nhp, pos, 1)) {
                     currentModel.addVariable(Variable.variable("lp", lp).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
                     changed = true;
                 }
@@ -215,13 +215,13 @@ public class DefaultRegressionTest implements IRegressionModule {
             Variable variable = tmpModel.variable(easter);
             if (variable != null && !Utility.isPrespecified(variable)) {
                 int pos = tmpModel.findPosition(variable.getCore());
-                if (mhTest.accept(ll, nhp, pos, 1, null)) {
+                if (mhTest.accept(ll, nhp, pos, 1)) {
                     currentModel.addVariable(Variable.variable("easter", easter).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
                     changed = true;
                 }
             }
         }
-        if (meanTest != null && regarima.isMean() && !meanTest.accept(ll, nhp, 0, 1, null)) {
+        if (meanTest != null && regarima.isMean() && !meanTest.accept(ll, nhp, 0, 1)) {
             currentModel.setMean(false);
             changed = true;
         }
