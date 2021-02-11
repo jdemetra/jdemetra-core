@@ -12,6 +12,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import demetra.data.DoubleSeq;
+import internal.jdplus.arima.KalmanFilter;
 import jdplus.arima.IArimaModel;
 import jdplus.arima.StationaryTransformation;
 import jdplus.sarima.SarimaModel;
@@ -23,7 +24,7 @@ import jdplus.sarima.SarimaUtility;
  */
 public class ArmaFilterTest {
 
-    private static final SarimaModel airline, arima, ar1;
+    private static final SarimaModel airline, arima, ar1, ma12;
     private static final DoubleSeq data;
 
     static {
@@ -38,7 +39,13 @@ public class ArmaFilterTest {
         SarimaOrders sar1=new SarimaOrders(12);
         sar1.setP(1);
         ar1=SarimaModel.builder(sar1).phi(-.95).build();
-    }
+         SarimaOrders orders = SarimaOrders.airline(12);
+        orders.setQ(0);
+        SarimaModel m = SarimaModel.builder(orders)
+                .btheta(-.9)
+                .build();
+        ma12 = m.stationaryTransformation().getStationaryModel();
+   }
 
     public ArmaFilterTest() {
 
@@ -68,8 +75,24 @@ public class ArmaFilterTest {
         DataBlock s = DataBlock.make(m);
         filter.apply(data, s);
         double ldet = filter.getLogDeterminant(), ssq = s.ssq();
-        filter = ArmaFilter.kalman();
+        filter = new KalmanFilter(true);
         m = filter.prepare(ar1, data.length());
+        s = DataBlock.make(m);
+        filter.apply(data, s);
+        assertEquals(ldet, filter.getLogDeterminant(), 1e-12);
+        assertEquals(ssq, s.ssq(), 1e-8);
+    }
+
+    @Test
+    public void testMa12() {
+        
+        ArmaFilter filter = ArmaFilter.ansley();
+        int m = filter.prepare(ma12, data.length());
+        DataBlock s = DataBlock.make(m);
+        filter.apply(data, s);
+        double ldet = filter.getLogDeterminant(), ssq = s.ssq();
+        filter = new KalmanFilter(true);
+        m = filter.prepare(ma12, data.length());
         s = DataBlock.make(m);
         filter.apply(data, s);
         assertEquals(ldet, filter.getLogDeterminant(), 1e-12);

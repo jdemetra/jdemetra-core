@@ -60,11 +60,6 @@ public class ResidualTradingDaysDiagnostics implements Diagnostics {
 
     private static final double E_LIMIT = .005;
 
-    private static boolean isMultiplicative(ProcResults rslts) {
-        DecompositionMode mul = rslts.getData(SaDictionary.MODE, DecompositionMode.class);
-        return mul != null && mul.isMultiplicative();
-    }
-
     private static boolean isSignificant(DoubleSeq s, DoubleSeq ref) {
         DescriptiveStatistics sdesc = DescriptiveStatistics.of(s);
         DescriptiveStatistics refdesc = DescriptiveStatistics.of(ref);
@@ -82,7 +77,7 @@ public class ResidualTradingDaysDiagnostics implements Diagnostics {
         return se > E_LIMIT;
     }
 
-    static Diagnostics of(ResidualTradingDaysDiagnosticsConfiguration config, Input data) {
+    public static ResidualTradingDaysDiagnostics of(ResidualTradingDaysDiagnosticsConfiguration config, Input data) {
         try {
             ResidualTradingDaysDiagnostics test = new ResidualTradingDaysDiagnostics();
             TsData sa = data.sa;
@@ -139,6 +134,14 @@ public class ResidualTradingDaysDiagnostics implements Diagnostics {
         } catch (Exception err) {
             return null;
         }
+    }
+
+    public StatisticalTest FTestOnSa(){
+        return f_sa;
+    }
+
+    public StatisticalTest FTestOnI(){
+        return f_i;
     }
 
     @Override

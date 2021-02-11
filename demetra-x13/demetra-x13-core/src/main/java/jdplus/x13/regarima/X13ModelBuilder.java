@@ -61,6 +61,7 @@ import demetra.timeseries.regression.UserTradingDays;
 import demetra.regarima.EasterSpec.Type;
 import demetra.arima.SarimaSpec;
 import demetra.sa.ComponentType;
+import demetra.sa.SaDictionary;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.GenericTradingDays;
 import java.util.List;
@@ -218,8 +219,8 @@ class X13ModelBuilder implements IModelBuilder {
                         .name(name)
                         .core(v)
                         .coefficients(c)
-                        .attribute(Utility.PRESPECIFIED)
-                        .attribute(cmp.name())
+                        .attribute(Utility.PRESPECIFIED, "true")
+                        .attribute(SaDictionary.REGEFFECT, cmp.name())
                         .build();
                 model.addVariable(var);
             }
@@ -331,9 +332,9 @@ class X13ModelBuilder implements IModelBuilder {
         }
         Parameter[] c = preadjustment.get(name);
         if (prespecified || c != null) {
-            model.addVariable(Variable.builder().name(name).core(var).coefficients(c).attribute(Utility.PRESPECIFIED).attribute(cmp.name()).build());
+            model.addVariable(Variable.builder().name(name).core(var).coefficients(c).attribute(Utility.PRESPECIFIED, "true").attribute(SaDictionary.REGEFFECT, cmp.name()).build());
         } else {
-            model.addVariable(Variable.builder().name(name).core(var).coefficients(c).attribute(cmp.name()).build());
+            model.addVariable(Variable.builder().name(name).core(var).coefficients(c).attribute(SaDictionary.REGEFFECT, cmp.name()).build());
         }
     }
 

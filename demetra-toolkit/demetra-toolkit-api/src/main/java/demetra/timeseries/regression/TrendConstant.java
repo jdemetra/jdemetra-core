@@ -18,6 +18,7 @@ import nbbrd.design.Development;
 public class TrendConstant implements ISystemVariable {
     
     private int d, bd;
+//    private LocalDateTime start; TODO
 
     @Override
     public int dim() {

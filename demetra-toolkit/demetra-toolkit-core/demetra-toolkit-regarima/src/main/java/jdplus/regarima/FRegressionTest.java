@@ -48,7 +48,7 @@ public class FRegressionTest implements IRegressionTest {
      * @return
      */
     @Override
-    public boolean accept(ConcentratedLikelihoodWithMissing ll, int nhp, int ireg, int nregs, InformationSet info) {
+    public boolean accept(ConcentratedLikelihoodWithMissing ll, int nhp, int ireg, int nregs) {
         StatisticalTest stat = new JointTest(ll)
                 .variableSelection(ireg, nregs)
                 .hyperParametersCount(nhp)

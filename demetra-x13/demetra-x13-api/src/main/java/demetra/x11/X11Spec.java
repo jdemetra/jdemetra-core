@@ -16,11 +16,11 @@
  */
 package demetra.x11;
 
-import nbbrd.design.Development;
-import nbbrd.design.LombokWorkaround;
 import demetra.sa.DecompositionMode;
 import demetra.util.Validatable;
 import java.util.List;
+import nbbrd.design.Development;
+import nbbrd.design.LombokWorkaround;
 
 /**
  *
@@ -33,6 +33,9 @@ public final class X11Spec implements Validatable<X11Spec> {
 
     public static final double DEFAULT_LOWER_SIGMA = 1.5, DEFAULT_UPPER_SIGMA = 2.5;
     public static final int DEFAULT_FORECAST_HORIZON = 0, DEFAULT_BACKCAST_HORIZON = 0;
+    
+    private static final SeasonalFilterOption[] MSR=new SeasonalFilterOption[]{SeasonalFilterOption.Msr};
+
 
     /**
      * Decomposition mode of X11
@@ -40,14 +43,14 @@ public final class X11Spec implements Validatable<X11Spec> {
     private DecompositionMode mode;
     private boolean seasonal;
 
-    @lombok.Singular
-    private List<SeasonalFilterOption> filters;
+    private SeasonalFilterOption[] filters;
 
     /**
      * Lower sigma value for extreme values detection [sigmalim option in
      * X12-arima].
      *
-     * @param lowerSigma Lower sigma value for extreme values detection. lowerSigma
+     * @param lowerSigma Lower sigma value for extreme values detection.
+     * lowerSigma
      * should be lower than upperSigma and higher than .5.
      */
     private double lowerSigma;
@@ -97,18 +100,23 @@ public final class X11Spec implements Validatable<X11Spec> {
      * error calculation used for outlier detection in the X11 part
      */
     private CalendarSigmaOption calendarSigma;
-    private List<SigmavecOption> sigmavec;
+    private SigmaVecOption[] sigmaVec;
+
     private boolean excludeForecast;
     private BiasCorrection bias;
 
-    public static final X11Spec DEFAULT = X11Spec.builder()
-            .filter(SeasonalFilterOption.Msr)
+    public static final X11Spec DEFAULT_UNDEFINED = X11Spec.builder()
             .forecastHorizon(-1)
+            .mode(DecompositionMode.Undefined)
+            .build();
+
+    public static final X11Spec DEFAULT = X11Spec.builder()
             .build();
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
+                .filters(MSR)
                 .calendarSigma(CalendarSigmaOption.None)
                 .excludeForecast(false)
                 .bias(BiasCorrection.Legacy)
@@ -118,11 +126,11 @@ public final class X11Spec implements Validatable<X11Spec> {
                 .seasonal(true)
                 .lowerSigma(DEFAULT_LOWER_SIGMA)
                 .upperSigma(DEFAULT_UPPER_SIGMA)
-                .mode(DecompositionMode.Undefined);
+                .mode(DecompositionMode.Multiplicative);
     }
 
     public boolean isDefault() {
-        return this.equals(DEFAULT);
+        return this.equals(DEFAULT_UNDEFINED);
     }
 
     @Override
@@ -134,10 +142,10 @@ public final class X11Spec implements Validatable<X11Spec> {
                 || (hendersonFilterLength != 0 && hendersonFilterLength % 2 == 0)) {
             throw new IllegalArgumentException("Invalid henderson length");
         }
-        if (!calendarSigma.equals(CalendarSigmaOption.Signif) && sigmavec != null) {
+        if (!calendarSigma.equals(CalendarSigmaOption.Signif) && sigmaVec != null) {
             throw new X11Exception("Sigmavec mustn't be used without CalendarSigmaOption Signif");
         }
-        if (calendarSigma.equals(CalendarSigmaOption.Signif) && sigmavec == null) {
+        if (calendarSigma.equals(CalendarSigmaOption.Signif) && sigmaVec == null) {
             throw new X11Exception("SigmavecOptions not set for CalendarSigmaOption Signif");
         }
         return this;

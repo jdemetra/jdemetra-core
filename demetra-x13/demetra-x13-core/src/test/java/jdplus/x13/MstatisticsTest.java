@@ -48,7 +48,7 @@ public class MstatisticsTest {
         X13Kernel x13=X13Kernel.of(X13Spec.RSA4, null);
         DefaultProcessingLog log=new DefaultProcessingLog();
         X13Results rslt = x13.process(Data.TS_PROD.drop(bdrop, edrop), log);
-        Mstatistics m=rslt.getMstatistics();
+        Mstatistics m=Mstatistics.of(rslt.getPreadjustment(), rslt.getDecomposition(), rslt.getFinals());
         
         ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, Data.PROD, true).drop(bdrop, edrop);
         CompositeResults orslt = ec.satoolkit.algorithm.implementation.X13ProcessingFactory.process(s, ec.satoolkit.x13.X13Specification.RSA4);

@@ -1,0 +1,84 @@
+syntax = "proto3";
+import public "toolkit.proto"
+
+package jd3.x13;
+
+option java_package = "demetra.x13.io.protobuf";
+option java_outer_classname = "X13Protos";
+
+message X11Spec {
+  enum DecompositionMode {
+    UNKNOWN = 0;
+    ADDITIVE = 1;
+    MULTIPLICATIVE = 2;
+    LOGADDITIVE = 3;
+    PSEUDOADDITIVE = 4;
+  }
+  
+  enum SeasonalFilter {
+    MSR=0;
+    STABLE=1;
+    S3X1=2;
+    S3X3=3;
+    S3X5=4;
+    S3X9=5;
+    S3X15=6;
+    X11DEFAULT=7;
+  }
+  
+  enum CalendarSigma {
+    NONE=0;
+    SIGNIF=1; 
+    ALL=2;
+    SELECT=3;
+  }
+  
+  enum BiasCorrection {
+    NOCORRECTION =0;
+    LEGACY = 1;
+    SMOOTH = 2;
+    RATIO = 3;	
+  }
+  
+  DecompositionMode mode = 1 [default = UNKNOWN];
+  bool seasonal = 2 [default = true];
+  int32 henderson = 3;
+  repeated SeasonalFilter sfilter=4;
+  double lsig = 5 [default = 1.5];
+  double usig = 6 [default = 2.5];
+  int32 nfcasts = 7;
+  int32 nbcasts = 8;
+  CalendarSigma sigma = 9 [default = NONE];
+  repeated int32 vsigma = 10;
+  bool excudefcasts = 11;
+  BiasCorrection bias = 12;
+}
+
+message X13Spec {
+    
+    message BasicSpec{
+	  jd3.TimeSpan span = 1;
+	  bool preprocessing = 2;
+	  bool preliminary_check = 3;
+    }
+    
+    message AutoModelSpec{
+        bool enavled = 1;
+        double ljungbox = 2;
+        double tsig = 3;
+        double predcv = 4;
+        double ubfinal = 5;
+        double ub1 = 6;
+        double ub2 = 7;
+        double cancel = 8;
+        double fct = 9;
+        bool acceptdef = 10;
+        bool checkmu = 11;
+        bool mixed = 12;
+        bool balanced = 13;
+    }
+
+    AutoModelSpec automodel = 2;
+    X11Spec x11=6;
+}
+

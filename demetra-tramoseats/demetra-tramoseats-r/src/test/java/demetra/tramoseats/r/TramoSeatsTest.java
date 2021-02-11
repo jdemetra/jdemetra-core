@@ -22,6 +22,7 @@ public class TramoSeatsTest {
     public void testProd() {
         TramoSeats.Results rslt = TramoSeats.process(Data.TS_PROD , "rsafull");
         assertTrue(rslt != null);
+        assertTrue(rslt.buffer() != null);
     }
     
 }

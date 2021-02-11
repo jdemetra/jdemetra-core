@@ -16,10 +16,14 @@
  */
 package demetra.tramoseats.r;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramoseats.TramoSeatsSpec;
+import demetra.tramoseats.io.protobuf.SpecProto;
+import demetra.tramoseats.io.protobuf.TramoSeatsProtos;
+import demetra.tramoseats.io.protobuf.TramoSeatsResultsProto;
 import demetra.util.r.Dictionary;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -36,6 +40,18 @@ public class TramoSeats {
     @lombok.Value
     public static class Results implements ProcResults{
         private TramoSeatsResults core;
+        
+        public byte[] buffer() {
+            return TramoSeatsResultsProto.convert(core).toByteArray();
+        }
+
+        public Tramo.Results preprocessing(){
+            return new Tramo.Results(core.getPreprocessing());
+        }
+
+        public Seats.Results decomposition(){
+            return new Seats.Results(core.getDecomposition());
+        }
 
         @Override
         public boolean contains(String id) {
@@ -69,4 +85,17 @@ public class TramoSeats {
         return new Results(estimation);
     }
     
+    public byte[] toBuffer(TramoSeatsSpec spec) {
+        return SpecProto.convert(spec).toByteArray();
+    }
+
+    public TramoSeatsSpec of(byte[] buffer) {
+        try {
+            TramoSeatsProtos.Spec spec = TramoSeatsProtos.Spec.parseFrom(buffer);
+            return SpecProto.convert(spec);
+        } catch (InvalidProtocolBufferException ex) {
+            System.out.println(ex.getMessage());
+            return null;
+        }
+    }
 }

@@ -1,20 +1,34 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2020 National Bank of Belgium
+ * 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ * 
+ * https://joinup.ec.europa.eu/software/page/eupl
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package demetra.x13.r;
 
 import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
+import demetra.data.Iterables;
 import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
+import demetra.outliers.io.protobuf.OutliersProtos;
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
+import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -50,6 +64,30 @@ public class RegArimaOutliersDetection {
     @lombok.Builder
     public static class Results implements ProcResults {
 
+        public byte[] buffer() {
+            int nx = x == null ? 0 : x.getColumnsCount();
+            OutliersProtos.RegArimaSolution.Builder builder = OutliersProtos.RegArimaSolution.newBuilder()
+                    .addAllArimaInitial(Iterables.of(initialArima.parameters()))
+                    .addAllArimaFinal(Iterables.of(finalArima.parameters()))
+                    .addAllCoefficients(Iterables.of(coefficients))
+                    .setCovariance(ToolkitProtosUtility.convert(coefficientsCovariance))
+                    .setRegressors(ToolkitProtosUtility.convert(regressors))
+                    .setLikelihoodInitial(ToolkitProtosUtility.convert(initialLikelihood))
+                    .setLikelihoodFinal(ToolkitProtosUtility.convert(finalLikelihood))
+                    .addAllResiduals(Iterables.of(residuals));
+            
+            DoubleSeq diag = coefficientsCovariance.diagonal();
+            for (int i = 0, j = nx; i < outliers.length; ++i, ++j) {
+                builder.addOutliers(
+                        OutliersProtos.Outlier.newBuilder()
+                                .setCode(outliers[i].getCode())
+                                .setPosition(outliers[i].getPosition())
+                                .setCoefficient(coefficients[j])
+                                .setStde(Math.sqrt(diag.get(j)))
+                                .build());
+            }
+            return builder.build().toByteArray();
+        }
         SarimaModel initialArima, finalArima;
 
         DoubleSeq y;
@@ -60,6 +98,7 @@ public class RegArimaOutliersDetection {
         MatrixType coefficientsCovariance;
         MatrixType regressors;
         DoubleSeq linearized;
+        DoubleSeq residuals;
 
         LikelihoodStatistics initialLikelihood, finalLikelihood;
 
@@ -145,17 +184,21 @@ public class RegArimaOutliersDetection {
         }
     }
 
-    public Results process(TsData y, int[] order, int[] seasonal, boolean mean, MatrixType x,
+    public Results process(TsData ts, int[] order, int[] seasonal, boolean mean, MatrixType x,
             boolean bao, boolean bls, boolean btc, boolean bso, double cv) {
-        y=y.cleanExtremities();
+        TsData y = ts.cleanExtremities();
+        if (x != null && ts.length() != y.length()){
+            int start=ts.getStart().until(y.getStart());
+            x=x.extract(start, y.length(), 0, x.getColumnsCount());
+        }
         SarimaOrders spec = new SarimaOrders(y.getAnnualFrequency());
         spec.setP(order[0]);
         spec.setD(order[1]);
         spec.setQ(order[2]);
         if (seasonal != null) {
-            spec.setBp(order[0]);
-            spec.setBd(order[1]);
-            spec.setBq(order[2]);
+            spec.setBp(seasonal[0]);
+            spec.setBd(seasonal[1]);
+            spec.setBq(seasonal[2]);
         }
 
         SarimaModel arima = SarimaModel.builder(spec)
@@ -227,6 +270,7 @@ public class RegArimaOutliersDetection {
                 .x(x)
                 .y(y.getValues())
                 .linearized(RegArimaUtility.linearizedData(estimation1.getModel(), estimation1.getConcentratedLikelihood()))
+                .residuals(estimation1.getConcentratedLikelihood().e())
                 .build();
     }
 

@@ -89,7 +89,7 @@ public class TwoStepsDecomposition {
         if (i != null) {
             builder.add(i, ComponentType.Irregular);
         }
-        TsData sa = op(mul, detSA.range(n1, n2), sadecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value));
+        TsData sa = op(mul, detSA.range(n1, n2), detT.range(n1, n2), detI.range(n1, n2), sadecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value));
         if (sa != null) {
             builder.add(sa, ComponentType.SeasonallyAdjusted);
         }
@@ -110,7 +110,7 @@ public class TwoStepsDecomposition {
             if (bi != null) {
                 builder.add(bi, ComponentType.Irregular, ComponentInformation.Backcast);
             }
-            TsData bsa = op(mul, detSA.range(n0, n1), sadecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast));
+            TsData bsa = op(mul, detSA.range(n0, n1), detT.range(n0, n1), detI.range(n0, n1), sadecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast));
             if (bsa != null) {
                 builder.add(bsa, ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast);
             }
@@ -133,7 +133,7 @@ public class TwoStepsDecomposition {
             if (fi != null) {
                 builder.add(fi, ComponentType.Irregular, ComponentInformation.Forecast);
             }
-            TsData fsa = op(mul, detSA.range(n2, n3), sadecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast));
+            TsData fsa = op(mul, detSA.range(n2, n3), detT.range(n2, n3), detI.range(n2, n3), sadecomp.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast));
             if (fsa != null) {
                 builder.add(fsa, ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast);
             }

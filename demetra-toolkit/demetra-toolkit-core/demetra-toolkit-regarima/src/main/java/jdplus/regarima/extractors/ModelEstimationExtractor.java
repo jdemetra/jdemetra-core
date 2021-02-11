@@ -13,13 +13,17 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.InterventionVariable;
+import demetra.timeseries.regression.LevelShift;
+import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.Ramp;
+import demetra.timeseries.regression.TransitoryChange;
 import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.Variable;
 import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
@@ -40,7 +44,9 @@ import jdplus.regsarima.regular.ModelEstimation;
 @lombok.experimental.UtilityClass
 public class ModelEstimationExtractor {
 
-    public static final int IMEAN = 0, ITD = 10, ILP = 11, IEASTER = 12, IOUTLIER = 20, IIV = 30, IRAMP = 40, IOTHER = 50;
+    public static final int IMEAN = 0, ITD = 10, ILP = 11, IEASTER = 12,
+            AO = 20, LS = 21, TC = 22, SO = 23, IOUTLIER = 29,
+            IIV = 30, IRAMP = 40, IOTHER = 50;
 
     public final String SARIMA = "sarima",
             LOG = "log",
@@ -155,7 +161,19 @@ public class ModelEstimationExtractor {
             return IEASTER;
         }
         if (var instanceof IOutlier) {
-            return IOUTLIER;
+            switch (((IOutlier) var).getCode()) {
+                case AdditiveOutlier.CODE:
+                    return AO;
+                case LevelShift.CODE:
+                    return LS;
+                case TransitoryChange.CODE:
+                    return TC;
+                case PeriodicOutlier.CODE:
+                case PeriodicOutlier.PO:
+                    return SO;
+                default:
+                    return IOUTLIER;
+            }
         }
         if (var instanceof InterventionVariable) {
             return IIV;

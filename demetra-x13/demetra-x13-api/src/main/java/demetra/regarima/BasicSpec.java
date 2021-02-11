@@ -16,10 +16,10 @@
  */
 package demetra.regarima;
 
-import nbbrd.design.Development;
-import nbbrd.design.LombokWorkaround;
 import demetra.timeseries.TimeSelector;
 import demetra.util.Validatable;
+import nbbrd.design.Development;
+import nbbrd.design.LombokWorkaround;
 
 /**
  *
@@ -31,18 +31,18 @@ import demetra.util.Validatable;
 public final class BasicSpec implements Validatable<BasicSpec> {
 
     public static final BasicSpec DEFAULT_ENABLED = BasicSpec.builder().build();
-    public static final BasicSpec DEFAULT_DISABLED = BasicSpec.builder().preProcessing(false).build();
+    public static final BasicSpec DEFAULT_DISABLED = BasicSpec.builder().preprocessing(false).build();
 
     @lombok.NonNull
     private TimeSelector span;
-    private boolean preProcessing;
+    private boolean preprocessing;
     private boolean preliminaryCheck;
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
                 .span(TimeSelector.all())
-                .preProcessing(true)
+                .preprocessing(true)
                 .preliminaryCheck(true);
     }
 

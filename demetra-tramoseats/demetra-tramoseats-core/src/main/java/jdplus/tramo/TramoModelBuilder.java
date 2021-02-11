@@ -56,6 +56,7 @@ import jdplus.modelling.regression.TransitoryChangeFactory;
 import demetra.timeseries.regression.UserTradingDays;
 import demetra.arima.SarimaSpec;
 import demetra.sa.ComponentType;
+import demetra.sa.SaDictionary;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.tramo.CalendarSpec;
@@ -217,8 +218,8 @@ class TramoModelBuilder implements IModelBuilder {
                         .name(name)
                         .core(v)
                         .coefficients(c)
-                        .attribute(Utility.PRESPECIFIED)
-                        .attribute(cmp.name())
+                        .attribute(Utility.PRESPECIFIED, "true")
+                        .attribute(SaDictionary.REGEFFECT, cmp.name())
                         .build();
                 model.addVariable(var);
             }
@@ -304,8 +305,8 @@ class TramoModelBuilder implements IModelBuilder {
                 .name(name)
                 .core(v)
                 .coefficients(c)
-                .attribute(cmp.name())
-                .attribute(Utility.PRESPECIFIED)
+                .attribute(SaDictionary.REGEFFECT, cmp.name())
+                .attribute(Utility.PRESPECIFIED, "true")
                 .build();
         model.addVariable(var);
     }

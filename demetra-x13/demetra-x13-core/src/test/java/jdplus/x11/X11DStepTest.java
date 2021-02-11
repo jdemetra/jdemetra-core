@@ -19,7 +19,7 @@ import org.junit.Test;
 import demetra.data.DoubleSeq;
 import demetra.x11.CalendarSigmaOption;
 import demetra.x11.SeasonalFilterOption;
-import demetra.x11.SigmavecOption;
+import demetra.x11.SigmaVecOption;
 
 /**
  *
@@ -287,17 +287,17 @@ public class X11DStepTest {
         SeasonalFilterOption[] filters_new = new SeasonalFilterOption[frequency];
         ec.satoolkit.x11.SeasonalFilterOption[] filters_old = new ec.satoolkit.x11.SeasonalFilterOption[frequency];
 
-        SigmavecOption[] sigmavecOptions_new = new SigmavecOption[frequency];
+        SigmaVecOption[] sigmavecOptions_new = new SigmaVecOption[frequency];
         ec.satoolkit.x11.SigmavecOption[] sigmavecOptions_old = new ec.satoolkit.x11.SigmavecOption[frequency];
 
         for (int i = 0; i < frequency; i++) {
             filters_new[i] = SeasonalFilterOption.valueOf(seasonalFilterOptionName);
             filters_old[i] = ec.satoolkit.x11.SeasonalFilterOption.valueOf(seasonalFilterOptionName);
-            sigmavecOptions_new[i] = SigmavecOption.Group1;
+            sigmavecOptions_new[i] = SigmaVecOption.Group1;
             sigmavecOptions_old[i] = ec.satoolkit.x11.SigmavecOption.Group1;
         }
 
-        sigmavecOptions_new[1] = SigmavecOption.Group2;
+        sigmavecOptions_new[1] = SigmaVecOption.Group2;
         sigmavecOptions_old[1] = ec.satoolkit.x11.SigmavecOption.Group2;
 
         X11DStep instance = new X11DStep();

@@ -17,14 +17,14 @@
 package demetra.regarima;
 
 import demetra.arima.SarimaSpec;
-import nbbrd.design.Development;
-import nbbrd.design.LombokWorkaround;
 import demetra.modelling.RegressionTestSpec;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.util.Validatable;
 import lombok.NonNull;
+import nbbrd.design.Development;
+import nbbrd.design.LombokWorkaround;
 
 /**
  *
@@ -104,7 +104,7 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
 
     static {
         RGDISABLED = RegArimaSpec.builder()
-                .basic(BasicSpec.builder().preProcessing(false).build())
+                .basic(BasicSpec.builder().preprocessing(false).build())
                 .build();
 
         TransformSpec tr = TransformSpec.builder()
@@ -170,16 +170,28 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
     public static RegArimaSpec fromString(String name) {
         switch (name) {
             case "RG0":
+            case "rg0":
                 return RG0;
             case "RG1":
+            case "rg1":
                 return RG1;
             case "RG2c":
+            case "rg2c":
+            case "RG2":
+            case "rg2":
                 return RG2;
             case "RG3":
+            case "rg3":
                 return RG3;
             case "RG4c":
+            case "rg4c":
+            case "RG4":
+            case "rg4":
                 return RG4;
             case "RG5c":
+            case "rg5c":
+            case "RG5":
+            case "rg5":
                 return RG5;
             default:
                 throw new RegArimaException();

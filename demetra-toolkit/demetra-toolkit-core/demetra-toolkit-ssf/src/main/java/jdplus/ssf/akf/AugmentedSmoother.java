@@ -65,14 +65,16 @@ public class AugmentedSmoother {
         initFilter(ssf);
         initSmoother(ssf, endpos);
         ordinarySmoothing(ssf, endpos);
-        calcSmoothedDiffuseEffects();
         int t = frslts.getCollapsingPosition();
-        while (--t >= 0) {
-            iterate(t);
-            if (hasinfo) {
-                srslts.saveSmoothation(t, uc, ucVariance);
-                srslts.saveR(t, Rc, Nc);
-                srslts.save(t, state, StateInfo.Smoothed);
+        if (t > 0) {
+            calcSmoothedDiffuseEffects();
+            while (--t >= 0) {
+                iterate(t);
+                if (hasinfo) {
+                    srslts.saveSmoothation(t, uc, ucVariance);
+                    srslts.saveR(t, Rc, Nc);
+                    srslts.save(t, state, StateInfo.Smoothed);
+                }
             }
         }
 

@@ -17,6 +17,7 @@
 package jdplus.regsarima.regular;
 
 import demetra.arima.SarimaOrders;
+import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
@@ -28,6 +29,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.regression.TrendConstant;
 import java.util.List;
 import java.util.function.Predicate;
@@ -40,7 +42,9 @@ import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
+import jdplus.regarima.RegArimaUtility;
 import jdplus.regarima.ami.Utility;
+import jdplus.stats.tests.NiidTests;
 import jdplus.timeseries.simplets.Transformations;
 
 /**
@@ -299,9 +303,6 @@ public final class ModelEstimation {
         DataBlock all = DataBlock.make(domain.getLength());
         if (variables.length > 0) {
             DoubleSeqCursor cursor = concentratedLikelihood.coefficients().cursor();
-            if (model.isMean()) {
-                cursor.skip(1);
-            }
             for (int i = 0; i < variables.length; ++i) {
                 Variable cur = variables[i];
                 if (test.test(cur)) {
@@ -384,6 +385,21 @@ public final class ModelEstimation {
             s = s.log();
         }
         return s;
+    }
+    
+    public TsData fullResiduals(){
+        DoubleSeq res = RegArimaUtility.fullResiduals(model, concentratedLikelihood);
+        TsPeriod start=transformedSeries.getEnd().plus(-res.length());
+        return TsData.ofInternal(start, res);
+    }
+    
+    public NiidTests residualsTests(){
+        DoubleSeq res = RegArimaUtility.fullResiduals(model, concentratedLikelihood);
+        return NiidTests.builder()
+                .data(res)
+                .period(originalSeries.getAnnualFrequency())
+                .hyperParametersCount(freeArimaParametersCount)
+                .build();
     }
 
     /**
@@ -471,7 +487,7 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getDeterministicEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> true);
+        TsData s = deterministicEffect(domain, v -> ! (v.getCore() instanceof TrendConstant));
         return backTransform(s, true);
     }
 

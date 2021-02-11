@@ -94,8 +94,7 @@ public class X13Kernel {
         X11Spec nspec = updateSpec(spec, preprocessing);
         X11Results xr = x11.process(alin, nspec);
         X13Finals finals = finals(nspec.getMode(), preadjustment, xr);
-        Mstatistics mstats = Mstatistics.of(preadjustment, xr, finals);
-        return new X13Results(preprocessing, preadjustment, xr, finals, mstats);
+        return new X13Results(preprocessing, preadjustment, xr, finals);
     }
 
     private TsData initialStep(ModelEstimation model, int nb, int nf, X13Preadjustment.Builder astep) {
@@ -321,20 +320,23 @@ public class X13Kernel {
         }
         decomp.d11final(d11c);
 
-        TsData d16;
-        if (spec.getMode() == DecompositionMode.PseudoAdditive) {
-            TsData tmp = TsData.divide(a1, d12);
-            tmp = TsData.subtract(tmp, d13);
-            d16 = tmp.add(1).commit();
-        } else {
-            d16 = op(mode, a1, d11c);
-        }
+        TsData a6=astep.getA6(), a7=astep.getA7();
+        TsData d18=invOp(mode, a6, a7);
+        
+        TsData d16=invOp(mode, d10c, d18);
+//        if (spec.getMode() == DecompositionMode.PseudoAdditive) {
+//            TsData tmp = TsData.divide(a1, d12);
+//            tmp = TsData.subtract(tmp, d13);
+//            d16 = tmp.add(1).commit();
+//        } else {
+//            d16 = op(mode, a1, d11c);
+//        }
         if (fd != null) {
             decomp.d16a(TsData.fitToDomain(d16, fd));
             d16 = TsData.fitToDomain(d16, d);
         }
         decomp.d16(d16);
-        TsData d18=op(mode, d16, d10c);
+//        TsData d18=op(mode, d16, d10c);
         if (fd != null) {
             decomp.d18a(TsData.fitToDomain(d18, fd));
             d18= TsData.fitToDomain(d18, d);
@@ -358,50 +360,6 @@ public class X13Kernel {
         decomp.e3(e3);
         decomp.e11(e11);
 
-//        int nf = toolkit.getContext().getForecastHorizon();
-//        if (nf > 0) {
-//            TsData a1a = atables.get(A1a, TsData.class);
-//            TsData d16a;
-//            if (toolkit.getContext().isPseudoAdditive()) {
-//                d16a = a1a.div(d12).minus(d13).plus(1);
-//            } else {
-//                d16a = toolkit.getContext().op(a1a, d11c);
-//            }
-//            TsDomain fdomain = new TsDomain(sdomain.getEnd(), nf);
-//            dtables.set(D10a, d10c.fittoDomain(fdomain));
-//            dtables.set(D10aL, d10.fittoDomain(fdomain));
-//            dtables.set(D11a, d11c.fittoDomain(fdomain));
-//            dtables.set(D11aL, d11.fittoDomain(fdomain));
-//            dtables.set(D12a, d12c.fittoDomain(fdomain));
-//            dtables.set(D12aL, d12.fittoDomain(fdomain));
-//            dtables.set(D16a, d16a);
-//        } else {
-//            int freq = toolkit.getContext().getFrequency();
-//            TsDomain fdomain = new TsDomain(sdomain.getEnd(), freq);
-//            TsData d10a = new TsData(fdomain);
-//            for (int i = 0, k = sdomain.getLength() - freq; i < freq; ++i, ++k) {
-//                d10a.set(i, (d10.get(k) * 3 - d10.get(k - freq)) / 2);
-//            }
-//            dtables.set(D10a, d10a);
-//            dtables.set(D10aL, d10a);
-//            // TsData a8s = atables.get(A8s, TsData.class);
-//            TsData a6 = atables.get(A6, TsData.class);
-//            TsData a7 = atables.get(A7, TsData.class);
-//            TsData d16a = toolkit.getContext().invOp(d10a, a6);
-//            d16a = toolkit.getContext().invOp(d16a, a7);
-//            d16a = toolkit.getContext().invOp(d16a, a8s);
-//            dtables.set(D16a, d16a);
-//        }
-//
-//        int nb = toolkit.getContext().getBackcastHorizon();
-//        //backcast is only calculated if there is a backcast horizon
-//        if (nb > 0) {
-//            TsDomain bdomain = new TsDomain(sdomain.getStart().minus(nb), nb);
-//            TsData a1b = atables.get(A1b, TsData.class);
-//            TsData d16b = toolkit.getContext().op(a1b, d11c);
-//            dtables.set(D16b, d16b);
-//            dtables.set(D10b, d10c.fittoDomain(bdomain));
-//        }
         return decomp.build();
 
     }

@@ -17,6 +17,7 @@
 package jdplus.x13.regarima;
 
 import demetra.sa.ComponentType;
+import demetra.sa.SaDictionary;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import demetra.timeseries.regression.Variable;
@@ -108,23 +109,23 @@ public class CalendarEffectsDetectionModule implements IRegressionModule {
 
         // builds models with and without td
         ModelDescription ntddesc = ModelDescription.copyOf(description, null);
-        boolean removed = ntddesc.removeVariable(var->Utility.isTradingDays(var));
+        boolean removed = ntddesc.removeVariable(var -> Utility.isTradingDays(var));
         if (lp != null) {
             if (ntddesc.isAdjusted()) {
                 ntddesc.setPreadjustment(LengthOfPeriodType.None);
             } else {
-                ntddesc.removeVariable(var->Utility.isLengthOfPeriod(var));
+                ntddesc.removeVariable(var -> Utility.isLengthOfPeriod(var));
             }
 
         }
 
         ModelDescription tddesc = ModelDescription.copyOf(ntddesc);
-        tddesc.addVariable(Variable.variable("td", td, ComponentType.CalendarEffect.name()));
+        tddesc.addVariable(Variable.variable("td", td).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
         if (lp != null) {
             if (tddesc.isLogTransformation() && adjust != LengthOfPeriodType.None) {
                 tddesc.setPreadjustment(adjust);
             } else {
-                tddesc.addVariable(Variable.variable("lp", lp, ComponentType.CalendarEffect.name()));
+                tddesc.addVariable(Variable.variable("lp", lp).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
             }
         }
 

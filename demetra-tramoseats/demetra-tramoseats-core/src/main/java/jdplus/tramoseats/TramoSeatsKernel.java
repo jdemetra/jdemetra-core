@@ -8,15 +8,23 @@ package jdplus.tramoseats;
 import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
+import demetra.modelling.ComponentInformation;
 import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
+import demetra.sa.DefaultSaDiagnostics;
 import demetra.sa.SeriesDecomposition;
+import demetra.sa.StationaryVarianceDecomposition;
 import demetra.seats.SeatsModelSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TransformSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.sa.StationaryVarianceComputer;
+import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnostics;
+import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
+import jdplus.sa.diagnostics.ResidualTradingDaysDiagnostics;
+import jdplus.sa.diagnostics.ResidualTradingDaysDiagnosticsConfiguration;
 import jdplus.sa.modelling.RegArimaDecomposer;
 import jdplus.sa.modelling.TwoStepsDecomposition;
 import jdplus.sarima.SarimaModel;
@@ -56,8 +64,9 @@ public class TramoSeatsKernel {
     }
 
     public TramoSeatsResults process(TsData s, ProcessingLog log) {
-        if (log == null)
-            log=ProcessingLog.dummy();
+        if (log == null) {
+            log = ProcessingLog.dummy();
+        }
         // Step 0. Preliminary checks
         TsData sc = preliminary.check(s, log);
         // Step 1. Tramo
@@ -68,8 +77,13 @@ public class TramoSeatsKernel {
         SeatsResults srslts = seats.process(smodel, log);
         // Step 4. Final decomposition
         SeriesDecomposition finals = TwoStepsDecomposition.merge(preprocessing, srslts.getFinalComponents());
+
         // Step 5. Diagnostics
-        return new TramoSeatsResults(preprocessing, srslts, finals);
+        return TramoSeatsResults.builder()
+                .preprocessing(preprocessing)
+                .decomposition(srslts)
+                .finals(finals)
+                .build();
     }
 
     private static SeatsModelSpec of(ModelEstimation model) {
@@ -99,5 +113,6 @@ public class TramoSeatsKernel {
                 .sarimaSpec(sarima)
                 .build();
     }
+
 
 }

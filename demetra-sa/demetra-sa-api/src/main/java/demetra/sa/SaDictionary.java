@@ -26,6 +26,11 @@ import nbbrd.design.Development;
 public final class SaDictionary  {
     
     /**
+     * Specific attributes
+     */
+    public final String REGEFFECT = "regeffect";
+    
+    /**
      * Subdivision of a SA processing
      * Pre-processing of the series (usually reg-arima), decomposition of the linearized series, final decomposition,
      * optional benchmarking and diagnostics

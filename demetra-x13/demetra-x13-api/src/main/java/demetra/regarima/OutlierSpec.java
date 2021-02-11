@@ -16,12 +16,12 @@
  */
 package demetra.regarima;
 
-import nbbrd.design.Development;
-import nbbrd.design.LombokWorkaround;
 import demetra.timeseries.TimeSelector;
 import demetra.util.Validatable;
 import java.util.ArrayList;
 import java.util.List;
+import nbbrd.design.Development;
+import nbbrd.design.LombokWorkaround;
 
 /**
  *
@@ -38,6 +38,10 @@ public final class OutlierSpec implements Validatable<OutlierSpec> {
     }
 
     public static final OutlierSpec DEFAULT_UNUSED = OutlierSpec.builder().build();
+    public static final OutlierSpec DEFAULT = OutlierSpec.builder()
+            .type(new SingleOutlierSpec("AO", 0))
+            .type(new SingleOutlierSpec("LS", 0))
+            .build();
 
     public static final double DEF_TCRATE = .7;
     public static final int DEF_NMAX = 30;

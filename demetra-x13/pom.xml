@@ -95,6 +95,11 @@
                 <artifactId>demetra-x13-core</artifactId>
                 <version>${jd3-x13.version}</version>
             </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-x13-io</artifactId>
+                <version>${jd3-x13.version}</version>
+            </dependency>
             <!-- < modules 3.0 -->
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>

@@ -16,6 +16,7 @@
  */
 package jdplus.x13.regarima;
 
+import demetra.sa.SaDictionary;
 import jdplus.regsarima.ami.ExactOutliersDetector;
 import nbbrd.design.BuilderPattern;
 import demetra.timeseries.regression.Variable;
@@ -219,7 +220,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
                 int[] cur = outliers[i];
                 TsPeriod pos = domain.get(cur[0]);
                 IOutlier o = impl.getFactory(cur[1]).make(pos.start());
-                model.addVariable(Variable.variable(IOutlier.defaultName(o.getCode(), pos), o, RegArimaDecomposer.componentTypeOf(o).name()));
+                model.addVariable(Variable.variable(IOutlier.defaultName(o.getCode(), pos), o).addAttribute(SaDictionary.REGEFFECT, RegArimaDecomposer.componentTypeOf(o).name()));
             }
             context.clearEstimation();
             return ProcessingResult.Changed;

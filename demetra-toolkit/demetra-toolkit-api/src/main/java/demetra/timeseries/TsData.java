@@ -511,7 +511,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
                 TsPeriod start = null;
                 TsPeriod curPeriod = null;
                 for (int i = 0; i < ns; ++i) {
-                    if (s[i] != null) {
+                    if (s[i] != null && ! s[i].isEmpty()) {
                         TsPeriod cstart = s[i].getStart();
                         if (start == null) {
                             start = cstart;

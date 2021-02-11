@@ -7,17 +7,21 @@ package demetra.sts.r;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
+import demetra.data.Iterables;
 import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
+import demetra.outliers.io.protobuf.OutliersProtos;
 import demetra.processing.ProcResults;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import demetra.sts.ComponentUse;
 import demetra.sts.SeasonalModel;
+import demetra.sts.outliers.io.protobuf.StsOutliersProtos;
 import demetra.timeseries.TsData;
 import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
+import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import jdplus.data.DataBlock;
@@ -34,6 +38,7 @@ import jdplus.sts.BasicStructuralModel;
 import jdplus.sts.OutliersDetection;
 import jdplus.sts.SsfBsm;
 import jdplus.sts.extractors.BasicStructuralModelExtractor;
+import jdplus.sts.internal.BsmMapping;
 import jdplus.sts.internal.BsmMonitor;
 
 /**
@@ -47,6 +52,36 @@ public class StsOutliersDetection {
     @lombok.Builder
     public static class Results implements ProcResults {
 
+        public byte[] buffer() {
+            int nx = x == null ? 0 : x.getColumnsCount();
+            BsmMapping mapping=new BsmMapping(spec, period);
+            StsOutliersProtos.StsSolution.Builder builder = StsOutliersProtos.StsSolution.newBuilder()
+                    .addAllBsmInitial(Iterables.of(mapping.map(initialBsm)))
+                    .addAllBsmFinal(Iterables.of(mapping.map(finalBsm)))
+                    .addAllCoefficients(Iterables.of(coefficients))
+                    .setCovariance(ToolkitProtosUtility.convert(coefficientsCovariance))
+                    .setRegressors(ToolkitProtosUtility.convert(regressors))
+                    .setLikelihoodInitial(ToolkitProtosUtility.convert(initialLikelihood))
+                    .setLikelihoodFinal(ToolkitProtosUtility.convert(finalLikelihood))
+                    .setComponents(ToolkitProtosUtility.convert(components))
+                    .setTauInitial(ToolkitProtosUtility.convert(initialTau))
+                    .setTauFinal(ToolkitProtosUtility.convert(finalTau))
+                    .addAllResiduals(Iterables.of(residuals));
+            DoubleSeq diag = coefficientsCovariance.diagonal();
+            for (int i = 0, j = nx; i < outliers.length; ++i, ++j) {
+                builder.addOutliers(
+                        OutliersProtos.Outlier.newBuilder()
+                                .setCode(outliers[i].getCode())
+                                .setPosition(outliers[i].getPosition())
+                                .setCoefficient(coefficients[j])
+                                .setStde(Math.sqrt(diag.get(j)))
+                                .build());
+            }
+            return builder.build().toByteArray();
+        }
+
+        BsmSpec spec;
+        int period;
         BasicStructuralModel initialBsm, finalBsm;
 
         DoubleSeq y;
@@ -58,6 +93,7 @@ public class StsOutliersDetection {
         MatrixType regressors;
         MatrixType components;
         DoubleSeq linearized;
+        DoubleSeq residuals;
         MatrixType initialTau, finalTau;
 
         LikelihoodStatistics initialLikelihood, finalLikelihood;
@@ -147,19 +183,23 @@ public class StsOutliersDetection {
         }
     }
 
-    public Results process(TsData y, int level, int slope, int noise, String seasmodel, MatrixType x,
+    public Results process(TsData ts, int level, int slope, int noise, String seasmodel, MatrixType x,
             boolean bao, boolean bls, boolean bso, double cv, double tcv, String forwardEstimation, String backwardEstimation) {
-        y=y.cleanExtremities();
+        TsData y = ts.cleanExtremities();
+        if (x != null && ts.length() != y.length()){
+            int start=ts.getStart().until(y.getStart());
+            x=x.extract(start, y.length(), 0, x.getColumnsCount());
+        }
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
-        BsmSpec mspec = new BsmSpec();
-        mspec.setLevelUse(of(level));
-        mspec.setSlopeUse(of(slope));
-        mspec.setNoiseUse(of(noise));
-        mspec.setSeasonalModel(sm);
+        BsmSpec spec = new BsmSpec();
+        spec.setLevelUse(of(level));
+        spec.setSlopeUse(of(slope));
+        spec.setNoiseUse(of(noise));
+        spec.setSeasonalModel(sm);
         OutliersDetection.Estimation fe = OutliersDetection.Estimation.valueOf(forwardEstimation);
         OutliersDetection.Estimation be = OutliersDetection.Estimation.valueOf(backwardEstimation);
         OutliersDetection od = OutliersDetection.builder()
-                .bsm(mspec)
+                .bsm(spec)
                 .forwardEstimation(fe)
                 .backardEstimation(be)
                 .criticalValue(cv)
@@ -218,9 +258,11 @@ public class StsOutliersDetection {
         sig2 = od.getLikelihood().sigma();
         Matrix tau1 = tau(n, ssf.getStateDim(), model, sd, sig2);
 
-        int np = mspec.getParametersCount();
+        int np = spec.getParametersCount();
 
         return Results.builder()
+                .spec(spec)
+                .period(y.getAnnualFrequency())
                 .initialBsm(od.getInitialModel())
                 .finalBsm(model)
                 .initialLikelihood(od.getInitialLikelihood().stats(0, np))
@@ -235,6 +277,7 @@ public class StsOutliersDetection {
                 .initialTau(tau0)
                 .finalTau(tau1)
                 .linearized(lin)
+                .residuals(ll.e())
                 .build();
     }
 

@@ -82,7 +82,6 @@ public class KalmanFilter implements ArmaFilter {
             }
             det.add(h);
             s[pos] = Math.sqrt(h);
-            // update
             if (pos < steadyPos) {
                 double zl = L[0];
                 double zlv = zl / h;
@@ -96,6 +95,7 @@ public class KalmanFilter implements ArmaFilter {
                         C[k] = C[j] - zlv * li;
                     } else {
                         L[i] = li;
+                        C[k] = C[j];
                     }
                 }
 

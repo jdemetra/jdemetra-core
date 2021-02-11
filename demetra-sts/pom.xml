@@ -17,6 +17,7 @@
         <module>demetra-sts-api</module>
         <module>demetra-sts-core</module>
         <module>demetra-sts-r</module>
+        <module>demetra-sts-io</module>
     </modules>
   
     <properties>
@@ -65,7 +66,17 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-toolkit-io</artifactId>
+                <version>${jd3-toolkit.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-sts-core</artifactId>
+                <version>${jd3-sts.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-sts-io</artifactId>
                 <version>${jd3-sts.version}</version>            
             </dependency>
             <!-- < modules 3.0 -->

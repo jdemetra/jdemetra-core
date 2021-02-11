@@ -38,14 +38,14 @@ public class Utility {
 
     public boolean isOutlier(Variable var, boolean prespecified) {
         if (var.getCore() instanceof IOutlier) {
-            return prespecified == var.isAttribute(PRESPECIFIED);
+            return prespecified == var.hasAttribute(PRESPECIFIED);
         } else {
             return false;
         }
     }
 
     public boolean isPrespecified(Variable var) {
-        return var.isAttribute(PRESPECIFIED);
+        return var.hasAttribute(PRESPECIFIED);
     }
 
     public boolean isMovingHoliday(Variable var) {

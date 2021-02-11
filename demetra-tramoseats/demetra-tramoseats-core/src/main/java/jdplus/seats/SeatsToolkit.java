@@ -20,6 +20,7 @@ import nbbrd.design.Development;
 import demetra.seats.DecompositionSpec;
 import demetra.seats.SeatsSpec;
 import jdplus.regsarima.GlsSarimaProcessor;
+import jdplus.regsarima.RegSarimaProcessor;
 
 /**
  * @author Jean Palate
@@ -28,13 +29,19 @@ import jdplus.regsarima.GlsSarimaProcessor;
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder")
 public class SeatsToolkit {
+    
+    private static final RegSarimaProcessor PROCESSOR=RegSarimaProcessor
+            .builder()
+            .startingPoint(RegSarimaProcessor.StartingPoint.HannanRissanen)
+            .precision(1e-7)
+            .build();
 
     public static SeatsToolkit of(DecompositionSpec spec) {
         DefaultModelValidator validator = DefaultModelValidator.builder()
                 .xl(spec.getXlBoundary())
                 .build();
 
-        DefaultModelEstimator estimator = new DefaultModelEstimator(validator, GlsSarimaProcessor.PROCESSOR);
+        DefaultModelEstimator estimator = new DefaultModelEstimator(validator, PROCESSOR);
 
         DefaultModelDecomposer decomposer = new DefaultModelDecomposer(spec);
 

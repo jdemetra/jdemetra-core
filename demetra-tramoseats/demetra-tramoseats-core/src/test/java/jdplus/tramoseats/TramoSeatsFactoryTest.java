@@ -14,6 +14,9 @@ import demetra.sa.SaItem;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsMoniker;
 import demetra.tramoseats.TramoSeatsSpec;
+import ec.satoolkit.tramoseats.TramoSeatsSpecification;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -70,4 +73,13 @@ public class TramoSeatsFactoryTest {
         assertTrue(estimation.getQuality() == ProcQuality.Good);
     }
 
+    @Test
+    public void testDictionay() {
+         Map<String, Class> dic = new LinkedHashMap<>();
+        TramoSeatsSpecification.fillDictionary(null, dic);
+        String[] arr = dic.keySet().toArray(new String[dic.size()]);
+        for (String s : arr) {
+            System.out.println(s);
+        }
+    }
 }

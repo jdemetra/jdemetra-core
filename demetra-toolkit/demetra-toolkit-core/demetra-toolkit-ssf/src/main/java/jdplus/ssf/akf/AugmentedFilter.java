@@ -136,9 +136,9 @@ public class AugmentedFilter {
      * @return
      */
     public boolean process(final ISsf ssf, final ISsfData data, final IAugmentedFilteringResults rslts) {
-        this.ssf=ssf;
+        this.ssf = ssf;
         loading = ssf.loading();
-        error=ssf.measurementError();
+        error = ssf.measurementError();
         dynamics = ssf.dynamics();
         this.data = data;
         if (!initState()) {
@@ -163,6 +163,9 @@ public class AugmentedFilter {
             }
             state.next(t++, dynamics);
         }
+//        if (collapsing && collapsingPos < 0) {
+//            collapsingPos=end;
+//        }
         return true;
     }
 

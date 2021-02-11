@@ -92,14 +92,14 @@ public class FastRegressionTest implements IRegressionModule {
             int pos = tmpModel.findPosition(variable.getCore());
             int dim = variable.getCore().dim();
             IRegressionTest test = dim == 1 ? wdTest : tdTest;
-            if (!test.accept(ll, nhp, pos, dim, null)) {
+            if (!test.accept(ll, nhp, pos, dim)) {
                 removetd = true;
             }
         }
         if (removetd && lp.isPresent()) {
             Variable variable = lp.get();
             int pos = tmpModel.findPosition(variable.getCore());
-            if (lpTest.accept(ll, nhp, pos, 1, null)) {
+            if (lpTest.accept(ll, nhp, pos, 1)) {
                 removetd = false;
             } else {
                 currentModel.remove(variable.getCore());
@@ -117,13 +117,13 @@ public class FastRegressionTest implements IRegressionModule {
         if (easter.isPresent()) {
             Variable variable = easter.get();
             int pos =  tmpModel.findPosition(variable.getCore());
-            if (!mhTest.accept(ll, nhp, pos, 1, null)) {
+            if (!mhTest.accept(ll, nhp, pos, 1)) {
                 currentModel.remove(variable.getCore());
                 changed = true;
             }
         }
         
-        if (meanTest != null && regarima.isMean() && !meanTest.accept(ll, nhp, 0, 1, null)) {
+        if (meanTest != null && regarima.isMean() && !meanTest.accept(ll, nhp, 0, 1)) {
             currentModel.setMean(false);
             changed = true;
         }

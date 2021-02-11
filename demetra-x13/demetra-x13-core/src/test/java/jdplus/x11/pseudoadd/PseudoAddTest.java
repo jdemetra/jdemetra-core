@@ -112,10 +112,10 @@ public class PseudoAddTest {
     private void testX11Kernel(String modeName, String seasonalFilterOptionName, int filterLength, int frequency, double[] values, String calendarSigma, int forecastHorizon) {
         jdplus.x11.X11Kernel instanceKernel = new X11Kernel();
         demetra.timeseries.TsData tsData = demetra.timeseries.TsData.ofInternal(TsPeriod.of(TsUnit.ofAnnualFrequency(frequency), 0), values);
-        List<SeasonalFilterOption> seasonalFilterOptions = new ArrayList<>();
+        SeasonalFilterOption[] seasonalFilterOptions = new SeasonalFilterOption[frequency];
 
         for (int i = 0; i < frequency; i++) {
-            seasonalFilterOptions.add(SeasonalFilterOption.valueOf(seasonalFilterOptionName));
+            seasonalFilterOptions[i]=SeasonalFilterOption.valueOf(seasonalFilterOptionName);
         }
 
         demetra.x11.X11Spec spec = demetra.x11.X11Spec.builder()

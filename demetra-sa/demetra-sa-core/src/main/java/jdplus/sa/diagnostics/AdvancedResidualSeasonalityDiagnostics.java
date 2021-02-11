@@ -77,7 +77,7 @@ public class AdvancedResidualSeasonalityDiagnostics implements Diagnostics {
         return se > E_LIMIT;
     }
 
-    public static Diagnostics of(AdvancedResidualSeasonalityDiagnosticsConfiguration config, Input data) {
+    public static AdvancedResidualSeasonalityDiagnostics of(AdvancedResidualSeasonalityDiagnosticsConfiguration config, Input data) {
         try {
             AdvancedResidualSeasonalityDiagnostics test = new AdvancedResidualSeasonalityDiagnostics();
             TsData sa = data.getSa();
@@ -217,6 +217,22 @@ public class AdvancedResidualSeasonalityDiagnostics implements Diagnostics {
     @Override
     public List<String> getWarnings() {
         return Collections.emptyList();
+    }
+    
+    public StatisticalTest QsTestOnSa(){
+        return qs_sa;
+    }
+
+    public StatisticalTest QsTestOnI(){
+        return qs_i;
+    }
+
+    public StatisticalTest FTestOnSa(){
+        return f_sa;
+    }
+
+    public StatisticalTest FTestOnI(){
+        return f_i;
     }
 
     private ProcQuality quality(StatisticalTest test) {

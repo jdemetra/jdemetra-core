@@ -17,9 +17,9 @@
 package jdplus.regarima;
 
 import demetra.data.DoubleSeq;
-import demetra.data.MissingValueEstimation;
-import demetra.data.ParameterEstimation;
-import demetra.data.ParametersEstimation;
+import demetra.likelihood.MissingValueEstimation;
+import demetra.likelihood.ParameterEstimation;
+import demetra.likelihood.ParametersEstimation;
 import nbbrd.design.Development;
 import demetra.math.matrices.MatrixType;
 import demetra.timeseries.regression.modelling.LinearModelEstimation;
@@ -67,7 +67,7 @@ public class ApiUtility {
         ParametersEstimation p = null;
         if (nhp > 0) {
             // TODO: adjust the computation of the covariance of the parameters
-            p = new ParametersEstimation(max.getParameters(), max.asymptoticCovariance(), null);
+            p = new ParametersEstimation(max.getParameters(), max.asymptoticCovariance(), null, null);
         }
 
         ParameterEstimation mean = null;
@@ -86,7 +86,7 @@ public class ApiUtility {
             b = ll.coefficients().range(x0, x1).toArray();
             cov = ll.covariance(nhp, true).extract(x0, b.length, x0, b.length).unmodifiable();
         }
-        ParametersEstimation all = new ParametersEstimation(b, cov, null);
+        ParametersEstimation all = new ParametersEstimation(b, cov, null, null);
 
         MissingValueEstimation[] me = null;
         if (missing.length > 0) {

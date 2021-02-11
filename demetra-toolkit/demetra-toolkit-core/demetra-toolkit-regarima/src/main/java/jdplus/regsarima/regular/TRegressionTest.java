@@ -43,7 +43,7 @@ public class TRegressionTest implements IRegressionTest {
     }
 
     @Override
-    public boolean accept(ConcentratedLikelihoodWithMissing ll, int nhp, int ireg, int nregs, InformationSet info) {
+    public boolean accept(ConcentratedLikelihoodWithMissing ll, int nhp, int ireg, int nregs) {
         double[] t = ll.tstats(nhp < 0 ? 0 : nhp, nhp >= 0);
         int nlow = 0, nhigh = 0;
         for (int i = 0; i < nregs; ++i) {

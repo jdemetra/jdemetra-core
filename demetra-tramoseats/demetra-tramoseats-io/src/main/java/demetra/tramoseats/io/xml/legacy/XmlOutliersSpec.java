@@ -183,7 +183,7 @@ public class XmlOutliersSpec
 
     public static OutlierSpec unmarshal(XmlOutliersSpec xml) {
         if (xml.types == null) {
-            return OutlierSpec.DEFAULT;
+            return OutlierSpec.DEFAULT_DISABLED;
         }
         OutlierSpec.Builder builder = OutlierSpec.builder();
         if (xml.span != null) {

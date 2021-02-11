@@ -47,7 +47,9 @@ public class X13Spec implements Validatable<X13Spec>, SaSpecification {
     }
     private static final X13Spec DEFAULT = X13Spec.builder().build();
 
+    @lombok.NonNull
     private RegArimaSpec regArima;
+    @lombok.NonNull
     private X11Spec x11;
     @lombok.NonNull
     private SaBenchmarkingSpec benchmarking;
@@ -56,7 +58,7 @@ public class X13Spec implements Validatable<X13Spec>, SaSpecification {
     public static Builder builder() {
         return new Builder()
                 .regArima(RegArimaSpec.DEFAULT_ENABLED)
-                .x11(X11Spec.DEFAULT)
+                .x11(X11Spec.DEFAULT_UNDEFINED)
                 .benchmarking(SaBenchmarkingSpec.DEFAULT_DISABLED);
     }
 
@@ -87,56 +89,55 @@ public class X13Spec implements Validatable<X13Spec>, SaSpecification {
                 .regArima(RegArimaSpec.RGDISABLED)
                 .x11(X11Spec.builder()
                         .mode(DecompositionMode.Multiplicative)
-                        .filter(SeasonalFilterOption.Msr)
                         .forecastHorizon(0)
                         .build())
                 .build();
         RSA0 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG0)
-                .x11(X11Spec.DEFAULT)
+                .x11(X11Spec.DEFAULT_UNDEFINED)
                 .build();
         RSA1 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG1)
-                .x11(X11Spec.DEFAULT)
+                .x11(X11Spec.DEFAULT_UNDEFINED)
                 .build();
         RSA2 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG2)
-                .x11(X11Spec.DEFAULT)
+                .x11(X11Spec.DEFAULT_UNDEFINED)
                 .build();
         RSA3 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG3)
-                .x11(X11Spec.DEFAULT)
+                .x11(X11Spec.DEFAULT_UNDEFINED)
                 .build();
         RSA4 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG4)
-                .x11(X11Spec.DEFAULT)
+                .x11(X11Spec.DEFAULT_UNDEFINED)
                 .build();
         RSA5 = X13Spec.builder()
                 .regArima(RegArimaSpec.RG5)
-                .x11(X11Spec.DEFAULT)
+                .x11(X11Spec.DEFAULT_UNDEFINED)
                 .build();
     }
 
     public static X13Spec fromString(String name) {
-        if (name.equals("X11")) {
+        if (name.equalsIgnoreCase("X11") || name.equalsIgnoreCase("X11")) {
             return RSAX11;
         }
-        if (name.equals("RSA0")) {
+        if (name.equalsIgnoreCase("RSA0") || name.equalsIgnoreCase("RSA0")) {
             return RSA0;
         }
-        if (name.equals("RSA1")) {
+        if (name.equalsIgnoreCase("RSA1") || name.equalsIgnoreCase("RSA1")) {
             return RSA1;
         }
-        if (name.equals("RSA2c")) {
+        if (name.equalsIgnoreCase("RSA2c") || name.equalsIgnoreCase("RSA2")) {
             return RSA2;
         }
-        if (name.equals("RSA3")) {
+        if (name.equalsIgnoreCase("RSA3") || name.equalsIgnoreCase("RSA3")) {
             return RSA3;
         }
-        if (name.equals("RSA4c")) {
+        if (name.equalsIgnoreCase("RSA4c") || name.equalsIgnoreCase("RSA4")) {
             return RSA4;
         }
-        if (name.equals("RSA5c")) {
+        if (name.equalsIgnoreCase("RSA5c") || name.equalsIgnoreCase("RSA5")) {
             return RSA5;
         }
         throw new X13Exception();

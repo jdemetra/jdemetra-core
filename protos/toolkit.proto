@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package jd3;
+
+option java_package = "demetra.toolkit.io.protobuf";
+option java_outer_classname = "ToolkitProtos";
+
+message TimeSelector{
+	enum SelectionType {
+        NONE=0;
+		ALL=1;
+		FROM=2;
+		TO=3;
+		BETWEEN=4;
+		LAST=5;
+		FIRST=6;
+		EXCLUDING=7;
+    }
+	
+	SelectorType Type = 1 [default = ALL];
+	int32 n0 = 2;
+	int32 n1 = 3;
+	string d0 = 4;
+	string d1 = 5;
+}

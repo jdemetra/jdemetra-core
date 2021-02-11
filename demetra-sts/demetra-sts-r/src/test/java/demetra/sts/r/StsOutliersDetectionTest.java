@@ -24,12 +24,18 @@ public class StsOutliersDetectionTest {
     @Test
     public void testSomeMethod() {
 //        TsData y = TsData.ofInternal(TsPeriod.monthly(1974, 1), sugar);
-        TsData y = TsData.ofInternal(TsPeriod.monthly(1992, 1), Data.RETAIL_BOOKSTORES);
-        Matrix X=Matrix.make(y.length(), 2);
-        Random rnd=new Random();
-        X.set((i,j)->rnd.nextDouble());
-        StsOutliersDetection.Results rslt = StsOutliersDetection.process(y.log(), 1, 1, 1, "HarrisonStevens", X, true, true, true, 0, 0, "Score", "Point");
-//        System.out.println(rslt.getComponents());
+        double[] z = Data.RETAIL_JEWELRYSTORES;
+        for (int i = 0; i < 12; ++i) {
+            z[i] = Double.NaN;
+        }
+        TsData y = TsData.ofInternal(TsPeriod.monthly(1992, 1), z);
+        Matrix X = Matrix.make(y.length(), 2);
+        Random rnd = new Random();
+        X.set((i, j) -> rnd.nextDouble());
+        StsOutliersDetection.Results rslt = StsOutliersDetection.process(y, 1, 1, 1, "Trigonometric", X, true, true, false, 0, 0, "Score", "Point");
+        rslt.buffer();
+
+        System.out.println(rslt.getComponents());
 //        System.out.println("");
 //        System.out.println(rslt.getInitialTau());
 //        System.out.println("");
@@ -54,7 +60,7 @@ public class StsOutliersDetectionTest {
     public void testSeasonalBreaks() {
         TsData y = TsData.ofInternal(TsPeriod.monthly(1974, 1), sugar);
         double[] rslt = StsOutliersDetection.seasonalBreaks(y, 1, 1, 1, "HarrisonStevens", null);
- //       System.out.println(DoubleSeq.of(rslt));
+        //       System.out.println(DoubleSeq.of(rslt));
     }
 
 }

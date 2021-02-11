@@ -10,7 +10,7 @@ import demetra.sa.DecompositionMode;
 import demetra.timeseries.TsData;
 import demetra.x11.CalendarSigmaOption;
 import demetra.x11.SeasonalFilterOption;
-import demetra.x11.SigmavecOption;
+import demetra.x11.SigmaVecOption;
 import demetra.x11.X11Exception;
 import demetra.x11.X11Spec;
 import jdplus.x11.extremevaluecorrector.Cochran;
@@ -46,7 +46,7 @@ public class X11Context {
     SeasonalFilterOption[] finalSeasonalFilter;
     double lowerSigma, upperSigma;
     CalendarSigmaOption calendarSigma;
-    SigmavecOption[] sigmavecOptions;
+    SigmaVecOption[] sigmavecOptions;
     int forecastHorizon;
     int backcastHorizon;
     int firstPeriod;
@@ -76,14 +76,14 @@ public class X11Context {
 
     public static X11Context of(@lombok.NonNull X11Spec spec, @lombok.NonNull TsData data) {
         SeasonalFilterOption[] filters = new SeasonalFilterOption[data.getAnnualFrequency()];
-        if (spec.getFilters().size() == 1) {
+        if (spec.getFilters().length == 1) {
             filters = new SeasonalFilterOption[data.getAnnualFrequency()];
-            SeasonalFilterOption filter = spec.getFilters().get(0);
+            SeasonalFilterOption filter = spec.getFilters()[0];
             for (int i = 0; i < data.getAnnualFrequency(); i++) {
                 filters[i] = filter;
             }
         } else {
-            filters = spec.getFilters().toArray(new SeasonalFilterOption[0]);
+            filters = spec.getFilters();
         }
 
         return builder().mode(spec.getMode())
@@ -93,7 +93,7 @@ public class X11Context {
                 .lowerSigma(spec.getLowerSigma())
                 .upperSigma(spec.getUpperSigma())
                 .calendarSigma(spec.getCalendarSigma())
-                .sigmavecOptions(spec.getSigmavec() == null ? null : spec.getSigmavec().toArray(new SigmavecOption[0]))
+                .sigmavecOptions(spec.getSigmaVec())
                 .excludefcast(spec.isExcludeForecast())
                 .forecastHorizon(spec.getForecastHorizon())
                 .backcastHorizon(spec.getBackcastHorizon())

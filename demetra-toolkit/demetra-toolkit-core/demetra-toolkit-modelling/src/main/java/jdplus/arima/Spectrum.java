@@ -154,16 +154,16 @@ public final class Spectrum {
             DoubleSeqCursor cursor = weights.cursor();
             f = cursor.getAndNext();
             df = 0;
-            double c1=Math.cos(freq), s1=Math.sin(freq);
-            double c0=c1, s0=s1;
+            double c1 = Math.cos(freq), s1 = Math.sin(freq);
+            double c0 = c1, s0 = s1;
             for (int i = 1; i < weights.length(); ++i) {
                 double w = cursor.getAndNext();
                 double wc = 2 * c0 * w;
                 double ws = 2 * s0 * w;
-                double cnext = c0*c1-s0*s1;
-                double snext=s0*c1+c0*s1;
-                c0=cnext;
-                s0=snext;
+                double cnext = c0 * c1 - s0 * s1;
+                double snext = s0 * c1 + c0 * s1;
+                c0 = cnext;
+                s0 = snext;
                 f += wc;
                 df -= i * ws;
                 d2f -= i * i * wc;
@@ -184,10 +184,11 @@ public final class Spectrum {
     }
 
     /**
-     * The Minimizer class searches the minimum of the spectrum. 
+     * The Minimizer class searches the minimum of the spectrum.
      * This implementtion searches local minima using the newton algortihm.
-     * The number of starting points is defined by the degrees of the polynomials
-     * The starting points are distributed in a uniform way. 
+     * The number of starting points is defined by the degrees of the
+     * polynomials
+     * The starting points are distributed in a uniform way.
      */
     public static class Minimizer {
 
@@ -321,7 +322,16 @@ public final class Spectrum {
             public IParametersDomain getDomain() {
                 return new ParametersRange(a, b, true);
             }
+        }
 
+        private static final int MIN_DENOM = 6;
+
+        public void minimize(final Spectrum spectrum) {
+            if (spectrum.denom.length() <= MIN_DENOM) {
+                minimizeByRoots(spectrum);
+            } else {
+                minimizeByGrid(spectrum);
+            }
         }
 
         /**
@@ -329,7 +339,7 @@ public final class Spectrum {
          *
          * @param spectrum The spectrum being minimized
          */
-        public void minimize(final Spectrum spectrum) {
+        public void minimizeByGrid(final Spectrum spectrum) {
             if (spectrum.num.length() == 1 && spectrum.denom.length() == 1) {
                 // constant
                 m_x = 0;
@@ -351,10 +361,10 @@ public final class Spectrum {
                 m_x = Math.PI;
             }
             // degree of the derivative
-            int nd = (spectrum.num.getUpperBound()+spectrum.denom.getUpperBound())-1;
-            double step = Math.PI / nd, a = step/2 ;
+            int nd = (spectrum.num.getUpperBound() + spectrum.denom.getUpperBound()) - 1;
+            double step = Math.PI / nd, a = step / 2;
             for (int i = 0; i < nd; ++i, a += step) {
-                double b = a+step;
+                double b = a + step;
                 double f = spectrum.denom.realFrequencyResponse(a);
                 double na = a;
                 while (f <= 0 && na < b) {
@@ -384,15 +394,15 @@ public final class Spectrum {
                 }
             }
         }
-         /**
+
+        /**
          * Computes the minimum of the spectrum, by explicit computation of the
          * roots of the derivative. This implementation can be instable in the
          * case of complex models (MA and AR seasonal parameters)
          *
          * @param spectrum
          */
-        @Deprecated
-        public void minimize2(final Spectrum spectrum) {
+        public void minimizeByRoots(final Spectrum spectrum) {
             SymmetricFrequencyResponse fnum = new SymmetricFrequencyResponse(spectrum.num),
                     fdenom = new SymmetricFrequencyResponse(spectrum.denom);
             double scale = fdenom.getIntegral();
@@ -481,7 +491,7 @@ public final class Spectrum {
 
             }
         }
-   }
+    }
 
     /**
      *

@@ -44,12 +44,6 @@ public class InterventionVariable implements ISystemVariable{
         
         private double delta, deltaSeasonal;
         private final List<Range<LocalDateTime>> sequences = new ArrayList<>();
-        private Double coefficient;
-        
-        public Builder coefficient(double cfixed) {
-            this.coefficient = cfixed;
-            return this;
-        }
         
         public Builder delta(double delta) {
             this.delta = delta;
@@ -71,22 +65,17 @@ public class InterventionVariable implements ISystemVariable{
                 throw new TsException(TsException.INVALID_DEFINITION);
             }
             return new InterventionVariable(delta, deltaSeasonal,
-                    sequences.toArray(new Range[sequences.size()]), coefficient);
+                    sequences.toArray(new Range[sequences.size()]));
         }
     }
     
     private double delta, deltaSeasonal;
     private Range<LocalDateTime>[] sequences;
-    private Double coefficient;
     
     @Override
     public int dim()
     {return 1;}
 
-    public boolean isFixed() {
-        return coefficient != null;
-    }
-    
     @Override
     public <D extends TimeSeriesDomain<?>> String description(D context){
         return "iv";

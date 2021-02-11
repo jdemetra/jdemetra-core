@@ -17,23 +17,23 @@ import static org.junit.Assert.*;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public class StationaryVarianceDecompositionTest {
-    
+
     public StationaryVarianceDecompositionTest() {
     }
 
     @Test
     public void testLongTerm() {
-        TsData t1 = new StationaryVarianceDecomposition
-                .LinearTrendComputer()
-                .calcLongTermTrend(TsData.of(TsPeriod.yearly(1900), 
-                Doubles.of(Data.NILE)));
+        TsData t1 = StationaryVarianceComputer.LINEARTREND
+                .calcLongTermTrend(TsData.of(TsPeriod.yearly(1900),
+                        Doubles.of(Data.NILE)));
 //        System.out.println(t1);
-        System.out.println(t1);
-        TsData t2 = new StationaryVarianceDecomposition
-                .HPTrendComputer(20)
-                .calcLongTermTrend(TsData.of(TsPeriod.yearly(1900), 
-                Doubles.of(Data.NILE)));
+        TsData t2 = new StationaryVarianceComputer.HPTrendComputer(20)
+                .calcLongTermTrend(TsData.of(TsPeriod.yearly(1900),
+                        Doubles.of(Data.NILE)));
 //        System.out.println(t2);
+
+        assertTrue(t1 != null);
+        assertTrue(t2 != null);
     }
-    
+
 }
