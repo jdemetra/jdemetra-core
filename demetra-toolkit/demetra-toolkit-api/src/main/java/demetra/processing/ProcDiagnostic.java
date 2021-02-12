@@ -14,60 +14,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package demetra.processing;
 
 import nbbrd.design.Development;
-import demetra.information.Information;
-import demetra.information.InformationSet;
 import java.util.List;
 
 /**
  * @author Jean Palate
  */
-@Development(status = Development.Status.Beta)
+@Development(status = Development.Status.Release)
+@lombok.Value
+@lombok.Builder(builderClassName = "Builder")
 public class ProcDiagnostic {
 
-    public ProcDiagnostic(double value, ProcQuality quality) {
-        this.value = value;
-        this.quality = quality;
-    }
-    public final double value;
-    public final ProcQuality quality;
-    public static final String QUALITY = "quality";
+    double value;
+    @lombok.NonNull
+    ProcQuality quality;
+    @lombok.NonNull
+    String diagnostic;
+    @lombok.NonNull
+    String category;
+    @lombok.Singular
+    List<String> warnings;
+    Object details;
 
-    public static ProcQuality summary(InformationSet summary) {
+    public static ProcQuality summary(@lombok.NonNull List<ProcDiagnostic> diagnostics) {
         ProcQuality rslt = ProcQuality.Undefined;
         int sum = 0, n = 0;
-        ProcQuality q = summary.get(QUALITY, ProcQuality.class);
-        if (q != null) {
-            return q;
-        }
-        List<Information<InformationSet>> subsets = summary.select(InformationSet.class);
 
-        for (Information<InformationSet> subset : subsets) {
-            List<Information<ProcDiagnostic>> infos = subset.getValue().select(ProcDiagnostic.class);
-            for (Information<ProcDiagnostic> info : infos) {
-                ProcQuality quality = info.getValue().quality;
-                switch (quality) {
-                    case Error:
-                        summary.set(QUALITY, ProcQuality.Error);
-                        return ProcQuality.Error;
-                    case Severe:
-                        summary.set(QUALITY, ProcQuality.Severe);
-                        return ProcQuality.Severe;
-                    case Good:
-                        ++n;
-                        sum += 3;
-                        break;
-                    case Uncertain:
-                        ++n;
-                        sum += 2;
-                        break;
-                    case Bad:
-                        ++n;
-                        break;
-                }
+        if (diagnostics.isEmpty()) {
+            return rslt;
+        }
+
+        for (ProcDiagnostic diag : diagnostics) {
+            ProcQuality quality = diag.quality;
+            switch (quality) {
+                case Error:
+                    return ProcQuality.Error;
+                case Severe:
+                    return ProcQuality.Severe;
+                case Good:
+                    ++n;
+                    sum += 3;
+                    break;
+                case Uncertain:
+                    ++n;
+                    sum += 2;
+                    break;
+                case Bad:
+                    ++n;
+                    break;
             }
         }
         if (n > 0) {
@@ -81,7 +77,6 @@ public class ProcDiagnostic {
                 rslt = ProcQuality.Bad;
             }
         }
-        summary.set(QUALITY, rslt);
         return rslt;
     }
 }

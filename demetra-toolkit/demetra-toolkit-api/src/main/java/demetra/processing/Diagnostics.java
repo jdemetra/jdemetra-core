@@ -48,7 +48,7 @@ public interface Diagnostics {
 
     /**
      * Gets the value of the diagnostic, if any.
-     * Double.Nana is returned if no value are available
+     * Double.Nan is returned if no value are available
      * @param test
      * @return 
      */

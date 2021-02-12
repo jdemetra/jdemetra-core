@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TsDataSupplier;
 import demetra.information.InformationSet;
 import demetra.timeseries.calendars.CalendarManager;
 import demetra.util.DefaultNameValidator;

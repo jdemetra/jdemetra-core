@@ -14,32 +14,22 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.regression;
-
-import demetra.timeseries.TsDataSupplier;
-import nbbrd.design.Development;
-import demetra.util.DefaultNameValidator;
-import demetra.util.INameValidator;
-import demetra.util.NameManager;
+package demetra.timeseries;
 
 /**
  *
- * @author Jean Palate
+ * @author PALATEJ
  */
-@Development(status=Development.Status.Release)
-public class TsDataSuppliers extends NameManager<TsDataSupplier> {
-
-    public static final String X = "x_";
-
-    public TsDataSuppliers() {
-        super(TsDataSupplier.class, X, new DefaultNameValidator(".+-*/"));
+@lombok.Value
+@lombok.EqualsAndHashCode(callSuper=false)
+public class StaticTsDataSupplier extends TsDataSupplier{
+    
+    @lombok.NonNull
+    TsData data;
+    
+    @Override
+    public TsData get() {
+        return data;
     }
-
-    public TsDataSuppliers(String prefix, INameValidator validator) {
-        super(TsDataSupplier.class, prefix, validator);
-    }
-
-    public boolean isEmpty() {
-        return getCount() < 1;
-    }
+    
 }

@@ -594,7 +594,7 @@ public final class ModelDescription {
         int p = this.getAnnualFrequency();
         LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
         if (max != null) {
-            arima.setFreeParameters(DoubleSeq.of(max.getParameters()));
+            arima.setFreeParameters(max.getParameters());
         }
         return RegArimaEstimation.<SarimaModel>builder()
                 .model(rslt.getModel())

@@ -47,8 +47,8 @@ public class FractionalAirlineDecompositionExtractor {
     static {
         MAPPING.delegate(LL, LikelihoodStatisticsExtractor.getMapping(), r -> r.getLikelihood());
         MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
-        MAPPING.set(PARAMETERS, double[].class, source -> source.getParameters());
-        MAPPING.set(SCORE, double[].class, source -> source.getScore());
+        MAPPING.set(PARAMETERS, double[].class, source -> source.getParameters().toArray());
+        MAPPING.set(SCORE, double[].class, source -> source.getScore().toArray());
         MAPPING.set(Y, double[].class, source -> source.getY());
         MAPPING.set(T, double[].class, source -> source.getT());
         MAPPING.set(S, double[].class, source -> source.getS());

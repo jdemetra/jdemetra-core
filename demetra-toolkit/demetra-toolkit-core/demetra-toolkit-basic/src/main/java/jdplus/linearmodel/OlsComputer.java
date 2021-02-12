@@ -8,6 +8,7 @@ package jdplus.linearmodel;
 import demetra.data.DoubleSeq;
 import demetra.eco.EcoException;
 import demetra.math.Constants;
+import demetra.math.matrices.MatrixType;
 import jdplus.leastsquares.QRSolution;
 import jdplus.leastsquares.QRSolver;
 import jdplus.math.matrices.Matrix;

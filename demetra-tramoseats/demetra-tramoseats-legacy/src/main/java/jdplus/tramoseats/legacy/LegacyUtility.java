@@ -6,6 +6,8 @@
 package jdplus.tramoseats.legacy;
 
 import demetra.arima.SarimaModel;
+import demetra.data.DoubleSeq;
+import demetra.likelihood.ParametersEstimation;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.LinearModelEstimation;
 import demetra.tramo.TramoSpec;
@@ -55,7 +57,7 @@ public class LegacyUtility {
         p.copyTo(params, 0);
         return LinearModelEstimation.<SarimaModel>builder()
                 .statistics(nstat)
-                .parameters(params)
+                .parameters(new ParametersEstimation(DoubleSeq.of(params), null, null, null))
                 .build();
     }
     

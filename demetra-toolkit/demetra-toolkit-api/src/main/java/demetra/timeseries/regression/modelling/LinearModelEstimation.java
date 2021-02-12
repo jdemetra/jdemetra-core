@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 National Bank of Belgium
+ * Copyright 2021 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -16,11 +16,13 @@
  */
 package demetra.timeseries.regression.modelling;
 
+import demetra.data.DoubleSeq;
 import demetra.likelihood.MissingValueEstimation;
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.likelihood.LikelihoodStatistics;
+import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.Variable;
@@ -44,32 +46,38 @@ public class LinearModelEstimation<M> {
     private LengthOfPeriodType lpTransformation;
 
     /**
-     * Mean correction (after differencing)
-     */
-    private boolean meanCorrection;
-
-    /**
      * Regression variables
      */
     private Variable[] variables;
+    
+    /**
+     * The linear model is composed of the transformed series (corrected for fixed regression variables)
+     * and of the free regression variable (including mean correction)
+     */
+    private DoubleSeq y;
+    
+    private MatrixType X; 
+    
+    /**
+     * Regression estimation. The order correspond to the order of the variables
+     * (starting with the mean)
+     * Fixed coefficients are integrated in the list (with variance = 0)
+     */
+    private ParametersEstimation coefficients;
 
+    private MissingValueEstimation[] missing;
     /**
      * Stochastic model
      */
     private M stochasticComponent;
 
     /**
-     * Regression estimation. The order correspond to the order of the variables
-     * (starting with the mean)
+     * Parameters of the stochastic component. Fixed parameters are integrated in the list, 
+     * with variance = 0
      */
-    private double[] coefficients;
-    private MatrixType coefficientsCovariance;
-    private double[] parameters, score;
-    private MatrixType parametersCovariance;
+    private ParametersEstimation parameters;
+ 
     private LikelihoodStatistics statistics;
-
-    private MissingValueEstimation[] missing;
-    private int freeParametersCount;
 
     @lombok.Singular
     private Map<String, Object> addtionalResults;

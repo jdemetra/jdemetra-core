@@ -64,7 +64,7 @@ public class RegArimaEstimation<M extends IArimaModel> {
     private double llAdjustment;
     
     public int parametersCount(){
-        return max== null ? 0 : max.getParameters().length;
+        return max== null ? 0 : max.getParameters().length();
     }
 
 

@@ -15,7 +15,7 @@
 * limitations under the Licence.
 */
 
-package demetra.modelling;
+package demetra.regarima;
 
 import nbbrd.design.Development;
 

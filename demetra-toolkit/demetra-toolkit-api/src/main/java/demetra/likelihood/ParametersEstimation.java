@@ -16,6 +16,7 @@
  */
 package demetra.likelihood;
 
+import demetra.data.DoubleSeq;
 import nbbrd.design.Development;
 import demetra.math.matrices.MatrixType;
 
@@ -30,7 +31,7 @@ public class ParametersEstimation {
      * Estimated values of the parameters
      */
     @lombok.NonNull
-    private double[] values;
+    private DoubleSeq values;
     /**
      * Covariance of the parameters.
      * Pre-specified parameters should have a variance equal to 0
@@ -39,7 +40,7 @@ public class ParametersEstimation {
     /**
      * Score of the parameter (in the context of maximum likelihood
      */
-    private double[] scores;
+    private DoubleSeq scores;
     /**
      * Any suitable information/description
      */

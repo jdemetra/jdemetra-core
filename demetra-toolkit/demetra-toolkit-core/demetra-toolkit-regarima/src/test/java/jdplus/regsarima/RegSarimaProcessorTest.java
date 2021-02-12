@@ -47,7 +47,7 @@ public class RegSarimaProcessorTest {
                 .build()
                 .process(model, null);
         
-        double ll1 = rslt.getMax().getFunction().evaluate(DoubleSeq.of(rslt.getMax().getParameters())).getValue();
+        double ll1 = rslt.getMax().getFunction().evaluate(rslt.getMax().getParameters()).getValue();
         double ll2 = rslt.getConcentratedLikelihood().logLikelihood();
         assertEquals(ll1, ll2, 1e-9);
     }

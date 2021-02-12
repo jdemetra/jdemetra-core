@@ -8,7 +8,7 @@ package jdplus.x13;
 import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
-import demetra.modelling.RegressionTestSpec;
+import demetra.regarima.RegressionTestSpec;
 import demetra.modelling.TransformationType;
 import demetra.regarima.AutoModelSpec;
 import demetra.regarima.EasterSpec;

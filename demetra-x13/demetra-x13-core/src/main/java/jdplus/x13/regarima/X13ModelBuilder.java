@@ -25,7 +25,7 @@ import demetra.regarima.TransformSpec;
 import jdplus.data.interpolation.AverageInterpolator;
 import nbbrd.design.Development;
 import demetra.information.InformationSet;
-import demetra.modelling.RegressionTestSpec;
+import demetra.regarima.RegressionTestSpec;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.regression.Variable;
 import demetra.timeseries.regression.AdditiveOutlier;

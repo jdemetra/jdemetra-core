@@ -5,8 +5,8 @@
  */
 package demetra.highfreq;
 
+import demetra.data.DoubleSeq;
 import demetra.highfreq.extractors.FractionalAirlineDecompositionExtractor;
-import demetra.highfreq.extractors.FractionalAirlineModelExtractor;
 import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
@@ -24,7 +24,7 @@ public class FractionalAirlineDecomposition implements ProcResults {
 
     FractionalAirline model;
 
-    private double[] parameters, score;
+    private DoubleSeq parameters, score;
     private MatrixType parametersCovariance;
 
     LikelihoodStatistics likelihood;
@@ -34,8 +34,8 @@ public class FractionalAirlineDecomposition implements ProcResults {
     public double[] getSa() {
         double[] sa = y.clone();
         if (s != null) {
-            for (int i = 0; i < sa.length; ++i) {
-                sa[i] -= s[i];
+            for (int j = 0; j < sa.length; ++j) {
+                sa[j] -= s[j];
             }
         }
         return sa;

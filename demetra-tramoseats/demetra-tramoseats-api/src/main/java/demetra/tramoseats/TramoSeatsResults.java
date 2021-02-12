@@ -20,7 +20,6 @@ import demetra.arima.SarimaModel;
 import demetra.processing.ProcessingLog;
 import demetra.sa.SeriesDecomposition;
 import demetra.seats.SeatsResults;
-import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.LinearModelEstimation;
 import java.util.List;
 import java.util.Map;

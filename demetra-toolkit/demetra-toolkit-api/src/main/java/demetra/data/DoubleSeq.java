@@ -756,11 +756,11 @@ public interface DoubleSeq extends BaseSeq {
     }
 
     default DoubleSeq log() {
-        return DoublesMath.log(this);
+        return fn(Math::log);
     }
 
     default DoubleSeq exp() {
-        return DoublesMath.exp(this);
+        return fn(Math::exp);
     }
 
     default boolean hasSameContentAs(DoubleSeq that) {

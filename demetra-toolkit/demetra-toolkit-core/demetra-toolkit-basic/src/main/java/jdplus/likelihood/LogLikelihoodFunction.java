@@ -100,35 +100,26 @@ public class LogLikelihoodFunction<T, L extends Likelihood> implements IFunction
         IFunctionDerivatives d = this.evaluate(parameters).derivatives();
         Matrix H = d.hessian();
         H.chs();
-        return new Point(this, parameters.toArray(), d.gradient().toArray(), H);
+        return new Point(this, parameters, d.gradient(), H);
     }
 
     @lombok.Value
     public static class Point<T, L extends Likelihood> {
 
         public static <T, L extends Likelihood> Point ofNegativeLogLikelihood(LogLikelihoodFunction<T, L> function,
-                double[] p, double[] grad, Matrix hessian) {
-            double[] score;
-            if (grad.length == 0) {
-                score = grad;
-            } else {
-                score = grad.clone();
-            }
-            for (int i = 0; i < score.length; ++i) {
-                score[i] = -score[i];
-            }
-            return new Point<>(function, p, score, hessian);
+                DoubleSeq p, DoubleSeq grad, Matrix hessian) {
+            return new Point<>(function, p, grad.fn(x->-x), hessian);
         }
 
         private LogLikelihoodFunction<T, L> function;
         /**
          * Parameters of the log-likelihood function at this point
          */
-        private double[] parameters;
+        private DoubleSeq parameters;
         /**
          * Score (or gradient) of the log-likelihood function at this point.
          */
-        private double[] score;
+        private DoubleSeq score;
 
         /**
          * Observed Information matrix at this point.

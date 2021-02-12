@@ -14,9 +14,8 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.regression;
+package demetra.timeseries;
 
-import demetra.timeseries.TsData;
 import java.util.function.Supplier;
 
 /**

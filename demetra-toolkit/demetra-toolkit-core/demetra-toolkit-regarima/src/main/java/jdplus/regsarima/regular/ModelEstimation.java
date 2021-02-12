@@ -147,14 +147,14 @@ public final class ModelEstimation {
         } else {
             this.fixedArimaParameters = arima.fixedConstraints();
             if (arima.getFixedParametersCount() == 0) {
-                this.arimaParameters = max.getParameters();
-                this.arimaScore = max.getScore();
+                this.arimaParameters = max.getParameters().toArray();
+                this.arimaScore = max.getScore().toArray();
                 this.arimaCovariance = max.asymptoticCovariance();
             } else {
                 // expand parameters, score, pcov;
                 this.arimaParameters = arima.parameters();
-                expand(max.getParameters(), fixedArimaParameters, this.arimaParameters);
-                this.arimaScore = expand(max.getScore(), fixedArimaParameters, Double.NaN);
+                expand(max.getParameters().toArray(), fixedArimaParameters, this.arimaParameters);
+                this.arimaScore = expand(max.getScore().toArray(), fixedArimaParameters, Double.NaN);
                 this.arimaCovariance = expand(max.asymptoticCovariance(), fixedArimaParameters);
             }
         }
