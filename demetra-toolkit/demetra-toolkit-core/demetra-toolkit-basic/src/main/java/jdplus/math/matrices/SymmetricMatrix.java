@@ -201,6 +201,17 @@ public class SymmetricMatrix {
             return I;
         }
     }
+    
+    /**
+     * Solve Sx =y using Cholesky decomposition
+     * @param S A symmetric matrix. On exit, it contains the cholesky factor
+     * @param y On entry y; on exit x
+     */
+    public void solve(final Matrix S, DataBlock y){
+        lcholesky(S);
+        LowerTriangularMatrix.solveLx(S, y);
+        LowerTriangularMatrix.solvexL(S, y);
+    }
 
     public Matrix XXt(final Matrix X) {
         int nr = X.getRowsCount();

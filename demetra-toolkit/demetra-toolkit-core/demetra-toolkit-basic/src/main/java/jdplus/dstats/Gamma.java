@@ -143,7 +143,11 @@ public class Gamma implements ContinuousDistribution {
 
     @Override
     public double random(RandomNumberGenerator rng) throws DStatException {
-        double a = alpha;
+        return random(rng, alpha, beta);
+    }
+    
+    public static double random(RandomNumberGenerator rng, double shape, double scale) {
+        double a = shape;
         double aa = -1.0, aaa = -1.0,
                 b = 0.0, c = 0.0, d = 0.0, e, r, s = 0.0, si = 0.0, ss = 0.0, q0 = 0.0,
                 q1 = 0.0416666664, q2 = 0.0208333723, q3 = 0.0079849875,
@@ -166,12 +170,12 @@ public class Gamma implements ContinuousDistribution {
                 if (p <= 1.0) {                       // Step 2. Case gds <= 1
                     gds = Math.exp(Math.log(p) / a);
                     if (Math.log(rng.nextDouble()) <= -gds) {
-                        return (gds * beta);
+                        return (gds * scale);
                     }
                 } else {                                // Step 3. Case gds > 1
                     gds = -Math.log((b - p) / a);
                     if (Math.log(rng.nextDouble()) <= ((a - 1.0) * Math.log(gds))) {
-                        return (gds * beta);
+                        return (gds * scale);
                     }
                 }
             }
@@ -191,11 +195,11 @@ public class Gamma implements ContinuousDistribution {
             x = s + 0.5 * t;
             gds = x * x;
             if (t >= 0.0) {
-                return (gds * beta);         // Immediate acceptance
+                return (gds * scale);         // Immediate acceptance
             }
             u = rng.nextDouble();                // Step 3. Uniform random number
             if (d * u <= t * t * t) {
-                return (gds * beta); // Squeeze acceptance
+                return (gds * scale); // Squeeze acceptance
             }
             if (a != aaa) {                           // Step 4. Set-up for hat case
                 r = 1.0 / a;
@@ -226,7 +230,7 @@ public class Gamma implements ContinuousDistribution {
                             * v + a5) * v + a4) * v + a3) * v + a2) * v + a1) * v;
                 }								  // Step 7. Quotient acceptance
                 if (Math.log(1.0 - u) <= q) {
-                    return (gds * beta);
+                    return (gds * scale);
                 }
             }
 
@@ -256,7 +260,7 @@ public class Gamma implements ContinuousDistribution {
                 }                    			  // Step 12. Hat acceptance
                 if (c * u * sign_u <= w * Math.exp(e - 0.5 * t * t)) {
                     x = s + 0.5 * t;
-                    return (x * x * beta);
+                    return (x * x * scale);
                 }
             }
         }
