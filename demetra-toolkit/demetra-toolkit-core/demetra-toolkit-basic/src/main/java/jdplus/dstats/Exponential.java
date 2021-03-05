@@ -25,14 +25,18 @@ import jdplus.random.RandomNumberGenerator;
  */
 public class Exponential implements ContinuousDistribution {
 
-    private final double lambda;
+    private final double scale;
 
-    public Exponential(double rate) {
-        this.lambda = rate;
+    public Exponential(double scale) {
+        this.scale = scale;
     }
 
     public double getRate() {
-        return lambda;
+        return 1 / scale;
+    }
+
+    public double getScale() {
+        return scale;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class Exponential implements ContinuousDistribution {
         if (x < 0.0) {
             return 0.0;
         }
-        return lambda * Math.exp(-x * lambda);
+        return Math.exp(-x / scale) / scale;
     }
 
     @Override
@@ -56,14 +60,14 @@ public class Exponential implements ContinuousDistribution {
     @Override
     public String getDescription() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Exponential with rate = ");
-        sb.append(lambda);
+        sb.append("Exponential with scale = ");
+        sb.append(scale);
         return sb.toString();
     }
 
     @Override
     public double getExpectation() throws DStatException {
-        return 1 / lambda;
+        return scale;
     }
 
     @Override
@@ -73,9 +77,9 @@ public class Exponential implements ContinuousDistribution {
         }
         switch (pt) {
             case Lower:
-                return 1.0 - Math.exp(-x * lambda);
+                return 1.0 - Math.exp(-x / scale);
             case Upper:
-                return Math.exp(-x * lambda);
+                return Math.exp(-x / scale);
             default:
                 return 0;
         }
@@ -91,9 +95,9 @@ public class Exponential implements ContinuousDistribution {
 
         switch (pt) {
             case Lower:
-                return -Math.log(1 - p) / lambda;
+                return -Math.log(1 - p) * scale;
             case Upper:
-                return -Math.log(p) / lambda;
+                return -Math.log(p) * scale;
             default:
                 return Double.NaN;
         }
@@ -101,7 +105,7 @@ public class Exponential implements ContinuousDistribution {
 
     @Override
     public double getVariance() throws DStatException {
-        return 1 / (lambda * lambda);
+        return scale * scale;
     }
 
     @Override
@@ -121,11 +125,11 @@ public class Exponential implements ContinuousDistribution {
 
     @Override
     public double random(RandomNumberGenerator rng) throws DStatException {
-        return random(rng, lambda);
+        return random(rng, scale);
     }
 
-    public static double random(RandomNumberGenerator rng, double lambda) {
-        return -Math.log(rng.nextDouble()) / lambda;
+    public static double random(RandomNumberGenerator rng, double scale) {
+        return - scale*Math.log(rng.nextDouble());
     }
 
 }

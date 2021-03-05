@@ -33,7 +33,7 @@ public class ExponentialTest {
 
     @Test
     public void testProb() {
-        Exponential E=new Exponential(5);
+        Exponential E=new Exponential(.2);
         double x=.123;
         double p =E.getProbability(x, ProbabilityType.Upper);
         double y=E.getProbabilityInverse(p, ProbabilityType.Upper);
@@ -44,7 +44,7 @@ public class ExponentialTest {
     }
 
     public static void main(String[] args){
-        Exponential E=new Exponential(.5);
+        Exponential E=new Exponential(2);
         MersenneTwister rng=MersenneTwister.fromSystemNanoTime();
         double[] z=new double[10000001];
         long t0=System.currentTimeMillis();

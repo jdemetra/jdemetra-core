@@ -40,10 +40,13 @@ public class BayesRegularizedRegressionTest {
             MatrixType ml = MatrixSerializer.read(file);
             DoubleSeq y=ml.column(0);
             Matrix X=Matrix.of(ml.extract(0,ml.getRowsCount(), 1, ml.getColumnsCount()-1));
+            new BayesRegularizedRegression(
+                    y, X,
+                    Model.GAUSSIAN, 0, Prior.HORSESHOE, 1000, 5000);
             long t0=System.currentTimeMillis();
             BayesRegularizedRegression reg=new BayesRegularizedRegression(
                     y, X,
-                    Model.GAUSSIAN, 0, Prior.LASSO, 10000, 50000);
+                    Model.GAUSSIAN, 0, Prior.HORSESHOE, 1000, 50000);
             long t1=System.currentTimeMillis();
             System.out.println(t1-t0);
             

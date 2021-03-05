@@ -147,6 +147,8 @@ public class Gamma implements ContinuousDistribution {
     }
     
     public static double random(RandomNumberGenerator rng, double shape, double scale) {
+        if (shape == 1)
+            return Exponential.random(rng, scale);
         double a = shape;
         double aa = -1.0, aaa = -1.0,
                 b = 0.0, c = 0.0, d = 0.0, e, r, s = 0.0, si = 0.0, ss = 0.0, q0 = 0.0,

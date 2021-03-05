@@ -93,14 +93,16 @@ public class BayesRegularizedRegression {
         this.prior = prior;
         this.burnin = burnin;
         this.nsamples = nsamples;
-        initialize();
+        n = y.length();
+        p = X.getColumnsCount();
         standardize();
+        initialize();
         int k = 0;
         while (k < nsamples) {
             samplingIteration();
             if (k >= burnin) {
                 // Store results
-                results.add(new Result(b.fn(DoubleSeq.of(xstd), (x, q) -> x * q), b0, tau2));
+                results.add(new Result(b.fn(DoubleSeq.of(xstd), (x, q) -> x / q), b0, tau2));
             }
             ++k;
         }
@@ -110,6 +112,9 @@ public class BayesRegularizedRegression {
         return Collections.unmodifiableList(results);
     }
 
+    /**
+     * standardize
+     */
     private void standardize() {
 
         xm = new double[p];
@@ -119,7 +124,7 @@ public class BayesRegularizedRegression {
         while (cols.hasNext()) {
             DataBlock col = cols.next();
             double mean = Moments.mean(col);
-            double std = Math.sqrt(Moments.variance(col, mean, true));
+            double std = Math.sqrt(Moments.variance(col, mean, false) * n);
             col.apply(a -> (a - mean) / std);
             xm[pos] = mean;
             xstd[pos++] = std;
@@ -128,8 +133,6 @@ public class BayesRegularizedRegression {
 
     private void initialize() {
         // Initial values
-        n = y.length();
-        p = X.getColumnsCount();
         ydiff = 0;
         b0 = 0;
         b = DataBlock.make(p);
@@ -171,7 +174,7 @@ public class BayesRegularizedRegression {
         if (model == Model.GAUSSIAN && mvnrue) {
             XtX = SymmetricMatrix.XtX(X);
             Xty = DataBlock.make(p);
-            Xty.product(X.columnsIterator(), y);
+            Xty.product(y, X.columnsIterator());
             precomputedXtX = true;
         }
     }
