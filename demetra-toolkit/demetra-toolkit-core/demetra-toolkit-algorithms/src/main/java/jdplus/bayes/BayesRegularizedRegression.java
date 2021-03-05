@@ -7,7 +7,6 @@ package jdplus.bayes;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.DoublesMath;
 import demetra.math.matrices.MatrixType;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +15,7 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.dstats.Exponential;
 import jdplus.dstats.Gamma;
+import jdplus.dstats.InverseGamma;
 import jdplus.dstats.InverseGaussian;
 import jdplus.dstats.Normal;
 import jdplus.dstats.internal.SpecialFunctions;
@@ -27,9 +27,8 @@ import jdplus.random.RandomNumberGenerator;
 import jdplus.stats.samples.Moments;
 
 /**
- * TODO See R package bayesreg
- * For the time being, I only implemented the linear regression (logistic will
- * be implemented later)
+ * TODO See R package bayesreg For the time being, I only implemented the linear
+ * regression (logistic will be implemented later)
  *
  * @author PALATEJ
  */
@@ -72,15 +71,16 @@ public class BayesRegularizedRegression {
     private boolean mvnrue, precomputedXtX;
     private Matrix XtX;
     private DataBlock Xty;
-    
+
     @lombok.Value
-    public static class Result{
+    public static class Result {
+
         DoubleSeq b;
         double b0;
         double tau2;
     }
-    
-    public static final List<Result> results=new ArrayList<>();
+
+    public static final List<Result> results = new ArrayList<>();
 
     private RandomNumberGenerator rng = MersenneTwister.fromSystemNanoTime();
 
@@ -100,18 +100,18 @@ public class BayesRegularizedRegression {
             samplingIteration();
             if (k >= burnin) {
                 // Store results
-                results.add(new Result(b.fn(DoubleSeq.of(xstd), (x,q)->x*q),b0,tau2));
+                results.add(new Result(b.fn(DoubleSeq.of(xstd), (x, q) -> x * q), b0, tau2));
             }
             ++k;
         }
     }
-    
-    public List<Result> results(){
+
+    public List<Result> results() {
         return Collections.unmodifiableList(results);
     }
 
     private void standardize() {
-        
+
         xm = new double[p];
         xstd = new double[p];
         int pos = 0;
@@ -245,8 +245,8 @@ public class BayesRegularizedRegression {
 
     private void sampleSigma2() {
         double shape = (n + p) / 2.0;
-        double scale = e.fastOp(omega2, (q, w) -> q * q / w).sum() / 2 + b.fastOp(lambda2, (q, l) -> q * q / l).sum() / (tau2 * 2);
-        sigma2 = 1 / Gamma.random(rng, shape, 1/scale);
+        double scale = (e.fastOp(omega2, (q, w) -> q * q / w).sum() + b.fastOp(lambda2, (q, l) -> q * q / l).sum() / tau2) / 2;
+        sigma2 = InverseGamma.random(rng, shape, scale);
         muSigma2 = scale / (shape - 1);
     }
 
@@ -275,15 +275,15 @@ public class BayesRegularizedRegression {
             case RIDGE: {
                 double shape = (p + 1) * .5;
                 double scale = 1 / xi + b.fastOp(lambda2, (q, l) -> q * q / l).sum() / (2 * sigma2);
-                tau2 = 1 / Gamma.random(rng, shape, 1 / scale);
+                tau2 = InverseGamma.random(rng, shape, scale);
                 scale = 1 + 1 / tau2;
-                xi = scale / Exponential.random(rng, 1);
+                xi = InverseGamma.random(rng, 1, scale);
             }
             break;
             case LASSO: {
-                double shape = p * .5 + 1;
+                double shape = (p + 1) * .5;
                 double scale = 1 + b.fastOp(lambda2, (q, l) -> q * q / l).sum() / (2 * sigma2);
-                tau2 = 1 / Gamma.random(rng, shape, 1 / scale);
+                tau2 = InverseGamma.random(rng, shape, scale);
             }
         }
     }
@@ -389,30 +389,30 @@ public class BayesRegularizedRegression {
     }
 
     private void rue_nongaussian(Matrix X0, DoubleSeq alpha, DoubleSeq Lambda, double sigma2, DoubleSeq omega) {
-        Matrix S=SymmetricMatrix.XtX(X0);
-        S.diagonal().add(Lambda.fastOp(q->1/q));
-        DataBlock y=DataBlock.of(alpha.fastOp(omega, (q,r)->q/r));
+        Matrix S = SymmetricMatrix.XtX(X0);
+        S.diagonal().add(Lambda.fastOp(q -> 1 / q));
+        DataBlock y = DataBlock.of(alpha.fastOp(omega, (q, r) -> q / r));
         SymmetricMatrix.solve(S, y);
         // b.mu=y
-        DataBlock w=DataBlock.of(p, i->Normal.random(rng, 0, 1));
+        DataBlock w = DataBlock.of(p, i -> Normal.random(rng, 0, 1));
         LowerTriangularMatrix.solvexL(S, w);
         b.copy(y);
         b.add(w);
     }
 
     private void rue_gaussian(Matrix X, DoubleSeq alpha, DoubleSeq Lambda, Matrix XtX, DataBlock Xty, double sigma2) {
-        Matrix S=XtX;
-        if (XtX == null){
-         S=SymmetricMatrix.XtX(X);
+        Matrix S = XtX;
+        if (XtX == null) {
+            S = SymmetricMatrix.XtX(X);
         }
-        S=S.dividedBy(sigma2);
-        S.diagonal().add(Lambda.fastOp(q->1/q));
-        
-        DataBlock y=Xty.deepClone();
+        S = S.dividedBy(sigma2);
+        S.diagonal().add(Lambda.fastOp(q -> 1 / q));
+
+        DataBlock y = Xty.deepClone();
         y.div(sigma2);
         SymmetricMatrix.solve(S, y);
         // b.mu=y
-        DataBlock w=DataBlock.of(p, i->Normal.random(rng, 0, 1));
+        DataBlock w = DataBlock.of(p, i -> Normal.random(rng, 0, 1));
         LowerTriangularMatrix.solvexL(S, w);
         b.copy(y);
         b.add(w);

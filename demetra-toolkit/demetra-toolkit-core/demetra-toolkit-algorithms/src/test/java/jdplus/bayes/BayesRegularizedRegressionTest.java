@@ -18,10 +18,8 @@ import java.util.stream.DoubleStream;
 import jdplus.bayes.BayesRegularizedRegression.Model;
 import jdplus.bayes.BayesRegularizedRegression.Prior;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.MatrixFactory;
 import jdplus.stats.samples.Moments;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -41,11 +39,11 @@ public class BayesRegularizedRegressionTest {
             File file = copyToTempFile(Data.class.getResource("/ml.txt"));
             MatrixType ml = MatrixSerializer.read(file);
             DoubleSeq y=ml.column(0);
-            Matrix X=Matrix.of(ml.extract(0, ml.getRowsCount(), 1, ml.getColumnsCount()-1));
+            Matrix X=Matrix.of(ml.extract(0,ml.getRowsCount(), 1, ml.getColumnsCount()-1));
             long t0=System.currentTimeMillis();
             BayesRegularizedRegression reg=new BayesRegularizedRegression(
                     y, X,
-                    Model.GAUSSIAN, 0, Prior.HORSESHOE, 1000, 10000);
+                    Model.GAUSSIAN, 0, Prior.LASSO, 10000, 50000);
             long t1=System.currentTimeMillis();
             System.out.println(t1-t0);
             

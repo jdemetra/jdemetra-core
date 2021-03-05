@@ -140,4 +140,7 @@ public class InverseGamma implements ContinuousDistribution {
         return 1 / z;
     }
 
+    public static double random(RandomNumberGenerator rng, double shape, double scale) {
+        return 1/Gamma.random(rng, shape, 1/scale);
+    }
 }
