@@ -26,7 +26,7 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class ArimaMapping {
+public class ArimaSpecMapping {
 
     public static final String MEAN = "mean", MU = "mu",
             THETA = "theta", D = "d", PHI = "phi",

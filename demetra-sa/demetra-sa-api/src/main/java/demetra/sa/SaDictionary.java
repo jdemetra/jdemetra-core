@@ -25,10 +25,6 @@ import nbbrd.design.Development;
 @lombok.experimental.UtilityClass
 public final class SaDictionary  {
     
-    /**
-     * Specific attributes
-     */
-    public final String REGEFFECT = "regeffect";
     
     /**
      * Subdivision of a SA processing

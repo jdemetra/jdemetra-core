@@ -108,44 +108,44 @@ public class XmlUserVariable
         this.effect = value;
     }
 
-    // For compatiility with existing specifications
-    public static class LegacyAdapter extends XmlAdapter<XmlUserVariable, TsContextVariable> {
-
-        @Override
-        public TsContextVariable unmarshal(XmlUserVariable v){
-            TsContextVariable.Builder builder = TsContextVariable.builder().name(v.variable);
-            if (v.effect != null) {
-                builder.attribute(v.effect);
-            }
-            if (v.modifier != null) {
-                if (v.modifier.size() == 1 && v.modifier.get(0) instanceof XmlLags) {
-                    XmlLags lv = (XmlLags) v.modifier.get(0);
-                    builder=builder.firstLag(lv.FirstLag).lastLag(lv.LastLag);
-                }
-            }
-            return builder.build();
-        }
-
-        @Override
-        public XmlUserVariable marshal(TsContextVariable v) {
-            XmlUserVariable xvar = new XmlUserVariable();
-            xvar.setVariable(v.getName());
-            xvar.setEffect(v.getAttributes().get(0));
-            if (v.getFirstLag() != 0 || v.getLastLag() != 0) {
-                XmlLags xl = new XmlLags();
-                xl.FirstLag = v.getFirstLag();
-                xl.LastLag = v.getLastLag();
-                xvar.getModifiers().add(xl);
-            }
-            return xvar;
-        }
-
-    }
-
-    private static final LegacyAdapter LEGACY_ADAPTER = new LegacyAdapter();
-
-    public static final LegacyAdapter getLegacyAdapter() {
-        return LEGACY_ADAPTER;
-    }
+//    // For compatiility with existing specifications
+//    public static class LegacyAdapter extends XmlAdapter<XmlUserVariable, TsContextVariable> {
+//
+//        @Override
+//        public TsContextVariable unmarshal(XmlUserVariable v){
+//            TsContextVariable.Builder builder = TsContextVariable.builder().name(v.variable);
+//            if (v.effect != null) {
+//                builder.attribute(v.effect);
+//            }
+//            if (v.modifier != null) {
+//                if (v.modifier.size() == 1 && v.modifier.get(0) instanceof XmlLags) {
+//                    XmlLags lv = (XmlLags) v.modifier.get(0);
+//                    builder=builder.firstLag(lv.FirstLag).lastLag(lv.LastLag);
+//                }
+//            }
+//            return builder.build();
+//        }
+//
+//        @Override
+//        public XmlUserVariable marshal(TsContextVariable v) {
+//            XmlUserVariable xvar = new XmlUserVariable();
+//            xvar.setVariable(v.getName());
+//            xvar.setEffect(v.getAttributes().get(0));
+//            if (v.getFirstLag() != 0 || v.getLastLag() != 0) {
+//                XmlLags xl = new XmlLags();
+//                xl.FirstLag = v.getFirstLag();
+//                xl.LastLag = v.getLastLag();
+//                xvar.getModifiers().add(xl);
+//            }
+//            return xvar;
+//        }
+//
+//    }
+//
+//    private static final LegacyAdapter LEGACY_ADAPTER = new LegacyAdapter();
+//
+//    public static final LegacyAdapter getLegacyAdapter() {
+//        return LEGACY_ADAPTER;
+//    }
     
 }

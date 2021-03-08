@@ -17,7 +17,7 @@
 package jdplus.x13.regarima;
 
 import demetra.sa.ComponentType;
-import demetra.sa.SaDictionary;
+import demetra.sa.SaVariable;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import demetra.timeseries.regression.Variable;
@@ -98,7 +98,7 @@ public class EasterDetectionModule implements IRegressionModule {
 
         for (int i = 0; i < n; ++i) {
             ModelDescription curDesc = ModelDescription.copyOf(refdesc);
-            curDesc.addVariable(Variable.variable("easter", easters[i]).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
+            curDesc.addVariable(Variable.variable("easter", easters[i]).addAttribute(SaVariable.REGEFFECT, ComponentType.CalendarEffect.name()));
             desc[i] = curDesc;
             est[i] = curDesc.estimate(processor);
         }

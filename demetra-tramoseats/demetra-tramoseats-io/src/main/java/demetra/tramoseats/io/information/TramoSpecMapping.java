@@ -25,5 +25,17 @@ import java.util.Map;
  */
 @lombok.experimental.UtilityClass
 public class TramoSpecMapping {
+    public static final String TRANSFORM = "transform",
+            AUTOMDL = "automdl", ARIMA = "arima",
+            REGRESSION = "regression", OUTLIER = "outlier", ESTIMATE = "esimate";
+
+    public static void fillDictionary(String prefix, Map<String, Class> dic) {
+        EstimateSpecMapping.fillDictionary(InformationSet.item(prefix, ESTIMATE), dic);
+        TransformSpecMapping.fillDictionary(InformationSet.item(prefix, TRANSFORM), dic);
+        AutoModelSpecMapping.fillDictionary(InformationSet.item(prefix, AUTOMDL), dic);
+        ArimaSpecMapping.fillDictionary(InformationSet.item(prefix, ARIMA), dic);
+        OutlierSpecMapping.fillDictionary(InformationSet.item(prefix, OUTLIER), dic);
+        RegressionSpecMapping.fillDictionary(InformationSet.item(prefix, REGRESSION), dic);
+    }
 
 }

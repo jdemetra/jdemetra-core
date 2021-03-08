@@ -17,12 +17,14 @@
 package demetra.tramo;
 
 import demetra.data.Parameter;
+import demetra.sa.SaVariable;
 import nbbrd.design.Development;
 import nbbrd.design.LombokWorkaround;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TsContextVariable;
+import demetra.timeseries.regression.Variable;
 import demetra.util.Validatable;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,13 +44,13 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
     @lombok.Singular
     private List<IOutlier> outliers;
     @lombok.Singular
-    private List<Ramp> ramps;
+    private List< Variable<Ramp> > ramps;
     @lombok.Singular
-    private List<InterventionVariable> interventionVariables;
+    private List< Variable<InterventionVariable> > interventionVariables;
     @lombok.Singular
-    private List<TsContextVariable> userDefinedVariables;
+    private List< Variable<TsContextVariable> > userDefinedVariables;
 
-    // the maps with the coefficients use short names...
+    // the maps with the coefficients use either the short names or the given names (SaVariable)...
     @lombok.Singular
     private Map<String, Parameter[]> coefficients;
 

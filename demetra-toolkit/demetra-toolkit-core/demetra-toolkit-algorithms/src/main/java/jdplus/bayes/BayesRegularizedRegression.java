@@ -11,6 +11,8 @@ import demetra.math.matrices.MatrixType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import jdplus.bayes.BayesRegularizedRegressionModel.ModelType;
+import jdplus.bayes.BayesRegularizedRegressionModel.Prior;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.dstats.Exponential;
@@ -34,20 +36,9 @@ import jdplus.stats.samples.Moments;
  */
 public class BayesRegularizedRegression {
 
-    public static enum Model {
-        GAUSSIAN, LAPLACE, T;
-    }
-
-    public static enum Prior {
-        RIDGE,
-        LASSO,
-        HORSESHOE,
-        HORSESHOEPLUS
-    }
-
     private final DataBlock y;
     private final Matrix X;
-    private final Model model;
+    private final ModelType model;
     private final Prior prior;
     private final int burnin, nsamples;
     private final int tdf;
@@ -84,7 +75,7 @@ public class BayesRegularizedRegression {
 
     private RandomNumberGenerator rng = MersenneTwister.fromSystemNanoTime();
 
-    public BayesRegularizedRegression(final DoubleSeq y, final MatrixType X, final Model model, final int tdf, final Prior prior,
+    public BayesRegularizedRegression(final DoubleSeq y, final MatrixType X, final ModelType model, final int tdf, final Prior prior,
             final int burnin, final int nsamples) {
         this.y = DataBlock.of(y);
         this.X = Matrix.of(X);
@@ -116,7 +107,6 @@ public class BayesRegularizedRegression {
      * standardize
      */
     private void standardize() {
-
         xm = new double[p];
         xstd = new double[p];
         int pos = 0;
@@ -140,7 +130,7 @@ public class BayesRegularizedRegression {
         omega2.set(1);
         sigma2 = 1;
         tau2 = 1;
-        xi = 1;
+        xi = 0.001;
         lambda2 = DataBlock.make(p);
         lambda2.set(1);
         nu = DataBlock.make(p);
@@ -171,7 +161,7 @@ public class BayesRegularizedRegression {
         XtX = null;
         Xty = null;
 
-        if (model == Model.GAUSSIAN && mvnrue) {
+        if (model == ModelType.GAUSSIAN && mvnrue) {
             XtX = SymmetricMatrix.XtX(X);
             Xty = DataBlock.make(p);
             Xty.product(y, X.columnsIterator());

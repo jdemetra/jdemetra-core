@@ -21,6 +21,7 @@ import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TsContextVariable;
+import demetra.timeseries.regression.Variable;
 import demetra.toolkit.io.xml.legacy.regression.XmlInterventionVariable;
 import demetra.toolkit.io.xml.legacy.regression.XmlOutlier;
 import demetra.toolkit.io.xml.legacy.regression.XmlRamp;
@@ -74,40 +75,40 @@ public class XmlRegressionSpec
                 }
             }
         }
-        if (v.getRampsCount() > 0) {
-            List<Ramp> ramps = v.getRamps();
-            for (Ramp ramp : ramps) {
-                XmlRegressionVariable xvar = XmlRamp.getAdapter().marshal(ramp);
-                if (xvar != null) {
-                    XmlRegressionItem xcur = new XmlRegressionItem();
-                    xcur.setVariable(xvar);
-                    xml.variables.getItems().add(xcur);
-                }
-            }
-        }
-        if (v.getInterventionVariablesCount() > 0) {
-            List<InterventionVariable> interventionVariables = v.getInterventionVariables();
-            for (InterventionVariable iv : interventionVariables) {
-                XmlRegressionVariable xvar = XmlInterventionVariable.getAdapter().marshal(iv);
-                if (xvar != null) {
-                    XmlRegressionItem xcur = new XmlRegressionItem();
-                    xcur.setVariable(xvar);
-                    xml.variables.getItems().add(xcur);
-                }
-            }
-        }
-        if (v.getUserDefinedVariablesCount() > 0) {
-            List<TsContextVariable> userDefinedVariables = v.getUserDefinedVariables();
-            for (TsContextVariable uv : userDefinedVariables) {
-                XmlUserVariable xvar = XmlUserVariable.getLegacyAdapter().marshal(uv);
-                if (xvar != null) {
-                    XmlRegressionItem xcur = new XmlRegressionItem();
-                    xcur.setVariable(xvar);
-                    xml.variables.getItems().add(xcur);
-                }
-            }
-
-        }
+//        if (v.getRampsCount() > 0) {
+//            List<Variable<Ramp>> ramps = v.getRamps();
+//            for (Variable<Ramp> ramp : ramps) {
+//                XmlRegressionVariable xvar = XmlRamp.getAdapter().marshal(ramp);
+//                if (xvar != null) {
+//                    XmlRegressionItem xcur = new XmlRegressionItem();
+//                    xcur.setVariable(xvar);
+//                    xml.variables.getItems().add(xcur);
+//                }
+//            }
+//        }
+//        if (v.getInterventionVariablesCount() > 0) {
+//            List<Variable<InterventionVariable>> interventionVariables = v.getInterventionVariables();
+//            for (InterventionVariable iv : interventionVariables) {
+//                XmlRegressionVariable xvar = XmlInterventionVariable.getAdapter().marshal(iv);
+//                if (xvar != null) {
+//                    XmlRegressionItem xcur = new XmlRegressionItem();
+//                    xcur.setVariable(xvar);
+//                    xml.variables.getItems().add(xcur);
+//                }
+//            }
+//        }
+//        if (v.getUserDefinedVariablesCount() > 0) {
+//            List<TsContextVariable> userDefinedVariables = v.getUserDefinedVariables();
+//            for (TsContextVariable uv : userDefinedVariables) {
+//                XmlUserVariable xvar = XmlUserVariable.getLegacyAdapter().marshal(uv);
+//                if (xvar != null) {
+//                    XmlRegressionItem xcur = new XmlRegressionItem();
+//                    xcur.setVariable(xvar);
+//                    xml.variables.getItems().add(xcur);
+//                }
+//            }
+//
+//        }
         return xml;
     }
 
@@ -120,15 +121,15 @@ public class XmlRegressionSpec
             if (cur instanceof XmlOutlier) {
                 IOutlier outlier = XmlOutlier.unmarshal((XmlOutlier) cur);
                 builder = builder.outlier(outlier);
-            } else if (cur instanceof XmlRamp) {
-                Ramp ramp = XmlRamp.getAdapter().unmarshal((XmlRamp) cur);
-                builder = builder.ramp(ramp);
-            } else if (cur instanceof XmlInterventionVariable) {
-                InterventionVariable ivar = XmlInterventionVariable.getAdapter().unmarshal((XmlInterventionVariable) cur);
-                builder = builder.interventionVariable(ivar);
-            } else if (cur instanceof XmlUserVariable) {
-                TsContextVariable tcv = XmlUserVariable.getLegacyAdapter().unmarshal((XmlUserVariable) cur);
-                builder = builder.userDefinedVariable(tcv);
+//            } else if (cur instanceof XmlRamp) {
+//                Ramp ramp = XmlRamp.getAdapter().unmarshal((XmlRamp) cur);
+//                builder = builder.ramp(ramp);
+//            } else if (cur instanceof XmlInterventionVariable) {
+//                InterventionVariable ivar = XmlInterventionVariable.getAdapter().unmarshal((XmlInterventionVariable) cur);
+//                builder = builder.interventionVariable(ivar);
+//            } else if (cur instanceof XmlUserVariable) {
+//                TsContextVariable tcv = XmlUserVariable.getLegacyAdapter().unmarshal((XmlUserVariable) cur);
+//                builder = builder.userDefinedVariable(tcv);
             }
         }
         return builder;

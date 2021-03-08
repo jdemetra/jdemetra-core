@@ -26,6 +26,7 @@ import java.util.Map;
  *
  * @author PALATEJ
  */
+@lombok.experimental.UtilityClass
 public class TransformSpecMapping {
 
     public final String SPAN = "span",

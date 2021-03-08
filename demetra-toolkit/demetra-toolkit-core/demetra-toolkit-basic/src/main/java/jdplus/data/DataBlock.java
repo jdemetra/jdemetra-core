@@ -67,6 +67,27 @@ public final class DataBlock implements DoubleSeq.Mutable {
     }
 
     /**
+     * Creates a data block of a given length. The buffer is created internally
+     * and initialized with the given value
+     *
+     * @param n The number of elements
+     * @param val The initial value
+     * @return
+     */
+    public static DataBlock make(@NonNegative int n, double val) {
+        if (n == 0) {
+            return EMPTY;
+        }
+        double[] data = new double[n];
+        if (val != 0) {
+            for (int i = 0; i < n; ++i) {
+                data[i] = val;
+            }
+        }
+        return new DataBlock(data, 0, n, 1);
+    }
+
+    /**
      * Envelope around an array of doubles.
      *
      * @param data The array of doubles. the data are not copied (they might be
@@ -134,6 +155,14 @@ public final class DataBlock implements DoubleSeq.Mutable {
         return new DataBlock(x, 0, x.length, 1);
     }
 
+    public static DataBlock of(int n, @NonNull DoubleSupplier fn) {
+        double[] x = new double[n];
+        for (int i = 0; i < n; ++i) {
+            x[i] = fn.getAsDouble();
+        }
+        return new DataBlock(x, 0, x.length, 1);
+    }
+    
     public static DataBlock of(int n, @NonNull IntToDoubleFunction fn) {
         double[] x = new double[n];
         for (int i = 0; i < n; ++i) {

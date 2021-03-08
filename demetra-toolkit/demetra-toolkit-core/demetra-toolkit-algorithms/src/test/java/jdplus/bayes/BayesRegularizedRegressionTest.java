@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.DoubleStream;
-import jdplus.bayes.BayesRegularizedRegression.Model;
-import jdplus.bayes.BayesRegularizedRegression.Prior;
+import jdplus.bayes.BayesRegularizedRegressionModel.ModelType;
+import jdplus.bayes.BayesRegularizedRegressionModel.Prior;
 import jdplus.math.matrices.Matrix;
 import jdplus.stats.samples.Moments;
 import org.junit.Test;
@@ -42,11 +42,11 @@ public class BayesRegularizedRegressionTest {
             Matrix X=Matrix.of(ml.extract(0,ml.getRowsCount(), 1, ml.getColumnsCount()-1));
             new BayesRegularizedRegression(
                     y, X,
-                    Model.GAUSSIAN, 0, Prior.HORSESHOE, 1000, 5000);
+                    ModelType.GAUSSIAN, 0, Prior.HORSESHOE, 1000, 5000);
             long t0=System.currentTimeMillis();
             BayesRegularizedRegression reg=new BayesRegularizedRegression(
                     y, X,
-                    Model.GAUSSIAN, 0, Prior.HORSESHOE, 1000, 50000);
+                    ModelType.GAUSSIAN, 0, Prior.HORSESHOE, 1000, 50000);
             long t1=System.currentTimeMillis();
             System.out.println(t1-t0);
             

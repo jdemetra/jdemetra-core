@@ -56,16 +56,19 @@ import jdplus.modelling.regression.TransitoryChangeFactory;
 import demetra.timeseries.regression.UserTradingDays;
 import demetra.arima.SarimaSpec;
 import demetra.sa.ComponentType;
-import demetra.sa.SaDictionary;
+import demetra.sa.SaVariable;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.GenericTradingDays;
+import demetra.timeseries.regression.InterventionVariable;
+import demetra.timeseries.regression.Ramp;
+import demetra.timeseries.regression.TsContextVariable;
 import demetra.tramo.CalendarSpec;
 import demetra.tramo.EasterSpec;
 import demetra.tramo.RegressionSpec;
 import demetra.tramo.TradingDaysSpec;
 import demetra.tramo.TramoSpec;
 import demetra.tramo.TransformSpec;
-import jdplus.data.OldParameter;
+import java.util.List;
 import jdplus.regarima.ami.Utility;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -117,18 +120,10 @@ class TramoModelBuilder implements IModelBuilder {
         model.setMean(regSpec.isMean());
         Map<String, Parameter[]> coefficients = regSpec.getCoefficients();
         initializeCalendar(model, regSpec.getCalendar(), coefficients);
-        if (regSpec.getOutliers().size() > 0) {
-            initializeOutliers(model, regSpec.getOutliers().toArray(new IOutlier[0]), coefficients);
-        }
-//        if (regSpec.getUserDefinedVariablesCount() > 0) {
-//            initializeUsers(model, regSpec.getUserDefinedVariables(), coefficients);
-//        }
-//        if (regSpec.getInterventionVariablesCount() > 0) {
-//            initializeInterventions(model, regSpec.getInterventionVariables(), coefficients);
-//        }
-//        if (regSpec.getRampsCount() > 0) {
-//            initializeRamps(model, regSpec.getRamps(), coefficients);
-//        }
+        initializeOutliers(model, regSpec.getOutliers(), coefficients);
+        initializeUsers(model, regSpec.getUserDefinedVariables());
+        initializeInterventions(model, regSpec.getInterventionVariables());
+        initializeRamps(model, regSpec.getRamps());
     }
 
     @Override
@@ -182,13 +177,13 @@ class TramoModelBuilder implements IModelBuilder {
         add(model, easter(spec), "easter", ComponentType.CalendarEffect, coefficients);
     }
 
-    private void initializeOutliers(ModelDescription model, IOutlier[] outliers, Map<String, Parameter[]> coefficients) {
+    private void initializeOutliers(ModelDescription model, List<IOutlier> outliers, Map<String, Parameter[]> coefficients) {
         int freq = model.getAnnualFrequency();
         TransitoryChangeFactory tc = new TransitoryChangeFactory(spec.getOutliers().getDeltaTC());
         PeriodicOutlierFactory so = new PeriodicOutlierFactory(freq, false);
-        for (int i = 0; i < outliers.length; ++i) {
-            String code = outliers[i].getCode();
-            LocalDateTime pos = outliers[i].getPosition();
+        for (IOutlier cur : outliers) {
+            String code = cur.getCode();
+            LocalDateTime pos = cur.getPosition();
             IOutlier v;
             ComponentType cmp = ComponentType.Undefined;
             switch (code) {
@@ -219,64 +214,33 @@ class TramoModelBuilder implements IModelBuilder {
                         .core(v)
                         .coefficients(c)
                         .attribute(Utility.PRESPECIFIED, "true")
-                        .attribute(SaDictionary.REGEFFECT, cmp.name())
+                        .attribute(SaVariable.REGEFFECT, cmp.name())
                         .build();
                 model.addVariable(var);
             }
         }
     }
 
-//    private void initializeUsers(ModelDescription model, TsVariableDescriptor[] uvars, Map<String, double[]> coefficients) {
-//        if (uvars == null) {
-//            return;
-//        }
-//        for (int i = 0; i < uvars.length; ++i) {
-//            ITsVariable var = uvars[i].toTsVariable(context);
-//            String sname = ITsVariable.shortName(var.getName());
-//            if (coefficients.containsKey(sname)) {
-//                PreadjustmentVariable pv = PreadjustmentVariable.userVariable(var, uvars[i].getEffect().type(), coefficients.get(sname));
-//                model.addPreadjustment(pv);
-//            } else {
-//                Variable uvar = Variable.userVariable(var, uvars[i].getEffect().type(), RegStatus.Prespecified);
-//                model.addVariable(uvar);
-//            }
-//        }
-//    }
-//
-//    private void initializeInterventions(ModelDescription model, InterventionVariable[] interventionVariables, Map<String, double[]> coefficients) {
-//        if (interventionVariables == null) {
-//            return;
-//        }
-//        for (int i = 0; i < interventionVariables.length; ++i) {
-//            InterventionVariable var = interventionVariables[i];
-//            String sname = ITsVariable.shortName(var.getName());
-//            if (coefficients.containsKey(sname)) {
-//                PreadjustmentVariable pv = PreadjustmentVariable.userVariable(var, Variable.searchType(var), coefficients.get(sname));
-//                model.addPreadjustment(pv);
-//            } else {
-//                Variable uvar = Variable.userVariable(var, Variable.searchType(var), RegStatus.Prespecified);
-//                model.addVariable(uvar);
-//            }
-//        }
-//    }
-//
-//    private void initializeRamps(ModelDescription model, Ramp[] ramps, Map<String, double[]> coefficients) {
-//        if (ramps == null) {
-//            return;
-//        }
-//        for (int i = 0; i < ramps.length; ++i) {
-//            Ramp var = ramps[i];
-//            String sname = ITsVariable.shortName(var.getName());
-//            if (coefficients.containsKey(sname)) {
-//                PreadjustmentVariable pv = PreadjustmentVariable.userVariable(var, ComponentType.Trend, coefficients.get(sname));
-//                model.addPreadjustment(pv);
-//            } else {
-//                Variable uvar = Variable.userVariable(var, ComponentType.Trend, RegStatus.Prespecified);
-//                model.addVariable(uvar);
-//            }
-//        }
-//    }
-//
+    private void initializeUsers(ModelDescription model, List< Variable<TsContextVariable>> uvars) {
+        for (Variable<TsContextVariable> user : uvars) {
+            String name = user.getName();
+            ITsVariable var=user.getCore().instantiateFrom(context, name);
+            model.addVariable(user.withCore(var));
+        }
+    }
+
+    private void initializeInterventions(ModelDescription model, List<Variable<InterventionVariable>> interventionVariables) {
+        for (Variable<InterventionVariable> iv : interventionVariables) {
+            model.addVariable(iv);
+        }
+    }
+
+    private void initializeRamps(ModelDescription model, List<Variable<Ramp>> ramps) {
+        for (Variable<Ramp> r : ramps) {
+            model.addVariable(r);
+        }
+    }
+
     private void initializeHolidays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> coefficients) {
         add(model, holidays(td, context), "td", ComponentType.CalendarEffect, coefficients);
         add(model, leapYear(td), "lp", ComponentType.CalendarEffect, coefficients);
@@ -305,7 +269,7 @@ class TramoModelBuilder implements IModelBuilder {
                 .name(name)
                 .core(v)
                 .coefficients(c)
-                .attribute(SaDictionary.REGEFFECT, cmp.name())
+                .attribute(SaVariable.REGEFFECT, cmp.name())
                 .attribute(Utility.PRESPECIFIED, "true")
                 .build();
         model.addVariable(var);

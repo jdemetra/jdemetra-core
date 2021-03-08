@@ -5,9 +5,8 @@
  */
 package jdplus.bayes;
 
-import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
-import java.util.List;
+import demetra.data.DoubleSeq;
 
 /**
  *
@@ -16,6 +15,7 @@ import java.util.List;
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder")
 public class BayesRegularizedRegressionModel {
+
     public static enum ModelType {
         GAUSSIAN, LAPLACE, T, BINOMIAL, POISSON, GEOMETRIC;
     }
@@ -26,13 +26,13 @@ public class BayesRegularizedRegressionModel {
         LASSO,
         HORSESHOE,
         HORSESHOEPLUS,
-        LOGT
+        LOGT;
     }
     
     public static enum Tau2Prior{
-        HS,
+        HC,
         SB,
-        UNIFORM
+        UNIFORM;
     }
     
     @lombok.NonNull
@@ -43,13 +43,19 @@ public class BayesRegularizedRegressionModel {
     @lombok.NonNull
     ModelType model;
     
+    int tdof;
+    
     @lombok.NonNull
     Prior prior;
     
-    int tdof;
-    
+    @lombok.NonNull
+    Tau2Prior tau2Prior;
+
+    /**
+     * Positions of the categorical variables
+     */
     int[] categoricalVariables;
-    @lombok.Singular
-    List<int[]> groups;
+    
+    
 
 }

@@ -141,18 +141,14 @@ public class RegArimaProtosUtility {
 
     public RegArimaProtos.Variable convert(TsContextVariable v) {
         return RegArimaProtos.Variable.newBuilder()
-                .setName(v.getName())
+                .setName(v.getId())
                 .setFirstLag(v.getFirstLag())
                 .setLastLag(v.getLastLag())
                 .build();
     }
 
     public TsContextVariable convert(RegArimaProtos.Variable v) {
-        return TsContextVariable.builder()
-                .name(v.getName())
-                .firstLag(v.getFirstLag())
-                .lastLag(v.getLastLag())
-                .build();
+        return new TsContextVariable(v.getName(), v.getFirstLag(), v.getLastLag());
     }
 
     public RegArimaProtos.Ramp convert(Ramp v) {

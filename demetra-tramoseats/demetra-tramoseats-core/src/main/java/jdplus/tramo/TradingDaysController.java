@@ -18,7 +18,7 @@ import demetra.timeseries.regression.ITradingDaysVariable;
 import jdplus.modelling.regression.Regression;
 import demetra.data.DoubleSeq;
 import demetra.sa.ComponentType;
-import demetra.sa.SaDictionary;
+import demetra.sa.SaVariable;
 import jdplus.math.matrices.Matrix;
 import jdplus.regarima.ami.Utility;
 
@@ -98,7 +98,7 @@ class TradingDaysController extends ModelController {
     private ModelDescription newModel(RegSarimaModelling context) {
         ModelDescription ndesc = ModelDescription.copyOf(context.getDescription());
         ndesc.removeVariable(var -> Utility.isDaysRelated(var));
-        ndesc.addVariable(Variable.variable("td", td).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
+        ndesc.addVariable(Variable.variable("td", td).addAttribute(SaVariable.REGEFFECT, ComponentType.CalendarEffect.name()));
         return ndesc;
     }
 

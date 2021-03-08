@@ -17,10 +17,8 @@
 package demetra.timeseries.regression;
 
 import demetra.data.Parameter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import nbbrd.design.Development;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -28,17 +26,18 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  *
  * @author Jean Palate
+ * @param <V>
  */
 @Development(status = Development.Status.Release)
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder", toBuilder = true)
-public class Variable {
+public class Variable <V extends ITsVariable> {
 
     @lombok.NonNull
     private String name;
 
     @lombok.NonNull
-    private ITsVariable core;
+    private V core;
 
     private Parameter[] coefficients;
 
@@ -52,6 +51,10 @@ public class Variable {
 
     public boolean hasAttribute(String id) {
         return attributes.containsKey(id);
+    }
+
+    public String attribute(String id) {
+        return attributes.get(id);
     }
 
     public boolean isAttribute(String key, String value) {
@@ -127,6 +130,13 @@ public class Variable {
             throw new IllegalArgumentException();
         }
         return new Variable(name, core, coefficients, attributes);
+    }
+
+    public Variable withCore(ITsVariable ncore) {
+        if (coefficients != null && ncore.dim() != coefficients.length) {
+            throw new IllegalArgumentException();
+        }
+        return new Variable(name, ncore, coefficients, attributes);
     }
 
     public Variable addAttribute(String key, String value) {
