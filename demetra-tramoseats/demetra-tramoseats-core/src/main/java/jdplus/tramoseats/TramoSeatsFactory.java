@@ -39,10 +39,13 @@ import jdplus.seats.SeatsResults;
 import nbbrd.service.ServiceProvider;
 import demetra.sa.SaProcessingFactory;
 import demetra.timeseries.TsData;
+import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.regression.EasterVariable;
+import demetra.timeseries.regression.TrendConstant;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import jdplus.regarima.ami.Utility;
+import jdplus.regarima.ami.ModellingUtility;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnostics;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsFactory;
@@ -81,16 +84,16 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
                 );
         SaOutOfSampleDiagnosticsFactory<TramoSeatsResults> outofsample
                 = new SaOutOfSampleDiagnosticsFactory<>(OutOfSampleDiagnosticsConfiguration.DEFAULT,
-                        r->r.getPreprocessing().getModel());
+                        r -> r.getPreprocessing().getModel());
         SaResidualsDiagnosticsFactory<TramoSeatsResults> residuals
                 = new SaResidualsDiagnosticsFactory<>(ResidualsDiagnosticsConfiguration.DEFAULT,
-                        r->r.getPreprocessing());
+                        r -> r.getPreprocessing());
         SaOutliersDiagnosticsFactory<TramoSeatsResults> outliers
                 = new SaOutliersDiagnosticsFactory<>(OutliersDiagnosticsConfiguration.DEFAULT,
-                        r->r.getPreprocessing());
+                        r -> r.getPreprocessing());
         SeatsDiagnosticsFactory<TramoSeatsResults> seats
                 = new SeatsDiagnosticsFactory<>(SeatsDiagnosticsConfiguration.DEFAULT,
-                        r->r.getDecomposition());
+                        r -> r.getDecomposition());
         AdvancedResidualSeasonalityDiagnosticsFactory<TramoSeatsResults> advancedResidualSeasonality
                 = new AdvancedResidualSeasonalityDiagnosticsFactory<>(AdvancedResidualSeasonalityDiagnosticsConfiguration.DEFAULT,
                         (TramoSeatsResults r) -> {
@@ -109,7 +112,7 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
                             return new ResidualTradingDaysDiagnostics.Input(mul, sa, irr);
                         }
                 );
-        
+
         diagnostics.add(coherence);
         diagnostics.add(residuals);
         diagnostics.add(outofsample);
@@ -117,11 +120,11 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
         diagnostics.add(seats);
         diagnostics.add(advancedResidualSeasonality);
         diagnostics.add(residualTradingDays);
-        
+
     }
 
     @Override
-    public TramoSeatsSpec of(TramoSeatsSpec spec, TramoSeatsResults estimation) {
+    public TramoSeatsSpec generateSpec(TramoSeatsSpec spec, TramoSeatsResults estimation) {
         if (spec instanceof TramoSeatsSpec && estimation instanceof TramoSeatsResults) {
             TramoSeatsSpec espec = (TramoSeatsSpec) spec;
             TramoSeatsResults rslts = (TramoSeatsResults) estimation;
@@ -139,7 +142,7 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
     }
 
     @Override
-    public SaSpecification refreshSpecification(TramoSeatsSpec currentSpec, TramoSeatsSpec domainSpec, EstimationPolicy policy) {
+    public SaSpecification refreshSpec(TramoSeatsSpec currentSpec, TramoSeatsSpec domainSpec, EstimationPolicy policy) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -194,19 +197,13 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
         builder.autoModel(nami);
     }
 
-    private TramoSpec update(TramoSpec tramo, ModelEstimation rslts) {
-        TramoSpec.Builder builder = tramo.toBuilder();
-        update(tramo.getTransform(), rslts, builder);
-        AutoModelSpec ami = tramo.getAutoModel();
-        if (ami.isEnabled()) {
-            update(tramo.getArima(), rslts, builder);
-            update(ami, rslts, builder);
-        } else {
-            updateArima(rslts, builder);
-        }
-
-        update(tramo.getOutliers(), rslts, builder);
-        update(tramo.getRegression(), rslts, builder);
+    private TramoSpec update(TramoSpec regarima, ModelEstimation rslts) {
+        TramoSpec.Builder builder = regarima.toBuilder();
+        update(regarima.getTransform(), rslts, builder);
+        update(regarima.getArima(), rslts, builder);
+        update(regarima.getAutoModel(), rslts, builder);
+        update(regarima.getOutliers(), rslts, builder);
+        update(regarima.getRegression(), rslts, builder);
 
         return builder.build();
     }
@@ -224,65 +221,119 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
     }
 
     private void update(RegressionSpec regression, ModelEstimation rslts, TramoSpec.Builder builder) {
+        // The huge part
         RegressionSpec.Builder rbuilder = regression.toBuilder();
-        // fill all the coefficients (either estimated or fixed)
-        rbuilder.clearCoefficients();
+        // all the coefficients (fixed or free) of the variables have already been filled
         Variable[] variables = rslts.getVariables();
-        for (int i = 0; i < variables.length; ++i) {
-            rbuilder.coefficient(variables[i].getName(), variables[i].getCoefficients());
-        }
-        // add new outliers in the list of pre-specified outliers
-        Arrays.stream(variables).filter(v -> Utility.isOutlier(v, false)).forEach(v -> rbuilder.outlier((IOutlier) v.getCore()));
-        // calendar effects
-        EasterSpec espec = regression.getCalendar().getEaster();
-        TradingDaysSpec tdspec = regression.getCalendar().getTradingDays();
+        updateMean(variables, rbuilder);
+        update(regression.getCalendar(), variables, rbuilder);
+        updateOutliers(variables, rbuilder);
+        builder.regression(rbuilder.build());
+    }
 
-        if (tdspec.isUsed() && (tdspec.isTest() || tdspec.isAutomatic())) {
-            // leap year
-            ILengthOfPeriodVariable lp = null;
-            ITradingDaysVariable td = null;
-            Optional<Variable> flp = Arrays.stream(variables).filter(v -> Utility.isLengthOfPeriod(v)).findFirst();
-            if (flp.isPresent()) {
-                lp = (ILengthOfPeriodVariable) flp.get().getCore();
-            }
-            Optional<Variable> ftd = Arrays.stream(variables).filter(v -> Utility.isTradingDays(v)).findFirst();
-            if (ftd.isPresent()) {
-                td = (ITradingDaysVariable) ftd.get().getCore();
-            }
-            if (lp != null || td != null) {
-                if (tdspec.isStockTradingDays()) {
-                    int ntd = tdspec.getStockTradingDays();
-                    tdspec = TradingDaysSpec.stockTradingDays(ntd, RegressionTestType.None);
-                } else if (tdspec.isHolidays()) {
-                    tdspec = TradingDaysSpec.holidays(tdspec.getHolidays(),
-                            tdspec.getTradingDaysType(), tdspec.getLengthOfPeriodType(), RegressionTestType.None);
-                } else if (tdspec.isUserDefined()) {
-                    tdspec = TradingDaysSpec.userDefined(tdspec.getUserVariables(), RegressionTestType.None);
-                } else { //normal case
-                    tdspec = TradingDaysSpec.td(td.dim() == 6 ? TradingDaysType.TradingDays : TradingDaysType.WorkingDays,
-                            tdspec.getLengthOfPeriodType(), RegressionTestType.None);
+    private void updateMean(Variable[] vars, RegressionSpec.Builder builder) {
+        Optional<Variable> fc = Arrays.stream(vars)
+                .filter(v -> v.getName().equals(TrendConstant.NAME)).findFirst();
+        if (fc.isPresent()) {
+            builder.mean(fc.get().getCoefficient(0));
+        } else {
+            builder.mean(null);
+        }
+    }
+
+    private void updateOutliers(Variable[] vars, RegressionSpec.Builder builder) {
+        // we keep the information that it has been previously estimated automatically
+        Arrays.stream(vars)
+                .filter(v -> ModellingUtility.isOutlier(v))
+                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
+                .forEach(v -> builder.outlier(v.replaceAttribute(ModellingUtility.AMI, ModellingUtility.AMI_PREVIOUS, "tramo")));
+    }
+
+    private void update(CalendarSpec cspec, Variable[] variables, RegressionSpec.Builder builder) {
+        CalendarSpec.Builder cbuilder = CalendarSpec.builder();
+        update(cspec.getTradingDays(), variables, cbuilder);
+        update(cspec.getEaster(), variables, cbuilder);
+        builder.calendar(cbuilder.build());
+    }
+
+    private void update(TradingDaysSpec tdspec, Variable[] vars, CalendarSpec.Builder builder) {
+        // Nothing to do
+        if (!tdspec.isUsed() || !(tdspec.isTest() || tdspec.isAutomatic())) {
+            return;
+        }
+        // leap year
+        Optional<Variable> flp = Arrays.stream(vars)
+                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
+                .filter(v -> ModellingUtility.isLengthOfPeriod(v)).findFirst();
+        Optional<Variable> ftd = Arrays.stream(vars)
+                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
+                .filter(v -> ModellingUtility.isTradingDays(v)).findFirst();
+
+        TradingDaysSpec ntdspec = TradingDaysSpec.none();
+
+        LengthOfPeriodType lp = LengthOfPeriodType.None;
+        Parameter clp = null;
+        if (flp.isPresent()) {
+            Variable v = flp.get();
+            lp = tdspec.getLengthOfPeriodType();
+            clp = v.getCoefficient(0);
+        }
+        TradingDaysType td = TradingDaysType.None;
+        Parameter[] ctd = null;
+        if (ftd.isPresent()) {
+            Variable v = ftd.get();
+            if (tdspec.isAutomatic()) {
+                switch (v.getCore().dim()){
+                    case 1: 
+                        td=TradingDaysType.WorkingDays;
+                        break;
+                    case 6: 
+                        td=TradingDaysType.TradingDays;
+                        break;
                 }
             } else {
-                tdspec = TradingDaysSpec.none();
+                td = tdspec.getTradingDaysType();
             }
+            ctd = v.getCoefficients();
         }
 
-        if (espec.isUsed() && espec.isTest()) {
-            Optional<Variable> fe = Arrays.stream(variables).filter(v -> Utility.isEaster(v)).findFirst();
-            if (fe.isPresent()) {
-                espec = espec.toBuilder()
-                        .test(false)
-                        .build();
-            } else {
-                espec = EasterSpec.none();
+        if (ftd.isPresent() || flp.isPresent()) {
+            if (tdspec.isStockTradingDays()) {
+                int ntd = tdspec.getStockTradingDays();
+                ntdspec = TradingDaysSpec.stockTradingDays(ntd, ctd);
+            } else if (tdspec.isHolidays()) {
+                ntdspec = TradingDaysSpec.holidays(tdspec.getHolidays(),
+                        td, lp, ctd, clp);
+            } else if (tdspec.isUserDefined()) {
+                ntdspec = TradingDaysSpec.userDefined(tdspec.getUserVariables(), ctd);
+            } else { //normal case
+                ntdspec = TradingDaysSpec.td(td, lp, ctd, clp);
             }
         }
-        rbuilder.calendar(
-                CalendarSpec.builder()
-                        .tradingDays(tdspec)
-                        .easter(espec)
-                        .build());
-        builder.regression(rbuilder.build());
+        builder.tradingDays(ntdspec);
+    }
+
+    private void update(EasterSpec espec, Variable[] vars, CalendarSpec.Builder builder) {
+        // Nothing to do
+        if (!espec.isUsed() || !espec.isTest()) {
+            return;
+        }
+        // Search for an optional easter variable
+        Optional<Variable> fe = Arrays.stream(vars)
+                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
+                .filter(v -> ModellingUtility.isEaster(v)).findFirst();
+        if (fe.isPresent()) {
+            Variable ev = fe.get();
+            EasterVariable evar = (EasterVariable) ev.getCore();
+            espec = espec.toBuilder()
+                    .test(false)
+                    .duration(evar.getDuration())
+                    .coefficient(ev.getCoefficient(0))
+                    .build();
+        } else {
+            espec = EasterSpec.none();
+        }
+        builder.easter(espec);
     }
 
     private Parameter[] parametersOf(Parameter[] phi, double[] vals) {
@@ -314,9 +365,9 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
             return null;
         }
     }
-    
+
     @Override
-    public boolean canHandle(SaSpecification spec){
+    public boolean canHandle(SaSpecification spec) {
         return spec instanceof TramoSeatsSpec;
     }
 

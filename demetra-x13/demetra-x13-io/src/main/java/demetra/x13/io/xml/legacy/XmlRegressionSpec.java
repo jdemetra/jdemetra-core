@@ -64,17 +64,17 @@ public class XmlRegressionSpec
         }
         XmlRegressionSpec xml = new XmlRegressionSpec();
         xml.variables = new XmlRegression();
-        if (v.getOutliersCount() > 0) {
-            List<IOutlier> outliers = v.getOutliers();
-            for (IOutlier o : outliers) {
-                XmlOutlier xvar = XmlOutlier.marshal(o);
-                if (xvar != null) {
-                    XmlRegressionItem xcur = new XmlRegressionItem();
-                    xcur.setVariable(xvar);
-                    xml.variables.getItems().add(xcur);
-                }
-            }
-        }
+//        if (v.getOutliersCount() > 0) {
+//            List<IOutlier> outliers = v.getOutliers();
+//            for (IOutlier o : outliers) {
+//                XmlOutlier xvar = XmlOutlier.marshal(o);
+//                if (xvar != null) {
+//                    XmlRegressionItem xcur = new XmlRegressionItem();
+//                    xcur.setVariable(xvar);
+//                    xml.variables.getItems().add(xcur);
+//                }
+//            }
+//        }
 //        if (v.getRampsCount() > 0) {
 //            List<Variable<Ramp>> ramps = v.getRamps();
 //            for (Variable<Ramp> ramp : ramps) {
@@ -118,9 +118,9 @@ public class XmlRegressionSpec
         }
         for (XmlRegressionItem item : xml.variables.getItems()) {
             XmlRegressionVariable cur = item.getVariable();
-            if (cur instanceof XmlOutlier) {
-                IOutlier outlier = XmlOutlier.unmarshal((XmlOutlier) cur);
-                builder = builder.outlier(outlier);
+//            if (cur instanceof XmlOutlier) {
+//                IOutlier outlier = XmlOutlier.unmarshal((XmlOutlier) cur);
+//                builder = builder.outlier(outlier);
 //            } else if (cur instanceof XmlRamp) {
 //                Ramp ramp = XmlRamp.getAdapter().unmarshal((XmlRamp) cur);
 //                builder = builder.ramp(ramp);
@@ -130,7 +130,7 @@ public class XmlRegressionSpec
 //            } else if (cur instanceof XmlUserVariable) {
 //                TsContextVariable tcv = XmlUserVariable.getLegacyAdapter().unmarshal((XmlUserVariable) cur);
 //                builder = builder.userDefinedVariable(tcv);
-            }
+//            }
         }
         return builder;
     }

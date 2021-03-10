@@ -139,10 +139,35 @@ public class Variable <V extends ITsVariable> {
         return new Variable(name, ncore, coefficients, attributes);
     }
 
+    public Variable withoutAttribute(String key) {
+        if (!attributes.containsKey(key))
+            return this;
+        Map<String, String> natts;
+        natts = new HashMap<>(attributes);
+        natts.remove(key);
+        return natts.isEmpty()? new Variable(name, core, coefficients, Collections.emptyMap())
+                : new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
+    }
+
     public Variable addAttribute(String key, String value) {
         Map<String, String> natts;
         natts = new HashMap<>(attributes);
         natts.put(key, value);
+        return new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
+    }
+
+    /**
+     * Same as without(oldkey).addAttribute(newKey, newValue)
+     * @param oldkey
+     * @param newkey
+     * @param newvalue
+     * @return 
+     */
+    public Variable replaceAttribute(String oldkey, String newkey, String newvalue) {
+        Map<String, String> natts;
+        natts = new HashMap<>(attributes);
+        natts.remove(oldkey);
+        natts.put(newkey, newvalue);
         return new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
     }
 
@@ -157,5 +182,5 @@ public class Variable <V extends ITsVariable> {
         natts.putAll(additionalAttributes);
         return new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
     }
-
+    
 }

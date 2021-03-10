@@ -72,9 +72,9 @@ public interface SaProcessingFactory<I extends SaSpecification, R extends ProcRe
      * @param estimation
      * @return
      */
-    I of(I spec, R estimation);
+    I generateSpec(I spec, R estimation);
 
-    SaSpecification refreshSpecification(I currentSpec, I domainSpec, EstimationPolicy policy);
+    SaSpecification refreshSpec(I currentSpec, I domainSpec, EstimationPolicy policy);
 
     List<SaDiagnosticsFactory<R>> diagnostics();
 

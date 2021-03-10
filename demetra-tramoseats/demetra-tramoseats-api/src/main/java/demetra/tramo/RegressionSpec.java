@@ -17,7 +17,6 @@
 package demetra.tramo;
 
 import demetra.data.Parameter;
-import demetra.sa.SaVariable;
 import nbbrd.design.Development;
 import nbbrd.design.LombokWorkaround;
 import demetra.timeseries.regression.IOutlier;
@@ -26,9 +25,7 @@ import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TsContextVariable;
 import demetra.timeseries.regression.Variable;
 import demetra.util.Validatable;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -39,32 +36,30 @@ import java.util.Map;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
 public final class RegressionSpec implements Validatable<RegressionSpec> {
 
-    private boolean mean;
-    private CalendarSpec calendar;
+    
+    Parameter mean;
+    
+    CalendarSpec calendar;
+    
     @lombok.Singular
-    private List<IOutlier> outliers;
+    List< Variable<IOutlier> > outliers;
     @lombok.Singular
-    private List< Variable<Ramp> > ramps;
+    List< Variable<Ramp> > ramps;
     @lombok.Singular
-    private List< Variable<InterventionVariable> > interventionVariables;
+    List< Variable<InterventionVariable> > interventionVariables;
     @lombok.Singular
-    private List< Variable<TsContextVariable> > userDefinedVariables;
-
-    // the maps with the coefficients use either the short names or the given names (SaVariable)...
-    @lombok.Singular
-    private Map<String, Parameter[]> coefficients;
+    List< Variable<TsContextVariable> > userDefinedVariables;
 
     private static final RegressionSpec DEFAULT = RegressionSpec.builder().build();
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
-                .coefficients(new LinkedHashMap<>())
                 .calendar(CalendarSpec.builder().build());
     }
 
     public boolean isUsed() {
-        return mean || calendar.isUsed() || outliers.isEmpty()
+        return mean !=null || calendar.isUsed() || outliers.isEmpty()
                 || !ramps.isEmpty() || !interventionVariables.isEmpty() 
                 || !userDefinedVariables.isEmpty();
     }

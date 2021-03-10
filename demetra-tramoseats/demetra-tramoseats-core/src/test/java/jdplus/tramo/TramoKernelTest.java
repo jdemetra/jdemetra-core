@@ -389,7 +389,7 @@ public class TramoKernelTest {
 //            System.out.print('\t');
 //            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
-        System.out.println("TR5");
+        System.out.println("TR5-retail");
         System.out.println(n);
         assertTrue(n > .9 * all.length);
     }

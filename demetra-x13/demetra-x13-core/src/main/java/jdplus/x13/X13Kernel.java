@@ -34,7 +34,7 @@ import demetra.x13.X13Spec;
 import jdplus.x13.regarima.FastArimaForecasts;
 import jdplus.x13.regarima.RegArimaKernel;
 import java.util.Arrays;
-import jdplus.regarima.ami.Utility;
+import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.sa.modelling.RegArimaDecomposer;
 import jdplus.sa.modelling.SaVariablesMapping;
@@ -109,15 +109,15 @@ public class X13Kernel {
         TsData mh = model.getMovingHolidayEffect(domain);
         TsData td = model.getTradingDaysEffect(domain);
 
-        TsData pt = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Trend, false, v -> Utility.isOutlier(v));
-        TsData ps = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Seasonal, false, v -> Utility.isOutlier(v));
-        TsData pi = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Irregular, false, v -> Utility.isOutlier(v));
-        TsData ut = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Trend, false, v -> Utility.isUser(v));
-        TsData us = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Seasonal, false, v -> Utility.isUser(v));
-        TsData ui = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Irregular, false, v -> Utility.isUser(v));
-        TsData usa = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.SeasonallyAdjusted, false, v -> Utility.isUser(v));
-        TsData user = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Series, false, v -> Utility.isUser(v));
-        TsData uu = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Undefined, false, v -> Utility.isUser(v));
+        TsData pt = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Trend, false, v -> ModellingUtility.isOutlier(v));
+        TsData ps = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Seasonal, false, v -> ModellingUtility.isOutlier(v));
+        TsData pi = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Irregular, false, v -> ModellingUtility.isOutlier(v));
+        TsData ut = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Trend, false, v -> ModellingUtility.isUser(v));
+        TsData us = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Seasonal, false, v -> ModellingUtility.isUser(v));
+        TsData ui = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Irregular, false, v -> ModellingUtility.isUser(v));
+        TsData usa = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.SeasonallyAdjusted, false, v -> ModellingUtility.isUser(v));
+        TsData user = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Series, false, v -> ModellingUtility.isUser(v));
+        TsData uu = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Undefined, false, v -> ModellingUtility.isUser(v));
         TsData p = mul ? TsData.multiply(pt, ps, pi) : TsData.add(pt, ps, pi);
 
         pt = mul ? TsData.multiply(pt, ut) : TsData.add(pt, ut);

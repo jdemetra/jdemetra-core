@@ -17,7 +17,7 @@ import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.regular.TRegressionTest;
 import jdplus.sarima.SarimaModel;
 import java.util.Optional;
-import jdplus.regarima.ami.Utility;
+import jdplus.regarima.ami.ModellingUtility;
 
 /**
  * Remove non significant regression items. The model is not re-estimated
@@ -82,9 +82,9 @@ public class FastRegressionTest implements IRegressionModule {
         int start = regarima.isMean() ? 1 : 0;
         int nhp = tmpModel.getArimaComponent().getFreeParametersCount();
 
-        Optional<Variable> td = tmpModel.variables().filter(var -> Utility.isTradingDays(var) && !Utility.isPrespecified(var)).findFirst();
-        Optional<Variable> lp = tmpModel.variables().filter(var -> Utility.isLengthOfPeriod(var) && !Utility.isPrespecified(var)).findFirst();
-        Optional<Variable> easter = tmpModel.variables().filter(var -> Utility.isEaster(var) && !Utility.isPrespecified(var)).findFirst();
+        Optional<Variable> td = tmpModel.variables().filter(var -> ModellingUtility.isTradingDays(var) && ModellingUtility.isAutomaticallyIdentified(var)).findFirst();
+        Optional<Variable> lp = tmpModel.variables().filter(var -> ModellingUtility.isLengthOfPeriod(var) && ModellingUtility.isAutomaticallyIdentified(var)).findFirst();
+        Optional<Variable> easter = tmpModel.variables().filter(var -> ModellingUtility.isEaster(var) && ModellingUtility.isAutomaticallyIdentified(var)).findFirst();
         // td
         boolean removetd = false;
         if (td.isPresent()) {

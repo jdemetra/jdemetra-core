@@ -98,7 +98,7 @@ public class EasterDetectionModule implements IRegressionModule {
 
         for (int i = 0; i < n; ++i) {
             ModelDescription curDesc = ModelDescription.copyOf(refdesc);
-            curDesc.addVariable(Variable.variable("easter", easters[i]).addAttribute(SaVariable.REGEFFECT, ComponentType.CalendarEffect.name()));
+            curDesc.addVariable(Variable.variable("easter", easters[i], X13ModelBuilder.calendarAMI));
             desc[i] = curDesc;
             est[i] = curDesc.estimate(processor);
         }

@@ -37,7 +37,7 @@ public class Constant implements ISystemVariable {
 
     @Override
     public <D extends TimeSeriesDomain<?>> String description(D context){
-        return "constant";
+        return "const";
     }
 
 }

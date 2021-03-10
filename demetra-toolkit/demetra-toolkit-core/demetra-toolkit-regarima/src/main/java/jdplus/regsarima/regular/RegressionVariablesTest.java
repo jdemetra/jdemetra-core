@@ -27,7 +27,7 @@ import demetra.timeseries.regression.ITsVariable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import jdplus.regarima.ami.Utility;
+import jdplus.regarima.ami.ModellingUtility;
 
 /**
  * See the Fortran routine pass0.f
@@ -120,7 +120,7 @@ public class RegressionVariablesTest {
         List<ITsVariable> tdtoremove = new ArrayList<>();
         boolean usetd = false, uselp = false;
         if (tdTest != null) {
-            List<Variable> ltd = desc.variables().filter(v -> Utility.isTradingDays(v)).collect(Collectors.toList());
+            List<Variable> ltd = desc.variables().filter(v -> ModellingUtility.isTradingDays(v)).collect(Collectors.toList());
             for (Variable cur : ltd) {
                 ITsVariable var = cur.getCore();
                 int pos = desc.findPosition(var);
@@ -132,7 +132,7 @@ public class RegressionVariablesTest {
                     usetd = true;
                 }
             }
-            List<Variable> llp = desc.variables().filter(v -> Utility.isLengthOfPeriod(v)).collect(Collectors.toList());
+            List<Variable> llp = desc.variables().filter(v -> ModellingUtility.isLengthOfPeriod(v)).collect(Collectors.toList());
             for (Variable cur : llp) {
                 ITsVariable var = cur.getCore();
                 int pos = desc.findPosition(var);
@@ -145,7 +145,7 @@ public class RegressionVariablesTest {
         }
         if (mhTest != null) {
             List<ITsVariable> mhtoremove = new ArrayList<>();
-            List<Variable> lmh = desc.variables().filter(v -> Utility.isMovingHoliday(v)).collect(Collectors.toList());
+            List<Variable> lmh = desc.variables().filter(v -> ModellingUtility.isMovingHoliday(v)).collect(Collectors.toList());
             for (Variable cur : lmh) {
                 ITsVariable var = cur.getCore();
                 int pos = desc.findPosition(var);

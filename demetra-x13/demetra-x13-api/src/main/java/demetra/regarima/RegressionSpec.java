@@ -44,13 +44,13 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
 
     private double aicDiff;
 
-    private boolean mean;
+    private Parameter mean;
     @lombok.NonNull
     private TradingDaysSpec tradingDays;
     @lombok.NonNull
     private EasterSpec easter;
     @lombok.Singular
-    private List<IOutlier> outliers;
+    private List<Variable<IOutlier>> outliers;
     @lombok.Singular
     private List<Variable<TsContextVariable>> userDefinedVariables;
     @lombok.Singular
@@ -58,15 +58,11 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
     @lombok.Singular
     private List<Variable<Ramp>> ramps;
 
-    @lombok.Singular
-    private Map<String, Parameter[]> coefficients;
-
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
                 .aicDiff(DEF_AICCDIFF)
                 .easter(EasterSpec.builder().build())
-                .coefficients(new LinkedHashMap<>())
                 .tradingDays(TradingDaysSpec.none());
     }
 

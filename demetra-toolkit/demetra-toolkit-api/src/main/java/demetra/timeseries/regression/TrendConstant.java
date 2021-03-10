@@ -17,6 +17,8 @@ import nbbrd.design.Development;
 @Development(status=Development.Status.Release)
 public class TrendConstant implements ISystemVariable {
     
+    public static final String NAME="const";
+    
     private int d, bd;
 //    private LocalDateTime start; TODO
 
@@ -27,7 +29,7 @@ public class TrendConstant implements ISystemVariable {
 
      @Override
     public <D extends TimeSeriesDomain<?>> String description(D context){
-        return "const";
+        return NAME;
     }
    
 }

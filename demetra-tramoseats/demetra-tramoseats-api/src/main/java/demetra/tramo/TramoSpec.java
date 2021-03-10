@@ -20,6 +20,7 @@ import nbbrd.design.Development;
 import nbbrd.design.LombokWorkaround;
 import demetra.modelling.TransformationType;
 import demetra.arima.SarimaSpec;
+import demetra.data.Parameter;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.util.Validatable;
@@ -119,7 +120,7 @@ public final class TramoSpec implements Validatable<TramoSpec> {
     public static Builder builder() {
         SarimaSpec sarima = SarimaSpec.airline();
         RegressionSpec regs = RegressionSpec.builder()
-                .mean(true)
+                .mean(Parameter.undefined())
                 .build();
         return new Builder()
                 .transform(TransformSpec.builder().build())
@@ -224,7 +225,7 @@ public final class TramoSpec implements Validatable<TramoSpec> {
                 .tradingDays(wd)
                 .build();
         RegressionSpec rwd = RegressionSpec.builder()
-                .mean(true)
+                .mean(Parameter.undefined())
                 .calendar(cwd)
                 .build();
 

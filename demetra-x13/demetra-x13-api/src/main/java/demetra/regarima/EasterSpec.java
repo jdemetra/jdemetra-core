@@ -16,6 +16,7 @@
  */
 package demetra.regarima;
 
+import demetra.data.Parameter;
 import nbbrd.design.Development;
 import nbbrd.design.LombokWorkaround;
 import demetra.util.Validatable;
@@ -42,13 +43,15 @@ public final class EasterSpec implements Validatable<EasterSpec> {
     private int duration;
     private RegressionTestSpec test;
     private Type type;
+    private Parameter coefficient;
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
                 .type(Type.Unused)
                 .duration(DEF_EASTERDUR)
-                .test(RegressionTestSpec.None);
+                .test(RegressionTestSpec.None)
+                .coefficient(Parameter.undefined());
     }
 
     @Override
@@ -56,18 +59,22 @@ public final class EasterSpec implements Validatable<EasterSpec> {
         if (duration <= 0 || duration > 25) {
             throw new IllegalArgumentException("Should be in [1,25]");
         }
+        if (test != RegressionTestSpec.None && Parameter.isFixed(coefficient)) {
+            throw new IllegalArgumentException("Coefficient should not be used with testing");
+        }
+
         return this;
     }
 
     public boolean isDefault() {
         return this.equals(DEFAULT_UNUSED);
     }
-    
+
     public boolean isUsed() {
         return type != Type.Unused;
     }
-    
-    public static EasterSpec none(){
+
+    public static EasterSpec none() {
         return DEFAULT_UNUSED;
     }
 

@@ -37,8 +37,11 @@ import jdplus.regsarima.regular.IOutliersDetectionModule;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import jdplus.modelling.regression.IOutlierFactory;
+import jdplus.regarima.ami.ModellingUtility;
 
 /**
  *
@@ -202,6 +205,13 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         detector.setOutlierFactories(factories.toArray(new IOutlierFactory[factories.size()]));
         return detector;
     }
+    
+    private Map<String, String> attributes(IOutlier o){
+        HashMap<String, String> attributes=new HashMap<>();
+        attributes.put(ModellingUtility.AMI, "tramo");
+        attributes.put(SaVariable.REGEFFECT, SaVariable.defaultComponentTypeOf(o).name());
+        return attributes;
+    }
 
     @Override
     public ProcessingResult process(RegSarimaModelling context, double criticalValue) {
@@ -224,7 +234,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
             int[] cur = outliers[i];
             TsPeriod pos = domain.get(cur[0]);
             IOutlier o = impl.getFactory(cur[1]).make(pos.start());
-            model.addVariable(Variable.variable(IOutlier.defaultName(o.getCode(), pos), o).addAttribute(SaVariable.REGEFFECT, SaVariable.defaultComponentTypeOf(o).name()));
+            model.addVariable(Variable.variable(IOutlier.defaultName(o.getCode(), pos), o, attributes(o)));
         }
         context.clearEstimation();
         return ProcessingResult.Changed;

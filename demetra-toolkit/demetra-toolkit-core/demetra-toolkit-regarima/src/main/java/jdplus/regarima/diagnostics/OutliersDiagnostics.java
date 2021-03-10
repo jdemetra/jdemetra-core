@@ -25,7 +25,7 @@ import demetra.timeseries.regression.Variable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import jdplus.regarima.ami.Utility;
+import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.ModelEstimation;
 
 /**
@@ -54,16 +54,22 @@ public final class OutliersDiagnostics implements Diagnostics {
         this.config = config;
         test(model);
     }
-    
+
     private void test(ModelEstimation rslts) {
         TsData y = rslts.getOriginalSeries();
         if (y == null) {
             return;
         }
         n = y.length();
-        
-        prespecifiedOutliers = (int) Arrays.stream(rslts.getVariables()).filter(var -> Utility.isOutlier(var, true)).count();
-        detectedOutliers = (int) Arrays.stream(rslts.getVariables()).filter(var -> Utility.isOutlier(var, false)).count();
+
+        prespecifiedOutliers = (int) Arrays.stream(rslts.getVariables())
+                .filter(var -> ModellingUtility.isOutlier(var))
+                .filter(var -> !ModellingUtility.isAutomaticallyIdentified(var))
+                .count();
+        detectedOutliers = (int) Arrays.stream(rslts.getVariables())
+                .filter(var -> ModellingUtility.isOutlier(var))
+                .filter(var -> ModellingUtility.isAutomaticallyIdentified(var))
+                .count();
     }
 
     @Override

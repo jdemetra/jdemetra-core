@@ -244,6 +244,25 @@ public class Parameter {
         return true;
     }
 
+    public static boolean hasFixedParameters(Parameter[] p) {
+        if (p == null) {
+            return false;
+        }
+        for (int i = 0; i < p.length; ++i) {
+            if (p[i].isFixed()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public static boolean isFixed(Parameter p) {
+        if (p == null) {
+            return false;
+        }else
+            return p.isFixed();
+    }
+    
     /**
      * Checks that a parameter is defined. A parameter is defined if it is non
      * null and if its type is not undefined

@@ -43,7 +43,7 @@ import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regarima.ami.Utility;
+import jdplus.regarima.ami.ModellingUtility;
 import jdplus.stats.tests.NiidTests;
 import jdplus.timeseries.simplets.Transformations;
 
@@ -409,7 +409,7 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getTradingDaysEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> Utility.isDaysRelated(v));
+        TsData s = deterministicEffect(domain, v -> ModellingUtility.isDaysRelated(v));
         return backTransform(s, true);
     }
 
@@ -420,7 +420,7 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getEasterEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> Utility.isEaster(v));
+        TsData s = deterministicEffect(domain, v -> ModellingUtility.isEaster(v));
         return backTransform(s, false);
     }
 
@@ -431,7 +431,7 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getMovingHolidayEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> Utility.isMovingHoliday(v));
+        TsData s = deterministicEffect(domain, v -> ModellingUtility.isMovingHoliday(v));
         return backTransform(s, false);
     }
 
@@ -454,18 +454,18 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getOutliersEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> Utility.isOutlier(v));
+        TsData s = deterministicEffect(domain, v -> ModellingUtility.isOutlier(v));
         return backTransform(s, false);
     }
 
     /**
      *
      * @param domain
-     * @param prespecified
+     * @param ami
      * @return
      */
-    public TsData getOutliersEffect(TsDomain domain, boolean prespecified) {
-        TsData s = deterministicEffect(domain, v -> Utility.isOutlier(v, prespecified));
+    public TsData getOutliersEffect(TsDomain domain, boolean ami) {
+        TsData s = deterministicEffect(domain, v -> ModellingUtility.isOutlier(v, ami));
         return backTransform(s, false);
     }
 
@@ -476,7 +476,7 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getCalendarEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> Utility.isCalendar(v));
+        TsData s = deterministicEffect(domain, v -> ModellingUtility.isCalendar(v));
         return backTransform(s, true);
     }
 

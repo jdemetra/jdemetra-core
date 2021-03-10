@@ -30,7 +30,7 @@ import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.arima.PreadjustmentType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
-import jdplus.regarima.ami.Utility;
+import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import static jdplus.x13.regarima.Converter.convert;

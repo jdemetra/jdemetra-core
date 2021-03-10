@@ -55,7 +55,7 @@ public class RegArimaDecomposerTest {
                 .duration(6)
                 .meanCorrection(EasterVariable.Correction.Theoretical)
                 .build();
-        model.addVariable(Variable.builder().name("easter").core(easter).attribute("prespecified", "true").attribute(SaVariable.REGEFFECT, ComponentType.CalendarEffect.name()).build());
+        model.addVariable(Variable.builder().name("easter").core(easter).attribute(SaVariable.REGEFFECT, ComponentType.CalendarEffect.name()).build());
         ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.PROCESSOR);
 
  
