@@ -28,25 +28,32 @@ import demetra.timeseries.regression.Variable;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class Utility {
+public class ModellingUtility {
 
-    public final String PRESPECIFIED = "prespecified";
+    public final String AMI = "ami", AMI_PREVIOUS="ami_previous";
+
+    public boolean isAutomaticallyIdentified(Variable var) {
+        return var.hasAttribute(AMI);
+    }
 
     public boolean isOutlier(Variable var) {
         return var.getCore() instanceof IOutlier;
     }
 
-    public boolean isOutlier(Variable var, boolean prespecified) {
+    /**
+     * Gets automatic or prespecified outliers
+     * @param var
+     * @param ami True if you are looking for automatically identified outliers
+     * @return 
+     */
+    public boolean isOutlier(Variable var, boolean ami) {
         if (var.getCore() instanceof IOutlier) {
-            return prespecified == var.hasAttribute(PRESPECIFIED);
+            return ami == var.hasAttribute(AMI);
         } else {
             return false;
         }
     }
 
-    public boolean isPrespecified(Variable var) {
-        return var.hasAttribute(PRESPECIFIED);
-    }
 
     public boolean isMovingHoliday(Variable var) {
         return var.getCore() instanceof IMovingHolidayVariable;

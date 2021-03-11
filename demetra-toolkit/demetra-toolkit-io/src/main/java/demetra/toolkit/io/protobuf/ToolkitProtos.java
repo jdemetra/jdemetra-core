@@ -186,17 +186,21 @@ public final class ToolkitProtos {
      */
     PARAMETER_UNSPECIFIED(0),
     /**
-     * <code>PARAMETER_FIXED = 1;</code>
+     * <code>PARAMETER_UNDEFINED = 1;</code>
      */
-    PARAMETER_FIXED(1),
+    PARAMETER_UNDEFINED(1),
     /**
-     * <code>PARAMETER_INITIAL = 2;</code>
+     * <code>PARAMETER_FIXED = 2;</code>
      */
-    PARAMETER_INITIAL(2),
+    PARAMETER_FIXED(2),
     /**
-     * <code>PARAMETER_ESTIMATED = 3;</code>
+     * <code>PARAMETER_INITIAL = 3;</code>
      */
-    PARAMETER_ESTIMATED(3),
+    PARAMETER_INITIAL(3),
+    /**
+     * <code>PARAMETER_ESTIMATED = 4;</code>
+     */
+    PARAMETER_ESTIMATED(4),
     UNRECOGNIZED(-1),
     ;
 
@@ -205,17 +209,21 @@ public final class ToolkitProtos {
      */
     public static final int PARAMETER_UNSPECIFIED_VALUE = 0;
     /**
-     * <code>PARAMETER_FIXED = 1;</code>
+     * <code>PARAMETER_UNDEFINED = 1;</code>
      */
-    public static final int PARAMETER_FIXED_VALUE = 1;
+    public static final int PARAMETER_UNDEFINED_VALUE = 1;
     /**
-     * <code>PARAMETER_INITIAL = 2;</code>
+     * <code>PARAMETER_FIXED = 2;</code>
      */
-    public static final int PARAMETER_INITIAL_VALUE = 2;
+    public static final int PARAMETER_FIXED_VALUE = 2;
     /**
-     * <code>PARAMETER_ESTIMATED = 3;</code>
+     * <code>PARAMETER_INITIAL = 3;</code>
      */
-    public static final int PARAMETER_ESTIMATED_VALUE = 3;
+    public static final int PARAMETER_INITIAL_VALUE = 3;
+    /**
+     * <code>PARAMETER_ESTIMATED = 4;</code>
+     */
+    public static final int PARAMETER_ESTIMATED_VALUE = 4;
 
 
     public final int getNumber() {
@@ -243,9 +251,10 @@ public final class ToolkitProtos {
     public static ParameterType forNumber(int value) {
       switch (value) {
         case 0: return PARAMETER_UNSPECIFIED;
-        case 1: return PARAMETER_FIXED;
-        case 2: return PARAMETER_INITIAL;
-        case 3: return PARAMETER_ESTIMATED;
+        case 1: return PARAMETER_UNDEFINED;
+        case 2: return PARAMETER_FIXED;
+        case 3: return PARAMETER_INITIAL;
+        case 4: return PARAMETER_ESTIMATED;
         default: return null;
       }
     }
@@ -13013,11 +13022,12 @@ public final class ToolkitProtos {
       "SelectionType\022\024\n\020SPAN_UNSPECIFIED\020\000\022\014\n\010S" +
       "PAN_ALL\020\001\022\r\n\tSPAN_FROM\020\002\022\013\n\007SPAN_TO\020\003\022\020\n" +
       "\014SPAN_BETWEEN\020\004\022\r\n\tSPAN_LAST\020\005\022\016\n\nSPAN_F" +
-      "IRST\020\006\022\022\n\016SPAN_EXCLUDING\020\007*o\n\rParameterT" +
-      "ype\022\031\n\025PARAMETER_UNSPECIFIED\020\000\022\023\n\017PARAME" +
-      "TER_FIXED\020\001\022\025\n\021PARAMETER_INITIAL\020\002\022\027\n\023PA" +
-      "RAMETER_ESTIMATED\020\003B,\n\033demetra.toolkit.i" +
-      "o.protobufB\rToolkitProtosb\006proto3"
+      "IRST\020\006\022\022\n\016SPAN_EXCLUDING\020\007*\210\001\n\rParameter" +
+      "Type\022\031\n\025PARAMETER_UNSPECIFIED\020\000\022\027\n\023PARAM" +
+      "ETER_UNDEFINED\020\001\022\023\n\017PARAMETER_FIXED\020\002\022\025\n" +
+      "\021PARAMETER_INITIAL\020\003\022\027\n\023PARAMETER_ESTIMA" +
+      "TED\020\004B,\n\033demetra.toolkit.io.protobufB\rTo" +
+      "olkitProtosb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

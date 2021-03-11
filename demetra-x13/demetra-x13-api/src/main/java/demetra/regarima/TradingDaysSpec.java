@@ -16,9 +16,8 @@
  */
 package demetra.regarima;
 
+import demetra.data.Parameter;
 import nbbrd.design.Development;
-import demetra.modelling.ChangeOfRegimeSpec;
-import demetra.modelling.RegressionTestSpec;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.util.Validatable;
@@ -39,23 +38,34 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     private RegressionTestSpec regressionTestType;
     private boolean autoAdjust;
     private int stockTradingDays;
-    private ChangeOfRegimeSpec changeOfRegime;
+    private Parameter[] tdCoefficients;
+    private Parameter lpCoefficient;
 
     private static final TradingDaysSpec NONE = new TradingDaysSpec(null, null, TradingDaysType.None,
-            LengthOfPeriodType.None, RegressionTestSpec.None, false, 0, null);
+            LengthOfPeriodType.None, RegressionTestSpec.None, false, 0, null, null);
 
     public static TradingDaysSpec stockTradingDays(int w, RegressionTestSpec test) {
         return new TradingDaysSpec(null, null, TradingDaysType.None,
-            LengthOfPeriodType.None, test, false, w, null);
+            LengthOfPeriodType.None, test, false, w, null, null);
     }
 
+    public static TradingDaysSpec stockTradingDays(int w, @NonNull Parameter[] tdc) {
+        return new TradingDaysSpec(null, null, TradingDaysType.None,
+            LengthOfPeriodType.None, RegressionTestSpec.None, false, w, tdc, null);
+    }
+    
     public static TradingDaysSpec none() {
         return NONE;
     }
 
     public static TradingDaysSpec userDefined(@NonNull String[] vars, RegressionTestSpec test) {
         return new TradingDaysSpec(null, vars, TradingDaysType.None,
-            LengthOfPeriodType.None, test, false, 0, null);
+            LengthOfPeriodType.None, test, false, 0, null, null);
+    }
+
+    public static TradingDaysSpec userDefined(@NonNull String[] vars, @NonNull Parameter[] tdcoeff) {
+        return new TradingDaysSpec(null, vars, TradingDaysType.None,
+            LengthOfPeriodType.None, RegressionTestSpec.None, false, 0, tdcoeff, null);
     }
 
     public static TradingDaysSpec holidays(String holidays, TradingDaysType type, LengthOfPeriodType lp, RegressionTestSpec test, boolean autoAdjust) {
@@ -63,18 +73,34 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(holidays, null, type,
-            lp, test, autoAdjust, 0, null);
+            lp, test, autoAdjust, 0, null, null);
     }
 
-    public static TradingDaysSpec td(TradingDaysType type, LengthOfPeriodType lp, RegressionTestSpec test, boolean autoAdjust) {
+   public static TradingDaysSpec holidays(String holidays, TradingDaysType type, LengthOfPeriodType lp, Parameter[] tdcoeff, Parameter lpcoeff ) {
+        if (type == TradingDaysType.None) {
+            throw new IllegalArgumentException();
+        }
+        return new TradingDaysSpec(holidays, null, type,
+            lp, RegressionTestSpec.None, false, 0, tdcoeff, lpcoeff);
+    }
+
+   public static TradingDaysSpec td(TradingDaysType type, LengthOfPeriodType lp, RegressionTestSpec test, boolean autoAdjust) {
         if (type == TradingDaysType.None) {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(null, null, type,
-            lp, test, autoAdjust, 0, null);
+            lp, test, autoAdjust, 0, null, null);
     }
 
-    public boolean isUsed() {
+   public static TradingDaysSpec td(TradingDaysType type, LengthOfPeriodType lp, Parameter[] tdcoeff, Parameter lpcoeff) {
+        if (type == TradingDaysType.None) {
+            throw new IllegalArgumentException();
+        }
+        return new TradingDaysSpec(null, null, type,
+            lp, RegressionTestSpec.None, false, 0, tdcoeff, lpcoeff);
+    }
+
+   public boolean isUsed() {
         return tradingDaysType != TradingDaysType.None || userVariables != null || stockTradingDays != 0;
     }
 

@@ -25,7 +25,7 @@ import demetra.regarima.TransformSpec;
 import jdplus.data.interpolation.AverageInterpolator;
 import nbbrd.design.Development;
 import demetra.information.InformationSet;
-import demetra.modelling.RegressionTestSpec;
+import demetra.regarima.RegressionTestSpec;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.regression.Variable;
 import demetra.timeseries.regression.AdditiveOutlier;
@@ -61,11 +61,18 @@ import demetra.timeseries.regression.UserTradingDays;
 import demetra.regarima.EasterSpec.Type;
 import demetra.arima.SarimaSpec;
 import demetra.sa.ComponentType;
-import demetra.sa.SaDictionary;
+import demetra.sa.SaVariable;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.GenericTradingDays;
+import demetra.timeseries.regression.InterventionVariable;
+import demetra.timeseries.regression.Ramp;
+import demetra.timeseries.regression.TrendConstant;
+import demetra.timeseries.regression.TsContextVariable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import jdplus.regarima.ami.Utility;
+import jdplus.regarima.ami.ModellingUtility;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -73,6 +80,15 @@ import jdplus.regarima.ami.Utility;
  */
 @Development(status = Development.Status.Preliminary)
 class X13ModelBuilder implements IModelBuilder {
+
+    public static final Map<String, String> calendarAMI;
+
+    static {
+        HashMap<String, String> map = new HashMap<>();
+        map.put(ModellingUtility.AMI, "x13");
+        map.put(SaVariable.REGEFFECT, ComponentType.CalendarEffect.name());
+        calendarAMI = Collections.unmodifiableMap(map);
+    }
 
     private final RegArimaSpec spec;
     private final ModellingContext context;
@@ -114,21 +130,14 @@ class X13ModelBuilder implements IModelBuilder {
         if (!regSpec.isUsed()) {
             return;
         }
-        model.setMean(regSpec.isMean());
-        Map<String, Parameter[]> preadjustment = regSpec.getCoefficients();
-        initializeCalendar(model, regSpec, preadjustment);
+        initializeMean(model, regSpec.getMean());
+        initializeCalendar(model, regSpec);
         if (regSpec.getOutliersCount() > 0) {
-            initializeOutliers(model, regSpec.getOutliers(), preadjustment);
+            initializeOutliers(model, regSpec.getOutliers());
         }
-//        if (regSpec.getUserDefinedVariablesCount() > 0) {
-//            initializeUsers(model, regSpec.getUserDefinedVariables(), preadjustment);
-//        }
-//        if (regSpec.getInterventionVariablesCount() > 0) {
-//            initializeInterventions(model, regSpec.getInterventionVariables(), preadjustment);
-//        }
-//        if (regSpec.getRampsCount() > 0) {
-//            initializeRamps(model, regSpec.getRamps(), preadjustment);
-//        }
+        initializeUsers(model, regSpec.getUserDefinedVariables());
+        initializeInterventions(model, regSpec.getInterventionVariables());
+        initializeRamps(model, regSpec.getRamps());
     }
 
     @Override
@@ -156,40 +165,58 @@ class X13ModelBuilder implements IModelBuilder {
         model.setPreadjustment(fnSpec.getAdjust());
     }
 
-    private void initializeCalendar(ModelDescription model, RegressionSpec calendar, Map<String, Parameter[]> preadjustment) {
-        initializeTradingDays(model, calendar.getTradingDays(), preadjustment);
-        initializeEaster(model, calendar.getEaster(), preadjustment);
+    private void initializeMean(ModelDescription model, Parameter mu) {
+        if (mu == null) {
+            model.setMean(false);
+        } else if (mu.isFixed()) {
+            int d = spec.getArima().getD(), bd = spec.getArima().getBd();
+            add(model, new TrendConstant(d, bd), "const", ComponentType.Trend, new Parameter[]{mu});
+        } else {
+            model.setMean(true);
+        }
     }
 
-    private void initializeTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> preadjustment) {
+    private void initializeCalendar(ModelDescription model, RegressionSpec calendar) {
+        initializeTradingDays(model, calendar.getTradingDays());
+        initializeEaster(model, calendar.getEaster());
+    }
+
+    private void initializeTradingDays(ModelDescription model, TradingDaysSpec td) {
         if (!td.isUsed() || td.getRegressionTestType() == RegressionTestSpec.Add) {
             return;
         }
         if (td.isStockTradingDays()) {
-            initializeStockTradingDays(model, td, preadjustment);
-//        } else if (td.getHolidays() != null) {
-//            initializeHolidays(model, td, preadjustment);
+            initializeStockTradingDays(model, td);
+        } else if (td.getHolidays() != null) {
+            initializeHolidays(model, td);
         } else if (td.getUserVariables() != null) {
-            initializeUserTradingDays(model, td, preadjustment);
+            initializeUserTradingDays(model, td);
         } else {
-            initializeDefaultTradingDays(model, td, preadjustment);
+            initializeDefaultTradingDays(model, td);
         }
     }
 
-    private void initializeEaster(ModelDescription model, EasterSpec easter, Map<String, Parameter[]> preadjustment) {
+    private void initializeEaster(ModelDescription model, EasterSpec easter) {
         if (!easter.isUsed() || easter.getTest() == RegressionTestSpec.Add) {
             return;
         }
-        add(model, easter(easter.getType(), easter.getDuration()), "easter", easter.getTest() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
+        if (easter.getTest() == RegressionTestSpec.None) {
+            add(model, easter(easter.getType(), easter.getDuration()), "easter", ComponentType.CalendarEffect, easter.getCoefficient());
+        } else {
+            Variable<EasterVariable> var = Variable.variable("easter", easter(easter.getType(), easter.getDuration()), calendarAMI);
+            model.addVariable(var);
+        }
+
     }
 
-    private void initializeOutliers(ModelDescription model, List<IOutlier> outliers, Map<String, Parameter[]> preadjustment) {
+    private void initializeOutliers(ModelDescription model, List<Variable<IOutlier>> outliers) {
         int freq = model.getAnnualFrequency();
         TransitoryChangeFactory tc = new TransitoryChangeFactory(spec.getOutliers().getMonthlyTCRate());
         PeriodicOutlierFactory so = new PeriodicOutlierFactory(freq, false);
-        for (int i = 0; i < outliers.size(); ++i) {
-            String code = outliers.get(i).getCode();
-            LocalDateTime pos = outliers.get(i).getPosition();
+        for (Variable<IOutlier> outlier : outliers) {
+            IOutlier cur = outlier.getCore();
+            String code = cur.getCode();
+            LocalDateTime pos = cur.getPosition();
             IOutlier v;
             ComponentType cmp = ComponentType.Undefined;
             switch (code) {
@@ -213,129 +240,136 @@ class X13ModelBuilder implements IModelBuilder {
                     v = null;
             }
             if (v != null) {
-                String name = IOutlier.defaultName(code, pos, model.getEstimationDomain());
-                Parameter[] c = preadjustment.get(name);
-                Variable var = Variable.builder()
-                        .name(name)
-                        .core(v)
-                        .coefficients(c)
-                        .attribute(Utility.PRESPECIFIED, "true")
-                        .attribute(SaDictionary.REGEFFECT, cmp.name())
-                        .build();
-                model.addVariable(var);
+                Variable nvar = outlier.withCore(v);
+                if (!nvar.hasAttribute(SaVariable.REGEFFECT)) {
+                    nvar = nvar.addAttribute(SaVariable.REGEFFECT, cmp.name());
+                }
+                model.addVariable(nvar);
             }
         }
     }
 
-//    private void initializeUsers(ModelDescription model, TsVariableDescriptor[] uvars, Map<String, double[]> preadjustment) {
-//        if (uvars == null) {
-//            return;
-//        }
-//        for (int i = 0; i < uvars.length; ++i) {
-//            ITsVariable var = uvars[i].toTsVariable(context);
-//            String sname = ITsVariable.shortName(var.getName());
-//            if (preadjustment.containsKey(sname)) {
-//                PreadjustmentVariable pv = PreadjustmentVariable.userVariable(var, uvars[i].getEffect().type(), preadjustment.get(sname));
-//                model.addPreadjustment(pv);
-//            } else {
-//                Variable uvar = Variable.userVariable(var, uvars[i].getEffect().type(), RegStatus.Prespecified);
-//                model.addVariable(uvar);
-//            }
-//        }
-//    }
-//
-//    private void initializeInterventions(ModelDescription model, InterventionVariable[] interventionVariables, Map<String, double[]> preadjustment) {
-//        if (interventionVariables == null) {
-//            return;
-//        }
-//        for (int i = 0; i < interventionVariables.length; ++i) {
-//            InterventionVariable var = interventionVariables[i];
-//            String sname = ITsVariable.shortName(var.getName());
-//            if (preadjustment.containsKey(sname)) {
-//                PreadjustmentVariable pv = PreadjustmentVariable.userVariable(var, Variable.searchType(var), preadjustment.get(sname));
-//                model.addPreadjustment(pv);
-//            } else {
-//                Variable uvar = Variable.userVariable(var, Variable.searchType(var), RegStatus.Prespecified);
-//                model.addVariable(uvar);
-//            }
-//        }
-//    }
-//
-//    private void initializeRamps(ModelDescription model, Ramp[] ramps, Map<String, double[]> preadjustment) {
-//        if (ramps == null) {
-//            return;
-//        }
-//        for (int i = 0; i < ramps.length; ++i) {
-//            Ramp var = ramps[i];
-//            String sname = ITsVariable.shortName(var.getName());
-//            if (preadjustment.containsKey(sname)) {
-//                PreadjustmentVariable pv = PreadjustmentVariable.userVariable(var, ComponentType.Trend, preadjustment.get(sname));
-//                model.addPreadjustment(pv);
-//            } else {
-//                Variable uvar = Variable.userVariable(var, ComponentType.Trend, RegStatus.Prespecified);
-//                model.addVariable(uvar);
-//            }
-//        }
-//    }
-//
-//    private void initializeHolidays(ModelDescription model, TradingDaysSpec td, Map<String, double[]> preadjustment) {
-//        IGregorianCalendarProvider cal = context.getGregorianCalendars().get(td.getHolidays());
-//        if (cal == null) {
-//            return;
-//        }
-//        TradingDaysType tdType = td.getTradingDaysType();
-//        if (tdType != TradingDaysType.None) {
-//            GregorianCalendarVariables var = new GregorianCalendarVariables(cal, tdType);
-//            String sname = ITsVariable.shortName(var.getName());
-//            if (preadjustment.containsKey(sname)) {
-//                PreadjustmentVariable pvar = PreadjustmentVariable.calendarVariable(var, preadjustment.get(sname));
-//                model.addPreadjustment(pvar);
-//            } else {
-//                Variable tvar = Variable.calendarVariable(var,
-//                        td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
-//                model.addVariable(tvar);
-//            }
-//        }
-//        if (td.isLeapYear()) {
-//            LeapYearVariable lp = new LeapYearVariable(LengthOfPeriodType.LeapYear);
-//            String sname = ITsVariable.shortName(lp.getName());
-//            if (preadjustment.containsKey(sname)) {
-//                PreadjustmentVariable pvar = PreadjustmentVariable.calendarVariable(lp, preadjustment.get(sname));
-//                model.addPreadjustment(pvar);
-//            } else {
-//                Variable lvar = Variable.calendarVariable(lp,
-//                        td.isTest() ? RegStatus.ToRemove : RegStatus.Prespecified);
-//                model.addVariable(lvar);
-//            }
-//        }
-//    }
-    private void initializeUserTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> preadjustment) {
-        add(model, userTradingDays(td, context), "td", td.getRegressionTestType() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
+    private void initializeUsers(ModelDescription model, List< Variable<TsContextVariable>> uvars) {
+        for (Variable<TsContextVariable> user : uvars) {
+            model.addVariable(user.withCore(user.getCore().instantiateFrom(context, user.getName())));
+        }
     }
 
-    private void initializeDefaultTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> preadjustment) {
-        add(model, defaultTradingDays(td), "td", td.getRegressionTestType() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
-        add(model, leapYear(td), "lp", td.getRegressionTestType() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
+    private void initializeInterventions(ModelDescription model, List<Variable<InterventionVariable>> interventionVariables) {
+        for (Variable<InterventionVariable> iv : interventionVariables) {
+            model.addVariable(iv);
+        }
     }
 
-    private void initializeStockTradingDays(ModelDescription model, TradingDaysSpec td, Map<String, Parameter[]> preadjustment) {
-        add(model, stockTradingDays(td), "td", td.getRegressionTestType() == RegressionTestSpec.None, ComponentType.CalendarEffect, preadjustment);
+    private void initializeRamps(ModelDescription model, List<Variable<Ramp>> ramps) {
+        for (Variable<Ramp> r : ramps) {
+            model.addVariable(r);
+        }
+    }
+
+    private void initializeUserTradingDays(ModelDescription model, TradingDaysSpec td) {
+        ITradingDaysVariable utd = userTradingDays(td, context);
+        if (td.getRegressionTestType() == RegressionTestSpec.None) {
+            add(model, utd, "usertd", ComponentType.CalendarEffect, td.getTdCoefficients());
+        } else {
+            Variable<ITradingDaysVariable> var = Variable.variable("usertd", utd, calendarAMI);
+            model.addVariable(var);
+        }
+    }
+
+    private void initializeDefaultTradingDays(ModelDescription model, TradingDaysSpec td) {
+        ITradingDaysVariable vtd = defaultTradingDays(td);
+        ILengthOfPeriodVariable vlp = leapYear(td);
+        if (td.getRegressionTestType() == RegressionTestSpec.None) {
+            if (vtd != null) {
+                add(model, vtd, "td", ComponentType.CalendarEffect, td.getTdCoefficients());
+            }
+            if (vlp != null) {
+                add(model, vlp, "lp", ComponentType.CalendarEffect, td.getLpCoefficient());
+            }
+        } else {
+            if (vtd != null) {
+                Variable<ITradingDaysVariable> var = Variable.variable("td", vtd, calendarAMI);
+                model.addVariable(var);
+            }
+            if (vlp != null) {
+                Variable<ILengthOfPeriodVariable> lpvar = Variable.variable("lp", vlp, calendarAMI);
+                model.addVariable(lpvar);
+            }
+        }
+    }
+
+    private void initializeHolidays(ModelDescription model, TradingDaysSpec td) {
+        ITradingDaysVariable vtd = holidays(td);
+        ILengthOfPeriodVariable vlp = leapYear(td);
+        if (td.getRegressionTestType() == RegressionTestSpec.None) {
+            if (vtd != null) {
+                add(model, vtd, "td", ComponentType.CalendarEffect, td.getTdCoefficients());
+            }
+            if (vlp != null) {
+                add(model, vlp, "lp", ComponentType.CalendarEffect, td.getLpCoefficient());
+            }
+        } else {
+            if (vtd != null) {
+                Variable<ITradingDaysVariable> var = Variable.variable("td", vtd, calendarAMI);
+                model.addVariable(var);
+            }
+            if (vlp != null) {
+                Variable<ILengthOfPeriodVariable> lpvar = Variable.variable("lp", vlp, calendarAMI);
+                model.addVariable(lpvar);
+            }
+        }
+    }
+
+    private void initializeStockTradingDays(ModelDescription model, TradingDaysSpec td) {
+        if (td.getRegressionTestType() == RegressionTestSpec.None) {
+            add(model, stockTradingDays(td), "td", ComponentType.CalendarEffect, td.getTdCoefficients());
+        } else {
+            Variable<ITradingDaysVariable> var = Variable.variable("td", stockTradingDays(td), calendarAMI);
+            model.addVariable(var);
+        }
     }
 
     private static ITradingDaysVariable stockTradingDays(TradingDaysSpec td) {
         return new StockTradingDays(td.getStockTradingDays());
     }
 
-    private void add(ModelDescription model, ITsVariable var, String name, boolean prespecified, ComponentType cmp, Map<String, Parameter[]> preadjustment) {
-        if (var == null) {
-            return;
-        }
-        Parameter[] c = preadjustment.get(name);
-        if (prespecified || c != null) {
-            model.addVariable(Variable.builder().name(name).core(var).coefficients(c).attribute(Utility.PRESPECIFIED, "true").attribute(SaDictionary.REGEFFECT, cmp.name()).build());
-        } else {
-            model.addVariable(Variable.builder().name(name).core(var).coefficients(c).attribute(SaDictionary.REGEFFECT, cmp.name()).build());
-        }
+    /**
+     * Add pre-specified variables (not automatically identified)
+     *
+     * @param model
+     * @param v
+     * @param name
+     * @param cmp
+     * @param c
+     */
+    private void add(@NonNull ModelDescription model, @NonNull ITsVariable v, @NonNull String name, @NonNull ComponentType cmp, Parameter[] c) {
+        Variable var = Variable.builder()
+                .name(name)
+                .core(v)
+                .coefficients(c)
+                .attribute(SaVariable.REGEFFECT, cmp.name())
+                .build();
+        model.addVariable(var);
+    }
+
+    /**
+     * Add pre-specified variables (not automatically identified)
+     *
+     * @param model
+     * @param v
+     * @param name
+     * @param cmp
+     * @param c
+     */
+    private void add(@NonNull ModelDescription model, @NonNull ITsVariable v, @NonNull String name, @NonNull ComponentType cmp, Parameter c) {
+        Variable var = Variable.builder()
+                .name(name)
+                .core(v)
+                .coefficients(c == null ? null : new Parameter[]{c})
+                .attribute(SaVariable.REGEFFECT, cmp.name())
+                .build();
+        model.addVariable(var);
     }
 
     public static ITradingDaysVariable tradingDays(RegArimaSpec spec, ModellingContext context) {
@@ -354,7 +388,7 @@ class X13ModelBuilder implements IModelBuilder {
         }
     }
 
-    static ITradingDaysVariable td(RegArimaSpec spec, DayClustering dc, ModellingContext context) {
+    public static ITradingDaysVariable td(RegArimaSpec spec, DayClustering dc, ModellingContext context) {
         TradingDaysSpec tdspec = spec.getRegression().getTradingDays();
         if (!tdspec.isUsed()) {
             return null;
@@ -371,7 +405,7 @@ class X13ModelBuilder implements IModelBuilder {
         }
     }
 
-    private static ITradingDaysVariable defaultTradingDays(TradingDaysSpec td) {
+    public static ITradingDaysVariable defaultTradingDays(TradingDaysSpec td) {
         if (td.getTradingDaysType() == TradingDaysType.None) {
             return null;
         }
@@ -381,7 +415,17 @@ class X13ModelBuilder implements IModelBuilder {
         return new GenericTradingDaysVariable(gtd);
     }
 
-    private static ITradingDaysVariable userTradingDays(TradingDaysSpec td, ModellingContext context) {
+    public static ITradingDaysVariable holidays(TradingDaysSpec td) {
+        if (td.getTradingDaysType() == TradingDaysType.None) {
+            return null;
+        }
+        TradingDaysType tdType = td.getTradingDaysType();
+        DayClustering dc = tdType == (TradingDaysType.TradingDays) ? DayClustering.TD7 : DayClustering.TD2;
+        GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
+        return new GenericTradingDaysVariable(gtd);
+    }
+
+    public static ITradingDaysVariable userTradingDays(TradingDaysSpec td, ModellingContext context) {
         String[] userVariables = td.getUserVariables();
         return UserTradingDays.of(userVariables, context);
     }

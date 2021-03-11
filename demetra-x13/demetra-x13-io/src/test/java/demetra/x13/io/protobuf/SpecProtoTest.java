@@ -22,6 +22,8 @@ public class SpecProtoTest {
     public void testDefault() {
         X13Spec s = X13Spec.RSA0;
         X13Spec ns = SpecProto.convert(SpecProto.convert(s));
+        System.out.println(s);
+        System.out.println(ns);
         assertTrue(s.equals(ns));
         s = X13Spec.RSA1;
         ns = SpecProto.convert(SpecProto.convert(s));

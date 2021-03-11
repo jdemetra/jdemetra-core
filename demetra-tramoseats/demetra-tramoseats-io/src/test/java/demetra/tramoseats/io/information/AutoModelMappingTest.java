@@ -22,8 +22,8 @@ public class AutoModelMappingTest {
     @Test
     public void testDefault() {
         AutoModelSpec spec1=AutoModelSpec.DEFAULT_ENABLED;
-        InformationSet info = AutoModelMapping.write(spec1, true);
-        AutoModelSpec spec2 = AutoModelMapping.read(info);
+        InformationSet info = AutoModelSpecMapping.write(spec1, true);
+        AutoModelSpec spec2 = AutoModelSpecMapping.read(info);
         assertEquals(spec1, spec2);
     }
     

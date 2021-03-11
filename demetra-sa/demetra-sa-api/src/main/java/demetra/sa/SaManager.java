@@ -23,6 +23,7 @@ import demetra.processing.ProcResults;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,12 +53,13 @@ public class SaManager {
                 ProcessingLog log= new DefaultProcessingLog();
                 SaProcessor processor = fac.processor(dspec);
                 ProcResults rslt = processor.process(def.getTs().getData(), context, log);
-                InformationSet diagnostics = fac.diagnosticsOf(rslt);
+                List<ProcDiagnostic> tests=new ArrayList<>();
+                fac.fillDiagnostics(tests, rslt);
                 return SaEstimation.builder()
                         .results(rslt)
                         .log(verbose ? log : ProcessingLog.dummy())
-                        .diagnostics(diagnostics)
-                        .quality(ProcDiagnostic.summary(diagnostics))
+                        .diagnostics(tests)
+                        .quality(ProcDiagnostic.summary(tests))
                         .build();
             }
         }

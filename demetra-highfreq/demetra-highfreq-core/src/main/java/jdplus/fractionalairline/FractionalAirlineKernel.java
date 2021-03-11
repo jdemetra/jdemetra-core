@@ -94,7 +94,7 @@ public class FractionalAirlineKernel {
                 .y(regarima.getY().toArray())
                 .x(regarima.variables())
                 .model(new demetra.highfreq.FractionalAirline(spec.getPeriodicities(), max.getParameters(), spec.isAdjustToInt()))
-                .coefficients(rslt.getConcentratedLikelihood().coefficients().toArray())
+                .coefficients(rslt.getConcentratedLikelihood().coefficients())
                 .coefficientsCovariance(rslt.getConcentratedLikelihood().covariance(2, true))
                 .likelihood(rslt.statistics())
                 .outliers(o)

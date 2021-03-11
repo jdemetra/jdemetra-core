@@ -48,7 +48,7 @@ import demetra.timeseries.TsException;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
-import jdplus.regarima.ami.Utility;
+import jdplus.regarima.ami.ModellingUtility;
 
 /**
  *
@@ -156,11 +156,23 @@ public final class ModelDescription {
             return;
         }
         List<Variable> vars = new ArrayList<>();
-        variables.stream().filter(v -> Utility.isUser(v)).forEachOrdered(v -> vars.add(v));
-        variables.stream().filter(v -> Utility.isDaysRelated(v)).forEachOrdered(v -> vars.add(v));
-        variables.stream().filter(v -> Utility.isMovingHoliday(v)).forEachOrdered(v -> vars.add(v));
-        variables.stream().filter(v -> Utility.isOutlier(v, true)).forEachOrdered(v -> vars.add(v));
-        variables.stream().filter(v -> Utility.isOutlier(v, false)).forEachOrdered(v -> vars.add(v));
+        variables.stream()
+                .filter(v -> ModellingUtility.isUser(v))
+                .forEachOrdered(v -> vars.add(v));
+        variables.stream()
+                .filter(v -> ModellingUtility.isDaysRelated(v))
+                .forEachOrdered(v -> vars.add(v));
+        variables.stream()
+                .filter(v -> ModellingUtility.isMovingHoliday(v))
+                .forEachOrdered(v -> vars.add(v));
+        variables.stream()
+                .filter(v -> ModellingUtility.isOutlier(v))
+                .filter(v -> !ModellingUtility.isAutomaticallyIdentified(v))
+                .forEachOrdered(v -> vars.add(v));
+        variables.stream()
+                .filter(v -> ModellingUtility.isOutlier(v))
+                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
+                .forEachOrdered(v -> vars.add(v));
         variables.clear();
         variables.addAll(vars);
         sortedVariables = true;
@@ -491,7 +503,7 @@ public final class ModelDescription {
     }
 
     public boolean removeVariable(Predicate<Variable> pred) {
-        if (variables.removeIf(pred.and(var -> !Utility.isPrespecified(var)))) {
+        if (variables.removeIf(pred.and(var -> ModellingUtility.isAutomaticallyIdentified(var)))) {
             return true;
         } else {
             return false;
@@ -594,7 +606,7 @@ public final class ModelDescription {
         int p = this.getAnnualFrequency();
         LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
         if (max != null) {
-            arima.setFreeParameters(DoubleSeq.of(max.getParameters()));
+            arima.setFreeParameters(max.getParameters());
         }
         return RegArimaEstimation.<SarimaModel>builder()
                 .model(rslt.getModel())

@@ -16,9 +16,9 @@
  */
 package demetra.toolkit.io.xml.legacy.processing;
 
-import demetra.timeseries.regression.DynamicTsDataSupplier;
-import demetra.timeseries.regression.StaticTsDataSupplier;
-import demetra.timeseries.regression.TsDataSupplier;
+import demetra.timeseries.DynamicTsDataSupplier;
+import demetra.timeseries.StaticTsDataSupplier;
+import demetra.timeseries.TsDataSupplier;
 import demetra.timeseries.regression.TsDataSuppliers;
 import java.util.ArrayList;
 import java.util.List;

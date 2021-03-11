@@ -5,6 +5,7 @@
  */
 package demetra.highfreq;
 
+import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.highfreq.extractors.FractionalAirlineModelExtractor;
 import demetra.information.InformationMapping;
@@ -31,10 +32,10 @@ public class FractionalAirlineEstimation implements ProcResults{
 
     OutlierDescriptor[] outliers;
 
-    double[] coefficients;
+    DoubleSeq coefficients;
     MatrixType coefficientsCovariance;
 
-    private double[] parameters, score;
+    private DoubleSeq parameters, score;
     private MatrixType parametersCovariance;
 
     LikelihoodStatistics likelihood;
@@ -42,8 +43,9 @@ public class FractionalAirlineEstimation implements ProcResults{
     public double[] linearized() {
 
         double[] l = y.clone();
+        DoubleSeqCursor acur = coefficients.cursor();
         for (int j = 0; j < x.getColumnsCount(); ++j) {
-            double a = coefficients[j];
+            double a = acur.getAndNext();
             if (a != 0) {
                 DoubleSeqCursor cursor = x.column(j).cursor();
                 for (int k = 0; k < l.length; ++k) {
@@ -55,7 +57,7 @@ public class FractionalAirlineEstimation implements ProcResults{
     }
 
     public double[] tstats() {
-        double[] t = coefficients.clone();
+        double[] t = coefficients.toArray();
         if (t == null) {
             return null;
         }
@@ -88,6 +90,6 @@ public class FractionalAirlineEstimation implements ProcResults{
     }
 
     public int getNx() {
-        return coefficients == null ? 0 : coefficients.length;
+        return coefficients == null ? 0 : coefficients.length();
     }
 }

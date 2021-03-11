@@ -28,6 +28,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import jdplus.arima.IArimaModel;
 import jdplus.stats.tests.NiidTests;
@@ -137,12 +138,16 @@ public class ToolkitProtosUtility {
                 return ParameterType.Initial;
             case PARAMETER_ESTIMATED:
                 return ParameterType.Estimated;
-            default:
+            case PARAMETER_UNDEFINED:
                 return ParameterType.Undefined;
+            default:
+                return null;
         }
     }
 
     public ToolkitProtos.ParameterType convert(ParameterType t) {
+        if (t == null)
+            return ToolkitProtos.ParameterType.PARAMETER_UNSPECIFIED;
         switch (t) {
             case Fixed:
                 return ToolkitProtos.ParameterType.PARAMETER_FIXED;
@@ -151,11 +156,14 @@ public class ToolkitProtosUtility {
             case Estimated:
                 return ToolkitProtos.ParameterType.PARAMETER_ESTIMATED;
             default:
-                return ToolkitProtos.ParameterType.PARAMETER_UNSPECIFIED;
+                return ToolkitProtos.ParameterType.PARAMETER_UNDEFINED;
         }
     }
 
     public Parameter convert(ToolkitProtos.Parameter p) {
+        if (p == null || p.getType() == ToolkitProtos.ParameterType.PARAMETER_UNSPECIFIED) {
+            return null;
+        }
         switch (p.getType()) {
             case PARAMETER_FIXED:
                 return Parameter.fixed(p.getValue());
@@ -170,10 +178,14 @@ public class ToolkitProtosUtility {
     }
 
     public ToolkitProtos.Parameter convert(Parameter p) {
-        return ToolkitProtos.Parameter.newBuilder()
-                .setType(convert(p.getType()))
-                .setValue(p.getValue())
-                .build();
+        if (p == null) {
+            return ToolkitProtos.Parameter.getDefaultInstance();
+        } else {
+            return ToolkitProtos.Parameter.newBuilder()
+                    .setType(convert(p.getType()))
+                    .setValue(p.getValue())
+                    .build();
+        }
     }
 
     public Parameter[] convert(List<ToolkitProtos.Parameter> p) {

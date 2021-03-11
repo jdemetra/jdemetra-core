@@ -8,7 +8,7 @@ package jdplus.x13;
 import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
-import demetra.modelling.RegressionTestSpec;
+import demetra.regarima.RegressionTestSpec;
 import demetra.modelling.TransformationType;
 import demetra.regarima.AutoModelSpec;
 import demetra.regarima.EasterSpec;
@@ -36,10 +36,12 @@ import jdplus.sarima.SarimaModel;
 import nbbrd.service.ServiceProvider;
 import demetra.sa.SaProcessingFactory;
 import demetra.timeseries.TsData;
+import demetra.timeseries.regression.ILengthOfPeriodVariable;
+import demetra.timeseries.regression.TrendConstant;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import jdplus.regarima.ami.Utility;
+import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regarima.diagnostics.OutOfSampleDiagnosticsConfiguration;
 import jdplus.regarima.diagnostics.OutliersDiagnosticsConfiguration;
 import jdplus.regarima.diagnostics.ResidualsDiagnosticsConfiguration;
@@ -116,15 +118,13 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
     }
 
     @Override
-    public X13Spec of(X13Spec spec, X13Results estimation) {
+    public X13Spec generateSpec(X13Spec spec, X13Results estimation) {
         if (spec instanceof X13Spec && estimation instanceof X13Results) {
-            X13Spec espec = (X13Spec) spec;
-            X13Results rslts = (X13Results) estimation;
 
-            RegArimaSpec ntspec = update(espec.getRegArima(), rslts.getPreprocessing());
-            X11Spec nsspec = update(espec.getX11(), rslts.getDecomposition());
+            RegArimaSpec ntspec = update(spec.getRegArima(), estimation.getPreprocessing());
+            X11Spec nsspec = update(spec.getX11(), estimation.getDecomposition());
 
-            return espec.toBuilder()
+            return spec.toBuilder()
                     .regArima(ntspec)
                     .x11(nsspec)
                     .build();
@@ -134,7 +134,7 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
     }
 
     @Override
-    public SaSpecification refreshSpecification(X13Spec currentSpec, X13Spec domainSpec, EstimationPolicy policy) {
+    public SaSpecification refreshSpec(X13Spec currentSpec, X13Spec domainSpec, EstimationPolicy policy) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -181,6 +181,9 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
     }
 
     private void update(AutoModelSpec ami, ModelEstimation rslts, RegArimaSpec.Builder builder) {
+        if (!ami.isEnabled()) {
+            return;
+        }
         // Disable ami
         AutoModelSpec nami = ami.toBuilder()
                 .enabled(false)
@@ -191,14 +194,8 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
     private RegArimaSpec update(RegArimaSpec regarima, ModelEstimation rslts) {
         RegArimaSpec.Builder builder = regarima.toBuilder();
         update(regarima.getTransform(), rslts, builder);
-        AutoModelSpec ami = regarima.getAutoModel();
-        if (ami.isEnabled()) {
-            update(regarima.getArima(), rslts, builder);
-            update(ami, rslts, builder);
-        } else {
-            updateArima(rslts, builder);
-        }
-
+        update(regarima.getArima(), rslts, builder);
+        update(regarima.getAutoModel(), rslts, builder);
         update(regarima.getOutliers(), rslts, builder);
         update(regarima.getRegression(), rslts, builder);
 
@@ -206,74 +203,112 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
     }
 
     private void update(OutlierSpec outliers, ModelEstimation rslts, RegArimaSpec.Builder builder) {
-        if (outliers.isUsed()) {    // Disable outliers
-            builder.outliers(
-                    outliers.toBuilder()
-                            .clearTypes()
-                            .build());
+        if (!outliers.isUsed()) {
+            return;
         }
+        // Disable outliers
+        builder.outliers(
+                outliers.toBuilder()
+                        .clearTypes()
+                        .build());
     }
 
     private void update(RegressionSpec regression, ModelEstimation rslts, RegArimaSpec.Builder builder) {
+        // The huge part
         RegressionSpec.Builder rbuilder = regression.toBuilder();
-        // fill all the coefficients (either estimated or fixed)
-        rbuilder.clearCoefficients();
+        // all the coefficients (fixed or free) of the variables have already been filled
         Variable[] variables = rslts.getVariables();
-        for (int i = 0; i < variables.length; ++i) {
-            rbuilder.coefficient(variables[i].getName(), variables[i].getCoefficients());
-        }
-        // add new outliers in the list of pre-specified outliers
-        Arrays.stream(variables).filter(v -> Utility.isOutlier(v, false)).forEach(v -> rbuilder.outlier((IOutlier) v.getCore()));
-        // calendar effects
-        EasterSpec espec = regression.getEaster();
-        TradingDaysSpec tdspec = regression.getTradingDays();
+        updateMean(variables, rbuilder);
+        update(regression.getTradingDays(), variables, rbuilder);
+        update(regression.getEaster(), variables, rbuilder);
+        updateOutliers(variables, rbuilder);
+        builder.regression(rbuilder.build());
+    }
 
-        if (tdspec.isUsed() && (tdspec.getRegressionTestType()!= RegressionTestSpec.None)) {
-            // leap year
-            LengthOfPeriodType lp = LengthOfPeriodType.None;
-            TradingDaysType td = TradingDaysType.None;
-            Optional<Variable> flp = Arrays.stream(variables).filter(v -> Utility.isLengthOfPeriod(v)).findFirst();
-            if (flp.isPresent()) {
-                lp = tdspec.getLengthOfPeriodType();
-            }
-            Optional<Variable> ftd = Arrays.stream(variables).filter(v -> Utility.isTradingDays(v)).findFirst();
-            if (ftd.isPresent()) {
-                td = tdspec.getTradingDaysType();
-            }
+    private void updateMean(Variable[] vars, RegressionSpec.Builder builder) {
+        Optional<Variable> fc = Arrays.stream(vars)
+                .filter(v -> v.getName().equals(TrendConstant.NAME)).findFirst();
+        if (fc.isPresent()) {
+            builder.mean(fc.get().getCoefficient(0));
+        } else {
+            builder.mean(null);
+        }
+    }
 
-            if (lp != null || td != null) {
-                if (tdspec.isStockTradingDays()) {
-                    int ntd = tdspec.getStockTradingDays();
-                    tdspec = TradingDaysSpec.stockTradingDays(ntd, RegressionTestSpec.None);
-                } else if (tdspec.isHolidays()) {
-                    tdspec = TradingDaysSpec.holidays(tdspec.getHolidays(),
-                            td, lp, RegressionTestSpec.None, false);
-                } else if (tdspec.isUserDefined()) {
-                    tdspec = TradingDaysSpec.userDefined(tdspec.getUserVariables(), RegressionTestSpec.None);
-                } else { //normal case
-                    tdspec = TradingDaysSpec.td(td, lp, RegressionTestSpec.None, false);
-                }
-            } else {
-                tdspec = TradingDaysSpec.none();
+    private void updateOutliers(Variable[] vars, RegressionSpec.Builder builder) {
+        // we keep the information that it has been previously estimated automatically
+        Arrays.stream(vars)
+                .filter(v -> ModellingUtility.isOutlier(v))
+                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
+                .forEach(v -> builder.outlier(v.replaceAttribute(ModellingUtility.AMI, ModellingUtility.AMI_PREVIOUS, "x13")));
+    }
+
+    private void update(EasterSpec espec, Variable[] vars, RegressionSpec.Builder builder) {
+        // Nothing to do
+        if (!espec.isUsed() || espec.getTest() == RegressionTestSpec.None) {
+            return;
+        }
+        // Search for an optional easter variable
+        Optional<Variable> fe = Arrays.stream(vars)
+                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
+                .filter(v -> ModellingUtility.isEaster(v)).findFirst();
+        if (fe.isPresent()) {
+            Variable ev = fe.get();
+            EasterVariable evar = (EasterVariable) ev.getCore();
+            espec = espec.toBuilder()
+                    .test(RegressionTestSpec.None)
+                    .duration(evar.getDuration())
+                    .coefficient(ev.getCoefficient(0))
+                    .build();
+        } else {
+            espec = EasterSpec.none();
+        }
+        builder.easter(espec);
+    }
+
+    private void update(TradingDaysSpec tdspec, Variable[] vars, RegressionSpec.Builder builder) {
+        // Nothing to do
+        if (!tdspec.isUsed() || tdspec.getRegressionTestType() == RegressionTestSpec.None) {
+            return;
+        }
+        // leap year
+        Optional<Variable> flp = Arrays.stream(vars)
+                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
+                .filter(v -> ModellingUtility.isLengthOfPeriod(v)).findFirst();
+        Optional<Variable> ftd = Arrays.stream(vars)
+                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
+                .filter(v -> ModellingUtility.isTradingDays(v)).findFirst();
+
+        TradingDaysSpec ntdspec = TradingDaysSpec.none();
+
+        LengthOfPeriodType lp = LengthOfPeriodType.None;
+        Parameter clp = null;
+        if (flp.isPresent()) {
+            Variable v = flp.get();
+            lp = tdspec.getLengthOfPeriodType();
+            clp = v.getCoefficient(0);
+        }
+        TradingDaysType td = TradingDaysType.None;
+        Parameter[] ctd = null;
+        if (ftd.isPresent()) {
+            Variable v = ftd.get();
+            td = tdspec.getTradingDaysType();
+            ctd = v.getCoefficients();
+        }
+        if (ftd.isPresent() || flp.isPresent()) {
+            if (tdspec.isStockTradingDays()) {
+                int ntd = tdspec.getStockTradingDays();
+                ntdspec = TradingDaysSpec.stockTradingDays(ntd, ctd);
+            } else if (tdspec.isHolidays()) {
+                ntdspec = TradingDaysSpec.holidays(tdspec.getHolidays(),
+                        td, lp, ctd, clp);
+            } else if (tdspec.isUserDefined()) {
+                ntdspec = TradingDaysSpec.userDefined(tdspec.getUserVariables(), ctd);
+            } else { //normal case
+                ntdspec = TradingDaysSpec.td(td, lp, ctd, clp);
             }
         }
-
-        if (espec.isUsed() && espec.getTest() != RegressionTestSpec.None) {
-            Optional<Variable> fe = Arrays.stream(variables).filter(v -> Utility.isEaster(v)).findFirst();
-            if (fe.isPresent()) {
-                EasterVariable evar = (EasterVariable) fe.get().getCore();
-                espec = espec.toBuilder()
-                        .test(RegressionTestSpec.None)
-                        .duration(evar.getDuration())
-                        .build();
-            } else {
-                espec = EasterSpec.none();
-            }
-        }
-        builder.regression(rbuilder
-                .easter(espec)
-                .tradingDays(tdspec)
-                .build());
+        builder.tradingDays(ntdspec);
     }
 
     private Parameter[] parametersOf(Parameter[] phi, double[] vals) {
@@ -292,8 +327,8 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
         }
     }
 
-   @Override
-    public boolean canHandle(SaSpecification spec){
+    @Override
+    public boolean canHandle(SaSpecification spec) {
         return spec instanceof X13Spec;
     }
 

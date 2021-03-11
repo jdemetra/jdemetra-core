@@ -16,7 +16,8 @@
  */
 package jdplus.x13.regarima;
 
-import demetra.sa.SaDictionary;
+import demetra.sa.SaVariable;
+import demetra.sa.SaVariable;
 import jdplus.regsarima.ami.ExactOutliersDetector;
 import nbbrd.design.BuilderPattern;
 import demetra.timeseries.regression.Variable;
@@ -38,9 +39,11 @@ import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.stats.RobustStandardDeviationComputer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import jdplus.modelling.regression.IOutlierFactory;
-import jdplus.regarima.ami.Utility;
+import jdplus.regarima.ami.ModellingUtility;
 import jdplus.sa.modelling.RegArimaDecomposer;
 
 /**
@@ -191,12 +194,12 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         }
         // exclude pre-specified outliers
         desc.variables()
-                .filter(var ->Utility.isOutlier(var, false))
+                .filter(var ->ModellingUtility.isOutlier(var, false))
                 .map(var -> (IOutlier) var.getCore()).forEach(
                 o -> impl.exclude(domain.indexOf(o.getPosition()), outlierType(types, o.getCode())));
         // add current outliers
         desc.variables()
-                .filter(var -> Utility.isOutlier(var, false))
+                .filter(var -> ModellingUtility.isOutlier(var, true))
                 .map(var -> (IOutlier) var.getCore()).forEach(
                 o -> impl.addOutlier(domain.indexOf(o.getPosition()), outlierType(types, o.getCode())));
         return impl;
@@ -213,20 +216,27 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
                 return ProcessingResult.Unchanged;
             }
             // clear current outliers and add the new ones (that could be partly the same)
-            model.removeVariable(var -> Utility.isOutlier(var, false));
+            model.removeVariable(var -> ModellingUtility.isOutlier(var, true));
             // add new outliers
             int[][] outliers = impl.getOutliers();
             for (int i = 0; i < outliers.length; ++i) {
                 int[] cur = outliers[i];
                 TsPeriod pos = domain.get(cur[0]);
                 IOutlier o = impl.getFactory(cur[1]).make(pos.start());
-                model.addVariable(Variable.variable(IOutlier.defaultName(o.getCode(), pos), o).addAttribute(SaDictionary.REGEFFECT, RegArimaDecomposer.componentTypeOf(o).name()));
+            model.addVariable(Variable.variable(IOutlier.defaultName(o.getCode(), pos), o, attributes(o)));
             }
             context.clearEstimation();
             return ProcessingResult.Changed;
         } catch (Exception err) {
             return ProcessingResult.Failed;
         }
+    }
+
+    private Map<String, String> attributes(IOutlier o){
+        HashMap<String, String> attributes=new HashMap<>();
+        attributes.put(ModellingUtility.AMI, "x13");
+        attributes.put(SaVariable.REGEFFECT, SaVariable.defaultComponentTypeOf(o).name());
+        return attributes;
     }
 
     private static int outlierType(String[] all, String cur) {

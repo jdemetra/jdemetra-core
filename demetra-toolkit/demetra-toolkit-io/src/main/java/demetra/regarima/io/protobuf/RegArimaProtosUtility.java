@@ -25,6 +25,7 @@ import demetra.timeseries.calendars.TradingDaysType;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TsContextVariable;
+import demetra.timeseries.regression.Variable;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -139,39 +140,53 @@ public class RegArimaProtosUtility {
         return builder.build();
     }
 
-    public RegArimaProtos.Variable convert(TsContextVariable v) {
+    public RegArimaProtos.Variable convertTsContextVariable(Variable<TsContextVariable> v) {
         return RegArimaProtos.Variable.newBuilder()
                 .setName(v.getName())
-                .setFirstLag(v.getFirstLag())
-                .setLastLag(v.getLastLag())
+                .setId(v.getCore().getId())
+                .setFirstLag(v.getCore().getFirstLag())
+                .setLastLag(v.getCore().getLastLag())
                 .build();
     }
 
-    public TsContextVariable convert(RegArimaProtos.Variable v) {
-        return TsContextVariable.builder()
+    public Variable<TsContextVariable> convert(RegArimaProtos.Variable v) {
+        return Variable.<TsContextVariable> builder()
                 .name(v.getName())
-                .firstLag(v.getFirstLag())
-                .lastLag(v.getLastLag())
+                .core(new TsContextVariable(v.getId(), v.getFirstLag(), v.getLastLag()))
+                .attributes(v.getMetadataMap())
+                .coefficients(ToolkitProtosUtility.convert(v.getCoefficientList()))
                 .build();
-    }
+     }
 
-    public RegArimaProtos.Ramp convert(Ramp v) {
+    public RegArimaProtos.Ramp convertRamp(Variable<Ramp> v) {
         return RegArimaProtos.Ramp.newBuilder()
-                .setStart(v.getStart().toLocalDate().format(DateTimeFormatter.ISO_DATE))
-                .setEnd(v.getEnd().toLocalDate().format(DateTimeFormatter.ISO_DATE))
+                .setName(v.getName())
+                .setStart(v.getCore().getStart().toLocalDate().format(DateTimeFormatter.ISO_DATE))
+                .setEnd(v.getCore().getEnd().toLocalDate().format(DateTimeFormatter.ISO_DATE))
+                .setCoefficient(ToolkitProtosUtility.convert(v.getCoefficient(0)))
+                .putAllMetadata(v.getAttributes())
                 .build();
     }
 
-    public Ramp convert(RegArimaProtos.Ramp v) {
+    public Variable<Ramp> convert(RegArimaProtos.Ramp v) {
         LocalDate start = LocalDate.parse(v.getStart(), DateTimeFormatter.ISO_DATE);
         LocalDate end = LocalDate.parse(v.getEnd(), DateTimeFormatter.ISO_DATE);
-        return new Ramp(start.atStartOfDay(), end.atStartOfDay());
+        return Variable.<Ramp> builder()
+                .name(v.getName())
+                .core(new Ramp(start.atStartOfDay(), end.atStartOfDay()))
+                .attributes(v.getMetadataMap())
+                .coefficients(new Parameter[]{ToolkitProtosUtility.convert(v.getCoefficient())})
+                .build();
     }
 
-    public RegArimaProtos.InterventionVariable convert(InterventionVariable v) {
+    public RegArimaProtos.InterventionVariable convertInterventionVariable(Variable<InterventionVariable> var) {
+        InterventionVariable v = var.getCore();
         RegArimaProtos.InterventionVariable.Builder builder = RegArimaProtos.InterventionVariable.newBuilder()
+                .setName(var.getName())
                 .setDelta(v.getDelta())
-                .setSeasonalDelta(v.getDeltaSeasonal());
+                .setSeasonalDelta(v.getDeltaSeasonal())
+                .setCoefficient(ToolkitProtosUtility.convert(var.getCoefficient(0)))
+                .putAllMetadata(var.getAttributes());
 
         Range<LocalDateTime>[] sequences = v.getSequences();
         for (int i = 0; i < sequences.length; ++i) {
@@ -184,7 +199,7 @@ public class RegArimaProtosUtility {
         return builder.build();
     }
 
-    public InterventionVariable convert(RegArimaProtos.InterventionVariable v) {
+    public Variable<InterventionVariable> convert(RegArimaProtos.InterventionVariable v) {
         InterventionVariable.Builder builder = InterventionVariable.builder()
                 .delta(v.getDelta())
                 .deltaSeasonal(v.getSeasonalDelta());
@@ -195,7 +210,12 @@ public class RegArimaProtosUtility {
             LocalDate end = LocalDate.parse(seq.getEnd(), DateTimeFormatter.ISO_DATE);
             builder.add(start.atStartOfDay(), end.atStartOfDay());
         }
-        return builder.build();
+        return Variable.<InterventionVariable>builder()
+                .name(v.getName())
+                .core(builder.build())
+                .coefficients(new Parameter[]{ToolkitProtosUtility.convert(v.getCoefficient())})
+                .attributes(v.getMetadataMap())
+                .build();
     }
     
     public RegArimaResultsProtos.Diagnostics of(ModelEstimation model){

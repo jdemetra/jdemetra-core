@@ -16,22 +16,11 @@
  */
 package jdplus.sa.modelling;
 
-import demetra.data.Range;
 import demetra.sa.ComponentType;
-import demetra.sa.SaDictionary;
+import demetra.sa.SaVariable;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
-import demetra.timeseries.regression.AdditiveOutlier;
-import demetra.timeseries.regression.IOutlier;
-import demetra.timeseries.regression.ITsVariable;
-import demetra.timeseries.regression.InterventionVariable;
-import demetra.timeseries.regression.LevelShift;
-import demetra.timeseries.regression.PeriodicOutlier;
-import demetra.timeseries.regression.SwitchOutlier;
-import demetra.timeseries.regression.TransitoryChange;
 import demetra.timeseries.regression.Variable;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.function.Predicate;
 import jdplus.regsarima.regular.ModelEstimation;
 
@@ -61,7 +50,7 @@ public class RegArimaDecomposer {
      * @return
      */
     public TsData deterministicEffect(ModelEstimation model, TsDomain domain, ComponentType type, boolean transformed) {
-        TsData f = model.deterministicEffect(domain, v -> v.isAttribute(SaDictionary.REGEFFECT, type.name()));
+        TsData f = model.deterministicEffect(domain, v -> v.isAttribute(SaVariable.REGEFFECT, type.name()));
         if (!transformed) {
             f = model.backTransform(f, type == ComponentType.CalendarEffect);
         }
@@ -84,47 +73,12 @@ public class RegArimaDecomposer {
      * @return
      */
     public TsData deterministicEffect(ModelEstimation model, TsDomain domain, ComponentType type, boolean transformed, Predicate<Variable> test) {
-        TsData f = model.deterministicEffect(domain, v -> test.test(v) && v.isAttribute(SaDictionary.REGEFFECT, type.name()));
+        TsData f = model.deterministicEffect(domain, v -> test.test(v) && v.isAttribute(SaVariable.REGEFFECT, type.name()));
         if (!transformed) {
             f = model.backTransform(f, false);
         }
         return f;
     }
 
-    public ComponentType componentTypeOf(IOutlier v) {
-        if (v instanceof AdditiveOutlier || v instanceof TransitoryChange || v instanceof SwitchOutlier) {
-            return ComponentType.Irregular;
-        } else if (v instanceof LevelShift) {
-            return ComponentType.Trend;
-        } else if (v instanceof PeriodicOutlier) {
-            return ComponentType.Seasonal;
-        } else {
-            return ComponentType.Undefined;
-        }
-    }
-
-    public ComponentType componentTypeOf(InterventionVariable var) {
-        if (var.getDeltaSeasonal() > 0 && var.getDelta() > 0) {
-            return ComponentType.Undefined;
-        }
-        Range<LocalDateTime>[] sequences = var.getSequences();
-        int maxseq = 0;
-        for (int i = 0; i < sequences.length; ++i) {
-            int len = (int) sequences[i].start().until(sequences[i].end(), ChronoUnit.DAYS) / 365;
-            if (len > maxseq) {
-                maxseq = len;
-            }
-        }
-        if (maxseq > 0) {
-            return var.getDeltaSeasonal() == 0 ? ComponentType.Trend : ComponentType.Undefined;
-        }
-        if (var.getDeltaSeasonal() > 0) {
-            return ComponentType.Seasonal;
-        }
-        if (var.getDelta() > .8) {
-            return ComponentType.Trend;
-        }
-        return ComponentType.Irregular;
-    }
 
 }

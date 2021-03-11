@@ -21,6 +21,8 @@ import demetra.information.InformationSet;
 import demetra.processing.Diagnostics;
 import demetra.processing.DiagnosticsFactory;
 import demetra.processing.ProcDiagnostic;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import nbbrd.service.Mutability;
@@ -32,8 +34,8 @@ import nbbrd.service.ServiceDefinition;
  * @author PALATEJ
  * @param <R> Output
  */
-@ServiceDefinition(quantifier = Quantifier.MULTIPLE, mutability = Mutability.NONE, singleton=true)
-public interface SaDiagnosticsFactory<R> extends DiagnosticsFactory<R>{
+@ServiceDefinition(quantifier = Quantifier.MULTIPLE, mutability = Mutability.NONE, singleton = true)
+public interface SaDiagnosticsFactory<R> extends DiagnosticsFactory<R> {
 
     public static enum Scope {
 
@@ -57,45 +59,48 @@ public interface SaDiagnosticsFactory<R> extends DiagnosticsFactory<R>{
 
     int getOrder();
 
-    public static class Ordering implements Comparator<SaDiagnosticsFactory>{
+    public static class Ordering implements Comparator<SaDiagnosticsFactory> {
 
         @Override
         public int compare(SaDiagnosticsFactory diag1, SaDiagnosticsFactory diag2) {
-            int s1=diag1.getScope().value, s2=diag2.getScope().value;
-            if (s1 < s2)
+            int s1 = diag1.getScope().value, s2 = diag2.getScope().value;
+            if (s1 < s2) {
                 return -1;
-            if (s1 > s2)
+            }
+            if (s1 > s2) {
                 return 1;
+            }
             // s1 == s2
-            int o1=diag1.getOrder(), o2=diag2.getOrder();
-            if (o1 < o2)
+            int o1 = diag1.getOrder(), o2 = diag2.getOrder();
+            if (o1 < o2) {
                 return -1;
-            if (o1 > o2)
+            }
+            if (o1 > o2) {
                 return 1;
-            else
+            } else {
                 return 0;
+            }
         }
     }
-    
-    default Information<InformationSet> qualityOf(R sa) {
+
+    default void fill(List<ProcDiagnostic> tests, R sa, String category) {
         if (sa == null) {
-            return null;
+            return;
         }
         Diagnostics diags = of(sa);
         if (diags == null) {
-            return null;
+            return;
         }
-        InformationSet set = new InformationSet();
         for (String test : diags.getTests()) {
-            double val = diags.getValue(test);
-            ProcDiagnostic item = new ProcDiagnostic(val, diags.getDiagnostic(test));
-            set.set(test.toLowerCase(), item);
+            ProcDiagnostic item = ProcDiagnostic.builder()
+                    .diagnostic(test)
+                    .category(category)
+                    .quality(diags.getDiagnostic(test))
+                    .value(diags.getValue(test))
+                    .warnings(diags.getWarnings())
+                    .build();
+            tests.add(item);
         }
-        List<String> warnings = diags.getWarnings();
-        if (warnings != null && !warnings.isEmpty()) {
-            set.set(InformationSet.WARNINGS, warnings.toArray());
-        }
-        return new Information<>(diags.getName().toLowerCase(), set);
-    }
+     }
 
 }

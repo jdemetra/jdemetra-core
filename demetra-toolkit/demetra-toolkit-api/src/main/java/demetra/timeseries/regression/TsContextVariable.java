@@ -16,25 +16,93 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
 import nbbrd.design.Development;
-import java.util.List;
 
 /**
- * 
+ * This variable should be translated to the correct implementation when the
+ * context is known
+ *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
+@Development(status = Development.Status.Release)
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder", toBuilder = true)
-public class TsContextVariable {
+public class TsContextVariable implements ITsVariable {
 
     @lombok.NonNull
-    String name;
-    
+    String id;
+
     int firstLag, lastLag;
-    
-    @lombok.NonNull
-    @lombok.Singular
-    List<String> attributes;
 
+    public TsContextVariable(String id) {
+        this.id = id;
+        firstLag = 0;
+        lastLag = 0;
+    }
+
+    public TsContextVariable(String id, int lag) {
+        this.id = id;
+        firstLag = lag;
+        lastLag = lag;
+    }
+
+    /**
+     * first &le last !!
+     *
+     * For instance, if first = -1 and last = 2
+     * we have the following variables:
+     * v(t+1), v(t), v(t-1), v(t-2)
+     *
+     * @param id
+     * @param first First lag (negative values = leads)
+     * @param last Last lag (negative values = leads)
+     */
+    public TsContextVariable(String id, int first, int last) {
+        this.id = id;
+        firstLag = first;
+        lastLag = last;
+    }
+
+    public boolean isLag() {
+        return firstLag != 0 || lastLag != 0;
+    }
+
+    @Override
+    public int dim() {
+        return lastLag - firstLag + 1;
+    }
+
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(D context) {
+        return id;
+    }
+
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(int idx, D context) {
+        if (isLag()) {
+             StringBuilder builder = new StringBuilder();
+            int lag = firstLag + idx;
+            builder.append(id);
+            if (lag < 0) {
+                builder.append("+").append(-lag).append(')');
+            } else {
+                builder.append("-").append(lag).append(')');
+            }
+            return builder.toString();
+        } else {
+           return id;
+        }
+    }
+
+    public ITsVariable instantiateFrom(ModellingContext context, String desc) {
+        UserVariable var = UserVariable.of(id, desc, context);
+        if (isLag()) {
+            return ModifiedTsVariable.builder()
+                    .variable(var)
+                    .modifier(new TsLags(firstLag, lastLag))
+                    .build();
+        } else {
+            return var;
+        }
+    }
 }

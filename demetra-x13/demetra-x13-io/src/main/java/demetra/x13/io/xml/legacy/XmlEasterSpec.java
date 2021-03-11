@@ -16,7 +16,7 @@
  */
 package demetra.x13.io.xml.legacy;
 
-import demetra.modelling.RegressionTestSpec;
+import demetra.regarima.RegressionTestSpec;
 import demetra.regarima.EasterSpec;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

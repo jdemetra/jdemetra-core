@@ -16,6 +16,7 @@
  */
 package jdplus.regarima.internal;
 
+import demetra.data.DoubleSeq;
 import jdplus.arima.IArimaModel;
 import jdplus.math.matrices.Matrix;
 
@@ -27,8 +28,8 @@ import jdplus.math.matrices.Matrix;
 @lombok.Value
 public class RegArmaEstimation<S extends IArimaModel> {
 
-    private double[] parameters;
-    private double[] score;
+    private DoubleSeq parameters;
+    private DoubleSeq score;
     private Matrix information;
 //    private int degreesOfFreedom;
 }

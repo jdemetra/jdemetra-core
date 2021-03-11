@@ -16,7 +16,7 @@
  */
 package demetra.x13.io.protobuf;
 
-import demetra.modelling.RegressionTestSpec;
+import demetra.regarima.RegressionTestSpec;
 import demetra.regarima.EasterSpec;
 import demetra.sa.DecompositionMode;
 import demetra.x11.BiasCorrection;

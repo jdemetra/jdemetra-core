@@ -18,7 +18,7 @@ package demetra.toolkit.io.xml.legacy.processing;
 
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsMoniker;
-import demetra.timeseries.regression.DynamicTsDataSupplier;
+import demetra.timeseries.DynamicTsDataSupplier;
 import demetra.timeseries.regression.DynamicTsVariable;
 import demetra.toolkit.io.xml.legacy.core.XmlTsData;
 import demetra.toolkit.io.xml.legacy.core.XmlTsMoniker;

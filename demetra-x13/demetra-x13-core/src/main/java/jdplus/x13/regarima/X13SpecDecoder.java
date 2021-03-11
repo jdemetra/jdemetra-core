@@ -23,7 +23,7 @@ import demetra.regarima.AutoModelSpec;
 import demetra.regarima.RegArimaSpec;
 import demetra.regarima.TradingDaysSpec;
 import demetra.regarima.TransformSpec;
-import demetra.modelling.RegressionTestSpec;
+import demetra.regarima.RegressionTestSpec;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.LevelShift;

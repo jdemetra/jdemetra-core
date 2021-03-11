@@ -17,7 +17,7 @@
 package jdplus.tramo;
 
 import demetra.sa.ComponentType;
-import demetra.sa.SaDictionary;
+import demetra.sa.SaVariable;
 import nbbrd.design.BuilderPattern;
 import jdplus.dstats.F;
 import demetra.stats.ProbabilityType;
@@ -195,13 +195,13 @@ public class AutomaticFRegressionTest implements IRegressionModule {
     private ModelDescription createTestModel(RegSarimaModelling context, ITradingDaysVariable td, ILengthOfPeriodVariable lp) {
         ModelDescription tmp = ModelDescription.copyOf(context.getDescription());
         if (td != null) {
-            tmp.addVariable(Variable.variable("td", td).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
+            tmp.addVariable(Variable.variable("td", td, TramoModelBuilder.calendarAMI));
             if (lp != null) {
-                tmp.addVariable(Variable.variable("lp", lp).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
+                tmp.addVariable(Variable.variable("lp", lp, TramoModelBuilder.calendarAMI));
             }
         }
         if (easter != null) {
-            tmp.addVariable(Variable.variable("easter", easter).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
+            tmp.addVariable(Variable.variable("easter", easter, TramoModelBuilder.calendarAMI));
         }
         return tmp;
     }
@@ -209,7 +209,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
     private ProcessingResult update(ModelDescription current, ModelDescription test, ITradingDaysVariable aTd, ConcentratedLikelihoodWithMissing ll, int nhp) {
         boolean changed = false;
         if (aTd != null) {
-            current.addVariable(Variable.variable("td", aTd).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
+            current.addVariable(Variable.variable("td", aTd, TramoModelBuilder.calendarAMI));
         }
         if (testMean) {
             boolean mean = Math.abs(ll.tstat(0, nhp, true)) > tmean;
@@ -221,14 +221,14 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         if (aTd != null && lp != null) {
             int pos = test.findPosition(lp);
             if (Math.abs(ll.tstat(pos, nhp, true)) > tlp) {
-                current.addVariable(Variable.variable("lp", lp).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
+                current.addVariable(Variable.variable("lp", lp, TramoModelBuilder.calendarAMI));
                 changed = true;
             }
         }
         if (easter != null) {
             int pos = test.findPosition(easter);
             if (Math.abs(ll.tstat(pos, nhp, true)) > teaster) {
-                current.addVariable(Variable.variable("easter", easter).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
+                current.addVariable(Variable.variable("easter", easter, TramoModelBuilder.calendarAMI));
                 changed = true;
             }
         }

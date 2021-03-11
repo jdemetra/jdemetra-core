@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 National Bank of Belgium
+ * Copyright 2021 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,35 +14,18 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.linearmodel;
+package demetra.modelling;
 
-import nbbrd.design.Development;
-import demetra.math.matrices.MatrixType;
+import demetra.likelihood.LikelihoodStatistics;
 
 /**
- * Describes the linear model: y = a + b * X
- * The constant should be defined explicitly (not included in X)
- * 
- * @author Jean Palate <jean.palate@nbb.be>
+ *
+ * @author PALATEJ
+ * @param <S> Stochastic model
  */
-@Development(status = Development.Status.Temporary)
 @lombok.Value
-@Deprecated
-public class LinearModel {
-    @lombok.NonNull
-    /**
-     * Exogenous variable
-     */
-    private double[] y;
-
-    /**
-     * Mean correction
-     */
-    private boolean meanCorrection;
-
-    /**
-     * Regression variables (without the mean)
-     */
-    private MatrixType X;
-    
+public class StochasticLinearModel<S> {
+    LinearModel linear;
+    StochasticModel<S> stochastic;
+    LikelihoodStatistics likelihood;
 }

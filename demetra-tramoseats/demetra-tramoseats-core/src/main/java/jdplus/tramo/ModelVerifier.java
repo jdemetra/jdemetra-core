@@ -23,7 +23,7 @@ import jdplus.stats.tests.NiidTests;
 import demetra.data.DoubleSeq;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regarima.ami.Utility;
+import jdplus.regarima.ami.ModellingUtility;
 import jdplus.sarima.SarimaModel;
 
 
@@ -39,7 +39,7 @@ public class ModelVerifier {
         ModelDescription desc = context.getDescription();
         RegArimaEstimation<SarimaModel> estimation = context.getEstimation();
         int nz = desc.getSeries().getValues().count(x->Double.isFinite(x));
-        if (desc.variables().filter(var->Utility.isOutlier(var, false)).count() > OUT * nz) {
+        if (desc.variables().filter(var->ModellingUtility.isOutlier(var, true)).count() > OUT * nz) {
             return false;
         }
         int period=desc.getAnnualFrequency();

@@ -50,7 +50,7 @@ public class FractionalAirlineKernelTest {
         FractionalAirlineEstimation rslt = FractionalAirlineKernel.process(spec);
         assertTrue(rslt != null);
         
-        System.out.println(DoubleSeq.of(rslt.getCoefficients()));
+        System.out.println(rslt.getCoefficients());
         System.out.println(DoubleSeq.of(rslt.tstats()));
         System.out.println(rslt.getLikelihood().getLogLikelihood());
         
@@ -63,7 +63,7 @@ public class FractionalAirlineKernelTest {
                 .build();
         rslt = FractionalAirlineKernel.process(spec);
         assertTrue(rslt != null);
-        System.out.println(DoubleSeq.of(rslt.getCoefficients()));
+        System.out.println(rslt.getCoefficients());
         System.out.println(DoubleSeq.of(rslt.tstats()));
         System.out.println(rslt.getLikelihood().getLogLikelihood());
         

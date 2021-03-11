@@ -213,15 +213,7 @@ public final class Normal implements ContinuousDistribution {
 
     @Override
     public double random(@NonNull RandomNumberGenerator rng) {
-        double x1, x2, w;
-        do {
-            x1 = 2 * rng.nextDouble() - 1;
-            x2 = 2 * rng.nextDouble() - 1;
-            w = x1 * x1 + x2 * x2;
-        } while (w >= 1 || w < 1E-30);
-        w = Math.sqrt((-2 * Math.log(w)) / w);
-        x1 *= w;
-        return x1 * stdev + mean;
+        return random(rng, mean,stdev);
     }
 
     @Override
@@ -234,4 +226,17 @@ public final class Normal implements ContinuousDistribution {
         sb.append(')');
         return sb.toString();
     }
+    
+    public static double random(@NonNull RandomNumberGenerator rng, double mean, double stdev) {
+        double x1, x2, w;
+        do {
+            x1 = 2 * rng.nextDouble() - 1;
+            x2 = 2 * rng.nextDouble() - 1;
+            w = x1 * x1 + x2 * x2;
+        } while (w >= 1 || w < 1E-30);
+        w = Math.sqrt((-2 * Math.log(w)) / w);
+        x1 *= w;
+        return x1 * stdev + mean;
+    }
+
 }

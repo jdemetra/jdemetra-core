@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.TsDataSupplier;
 import nbbrd.design.Development;
 import demetra.util.DefaultNameValidator;
 import demetra.util.INameValidator;

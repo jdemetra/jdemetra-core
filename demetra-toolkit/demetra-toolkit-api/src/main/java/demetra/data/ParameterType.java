@@ -46,7 +46,7 @@ public enum ParameterType {
      * - in re-estimation (fixed parameters should not be considered, but
      * estimated parameters should be recomputed)
      */
-    Estimated,
+    Estimated;
 //    /**
 //     * The value is derived from other parameters. Such parameters are just
 //     * added for information (they are not actual parameters)

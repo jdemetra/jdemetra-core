@@ -32,7 +32,7 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class OutliersMapping {
+public class OutlierSpecMapping {
 
     public final String SPAN = "span",
             TYPES = "types",

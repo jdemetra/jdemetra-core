@@ -22,7 +22,7 @@ import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.arima.SarimaOrders;
-import jdplus.regarima.ami.Utility;
+import jdplus.regarima.ami.ModellingUtility;
 
 /**
  *
@@ -52,7 +52,7 @@ class ModelBenchmarking extends ModelController {
         ModelDescription ndesc = ModelDescription.copyOf(modelling.getDescription());
         ndesc.setAirline(context.seasonal);
         ndesc.setMean(context.seasonal ? modelling.getDescription().isMean() : true);
-        ndesc.removeVariable(var -> Utility.isOutlier(var, false));
+        ndesc.removeVariable(var -> ModellingUtility.isOutlier(var, true));
         RegSarimaModelling nmodelling = RegSarimaModelling.of(ndesc);
 
         if (!estimate(nmodelling, true)) {

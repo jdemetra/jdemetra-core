@@ -17,6 +17,7 @@
 package demetra.x13.io.protobuf;
 
 import demetra.data.Parameter;
+import demetra.regarima.EasterSpec;
 import demetra.regarima.RegressionSpec;
 import demetra.regarima.io.protobuf.RegArimaProtos;
 import demetra.regarima.io.protobuf.RegArimaProtosUtility;
@@ -28,13 +29,11 @@ import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TransitoryChange;
 import demetra.timeseries.regression.TsContextVariable;
+import demetra.timeseries.regression.Variable;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  *
@@ -42,16 +41,11 @@ import java.util.Set;
  */
 @lombok.experimental.UtilityClass
 public class RegressionProto {
-
     public RegressionSpec convert(X13Protos.RegArimaSpec.RegressionSpec spec, double tc) {
         RegressionSpec.Builder builder = RegressionSpec.builder()
-                .mean(spec.getMean());
-        if (spec.hasEaster()) {
-            builder.easter(EasterProto.convert(spec.getEaster()));
-        }
-        if (spec.hasTd()) {
-            builder.tradingDays(TradingDaysProto.convert(spec.getTd()));
-        }
+                .mean(ToolkitProtosUtility.convert(spec.getMean()))
+                .easter(EasterProto.convert(spec.getEaster()))
+                .tradingDays(TradingDaysProto.convert(spec.getTd()));
         int n = spec.getOutliersCount();
         for (int i = 0; i < n; ++i) {
             RegArimaProtos.Outlier outlier = spec.getOutliers(i);
@@ -73,75 +67,75 @@ public class RegressionProto {
             builder.ramp(RegArimaProtosUtility.convert(var));
         }
         
-        n=spec.getPreadujstmentsCount();
-        for (int i=0; i<n; ++i){
-            X13Protos.RegArimaSpec.RegressionSpec.PrespecifiedVariable p = spec.getPreadujstments(i);
-            builder.coefficient(p.getName(), ToolkitProtosUtility.convert(p.getParametersList()));
-        }
         return builder.build();
     }
 
     public X13Protos.RegArimaSpec.RegressionSpec convert(RegressionSpec spec) {
         X13Protos.RegArimaSpec.RegressionSpec.Builder builder = X13Protos.RegArimaSpec.RegressionSpec.newBuilder()
-                .setMean(spec.isMean())
+                .setMean(ToolkitProtosUtility.convert(spec.getMean()))
                 .setEaster(EasterProto.convert(spec.getEaster()))
                 .setTd(TradingDaysProto.convert(spec.getTradingDays()));
         
-        List<IOutlier> outliers = spec.getOutliers();
-        for (IOutlier outlier : outliers) {
+        List<Variable<IOutlier>> outliers = spec.getOutliers();
+        for (Variable<IOutlier> outlier : outliers) {
            builder.addOutliers(convert(outlier));
         }
-        List<TsContextVariable> users = spec.getUserDefinedVariables();
-        for (TsContextVariable user:users) {
-            builder.addUsers(RegArimaProtosUtility.convert(user));
+        List<Variable<TsContextVariable>> users = spec.getUserDefinedVariables();
+        for (Variable<TsContextVariable> user:users) {
+            builder.addUsers(RegArimaProtosUtility.convertTsContextVariable(user));
         }
-        List<InterventionVariable> ivs = spec.getInterventionVariables();
-        for (InterventionVariable iv : ivs) {
-            builder.addInterventions(RegArimaProtosUtility.convert(iv));
+        List<Variable<InterventionVariable>> ivs = spec.getInterventionVariables();
+        for (Variable<InterventionVariable> iv : ivs) {
+            builder.addInterventions(RegArimaProtosUtility.convertInterventionVariable(iv));
         }
-        List<Ramp> ramps = spec.getRamps();
-        for (Ramp ramp : ramps) {
-            builder.addRamps(RegArimaProtosUtility.convert(ramp));
+        List<Variable<Ramp>> ramps = spec.getRamps();
+        for (Variable<Ramp> ramp : ramps) {
+            builder.addRamps(RegArimaProtosUtility.convertRamp(ramp));
         }
         
-        Map<String, Parameter[]> map = spec.getCoefficients();
-        for (Entry<String, Parameter[]> entry : map.entrySet()){
-            X13Protos.RegArimaSpec.RegressionSpec.PrespecifiedVariable.Builder b = X13Protos.RegArimaSpec.RegressionSpec.PrespecifiedVariable.newBuilder()
-                    .setName(entry.getKey());
-            for (int i=0; i<entry.getValue().length; ++i){
-                b.addParameters(ToolkitProtosUtility.convert(entry.getValue()[i]));
-            }        
-            builder.addPreadujstments(b.build());
-        }
         return builder.build();
     }
 
-    public IOutlier convert(RegArimaProtos.Outlier outlier, double tc) {
+    public Variable<IOutlier> convert(RegArimaProtos.Outlier outlier, double tc) {
         LocalDate ldt = LocalDate.parse(outlier.getPosition(), DateTimeFormatter.ISO_DATE);
+        IOutlier o=null;
         switch (outlier.getCode()) {
             case "ao":
             case "AO":
-                return new AdditiveOutlier(ldt.atStartOfDay());
+                o= new AdditiveOutlier(ldt.atStartOfDay());
+                break;
             case "ls":
             case "LS":
-                return new LevelShift(ldt.atStartOfDay(), true);
+                o= new LevelShift(ldt.atStartOfDay(), false);
+                break;
             case "tc":
             case "TC":
-                return new TransitoryChange(ldt.atStartOfDay(), tc);
-
+                o= new TransitoryChange(ldt.atStartOfDay(), tc);
+                break;
             case "so":
             case "SO":
-                return new PeriodicOutlier(ldt.atStartOfDay(), 0, true);
+                o=new PeriodicOutlier(ldt.atStartOfDay(), 0, false);
+                break;
 
             default:
                 return null;
         }
+        
+        return Variable.<IOutlier>builder()
+                .core(o)
+                .name(outlier.getName())
+                .coefficients(new Parameter[]{ToolkitProtosUtility.convert(outlier.getCoefficient())})
+                .attributes(outlier.getMetadataMap())
+                .build();        
     }
     
-    public RegArimaProtos.Outlier convert(IOutlier outlier){
+    public RegArimaProtos.Outlier convert(Variable<IOutlier> v){
+        IOutlier outlier = v.getCore();
         return RegArimaProtos.Outlier.newBuilder()
+                .setName(v.getName())
                 .setCode(outlier.getCode())
                 .setPosition(outlier.getPosition().toLocalDate().format(DateTimeFormatter.ISO_DATE))
+                .setCoefficient(ToolkitProtosUtility.convert(v.getCoefficient(0)))
                 .build();
     }
 }

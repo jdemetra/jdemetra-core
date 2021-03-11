@@ -25,7 +25,7 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class AutoModelMapping {
+public class AutoModelSpecMapping {
 
     public final String ENABLED = "enabled",
             PCR = "pcr",

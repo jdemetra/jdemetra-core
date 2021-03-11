@@ -5,6 +5,8 @@
  */
 package demetra.highfreq;
 
+import demetra.data.DoubleSeq;
+
 /**
  * Description of a fractional airline model with multiple periodicities
  * @author palatej
@@ -13,6 +15,6 @@ package demetra.highfreq;
 public class FractionalAirline {
 
     private double[] periodicities;
-    private double[] theta;
+    private DoubleSeq theta;
     private boolean adjustToInt;
 }

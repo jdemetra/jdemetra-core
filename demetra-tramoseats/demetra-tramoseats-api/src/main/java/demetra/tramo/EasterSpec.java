@@ -16,6 +16,7 @@
  */
 package demetra.tramo;
 
+import demetra.data.Parameter;
 import nbbrd.design.Development;
 import nbbrd.design.LombokWorkaround;
 import demetra.util.Validatable;
@@ -44,10 +45,13 @@ public final class EasterSpec implements Validatable<EasterSpec> {
     public static final int DEF_IDUR = 6;
     public static boolean DEF_JULIAN = false;
 
-    private boolean test;
-    private int duration;
-    private Type type;
-    private boolean julian;
+    boolean test;
+    int duration;
+    Type type;
+    boolean julian;
+    
+    // optional coefficient.
+    Parameter coefficient;
 
     public static final EasterSpec DEFAULT_UNUSED = EasterSpec.builder().build();
 
@@ -57,7 +61,8 @@ public final class EasterSpec implements Validatable<EasterSpec> {
                 .test(false)
                 .julian(DEF_JULIAN)
                 .type(Type.Unused)
-                .duration(DEF_IDUR);
+                .duration(DEF_IDUR)
+                .coefficient(Parameter.undefined());
     }
 
     @Override
@@ -65,6 +70,8 @@ public final class EasterSpec implements Validatable<EasterSpec> {
         if (duration <= 0 || duration > 15) {
             throw new IllegalArgumentException("Duration should be inside [1, 15]");
         }
+        if (test && Parameter.isFixed(coefficient))
+            throw new IllegalArgumentException("Fixed coefficient should not be used with testing");
         return this;
     }
 

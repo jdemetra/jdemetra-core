@@ -5699,6 +5699,21 @@ public final class TramoSeatsProtos {
        * @return The test.
        */
       boolean getTest();
+
+      /**
+       * <code>.jd3.Parameter coefficient = 10;</code>
+       * @return Whether the coefficient field is set.
+       */
+      boolean hasCoefficient();
+      /**
+       * <code>.jd3.Parameter coefficient = 10;</code>
+       * @return The coefficient.
+       */
+      demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCoefficient();
+      /**
+       * <code>.jd3.Parameter coefficient = 10;</code>
+       */
+      demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCoefficientOrBuilder();
     }
     /**
      * Protobuf type {@code tramoseats.TramoSpec.EasterSpec}
@@ -5765,6 +5780,19 @@ public final class TramoSeatsProtos {
               case 32: {
 
                 test_ = input.readBool();
+                break;
+              }
+              case 82: {
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
+                if (coefficient_ != null) {
+                  subBuilder = coefficient_.toBuilder();
+                }
+                coefficient_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(coefficient_);
+                  coefficient_ = subBuilder.buildPartial();
+                }
+
                 break;
               }
               default: {
@@ -5851,6 +5879,32 @@ public final class TramoSeatsProtos {
         return test_;
       }
 
+      public static final int COEFFICIENT_FIELD_NUMBER = 10;
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter coefficient_;
+      /**
+       * <code>.jd3.Parameter coefficient = 10;</code>
+       * @return Whether the coefficient field is set.
+       */
+      @java.lang.Override
+      public boolean hasCoefficient() {
+        return coefficient_ != null;
+      }
+      /**
+       * <code>.jd3.Parameter coefficient = 10;</code>
+       * @return The coefficient.
+       */
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCoefficient() {
+        return coefficient_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : coefficient_;
+      }
+      /**
+       * <code>.jd3.Parameter coefficient = 10;</code>
+       */
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCoefficientOrBuilder() {
+        return getCoefficient();
+      }
+
       private byte memoizedIsInitialized = -1;
       @java.lang.Override
       public final boolean isInitialized() {
@@ -5877,6 +5931,9 @@ public final class TramoSeatsProtos {
         if (test_ != false) {
           output.writeBool(4, test_);
         }
+        if (coefficient_ != null) {
+          output.writeMessage(10, getCoefficient());
+        }
         unknownFields.writeTo(output);
       }
 
@@ -5902,6 +5959,10 @@ public final class TramoSeatsProtos {
           size += com.google.protobuf.CodedOutputStream
             .computeBoolSize(4, test_);
         }
+        if (coefficient_ != null) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(10, getCoefficient());
+        }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
         return size;
@@ -5924,6 +5985,11 @@ public final class TramoSeatsProtos {
             != other.getJulian()) return false;
         if (getTest()
             != other.getTest()) return false;
+        if (hasCoefficient() != other.hasCoefficient()) return false;
+        if (hasCoefficient()) {
+          if (!getCoefficient()
+              .equals(other.getCoefficient())) return false;
+        }
         if (!unknownFields.equals(other.unknownFields)) return false;
         return true;
       }
@@ -5945,6 +6011,10 @@ public final class TramoSeatsProtos {
         hash = (37 * hash) + TEST_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
             getTest());
+        if (hasCoefficient()) {
+          hash = (37 * hash) + COEFFICIENT_FIELD_NUMBER;
+          hash = (53 * hash) + getCoefficient().hashCode();
+        }
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
         return hash;
@@ -6086,6 +6156,12 @@ public final class TramoSeatsProtos {
 
           test_ = false;
 
+          if (coefficientBuilder_ == null) {
+            coefficient_ = null;
+          } else {
+            coefficient_ = null;
+            coefficientBuilder_ = null;
+          }
           return this;
         }
 
@@ -6116,6 +6192,11 @@ public final class TramoSeatsProtos {
           result.duration_ = duration_;
           result.julian_ = julian_;
           result.test_ = test_;
+          if (coefficientBuilder_ == null) {
+            result.coefficient_ = coefficient_;
+          } else {
+            result.coefficient_ = coefficientBuilder_.build();
+          }
           onBuilt();
           return result;
         }
@@ -6175,6 +6256,9 @@ public final class TramoSeatsProtos {
           }
           if (other.getTest() != false) {
             setTest(other.getTest());
+          }
+          if (other.hasCoefficient()) {
+            mergeCoefficient(other.getCoefficient());
           }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
@@ -6351,6 +6435,125 @@ public final class TramoSeatsProtos {
           onChanged();
           return this;
         }
+
+        private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter coefficient_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> coefficientBuilder_;
+        /**
+         * <code>.jd3.Parameter coefficient = 10;</code>
+         * @return Whether the coefficient field is set.
+         */
+        public boolean hasCoefficient() {
+          return coefficientBuilder_ != null || coefficient_ != null;
+        }
+        /**
+         * <code>.jd3.Parameter coefficient = 10;</code>
+         * @return The coefficient.
+         */
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCoefficient() {
+          if (coefficientBuilder_ == null) {
+            return coefficient_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : coefficient_;
+          } else {
+            return coefficientBuilder_.getMessage();
+          }
+        }
+        /**
+         * <code>.jd3.Parameter coefficient = 10;</code>
+         */
+        public Builder setCoefficient(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+          if (coefficientBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            coefficient_ = value;
+            onChanged();
+          } else {
+            coefficientBuilder_.setMessage(value);
+          }
+
+          return this;
+        }
+        /**
+         * <code>.jd3.Parameter coefficient = 10;</code>
+         */
+        public Builder setCoefficient(
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+          if (coefficientBuilder_ == null) {
+            coefficient_ = builderForValue.build();
+            onChanged();
+          } else {
+            coefficientBuilder_.setMessage(builderForValue.build());
+          }
+
+          return this;
+        }
+        /**
+         * <code>.jd3.Parameter coefficient = 10;</code>
+         */
+        public Builder mergeCoefficient(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+          if (coefficientBuilder_ == null) {
+            if (coefficient_ != null) {
+              coefficient_ =
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder(coefficient_).mergeFrom(value).buildPartial();
+            } else {
+              coefficient_ = value;
+            }
+            onChanged();
+          } else {
+            coefficientBuilder_.mergeFrom(value);
+          }
+
+          return this;
+        }
+        /**
+         * <code>.jd3.Parameter coefficient = 10;</code>
+         */
+        public Builder clearCoefficient() {
+          if (coefficientBuilder_ == null) {
+            coefficient_ = null;
+            onChanged();
+          } else {
+            coefficient_ = null;
+            coefficientBuilder_ = null;
+          }
+
+          return this;
+        }
+        /**
+         * <code>.jd3.Parameter coefficient = 10;</code>
+         */
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getCoefficientBuilder() {
+          
+          onChanged();
+          return getCoefficientFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>.jd3.Parameter coefficient = 10;</code>
+         */
+        public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCoefficientOrBuilder() {
+          if (coefficientBuilder_ != null) {
+            return coefficientBuilder_.getMessageOrBuilder();
+          } else {
+            return coefficient_ == null ?
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : coefficient_;
+          }
+        }
+        /**
+         * <code>.jd3.Parameter coefficient = 10;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilderV3<
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+            getCoefficientFieldBuilder() {
+          if (coefficientBuilder_ == null) {
+            coefficientBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
+                    getCoefficient(),
+                    getParentForChildren(),
+                    isClean());
+            coefficient_ = null;
+          }
+          return coefficientBuilder_;
+        }
         @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -6500,6 +6703,45 @@ public final class TramoSeatsProtos {
        * @return The ptest.
        */
       double getPtest();
+
+      /**
+       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       */
+      java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> 
+          getTdcoefficientList();
+      /**
+       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       */
+      demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficient(int index);
+      /**
+       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       */
+      int getTdcoefficientCount();
+      /**
+       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       */
+      java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+          getTdcoefficientOrBuilderList();
+      /**
+       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       */
+      demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientOrBuilder(
+          int index);
+
+      /**
+       * <code>.jd3.Parameter lpcoefficient = 11;</code>
+       * @return Whether the lpcoefficient field is set.
+       */
+      boolean hasLpcoefficient();
+      /**
+       * <code>.jd3.Parameter lpcoefficient = 11;</code>
+       * @return The lpcoefficient.
+       */
+      demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getLpcoefficient();
+      /**
+       * <code>.jd3.Parameter lpcoefficient = 11;</code>
+       */
+      demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getLpcoefficientOrBuilder();
     }
     /**
      * Protobuf type {@code tramoseats.TramoSpec.TradingDaysSpec}
@@ -6520,6 +6762,7 @@ public final class TramoSeatsProtos {
         users_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         test_ = 0;
         auto_ = 0;
+        tdcoefficient_ = java.util.Collections.emptyList();
       }
 
       @java.lang.Override
@@ -6602,6 +6845,28 @@ public final class TramoSeatsProtos {
                 ptest_ = input.readDouble();
                 break;
               }
+              case 82: {
+                if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                  tdcoefficient_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>();
+                  mutable_bitField0_ |= 0x00000002;
+                }
+                tdcoefficient_.add(
+                    input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry));
+                break;
+              }
+              case 90: {
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
+                if (lpcoefficient_ != null) {
+                  subBuilder = lpcoefficient_.toBuilder();
+                }
+                lpcoefficient_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(lpcoefficient_);
+                  lpcoefficient_ = subBuilder.buildPartial();
+                }
+
+                break;
+              }
               default: {
                 if (!parseUnknownField(
                     input, unknownFields, extensionRegistry, tag)) {
@@ -6619,6 +6884,9 @@ public final class TramoSeatsProtos {
         } finally {
           if (((mutable_bitField0_ & 0x00000001) != 0)) {
             users_ = users_.getUnmodifiableView();
+          }
+          if (((mutable_bitField0_ & 0x00000002) != 0)) {
+            tdcoefficient_ = java.util.Collections.unmodifiableList(tdcoefficient_);
           }
           this.unknownFields = unknownFields.build();
           makeExtensionsImmutable();
@@ -6808,6 +7076,72 @@ public final class TramoSeatsProtos {
         return ptest_;
       }
 
+      public static final int TDCOEFFICIENT_FIELD_NUMBER = 10;
+      private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> tdcoefficient_;
+      /**
+       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       */
+      @java.lang.Override
+      public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getTdcoefficientList() {
+        return tdcoefficient_;
+      }
+      /**
+       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       */
+      @java.lang.Override
+      public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+          getTdcoefficientOrBuilderList() {
+        return tdcoefficient_;
+      }
+      /**
+       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       */
+      @java.lang.Override
+      public int getTdcoefficientCount() {
+        return tdcoefficient_.size();
+      }
+      /**
+       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       */
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficient(int index) {
+        return tdcoefficient_.get(index);
+      }
+      /**
+       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       */
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientOrBuilder(
+          int index) {
+        return tdcoefficient_.get(index);
+      }
+
+      public static final int LPCOEFFICIENT_FIELD_NUMBER = 11;
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter lpcoefficient_;
+      /**
+       * <code>.jd3.Parameter lpcoefficient = 11;</code>
+       * @return Whether the lpcoefficient field is set.
+       */
+      @java.lang.Override
+      public boolean hasLpcoefficient() {
+        return lpcoefficient_ != null;
+      }
+      /**
+       * <code>.jd3.Parameter lpcoefficient = 11;</code>
+       * @return The lpcoefficient.
+       */
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getLpcoefficient() {
+        return lpcoefficient_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : lpcoefficient_;
+      }
+      /**
+       * <code>.jd3.Parameter lpcoefficient = 11;</code>
+       */
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getLpcoefficientOrBuilder() {
+        return getLpcoefficient();
+      }
+
       private byte memoizedIsInitialized = -1;
       @java.lang.Override
       public final boolean isInitialized() {
@@ -6845,6 +7179,12 @@ public final class TramoSeatsProtos {
         }
         if (ptest_ != 0D) {
           output.writeDouble(8, ptest_);
+        }
+        for (int i = 0; i < tdcoefficient_.size(); i++) {
+          output.writeMessage(10, tdcoefficient_.get(i));
+        }
+        if (lpcoefficient_ != null) {
+          output.writeMessage(11, getLpcoefficient());
         }
         unknownFields.writeTo(output);
       }
@@ -6890,6 +7230,14 @@ public final class TramoSeatsProtos {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(8, ptest_);
         }
+        for (int i = 0; i < tdcoefficient_.size(); i++) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(10, tdcoefficient_.get(i));
+        }
+        if (lpcoefficient_ != null) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(11, getLpcoefficient());
+        }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
         return size;
@@ -6918,6 +7266,13 @@ public final class TramoSeatsProtos {
         if (java.lang.Double.doubleToLongBits(getPtest())
             != java.lang.Double.doubleToLongBits(
                 other.getPtest())) return false;
+        if (!getTdcoefficientList()
+            .equals(other.getTdcoefficientList())) return false;
+        if (hasLpcoefficient() != other.hasLpcoefficient()) return false;
+        if (hasLpcoefficient()) {
+          if (!getLpcoefficient()
+              .equals(other.getLpcoefficient())) return false;
+        }
         if (!unknownFields.equals(other.unknownFields)) return false;
         return true;
       }
@@ -6948,6 +7303,14 @@ public final class TramoSeatsProtos {
         hash = (37 * hash) + PTEST_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
             java.lang.Double.doubleToLongBits(getPtest()));
+        if (getTdcoefficientCount() > 0) {
+          hash = (37 * hash) + TDCOEFFICIENT_FIELD_NUMBER;
+          hash = (53 * hash) + getTdcoefficientList().hashCode();
+        }
+        if (hasLpcoefficient()) {
+          hash = (37 * hash) + LPCOEFFICIENT_FIELD_NUMBER;
+          hash = (53 * hash) + getLpcoefficient().hashCode();
+        }
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
         return hash;
@@ -7076,6 +7439,7 @@ public final class TramoSeatsProtos {
         private void maybeForceBuilderInitialization() {
           if (com.google.protobuf.GeneratedMessageV3
                   .alwaysUseFieldBuilders) {
+            getTdcoefficientFieldBuilder();
           }
         }
         @java.lang.Override
@@ -7097,6 +7461,18 @@ public final class TramoSeatsProtos {
 
           ptest_ = 0D;
 
+          if (tdcoefficientBuilder_ == null) {
+            tdcoefficient_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            tdcoefficientBuilder_.clear();
+          }
+          if (lpcoefficientBuilder_ == null) {
+            lpcoefficient_ = null;
+          } else {
+            lpcoefficient_ = null;
+            lpcoefficientBuilder_ = null;
+          }
           return this;
         }
 
@@ -7136,6 +7512,20 @@ public final class TramoSeatsProtos {
           result.test_ = test_;
           result.auto_ = auto_;
           result.ptest_ = ptest_;
+          if (tdcoefficientBuilder_ == null) {
+            if (((bitField0_ & 0x00000002) != 0)) {
+              tdcoefficient_ = java.util.Collections.unmodifiableList(tdcoefficient_);
+              bitField0_ = (bitField0_ & ~0x00000002);
+            }
+            result.tdcoefficient_ = tdcoefficient_;
+          } else {
+            result.tdcoefficient_ = tdcoefficientBuilder_.build();
+          }
+          if (lpcoefficientBuilder_ == null) {
+            result.lpcoefficient_ = lpcoefficient_;
+          } else {
+            result.lpcoefficient_ = lpcoefficientBuilder_.build();
+          }
           onBuilt();
           return result;
         }
@@ -7215,6 +7605,35 @@ public final class TramoSeatsProtos {
           }
           if (other.getPtest() != 0D) {
             setPtest(other.getPtest());
+          }
+          if (tdcoefficientBuilder_ == null) {
+            if (!other.tdcoefficient_.isEmpty()) {
+              if (tdcoefficient_.isEmpty()) {
+                tdcoefficient_ = other.tdcoefficient_;
+                bitField0_ = (bitField0_ & ~0x00000002);
+              } else {
+                ensureTdcoefficientIsMutable();
+                tdcoefficient_.addAll(other.tdcoefficient_);
+              }
+              onChanged();
+            }
+          } else {
+            if (!other.tdcoefficient_.isEmpty()) {
+              if (tdcoefficientBuilder_.isEmpty()) {
+                tdcoefficientBuilder_.dispose();
+                tdcoefficientBuilder_ = null;
+                tdcoefficient_ = other.tdcoefficient_;
+                bitField0_ = (bitField0_ & ~0x00000002);
+                tdcoefficientBuilder_ = 
+                  com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                     getTdcoefficientFieldBuilder() : null;
+              } else {
+                tdcoefficientBuilder_.addAllMessages(other.tdcoefficient_);
+              }
+            }
+          }
+          if (other.hasLpcoefficient()) {
+            mergeLpcoefficient(other.getLpcoefficient());
           }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
@@ -7709,6 +8128,365 @@ public final class TramoSeatsProtos {
           onChanged();
           return this;
         }
+
+        private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> tdcoefficient_ =
+          java.util.Collections.emptyList();
+        private void ensureTdcoefficientIsMutable() {
+          if (!((bitField0_ & 0x00000002) != 0)) {
+            tdcoefficient_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>(tdcoefficient_);
+            bitField0_ |= 0x00000002;
+           }
+        }
+
+        private com.google.protobuf.RepeatedFieldBuilderV3<
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> tdcoefficientBuilder_;
+
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getTdcoefficientList() {
+          if (tdcoefficientBuilder_ == null) {
+            return java.util.Collections.unmodifiableList(tdcoefficient_);
+          } else {
+            return tdcoefficientBuilder_.getMessageList();
+          }
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public int getTdcoefficientCount() {
+          if (tdcoefficientBuilder_ == null) {
+            return tdcoefficient_.size();
+          } else {
+            return tdcoefficientBuilder_.getCount();
+          }
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficient(int index) {
+          if (tdcoefficientBuilder_ == null) {
+            return tdcoefficient_.get(index);
+          } else {
+            return tdcoefficientBuilder_.getMessage(index);
+          }
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public Builder setTdcoefficient(
+            int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+          if (tdcoefficientBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureTdcoefficientIsMutable();
+            tdcoefficient_.set(index, value);
+            onChanged();
+          } else {
+            tdcoefficientBuilder_.setMessage(index, value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public Builder setTdcoefficient(
+            int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+          if (tdcoefficientBuilder_ == null) {
+            ensureTdcoefficientIsMutable();
+            tdcoefficient_.set(index, builderForValue.build());
+            onChanged();
+          } else {
+            tdcoefficientBuilder_.setMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public Builder addTdcoefficient(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+          if (tdcoefficientBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureTdcoefficientIsMutable();
+            tdcoefficient_.add(value);
+            onChanged();
+          } else {
+            tdcoefficientBuilder_.addMessage(value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public Builder addTdcoefficient(
+            int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+          if (tdcoefficientBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureTdcoefficientIsMutable();
+            tdcoefficient_.add(index, value);
+            onChanged();
+          } else {
+            tdcoefficientBuilder_.addMessage(index, value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public Builder addTdcoefficient(
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+          if (tdcoefficientBuilder_ == null) {
+            ensureTdcoefficientIsMutable();
+            tdcoefficient_.add(builderForValue.build());
+            onChanged();
+          } else {
+            tdcoefficientBuilder_.addMessage(builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public Builder addTdcoefficient(
+            int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+          if (tdcoefficientBuilder_ == null) {
+            ensureTdcoefficientIsMutable();
+            tdcoefficient_.add(index, builderForValue.build());
+            onChanged();
+          } else {
+            tdcoefficientBuilder_.addMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public Builder addAllTdcoefficient(
+            java.lang.Iterable<? extends demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> values) {
+          if (tdcoefficientBuilder_ == null) {
+            ensureTdcoefficientIsMutable();
+            com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, tdcoefficient_);
+            onChanged();
+          } else {
+            tdcoefficientBuilder_.addAllMessages(values);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public Builder clearTdcoefficient() {
+          if (tdcoefficientBuilder_ == null) {
+            tdcoefficient_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000002);
+            onChanged();
+          } else {
+            tdcoefficientBuilder_.clear();
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public Builder removeTdcoefficient(int index) {
+          if (tdcoefficientBuilder_ == null) {
+            ensureTdcoefficientIsMutable();
+            tdcoefficient_.remove(index);
+            onChanged();
+          } else {
+            tdcoefficientBuilder_.remove(index);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getTdcoefficientBuilder(
+            int index) {
+          return getTdcoefficientFieldBuilder().getBuilder(index);
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientOrBuilder(
+            int index) {
+          if (tdcoefficientBuilder_ == null) {
+            return tdcoefficient_.get(index);  } else {
+            return tdcoefficientBuilder_.getMessageOrBuilder(index);
+          }
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+             getTdcoefficientOrBuilderList() {
+          if (tdcoefficientBuilder_ != null) {
+            return tdcoefficientBuilder_.getMessageOrBuilderList();
+          } else {
+            return java.util.Collections.unmodifiableList(tdcoefficient_);
+          }
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addTdcoefficientBuilder() {
+          return getTdcoefficientFieldBuilder().addBuilder(
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addTdcoefficientBuilder(
+            int index) {
+          return getTdcoefficientFieldBuilder().addBuilder(
+              index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
+        }
+        /**
+         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         */
+        public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder> 
+             getTdcoefficientBuilderList() {
+          return getTdcoefficientFieldBuilder().getBuilderList();
+        }
+        private com.google.protobuf.RepeatedFieldBuilderV3<
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+            getTdcoefficientFieldBuilder() {
+          if (tdcoefficientBuilder_ == null) {
+            tdcoefficientBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
+                    tdcoefficient_,
+                    ((bitField0_ & 0x00000002) != 0),
+                    getParentForChildren(),
+                    isClean());
+            tdcoefficient_ = null;
+          }
+          return tdcoefficientBuilder_;
+        }
+
+        private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter lpcoefficient_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> lpcoefficientBuilder_;
+        /**
+         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         * @return Whether the lpcoefficient field is set.
+         */
+        public boolean hasLpcoefficient() {
+          return lpcoefficientBuilder_ != null || lpcoefficient_ != null;
+        }
+        /**
+         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         * @return The lpcoefficient.
+         */
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getLpcoefficient() {
+          if (lpcoefficientBuilder_ == null) {
+            return lpcoefficient_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : lpcoefficient_;
+          } else {
+            return lpcoefficientBuilder_.getMessage();
+          }
+        }
+        /**
+         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         */
+        public Builder setLpcoefficient(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+          if (lpcoefficientBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            lpcoefficient_ = value;
+            onChanged();
+          } else {
+            lpcoefficientBuilder_.setMessage(value);
+          }
+
+          return this;
+        }
+        /**
+         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         */
+        public Builder setLpcoefficient(
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+          if (lpcoefficientBuilder_ == null) {
+            lpcoefficient_ = builderForValue.build();
+            onChanged();
+          } else {
+            lpcoefficientBuilder_.setMessage(builderForValue.build());
+          }
+
+          return this;
+        }
+        /**
+         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         */
+        public Builder mergeLpcoefficient(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+          if (lpcoefficientBuilder_ == null) {
+            if (lpcoefficient_ != null) {
+              lpcoefficient_ =
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder(lpcoefficient_).mergeFrom(value).buildPartial();
+            } else {
+              lpcoefficient_ = value;
+            }
+            onChanged();
+          } else {
+            lpcoefficientBuilder_.mergeFrom(value);
+          }
+
+          return this;
+        }
+        /**
+         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         */
+        public Builder clearLpcoefficient() {
+          if (lpcoefficientBuilder_ == null) {
+            lpcoefficient_ = null;
+            onChanged();
+          } else {
+            lpcoefficient_ = null;
+            lpcoefficientBuilder_ = null;
+          }
+
+          return this;
+        }
+        /**
+         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         */
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getLpcoefficientBuilder() {
+          
+          onChanged();
+          return getLpcoefficientFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         */
+        public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getLpcoefficientOrBuilder() {
+          if (lpcoefficientBuilder_ != null) {
+            return lpcoefficientBuilder_.getMessageOrBuilder();
+          } else {
+            return lpcoefficient_ == null ?
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : lpcoefficient_;
+          }
+        }
+        /**
+         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilderV3<
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+            getLpcoefficientFieldBuilder() {
+          if (lpcoefficientBuilder_ == null) {
+            lpcoefficientBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
+                    getLpcoefficient(),
+                    getParentForChildren(),
+                    isClean());
+            lpcoefficient_ = null;
+          }
+          return lpcoefficientBuilder_;
+        }
         @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -7767,10 +8545,19 @@ public final class TramoSeatsProtos {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>bool mean = 1;</code>
+       * <code>.jd3.Parameter mean = 1;</code>
+       * @return Whether the mean field is set.
+       */
+      boolean hasMean();
+      /**
+       * <code>.jd3.Parameter mean = 1;</code>
        * @return The mean.
        */
-      boolean getMean();
+      demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getMean();
+      /**
+       * <code>.jd3.Parameter mean = 1;</code>
+       */
+      demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getMeanOrBuilder();
 
       /**
        * <code>.tramoseats.TramoSpec.TradingDaysSpec td = 2;</code>
@@ -7897,30 +8684,6 @@ public final class TramoSeatsProtos {
        */
       demetra.regarima.io.protobuf.RegArimaProtos.RampOrBuilder getRampsOrBuilder(
           int index);
-
-      /**
-       * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-       */
-      java.util.List<demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable> 
-          getPreadujstmentsList();
-      /**
-       * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-       */
-      demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable getPreadujstments(int index);
-      /**
-       * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-       */
-      int getPreadujstmentsCount();
-      /**
-       * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-       */
-      java.util.List<? extends demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariableOrBuilder> 
-          getPreadujstmentsOrBuilderList();
-      /**
-       * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-       */
-      demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariableOrBuilder getPreadujstmentsOrBuilder(
-          int index);
     }
     /**
      * Protobuf type {@code tramoseats.TramoSpec.RegressionSpec}
@@ -7939,7 +8702,6 @@ public final class TramoSeatsProtos {
         users_ = java.util.Collections.emptyList();
         interventions_ = java.util.Collections.emptyList();
         ramps_ = java.util.Collections.emptyList();
-        preadujstments_ = java.util.Collections.emptyList();
       }
 
       @java.lang.Override
@@ -7973,9 +8735,17 @@ public final class TramoSeatsProtos {
               case 0:
                 done = true;
                 break;
-              case 8: {
+              case 10: {
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
+                if (mean_ != null) {
+                  subBuilder = mean_.toBuilder();
+                }
+                mean_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(mean_);
+                  mean_ = subBuilder.buildPartial();
+                }
 
-                mean_ = input.readBool();
                 break;
               }
               case 18: {
@@ -8040,15 +8810,6 @@ public final class TramoSeatsProtos {
                     input.readMessage(demetra.regarima.io.protobuf.RegArimaProtos.Ramp.parser(), extensionRegistry));
                 break;
               }
-              case 66: {
-                if (!((mutable_bitField0_ & 0x00000010) != 0)) {
-                  preadujstments_ = new java.util.ArrayList<demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable>();
-                  mutable_bitField0_ |= 0x00000010;
-                }
-                preadujstments_.add(
-                    input.readMessage(demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.parser(), extensionRegistry));
-                break;
-              }
               default: {
                 if (!parseUnknownField(
                     input, unknownFields, extensionRegistry, tag)) {
@@ -8076,9 +8837,6 @@ public final class TramoSeatsProtos {
           if (((mutable_bitField0_ & 0x00000008) != 0)) {
             ramps_ = java.util.Collections.unmodifiableList(ramps_);
           }
-          if (((mutable_bitField0_ & 0x00000010) != 0)) {
-            preadujstments_ = java.util.Collections.unmodifiableList(preadujstments_);
-          }
           this.unknownFields = unknownFields.build();
           makeExtensionsImmutable();
         }
@@ -8096,958 +8854,30 @@ public final class TramoSeatsProtos {
                 demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.class, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.Builder.class);
       }
 
-      public interface PrespecifiedVariableOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable)
-          com.google.protobuf.MessageOrBuilder {
-
-        /**
-         * <code>string name = 1;</code>
-         * @return The name.
-         */
-        java.lang.String getName();
-        /**
-         * <code>string name = 1;</code>
-         * @return The bytes for name.
-         */
-        com.google.protobuf.ByteString
-            getNameBytes();
-
-        /**
-         * <code>repeated .jd3.Parameter parameters = 2;</code>
-         */
-        java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> 
-            getParametersList();
-        /**
-         * <code>repeated .jd3.Parameter parameters = 2;</code>
-         */
-        demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getParameters(int index);
-        /**
-         * <code>repeated .jd3.Parameter parameters = 2;</code>
-         */
-        int getParametersCount();
-        /**
-         * <code>repeated .jd3.Parameter parameters = 2;</code>
-         */
-        java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
-            getParametersOrBuilderList();
-        /**
-         * <code>repeated .jd3.Parameter parameters = 2;</code>
-         */
-        demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getParametersOrBuilder(
-            int index);
-      }
-      /**
-       * Protobuf type {@code tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable}
-       */
-      public static final class PrespecifiedVariable extends
-          com.google.protobuf.GeneratedMessageV3 implements
-          // @@protoc_insertion_point(message_implements:tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable)
-          PrespecifiedVariableOrBuilder {
-      private static final long serialVersionUID = 0L;
-        // Use PrespecifiedVariable.newBuilder() to construct.
-        private PrespecifiedVariable(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-          super(builder);
-        }
-        private PrespecifiedVariable() {
-          name_ = "";
-          parameters_ = java.util.Collections.emptyList();
-        }
-
-        @java.lang.Override
-        @SuppressWarnings({"unused"})
-        protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-          return new PrespecifiedVariable();
-        }
-
-        @java.lang.Override
-        public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-          return this.unknownFields;
-        }
-        private PrespecifiedVariable(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          this();
-          if (extensionRegistry == null) {
-            throw new java.lang.NullPointerException();
-          }
-          int mutable_bitField0_ = 0;
-          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-              com.google.protobuf.UnknownFieldSet.newBuilder();
-          try {
-            boolean done = false;
-            while (!done) {
-              int tag = input.readTag();
-              switch (tag) {
-                case 0:
-                  done = true;
-                  break;
-                case 10: {
-                  java.lang.String s = input.readStringRequireUtf8();
-
-                  name_ = s;
-                  break;
-                }
-                case 18: {
-                  if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                    parameters_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>();
-                    mutable_bitField0_ |= 0x00000001;
-                  }
-                  parameters_.add(
-                      input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry));
-                  break;
-                }
-                default: {
-                  if (!parseUnknownField(
-                      input, unknownFields, extensionRegistry, tag)) {
-                    done = true;
-                  }
-                  break;
-                }
-              }
-            }
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw e.setUnfinishedMessage(this);
-          } catch (java.io.IOException e) {
-            throw new com.google.protobuf.InvalidProtocolBufferException(
-                e).setUnfinishedMessage(this);
-          } finally {
-            if (((mutable_bitField0_ & 0x00000001) != 0)) {
-              parameters_ = java.util.Collections.unmodifiableList(parameters_);
-            }
-            this.unknownFields = unknownFields.build();
-            makeExtensionsImmutable();
-          }
-        }
-        public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-          return demetra.tramoseats.io.protobuf.TramoSeatsProtos.internal_static_tramoseats_TramoSpec_RegressionSpec_PrespecifiedVariable_descriptor;
-        }
-
-        @java.lang.Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-          return demetra.tramoseats.io.protobuf.TramoSeatsProtos.internal_static_tramoseats_TramoSpec_RegressionSpec_PrespecifiedVariable_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                  demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.class, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.Builder.class);
-        }
-
-        public static final int NAME_FIELD_NUMBER = 1;
-        private volatile java.lang.Object name_;
-        /**
-         * <code>string name = 1;</code>
-         * @return The name.
-         */
-        @java.lang.Override
-        public java.lang.String getName() {
-          java.lang.Object ref = name_;
-          if (ref instanceof java.lang.String) {
-            return (java.lang.String) ref;
-          } else {
-            com.google.protobuf.ByteString bs = 
-                (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            name_ = s;
-            return s;
-          }
-        }
-        /**
-         * <code>string name = 1;</code>
-         * @return The bytes for name.
-         */
-        @java.lang.Override
-        public com.google.protobuf.ByteString
-            getNameBytes() {
-          java.lang.Object ref = name_;
-          if (ref instanceof java.lang.String) {
-            com.google.protobuf.ByteString b = 
-                com.google.protobuf.ByteString.copyFromUtf8(
-                    (java.lang.String) ref);
-            name_ = b;
-            return b;
-          } else {
-            return (com.google.protobuf.ByteString) ref;
-          }
-        }
-
-        public static final int PARAMETERS_FIELD_NUMBER = 2;
-        private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> parameters_;
-        /**
-         * <code>repeated .jd3.Parameter parameters = 2;</code>
-         */
-        @java.lang.Override
-        public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getParametersList() {
-          return parameters_;
-        }
-        /**
-         * <code>repeated .jd3.Parameter parameters = 2;</code>
-         */
-        @java.lang.Override
-        public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
-            getParametersOrBuilderList() {
-          return parameters_;
-        }
-        /**
-         * <code>repeated .jd3.Parameter parameters = 2;</code>
-         */
-        @java.lang.Override
-        public int getParametersCount() {
-          return parameters_.size();
-        }
-        /**
-         * <code>repeated .jd3.Parameter parameters = 2;</code>
-         */
-        @java.lang.Override
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getParameters(int index) {
-          return parameters_.get(index);
-        }
-        /**
-         * <code>repeated .jd3.Parameter parameters = 2;</code>
-         */
-        @java.lang.Override
-        public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getParametersOrBuilder(
-            int index) {
-          return parameters_.get(index);
-        }
-
-        private byte memoizedIsInitialized = -1;
-        @java.lang.Override
-        public final boolean isInitialized() {
-          byte isInitialized = memoizedIsInitialized;
-          if (isInitialized == 1) return true;
-          if (isInitialized == 0) return false;
-
-          memoizedIsInitialized = 1;
-          return true;
-        }
-
-        @java.lang.Override
-        public void writeTo(com.google.protobuf.CodedOutputStream output)
-                            throws java.io.IOException {
-          if (!getNameBytes().isEmpty()) {
-            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
-          }
-          for (int i = 0; i < parameters_.size(); i++) {
-            output.writeMessage(2, parameters_.get(i));
-          }
-          unknownFields.writeTo(output);
-        }
-
-        @java.lang.Override
-        public int getSerializedSize() {
-          int size = memoizedSize;
-          if (size != -1) return size;
-
-          size = 0;
-          if (!getNameBytes().isEmpty()) {
-            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
-          }
-          for (int i = 0; i < parameters_.size(); i++) {
-            size += com.google.protobuf.CodedOutputStream
-              .computeMessageSize(2, parameters_.get(i));
-          }
-          size += unknownFields.getSerializedSize();
-          memoizedSize = size;
-          return size;
-        }
-
-        @java.lang.Override
-        public boolean equals(final java.lang.Object obj) {
-          if (obj == this) {
-           return true;
-          }
-          if (!(obj instanceof demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable)) {
-            return super.equals(obj);
-          }
-          demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable other = (demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable) obj;
-
-          if (!getName()
-              .equals(other.getName())) return false;
-          if (!getParametersList()
-              .equals(other.getParametersList())) return false;
-          if (!unknownFields.equals(other.unknownFields)) return false;
-          return true;
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-          if (memoizedHashCode != 0) {
-            return memoizedHashCode;
-          }
-          int hash = 41;
-          hash = (19 * hash) + getDescriptor().hashCode();
-          hash = (37 * hash) + NAME_FIELD_NUMBER;
-          hash = (53 * hash) + getName().hashCode();
-          if (getParametersCount() > 0) {
-            hash = (37 * hash) + PARAMETERS_FIELD_NUMBER;
-            hash = (53 * hash) + getParametersList().hashCode();
-          }
-          hash = (29 * hash) + unknownFields.hashCode();
-          memoizedHashCode = hash;
-          return hash;
-        }
-
-        public static demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable parseFrom(
-            java.nio.ByteBuffer data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          return PARSER.parseFrom(data);
-        }
-        public static demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable parseFrom(
-            java.nio.ByteBuffer data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          return PARSER.parseFrom(data, extensionRegistry);
-        }
-        public static demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          return PARSER.parseFrom(data);
-        }
-        public static demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          return PARSER.parseFrom(data, extensionRegistry);
-        }
-        public static demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          return PARSER.parseFrom(data);
-        }
-        public static demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          return PARSER.parseFrom(data, extensionRegistry);
-        }
-        public static demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
-          return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input);
-        }
-        public static demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input, extensionRegistry);
-        }
-        public static demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
-          return com.google.protobuf.GeneratedMessageV3
-              .parseDelimitedWithIOException(PARSER, input);
-        }
-        public static demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          return com.google.protobuf.GeneratedMessageV3
-              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-        }
-        public static demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
-          return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input);
-        }
-        public static demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        @java.lang.Override
-        public Builder newBuilderForType() { return newBuilder(); }
-        public static Builder newBuilder() {
-          return DEFAULT_INSTANCE.toBuilder();
-        }
-        public static Builder newBuilder(demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable prototype) {
-          return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-        }
-        @java.lang.Override
-        public Builder toBuilder() {
-          return this == DEFAULT_INSTANCE
-              ? new Builder() : new Builder().mergeFrom(this);
-        }
-
-        @java.lang.Override
-        protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-          Builder builder = new Builder(parent);
-          return builder;
-        }
-        /**
-         * Protobuf type {@code tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable}
-         */
-        public static final class Builder extends
-            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable)
-            demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariableOrBuilder {
-          public static final com.google.protobuf.Descriptors.Descriptor
-              getDescriptor() {
-            return demetra.tramoseats.io.protobuf.TramoSeatsProtos.internal_static_tramoseats_TramoSpec_RegressionSpec_PrespecifiedVariable_descriptor;
-          }
-
-          @java.lang.Override
-          protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-              internalGetFieldAccessorTable() {
-            return demetra.tramoseats.io.protobuf.TramoSeatsProtos.internal_static_tramoseats_TramoSpec_RegressionSpec_PrespecifiedVariable_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                    demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.class, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.Builder.class);
-          }
-
-          // Construct using demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.newBuilder()
-          private Builder() {
-            maybeForceBuilderInitialization();
-          }
-
-          private Builder(
-              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            super(parent);
-            maybeForceBuilderInitialization();
-          }
-          private void maybeForceBuilderInitialization() {
-            if (com.google.protobuf.GeneratedMessageV3
-                    .alwaysUseFieldBuilders) {
-              getParametersFieldBuilder();
-            }
-          }
-          @java.lang.Override
-          public Builder clear() {
-            super.clear();
-            name_ = "";
-
-            if (parametersBuilder_ == null) {
-              parameters_ = java.util.Collections.emptyList();
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              parametersBuilder_.clear();
-            }
-            return this;
-          }
-
-          @java.lang.Override
-          public com.google.protobuf.Descriptors.Descriptor
-              getDescriptorForType() {
-            return demetra.tramoseats.io.protobuf.TramoSeatsProtos.internal_static_tramoseats_TramoSpec_RegressionSpec_PrespecifiedVariable_descriptor;
-          }
-
-          @java.lang.Override
-          public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable getDefaultInstanceForType() {
-            return demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.getDefaultInstance();
-          }
-
-          @java.lang.Override
-          public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable build() {
-            demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable result = buildPartial();
-            if (!result.isInitialized()) {
-              throw newUninitializedMessageException(result);
-            }
-            return result;
-          }
-
-          @java.lang.Override
-          public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable buildPartial() {
-            demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable result = new demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable(this);
-            int from_bitField0_ = bitField0_;
-            result.name_ = name_;
-            if (parametersBuilder_ == null) {
-              if (((bitField0_ & 0x00000001) != 0)) {
-                parameters_ = java.util.Collections.unmodifiableList(parameters_);
-                bitField0_ = (bitField0_ & ~0x00000001);
-              }
-              result.parameters_ = parameters_;
-            } else {
-              result.parameters_ = parametersBuilder_.build();
-            }
-            onBuilt();
-            return result;
-          }
-
-          @java.lang.Override
-          public Builder clone() {
-            return super.clone();
-          }
-          @java.lang.Override
-          public Builder setField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              java.lang.Object value) {
-            return super.setField(field, value);
-          }
-          @java.lang.Override
-          public Builder clearField(
-              com.google.protobuf.Descriptors.FieldDescriptor field) {
-            return super.clearField(field);
-          }
-          @java.lang.Override
-          public Builder clearOneof(
-              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-            return super.clearOneof(oneof);
-          }
-          @java.lang.Override
-          public Builder setRepeatedField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              int index, java.lang.Object value) {
-            return super.setRepeatedField(field, index, value);
-          }
-          @java.lang.Override
-          public Builder addRepeatedField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              java.lang.Object value) {
-            return super.addRepeatedField(field, value);
-          }
-          @java.lang.Override
-          public Builder mergeFrom(com.google.protobuf.Message other) {
-            if (other instanceof demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable) {
-              return mergeFrom((demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable)other);
-            } else {
-              super.mergeFrom(other);
-              return this;
-            }
-          }
-
-          public Builder mergeFrom(demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable other) {
-            if (other == demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.getDefaultInstance()) return this;
-            if (!other.getName().isEmpty()) {
-              name_ = other.name_;
-              onChanged();
-            }
-            if (parametersBuilder_ == null) {
-              if (!other.parameters_.isEmpty()) {
-                if (parameters_.isEmpty()) {
-                  parameters_ = other.parameters_;
-                  bitField0_ = (bitField0_ & ~0x00000001);
-                } else {
-                  ensureParametersIsMutable();
-                  parameters_.addAll(other.parameters_);
-                }
-                onChanged();
-              }
-            } else {
-              if (!other.parameters_.isEmpty()) {
-                if (parametersBuilder_.isEmpty()) {
-                  parametersBuilder_.dispose();
-                  parametersBuilder_ = null;
-                  parameters_ = other.parameters_;
-                  bitField0_ = (bitField0_ & ~0x00000001);
-                  parametersBuilder_ = 
-                    com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                       getParametersFieldBuilder() : null;
-                } else {
-                  parametersBuilder_.addAllMessages(other.parameters_);
-                }
-              }
-            }
-            this.mergeUnknownFields(other.unknownFields);
-            onChanged();
-            return this;
-          }
-
-          @java.lang.Override
-          public final boolean isInitialized() {
-            return true;
-          }
-
-          @java.lang.Override
-          public Builder mergeFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws java.io.IOException {
-            demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable parsedMessage = null;
-            try {
-              parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-              parsedMessage = (demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable) e.getUnfinishedMessage();
-              throw e.unwrapIOException();
-            } finally {
-              if (parsedMessage != null) {
-                mergeFrom(parsedMessage);
-              }
-            }
-            return this;
-          }
-          private int bitField0_;
-
-          private java.lang.Object name_ = "";
-          /**
-           * <code>string name = 1;</code>
-           * @return The name.
-           */
-          public java.lang.String getName() {
-            java.lang.Object ref = name_;
-            if (!(ref instanceof java.lang.String)) {
-              com.google.protobuf.ByteString bs =
-                  (com.google.protobuf.ByteString) ref;
-              java.lang.String s = bs.toStringUtf8();
-              name_ = s;
-              return s;
-            } else {
-              return (java.lang.String) ref;
-            }
-          }
-          /**
-           * <code>string name = 1;</code>
-           * @return The bytes for name.
-           */
-          public com.google.protobuf.ByteString
-              getNameBytes() {
-            java.lang.Object ref = name_;
-            if (ref instanceof String) {
-              com.google.protobuf.ByteString b = 
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                      (java.lang.String) ref);
-              name_ = b;
-              return b;
-            } else {
-              return (com.google.protobuf.ByteString) ref;
-            }
-          }
-          /**
-           * <code>string name = 1;</code>
-           * @param value The name to set.
-           * @return This builder for chaining.
-           */
-          public Builder setName(
-              java.lang.String value) {
-            if (value == null) {
-    throw new NullPointerException();
-  }
-  
-            name_ = value;
-            onChanged();
-            return this;
-          }
-          /**
-           * <code>string name = 1;</code>
-           * @return This builder for chaining.
-           */
-          public Builder clearName() {
-            
-            name_ = getDefaultInstance().getName();
-            onChanged();
-            return this;
-          }
-          /**
-           * <code>string name = 1;</code>
-           * @param value The bytes for name to set.
-           * @return This builder for chaining.
-           */
-          public Builder setNameBytes(
-              com.google.protobuf.ByteString value) {
-            if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-            
-            name_ = value;
-            onChanged();
-            return this;
-          }
-
-          private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> parameters_ =
-            java.util.Collections.emptyList();
-          private void ensureParametersIsMutable() {
-            if (!((bitField0_ & 0x00000001) != 0)) {
-              parameters_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>(parameters_);
-              bitField0_ |= 0x00000001;
-             }
-          }
-
-          private com.google.protobuf.RepeatedFieldBuilderV3<
-              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> parametersBuilder_;
-
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getParametersList() {
-            if (parametersBuilder_ == null) {
-              return java.util.Collections.unmodifiableList(parameters_);
-            } else {
-              return parametersBuilder_.getMessageList();
-            }
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public int getParametersCount() {
-            if (parametersBuilder_ == null) {
-              return parameters_.size();
-            } else {
-              return parametersBuilder_.getCount();
-            }
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getParameters(int index) {
-            if (parametersBuilder_ == null) {
-              return parameters_.get(index);
-            } else {
-              return parametersBuilder_.getMessage(index);
-            }
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public Builder setParameters(
-              int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
-            if (parametersBuilder_ == null) {
-              if (value == null) {
-                throw new NullPointerException();
-              }
-              ensureParametersIsMutable();
-              parameters_.set(index, value);
-              onChanged();
-            } else {
-              parametersBuilder_.setMessage(index, value);
-            }
-            return this;
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public Builder setParameters(
-              int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
-            if (parametersBuilder_ == null) {
-              ensureParametersIsMutable();
-              parameters_.set(index, builderForValue.build());
-              onChanged();
-            } else {
-              parametersBuilder_.setMessage(index, builderForValue.build());
-            }
-            return this;
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public Builder addParameters(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
-            if (parametersBuilder_ == null) {
-              if (value == null) {
-                throw new NullPointerException();
-              }
-              ensureParametersIsMutable();
-              parameters_.add(value);
-              onChanged();
-            } else {
-              parametersBuilder_.addMessage(value);
-            }
-            return this;
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public Builder addParameters(
-              int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
-            if (parametersBuilder_ == null) {
-              if (value == null) {
-                throw new NullPointerException();
-              }
-              ensureParametersIsMutable();
-              parameters_.add(index, value);
-              onChanged();
-            } else {
-              parametersBuilder_.addMessage(index, value);
-            }
-            return this;
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public Builder addParameters(
-              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
-            if (parametersBuilder_ == null) {
-              ensureParametersIsMutable();
-              parameters_.add(builderForValue.build());
-              onChanged();
-            } else {
-              parametersBuilder_.addMessage(builderForValue.build());
-            }
-            return this;
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public Builder addParameters(
-              int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
-            if (parametersBuilder_ == null) {
-              ensureParametersIsMutable();
-              parameters_.add(index, builderForValue.build());
-              onChanged();
-            } else {
-              parametersBuilder_.addMessage(index, builderForValue.build());
-            }
-            return this;
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public Builder addAllParameters(
-              java.lang.Iterable<? extends demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> values) {
-            if (parametersBuilder_ == null) {
-              ensureParametersIsMutable();
-              com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                  values, parameters_);
-              onChanged();
-            } else {
-              parametersBuilder_.addAllMessages(values);
-            }
-            return this;
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public Builder clearParameters() {
-            if (parametersBuilder_ == null) {
-              parameters_ = java.util.Collections.emptyList();
-              bitField0_ = (bitField0_ & ~0x00000001);
-              onChanged();
-            } else {
-              parametersBuilder_.clear();
-            }
-            return this;
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public Builder removeParameters(int index) {
-            if (parametersBuilder_ == null) {
-              ensureParametersIsMutable();
-              parameters_.remove(index);
-              onChanged();
-            } else {
-              parametersBuilder_.remove(index);
-            }
-            return this;
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getParametersBuilder(
-              int index) {
-            return getParametersFieldBuilder().getBuilder(index);
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getParametersOrBuilder(
-              int index) {
-            if (parametersBuilder_ == null) {
-              return parameters_.get(index);  } else {
-              return parametersBuilder_.getMessageOrBuilder(index);
-            }
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
-               getParametersOrBuilderList() {
-            if (parametersBuilder_ != null) {
-              return parametersBuilder_.getMessageOrBuilderList();
-            } else {
-              return java.util.Collections.unmodifiableList(parameters_);
-            }
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addParametersBuilder() {
-            return getParametersFieldBuilder().addBuilder(
-                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addParametersBuilder(
-              int index) {
-            return getParametersFieldBuilder().addBuilder(
-                index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
-          }
-          /**
-           * <code>repeated .jd3.Parameter parameters = 2;</code>
-           */
-          public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder> 
-               getParametersBuilderList() {
-            return getParametersFieldBuilder().getBuilderList();
-          }
-          private com.google.protobuf.RepeatedFieldBuilderV3<
-              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
-              getParametersFieldBuilder() {
-            if (parametersBuilder_ == null) {
-              parametersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                  demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
-                      parameters_,
-                      ((bitField0_ & 0x00000001) != 0),
-                      getParentForChildren(),
-                      isClean());
-              parameters_ = null;
-            }
-            return parametersBuilder_;
-          }
-          @java.lang.Override
-          public final Builder setUnknownFields(
-              final com.google.protobuf.UnknownFieldSet unknownFields) {
-            return super.setUnknownFields(unknownFields);
-          }
-
-          @java.lang.Override
-          public final Builder mergeUnknownFields(
-              final com.google.protobuf.UnknownFieldSet unknownFields) {
-            return super.mergeUnknownFields(unknownFields);
-          }
-
-
-          // @@protoc_insertion_point(builder_scope:tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable)
-        }
-
-        // @@protoc_insertion_point(class_scope:tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable)
-        private static final demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable DEFAULT_INSTANCE;
-        static {
-          DEFAULT_INSTANCE = new demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable();
-        }
-
-        public static demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable getDefaultInstance() {
-          return DEFAULT_INSTANCE;
-        }
-
-        private static final com.google.protobuf.Parser<PrespecifiedVariable>
-            PARSER = new com.google.protobuf.AbstractParser<PrespecifiedVariable>() {
-          @java.lang.Override
-          public PrespecifiedVariable parsePartialFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws com.google.protobuf.InvalidProtocolBufferException {
-            return new PrespecifiedVariable(input, extensionRegistry);
-          }
-        };
-
-        public static com.google.protobuf.Parser<PrespecifiedVariable> parser() {
-          return PARSER;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Parser<PrespecifiedVariable> getParserForType() {
-          return PARSER;
-        }
-
-        @java.lang.Override
-        public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable getDefaultInstanceForType() {
-          return DEFAULT_INSTANCE;
-        }
-
-      }
-
       public static final int MEAN_FIELD_NUMBER = 1;
-      private boolean mean_;
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter mean_;
       /**
-       * <code>bool mean = 1;</code>
+       * <code>.jd3.Parameter mean = 1;</code>
+       * @return Whether the mean field is set.
+       */
+      @java.lang.Override
+      public boolean hasMean() {
+        return mean_ != null;
+      }
+      /**
+       * <code>.jd3.Parameter mean = 1;</code>
        * @return The mean.
        */
       @java.lang.Override
-      public boolean getMean() {
-        return mean_;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getMean() {
+        return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : mean_;
+      }
+      /**
+       * <code>.jd3.Parameter mean = 1;</code>
+       */
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getMeanOrBuilder() {
+        return getMean();
       }
 
       public static final int TD_FIELD_NUMBER = 2;
@@ -9262,46 +9092,6 @@ public final class TramoSeatsProtos {
         return ramps_.get(index);
       }
 
-      public static final int PREADUJSTMENTS_FIELD_NUMBER = 8;
-      private java.util.List<demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable> preadujstments_;
-      /**
-       * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-       */
-      @java.lang.Override
-      public java.util.List<demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable> getPreadujstmentsList() {
-        return preadujstments_;
-      }
-      /**
-       * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-       */
-      @java.lang.Override
-      public java.util.List<? extends demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariableOrBuilder> 
-          getPreadujstmentsOrBuilderList() {
-        return preadujstments_;
-      }
-      /**
-       * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-       */
-      @java.lang.Override
-      public int getPreadujstmentsCount() {
-        return preadujstments_.size();
-      }
-      /**
-       * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-       */
-      @java.lang.Override
-      public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable getPreadujstments(int index) {
-        return preadujstments_.get(index);
-      }
-      /**
-       * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-       */
-      @java.lang.Override
-      public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariableOrBuilder getPreadujstmentsOrBuilder(
-          int index) {
-        return preadujstments_.get(index);
-      }
-
       private byte memoizedIsInitialized = -1;
       @java.lang.Override
       public final boolean isInitialized() {
@@ -9316,8 +9106,8 @@ public final class TramoSeatsProtos {
       @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (mean_ != false) {
-          output.writeBool(1, mean_);
+        if (mean_ != null) {
+          output.writeMessage(1, getMean());
         }
         if (td_ != null) {
           output.writeMessage(2, getTd());
@@ -9337,9 +9127,6 @@ public final class TramoSeatsProtos {
         for (int i = 0; i < ramps_.size(); i++) {
           output.writeMessage(7, ramps_.get(i));
         }
-        for (int i = 0; i < preadujstments_.size(); i++) {
-          output.writeMessage(8, preadujstments_.get(i));
-        }
         unknownFields.writeTo(output);
       }
 
@@ -9349,9 +9136,9 @@ public final class TramoSeatsProtos {
         if (size != -1) return size;
 
         size = 0;
-        if (mean_ != false) {
+        if (mean_ != null) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(1, mean_);
+            .computeMessageSize(1, getMean());
         }
         if (td_ != null) {
           size += com.google.protobuf.CodedOutputStream
@@ -9377,10 +9164,6 @@ public final class TramoSeatsProtos {
           size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(7, ramps_.get(i));
         }
-        for (int i = 0; i < preadujstments_.size(); i++) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(8, preadujstments_.get(i));
-        }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
         return size;
@@ -9396,8 +9179,11 @@ public final class TramoSeatsProtos {
         }
         demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec other = (demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec) obj;
 
-        if (getMean()
-            != other.getMean()) return false;
+        if (hasMean() != other.hasMean()) return false;
+        if (hasMean()) {
+          if (!getMean()
+              .equals(other.getMean())) return false;
+        }
         if (hasTd() != other.hasTd()) return false;
         if (hasTd()) {
           if (!getTd()
@@ -9416,8 +9202,6 @@ public final class TramoSeatsProtos {
             .equals(other.getInterventionsList())) return false;
         if (!getRampsList()
             .equals(other.getRampsList())) return false;
-        if (!getPreadujstmentsList()
-            .equals(other.getPreadujstmentsList())) return false;
         if (!unknownFields.equals(other.unknownFields)) return false;
         return true;
       }
@@ -9429,9 +9213,10 @@ public final class TramoSeatsProtos {
         }
         int hash = 41;
         hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + MEAN_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getMean());
+        if (hasMean()) {
+          hash = (37 * hash) + MEAN_FIELD_NUMBER;
+          hash = (53 * hash) + getMean().hashCode();
+        }
         if (hasTd()) {
           hash = (37 * hash) + TD_FIELD_NUMBER;
           hash = (53 * hash) + getTd().hashCode();
@@ -9455,10 +9240,6 @@ public final class TramoSeatsProtos {
         if (getRampsCount() > 0) {
           hash = (37 * hash) + RAMPS_FIELD_NUMBER;
           hash = (53 * hash) + getRampsList().hashCode();
-        }
-        if (getPreadujstmentsCount() > 0) {
-          hash = (37 * hash) + PREADUJSTMENTS_FIELD_NUMBER;
-          hash = (53 * hash) + getPreadujstmentsList().hashCode();
         }
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
@@ -9592,14 +9373,17 @@ public final class TramoSeatsProtos {
             getUsersFieldBuilder();
             getInterventionsFieldBuilder();
             getRampsFieldBuilder();
-            getPreadujstmentsFieldBuilder();
           }
         }
         @java.lang.Override
         public Builder clear() {
           super.clear();
-          mean_ = false;
-
+          if (meanBuilder_ == null) {
+            mean_ = null;
+          } else {
+            mean_ = null;
+            meanBuilder_ = null;
+          }
           if (tdBuilder_ == null) {
             td_ = null;
           } else {
@@ -9636,12 +9420,6 @@ public final class TramoSeatsProtos {
           } else {
             rampsBuilder_.clear();
           }
-          if (preadujstmentsBuilder_ == null) {
-            preadujstments_ = java.util.Collections.emptyList();
-            bitField0_ = (bitField0_ & ~0x00000010);
-          } else {
-            preadujstmentsBuilder_.clear();
-          }
           return this;
         }
 
@@ -9669,7 +9447,11 @@ public final class TramoSeatsProtos {
         public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec buildPartial() {
           demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec result = new demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec(this);
           int from_bitField0_ = bitField0_;
-          result.mean_ = mean_;
+          if (meanBuilder_ == null) {
+            result.mean_ = mean_;
+          } else {
+            result.mean_ = meanBuilder_.build();
+          }
           if (tdBuilder_ == null) {
             result.td_ = td_;
           } else {
@@ -9715,15 +9497,6 @@ public final class TramoSeatsProtos {
             result.ramps_ = ramps_;
           } else {
             result.ramps_ = rampsBuilder_.build();
-          }
-          if (preadujstmentsBuilder_ == null) {
-            if (((bitField0_ & 0x00000010) != 0)) {
-              preadujstments_ = java.util.Collections.unmodifiableList(preadujstments_);
-              bitField0_ = (bitField0_ & ~0x00000010);
-            }
-            result.preadujstments_ = preadujstments_;
-          } else {
-            result.preadujstments_ = preadujstmentsBuilder_.build();
           }
           onBuilt();
           return result;
@@ -9773,8 +9546,8 @@ public final class TramoSeatsProtos {
 
         public Builder mergeFrom(demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec other) {
           if (other == demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.getDefaultInstance()) return this;
-          if (other.getMean() != false) {
-            setMean(other.getMean());
+          if (other.hasMean()) {
+            mergeMean(other.getMean());
           }
           if (other.hasTd()) {
             mergeTd(other.getTd());
@@ -9886,32 +9659,6 @@ public final class TramoSeatsProtos {
               }
             }
           }
-          if (preadujstmentsBuilder_ == null) {
-            if (!other.preadujstments_.isEmpty()) {
-              if (preadujstments_.isEmpty()) {
-                preadujstments_ = other.preadujstments_;
-                bitField0_ = (bitField0_ & ~0x00000010);
-              } else {
-                ensurePreadujstmentsIsMutable();
-                preadujstments_.addAll(other.preadujstments_);
-              }
-              onChanged();
-            }
-          } else {
-            if (!other.preadujstments_.isEmpty()) {
-              if (preadujstmentsBuilder_.isEmpty()) {
-                preadujstmentsBuilder_.dispose();
-                preadujstmentsBuilder_ = null;
-                preadujstments_ = other.preadujstments_;
-                bitField0_ = (bitField0_ & ~0x00000010);
-                preadujstmentsBuilder_ = 
-                  com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                     getPreadujstmentsFieldBuilder() : null;
-              } else {
-                preadujstmentsBuilder_.addAllMessages(other.preadujstments_);
-              }
-            }
-          }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
           return this;
@@ -9942,35 +9689,123 @@ public final class TramoSeatsProtos {
         }
         private int bitField0_;
 
-        private boolean mean_ ;
+        private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter mean_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> meanBuilder_;
         /**
-         * <code>bool mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
+         * @return Whether the mean field is set.
+         */
+        public boolean hasMean() {
+          return meanBuilder_ != null || mean_ != null;
+        }
+        /**
+         * <code>.jd3.Parameter mean = 1;</code>
          * @return The mean.
          */
-        @java.lang.Override
-        public boolean getMean() {
-          return mean_;
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getMean() {
+          if (meanBuilder_ == null) {
+            return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : mean_;
+          } else {
+            return meanBuilder_.getMessage();
+          }
         }
         /**
-         * <code>bool mean = 1;</code>
-         * @param value The mean to set.
-         * @return This builder for chaining.
+         * <code>.jd3.Parameter mean = 1;</code>
          */
-        public Builder setMean(boolean value) {
-          
-          mean_ = value;
-          onChanged();
+        public Builder setMean(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+          if (meanBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            mean_ = value;
+            onChanged();
+          } else {
+            meanBuilder_.setMessage(value);
+          }
+
           return this;
         }
         /**
-         * <code>bool mean = 1;</code>
-         * @return This builder for chaining.
+         * <code>.jd3.Parameter mean = 1;</code>
+         */
+        public Builder setMean(
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+          if (meanBuilder_ == null) {
+            mean_ = builderForValue.build();
+            onChanged();
+          } else {
+            meanBuilder_.setMessage(builderForValue.build());
+          }
+
+          return this;
+        }
+        /**
+         * <code>.jd3.Parameter mean = 1;</code>
+         */
+        public Builder mergeMean(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+          if (meanBuilder_ == null) {
+            if (mean_ != null) {
+              mean_ =
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder(mean_).mergeFrom(value).buildPartial();
+            } else {
+              mean_ = value;
+            }
+            onChanged();
+          } else {
+            meanBuilder_.mergeFrom(value);
+          }
+
+          return this;
+        }
+        /**
+         * <code>.jd3.Parameter mean = 1;</code>
          */
         public Builder clearMean() {
-          
-          mean_ = false;
-          onChanged();
+          if (meanBuilder_ == null) {
+            mean_ = null;
+            onChanged();
+          } else {
+            mean_ = null;
+            meanBuilder_ = null;
+          }
+
           return this;
+        }
+        /**
+         * <code>.jd3.Parameter mean = 1;</code>
+         */
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getMeanBuilder() {
+          
+          onChanged();
+          return getMeanFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>.jd3.Parameter mean = 1;</code>
+         */
+        public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getMeanOrBuilder() {
+          if (meanBuilder_ != null) {
+            return meanBuilder_.getMessageOrBuilder();
+          } else {
+            return mean_ == null ?
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : mean_;
+          }
+        }
+        /**
+         * <code>.jd3.Parameter mean = 1;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilderV3<
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+            getMeanFieldBuilder() {
+          if (meanBuilder_ == null) {
+            meanBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
+                    getMean(),
+                    getParentForChildren(),
+                    isClean());
+            mean_ = null;
+          }
+          return meanBuilder_;
         }
 
         private demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.TradingDaysSpec td_;
@@ -11169,246 +11004,6 @@ public final class TramoSeatsProtos {
             ramps_ = null;
           }
           return rampsBuilder_;
-        }
-
-        private java.util.List<demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable> preadujstments_ =
-          java.util.Collections.emptyList();
-        private void ensurePreadujstmentsIsMutable() {
-          if (!((bitField0_ & 0x00000010) != 0)) {
-            preadujstments_ = new java.util.ArrayList<demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable>(preadujstments_);
-            bitField0_ |= 0x00000010;
-           }
-        }
-
-        private com.google.protobuf.RepeatedFieldBuilderV3<
-            demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.Builder, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariableOrBuilder> preadujstmentsBuilder_;
-
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public java.util.List<demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable> getPreadujstmentsList() {
-          if (preadujstmentsBuilder_ == null) {
-            return java.util.Collections.unmodifiableList(preadujstments_);
-          } else {
-            return preadujstmentsBuilder_.getMessageList();
-          }
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public int getPreadujstmentsCount() {
-          if (preadujstmentsBuilder_ == null) {
-            return preadujstments_.size();
-          } else {
-            return preadujstmentsBuilder_.getCount();
-          }
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable getPreadujstments(int index) {
-          if (preadujstmentsBuilder_ == null) {
-            return preadujstments_.get(index);
-          } else {
-            return preadujstmentsBuilder_.getMessage(index);
-          }
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public Builder setPreadujstments(
-            int index, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable value) {
-          if (preadujstmentsBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensurePreadujstmentsIsMutable();
-            preadujstments_.set(index, value);
-            onChanged();
-          } else {
-            preadujstmentsBuilder_.setMessage(index, value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public Builder setPreadujstments(
-            int index, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.Builder builderForValue) {
-          if (preadujstmentsBuilder_ == null) {
-            ensurePreadujstmentsIsMutable();
-            preadujstments_.set(index, builderForValue.build());
-            onChanged();
-          } else {
-            preadujstmentsBuilder_.setMessage(index, builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public Builder addPreadujstments(demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable value) {
-          if (preadujstmentsBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensurePreadujstmentsIsMutable();
-            preadujstments_.add(value);
-            onChanged();
-          } else {
-            preadujstmentsBuilder_.addMessage(value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public Builder addPreadujstments(
-            int index, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable value) {
-          if (preadujstmentsBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensurePreadujstmentsIsMutable();
-            preadujstments_.add(index, value);
-            onChanged();
-          } else {
-            preadujstmentsBuilder_.addMessage(index, value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public Builder addPreadujstments(
-            demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.Builder builderForValue) {
-          if (preadujstmentsBuilder_ == null) {
-            ensurePreadujstmentsIsMutable();
-            preadujstments_.add(builderForValue.build());
-            onChanged();
-          } else {
-            preadujstmentsBuilder_.addMessage(builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public Builder addPreadujstments(
-            int index, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.Builder builderForValue) {
-          if (preadujstmentsBuilder_ == null) {
-            ensurePreadujstmentsIsMutable();
-            preadujstments_.add(index, builderForValue.build());
-            onChanged();
-          } else {
-            preadujstmentsBuilder_.addMessage(index, builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public Builder addAllPreadujstments(
-            java.lang.Iterable<? extends demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable> values) {
-          if (preadujstmentsBuilder_ == null) {
-            ensurePreadujstmentsIsMutable();
-            com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                values, preadujstments_);
-            onChanged();
-          } else {
-            preadujstmentsBuilder_.addAllMessages(values);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public Builder clearPreadujstments() {
-          if (preadujstmentsBuilder_ == null) {
-            preadujstments_ = java.util.Collections.emptyList();
-            bitField0_ = (bitField0_ & ~0x00000010);
-            onChanged();
-          } else {
-            preadujstmentsBuilder_.clear();
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public Builder removePreadujstments(int index) {
-          if (preadujstmentsBuilder_ == null) {
-            ensurePreadujstmentsIsMutable();
-            preadujstments_.remove(index);
-            onChanged();
-          } else {
-            preadujstmentsBuilder_.remove(index);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.Builder getPreadujstmentsBuilder(
-            int index) {
-          return getPreadujstmentsFieldBuilder().getBuilder(index);
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariableOrBuilder getPreadujstmentsOrBuilder(
-            int index) {
-          if (preadujstmentsBuilder_ == null) {
-            return preadujstments_.get(index);  } else {
-            return preadujstmentsBuilder_.getMessageOrBuilder(index);
-          }
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public java.util.List<? extends demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariableOrBuilder> 
-             getPreadujstmentsOrBuilderList() {
-          if (preadujstmentsBuilder_ != null) {
-            return preadujstmentsBuilder_.getMessageOrBuilderList();
-          } else {
-            return java.util.Collections.unmodifiableList(preadujstments_);
-          }
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.Builder addPreadujstmentsBuilder() {
-          return getPreadujstmentsFieldBuilder().addBuilder(
-              demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.getDefaultInstance());
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.Builder addPreadujstmentsBuilder(
-            int index) {
-          return getPreadujstmentsFieldBuilder().addBuilder(
-              index, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.getDefaultInstance());
-        }
-        /**
-         * <code>repeated .tramoseats.TramoSpec.RegressionSpec.PrespecifiedVariable preadujstments = 8;</code>
-         */
-        public java.util.List<demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.Builder> 
-             getPreadujstmentsBuilderList() {
-          return getPreadujstmentsFieldBuilder().getBuilderList();
-        }
-        private com.google.protobuf.RepeatedFieldBuilderV3<
-            demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.Builder, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariableOrBuilder> 
-            getPreadujstmentsFieldBuilder() {
-          if (preadujstmentsBuilder_ == null) {
-            preadujstmentsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariable.Builder, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.RegressionSpec.PrespecifiedVariableOrBuilder>(
-                    preadujstments_,
-                    ((bitField0_ & 0x00000010) != 0),
-                    getParentForChildren(),
-                    isClean());
-            preadujstments_ = null;
-          }
-          return preadujstmentsBuilder_;
         }
         @java.lang.Override
         public final Builder setUnknownFields(
@@ -14934,11 +14529,6 @@ public final class TramoSeatsProtos {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_tramoseats_TramoSpec_RegressionSpec_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_tramoseats_TramoSpec_RegressionSpec_PrespecifiedVariable_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_tramoseats_TramoSpec_RegressionSpec_PrespecifiedVariable_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_tramoseats_TramoSpec_EstimateSpec_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -14966,7 +14556,7 @@ public final class TramoSeatsProtos {
       "\033\n\023seas_boundary_at_pi\030\006 \001(\001\022\027\n\017bias_cor" +
       "rection\030\007 \001(\010\022\017\n\007nfcasts\030\010 \001(\005\022\017\n\007nbcast" +
       "s\030\t \001(\005\022-\n\talgorithm\030\n \001(\0162\032.tramoseats." +
-      "SeatsAlgorithm\"\263\r\n\tTramoSpec\022.\n\005basic\030\001 " +
+      "SeatsAlgorithm\"\232\r\n\tTramoSpec\022.\n\005basic\030\001 " +
       "\001(\0132\037.tramoseats.TramoSpec.BasicSpec\0226\n\t" +
       "transform\030\002 \001(\0132#.tramoseats.TramoSpec.T" +
       "ransformSpec\0222\n\007outlier\030\003 \001(\0132!.tramosea" +
@@ -14987,48 +14577,47 @@ public final class TramoSeatsProtos {
       "abled\030\001 \001(\010\022\016\n\006cancel\030\002 \001(\001\022\013\n\003ub1\030\003 \001(\001" +
       "\022\013\n\003ub2\030\004 \001(\001\022\013\n\003pcr\030\005 \001(\001\022\n\n\002pc\030\006 \001(\001\022\014" +
       "\n\004tsig\030\007 \001(\001\022\022\n\naccept_def\030\010 \001(\010\022\023\n\013ami_" +
-      "compare\030\t \001(\010\032b\n\nEasterSpec\022$\n\004type\030\001 \001(" +
-      "\0162\026.tramoseats.EasterType\022\020\n\010duration\030\002 " +
-      "\001(\005\022\016\n\006julian\030\003 \001(\010\022\014\n\004test\030\004 \001(\010\032\360\001\n\017Tr" +
-      "adingDaysSpec\022!\n\002td\030\001 \001(\0162\025.regarima.Tra" +
-      "dingDays\022$\n\002lp\030\002 \001(\0162\030.regarima.LengthOf" +
-      "Period\022\020\n\010holidays\030\003 \001(\t\022\r\n\005users\030\004 \003(\t\022" +
-      "\t\n\001w\030\005 \001(\005\022)\n\004test\030\006 \001(\0162\033.tramoseats.Tr" +
-      "adingDaysTest\022.\n\004auto\030\007 \001(\0162 .tramoseats" +
-      ".AutomaticTradingDays\022\r\n\005ptest\030\010 \001(\001\032\276\003\n" +
-      "\016RegressionSpec\022\014\n\004mean\030\001 \001(\010\0221\n\002td\030\002 \001(" +
-      "\0132%.tramoseats.TramoSpec.TradingDaysSpec" +
-      "\0220\n\006easter\030\003 \001(\0132 .tramoseats.TramoSpec." +
-      "EasterSpec\022#\n\010outliers\030\004 \003(\0132\021.regarima." +
-      "Outlier\022!\n\005users\030\005 \003(\0132\022.regarima.Variab" +
-      "le\0225\n\rinterventions\030\006 \003(\0132\036.regarima.Int" +
-      "erventionVariable\022\035\n\005ramps\030\007 \003(\0132\016.regar" +
-      "ima.Ramp\022Q\n\016preadujstments\030\010 \003(\01329.tramo" +
-      "seats.TramoSpec.RegressionSpec.Prespecif" +
-      "iedVariable\032H\n\024PrespecifiedVariable\022\014\n\004n" +
-      "ame\030\001 \001(\t\022\"\n\nparameters\030\002 \003(\0132\016.jd3.Para" +
-      "meter\032U\n\014EstimateSpec\022\037\n\004span\030\001 \001(\0132\021.jd" +
-      "3.TimeSelector\022\n\n\002ml\030\002 \001(\010\022\013\n\003tol\030\003 \001(\001\022" +
-      "\013\n\003ubp\030\004 \001(\001\"\206\001\n\004Spec\022$\n\005tramo\030\001 \001(\0132\025.t" +
-      "ramoseats.TramoSpec\022,\n\005seats\030\002 \001(\0132\035.tra" +
-      "moseats.DecompositionSpec\022*\n\014benchmarkin" +
-      "g\030\003 \001(\0132\024.sa.BenchmarkingSpec*n\n\022SeatsAp" +
-      "proximation\022\031\n\025SEATS_APP_UNSPECIFIED\020\000\022\022" +
-      "\n\016SEATS_APP_NONE\020\001\022\024\n\020SEATS_APP_LEGACY\020\002" +
-      "\022\023\n\017SEATS_APP_NOISY\020\003*_\n\016SeatsAlgorithm\022" +
-      "\031\n\025SEATS_ALG_UNSPECIFIED\020\000\022\024\n\020SEATS_ALG_" +
-      "BURMAN\020\001\022\034\n\030SEATS_ALG_KALMANSMOOTHER\020\002*h" +
-      "\n\024AutomaticTradingDays\022\027\n\023TD_AUTO_UNSPEC" +
-      "IFIED\020\000\022\016\n\nTD_AUTO_NO\020\001\022\021\n\rTD_AUTO_FTEST" +
-      "\020\002\022\024\n\020TD_AUTO_WALDTEST\020\003*g\n\017TradingDaysT" +
-      "est\022\027\n\023TD_TEST_UNSPECIFIED\020\000\022\016\n\nTD_TEST_" +
-      "NO\020\001\022\026\n\022TD_TEST_SEPARATE_T\020\002\022\023\n\017TD_TEST_" +
-      "JOINT_F\020\003*\206\001\n\nEasterType\022\026\n\022EASTER_UNSPE" +
-      "CIFIED\020\000\022\021\n\rEASTER_UNUSED\020\001\022\023\n\017EASTER_ST" +
-      "ANDARD\020\002\022\030\n\024EASTER_INCLUDEEASTER\020\003\022\036\n\032EA" +
-      "STER_INCLUDEEASTERMONDAY\020\004B2\n\036demetra.tr" +
-      "amoseats.io.protobufB\020TramoSeatsProtosP\000" +
-      "P\001P\002b\006proto3"
+      "compare\030\t \001(\010\032\207\001\n\nEasterSpec\022$\n\004type\030\001 \001" +
+      "(\0162\026.tramoseats.EasterType\022\020\n\010duration\030\002" +
+      " \001(\005\022\016\n\006julian\030\003 \001(\010\022\014\n\004test\030\004 \001(\010\022#\n\013co" +
+      "efficient\030\n \001(\0132\016.jd3.Parameter\032\276\002\n\017Trad" +
+      "ingDaysSpec\022!\n\002td\030\001 \001(\0162\025.regarima.Tradi" +
+      "ngDays\022$\n\002lp\030\002 \001(\0162\030.regarima.LengthOfPe" +
+      "riod\022\020\n\010holidays\030\003 \001(\t\022\r\n\005users\030\004 \003(\t\022\t\n" +
+      "\001w\030\005 \001(\005\022)\n\004test\030\006 \001(\0162\033.tramoseats.Trad" +
+      "ingDaysTest\022.\n\004auto\030\007 \001(\0162 .tramoseats.A" +
+      "utomaticTradingDays\022\r\n\005ptest\030\010 \001(\001\022%\n\rtd" +
+      "coefficient\030\n \003(\0132\016.jd3.Parameter\022%\n\rlpc" +
+      "oefficient\030\013 \001(\0132\016.jd3.Parameter\032\261\002\n\016Reg" +
+      "ressionSpec\022\034\n\004mean\030\001 \001(\0132\016.jd3.Paramete" +
+      "r\0221\n\002td\030\002 \001(\0132%.tramoseats.TramoSpec.Tra" +
+      "dingDaysSpec\0220\n\006easter\030\003 \001(\0132 .tramoseat" +
+      "s.TramoSpec.EasterSpec\022#\n\010outliers\030\004 \003(\013" +
+      "2\021.regarima.Outlier\022!\n\005users\030\005 \003(\0132\022.reg" +
+      "arima.Variable\0225\n\rinterventions\030\006 \003(\0132\036." +
+      "regarima.InterventionVariable\022\035\n\005ramps\030\007" +
+      " \003(\0132\016.regarima.Ramp\032U\n\014EstimateSpec\022\037\n\004" +
+      "span\030\001 \001(\0132\021.jd3.TimeSelector\022\n\n\002ml\030\002 \001(" +
+      "\010\022\013\n\003tol\030\003 \001(\001\022\013\n\003ubp\030\004 \001(\001\"\206\001\n\004Spec\022$\n\005" +
+      "tramo\030\001 \001(\0132\025.tramoseats.TramoSpec\022,\n\005se" +
+      "ats\030\002 \001(\0132\035.tramoseats.DecompositionSpec" +
+      "\022*\n\014benchmarking\030\003 \001(\0132\024.sa.Benchmarking" +
+      "Spec*n\n\022SeatsApproximation\022\031\n\025SEATS_APP_" +
+      "UNSPECIFIED\020\000\022\022\n\016SEATS_APP_NONE\020\001\022\024\n\020SEA" +
+      "TS_APP_LEGACY\020\002\022\023\n\017SEATS_APP_NOISY\020\003*_\n\016" +
+      "SeatsAlgorithm\022\031\n\025SEATS_ALG_UNSPECIFIED\020" +
+      "\000\022\024\n\020SEATS_ALG_BURMAN\020\001\022\034\n\030SEATS_ALG_KAL" +
+      "MANSMOOTHER\020\002*h\n\024AutomaticTradingDays\022\027\n" +
+      "\023TD_AUTO_UNSPECIFIED\020\000\022\016\n\nTD_AUTO_NO\020\001\022\021" +
+      "\n\rTD_AUTO_FTEST\020\002\022\024\n\020TD_AUTO_WALDTEST\020\003*" +
+      "g\n\017TradingDaysTest\022\027\n\023TD_TEST_UNSPECIFIE" +
+      "D\020\000\022\016\n\nTD_TEST_NO\020\001\022\026\n\022TD_TEST_SEPARATE_" +
+      "T\020\002\022\023\n\017TD_TEST_JOINT_F\020\003*\206\001\n\nEasterType\022" +
+      "\026\n\022EASTER_UNSPECIFIED\020\000\022\021\n\rEASTER_UNUSED" +
+      "\020\001\022\023\n\017EASTER_STANDARD\020\002\022\030\n\024EASTER_INCLUD" +
+      "EEASTER\020\003\022\036\n\032EASTER_INCLUDEEASTERMONDAY\020" +
+      "\004B2\n\036demetra.tramoseats.io.protobufB\020Tra" +
+      "moSeatsProtosP\000P\001P\002b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -15078,25 +14667,19 @@ public final class TramoSeatsProtos {
     internal_static_tramoseats_TramoSpec_EasterSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tramoseats_TramoSpec_EasterSpec_descriptor,
-        new java.lang.String[] { "Type", "Duration", "Julian", "Test", });
+        new java.lang.String[] { "Type", "Duration", "Julian", "Test", "Coefficient", });
     internal_static_tramoseats_TramoSpec_TradingDaysSpec_descriptor =
       internal_static_tramoseats_TramoSpec_descriptor.getNestedTypes().get(5);
     internal_static_tramoseats_TramoSpec_TradingDaysSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tramoseats_TramoSpec_TradingDaysSpec_descriptor,
-        new java.lang.String[] { "Td", "Lp", "Holidays", "Users", "W", "Test", "Auto", "Ptest", });
+        new java.lang.String[] { "Td", "Lp", "Holidays", "Users", "W", "Test", "Auto", "Ptest", "Tdcoefficient", "Lpcoefficient", });
     internal_static_tramoseats_TramoSpec_RegressionSpec_descriptor =
       internal_static_tramoseats_TramoSpec_descriptor.getNestedTypes().get(6);
     internal_static_tramoseats_TramoSpec_RegressionSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tramoseats_TramoSpec_RegressionSpec_descriptor,
-        new java.lang.String[] { "Mean", "Td", "Easter", "Outliers", "Users", "Interventions", "Ramps", "Preadujstments", });
-    internal_static_tramoseats_TramoSpec_RegressionSpec_PrespecifiedVariable_descriptor =
-      internal_static_tramoseats_TramoSpec_RegressionSpec_descriptor.getNestedTypes().get(0);
-    internal_static_tramoseats_TramoSpec_RegressionSpec_PrespecifiedVariable_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_tramoseats_TramoSpec_RegressionSpec_PrespecifiedVariable_descriptor,
-        new java.lang.String[] { "Name", "Parameters", });
+        new java.lang.String[] { "Mean", "Td", "Easter", "Outliers", "Users", "Interventions", "Ramps", });
     internal_static_tramoseats_TramoSpec_EstimateSpec_descriptor =
       internal_static_tramoseats_TramoSpec_descriptor.getNestedTypes().get(7);
     internal_static_tramoseats_TramoSpec_EstimateSpec_fieldAccessorTable = new

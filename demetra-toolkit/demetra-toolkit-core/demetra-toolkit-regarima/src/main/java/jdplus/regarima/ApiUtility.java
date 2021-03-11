@@ -18,10 +18,12 @@ package jdplus.regarima;
 
 import demetra.data.DoubleSeq;
 import demetra.likelihood.MissingValueEstimation;
-import demetra.likelihood.ParameterEstimation;
 import demetra.likelihood.ParametersEstimation;
 import nbbrd.design.Development;
 import demetra.math.matrices.MatrixType;
+import demetra.modelling.LinearModel;
+import demetra.modelling.StochasticLinearModel;
+import demetra.modelling.StochasticModel;
 import demetra.timeseries.regression.modelling.LinearModelEstimation;
 import java.util.List;
 import java.util.function.Function;
@@ -30,6 +32,7 @@ import jdplus.dstats.T;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.sarima.SarimaModel;
 
 /**
  *
@@ -39,7 +42,7 @@ import jdplus.regsarima.regular.ModelEstimation;
 @Development(status = Development.Status.Beta)
 public class ApiUtility {
 
-    public <S extends IArimaModel, R> demetra.modelling.regarima.RegArimaEstimation<R> toApi(RegArimaEstimation<S> regarima, Function<S, R> fn) {
+    public <S extends IArimaModel, R> demetra.modelling.StochasticLinearModel<R> toApi(RegArimaEstimation<S> regarima, Function<S, R> fn) {
         RegArimaModel<S> model = regarima.getModel();
         double[] y = model.getY().toArray();
         int[] missing = model.missing();
@@ -63,29 +66,17 @@ public class ApiUtility {
 
         ConcentratedLikelihoodWithMissing ll = regarima.getConcentratedLikelihood();
         LogLikelihoodFunction.Point<RegArimaModel<S>, ConcentratedLikelihoodWithMissing> max = regarima.getMax();
-        int nhp = max.getParameters().length;
+        int nhp = max.getParameters().length();
         ParametersEstimation p = null;
         if (nhp > 0) {
             // TODO: adjust the computation of the covariance of the parameters
-            p = new ParametersEstimation(max.getParameters(), max.asymptoticCovariance(), null, null);
+            p = new ParametersEstimation(
+                    max.getParameters(), max.asymptoticCovariance(), max.getScore(), null);
         }
 
-        ParameterEstimation mean = null;
         T t = new T(ll.degreesOfFreedom() - nhp);
-        int x0 = 0, x1 = ll.nx();
-        if (model.isMean()) {
-            x0++;
-            double m = ll.coefficient(0);
-            double ser = ll.ser(0, nhp, true);
-            double tval = Math.abs(m / ser);
-            mean = new ParameterEstimation(m, ser, 1 - t.getProbabilityForInterval(-tval, tval), "mean");
-        }
-        double[] b = null;
-        MatrixType cov = MatrixType.EMPTY;
-        if (x1 > x0) {
-            b = ll.coefficients().range(x0, x1).toArray();
-            cov = ll.covariance(nhp, true).extract(x0, b.length, x0, b.length).unmodifiable();
-        }
+        DoubleSeq b = ll.coefficients();
+        MatrixType cov = ll.covariance(nhp, true).unmodifiable();
         ParametersEstimation all = new ParametersEstimation(b, cov, null, null);
 
         MissingValueEstimation[] me = null;
@@ -99,36 +90,36 @@ public class ApiUtility {
                 me[i] = new MissingValueEstimation(missing[i], mval.get(i), Math.sqrt(mvar.get(i) / sig2));
             }
         }
-        return demetra.modelling.regarima.RegArimaEstimation.<R>builder()
-                .arima(fn.apply(model.arima()))
-                .y(y)
+        
+        LinearModel lm = LinearModel.builder()
+                .y(DoubleSeq.of(y))
                 .X(X)
-                .meanCorrection(mean)
-                .coefficients(all)
-                .likelihood(regarima.statistics())
                 .missing(me)
-                .parameters(p)
+                .coefficients(all)
                 .build();
+        StochasticModel<R> sm=new StochasticModel<R>(fn.apply(model.arima()), p);        
+
+        return new StochasticLinearModel<R>(lm, sm, regarima.statistics());
 
     }
 
     public LinearModelEstimation<demetra.arima.SarimaModel> toApi(ModelEstimation estimation) {
+        ConcentratedLikelihoodWithMissing cll = estimation.getConcentratedLikelihood();
+        RegArimaModel<SarimaModel> lm = estimation.getModel();
         return LinearModelEstimation.<demetra.arima.SarimaModel>builder()
                 .originalSeries(estimation.getOriginalSeries())
                 .estimationDomain(estimation.getEstimationDomain())
                 .logTransformation(estimation.isLogTransformation())
                 .lpTransformation(estimation.getLpTransformation())
-                .meanCorrection(estimation.getModel().isMean())
                 .variables(estimation.getVariables())
+                .y(lm.getY())
+                .X(lm.variables())
                 .stochasticComponent(jdplus.modelling.ApiUtility.toApi(estimation.getModel().arima(), null))
-                .coefficients(estimation.getConcentratedLikelihood().coefficients().toArray())
-                .coefficientsCovariance(estimation.getConcentratedLikelihood().covariance(estimation.getFreeArimaParametersCount(), true))
-                .parameters(estimation.getArimaParameters())
-                .score(estimation.getArimaScore())
-                .parametersCovariance(estimation.getArimaCovariance().unmodifiable())
+                .coefficients(new ParametersEstimation(cll.coefficients(), cll.covariance(estimation.getFreeArimaParametersCount(), true), null, null))
+                .parameters(new ParametersEstimation(DoubleSeq.of(estimation.getArimaParameters()), estimation.getArimaCovariance().unmodifiable(), 
+                        DoubleSeq.of(estimation.getArimaScore()), "arima"))
                 .missing(missing(estimation))
                 .statistics(estimation.getStatistics())
-                .freeParametersCount(estimation.getFreeArimaParametersCount())
                 .build();
     }
 

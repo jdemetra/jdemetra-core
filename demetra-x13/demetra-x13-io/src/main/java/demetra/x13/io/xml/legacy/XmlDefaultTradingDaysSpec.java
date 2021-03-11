@@ -16,7 +16,7 @@
  */
 package demetra.x13.io.xml.legacy;
 
-import demetra.modelling.RegressionTestSpec;
+import demetra.regarima.RegressionTestSpec;
 import demetra.regarima.TradingDaysSpec;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;

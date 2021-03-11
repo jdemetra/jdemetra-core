@@ -55,8 +55,8 @@ public class LinearModelEstimationExtractor {
         MAPPING.set(LOG, Boolean.class, source -> source.isLogTransformation());
         MAPPING.set(ADJUST, Boolean.class, source -> source.getLpTransformation() != LengthOfPeriodType.None);
         MAPPING.set(ModellingDictionary.Y, TsData.class, source -> source.getOriginalSeries());
-        MAPPING.set(InformationExtractor.concatenate(REGRESSION, COVAR), MatrixType.class, source -> source.getCoefficientsCovariance());
-        MAPPING.set(InformationExtractor.concatenate(REGRESSION, PCOVAR), MatrixType.class, source -> source.getParametersCovariance());
+        MAPPING.set(InformationExtractor.concatenate(REGRESSION, COVAR), MatrixType.class, source -> source.getCoefficients().getCovariance());
+        MAPPING.set(InformationExtractor.concatenate(REGRESSION, PCOVAR), MatrixType.class, source -> source.getParameters().getCovariance());
     }
 
     public InformationMapping<LinearModelEstimation> getMapping() {

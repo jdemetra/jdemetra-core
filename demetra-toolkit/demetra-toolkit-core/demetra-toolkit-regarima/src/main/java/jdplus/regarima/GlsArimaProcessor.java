@@ -158,7 +158,7 @@ public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProces
         RegArmaProcessor processor = new RegArmaProcessor(ml, mt, fast);
         int ndf = dmodel.getY().length() - dmodel.getX().getColumnsCount();// - mapping.getDim();
         RegArmaEstimation<M> rslt = processor.compute(dmodel, stmapping.parametersOf(arma), stmapping, min.build(), ndf);
-        M nmodel = mapping.map(DoubleSeq.of(rslt.getParameters()));
+        M nmodel = mapping.map(rslt.getParameters());
         RegArimaModel<M> nregs = regs.toBuilder().arima(nmodel).build();
 
         return RegArimaEstimation.<M>builder()

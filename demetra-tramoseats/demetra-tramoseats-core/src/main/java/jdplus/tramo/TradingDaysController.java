@@ -18,9 +18,9 @@ import demetra.timeseries.regression.ITradingDaysVariable;
 import jdplus.modelling.regression.Regression;
 import demetra.data.DoubleSeq;
 import demetra.sa.ComponentType;
-import demetra.sa.SaDictionary;
+import demetra.sa.SaVariable;
 import jdplus.math.matrices.Matrix;
-import jdplus.regarima.ami.Utility;
+import jdplus.regarima.ami.ModellingUtility;
 
 /**
  *
@@ -43,7 +43,7 @@ class TradingDaysController extends ModelController {
     ProcessingResult process(RegSarimaModelling modelling, TramoContext context) {
         // find td variables
         ModelDescription desc = modelling.getDescription();
-        boolean hascal = desc.variables().anyMatch(var ->(!Utility.isPrespecified(var)) && (Utility.isDaysRelated(var)));
+        boolean hascal = desc.variables().anyMatch(var ->(ModellingUtility.isAutomaticallyIdentified(var)) && (ModellingUtility.isDaysRelated(var)));
         // nothing to do if td is prespecified
         if (hascal) {
             return ProcessingResult.Unchanged;
@@ -52,7 +52,7 @@ class TradingDaysController extends ModelController {
             return ProcessingResult.Unchanged;
         }
         ModelDescription nmodel = newModel(modelling);
-        nmodel.removeVariable(var->Utility.isOutlier(var, false));
+        nmodel.removeVariable(var->ModellingUtility.isOutlier(var, true));
         // compute the corresponding airline model.
         RegSarimaModelling ncontext = RegSarimaModelling.of(nmodel);
         if (!estimate(ncontext, true)) {
@@ -97,8 +97,8 @@ class TradingDaysController extends ModelController {
 
     private ModelDescription newModel(RegSarimaModelling context) {
         ModelDescription ndesc = ModelDescription.copyOf(context.getDescription());
-        ndesc.removeVariable(var -> Utility.isDaysRelated(var));
-        ndesc.addVariable(Variable.variable("td", td).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
+        ndesc.removeVariable(var -> ModellingUtility.isDaysRelated(var));
+        ndesc.addVariable(Variable.variable("td", td, TramoModelBuilder.calendarAMI));
         return ndesc;
     }
 

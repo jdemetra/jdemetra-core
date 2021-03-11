@@ -103,7 +103,7 @@ public class ArimaEstimation {
         ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
         Matrix parametersCovariance;
-        double[] score;
+        DoubleSeq score;
 
         public SarimaModel getArima() {
             return regarima.arima();
@@ -117,7 +117,7 @@ public class ArimaEstimation {
             MAPPING.delegate(ARIMA, SarimaExtractor.getMapping(), r -> r.getArima());
             MAPPING.delegate(LL, LikelihoodStatisticsExtractor.getMapping(), r -> r.statistics);
             MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
-            MAPPING.set(SCORE, double[].class, source -> source.getScore());
+            MAPPING.set(SCORE, double[].class, source -> source.getScore().toArray());
             MAPPING.set(B, double[].class, source
                     -> {
                 DoubleSeq b = source.getConcentratedLogLikelihood().coefficients();

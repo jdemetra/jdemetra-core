@@ -35,13 +35,13 @@ public class TramoSeatsFactoryTest {
         ProcessingLog log = ProcessingLog.dummy();
         TramoSeatsResults rslt = ts.process(Data.TS_PROD, log);
         assertTrue(rslt.getFinals() != null);
-        TramoSeatsSpec nspec = TramoSeatsFactory.INSTANCE.of(TramoSeatsSpec.RSAfull, rslt);
+        TramoSeatsSpec nspec = TramoSeatsFactory.INSTANCE.generateSpec(TramoSeatsSpec.RSAfull, rslt);
         log = ProcessingLog.dummy();
         System.out.println(nspec);
         ts = TramoSeatsKernel.of(nspec, null);
         TramoSeatsResults rslt2 = ts.process(Data.TS_PROD, log);
         assertTrue(rslt2.getFinals() != null);
-        TramoSeatsSpec nspec2 = TramoSeatsFactory.INSTANCE.of(nspec, rslt2);
+        TramoSeatsSpec nspec2 = TramoSeatsFactory.INSTANCE.generateSpec(nspec, rslt2);
         System.out.println(nspec2);
         assertEquals(rslt.getPreprocessing().getConcentratedLikelihood().logLikelihood(),
                 rslt2.getPreprocessing().getConcentratedLikelihood().logLikelihood(), 1e-4);

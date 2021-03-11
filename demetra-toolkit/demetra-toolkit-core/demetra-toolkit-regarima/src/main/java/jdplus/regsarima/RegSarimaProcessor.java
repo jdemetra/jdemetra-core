@@ -389,7 +389,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         RegArmaEstimation<SarimaModel> rslt = processor.compute(dmodel, p, stationaryMapping, min.functionPrecision(precision).build(), ndf);
 
         SarimaModel arima = SarimaModel.builder(regs.arima().orders())
-                .parameters(DoubleSeq.of(rslt.getParameters()))
+                .parameters(rslt.getParameters())
                 .build();
         RegArimaModel<SarimaModel> nmodel = RegArimaModel.of(regs, arima);
         RegArimaEstimation finalRslt = RegArimaEstimation.<SarimaModel>builder()

@@ -7,6 +7,7 @@ package jdplus.data;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
+import java.util.Random;
 import jdplus.math.matrices.Matrix;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoublePredicate;
@@ -84,7 +85,7 @@ public class DataBlockTest {
         assertThat(DataBlock.of(getSample(10))).isExactlyInstanceOf(DataBlock.class);
 
         //When data is null
-        assertThatThrownBy(() -> DataBlock.of((DoubleSeq)null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> DataBlock.of((DoubleSeq) null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
@@ -216,7 +217,7 @@ public class DataBlockTest {
 
         assertThatThrownBy(()
                 -> of(getSample(4))
-                .copyFrom(new double[]{5.55, 6.66, 7.77, 8.88}, -2))
+                        .copyFrom(new double[]{5.55, 6.66, 7.77, 8.88}, -2))
                 .describedAs("Start is negative")
                 .isInstanceOf(ArrayIndexOutOfBoundsException.class);
 
@@ -332,13 +333,13 @@ public class DataBlockTest {
 
         assertThatThrownBy(()
                 -> of(getSample(4))
-                .copyTo(new double[]{5.55, 6.66, 7.77, 8.88}, -2))
+                        .copyTo(new double[]{5.55, 6.66, 7.77, 8.88}, -2))
                 .describedAs("Start is negative")
                 .isInstanceOf(ArrayIndexOutOfBoundsException.class);
 
         assertThatThrownBy(()
                 -> of(getSample(4))
-                .copyTo(new double[]{5.55, 6.66, 7.77}, 0))
+                        .copyTo(new double[]{5.55, 6.66, 7.77}, 0))
                 .describedAs("buffer.length < data.length")
                 .isInstanceOf(ArrayIndexOutOfBoundsException.class);
 
@@ -1535,7 +1536,6 @@ public class DataBlockTest {
 //            assertThat(ka.sum()).isEqualTo(220);
 //        });
 //    }
-
     @Test
     public void testSum() {
         assertThat(of(getSample(10), 0, 10, 1).sum())
@@ -2081,7 +2081,6 @@ public class DataBlockTest {
 //            assertThat(o.getStorage()).containsExactly(1, 2, 3, 93, 84, 75);
 //        });
 //    }
-
     @Test
     public void testAddProductDataBlockIterator() {
         assertThat(of(getSample(3), 0, 3, 1)).satisfies(o -> {

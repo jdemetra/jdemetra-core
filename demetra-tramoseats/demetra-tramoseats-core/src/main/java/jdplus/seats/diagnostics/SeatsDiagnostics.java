@@ -157,7 +157,7 @@ public class SeatsDiagnostics implements Diagnostics {
         } else if (cutoff){
              return Collections.singletonList(SeatsDiagnosticsFactory.CUTOFF);
         }else{
-           return null;
+           return Collections.emptyList();
         }
     }
 }

@@ -18,8 +18,8 @@ package demetra.util.r;
 
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
-import demetra.timeseries.regression.StaticTsDataSupplier;
-import demetra.timeseries.regression.TsDataSupplier;
+import demetra.timeseries.StaticTsDataSupplier;
+import demetra.timeseries.TsDataSupplier;
 import demetra.timeseries.regression.TsDataSuppliers;
 import java.util.Collections;
 import java.util.LinkedHashMap;

@@ -17,7 +17,7 @@
 package jdplus.tramo;
 
 import demetra.sa.ComponentType;
-import demetra.sa.SaDictionary;
+import demetra.sa.SaVariable;
 import jdplus.regsarima.regular.TRegressionTest;
 import jdplus.regarima.FRegressionTest;
 import jdplus.regsarima.regular.IRegressionTest;
@@ -37,7 +37,10 @@ import jdplus.sarima.SarimaModel;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.IEasterVariable;
-import jdplus.regarima.ami.Utility;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import jdplus.regarima.ami.ModellingUtility;
 
 /**
  * This module test for the presence of td, easter and mean in 
@@ -52,7 +55,7 @@ public class DefaultRegressionTest implements IRegressionModule {
     public static final double CVAL = 1.96;
     public static final double T0 = 2, T1 = 2.6;
     public static final double T2 = 2.2;
-
+    
     public static Builder builder() {
         return new Builder();
     }
@@ -160,13 +163,13 @@ public class DefaultRegressionTest implements IRegressionModule {
         ModelDescription model = ModelDescription.copyOf(current.getDescription());
         // add td, lp and easter
         if (td != null) {
-            model.addVariable(Variable.variable("td", td).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
+            model.addVariable(Variable.variable("td", td, TramoModelBuilder.calendarAMI));
         }
         if (lp != null) {
-            model.addVariable(Variable.variable("lp", lp).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
+            model.addVariable(Variable.variable("lp", lp, TramoModelBuilder.calendarAMI));
         }
         if (easter != null) {
-            model.addVariable(Variable.variable("easter", easter).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
+            model.addVariable(Variable.variable("easter", easter, TramoModelBuilder.calendarAMI));
         }
         return model;
     }
@@ -189,23 +192,23 @@ public class DefaultRegressionTest implements IRegressionModule {
         boolean usetd = false;
         if (td != null) {
             Variable variable = tmpModel.variable(td);
-            if (variable != null && ! Utility.isPrespecified(variable)) {
+            if (variable != null && ModellingUtility.isAutomaticallyIdentified(variable)) {
                 int pos = tmpModel.findPosition(variable.getCore());
                 int dim = variable.getCore().dim();
                 IRegressionTest test = dim == 1 ? wdTest : tdTest;
                 if (test.accept(ll, nhp, pos, dim)) {
                     usetd = true;
-                    currentModel.addVariable(Variable.variable("td", td).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
+                    currentModel.addVariable(Variable.variable("td", td, TramoModelBuilder.calendarAMI));
                     changed = true;
                 }
             }
         }
         if (lp != null) {
             Variable variable = tmpModel.variable(lp);
-            if (variable != null && !Utility.isPrespecified(variable)) {
+            if (variable != null && ModellingUtility.isAutomaticallyIdentified(variable)) {
                 int pos = tmpModel.findPosition(variable.getCore());
                 if (usetd && lpTest.accept(ll, nhp, pos, 1)) {
-                    currentModel.addVariable(Variable.variable("lp", lp).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
+                    currentModel.addVariable(Variable.variable("lp", lp, TramoModelBuilder.calendarAMI));
                     changed = true;
                 }
             }
@@ -213,10 +216,10 @@ public class DefaultRegressionTest implements IRegressionModule {
 
         if (easter != null) {
             Variable variable = tmpModel.variable(easter);
-            if (variable != null && !Utility.isPrespecified(variable)) {
+            if (variable != null && ModellingUtility.isAutomaticallyIdentified(variable)) {
                 int pos = tmpModel.findPosition(variable.getCore());
                 if (mhTest.accept(ll, nhp, pos, 1)) {
-                    currentModel.addVariable(Variable.variable("easter", easter).addAttribute(SaDictionary.REGEFFECT, ComponentType.CalendarEffect.name()));
+                    currentModel.addVariable(Variable.variable("easter", easter, TramoModelBuilder.calendarAMI));
                     changed = true;
                 }
             }
