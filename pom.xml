@@ -49,14 +49,14 @@
             <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>3.10.0</version>
+                <version>3.11.0</version>
             </dependency>  
                         
             <!-- test libraries -->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.13.1</version>
+                <version>4.13.2</version>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
@@ -180,7 +180,7 @@
                     <dependency>
                         <groupId>com.google.protobuf</groupId>
                         <artifactId>protobuf-java</artifactId>
-                        <version>3.14.0</version>
+                        <version>3.15.5</version>
                     </dependency>                
                 </dependencies>
             </dependencyManagement>
