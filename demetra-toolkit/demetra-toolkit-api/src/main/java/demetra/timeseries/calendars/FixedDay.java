@@ -31,6 +31,7 @@ public class FixedDay implements Holiday {
     private int day;
     private double weight;
     private ValidityPeriod validityPeriod;
+    
 
     /**
      *

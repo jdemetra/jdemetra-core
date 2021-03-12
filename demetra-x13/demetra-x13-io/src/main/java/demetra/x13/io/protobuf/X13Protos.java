@@ -10550,19 +10550,19 @@ public final class X13Protos {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>.jd3.Parameter mean = 1;</code>
+       * <code>.jd3.NullableParameter mean = 1;</code>
        * @return Whether the mean field is set.
        */
       boolean hasMean();
       /**
-       * <code>.jd3.Parameter mean = 1;</code>
+       * <code>.jd3.NullableParameter mean = 1;</code>
        * @return The mean.
        */
-      demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getMean();
+      demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter getMean();
       /**
-       * <code>.jd3.Parameter mean = 1;</code>
+       * <code>.jd3.NullableParameter mean = 1;</code>
        */
-      demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getMeanOrBuilder();
+      demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder getMeanOrBuilder();
 
       /**
        * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
@@ -10741,11 +10741,11 @@ public final class X13Protos {
                 done = true;
                 break;
               case 10: {
-                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
+                demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder subBuilder = null;
                 if (mean_ != null) {
                   subBuilder = mean_.toBuilder();
                 }
-                mean_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry);
+                mean_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.parser(), extensionRegistry);
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(mean_);
                   mean_ = subBuilder.buildPartial();
@@ -10860,9 +10860,9 @@ public final class X13Protos {
       }
 
       public static final int MEAN_FIELD_NUMBER = 1;
-      private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter mean_;
+      private demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter mean_;
       /**
-       * <code>.jd3.Parameter mean = 1;</code>
+       * <code>.jd3.NullableParameter mean = 1;</code>
        * @return Whether the mean field is set.
        */
       @java.lang.Override
@@ -10870,18 +10870,18 @@ public final class X13Protos {
         return mean_ != null;
       }
       /**
-       * <code>.jd3.Parameter mean = 1;</code>
+       * <code>.jd3.NullableParameter mean = 1;</code>
        * @return The mean.
        */
       @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getMean() {
-        return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : mean_;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter getMean() {
+        return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.getDefaultInstance() : mean_;
       }
       /**
-       * <code>.jd3.Parameter mean = 1;</code>
+       * <code>.jd3.NullableParameter mean = 1;</code>
        */
       @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getMeanOrBuilder() {
+      public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder getMeanOrBuilder() {
         return getMean();
       }
 
@@ -11694,31 +11694,31 @@ public final class X13Protos {
         }
         private int bitField0_;
 
-        private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter mean_;
+        private demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter mean_;
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> meanBuilder_;
+            demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder> meanBuilder_;
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          * @return Whether the mean field is set.
          */
         public boolean hasMean() {
           return meanBuilder_ != null || mean_ != null;
         }
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          * @return The mean.
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getMean() {
+        public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter getMean() {
           if (meanBuilder_ == null) {
-            return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : mean_;
+            return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.getDefaultInstance() : mean_;
           } else {
             return meanBuilder_.getMessage();
           }
         }
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          */
-        public Builder setMean(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        public Builder setMean(demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter value) {
           if (meanBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -11732,10 +11732,10 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          */
         public Builder setMean(
-            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+            demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder builderForValue) {
           if (meanBuilder_ == null) {
             mean_ = builderForValue.build();
             onChanged();
@@ -11746,13 +11746,13 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          */
-        public Builder mergeMean(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        public Builder mergeMean(demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter value) {
           if (meanBuilder_ == null) {
             if (mean_ != null) {
               mean_ =
-                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder(mean_).mergeFrom(value).buildPartial();
+                demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.newBuilder(mean_).mergeFrom(value).buildPartial();
             } else {
               mean_ = value;
             }
@@ -11764,7 +11764,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          */
         public Builder clearMean() {
           if (meanBuilder_ == null) {
@@ -11778,33 +11778,33 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getMeanBuilder() {
+        public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder getMeanBuilder() {
           
           onChanged();
           return getMeanFieldBuilder().getBuilder();
         }
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getMeanOrBuilder() {
+        public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder getMeanOrBuilder() {
           if (meanBuilder_ != null) {
             return meanBuilder_.getMessageOrBuilder();
           } else {
             return mean_ == null ?
-                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : mean_;
+                demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.getDefaultInstance() : mean_;
           }
         }
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+            demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder> 
             getMeanFieldBuilder() {
           if (meanBuilder_ == null) {
             meanBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
+                demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder>(
                     getMean(),
                     getParentForChildren(),
                     isClean());
@@ -16422,7 +16422,7 @@ public final class X13Protos {
       "\004usig\030\006 \001(\001\022\017\n\007nfcasts\030\007 \001(\005\022\017\n\007nbcasts\030" +
       "\010 \001(\005\022!\n\005sigma\030\t \001(\0162\022.x13.CalendarSigma" +
       "\022\017\n\007vsigmas\030\n \003(\005\022\026\n\016exclude_fcasts\030\013 \001(" +
-      "\010\022!\n\004bias\030\014 \001(\0162\023.x13.BiasCorrection\"\223\016\n" +
+      "\010\022!\n\004bias\030\014 \001(\0162\023.x13.BiasCorrection\"\233\016\n" +
       "\014RegArimaSpec\022*\n\005basic\030\001 \001(\0132\033.x13.RegAr" +
       "imaSpec.BasicSpec\0222\n\ttransform\030\002 \001(\0132\037.x" +
       "13.RegArimaSpec.TransformSpec\022.\n\007outlier" +
@@ -16459,42 +16459,42 @@ public final class X13Protos {
       "st\030\006 \001(\0162\023.x13.RegressionTest\022\023\n\013auto_ad" +
       "just\030\007 \001(\010\022%\n\rtdcoefficient\030\n \003(\0132\016.jd3." +
       "Parameter\022%\n\rlpcoefficient\030\013 \001(\0132\016.jd3.P" +
-      "arameter\032\251\002\n\016RegressionSpec\022\034\n\004mean\030\001 \001(" +
-      "\0132\016.jd3.Parameter\022-\n\002td\030\002 \001(\0132!.x13.RegA" +
-      "rimaSpec.TradingDaysSpec\022,\n\006easter\030\003 \001(\013" +
-      "2\034.x13.RegArimaSpec.EasterSpec\022#\n\010outlie" +
-      "rs\030\004 \003(\0132\021.regarima.Outlier\022!\n\005users\030\005 \003" +
-      "(\0132\022.regarima.Variable\0225\n\rinterventions\030" +
-      "\006 \003(\0132\036.regarima.InterventionVariable\022\035\n" +
-      "\005ramps\030\007 \003(\0132\016.regarima.Ramp\032<\n\014Estimate" +
-      "Spec\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeSelector\022\013\n" +
-      "\003tol\030\002 \001(\001\"r\n\004Spec\022#\n\010regarima\030\001 \001(\0132\021.x" +
-      "13.RegArimaSpec\022\031\n\003x11\030\002 \001(\0132\014.x13.X11Sp" +
-      "ec\022*\n\014benchmarking\030\003 \001(\0132\024.sa.Benchmarki" +
-      "ngSpec*g\n\021DecompositionMode\022\013\n\007UNKNOWN\020\000" +
-      "\022\014\n\010ADDITIVE\020\001\022\022\n\016MULTIPLICATIVE\020\002\022\017\n\013LO" +
-      "GADDITIVE\020\003\022\022\n\016PSEUDOADDITIVE\020\004*\211\002\n\016Seas" +
-      "onalFilter\022\037\n\033SEASONAL_FILTER_UNSPECIFIE" +
-      "D\020\000\022\030\n\024SEASONAL_FILTER_S3X1\020\001\022\030\n\024SEASONA" +
-      "L_FILTER_S3X3\020\002\022\030\n\024SEASONAL_FILTER_S3X5\020" +
-      "\003\022\030\n\024SEASONAL_FILTER_S3X9\020\004\022\031\n\025SEASONAL_" +
-      "FILTER_S3X15\020\005\022\027\n\023SEASONAL_FILTER_MSR\020\006\022" +
-      "\032\n\026SEASONAL_FILTER_STABLE\020\007\022\036\n\032SEASONAL_" +
-      "FILTER_X11DEFAULT\020\010*i\n\rCalendarSigma\022\025\n\021" +
-      "SIGMA_UNSPECIFIED\020\000\022\016\n\nSIGMA_NONE\020\001\022\020\n\014S" +
-      "IGMA_SIGNIF\020\002\022\r\n\tSIGMA_ALL\020\003\022\020\n\014SIGMA_SE" +
-      "LECT\020\004*g\n\016BiasCorrection\022\024\n\020BIAS_UNSPECI" +
-      "FIED\020\000\022\r\n\tBIAS_NONE\020\001\022\017\n\013BIAS_LEGACY\020\002\022\017" +
-      "\n\013BIAS_SMOOTH\020\003\022\016\n\nBIAS_RATIO\020\004*P\n\rOutli" +
-      "erMethod\022\027\n\023OUTLIER_UNSPECIFIED\020\000\022\022\n\016OUT" +
-      "LIER_ADDONE\020\001\022\022\n\016OUTLIER_ADDALL\020\002*n\n\nEas" +
-      "terType\022\026\n\022EASTER_UNSPECIFIED\020\000\022\021\n\rEASTE" +
-      "R_UNUSED\020\001\022\023\n\017EASTER_STANDARD\020\002\022\021\n\rEASTE" +
-      "R_JULIAN\020\003\022\r\n\tEASTER_SC\020\004*R\n\016RegressionT" +
-      "est\022\024\n\020TEST_UNSPECIFIED\020\000\022\013\n\007TEST_NO\020\001\022\014" +
-      "\n\010TEST_ADD\020\002\022\017\n\013TEST_REMOVE\020\003B$\n\027demetra" +
-      ".x13.io.protobufB\tX13ProtosP\000P\001P\002b\006proto" +
-      "3"
+      "arameter\032\261\002\n\016RegressionSpec\022$\n\004mean\030\001 \001(" +
+      "\0132\026.jd3.NullableParameter\022-\n\002td\030\002 \001(\0132!." +
+      "x13.RegArimaSpec.TradingDaysSpec\022,\n\006east" +
+      "er\030\003 \001(\0132\034.x13.RegArimaSpec.EasterSpec\022#" +
+      "\n\010outliers\030\004 \003(\0132\021.regarima.Outlier\022!\n\005u" +
+      "sers\030\005 \003(\0132\022.regarima.Variable\0225\n\rinterv" +
+      "entions\030\006 \003(\0132\036.regarima.InterventionVar" +
+      "iable\022\035\n\005ramps\030\007 \003(\0132\016.regarima.Ramp\032<\n\014" +
+      "EstimateSpec\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeSel" +
+      "ector\022\013\n\003tol\030\002 \001(\001\"r\n\004Spec\022#\n\010regarima\030\001" +
+      " \001(\0132\021.x13.RegArimaSpec\022\031\n\003x11\030\002 \001(\0132\014.x" +
+      "13.X11Spec\022*\n\014benchmarking\030\003 \001(\0132\024.sa.Be" +
+      "nchmarkingSpec*g\n\021DecompositionMode\022\013\n\007U" +
+      "NKNOWN\020\000\022\014\n\010ADDITIVE\020\001\022\022\n\016MULTIPLICATIVE" +
+      "\020\002\022\017\n\013LOGADDITIVE\020\003\022\022\n\016PSEUDOADDITIVE\020\004*" +
+      "\211\002\n\016SeasonalFilter\022\037\n\033SEASONAL_FILTER_UN" +
+      "SPECIFIED\020\000\022\030\n\024SEASONAL_FILTER_S3X1\020\001\022\030\n" +
+      "\024SEASONAL_FILTER_S3X3\020\002\022\030\n\024SEASONAL_FILT" +
+      "ER_S3X5\020\003\022\030\n\024SEASONAL_FILTER_S3X9\020\004\022\031\n\025S" +
+      "EASONAL_FILTER_S3X15\020\005\022\027\n\023SEASONAL_FILTE" +
+      "R_MSR\020\006\022\032\n\026SEASONAL_FILTER_STABLE\020\007\022\036\n\032S" +
+      "EASONAL_FILTER_X11DEFAULT\020\010*i\n\rCalendarS" +
+      "igma\022\025\n\021SIGMA_UNSPECIFIED\020\000\022\016\n\nSIGMA_NON" +
+      "E\020\001\022\020\n\014SIGMA_SIGNIF\020\002\022\r\n\tSIGMA_ALL\020\003\022\020\n\014" +
+      "SIGMA_SELECT\020\004*g\n\016BiasCorrection\022\024\n\020BIAS" +
+      "_UNSPECIFIED\020\000\022\r\n\tBIAS_NONE\020\001\022\017\n\013BIAS_LE" +
+      "GACY\020\002\022\017\n\013BIAS_SMOOTH\020\003\022\016\n\nBIAS_RATIO\020\004*" +
+      "P\n\rOutlierMethod\022\027\n\023OUTLIER_UNSPECIFIED\020" +
+      "\000\022\022\n\016OUTLIER_ADDONE\020\001\022\022\n\016OUTLIER_ADDALL\020" +
+      "\002*n\n\nEasterType\022\026\n\022EASTER_UNSPECIFIED\020\000\022" +
+      "\021\n\rEASTER_UNUSED\020\001\022\023\n\017EASTER_STANDARD\020\002\022" +
+      "\021\n\rEASTER_JULIAN\020\003\022\r\n\tEASTER_SC\020\004*R\n\016Reg" +
+      "ressionTest\022\024\n\020TEST_UNSPECIFIED\020\000\022\013\n\007TES" +
+      "T_NO\020\001\022\014\n\010TEST_ADD\020\002\022\017\n\013TEST_REMOVE\020\003B$\n" +
+      "\027demetra.x13.io.protobufB\tX13ProtosP\000P\001P" +
+      "\002b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

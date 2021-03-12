@@ -94,7 +94,6 @@ public class StlDecomposition {
                 .i(DoubleSeq.of(stl.getIrr()))
                 .multiplicative(mul)
                 .build();
-
     }
 
     public double[] loess(double[] y, int window, int degree, int jump) {

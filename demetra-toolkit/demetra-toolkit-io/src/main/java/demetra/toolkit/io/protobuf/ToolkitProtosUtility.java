@@ -16,6 +16,7 @@
  */
 package demetra.toolkit.io.protobuf;
 
+import com.google.protobuf.NullValue;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.data.Iterables;
@@ -33,6 +34,7 @@ import java.util.List;
 import jdplus.arima.IArimaModel;
 import jdplus.stats.tests.NiidTests;
 import jdplus.stats.tests.StatisticalTest;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -146,8 +148,6 @@ public class ToolkitProtosUtility {
     }
 
     public ToolkitProtos.ParameterType convert(ParameterType t) {
-        if (t == null)
-            return ToolkitProtos.ParameterType.PARAMETER_UNSPECIFIED;
         switch (t) {
             case Fixed:
                 return ToolkitProtos.ParameterType.PARAMETER_FIXED;
@@ -160,10 +160,15 @@ public class ToolkitProtosUtility {
         }
     }
 
-    public Parameter convert(ToolkitProtos.Parameter p) {
-        if (p == null || p.getType() == ToolkitProtos.ParameterType.PARAMETER_UNSPECIFIED) {
+    public Parameter convert(ToolkitProtos.NullableParameter p) {
+        if (p.hasData()) {
+            return convert(p.getData());
+        } else {
             return null;
         }
+    }
+
+    public Parameter convert(ToolkitProtos.Parameter p) {
         switch (p.getType()) {
             case PARAMETER_FIXED:
                 return Parameter.fixed(p.getValue());
@@ -177,15 +182,23 @@ public class ToolkitProtosUtility {
         }
     }
 
-    public ToolkitProtos.Parameter convert(Parameter p) {
+    public ToolkitProtos.NullableParameter convertNullable(Parameter p) {
         if (p == null) {
-            return ToolkitProtos.Parameter.getDefaultInstance();
+            return ToolkitProtos.NullableParameter.newBuilder()
+                    .setNull(NullValue.NULL_VALUE)
+                    .build();
         } else {
-            return ToolkitProtos.Parameter.newBuilder()
-                    .setType(convert(p.getType()))
-                    .setValue(p.getValue())
+            return ToolkitProtos.NullableParameter.newBuilder()
+                    .setData(convert(p))
                     .build();
         }
+    }
+
+    public ToolkitProtos.Parameter convert(@NonNull Parameter p) {
+        return ToolkitProtos.Parameter.newBuilder()
+                .setType(convert(p.getType()))
+                .setValue(p.getValue())
+                .build();
     }
 
     public Parameter[] convert(List<ToolkitProtos.Parameter> p) {

@@ -69,7 +69,7 @@ public class RegressionProto {
 
     public TramoSeatsProtos.TramoSpec.RegressionSpec convert(RegressionSpec spec) {
         TramoSeatsProtos.TramoSpec.RegressionSpec.Builder builder = TramoSeatsProtos.TramoSpec.RegressionSpec.newBuilder()
-                .setMean(ToolkitProtosUtility.convert(spec.getMean()))
+                .setMean(ToolkitProtosUtility.convertNullable(spec.getMean()))
                 .setEaster(EasterProto.convert(spec.getCalendar().getEaster()))
                 .setTd(TradingDaysProto.convert(spec.getCalendar().getTradingDays()));
         

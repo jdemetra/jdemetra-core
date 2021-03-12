@@ -72,7 +72,7 @@ public class RegressionProto {
 
     public X13Protos.RegArimaSpec.RegressionSpec convert(RegressionSpec spec) {
         X13Protos.RegArimaSpec.RegressionSpec.Builder builder = X13Protos.RegArimaSpec.RegressionSpec.newBuilder()
-                .setMean(ToolkitProtosUtility.convert(spec.getMean()))
+                .setMean(ToolkitProtosUtility.convertNullable(spec.getMean()))
                 .setEaster(EasterProto.convert(spec.getEaster()))
                 .setTd(TradingDaysProto.convert(spec.getTradingDays()));
         
