@@ -16,7 +16,7 @@
  */
 package demetra.regarima.io.protobuf;
 
-import demetra.arima.SarimaSpec;
+import demetra.timeseries.regression.modelling.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.Range;
 import demetra.modelling.TransformationType;
@@ -161,16 +161,16 @@ public class RegArimaProtosUtility {
     public RegArimaProtos.Ramp convertRamp(Variable<Ramp> v) {
         return RegArimaProtos.Ramp.newBuilder()
                 .setName(v.getName())
-                .setStart(v.getCore().getStart().toLocalDate().format(DateTimeFormatter.ISO_DATE))
-                .setEnd(v.getCore().getEnd().toLocalDate().format(DateTimeFormatter.ISO_DATE))
+                .setStart(ToolkitProtosUtility.convert(v.getCore().getStart().toLocalDate()))
+                .setEnd(ToolkitProtosUtility.convert(v.getCore().getEnd().toLocalDate()))
                 .setCoefficient(ToolkitProtosUtility.convert(v.getCoefficient(0)))
                 .putAllMetadata(v.getAttributes())
                 .build();
     }
 
     public Variable<Ramp> convert(RegArimaProtos.Ramp v) {
-        LocalDate start = LocalDate.parse(v.getStart(), DateTimeFormatter.ISO_DATE);
-        LocalDate end = LocalDate.parse(v.getEnd(), DateTimeFormatter.ISO_DATE);
+        LocalDate start = ToolkitProtosUtility.convert(v.getStart());
+        LocalDate end = ToolkitProtosUtility.convert(v.getEnd());
         return Variable.<Ramp> builder()
                 .name(v.getName())
                 .core(new Ramp(start.atStartOfDay(), end.atStartOfDay()))
@@ -192,8 +192,8 @@ public class RegArimaProtosUtility {
         for (int i = 0; i < sequences.length; ++i) {
             Range<LocalDateTime> seq = sequences[i];
             builder.addSequences(RegArimaProtos.InterventionVariable.Sequence.newBuilder()
-                    .setStart(seq.start().toLocalDate().format(DateTimeFormatter.ISO_DATE))
-                    .setEnd(seq.end().toLocalDate().format(DateTimeFormatter.ISO_DATE))
+                    .setStart(ToolkitProtosUtility.convert(seq.start().toLocalDate()))
+                    .setEnd(ToolkitProtosUtility.convert(seq.end().toLocalDate()))
                     .build());
         }
         return builder.build();
@@ -206,8 +206,8 @@ public class RegArimaProtosUtility {
         int n = v.getSequencesCount();
         for (int i = 0; i < n; ++i) {
             RegArimaProtos.InterventionVariable.Sequence seq = v.getSequences(i);
-            LocalDate start = LocalDate.parse(seq.getStart(), DateTimeFormatter.ISO_DATE);
-            LocalDate end = LocalDate.parse(seq.getEnd(), DateTimeFormatter.ISO_DATE);
+            LocalDate start = ToolkitProtosUtility.convert(seq.getStart());
+            LocalDate end = ToolkitProtosUtility.convert(seq.getEnd());
             builder.add(start.atStartOfDay(), end.atStartOfDay());
         }
         return Variable.<InterventionVariable>builder()

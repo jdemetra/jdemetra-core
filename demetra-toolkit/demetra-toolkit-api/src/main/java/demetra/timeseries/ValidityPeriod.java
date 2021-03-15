@@ -59,6 +59,8 @@ public class ValidityPeriod {
             return to(date1);
         } else if (date1 == null) {
             return from(date0);
+        } else if (date0.equals(LocalDate.MIN) && date1.equals(LocalDate.MAX)) {
+            return ALWAYS;
         } else {
             return new ValidityPeriod(date0, date1);
         }

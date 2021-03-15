@@ -17,7 +17,7 @@
 package jdplus.seats;
 
 import demetra.arima.SarimaOrders;
-import demetra.arima.SarimaSpec;
+import demetra.timeseries.regression.modelling.SarimaSpec;
 import demetra.sa.ComponentType;
 import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;

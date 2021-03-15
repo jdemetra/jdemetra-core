@@ -16,7 +16,7 @@
  */
 package demetra.regarima;
 
-import demetra.arima.SarimaSpec;
+import demetra.timeseries.regression.modelling.SarimaSpec;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;

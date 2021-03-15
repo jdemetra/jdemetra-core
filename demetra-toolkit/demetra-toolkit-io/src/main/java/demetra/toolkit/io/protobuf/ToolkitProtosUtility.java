@@ -29,7 +29,6 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 import jdplus.arima.IArimaModel;
 import jdplus.stats.tests.NiidTests;
@@ -43,33 +42,57 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 @lombok.experimental.UtilityClass
 public class ToolkitProtosUtility {
 
+    public ToolkitProtos.Date convert(LocalDate ld) {
+        if (ld.equals(LocalDate.MIN)) {
+            return ToolkitProtos.Date.newBuilder()
+                    .setYear(1)
+                    .setMonth(1)
+                    .setDay(1)
+                    .build();
+        } else if (ld.equals(LocalDate.MAX)) {
+            return ToolkitProtos.Date.newBuilder()
+                    .setYear(9999)
+                    .setMonth(12)
+                    .setDay(31)
+                    .build();
+        } else {
+            return ToolkitProtos.Date.newBuilder()
+                    .setYear(ld.getYear())
+                    .setMonth(ld.getMonthValue())
+                    .setDay(ld.getDayOfMonth())
+                    .build();
+        }
+    }
+
+    public LocalDate convert(ToolkitProtos.Date d) {
+        switch (d.getYear()) {
+            case 0:
+                throw new IllegalArgumentException("Date not correctly initialized");
+
+            case 1:
+                return LocalDate.MIN;
+            case 9999:
+                return LocalDate.MAX;
+            default:
+                return LocalDate.of(d.getYear(), d.getMonth(), d.getDay());
+        }
+    }
+
     public TimeSelector convert(ToolkitProtos.TimeSelector sel) {
         switch (sel.getType()) {
             case SPAN_ALL:
                 return TimeSelector.all();
             case SPAN_FROM: {
-                String d0 = sel.getD0();
-                if (d0 == null) {
-                    throw new IllegalArgumentException("Span not correctly initialized");
-                }
-                LocalDate ld = LocalDate.parse(d0, DateTimeFormatter.ISO_DATE);
+                LocalDate ld = convert(sel.getD0());
                 return TimeSelector.from(ld.atStartOfDay());
             }
             case SPAN_TO: {
-                String d1 = sel.getD1();
-                if (d1 == null) {
-                    throw new IllegalArgumentException("Span not correctly initialized");
-                }
-                LocalDate ld = LocalDate.parse(d1, DateTimeFormatter.ISO_DATE);
+                LocalDate ld = convert(sel.getD1());
                 return TimeSelector.to(ld.atStartOfDay());
             }
             case SPAN_BETWEEN: {
-                String d0 = sel.getD0(), d1 = sel.getD1();
-                if (d0 == null || d1 == null) {
-                    throw new IllegalArgumentException("Span not correctly initialized");
-                }
-                LocalDate ld0 = LocalDate.parse(d0, DateTimeFormatter.ISO_DATE);
-                LocalDate ld1 = LocalDate.parse(d1, DateTimeFormatter.ISO_DATE);
+                LocalDate ld0 = convert(sel.getD0());
+                LocalDate ld1 = convert(sel.getD1());
                 return TimeSelector.between(ld0.atStartOfDay(), ld1.atStartOfDay());
             }
             case SPAN_FIRST: {
@@ -96,16 +119,16 @@ public class ToolkitProtosUtility {
                 break;
             case From:
                 builder.setType(ToolkitProtos.SelectionType.SPAN_FROM)
-                        .setD0(sel.getD0().toLocalDate().format(DateTimeFormatter.ISO_DATE));
+                        .setD0(convert(sel.getD0().toLocalDate()));
                 break;
             case To:
                 builder.setType(ToolkitProtos.SelectionType.SPAN_TO)
-                        .setD1(sel.getD1().toLocalDate().format(DateTimeFormatter.ISO_DATE));
+                        .setD1(convert(sel.getD1().toLocalDate()));
                 break;
             case Between:
                 builder.setType(ToolkitProtos.SelectionType.SPAN_BETWEEN)
-                        .setD0(sel.getD0().toLocalDate().format(DateTimeFormatter.ISO_DATE))
-                        .setD1(sel.getD1().toLocalDate().format(DateTimeFormatter.ISO_DATE));
+                        .setD0(convert(sel.getD0().toLocalDate()))
+                        .setD1(convert(sel.getD1().toLocalDate()));
                 break;
             case First:
                 builder.setType(ToolkitProtos.SelectionType.SPAN_FIRST)

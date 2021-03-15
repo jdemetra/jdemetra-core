@@ -800,6 +800,714 @@ public final class ToolkitProtos {
     // @@protoc_insertion_point(enum_scope:jd3.CalendarEvent)
   }
 
+  public interface DateOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:jd3.Date)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * Year of the date. Must be from 1 to 9999, or 0 to specify a date without
+     * a year.
+     * </pre>
+     *
+     * <code>int32 year = 1;</code>
+     * @return The year.
+     */
+    int getYear();
+
+    /**
+     * <pre>
+     * Month of a year. Must be from 1 to 12, or 0 to specify a year without a
+     * month and day.
+     * </pre>
+     *
+     * <code>int32 month = 2;</code>
+     * @return The month.
+     */
+    int getMonth();
+
+    /**
+     * <pre>
+     * Day of a month. Must be from 1 to 31 and valid for the year and month, or 0
+     * to specify a year by itself or a year and month where the day isn't
+     * significant.
+     * </pre>
+     *
+     * <code>int32 day = 3;</code>
+     * @return The day.
+     */
+    int getDay();
+  }
+  /**
+   * Protobuf type {@code jd3.Date}
+   */
+  public static final class Date extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:jd3.Date)
+      DateOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Date.newBuilder() to construct.
+    private Date(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Date() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new Date();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Date(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              year_ = input.readInt32();
+              break;
+            }
+            case 16: {
+
+              month_ = input.readInt32();
+              break;
+            }
+            case 24: {
+
+              day_ = input.readInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_Date_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_Date_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.class, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder.class);
+    }
+
+    public static final int YEAR_FIELD_NUMBER = 1;
+    private int year_;
+    /**
+     * <pre>
+     * Year of the date. Must be from 1 to 9999, or 0 to specify a date without
+     * a year.
+     * </pre>
+     *
+     * <code>int32 year = 1;</code>
+     * @return The year.
+     */
+    @java.lang.Override
+    public int getYear() {
+      return year_;
+    }
+
+    public static final int MONTH_FIELD_NUMBER = 2;
+    private int month_;
+    /**
+     * <pre>
+     * Month of a year. Must be from 1 to 12, or 0 to specify a year without a
+     * month and day.
+     * </pre>
+     *
+     * <code>int32 month = 2;</code>
+     * @return The month.
+     */
+    @java.lang.Override
+    public int getMonth() {
+      return month_;
+    }
+
+    public static final int DAY_FIELD_NUMBER = 3;
+    private int day_;
+    /**
+     * <pre>
+     * Day of a month. Must be from 1 to 31 and valid for the year and month, or 0
+     * to specify a year by itself or a year and month where the day isn't
+     * significant.
+     * </pre>
+     *
+     * <code>int32 day = 3;</code>
+     * @return The day.
+     */
+    @java.lang.Override
+    public int getDay() {
+      return day_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (year_ != 0) {
+        output.writeInt32(1, year_);
+      }
+      if (month_ != 0) {
+        output.writeInt32(2, month_);
+      }
+      if (day_ != 0) {
+        output.writeInt32(3, day_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (year_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, year_);
+      }
+      if (month_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, month_);
+      }
+      if (day_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, day_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.toolkit.io.protobuf.ToolkitProtos.Date)) {
+        return super.equals(obj);
+      }
+      demetra.toolkit.io.protobuf.ToolkitProtos.Date other = (demetra.toolkit.io.protobuf.ToolkitProtos.Date) obj;
+
+      if (getYear()
+          != other.getYear()) return false;
+      if (getMonth()
+          != other.getMonth()) return false;
+      if (getDay()
+          != other.getDay()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + YEAR_FIELD_NUMBER;
+      hash = (53 * hash) + getYear();
+      hash = (37 * hash) + MONTH_FIELD_NUMBER;
+      hash = (53 * hash) + getMonth();
+      hash = (37 * hash) + DAY_FIELD_NUMBER;
+      hash = (53 * hash) + getDay();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Date parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Date parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Date parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Date parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Date parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Date parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Date parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Date parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Date parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Date parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Date parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Date parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.toolkit.io.protobuf.ToolkitProtos.Date prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code jd3.Date}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:jd3.Date)
+        demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_Date_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_Date_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.toolkit.io.protobuf.ToolkitProtos.Date.class, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder.class);
+      }
+
+      // Construct using demetra.toolkit.io.protobuf.ToolkitProtos.Date.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        year_ = 0;
+
+        month_ = 0;
+
+        day_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_Date_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date getDefaultInstanceForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date build() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.Date result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date buildPartial() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.Date result = new demetra.toolkit.io.protobuf.ToolkitProtos.Date(this);
+        result.year_ = year_;
+        result.month_ = month_;
+        result.day_ = day_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.toolkit.io.protobuf.ToolkitProtos.Date) {
+          return mergeFrom((demetra.toolkit.io.protobuf.ToolkitProtos.Date)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.toolkit.io.protobuf.ToolkitProtos.Date other) {
+        if (other == demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance()) return this;
+        if (other.getYear() != 0) {
+          setYear(other.getYear());
+        }
+        if (other.getMonth() != 0) {
+          setMonth(other.getMonth());
+        }
+        if (other.getDay() != 0) {
+          setDay(other.getDay());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.toolkit.io.protobuf.ToolkitProtos.Date parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.toolkit.io.protobuf.ToolkitProtos.Date) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int year_ ;
+      /**
+       * <pre>
+       * Year of the date. Must be from 1 to 9999, or 0 to specify a date without
+       * a year.
+       * </pre>
+       *
+       * <code>int32 year = 1;</code>
+       * @return The year.
+       */
+      @java.lang.Override
+      public int getYear() {
+        return year_;
+      }
+      /**
+       * <pre>
+       * Year of the date. Must be from 1 to 9999, or 0 to specify a date without
+       * a year.
+       * </pre>
+       *
+       * <code>int32 year = 1;</code>
+       * @param value The year to set.
+       * @return This builder for chaining.
+       */
+      public Builder setYear(int value) {
+        
+        year_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Year of the date. Must be from 1 to 9999, or 0 to specify a date without
+       * a year.
+       * </pre>
+       *
+       * <code>int32 year = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearYear() {
+        
+        year_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int month_ ;
+      /**
+       * <pre>
+       * Month of a year. Must be from 1 to 12, or 0 to specify a year without a
+       * month and day.
+       * </pre>
+       *
+       * <code>int32 month = 2;</code>
+       * @return The month.
+       */
+      @java.lang.Override
+      public int getMonth() {
+        return month_;
+      }
+      /**
+       * <pre>
+       * Month of a year. Must be from 1 to 12, or 0 to specify a year without a
+       * month and day.
+       * </pre>
+       *
+       * <code>int32 month = 2;</code>
+       * @param value The month to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMonth(int value) {
+        
+        month_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Month of a year. Must be from 1 to 12, or 0 to specify a year without a
+       * month and day.
+       * </pre>
+       *
+       * <code>int32 month = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMonth() {
+        
+        month_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int day_ ;
+      /**
+       * <pre>
+       * Day of a month. Must be from 1 to 31 and valid for the year and month, or 0
+       * to specify a year by itself or a year and month where the day isn't
+       * significant.
+       * </pre>
+       *
+       * <code>int32 day = 3;</code>
+       * @return The day.
+       */
+      @java.lang.Override
+      public int getDay() {
+        return day_;
+      }
+      /**
+       * <pre>
+       * Day of a month. Must be from 1 to 31 and valid for the year and month, or 0
+       * to specify a year by itself or a year and month where the day isn't
+       * significant.
+       * </pre>
+       *
+       * <code>int32 day = 3;</code>
+       * @param value The day to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDay(int value) {
+        
+        day_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Day of a month. Must be from 1 to 31 and valid for the year and month, or 0
+       * to specify a year by itself or a year and month where the day isn't
+       * significant.
+       * </pre>
+       *
+       * <code>int32 day = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDay() {
+        
+        day_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:jd3.Date)
+    }
+
+    // @@protoc_insertion_point(class_scope:jd3.Date)
+    private static final demetra.toolkit.io.protobuf.ToolkitProtos.Date DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.toolkit.io.protobuf.ToolkitProtos.Date();
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.Date getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Date>
+        PARSER = new com.google.protobuf.AbstractParser<Date>() {
+      @java.lang.Override
+      public Date parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Date(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Date> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Date> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Date getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface TimeSelectorOrBuilder extends
       // @@protoc_insertion_point(interface_extends:jd3.TimeSelector)
       com.google.protobuf.MessageOrBuilder {
@@ -828,28 +1536,34 @@ public final class ToolkitProtos {
     int getN1();
 
     /**
-     * <code>string d0 = 4;</code>
+     * <code>.jd3.Date d0 = 4;</code>
+     * @return Whether the d0 field is set.
+     */
+    boolean hasD0();
+    /**
+     * <code>.jd3.Date d0 = 4;</code>
      * @return The d0.
      */
-    java.lang.String getD0();
+    demetra.toolkit.io.protobuf.ToolkitProtos.Date getD0();
     /**
-     * <code>string d0 = 4;</code>
-     * @return The bytes for d0.
+     * <code>.jd3.Date d0 = 4;</code>
      */
-    com.google.protobuf.ByteString
-        getD0Bytes();
+    demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getD0OrBuilder();
 
     /**
-     * <code>string d1 = 5;</code>
+     * <code>.jd3.Date d1 = 5;</code>
+     * @return Whether the d1 field is set.
+     */
+    boolean hasD1();
+    /**
+     * <code>.jd3.Date d1 = 5;</code>
      * @return The d1.
      */
-    java.lang.String getD1();
+    demetra.toolkit.io.protobuf.ToolkitProtos.Date getD1();
     /**
-     * <code>string d1 = 5;</code>
-     * @return The bytes for d1.
+     * <code>.jd3.Date d1 = 5;</code>
      */
-    com.google.protobuf.ByteString
-        getD1Bytes();
+    demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getD1OrBuilder();
   }
   /**
    * Protobuf type {@code jd3.TimeSelector}
@@ -865,8 +1579,6 @@ public final class ToolkitProtos {
     }
     private TimeSelector() {
       type_ = 0;
-      d0_ = "";
-      d1_ = "";
     }
 
     @java.lang.Override
@@ -916,15 +1628,29 @@ public final class ToolkitProtos {
               break;
             }
             case 34: {
-              java.lang.String s = input.readStringRequireUtf8();
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder subBuilder = null;
+              if (d0_ != null) {
+                subBuilder = d0_.toBuilder();
+              }
+              d0_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Date.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(d0_);
+                d0_ = subBuilder.buildPartial();
+              }
 
-              d0_ = s;
               break;
             }
             case 42: {
-              java.lang.String s = input.readStringRequireUtf8();
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder subBuilder = null;
+              if (d1_ != null) {
+                subBuilder = d1_.toBuilder();
+              }
+              d1_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Date.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(d1_);
+                d1_ = subBuilder.buildPartial();
+              }
 
-              d1_ = s;
               break;
             }
             default: {
@@ -1001,79 +1727,55 @@ public final class ToolkitProtos {
     }
 
     public static final int D0_FIELD_NUMBER = 4;
-    private volatile java.lang.Object d0_;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Date d0_;
     /**
-     * <code>string d0 = 4;</code>
+     * <code>.jd3.Date d0 = 4;</code>
+     * @return Whether the d0 field is set.
+     */
+    @java.lang.Override
+    public boolean hasD0() {
+      return d0_ != null;
+    }
+    /**
+     * <code>.jd3.Date d0 = 4;</code>
      * @return The d0.
      */
     @java.lang.Override
-    public java.lang.String getD0() {
-      java.lang.Object ref = d0_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        d0_ = s;
-        return s;
-      }
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Date getD0() {
+      return d0_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : d0_;
     }
     /**
-     * <code>string d0 = 4;</code>
-     * @return The bytes for d0.
+     * <code>.jd3.Date d0 = 4;</code>
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getD0Bytes() {
-      java.lang.Object ref = d0_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        d0_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getD0OrBuilder() {
+      return getD0();
     }
 
     public static final int D1_FIELD_NUMBER = 5;
-    private volatile java.lang.Object d1_;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Date d1_;
     /**
-     * <code>string d1 = 5;</code>
+     * <code>.jd3.Date d1 = 5;</code>
+     * @return Whether the d1 field is set.
+     */
+    @java.lang.Override
+    public boolean hasD1() {
+      return d1_ != null;
+    }
+    /**
+     * <code>.jd3.Date d1 = 5;</code>
      * @return The d1.
      */
     @java.lang.Override
-    public java.lang.String getD1() {
-      java.lang.Object ref = d1_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        d1_ = s;
-        return s;
-      }
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Date getD1() {
+      return d1_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : d1_;
     }
     /**
-     * <code>string d1 = 5;</code>
-     * @return The bytes for d1.
+     * <code>.jd3.Date d1 = 5;</code>
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getD1Bytes() {
-      java.lang.Object ref = d1_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        d1_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getD1OrBuilder() {
+      return getD1();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1099,11 +1801,11 @@ public final class ToolkitProtos {
       if (n1_ != 0) {
         output.writeInt32(3, n1_);
       }
-      if (!getD0Bytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, d0_);
+      if (d0_ != null) {
+        output.writeMessage(4, getD0());
       }
-      if (!getD1Bytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, d1_);
+      if (d1_ != null) {
+        output.writeMessage(5, getD1());
       }
       unknownFields.writeTo(output);
     }
@@ -1126,11 +1828,13 @@ public final class ToolkitProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, n1_);
       }
-      if (!getD0Bytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, d0_);
+      if (d0_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, getD0());
       }
-      if (!getD1Bytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, d1_);
+      if (d1_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, getD1());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1152,10 +1856,16 @@ public final class ToolkitProtos {
           != other.getN0()) return false;
       if (getN1()
           != other.getN1()) return false;
-      if (!getD0()
-          .equals(other.getD0())) return false;
-      if (!getD1()
-          .equals(other.getD1())) return false;
+      if (hasD0() != other.hasD0()) return false;
+      if (hasD0()) {
+        if (!getD0()
+            .equals(other.getD0())) return false;
+      }
+      if (hasD1() != other.hasD1()) return false;
+      if (hasD1()) {
+        if (!getD1()
+            .equals(other.getD1())) return false;
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1173,10 +1883,14 @@ public final class ToolkitProtos {
       hash = (53 * hash) + getN0();
       hash = (37 * hash) + N1_FIELD_NUMBER;
       hash = (53 * hash) + getN1();
-      hash = (37 * hash) + D0_FIELD_NUMBER;
-      hash = (53 * hash) + getD0().hashCode();
-      hash = (37 * hash) + D1_FIELD_NUMBER;
-      hash = (53 * hash) + getD1().hashCode();
+      if (hasD0()) {
+        hash = (37 * hash) + D0_FIELD_NUMBER;
+        hash = (53 * hash) + getD0().hashCode();
+      }
+      if (hasD1()) {
+        hash = (37 * hash) + D1_FIELD_NUMBER;
+        hash = (53 * hash) + getD1().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1316,10 +2030,18 @@ public final class ToolkitProtos {
 
         n1_ = 0;
 
-        d0_ = "";
-
-        d1_ = "";
-
+        if (d0Builder_ == null) {
+          d0_ = null;
+        } else {
+          d0_ = null;
+          d0Builder_ = null;
+        }
+        if (d1Builder_ == null) {
+          d1_ = null;
+        } else {
+          d1_ = null;
+          d1Builder_ = null;
+        }
         return this;
       }
 
@@ -1349,8 +2071,16 @@ public final class ToolkitProtos {
         result.type_ = type_;
         result.n0_ = n0_;
         result.n1_ = n1_;
-        result.d0_ = d0_;
-        result.d1_ = d1_;
+        if (d0Builder_ == null) {
+          result.d0_ = d0_;
+        } else {
+          result.d0_ = d0Builder_.build();
+        }
+        if (d1Builder_ == null) {
+          result.d1_ = d1_;
+        } else {
+          result.d1_ = d1Builder_.build();
+        }
         onBuilt();
         return result;
       }
@@ -1408,13 +2138,11 @@ public final class ToolkitProtos {
         if (other.getN1() != 0) {
           setN1(other.getN1());
         }
-        if (!other.getD0().isEmpty()) {
-          d0_ = other.d0_;
-          onChanged();
+        if (other.hasD0()) {
+          mergeD0(other.getD0());
         }
-        if (!other.getD1().isEmpty()) {
-          d1_ = other.d1_;
-          onChanged();
+        if (other.hasD1()) {
+          mergeD1(other.getD1());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1561,156 +2289,242 @@ public final class ToolkitProtos {
         return this;
       }
 
-      private java.lang.Object d0_ = "";
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Date d0_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> d0Builder_;
       /**
-       * <code>string d0 = 4;</code>
+       * <code>.jd3.Date d0 = 4;</code>
+       * @return Whether the d0 field is set.
+       */
+      public boolean hasD0() {
+        return d0Builder_ != null || d0_ != null;
+      }
+      /**
+       * <code>.jd3.Date d0 = 4;</code>
        * @return The d0.
        */
-      public java.lang.String getD0() {
-        java.lang.Object ref = d0_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          d0_ = s;
-          return s;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date getD0() {
+        if (d0Builder_ == null) {
+          return d0_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : d0_;
         } else {
-          return (java.lang.String) ref;
+          return d0Builder_.getMessage();
         }
       }
       /**
-       * <code>string d0 = 4;</code>
-       * @return The bytes for d0.
+       * <code>.jd3.Date d0 = 4;</code>
        */
-      public com.google.protobuf.ByteString
-          getD0Bytes() {
-        java.lang.Object ref = d0_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          d0_ = b;
-          return b;
+      public Builder setD0(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (d0Builder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          d0_ = value;
+          onChanged();
         } else {
-          return (com.google.protobuf.ByteString) ref;
+          d0Builder_.setMessage(value);
         }
+
+        return this;
       }
       /**
-       * <code>string d0 = 4;</code>
-       * @param value The d0 to set.
-       * @return This builder for chaining.
+       * <code>.jd3.Date d0 = 4;</code>
        */
       public Builder setD0(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        d0_ = value;
-        onChanged();
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder builderForValue) {
+        if (d0Builder_ == null) {
+          d0_ = builderForValue.build();
+          onChanged();
+        } else {
+          d0Builder_.setMessage(builderForValue.build());
+        }
+
         return this;
       }
       /**
-       * <code>string d0 = 4;</code>
-       * @return This builder for chaining.
+       * <code>.jd3.Date d0 = 4;</code>
+       */
+      public Builder mergeD0(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (d0Builder_ == null) {
+          if (d0_ != null) {
+            d0_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.newBuilder(d0_).mergeFrom(value).buildPartial();
+          } else {
+            d0_ = value;
+          }
+          onChanged();
+        } else {
+          d0Builder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Date d0 = 4;</code>
        */
       public Builder clearD0() {
-        
-        d0_ = getDefaultInstance().getD0();
-        onChanged();
+        if (d0Builder_ == null) {
+          d0_ = null;
+          onChanged();
+        } else {
+          d0_ = null;
+          d0Builder_ = null;
+        }
+
         return this;
       }
       /**
-       * <code>string d0 = 4;</code>
-       * @param value The bytes for d0 to set.
-       * @return This builder for chaining.
+       * <code>.jd3.Date d0 = 4;</code>
        */
-      public Builder setD0Bytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder getD0Builder() {
         
-        d0_ = value;
         onChanged();
-        return this;
+        return getD0FieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Date d0 = 4;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getD0OrBuilder() {
+        if (d0Builder_ != null) {
+          return d0Builder_.getMessageOrBuilder();
+        } else {
+          return d0_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : d0_;
+        }
+      }
+      /**
+       * <code>.jd3.Date d0 = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> 
+          getD0FieldBuilder() {
+        if (d0Builder_ == null) {
+          d0Builder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder>(
+                  getD0(),
+                  getParentForChildren(),
+                  isClean());
+          d0_ = null;
+        }
+        return d0Builder_;
       }
 
-      private java.lang.Object d1_ = "";
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Date d1_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> d1Builder_;
       /**
-       * <code>string d1 = 5;</code>
+       * <code>.jd3.Date d1 = 5;</code>
+       * @return Whether the d1 field is set.
+       */
+      public boolean hasD1() {
+        return d1Builder_ != null || d1_ != null;
+      }
+      /**
+       * <code>.jd3.Date d1 = 5;</code>
        * @return The d1.
        */
-      public java.lang.String getD1() {
-        java.lang.Object ref = d1_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          d1_ = s;
-          return s;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date getD1() {
+        if (d1Builder_ == null) {
+          return d1_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : d1_;
         } else {
-          return (java.lang.String) ref;
+          return d1Builder_.getMessage();
         }
       }
       /**
-       * <code>string d1 = 5;</code>
-       * @return The bytes for d1.
+       * <code>.jd3.Date d1 = 5;</code>
        */
-      public com.google.protobuf.ByteString
-          getD1Bytes() {
-        java.lang.Object ref = d1_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          d1_ = b;
-          return b;
+      public Builder setD1(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (d1Builder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          d1_ = value;
+          onChanged();
         } else {
-          return (com.google.protobuf.ByteString) ref;
+          d1Builder_.setMessage(value);
         }
+
+        return this;
       }
       /**
-       * <code>string d1 = 5;</code>
-       * @param value The d1 to set.
-       * @return This builder for chaining.
+       * <code>.jd3.Date d1 = 5;</code>
        */
       public Builder setD1(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        d1_ = value;
-        onChanged();
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder builderForValue) {
+        if (d1Builder_ == null) {
+          d1_ = builderForValue.build();
+          onChanged();
+        } else {
+          d1Builder_.setMessage(builderForValue.build());
+        }
+
         return this;
       }
       /**
-       * <code>string d1 = 5;</code>
-       * @return This builder for chaining.
+       * <code>.jd3.Date d1 = 5;</code>
+       */
+      public Builder mergeD1(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (d1Builder_ == null) {
+          if (d1_ != null) {
+            d1_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.newBuilder(d1_).mergeFrom(value).buildPartial();
+          } else {
+            d1_ = value;
+          }
+          onChanged();
+        } else {
+          d1Builder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Date d1 = 5;</code>
        */
       public Builder clearD1() {
-        
-        d1_ = getDefaultInstance().getD1();
-        onChanged();
+        if (d1Builder_ == null) {
+          d1_ = null;
+          onChanged();
+        } else {
+          d1_ = null;
+          d1Builder_ = null;
+        }
+
         return this;
       }
       /**
-       * <code>string d1 = 5;</code>
-       * @param value The bytes for d1 to set.
-       * @return This builder for chaining.
+       * <code>.jd3.Date d1 = 5;</code>
        */
-      public Builder setD1Bytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder getD1Builder() {
         
-        d1_ = value;
         onChanged();
-        return this;
+        return getD1FieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Date d1 = 5;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getD1OrBuilder() {
+        if (d1Builder_ != null) {
+          return d1Builder_.getMessageOrBuilder();
+        } else {
+          return d1_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : d1_;
+        }
+      }
+      /**
+       * <code>.jd3.Date d1 = 5;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> 
+          getD1FieldBuilder() {
+        if (d1Builder_ == null) {
+          d1Builder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder>(
+                  getD1(),
+                  getParentForChildren(),
+                  isClean());
+          d1_ = null;
+        }
+        return d1Builder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -14253,28 +15067,34 @@ public final class ToolkitProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string start = 1;</code>
+     * <code>.jd3.Date start = 1;</code>
+     * @return Whether the start field is set.
+     */
+    boolean hasStart();
+    /**
+     * <code>.jd3.Date start = 1;</code>
      * @return The start.
      */
-    java.lang.String getStart();
+    demetra.toolkit.io.protobuf.ToolkitProtos.Date getStart();
     /**
-     * <code>string start = 1;</code>
-     * @return The bytes for start.
+     * <code>.jd3.Date start = 1;</code>
      */
-    com.google.protobuf.ByteString
-        getStartBytes();
+    demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getStartOrBuilder();
 
     /**
-     * <code>string end = 2;</code>
+     * <code>.jd3.Date end = 2;</code>
+     * @return Whether the end field is set.
+     */
+    boolean hasEnd();
+    /**
+     * <code>.jd3.Date end = 2;</code>
      * @return The end.
      */
-    java.lang.String getEnd();
+    demetra.toolkit.io.protobuf.ToolkitProtos.Date getEnd();
     /**
-     * <code>string end = 2;</code>
-     * @return The bytes for end.
+     * <code>.jd3.Date end = 2;</code>
      */
-    com.google.protobuf.ByteString
-        getEndBytes();
+    demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getEndOrBuilder();
   }
   /**
    * Protobuf type {@code jd3.ValidityPeriod}
@@ -14289,8 +15109,6 @@ public final class ToolkitProtos {
       super(builder);
     }
     private ValidityPeriod() {
-      start_ = "";
-      end_ = "";
     }
 
     @java.lang.Override
@@ -14324,15 +15142,29 @@ public final class ToolkitProtos {
               done = true;
               break;
             case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder subBuilder = null;
+              if (start_ != null) {
+                subBuilder = start_.toBuilder();
+              }
+              start_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Date.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(start_);
+                start_ = subBuilder.buildPartial();
+              }
 
-              start_ = s;
               break;
             }
             case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder subBuilder = null;
+              if (end_ != null) {
+                subBuilder = end_.toBuilder();
+              }
+              end_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Date.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(end_);
+                end_ = subBuilder.buildPartial();
+              }
 
-              end_ = s;
               break;
             }
             default: {
@@ -14368,79 +15200,55 @@ public final class ToolkitProtos {
     }
 
     public static final int START_FIELD_NUMBER = 1;
-    private volatile java.lang.Object start_;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Date start_;
     /**
-     * <code>string start = 1;</code>
+     * <code>.jd3.Date start = 1;</code>
+     * @return Whether the start field is set.
+     */
+    @java.lang.Override
+    public boolean hasStart() {
+      return start_ != null;
+    }
+    /**
+     * <code>.jd3.Date start = 1;</code>
      * @return The start.
      */
     @java.lang.Override
-    public java.lang.String getStart() {
-      java.lang.Object ref = start_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        start_ = s;
-        return s;
-      }
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Date getStart() {
+      return start_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : start_;
     }
     /**
-     * <code>string start = 1;</code>
-     * @return The bytes for start.
+     * <code>.jd3.Date start = 1;</code>
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getStartBytes() {
-      java.lang.Object ref = start_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        start_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getStartOrBuilder() {
+      return getStart();
     }
 
     public static final int END_FIELD_NUMBER = 2;
-    private volatile java.lang.Object end_;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Date end_;
     /**
-     * <code>string end = 2;</code>
+     * <code>.jd3.Date end = 2;</code>
+     * @return Whether the end field is set.
+     */
+    @java.lang.Override
+    public boolean hasEnd() {
+      return end_ != null;
+    }
+    /**
+     * <code>.jd3.Date end = 2;</code>
      * @return The end.
      */
     @java.lang.Override
-    public java.lang.String getEnd() {
-      java.lang.Object ref = end_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        end_ = s;
-        return s;
-      }
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Date getEnd() {
+      return end_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : end_;
     }
     /**
-     * <code>string end = 2;</code>
-     * @return The bytes for end.
+     * <code>.jd3.Date end = 2;</code>
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getEndBytes() {
-      java.lang.Object ref = end_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        end_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getEndOrBuilder() {
+      return getEnd();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -14457,11 +15265,11 @@ public final class ToolkitProtos {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getStartBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, start_);
+      if (start_ != null) {
+        output.writeMessage(1, getStart());
       }
-      if (!getEndBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, end_);
+      if (end_ != null) {
+        output.writeMessage(2, getEnd());
       }
       unknownFields.writeTo(output);
     }
@@ -14472,11 +15280,13 @@ public final class ToolkitProtos {
       if (size != -1) return size;
 
       size = 0;
-      if (!getStartBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, start_);
+      if (start_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getStart());
       }
-      if (!getEndBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, end_);
+      if (end_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getEnd());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -14493,10 +15303,16 @@ public final class ToolkitProtos {
       }
       demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriod other = (demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriod) obj;
 
-      if (!getStart()
-          .equals(other.getStart())) return false;
-      if (!getEnd()
-          .equals(other.getEnd())) return false;
+      if (hasStart() != other.hasStart()) return false;
+      if (hasStart()) {
+        if (!getStart()
+            .equals(other.getStart())) return false;
+      }
+      if (hasEnd() != other.hasEnd()) return false;
+      if (hasEnd()) {
+        if (!getEnd()
+            .equals(other.getEnd())) return false;
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -14508,10 +15324,14 @@ public final class ToolkitProtos {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + START_FIELD_NUMBER;
-      hash = (53 * hash) + getStart().hashCode();
-      hash = (37 * hash) + END_FIELD_NUMBER;
-      hash = (53 * hash) + getEnd().hashCode();
+      if (hasStart()) {
+        hash = (37 * hash) + START_FIELD_NUMBER;
+        hash = (53 * hash) + getStart().hashCode();
+      }
+      if (hasEnd()) {
+        hash = (37 * hash) + END_FIELD_NUMBER;
+        hash = (53 * hash) + getEnd().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -14645,10 +15465,18 @@ public final class ToolkitProtos {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        start_ = "";
-
-        end_ = "";
-
+        if (startBuilder_ == null) {
+          start_ = null;
+        } else {
+          start_ = null;
+          startBuilder_ = null;
+        }
+        if (endBuilder_ == null) {
+          end_ = null;
+        } else {
+          end_ = null;
+          endBuilder_ = null;
+        }
         return this;
       }
 
@@ -14675,8 +15503,16 @@ public final class ToolkitProtos {
       @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriod buildPartial() {
         demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriod result = new demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriod(this);
-        result.start_ = start_;
-        result.end_ = end_;
+        if (startBuilder_ == null) {
+          result.start_ = start_;
+        } else {
+          result.start_ = startBuilder_.build();
+        }
+        if (endBuilder_ == null) {
+          result.end_ = end_;
+        } else {
+          result.end_ = endBuilder_.build();
+        }
         onBuilt();
         return result;
       }
@@ -14725,13 +15561,11 @@ public final class ToolkitProtos {
 
       public Builder mergeFrom(demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriod other) {
         if (other == demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriod.getDefaultInstance()) return this;
-        if (!other.getStart().isEmpty()) {
-          start_ = other.start_;
-          onChanged();
+        if (other.hasStart()) {
+          mergeStart(other.getStart());
         }
-        if (!other.getEnd().isEmpty()) {
-          end_ = other.end_;
-          onChanged();
+        if (other.hasEnd()) {
+          mergeEnd(other.getEnd());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -14762,156 +15596,242 @@ public final class ToolkitProtos {
         return this;
       }
 
-      private java.lang.Object start_ = "";
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Date start_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> startBuilder_;
       /**
-       * <code>string start = 1;</code>
+       * <code>.jd3.Date start = 1;</code>
+       * @return Whether the start field is set.
+       */
+      public boolean hasStart() {
+        return startBuilder_ != null || start_ != null;
+      }
+      /**
+       * <code>.jd3.Date start = 1;</code>
        * @return The start.
        */
-      public java.lang.String getStart() {
-        java.lang.Object ref = start_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          start_ = s;
-          return s;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date getStart() {
+        if (startBuilder_ == null) {
+          return start_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : start_;
         } else {
-          return (java.lang.String) ref;
+          return startBuilder_.getMessage();
         }
       }
       /**
-       * <code>string start = 1;</code>
-       * @return The bytes for start.
+       * <code>.jd3.Date start = 1;</code>
        */
-      public com.google.protobuf.ByteString
-          getStartBytes() {
-        java.lang.Object ref = start_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          start_ = b;
-          return b;
+      public Builder setStart(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (startBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          start_ = value;
+          onChanged();
         } else {
-          return (com.google.protobuf.ByteString) ref;
+          startBuilder_.setMessage(value);
         }
+
+        return this;
       }
       /**
-       * <code>string start = 1;</code>
-       * @param value The start to set.
-       * @return This builder for chaining.
+       * <code>.jd3.Date start = 1;</code>
        */
       public Builder setStart(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        start_ = value;
-        onChanged();
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder builderForValue) {
+        if (startBuilder_ == null) {
+          start_ = builderForValue.build();
+          onChanged();
+        } else {
+          startBuilder_.setMessage(builderForValue.build());
+        }
+
         return this;
       }
       /**
-       * <code>string start = 1;</code>
-       * @return This builder for chaining.
+       * <code>.jd3.Date start = 1;</code>
+       */
+      public Builder mergeStart(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (startBuilder_ == null) {
+          if (start_ != null) {
+            start_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.newBuilder(start_).mergeFrom(value).buildPartial();
+          } else {
+            start_ = value;
+          }
+          onChanged();
+        } else {
+          startBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Date start = 1;</code>
        */
       public Builder clearStart() {
-        
-        start_ = getDefaultInstance().getStart();
-        onChanged();
+        if (startBuilder_ == null) {
+          start_ = null;
+          onChanged();
+        } else {
+          start_ = null;
+          startBuilder_ = null;
+        }
+
         return this;
       }
       /**
-       * <code>string start = 1;</code>
-       * @param value The bytes for start to set.
-       * @return This builder for chaining.
+       * <code>.jd3.Date start = 1;</code>
        */
-      public Builder setStartBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder getStartBuilder() {
         
-        start_ = value;
         onChanged();
-        return this;
+        return getStartFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Date start = 1;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getStartOrBuilder() {
+        if (startBuilder_ != null) {
+          return startBuilder_.getMessageOrBuilder();
+        } else {
+          return start_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : start_;
+        }
+      }
+      /**
+       * <code>.jd3.Date start = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> 
+          getStartFieldBuilder() {
+        if (startBuilder_ == null) {
+          startBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder>(
+                  getStart(),
+                  getParentForChildren(),
+                  isClean());
+          start_ = null;
+        }
+        return startBuilder_;
       }
 
-      private java.lang.Object end_ = "";
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Date end_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> endBuilder_;
       /**
-       * <code>string end = 2;</code>
+       * <code>.jd3.Date end = 2;</code>
+       * @return Whether the end field is set.
+       */
+      public boolean hasEnd() {
+        return endBuilder_ != null || end_ != null;
+      }
+      /**
+       * <code>.jd3.Date end = 2;</code>
        * @return The end.
        */
-      public java.lang.String getEnd() {
-        java.lang.Object ref = end_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          end_ = s;
-          return s;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date getEnd() {
+        if (endBuilder_ == null) {
+          return end_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : end_;
         } else {
-          return (java.lang.String) ref;
+          return endBuilder_.getMessage();
         }
       }
       /**
-       * <code>string end = 2;</code>
-       * @return The bytes for end.
+       * <code>.jd3.Date end = 2;</code>
        */
-      public com.google.protobuf.ByteString
-          getEndBytes() {
-        java.lang.Object ref = end_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          end_ = b;
-          return b;
+      public Builder setEnd(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (endBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          end_ = value;
+          onChanged();
         } else {
-          return (com.google.protobuf.ByteString) ref;
+          endBuilder_.setMessage(value);
         }
+
+        return this;
       }
       /**
-       * <code>string end = 2;</code>
-       * @param value The end to set.
-       * @return This builder for chaining.
+       * <code>.jd3.Date end = 2;</code>
        */
       public Builder setEnd(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        end_ = value;
-        onChanged();
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder builderForValue) {
+        if (endBuilder_ == null) {
+          end_ = builderForValue.build();
+          onChanged();
+        } else {
+          endBuilder_.setMessage(builderForValue.build());
+        }
+
         return this;
       }
       /**
-       * <code>string end = 2;</code>
-       * @return This builder for chaining.
+       * <code>.jd3.Date end = 2;</code>
+       */
+      public Builder mergeEnd(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (endBuilder_ == null) {
+          if (end_ != null) {
+            end_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.newBuilder(end_).mergeFrom(value).buildPartial();
+          } else {
+            end_ = value;
+          }
+          onChanged();
+        } else {
+          endBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Date end = 2;</code>
        */
       public Builder clearEnd() {
-        
-        end_ = getDefaultInstance().getEnd();
-        onChanged();
+        if (endBuilder_ == null) {
+          end_ = null;
+          onChanged();
+        } else {
+          end_ = null;
+          endBuilder_ = null;
+        }
+
         return this;
       }
       /**
-       * <code>string end = 2;</code>
-       * @param value The bytes for end to set.
-       * @return This builder for chaining.
+       * <code>.jd3.Date end = 2;</code>
        */
-      public Builder setEndBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder getEndBuilder() {
         
-        end_ = value;
         onChanged();
-        return this;
+        return getEndFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Date end = 2;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getEndOrBuilder() {
+        if (endBuilder_ != null) {
+          return endBuilder_.getMessageOrBuilder();
+        } else {
+          return end_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : end_;
+        }
+      }
+      /**
+       * <code>.jd3.Date end = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> 
+          getEndFieldBuilder() {
+        if (endBuilder_ == null) {
+          endBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder>(
+                  getEnd(),
+                  getParentForChildren(),
+                  isClean());
+          end_ = null;
+        }
+        return endBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -23052,16 +23972,19 @@ public final class ToolkitProtos {
     demetra.toolkit.io.protobuf.ToolkitProtos.CalendarDefinitionOrBuilder getCalendar2OrBuilder();
 
     /**
-     * <code>string break = 3;</code>
+     * <code>.jd3.Date break = 3;</code>
+     * @return Whether the break field is set.
+     */
+    boolean hasBreak();
+    /**
+     * <code>.jd3.Date break = 3;</code>
      * @return The break.
      */
-    java.lang.String getBreak();
+    demetra.toolkit.io.protobuf.ToolkitProtos.Date getBreak();
     /**
-     * <code>string break = 3;</code>
-     * @return The bytes for break.
+     * <code>.jd3.Date break = 3;</code>
      */
-    com.google.protobuf.ByteString
-        getBreakBytes();
+    demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getBreakOrBuilder();
   }
   /**
    * Protobuf type {@code jd3.ChainedCalendar}
@@ -23076,7 +23999,6 @@ public final class ToolkitProtos {
       super(builder);
     }
     private ChainedCalendar() {
-      break_ = "";
     }
 
     @java.lang.Override
@@ -23136,9 +24058,16 @@ public final class ToolkitProtos {
               break;
             }
             case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder subBuilder = null;
+              if (break_ != null) {
+                subBuilder = break_.toBuilder();
+              }
+              break_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Date.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(break_);
+                break_ = subBuilder.buildPartial();
+              }
 
-              break_ = s;
               break;
             }
             default: {
@@ -23226,41 +24155,29 @@ public final class ToolkitProtos {
     }
 
     public static final int BREAK_FIELD_NUMBER = 3;
-    private volatile java.lang.Object break_;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Date break_;
     /**
-     * <code>string break = 3;</code>
+     * <code>.jd3.Date break = 3;</code>
+     * @return Whether the break field is set.
+     */
+    @java.lang.Override
+    public boolean hasBreak() {
+      return break_ != null;
+    }
+    /**
+     * <code>.jd3.Date break = 3;</code>
      * @return The break.
      */
     @java.lang.Override
-    public java.lang.String getBreak() {
-      java.lang.Object ref = break_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        break_ = s;
-        return s;
-      }
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Date getBreak() {
+      return break_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : break_;
     }
     /**
-     * <code>string break = 3;</code>
-     * @return The bytes for break.
+     * <code>.jd3.Date break = 3;</code>
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getBreakBytes() {
-      java.lang.Object ref = break_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        break_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getBreakOrBuilder() {
+      return getBreak();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -23283,8 +24200,8 @@ public final class ToolkitProtos {
       if (calendar2_ != null) {
         output.writeMessage(2, getCalendar2());
       }
-      if (!getBreakBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, break_);
+      if (break_ != null) {
+        output.writeMessage(3, getBreak());
       }
       unknownFields.writeTo(output);
     }
@@ -23303,8 +24220,9 @@ public final class ToolkitProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, getCalendar2());
       }
-      if (!getBreakBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, break_);
+      if (break_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getBreak());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -23331,8 +24249,11 @@ public final class ToolkitProtos {
         if (!getCalendar2()
             .equals(other.getCalendar2())) return false;
       }
-      if (!getBreak()
-          .equals(other.getBreak())) return false;
+      if (hasBreak() != other.hasBreak()) return false;
+      if (hasBreak()) {
+        if (!getBreak()
+            .equals(other.getBreak())) return false;
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -23352,8 +24273,10 @@ public final class ToolkitProtos {
         hash = (37 * hash) + CALENDAR2_FIELD_NUMBER;
         hash = (53 * hash) + getCalendar2().hashCode();
       }
-      hash = (37 * hash) + BREAK_FIELD_NUMBER;
-      hash = (53 * hash) + getBreak().hashCode();
+      if (hasBreak()) {
+        hash = (37 * hash) + BREAK_FIELD_NUMBER;
+        hash = (53 * hash) + getBreak().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -23499,8 +24422,12 @@ public final class ToolkitProtos {
           calendar2_ = null;
           calendar2Builder_ = null;
         }
-        break_ = "";
-
+        if (breakBuilder_ == null) {
+          break_ = null;
+        } else {
+          break_ = null;
+          breakBuilder_ = null;
+        }
         return this;
       }
 
@@ -23537,7 +24464,11 @@ public final class ToolkitProtos {
         } else {
           result.calendar2_ = calendar2Builder_.build();
         }
-        result.break_ = break_;
+        if (breakBuilder_ == null) {
+          result.break_ = break_;
+        } else {
+          result.break_ = breakBuilder_.build();
+        }
         onBuilt();
         return result;
       }
@@ -23592,9 +24523,8 @@ public final class ToolkitProtos {
         if (other.hasCalendar2()) {
           mergeCalendar2(other.getCalendar2());
         }
-        if (!other.getBreak().isEmpty()) {
-          break_ = other.break_;
-          onChanged();
+        if (other.hasBreak()) {
+          mergeBreak(other.getBreak());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -23863,80 +24793,123 @@ public final class ToolkitProtos {
         return calendar2Builder_;
       }
 
-      private java.lang.Object break_ = "";
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Date break_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> breakBuilder_;
       /**
-       * <code>string break = 3;</code>
+       * <code>.jd3.Date break = 3;</code>
+       * @return Whether the break field is set.
+       */
+      public boolean hasBreak() {
+        return breakBuilder_ != null || break_ != null;
+      }
+      /**
+       * <code>.jd3.Date break = 3;</code>
        * @return The break.
        */
-      public java.lang.String getBreak() {
-        java.lang.Object ref = break_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          break_ = s;
-          return s;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date getBreak() {
+        if (breakBuilder_ == null) {
+          return break_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : break_;
         } else {
-          return (java.lang.String) ref;
+          return breakBuilder_.getMessage();
         }
       }
       /**
-       * <code>string break = 3;</code>
-       * @return The bytes for break.
+       * <code>.jd3.Date break = 3;</code>
        */
-      public com.google.protobuf.ByteString
-          getBreakBytes() {
-        java.lang.Object ref = break_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          break_ = b;
-          return b;
+      public Builder setBreak(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (breakBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          break_ = value;
+          onChanged();
         } else {
-          return (com.google.protobuf.ByteString) ref;
+          breakBuilder_.setMessage(value);
         }
+
+        return this;
       }
       /**
-       * <code>string break = 3;</code>
-       * @param value The break to set.
-       * @return This builder for chaining.
+       * <code>.jd3.Date break = 3;</code>
        */
       public Builder setBreak(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        break_ = value;
-        onChanged();
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder builderForValue) {
+        if (breakBuilder_ == null) {
+          break_ = builderForValue.build();
+          onChanged();
+        } else {
+          breakBuilder_.setMessage(builderForValue.build());
+        }
+
         return this;
       }
       /**
-       * <code>string break = 3;</code>
-       * @return This builder for chaining.
+       * <code>.jd3.Date break = 3;</code>
+       */
+      public Builder mergeBreak(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (breakBuilder_ == null) {
+          if (break_ != null) {
+            break_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.newBuilder(break_).mergeFrom(value).buildPartial();
+          } else {
+            break_ = value;
+          }
+          onChanged();
+        } else {
+          breakBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Date break = 3;</code>
        */
       public Builder clearBreak() {
-        
-        break_ = getDefaultInstance().getBreak();
-        onChanged();
+        if (breakBuilder_ == null) {
+          break_ = null;
+          onChanged();
+        } else {
+          break_ = null;
+          breakBuilder_ = null;
+        }
+
         return this;
       }
       /**
-       * <code>string break = 3;</code>
-       * @param value The bytes for break to set.
-       * @return This builder for chaining.
+       * <code>.jd3.Date break = 3;</code>
        */
-      public Builder setBreakBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder getBreakBuilder() {
         
-        break_ = value;
         onChanged();
-        return this;
+        return getBreakFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Date break = 3;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getBreakOrBuilder() {
+        if (breakBuilder_ != null) {
+          return breakBuilder_.getMessageOrBuilder();
+        } else {
+          return break_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : break_;
+        }
+      }
+      /**
+       * <code>.jd3.Date break = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> 
+          getBreakFieldBuilder() {
+        if (breakBuilder_ == null) {
+          breakBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder>(
+                  getBreak(),
+                  getParentForChildren(),
+                  isClean());
+          break_ = null;
+        }
+        return breakBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -25019,6 +25992,11 @@ public final class ToolkitProtos {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_jd3_Date_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_jd3_Date_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_jd3_TimeSelector_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -25153,230 +26131,239 @@ public final class ToolkitProtos {
   static {
     java.lang.String[] descriptorData = {
       "\n\rtoolkit.proto\022\003jd3\032\034google/protobuf/st" +
-      "ruct.proto\"`\n\014TimeSelector\022 \n\004type\030\001 \001(\016" +
-      "2\022.jd3.SelectionType\022\n\n\002n0\030\002 \001(\005\022\n\n\002n1\030\003" +
-      " \001(\005\022\n\n\002d0\030\004 \001(\t\022\n\n\002d1\030\005 \001(\t\"<\n\tParamete" +
-      "r\022\r\n\005value\030\001 \001(\001\022 \n\004type\030\002 \001(\0162\022.jd3.Par" +
-      "ameterType\"g\n\021NullableParameter\022*\n\004null\030" +
-      "\001 \001(\0162\032.google.protobuf.NullValueH\000\022\036\n\004d" +
-      "ata\030\002 \001(\0132\016.jd3.ParameterH\000B\006\n\004kind\"?\n\010T" +
-      "sPeriod\022\030\n\020annual_frequency\030\001 \001(\005\022\014\n\004yea" +
-      "r\030\002 \001(\005\022\013\n\003pos\030\003 \001(\005\"j\n\006TsData\022\014\n\004name\030\001" +
-      " \001(\t\022\030\n\020annual_frequency\030\002 \001(\005\022\022\n\nstart_" +
-      "year\030\003 \001(\005\022\024\n\014start_period\030\004 \001(\005\022\016\n\006valu" +
-      "es\030\005 \003(\001\"D\n\006Matrix\022\014\n\004name\030\001 \001(\t\022\r\n\005nrow" +
-      "s\030\002 \001(\005\022\r\n\005ncols\030\003 \001(\005\022\016\n\006values\030\004 \003(\001\"y" +
-      "\n\010TsMatrix\022\014\n\004name\030\001 \001(\t\022\030\n\020annual_frequ" +
-      "ency\030\002 \001(\005\022\022\n\nstart_year\030\003 \001(\005\022\024\n\014start_" +
-      "period\030\004 \001(\005\022\033\n\006values\030\005 \001(\0132\013.jd3.Matri" +
-      "x\"E\n\017StatisticalTest\022\r\n\005value\030\001 \001(\001\022\016\n\006p" +
-      "value\030\002 \001(\001\022\023\n\013description\030\003 \001(\t\"P\n\023Para" +
-      "meterEstimation\022\014\n\004name\030\001 \001(\t\022\r\n\005value\030\002" +
-      " \001(\001\022\014\n\004stde\030\003 \001(\001\022\016\n\006pvalue\030\004 \001(\001\"\210\002\n\024L" +
-      "ikelihoodStatistics\022\014\n\004nobs\030\001 \001(\005\022\025\n\rnef" +
-      "fectiveobs\030\002 \001(\005\022\017\n\007nparams\030\003 \001(\005\022\032\n\022deg" +
-      "rees_of_freedom\030\004 \001(\005\022\026\n\016log_likelihood\030" +
-      "\005 \001(\001\022\037\n\027adjusted_log_likelihood\030\006 \001(\001\022\013" +
-      "\n\003aic\030\007 \001(\001\022\014\n\004aicc\030\010 \001(\001\022\013\n\003bic\030\t \001(\001\022\014" +
-      "\n\004bicc\030\n \001(\001\022\014\n\004bic2\030\013 \001(\001\022\024\n\014hannan_qui" +
-      "nn\030\014 \001(\001\022\013\n\003ssq\030\r \001(\001\"^\n\nArimaModel\022\014\n\004n" +
-      "ame\030\001 \001(\t\022\033\n\023innovation_variance\030\002 \001(\001\022\n" +
-      "\n\002ar\030\003 \003(\001\022\r\n\005delta\030\004 \003(\001\022\n\n\002ma\030\005 \003(\001\"\212\005" +
-      "\n\tNIIDTests\022\"\n\004mean\030\001 \001(\0132\024.jd3.Statisti" +
-      "calTest\022&\n\010skewness\030\002 \001(\0132\024.jd3.Statisti" +
-      "calTest\022&\n\010kurtosis\030\003 \001(\0132\024.jd3.Statisti" +
-      "calTest\022,\n\016doornik_hansen\030\004 \001(\0132\024.jd3.St" +
-      "atisticalTest\022\'\n\tljung_box\030\005 \001(\0132\024.jd3.S" +
-      "tatisticalTest\022(\n\nbox_pierce\030\006 \001(\0132\024.jd3" +
-      ".StatisticalTest\0220\n\022seasonal_ljung_box\030\007" +
-      " \001(\0132\024.jd3.StatisticalTest\0221\n\023seasonal_b" +
-      "ox_pierce\030\010 \001(\0132\024.jd3.StatisticalTest\022)\n" +
-      "\013runs_number\030\t \001(\0132\024.jd3.StatisticalTest" +
-      "\022)\n\013runs_length\030\n \001(\0132\024.jd3.StatisticalT" +
-      "est\0221\n\023up_down_runs_number\030\013 \001(\0132\024.jd3.S" +
-      "tatisticalTest\0221\n\023up_down_runs_length\030\014 " +
-      "\001(\0132\024.jd3.StatisticalTest\0222\n\024ljung_box_o" +
-      "n_squares\030\r \001(\0132\024.jd3.StatisticalTest\0223\n" +
-      "\025box_pierce_on_squares\030\016 \001(\0132\024.jd3.Stati" +
-      "sticalTest\",\n\016ValidityPeriod\022\r\n\005start\030\001 " +
-      "\001(\t\022\013\n\003end\030\002 \001(\t\"]\n\010FixedDay\022\r\n\005month\030\001 " +
-      "\001(\005\022\013\n\003day\030\002 \001(\005\022\016\n\006weight\030\003 \001(\001\022%\n\010vali" +
-      "dity\030\004 \001(\0132\023.jd3.ValidityPeriod\"i\n\020Easte" +
-      "rRelatedDay\022\016\n\006offset\030\001 \001(\005\022\016\n\006julian\030\002 " +
-      "\001(\010\022\016\n\006weight\030\003 \001(\001\022%\n\010validity\030\004 \001(\0132\023." +
-      "jd3.ValidityPeriod\"\177\n\023PrespecifiedHolida" +
-      "y\022!\n\005event\030\001 \001(\0162\022.jd3.CalendarEvent\022\016\n\006" +
-      "offset\030\002 \001(\005\022\016\n\006weight\030\003 \001(\001\022%\n\010validity" +
-      "\030\004 \001(\0132\023.jd3.ValidityPeriod\"w\n\014FixedWeek" +
-      "Day\022\r\n\005month\030\001 \001(\005\022\020\n\010position\030\002 \001(\005\022\017\n\007" +
-      "weekday\030\003 \001(\005\022\016\n\006weight\030\004 \001(\001\022%\n\010validit" +
-      "y\030\005 \001(\0132\023.jd3.ValidityPeriod\"\253\001\n\022Calenda" +
-      "rDefinition\022!\n\010calendar\030\001 \001(\0132\r.jd3.Cale" +
-      "ndarH\000\0222\n\021weighted_calendar\030\002 \001(\0132\025.jd3." +
-      "WeightedCalendarH\000\0220\n\020chained_calendar\030\003" +
-      " \001(\0132\024.jd3.ChainedCalendarH\000B\014\n\ndefiniti" +
-      "on\"\306\001\n\010Calendar\022!\n\nfixed_days\030\001 \003(\0132\r.jd" +
-      "3.FixedDay\0222\n\023easter_related_days\030\002 \003(\0132" +
-      "\025.jd3.EasterRelatedDay\022*\n\017fixed_week_day" +
-      "s\030\003 \003(\0132\021.jd3.FixedWeekDay\0227\n\025prespecifi" +
-      "ed_holidays\030\004 \003(\0132\030.jd3.PrespecifiedHoli" +
-      "day\"\200\001\n\020WeightedCalendar\022)\n\005items\030\001 \003(\0132" +
-      "\032.jd3.WeightedCalendar.Item\032A\n\004Item\022)\n\010c" +
-      "alendar\030\001 \001(\0132\027.jd3.CalendarDefinition\022\016" +
-      "\n\006weight\030\002 \001(\001\"x\n\017ChainedCalendar\022*\n\tcal" +
-      "endar1\030\001 \001(\0132\027.jd3.CalendarDefinition\022*\n" +
-      "\tcalendar2\030\002 \001(\0132\027.jd3.CalendarDefinitio" +
-      "n\022\r\n\005break\030\003 \001(\t\"\216\002\n\020ModellingContext\0227\n" +
-      "\tcalendars\030\001 \003(\0132$.jd3.ModellingContext." +
-      "CalendarsEntry\0227\n\tvariables\030\002 \003(\0132$.jd3." +
-      "ModellingContext.VariablesEntry\032I\n\016Calen" +
-      "darsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027." +
-      "jd3.CalendarDefinition:\0028\001\032=\n\016VariablesE" +
-      "ntry\022\013\n\003key\030\001 \001(\t\022\032\n\005value\030\002 \001(\0132\013.jd3.T" +
-      "sData:\0028\001*\224\001\n\rSelectionType\022\024\n\020SPAN_UNSP" +
-      "ECIFIED\020\000\022\014\n\010SPAN_ALL\020\001\022\r\n\tSPAN_FROM\020\002\022\013" +
-      "\n\007SPAN_TO\020\003\022\020\n\014SPAN_BETWEEN\020\004\022\r\n\tSPAN_LA" +
-      "ST\020\005\022\016\n\nSPAN_FIRST\020\006\022\022\n\016SPAN_EXCLUDING\020\007" +
-      "*m\n\rParameterType\022\027\n\023PARAMETER_UNDEFINED" +
-      "\020\000\022\023\n\017PARAMETER_FIXED\020\001\022\025\n\021PARAMETER_INI" +
-      "TIAL\020\002\022\027\n\023PARAMETER_ESTIMATED\020\003*\243\004\n\rCale" +
-      "ndarEvent\022\027\n\023HOLIDAY_UNSPECIFIED\020\000\022\023\n\017HO" +
-      "LIDAY_NEWYEAR\020\001\022\030\n\024HOLIDAY_SHROVEMONDAY\020" +
-      "\002\022\031\n\025HOLIDAY_SHROVETUESDAY\020\003\022\030\n\024HOLIDAY_" +
-      "ASHWEDNESDAY\020\004\022\022\n\016HOLIDAY_EASTER\020\005\022\030\n\024HO" +
-      "LIDAY_JULIANEASTER\020\006\022\032\n\026HOLIDAY_MAUNDYTH" +
-      "URSDAY\020\007\022\026\n\022HOLIDAY_GOODFRIDAY\020\010\022\030\n\024HOLI" +
-      "DAY_EASTERMONDAY\020\t\022\025\n\021HOLIDAY_ASCENSION\020" +
-      "\n\022\025\n\021HOLIDAY_PENTECOST\020\013\022\031\n\025HOLIDAY_CORP" +
-      "USCHRISTI\020\014\022\026\n\022HOLIDAY_WHITMONDAY\020\r\022\022\n\016H" +
-      "OLIDAY_MAYDAY\020\016\022\026\n\022HOLIDAY_ASSUMPTION\020\017\022" +
-      "\024\n\020HOLIDAY_LABORDAY\020\020\022\025\n\021HOLIDAY_HALLOWE" +
-      "EN\020\021\022\027\n\023HOLIDAY_ALLSAINTDAY\020\022\022\025\n\021HOLIDAY" +
-      "_ARMISTICE\020\023\022\030\n\024HOLIDAY_THANKSGIVING\020\024\022\025" +
-      "\n\021HOLIDAY_CHRISTMAS\020\025B,\n\033demetra.toolkit" +
-      ".io.protobufB\rToolkitProtosb\006proto3"
+      "ruct.proto\"0\n\004Date\022\014\n\004year\030\001 \001(\005\022\r\n\005mont" +
+      "h\030\002 \001(\005\022\013\n\003day\030\003 \001(\005\"v\n\014TimeSelector\022 \n\004" +
+      "type\030\001 \001(\0162\022.jd3.SelectionType\022\n\n\002n0\030\002 \001" +
+      "(\005\022\n\n\002n1\030\003 \001(\005\022\025\n\002d0\030\004 \001(\0132\t.jd3.Date\022\025\n" +
+      "\002d1\030\005 \001(\0132\t.jd3.Date\"<\n\tParameter\022\r\n\005val" +
+      "ue\030\001 \001(\001\022 \n\004type\030\002 \001(\0162\022.jd3.ParameterTy" +
+      "pe\"g\n\021NullableParameter\022*\n\004null\030\001 \001(\0162\032." +
+      "google.protobuf.NullValueH\000\022\036\n\004data\030\002 \001(" +
+      "\0132\016.jd3.ParameterH\000B\006\n\004kind\"?\n\010TsPeriod\022" +
+      "\030\n\020annual_frequency\030\001 \001(\005\022\014\n\004year\030\002 \001(\005\022" +
+      "\013\n\003pos\030\003 \001(\005\"j\n\006TsData\022\014\n\004name\030\001 \001(\t\022\030\n\020" +
+      "annual_frequency\030\002 \001(\005\022\022\n\nstart_year\030\003 \001" +
+      "(\005\022\024\n\014start_period\030\004 \001(\005\022\016\n\006values\030\005 \003(\001" +
+      "\"D\n\006Matrix\022\014\n\004name\030\001 \001(\t\022\r\n\005nrows\030\002 \001(\005\022" +
+      "\r\n\005ncols\030\003 \001(\005\022\016\n\006values\030\004 \003(\001\"y\n\010TsMatr" +
+      "ix\022\014\n\004name\030\001 \001(\t\022\030\n\020annual_frequency\030\002 \001" +
+      "(\005\022\022\n\nstart_year\030\003 \001(\005\022\024\n\014start_period\030\004" +
+      " \001(\005\022\033\n\006values\030\005 \001(\0132\013.jd3.Matrix\"E\n\017Sta" +
+      "tisticalTest\022\r\n\005value\030\001 \001(\001\022\016\n\006pvalue\030\002 " +
+      "\001(\001\022\023\n\013description\030\003 \001(\t\"P\n\023ParameterEst" +
+      "imation\022\014\n\004name\030\001 \001(\t\022\r\n\005value\030\002 \001(\001\022\014\n\004" +
+      "stde\030\003 \001(\001\022\016\n\006pvalue\030\004 \001(\001\"\210\002\n\024Likelihoo" +
+      "dStatistics\022\014\n\004nobs\030\001 \001(\005\022\025\n\rneffectiveo" +
+      "bs\030\002 \001(\005\022\017\n\007nparams\030\003 \001(\005\022\032\n\022degrees_of_" +
+      "freedom\030\004 \001(\005\022\026\n\016log_likelihood\030\005 \001(\001\022\037\n" +
+      "\027adjusted_log_likelihood\030\006 \001(\001\022\013\n\003aic\030\007 " +
+      "\001(\001\022\014\n\004aicc\030\010 \001(\001\022\013\n\003bic\030\t \001(\001\022\014\n\004bicc\030\n" +
+      " \001(\001\022\014\n\004bic2\030\013 \001(\001\022\024\n\014hannan_quinn\030\014 \001(\001" +
+      "\022\013\n\003ssq\030\r \001(\001\"^\n\nArimaModel\022\014\n\004name\030\001 \001(" +
+      "\t\022\033\n\023innovation_variance\030\002 \001(\001\022\n\n\002ar\030\003 \003" +
+      "(\001\022\r\n\005delta\030\004 \003(\001\022\n\n\002ma\030\005 \003(\001\"\212\005\n\tNIIDTe" +
+      "sts\022\"\n\004mean\030\001 \001(\0132\024.jd3.StatisticalTest\022" +
+      "&\n\010skewness\030\002 \001(\0132\024.jd3.StatisticalTest\022" +
+      "&\n\010kurtosis\030\003 \001(\0132\024.jd3.StatisticalTest\022" +
+      ",\n\016doornik_hansen\030\004 \001(\0132\024.jd3.Statistica" +
+      "lTest\022\'\n\tljung_box\030\005 \001(\0132\024.jd3.Statistic" +
+      "alTest\022(\n\nbox_pierce\030\006 \001(\0132\024.jd3.Statist" +
+      "icalTest\0220\n\022seasonal_ljung_box\030\007 \001(\0132\024.j" +
+      "d3.StatisticalTest\0221\n\023seasonal_box_pierc" +
+      "e\030\010 \001(\0132\024.jd3.StatisticalTest\022)\n\013runs_nu" +
+      "mber\030\t \001(\0132\024.jd3.StatisticalTest\022)\n\013runs" +
+      "_length\030\n \001(\0132\024.jd3.StatisticalTest\0221\n\023u" +
+      "p_down_runs_number\030\013 \001(\0132\024.jd3.Statistic" +
+      "alTest\0221\n\023up_down_runs_length\030\014 \001(\0132\024.jd" +
+      "3.StatisticalTest\0222\n\024ljung_box_on_square" +
+      "s\030\r \001(\0132\024.jd3.StatisticalTest\0223\n\025box_pie" +
+      "rce_on_squares\030\016 \001(\0132\024.jd3.StatisticalTe" +
+      "st\"B\n\016ValidityPeriod\022\030\n\005start\030\001 \001(\0132\t.jd" +
+      "3.Date\022\026\n\003end\030\002 \001(\0132\t.jd3.Date\"]\n\010FixedD" +
+      "ay\022\r\n\005month\030\001 \001(\005\022\013\n\003day\030\002 \001(\005\022\016\n\006weight" +
+      "\030\003 \001(\001\022%\n\010validity\030\004 \001(\0132\023.jd3.ValidityP" +
+      "eriod\"i\n\020EasterRelatedDay\022\016\n\006offset\030\001 \001(" +
+      "\005\022\016\n\006julian\030\002 \001(\010\022\016\n\006weight\030\003 \001(\001\022%\n\010val" +
+      "idity\030\004 \001(\0132\023.jd3.ValidityPeriod\"\177\n\023Pres" +
+      "pecifiedHoliday\022!\n\005event\030\001 \001(\0162\022.jd3.Cal" +
+      "endarEvent\022\016\n\006offset\030\002 \001(\005\022\016\n\006weight\030\003 \001" +
+      "(\001\022%\n\010validity\030\004 \001(\0132\023.jd3.ValidityPerio" +
+      "d\"w\n\014FixedWeekDay\022\r\n\005month\030\001 \001(\005\022\020\n\010posi" +
+      "tion\030\002 \001(\005\022\017\n\007weekday\030\003 \001(\005\022\016\n\006weight\030\004 " +
+      "\001(\001\022%\n\010validity\030\005 \001(\0132\023.jd3.ValidityPeri" +
+      "od\"\253\001\n\022CalendarDefinition\022!\n\010calendar\030\001 " +
+      "\001(\0132\r.jd3.CalendarH\000\0222\n\021weighted_calenda" +
+      "r\030\002 \001(\0132\025.jd3.WeightedCalendarH\000\0220\n\020chai" +
+      "ned_calendar\030\003 \001(\0132\024.jd3.ChainedCalendar" +
+      "H\000B\014\n\ndefinition\"\306\001\n\010Calendar\022!\n\nfixed_d" +
+      "ays\030\001 \003(\0132\r.jd3.FixedDay\0222\n\023easter_relat" +
+      "ed_days\030\002 \003(\0132\025.jd3.EasterRelatedDay\022*\n\017" +
+      "fixed_week_days\030\003 \003(\0132\021.jd3.FixedWeekDay" +
+      "\0227\n\025prespecified_holidays\030\004 \003(\0132\030.jd3.Pr" +
+      "especifiedHoliday\"\200\001\n\020WeightedCalendar\022)" +
+      "\n\005items\030\001 \003(\0132\032.jd3.WeightedCalendar.Ite" +
+      "m\032A\n\004Item\022)\n\010calendar\030\001 \001(\0132\027.jd3.Calend" +
+      "arDefinition\022\016\n\006weight\030\002 \001(\001\"\203\001\n\017Chained" +
+      "Calendar\022*\n\tcalendar1\030\001 \001(\0132\027.jd3.Calend" +
+      "arDefinition\022*\n\tcalendar2\030\002 \001(\0132\027.jd3.Ca" +
+      "lendarDefinition\022\030\n\005break\030\003 \001(\0132\t.jd3.Da" +
+      "te\"\216\002\n\020ModellingContext\0227\n\tcalendars\030\001 \003" +
+      "(\0132$.jd3.ModellingContext.CalendarsEntry" +
+      "\0227\n\tvariables\030\002 \003(\0132$.jd3.ModellingConte" +
+      "xt.VariablesEntry\032I\n\016CalendarsEntry\022\013\n\003k" +
+      "ey\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.jd3.CalendarDe" +
+      "finition:\0028\001\032=\n\016VariablesEntry\022\013\n\003key\030\001 " +
+      "\001(\t\022\032\n\005value\030\002 \001(\0132\013.jd3.TsData:\0028\001*\224\001\n\r" +
+      "SelectionType\022\024\n\020SPAN_UNSPECIFIED\020\000\022\014\n\010S" +
+      "PAN_ALL\020\001\022\r\n\tSPAN_FROM\020\002\022\013\n\007SPAN_TO\020\003\022\020\n" +
+      "\014SPAN_BETWEEN\020\004\022\r\n\tSPAN_LAST\020\005\022\016\n\nSPAN_F" +
+      "IRST\020\006\022\022\n\016SPAN_EXCLUDING\020\007*m\n\rParameterT" +
+      "ype\022\027\n\023PARAMETER_UNDEFINED\020\000\022\023\n\017PARAMETE" +
+      "R_FIXED\020\001\022\025\n\021PARAMETER_INITIAL\020\002\022\027\n\023PARA" +
+      "METER_ESTIMATED\020\003*\243\004\n\rCalendarEvent\022\027\n\023H" +
+      "OLIDAY_UNSPECIFIED\020\000\022\023\n\017HOLIDAY_NEWYEAR\020" +
+      "\001\022\030\n\024HOLIDAY_SHROVEMONDAY\020\002\022\031\n\025HOLIDAY_S" +
+      "HROVETUESDAY\020\003\022\030\n\024HOLIDAY_ASHWEDNESDAY\020\004" +
+      "\022\022\n\016HOLIDAY_EASTER\020\005\022\030\n\024HOLIDAY_JULIANEA" +
+      "STER\020\006\022\032\n\026HOLIDAY_MAUNDYTHURSDAY\020\007\022\026\n\022HO" +
+      "LIDAY_GOODFRIDAY\020\010\022\030\n\024HOLIDAY_EASTERMOND" +
+      "AY\020\t\022\025\n\021HOLIDAY_ASCENSION\020\n\022\025\n\021HOLIDAY_P" +
+      "ENTECOST\020\013\022\031\n\025HOLIDAY_CORPUSCHRISTI\020\014\022\026\n" +
+      "\022HOLIDAY_WHITMONDAY\020\r\022\022\n\016HOLIDAY_MAYDAY\020" +
+      "\016\022\026\n\022HOLIDAY_ASSUMPTION\020\017\022\024\n\020HOLIDAY_LAB" +
+      "ORDAY\020\020\022\025\n\021HOLIDAY_HALLOWEEN\020\021\022\027\n\023HOLIDA" +
+      "Y_ALLSAINTDAY\020\022\022\025\n\021HOLIDAY_ARMISTICE\020\023\022\030" +
+      "\n\024HOLIDAY_THANKSGIVING\020\024\022\025\n\021HOLIDAY_CHRI" +
+      "STMAS\020\025B,\n\033demetra.toolkit.io.protobufB\r" +
+      "ToolkitProtosb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.StructProto.getDescriptor(),
         });
-    internal_static_jd3_TimeSelector_descriptor =
+    internal_static_jd3_Date_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_jd3_Date_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_jd3_Date_descriptor,
+        new java.lang.String[] { "Year", "Month", "Day", });
+    internal_static_jd3_TimeSelector_descriptor =
+      getDescriptor().getMessageTypes().get(1);
     internal_static_jd3_TimeSelector_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_TimeSelector_descriptor,
         new java.lang.String[] { "Type", "N0", "N1", "D0", "D1", });
     internal_static_jd3_Parameter_descriptor =
-      getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_jd3_Parameter_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_Parameter_descriptor,
         new java.lang.String[] { "Value", "Type", });
     internal_static_jd3_NullableParameter_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_jd3_NullableParameter_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_NullableParameter_descriptor,
         new java.lang.String[] { "Null", "Data", "Kind", });
     internal_static_jd3_TsPeriod_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_jd3_TsPeriod_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_TsPeriod_descriptor,
         new java.lang.String[] { "AnnualFrequency", "Year", "Pos", });
     internal_static_jd3_TsData_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_jd3_TsData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_TsData_descriptor,
         new java.lang.String[] { "Name", "AnnualFrequency", "StartYear", "StartPeriod", "Values", });
     internal_static_jd3_Matrix_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_jd3_Matrix_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_Matrix_descriptor,
         new java.lang.String[] { "Name", "Nrows", "Ncols", "Values", });
     internal_static_jd3_TsMatrix_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_jd3_TsMatrix_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_TsMatrix_descriptor,
         new java.lang.String[] { "Name", "AnnualFrequency", "StartYear", "StartPeriod", "Values", });
     internal_static_jd3_StatisticalTest_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_jd3_StatisticalTest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_StatisticalTest_descriptor,
         new java.lang.String[] { "Value", "Pvalue", "Description", });
     internal_static_jd3_ParameterEstimation_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_jd3_ParameterEstimation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ParameterEstimation_descriptor,
         new java.lang.String[] { "Name", "Value", "Stde", "Pvalue", });
     internal_static_jd3_LikelihoodStatistics_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_jd3_LikelihoodStatistics_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_LikelihoodStatistics_descriptor,
         new java.lang.String[] { "Nobs", "Neffectiveobs", "Nparams", "DegreesOfFreedom", "LogLikelihood", "AdjustedLogLikelihood", "Aic", "Aicc", "Bic", "Bicc", "Bic2", "HannanQuinn", "Ssq", });
     internal_static_jd3_ArimaModel_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_jd3_ArimaModel_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ArimaModel_descriptor,
         new java.lang.String[] { "Name", "InnovationVariance", "Ar", "Delta", "Ma", });
     internal_static_jd3_NIIDTests_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_jd3_NIIDTests_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_NIIDTests_descriptor,
         new java.lang.String[] { "Mean", "Skewness", "Kurtosis", "DoornikHansen", "LjungBox", "BoxPierce", "SeasonalLjungBox", "SeasonalBoxPierce", "RunsNumber", "RunsLength", "UpDownRunsNumber", "UpDownRunsLength", "LjungBoxOnSquares", "BoxPierceOnSquares", });
     internal_static_jd3_ValidityPeriod_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_jd3_ValidityPeriod_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ValidityPeriod_descriptor,
         new java.lang.String[] { "Start", "End", });
     internal_static_jd3_FixedDay_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_jd3_FixedDay_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_FixedDay_descriptor,
         new java.lang.String[] { "Month", "Day", "Weight", "Validity", });
     internal_static_jd3_EasterRelatedDay_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_jd3_EasterRelatedDay_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_EasterRelatedDay_descriptor,
         new java.lang.String[] { "Offset", "Julian", "Weight", "Validity", });
     internal_static_jd3_PrespecifiedHoliday_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_jd3_PrespecifiedHoliday_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_PrespecifiedHoliday_descriptor,
         new java.lang.String[] { "Event", "Offset", "Weight", "Validity", });
     internal_static_jd3_FixedWeekDay_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_jd3_FixedWeekDay_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_FixedWeekDay_descriptor,
         new java.lang.String[] { "Month", "Position", "Weekday", "Weight", "Validity", });
     internal_static_jd3_CalendarDefinition_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_jd3_CalendarDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_CalendarDefinition_descriptor,
         new java.lang.String[] { "Calendar", "WeightedCalendar", "ChainedCalendar", "Definition", });
     internal_static_jd3_Calendar_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_jd3_Calendar_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_Calendar_descriptor,
         new java.lang.String[] { "FixedDays", "EasterRelatedDays", "FixedWeekDays", "PrespecifiedHolidays", });
     internal_static_jd3_WeightedCalendar_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_jd3_WeightedCalendar_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_WeightedCalendar_descriptor,
@@ -25388,13 +26375,13 @@ public final class ToolkitProtos {
         internal_static_jd3_WeightedCalendar_Item_descriptor,
         new java.lang.String[] { "Calendar", "Weight", });
     internal_static_jd3_ChainedCalendar_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_jd3_ChainedCalendar_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ChainedCalendar_descriptor,
         new java.lang.String[] { "Calendar1", "Calendar2", "Break", });
     internal_static_jd3_ModellingContext_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_jd3_ModellingContext_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ModellingContext_descriptor,

@@ -5,7 +5,7 @@
  */
 package jdplus.tramoseats;
 
-import demetra.arima.SarimaSpec;
+import demetra.timeseries.regression.modelling.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.modelling.ComponentInformation;

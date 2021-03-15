@@ -97,7 +97,7 @@ public class RegressionProto {
     }
 
     public Variable<IOutlier> convert(RegArimaProtos.Outlier outlier, double tc) {
-        LocalDate ldt = LocalDate.parse(outlier.getPosition(), DateTimeFormatter.ISO_DATE);
+        LocalDate ldt = ToolkitProtosUtility.convert(outlier.getPosition());
         IOutlier o=null;
         switch (outlier.getCode()) {
             case "ao":
@@ -134,7 +134,7 @@ public class RegressionProto {
         return RegArimaProtos.Outlier.newBuilder()
                 .setName(v.getName())
                 .setCode(outlier.getCode())
-                .setPosition(outlier.getPosition().toLocalDate().format(DateTimeFormatter.ISO_DATE))
+                .setPosition(ToolkitProtosUtility.convert(outlier.getPosition().toLocalDate()))
                 .setCoefficient(ToolkitProtosUtility.convert(v.getCoefficient(0)))
                 .build();
     }

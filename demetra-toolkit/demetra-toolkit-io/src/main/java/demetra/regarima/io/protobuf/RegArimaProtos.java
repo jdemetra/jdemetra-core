@@ -4017,28 +4017,34 @@ public final class RegArimaProtos {
         getNameBytes();
 
     /**
-     * <code>string start = 2;</code>
+     * <code>.jd3.Date start = 2;</code>
+     * @return Whether the start field is set.
+     */
+    boolean hasStart();
+    /**
+     * <code>.jd3.Date start = 2;</code>
      * @return The start.
      */
-    java.lang.String getStart();
+    demetra.toolkit.io.protobuf.ToolkitProtos.Date getStart();
     /**
-     * <code>string start = 2;</code>
-     * @return The bytes for start.
+     * <code>.jd3.Date start = 2;</code>
      */
-    com.google.protobuf.ByteString
-        getStartBytes();
+    demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getStartOrBuilder();
 
     /**
-     * <code>string end = 3;</code>
+     * <code>.jd3.Date end = 3;</code>
+     * @return Whether the end field is set.
+     */
+    boolean hasEnd();
+    /**
+     * <code>.jd3.Date end = 3;</code>
      * @return The end.
      */
-    java.lang.String getEnd();
+    demetra.toolkit.io.protobuf.ToolkitProtos.Date getEnd();
     /**
-     * <code>string end = 3;</code>
-     * @return The bytes for end.
+     * <code>.jd3.Date end = 3;</code>
      */
-    com.google.protobuf.ByteString
-        getEndBytes();
+    demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getEndOrBuilder();
 
     /**
      * <code>.jd3.Parameter coefficient = 5;</code>
@@ -4103,8 +4109,6 @@ public final class RegArimaProtos {
     }
     private Ramp() {
       name_ = "";
-      start_ = "";
-      end_ = "";
     }
 
     @java.lang.Override
@@ -4145,15 +4149,29 @@ public final class RegArimaProtos {
               break;
             }
             case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder subBuilder = null;
+              if (start_ != null) {
+                subBuilder = start_.toBuilder();
+              }
+              start_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Date.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(start_);
+                start_ = subBuilder.buildPartial();
+              }
 
-              start_ = s;
               break;
             }
             case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder subBuilder = null;
+              if (end_ != null) {
+                subBuilder = end_.toBuilder();
+              }
+              end_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Date.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(end_);
+                end_ = subBuilder.buildPartial();
+              }
 
-              end_ = s;
               break;
             }
             case 42: {
@@ -4265,79 +4283,55 @@ public final class RegArimaProtos {
     }
 
     public static final int START_FIELD_NUMBER = 2;
-    private volatile java.lang.Object start_;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Date start_;
     /**
-     * <code>string start = 2;</code>
+     * <code>.jd3.Date start = 2;</code>
+     * @return Whether the start field is set.
+     */
+    @java.lang.Override
+    public boolean hasStart() {
+      return start_ != null;
+    }
+    /**
+     * <code>.jd3.Date start = 2;</code>
      * @return The start.
      */
     @java.lang.Override
-    public java.lang.String getStart() {
-      java.lang.Object ref = start_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        start_ = s;
-        return s;
-      }
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Date getStart() {
+      return start_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : start_;
     }
     /**
-     * <code>string start = 2;</code>
-     * @return The bytes for start.
+     * <code>.jd3.Date start = 2;</code>
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getStartBytes() {
-      java.lang.Object ref = start_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        start_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getStartOrBuilder() {
+      return getStart();
     }
 
     public static final int END_FIELD_NUMBER = 3;
-    private volatile java.lang.Object end_;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Date end_;
     /**
-     * <code>string end = 3;</code>
+     * <code>.jd3.Date end = 3;</code>
+     * @return Whether the end field is set.
+     */
+    @java.lang.Override
+    public boolean hasEnd() {
+      return end_ != null;
+    }
+    /**
+     * <code>.jd3.Date end = 3;</code>
      * @return The end.
      */
     @java.lang.Override
-    public java.lang.String getEnd() {
-      java.lang.Object ref = end_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        end_ = s;
-        return s;
-      }
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Date getEnd() {
+      return end_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : end_;
     }
     /**
-     * <code>string end = 3;</code>
-     * @return The bytes for end.
+     * <code>.jd3.Date end = 3;</code>
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getEndBytes() {
-      java.lang.Object ref = end_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        end_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getEndOrBuilder() {
+      return getEnd();
     }
 
     public static final int COEFFICIENT_FIELD_NUMBER = 5;
@@ -4464,11 +4458,11 @@ public final class RegArimaProtos {
       if (!getNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
       }
-      if (!getStartBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, start_);
+      if (start_ != null) {
+        output.writeMessage(2, getStart());
       }
-      if (!getEndBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, end_);
+      if (end_ != null) {
+        output.writeMessage(3, getEnd());
       }
       if (coefficient_ != null) {
         output.writeMessage(5, getCoefficient());
@@ -4491,11 +4485,13 @@ public final class RegArimaProtos {
       if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
       }
-      if (!getStartBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, start_);
+      if (start_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getStart());
       }
-      if (!getEndBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, end_);
+      if (end_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getEnd());
       }
       if (coefficient_ != null) {
         size += com.google.protobuf.CodedOutputStream
@@ -4528,10 +4524,16 @@ public final class RegArimaProtos {
 
       if (!getName()
           .equals(other.getName())) return false;
-      if (!getStart()
-          .equals(other.getStart())) return false;
-      if (!getEnd()
-          .equals(other.getEnd())) return false;
+      if (hasStart() != other.hasStart()) return false;
+      if (hasStart()) {
+        if (!getStart()
+            .equals(other.getStart())) return false;
+      }
+      if (hasEnd() != other.hasEnd()) return false;
+      if (hasEnd()) {
+        if (!getEnd()
+            .equals(other.getEnd())) return false;
+      }
       if (hasCoefficient() != other.hasCoefficient()) return false;
       if (hasCoefficient()) {
         if (!getCoefficient()
@@ -4552,10 +4554,14 @@ public final class RegArimaProtos {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + NAME_FIELD_NUMBER;
       hash = (53 * hash) + getName().hashCode();
-      hash = (37 * hash) + START_FIELD_NUMBER;
-      hash = (53 * hash) + getStart().hashCode();
-      hash = (37 * hash) + END_FIELD_NUMBER;
-      hash = (53 * hash) + getEnd().hashCode();
+      if (hasStart()) {
+        hash = (37 * hash) + START_FIELD_NUMBER;
+        hash = (53 * hash) + getStart().hashCode();
+      }
+      if (hasEnd()) {
+        hash = (37 * hash) + END_FIELD_NUMBER;
+        hash = (53 * hash) + getEnd().hashCode();
+      }
       if (hasCoefficient()) {
         hash = (37 * hash) + COEFFICIENT_FIELD_NUMBER;
         hash = (53 * hash) + getCoefficient().hashCode();
@@ -4721,10 +4727,18 @@ public final class RegArimaProtos {
         super.clear();
         name_ = "";
 
-        start_ = "";
-
-        end_ = "";
-
+        if (startBuilder_ == null) {
+          start_ = null;
+        } else {
+          start_ = null;
+          startBuilder_ = null;
+        }
+        if (endBuilder_ == null) {
+          end_ = null;
+        } else {
+          end_ = null;
+          endBuilder_ = null;
+        }
         if (coefficientBuilder_ == null) {
           coefficient_ = null;
         } else {
@@ -4760,8 +4774,16 @@ public final class RegArimaProtos {
         demetra.regarima.io.protobuf.RegArimaProtos.Ramp result = new demetra.regarima.io.protobuf.RegArimaProtos.Ramp(this);
         int from_bitField0_ = bitField0_;
         result.name_ = name_;
-        result.start_ = start_;
-        result.end_ = end_;
+        if (startBuilder_ == null) {
+          result.start_ = start_;
+        } else {
+          result.start_ = startBuilder_.build();
+        }
+        if (endBuilder_ == null) {
+          result.end_ = end_;
+        } else {
+          result.end_ = endBuilder_.build();
+        }
         if (coefficientBuilder_ == null) {
           result.coefficient_ = coefficient_;
         } else {
@@ -4821,13 +4843,11 @@ public final class RegArimaProtos {
           name_ = other.name_;
           onChanged();
         }
-        if (!other.getStart().isEmpty()) {
-          start_ = other.start_;
-          onChanged();
+        if (other.hasStart()) {
+          mergeStart(other.getStart());
         }
-        if (!other.getEnd().isEmpty()) {
-          end_ = other.end_;
-          onChanged();
+        if (other.hasEnd()) {
+          mergeEnd(other.getEnd());
         }
         if (other.hasCoefficient()) {
           mergeCoefficient(other.getCoefficient());
@@ -4940,156 +4960,242 @@ public final class RegArimaProtos {
         return this;
       }
 
-      private java.lang.Object start_ = "";
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Date start_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> startBuilder_;
       /**
-       * <code>string start = 2;</code>
+       * <code>.jd3.Date start = 2;</code>
+       * @return Whether the start field is set.
+       */
+      public boolean hasStart() {
+        return startBuilder_ != null || start_ != null;
+      }
+      /**
+       * <code>.jd3.Date start = 2;</code>
        * @return The start.
        */
-      public java.lang.String getStart() {
-        java.lang.Object ref = start_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          start_ = s;
-          return s;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date getStart() {
+        if (startBuilder_ == null) {
+          return start_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : start_;
         } else {
-          return (java.lang.String) ref;
+          return startBuilder_.getMessage();
         }
       }
       /**
-       * <code>string start = 2;</code>
-       * @return The bytes for start.
+       * <code>.jd3.Date start = 2;</code>
        */
-      public com.google.protobuf.ByteString
-          getStartBytes() {
-        java.lang.Object ref = start_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          start_ = b;
-          return b;
+      public Builder setStart(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (startBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          start_ = value;
+          onChanged();
         } else {
-          return (com.google.protobuf.ByteString) ref;
+          startBuilder_.setMessage(value);
         }
+
+        return this;
       }
       /**
-       * <code>string start = 2;</code>
-       * @param value The start to set.
-       * @return This builder for chaining.
+       * <code>.jd3.Date start = 2;</code>
        */
       public Builder setStart(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        start_ = value;
-        onChanged();
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder builderForValue) {
+        if (startBuilder_ == null) {
+          start_ = builderForValue.build();
+          onChanged();
+        } else {
+          startBuilder_.setMessage(builderForValue.build());
+        }
+
         return this;
       }
       /**
-       * <code>string start = 2;</code>
-       * @return This builder for chaining.
+       * <code>.jd3.Date start = 2;</code>
+       */
+      public Builder mergeStart(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (startBuilder_ == null) {
+          if (start_ != null) {
+            start_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.newBuilder(start_).mergeFrom(value).buildPartial();
+          } else {
+            start_ = value;
+          }
+          onChanged();
+        } else {
+          startBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Date start = 2;</code>
        */
       public Builder clearStart() {
-        
-        start_ = getDefaultInstance().getStart();
-        onChanged();
+        if (startBuilder_ == null) {
+          start_ = null;
+          onChanged();
+        } else {
+          start_ = null;
+          startBuilder_ = null;
+        }
+
         return this;
       }
       /**
-       * <code>string start = 2;</code>
-       * @param value The bytes for start to set.
-       * @return This builder for chaining.
+       * <code>.jd3.Date start = 2;</code>
        */
-      public Builder setStartBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder getStartBuilder() {
         
-        start_ = value;
         onChanged();
-        return this;
+        return getStartFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Date start = 2;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getStartOrBuilder() {
+        if (startBuilder_ != null) {
+          return startBuilder_.getMessageOrBuilder();
+        } else {
+          return start_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : start_;
+        }
+      }
+      /**
+       * <code>.jd3.Date start = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> 
+          getStartFieldBuilder() {
+        if (startBuilder_ == null) {
+          startBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder>(
+                  getStart(),
+                  getParentForChildren(),
+                  isClean());
+          start_ = null;
+        }
+        return startBuilder_;
       }
 
-      private java.lang.Object end_ = "";
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Date end_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> endBuilder_;
       /**
-       * <code>string end = 3;</code>
+       * <code>.jd3.Date end = 3;</code>
+       * @return Whether the end field is set.
+       */
+      public boolean hasEnd() {
+        return endBuilder_ != null || end_ != null;
+      }
+      /**
+       * <code>.jd3.Date end = 3;</code>
        * @return The end.
        */
-      public java.lang.String getEnd() {
-        java.lang.Object ref = end_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          end_ = s;
-          return s;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date getEnd() {
+        if (endBuilder_ == null) {
+          return end_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : end_;
         } else {
-          return (java.lang.String) ref;
+          return endBuilder_.getMessage();
         }
       }
       /**
-       * <code>string end = 3;</code>
-       * @return The bytes for end.
+       * <code>.jd3.Date end = 3;</code>
        */
-      public com.google.protobuf.ByteString
-          getEndBytes() {
-        java.lang.Object ref = end_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          end_ = b;
-          return b;
+      public Builder setEnd(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (endBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          end_ = value;
+          onChanged();
         } else {
-          return (com.google.protobuf.ByteString) ref;
+          endBuilder_.setMessage(value);
         }
+
+        return this;
       }
       /**
-       * <code>string end = 3;</code>
-       * @param value The end to set.
-       * @return This builder for chaining.
+       * <code>.jd3.Date end = 3;</code>
        */
       public Builder setEnd(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        end_ = value;
-        onChanged();
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder builderForValue) {
+        if (endBuilder_ == null) {
+          end_ = builderForValue.build();
+          onChanged();
+        } else {
+          endBuilder_.setMessage(builderForValue.build());
+        }
+
         return this;
       }
       /**
-       * <code>string end = 3;</code>
-       * @return This builder for chaining.
+       * <code>.jd3.Date end = 3;</code>
+       */
+      public Builder mergeEnd(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (endBuilder_ == null) {
+          if (end_ != null) {
+            end_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.newBuilder(end_).mergeFrom(value).buildPartial();
+          } else {
+            end_ = value;
+          }
+          onChanged();
+        } else {
+          endBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Date end = 3;</code>
        */
       public Builder clearEnd() {
-        
-        end_ = getDefaultInstance().getEnd();
-        onChanged();
+        if (endBuilder_ == null) {
+          end_ = null;
+          onChanged();
+        } else {
+          end_ = null;
+          endBuilder_ = null;
+        }
+
         return this;
       }
       /**
-       * <code>string end = 3;</code>
-       * @param value The bytes for end to set.
-       * @return This builder for chaining.
+       * <code>.jd3.Date end = 3;</code>
        */
-      public Builder setEndBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder getEndBuilder() {
         
-        end_ = value;
         onChanged();
-        return this;
+        return getEndFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Date end = 3;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getEndOrBuilder() {
+        if (endBuilder_ != null) {
+          return endBuilder_.getMessageOrBuilder();
+        } else {
+          return end_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : end_;
+        }
+      }
+      /**
+       * <code>.jd3.Date end = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> 
+          getEndFieldBuilder() {
+        if (endBuilder_ == null) {
+          endBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder>(
+                  getEnd(),
+                  getParentForChildren(),
+                  isClean());
+          end_ = null;
+        }
+        return endBuilder_;
       }
 
       private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter coefficient_;
@@ -5420,16 +5526,19 @@ public final class RegArimaProtos {
         getCodeBytes();
 
     /**
-     * <code>string position = 3;</code>
+     * <code>.jd3.Date position = 3;</code>
+     * @return Whether the position field is set.
+     */
+    boolean hasPosition();
+    /**
+     * <code>.jd3.Date position = 3;</code>
      * @return The position.
      */
-    java.lang.String getPosition();
+    demetra.toolkit.io.protobuf.ToolkitProtos.Date getPosition();
     /**
-     * <code>string position = 3;</code>
-     * @return The bytes for position.
+     * <code>.jd3.Date position = 3;</code>
      */
-    com.google.protobuf.ByteString
-        getPositionBytes();
+    demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getPositionOrBuilder();
 
     /**
      * <code>.jd3.Parameter coefficient = 5;</code>
@@ -5495,7 +5604,6 @@ public final class RegArimaProtos {
     private Outlier() {
       name_ = "";
       code_ = "";
-      position_ = "";
     }
 
     @java.lang.Override
@@ -5542,9 +5650,16 @@ public final class RegArimaProtos {
               break;
             }
             case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder subBuilder = null;
+              if (position_ != null) {
+                subBuilder = position_.toBuilder();
+              }
+              position_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Date.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(position_);
+                position_ = subBuilder.buildPartial();
+              }
 
-              position_ = s;
               break;
             }
             case 42: {
@@ -5694,41 +5809,29 @@ public final class RegArimaProtos {
     }
 
     public static final int POSITION_FIELD_NUMBER = 3;
-    private volatile java.lang.Object position_;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Date position_;
     /**
-     * <code>string position = 3;</code>
+     * <code>.jd3.Date position = 3;</code>
+     * @return Whether the position field is set.
+     */
+    @java.lang.Override
+    public boolean hasPosition() {
+      return position_ != null;
+    }
+    /**
+     * <code>.jd3.Date position = 3;</code>
      * @return The position.
      */
     @java.lang.Override
-    public java.lang.String getPosition() {
-      java.lang.Object ref = position_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        position_ = s;
-        return s;
-      }
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Date getPosition() {
+      return position_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : position_;
     }
     /**
-     * <code>string position = 3;</code>
-     * @return The bytes for position.
+     * <code>.jd3.Date position = 3;</code>
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getPositionBytes() {
-      java.lang.Object ref = position_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        position_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getPositionOrBuilder() {
+      return getPosition();
     }
 
     public static final int COEFFICIENT_FIELD_NUMBER = 5;
@@ -5858,8 +5961,8 @@ public final class RegArimaProtos {
       if (!getCodeBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, code_);
       }
-      if (!getPositionBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, position_);
+      if (position_ != null) {
+        output.writeMessage(3, getPosition());
       }
       if (coefficient_ != null) {
         output.writeMessage(5, getCoefficient());
@@ -5885,8 +5988,9 @@ public final class RegArimaProtos {
       if (!getCodeBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, code_);
       }
-      if (!getPositionBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, position_);
+      if (position_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getPosition());
       }
       if (coefficient_ != null) {
         size += com.google.protobuf.CodedOutputStream
@@ -5921,8 +6025,11 @@ public final class RegArimaProtos {
           .equals(other.getName())) return false;
       if (!getCode()
           .equals(other.getCode())) return false;
-      if (!getPosition()
-          .equals(other.getPosition())) return false;
+      if (hasPosition() != other.hasPosition()) return false;
+      if (hasPosition()) {
+        if (!getPosition()
+            .equals(other.getPosition())) return false;
+      }
       if (hasCoefficient() != other.hasCoefficient()) return false;
       if (hasCoefficient()) {
         if (!getCoefficient()
@@ -5945,8 +6052,10 @@ public final class RegArimaProtos {
       hash = (53 * hash) + getName().hashCode();
       hash = (37 * hash) + CODE_FIELD_NUMBER;
       hash = (53 * hash) + getCode().hashCode();
-      hash = (37 * hash) + POSITION_FIELD_NUMBER;
-      hash = (53 * hash) + getPosition().hashCode();
+      if (hasPosition()) {
+        hash = (37 * hash) + POSITION_FIELD_NUMBER;
+        hash = (53 * hash) + getPosition().hashCode();
+      }
       if (hasCoefficient()) {
         hash = (37 * hash) + COEFFICIENT_FIELD_NUMBER;
         hash = (53 * hash) + getCoefficient().hashCode();
@@ -6114,8 +6223,12 @@ public final class RegArimaProtos {
 
         code_ = "";
 
-        position_ = "";
-
+        if (positionBuilder_ == null) {
+          position_ = null;
+        } else {
+          position_ = null;
+          positionBuilder_ = null;
+        }
         if (coefficientBuilder_ == null) {
           coefficient_ = null;
         } else {
@@ -6152,7 +6265,11 @@ public final class RegArimaProtos {
         int from_bitField0_ = bitField0_;
         result.name_ = name_;
         result.code_ = code_;
-        result.position_ = position_;
+        if (positionBuilder_ == null) {
+          result.position_ = position_;
+        } else {
+          result.position_ = positionBuilder_.build();
+        }
         if (coefficientBuilder_ == null) {
           result.coefficient_ = coefficient_;
         } else {
@@ -6216,9 +6333,8 @@ public final class RegArimaProtos {
           code_ = other.code_;
           onChanged();
         }
-        if (!other.getPosition().isEmpty()) {
-          position_ = other.position_;
-          onChanged();
+        if (other.hasPosition()) {
+          mergePosition(other.getPosition());
         }
         if (other.hasCoefficient()) {
           mergeCoefficient(other.getCoefficient());
@@ -6407,80 +6523,123 @@ public final class RegArimaProtos {
         return this;
       }
 
-      private java.lang.Object position_ = "";
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Date position_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> positionBuilder_;
       /**
-       * <code>string position = 3;</code>
+       * <code>.jd3.Date position = 3;</code>
+       * @return Whether the position field is set.
+       */
+      public boolean hasPosition() {
+        return positionBuilder_ != null || position_ != null;
+      }
+      /**
+       * <code>.jd3.Date position = 3;</code>
        * @return The position.
        */
-      public java.lang.String getPosition() {
-        java.lang.Object ref = position_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          position_ = s;
-          return s;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date getPosition() {
+        if (positionBuilder_ == null) {
+          return position_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : position_;
         } else {
-          return (java.lang.String) ref;
+          return positionBuilder_.getMessage();
         }
       }
       /**
-       * <code>string position = 3;</code>
-       * @return The bytes for position.
+       * <code>.jd3.Date position = 3;</code>
        */
-      public com.google.protobuf.ByteString
-          getPositionBytes() {
-        java.lang.Object ref = position_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          position_ = b;
-          return b;
+      public Builder setPosition(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (positionBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          position_ = value;
+          onChanged();
         } else {
-          return (com.google.protobuf.ByteString) ref;
+          positionBuilder_.setMessage(value);
         }
+
+        return this;
       }
       /**
-       * <code>string position = 3;</code>
-       * @param value The position to set.
-       * @return This builder for chaining.
+       * <code>.jd3.Date position = 3;</code>
        */
       public Builder setPosition(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        position_ = value;
-        onChanged();
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder builderForValue) {
+        if (positionBuilder_ == null) {
+          position_ = builderForValue.build();
+          onChanged();
+        } else {
+          positionBuilder_.setMessage(builderForValue.build());
+        }
+
         return this;
       }
       /**
-       * <code>string position = 3;</code>
-       * @return This builder for chaining.
+       * <code>.jd3.Date position = 3;</code>
+       */
+      public Builder mergePosition(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (positionBuilder_ == null) {
+          if (position_ != null) {
+            position_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.newBuilder(position_).mergeFrom(value).buildPartial();
+          } else {
+            position_ = value;
+          }
+          onChanged();
+        } else {
+          positionBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Date position = 3;</code>
        */
       public Builder clearPosition() {
-        
-        position_ = getDefaultInstance().getPosition();
-        onChanged();
+        if (positionBuilder_ == null) {
+          position_ = null;
+          onChanged();
+        } else {
+          position_ = null;
+          positionBuilder_ = null;
+        }
+
         return this;
       }
       /**
-       * <code>string position = 3;</code>
-       * @param value The bytes for position to set.
-       * @return This builder for chaining.
+       * <code>.jd3.Date position = 3;</code>
        */
-      public Builder setPositionBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder getPositionBuilder() {
         
-        position_ = value;
         onChanged();
-        return this;
+        return getPositionFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Date position = 3;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getPositionOrBuilder() {
+        if (positionBuilder_ != null) {
+          return positionBuilder_.getMessageOrBuilder();
+        } else {
+          return position_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : position_;
+        }
+      }
+      /**
+       * <code>.jd3.Date position = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> 
+          getPositionFieldBuilder() {
+        if (positionBuilder_ == null) {
+          positionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder>(
+                  getPosition(),
+                  getParentForChildren(),
+                  isClean());
+          position_ = null;
+        }
+        return positionBuilder_;
       }
 
       private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter coefficient_;
@@ -7034,28 +7193,34 @@ public final class RegArimaProtos {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>string start = 1;</code>
+       * <code>.jd3.Date start = 1;</code>
+       * @return Whether the start field is set.
+       */
+      boolean hasStart();
+      /**
+       * <code>.jd3.Date start = 1;</code>
        * @return The start.
        */
-      java.lang.String getStart();
+      demetra.toolkit.io.protobuf.ToolkitProtos.Date getStart();
       /**
-       * <code>string start = 1;</code>
-       * @return The bytes for start.
+       * <code>.jd3.Date start = 1;</code>
        */
-      com.google.protobuf.ByteString
-          getStartBytes();
+      demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getStartOrBuilder();
 
       /**
-       * <code>string end = 2;</code>
+       * <code>.jd3.Date end = 2;</code>
+       * @return Whether the end field is set.
+       */
+      boolean hasEnd();
+      /**
+       * <code>.jd3.Date end = 2;</code>
        * @return The end.
        */
-      java.lang.String getEnd();
+      demetra.toolkit.io.protobuf.ToolkitProtos.Date getEnd();
       /**
-       * <code>string end = 2;</code>
-       * @return The bytes for end.
+       * <code>.jd3.Date end = 2;</code>
        */
-      com.google.protobuf.ByteString
-          getEndBytes();
+      demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getEndOrBuilder();
     }
     /**
      * Protobuf type {@code regarima.InterventionVariable.Sequence}
@@ -7070,8 +7235,6 @@ public final class RegArimaProtos {
         super(builder);
       }
       private Sequence() {
-        start_ = "";
-        end_ = "";
       }
 
       @java.lang.Override
@@ -7105,15 +7268,29 @@ public final class RegArimaProtos {
                 done = true;
                 break;
               case 10: {
-                java.lang.String s = input.readStringRequireUtf8();
+                demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder subBuilder = null;
+                if (start_ != null) {
+                  subBuilder = start_.toBuilder();
+                }
+                start_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Date.parser(), extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(start_);
+                  start_ = subBuilder.buildPartial();
+                }
 
-                start_ = s;
                 break;
               }
               case 18: {
-                java.lang.String s = input.readStringRequireUtf8();
+                demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder subBuilder = null;
+                if (end_ != null) {
+                  subBuilder = end_.toBuilder();
+                }
+                end_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Date.parser(), extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(end_);
+                  end_ = subBuilder.buildPartial();
+                }
 
-                end_ = s;
                 break;
               }
               default: {
@@ -7149,79 +7326,55 @@ public final class RegArimaProtos {
       }
 
       public static final int START_FIELD_NUMBER = 1;
-      private volatile java.lang.Object start_;
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Date start_;
       /**
-       * <code>string start = 1;</code>
+       * <code>.jd3.Date start = 1;</code>
+       * @return Whether the start field is set.
+       */
+      @java.lang.Override
+      public boolean hasStart() {
+        return start_ != null;
+      }
+      /**
+       * <code>.jd3.Date start = 1;</code>
        * @return The start.
        */
       @java.lang.Override
-      public java.lang.String getStart() {
-        java.lang.Object ref = start_;
-        if (ref instanceof java.lang.String) {
-          return (java.lang.String) ref;
-        } else {
-          com.google.protobuf.ByteString bs = 
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          start_ = s;
-          return s;
-        }
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date getStart() {
+        return start_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : start_;
       }
       /**
-       * <code>string start = 1;</code>
-       * @return The bytes for start.
+       * <code>.jd3.Date start = 1;</code>
        */
       @java.lang.Override
-      public com.google.protobuf.ByteString
-          getStartBytes() {
-        java.lang.Object ref = start_;
-        if (ref instanceof java.lang.String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          start_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getStartOrBuilder() {
+        return getStart();
       }
 
       public static final int END_FIELD_NUMBER = 2;
-      private volatile java.lang.Object end_;
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Date end_;
       /**
-       * <code>string end = 2;</code>
+       * <code>.jd3.Date end = 2;</code>
+       * @return Whether the end field is set.
+       */
+      @java.lang.Override
+      public boolean hasEnd() {
+        return end_ != null;
+      }
+      /**
+       * <code>.jd3.Date end = 2;</code>
        * @return The end.
        */
       @java.lang.Override
-      public java.lang.String getEnd() {
-        java.lang.Object ref = end_;
-        if (ref instanceof java.lang.String) {
-          return (java.lang.String) ref;
-        } else {
-          com.google.protobuf.ByteString bs = 
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          end_ = s;
-          return s;
-        }
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date getEnd() {
+        return end_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : end_;
       }
       /**
-       * <code>string end = 2;</code>
-       * @return The bytes for end.
+       * <code>.jd3.Date end = 2;</code>
        */
       @java.lang.Override
-      public com.google.protobuf.ByteString
-          getEndBytes() {
-        java.lang.Object ref = end_;
-        if (ref instanceof java.lang.String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          end_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getEndOrBuilder() {
+        return getEnd();
       }
 
       private byte memoizedIsInitialized = -1;
@@ -7238,11 +7391,11 @@ public final class RegArimaProtos {
       @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (!getStartBytes().isEmpty()) {
-          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, start_);
+        if (start_ != null) {
+          output.writeMessage(1, getStart());
         }
-        if (!getEndBytes().isEmpty()) {
-          com.google.protobuf.GeneratedMessageV3.writeString(output, 2, end_);
+        if (end_ != null) {
+          output.writeMessage(2, getEnd());
         }
         unknownFields.writeTo(output);
       }
@@ -7253,11 +7406,13 @@ public final class RegArimaProtos {
         if (size != -1) return size;
 
         size = 0;
-        if (!getStartBytes().isEmpty()) {
-          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, start_);
+        if (start_ != null) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(1, getStart());
         }
-        if (!getEndBytes().isEmpty()) {
-          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, end_);
+        if (end_ != null) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(2, getEnd());
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -7274,10 +7429,16 @@ public final class RegArimaProtos {
         }
         demetra.regarima.io.protobuf.RegArimaProtos.InterventionVariable.Sequence other = (demetra.regarima.io.protobuf.RegArimaProtos.InterventionVariable.Sequence) obj;
 
-        if (!getStart()
-            .equals(other.getStart())) return false;
-        if (!getEnd()
-            .equals(other.getEnd())) return false;
+        if (hasStart() != other.hasStart()) return false;
+        if (hasStart()) {
+          if (!getStart()
+              .equals(other.getStart())) return false;
+        }
+        if (hasEnd() != other.hasEnd()) return false;
+        if (hasEnd()) {
+          if (!getEnd()
+              .equals(other.getEnd())) return false;
+        }
         if (!unknownFields.equals(other.unknownFields)) return false;
         return true;
       }
@@ -7289,10 +7450,14 @@ public final class RegArimaProtos {
         }
         int hash = 41;
         hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + START_FIELD_NUMBER;
-        hash = (53 * hash) + getStart().hashCode();
-        hash = (37 * hash) + END_FIELD_NUMBER;
-        hash = (53 * hash) + getEnd().hashCode();
+        if (hasStart()) {
+          hash = (37 * hash) + START_FIELD_NUMBER;
+          hash = (53 * hash) + getStart().hashCode();
+        }
+        if (hasEnd()) {
+          hash = (37 * hash) + END_FIELD_NUMBER;
+          hash = (53 * hash) + getEnd().hashCode();
+        }
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
         return hash;
@@ -7426,10 +7591,18 @@ public final class RegArimaProtos {
         @java.lang.Override
         public Builder clear() {
           super.clear();
-          start_ = "";
-
-          end_ = "";
-
+          if (startBuilder_ == null) {
+            start_ = null;
+          } else {
+            start_ = null;
+            startBuilder_ = null;
+          }
+          if (endBuilder_ == null) {
+            end_ = null;
+          } else {
+            end_ = null;
+            endBuilder_ = null;
+          }
           return this;
         }
 
@@ -7456,8 +7629,16 @@ public final class RegArimaProtos {
         @java.lang.Override
         public demetra.regarima.io.protobuf.RegArimaProtos.InterventionVariable.Sequence buildPartial() {
           demetra.regarima.io.protobuf.RegArimaProtos.InterventionVariable.Sequence result = new demetra.regarima.io.protobuf.RegArimaProtos.InterventionVariable.Sequence(this);
-          result.start_ = start_;
-          result.end_ = end_;
+          if (startBuilder_ == null) {
+            result.start_ = start_;
+          } else {
+            result.start_ = startBuilder_.build();
+          }
+          if (endBuilder_ == null) {
+            result.end_ = end_;
+          } else {
+            result.end_ = endBuilder_.build();
+          }
           onBuilt();
           return result;
         }
@@ -7506,13 +7687,11 @@ public final class RegArimaProtos {
 
         public Builder mergeFrom(demetra.regarima.io.protobuf.RegArimaProtos.InterventionVariable.Sequence other) {
           if (other == demetra.regarima.io.protobuf.RegArimaProtos.InterventionVariable.Sequence.getDefaultInstance()) return this;
-          if (!other.getStart().isEmpty()) {
-            start_ = other.start_;
-            onChanged();
+          if (other.hasStart()) {
+            mergeStart(other.getStart());
           }
-          if (!other.getEnd().isEmpty()) {
-            end_ = other.end_;
-            onChanged();
+          if (other.hasEnd()) {
+            mergeEnd(other.getEnd());
           }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
@@ -7543,156 +7722,242 @@ public final class RegArimaProtos {
           return this;
         }
 
-        private java.lang.Object start_ = "";
+        private demetra.toolkit.io.protobuf.ToolkitProtos.Date start_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+            demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> startBuilder_;
         /**
-         * <code>string start = 1;</code>
+         * <code>.jd3.Date start = 1;</code>
+         * @return Whether the start field is set.
+         */
+        public boolean hasStart() {
+          return startBuilder_ != null || start_ != null;
+        }
+        /**
+         * <code>.jd3.Date start = 1;</code>
          * @return The start.
          */
-        public java.lang.String getStart() {
-          java.lang.Object ref = start_;
-          if (!(ref instanceof java.lang.String)) {
-            com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            start_ = s;
-            return s;
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Date getStart() {
+          if (startBuilder_ == null) {
+            return start_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : start_;
           } else {
-            return (java.lang.String) ref;
+            return startBuilder_.getMessage();
           }
         }
         /**
-         * <code>string start = 1;</code>
-         * @return The bytes for start.
+         * <code>.jd3.Date start = 1;</code>
          */
-        public com.google.protobuf.ByteString
-            getStartBytes() {
-          java.lang.Object ref = start_;
-          if (ref instanceof String) {
-            com.google.protobuf.ByteString b = 
-                com.google.protobuf.ByteString.copyFromUtf8(
-                    (java.lang.String) ref);
-            start_ = b;
-            return b;
+        public Builder setStart(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+          if (startBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            start_ = value;
+            onChanged();
           } else {
-            return (com.google.protobuf.ByteString) ref;
+            startBuilder_.setMessage(value);
           }
+
+          return this;
         }
         /**
-         * <code>string start = 1;</code>
-         * @param value The start to set.
-         * @return This builder for chaining.
+         * <code>.jd3.Date start = 1;</code>
          */
         public Builder setStart(
-            java.lang.String value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  
-          start_ = value;
-          onChanged();
+            demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder builderForValue) {
+          if (startBuilder_ == null) {
+            start_ = builderForValue.build();
+            onChanged();
+          } else {
+            startBuilder_.setMessage(builderForValue.build());
+          }
+
           return this;
         }
         /**
-         * <code>string start = 1;</code>
-         * @return This builder for chaining.
+         * <code>.jd3.Date start = 1;</code>
+         */
+        public Builder mergeStart(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+          if (startBuilder_ == null) {
+            if (start_ != null) {
+              start_ =
+                demetra.toolkit.io.protobuf.ToolkitProtos.Date.newBuilder(start_).mergeFrom(value).buildPartial();
+            } else {
+              start_ = value;
+            }
+            onChanged();
+          } else {
+            startBuilder_.mergeFrom(value);
+          }
+
+          return this;
+        }
+        /**
+         * <code>.jd3.Date start = 1;</code>
          */
         public Builder clearStart() {
-          
-          start_ = getDefaultInstance().getStart();
-          onChanged();
+          if (startBuilder_ == null) {
+            start_ = null;
+            onChanged();
+          } else {
+            start_ = null;
+            startBuilder_ = null;
+          }
+
           return this;
         }
         /**
-         * <code>string start = 1;</code>
-         * @param value The bytes for start to set.
-         * @return This builder for chaining.
+         * <code>.jd3.Date start = 1;</code>
          */
-        public Builder setStartBytes(
-            com.google.protobuf.ByteString value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder getStartBuilder() {
           
-          start_ = value;
           onChanged();
-          return this;
+          return getStartFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>.jd3.Date start = 1;</code>
+         */
+        public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getStartOrBuilder() {
+          if (startBuilder_ != null) {
+            return startBuilder_.getMessageOrBuilder();
+          } else {
+            return start_ == null ?
+                demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : start_;
+          }
+        }
+        /**
+         * <code>.jd3.Date start = 1;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilderV3<
+            demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> 
+            getStartFieldBuilder() {
+          if (startBuilder_ == null) {
+            startBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder>(
+                    getStart(),
+                    getParentForChildren(),
+                    isClean());
+            start_ = null;
+          }
+          return startBuilder_;
         }
 
-        private java.lang.Object end_ = "";
+        private demetra.toolkit.io.protobuf.ToolkitProtos.Date end_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+            demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> endBuilder_;
         /**
-         * <code>string end = 2;</code>
+         * <code>.jd3.Date end = 2;</code>
+         * @return Whether the end field is set.
+         */
+        public boolean hasEnd() {
+          return endBuilder_ != null || end_ != null;
+        }
+        /**
+         * <code>.jd3.Date end = 2;</code>
          * @return The end.
          */
-        public java.lang.String getEnd() {
-          java.lang.Object ref = end_;
-          if (!(ref instanceof java.lang.String)) {
-            com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            end_ = s;
-            return s;
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Date getEnd() {
+          if (endBuilder_ == null) {
+            return end_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : end_;
           } else {
-            return (java.lang.String) ref;
+            return endBuilder_.getMessage();
           }
         }
         /**
-         * <code>string end = 2;</code>
-         * @return The bytes for end.
+         * <code>.jd3.Date end = 2;</code>
          */
-        public com.google.protobuf.ByteString
-            getEndBytes() {
-          java.lang.Object ref = end_;
-          if (ref instanceof String) {
-            com.google.protobuf.ByteString b = 
-                com.google.protobuf.ByteString.copyFromUtf8(
-                    (java.lang.String) ref);
-            end_ = b;
-            return b;
+        public Builder setEnd(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+          if (endBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            end_ = value;
+            onChanged();
           } else {
-            return (com.google.protobuf.ByteString) ref;
+            endBuilder_.setMessage(value);
           }
+
+          return this;
         }
         /**
-         * <code>string end = 2;</code>
-         * @param value The end to set.
-         * @return This builder for chaining.
+         * <code>.jd3.Date end = 2;</code>
          */
         public Builder setEnd(
-            java.lang.String value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  
-          end_ = value;
-          onChanged();
+            demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder builderForValue) {
+          if (endBuilder_ == null) {
+            end_ = builderForValue.build();
+            onChanged();
+          } else {
+            endBuilder_.setMessage(builderForValue.build());
+          }
+
           return this;
         }
         /**
-         * <code>string end = 2;</code>
-         * @return This builder for chaining.
+         * <code>.jd3.Date end = 2;</code>
+         */
+        public Builder mergeEnd(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+          if (endBuilder_ == null) {
+            if (end_ != null) {
+              end_ =
+                demetra.toolkit.io.protobuf.ToolkitProtos.Date.newBuilder(end_).mergeFrom(value).buildPartial();
+            } else {
+              end_ = value;
+            }
+            onChanged();
+          } else {
+            endBuilder_.mergeFrom(value);
+          }
+
+          return this;
+        }
+        /**
+         * <code>.jd3.Date end = 2;</code>
          */
         public Builder clearEnd() {
-          
-          end_ = getDefaultInstance().getEnd();
-          onChanged();
+          if (endBuilder_ == null) {
+            end_ = null;
+            onChanged();
+          } else {
+            end_ = null;
+            endBuilder_ = null;
+          }
+
           return this;
         }
         /**
-         * <code>string end = 2;</code>
-         * @param value The bytes for end to set.
-         * @return This builder for chaining.
+         * <code>.jd3.Date end = 2;</code>
          */
-        public Builder setEndBytes(
-            com.google.protobuf.ByteString value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder getEndBuilder() {
           
-          end_ = value;
           onChanged();
-          return this;
+          return getEndFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>.jd3.Date end = 2;</code>
+         */
+        public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getEndOrBuilder() {
+          if (endBuilder_ != null) {
+            return endBuilder_.getMessageOrBuilder();
+          } else {
+            return end_ == null ?
+                demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : end_;
+          }
+        }
+        /**
+         * <code>.jd3.Date end = 2;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilderV3<
+            demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> 
+            getEndFieldBuilder() {
+          if (endBuilder_ == null) {
+            endBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder>(
+                    getEnd(),
+                    getParentForChildren(),
+                    isClean());
+            end_ = null;
+          }
+          return endBuilder_;
         }
         @java.lang.Override
         public final Builder setUnknownFields(
@@ -9176,32 +9441,34 @@ public final class RegArimaProtos {
       "\013coefficient\030\005 \003(\0132\016.jd3.Parameter\0222\n\010me" +
       "tadata\030\006 \003(\0132 .regarima.Variable.Metadat" +
       "aEntry\032/\n\rMetadataEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005" +
-      "value\030\002 \001(\t:\0028\001\"\266\001\n\004Ramp\022\014\n\004name\030\001 \001(\t\022\r" +
-      "\n\005start\030\002 \001(\t\022\013\n\003end\030\003 \001(\t\022#\n\013coefficien" +
-      "t\030\005 \001(\0132\016.jd3.Parameter\022.\n\010metadata\030\006 \003(" +
-      "\0132\034.regarima.Ramp.MetadataEntry\032/\n\rMetad" +
-      "ataEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001" +
-      "\"\300\001\n\007Outlier\022\014\n\004name\030\001 \001(\t\022\014\n\004code\030\002 \001(\t" +
-      "\022\020\n\010position\030\003 \001(\t\022#\n\013coefficient\030\005 \001(\0132" +
-      "\016.jd3.Parameter\0221\n\010metadata\030\006 \003(\0132\037.rega" +
-      "rima.Outlier.MetadataEntry\032/\n\rMetadataEn" +
-      "try\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\305\002\n\024" +
-      "InterventionVariable\022\014\n\004name\030\001 \001(\t\022:\n\tse" +
-      "quences\030\002 \003(\0132\'.regarima.InterventionVar" +
-      "iable.Sequence\022\r\n\005delta\030\003 \001(\001\022\026\n\016seasona" +
-      "l_delta\030\004 \001(\001\022#\n\013coefficient\030\005 \001(\0132\016.jd3" +
-      ".Parameter\022>\n\010metadata\030\006 \003(\0132,.regarima." +
-      "InterventionVariable.MetadataEntry\032&\n\010Se" +
-      "quence\022\r\n\005start\030\001 \001(\t\022\013\n\003end\030\002 \001(\t\032/\n\rMe" +
-      "tadataEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:" +
-      "\0028\001*K\n\016Transformation\022\022\n\016FN_UNSPECIFIED\020" +
-      "\000\022\014\n\010FN_LEVEL\020\001\022\n\n\006FN_LOG\020\002\022\013\n\007FN_AUTO\020\n" +
-      "*Y\n\016LengthOfPeriod\022\022\n\016LP_UNSPECIFIED\020\000\022\013" +
-      "\n\007LP_NONE\020\001\022\017\n\013LP_LEAPYEAR\020\002\022\025\n\021LP_LENGT" +
-      "HOFPERIOD\020\003*R\n\013TradingDays\022\022\n\016TD_UNSPECI" +
-      "FIED\020\000\022\013\n\007TD_NONE\020\001\022\013\n\007TD_WEEK\020\002\022\010\n\004TD_3" +
-      "\020\003\022\013\n\007TD_FULL\020\006B.\n\034demetra.regarima.io.p" +
-      "rotobufB\016RegArimaProtosP\000b\006proto3"
+      "value\030\002 \001(\t:\0028\001\"\314\001\n\004Ramp\022\014\n\004name\030\001 \001(\t\022\030" +
+      "\n\005start\030\002 \001(\0132\t.jd3.Date\022\026\n\003end\030\003 \001(\0132\t." +
+      "jd3.Date\022#\n\013coefficient\030\005 \001(\0132\016.jd3.Para" +
+      "meter\022.\n\010metadata\030\006 \003(\0132\034.regarima.Ramp." +
+      "MetadataEntry\032/\n\rMetadataEntry\022\013\n\003key\030\001 " +
+      "\001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\313\001\n\007Outlier\022\014\n\004na" +
+      "me\030\001 \001(\t\022\014\n\004code\030\002 \001(\t\022\033\n\010position\030\003 \001(\013" +
+      "2\t.jd3.Date\022#\n\013coefficient\030\005 \001(\0132\016.jd3.P" +
+      "arameter\0221\n\010metadata\030\006 \003(\0132\037.regarima.Ou" +
+      "tlier.MetadataEntry\032/\n\rMetadataEntry\022\013\n\003" +
+      "key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\333\002\n\024Interve" +
+      "ntionVariable\022\014\n\004name\030\001 \001(\t\022:\n\tsequences" +
+      "\030\002 \003(\0132\'.regarima.InterventionVariable.S" +
+      "equence\022\r\n\005delta\030\003 \001(\001\022\026\n\016seasonal_delta" +
+      "\030\004 \001(\001\022#\n\013coefficient\030\005 \001(\0132\016.jd3.Parame" +
+      "ter\022>\n\010metadata\030\006 \003(\0132,.regarima.Interve" +
+      "ntionVariable.MetadataEntry\032<\n\010Sequence\022" +
+      "\030\n\005start\030\001 \001(\0132\t.jd3.Date\022\026\n\003end\030\002 \001(\0132\t" +
+      ".jd3.Date\032/\n\rMetadataEntry\022\013\n\003key\030\001 \001(\t\022" +
+      "\r\n\005value\030\002 \001(\t:\0028\001*K\n\016Transformation\022\022\n\016" +
+      "FN_UNSPECIFIED\020\000\022\014\n\010FN_LEVEL\020\001\022\n\n\006FN_LOG" +
+      "\020\002\022\013\n\007FN_AUTO\020\n*Y\n\016LengthOfPeriod\022\022\n\016LP_" +
+      "UNSPECIFIED\020\000\022\013\n\007LP_NONE\020\001\022\017\n\013LP_LEAPYEA" +
+      "R\020\002\022\025\n\021LP_LENGTHOFPERIOD\020\003*R\n\013TradingDay" +
+      "s\022\022\n\016TD_UNSPECIFIED\020\000\022\013\n\007TD_NONE\020\001\022\013\n\007TD" +
+      "_WEEK\020\002\022\010\n\004TD_3\020\003\022\013\n\007TD_FULL\020\006B.\n\034demetr" +
+      "a.regarima.io.protobufB\016RegArimaProtosP\000" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

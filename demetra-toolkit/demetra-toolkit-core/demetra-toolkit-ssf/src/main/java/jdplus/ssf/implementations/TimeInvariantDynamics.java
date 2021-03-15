@@ -16,12 +16,10 @@
  */
 package jdplus.ssf.implementations;
 
-import java.util.Iterator;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
-import jdplus.ssf.ISsfInitialization;
 import jdplus.math.matrices.Matrix;
 
 /**

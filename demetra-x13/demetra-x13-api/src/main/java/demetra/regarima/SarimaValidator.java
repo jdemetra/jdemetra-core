@@ -16,7 +16,7 @@
  */
 package demetra.regarima;
 
-import demetra.arima.SarimaSpec;
+import demetra.timeseries.regression.modelling.SarimaSpec;
 import nbbrd.design.Development;
 
 /**

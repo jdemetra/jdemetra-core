@@ -84,7 +84,7 @@ public enum DayEvent {
     /**
      * Second Tuesday of September
      */
-    //LaborDay,
+    LaborDay,
     /**
      * October, 31
      */
@@ -100,7 +100,7 @@ public enum DayEvent {
     /**
      * Fourth Thursday of November
      */
-    //ThanksGiving,
+    ThanksGiving,
     /**
      * December, 25
      */

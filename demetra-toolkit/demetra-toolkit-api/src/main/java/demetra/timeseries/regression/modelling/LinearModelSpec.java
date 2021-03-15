@@ -21,7 +21,10 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.Variable;
 
 /**
- *
+ * Describes a regression model, with any stochastic component
+ * The parameters of the model (regression and stochastic) can be provided
+ * (fixed or not). 
+ * 
  * @author Jean Palate
  * @param <M>
  */
@@ -32,7 +35,7 @@ public class LinearModelSpec<M> {
     /**
      * Original series
      */
-    private TsData series;
+    private TsData series;    
     /**
      * Log transformation
      */
@@ -40,13 +43,16 @@ public class LinearModelSpec<M> {
     /**
      * Transformation for leap year or length of period
      */
+    
     private LengthOfPeriodType lengthOfPeriodTransformation;
 
     /**
-     * Regression variables
+     * Regression variables (including mean correction)
      */
-    private boolean meanCorrection;
     private Variable[] variables;
-
+    
+    /**
+     * For instance SarimaSpec
+     */
     private M stochasticComponent;
 }

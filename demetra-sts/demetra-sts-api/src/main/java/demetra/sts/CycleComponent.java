@@ -16,14 +16,16 @@
  */
 package demetra.sts;
 
+import demetra.data.Parameter;
+
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-public class CycleComponentType {
+public class CycleComponent {
 
-    private double variance;
-    private double cdump, cyclePeriod;
+    private Parameter variance;
+    private Parameter cdump, cyclePeriod;
 
 }

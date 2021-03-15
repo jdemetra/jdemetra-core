@@ -16,7 +16,7 @@
  */
 package demetra.tramo;
 
-import demetra.arima.SarimaSpec;
+import demetra.timeseries.regression.modelling.SarimaSpec;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

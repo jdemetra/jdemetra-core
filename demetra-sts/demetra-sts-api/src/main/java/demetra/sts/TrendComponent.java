@@ -16,15 +16,14 @@
  */
 package demetra.sts;
 
+import demetra.data.Parameter;
+
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-@lombok.Builder(toBuilder=true)
-public class BsmType {
-    TrendComponentType trendComponent;
-    SeasonalComponentType seasonalComponent;
-    CycleComponentType cycleComponent;
-    double noiseVariance;
+public class TrendComponent {
+    Parameter levelVariance;
+    Parameter slopeVariance;
 }

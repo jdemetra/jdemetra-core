@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.arima;
+package demetra.timeseries.regression.modelling;
 
+import demetra.arima.SarimaOrders;
 import nbbrd.design.Development;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
@@ -67,6 +68,7 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
     /**
      * Period of the Arima model. Should be 0 when the period is unspecified
      */
+    private int period;
     private int d, bd;
     private @NonNull
     Parameter[] phi, theta, bphi, btheta;
@@ -150,7 +152,7 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
 
     }
 
-    private static final SarimaSpec AIRLINE = new SarimaSpec(null, 1, 1,
+    private static final SarimaSpec AIRLINE = new SarimaSpec(null, 0, 1, 1,
             EMPTY, Parameter.make(1), EMPTY, Parameter.make(1));
 
     public static SarimaSpec airline() {
@@ -201,6 +203,12 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
     public boolean isUndefined(){
         return Parameter.isDefault(phi) && Parameter.isDefault(theta)
                 && Parameter.isDefault(bphi) && Parameter.isDefault(btheta);
+    }
+    
+    public SarimaSpec withPeriod(int period){
+        if (this.period == period)
+            return this;
+        return new SarimaSpec(null, period, d, bd, phi, theta, bphi, btheta );
     }
 
     public SarimaSpec resetParameters() {
