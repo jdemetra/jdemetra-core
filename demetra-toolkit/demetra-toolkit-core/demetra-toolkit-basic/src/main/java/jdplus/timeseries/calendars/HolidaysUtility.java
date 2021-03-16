@@ -293,7 +293,7 @@ public class HolidaysUtility {
                 }
             }
         }
-        return rslt;
+        return rslt != null ? rslt : new double[freq][];
     }
 
 }

@@ -93,7 +93,7 @@ public class TdRegressionItem extends StateItem {
 
     public static MatrixType rawTd(TsDomain domain, int[] groups) {
         DayClustering dc = DayClustering.of(groups);
-        GenericTradingDays gtd = GenericTradingDays.of(dc);
+        GenericTradingDays gtd = GenericTradingDays.raw(dc);
         Matrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
         return td.unmodifiable();
     }

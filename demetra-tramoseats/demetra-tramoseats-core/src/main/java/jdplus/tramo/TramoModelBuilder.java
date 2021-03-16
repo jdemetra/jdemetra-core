@@ -346,7 +346,7 @@ class TramoModelBuilder implements IModelBuilder {
             return null;
         } else if (tdspec.getHolidays() != null) {
             GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(tdspec.getHolidays(), context.getCalendars());
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(tdspec.getHolidays(), context.getCalendars(), true);
             return new HolidaysCorrectedTradingDays(gtd, corrector);
         } else if (tdspec.getUserVariables() != null) {
             return null;
@@ -379,7 +379,7 @@ class TramoModelBuilder implements IModelBuilder {
         }
         DayClustering dc = tdType == (TradingDaysType.TradingDays) ? DayClustering.TD7 : DayClustering.TD2;
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(td.getHolidays(), context.getCalendars());
+        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(td.getHolidays(), context.getCalendars(), true);
         return new HolidaysCorrectedTradingDays(gtd, corrector);
     }
 

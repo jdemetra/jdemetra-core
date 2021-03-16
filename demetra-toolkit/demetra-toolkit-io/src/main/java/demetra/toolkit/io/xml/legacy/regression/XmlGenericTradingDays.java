@@ -56,9 +56,9 @@ public class XmlGenericTradingDays extends XmlModifiableRegressionVariable {
 
                 GenericTradingDays gtd;
                 if (v.contrasts) {
-                    gtd = GenericTradingDays.contrasts(clustering);
+                    gtd = new GenericTradingDays(clustering, GenericTradingDays.Type.CONTRAST);
                 } else {
-                    gtd = GenericTradingDays.normalized(clustering);
+                    gtd = new GenericTradingDays(clustering, GenericTradingDays.Type.MEANCORRECTED);
                 }
                 GenericTradingDaysVariable td = new GenericTradingDaysVariable(gtd);
                 if (v.getModifiersCount() == 0) {
@@ -92,7 +92,7 @@ public class XmlGenericTradingDays extends XmlModifiableRegressionVariable {
                 return null;
 
             XmlGenericTradingDays xml = new XmlGenericTradingDays();
-            xml.contrasts = td.isContrast();
+            xml.contrasts = td.getType() == GenericTradingDays.Type.CONTRAST;
             xml.dayClustering = td.getClustering().getGroupsDefinition();
             if (mv != null){
                 List<XmlRegressionVariableModifier> xm = TsModifierAdapters.marshal(mv.getModifiers());

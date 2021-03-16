@@ -19,13 +19,11 @@ package demetra.toolkit.io.protobuf;
 import demetra.timeseries.ValidityPeriod;
 import demetra.timeseries.calendars.Calendar;
 import demetra.timeseries.calendars.CalendarDefinition;
-import demetra.timeseries.calendars.CalendarManager;
 import demetra.timeseries.calendars.DayEvent;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.Holiday;
 import demetra.timeseries.calendars.PrespecifiedHoliday;
-import demetra.timeseries.regression.ModellingContext;
 import java.util.ArrayList;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -238,7 +236,7 @@ public class CalendarProtosUtility {
         for (ToolkitProtos.PrespecifiedHoliday pd : calendar.getPrespecifiedHolidaysList()) {
             hol.add(convert(pd));
         }
-        return new Calendar(hol.toArray(new Holiday[hol.size()]), true);
+        return new Calendar(hol.toArray(new Holiday[hol.size()]));
     }
 
     public ToolkitProtos.CalendarDefinition convert(CalendarDefinition cd) {

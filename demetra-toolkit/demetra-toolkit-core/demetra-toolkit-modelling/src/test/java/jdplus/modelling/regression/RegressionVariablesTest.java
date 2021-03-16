@@ -35,7 +35,7 @@ public class RegressionVariablesTest {
         List<ITsVariable> vars = new ArrayList<>();
         PeriodicContrasts pc = new PeriodicContrasts(12);
         GenericTradingDays td = GenericTradingDays.contrasts(DayClustering.TD7);
-        GenericTradingDaysVariable vtd = new GenericTradingDaysVariable(td.getClustering(), td.isContrast(), td.isNormalized());
+        GenericTradingDaysVariable vtd = new GenericTradingDaysVariable(td);
         vars.add(pc);
         vars.add(vtd);
 

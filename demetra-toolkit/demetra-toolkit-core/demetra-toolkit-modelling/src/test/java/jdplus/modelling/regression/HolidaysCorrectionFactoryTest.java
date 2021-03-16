@@ -43,7 +43,7 @@ public class HolidaysCorrectionFactoryTest {
         holidays.add(EasterRelatedDay.EASTERMONDAY);
         holidays.add(EasterRelatedDay.WHITMONDAY);
 
-        belgium = new Calendar(holidays.toArray(new Holiday[holidays.size()]), true);
+        belgium = new Calendar(holidays.toArray(new Holiday[holidays.size()]));
 
         obelgium = new ec.tstoolkit.timeseries.calendars.NationalCalendar();
         obelgium.add(new ec.tstoolkit.timeseries.calendars.FixedDay(20, Month.July));
@@ -63,7 +63,7 @@ public class HolidaysCorrectionFactoryTest {
 
     @Test
     public void testTD7_12() {
-        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium);
+        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, true);
         HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD7), corrector);
         Matrix td6 = Regression.matrix(TsDomain.of(TsPeriod.monthly(1980, 1), 360), var);
         ec.tstoolkit.timeseries.calendars.NationalCalendarProvider provider
@@ -81,7 +81,7 @@ public class HolidaysCorrectionFactoryTest {
 
     @Test
     public void testTD2_12() {
-        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium);
+        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, true);
         HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD2), corrector);
         Matrix td2 = Regression.matrix(TsDomain.of(TsPeriod.monthly(1980, 1), 360), var);
         ec.tstoolkit.timeseries.calendars.NationalCalendarProvider provider
@@ -101,7 +101,7 @@ public class HolidaysCorrectionFactoryTest {
 
     @Test
     public void testTD7_4() {
-        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium);
+        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, true);
         HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD7), corrector);
         Matrix td6 = Regression.matrix(TsDomain.of(TsPeriod.quarterly(1980, 1), 360), var);
         ec.tstoolkit.timeseries.calendars.NationalCalendarProvider provider
@@ -119,7 +119,7 @@ public class HolidaysCorrectionFactoryTest {
 
     @Test
     public void testTD2_4() {
-        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium);
+        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, true);
         HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD2), corrector);
         Matrix td2 = Regression.matrix(TsDomain.of(TsPeriod.quarterly(1980, 1), 360), var);
         ec.tstoolkit.timeseries.calendars.NationalCalendarProvider provider
@@ -137,18 +137,17 @@ public class HolidaysCorrectionFactoryTest {
         }
     }
 
-    //@Test
-    public void stressTest() {
+    public static void stressTest() {
         long t0 = System.currentTimeMillis();
-        for (int i = 0; i < 1000; ++i) {
-            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium);
+        for (int i = 0; i < 10000; ++i) {
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium,true);
             HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD2), corrector);
             Matrix td2 = Regression.matrix(TsDomain.of(TsPeriod.monthly(1980, 1), 360), var);
         }
         long t1 = System.currentTimeMillis();
         System.out.println("New: " + (t1 - t0));
         t0 = System.currentTimeMillis();
-        for (int i = 0; i < 1000; ++i) {
+        for (int i = 0; i < 10000; ++i) {
             ec.tstoolkit.timeseries.calendars.NationalCalendarProvider provider
                     = new ec.tstoolkit.timeseries.calendars.NationalCalendarProvider(obelgium);
             ec.tstoolkit.timeseries.regression.GregorianCalendarVariables ovar
@@ -158,6 +157,10 @@ public class HolidaysCorrectionFactoryTest {
         }
         t1 = System.currentTimeMillis();
         System.out.println("Old: " + (t1 - t0));
+    }
+    
+    public static void main(String[] args){
+        stressTest();
     }
 
 }

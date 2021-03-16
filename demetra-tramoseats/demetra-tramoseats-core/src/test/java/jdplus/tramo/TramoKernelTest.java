@@ -70,7 +70,7 @@ public class TramoKernelTest {
         holidays.add(EasterRelatedDay.EASTERMONDAY);
         holidays.add(EasterRelatedDay.WHITMONDAY);
 
-        france = new Calendar(holidays.toArray(new Holiday[holidays.size()]), true);
+        france = new Calendar(holidays.toArray(new Holiday[holidays.size()]));
 
         ofrance = new ec.tstoolkit.timeseries.calendars.NationalCalendar();
         ofrance.add(new ec.tstoolkit.timeseries.calendars.FixedDay(13, Month.July));

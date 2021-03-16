@@ -45,21 +45,19 @@ public class HolidaysCorrectedTradingDays implements ITradingDaysVariable, ISyst
     }
 
     private DayClustering clustering;
-    private boolean contrast;
-    private boolean normalized;
+    private GenericTradingDays.Type type;
     private HolidaysCorrector corrector;
 
     public HolidaysCorrectedTradingDays(GenericTradingDays td, HolidaysCorrector corrector) {
         this.clustering = td.getClustering();
-        this.contrast = td.isContrast();
-        this.normalized = td.isNormalized();
+        this.type=td.getType();
         this.corrector = corrector;
     }
 
     @Override
     public int dim() {
         int n = clustering.getGroupsCount();
-        return contrast ? n - 1 : n;
+        return type == GenericTradingDays.Type.CONTRAST ? n - 1 : n;
     }
     
     @Override

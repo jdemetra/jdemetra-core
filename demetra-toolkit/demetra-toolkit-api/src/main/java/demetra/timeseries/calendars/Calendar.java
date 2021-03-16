@@ -29,8 +29,6 @@ public class Calendar implements CalendarDefinition {
     @lombok.NonNull
     private Holiday[] holidays;
 
-    private boolean meanCorrection;
-
-    public static final Calendar DEFAULT = new Calendar(new Holiday[0], false);
+    public static final Calendar DEFAULT = new Calendar(new Holiday[0]);
 
 }
