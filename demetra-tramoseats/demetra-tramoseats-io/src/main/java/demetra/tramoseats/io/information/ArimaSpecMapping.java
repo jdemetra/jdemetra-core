@@ -16,7 +16,7 @@
  */
 package demetra.tramoseats.io.information;
 
-import demetra.timeseries.regression.modelling.SarimaSpec;
+import demetra.modelling.implementations.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.information.InformationSet;
 import java.util.Map;

@@ -16,7 +16,7 @@
  */
 package demetra.toolkit.io.xml.legacy.modelling;
 
-import demetra.timeseries.regression.modelling.SarimaSpec;
+import demetra.modelling.implementations.SarimaSpec;
 import demetra.toolkit.io.xml.legacy.arima.XmlSarimaOrders;
 import demetra.toolkit.io.xml.legacy.arima.XmlSarimaPolynomials;
 import javax.xml.bind.annotation.XmlAccessType;

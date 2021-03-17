@@ -16,18 +16,18 @@
  */
 package jdplus.x13.regarima;
 
-import jdplus.data.DataBlock;
+import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
-import nbbrd.design.Development;
+import jdplus.data.DataBlock;
 import jdplus.math.functions.IParametricMapping;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
+import static jdplus.math.linearfilters.FilterUtility.checkRoots;
+import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.regsarima.regular.IModelEstimator;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
-import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaOrders;
-import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
-import static jdplus.math.linearfilters.FilterUtility.checkRoots;
+import nbbrd.design.Development;
 
 /**
  *
@@ -50,7 +50,7 @@ public class FinalEstimator implements IModelEstimator {
         int niter = 0;
         do {
             try {
-                IParametricMapping<SarimaModel> mapping = context.getDescription().getArimaComponent().defaultMapping();
+                IParametricMapping<SarimaModel> mapping = context.getDescription().mapping();
                 int ndim = mapping.getDim();
                 RegSarimaProcessor processor = RegSarimaProcessor.builder()
                         .minimizer(LevenbergMarquardtMinimizer.builder())
@@ -58,7 +58,7 @@ public class FinalEstimator implements IModelEstimator {
                         .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
                         .computeExactFinalDerivatives(true)
                         .build();
-                context.getDescription().getArimaComponent().clearFreeParameters();
+                context.getDescription().freeArimaParameters();
                 context.estimate(processor);
                 if (ndim == 0) {
                     return true;

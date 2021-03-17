@@ -17,61 +17,59 @@
 package jdplus.x13.regarima;
 
 import demetra.data.Parameter;
+import demetra.information.InformationSet;
+import demetra.modelling.TransformationType;
 import demetra.regarima.EasterSpec;
-import demetra.regarima.RegressionSpec;
+import demetra.regarima.EasterSpec.Type;
 import demetra.regarima.RegArimaSpec;
+import demetra.regarima.RegressionSpec;
+import demetra.regarima.RegressionTestSpec;
 import demetra.regarima.TradingDaysSpec;
 import demetra.regarima.TransformSpec;
-import jdplus.data.interpolation.AverageInterpolator;
-import nbbrd.design.Development;
-import demetra.information.InformationSet;
-import demetra.regarima.RegressionTestSpec;
-import demetra.modelling.TransformationType;
-import demetra.timeseries.regression.Variable;
+import demetra.sa.ComponentType;
+import demetra.sa.SaVariable;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.calendars.DayClustering;
+import demetra.timeseries.calendars.GenericTradingDays;
+import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.calendars.TradingDaysType;
 import demetra.timeseries.regression.AdditiveOutlier;
-import jdplus.modelling.regression.AdditiveOutlierFactory;
 import demetra.timeseries.regression.EasterVariable;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
+import demetra.timeseries.regression.IEasterVariable;
+import demetra.timeseries.regression.ILengthOfPeriodVariable;
+import demetra.timeseries.regression.IOutlier;
+import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.JulianEasterVariable;
 import demetra.timeseries.regression.LengthOfPeriod;
 import demetra.timeseries.regression.LevelShift;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.PeriodicOutlier;
-import demetra.timeseries.regression.StockTradingDays;
-import demetra.timeseries.calendars.TradingDaysType;
-import demetra.timeseries.regression.TransitoryChange;
-import jdplus.regsarima.regular.IModelBuilder;
-import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.SarimaComponent;
-import demetra.timeseries.TsData;
-import demetra.timeseries.calendars.DayClustering;
-import demetra.timeseries.calendars.LengthOfPeriodType;
-import jdplus.timeseries.simplets.TsDataToolkit;
-import java.time.LocalDateTime;
-import java.util.Map;
-import demetra.timeseries.regression.ILengthOfPeriodVariable;
-import demetra.timeseries.regression.ITradingDaysVariable;
-import demetra.timeseries.regression.IEasterVariable;
-import demetra.timeseries.regression.IOutlier;
-import jdplus.modelling.regression.LevelShiftFactory;
-import jdplus.modelling.regression.PeriodicOutlierFactory;
-import jdplus.modelling.regression.TransitoryChangeFactory;
-import demetra.timeseries.regression.UserTradingDays;
-import demetra.regarima.EasterSpec.Type;
-import demetra.timeseries.regression.modelling.SarimaSpec;
-import demetra.sa.ComponentType;
-import demetra.sa.SaVariable;
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.calendars.GenericTradingDays;
-import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.Ramp;
+import demetra.timeseries.regression.StockTradingDays;
+import demetra.timeseries.regression.TransitoryChange;
 import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.TsContextVariable;
+import demetra.timeseries.regression.UserTradingDays;
+import demetra.timeseries.regression.Variable;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import jdplus.data.interpolation.AverageInterpolator;
+import jdplus.modelling.regression.AdditiveOutlierFactory;
+import jdplus.modelling.regression.LevelShiftFactory;
+import jdplus.modelling.regression.PeriodicOutlierFactory;
+import jdplus.modelling.regression.TransitoryChangeFactory;
 import jdplus.regarima.ami.ModellingUtility;
+import jdplus.regsarima.regular.IModelBuilder;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.timeseries.simplets.TsDataToolkit;
+import nbbrd.design.Development;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -111,17 +109,7 @@ class X13ModelBuilder implements IModelBuilder {
         } else if (spec.getArima() == null) {
             model.setAirline(!yearly);
         } else {
-            SarimaComponent cmp = model.getArimaComponent();
-            SarimaSpec arima = spec.getArima();
-            cmp.setPeriod(freq);
-            cmp.setPhi(arima.getPhi());
-            cmp.setTheta(arima.getTheta());
-            cmp.setD(arima.getD());
-            if (!yearly) {
-                cmp.setBphi(arima.getBphi());
-                cmp.setBtheta(arima.getBtheta());
-                cmp.setBd(arima.getBd());
-            }
+            model.setArimaSpec(spec.getArima().withPeriod(freq));
         }
     }
 

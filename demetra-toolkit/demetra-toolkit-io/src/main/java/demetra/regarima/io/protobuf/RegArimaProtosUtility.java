@@ -16,7 +16,7 @@
  */
 package demetra.regarima.io.protobuf;
 
-import demetra.timeseries.regression.modelling.SarimaSpec;
+import demetra.modelling.implementations.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.Range;
 import demetra.modelling.TransformationType;

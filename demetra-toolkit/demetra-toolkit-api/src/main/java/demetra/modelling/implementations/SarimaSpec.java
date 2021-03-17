@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.regression.modelling;
+package demetra.modelling.implementations;
 
 import demetra.arima.SarimaOrders;
 import nbbrd.design.Development;
@@ -154,9 +154,15 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
 
     private static final SarimaSpec AIRLINE = new SarimaSpec(null, 0, 1, 1,
             EMPTY, Parameter.make(1), EMPTY, Parameter.make(1));
+    private static final SarimaSpec WN = new SarimaSpec(null, 0, 0, 0,
+            EMPTY, EMPTY, EMPTY, EMPTY);
 
     public static SarimaSpec airline() {
         return AIRLINE;
+    }
+
+    public static SarimaSpec whiteNoise() {
+        return WN;
     }
 
     public int getP() {
@@ -180,11 +186,15 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
                 && getBp() == 0 && bd == 1 && getBq() == 1;
     }
 
+    public int parametersCount() {
+        return phi.length + bphi.length  + theta.length + btheta.length;
+    }
+
     public int freeParametersCount() {
         return Parameter.freeParametersCount(phi) + Parameter.freeParametersCount(bphi)
                 + Parameter.freeParametersCount(theta) + Parameter.freeParametersCount(btheta);
     }
-
+    
     public boolean hasFixedParameters() {
         return !Parameter.isFree(phi) || !Parameter.isFree(bphi)
                 || !Parameter.isFree(theta) || !Parameter.isFree(btheta);
@@ -225,17 +235,21 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
         return toBuilder().free().build();
     }
 
-    public SarimaOrders specification(int period) {
+    public SarimaOrders orders() {
         SarimaOrders spec = new SarimaOrders(period);
         spec.setP(getP());
         spec.setD(d);
         spec.setQ(getQ());
-        if (period > 1) {
+        if (period != 1) {
             spec.setBp(getBp());
             spec.setBd(bd);
             spec.setBq(getBq());
         }
         return spec;
+    }
+
+    public int getDifferencingOrder() {
+        return d + bd * period;
     }
 
 }

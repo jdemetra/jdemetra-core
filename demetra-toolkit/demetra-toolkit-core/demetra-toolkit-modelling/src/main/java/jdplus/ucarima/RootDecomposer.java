@@ -68,7 +68,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
         }
 
         if (m_selector == null) {
-            signal = new ArimaModel(null, null, null, 0);
+            signal = ArimaModel.NULL;
             noise = model;
             return;
         }
@@ -164,7 +164,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
     private boolean checkSpecialCases() {
         // No selected roots:
         if (m_sfds == null || m_sfds.length() <= 1) {
-            signal = new ArimaModel(null, m_sur, null, 0);
+            signal = new ArimaModel(BackFilter.ONE, m_sur, BackFilter.ONE, 0);
             noise = new ArimaModel(m_nar, m_nur, m_sfcn != null ? m_sma
                     .times(m_sfcn) : m_sma);
             return false;

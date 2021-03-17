@@ -16,39 +16,43 @@
  */
 package jdplus.regsarima.regular;
 
-import demetra.timeseries.regression.Variable;
-import jdplus.data.DataBlock;
-import jdplus.data.DataBlockIterator;
-import jdplus.data.transformation.LogJacobian;
-import jdplus.data.interpolation.DataInterpolator;
-import nbbrd.design.Development;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.likelihood.LogLikelihoodFunction;
-import jdplus.math.matrices.Matrix;
-import demetra.timeseries.regression.ITsVariable;
-import jdplus.modelling.regression.Regression;
-import jdplus.regarima.IRegArimaProcessor;
-import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
+import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
+import demetra.data.Parameter;
+import demetra.modelling.implementations.SarimaSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsException;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import jdplus.timeseries.simplets.Transformations;
-import jdplus.timeseries.simplets.TsDataTransformation;
+import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.Variable;
 import demetra.util.IntList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import demetra.data.DoubleSeq;
-import demetra.data.Parameter;
-import demetra.timeseries.TsException;
 import jdplus.arima.estimation.IArimaMapping;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.data.interpolation.DataInterpolator;
+import jdplus.data.transformation.LogJacobian;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.LogLikelihoodFunction;
+import jdplus.math.matrices.Matrix;
+import jdplus.modelling.regression.Regression;
+import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.ami.ModellingUtility;
+import jdplus.sarima.SarimaModel;
+import jdplus.sarima.estimation.SarimaFixedMapping;
+import jdplus.sarima.estimation.SarimaMapping;
+import jdplus.timeseries.simplets.Transformations;
+import jdplus.timeseries.simplets.TsDataTransformation;
+import nbbrd.design.Development;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -86,7 +90,7 @@ public final class ModelDescription {
     /**
      * Arima component
      */
-    private final SarimaComponent arima = new SarimaComponent();
+    private SarimaSpec arima = SarimaSpec.whiteNoise();
 
     private boolean sortedVariables; //optimization
 
@@ -100,7 +104,7 @@ public final class ModelDescription {
 
     public static ModelDescription copyOf(@NonNull ModelDescription model, TsDomain estimationDomain) {
         ModelDescription nmodel = new ModelDescription(model.series, estimationDomain);
-        nmodel.arima.copy(model.arima);
+        nmodel.arima = model.arima;
         nmodel.mean = model.mean;
         nmodel.logTransformation = model.logTransformation;
         nmodel.lpTransformation = model.lpTransformation;
@@ -178,6 +182,22 @@ public final class ModelDescription {
         sortedVariables = true;
     }
 
+    private int differencingOrder() {
+        return arima.getDifferencingOrder();
+    }
+
+//        public BackFilter getDifferencingFilter() {
+//        UnitRoots ur = new UnitRoots();
+//        if (period > 1) {
+//            for (int i = 0; i < bd; ++i) {
+//                ur.add(period);
+//            }
+//        }
+//        for (int i = 0; i < d; ++i) {
+//            ur.add(1);
+//        }
+//        return new BackFilter(ur.asPolynomial());
+//    }
     private void buildTransformation() {
         if (transformedData == null) {
             int diff = arima.getDifferencingOrder();
@@ -270,7 +290,7 @@ public final class ModelDescription {
                 .y(yc)
                 .missing(missingc)
                 .meanCorrection(mean)
-                .arima(arima.getModel());
+                .arima(SarimaModel.builder(arima).build());
         for (Variable v : variables) {
             if (!v.isPreadjustment()) {
                 Matrix x = Regression.matrix(domain, v.getCore());
@@ -401,29 +421,40 @@ public final class ModelDescription {
     /**
      * @return the arima
      */
-    public SarimaComponent getArimaComponent() {
+    public SarimaSpec getArimaSpec() {
         return arima;
     }
 
-    public SarimaOrders specification() {
-        return arima.specification();
-    }
-
-    public SarimaModel arima() {
-        return arima.getModel();
-    }
-
-    public IArimaMapping<SarimaModel> mapping() {
-        return arima.defaultMapping();
-    }
-
-    public void setSpecification(SarimaOrders spec) {
-        SarimaOrders oldSpec = arima.specification();
-        arima.setSpecification(spec);
-        if (transformedData != null && (oldSpec.getD() != spec.getD() || oldSpec.getBd() != spec.getBd())) {
+    public void setArimaSpec(SarimaSpec spec) {
+        arima = spec;
+        if (transformedData != null && (arima.getD() != spec.getD() || arima.getBd() != spec.getBd())) {
             transformedData = null;
             buildTransformation();
         }
+    }
+
+    public SarimaOrders specification() {
+        return arima.orders();
+    }
+
+    public SarimaModel arima() {
+        return SarimaModel.builder(arima).build();
+    }
+
+    public void setSpecification(SarimaOrders spec) {
+        if (transformedData != null && (arima.getD() != spec.getD() || arima.getBd() != spec.getBd())) {
+            transformedData = null;
+        }
+        arima = SarimaSpec.builder()
+                .period(spec.getPeriod())
+                .d(spec.getD())
+                .bd(spec.getBd())
+                .p(spec.getP())
+                .q(spec.getQ())
+                .bp(spec.getBp())
+                .bq(spec.getBq())
+                .buildWithoutValidation();
+        buildTransformation();
     }
 
     public void setAirline(boolean seas) {
@@ -593,20 +624,47 @@ public final class ModelDescription {
         return mean ? pos + 1 : pos;
     }
 
+    public IArimaMapping<SarimaModel> mapping() {
+        if (arima.hasFixedParameters()) {
+            int n = arima.getP() + arima.getBp() + arima.getQ() + arima.getBq();
+            double[] p = new double[n];
+            boolean[] b = new boolean[n];
+            int j = 0;
+            Parameter[] P = arima.getPhi();
+            for (int i = 0; i < P.length; ++i, ++j) {
+                p[j] = P[i].getValue();
+                b[j] = P[i].isFixed();
+            }
+            P = arima.getTheta();
+            for (int i = 0; i < P.length; ++i, ++j) {
+                p[j] = P[i].getValue();
+                b[j] = P[i].isFixed();
+            }
+            P = arima.getBtheta();
+            for (int i = 0; i < P.length; ++i, ++j) {
+                p[j] = P[i].getValue();
+                b[j] = P[i].isFixed();
+            }
+            return new SarimaFixedMapping(specification(), DoubleSeq.of(p), b);
+        } else {
+            return SarimaMapping.of(specification());
+        }
+    }
+
     public RegArimaEstimation<SarimaModel> estimate(IRegArimaProcessor<SarimaModel> processor) {
 
         RegArimaModel<SarimaModel> model = regarima();
         RegArimaEstimation<SarimaModel> rslt;
-        if (arima.isDefined()) {
-            rslt = processor.optimize(model, arima.defaultMapping());
+        if (arima.hasFreeParameters()) {
+            rslt = processor.process(model, mapping());
         } else {
-            rslt = processor.process(model, arima.defaultMapping());
+            rslt = processor.optimize(model, mapping());
         }
         // update current description
         int p = this.getAnnualFrequency();
         LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
         if (max != null) {
-            arima.setFreeParameters(max.getParameters());
+            setFreeParameters(max.getParameters());
         }
         return RegArimaEstimation.<SarimaModel>builder()
                 .model(rslt.getModel())
@@ -614,6 +672,44 @@ public final class ModelDescription {
                 .max(max)
                 .llAdjustment(llCorrection)
                 .build();
+    }
+    
+    public void freeArimaParameters(){
+        arima=arima.resetParameters();
+    }
+
+    public void setFreeParameters(DoubleSeq p) {
+        SarimaSpec.Builder builder = arima.toBuilder();
+        DoubleSeqCursor pcur = p.cursor();
+        Parameter[] P = arima.getPhi();
+        for (int i = 0; i < P.length; ++i) {
+            if (!P[i].isFixed()) {
+                P[i] = Parameter.estimated(pcur.getAndNext());
+            }
+        }
+        builder.phi(P);
+        P = arima.getBphi();
+        for (int i = 0; i < P.length; ++i) {
+            if (!P[i].isFixed()) {
+                P[i] = Parameter.estimated(pcur.getAndNext());
+            }
+        }
+        builder.bphi(P);
+        P = arima.getTheta();
+        for (int i = 0; i < P.length; ++i) {
+            if (!P[i].isFixed()) {
+                P[i] = Parameter.estimated(pcur.getAndNext());
+            }
+        }
+        builder.theta(P);
+        P = arima.getBtheta();
+        for (int i = 0; i < P.length; ++i) {
+            if (!P[i].isFixed()) {
+                P[i] = Parameter.estimated(pcur.getAndNext());
+            }
+        }
+        builder.btheta(P);
+        arima = builder.buildWithoutValidation();
     }
 
 }

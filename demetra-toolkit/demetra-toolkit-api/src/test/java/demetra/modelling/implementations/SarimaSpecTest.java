@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,29 +14,20 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.modelling;
+package demetra.modelling.implementations;
 
-import demetra.likelihood.ParametersEstimation;
+import demetra.arima.SarimaModel;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
- * Description of the stochastic component
- * The link between the model itself and its parameters is domain-dependent
- * and not expressed in this structure (which means that it could be some
- * redundancy.
- * 
+ *
  * @author PALATEJ
- * @param <S>
  */
-@lombok.Value
-public class StochasticModel<S> {
-    /**
-     * Stochastic (parametric) model
-     */
-    S model;
+public class SarimaSpecTest {
     
-    /**
-     * Underlying parameters. Fixed parameters should be integrated in the
-     * parameters (with 0 variance).
-     */
-    ParametersEstimation parameters;
+    public SarimaSpecTest() {
+    }
+
+    
 }

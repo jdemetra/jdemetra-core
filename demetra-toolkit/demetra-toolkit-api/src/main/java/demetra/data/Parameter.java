@@ -33,7 +33,7 @@ public class Parameter {
      */
     private double value;
     /**
-     * Type of the parameter. 
+     * Type of the parameter.
      */
     private ParameterType type;
 
@@ -138,12 +138,13 @@ public class Parameter {
             }
         }
     }
-    
-    public static Parameter of(double val, ParameterType t){
-        if (t == ParameterType.Undefined)
+
+    public static Parameter of(double val, ParameterType t) {
+        if (t == ParameterType.Undefined) {
             return UNDEFINED;
-        else
+        } else {
             return new Parameter(val, t);
+        }
     }
 
     public static Parameter undefined() {
@@ -163,8 +164,9 @@ public class Parameter {
     }
 
     public static Parameter[] of(double values[], ParameterType type) {
-        if (type == ParameterType.Undefined)
+        if (type == ParameterType.Undefined) {
             return make(values.length);
+        }
         Parameter[] p = new Parameter[values.length];
         for (int i = 0; i < p.length; ++i) {
             p[i] = new Parameter(values[i], type);
@@ -209,9 +211,26 @@ public class Parameter {
         }
     }
 
+    public static double[] values(Parameter[] spec, double defvalue) {
+        if (spec.length == 0) {
+            return Doubles.EMPTYARRAY;
+        } else {
+            double[] val = new double[spec.length];
+            for (int i = 0; i < val.length; ++i) {
+                if (spec[i].getType() == ParameterType.Undefined) {
+                    val[i] = defvalue;
+                } else {
+                    val[i] = spec[i].value;
+                }
+            }
+            return val;
+        }
+    }
+
     /**
      * Checks that all the parameters in an array are uninitialized.
      * Opposite of isDefined except for empty or null arrays.
+     *
      * @param p The array of parameters. May be null;
      * @return True if all parameters are undefined (or null)
      */
@@ -220,12 +239,13 @@ public class Parameter {
             return true;
         }
         for (int i = 0; i < p.length; ++i) {
-            if (p[i]!=UNDEFINED) {
+            if (p[i] != UNDEFINED) {
                 return false;
             }
         }
         return true;
     }
+
     /*
      * Checks that all the parameters in an array are defined. Opposite of isDefault
      * except for empty (or null) arrays.
@@ -237,7 +257,7 @@ public class Parameter {
             return true;
         }
         for (int i = 0; i < p.length; ++i) {
-            if (p[i]== UNDEFINED) {
+            if (p[i] == UNDEFINED) {
                 return false;
             }
         }
@@ -255,14 +275,15 @@ public class Parameter {
         }
         return false;
     }
-    
+
     public static boolean isFixed(Parameter p) {
         if (p == null) {
             return false;
-        }else
+        } else {
             return p.isFixed();
+        }
     }
-    
+
     /**
      * Checks that a parameter is defined. A parameter is defined if it is non
      * null and if its type is not undefined

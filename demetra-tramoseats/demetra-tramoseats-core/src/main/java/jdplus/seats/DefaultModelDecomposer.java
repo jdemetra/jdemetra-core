@@ -49,7 +49,7 @@ public class DefaultModelDecomposer implements IModelDecomposer {
             TrendCycleSelector tsel = new TrendCycleSelector(spec.getTrendBoundary());
             tsel.setDefaultLowFreqThreshold(period);
             SeasonalSelector ssel = new SeasonalSelector(period, spec.getSeasTolerance());
-            if (orders.getBd()>0 || orders.getBd()>0) {
+            if (orders.getBd()>0 || orders.getBp()>0) {
                 ssel.setK(spec.getSeasBoundary());
             } else {
                 ssel.setK(spec.getSeasBoundaryAtPi());

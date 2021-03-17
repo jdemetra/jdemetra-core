@@ -9,7 +9,6 @@ import demetra.arima.SarimaModel;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.ParametersEstimation;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.LinearModelEstimation;
 import demetra.tramo.TramoSpec;
 import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
 import ec.tstoolkit.data.IReadDataBlock;
@@ -42,24 +41,24 @@ public class LegacyUtility {
             throw new java.lang.UnsupportedOperationException();
     }
     
-    LinearModelEstimation<SarimaModel> toApi(PreprocessingModel model){
-        // likelihood statistics
-        LikelihoodStatistics stat = model.estimation.getStatistics();
-        demetra.likelihood.LikelihoodStatistics nstat = demetra.likelihood.LikelihoodStatistics.statistics(stat.logLikelihood, stat.observationsCount)
-                .differencingOrder(stat.observationsCount-stat.effectiveObservationsCount)
-                .llAdjustment(stat.transformationAdjustment)
-                .ssq(stat.SsqErr)
-                .parametersCount(stat.estimatedParametersCount)
-                .build();
-        
-        IReadDataBlock p = model.estimation.getArima().getParameters();
-        double[] params=new double[p.getLength()];
-        p.copyTo(params, 0);
-        return LinearModelEstimation.<SarimaModel>builder()
-                .statistics(nstat)
-                .parameters(new ParametersEstimation(DoubleSeq.of(params), null, null, null))
-                .build();
-    }
+//    LinearModelEstimation<SarimaModel> toApi(PreprocessingModel model){
+//        // likelihood statistics
+//        LikelihoodStatistics stat = model.estimation.getStatistics();
+//        demetra.likelihood.LikelihoodStatistics nstat = demetra.likelihood.LikelihoodStatistics.statistics(stat.logLikelihood, stat.observationsCount)
+//                .differencingOrder(stat.observationsCount-stat.effectiveObservationsCount)
+//                .llAdjustment(stat.transformationAdjustment)
+//                .ssq(stat.SsqErr)
+//                .parametersCount(stat.estimatedParametersCount)
+//                .build();
+//        
+//        IReadDataBlock p = model.estimation.getArima().getParameters();
+//        double[] params=new double[p.getLength()];
+//        p.copyTo(params, 0);
+//        return LinearModelEstimation.<SarimaModel>builder()
+//                .statistics(nstat)
+//                .parameters(new ParametersEstimation(DoubleSeq.of(params), null, null, null))
+//                .build();
+//    }
     
     public ec.tstoolkit.timeseries.simplets.TsData toLegacy(TsData series){
                 int y=series.getStart().year(), p=series.getStart().annualPosition();

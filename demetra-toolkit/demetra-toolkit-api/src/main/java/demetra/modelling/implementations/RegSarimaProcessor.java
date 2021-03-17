@@ -14,10 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.regression.modelling;
+package demetra.modelling.implementations;
 
 import demetra.arima.SarimaModel;
 import demetra.design.Algorithm;
+import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import nbbrd.design.Development;
 import java.util.List;
 import nbbrd.service.Mutability;
@@ -25,10 +26,10 @@ import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
 
 /**
- *
+ * TODO
  * @author palatej
  */
-@Development(status = Development.Status.Beta)
+@Development(status = Development.Status.Temporary)
 @lombok.experimental.UtilityClass
 public class RegSarimaProcessor {
 
@@ -42,17 +43,18 @@ public class RegSarimaProcessor {
         return ENGINE.get();
     }
 
-    public LinearModelEstimation<SarimaModel> compute(LinearModelSpec spec, List<String> addtionalItems) {
-        return ENGINE.get().compute(spec, addtionalItems);
-    }
-
+    /**
+     *
+     */
     @Algorithm
-    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
-    @FunctionalInterface
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT, fallback = NoComputer.class)
     public static interface Computer {
-
-        public LinearModelEstimation<SarimaModel> compute(LinearModelSpec spec, List<String> addtionalItems);
-
+        
+    }
+    
+    public static class NoComputer implements Computer{
+        
+         
     }
 
 }

@@ -17,7 +17,7 @@
 package jdplus.seats;
 
 import demetra.arima.SarimaOrders;
-import demetra.timeseries.regression.modelling.SarimaSpec;
+import demetra.modelling.implementations.SarimaSpec;
 import demetra.sa.ComponentType;
 import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;
@@ -61,8 +61,8 @@ public class SeatsModel {
         boolean log = spec.isLog();
         TsData nseries = log ? series.log() : series;
         boolean mean = spec.isMeanCorrection();
-        SarimaSpec sarimaSpec = spec.getSarimaSpec();
-        SarimaOrders orders = sarimaSpec.specification(period);
+        SarimaSpec sarimaSpec = spec.getSarimaSpec().withPeriod(period);
+        SarimaOrders orders = sarimaSpec.orders();
         SarimaModel sarima = SarimaModel.builder(orders)
                 .phi(Parameter.values(sarimaSpec.getPhi()))
                 .bphi(Parameter.values(sarimaSpec.getBphi()))
@@ -82,11 +82,11 @@ public class SeatsModel {
         boolean log = spec.isLog();
         TsData nseries = log ? series.log() : series;
         boolean mean = spec.isMeanCorrection();
-        SarimaSpec sarimaSpec = spec.getSarimaSpec();
+        SarimaSpec sarimaSpec = spec.getSarimaSpec().withPeriod(period);
         if (sarimaSpec.hasFixedParameters()) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
-        SarimaOrders orders = sarimaSpec.specification(period);
+        SarimaOrders orders = sarimaSpec.orders();
         SarimaModel sarima = SarimaModel.builder(orders)
                 .phi(Parameter.values(sarimaSpec.getPhi()))
                 .bphi(Parameter.values(sarimaSpec.getBphi()))

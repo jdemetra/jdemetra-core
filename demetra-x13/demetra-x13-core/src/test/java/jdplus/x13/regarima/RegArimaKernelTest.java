@@ -16,17 +16,17 @@
  */
 package jdplus.x13.regarima;
 
-import demetra.regarima.RegArimaSpec;
 import demetra.data.Data;
+import demetra.data.Doubles;
+import demetra.regarima.RegArimaSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
-import demetra.data.Doubles;
 import jdplus.regsarima.regular.ModelEstimation;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  *

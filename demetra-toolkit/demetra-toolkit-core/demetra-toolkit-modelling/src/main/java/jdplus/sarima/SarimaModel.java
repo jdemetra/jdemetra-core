@@ -32,6 +32,8 @@ import nbbrd.design.BuilderPattern;
 import nbbrd.design.SkipProcessing;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import demetra.data.Parameter;
+import demetra.modelling.implementations.SarimaSpec;
 import java.util.Arrays;
 
 /**
@@ -57,6 +59,8 @@ public final class SarimaModel extends AbstractArimaModel {
         private double[] phi, bphi, th, bth;
         private boolean adjust = false;
 
+        public static final double AR = -.1, MA = -.2;
+
         private Builder(SarimaOrders spec) {
             s = spec.getPeriod();
             d = spec.getD();
@@ -65,6 +69,17 @@ public final class SarimaModel extends AbstractArimaModel {
             bphi = (spec.getBp() > 0) ? new double[spec.getBp()] : Doubles.EMPTYARRAY;
             th = (spec.getQ() > 0) ? new double[spec.getQ()] : Doubles.EMPTYARRAY;
             bth = (spec.getBq() > 0) ? new double[spec.getBq()] : Doubles.EMPTYARRAY;
+        }
+
+        private Builder(SarimaSpec spec) {
+            s = spec.getPeriod();
+            d = spec.getD();
+            bd = spec.getBd();
+
+            phi = Parameter.values(spec.getPhi(), AR);
+            bphi = Parameter.values(spec.getBphi(), AR);
+            th = Parameter.values(spec.getTheta(), MA);
+            bth = Parameter.values(spec.getBtheta(), MA);
         }
 
         private Builder(SarmaOrders spec) {
@@ -182,7 +197,7 @@ public final class SarimaModel extends AbstractArimaModel {
             this.bd = bd;
             return this;
         }
-        
+
         private void adjust() {
             double[] nphi = adjust(phi);
             if (nphi != null) {
@@ -238,6 +253,10 @@ public final class SarimaModel extends AbstractArimaModel {
         return new Builder(spec);
     }
 
+    public static Builder builder(SarimaSpec spec) {
+        return new Builder(spec);
+    }
+
     public static final double SMALL = 1e-6;
 
     private final int s;
@@ -260,7 +279,8 @@ public final class SarimaModel extends AbstractArimaModel {
     /**
      * Gets all the parameters in the following order:
      * phi, bphi, theta, btheta
-     * @return 
+     *
+     * @return
      */
     public DoubleSeq parameters() {
         double[] p = new double[phi.length + bphi.length + th.length + bth.length];
@@ -595,7 +615,7 @@ public final class SarimaModel extends AbstractArimaModel {
 
     @Override
     public boolean isInvertible() {
-        return FilterUtility.checkStability(DoubleSeq.of(th)) 
+        return FilterUtility.checkStability(DoubleSeq.of(th))
                 && FilterUtility.checkStability(DoubleSeq.of(bth));
     }
 

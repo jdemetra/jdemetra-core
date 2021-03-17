@@ -111,7 +111,7 @@ class FinalEstimator implements IModelEstimator {
         int niter = 0;
         do {
             try {
-                IParametricMapping<SarimaModel> mapping = context.getDescription().getArimaComponent().defaultMapping();
+                IParametricMapping<SarimaModel> mapping = context.getDescription().mapping();
                 RegSarimaProcessor processor = RegSarimaProcessor.builder()
                         .minimizer(LevenbergMarquardtMinimizer.builder())
                         .precision(eps)
@@ -166,7 +166,7 @@ class FinalEstimator implements IModelEstimator {
         double cmin = nz <= 150 ? .15 : .1;
         double cmod = .95;
 
-        SarimaModel m = context.getDescription().getArimaComponent().getModel();
+        SarimaModel m = context.getDescription().arima();
         SarimaOrders spec = m.orders();
 
         DoubleSeq pm = m.parameters();
@@ -261,7 +261,7 @@ class FinalEstimator implements IModelEstimator {
 
     private boolean checkCommonRoots(RegSarimaModelling context) {
         // simplify possible common roots on ar, ma
-        SarimaModel arima = context.getDescription().getArimaComponent().getModel();
+        SarimaModel arima = context.getDescription().arima();
         SarimaOrders spec = arima.orders();
         boolean changed = false;
         if (spec.getP() != 0 && spec.getQ() != 0) {
@@ -297,7 +297,7 @@ class FinalEstimator implements IModelEstimator {
     private boolean checkUnitRoots(RegSarimaModelling context) {
 
         //quasi-unit roots of ar are changed in true unit roots
-        SarimaModel m = context.getDescription().getArimaComponent().getModel();
+        SarimaModel m = context.getDescription().arima();
         SarimaOrders nspec = m.orders();
 
         boolean ok = true;

@@ -16,23 +16,20 @@
  */
 package jdplus.x13.regarima;
 
-import demetra.sa.ComponentType;
-import demetra.sa.SaVariable;
-import nbbrd.design.BuilderPattern;
-import nbbrd.design.Development;
+import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.Variable;
+import jdplus.regarima.AICcComparator;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
-import jdplus.regsarima.regular.IRegressionModule;
-import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regarima.AICcComparator;
 import jdplus.regsarima.regular.IModelComparator;
+import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
-import demetra.timeseries.regression.IEasterVariable;
-import jdplus.arima.estimation.IArimaMapping;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 
 /**
  *
@@ -89,7 +86,6 @@ public class EasterDetectionModule implements IRegressionModule {
         int icur = -1;
         ModelDescription[] desc = new ModelDescription[n];
         RegArimaEstimation[] est = new RegArimaEstimation[n];
-        IArimaMapping<SarimaModel> mapping = description.getArimaComponent().defaultMapping();
         IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(true, eps);
 
         ModelDescription refdesc = ModelDescription.copyOf(description);

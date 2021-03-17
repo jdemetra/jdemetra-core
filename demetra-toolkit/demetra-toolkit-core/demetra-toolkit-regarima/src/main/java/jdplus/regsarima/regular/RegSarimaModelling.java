@@ -69,7 +69,7 @@ public class RegSarimaModelling {
     
     public void clearEstimation(){
         estimation=null;
-        description.getArimaComponent().clearFreeParameters();
+        description.freeArimaParameters();
     }
 
     public boolean needEstimation() {

@@ -1,13 +1,13 @@
 /*
  * Copyright 2020 National Bank of Belgium
- * 
+ *
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * https://joinup.ec.europa.eu/software/page/eupl
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,237 +19,124 @@ package jdplus.regsarima.regular;
 import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.Doubles;
 import demetra.data.Parameter;
-import demetra.timeseries.regression.Variable;
-import nbbrd.design.Development;
-import jdplus.regarima.IRegArimaProcessor;
-import jdplus.sarima.SarimaModel;
-import demetra.timeseries.TsData;
-import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.likelihood.LikelihoodStatistics;
+import demetra.likelihood.MissingValueEstimation;
 import demetra.modelling.implementations.SarimaSpec;
+import demetra.processing.ProcessingLog;
+import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.TrendConstant;
+import demetra.timeseries.regression.Variable;
+import demetra.timeseries.regression.modelling.GeneralLinearModel;
+import demetra.timeseries.regression.modelling.LightLinearModel;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
-import jdplus.regarima.RegArimaModel;
-import jdplus.regarima.RegArimaUtility;
 import jdplus.regarima.ami.ModellingUtility;
+import jdplus.sarima.SarimaModel;
 import jdplus.stats.tests.NiidTests;
 import jdplus.timeseries.simplets.Transformations;
 
 /**
  *
- * @author Jean Palate
+ * @author PALATEJ
  */
-@Development(status = Development.Status.Preliminary)
 @lombok.Value
-public final class ModelEstimation {
+@lombok.Builder(builderClassName = "Builder")
+public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
+    
+    public static RegSarimaModel of(ModelDescription description, RegArimaEstimation<SarimaModel> estimation, ProcessingLog log){
+        
+        LightLinearModel.Description.Builder<SarimaSpec> dbuilder = LightLinearModel.Description.<SarimaSpec>builder();
 
-    private static final boolean[] EB = new boolean[0];
-
-    private final TsData originalSeries;
-    @lombok.Getter(lombok.AccessLevel.NONE)
-    private final TsData interpolated;
-    private final TsData transformedSeries;
-    private final TsDomain estimationDomain;
-    private final boolean logTransformation;
-    private final LengthOfPeriodType lpTransformation;
-
-    // Missing values correspond to the positions in the domain of the series !
-    private final int[] missing;
-    private final @lombok.NonNull
-    Variable[] variables;
-
-    private RegArimaModel<SarimaModel> model;
-    private ConcentratedLikelihoodWithMissing concentratedLikelihood;
-
-    private int freeArimaParametersCount;
-    private boolean[] fixedArimaParameters;
-    private double[] arimaParameters, arimaScore;
-    private Matrix arimaCovariance;
-
-    private LikelihoodStatistics statistics;
-
-    public static ModelEstimation of(ModelDescription builder, IRegArimaProcessor<SarimaModel> processor) {
-        return new ModelEstimation(builder, builder.estimate(processor));
+        LightLinearModel.Estimation.Builder ebuilder = LightLinearModel.Estimation.builder();
+        
+        
+        Builder builder = RegSarimaModel.builder()
+                .description(dbuilder.build())
+                .estimation(ebuilder.build())
+                .logs(log.all());
+       
+        return builder.build();
     }
+       
+    Description<SarimaSpec> description;
+    Estimation estimation;
 
-    public static ModelEstimation of(RegSarimaModelling regarima) {
-        return new ModelEstimation(regarima.getDescription(), regarima.getEstimation());
+    @lombok.Singular
+    private Map<String, Object> additionalResults;
+
+    @lombok.Singular
+    private List<ProcessingLog.Information> logs;
+    
+    @lombok.Value
+    @lombok.Builder(builderClassName = "Builder")
+    static class Details{
+        TsDomain estimationDomain;
+        TsData interpolatedSeries, transformedSeries;
     }
-
-    private ModelEstimation(ModelDescription description, RegArimaEstimation<SarimaModel> estimation) {
-        this.originalSeries = description.getSeries();
-        this.transformedSeries = description.getTransformedSeries();
-        this.interpolated = description.getInterpolatedSeries();
-        this.logTransformation = description.isLogTransformation();
-        this.lpTransformation = description.getPreadjustment();
-        this.missing = description.getMissing();
-        this.estimationDomain = description.getEstimationDomain();
-
-        SarimaSpec arima = description.getArimaSpec();
-        int free = arima.freeParametersCount(), all = arima.parametersCount();
-
-        List<Variable> vars = description.variables().sequential().collect(Collectors.toList());
-        int nvars = (int) vars.size();
-        if (description.isMean()) {
-            ++nvars;
-        }
-        this.variables = new Variable[nvars];
-        DoubleSeqCursor cursor = estimation.getConcentratedLikelihood().coefficients().cursor();
-        int k = 0;
-        if (description.isMean()) {
-            this.variables[k++] = Variable.variable("const", new TrendConstant(arima.getD(), arima.getBd()));
-        }
-        // fill the free coefficients
-        for (Variable var : vars) {
-            int nfree = var.freeCoefficientsCount();
-            if (nfree == var.dim()) {
-                Parameter[] p = new Parameter[nfree];
-                for (int j = 0; j < nfree; ++j) {
-                    p[j] = Parameter.estimated(cursor.getAndNext());
-                }
-                variables[k++] = var.withCoefficient(p);
-            } else if (nfree > 0) {
-                Parameter[] p = var.getCoefficients();
-                for (int j = 0; j < p.length; ++j) {
-                    if (p[j].isFree()) {
-                        p[j] = Parameter.estimated(cursor.getAndNext());
-                    }
-                }
-                variables[k++] = var.withCoefficient(p);
-            } else {
-                variables[k++] = var;
-            }
-        }
-
-        this.model = estimation.getModel();
-        this.concentratedLikelihood = estimation.getConcentratedLikelihood();
-        this.statistics = estimation.statistics();
-
-        LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = estimation.getMax();
-        freeArimaParametersCount = arima.freeParametersCount();
-        if (max == null) {
-            this.arimaParameters = Doubles.EMPTYARRAY;
-            this.arimaScore = Doubles.EMPTYARRAY;
-            this.arimaCovariance = Matrix.EMPTY;
-            this.fixedArimaParameters = EB;
-        } else {
-            this.fixedArimaParameters = null;
-//            this.fixedArimaParameters = arima.fixedConstraints();
-//            if (arima.fixedParametersCount() == 0) {
-            this.arimaParameters = max.getParameters().toArray();
-            this.arimaScore = max.getScore().toArray();
-            this.arimaCovariance = max.asymptoticCovariance();
-//            } else {
-//                // expand parameters, score, pcov;
-//                this.arimaParameters = arima.parameters();
-//                expand(max.getParameters().toArray(), fixedArimaParameters, this.arimaParameters);
-//                this.arimaScore = expand(max.getScore().toArray(), fixedArimaParameters, Double.NaN);
-//                this.arimaCovariance = expand(max.asymptoticCovariance(), fixedArimaParameters);
-//            }
-        }
+    
+    private boolean isMean(){
+        return description.isMean();
     }
-
-    private static double[] expand(double[] params, boolean[] fixedItems, double value) {
-        double[] p = new double[fixedItems.length];
-        for (int i = 0, j = 0; i < p.length; ++i) {
-            if (fixedItems[i]) {
-                p[i] = value;
-            } else {
-                p[i] = params[j++];
-            }
-        }
-        return p;
-    }
-
-    private static void expand(double[] params, boolean[] fixedItems, double[] values) {
-        for (int i = 0, j = 0; i < values.length; ++i) {
-            if (!fixedItems[i]) {
-                values[i] = params[j++];
-            }
-        }
-    }
-
-    public static Matrix expand(Matrix cov, boolean[] fixedItems) {
-        int dim = fixedItems.length;
-        int[] idx = new int[dim];
-        for (int i = 0, j = 0; i < fixedItems.length; ++i) {
-            if (!fixedItems[i]) {
-                idx[j++] = i;
-            }
-        }
-        Matrix m = Matrix.make(fixedItems.length, fixedItems.length);
-        for (int i = 0; i < dim; ++i) {
-            for (int j = 0; j <= i; ++j) {
-                double s = cov.get(i, j);
-                m.set(idx[i], idx[j], s);
-                if (i != j) {
-                    m.set(idx[j], idx[i], s);
-                }
-            }
-        }
-        return m;
-    }
-
+    
+    Details details;
+    
     public int getAnnualFrequency() {
-        return originalSeries.getAnnualFrequency();
+        return description.getSeries().getAnnualFrequency();
     }
 
     public SarimaOrders specification() {
-        return model.arima().orders();
+        return description.getStochasticComponent().orders();
     }
 
     public TsData interpolatedSeries(boolean bTransformed) {
 
         TsData data;
         if (bTransformed) {
-            data = transformedSeries;
+            data = details.transformedSeries;
         } else {
-            data = interpolated;
+            data = details.interpolatedSeries;
         }
 
         // complete for missings
-        int nmissing = concentratedLikelihood.nmissing();
+        MissingValueEstimation[] missing = estimation.getMissing();
+        int nmissing =missing.length; 
         if (nmissing > 0) {
             double[] datac = data.getValues().toArray();
             if (bTransformed) {
-                DoubleSeqCursor cur = concentratedLikelihood.missingCorrections().cursor();
                 for (int i = 0; i < nmissing; ++i) {
-                    datac[missing[i]] -= cur.getAndNext();
+                    datac[missing[i].getPosition()] = missing[i].getValue();
                 }
             } else {
-                DoubleSeqCursor cur = concentratedLikelihood.missingCorrections().cursor();
                 for (int i = 0; i < nmissing; ++i) {
-                    double m = cur.getAndNext();
-                    if (logTransformation) {
-                        datac[missing[i]] /= Math.exp(m);
+                    double m = missing[i].getValue();
+                    int pos=missing[i].getPosition();
+                    if (description.isLogTransformation()) {
+                        datac[pos] = Math.exp(m);
                     } else {
-                        datac[missing[i]] -= m;
+                        datac[pos] = m;
                     }
                 }
             }
-            data = TsData.ofInternal(originalSeries.getStart(), datac);
+            data = TsData.ofInternal(description.getSeries().getStart(), datac);
         }
         return data;
     }
 
     public TsData regressionEffect(TsDomain domain, Predicate<Variable> test) {
         DataBlock all = DataBlock.make(domain.getLength());
+        Variable[] variables = description.getVariables();
         if (variables.length > 0) {
-            DoubleSeqCursor cursor = concentratedLikelihood.coefficients().cursor();
-            if (model.isMean()) {
+            DoubleSeqCursor cursor = estimation.getCoefficients().cursor();
+            if (description.isMean()) {
                 cursor.skip(1);
             }
             for (int i = 0; i < variables.length; ++i) {
@@ -278,6 +165,7 @@ public final class ModelEstimation {
 
     public TsData preadjustmentEffect(TsDomain domain, Predicate<Variable> test) {
         DataBlock all = DataBlock.make(domain.getLength());
+        Variable[] variables = description.getVariables();
         if (variables.length > 0) {
             for (int i = 0; i < variables.length; ++i) {
                 Variable cur = variables[i];
@@ -303,8 +191,9 @@ public final class ModelEstimation {
 
     public TsData deterministicEffect(TsDomain domain, Predicate<Variable> test) {
         DataBlock all = DataBlock.make(domain.getLength());
+        Variable[] variables = description.getVariables();
         if (variables.length > 0) {
-            DoubleSeqCursor cursor = concentratedLikelihood.coefficients().cursor();
+            DoubleSeqCursor cursor = estimation.getCoefficients().cursor();
             for (int i = 0; i < variables.length; ++i) {
                 Variable cur = variables[i];
                 if (test.test(cur)) {
@@ -331,13 +220,14 @@ public final class ModelEstimation {
 
     public TsData linearizedSeries() {
         TsData interp = interpolatedSeries(true);
+        Variable[] variables = description.getVariables();
         if (variables.length == 0) {
             return interp;
         }
         DataBlock rslt = DataBlock.of(interp.getValues());
-        DoubleSeqCursor c = concentratedLikelihood.coefficients().cursor();
+        DoubleSeqCursor c = estimation.getCoefficients().cursor();
         int j = 0;
-        if (model.isMean()) {
+        if (description.isMean()) {
             c.skip(1);
             ++j;
         }
@@ -361,10 +251,10 @@ public final class ModelEstimation {
      * @return
      */
     public TsData backTransform(TsData s, boolean includeLp) {
-        if (logTransformation) {
+        if (description.isLogTransformation()) {
             s = s.exp();
-            if (includeLp && lpTransformation != LengthOfPeriodType.None) {
-                s = Transformations.lengthOfPeriod(lpTransformation).converse().transform(s, null);
+            if (includeLp && description.getLengthOfPeriodTransformation() != LengthOfPeriodType.None) {
+                s = Transformations.lengthOfPeriod(description.getLengthOfPeriodTransformation()).converse().transform(s, null);
             }
         }
         return s;
@@ -380,27 +270,31 @@ public final class ModelEstimation {
      * @return
      */
     public TsData transform(TsData s, boolean includeLp) {
-        if (logTransformation) {
-            if (includeLp && lpTransformation != LengthOfPeriodType.None) {
-                s = Transformations.lengthOfPeriod(lpTransformation).transform(s, null);
+        if (description.isLogTransformation()) {
+            if (includeLp && description.getLengthOfPeriodTransformation() != LengthOfPeriodType.None) {
+                s = Transformations.lengthOfPeriod(description.getLengthOfPeriodTransformation()).transform(s, null);
             }
             s = s.log();
         }
         return s;
     }
-
-    public TsData fullResiduals() {
-        DoubleSeq res = RegArimaUtility.fullResiduals(model, concentratedLikelihood);
-        TsPeriod start = transformedSeries.getEnd().plus(-res.length());
+    
+    public TsData fullResiduals(){
+        DoubleSeq res = estimation.getResiduals();
+        TsPeriod start=details.transformedSeries.getEnd().plus(-res.length());
         return TsData.ofInternal(start, res);
     }
-
-    public NiidTests residualsTests() {
-        DoubleSeq res = RegArimaUtility.fullResiduals(model, concentratedLikelihood);
+    
+    public int freeArimaParametersCount(){
+        return description.getStochasticComponent().freeParametersCount();
+    }
+    
+    public NiidTests residualsTests(){
+        DoubleSeq res = estimation.getResiduals();
         return NiidTests.builder()
                 .data(res)
-                .period(originalSeries.getAnnualFrequency())
-                .hyperParametersCount(freeArimaParametersCount)
+                .period(getAnnualFrequency())
+                .hyperParametersCount(freeArimaParametersCount())
                 .build();
     }
 
@@ -489,7 +383,7 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getDeterministicEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> !(v.getCore() instanceof TrendConstant));
+        TsData s = deterministicEffect(domain, v -> ! (v.getCore() instanceof TrendConstant));
         return backTransform(s, true);
     }
 

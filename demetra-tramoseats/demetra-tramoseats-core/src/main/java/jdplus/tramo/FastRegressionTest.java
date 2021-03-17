@@ -5,10 +5,11 @@
  */
 package jdplus.tramo;
 
-import nbbrd.design.BuilderPattern;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.timeseries.regression.Variable;
+import java.util.Optional;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.regarima.RegArimaModel;
+import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.IRegressionTest;
 import jdplus.regsarima.regular.ModelDescription;
@@ -16,8 +17,7 @@ import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.regular.TRegressionTest;
 import jdplus.sarima.SarimaModel;
-import java.util.Optional;
-import jdplus.regarima.ami.ModellingUtility;
+import nbbrd.design.BuilderPattern;
 
 /**
  * Remove non significant regression items. The model is not re-estimated
@@ -79,8 +79,7 @@ public class FastRegressionTest implements IRegressionModule {
         RegArimaModel<SarimaModel> regarima = tmpModel.regarima();
         ConcentratedLikelihoodWithMissing ll = context.getEstimation().getConcentratedLikelihood();
 
-        int start = regarima.isMean() ? 1 : 0;
-        int nhp = tmpModel.getArimaComponent().getFreeParametersCount();
+        int nhp = tmpModel.getArimaSpec().freeParametersCount();
 
         Optional<Variable> td = tmpModel.variables().filter(var -> ModellingUtility.isTradingDays(var) && ModellingUtility.isAutomaticallyIdentified(var)).findFirst();
         Optional<Variable> lp = tmpModel.variables().filter(var -> ModellingUtility.isLengthOfPeriod(var) && ModellingUtility.isAutomaticallyIdentified(var)).findFirst();

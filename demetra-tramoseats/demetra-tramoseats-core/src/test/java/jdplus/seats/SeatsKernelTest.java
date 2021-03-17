@@ -16,7 +16,7 @@
  */
 package jdplus.seats;
 
-import demetra.timeseries.regression.modelling.SarimaSpec;
+import demetra.modelling.implementations.SarimaSpec;
 import demetra.data.Data;
 import demetra.processing.ProcessingLog;
 import demetra.seats.DecompositionSpec;

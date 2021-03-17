@@ -145,7 +145,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         IRegArimaProcessor processor = RegArimaUtility.processor(true, precision);
         RegArimaEstimation regarima0 = processor.process(test0.regarima(), mapping);
         ConcentratedLikelihoodWithMissing ll0 = regarima0.getConcentratedLikelihood();
-        int nhp = test0.getArimaComponent().getFreeParametersCount();
+        int nhp = test0.getArimaSpec().freeParametersCount();
         double SS0 = ll0.ssq();
 
         if (td == null) {

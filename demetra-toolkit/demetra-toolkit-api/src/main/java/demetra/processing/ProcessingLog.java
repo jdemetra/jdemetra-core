@@ -16,6 +16,8 @@
  */
 package demetra.processing;
 
+import java.util.Collections;
+import java.util.List;
 import nbbrd.design.Development;
 
 /**
@@ -66,6 +68,10 @@ public interface ProcessingLog {
             return builder.toString();
         }
 
+    }
+    
+    default List<Information> all(){
+        return Collections.emptyList();
     }
 
     default void push(String routine) {
@@ -141,4 +147,4 @@ public interface ProcessingLog {
  
 class DummyLog implements ProcessingLog {
         static final DummyLog DUMMY=new DummyLog();
-    }
+}

@@ -16,26 +16,23 @@
  */
 package jdplus.x13.regarima;
 
-import demetra.sa.ComponentType;
-import demetra.sa.SaVariable;
-import nbbrd.design.BuilderPattern;
-import nbbrd.design.Development;
-import demetra.timeseries.regression.Variable;
-import jdplus.regarima.IRegArimaProcessor;
-import jdplus.regsarima.regular.IRegressionModule;
-import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regarima.RegArimaUtility;
-import jdplus.regarima.AICcComparator;
-import jdplus.regsarima.regular.IModelComparator;
-import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.regsarima.regular.RegSarimaModelling;
-import jdplus.sarima.SarimaModel;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.ITradingDaysVariable;
+import demetra.timeseries.regression.Variable;
+import jdplus.regarima.AICcComparator;
+import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.RegArimaUtility;
 import jdplus.regarima.ami.ModellingUtility;
+import jdplus.regsarima.regular.IModelComparator;
+import jdplus.regsarima.regular.IRegressionModule;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegSarimaModelling;
+import jdplus.sarima.SarimaModel;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 
 /**
  *

@@ -58,6 +58,7 @@ public class DefaultProcessingLog implements ProcessingLog{
         context.pop();
     }
     
+    @Override
     public List<Information> all(){
         return Collections.unmodifiableList(logs);
     }

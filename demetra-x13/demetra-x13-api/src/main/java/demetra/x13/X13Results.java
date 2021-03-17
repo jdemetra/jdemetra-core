@@ -18,7 +18,7 @@ package demetra.x13;
 
 import demetra.arima.SarimaModel;
 import demetra.processing.ProcessingLog;
-import demetra.timeseries.regression.modelling.LinearModelEstimation;
+import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.x11.X11Results;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +30,7 @@ import java.util.Map;
 @lombok.Value
 @lombok.Builder(builderClassName="Builder")
 public class X13Results {
-    private LinearModelEstimation<SarimaModel> preprocessing;
+    private GeneralLinearModel<SarimaModel> preprocessing;
     private X13Preadjustment preadjustment;
     private X11Results decomposition;
     private X13Finals finals;

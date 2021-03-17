@@ -17,7 +17,7 @@
 package demetra.tramo;
 
 import nbbrd.design.Development;
-import demetra.timeseries.regression.modelling.SarimaSpec;
+import demetra.modelling.implementations.SarimaSpec;
 
 /**
  *
