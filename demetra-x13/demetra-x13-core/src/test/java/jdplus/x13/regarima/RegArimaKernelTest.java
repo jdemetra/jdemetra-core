@@ -43,7 +43,6 @@ public class RegArimaKernelTest {
         datamissing[100] = Double.NaN;
         datamissing[101] = Double.NaN;
         datamissing[102] = Double.NaN;
-
     }
 
     public RegArimaKernelTest() {

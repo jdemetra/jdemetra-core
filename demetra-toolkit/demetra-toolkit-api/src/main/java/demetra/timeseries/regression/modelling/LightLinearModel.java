@@ -50,31 +50,32 @@ public class LightLinearModel<M> implements GeneralLinearModel<M> {
         /**
          * Original series
          */
-        private TsData series;
+        TsData series;
         /**
          * Log transformation
          */
-        private boolean logTransformation;
+        boolean logTransformation;
 
         /**
          * The model contains a constant (trend) variable
+         * This property is added for convenience (could be retrieved from variables
          */
-        private boolean mean;
+        boolean mean;
         
         /**
          * Transformation for leap year or length of period
          */
-        private LengthOfPeriodType lengthOfPeriodTransformation;
+        LengthOfPeriodType lengthOfPeriodTransformation;
 
         /**
          * Regression variables (including mean correction)
          */
-        private Variable[] variables;
+        Variable[] variables;
 
         /**
          * For instance SarimaSpec
          */
-        private M stochasticComponent;
+        M stochasticComponent;
         
     }
 

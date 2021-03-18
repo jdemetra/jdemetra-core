@@ -19,8 +19,10 @@ package jdplus.regsarima.regular;
 import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
+import demetra.data.Doubles;
 import demetra.data.Parameter;
 import demetra.likelihood.MissingValueEstimation;
+import demetra.likelihood.ParametersEstimation;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
@@ -34,11 +36,16 @@ import demetra.timeseries.regression.modelling.LightLinearModel;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.RegArimaModel;
+import jdplus.regarima.RegArimaUtility;
 import jdplus.regarima.ami.ModellingUtility;
 import jdplus.sarima.SarimaModel;
 import jdplus.stats.tests.NiidTests;
@@ -51,44 +58,136 @@ import jdplus.timeseries.simplets.Transformations;
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder")
 public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
-    
-    public static RegSarimaModel of(ModelDescription description, RegArimaEstimation<SarimaModel> estimation, ProcessingLog log){
-        
-        LightLinearModel.Description.Builder<SarimaSpec> dbuilder = LightLinearModel.Description.<SarimaSpec>builder();
 
-        LightLinearModel.Estimation.Builder ebuilder = LightLinearModel.Estimation.builder();
-        
-        
+    private static final MissingValueEstimation[] NOMISSING = new MissingValueEstimation[0];
+
+    public static RegSarimaModel of(ModelDescription description, RegArimaEstimation<SarimaModel> estimation, ProcessingLog log) {
+
+        SarimaSpec arima = description.getArimaSpec();
+        int free = arima.freeParametersCount(), all = arima.parametersCount();
+
+        List<Variable> vars = description.variables().sequential().collect(Collectors.toList());
+        int nvars = (int) vars.size();
+        if (description.isMean()) {
+            ++nvars;
+        }
+        Variable[] variables = new Variable[nvars];
+        DoubleSeqCursor cursor = estimation.getConcentratedLikelihood().coefficients().cursor();
+        int k = 0;
+        if (description.isMean()) {
+            variables[k++] = Variable.variable("const", new TrendConstant(arima.getD(), arima.getBd()));
+        }
+        // fill the free coefficients
+        for (Variable var : vars) {
+            int nfree = var.freeCoefficientsCount();
+            if (nfree == var.dim()) {
+                Parameter[] p = new Parameter[nfree];
+                for (int j = 0; j < nfree; ++j) {
+                    p[j] = Parameter.estimated(cursor.getAndNext());
+                }
+                variables[k++] = var.withCoefficient(p);
+            } else if (nfree > 0) {
+                Parameter[] p = var.getCoefficients();
+                for (int j = 0; j < p.length; ++j) {
+                    if (p[j].isFree()) {
+                        p[j] = Parameter.estimated(cursor.getAndNext());
+                    }
+                }
+                variables[k++] = var.withCoefficient(p);
+            } else {
+                variables[k++] = var;
+            }
+        }
+
+        LightLinearModel.Description desc = LightLinearModel.Description.<SarimaSpec>builder()
+                .series(description.getSeries())
+                .lengthOfPeriodTransformation(description.getPreadjustment())
+                .logTransformation(description.isLogTransformation())
+                .mean(description.isMean())
+                .variables(variables)
+                .stochasticComponent(arima)
+                .build();
+
+        LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = estimation.getMax();
+        ParametersEstimation pestim;
+        if (max == null) {
+            pestim = new ParametersEstimation(Doubles.EMPTY, Matrix.EMPTY, Doubles.EMPTY, null);
+        } else {
+            pestim = new ParametersEstimation(max.getParameters(), max.asymptoticCovariance(), max.getScore(), "sarima (true signs)");
+        }
+        RegArimaModel<SarimaModel> model = estimation.getModel();
+        ConcentratedLikelihoodWithMissing ll = estimation.getConcentratedLikelihood();
+
+        TsData interpolated = description.getInterpolatedSeries();
+        TsData transformed = description.getTransformedSeries();
+
+        // complete for missings
+        int nmissing = ll.nmissing();
+        MissingValueEstimation[] missing = NOMISSING;
+        if (nmissing > 0) {
+            double[] datac = interpolated.getValues().toArray();
+            int dpos = description.getDomain().getStartPeriod().until(description.getEstimationDomain().getStartPeriod());
+            missing = new MissingValueEstimation[nmissing];
+            DoubleSeqCursor cur = ll.missingCorrections().cursor();
+            DoubleSeqCursor vcur = ll.missingUnscaledVariances().cursor();
+            double vscale = ll.ssq() / (ll.degreesOfFreedom() - free);
+            int[] pmissing = model.missing();
+            for (int i = 0; i < nmissing; ++i) {
+                double m = cur.getAndNext();
+                double v = vcur.getAndNext();
+                missing[i] = new MissingValueEstimation(pmissing[i] + dpos, model.getY().get(pmissing[i]) - m, Math.sqrt(v * vscale));
+                if (description.isLogTransformation()) {
+                    datac[pmissing[i] + dpos] /= Math.exp(m);
+                } else {
+                    datac[pmissing[i] + dpos] -= m;
+                }
+            }
+            transformed = TsData.ofInternal(transformed.getStart(), datac);
+        }
+
+        LightLinearModel.Estimation est = LightLinearModel.Estimation.builder()
+                .y(model.getY())
+                .X(model.variables())
+                .coefficients(ll.coefficients())
+                .coefficientsCovariance(ll.covariance(free, true))
+                .residuals(RegArimaUtility.fullResiduals(model, ll))
+                .statistics(estimation.statistics())
+                .missing(missing)
+                .logs(log.all())
+                .build();
+
         Builder builder = RegSarimaModel.builder()
-                .description(dbuilder.build())
-                .estimation(ebuilder.build())
-                .logs(log.all());
-       
+                .description(desc)
+                .estimation(est)
+                .details(Details.builder()
+                        .estimationDomain(description.getEstimationDomain())
+                        .interpolatedSeries(interpolated)
+                        .transformedSeries(transformed)
+                        .build());
+
         return builder.build();
     }
-       
+
     Description<SarimaSpec> description;
     Estimation estimation;
 
     @lombok.Singular
     private Map<String, Object> additionalResults;
 
-    @lombok.Singular
-    private List<ProcessingLog.Information> logs;
-    
     @lombok.Value
     @lombok.Builder(builderClassName = "Builder")
-    static class Details{
+    static class Details {
+
         TsDomain estimationDomain;
         TsData interpolatedSeries, transformedSeries;
     }
-    
-    private boolean isMean(){
+
+    private boolean isMean() {
         return description.isMean();
     }
-    
+
     Details details;
-    
+
     public int getAnnualFrequency() {
         return description.getSeries().getAnnualFrequency();
     }
@@ -108,7 +207,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
 
         // complete for missings
         MissingValueEstimation[] missing = estimation.getMissing();
-        int nmissing =missing.length; 
+        int nmissing = missing.length;
         if (nmissing > 0) {
             double[] datac = data.getValues().toArray();
             if (bTransformed) {
@@ -118,7 +217,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
             } else {
                 for (int i = 0; i < nmissing; ++i) {
                     double m = missing[i].getValue();
-                    int pos=missing[i].getPosition();
+                    int pos = missing[i].getPosition();
                     if (description.isLogTransformation()) {
                         datac[pos] = Math.exp(m);
                     } else {
@@ -278,18 +377,18 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
         }
         return s;
     }
-    
-    public TsData fullResiduals(){
+
+    public TsData fullResiduals() {
         DoubleSeq res = estimation.getResiduals();
-        TsPeriod start=details.transformedSeries.getEnd().plus(-res.length());
+        TsPeriod start = details.transformedSeries.getEnd().plus(-res.length());
         return TsData.ofInternal(start, res);
     }
-    
-    public int freeArimaParametersCount(){
+
+    public int freeArimaParametersCount() {
         return description.getStochasticComponent().freeParametersCount();
     }
-    
-    public NiidTests residualsTests(){
+
+    public NiidTests residualsTests() {
         DoubleSeq res = estimation.getResiduals();
         return NiidTests.builder()
                 .data(res)
@@ -383,7 +482,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
      * @return
      */
     public TsData getDeterministicEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> ! (v.getCore() instanceof TrendConstant));
+        TsData s = deterministicEffect(domain, v -> !(v.getCore() instanceof TrendConstant));
         return backTransform(s, true);
     }
 

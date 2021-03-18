@@ -8,7 +8,10 @@ package jdplus.tramoseats.legacy;
 import demetra.arima.SarimaModel;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.ParametersEstimation;
+import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsData;
+import demetra.timeseries.regression.modelling.GeneralLinearModel;
+import demetra.timeseries.regression.modelling.LightLinearModel;
 import demetra.tramo.TramoSpec;
 import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
 import ec.tstoolkit.data.IReadDataBlock;
@@ -65,6 +68,37 @@ public class LegacyUtility {
         ec.tstoolkit.timeseries.simplets.TsFrequency freq=ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(series.getAnnualFrequency());
         return new
                 ec.tstoolkit.timeseries.simplets.TsData(freq, y, p,series.getValues().toArray(), false);
+
+    }
+    
+    public MatrixType fromLegacy(ec.tstoolkit.maths.matrices.Matrix M){
+        return MatrixType.of(M.internalStorage(), M.getRowsCount(), M.getColumnsCount());
+    }
+
+    public DoubleSeq fromLegacy(ec.tstoolkit.data.IReadDataBlock v){
+        double[] p=new double[v.getLength()];
+        v.copyTo(p, 0);
+        return DoubleSeq.of(p);
+    }
+
+    public GeneralLinearModel<SarimaModel> toApi(PreprocessingModel model) {
+        LikelihoodStatistics stat = model.estimation.getStatistics();
+        demetra.likelihood.LikelihoodStatistics nstat = demetra.likelihood.LikelihoodStatistics.statistics(stat.logLikelihood, stat.observationsCount)
+                .differencingOrder(stat.observationsCount - stat.effectiveObservationsCount)
+                .llAdjustment(stat.transformationAdjustment)
+                .ssq(stat.SsqErr)
+                .parametersCount(stat.estimatedParametersCount)
+                .build();
+        LightLinearModel.Description.Builder<SarimaModel> dbuilder = LightLinearModel.Description.<SarimaModel>builder();
+        LightLinearModel.Estimation.Builder ebuilder = LightLinearModel.Estimation.builder()
+                .residuals(DoubleSeq.of(model.getFullResiduals().internalStorage()))
+                .parameters(new ParametersEstimation(fromLegacy(model.estimation.getArima().getParameters()), fromLegacy(model.estimation.getParametersCovariance()), null, null))
+                .statistics(nstat);
+        
+        return LightLinearModel.<SarimaModel>builder()
+                .description(dbuilder.build())
+                .estimation(ebuilder.build())
+                .build();
 
     }
 }
