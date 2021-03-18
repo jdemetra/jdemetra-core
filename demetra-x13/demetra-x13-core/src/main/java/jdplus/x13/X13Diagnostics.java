@@ -23,7 +23,7 @@ import demetra.sa.StationaryVarianceDecomposition;
 import demetra.stats.TestResult;
 import demetra.timeseries.TsData;
 import demetra.x11.X11Results;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sa.StationaryVarianceComputer;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnostics;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
@@ -43,12 +43,12 @@ public class X13Diagnostics {
     private DefaultSaDiagnostics saDiagnostics;
 
     public static X13Diagnostics of(X13Results rslts) {
-        ModelEstimation preprocessing = rslts.getPreprocessing();
+        RegSarimaModel preprocessing = rslts.getPreprocessing();
         X11Results xrslts = rslts.getDecomposition();
             Mstatistics mstats = Mstatistics.of(rslts.getPreadjustment(), xrslts, rslts.getFinals());
         DefaultSaDiagnostics.Builder sadiags = DefaultSaDiagnostics.builder()
                 .varianceDecomposition(varDecomposition(mstats));
-        boolean mul = preprocessing.isLogTransformation();
+        boolean mul = preprocessing.getDescription().isLogTransformation();
         TsData sa = xrslts.getD11();
         TsData i = xrslts.getD13();
         AdvancedResidualSeasonalityDiagnostics.Input input = new AdvancedResidualSeasonalityDiagnostics.Input(mul, sa, i);

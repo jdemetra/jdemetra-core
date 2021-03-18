@@ -29,8 +29,7 @@ import demetra.timeseries.regression.Variable;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 
 /**
  *
@@ -218,7 +217,7 @@ public class RegArimaProtosUtility {
                 .build();
     }
     
-    public RegArimaResultsProtos.Diagnostics of(ModelEstimation model){
+    public RegArimaResultsProtos.Diagnostics diagnosticsOf(RegSarimaModel model){
         return RegArimaResultsProtos.Diagnostics.newBuilder()
                 .setResidualsTests(ToolkitProtosUtility.convert(model.residualsTests()))
                 .build();

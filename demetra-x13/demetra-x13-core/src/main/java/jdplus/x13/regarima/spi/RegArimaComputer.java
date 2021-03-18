@@ -25,7 +25,7 @@ import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.timeseries.regression.modelling.LightLinearModel;
 import java.util.List;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.x13.regarima.RegArimaKernel;
 import nbbrd.service.ServiceProvider;
 
@@ -40,7 +40,7 @@ public class RegArimaComputer implements RegArima.Processor{
     public GeneralLinearModel<SarimaModel>  process(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems) {
         RegArimaKernel processor = RegArimaKernel.of(spec, context);
         DefaultProcessingLog log=new DefaultProcessingLog();
-        ModelEstimation rslt = processor.process(series, log);
+        RegSarimaModel rslt = processor.process(series, log);
         // TODO: fill details
         return LightLinearModel.<SarimaModel>builder()
 //                .regarima(ApiUtility.toApi(rslt))

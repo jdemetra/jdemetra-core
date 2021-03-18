@@ -23,6 +23,8 @@ import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.arima.SarimaOrders;
 import jdplus.stats.AutoCovariances;
 import demetra.data.DoubleSeq;
+import demetra.processing.ProcessingLog;
+import jdplus.regsarima.regular.RegSarimaModel;
 
 /**
  *
@@ -36,7 +38,7 @@ class RegularUnderDifferencingTest2 extends ModelController {
         if (desc.getAnnualFrequency() <= 2) {
             return ProcessingResult.Unprocessed;
         }
-        ModelStatistics stats = ModelStatistics.of(modelling.build());
+        ModelStatistics stats = ModelStatistics.of(modelling.getDescription(), modelling.getEstimation().getConcentratedLikelihood());
         if (stats.getLjungBoxPvalue() >= .005) {
             return ProcessingResult.Unchanged;
         }
@@ -44,13 +46,9 @@ class RegularUnderDifferencingTest2 extends ModelController {
             return ProcessingResult.Unchanged;
         }
         RegSarimaModelling ncontext = buildNewModel(modelling);
-        ModelEstimation nmodel = ncontext.build();
-        if (nmodel == null) {
-            return ProcessingResult.Failed;
-        }
-        ModelComparator cmp = ModelComparator.builder()
+         ModelComparator cmp = ModelComparator.builder()
                 .build();
-        if (cmp.compare(nmodel, modelling.build()) < 0) {
+        if (cmp.compare(ncontext, modelling) < 0) {
 //            setReferenceModel(smodel);
             transferInformation(ncontext, modelling);
             return ProcessingResult.Changed;

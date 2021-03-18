@@ -22,10 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import jdplus.regarima.RegArimaModel;
-import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.sarima.SarimaModel;
-import nbbrd.service.ServiceProvider;
+import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.regsarima.regular.RegSarimaModel;
 
 /**
  *
@@ -37,10 +35,10 @@ public class OutliersDiagnosticsFactory<R> implements DiagnosticsFactory<R> {
     public static final String NAME = "Outliers";
     public static final List<String> ALL = Collections.singletonList(NUMBER);
     private final OutliersDiagnosticsConfiguration config;
-    private final Function<R, ModelEstimation> extractor;
+    private final Function<R, RegSarimaModel> extractor;
     private boolean enabled = true;
     
-    public OutliersDiagnosticsFactory(OutliersDiagnosticsConfiguration config, Function<R, ModelEstimation> extractor) {
+    public OutliersDiagnosticsFactory(OutliersDiagnosticsConfiguration config, Function<R, RegSarimaModel> extractor) {
         this.config = config;
         this.extractor = extractor;
     }

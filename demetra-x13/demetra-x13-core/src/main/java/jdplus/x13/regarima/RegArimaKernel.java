@@ -31,7 +31,7 @@ import jdplus.regsarima.regular.IModelBuilder;
 import jdplus.regsarima.regular.IOutliersDetectionModule;
 import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.regular.RegSarimaProcessor;
@@ -206,7 +206,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
     }
 
     @Override
-    public ModelEstimation process(TsData originalTs, ProcessingLog log) {
+    public RegSarimaModel process(TsData originalTs, ProcessingLog log) {
         if (log == null)
             log=ProcessingLog.dummy();
         clear();
@@ -225,7 +225,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
             needOutliers = true;
         }
 
-        ModelEstimation rslt = calc(context);
+        RegSarimaModel rslt = calc(context);
 //        if (rslt != null) {
 //            rslt.info_ = context.information;
 //            rslt.addProcessingInformation(context.processingLog);
@@ -233,7 +233,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
         return rslt;
     }
 
-    private ModelEstimation calc(RegSarimaModelling context) {
+    private RegSarimaModel calc(RegSarimaModelling context) {
         try {
 
             if (transformation != null) {

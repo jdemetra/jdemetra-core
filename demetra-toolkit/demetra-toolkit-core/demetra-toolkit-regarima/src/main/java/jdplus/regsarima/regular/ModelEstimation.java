@@ -54,6 +54,7 @@ import jdplus.timeseries.simplets.Transformations;
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
+@Deprecated
 public final class ModelEstimation {
 
     private static final boolean[] EB = new boolean[0];

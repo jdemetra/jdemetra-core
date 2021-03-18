@@ -17,7 +17,7 @@ import demetra.sa.SaDictionary;
 import demetra.timeseries.TsData;
 import jdplus.modelling.extractors.ArimaExtractor;
 import jdplus.modelling.extractors.SarimaExtractor;
-import jdplus.regarima.extractors.ModelEstimationExtractor;
+import jdplus.regarima.extractors.RegSarimaModelExtractor;
 import jdplus.tramoseats.TramoSeatsResults;
 
 /**
@@ -217,7 +217,7 @@ public class TramoSeatsExtractor {
         MAPPING.delegate(DECOMP + "finalmodel", SarimaExtractor.getMapping(), source
                 -> source.getDecomposition().getFinalModel());
 
-        MAPPING.delegate("preprocessing", ModelEstimationExtractor.getMapping(), source -> source.getPreprocessing());
+        MAPPING.delegate("preprocessing", RegSarimaModelExtractor.getMapping(), source -> source.getPreprocessing());
     }
 
     public InformationMapping<TramoSeatsResults> getMapping() {

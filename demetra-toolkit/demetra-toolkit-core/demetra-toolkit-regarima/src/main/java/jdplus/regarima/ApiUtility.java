@@ -29,7 +29,7 @@ import jdplus.arima.IArimaModel;
 import jdplus.dstats.T;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sarima.SarimaModel;
 
 /**
@@ -122,19 +122,19 @@ public class ApiUtility {
 //                .build();
 //    }
 
-    public MissingValueEstimation[] missing(ModelEstimation estimation) {
-        MissingValueEstimation[] missing = null;
-        int nmissing = estimation.getConcentratedLikelihood().nmissing();
-        if (nmissing > 0) {
-            int[] missingPos = estimation.getMissing();
-            double[] missingVal = estimation.getConcentratedLikelihood().missingCorrections().toArray();
-            double[] missingErr = estimation.getConcentratedLikelihood().missingCorrections().toArray();
-            missing = new MissingValueEstimation[nmissing];
-            DoubleSeq y = estimation.getModel().getY();
-            for (int i = 0; i < nmissing; ++i) {
-                missing[i] = new MissingValueEstimation(missingPos[i], y.get(missingPos[i]) - missingVal[i], missingErr[i]);
-            }
-        }
-        return missing;
-    }
+//    public MissingValueEstimation[] missing(ModelEstimation estimation) {
+//        MissingValueEstimation[] missing = null;
+//        int nmissing = estimation.getConcentratedLikelihood().nmissing();
+//        if (nmissing > 0) {
+//            int[] missingPos = estimation.getMissing();
+//            double[] missingVal = estimation.getConcentratedLikelihood().missingCorrections().toArray();
+//            double[] missingErr = estimation.getConcentratedLikelihood().missingCorrections().toArray();
+//            missing = new MissingValueEstimation[nmissing];
+//            DoubleSeq y = estimation.getModel().getY();
+//            for (int i = 0; i < nmissing; ++i) {
+//                missing[i] = new MissingValueEstimation(missingPos[i], y.get(missingPos[i]) - missingVal[i], missingErr[i]);
+//            }
+//        }
+//        return missing;
+//    }
 }

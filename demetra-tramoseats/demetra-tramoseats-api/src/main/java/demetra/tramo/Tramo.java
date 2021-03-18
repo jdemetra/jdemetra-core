@@ -18,6 +18,7 @@ package demetra.tramo;
 
 import demetra.arima.SarimaModel;
 import demetra.design.Algorithm;
+import demetra.modelling.implementations.SarimaSpec;
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
@@ -47,7 +48,7 @@ public class Tramo {
         return ENGINE.get();
     }
 
-    public GeneralLinearModel<SarimaModel> process(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public GeneralLinearModel<SarimaSpec> process(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems) {
         return ENGINE.get().process(series, spec, context, addtionalItems);
     }
 
@@ -59,11 +60,11 @@ public class Tramo {
         return LEGACYENGINE.get();
     }
 
-    public GeneralLinearModel<SarimaModel> processLegacy(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public GeneralLinearModel<SarimaSpec> processLegacy(TsData series, TramoSpec spec, ModellingContext context, List<String> additionalItems) {
         Processor cp = LEGACYENGINE.get();
         if (cp == null)
             throw new TramoException("No legacy engine");
-        return cp.process(series, spec, context, addtionalItems);
+        return cp.process(series, spec, context, additionalItems);
     }
 
     @Algorithm
@@ -71,7 +72,7 @@ public class Tramo {
     @FunctionalInterface
     public static interface Processor {
 
-        public GeneralLinearModel<SarimaModel> process(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems);
+        public GeneralLinearModel<SarimaSpec> process(TsData series, TramoSpec spec, ModellingContext context, List<String> additionalItems);
 
     }
 }

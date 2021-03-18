@@ -20,7 +20,7 @@ import demetra.sa.SaDiagnosticsFactory;
 import java.util.function.Function;
 import jdplus.regarima.diagnostics.OutliersDiagnosticsConfiguration;
 import jdplus.regarima.diagnostics.OutliersDiagnosticsFactory;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 
 /**
  *
@@ -29,7 +29,7 @@ import jdplus.regsarima.regular.ModelEstimation;
  */
 public class SaOutliersDiagnosticsFactory<R> extends OutliersDiagnosticsFactory<R> implements SaDiagnosticsFactory<R> {
 
-    public SaOutliersDiagnosticsFactory(OutliersDiagnosticsConfiguration config, Function<R, ModelEstimation> extractor) {
+    public SaOutliersDiagnosticsFactory(OutliersDiagnosticsConfiguration config, Function<R, RegSarimaModel> extractor) {
         super(config, extractor);
     }
 

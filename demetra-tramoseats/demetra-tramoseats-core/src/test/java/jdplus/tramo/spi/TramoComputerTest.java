@@ -7,6 +7,7 @@ package jdplus.tramo.spi;
 
 import demetra.arima.SarimaModel;
 import demetra.data.Data;
+import demetra.modelling.implementations.SarimaSpec;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.tramo.TramoSpec;
@@ -23,7 +24,7 @@ public class TramoComputerTest {
 
     @Test
     public void testBasic() {
-        GeneralLinearModel<SarimaModel> rslt = demetra.tramo.Tramo.process(Data.TS_PROD, TramoSpec.TRfull, ModellingContext.getActiveContext(), null);
+        GeneralLinearModel<SarimaSpec> rslt = demetra.tramo.Tramo.process(Data.TS_PROD, TramoSpec.TRfull, ModellingContext.getActiveContext(), null);
         System.out.println(rslt.getEstimation().getStatistics());
         System.out.println(rslt.getDescription().getStochasticComponent());
     }

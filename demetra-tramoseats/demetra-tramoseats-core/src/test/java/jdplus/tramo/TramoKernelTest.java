@@ -18,7 +18,7 @@ package jdplus.tramo;
 
 import demetra.data.Data;
 import demetra.timeseries.regression.ModellingContext;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.Calendar;
@@ -33,7 +33,6 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 import demetra.data.Doubles;
 import demetra.processing.DefaultProcessingLog;
-import demetra.processing.ProcessingLog;
 import demetra.tramo.CalendarSpec;
 import demetra.tramo.RegressionSpec;
 import demetra.tramo.TradingDaysSpec;
@@ -94,9 +93,9 @@ public class TramoKernelTest {
         TramoKernel processor = TramoKernel.of(TramoSpec.TR5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(datamissing));
-        jdplus.regsarima.regular.ModelEstimation rslt = processor.process(s, null);
+        jdplus.regsarima.regular.RegSarimaModel rslt = processor.process(s, null);
         System.out.println("JD3 with missing");
-        System.out.println(rslt.getStatistics().getLogLikelihood());
+        System.out.println(rslt.getEstimation().getStatistics().getLogLikelihood());
     }
 
     @Test
@@ -114,9 +113,9 @@ public class TramoKernelTest {
         TramoKernel processor = TramoKernel.of(TramoSpec.TRfull, null);
         TsPeriod start = TsPeriod.monthly(1992, 1);
         TsData s = TsData.of(start, Doubles.of(Data.RETAIL_BOOKSTORES));
-        ModelEstimation rslt = processor.process(s, log);
+        RegSarimaModel rslt = processor.process(s, log);
         System.out.println("JD3");
-        System.out.println(rslt.getStatistics().getAdjustedLogLikelihood());
+        System.out.println(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
         log.all().stream().forEach(z->System.out.println(z));
     }
 
@@ -136,11 +135,11 @@ public class TramoKernelTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -183,11 +182,11 @@ public class TramoKernelTest {
         IPreprocessor oprocessor = ospec.build(ocontext);
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -212,11 +211,11 @@ public class TramoKernelTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR0.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -239,11 +238,11 @@ public class TramoKernelTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR1.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -266,11 +265,11 @@ public class TramoKernelTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR2.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -293,11 +292,11 @@ public class TramoKernelTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR3.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -320,11 +319,11 @@ public class TramoKernelTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR4.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -347,11 +346,11 @@ public class TramoKernelTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR5.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -374,11 +373,11 @@ public class TramoKernelTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR5.build();
         int n = 0;
         for (int i =0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -412,9 +411,9 @@ public class TramoKernelTest {
         TramoKernel processor = TramoKernel.of(nspec, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(data));
-        ModelEstimation rslt = processor.process(s, null);
+        RegSarimaModel rslt = processor.process(s, null);
         System.out.println("JD3 wald");
-        System.out.println(rslt.getStatistics().getAdjustedLogLikelihood());
+        System.out.println(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
     }
 
 //    @Test
@@ -443,7 +442,7 @@ public class TramoKernelTest {
             TramoKernel processor = TramoKernel.of(TramoSpec.TRfull, null);
             TsPeriod start = TsPeriod.monthly(1967, 1);
             TsData s = TsData.of(start, Doubles.of(data));
-            ModelEstimation rslt = processor.process(s, null);
+            RegSarimaModel rslt = processor.process(s, null);
         }
         t1 = System.currentTimeMillis();
         System.out.println("JD3");

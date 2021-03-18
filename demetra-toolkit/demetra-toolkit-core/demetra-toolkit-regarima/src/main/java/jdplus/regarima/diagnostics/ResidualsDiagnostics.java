@@ -20,7 +20,7 @@ import jdplus.data.analysis.Periodogram;
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.stats.tests.NiidTests;
 import jdplus.stats.tests.StatisticalTest;
 import java.util.ArrayList;
@@ -43,19 +43,15 @@ public class ResidualsDiagnostics implements Diagnostics {
     private Periodogram periodogram;
     private int period;
 
-    static ResidualsDiagnostics create(ResidualsDiagnosticsConfiguration config, ModelEstimation regarima) {
+    static ResidualsDiagnostics create(ResidualsDiagnosticsConfiguration config, RegSarimaModel regarima) {
         try {
-            if (regarima instanceof ModelEstimation) {
-                return new ResidualsDiagnostics(config, regarima);
-            } else {
-                return null;
-            }
+            return new ResidualsDiagnostics(config, regarima);
         } catch (Exception ex) {
             return null;
         }
     }
 
-    public ResidualsDiagnostics(ResidualsDiagnosticsConfiguration config, ModelEstimation rslts) {
+    public ResidualsDiagnostics(ResidualsDiagnosticsConfiguration config, RegSarimaModel rslts) {
         sPeriodogram2 = config.getSevereThresholdeForSeasonalPeaks();
         sPeriodogram1 = config.getBadThresholdeForSeasonalPeaks();
         sPeriodogram0 = config.getUncertainThresholdeForSeasonalPeaks();
@@ -70,17 +66,17 @@ public class ResidualsDiagnostics implements Diagnostics {
         testRegarima(rslts);
     }
 
-    private boolean testRegarima(ModelEstimation regarima) {
+    private boolean testRegarima(RegSarimaModel regarima) {
         try {
-            DoubleSeq res = RegArimaUtility.fullResiduals(regarima.getModel(), regarima.getConcentratedLikelihood());
+            DoubleSeq res = regarima.getEstimation().getResiduals();
             period = regarima.getAnnualFrequency();
             stats = NiidTests.builder()
-                    .data(regarima.getConcentratedLikelihood().e())
+                    .data(res)
                     .period(period)
                     .k(RegArimaUtility.defaultLjungBoxLength(period))
                     .ks(2)
                     .seasonal(period > 1)
-                    .hyperParametersCount(regarima.getFreeArimaParametersCount())
+                    .hyperParametersCount(regarima.freeArimaParametersCount())
                     .build();
             periodogram = Periodogram.of(res);
             return true;

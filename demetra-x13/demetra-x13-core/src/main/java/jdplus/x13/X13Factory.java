@@ -23,7 +23,6 @@ import demetra.sa.SaProcessor;
 import demetra.sa.SaSpecification;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.EasterVariable;
-import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.timeseries.regression.Variable;
 import demetra.x11.X11Results;
@@ -31,12 +30,11 @@ import demetra.x11.X11Spec;
 import demetra.x13.X13Spec;
 import java.util.Arrays;
 import java.util.Optional;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sarima.SarimaModel;
 import nbbrd.service.ServiceProvider;
 import demetra.sa.SaProcessingFactory;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.TrendConstant;
 import java.util.Collections;
 import java.util.List;
@@ -80,7 +78,7 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
                 );
         SaOutOfSampleDiagnosticsFactory<X13Results> outofsample
                 = new SaOutOfSampleDiagnosticsFactory<>(OutOfSampleDiagnosticsConfiguration.DEFAULT,
-                        r -> r.getPreprocessing().getModel());
+                        r -> r.getPreprocessing().regarima());
         SaResidualsDiagnosticsFactory<X13Results> residuals
                 = new SaResidualsDiagnosticsFactory<>(ResidualsDiagnosticsConfiguration.DEFAULT,
                         r -> r.getPreprocessing());
@@ -91,7 +89,7 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
         AdvancedResidualSeasonalityDiagnosticsFactory<X13Results> advancedResidualSeasonality
                 = new AdvancedResidualSeasonalityDiagnosticsFactory<>(AdvancedResidualSeasonalityDiagnosticsConfiguration.DEFAULT,
                         (X13Results r) -> {
-                            boolean mul = r.getPreprocessing().isLogTransformation();
+                            boolean mul = r.getPreprocessing().getDescription().isLogTransformation();
                             TsData sa = r.getDecomposition().getD11();
                             TsData irr = r.getDecomposition().getD13();
                             return new AdvancedResidualSeasonalityDiagnostics.Input(mul, sa, irr);
@@ -100,7 +98,7 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
         ResidualTradingDaysDiagnosticsFactory<X13Results> residualTradingDays
                 = new ResidualTradingDaysDiagnosticsFactory<>(ResidualTradingDaysDiagnosticsConfiguration.DEFAULT,
                         (X13Results r) -> {
-                            boolean mul = r.getPreprocessing().isLogTransformation();
+                            boolean mul = r.getPreprocessing().getDescription().isLogTransformation();
                             TsData sa = r.getDecomposition().getD11();
                             TsData irr = r.getDecomposition().getD13();
                             return new ResidualTradingDaysDiagnostics.Input(mul, sa, irr);
@@ -143,18 +141,18 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
         return x11;
     }
 
-    private void update(TransformSpec transform, ModelEstimation rslts, RegArimaSpec.Builder builder) {
+    private void update(TransformSpec transform, RegSarimaModel rslts, RegArimaSpec.Builder builder) {
         TransformSpec ntransform = transform.toBuilder()
-                .function(rslts.isLogTransformation() ? TransformationType.Log : TransformationType.None)
-                .adjust(rslts.getLpTransformation())
+                .function(rslts.getDescription().isLogTransformation() ? TransformationType.Log : TransformationType.None)
+                .adjust(rslts.getDescription().getLengthOfPeriodTransformation())
                 .build();
         builder.transform(ntransform);
     }
 
-    private void update(SarimaSpec sarima, ModelEstimation rslts, RegArimaSpec.Builder builder) {
+    private void update(SarimaSpec sarima, RegSarimaModel rslts, RegArimaSpec.Builder builder) {
         // Update the model (taking into account fixed parameters)
         sarima.getPhi();
-        SarimaModel model = rslts.getModel().arima();
+        SarimaModel model = rslts.arima();
         SarimaSpec nspec = sarima.toBuilder()
                 .phi(parametersOf(sarima.getPhi(), model.phi()))
                 .bphi(parametersOf(sarima.getBphi(), model.bphi()))
@@ -166,9 +164,9 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
         builder.arima(nspec);
     }
 
-    private void updateArima(ModelEstimation rslts, RegArimaSpec.Builder builder) {
+    private void updateArima(RegSarimaModel rslts, RegArimaSpec.Builder builder) {
         // Update completely the model (if AMI, no fixed parameters!)
-        SarimaModel model = rslts.getModel().arima();
+        SarimaModel model = rslts.arima();
         SarimaSpec nspec = SarimaSpec.builder()
                 .phi(Parameter.of(model.phi(), ParameterType.Estimated))
                 .bphi(Parameter.of(model.bphi(), ParameterType.Estimated))
@@ -180,7 +178,7 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
         builder.arima(nspec);
     }
 
-    private void update(AutoModelSpec ami, ModelEstimation rslts, RegArimaSpec.Builder builder) {
+    private void update(AutoModelSpec ami, RegSarimaModel rslts, RegArimaSpec.Builder builder) {
         if (!ami.isEnabled()) {
             return;
         }
@@ -191,7 +189,7 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
         builder.autoModel(nami);
     }
 
-    private RegArimaSpec update(RegArimaSpec regarima, ModelEstimation rslts) {
+    private RegArimaSpec update(RegArimaSpec regarima, RegSarimaModel rslts) {
         RegArimaSpec.Builder builder = regarima.toBuilder();
         update(regarima.getTransform(), rslts, builder);
         update(regarima.getArima(), rslts, builder);
@@ -202,7 +200,7 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
         return builder.build();
     }
 
-    private void update(OutlierSpec outliers, ModelEstimation rslts, RegArimaSpec.Builder builder) {
+    private void update(OutlierSpec outliers, RegSarimaModel rslts, RegArimaSpec.Builder builder) {
         if (!outliers.isUsed()) {
             return;
         }
@@ -213,11 +211,11 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
                         .build());
     }
 
-    private void update(RegressionSpec regression, ModelEstimation rslts, RegArimaSpec.Builder builder) {
+    private void update(RegressionSpec regression, RegSarimaModel rslts, RegArimaSpec.Builder builder) {
         // The huge part
         RegressionSpec.Builder rbuilder = regression.toBuilder();
         // all the coefficients (fixed or free) of the variables have already been filled
-        Variable[] variables = rslts.getVariables();
+        Variable[] variables = rslts.getDescription().getVariables();
         updateMean(variables, rbuilder);
         update(regression.getTradingDays(), variables, rbuilder);
         update(regression.getEaster(), variables, rbuilder);

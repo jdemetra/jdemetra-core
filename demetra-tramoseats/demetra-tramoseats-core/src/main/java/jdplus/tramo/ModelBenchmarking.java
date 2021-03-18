@@ -18,10 +18,11 @@ package jdplus.tramo;
 
 import nbbrd.design.Development;
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.arima.SarimaOrders;
+import demetra.processing.ProcessingLog;
 import jdplus.regarima.ami.ModellingUtility;
 
 /**
@@ -37,9 +38,8 @@ class ModelBenchmarking extends ModelController {
     @Override
     public ProcessingResult process(RegSarimaModelling modelling, TramoContext context) {
 
-        ModelEstimation current = modelling.build();
 
-        SarimaOrders spec = current.specification();
+        SarimaOrders spec = modelling.getDescription().specification();
         if (spec.isAirline(context.seasonal)) {
             return ProcessingResult.Unchanged;
         }
@@ -59,9 +59,8 @@ class ModelBenchmarking extends ModelController {
             return ProcessingResult.Failed;
         }
 
-        ModelEstimation nmodel = nmodelling.build();
         ModelComparator mcmp = ModelComparator.builder().build();
-        int cmp = mcmp.compare(current, nmodel);
+        int cmp = mcmp.compare(modelling, nmodelling);
         if (cmp < 1) {
             return ProcessingResult.Unchanged;
         } else {

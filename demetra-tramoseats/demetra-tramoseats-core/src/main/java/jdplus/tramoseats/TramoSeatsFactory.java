@@ -16,10 +16,6 @@ import demetra.sa.SaDiagnosticsFactory;
 import demetra.sa.SaProcessor;
 import demetra.sa.SaSpecification;
 import demetra.seats.DecompositionSpec;
-import demetra.timeseries.regression.ILengthOfPeriodVariable;
-import demetra.timeseries.regression.IOutlier;
-import demetra.timeseries.regression.ITradingDaysVariable;
-import demetra.tramo.RegressionTestType;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.timeseries.regression.Variable;
 import demetra.tramo.AutoModelSpec;
@@ -33,7 +29,7 @@ import demetra.tramo.TransformSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import java.util.Arrays;
 import java.util.Optional;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sarima.SarimaModel;
 import jdplus.seats.SeatsResults;
 import nbbrd.service.ServiceProvider;
@@ -84,7 +80,7 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
                 );
         SaOutOfSampleDiagnosticsFactory<TramoSeatsResults> outofsample
                 = new SaOutOfSampleDiagnosticsFactory<>(OutOfSampleDiagnosticsConfiguration.DEFAULT,
-                        r -> r.getPreprocessing().getModel());
+                        r -> r.getPreprocessing().regarima());
         SaResidualsDiagnosticsFactory<TramoSeatsResults> residuals
                 = new SaResidualsDiagnosticsFactory<>(ResidualsDiagnosticsConfiguration.DEFAULT,
                         r -> r.getPreprocessing());
@@ -97,7 +93,7 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
         AdvancedResidualSeasonalityDiagnosticsFactory<TramoSeatsResults> advancedResidualSeasonality
                 = new AdvancedResidualSeasonalityDiagnosticsFactory<>(AdvancedResidualSeasonalityDiagnosticsConfiguration.DEFAULT,
                         (TramoSeatsResults r) -> {
-                            boolean mul = r.getPreprocessing().isLogTransformation();
+                            boolean mul = r.getPreprocessing().getDescription().isLogTransformation();
                             TsData sa = r.getDecomposition().getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
                             TsData irr = r.getDecomposition().getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.Value);
                             return new AdvancedResidualSeasonalityDiagnostics.Input(mul, sa, irr);
@@ -106,7 +102,7 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
         ResidualTradingDaysDiagnosticsFactory<TramoSeatsResults> residualTradingDays
                 = new ResidualTradingDaysDiagnosticsFactory<>(ResidualTradingDaysDiagnosticsConfiguration.DEFAULT,
                         (TramoSeatsResults r) -> {
-                            boolean mul = r.getPreprocessing().isLogTransformation();
+                            boolean mul = r.getPreprocessing().getDescription().isLogTransformation();
                             TsData sa = r.getDecomposition().getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
                             TsData irr = r.getDecomposition().getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.Value);
                             return new ResidualTradingDaysDiagnostics.Input(mul, sa, irr);
@@ -151,19 +147,19 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
         return seats;
     }
 
-    private void update(TransformSpec transform, ModelEstimation rslts, TramoSpec.Builder builder) {
+    private void update(TransformSpec transform, RegSarimaModel rslts, TramoSpec.Builder builder) {
         if (transform.getFunction() == TransformationType.Auto) {
             TransformSpec ntransform = transform.toBuilder()
-                    .function(rslts.isLogTransformation() ? TransformationType.Log : TransformationType.None)
+                    .function(rslts.getDescription().isLogTransformation() ? TransformationType.Log : TransformationType.None)
                     .build();
             builder.transform(ntransform);
         }
     }
 
-    private void update(SarimaSpec sarima, ModelEstimation rslts, TramoSpec.Builder builder) {
+    private void update(SarimaSpec sarima, RegSarimaModel rslts, TramoSpec.Builder builder) {
         // Update the model (taking into account fixed parameters)
         sarima.getPhi();
-        SarimaModel model = rslts.getModel().arima();
+        SarimaModel model = rslts.arima();
         SarimaSpec nspec = sarima.toBuilder()
                 .phi(parametersOf(sarima.getPhi(), model.phi()))
                 .bphi(parametersOf(sarima.getBphi(), model.bphi()))
@@ -175,9 +171,9 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
         builder.arima(nspec);
     }
 
-    private void updateArima(ModelEstimation rslts, TramoSpec.Builder builder) {
+    private void updateArima(RegSarimaModel rslts, TramoSpec.Builder builder) {
         // Update completely the model (if AMI, no fixed parameters!)
-        SarimaModel model = rslts.getModel().arima();
+        SarimaModel model = rslts.arima();
         SarimaSpec nspec = SarimaSpec.builder()
                 .phi(Parameter.of(model.phi(), ParameterType.Estimated))
                 .bphi(Parameter.of(model.bphi(), ParameterType.Estimated))
@@ -189,7 +185,7 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
         builder.arima(nspec);
     }
 
-    private void update(AutoModelSpec ami, ModelEstimation rslts, TramoSpec.Builder builder) {
+    private void update(AutoModelSpec ami, RegSarimaModel rslts, TramoSpec.Builder builder) {
         // Disable ami
         AutoModelSpec nami = ami.toBuilder()
                 .enabled(false)
@@ -197,7 +193,7 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
         builder.autoModel(nami);
     }
 
-    private TramoSpec update(TramoSpec regarima, ModelEstimation rslts) {
+    private TramoSpec update(TramoSpec regarima, RegSarimaModel rslts) {
         TramoSpec.Builder builder = regarima.toBuilder();
         update(regarima.getTransform(), rslts, builder);
         update(regarima.getArima(), rslts, builder);
@@ -208,7 +204,7 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
         return builder.build();
     }
 
-    private void update(OutlierSpec outliers, ModelEstimation rslts, TramoSpec.Builder builder) {
+    private void update(OutlierSpec outliers, RegSarimaModel rslts, TramoSpec.Builder builder) {
         if (outliers.isUsed()) {    // Disable outliers
             builder.outliers(
                     outliers.toBuilder()
@@ -220,11 +216,11 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
         }
     }
 
-    private void update(RegressionSpec regression, ModelEstimation rslts, TramoSpec.Builder builder) {
+    private void update(RegressionSpec regression, RegSarimaModel rslts, TramoSpec.Builder builder) {
         // The huge part
         RegressionSpec.Builder rbuilder = regression.toBuilder();
         // all the coefficients (fixed or free) of the variables have already been filled
-        Variable[] variables = rslts.getVariables();
+        Variable[] variables = rslts.getDescription().getVariables();
         updateMean(variables, rbuilder);
         update(regression.getCalendar(), variables, rbuilder);
         updateOutliers(variables, rbuilder);

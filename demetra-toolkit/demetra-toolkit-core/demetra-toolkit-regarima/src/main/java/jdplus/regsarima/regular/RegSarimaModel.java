@@ -23,6 +23,7 @@ import demetra.data.Doubles;
 import demetra.data.Parameter;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
+import demetra.math.matrices.MatrixType;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
@@ -60,6 +61,10 @@ import jdplus.timeseries.simplets.Transformations;
 public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
 
     private static final MissingValueEstimation[] NOMISSING = new MissingValueEstimation[0];
+    
+    public static RegSarimaModel of(ModelDescription model, jdplus.regsarima.RegSarimaProcessor processor){
+        return RegSarimaModel.of(model, processor.process(model.regarima(), model.mapping()), ProcessingLog.dummy());
+    }
 
     public static RegSarimaModel of(ModelDescription description, RegArimaEstimation<SarimaModel> estimation, ProcessingLog log) {
 
@@ -150,6 +155,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
                 .X(model.variables())
                 .coefficients(ll.coefficients())
                 .coefficientsCovariance(ll.covariance(free, true))
+                .parameters(pestim)
                 .residuals(RegArimaUtility.fullResiduals(model, ll))
                 .statistics(estimation.statistics())
                 .missing(missing)
@@ -163,29 +169,26 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
                         .estimationDomain(description.getEstimationDomain())
                         .interpolatedSeries(interpolated)
                         .transformedSeries(transformed)
+                        .independentResiduals(ll.e())
                         .build());
 
         return builder.build();
     }
-
-    Description<SarimaSpec> description;
-    Estimation estimation;
 
     @lombok.Singular
     private Map<String, Object> additionalResults;
 
     @lombok.Value
     @lombok.Builder(builderClassName = "Builder")
-    static class Details {
+    public static class Details {
 
         TsDomain estimationDomain;
         TsData interpolatedSeries, transformedSeries;
+        DoubleSeq independentResiduals;
     }
 
-    private boolean isMean() {
-        return description.isMean();
-    }
-
+    Description<SarimaSpec> description;
+    Estimation estimation;
     Details details;
 
     public int getAnnualFrequency() {
@@ -194,6 +197,26 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
 
     public SarimaOrders specification() {
         return description.getStochasticComponent().orders();
+    }
+    
+    public SarimaModel arima(){
+        return SarimaModel.builder(description.getStochasticComponent())
+                .build();
+    }
+
+    public RegArimaModel<SarimaModel> regarima(){
+        
+        MatrixType X=estimation.getX();
+        
+        RegArimaModel.Builder builder = RegArimaModel.<SarimaModel>builder()
+                .y(estimation.getY())
+                .arima(arima())
+                .meanCorrection(description.isMean());
+        
+        int start=description.isMean()? 1 : 0;
+        for (int i=start; i<X.getColumnsCount(); ++i)
+            builder.addX(X.column(i));
+        return builder.build();
     }
 
     public TsData interpolatedSeries(boolean bTransformed) {

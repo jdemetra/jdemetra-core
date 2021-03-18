@@ -20,6 +20,7 @@ import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.regular.SeasonalFTest;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
+import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
 
 /**
@@ -41,8 +42,8 @@ class SeasonalOverDifferencingTest {
         if (spec.getBp() == 1 || spec.getBd() == 0 || spec.getBq() == 0 || arima.btheta(1) >= THRESHOLD) {
             return 0;
         }
-        TsData lin = context.build().linearizedSeries();
-        SeasonalityTests tests = SeasonalityTests.seasonalityTest(lin.getValues(), spec.getPeriod(), 1, true, true);
+        DoubleSeq lin = context.getEstimation().linearizedSeries();
+        SeasonalityTests tests = SeasonalityTests.seasonalityTest(lin, spec.getPeriod(), 1, true, true);
         SeasonalFTest ftest = new SeasonalFTest();
         ftest.test(context.getDescription());
         int score = tests.getScore();

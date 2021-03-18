@@ -18,7 +18,6 @@ package jdplus.tramo;
 
 import nbbrd.design.Development;
 import demetra.likelihood.LikelihoodStatistics;
-import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.stats.AutoCovariances;
 import jdplus.stats.samples.Sample;
 import jdplus.stats.tests.LjungBox;
@@ -28,14 +27,17 @@ import jdplus.tramo.internal.TramoUtility;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import java.util.Arrays;
+import jdplus.likelihood.ConcentratedLikelihood;
 import jdplus.regarima.ami.ModellingUtility;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.RegSarimaModel;
 
 /**
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder(builderClassName = "Builder")
 public class ModelStatistics {
 
     private int outliersCount;
@@ -58,25 +60,26 @@ public class ModelStatistics {
         return new Builder();
     }
 
-    public static ModelStatistics of(ModelEstimation m) {
-        LikelihoodStatistics stats = m.getStatistics();
-        DoubleSeq e = m.getConcentratedLikelihood().e();
+    public static ModelStatistics of(ModelDescription m, ConcentratedLikelihood ll) {
+        DoubleSeq e = ll.e();
         int p = m.getAnnualFrequency();
         int n = TramoUtility.calcLBLength(p);
         int nres = e.length();
-        int nhp=m.getFreeArimaParametersCount();
+        int nhp = m.getArimaSpec().freeParametersCount();
         IntToDoubleFunction acf = AutoCovariances.autoCorrelationFunction(e, 0);
         StatisticalTest lb = new LjungBox(acf, nres)
                 .autoCorrelationsCount(n)
                 .hyperParametersCount(nhp)
                 .build();
         StatisticalTest sk = new Skewness(e).build();
+        int nobs = ll.dim();
+        double bic = Math.log(ll.sigma()) + nhp * Math.log(nobs) / nobs; // TRAMO-like
         Builder builder = builder()
-                .outliersCount((int) Arrays.stream(m.getVariables()).filter(var -> ModellingUtility.isOutlier(var, true)).count())
-                .observationsCount(stats.getObservationsCount())
-                .effectiveObservationsCount(stats.getEffectiveObservationsCount())
-                .bic(stats.getBICC())
-                .se(Math.sqrt(stats.getSsqErr() / (stats.getEffectiveObservationsCount() - stats.getEstimatedParametersCount() + 1)))
+                .outliersCount((int) m.variables().filter(var -> ModellingUtility.isOutlier(var, true)).count())
+                .observationsCount(m.getEstimationDomain().getLength())
+                .effectiveObservationsCount(ll.dim())
+                .bic(bic)
+                .se(Math.sqrt(ll.ssq() / (ll.degreesOfFreedom() - nhp)))
                 .ljungBox(lb.getValue())
                 .ljungBoxPvalue(lb.getPValue())
                 .skewnessAbsvalue(Math.abs(sk.getValue()))
@@ -93,7 +96,7 @@ public class ModelStatistics {
         int nlast = Math.min(nres2, 10 * p);
         DoubleSeq data0 = e.range(0, nres - nlast);
         DoubleSeq data1 = e.range(nlast, nres);
-        
+
         Sample s0 = Sample.ofResiduals(data0);
         Sample s1 = Sample.ofResiduals(data1);
         StatisticalTest means = Sample.compareMeans(s0, s1, true);

@@ -102,7 +102,7 @@ public class SeatsModel {
 
         SarimaModel arima = estimation.getModel().arima();
         LikelihoodStatistics stat = estimation.statistics();
-        double var = stat.getSsqErr() / (stat.getEffectiveObservationsCount() - stat.getEstimatedParametersCount());
+        double var = stat.getSsqErr() / (stat.getEffectiveObservationsCount() - stat.getEstimatedParametersCount()+1);
         SeasonalityDetector detector = new TramoSeasonalityDetector();
         SeasonalityDetector.Seasonality seas = detector.hasSeasonality(nseries.getValues(), period);
 
@@ -147,7 +147,7 @@ public class SeatsModel {
                 .build();
         RegArimaEstimation<SarimaModel> estimation = RegArimaToolkit.concentratedLikelihood(regarima);
         LikelihoodStatistics stat = estimation.statistics();
-        double var = stat.getSsqErr() / (stat.getEffectiveObservationsCount() - stat.getEstimatedParametersCount());
+        double var = stat.getSsqErr() / (stat.getEffectiveObservationsCount() - stat.getEstimatedParametersCount()+1);
         if (set) {
             this.innovationVariance = var;
         }

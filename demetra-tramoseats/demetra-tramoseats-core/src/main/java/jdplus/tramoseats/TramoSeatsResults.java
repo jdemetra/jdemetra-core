@@ -17,11 +17,11 @@
 package jdplus.tramoseats;
 
 import demetra.processing.ProcResults;
-import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.seats.SeatsResults;
 import demetra.sa.SeriesDecomposition;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.tramoseats.extractors.TramoSeatsExtractor;
 
 /**
@@ -32,7 +32,7 @@ import jdplus.tramoseats.extractors.TramoSeatsExtractor;
 @lombok.Builder(builderClassName="Builder")
 public class TramoSeatsResults implements ProcResults {
 
-    private ModelEstimation preprocessing;
+    private RegSarimaModel preprocessing;
     private SeatsResults decomposition;
     private SeriesDecomposition finals;
 

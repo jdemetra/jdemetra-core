@@ -10,7 +10,7 @@ import nbbrd.design.Development;
 import demetra.information.InformationMapping;
 import demetra.sa.SaDictionary;
 import demetra.timeseries.TsData;
-import jdplus.regarima.extractors.ModelEstimationExtractor;
+import jdplus.regarima.extractors.RegSarimaModelExtractor;
 import jdplus.x13.X13Results;
 
 /**
@@ -92,7 +92,7 @@ public class X13Extractor {
 //                -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.Backcast));
 //        MAPPING.set(FINAL + SaDictionary.I + SeriesInfo.EB_SUFFIX, TsData.class, source
 //                -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast));
-        MAPPING.delegate("preprocessing", ModelEstimationExtractor.getMapping(), source -> source.getPreprocessing());
+        MAPPING.delegate("preprocessing", RegSarimaModelExtractor.getMapping(), source -> source.getPreprocessing());
         MAPPING.delegate("x11", X11Extractor.getMapping(), source -> source.getDecomposition());
    }
 

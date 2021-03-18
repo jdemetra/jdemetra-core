@@ -17,7 +17,7 @@
 package jdplus.tramo;
 
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
@@ -46,13 +46,9 @@ class SeasonalUnderDifferencingTest extends ModelController {
             return ProcessingResult.Unchanged;
         }
         RegSarimaModelling scontext = buildNewModel(modelling);
-        ModelEstimation smodel = scontext.build();
-        if (smodel == null) {
-            return ProcessingResult.Failed;
-        }
         ModelComparator cmp = ModelComparator.builder()
                 .build();
-        if (cmp.compare(smodel, modelling.build()) < 0) {
+        if (cmp.compare(scontext, modelling) < 0) {
 //            setReferenceModel(smodel);
             transferInformation(scontext, modelling);
             return ProcessingResult.Changed;

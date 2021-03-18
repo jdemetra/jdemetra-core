@@ -6,6 +6,7 @@
 package jdplus.regsarima.regular;
 
 import demetra.data.DoubleSeq;
+import demetra.likelihood.LikelihoodStatistics;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ITsVariable;
@@ -51,29 +52,30 @@ public class CheckLast {
             if (!testSeries(data)) {
                 return false;
             }
-            ModelEstimation model = kernel.process(data.drop(0, nback), null);
+            RegSarimaModel model = kernel.process(data.drop(0, nback), null);
             if (model == null) {
                 return false;
             }
 
-            Variable[] variables = model.getVariables();
+            Variable[] variables = model.getDescription().getVariables();
             // drop mean if any
-            if (model.getModel().isMean()){
+            if (model.getDescription().isMean()){
                 variables=Arrays.copyOfRange(variables, 1, variables.length);
             }
-            TsDomain fdom = TsDomain.of(model.getEstimationDomain().getEndPeriod(), nback);
+            TsDomain fdom = TsDomain.of(model.getDetails().getEstimationDomain().getEndPeriod(), nback);
             ITsVariable[] vars = new ITsVariable[variables.length];
             for (int i = 0; i < vars.length; ++i) {
                 vars[i] = variables[i].getCore();
             }
             Matrix matrix = Regression.matrix(fdom, vars);
             RegArimaForecasts.Result fcasts;
+            LikelihoodStatistics ll = model.getEstimation().getStatistics();
+            double sig2=ll.getSsqErr()/(ll.getEffectiveObservationsCount()-ll.getEstimatedParametersCount()+1);
             if (matrix.isEmpty()) {
-                fcasts = RegArimaForecasts.calcForecast(model.getModel(), model.getConcentratedLikelihood(),
-                        nback, true, model.getFreeArimaParametersCount());
+                fcasts = RegArimaForecasts.calcForecast(model.regarima(), nback, sig2);
             } else {
-                fcasts = RegArimaForecasts.calcForecast(model.getModel(), model.getConcentratedLikelihood(),
-                        matrix, true, model.getFreeArimaParametersCount());
+                fcasts = RegArimaForecasts.calcForecast(model.regarima(), matrix, model.getEstimation().getCoefficients(), 
+                        model.getEstimation().getCoefficientsCovariance(), sig2);
             }
             f=fcasts.getForecasts();
             ef=fcasts.getForecastsStdev();

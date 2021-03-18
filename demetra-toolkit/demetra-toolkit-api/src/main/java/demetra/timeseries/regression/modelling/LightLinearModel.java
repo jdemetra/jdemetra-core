@@ -88,9 +88,9 @@ public class LightLinearModel<M> implements GeneralLinearModel<M> {
          * fixed regression variables)
          * and of the free regression variable (including mean correction)
          */
-        @lombok.NonNull
+//        @lombok.NonNull
         private DoubleSeq y;
-        @lombok.NonNull
+//        @lombok.NonNull
         private MatrixType X;
 
         /**
@@ -98,24 +98,24 @@ public class LightLinearModel<M> implements GeneralLinearModel<M> {
          * variables
          * Fixed coefficients are not included
          */
-        @lombok.NonNull
+//        @lombok.NonNull
         private DoubleSeq coefficients;
-        @lombok.NonNull
+//        @lombok.NonNull
         private MatrixType coefficientsCovariance;
 
-        @lombok.NonNull
+//        @lombok.NonNull
         private MissingValueEstimation[] missing;
         /**
          * Parameters of the stochastic component. Fixed parameters are not
          * included
          */
-        @lombok.NonNull
+//        @lombok.NonNull
         private ParametersEstimation parameters;
 
-        @lombok.NonNull
+//        @lombok.NonNull
         private LikelihoodStatistics statistics;
 
-        @lombok.NonNull
+//        @lombok.NonNull
         private DoubleSeq residuals;
 
         @lombok.Singular

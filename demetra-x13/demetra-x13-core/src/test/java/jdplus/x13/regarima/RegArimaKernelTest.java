@@ -23,7 +23,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -53,9 +53,9 @@ public class RegArimaKernelTest {
         RegArimaKernel processor = RegArimaKernel.of(RegArimaSpec.RG5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(datamissing));
-        ModelEstimation rslt = processor.process(s, null);
+        RegSarimaModel rslt = processor.process(s, null);
         System.out.println("New");
-        System.out.println(rslt.getConcentratedLikelihood().logLikelihood());
+        System.out.println(rslt.getEstimation().getStatistics().getLogLikelihood());
     }
 
     @Test
@@ -80,13 +80,13 @@ public class RegArimaKernelTest {
         RegArimaKernel processor = RegArimaKernel.of(spec, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
         TsData s = TsData.of(start, Doubles.of(data));
-        ModelEstimation rslt = processor.process(s, null);
+        RegSarimaModel rslt = processor.process(s, null);
         RegArimaSpecification ospec = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.clone();
 //        ospec.getOutliers().setDefaultCriticalValue(3);
         IPreprocessor oprocessor = ospec.build();
         ec.tstoolkit.timeseries.simplets.TsData os = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
         ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(os, null);
-        assertEquals(rslt.getStatistics().getLogLikelihood(), orslt.estimation.getStatistics().logLikelihood, 1e-4);
+        assertEquals(rslt.getEstimation().getStatistics().getLogLikelihood(), orslt.estimation.getStatistics().logLikelihood, 1e-4);
     }
 
     @Test
@@ -96,11 +96,11 @@ public class RegArimaKernelTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG0.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -123,11 +123,11 @@ public class RegArimaKernelTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG1.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -150,11 +150,11 @@ public class RegArimaKernelTest {
         IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG2.build();
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-            ModelEstimation rslt = processor.process(all[i], null);
+            RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -177,11 +177,11 @@ public class RegArimaKernelTest {
         for (int i = 0; i < all.length; ++i) {
             RegArimaKernel processor = RegArimaKernel.of(RegArimaSpec.RG3, null);
             IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG3.build();
-            ModelEstimation rslt = processor.process(all[i], null);
+            RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -204,11 +204,11 @@ public class RegArimaKernelTest {
         for (int i = 0; i < all.length; ++i) {
             RegArimaKernel processor = RegArimaKernel.of(RegArimaSpec.RG4, null);
             IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG4.build();
-            ModelEstimation rslt = processor.process(all[i], null);
+            RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -231,11 +231,11 @@ public class RegArimaKernelTest {
         for (int i = 0; i < all.length; ++i) {
             RegArimaKernel processor = RegArimaKernel.of(RegArimaSpec.RG5, null);
             IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.build();
-            ModelEstimation rslt = processor.process(all[i], null);
+            RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
             ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
-            double del = rslt.getStatistics().getAdjustedLogLikelihood()
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
                     - orslt.estimation.getStatistics().adjustedLogLikelihood;
             if (Math.abs(del) < 1e-3) {
                 ++n;
@@ -267,7 +267,7 @@ public class RegArimaKernelTest {
             RegArimaKernel processor = RegArimaKernel.of(spec, null);
             TsPeriod start = TsPeriod.monthly(1967, 1);
             TsData s = TsData.of(start, Doubles.of(data));
-            ModelEstimation rslt = processor.process(s, null);
+            RegSarimaModel rslt = processor.process(s, null);
         }
         t1 = System.currentTimeMillis();
         System.out.println("new: " + (t1 - t0));

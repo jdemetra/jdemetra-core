@@ -18,15 +18,12 @@ package jdplus.regarima.diagnostics;
 
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
-import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.IOutlier;
-import demetra.timeseries.regression.Variable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import jdplus.regarima.ami.ModellingUtility;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 
 /**
  *
@@ -37,7 +34,7 @@ public final class OutliersDiagnostics implements Diagnostics {
     private final OutliersDiagnosticsConfiguration config;
     private int n, prespecifiedOutliers, detectedOutliers;
 
-    static OutliersDiagnostics create(ModelEstimation model, OutliersDiagnosticsConfiguration config) {
+    static OutliersDiagnostics create(RegSarimaModel model, OutliersDiagnosticsConfiguration config) {
         try {
             if (model == null) {
                 return null;
@@ -49,24 +46,24 @@ public final class OutliersDiagnostics implements Diagnostics {
         }
     }
 
-    private OutliersDiagnostics(ModelEstimation model, OutliersDiagnosticsConfiguration config) {
+    private OutliersDiagnostics(RegSarimaModel model, OutliersDiagnosticsConfiguration config) {
         // set the boundaries...
         this.config = config;
         test(model);
     }
 
-    private void test(ModelEstimation rslts) {
-        TsData y = rslts.getOriginalSeries();
+    private void test(RegSarimaModel rslts) {
+        TsData y = rslts.getDescription().getSeries();
         if (y == null) {
             return;
         }
         n = y.length();
 
-        prespecifiedOutliers = (int) Arrays.stream(rslts.getVariables())
+        prespecifiedOutliers = (int) Arrays.stream(rslts.getDescription().getVariables())
                 .filter(var -> ModellingUtility.isOutlier(var))
                 .filter(var -> !ModellingUtility.isAutomaticallyIdentified(var))
                 .count();
-        detectedOutliers = (int) Arrays.stream(rslts.getVariables())
+        detectedOutliers = (int) Arrays.stream(rslts.getDescription().getVariables())
                 .filter(var -> ModellingUtility.isOutlier(var))
                 .filter(var -> ModellingUtility.isAutomaticallyIdentified(var))
                 .count();

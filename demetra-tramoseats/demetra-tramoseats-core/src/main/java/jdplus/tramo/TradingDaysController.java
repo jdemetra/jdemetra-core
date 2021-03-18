@@ -10,15 +10,12 @@ import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
 import demetra.timeseries.regression.Variable;
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import jdplus.modelling.regression.Regression;
 import demetra.data.DoubleSeq;
-import demetra.sa.ComponentType;
-import demetra.sa.SaVariable;
 import jdplus.math.matrices.Matrix;
 import jdplus.regarima.ami.ModellingUtility;
 
@@ -58,10 +55,8 @@ class TradingDaysController extends ModelController {
         if (!estimate(ncontext, true)) {
             return ProcessingResult.Failed;
         }
-        ModelEstimation current = modelling.build();
-        ModelEstimation ncurrent = ncontext.build();
         ModelComparator mcmp = ModelComparator.builder().build();
-        int cmp = mcmp.compare(current, ncurrent);
+        int cmp = mcmp.compare(modelling, ncontext);
         if (cmp < 1) {
 //            setReferenceModel(current);
             return ProcessingResult.Unchanged;

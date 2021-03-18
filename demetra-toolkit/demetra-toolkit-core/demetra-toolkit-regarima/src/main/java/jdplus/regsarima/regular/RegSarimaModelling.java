@@ -17,8 +17,15 @@
 package jdplus.regsarima.regular;
 
 import demetra.arima.SarimaOrders;
+import demetra.data.DoubleSeqCursor;
 import nbbrd.design.Development;
 import demetra.processing.ProcessingLog;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.math.matrices.Matrix;
+import jdplus.modelling.regression.Regression;
 import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regsarima.RegSarimaProcessor;
@@ -63,8 +70,8 @@ public class RegSarimaModelling {
         estimation = description.estimate(processor);
     }
 
-    public ModelEstimation build() {
-        return ModelEstimation.of(this);
+    public RegSarimaModel build() {
+        return RegSarimaModel.of(description, estimation, log);
     }
     
     public void clearEstimation(){
@@ -94,7 +101,8 @@ public class RegSarimaModelling {
         this.description=desc;
         this.estimation=est;
     }
-    
+   
+   
 //    public ModellingContext() {
 //        processingLog = new ArrayList<>();
 //    }

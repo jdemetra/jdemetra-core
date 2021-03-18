@@ -17,6 +17,8 @@
 package jdplus.regarima;
 
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
+import demetra.math.matrices.MatrixType;
 import java.util.List;
 import jdplus.arima.IArimaModel;
 import jdplus.arima.ssf.SsfArima;
@@ -46,12 +48,12 @@ public class RegArimaForecasts {
         double[] forecasts, forecastsStdev;
     }
 
-    public <M extends IArimaModel> Result calcForecast(final RegArimaModel<M> regarima, final ConcentratedLikelihoodWithMissing cl, final int nf, boolean unbiased, int nhp) {
+    public <M extends IArimaModel> Result calcForecast(final RegArimaModel<M> regarima, final int nf, final double sig2) {
         // use dummy matrix
-        return calcForecast(regarima, cl, Matrix.make(nf, 1), unbiased, nhp);
+        return calcForecast(regarima, Matrix.make(nf, 1), Doubles.EMPTY, MatrixType.EMPTY, sig2);
     }
 
-    public <M extends IArimaModel> Result calcForecast(final RegArimaModel<M> regarima, final ConcentratedLikelihoodWithMissing cl, final Matrix Xf, boolean unbiased, int nhp) {
+    public <M extends IArimaModel> Result calcForecast(final RegArimaModel<M> regarima, final Matrix Xf,final DoubleSeq b, final MatrixType v, final double sig2) {
         DoubleSeq y = regarima.getY();
         int nf = Xf.getRowsCount(), n = y.length();
         int nall = n + nf;
@@ -86,15 +88,11 @@ public class RegArimaForecasts {
         fr.getComponent(0).drop(n, 0).copyTo(f, 0);
         fr.getComponentVariance(0).drop(n, 0).copyTo(vf, 0);
 
-        int ndf = unbiased ? cl.dim() - cl.nx() - nhp : cl.dim();
-        double sig2 = cl.ssq() / ndf;
         for (int i = 0; i < nf; ++i) {
             vf[i] *= sig2;
         }
 //        // compute X-LX
         if (nx > 0) {
-            DoubleSeq b = cl.coefficients();
-            Matrix v = cl.covariance(nhp, unbiased);
 
             Matrix xall = Matrix.make(nall, nx);
             int j = 0;
@@ -116,10 +114,11 @@ public class RegArimaForecasts {
 
             DataBlockIterator xrows = dx.rowsIterator();
             j = 0;
+            Matrix V=Matrix.of(v);
             while (xrows.hasNext()) {
                 DataBlock xrow = xrows.next();
                 f[j] += xrow.dot(b);
-                vf[j] += QuadraticForm.apply(v, xrow);
+                vf[j] += QuadraticForm.apply(V, xrow);
                 j++;
             }
         }
