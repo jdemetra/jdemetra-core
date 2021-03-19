@@ -80,7 +80,8 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
         DoubleSeqCursor cursor = estimation.getConcentratedLikelihood().coefficients().cursor();
         int k = 0;
         if (description.isMean()) {
-            variables[k++] = Variable.variable("const", new TrendConstant(arima.getD(), arima.getBd()));
+            variables[k++] = Variable.variable("const", new TrendConstant(arima.getD(), arima.getBd()))
+                    .withCoefficient(Parameter.estimated(cursor.getAndNext()));
         }
         // fill the free coefficients
         for (Variable var : vars) {
@@ -149,10 +150,10 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
             }
             transformed = TsData.ofInternal(transformed.getStart(), datac);
         }
-
+        
         LightLinearModel.Estimation est = LightLinearModel.Estimation.builder()
                 .y(model.getY())
-                .X(model.variables())
+                .X(model.allVariables())
                 .coefficients(ll.coefficients())
                 .coefficientsCovariance(ll.covariance(free, true))
                 .parameters(pestim)

@@ -9,6 +9,7 @@ import demetra.data.DoubleSeq;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.Variable;
 import java.util.Arrays;
@@ -58,30 +59,27 @@ public class Forecast {
                 return false;
             }
 
-            Variable[] variables = model.getDescription().getVariables();
-            // drop mean if any
-            if (model.getDescription().isMean()) {
-                variables = Arrays.copyOfRange(variables, 1, variables.length);
-            }
-            TsDomain fdom = TsDomain.of(model.getDetails().getEstimationDomain().getEndPeriod(), nf);
-            ITsVariable[] vars = new ITsVariable[variables.length];
-            for (int i = 0; i < vars.length; ++i) {
-                vars[i] = variables[i].getCore();
-            }
-            Matrix matrix = Regression.matrix(fdom, vars);
             RegArimaForecasts.Result fcasts;
+            DoubleSeq b = model.getEstimation().getCoefficients();
             LikelihoodStatistics ll = model.getEstimation().getStatistics();
-            double sig2=ll.getSsqErr()/(ll.getEffectiveObservationsCount()-ll.getEstimatedParametersCount()+1);
-            if (matrix.isEmpty()) {
-                fcasts = RegArimaForecasts.calcForecast(model.regarima(), nf, sig2);
+            double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount() + 1);
+            TsDomain edom = model.getDetails().getEstimationDomain();
+            if (b.isEmpty()) {
+                fcasts = RegArimaForecasts.calcForecast(model.arima(),
+                        model.getEstimation().originalY(), nf, sig2);
             } else {
-                fcasts = RegArimaForecasts.calcForecast(model.regarima(), matrix, model.getEstimation().getCoefficients(), 
-                        model.getEstimation().getCoefficientsCovariance(), sig2);
+                Variable[] variables = model.getDescription().getVariables();
+                TsDomain xdom = edom.extend(0, nf);
+                Matrix matrix = Regression.matrix(xdom, Arrays.stream(variables).map(v -> v.getCore()).toArray(n -> new ITsVariable[n]));
+                fcasts = RegArimaForecasts.calcForecast(model.arima(),
+                        model.getEstimation().originalY(), matrix,
+                        b, model.getEstimation().getCoefficientsCovariance(), sig2);
             }
+            TsPeriod fstart = edom.getEndPeriod();
             f = fcasts.getForecasts();
             ef = fcasts.getForecastsStdev();
 
-            TsData tf = TsData.ofInternal(fdom.getStartPeriod(), f);
+            TsData tf = TsData.ofInternal(fstart, f);
             fy = model.backTransform(tf, true);
 
             if (model.getDescription().isLogTransformation()) {
@@ -89,9 +87,9 @@ public class Forecast {
                 for (int i = 0; i < nf; ++i) {
                     e[i] = LogNormal.stdev(f[i], ef[i]);
                 }
-                efy = TsData.ofInternal(fdom.getStartPeriod(), e);
+                efy = TsData.ofInternal(fstart, e);
             } else {
-                efy = TsData.ofInternal(fdom.getStartPeriod(), ef);
+                efy = TsData.ofInternal(fstart, ef);
             }
 
             return true;

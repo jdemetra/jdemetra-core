@@ -9,6 +9,7 @@ import demetra.data.DoubleSeq;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.Variable;
 import java.util.Arrays;
@@ -57,34 +58,31 @@ public class CheckLast {
                 return false;
             }
 
-            Variable[] variables = model.getDescription().getVariables();
-            // drop mean if any
-            if (model.getDescription().isMean()){
-                variables=Arrays.copyOfRange(variables, 1, variables.length);
-            }
-            TsDomain fdom = TsDomain.of(model.getDetails().getEstimationDomain().getEndPeriod(), nback);
-            ITsVariable[] vars = new ITsVariable[variables.length];
-            for (int i = 0; i < vars.length; ++i) {
-                vars[i] = variables[i].getCore();
-            }
-            Matrix matrix = Regression.matrix(fdom, vars);
             RegArimaForecasts.Result fcasts;
+            DoubleSeq b = model.getEstimation().getCoefficients();
             LikelihoodStatistics ll = model.getEstimation().getStatistics();
-            double sig2=ll.getSsqErr()/(ll.getEffectiveObservationsCount()-ll.getEstimatedParametersCount()+1);
-            if (matrix.isEmpty()) {
-                fcasts = RegArimaForecasts.calcForecast(model.regarima(), nback, sig2);
+            double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount() + 1);
+            TsDomain edom = model.getDetails().getEstimationDomain();
+            if (b.isEmpty()) {
+                fcasts = RegArimaForecasts.calcForecast(model.arima(),
+                        model.getEstimation().originalY(), nback, sig2);
             } else {
-                fcasts = RegArimaForecasts.calcForecast(model.regarima(), matrix, model.getEstimation().getCoefficients(), 
-                        model.getEstimation().getCoefficientsCovariance(), sig2);
+                Variable[] variables = model.getDescription().getVariables();
+                TsDomain xdom = edom.extend(0, nback);
+                Matrix matrix = Regression.matrix(xdom, Arrays.stream(variables).map(v -> v.getCore()).toArray(n -> new ITsVariable[n]));
+                fcasts = RegArimaForecasts.calcForecast(model.arima(),
+                        model.getEstimation().originalY(), matrix,
+                        b, model.getEstimation().getCoefficientsCovariance(), sig2);
             }
-            f=fcasts.getForecasts();
-            ef=fcasts.getForecastsStdev();
-            
-            y=TsData.fitToDomain(data, fdom);
-            fy=model.transform(y, true);
-            TsData tf=TsData.ofInternal(fdom.getStartPeriod(), f);
-            oforecasts=model.backTransform(tf, true);
-             return true;
+            TsDomain fdom = TsDomain.of(edom.getEndPeriod(), nback);
+            f = fcasts.getForecasts();
+            ef = fcasts.getForecastsStdev();
+
+            y = TsData.fitToDomain(data, fdom);
+            fy = model.transform(y, true);
+            TsData tf = TsData.ofInternal(fdom.getStartPeriod(), f);
+            oforecasts = model.backTransform(tf, true);
+            return true;
         } catch (Exception err) {
             return false;
         }
@@ -186,14 +184,15 @@ public class CheckLast {
     public double getRelativeError(int i) {
         return getScore(i);
     }
-    
-    public double[] getRawForecasts(){
+
+    public double[] getRawForecasts() {
         return f;
     }
 
-    public double[] getRawForecastsStdev(){
+    public double[] getRawForecastsStdev() {
         return ef;
     }
+
     /**
      * Gets the number of last observations that will be considered
      *

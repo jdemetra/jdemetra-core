@@ -27,6 +27,7 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.Variable;
 import java.util.List;
 import java.util.Map;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -92,6 +93,26 @@ public interface GeneralLinearModel<M> {
          * @return
          */
         DoubleSeq getY();
+
+        /**
+         * @return y not corrected for missing
+         */
+        default DoubleSeq originalY() {
+            DoubleSeq y = getY();
+            if (y.anyMatch(z -> Double.isNaN(z))) {
+                // already contains the missing values
+                return y;
+            }
+            MissingValueEstimation[] missing = getMissing();
+            if (missing.length == 0) {
+                return y;
+            }
+            double[] z = y.toArray();
+            for (int i = 0; i < missing.length; ++i) {
+                z[missing[i].getPosition()] = Double.NaN;
+            }
+            return DoubleSeq.of(z);
+        }
 
         /**
          * Regression variables (including meanCorrection)

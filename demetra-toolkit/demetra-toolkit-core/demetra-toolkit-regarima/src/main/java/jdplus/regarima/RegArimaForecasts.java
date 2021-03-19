@@ -17,14 +17,11 @@
 package jdplus.regarima;
 
 import demetra.data.DoubleSeq;
-import demetra.data.Doubles;
 import demetra.math.matrices.MatrixType;
-import java.util.List;
 import jdplus.arima.IArimaModel;
 import jdplus.arima.ssf.SsfArima;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.ssf.ResultsRange;
@@ -34,8 +31,11 @@ import jdplus.ssf.dk.sqrt.DiffuseSquareRootInitializer;
 import jdplus.ssf.univariate.OrdinaryFilter;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
+ * f = X'b + L(y-X'b) = Ly + (X - LX)'b
+ * var(f) = var (Ly)+ (X - LX)' var(b)(X - LX)
  *
  * @author PALATEJ
  */
@@ -48,29 +48,45 @@ public class RegArimaForecasts {
         double[] forecasts, forecastsStdev;
     }
 
-    public <M extends IArimaModel> Result calcForecast(final RegArimaModel<M> regarima, final int nf, final double sig2) {
-        // use dummy matrix
-        return calcForecast(regarima, Matrix.make(nf, 1), Doubles.EMPTY, MatrixType.EMPTY, sig2);
+    /**
+     *
+     * @param <M>
+     * @param arima
+     * @param y
+     * @param X X should contain the regression variables extended with
+     * forecasts
+     * @param b
+     * @param varB
+     * @param sig2
+     * @return
+     */
+    public <M extends IArimaModel> Result calcForecast(final @NonNull IArimaModel arima, final @NonNull DoubleSeq y, final @NonNull MatrixType X, final @NonNull DoubleSeq b, final @NonNull MatrixType varB, final double sig2) {
+        return calcForecast(arima, y, X.getRowsCount() - y.length(), X, b, varB, sig2);
     }
 
-    public <M extends IArimaModel> Result calcForecast(final RegArimaModel<M> regarima, final Matrix Xf,final DoubleSeq b, final MatrixType v, final double sig2) {
-        DoubleSeq y = regarima.getY();
-        int nf = Xf.getRowsCount(), n = y.length();
-        int nall = n + nf;
+    /**
+     *
+     * @param <M>
+     * @param arima
+     * @param y
+     * @param nf
+     * @param sig2
+     * @return
+     */
+    public <M extends IArimaModel> Result calcForecast(final @NonNull IArimaModel arima, final @NonNull DoubleSeq y, final int nf, final double sig2) {
+        return calcForecast(arima, y, nf, null, null, null, sig2);
+    }
+
+    private <M extends IArimaModel> Result calcForecast(final IArimaModel arima, final DoubleSeq y, final int nf, final MatrixType X, final DoubleSeq b, final MatrixType varb, final double sig2) {
+
+        int n = y.length(), nall = n + nf;
         double[] yall = new double[nall];
         y.copyTo(yall, 0);
         for (int i = n; i < nall; ++i) {
             yall[i] = Double.NaN;
         }
-        // reset missing values, if any
-        int[] missings = regarima.missing();
-        if (missings != null) {
-            for (int i = 0; i < missings.length; ++i) {
-                yall[missings[i]] = Double.NaN;
-            }
-        }
 
-        Ssf ssf = SsfArima.ssf(regarima.arima());
+        Ssf ssf = SsfArima.ssf(arima);
         DefaultDiffuseSquareRootFilteringResults fr = DefaultDiffuseSquareRootFilteringResults.full();
         fr.prepare(ssf, 0, nall);
         DiffuseSquareRootInitializer initializer = new DiffuseSquareRootInitializer(fr);
@@ -79,7 +95,7 @@ public class RegArimaForecasts {
         ResultsRange range = new ResultsRange(0, nall);
         DkFilter filter = new DkFilter(ssf, fr, range, false);
 
-        int nx = regarima.getVariablesCount();
+        int nx = X == null ? 0 : X.getColumnsCount();
 
         // get forecasts of the series
         double[] f = new double[nf];
@@ -91,30 +107,16 @@ public class RegArimaForecasts {
         for (int i = 0; i < nf; ++i) {
             vf[i] *= sig2;
         }
-//        // compute X-LX
         if (nx > 0) {
-
-            Matrix xall = Matrix.make(nall, nx);
-            int j = 0;
-            if (regarima.isMean()) {
-                double[] xm = RegArimaUtility.meanRegressionVariable(regarima.arima().getNonStationaryAr(), nall);
-                xall.column(j++).copyFrom(xm, 0);
-            }
-            List<DoubleSeq> x = regarima.getX();
-            if (!x.isEmpty()) {
-                xall.extract(n, nf, j, nx - j).copy(Xf);
-
-                for (DoubleSeq xcur : x) {
-                    xall.column(j++).range(0, n).copy(xcur);
-                }
-            }
-
+            // compute DX = X-LX 
+            Matrix xall = Matrix.of(X);
+            Matrix dx = xall.extract(n, nf, 0, nx).deepClone();
             filter.filter(xall);
-            Matrix dx = xall.extract(n, nf, 0, nx);
-
+            dx.sub(xall.extract(n, nf, 0, nx));
+            // F += DX * b, varF += DX*varB*DX'
             DataBlockIterator xrows = dx.rowsIterator();
-            j = 0;
-            Matrix V=Matrix.of(v);
+            int j = 0;
+            Matrix V = Matrix.of(varb);
             while (xrows.hasNext()) {
                 DataBlock xrow = xrows.next();
                 f[j] += xrow.dot(b);
