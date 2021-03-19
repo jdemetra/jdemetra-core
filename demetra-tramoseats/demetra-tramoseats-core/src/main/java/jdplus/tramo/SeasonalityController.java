@@ -7,11 +7,11 @@ package jdplus.tramo;
 
 import nbbrd.design.Development;
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.regular.SeasonalFTest;
 import demetra.arima.SarimaOrders;
+import demetra.data.DoubleSeq;
 import jdplus.stats.tests.StatisticalTest;
 import demetra.timeseries.TsData;
 import static jdplus.tramo.SeasonalityTests.MSHORT;
@@ -49,15 +49,15 @@ class SeasonalityController extends ModelController {
     }
 
     private void computeSTests() {
-        ModelEstimation refestimation = getReferenceModel().build();
-        TsData lin = refestimation.linearizedSeries();
-        SarimaOrders spec = refestimation.specification();
+        RegSarimaModelling refestimation = getReferenceModel();
+        DoubleSeq lin = refestimation.getEstimation().linearizedSeries();
+        SarimaOrders spec = refestimation.getDescription().specification();
 //        int del = spec.getD() + spec.getBD();
 //        del = Math.max(Math.min(2, del), 1);
         int del = 1;
         stests = new SeasonalityTests();
-        stests.test(lin.getValues(), lin.getAnnualFrequency(), del, true);
-        mstats = ModelStatistics.of(refestimation);
+        stests.test(lin, refestimation.getDescription().getAnnualFrequency(), del, true);
+        mstats = ModelStatistics.of(refestimation.getDescription(), refestimation.getEstimation().getConcentratedLikelihood());
     }
 
     private boolean hasSeasonality(RegSarimaModelling modelling, TramoContext context) {
@@ -104,11 +104,10 @@ class SeasonalityController extends ModelController {
      * @return
      */
     private ProcessingResult computeReferenceModel(RegSarimaModelling modelling, TramoContext context) {
-        ModelEstimation model = modelling.build();
         setReferenceModel(modelling);
         computeSTests();
         boolean seas = hasSeasonality(modelling, context);
-        SarimaOrders spec = model.specification();
+        SarimaOrders spec = modelling.getDescription().specification();
         SarimaOrders nspec = null;
         if (!seas && spec.isSeasonal()) {
             nspec = SarimaOrders.m011(spec.getPeriod());
@@ -139,9 +138,8 @@ class SeasonalityController extends ModelController {
     private ProcessingResult compareReferenceModels(RegSarimaModelling context) {
         // compare with the previous reference model
         RegSarimaModelling referenceModel = getReferenceModel();
-        ModelEstimation refestimation = referenceModel.build();
         ModelComparator.Preference pref = ModelComparator.Preference.BIC;
-        if (!refestimation.specification().equals(context.getDescription().specification())) {
+        if (!referenceModel.getDescription().specification().equals(context.getDescription().specification())) {
             SeasonalOverDifferencingTest overseas = new SeasonalOverDifferencingTest();
             switch (overseas.test(context)) {
                 case 1:
@@ -155,8 +153,7 @@ class SeasonalityController extends ModelController {
         ModelComparator cmp = ModelComparator.builder()
                 .preference(pref)
                 .build();
-        ModelEstimation cur = context.build();
-        int icmp = cmp.compare(cur, refestimation);
+        int icmp = cmp.compare(context, referenceModel);
         if (icmp <= 0) {
             setReferenceModel(context);
             return ProcessingResult.Unchanged;

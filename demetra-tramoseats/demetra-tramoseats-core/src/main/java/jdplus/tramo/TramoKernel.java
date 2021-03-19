@@ -25,7 +25,6 @@ import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.SeasonalityDetector;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
-import jdplus.regsarima.regular.ModelEstimation;
 import demetra.arima.SarimaOrders;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
@@ -45,6 +44,7 @@ import jdplus.tramo.internal.OutliersDetectionModule;
 import java.util.ArrayList;
 import java.util.List;
 import jdplus.regarima.ami.ModellingUtility;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.regsarima.regular.RegSarimaProcessor;
 
 /**
@@ -209,7 +209,7 @@ public class TramoKernel implements RegSarimaProcessor {
     }
 
     @Override
-    public ModelEstimation process(TsData originalTs, ProcessingLog log) {
+    public RegSarimaModel process(TsData originalTs, ProcessingLog log) {
         if (log == null)
             log=ProcessingLog.dummy();
         log.push(TRAMO);
@@ -218,7 +218,7 @@ public class TramoKernel implements RegSarimaProcessor {
             throw new TramoException("Initialization failed");
         }
         RegSarimaModelling modelling = RegSarimaModelling.of(desc, log);
-        ModelEstimation rslt = ami(modelling, log);
+        RegSarimaModel rslt = ami(modelling, log);
         log.pop();
         return rslt;
     }
@@ -234,7 +234,7 @@ public class TramoKernel implements RegSarimaProcessor {
 
     }
 
-    private ModelEstimation ami(RegSarimaModelling modelling, ProcessingLog log) {
+    private RegSarimaModel ami(RegSarimaModelling modelling, ProcessingLog log) {
 
         // Test the seasonality
         testSeasonality(modelling);
@@ -344,7 +344,7 @@ public class TramoKernel implements RegSarimaProcessor {
             ++pass;
             refAirline = RegSarimaModelling.copyOf(modelling);
             refAuto = RegSarimaModelling.copyOf(modelling);
-            refStats = ModelStatistics.of(refAuto.build());
+            refStats = ModelStatistics.of(refAuto.getDescription(), refAuto.getEstimation().getConcentratedLikelihood());
             double lb = refStats.getLjungBoxPvalue();
             return options.acceptAirline && (1 - lb) < options.ljungBoxLimit;
         }
@@ -547,8 +547,7 @@ public class TramoKernel implements RegSarimaProcessor {
         SarimaModel curmodel = context.getDescription().arima();
         SarimaOrders curspec = curmodel.orders();
 
-        ModelEstimation cur = context.build();
-        ModelStatistics stats = ModelStatistics.of(cur);
+         ModelStatistics stats = ModelStatistics.of(context.getDescription(), context.getEstimation().getConcentratedLikelihood());
         double plbox = 1 - stats.getLjungBoxPvalue();
         double rvr = stats.getSe();
         if (refAuto != null) {

@@ -14,39 +14,18 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.timeseries.regression.modelling;
+package demetra.sts;
 
-import demetra.timeseries.TsData;
-import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.regression.Variable;
+import demetra.data.Parameter;
 
 /**
  *
- * @author Jean Palate
- * @param <M>
+ * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-@lombok.Builder
-public class LinearModelSpec<M> {
+public class CycleComponent {
 
-    /**
-     * Original series
-     */
-    private TsData series;
-    /**
-     * Log transformation
-     */
-    private boolean logTransformation;
-    /**
-     * Transformation for leap year or length of period
-     */
-    private LengthOfPeriodType lengthOfPeriodTransformation;
+    private Parameter variance;
+    private Parameter cdump, cyclePeriod;
 
-    /**
-     * Regression variables
-     */
-    private boolean meanCorrection;
-    private Variable[] variables;
-
-    private M stochasticComponent;
 }

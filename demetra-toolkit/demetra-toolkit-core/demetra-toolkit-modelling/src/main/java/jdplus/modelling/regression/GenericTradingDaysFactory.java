@@ -114,10 +114,11 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
 
     public boolean fill(GenericTradingDays var, TsPeriod start, Matrix buffer) {
 
-        if (var.isContrast()) {
+        if (var.getType() == GenericTradingDays.Type.CONTRAST) {
             dataContrast(var.getClustering(), start, buffer);
         } else {
-            dataNoContrast(var.getClustering(), var.isNormalized(), start, buffer);
+            dataNoContrast(var.getClustering(), var.getType() == GenericTradingDays.Type.NORMALIZED,
+                    var.getType() == GenericTradingDays.Type.MEANCORRECTED, start, buffer);
         }
         return true;
     }
@@ -125,27 +126,28 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
     @Override
     public boolean fill(GenericTradingDaysVariable var, TsPeriod start, Matrix buffer) {
 
-        if (var.isContrast()) {
+        if (var.getType() == GenericTradingDays.Type.CONTRAST) {
             dataContrast(var.getClustering(), start, buffer);
         } else {
-            dataNoContrast(var.getClustering(), var.isNormalized(), start, buffer);
+            dataNoContrast(var.getClustering(), var.getType() == GenericTradingDays.Type.NORMALIZED,
+                    var.getType() == GenericTradingDays.Type.MEANCORRECTED, start, buffer);
         }
         return true;
     }
 
     @Override
-    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(GenericTradingDaysVariable var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>> boolean fill(GenericTradingDaysVariable var, D domain, Matrix buffer) {
         throw new UnsupportedOperationException("Not supported.");
     }
 
     private static final double[] MDAYS = new double[]{31.0, 28.25, 31.0, 30.0, 31.0, 30.0, 31.0, 31.0, 30.0, 31.0, 30.0, 31.0};
 
-    private void dataNoContrast(DayClustering clustering, boolean normalized,
+    private void dataNoContrast(DayClustering clustering, boolean normalized, boolean meanCorrected,
             TsPeriod start, Matrix buffer) {
         int n = buffer.getRowsCount();
         TsDomain domain = TsDomain.of(start, n);
         int[][] days = tdCount(domain);
-        double[] mdays = meanDays(domain);
+        double[] mdays = meanCorrected ? meanDays(domain) : null;
 
         int[][] groups = clustering.allPositions();
         int ng = groups.length;
@@ -162,10 +164,10 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
                     sum += days[group[ip]][i];
                 }
                 double dsum = sum;
-                if (normalized) {
-                    dsum = dsum / np - mdays[i];
-                } else {
+                if (mdays != null) {
                     dsum -= np * mdays[i];
+                } else if (normalized) {
+                    dsum /= np;
                 }
 
                 cells[ig].setAndNext(dsum);
@@ -256,14 +258,14 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         return data;
     }
 
-    public static Matrix generateNoContrast(DayClustering clustering, TsPeriod start,
+    public static Matrix generateNoContrast(DayClustering clustering, boolean normalized, TsPeriod start,
             Matrix days) {
         Matrix m = Matrix.make(days.getRowsCount(), clustering.getGroupsCount());
-        fillNoContrasts(clustering, start, days, m);
+        fillNoContrasts(clustering, normalized, start, days, m);
         return m;
     }
 
-    public static Matrix fillNoContrasts(DayClustering clustering, TsPeriod start, Matrix days, Matrix data) {
+    public static Matrix fillNoContrasts(DayClustering clustering, boolean normalized, TsPeriod start, Matrix days, Matrix data) {
         int n = days.getRowsCount();
         double[] mdays = null;
         if (start != null) {
@@ -287,9 +289,9 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
                 }
                 double dsum = sum;
                 if (mdays != null) {
-                    dsum = dsum / np - mdays[i];
-                } else {
                     dsum -= np * mdays[i];
+                } else if (normalized) {
+                    dsum /= np;
                 }
 
                 cells[ig].setAndNext(dsum);
@@ -354,6 +356,19 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
             int[] curtd = td[i];
             mtd.column(i).set(k -> curtd[k]);
         }
+    }
+
+    public static double[] meanDays(int period) {
+        int conv = 12 / period;
+        double[] m = new double[period];
+        for (int i = 0, k = 0; i < period; ++i) {
+            double s = 0;
+            for (int j = 0; j < conv; ++j, ++k) {
+                s += MDAYS[k];
+            }
+            m[i] = s / 7;
+        }
+        return m;
     }
 
     public static double[] meanDays(TsDomain domain) {

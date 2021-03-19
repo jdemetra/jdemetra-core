@@ -17,6 +17,8 @@
 package jdplus.regarima;
 
 import demetra.data.Data;
+import demetra.likelihood.LikelihoodStatistics;
+import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
@@ -26,11 +28,12 @@ import demetra.timeseries.regression.GenericTradingDaysVariable;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.LengthOfPeriod;
 import demetra.timeseries.regression.Variable;
+import java.util.Arrays;
 import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -51,7 +54,7 @@ public class RegArimaForecastsTest {
 //        model.setLogTransformation(true);
 //        model.setPreadjustment(LengthOfPeriodType.LeapYear);
         GenericTradingDaysVariable td = new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD7));
-        LengthOfPeriod lp=new LengthOfPeriod(LengthOfPeriodType.LeapYear);
+        LengthOfPeriod lp = new LengthOfPeriod(LengthOfPeriodType.LeapYear);
         model.addVariable(Variable.variable("td", td));
         EasterVariable easter = EasterVariable.builder()
                 .duration(8)
@@ -60,12 +63,18 @@ public class RegArimaForecastsTest {
                 .build();
         model.addVariable(Variable.variable("lp", lp));
         model.addVariable(Variable.variable("easter", easter));
-        ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.PROCESSOR);
+        RegSarimaModel rslt = RegSarimaModel.of(model, RegSarimaProcessor.PROCESSOR.process(model.regarima(), model.mapping()), ProcessingLog.dummy());
 
-        TsDomain fdom = TsDomain.of(model.getEstimationDomain().getEndPeriod(), 24);
-        Matrix matrix = Regression.matrix(fdom, model.variables().map(v->v.getCore()).toArray(n->new ITsVariable[n]));
+        TsDomain xdom = model.getEstimationDomain().extend(0, 24);
+        Variable[] variables = rslt.getDescription().getVariables(); // could contain the trend const
+        Matrix matrix = Regression.matrix(xdom, Arrays.stream(variables).map(v -> v.getCore()).toArray(n -> new ITsVariable[n]));
 
-        RegArimaForecasts.Result f = RegArimaForecasts.calcForecast(rslt.getModel(), rslt.getConcentratedLikelihood(), matrix, true, 2);
+        LikelihoodStatistics ll = rslt.getEstimation().getStatistics();
+        double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount() + 1);
+        RegArimaForecasts.Result f = RegArimaForecasts.calcForecast(
+                rslt.arima(), rslt.getEstimation().originalY(), matrix, 
+                rslt.getEstimation().getCoefficients(),
+                rslt.getEstimation().getCoefficientsCovariance(), sig2);
     }
 
 }

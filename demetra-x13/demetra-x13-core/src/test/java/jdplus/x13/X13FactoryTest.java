@@ -52,8 +52,8 @@ public class X13FactoryTest {
         assertTrue(rslt2.getFinals() != null);
         X13Spec nspec2 = X13Factory.INSTANCE.generateSpec(nspec, rslt2);
         System.out.println(nspec2);
-        assertEquals(rslt.getPreprocessing().getConcentratedLikelihood().logLikelihood(),
-                rslt2.getPreprocessing().getConcentratedLikelihood().logLikelihood(), 1e-4);
+        assertEquals(rslt.getPreprocessing().getEstimation().getStatistics().getLogLikelihood(),
+                rslt2.getPreprocessing().getEstimation().getStatistics().getLogLikelihood(), 1e-4);
     }
     
     @Test

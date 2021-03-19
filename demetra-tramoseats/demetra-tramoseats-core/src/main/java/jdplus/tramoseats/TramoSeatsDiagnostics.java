@@ -8,11 +8,11 @@ package jdplus.tramoseats;
 import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
 import demetra.sa.DefaultSaDiagnostics;
-import demetra.sa.SeriesDecomposition;
 import demetra.sa.StationaryVarianceDecomposition;
 import demetra.stats.TestResult;
 import demetra.timeseries.TsData;
 import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sa.StationaryVarianceComputer;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnostics;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
@@ -32,11 +32,11 @@ public class TramoSeatsDiagnostics {
     private DefaultSaDiagnostics saDiagnostics;
 
     public static TramoSeatsDiagnostics of(TramoSeatsResults rslts) {
-        ModelEstimation preprocessing = rslts.getPreprocessing();
+        RegSarimaModel preprocessing = rslts.getPreprocessing();
         SeatsResults srslts = rslts.getDecomposition();
         DefaultSaDiagnostics.Builder sadiags = DefaultSaDiagnostics.builder()
                 .varianceDecomposition(varDecomposition(preprocessing, srslts));
-        boolean mul = preprocessing.isLogTransformation();
+        boolean mul = preprocessing.getDescription().isLogTransformation();
         TsData sa = srslts.getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
         TsData i = srslts.getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.Value);
         AdvancedResidualSeasonalityDiagnostics.Input input = new AdvancedResidualSeasonalityDiagnostics.Input(mul, sa, i);
@@ -60,9 +60,9 @@ public class TramoSeatsDiagnostics {
         return t == null ? null : t.toSummary();
     }
 
-    private static StationaryVarianceDecomposition varDecomposition(ModelEstimation preprocessing, SeatsResults srslts) {
+    private static StationaryVarianceDecomposition varDecomposition(RegSarimaModel preprocessing, SeatsResults srslts) {
         StationaryVarianceComputer var = new StationaryVarianceComputer();
-        boolean mul = preprocessing.isLogTransformation();
+        boolean mul = preprocessing.getDescription().isLogTransformation();
         TsData y = preprocessing.interpolatedSeries(false),
                 t = srslts.getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.Value),
                 seas = srslts.getFinalComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Value),

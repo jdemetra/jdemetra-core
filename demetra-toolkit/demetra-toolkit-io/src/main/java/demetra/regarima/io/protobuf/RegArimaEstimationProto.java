@@ -17,10 +17,12 @@
 package demetra.regarima.io.protobuf;
 
 import demetra.arima.SarimaOrders;
-import demetra.data.DoubleSeq;
-import demetra.data.DoubleSeqCursor;
 import demetra.data.Parameter;
 import demetra.data.Iterables;
+import demetra.likelihood.LikelihoodStatistics;
+import demetra.likelihood.MissingValueEstimation;
+import demetra.likelihood.ParametersEstimation;
+import demetra.math.matrices.MatrixType;
 import demetra.stats.ProbabilityType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.AdditiveOutlier;
@@ -37,10 +39,8 @@ import demetra.timeseries.regression.TransitoryChange;
 import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.Variable;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
-import jdplus.data.DataBlock;
 import jdplus.dstats.T;
-import jdplus.math.matrices.Matrix;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sarima.SarimaModel;
 
 /**
@@ -50,9 +50,10 @@ import jdplus.sarima.SarimaModel;
 @lombok.experimental.UtilityClass
 public class RegArimaEstimationProto {
 
-    RegArimaResultsProtos.Sarima arima(ModelEstimation model) {
-        SarimaModel arima = model.getModel().arima();
+    RegArimaResultsProtos.Sarima arima(RegSarimaModel model) {
+        SarimaModel arima = model.arima();
         SarimaOrders orders = arima.orders();
+        ParametersEstimation parameters = model.getEstimation().getParameters();
         RegArimaResultsProtos.Sarima.Builder builder = RegArimaResultsProtos.Sarima.newBuilder()
                 .setPeriod(orders.getPeriod())
                 .setP(orders.getP())
@@ -61,32 +62,33 @@ public class RegArimaEstimationProto {
                 .setBp(orders.getBp())
                 .setBd(orders.getBd())
                 .setBq(orders.getBq())
-                .addAllParameters(Iterables.of(model.getArimaParameters()))
-                .setCovariance(ToolkitProtosUtility.convert(model.getArimaCovariance()))
-                .addAllScore(Iterables.of(model.getArimaScore()));
+                .addAllParameters(Iterables.of(parameters.getValues()))
+                .setCovariance(ToolkitProtosUtility.convert(parameters.getCovariance()))
+                .addAllScore(Iterables.of(parameters.getScores()));
         return builder.build();
     }
 
-    public RegArimaResultsProtos.RegArimaEstimation convert(ModelEstimation model) {
+    public RegArimaResultsProtos.RegArimaEstimation convert(RegSarimaModel model) {
         RegArimaResultsProtos.RegArimaEstimation.Builder builder = RegArimaResultsProtos.RegArimaEstimation.newBuilder();
 
-        Variable[] vars = model.getVariables();
-        Matrix cov = model.getConcentratedLikelihood().covariance(model.getFreeArimaParametersCount(), true);
-        TsDomain domain = model.getOriginalSeries().getDomain();
+        Variable[] vars = model.getDescription().getVariables();
+        MatrixType cov = model.getEstimation().getCoefficientsCovariance();
+        TsDomain domain = model.getDescription().getSeries().getDomain();
+        LikelihoodStatistics statistics = model.getEstimation().getStatistics();
 
-        builder.addAllY(Iterables.of(model.getModel().getY()))
-                .setX(ToolkitProtosUtility.convert(model.getModel().variables()))
+        builder.addAllY(Iterables.of(model.getEstimation().getY()))
+                .setX(ToolkitProtosUtility.convert(model.getEstimation().getX()))
                 .setSarima(arima(model))
-                .setLikelihood(ToolkitProtosUtility.convert(model.getStatistics()))
+                .setLikelihood(ToolkitProtosUtility.convert(statistics))
                 .addAllResiduals(Iterables.of(model.fullResiduals().getValues()))
-                .addAllCoefficients(Iterables.of(model.getConcentratedLikelihood().coefficients()))
+                .addAllCoefficients(Iterables.of(model.getEstimation().getCoefficients()))
                 .setCovariance(ToolkitProtosUtility.convert(cov))
-                .setTransformation(model.isLogTransformation() ? RegArimaProtos.Transformation.FN_LOG : RegArimaProtos.Transformation.FN_LEVEL)
-                .setPreadjustment(RegArimaProtosUtility.convert(model.getLpTransformation()));
+                .setTransformation(model.getDescription().isLogTransformation() ? RegArimaProtos.Transformation.FN_LOG : RegArimaProtos.Transformation.FN_LEVEL)
+                .setPreadjustment(RegArimaProtosUtility.convert(model.getDescription().getLengthOfPeriodTransformation()));
 
         // variables
-        DataBlock diag = cov.diagonal();
-        T tstat = new T(model.getConcentratedLikelihood().degreesOfFreedom() - model.getFreeArimaParametersCount());
+        int ndf=statistics.getEffectiveObservationsCount()-statistics.getEstimatedParametersCount()+1;
+       T tstat = new T(ndf);
         for (int i = 0, j = 0; i < vars.length; ++i) {
             int m = vars[i].dim();
             ITsVariable core = vars[i].getCore();
@@ -96,7 +98,8 @@ public class RegArimaEstimationProto {
                 Parameter c = vars[i].getCoefficient(k);
                 double val = c.getValue(), e = 0;
                 if (!c.isFixed()) {
-                    e = Math.sqrt(diag.get(j++));
+                    e = Math.sqrt(cov.get(j, j));
+                    ++j;
                 }
                 RegArimaResultsProtos.RegressionVariable v = RegArimaResultsProtos.RegressionVariable.newBuilder()
                         .setName(name)
@@ -110,24 +113,23 @@ public class RegArimaEstimationProto {
             }
         }
         // missing
-        int[] missing = model.getModel().missing();
+        MissingValueEstimation[] missing = model.getEstimation().getMissing();
         if (missing.length > 0) {
-            DoubleSeq y = model.getModel().getY();
-            DoubleSeqCursor ccursor = model.getConcentratedLikelihood().missingCorrections().cursor();
-            DoubleSeqCursor vcursor = model.getConcentratedLikelihood().missingUnscaledVariances().cursor();
-            double var = model.getConcentratedLikelihood().ssq() / (model.getConcentratedLikelihood().degreesOfFreedom() - model.getFreeArimaParametersCount());
             for (int i = 0; i < missing.length; ++i) {
-                RegArimaResultsProtos.MissingEstimation me = RegArimaResultsProtos.MissingEstimation.newBuilder()
-                        .setPosition(missing[i])
-                        .setValue(y.get(missing[i]) + ccursor.getAndNext())
-                        .setStde(Math.sqrt(vcursor.getAndNext() * var))
-                        .build();
-                builder.addMissings(me);
+                 builder.addMissings(convert(missing[i]));
             }
         }
 
         return builder
-                .setDiagnostics(RegArimaProtosUtility.of(model))
+                .setDiagnostics(RegArimaProtosUtility.diagnosticsOf(model))
+                .build();
+    }
+    
+    public RegArimaResultsProtos.MissingEstimation convert(MissingValueEstimation missing){
+        return RegArimaResultsProtos.MissingEstimation.newBuilder()
+                .setPosition(missing.getPosition())
+                .setValue(missing.getValue())
+                .setStde(missing.getStandardError())
                 .build();
     }
 

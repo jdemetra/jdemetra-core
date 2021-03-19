@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author Jean Palate
  */
 @XmlType(name = XmlRegItem.NAME)
+@Deprecated
 public class XmlRegItem implements IXmlConverter<RegressionItem> {
 
     static final String NAME = "RegressionItemType";

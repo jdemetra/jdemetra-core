@@ -22,7 +22,7 @@ import demetra.x13.X13Finals;
 import demetra.x13.X13Preadjustment;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.x13.extractors.X13Extractor;
 
 /**
@@ -32,7 +32,7 @@ import jdplus.x13.extractors.X13Extractor;
 @lombok.Value
 public class X13Results implements ProcResults {
 
-    private ModelEstimation preprocessing;
+    private RegSarimaModel preprocessing;
     private X13Preadjustment preadjustment;
     private X11Results decomposition;
     private X13Finals finals;

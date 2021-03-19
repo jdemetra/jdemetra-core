@@ -22,7 +22,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.Variable;
 import java.util.function.Predicate;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 
 /**
  *
@@ -49,7 +49,7 @@ public class RegArimaDecomposer {
      * length of period pre-adjustment.
      * @return
      */
-    public TsData deterministicEffect(ModelEstimation model, TsDomain domain, ComponentType type, boolean transformed) {
+    public TsData deterministicEffect(RegSarimaModel model, TsDomain domain, ComponentType type, boolean transformed) {
         TsData f = model.deterministicEffect(domain, v -> v.isAttribute(SaVariable.REGEFFECT, type.name()));
         if (!transformed) {
             f = model.backTransform(f, type == ComponentType.CalendarEffect);
@@ -72,7 +72,7 @@ public class RegArimaDecomposer {
      * @param test The selection test
      * @return
      */
-    public TsData deterministicEffect(ModelEstimation model, TsDomain domain, ComponentType type, boolean transformed, Predicate<Variable> test) {
+    public TsData deterministicEffect(RegSarimaModel model, TsDomain domain, ComponentType type, boolean transformed, Predicate<Variable> test) {
         TsData f = model.deterministicEffect(domain, v -> test.test(v) && v.isAttribute(SaVariable.REGEFFECT, type.name()));
         if (!transformed) {
             f = model.backTransform(f, false);

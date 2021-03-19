@@ -229,21 +229,6 @@ public final class StsProtos {
      * @return The seasvar.
      */
     double getSeasvar();
-
-    /**
-     * <code>.jd3.Matrix covariance = 13;</code>
-     * @return Whether the covariance field is set.
-     */
-    boolean hasCovariance();
-    /**
-     * <code>.jd3.Matrix covariance = 13;</code>
-     * @return The covariance.
-     */
-    demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getCovariance();
-    /**
-     * <code>.jd3.Matrix covariance = 13;</code>
-     */
-    demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getCovarianceOrBuilder();
   }
   /**
    * Protobuf type {@code sts.BasicStructuralModel}
@@ -350,19 +335,6 @@ public final class StsProtos {
             case 97: {
 
               seasvar_ = input.readDouble();
-              break;
-            }
-            case 106: {
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder subBuilder = null;
-              if (covariance_ != null) {
-                subBuilder = covariance_.toBuilder();
-              }
-              covariance_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(covariance_);
-                covariance_ = subBuilder.buildPartial();
-              }
-
               break;
             }
             default: {
@@ -537,32 +509,6 @@ public final class StsProtos {
       return seasvar_;
     }
 
-    public static final int COVARIANCE_FIELD_NUMBER = 13;
-    private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix covariance_;
-    /**
-     * <code>.jd3.Matrix covariance = 13;</code>
-     * @return Whether the covariance field is set.
-     */
-    @java.lang.Override
-    public boolean hasCovariance() {
-      return covariance_ != null;
-    }
-    /**
-     * <code>.jd3.Matrix covariance = 13;</code>
-     * @return The covariance.
-     */
-    @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getCovariance() {
-      return covariance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : covariance_;
-    }
-    /**
-     * <code>.jd3.Matrix covariance = 13;</code>
-     */
-    @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getCovarianceOrBuilder() {
-      return getCovariance();
-    }
-
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -612,9 +558,6 @@ public final class StsProtos {
       }
       if (seasvar_ != 0D) {
         output.writeDouble(12, seasvar_);
-      }
-      if (covariance_ != null) {
-        output.writeMessage(13, getCovariance());
       }
       unknownFields.writeTo(output);
     }
@@ -673,10 +616,6 @@ public final class StsProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(12, seasvar_);
       }
-      if (covariance_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(13, getCovariance());
-      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -722,11 +661,6 @@ public final class StsProtos {
       if (java.lang.Double.doubleToLongBits(getSeasvar())
           != java.lang.Double.doubleToLongBits(
               other.getSeasvar())) return false;
-      if (hasCovariance() != other.hasCovariance()) return false;
-      if (hasCovariance()) {
-        if (!getCovariance()
-            .equals(other.getCovariance())) return false;
-      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -772,10 +706,6 @@ public final class StsProtos {
       hash = (37 * hash) + SEASVAR_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           java.lang.Double.doubleToLongBits(getSeasvar()));
-      if (hasCovariance()) {
-        hash = (37 * hash) + COVARIANCE_FIELD_NUMBER;
-        hash = (53 * hash) + getCovariance().hashCode();
-      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -933,12 +863,6 @@ public final class StsProtos {
 
         seasvar_ = 0D;
 
-        if (covarianceBuilder_ == null) {
-          covariance_ = null;
-        } else {
-          covariance_ = null;
-          covarianceBuilder_ = null;
-        }
         return this;
       }
 
@@ -977,11 +901,6 @@ public final class StsProtos {
         result.cvar_ = cvar_;
         result.seasonalModel_ = seasonalModel_;
         result.seasvar_ = seasvar_;
-        if (covarianceBuilder_ == null) {
-          result.covariance_ = covariance_;
-        } else {
-          result.covariance_ = covarianceBuilder_.build();
-        }
         onBuilt();
         return result;
       }
@@ -1065,9 +984,6 @@ public final class StsProtos {
         }
         if (other.getSeasvar() != 0D) {
           setSeasvar(other.getSeasvar());
-        }
-        if (other.hasCovariance()) {
-          mergeCovariance(other.getCovariance());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1492,125 +1408,6 @@ public final class StsProtos {
         onChanged();
         return this;
       }
-
-      private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix covariance_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> covarianceBuilder_;
-      /**
-       * <code>.jd3.Matrix covariance = 13;</code>
-       * @return Whether the covariance field is set.
-       */
-      public boolean hasCovariance() {
-        return covarianceBuilder_ != null || covariance_ != null;
-      }
-      /**
-       * <code>.jd3.Matrix covariance = 13;</code>
-       * @return The covariance.
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getCovariance() {
-        if (covarianceBuilder_ == null) {
-          return covariance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : covariance_;
-        } else {
-          return covarianceBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.jd3.Matrix covariance = 13;</code>
-       */
-      public Builder setCovariance(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
-        if (covarianceBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          covariance_ = value;
-          onChanged();
-        } else {
-          covarianceBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix covariance = 13;</code>
-       */
-      public Builder setCovariance(
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder builderForValue) {
-        if (covarianceBuilder_ == null) {
-          covariance_ = builderForValue.build();
-          onChanged();
-        } else {
-          covarianceBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix covariance = 13;</code>
-       */
-      public Builder mergeCovariance(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
-        if (covarianceBuilder_ == null) {
-          if (covariance_ != null) {
-            covariance_ =
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.newBuilder(covariance_).mergeFrom(value).buildPartial();
-          } else {
-            covariance_ = value;
-          }
-          onChanged();
-        } else {
-          covarianceBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix covariance = 13;</code>
-       */
-      public Builder clearCovariance() {
-        if (covarianceBuilder_ == null) {
-          covariance_ = null;
-          onChanged();
-        } else {
-          covariance_ = null;
-          covarianceBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.jd3.Matrix covariance = 13;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder getCovarianceBuilder() {
-        
-        onChanged();
-        return getCovarianceFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.jd3.Matrix covariance = 13;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getCovarianceOrBuilder() {
-        if (covarianceBuilder_ != null) {
-          return covarianceBuilder_.getMessageOrBuilder();
-        } else {
-          return covariance_ == null ?
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : covariance_;
-        }
-      }
-      /**
-       * <code>.jd3.Matrix covariance = 13;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> 
-          getCovarianceFieldBuilder() {
-        if (covarianceBuilder_ == null) {
-          covarianceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder>(
-                  getCovariance(),
-                  getParentForChildren(),
-                  isClean());
-          covariance_ = null;
-        }
-        return covarianceBuilder_;
-      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -1664,11 +1461,8729 @@ public final class StsProtos {
 
   }
 
+  public interface SeasonalComponentOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:sts.SeasonalComponent)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.sts.SeasonalModel model = 1;</code>
+     * @return The enum numeric value on the wire for model.
+     */
+    int getModelValue();
+    /**
+     * <code>.sts.SeasonalModel model = 1;</code>
+     * @return The model.
+     */
+    demetra.sts.io.protobuf.StsProtos.SeasonalModel getModel();
+
+    /**
+     * <code>.jd3.Parameter variance = 2;</code>
+     * @return Whether the variance field is set.
+     */
+    boolean hasVariance();
+    /**
+     * <code>.jd3.Parameter variance = 2;</code>
+     * @return The variance.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getVariance();
+    /**
+     * <code>.jd3.Parameter variance = 2;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getVarianceOrBuilder();
+  }
+  /**
+   * Protobuf type {@code sts.SeasonalComponent}
+   */
+  public static final class SeasonalComponent extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:sts.SeasonalComponent)
+      SeasonalComponentOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use SeasonalComponent.newBuilder() to construct.
+    private SeasonalComponent(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private SeasonalComponent() {
+      model_ = 0;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new SeasonalComponent();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private SeasonalComponent(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              int rawValue = input.readEnum();
+
+              model_ = rawValue;
+              break;
+            }
+            case 18: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
+              if (variance_ != null) {
+                subBuilder = variance_.toBuilder();
+              }
+              variance_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(variance_);
+                variance_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_SeasonalComponent_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_SeasonalComponent_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.sts.io.protobuf.StsProtos.SeasonalComponent.class, demetra.sts.io.protobuf.StsProtos.SeasonalComponent.Builder.class);
+    }
+
+    public static final int MODEL_FIELD_NUMBER = 1;
+    private int model_;
+    /**
+     * <code>.sts.SeasonalModel model = 1;</code>
+     * @return The enum numeric value on the wire for model.
+     */
+    @java.lang.Override public int getModelValue() {
+      return model_;
+    }
+    /**
+     * <code>.sts.SeasonalModel model = 1;</code>
+     * @return The model.
+     */
+    @java.lang.Override public demetra.sts.io.protobuf.StsProtos.SeasonalModel getModel() {
+      @SuppressWarnings("deprecation")
+      demetra.sts.io.protobuf.StsProtos.SeasonalModel result = demetra.sts.io.protobuf.StsProtos.SeasonalModel.valueOf(model_);
+      return result == null ? demetra.sts.io.protobuf.StsProtos.SeasonalModel.UNRECOGNIZED : result;
+    }
+
+    public static final int VARIANCE_FIELD_NUMBER = 2;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter variance_;
+    /**
+     * <code>.jd3.Parameter variance = 2;</code>
+     * @return Whether the variance field is set.
+     */
+    @java.lang.Override
+    public boolean hasVariance() {
+      return variance_ != null;
+    }
+    /**
+     * <code>.jd3.Parameter variance = 2;</code>
+     * @return The variance.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getVariance() {
+      return variance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : variance_;
+    }
+    /**
+     * <code>.jd3.Parameter variance = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getVarianceOrBuilder() {
+      return getVariance();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (model_ != demetra.sts.io.protobuf.StsProtos.SeasonalModel.SEAS_NONE.getNumber()) {
+        output.writeEnum(1, model_);
+      }
+      if (variance_ != null) {
+        output.writeMessage(2, getVariance());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (model_ != demetra.sts.io.protobuf.StsProtos.SeasonalModel.SEAS_NONE.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, model_);
+      }
+      if (variance_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getVariance());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.sts.io.protobuf.StsProtos.SeasonalComponent)) {
+        return super.equals(obj);
+      }
+      demetra.sts.io.protobuf.StsProtos.SeasonalComponent other = (demetra.sts.io.protobuf.StsProtos.SeasonalComponent) obj;
+
+      if (model_ != other.model_) return false;
+      if (hasVariance() != other.hasVariance()) return false;
+      if (hasVariance()) {
+        if (!getVariance()
+            .equals(other.getVariance())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + MODEL_FIELD_NUMBER;
+      hash = (53 * hash) + model_;
+      if (hasVariance()) {
+        hash = (37 * hash) + VARIANCE_FIELD_NUMBER;
+        hash = (53 * hash) + getVariance().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.SeasonalComponent parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.SeasonalComponent parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.SeasonalComponent parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.SeasonalComponent parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.SeasonalComponent parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.SeasonalComponent parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.SeasonalComponent parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.SeasonalComponent parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.SeasonalComponent parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.SeasonalComponent parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.SeasonalComponent parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.SeasonalComponent parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.sts.io.protobuf.StsProtos.SeasonalComponent prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code sts.SeasonalComponent}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:sts.SeasonalComponent)
+        demetra.sts.io.protobuf.StsProtos.SeasonalComponentOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_SeasonalComponent_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_SeasonalComponent_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.sts.io.protobuf.StsProtos.SeasonalComponent.class, demetra.sts.io.protobuf.StsProtos.SeasonalComponent.Builder.class);
+      }
+
+      // Construct using demetra.sts.io.protobuf.StsProtos.SeasonalComponent.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        model_ = 0;
+
+        if (varianceBuilder_ == null) {
+          variance_ = null;
+        } else {
+          variance_ = null;
+          varianceBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_SeasonalComponent_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.SeasonalComponent getDefaultInstanceForType() {
+        return demetra.sts.io.protobuf.StsProtos.SeasonalComponent.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.SeasonalComponent build() {
+        demetra.sts.io.protobuf.StsProtos.SeasonalComponent result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.SeasonalComponent buildPartial() {
+        demetra.sts.io.protobuf.StsProtos.SeasonalComponent result = new demetra.sts.io.protobuf.StsProtos.SeasonalComponent(this);
+        result.model_ = model_;
+        if (varianceBuilder_ == null) {
+          result.variance_ = variance_;
+        } else {
+          result.variance_ = varianceBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.sts.io.protobuf.StsProtos.SeasonalComponent) {
+          return mergeFrom((demetra.sts.io.protobuf.StsProtos.SeasonalComponent)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.sts.io.protobuf.StsProtos.SeasonalComponent other) {
+        if (other == demetra.sts.io.protobuf.StsProtos.SeasonalComponent.getDefaultInstance()) return this;
+        if (other.model_ != 0) {
+          setModelValue(other.getModelValue());
+        }
+        if (other.hasVariance()) {
+          mergeVariance(other.getVariance());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.sts.io.protobuf.StsProtos.SeasonalComponent parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.sts.io.protobuf.StsProtos.SeasonalComponent) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int model_ = 0;
+      /**
+       * <code>.sts.SeasonalModel model = 1;</code>
+       * @return The enum numeric value on the wire for model.
+       */
+      @java.lang.Override public int getModelValue() {
+        return model_;
+      }
+      /**
+       * <code>.sts.SeasonalModel model = 1;</code>
+       * @param value The enum numeric value on the wire for model to set.
+       * @return This builder for chaining.
+       */
+      public Builder setModelValue(int value) {
+        
+        model_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.sts.SeasonalModel model = 1;</code>
+       * @return The model.
+       */
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.SeasonalModel getModel() {
+        @SuppressWarnings("deprecation")
+        demetra.sts.io.protobuf.StsProtos.SeasonalModel result = demetra.sts.io.protobuf.StsProtos.SeasonalModel.valueOf(model_);
+        return result == null ? demetra.sts.io.protobuf.StsProtos.SeasonalModel.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.sts.SeasonalModel model = 1;</code>
+       * @param value The model to set.
+       * @return This builder for chaining.
+       */
+      public Builder setModel(demetra.sts.io.protobuf.StsProtos.SeasonalModel value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        model_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.sts.SeasonalModel model = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearModel() {
+        
+        model_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter variance_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> varianceBuilder_;
+      /**
+       * <code>.jd3.Parameter variance = 2;</code>
+       * @return Whether the variance field is set.
+       */
+      public boolean hasVariance() {
+        return varianceBuilder_ != null || variance_ != null;
+      }
+      /**
+       * <code>.jd3.Parameter variance = 2;</code>
+       * @return The variance.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getVariance() {
+        if (varianceBuilder_ == null) {
+          return variance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : variance_;
+        } else {
+          return varianceBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.Parameter variance = 2;</code>
+       */
+      public Builder setVariance(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (varianceBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          variance_ = value;
+          onChanged();
+        } else {
+          varianceBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter variance = 2;</code>
+       */
+      public Builder setVariance(
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+        if (varianceBuilder_ == null) {
+          variance_ = builderForValue.build();
+          onChanged();
+        } else {
+          varianceBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter variance = 2;</code>
+       */
+      public Builder mergeVariance(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (varianceBuilder_ == null) {
+          if (variance_ != null) {
+            variance_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder(variance_).mergeFrom(value).buildPartial();
+          } else {
+            variance_ = value;
+          }
+          onChanged();
+        } else {
+          varianceBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter variance = 2;</code>
+       */
+      public Builder clearVariance() {
+        if (varianceBuilder_ == null) {
+          variance_ = null;
+          onChanged();
+        } else {
+          variance_ = null;
+          varianceBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter variance = 2;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getVarianceBuilder() {
+        
+        onChanged();
+        return getVarianceFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Parameter variance = 2;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getVarianceOrBuilder() {
+        if (varianceBuilder_ != null) {
+          return varianceBuilder_.getMessageOrBuilder();
+        } else {
+          return variance_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : variance_;
+        }
+      }
+      /**
+       * <code>.jd3.Parameter variance = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+          getVarianceFieldBuilder() {
+        if (varianceBuilder_ == null) {
+          varianceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
+                  getVariance(),
+                  getParentForChildren(),
+                  isClean());
+          variance_ = null;
+        }
+        return varianceBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:sts.SeasonalComponent)
+    }
+
+    // @@protoc_insertion_point(class_scope:sts.SeasonalComponent)
+    private static final demetra.sts.io.protobuf.StsProtos.SeasonalComponent DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.sts.io.protobuf.StsProtos.SeasonalComponent();
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.SeasonalComponent getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SeasonalComponent>
+        PARSER = new com.google.protobuf.AbstractParser<SeasonalComponent>() {
+      @java.lang.Override
+      public SeasonalComponent parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SeasonalComponent(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<SeasonalComponent> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SeasonalComponent> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.SeasonalComponent getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface NullableSeasonalComponentOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:sts.NullableSeasonalComponent)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The enum numeric value on the wire for null.
+     */
+    int getNullValue();
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The null.
+     */
+    com.google.protobuf.NullValue getNull();
+
+    /**
+     * <code>.sts.SeasonalComponent component = 2;</code>
+     * @return Whether the component field is set.
+     */
+    boolean hasComponent();
+    /**
+     * <code>.sts.SeasonalComponent component = 2;</code>
+     * @return The component.
+     */
+    demetra.sts.io.protobuf.StsProtos.SeasonalComponent getComponent();
+    /**
+     * <code>.sts.SeasonalComponent component = 2;</code>
+     */
+    demetra.sts.io.protobuf.StsProtos.SeasonalComponentOrBuilder getComponentOrBuilder();
+
+    public demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.KindCase getKindCase();
+  }
+  /**
+   * Protobuf type {@code sts.NullableSeasonalComponent}
+   */
+  public static final class NullableSeasonalComponent extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:sts.NullableSeasonalComponent)
+      NullableSeasonalComponentOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use NullableSeasonalComponent.newBuilder() to construct.
+    private NullableSeasonalComponent(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private NullableSeasonalComponent() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new NullableSeasonalComponent();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private NullableSeasonalComponent(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              int rawValue = input.readEnum();
+              kindCase_ = 1;
+              kind_ = rawValue;
+              break;
+            }
+            case 18: {
+              demetra.sts.io.protobuf.StsProtos.SeasonalComponent.Builder subBuilder = null;
+              if (kindCase_ == 2) {
+                subBuilder = ((demetra.sts.io.protobuf.StsProtos.SeasonalComponent) kind_).toBuilder();
+              }
+              kind_ =
+                  input.readMessage(demetra.sts.io.protobuf.StsProtos.SeasonalComponent.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((demetra.sts.io.protobuf.StsProtos.SeasonalComponent) kind_);
+                kind_ = subBuilder.buildPartial();
+              }
+              kindCase_ = 2;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableSeasonalComponent_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableSeasonalComponent_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.class, demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.Builder.class);
+    }
+
+    private int kindCase_ = 0;
+    private java.lang.Object kind_;
+    public enum KindCase
+        implements com.google.protobuf.Internal.EnumLite,
+            com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+      NULL(1),
+      COMPONENT(2),
+      KIND_NOT_SET(0);
+      private final int value;
+      private KindCase(int value) {
+        this.value = value;
+      }
+      /**
+       * @param value The number of the enum to look for.
+       * @return The enum associated with the given number.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static KindCase valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static KindCase forNumber(int value) {
+        switch (value) {
+          case 1: return NULL;
+          case 2: return COMPONENT;
+          case 0: return KIND_NOT_SET;
+          default: return null;
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
+
+    public KindCase
+    getKindCase() {
+      return KindCase.forNumber(
+          kindCase_);
+    }
+
+    public static final int NULL_FIELD_NUMBER = 1;
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The enum numeric value on the wire for null.
+     */
+    public int getNullValue() {
+      if (kindCase_ == 1) {
+        return (java.lang.Integer) kind_;
+      }
+      return 0;
+    }
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The null.
+     */
+    public com.google.protobuf.NullValue getNull() {
+      if (kindCase_ == 1) {
+        @SuppressWarnings("deprecation")
+        com.google.protobuf.NullValue result = com.google.protobuf.NullValue.valueOf(
+            (java.lang.Integer) kind_);
+        return result == null ? com.google.protobuf.NullValue.UNRECOGNIZED : result;
+      }
+      return com.google.protobuf.NullValue.NULL_VALUE;
+    }
+
+    public static final int COMPONENT_FIELD_NUMBER = 2;
+    /**
+     * <code>.sts.SeasonalComponent component = 2;</code>
+     * @return Whether the component field is set.
+     */
+    @java.lang.Override
+    public boolean hasComponent() {
+      return kindCase_ == 2;
+    }
+    /**
+     * <code>.sts.SeasonalComponent component = 2;</code>
+     * @return The component.
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.SeasonalComponent getComponent() {
+      if (kindCase_ == 2) {
+         return (demetra.sts.io.protobuf.StsProtos.SeasonalComponent) kind_;
+      }
+      return demetra.sts.io.protobuf.StsProtos.SeasonalComponent.getDefaultInstance();
+    }
+    /**
+     * <code>.sts.SeasonalComponent component = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.SeasonalComponentOrBuilder getComponentOrBuilder() {
+      if (kindCase_ == 2) {
+         return (demetra.sts.io.protobuf.StsProtos.SeasonalComponent) kind_;
+      }
+      return demetra.sts.io.protobuf.StsProtos.SeasonalComponent.getDefaultInstance();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (kindCase_ == 1) {
+        output.writeEnum(1, ((java.lang.Integer) kind_));
+      }
+      if (kindCase_ == 2) {
+        output.writeMessage(2, (demetra.sts.io.protobuf.StsProtos.SeasonalComponent) kind_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (kindCase_ == 1) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, ((java.lang.Integer) kind_));
+      }
+      if (kindCase_ == 2) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, (demetra.sts.io.protobuf.StsProtos.SeasonalComponent) kind_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent)) {
+        return super.equals(obj);
+      }
+      demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent other = (demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent) obj;
+
+      if (!getKindCase().equals(other.getKindCase())) return false;
+      switch (kindCase_) {
+        case 1:
+          if (getNullValue()
+              != other.getNullValue()) return false;
+          break;
+        case 2:
+          if (!getComponent()
+              .equals(other.getComponent())) return false;
+          break;
+        case 0:
+        default:
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      switch (kindCase_) {
+        case 1:
+          hash = (37 * hash) + NULL_FIELD_NUMBER;
+          hash = (53 * hash) + getNullValue();
+          break;
+        case 2:
+          hash = (37 * hash) + COMPONENT_FIELD_NUMBER;
+          hash = (53 * hash) + getComponent().hashCode();
+          break;
+        case 0:
+        default:
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code sts.NullableSeasonalComponent}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:sts.NullableSeasonalComponent)
+        demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponentOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableSeasonalComponent_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableSeasonalComponent_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.class, demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.Builder.class);
+      }
+
+      // Construct using demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        kindCase_ = 0;
+        kind_ = null;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableSeasonalComponent_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent getDefaultInstanceForType() {
+        return demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent build() {
+        demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent buildPartial() {
+        demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent result = new demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent(this);
+        if (kindCase_ == 1) {
+          result.kind_ = kind_;
+        }
+        if (kindCase_ == 2) {
+          if (componentBuilder_ == null) {
+            result.kind_ = kind_;
+          } else {
+            result.kind_ = componentBuilder_.build();
+          }
+        }
+        result.kindCase_ = kindCase_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent) {
+          return mergeFrom((demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent other) {
+        if (other == demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.getDefaultInstance()) return this;
+        switch (other.getKindCase()) {
+          case NULL: {
+            setNullValue(other.getNullValue());
+            break;
+          }
+          case COMPONENT: {
+            mergeComponent(other.getComponent());
+            break;
+          }
+          case KIND_NOT_SET: {
+            break;
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int kindCase_ = 0;
+      private java.lang.Object kind_;
+      public KindCase
+          getKindCase() {
+        return KindCase.forNumber(
+            kindCase_);
+      }
+
+      public Builder clearKind() {
+        kindCase_ = 0;
+        kind_ = null;
+        onChanged();
+        return this;
+      }
+
+
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @return The enum numeric value on the wire for null.
+       */
+      @java.lang.Override
+      public int getNullValue() {
+        if (kindCase_ == 1) {
+          return ((java.lang.Integer) kind_).intValue();
+        }
+        return 0;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @param value The enum numeric value on the wire for null to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNullValue(int value) {
+        kindCase_ = 1;
+        kind_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @return The null.
+       */
+      @java.lang.Override
+      public com.google.protobuf.NullValue getNull() {
+        if (kindCase_ == 1) {
+          @SuppressWarnings("deprecation")
+          com.google.protobuf.NullValue result = com.google.protobuf.NullValue.valueOf(
+              (java.lang.Integer) kind_);
+          return result == null ? com.google.protobuf.NullValue.UNRECOGNIZED : result;
+        }
+        return com.google.protobuf.NullValue.NULL_VALUE;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @param value The null to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNull(com.google.protobuf.NullValue value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        kindCase_ = 1;
+        kind_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNull() {
+        if (kindCase_ == 1) {
+          kindCase_ = 0;
+          kind_ = null;
+          onChanged();
+        }
+        return this;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.SeasonalComponent, demetra.sts.io.protobuf.StsProtos.SeasonalComponent.Builder, demetra.sts.io.protobuf.StsProtos.SeasonalComponentOrBuilder> componentBuilder_;
+      /**
+       * <code>.sts.SeasonalComponent component = 2;</code>
+       * @return Whether the component field is set.
+       */
+      @java.lang.Override
+      public boolean hasComponent() {
+        return kindCase_ == 2;
+      }
+      /**
+       * <code>.sts.SeasonalComponent component = 2;</code>
+       * @return The component.
+       */
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.SeasonalComponent getComponent() {
+        if (componentBuilder_ == null) {
+          if (kindCase_ == 2) {
+            return (demetra.sts.io.protobuf.StsProtos.SeasonalComponent) kind_;
+          }
+          return demetra.sts.io.protobuf.StsProtos.SeasonalComponent.getDefaultInstance();
+        } else {
+          if (kindCase_ == 2) {
+            return componentBuilder_.getMessage();
+          }
+          return demetra.sts.io.protobuf.StsProtos.SeasonalComponent.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.sts.SeasonalComponent component = 2;</code>
+       */
+      public Builder setComponent(demetra.sts.io.protobuf.StsProtos.SeasonalComponent value) {
+        if (componentBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          kind_ = value;
+          onChanged();
+        } else {
+          componentBuilder_.setMessage(value);
+        }
+        kindCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.sts.SeasonalComponent component = 2;</code>
+       */
+      public Builder setComponent(
+          demetra.sts.io.protobuf.StsProtos.SeasonalComponent.Builder builderForValue) {
+        if (componentBuilder_ == null) {
+          kind_ = builderForValue.build();
+          onChanged();
+        } else {
+          componentBuilder_.setMessage(builderForValue.build());
+        }
+        kindCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.sts.SeasonalComponent component = 2;</code>
+       */
+      public Builder mergeComponent(demetra.sts.io.protobuf.StsProtos.SeasonalComponent value) {
+        if (componentBuilder_ == null) {
+          if (kindCase_ == 2 &&
+              kind_ != demetra.sts.io.protobuf.StsProtos.SeasonalComponent.getDefaultInstance()) {
+            kind_ = demetra.sts.io.protobuf.StsProtos.SeasonalComponent.newBuilder((demetra.sts.io.protobuf.StsProtos.SeasonalComponent) kind_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            kind_ = value;
+          }
+          onChanged();
+        } else {
+          if (kindCase_ == 2) {
+            componentBuilder_.mergeFrom(value);
+          }
+          componentBuilder_.setMessage(value);
+        }
+        kindCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.sts.SeasonalComponent component = 2;</code>
+       */
+      public Builder clearComponent() {
+        if (componentBuilder_ == null) {
+          if (kindCase_ == 2) {
+            kindCase_ = 0;
+            kind_ = null;
+            onChanged();
+          }
+        } else {
+          if (kindCase_ == 2) {
+            kindCase_ = 0;
+            kind_ = null;
+          }
+          componentBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.sts.SeasonalComponent component = 2;</code>
+       */
+      public demetra.sts.io.protobuf.StsProtos.SeasonalComponent.Builder getComponentBuilder() {
+        return getComponentFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.sts.SeasonalComponent component = 2;</code>
+       */
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.SeasonalComponentOrBuilder getComponentOrBuilder() {
+        if ((kindCase_ == 2) && (componentBuilder_ != null)) {
+          return componentBuilder_.getMessageOrBuilder();
+        } else {
+          if (kindCase_ == 2) {
+            return (demetra.sts.io.protobuf.StsProtos.SeasonalComponent) kind_;
+          }
+          return demetra.sts.io.protobuf.StsProtos.SeasonalComponent.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.sts.SeasonalComponent component = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.SeasonalComponent, demetra.sts.io.protobuf.StsProtos.SeasonalComponent.Builder, demetra.sts.io.protobuf.StsProtos.SeasonalComponentOrBuilder> 
+          getComponentFieldBuilder() {
+        if (componentBuilder_ == null) {
+          if (!(kindCase_ == 2)) {
+            kind_ = demetra.sts.io.protobuf.StsProtos.SeasonalComponent.getDefaultInstance();
+          }
+          componentBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.sts.io.protobuf.StsProtos.SeasonalComponent, demetra.sts.io.protobuf.StsProtos.SeasonalComponent.Builder, demetra.sts.io.protobuf.StsProtos.SeasonalComponentOrBuilder>(
+                  (demetra.sts.io.protobuf.StsProtos.SeasonalComponent) kind_,
+                  getParentForChildren(),
+                  isClean());
+          kind_ = null;
+        }
+        kindCase_ = 2;
+        onChanged();;
+        return componentBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:sts.NullableSeasonalComponent)
+    }
+
+    // @@protoc_insertion_point(class_scope:sts.NullableSeasonalComponent)
+    private static final demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent();
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<NullableSeasonalComponent>
+        PARSER = new com.google.protobuf.AbstractParser<NullableSeasonalComponent>() {
+      @java.lang.Override
+      public NullableSeasonalComponent parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new NullableSeasonalComponent(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<NullableSeasonalComponent> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<NullableSeasonalComponent> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface LocalLevelComponentOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:sts.LocalLevelComponent)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.jd3.Parameter levelVariance = 1;</code>
+     * @return Whether the levelVariance field is set.
+     */
+    boolean hasLevelVariance();
+    /**
+     * <code>.jd3.Parameter levelVariance = 1;</code>
+     * @return The levelVariance.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getLevelVariance();
+    /**
+     * <code>.jd3.Parameter levelVariance = 1;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getLevelVarianceOrBuilder();
+  }
+  /**
+   * Protobuf type {@code sts.LocalLevelComponent}
+   */
+  public static final class LocalLevelComponent extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:sts.LocalLevelComponent)
+      LocalLevelComponentOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use LocalLevelComponent.newBuilder() to construct.
+    private LocalLevelComponent(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private LocalLevelComponent() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new LocalLevelComponent();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private LocalLevelComponent(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
+              if (levelVariance_ != null) {
+                subBuilder = levelVariance_.toBuilder();
+              }
+              levelVariance_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(levelVariance_);
+                levelVariance_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_LocalLevelComponent_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_LocalLevelComponent_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.class, demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.Builder.class);
+    }
+
+    public static final int LEVELVARIANCE_FIELD_NUMBER = 1;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter levelVariance_;
+    /**
+     * <code>.jd3.Parameter levelVariance = 1;</code>
+     * @return Whether the levelVariance field is set.
+     */
+    @java.lang.Override
+    public boolean hasLevelVariance() {
+      return levelVariance_ != null;
+    }
+    /**
+     * <code>.jd3.Parameter levelVariance = 1;</code>
+     * @return The levelVariance.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getLevelVariance() {
+      return levelVariance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : levelVariance_;
+    }
+    /**
+     * <code>.jd3.Parameter levelVariance = 1;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getLevelVarianceOrBuilder() {
+      return getLevelVariance();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (levelVariance_ != null) {
+        output.writeMessage(1, getLevelVariance());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (levelVariance_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getLevelVariance());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.sts.io.protobuf.StsProtos.LocalLevelComponent)) {
+        return super.equals(obj);
+      }
+      demetra.sts.io.protobuf.StsProtos.LocalLevelComponent other = (demetra.sts.io.protobuf.StsProtos.LocalLevelComponent) obj;
+
+      if (hasLevelVariance() != other.hasLevelVariance()) return false;
+      if (hasLevelVariance()) {
+        if (!getLevelVariance()
+            .equals(other.getLevelVariance())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasLevelVariance()) {
+        hash = (37 * hash) + LEVELVARIANCE_FIELD_NUMBER;
+        hash = (53 * hash) + getLevelVariance().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.LocalLevelComponent parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLevelComponent parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLevelComponent parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLevelComponent parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLevelComponent parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLevelComponent parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLevelComponent parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLevelComponent parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLevelComponent parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLevelComponent parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLevelComponent parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLevelComponent parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.sts.io.protobuf.StsProtos.LocalLevelComponent prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code sts.LocalLevelComponent}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:sts.LocalLevelComponent)
+        demetra.sts.io.protobuf.StsProtos.LocalLevelComponentOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_LocalLevelComponent_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_LocalLevelComponent_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.class, demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.Builder.class);
+      }
+
+      // Construct using demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (levelVarianceBuilder_ == null) {
+          levelVariance_ = null;
+        } else {
+          levelVariance_ = null;
+          levelVarianceBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_LocalLevelComponent_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.LocalLevelComponent getDefaultInstanceForType() {
+        return demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.LocalLevelComponent build() {
+        demetra.sts.io.protobuf.StsProtos.LocalLevelComponent result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.LocalLevelComponent buildPartial() {
+        demetra.sts.io.protobuf.StsProtos.LocalLevelComponent result = new demetra.sts.io.protobuf.StsProtos.LocalLevelComponent(this);
+        if (levelVarianceBuilder_ == null) {
+          result.levelVariance_ = levelVariance_;
+        } else {
+          result.levelVariance_ = levelVarianceBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.sts.io.protobuf.StsProtos.LocalLevelComponent) {
+          return mergeFrom((demetra.sts.io.protobuf.StsProtos.LocalLevelComponent)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.sts.io.protobuf.StsProtos.LocalLevelComponent other) {
+        if (other == demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.getDefaultInstance()) return this;
+        if (other.hasLevelVariance()) {
+          mergeLevelVariance(other.getLevelVariance());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.sts.io.protobuf.StsProtos.LocalLevelComponent parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.sts.io.protobuf.StsProtos.LocalLevelComponent) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter levelVariance_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> levelVarianceBuilder_;
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       * @return Whether the levelVariance field is set.
+       */
+      public boolean hasLevelVariance() {
+        return levelVarianceBuilder_ != null || levelVariance_ != null;
+      }
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       * @return The levelVariance.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getLevelVariance() {
+        if (levelVarianceBuilder_ == null) {
+          return levelVariance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : levelVariance_;
+        } else {
+          return levelVarianceBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       */
+      public Builder setLevelVariance(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (levelVarianceBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          levelVariance_ = value;
+          onChanged();
+        } else {
+          levelVarianceBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       */
+      public Builder setLevelVariance(
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+        if (levelVarianceBuilder_ == null) {
+          levelVariance_ = builderForValue.build();
+          onChanged();
+        } else {
+          levelVarianceBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       */
+      public Builder mergeLevelVariance(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (levelVarianceBuilder_ == null) {
+          if (levelVariance_ != null) {
+            levelVariance_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder(levelVariance_).mergeFrom(value).buildPartial();
+          } else {
+            levelVariance_ = value;
+          }
+          onChanged();
+        } else {
+          levelVarianceBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       */
+      public Builder clearLevelVariance() {
+        if (levelVarianceBuilder_ == null) {
+          levelVariance_ = null;
+          onChanged();
+        } else {
+          levelVariance_ = null;
+          levelVarianceBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getLevelVarianceBuilder() {
+        
+        onChanged();
+        return getLevelVarianceFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getLevelVarianceOrBuilder() {
+        if (levelVarianceBuilder_ != null) {
+          return levelVarianceBuilder_.getMessageOrBuilder();
+        } else {
+          return levelVariance_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : levelVariance_;
+        }
+      }
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+          getLevelVarianceFieldBuilder() {
+        if (levelVarianceBuilder_ == null) {
+          levelVarianceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
+                  getLevelVariance(),
+                  getParentForChildren(),
+                  isClean());
+          levelVariance_ = null;
+        }
+        return levelVarianceBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:sts.LocalLevelComponent)
+    }
+
+    // @@protoc_insertion_point(class_scope:sts.LocalLevelComponent)
+    private static final demetra.sts.io.protobuf.StsProtos.LocalLevelComponent DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.sts.io.protobuf.StsProtos.LocalLevelComponent();
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.LocalLevelComponent getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<LocalLevelComponent>
+        PARSER = new com.google.protobuf.AbstractParser<LocalLevelComponent>() {
+      @java.lang.Override
+      public LocalLevelComponent parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new LocalLevelComponent(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<LocalLevelComponent> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<LocalLevelComponent> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.LocalLevelComponent getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface LocalLinearTrendComponentOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:sts.LocalLinearTrendComponent)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.jd3.Parameter levelVariance = 1;</code>
+     * @return Whether the levelVariance field is set.
+     */
+    boolean hasLevelVariance();
+    /**
+     * <code>.jd3.Parameter levelVariance = 1;</code>
+     * @return The levelVariance.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getLevelVariance();
+    /**
+     * <code>.jd3.Parameter levelVariance = 1;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getLevelVarianceOrBuilder();
+
+    /**
+     * <code>.jd3.Parameter slopeVariance = 2;</code>
+     * @return Whether the slopeVariance field is set.
+     */
+    boolean hasSlopeVariance();
+    /**
+     * <code>.jd3.Parameter slopeVariance = 2;</code>
+     * @return The slopeVariance.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getSlopeVariance();
+    /**
+     * <code>.jd3.Parameter slopeVariance = 2;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getSlopeVarianceOrBuilder();
+  }
+  /**
+   * Protobuf type {@code sts.LocalLinearTrendComponent}
+   */
+  public static final class LocalLinearTrendComponent extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:sts.LocalLinearTrendComponent)
+      LocalLinearTrendComponentOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use LocalLinearTrendComponent.newBuilder() to construct.
+    private LocalLinearTrendComponent(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private LocalLinearTrendComponent() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new LocalLinearTrendComponent();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private LocalLinearTrendComponent(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
+              if (levelVariance_ != null) {
+                subBuilder = levelVariance_.toBuilder();
+              }
+              levelVariance_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(levelVariance_);
+                levelVariance_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 18: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
+              if (slopeVariance_ != null) {
+                subBuilder = slopeVariance_.toBuilder();
+              }
+              slopeVariance_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(slopeVariance_);
+                slopeVariance_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_LocalLinearTrendComponent_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_LocalLinearTrendComponent_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.class, demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.Builder.class);
+    }
+
+    public static final int LEVELVARIANCE_FIELD_NUMBER = 1;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter levelVariance_;
+    /**
+     * <code>.jd3.Parameter levelVariance = 1;</code>
+     * @return Whether the levelVariance field is set.
+     */
+    @java.lang.Override
+    public boolean hasLevelVariance() {
+      return levelVariance_ != null;
+    }
+    /**
+     * <code>.jd3.Parameter levelVariance = 1;</code>
+     * @return The levelVariance.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getLevelVariance() {
+      return levelVariance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : levelVariance_;
+    }
+    /**
+     * <code>.jd3.Parameter levelVariance = 1;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getLevelVarianceOrBuilder() {
+      return getLevelVariance();
+    }
+
+    public static final int SLOPEVARIANCE_FIELD_NUMBER = 2;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter slopeVariance_;
+    /**
+     * <code>.jd3.Parameter slopeVariance = 2;</code>
+     * @return Whether the slopeVariance field is set.
+     */
+    @java.lang.Override
+    public boolean hasSlopeVariance() {
+      return slopeVariance_ != null;
+    }
+    /**
+     * <code>.jd3.Parameter slopeVariance = 2;</code>
+     * @return The slopeVariance.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getSlopeVariance() {
+      return slopeVariance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : slopeVariance_;
+    }
+    /**
+     * <code>.jd3.Parameter slopeVariance = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getSlopeVarianceOrBuilder() {
+      return getSlopeVariance();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (levelVariance_ != null) {
+        output.writeMessage(1, getLevelVariance());
+      }
+      if (slopeVariance_ != null) {
+        output.writeMessage(2, getSlopeVariance());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (levelVariance_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getLevelVariance());
+      }
+      if (slopeVariance_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getSlopeVariance());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent)) {
+        return super.equals(obj);
+      }
+      demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent other = (demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent) obj;
+
+      if (hasLevelVariance() != other.hasLevelVariance()) return false;
+      if (hasLevelVariance()) {
+        if (!getLevelVariance()
+            .equals(other.getLevelVariance())) return false;
+      }
+      if (hasSlopeVariance() != other.hasSlopeVariance()) return false;
+      if (hasSlopeVariance()) {
+        if (!getSlopeVariance()
+            .equals(other.getSlopeVariance())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasLevelVariance()) {
+        hash = (37 * hash) + LEVELVARIANCE_FIELD_NUMBER;
+        hash = (53 * hash) + getLevelVariance().hashCode();
+      }
+      if (hasSlopeVariance()) {
+        hash = (37 * hash) + SLOPEVARIANCE_FIELD_NUMBER;
+        hash = (53 * hash) + getSlopeVariance().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code sts.LocalLinearTrendComponent}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:sts.LocalLinearTrendComponent)
+        demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponentOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_LocalLinearTrendComponent_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_LocalLinearTrendComponent_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.class, demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.Builder.class);
+      }
+
+      // Construct using demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (levelVarianceBuilder_ == null) {
+          levelVariance_ = null;
+        } else {
+          levelVariance_ = null;
+          levelVarianceBuilder_ = null;
+        }
+        if (slopeVarianceBuilder_ == null) {
+          slopeVariance_ = null;
+        } else {
+          slopeVariance_ = null;
+          slopeVarianceBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_LocalLinearTrendComponent_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent getDefaultInstanceForType() {
+        return demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent build() {
+        demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent buildPartial() {
+        demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent result = new demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent(this);
+        if (levelVarianceBuilder_ == null) {
+          result.levelVariance_ = levelVariance_;
+        } else {
+          result.levelVariance_ = levelVarianceBuilder_.build();
+        }
+        if (slopeVarianceBuilder_ == null) {
+          result.slopeVariance_ = slopeVariance_;
+        } else {
+          result.slopeVariance_ = slopeVarianceBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent) {
+          return mergeFrom((demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent other) {
+        if (other == demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.getDefaultInstance()) return this;
+        if (other.hasLevelVariance()) {
+          mergeLevelVariance(other.getLevelVariance());
+        }
+        if (other.hasSlopeVariance()) {
+          mergeSlopeVariance(other.getSlopeVariance());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter levelVariance_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> levelVarianceBuilder_;
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       * @return Whether the levelVariance field is set.
+       */
+      public boolean hasLevelVariance() {
+        return levelVarianceBuilder_ != null || levelVariance_ != null;
+      }
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       * @return The levelVariance.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getLevelVariance() {
+        if (levelVarianceBuilder_ == null) {
+          return levelVariance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : levelVariance_;
+        } else {
+          return levelVarianceBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       */
+      public Builder setLevelVariance(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (levelVarianceBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          levelVariance_ = value;
+          onChanged();
+        } else {
+          levelVarianceBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       */
+      public Builder setLevelVariance(
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+        if (levelVarianceBuilder_ == null) {
+          levelVariance_ = builderForValue.build();
+          onChanged();
+        } else {
+          levelVarianceBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       */
+      public Builder mergeLevelVariance(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (levelVarianceBuilder_ == null) {
+          if (levelVariance_ != null) {
+            levelVariance_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder(levelVariance_).mergeFrom(value).buildPartial();
+          } else {
+            levelVariance_ = value;
+          }
+          onChanged();
+        } else {
+          levelVarianceBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       */
+      public Builder clearLevelVariance() {
+        if (levelVarianceBuilder_ == null) {
+          levelVariance_ = null;
+          onChanged();
+        } else {
+          levelVariance_ = null;
+          levelVarianceBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getLevelVarianceBuilder() {
+        
+        onChanged();
+        return getLevelVarianceFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getLevelVarianceOrBuilder() {
+        if (levelVarianceBuilder_ != null) {
+          return levelVarianceBuilder_.getMessageOrBuilder();
+        } else {
+          return levelVariance_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : levelVariance_;
+        }
+      }
+      /**
+       * <code>.jd3.Parameter levelVariance = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+          getLevelVarianceFieldBuilder() {
+        if (levelVarianceBuilder_ == null) {
+          levelVarianceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
+                  getLevelVariance(),
+                  getParentForChildren(),
+                  isClean());
+          levelVariance_ = null;
+        }
+        return levelVarianceBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter slopeVariance_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> slopeVarianceBuilder_;
+      /**
+       * <code>.jd3.Parameter slopeVariance = 2;</code>
+       * @return Whether the slopeVariance field is set.
+       */
+      public boolean hasSlopeVariance() {
+        return slopeVarianceBuilder_ != null || slopeVariance_ != null;
+      }
+      /**
+       * <code>.jd3.Parameter slopeVariance = 2;</code>
+       * @return The slopeVariance.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getSlopeVariance() {
+        if (slopeVarianceBuilder_ == null) {
+          return slopeVariance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : slopeVariance_;
+        } else {
+          return slopeVarianceBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.Parameter slopeVariance = 2;</code>
+       */
+      public Builder setSlopeVariance(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (slopeVarianceBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          slopeVariance_ = value;
+          onChanged();
+        } else {
+          slopeVarianceBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter slopeVariance = 2;</code>
+       */
+      public Builder setSlopeVariance(
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+        if (slopeVarianceBuilder_ == null) {
+          slopeVariance_ = builderForValue.build();
+          onChanged();
+        } else {
+          slopeVarianceBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter slopeVariance = 2;</code>
+       */
+      public Builder mergeSlopeVariance(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (slopeVarianceBuilder_ == null) {
+          if (slopeVariance_ != null) {
+            slopeVariance_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder(slopeVariance_).mergeFrom(value).buildPartial();
+          } else {
+            slopeVariance_ = value;
+          }
+          onChanged();
+        } else {
+          slopeVarianceBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter slopeVariance = 2;</code>
+       */
+      public Builder clearSlopeVariance() {
+        if (slopeVarianceBuilder_ == null) {
+          slopeVariance_ = null;
+          onChanged();
+        } else {
+          slopeVariance_ = null;
+          slopeVarianceBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter slopeVariance = 2;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getSlopeVarianceBuilder() {
+        
+        onChanged();
+        return getSlopeVarianceFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Parameter slopeVariance = 2;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getSlopeVarianceOrBuilder() {
+        if (slopeVarianceBuilder_ != null) {
+          return slopeVarianceBuilder_.getMessageOrBuilder();
+        } else {
+          return slopeVariance_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : slopeVariance_;
+        }
+      }
+      /**
+       * <code>.jd3.Parameter slopeVariance = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+          getSlopeVarianceFieldBuilder() {
+        if (slopeVarianceBuilder_ == null) {
+          slopeVarianceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
+                  getSlopeVariance(),
+                  getParentForChildren(),
+                  isClean());
+          slopeVariance_ = null;
+        }
+        return slopeVarianceBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:sts.LocalLinearTrendComponent)
+    }
+
+    // @@protoc_insertion_point(class_scope:sts.LocalLinearTrendComponent)
+    private static final demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent();
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<LocalLinearTrendComponent>
+        PARSER = new com.google.protobuf.AbstractParser<LocalLinearTrendComponent>() {
+      @java.lang.Override
+      public LocalLinearTrendComponent parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new LocalLinearTrendComponent(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<LocalLinearTrendComponent> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<LocalLinearTrendComponent> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface NullableTrendComponentOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:sts.NullableTrendComponent)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The enum numeric value on the wire for null.
+     */
+    int getNullValue();
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The null.
+     */
+    com.google.protobuf.NullValue getNull();
+
+    /**
+     * <code>.sts.LocalLevelComponent local_level = 2;</code>
+     * @return Whether the localLevel field is set.
+     */
+    boolean hasLocalLevel();
+    /**
+     * <code>.sts.LocalLevelComponent local_level = 2;</code>
+     * @return The localLevel.
+     */
+    demetra.sts.io.protobuf.StsProtos.LocalLevelComponent getLocalLevel();
+    /**
+     * <code>.sts.LocalLevelComponent local_level = 2;</code>
+     */
+    demetra.sts.io.protobuf.StsProtos.LocalLevelComponentOrBuilder getLocalLevelOrBuilder();
+
+    /**
+     * <code>.sts.LocalLinearTrendComponent local_linear_trend = 3;</code>
+     * @return Whether the localLinearTrend field is set.
+     */
+    boolean hasLocalLinearTrend();
+    /**
+     * <code>.sts.LocalLinearTrendComponent local_linear_trend = 3;</code>
+     * @return The localLinearTrend.
+     */
+    demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent getLocalLinearTrend();
+    /**
+     * <code>.sts.LocalLinearTrendComponent local_linear_trend = 3;</code>
+     */
+    demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponentOrBuilder getLocalLinearTrendOrBuilder();
+
+    public demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.KindCase getKindCase();
+  }
+  /**
+   * Protobuf type {@code sts.NullableTrendComponent}
+   */
+  public static final class NullableTrendComponent extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:sts.NullableTrendComponent)
+      NullableTrendComponentOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use NullableTrendComponent.newBuilder() to construct.
+    private NullableTrendComponent(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private NullableTrendComponent() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new NullableTrendComponent();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private NullableTrendComponent(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              int rawValue = input.readEnum();
+              kindCase_ = 1;
+              kind_ = rawValue;
+              break;
+            }
+            case 18: {
+              demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.Builder subBuilder = null;
+              if (kindCase_ == 2) {
+                subBuilder = ((demetra.sts.io.protobuf.StsProtos.LocalLevelComponent) kind_).toBuilder();
+              }
+              kind_ =
+                  input.readMessage(demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((demetra.sts.io.protobuf.StsProtos.LocalLevelComponent) kind_);
+                kind_ = subBuilder.buildPartial();
+              }
+              kindCase_ = 2;
+              break;
+            }
+            case 26: {
+              demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.Builder subBuilder = null;
+              if (kindCase_ == 3) {
+                subBuilder = ((demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent) kind_).toBuilder();
+              }
+              kind_ =
+                  input.readMessage(demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent) kind_);
+                kind_ = subBuilder.buildPartial();
+              }
+              kindCase_ = 3;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableTrendComponent_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableTrendComponent_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.class, demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.Builder.class);
+    }
+
+    private int kindCase_ = 0;
+    private java.lang.Object kind_;
+    public enum KindCase
+        implements com.google.protobuf.Internal.EnumLite,
+            com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+      NULL(1),
+      LOCAL_LEVEL(2),
+      LOCAL_LINEAR_TREND(3),
+      KIND_NOT_SET(0);
+      private final int value;
+      private KindCase(int value) {
+        this.value = value;
+      }
+      /**
+       * @param value The number of the enum to look for.
+       * @return The enum associated with the given number.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static KindCase valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static KindCase forNumber(int value) {
+        switch (value) {
+          case 1: return NULL;
+          case 2: return LOCAL_LEVEL;
+          case 3: return LOCAL_LINEAR_TREND;
+          case 0: return KIND_NOT_SET;
+          default: return null;
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
+
+    public KindCase
+    getKindCase() {
+      return KindCase.forNumber(
+          kindCase_);
+    }
+
+    public static final int NULL_FIELD_NUMBER = 1;
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The enum numeric value on the wire for null.
+     */
+    public int getNullValue() {
+      if (kindCase_ == 1) {
+        return (java.lang.Integer) kind_;
+      }
+      return 0;
+    }
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The null.
+     */
+    public com.google.protobuf.NullValue getNull() {
+      if (kindCase_ == 1) {
+        @SuppressWarnings("deprecation")
+        com.google.protobuf.NullValue result = com.google.protobuf.NullValue.valueOf(
+            (java.lang.Integer) kind_);
+        return result == null ? com.google.protobuf.NullValue.UNRECOGNIZED : result;
+      }
+      return com.google.protobuf.NullValue.NULL_VALUE;
+    }
+
+    public static final int LOCAL_LEVEL_FIELD_NUMBER = 2;
+    /**
+     * <code>.sts.LocalLevelComponent local_level = 2;</code>
+     * @return Whether the localLevel field is set.
+     */
+    @java.lang.Override
+    public boolean hasLocalLevel() {
+      return kindCase_ == 2;
+    }
+    /**
+     * <code>.sts.LocalLevelComponent local_level = 2;</code>
+     * @return The localLevel.
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.LocalLevelComponent getLocalLevel() {
+      if (kindCase_ == 2) {
+         return (demetra.sts.io.protobuf.StsProtos.LocalLevelComponent) kind_;
+      }
+      return demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.getDefaultInstance();
+    }
+    /**
+     * <code>.sts.LocalLevelComponent local_level = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.LocalLevelComponentOrBuilder getLocalLevelOrBuilder() {
+      if (kindCase_ == 2) {
+         return (demetra.sts.io.protobuf.StsProtos.LocalLevelComponent) kind_;
+      }
+      return demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.getDefaultInstance();
+    }
+
+    public static final int LOCAL_LINEAR_TREND_FIELD_NUMBER = 3;
+    /**
+     * <code>.sts.LocalLinearTrendComponent local_linear_trend = 3;</code>
+     * @return Whether the localLinearTrend field is set.
+     */
+    @java.lang.Override
+    public boolean hasLocalLinearTrend() {
+      return kindCase_ == 3;
+    }
+    /**
+     * <code>.sts.LocalLinearTrendComponent local_linear_trend = 3;</code>
+     * @return The localLinearTrend.
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent getLocalLinearTrend() {
+      if (kindCase_ == 3) {
+         return (demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent) kind_;
+      }
+      return demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.getDefaultInstance();
+    }
+    /**
+     * <code>.sts.LocalLinearTrendComponent local_linear_trend = 3;</code>
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponentOrBuilder getLocalLinearTrendOrBuilder() {
+      if (kindCase_ == 3) {
+         return (demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent) kind_;
+      }
+      return demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.getDefaultInstance();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (kindCase_ == 1) {
+        output.writeEnum(1, ((java.lang.Integer) kind_));
+      }
+      if (kindCase_ == 2) {
+        output.writeMessage(2, (demetra.sts.io.protobuf.StsProtos.LocalLevelComponent) kind_);
+      }
+      if (kindCase_ == 3) {
+        output.writeMessage(3, (demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent) kind_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (kindCase_ == 1) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, ((java.lang.Integer) kind_));
+      }
+      if (kindCase_ == 2) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, (demetra.sts.io.protobuf.StsProtos.LocalLevelComponent) kind_);
+      }
+      if (kindCase_ == 3) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, (demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent) kind_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.sts.io.protobuf.StsProtos.NullableTrendComponent)) {
+        return super.equals(obj);
+      }
+      demetra.sts.io.protobuf.StsProtos.NullableTrendComponent other = (demetra.sts.io.protobuf.StsProtos.NullableTrendComponent) obj;
+
+      if (!getKindCase().equals(other.getKindCase())) return false;
+      switch (kindCase_) {
+        case 1:
+          if (getNullValue()
+              != other.getNullValue()) return false;
+          break;
+        case 2:
+          if (!getLocalLevel()
+              .equals(other.getLocalLevel())) return false;
+          break;
+        case 3:
+          if (!getLocalLinearTrend()
+              .equals(other.getLocalLinearTrend())) return false;
+          break;
+        case 0:
+        default:
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      switch (kindCase_) {
+        case 1:
+          hash = (37 * hash) + NULL_FIELD_NUMBER;
+          hash = (53 * hash) + getNullValue();
+          break;
+        case 2:
+          hash = (37 * hash) + LOCAL_LEVEL_FIELD_NUMBER;
+          hash = (53 * hash) + getLocalLevel().hashCode();
+          break;
+        case 3:
+          hash = (37 * hash) + LOCAL_LINEAR_TREND_FIELD_NUMBER;
+          hash = (53 * hash) + getLocalLinearTrend().hashCode();
+          break;
+        case 0:
+        default:
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.NullableTrendComponent parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableTrendComponent parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableTrendComponent parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableTrendComponent parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableTrendComponent parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableTrendComponent parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableTrendComponent parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableTrendComponent parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableTrendComponent parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableTrendComponent parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableTrendComponent parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableTrendComponent parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.sts.io.protobuf.StsProtos.NullableTrendComponent prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code sts.NullableTrendComponent}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:sts.NullableTrendComponent)
+        demetra.sts.io.protobuf.StsProtos.NullableTrendComponentOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableTrendComponent_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableTrendComponent_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.class, demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.Builder.class);
+      }
+
+      // Construct using demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        kindCase_ = 0;
+        kind_ = null;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableTrendComponent_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NullableTrendComponent getDefaultInstanceForType() {
+        return demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NullableTrendComponent build() {
+        demetra.sts.io.protobuf.StsProtos.NullableTrendComponent result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NullableTrendComponent buildPartial() {
+        demetra.sts.io.protobuf.StsProtos.NullableTrendComponent result = new demetra.sts.io.protobuf.StsProtos.NullableTrendComponent(this);
+        if (kindCase_ == 1) {
+          result.kind_ = kind_;
+        }
+        if (kindCase_ == 2) {
+          if (localLevelBuilder_ == null) {
+            result.kind_ = kind_;
+          } else {
+            result.kind_ = localLevelBuilder_.build();
+          }
+        }
+        if (kindCase_ == 3) {
+          if (localLinearTrendBuilder_ == null) {
+            result.kind_ = kind_;
+          } else {
+            result.kind_ = localLinearTrendBuilder_.build();
+          }
+        }
+        result.kindCase_ = kindCase_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.sts.io.protobuf.StsProtos.NullableTrendComponent) {
+          return mergeFrom((demetra.sts.io.protobuf.StsProtos.NullableTrendComponent)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.sts.io.protobuf.StsProtos.NullableTrendComponent other) {
+        if (other == demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.getDefaultInstance()) return this;
+        switch (other.getKindCase()) {
+          case NULL: {
+            setNullValue(other.getNullValue());
+            break;
+          }
+          case LOCAL_LEVEL: {
+            mergeLocalLevel(other.getLocalLevel());
+            break;
+          }
+          case LOCAL_LINEAR_TREND: {
+            mergeLocalLinearTrend(other.getLocalLinearTrend());
+            break;
+          }
+          case KIND_NOT_SET: {
+            break;
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.sts.io.protobuf.StsProtos.NullableTrendComponent parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.sts.io.protobuf.StsProtos.NullableTrendComponent) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int kindCase_ = 0;
+      private java.lang.Object kind_;
+      public KindCase
+          getKindCase() {
+        return KindCase.forNumber(
+            kindCase_);
+      }
+
+      public Builder clearKind() {
+        kindCase_ = 0;
+        kind_ = null;
+        onChanged();
+        return this;
+      }
+
+
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @return The enum numeric value on the wire for null.
+       */
+      @java.lang.Override
+      public int getNullValue() {
+        if (kindCase_ == 1) {
+          return ((java.lang.Integer) kind_).intValue();
+        }
+        return 0;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @param value The enum numeric value on the wire for null to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNullValue(int value) {
+        kindCase_ = 1;
+        kind_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @return The null.
+       */
+      @java.lang.Override
+      public com.google.protobuf.NullValue getNull() {
+        if (kindCase_ == 1) {
+          @SuppressWarnings("deprecation")
+          com.google.protobuf.NullValue result = com.google.protobuf.NullValue.valueOf(
+              (java.lang.Integer) kind_);
+          return result == null ? com.google.protobuf.NullValue.UNRECOGNIZED : result;
+        }
+        return com.google.protobuf.NullValue.NULL_VALUE;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @param value The null to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNull(com.google.protobuf.NullValue value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        kindCase_ = 1;
+        kind_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNull() {
+        if (kindCase_ == 1) {
+          kindCase_ = 0;
+          kind_ = null;
+          onChanged();
+        }
+        return this;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.LocalLevelComponent, demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.Builder, demetra.sts.io.protobuf.StsProtos.LocalLevelComponentOrBuilder> localLevelBuilder_;
+      /**
+       * <code>.sts.LocalLevelComponent local_level = 2;</code>
+       * @return Whether the localLevel field is set.
+       */
+      @java.lang.Override
+      public boolean hasLocalLevel() {
+        return kindCase_ == 2;
+      }
+      /**
+       * <code>.sts.LocalLevelComponent local_level = 2;</code>
+       * @return The localLevel.
+       */
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.LocalLevelComponent getLocalLevel() {
+        if (localLevelBuilder_ == null) {
+          if (kindCase_ == 2) {
+            return (demetra.sts.io.protobuf.StsProtos.LocalLevelComponent) kind_;
+          }
+          return demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.getDefaultInstance();
+        } else {
+          if (kindCase_ == 2) {
+            return localLevelBuilder_.getMessage();
+          }
+          return demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.sts.LocalLevelComponent local_level = 2;</code>
+       */
+      public Builder setLocalLevel(demetra.sts.io.protobuf.StsProtos.LocalLevelComponent value) {
+        if (localLevelBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          kind_ = value;
+          onChanged();
+        } else {
+          localLevelBuilder_.setMessage(value);
+        }
+        kindCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.sts.LocalLevelComponent local_level = 2;</code>
+       */
+      public Builder setLocalLevel(
+          demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.Builder builderForValue) {
+        if (localLevelBuilder_ == null) {
+          kind_ = builderForValue.build();
+          onChanged();
+        } else {
+          localLevelBuilder_.setMessage(builderForValue.build());
+        }
+        kindCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.sts.LocalLevelComponent local_level = 2;</code>
+       */
+      public Builder mergeLocalLevel(demetra.sts.io.protobuf.StsProtos.LocalLevelComponent value) {
+        if (localLevelBuilder_ == null) {
+          if (kindCase_ == 2 &&
+              kind_ != demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.getDefaultInstance()) {
+            kind_ = demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.newBuilder((demetra.sts.io.protobuf.StsProtos.LocalLevelComponent) kind_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            kind_ = value;
+          }
+          onChanged();
+        } else {
+          if (kindCase_ == 2) {
+            localLevelBuilder_.mergeFrom(value);
+          }
+          localLevelBuilder_.setMessage(value);
+        }
+        kindCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.sts.LocalLevelComponent local_level = 2;</code>
+       */
+      public Builder clearLocalLevel() {
+        if (localLevelBuilder_ == null) {
+          if (kindCase_ == 2) {
+            kindCase_ = 0;
+            kind_ = null;
+            onChanged();
+          }
+        } else {
+          if (kindCase_ == 2) {
+            kindCase_ = 0;
+            kind_ = null;
+          }
+          localLevelBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.sts.LocalLevelComponent local_level = 2;</code>
+       */
+      public demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.Builder getLocalLevelBuilder() {
+        return getLocalLevelFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.sts.LocalLevelComponent local_level = 2;</code>
+       */
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.LocalLevelComponentOrBuilder getLocalLevelOrBuilder() {
+        if ((kindCase_ == 2) && (localLevelBuilder_ != null)) {
+          return localLevelBuilder_.getMessageOrBuilder();
+        } else {
+          if (kindCase_ == 2) {
+            return (demetra.sts.io.protobuf.StsProtos.LocalLevelComponent) kind_;
+          }
+          return demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.sts.LocalLevelComponent local_level = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.LocalLevelComponent, demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.Builder, demetra.sts.io.protobuf.StsProtos.LocalLevelComponentOrBuilder> 
+          getLocalLevelFieldBuilder() {
+        if (localLevelBuilder_ == null) {
+          if (!(kindCase_ == 2)) {
+            kind_ = demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.getDefaultInstance();
+          }
+          localLevelBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.sts.io.protobuf.StsProtos.LocalLevelComponent, demetra.sts.io.protobuf.StsProtos.LocalLevelComponent.Builder, demetra.sts.io.protobuf.StsProtos.LocalLevelComponentOrBuilder>(
+                  (demetra.sts.io.protobuf.StsProtos.LocalLevelComponent) kind_,
+                  getParentForChildren(),
+                  isClean());
+          kind_ = null;
+        }
+        kindCase_ = 2;
+        onChanged();;
+        return localLevelBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent, demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.Builder, demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponentOrBuilder> localLinearTrendBuilder_;
+      /**
+       * <code>.sts.LocalLinearTrendComponent local_linear_trend = 3;</code>
+       * @return Whether the localLinearTrend field is set.
+       */
+      @java.lang.Override
+      public boolean hasLocalLinearTrend() {
+        return kindCase_ == 3;
+      }
+      /**
+       * <code>.sts.LocalLinearTrendComponent local_linear_trend = 3;</code>
+       * @return The localLinearTrend.
+       */
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent getLocalLinearTrend() {
+        if (localLinearTrendBuilder_ == null) {
+          if (kindCase_ == 3) {
+            return (demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent) kind_;
+          }
+          return demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.getDefaultInstance();
+        } else {
+          if (kindCase_ == 3) {
+            return localLinearTrendBuilder_.getMessage();
+          }
+          return demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.sts.LocalLinearTrendComponent local_linear_trend = 3;</code>
+       */
+      public Builder setLocalLinearTrend(demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent value) {
+        if (localLinearTrendBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          kind_ = value;
+          onChanged();
+        } else {
+          localLinearTrendBuilder_.setMessage(value);
+        }
+        kindCase_ = 3;
+        return this;
+      }
+      /**
+       * <code>.sts.LocalLinearTrendComponent local_linear_trend = 3;</code>
+       */
+      public Builder setLocalLinearTrend(
+          demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.Builder builderForValue) {
+        if (localLinearTrendBuilder_ == null) {
+          kind_ = builderForValue.build();
+          onChanged();
+        } else {
+          localLinearTrendBuilder_.setMessage(builderForValue.build());
+        }
+        kindCase_ = 3;
+        return this;
+      }
+      /**
+       * <code>.sts.LocalLinearTrendComponent local_linear_trend = 3;</code>
+       */
+      public Builder mergeLocalLinearTrend(demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent value) {
+        if (localLinearTrendBuilder_ == null) {
+          if (kindCase_ == 3 &&
+              kind_ != demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.getDefaultInstance()) {
+            kind_ = demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.newBuilder((demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent) kind_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            kind_ = value;
+          }
+          onChanged();
+        } else {
+          if (kindCase_ == 3) {
+            localLinearTrendBuilder_.mergeFrom(value);
+          }
+          localLinearTrendBuilder_.setMessage(value);
+        }
+        kindCase_ = 3;
+        return this;
+      }
+      /**
+       * <code>.sts.LocalLinearTrendComponent local_linear_trend = 3;</code>
+       */
+      public Builder clearLocalLinearTrend() {
+        if (localLinearTrendBuilder_ == null) {
+          if (kindCase_ == 3) {
+            kindCase_ = 0;
+            kind_ = null;
+            onChanged();
+          }
+        } else {
+          if (kindCase_ == 3) {
+            kindCase_ = 0;
+            kind_ = null;
+          }
+          localLinearTrendBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.sts.LocalLinearTrendComponent local_linear_trend = 3;</code>
+       */
+      public demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.Builder getLocalLinearTrendBuilder() {
+        return getLocalLinearTrendFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.sts.LocalLinearTrendComponent local_linear_trend = 3;</code>
+       */
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponentOrBuilder getLocalLinearTrendOrBuilder() {
+        if ((kindCase_ == 3) && (localLinearTrendBuilder_ != null)) {
+          return localLinearTrendBuilder_.getMessageOrBuilder();
+        } else {
+          if (kindCase_ == 3) {
+            return (demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent) kind_;
+          }
+          return demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.sts.LocalLinearTrendComponent local_linear_trend = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent, demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.Builder, demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponentOrBuilder> 
+          getLocalLinearTrendFieldBuilder() {
+        if (localLinearTrendBuilder_ == null) {
+          if (!(kindCase_ == 3)) {
+            kind_ = demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.getDefaultInstance();
+          }
+          localLinearTrendBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent, demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent.Builder, demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponentOrBuilder>(
+                  (demetra.sts.io.protobuf.StsProtos.LocalLinearTrendComponent) kind_,
+                  getParentForChildren(),
+                  isClean());
+          kind_ = null;
+        }
+        kindCase_ = 3;
+        onChanged();;
+        return localLinearTrendBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:sts.NullableTrendComponent)
+    }
+
+    // @@protoc_insertion_point(class_scope:sts.NullableTrendComponent)
+    private static final demetra.sts.io.protobuf.StsProtos.NullableTrendComponent DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.sts.io.protobuf.StsProtos.NullableTrendComponent();
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.NullableTrendComponent getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<NullableTrendComponent>
+        PARSER = new com.google.protobuf.AbstractParser<NullableTrendComponent>() {
+      @java.lang.Override
+      public NullableTrendComponent parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new NullableTrendComponent(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<NullableTrendComponent> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<NullableTrendComponent> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.NullableTrendComponent getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface NoiseComponentOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:sts.NoiseComponent)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.jd3.Parameter variance = 1;</code>
+     * @return Whether the variance field is set.
+     */
+    boolean hasVariance();
+    /**
+     * <code>.jd3.Parameter variance = 1;</code>
+     * @return The variance.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getVariance();
+    /**
+     * <code>.jd3.Parameter variance = 1;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getVarianceOrBuilder();
+  }
+  /**
+   * Protobuf type {@code sts.NoiseComponent}
+   */
+  public static final class NoiseComponent extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:sts.NoiseComponent)
+      NoiseComponentOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use NoiseComponent.newBuilder() to construct.
+    private NoiseComponent(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private NoiseComponent() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new NoiseComponent();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private NoiseComponent(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
+              if (variance_ != null) {
+                subBuilder = variance_.toBuilder();
+              }
+              variance_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(variance_);
+                variance_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NoiseComponent_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NoiseComponent_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.sts.io.protobuf.StsProtos.NoiseComponent.class, demetra.sts.io.protobuf.StsProtos.NoiseComponent.Builder.class);
+    }
+
+    public static final int VARIANCE_FIELD_NUMBER = 1;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter variance_;
+    /**
+     * <code>.jd3.Parameter variance = 1;</code>
+     * @return Whether the variance field is set.
+     */
+    @java.lang.Override
+    public boolean hasVariance() {
+      return variance_ != null;
+    }
+    /**
+     * <code>.jd3.Parameter variance = 1;</code>
+     * @return The variance.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getVariance() {
+      return variance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : variance_;
+    }
+    /**
+     * <code>.jd3.Parameter variance = 1;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getVarianceOrBuilder() {
+      return getVariance();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (variance_ != null) {
+        output.writeMessage(1, getVariance());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (variance_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getVariance());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.sts.io.protobuf.StsProtos.NoiseComponent)) {
+        return super.equals(obj);
+      }
+      demetra.sts.io.protobuf.StsProtos.NoiseComponent other = (demetra.sts.io.protobuf.StsProtos.NoiseComponent) obj;
+
+      if (hasVariance() != other.hasVariance()) return false;
+      if (hasVariance()) {
+        if (!getVariance()
+            .equals(other.getVariance())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasVariance()) {
+        hash = (37 * hash) + VARIANCE_FIELD_NUMBER;
+        hash = (53 * hash) + getVariance().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.NoiseComponent parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NoiseComponent parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NoiseComponent parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NoiseComponent parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NoiseComponent parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NoiseComponent parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NoiseComponent parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NoiseComponent parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NoiseComponent parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NoiseComponent parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NoiseComponent parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NoiseComponent parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.sts.io.protobuf.StsProtos.NoiseComponent prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code sts.NoiseComponent}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:sts.NoiseComponent)
+        demetra.sts.io.protobuf.StsProtos.NoiseComponentOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NoiseComponent_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NoiseComponent_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.sts.io.protobuf.StsProtos.NoiseComponent.class, demetra.sts.io.protobuf.StsProtos.NoiseComponent.Builder.class);
+      }
+
+      // Construct using demetra.sts.io.protobuf.StsProtos.NoiseComponent.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (varianceBuilder_ == null) {
+          variance_ = null;
+        } else {
+          variance_ = null;
+          varianceBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NoiseComponent_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NoiseComponent getDefaultInstanceForType() {
+        return demetra.sts.io.protobuf.StsProtos.NoiseComponent.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NoiseComponent build() {
+        demetra.sts.io.protobuf.StsProtos.NoiseComponent result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NoiseComponent buildPartial() {
+        demetra.sts.io.protobuf.StsProtos.NoiseComponent result = new demetra.sts.io.protobuf.StsProtos.NoiseComponent(this);
+        if (varianceBuilder_ == null) {
+          result.variance_ = variance_;
+        } else {
+          result.variance_ = varianceBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.sts.io.protobuf.StsProtos.NoiseComponent) {
+          return mergeFrom((demetra.sts.io.protobuf.StsProtos.NoiseComponent)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.sts.io.protobuf.StsProtos.NoiseComponent other) {
+        if (other == demetra.sts.io.protobuf.StsProtos.NoiseComponent.getDefaultInstance()) return this;
+        if (other.hasVariance()) {
+          mergeVariance(other.getVariance());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.sts.io.protobuf.StsProtos.NoiseComponent parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.sts.io.protobuf.StsProtos.NoiseComponent) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter variance_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> varianceBuilder_;
+      /**
+       * <code>.jd3.Parameter variance = 1;</code>
+       * @return Whether the variance field is set.
+       */
+      public boolean hasVariance() {
+        return varianceBuilder_ != null || variance_ != null;
+      }
+      /**
+       * <code>.jd3.Parameter variance = 1;</code>
+       * @return The variance.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getVariance() {
+        if (varianceBuilder_ == null) {
+          return variance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : variance_;
+        } else {
+          return varianceBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.Parameter variance = 1;</code>
+       */
+      public Builder setVariance(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (varianceBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          variance_ = value;
+          onChanged();
+        } else {
+          varianceBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter variance = 1;</code>
+       */
+      public Builder setVariance(
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+        if (varianceBuilder_ == null) {
+          variance_ = builderForValue.build();
+          onChanged();
+        } else {
+          varianceBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter variance = 1;</code>
+       */
+      public Builder mergeVariance(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (varianceBuilder_ == null) {
+          if (variance_ != null) {
+            variance_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder(variance_).mergeFrom(value).buildPartial();
+          } else {
+            variance_ = value;
+          }
+          onChanged();
+        } else {
+          varianceBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter variance = 1;</code>
+       */
+      public Builder clearVariance() {
+        if (varianceBuilder_ == null) {
+          variance_ = null;
+          onChanged();
+        } else {
+          variance_ = null;
+          varianceBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter variance = 1;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getVarianceBuilder() {
+        
+        onChanged();
+        return getVarianceFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Parameter variance = 1;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getVarianceOrBuilder() {
+        if (varianceBuilder_ != null) {
+          return varianceBuilder_.getMessageOrBuilder();
+        } else {
+          return variance_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : variance_;
+        }
+      }
+      /**
+       * <code>.jd3.Parameter variance = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+          getVarianceFieldBuilder() {
+        if (varianceBuilder_ == null) {
+          varianceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
+                  getVariance(),
+                  getParentForChildren(),
+                  isClean());
+          variance_ = null;
+        }
+        return varianceBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:sts.NoiseComponent)
+    }
+
+    // @@protoc_insertion_point(class_scope:sts.NoiseComponent)
+    private static final demetra.sts.io.protobuf.StsProtos.NoiseComponent DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.sts.io.protobuf.StsProtos.NoiseComponent();
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.NoiseComponent getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<NoiseComponent>
+        PARSER = new com.google.protobuf.AbstractParser<NoiseComponent>() {
+      @java.lang.Override
+      public NoiseComponent parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new NoiseComponent(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<NoiseComponent> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<NoiseComponent> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.NoiseComponent getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface NullableNoiseComponentOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:sts.NullableNoiseComponent)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The enum numeric value on the wire for null.
+     */
+    int getNullValue();
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The null.
+     */
+    com.google.protobuf.NullValue getNull();
+
+    /**
+     * <code>.sts.NoiseComponent component = 2;</code>
+     * @return Whether the component field is set.
+     */
+    boolean hasComponent();
+    /**
+     * <code>.sts.NoiseComponent component = 2;</code>
+     * @return The component.
+     */
+    demetra.sts.io.protobuf.StsProtos.NoiseComponent getComponent();
+    /**
+     * <code>.sts.NoiseComponent component = 2;</code>
+     */
+    demetra.sts.io.protobuf.StsProtos.NoiseComponentOrBuilder getComponentOrBuilder();
+
+    public demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.KindCase getKindCase();
+  }
+  /**
+   * Protobuf type {@code sts.NullableNoiseComponent}
+   */
+  public static final class NullableNoiseComponent extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:sts.NullableNoiseComponent)
+      NullableNoiseComponentOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use NullableNoiseComponent.newBuilder() to construct.
+    private NullableNoiseComponent(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private NullableNoiseComponent() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new NullableNoiseComponent();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private NullableNoiseComponent(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              int rawValue = input.readEnum();
+              kindCase_ = 1;
+              kind_ = rawValue;
+              break;
+            }
+            case 18: {
+              demetra.sts.io.protobuf.StsProtos.NoiseComponent.Builder subBuilder = null;
+              if (kindCase_ == 2) {
+                subBuilder = ((demetra.sts.io.protobuf.StsProtos.NoiseComponent) kind_).toBuilder();
+              }
+              kind_ =
+                  input.readMessage(demetra.sts.io.protobuf.StsProtos.NoiseComponent.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((demetra.sts.io.protobuf.StsProtos.NoiseComponent) kind_);
+                kind_ = subBuilder.buildPartial();
+              }
+              kindCase_ = 2;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableNoiseComponent_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableNoiseComponent_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.class, demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.Builder.class);
+    }
+
+    private int kindCase_ = 0;
+    private java.lang.Object kind_;
+    public enum KindCase
+        implements com.google.protobuf.Internal.EnumLite,
+            com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+      NULL(1),
+      COMPONENT(2),
+      KIND_NOT_SET(0);
+      private final int value;
+      private KindCase(int value) {
+        this.value = value;
+      }
+      /**
+       * @param value The number of the enum to look for.
+       * @return The enum associated with the given number.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static KindCase valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static KindCase forNumber(int value) {
+        switch (value) {
+          case 1: return NULL;
+          case 2: return COMPONENT;
+          case 0: return KIND_NOT_SET;
+          default: return null;
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
+
+    public KindCase
+    getKindCase() {
+      return KindCase.forNumber(
+          kindCase_);
+    }
+
+    public static final int NULL_FIELD_NUMBER = 1;
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The enum numeric value on the wire for null.
+     */
+    public int getNullValue() {
+      if (kindCase_ == 1) {
+        return (java.lang.Integer) kind_;
+      }
+      return 0;
+    }
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The null.
+     */
+    public com.google.protobuf.NullValue getNull() {
+      if (kindCase_ == 1) {
+        @SuppressWarnings("deprecation")
+        com.google.protobuf.NullValue result = com.google.protobuf.NullValue.valueOf(
+            (java.lang.Integer) kind_);
+        return result == null ? com.google.protobuf.NullValue.UNRECOGNIZED : result;
+      }
+      return com.google.protobuf.NullValue.NULL_VALUE;
+    }
+
+    public static final int COMPONENT_FIELD_NUMBER = 2;
+    /**
+     * <code>.sts.NoiseComponent component = 2;</code>
+     * @return Whether the component field is set.
+     */
+    @java.lang.Override
+    public boolean hasComponent() {
+      return kindCase_ == 2;
+    }
+    /**
+     * <code>.sts.NoiseComponent component = 2;</code>
+     * @return The component.
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.NoiseComponent getComponent() {
+      if (kindCase_ == 2) {
+         return (demetra.sts.io.protobuf.StsProtos.NoiseComponent) kind_;
+      }
+      return demetra.sts.io.protobuf.StsProtos.NoiseComponent.getDefaultInstance();
+    }
+    /**
+     * <code>.sts.NoiseComponent component = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.NoiseComponentOrBuilder getComponentOrBuilder() {
+      if (kindCase_ == 2) {
+         return (demetra.sts.io.protobuf.StsProtos.NoiseComponent) kind_;
+      }
+      return demetra.sts.io.protobuf.StsProtos.NoiseComponent.getDefaultInstance();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (kindCase_ == 1) {
+        output.writeEnum(1, ((java.lang.Integer) kind_));
+      }
+      if (kindCase_ == 2) {
+        output.writeMessage(2, (demetra.sts.io.protobuf.StsProtos.NoiseComponent) kind_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (kindCase_ == 1) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, ((java.lang.Integer) kind_));
+      }
+      if (kindCase_ == 2) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, (demetra.sts.io.protobuf.StsProtos.NoiseComponent) kind_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent)) {
+        return super.equals(obj);
+      }
+      demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent other = (demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent) obj;
+
+      if (!getKindCase().equals(other.getKindCase())) return false;
+      switch (kindCase_) {
+        case 1:
+          if (getNullValue()
+              != other.getNullValue()) return false;
+          break;
+        case 2:
+          if (!getComponent()
+              .equals(other.getComponent())) return false;
+          break;
+        case 0:
+        default:
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      switch (kindCase_) {
+        case 1:
+          hash = (37 * hash) + NULL_FIELD_NUMBER;
+          hash = (53 * hash) + getNullValue();
+          break;
+        case 2:
+          hash = (37 * hash) + COMPONENT_FIELD_NUMBER;
+          hash = (53 * hash) + getComponent().hashCode();
+          break;
+        case 0:
+        default:
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code sts.NullableNoiseComponent}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:sts.NullableNoiseComponent)
+        demetra.sts.io.protobuf.StsProtos.NullableNoiseComponentOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableNoiseComponent_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableNoiseComponent_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.class, demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.Builder.class);
+      }
+
+      // Construct using demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        kindCase_ = 0;
+        kind_ = null;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableNoiseComponent_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent getDefaultInstanceForType() {
+        return demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent build() {
+        demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent buildPartial() {
+        demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent result = new demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent(this);
+        if (kindCase_ == 1) {
+          result.kind_ = kind_;
+        }
+        if (kindCase_ == 2) {
+          if (componentBuilder_ == null) {
+            result.kind_ = kind_;
+          } else {
+            result.kind_ = componentBuilder_.build();
+          }
+        }
+        result.kindCase_ = kindCase_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent) {
+          return mergeFrom((demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent other) {
+        if (other == demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.getDefaultInstance()) return this;
+        switch (other.getKindCase()) {
+          case NULL: {
+            setNullValue(other.getNullValue());
+            break;
+          }
+          case COMPONENT: {
+            mergeComponent(other.getComponent());
+            break;
+          }
+          case KIND_NOT_SET: {
+            break;
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int kindCase_ = 0;
+      private java.lang.Object kind_;
+      public KindCase
+          getKindCase() {
+        return KindCase.forNumber(
+            kindCase_);
+      }
+
+      public Builder clearKind() {
+        kindCase_ = 0;
+        kind_ = null;
+        onChanged();
+        return this;
+      }
+
+
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @return The enum numeric value on the wire for null.
+       */
+      @java.lang.Override
+      public int getNullValue() {
+        if (kindCase_ == 1) {
+          return ((java.lang.Integer) kind_).intValue();
+        }
+        return 0;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @param value The enum numeric value on the wire for null to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNullValue(int value) {
+        kindCase_ = 1;
+        kind_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @return The null.
+       */
+      @java.lang.Override
+      public com.google.protobuf.NullValue getNull() {
+        if (kindCase_ == 1) {
+          @SuppressWarnings("deprecation")
+          com.google.protobuf.NullValue result = com.google.protobuf.NullValue.valueOf(
+              (java.lang.Integer) kind_);
+          return result == null ? com.google.protobuf.NullValue.UNRECOGNIZED : result;
+        }
+        return com.google.protobuf.NullValue.NULL_VALUE;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @param value The null to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNull(com.google.protobuf.NullValue value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        kindCase_ = 1;
+        kind_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNull() {
+        if (kindCase_ == 1) {
+          kindCase_ = 0;
+          kind_ = null;
+          onChanged();
+        }
+        return this;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.NoiseComponent, demetra.sts.io.protobuf.StsProtos.NoiseComponent.Builder, demetra.sts.io.protobuf.StsProtos.NoiseComponentOrBuilder> componentBuilder_;
+      /**
+       * <code>.sts.NoiseComponent component = 2;</code>
+       * @return Whether the component field is set.
+       */
+      @java.lang.Override
+      public boolean hasComponent() {
+        return kindCase_ == 2;
+      }
+      /**
+       * <code>.sts.NoiseComponent component = 2;</code>
+       * @return The component.
+       */
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NoiseComponent getComponent() {
+        if (componentBuilder_ == null) {
+          if (kindCase_ == 2) {
+            return (demetra.sts.io.protobuf.StsProtos.NoiseComponent) kind_;
+          }
+          return demetra.sts.io.protobuf.StsProtos.NoiseComponent.getDefaultInstance();
+        } else {
+          if (kindCase_ == 2) {
+            return componentBuilder_.getMessage();
+          }
+          return demetra.sts.io.protobuf.StsProtos.NoiseComponent.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.sts.NoiseComponent component = 2;</code>
+       */
+      public Builder setComponent(demetra.sts.io.protobuf.StsProtos.NoiseComponent value) {
+        if (componentBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          kind_ = value;
+          onChanged();
+        } else {
+          componentBuilder_.setMessage(value);
+        }
+        kindCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.sts.NoiseComponent component = 2;</code>
+       */
+      public Builder setComponent(
+          demetra.sts.io.protobuf.StsProtos.NoiseComponent.Builder builderForValue) {
+        if (componentBuilder_ == null) {
+          kind_ = builderForValue.build();
+          onChanged();
+        } else {
+          componentBuilder_.setMessage(builderForValue.build());
+        }
+        kindCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.sts.NoiseComponent component = 2;</code>
+       */
+      public Builder mergeComponent(demetra.sts.io.protobuf.StsProtos.NoiseComponent value) {
+        if (componentBuilder_ == null) {
+          if (kindCase_ == 2 &&
+              kind_ != demetra.sts.io.protobuf.StsProtos.NoiseComponent.getDefaultInstance()) {
+            kind_ = demetra.sts.io.protobuf.StsProtos.NoiseComponent.newBuilder((demetra.sts.io.protobuf.StsProtos.NoiseComponent) kind_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            kind_ = value;
+          }
+          onChanged();
+        } else {
+          if (kindCase_ == 2) {
+            componentBuilder_.mergeFrom(value);
+          }
+          componentBuilder_.setMessage(value);
+        }
+        kindCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.sts.NoiseComponent component = 2;</code>
+       */
+      public Builder clearComponent() {
+        if (componentBuilder_ == null) {
+          if (kindCase_ == 2) {
+            kindCase_ = 0;
+            kind_ = null;
+            onChanged();
+          }
+        } else {
+          if (kindCase_ == 2) {
+            kindCase_ = 0;
+            kind_ = null;
+          }
+          componentBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.sts.NoiseComponent component = 2;</code>
+       */
+      public demetra.sts.io.protobuf.StsProtos.NoiseComponent.Builder getComponentBuilder() {
+        return getComponentFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.sts.NoiseComponent component = 2;</code>
+       */
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NoiseComponentOrBuilder getComponentOrBuilder() {
+        if ((kindCase_ == 2) && (componentBuilder_ != null)) {
+          return componentBuilder_.getMessageOrBuilder();
+        } else {
+          if (kindCase_ == 2) {
+            return (demetra.sts.io.protobuf.StsProtos.NoiseComponent) kind_;
+          }
+          return demetra.sts.io.protobuf.StsProtos.NoiseComponent.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.sts.NoiseComponent component = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.NoiseComponent, demetra.sts.io.protobuf.StsProtos.NoiseComponent.Builder, demetra.sts.io.protobuf.StsProtos.NoiseComponentOrBuilder> 
+          getComponentFieldBuilder() {
+        if (componentBuilder_ == null) {
+          if (!(kindCase_ == 2)) {
+            kind_ = demetra.sts.io.protobuf.StsProtos.NoiseComponent.getDefaultInstance();
+          }
+          componentBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.sts.io.protobuf.StsProtos.NoiseComponent, demetra.sts.io.protobuf.StsProtos.NoiseComponent.Builder, demetra.sts.io.protobuf.StsProtos.NoiseComponentOrBuilder>(
+                  (demetra.sts.io.protobuf.StsProtos.NoiseComponent) kind_,
+                  getParentForChildren(),
+                  isClean());
+          kind_ = null;
+        }
+        kindCase_ = 2;
+        onChanged();;
+        return componentBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:sts.NullableNoiseComponent)
+    }
+
+    // @@protoc_insertion_point(class_scope:sts.NullableNoiseComponent)
+    private static final demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent();
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<NullableNoiseComponent>
+        PARSER = new com.google.protobuf.AbstractParser<NullableNoiseComponent>() {
+      @java.lang.Override
+      public NullableNoiseComponent parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new NullableNoiseComponent(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<NullableNoiseComponent> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<NullableNoiseComponent> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface CycleComponentOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:sts.CycleComponent)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.jd3.Parameter cycle_period = 1;</code>
+     * @return Whether the cyclePeriod field is set.
+     */
+    boolean hasCyclePeriod();
+    /**
+     * <code>.jd3.Parameter cycle_period = 1;</code>
+     * @return The cyclePeriod.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCyclePeriod();
+    /**
+     * <code>.jd3.Parameter cycle_period = 1;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCyclePeriodOrBuilder();
+
+    /**
+     * <code>.jd3.Parameter cycle_factor = 2;</code>
+     * @return Whether the cycleFactor field is set.
+     */
+    boolean hasCycleFactor();
+    /**
+     * <code>.jd3.Parameter cycle_factor = 2;</code>
+     * @return The cycleFactor.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCycleFactor();
+    /**
+     * <code>.jd3.Parameter cycle_factor = 2;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCycleFactorOrBuilder();
+
+    /**
+     * <code>.jd3.Parameter variance = 3;</code>
+     * @return Whether the variance field is set.
+     */
+    boolean hasVariance();
+    /**
+     * <code>.jd3.Parameter variance = 3;</code>
+     * @return The variance.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getVariance();
+    /**
+     * <code>.jd3.Parameter variance = 3;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getVarianceOrBuilder();
+  }
+  /**
+   * Protobuf type {@code sts.CycleComponent}
+   */
+  public static final class CycleComponent extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:sts.CycleComponent)
+      CycleComponentOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use CycleComponent.newBuilder() to construct.
+    private CycleComponent(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private CycleComponent() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new CycleComponent();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private CycleComponent(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
+              if (cyclePeriod_ != null) {
+                subBuilder = cyclePeriod_.toBuilder();
+              }
+              cyclePeriod_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(cyclePeriod_);
+                cyclePeriod_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 18: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
+              if (cycleFactor_ != null) {
+                subBuilder = cycleFactor_.toBuilder();
+              }
+              cycleFactor_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(cycleFactor_);
+                cycleFactor_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 26: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
+              if (variance_ != null) {
+                subBuilder = variance_.toBuilder();
+              }
+              variance_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(variance_);
+                variance_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_CycleComponent_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_CycleComponent_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.sts.io.protobuf.StsProtos.CycleComponent.class, demetra.sts.io.protobuf.StsProtos.CycleComponent.Builder.class);
+    }
+
+    public static final int CYCLE_PERIOD_FIELD_NUMBER = 1;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter cyclePeriod_;
+    /**
+     * <code>.jd3.Parameter cycle_period = 1;</code>
+     * @return Whether the cyclePeriod field is set.
+     */
+    @java.lang.Override
+    public boolean hasCyclePeriod() {
+      return cyclePeriod_ != null;
+    }
+    /**
+     * <code>.jd3.Parameter cycle_period = 1;</code>
+     * @return The cyclePeriod.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCyclePeriod() {
+      return cyclePeriod_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : cyclePeriod_;
+    }
+    /**
+     * <code>.jd3.Parameter cycle_period = 1;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCyclePeriodOrBuilder() {
+      return getCyclePeriod();
+    }
+
+    public static final int CYCLE_FACTOR_FIELD_NUMBER = 2;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter cycleFactor_;
+    /**
+     * <code>.jd3.Parameter cycle_factor = 2;</code>
+     * @return Whether the cycleFactor field is set.
+     */
+    @java.lang.Override
+    public boolean hasCycleFactor() {
+      return cycleFactor_ != null;
+    }
+    /**
+     * <code>.jd3.Parameter cycle_factor = 2;</code>
+     * @return The cycleFactor.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCycleFactor() {
+      return cycleFactor_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : cycleFactor_;
+    }
+    /**
+     * <code>.jd3.Parameter cycle_factor = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCycleFactorOrBuilder() {
+      return getCycleFactor();
+    }
+
+    public static final int VARIANCE_FIELD_NUMBER = 3;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter variance_;
+    /**
+     * <code>.jd3.Parameter variance = 3;</code>
+     * @return Whether the variance field is set.
+     */
+    @java.lang.Override
+    public boolean hasVariance() {
+      return variance_ != null;
+    }
+    /**
+     * <code>.jd3.Parameter variance = 3;</code>
+     * @return The variance.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getVariance() {
+      return variance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : variance_;
+    }
+    /**
+     * <code>.jd3.Parameter variance = 3;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getVarianceOrBuilder() {
+      return getVariance();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (cyclePeriod_ != null) {
+        output.writeMessage(1, getCyclePeriod());
+      }
+      if (cycleFactor_ != null) {
+        output.writeMessage(2, getCycleFactor());
+      }
+      if (variance_ != null) {
+        output.writeMessage(3, getVariance());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (cyclePeriod_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getCyclePeriod());
+      }
+      if (cycleFactor_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getCycleFactor());
+      }
+      if (variance_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getVariance());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.sts.io.protobuf.StsProtos.CycleComponent)) {
+        return super.equals(obj);
+      }
+      demetra.sts.io.protobuf.StsProtos.CycleComponent other = (demetra.sts.io.protobuf.StsProtos.CycleComponent) obj;
+
+      if (hasCyclePeriod() != other.hasCyclePeriod()) return false;
+      if (hasCyclePeriod()) {
+        if (!getCyclePeriod()
+            .equals(other.getCyclePeriod())) return false;
+      }
+      if (hasCycleFactor() != other.hasCycleFactor()) return false;
+      if (hasCycleFactor()) {
+        if (!getCycleFactor()
+            .equals(other.getCycleFactor())) return false;
+      }
+      if (hasVariance() != other.hasVariance()) return false;
+      if (hasVariance()) {
+        if (!getVariance()
+            .equals(other.getVariance())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasCyclePeriod()) {
+        hash = (37 * hash) + CYCLE_PERIOD_FIELD_NUMBER;
+        hash = (53 * hash) + getCyclePeriod().hashCode();
+      }
+      if (hasCycleFactor()) {
+        hash = (37 * hash) + CYCLE_FACTOR_FIELD_NUMBER;
+        hash = (53 * hash) + getCycleFactor().hashCode();
+      }
+      if (hasVariance()) {
+        hash = (37 * hash) + VARIANCE_FIELD_NUMBER;
+        hash = (53 * hash) + getVariance().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.CycleComponent parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.CycleComponent parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.CycleComponent parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.CycleComponent parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.CycleComponent parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.CycleComponent parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.CycleComponent parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.CycleComponent parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.CycleComponent parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.CycleComponent parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.CycleComponent parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.CycleComponent parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.sts.io.protobuf.StsProtos.CycleComponent prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code sts.CycleComponent}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:sts.CycleComponent)
+        demetra.sts.io.protobuf.StsProtos.CycleComponentOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_CycleComponent_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_CycleComponent_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.sts.io.protobuf.StsProtos.CycleComponent.class, demetra.sts.io.protobuf.StsProtos.CycleComponent.Builder.class);
+      }
+
+      // Construct using demetra.sts.io.protobuf.StsProtos.CycleComponent.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (cyclePeriodBuilder_ == null) {
+          cyclePeriod_ = null;
+        } else {
+          cyclePeriod_ = null;
+          cyclePeriodBuilder_ = null;
+        }
+        if (cycleFactorBuilder_ == null) {
+          cycleFactor_ = null;
+        } else {
+          cycleFactor_ = null;
+          cycleFactorBuilder_ = null;
+        }
+        if (varianceBuilder_ == null) {
+          variance_ = null;
+        } else {
+          variance_ = null;
+          varianceBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_CycleComponent_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.CycleComponent getDefaultInstanceForType() {
+        return demetra.sts.io.protobuf.StsProtos.CycleComponent.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.CycleComponent build() {
+        demetra.sts.io.protobuf.StsProtos.CycleComponent result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.CycleComponent buildPartial() {
+        demetra.sts.io.protobuf.StsProtos.CycleComponent result = new demetra.sts.io.protobuf.StsProtos.CycleComponent(this);
+        if (cyclePeriodBuilder_ == null) {
+          result.cyclePeriod_ = cyclePeriod_;
+        } else {
+          result.cyclePeriod_ = cyclePeriodBuilder_.build();
+        }
+        if (cycleFactorBuilder_ == null) {
+          result.cycleFactor_ = cycleFactor_;
+        } else {
+          result.cycleFactor_ = cycleFactorBuilder_.build();
+        }
+        if (varianceBuilder_ == null) {
+          result.variance_ = variance_;
+        } else {
+          result.variance_ = varianceBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.sts.io.protobuf.StsProtos.CycleComponent) {
+          return mergeFrom((demetra.sts.io.protobuf.StsProtos.CycleComponent)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.sts.io.protobuf.StsProtos.CycleComponent other) {
+        if (other == demetra.sts.io.protobuf.StsProtos.CycleComponent.getDefaultInstance()) return this;
+        if (other.hasCyclePeriod()) {
+          mergeCyclePeriod(other.getCyclePeriod());
+        }
+        if (other.hasCycleFactor()) {
+          mergeCycleFactor(other.getCycleFactor());
+        }
+        if (other.hasVariance()) {
+          mergeVariance(other.getVariance());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.sts.io.protobuf.StsProtos.CycleComponent parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.sts.io.protobuf.StsProtos.CycleComponent) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter cyclePeriod_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> cyclePeriodBuilder_;
+      /**
+       * <code>.jd3.Parameter cycle_period = 1;</code>
+       * @return Whether the cyclePeriod field is set.
+       */
+      public boolean hasCyclePeriod() {
+        return cyclePeriodBuilder_ != null || cyclePeriod_ != null;
+      }
+      /**
+       * <code>.jd3.Parameter cycle_period = 1;</code>
+       * @return The cyclePeriod.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCyclePeriod() {
+        if (cyclePeriodBuilder_ == null) {
+          return cyclePeriod_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : cyclePeriod_;
+        } else {
+          return cyclePeriodBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.Parameter cycle_period = 1;</code>
+       */
+      public Builder setCyclePeriod(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (cyclePeriodBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          cyclePeriod_ = value;
+          onChanged();
+        } else {
+          cyclePeriodBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter cycle_period = 1;</code>
+       */
+      public Builder setCyclePeriod(
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+        if (cyclePeriodBuilder_ == null) {
+          cyclePeriod_ = builderForValue.build();
+          onChanged();
+        } else {
+          cyclePeriodBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter cycle_period = 1;</code>
+       */
+      public Builder mergeCyclePeriod(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (cyclePeriodBuilder_ == null) {
+          if (cyclePeriod_ != null) {
+            cyclePeriod_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder(cyclePeriod_).mergeFrom(value).buildPartial();
+          } else {
+            cyclePeriod_ = value;
+          }
+          onChanged();
+        } else {
+          cyclePeriodBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter cycle_period = 1;</code>
+       */
+      public Builder clearCyclePeriod() {
+        if (cyclePeriodBuilder_ == null) {
+          cyclePeriod_ = null;
+          onChanged();
+        } else {
+          cyclePeriod_ = null;
+          cyclePeriodBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter cycle_period = 1;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getCyclePeriodBuilder() {
+        
+        onChanged();
+        return getCyclePeriodFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Parameter cycle_period = 1;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCyclePeriodOrBuilder() {
+        if (cyclePeriodBuilder_ != null) {
+          return cyclePeriodBuilder_.getMessageOrBuilder();
+        } else {
+          return cyclePeriod_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : cyclePeriod_;
+        }
+      }
+      /**
+       * <code>.jd3.Parameter cycle_period = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+          getCyclePeriodFieldBuilder() {
+        if (cyclePeriodBuilder_ == null) {
+          cyclePeriodBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
+                  getCyclePeriod(),
+                  getParentForChildren(),
+                  isClean());
+          cyclePeriod_ = null;
+        }
+        return cyclePeriodBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter cycleFactor_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> cycleFactorBuilder_;
+      /**
+       * <code>.jd3.Parameter cycle_factor = 2;</code>
+       * @return Whether the cycleFactor field is set.
+       */
+      public boolean hasCycleFactor() {
+        return cycleFactorBuilder_ != null || cycleFactor_ != null;
+      }
+      /**
+       * <code>.jd3.Parameter cycle_factor = 2;</code>
+       * @return The cycleFactor.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCycleFactor() {
+        if (cycleFactorBuilder_ == null) {
+          return cycleFactor_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : cycleFactor_;
+        } else {
+          return cycleFactorBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.Parameter cycle_factor = 2;</code>
+       */
+      public Builder setCycleFactor(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (cycleFactorBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          cycleFactor_ = value;
+          onChanged();
+        } else {
+          cycleFactorBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter cycle_factor = 2;</code>
+       */
+      public Builder setCycleFactor(
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+        if (cycleFactorBuilder_ == null) {
+          cycleFactor_ = builderForValue.build();
+          onChanged();
+        } else {
+          cycleFactorBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter cycle_factor = 2;</code>
+       */
+      public Builder mergeCycleFactor(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (cycleFactorBuilder_ == null) {
+          if (cycleFactor_ != null) {
+            cycleFactor_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder(cycleFactor_).mergeFrom(value).buildPartial();
+          } else {
+            cycleFactor_ = value;
+          }
+          onChanged();
+        } else {
+          cycleFactorBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter cycle_factor = 2;</code>
+       */
+      public Builder clearCycleFactor() {
+        if (cycleFactorBuilder_ == null) {
+          cycleFactor_ = null;
+          onChanged();
+        } else {
+          cycleFactor_ = null;
+          cycleFactorBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter cycle_factor = 2;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getCycleFactorBuilder() {
+        
+        onChanged();
+        return getCycleFactorFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Parameter cycle_factor = 2;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCycleFactorOrBuilder() {
+        if (cycleFactorBuilder_ != null) {
+          return cycleFactorBuilder_.getMessageOrBuilder();
+        } else {
+          return cycleFactor_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : cycleFactor_;
+        }
+      }
+      /**
+       * <code>.jd3.Parameter cycle_factor = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+          getCycleFactorFieldBuilder() {
+        if (cycleFactorBuilder_ == null) {
+          cycleFactorBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
+                  getCycleFactor(),
+                  getParentForChildren(),
+                  isClean());
+          cycleFactor_ = null;
+        }
+        return cycleFactorBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter variance_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> varianceBuilder_;
+      /**
+       * <code>.jd3.Parameter variance = 3;</code>
+       * @return Whether the variance field is set.
+       */
+      public boolean hasVariance() {
+        return varianceBuilder_ != null || variance_ != null;
+      }
+      /**
+       * <code>.jd3.Parameter variance = 3;</code>
+       * @return The variance.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getVariance() {
+        if (varianceBuilder_ == null) {
+          return variance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : variance_;
+        } else {
+          return varianceBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.Parameter variance = 3;</code>
+       */
+      public Builder setVariance(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (varianceBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          variance_ = value;
+          onChanged();
+        } else {
+          varianceBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter variance = 3;</code>
+       */
+      public Builder setVariance(
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+        if (varianceBuilder_ == null) {
+          variance_ = builderForValue.build();
+          onChanged();
+        } else {
+          varianceBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter variance = 3;</code>
+       */
+      public Builder mergeVariance(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (varianceBuilder_ == null) {
+          if (variance_ != null) {
+            variance_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder(variance_).mergeFrom(value).buildPartial();
+          } else {
+            variance_ = value;
+          }
+          onChanged();
+        } else {
+          varianceBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter variance = 3;</code>
+       */
+      public Builder clearVariance() {
+        if (varianceBuilder_ == null) {
+          variance_ = null;
+          onChanged();
+        } else {
+          variance_ = null;
+          varianceBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Parameter variance = 3;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getVarianceBuilder() {
+        
+        onChanged();
+        return getVarianceFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Parameter variance = 3;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getVarianceOrBuilder() {
+        if (varianceBuilder_ != null) {
+          return varianceBuilder_.getMessageOrBuilder();
+        } else {
+          return variance_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : variance_;
+        }
+      }
+      /**
+       * <code>.jd3.Parameter variance = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+          getVarianceFieldBuilder() {
+        if (varianceBuilder_ == null) {
+          varianceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
+                  getVariance(),
+                  getParentForChildren(),
+                  isClean());
+          variance_ = null;
+        }
+        return varianceBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:sts.CycleComponent)
+    }
+
+    // @@protoc_insertion_point(class_scope:sts.CycleComponent)
+    private static final demetra.sts.io.protobuf.StsProtos.CycleComponent DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.sts.io.protobuf.StsProtos.CycleComponent();
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.CycleComponent getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<CycleComponent>
+        PARSER = new com.google.protobuf.AbstractParser<CycleComponent>() {
+      @java.lang.Override
+      public CycleComponent parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new CycleComponent(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<CycleComponent> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<CycleComponent> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.CycleComponent getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface NullableCycleComponentOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:sts.NullableCycleComponent)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The enum numeric value on the wire for null.
+     */
+    int getNullValue();
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The null.
+     */
+    com.google.protobuf.NullValue getNull();
+
+    /**
+     * <code>.sts.CycleComponent component = 2;</code>
+     * @return Whether the component field is set.
+     */
+    boolean hasComponent();
+    /**
+     * <code>.sts.CycleComponent component = 2;</code>
+     * @return The component.
+     */
+    demetra.sts.io.protobuf.StsProtos.CycleComponent getComponent();
+    /**
+     * <code>.sts.CycleComponent component = 2;</code>
+     */
+    demetra.sts.io.protobuf.StsProtos.CycleComponentOrBuilder getComponentOrBuilder();
+
+    public demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.KindCase getKindCase();
+  }
+  /**
+   * Protobuf type {@code sts.NullableCycleComponent}
+   */
+  public static final class NullableCycleComponent extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:sts.NullableCycleComponent)
+      NullableCycleComponentOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use NullableCycleComponent.newBuilder() to construct.
+    private NullableCycleComponent(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private NullableCycleComponent() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new NullableCycleComponent();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private NullableCycleComponent(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              int rawValue = input.readEnum();
+              kindCase_ = 1;
+              kind_ = rawValue;
+              break;
+            }
+            case 18: {
+              demetra.sts.io.protobuf.StsProtos.CycleComponent.Builder subBuilder = null;
+              if (kindCase_ == 2) {
+                subBuilder = ((demetra.sts.io.protobuf.StsProtos.CycleComponent) kind_).toBuilder();
+              }
+              kind_ =
+                  input.readMessage(demetra.sts.io.protobuf.StsProtos.CycleComponent.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((demetra.sts.io.protobuf.StsProtos.CycleComponent) kind_);
+                kind_ = subBuilder.buildPartial();
+              }
+              kindCase_ = 2;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableCycleComponent_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableCycleComponent_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.class, demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.Builder.class);
+    }
+
+    private int kindCase_ = 0;
+    private java.lang.Object kind_;
+    public enum KindCase
+        implements com.google.protobuf.Internal.EnumLite,
+            com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+      NULL(1),
+      COMPONENT(2),
+      KIND_NOT_SET(0);
+      private final int value;
+      private KindCase(int value) {
+        this.value = value;
+      }
+      /**
+       * @param value The number of the enum to look for.
+       * @return The enum associated with the given number.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static KindCase valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static KindCase forNumber(int value) {
+        switch (value) {
+          case 1: return NULL;
+          case 2: return COMPONENT;
+          case 0: return KIND_NOT_SET;
+          default: return null;
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
+
+    public KindCase
+    getKindCase() {
+      return KindCase.forNumber(
+          kindCase_);
+    }
+
+    public static final int NULL_FIELD_NUMBER = 1;
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The enum numeric value on the wire for null.
+     */
+    public int getNullValue() {
+      if (kindCase_ == 1) {
+        return (java.lang.Integer) kind_;
+      }
+      return 0;
+    }
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The null.
+     */
+    public com.google.protobuf.NullValue getNull() {
+      if (kindCase_ == 1) {
+        @SuppressWarnings("deprecation")
+        com.google.protobuf.NullValue result = com.google.protobuf.NullValue.valueOf(
+            (java.lang.Integer) kind_);
+        return result == null ? com.google.protobuf.NullValue.UNRECOGNIZED : result;
+      }
+      return com.google.protobuf.NullValue.NULL_VALUE;
+    }
+
+    public static final int COMPONENT_FIELD_NUMBER = 2;
+    /**
+     * <code>.sts.CycleComponent component = 2;</code>
+     * @return Whether the component field is set.
+     */
+    @java.lang.Override
+    public boolean hasComponent() {
+      return kindCase_ == 2;
+    }
+    /**
+     * <code>.sts.CycleComponent component = 2;</code>
+     * @return The component.
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.CycleComponent getComponent() {
+      if (kindCase_ == 2) {
+         return (demetra.sts.io.protobuf.StsProtos.CycleComponent) kind_;
+      }
+      return demetra.sts.io.protobuf.StsProtos.CycleComponent.getDefaultInstance();
+    }
+    /**
+     * <code>.sts.CycleComponent component = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.CycleComponentOrBuilder getComponentOrBuilder() {
+      if (kindCase_ == 2) {
+         return (demetra.sts.io.protobuf.StsProtos.CycleComponent) kind_;
+      }
+      return demetra.sts.io.protobuf.StsProtos.CycleComponent.getDefaultInstance();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (kindCase_ == 1) {
+        output.writeEnum(1, ((java.lang.Integer) kind_));
+      }
+      if (kindCase_ == 2) {
+        output.writeMessage(2, (demetra.sts.io.protobuf.StsProtos.CycleComponent) kind_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (kindCase_ == 1) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, ((java.lang.Integer) kind_));
+      }
+      if (kindCase_ == 2) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, (demetra.sts.io.protobuf.StsProtos.CycleComponent) kind_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.sts.io.protobuf.StsProtos.NullableCycleComponent)) {
+        return super.equals(obj);
+      }
+      demetra.sts.io.protobuf.StsProtos.NullableCycleComponent other = (demetra.sts.io.protobuf.StsProtos.NullableCycleComponent) obj;
+
+      if (!getKindCase().equals(other.getKindCase())) return false;
+      switch (kindCase_) {
+        case 1:
+          if (getNullValue()
+              != other.getNullValue()) return false;
+          break;
+        case 2:
+          if (!getComponent()
+              .equals(other.getComponent())) return false;
+          break;
+        case 0:
+        default:
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      switch (kindCase_) {
+        case 1:
+          hash = (37 * hash) + NULL_FIELD_NUMBER;
+          hash = (53 * hash) + getNullValue();
+          break;
+        case 2:
+          hash = (37 * hash) + COMPONENT_FIELD_NUMBER;
+          hash = (53 * hash) + getComponent().hashCode();
+          break;
+        case 0:
+        default:
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.NullableCycleComponent parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableCycleComponent parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableCycleComponent parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableCycleComponent parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableCycleComponent parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableCycleComponent parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableCycleComponent parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableCycleComponent parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableCycleComponent parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableCycleComponent parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableCycleComponent parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.NullableCycleComponent parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.sts.io.protobuf.StsProtos.NullableCycleComponent prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code sts.NullableCycleComponent}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:sts.NullableCycleComponent)
+        demetra.sts.io.protobuf.StsProtos.NullableCycleComponentOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableCycleComponent_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableCycleComponent_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.class, demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.Builder.class);
+      }
+
+      // Construct using demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        kindCase_ = 0;
+        kind_ = null;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_NullableCycleComponent_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NullableCycleComponent getDefaultInstanceForType() {
+        return demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NullableCycleComponent build() {
+        demetra.sts.io.protobuf.StsProtos.NullableCycleComponent result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.NullableCycleComponent buildPartial() {
+        demetra.sts.io.protobuf.StsProtos.NullableCycleComponent result = new demetra.sts.io.protobuf.StsProtos.NullableCycleComponent(this);
+        if (kindCase_ == 1) {
+          result.kind_ = kind_;
+        }
+        if (kindCase_ == 2) {
+          if (componentBuilder_ == null) {
+            result.kind_ = kind_;
+          } else {
+            result.kind_ = componentBuilder_.build();
+          }
+        }
+        result.kindCase_ = kindCase_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.sts.io.protobuf.StsProtos.NullableCycleComponent) {
+          return mergeFrom((demetra.sts.io.protobuf.StsProtos.NullableCycleComponent)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.sts.io.protobuf.StsProtos.NullableCycleComponent other) {
+        if (other == demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.getDefaultInstance()) return this;
+        switch (other.getKindCase()) {
+          case NULL: {
+            setNullValue(other.getNullValue());
+            break;
+          }
+          case COMPONENT: {
+            mergeComponent(other.getComponent());
+            break;
+          }
+          case KIND_NOT_SET: {
+            break;
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.sts.io.protobuf.StsProtos.NullableCycleComponent parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.sts.io.protobuf.StsProtos.NullableCycleComponent) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int kindCase_ = 0;
+      private java.lang.Object kind_;
+      public KindCase
+          getKindCase() {
+        return KindCase.forNumber(
+            kindCase_);
+      }
+
+      public Builder clearKind() {
+        kindCase_ = 0;
+        kind_ = null;
+        onChanged();
+        return this;
+      }
+
+
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @return The enum numeric value on the wire for null.
+       */
+      @java.lang.Override
+      public int getNullValue() {
+        if (kindCase_ == 1) {
+          return ((java.lang.Integer) kind_).intValue();
+        }
+        return 0;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @param value The enum numeric value on the wire for null to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNullValue(int value) {
+        kindCase_ = 1;
+        kind_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @return The null.
+       */
+      @java.lang.Override
+      public com.google.protobuf.NullValue getNull() {
+        if (kindCase_ == 1) {
+          @SuppressWarnings("deprecation")
+          com.google.protobuf.NullValue result = com.google.protobuf.NullValue.valueOf(
+              (java.lang.Integer) kind_);
+          return result == null ? com.google.protobuf.NullValue.UNRECOGNIZED : result;
+        }
+        return com.google.protobuf.NullValue.NULL_VALUE;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @param value The null to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNull(com.google.protobuf.NullValue value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        kindCase_ = 1;
+        kind_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNull() {
+        if (kindCase_ == 1) {
+          kindCase_ = 0;
+          kind_ = null;
+          onChanged();
+        }
+        return this;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.CycleComponent, demetra.sts.io.protobuf.StsProtos.CycleComponent.Builder, demetra.sts.io.protobuf.StsProtos.CycleComponentOrBuilder> componentBuilder_;
+      /**
+       * <code>.sts.CycleComponent component = 2;</code>
+       * @return Whether the component field is set.
+       */
+      @java.lang.Override
+      public boolean hasComponent() {
+        return kindCase_ == 2;
+      }
+      /**
+       * <code>.sts.CycleComponent component = 2;</code>
+       * @return The component.
+       */
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.CycleComponent getComponent() {
+        if (componentBuilder_ == null) {
+          if (kindCase_ == 2) {
+            return (demetra.sts.io.protobuf.StsProtos.CycleComponent) kind_;
+          }
+          return demetra.sts.io.protobuf.StsProtos.CycleComponent.getDefaultInstance();
+        } else {
+          if (kindCase_ == 2) {
+            return componentBuilder_.getMessage();
+          }
+          return demetra.sts.io.protobuf.StsProtos.CycleComponent.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.sts.CycleComponent component = 2;</code>
+       */
+      public Builder setComponent(demetra.sts.io.protobuf.StsProtos.CycleComponent value) {
+        if (componentBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          kind_ = value;
+          onChanged();
+        } else {
+          componentBuilder_.setMessage(value);
+        }
+        kindCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.sts.CycleComponent component = 2;</code>
+       */
+      public Builder setComponent(
+          demetra.sts.io.protobuf.StsProtos.CycleComponent.Builder builderForValue) {
+        if (componentBuilder_ == null) {
+          kind_ = builderForValue.build();
+          onChanged();
+        } else {
+          componentBuilder_.setMessage(builderForValue.build());
+        }
+        kindCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.sts.CycleComponent component = 2;</code>
+       */
+      public Builder mergeComponent(demetra.sts.io.protobuf.StsProtos.CycleComponent value) {
+        if (componentBuilder_ == null) {
+          if (kindCase_ == 2 &&
+              kind_ != demetra.sts.io.protobuf.StsProtos.CycleComponent.getDefaultInstance()) {
+            kind_ = demetra.sts.io.protobuf.StsProtos.CycleComponent.newBuilder((demetra.sts.io.protobuf.StsProtos.CycleComponent) kind_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            kind_ = value;
+          }
+          onChanged();
+        } else {
+          if (kindCase_ == 2) {
+            componentBuilder_.mergeFrom(value);
+          }
+          componentBuilder_.setMessage(value);
+        }
+        kindCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.sts.CycleComponent component = 2;</code>
+       */
+      public Builder clearComponent() {
+        if (componentBuilder_ == null) {
+          if (kindCase_ == 2) {
+            kindCase_ = 0;
+            kind_ = null;
+            onChanged();
+          }
+        } else {
+          if (kindCase_ == 2) {
+            kindCase_ = 0;
+            kind_ = null;
+          }
+          componentBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.sts.CycleComponent component = 2;</code>
+       */
+      public demetra.sts.io.protobuf.StsProtos.CycleComponent.Builder getComponentBuilder() {
+        return getComponentFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.sts.CycleComponent component = 2;</code>
+       */
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.CycleComponentOrBuilder getComponentOrBuilder() {
+        if ((kindCase_ == 2) && (componentBuilder_ != null)) {
+          return componentBuilder_.getMessageOrBuilder();
+        } else {
+          if (kindCase_ == 2) {
+            return (demetra.sts.io.protobuf.StsProtos.CycleComponent) kind_;
+          }
+          return demetra.sts.io.protobuf.StsProtos.CycleComponent.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.sts.CycleComponent component = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.CycleComponent, demetra.sts.io.protobuf.StsProtos.CycleComponent.Builder, demetra.sts.io.protobuf.StsProtos.CycleComponentOrBuilder> 
+          getComponentFieldBuilder() {
+        if (componentBuilder_ == null) {
+          if (!(kindCase_ == 2)) {
+            kind_ = demetra.sts.io.protobuf.StsProtos.CycleComponent.getDefaultInstance();
+          }
+          componentBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.sts.io.protobuf.StsProtos.CycleComponent, demetra.sts.io.protobuf.StsProtos.CycleComponent.Builder, demetra.sts.io.protobuf.StsProtos.CycleComponentOrBuilder>(
+                  (demetra.sts.io.protobuf.StsProtos.CycleComponent) kind_,
+                  getParentForChildren(),
+                  isClean());
+          kind_ = null;
+        }
+        kindCase_ = 2;
+        onChanged();;
+        return componentBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:sts.NullableCycleComponent)
+    }
+
+    // @@protoc_insertion_point(class_scope:sts.NullableCycleComponent)
+    private static final demetra.sts.io.protobuf.StsProtos.NullableCycleComponent DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.sts.io.protobuf.StsProtos.NullableCycleComponent();
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.NullableCycleComponent getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<NullableCycleComponent>
+        PARSER = new com.google.protobuf.AbstractParser<NullableCycleComponent>() {
+      @java.lang.Override
+      public NullableCycleComponent parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new NullableCycleComponent(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<NullableCycleComponent> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<NullableCycleComponent> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.NullableCycleComponent getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface BsmSpecOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:sts.BsmSpec)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.sts.NullableNoiseComponent noise = 1;</code>
+     * @return Whether the noise field is set.
+     */
+    boolean hasNoise();
+    /**
+     * <code>.sts.NullableNoiseComponent noise = 1;</code>
+     * @return The noise.
+     */
+    demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent getNoise();
+    /**
+     * <code>.sts.NullableNoiseComponent noise = 1;</code>
+     */
+    demetra.sts.io.protobuf.StsProtos.NullableNoiseComponentOrBuilder getNoiseOrBuilder();
+
+    /**
+     * <code>.sts.NullableCycleComponent cycle = 2;</code>
+     * @return Whether the cycle field is set.
+     */
+    boolean hasCycle();
+    /**
+     * <code>.sts.NullableCycleComponent cycle = 2;</code>
+     * @return The cycle.
+     */
+    demetra.sts.io.protobuf.StsProtos.NullableCycleComponent getCycle();
+    /**
+     * <code>.sts.NullableCycleComponent cycle = 2;</code>
+     */
+    demetra.sts.io.protobuf.StsProtos.NullableCycleComponentOrBuilder getCycleOrBuilder();
+
+    /**
+     * <code>.sts.NullableTrendComponent trend = 3;</code>
+     * @return Whether the trend field is set.
+     */
+    boolean hasTrend();
+    /**
+     * <code>.sts.NullableTrendComponent trend = 3;</code>
+     * @return The trend.
+     */
+    demetra.sts.io.protobuf.StsProtos.NullableTrendComponent getTrend();
+    /**
+     * <code>.sts.NullableTrendComponent trend = 3;</code>
+     */
+    demetra.sts.io.protobuf.StsProtos.NullableTrendComponentOrBuilder getTrendOrBuilder();
+
+    /**
+     * <code>.sts.NullableSeasonalComponent seasonal = 4;</code>
+     * @return Whether the seasonal field is set.
+     */
+    boolean hasSeasonal();
+    /**
+     * <code>.sts.NullableSeasonalComponent seasonal = 4;</code>
+     * @return The seasonal.
+     */
+    demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent getSeasonal();
+    /**
+     * <code>.sts.NullableSeasonalComponent seasonal = 4;</code>
+     */
+    demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponentOrBuilder getSeasonalOrBuilder();
+  }
+  /**
+   * Protobuf type {@code sts.BsmSpec}
+   */
+  public static final class BsmSpec extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:sts.BsmSpec)
+      BsmSpecOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use BsmSpec.newBuilder() to construct.
+    private BsmSpec(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private BsmSpec() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new BsmSpec();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private BsmSpec(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.Builder subBuilder = null;
+              if (noise_ != null) {
+                subBuilder = noise_.toBuilder();
+              }
+              noise_ = input.readMessage(demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(noise_);
+                noise_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 18: {
+              demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.Builder subBuilder = null;
+              if (cycle_ != null) {
+                subBuilder = cycle_.toBuilder();
+              }
+              cycle_ = input.readMessage(demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(cycle_);
+                cycle_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 26: {
+              demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.Builder subBuilder = null;
+              if (trend_ != null) {
+                subBuilder = trend_.toBuilder();
+              }
+              trend_ = input.readMessage(demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(trend_);
+                trend_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 34: {
+              demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.Builder subBuilder = null;
+              if (seasonal_ != null) {
+                subBuilder = seasonal_.toBuilder();
+              }
+              seasonal_ = input.readMessage(demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(seasonal_);
+                seasonal_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_BsmSpec_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_BsmSpec_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.sts.io.protobuf.StsProtos.BsmSpec.class, demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder.class);
+    }
+
+    public static final int NOISE_FIELD_NUMBER = 1;
+    private demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent noise_;
+    /**
+     * <code>.sts.NullableNoiseComponent noise = 1;</code>
+     * @return Whether the noise field is set.
+     */
+    @java.lang.Override
+    public boolean hasNoise() {
+      return noise_ != null;
+    }
+    /**
+     * <code>.sts.NullableNoiseComponent noise = 1;</code>
+     * @return The noise.
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent getNoise() {
+      return noise_ == null ? demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.getDefaultInstance() : noise_;
+    }
+    /**
+     * <code>.sts.NullableNoiseComponent noise = 1;</code>
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.NullableNoiseComponentOrBuilder getNoiseOrBuilder() {
+      return getNoise();
+    }
+
+    public static final int CYCLE_FIELD_NUMBER = 2;
+    private demetra.sts.io.protobuf.StsProtos.NullableCycleComponent cycle_;
+    /**
+     * <code>.sts.NullableCycleComponent cycle = 2;</code>
+     * @return Whether the cycle field is set.
+     */
+    @java.lang.Override
+    public boolean hasCycle() {
+      return cycle_ != null;
+    }
+    /**
+     * <code>.sts.NullableCycleComponent cycle = 2;</code>
+     * @return The cycle.
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.NullableCycleComponent getCycle() {
+      return cycle_ == null ? demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.getDefaultInstance() : cycle_;
+    }
+    /**
+     * <code>.sts.NullableCycleComponent cycle = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.NullableCycleComponentOrBuilder getCycleOrBuilder() {
+      return getCycle();
+    }
+
+    public static final int TREND_FIELD_NUMBER = 3;
+    private demetra.sts.io.protobuf.StsProtos.NullableTrendComponent trend_;
+    /**
+     * <code>.sts.NullableTrendComponent trend = 3;</code>
+     * @return Whether the trend field is set.
+     */
+    @java.lang.Override
+    public boolean hasTrend() {
+      return trend_ != null;
+    }
+    /**
+     * <code>.sts.NullableTrendComponent trend = 3;</code>
+     * @return The trend.
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.NullableTrendComponent getTrend() {
+      return trend_ == null ? demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.getDefaultInstance() : trend_;
+    }
+    /**
+     * <code>.sts.NullableTrendComponent trend = 3;</code>
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.NullableTrendComponentOrBuilder getTrendOrBuilder() {
+      return getTrend();
+    }
+
+    public static final int SEASONAL_FIELD_NUMBER = 4;
+    private demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent seasonal_;
+    /**
+     * <code>.sts.NullableSeasonalComponent seasonal = 4;</code>
+     * @return Whether the seasonal field is set.
+     */
+    @java.lang.Override
+    public boolean hasSeasonal() {
+      return seasonal_ != null;
+    }
+    /**
+     * <code>.sts.NullableSeasonalComponent seasonal = 4;</code>
+     * @return The seasonal.
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent getSeasonal() {
+      return seasonal_ == null ? demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.getDefaultInstance() : seasonal_;
+    }
+    /**
+     * <code>.sts.NullableSeasonalComponent seasonal = 4;</code>
+     */
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponentOrBuilder getSeasonalOrBuilder() {
+      return getSeasonal();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (noise_ != null) {
+        output.writeMessage(1, getNoise());
+      }
+      if (cycle_ != null) {
+        output.writeMessage(2, getCycle());
+      }
+      if (trend_ != null) {
+        output.writeMessage(3, getTrend());
+      }
+      if (seasonal_ != null) {
+        output.writeMessage(4, getSeasonal());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (noise_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getNoise());
+      }
+      if (cycle_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getCycle());
+      }
+      if (trend_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getTrend());
+      }
+      if (seasonal_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, getSeasonal());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.sts.io.protobuf.StsProtos.BsmSpec)) {
+        return super.equals(obj);
+      }
+      demetra.sts.io.protobuf.StsProtos.BsmSpec other = (demetra.sts.io.protobuf.StsProtos.BsmSpec) obj;
+
+      if (hasNoise() != other.hasNoise()) return false;
+      if (hasNoise()) {
+        if (!getNoise()
+            .equals(other.getNoise())) return false;
+      }
+      if (hasCycle() != other.hasCycle()) return false;
+      if (hasCycle()) {
+        if (!getCycle()
+            .equals(other.getCycle())) return false;
+      }
+      if (hasTrend() != other.hasTrend()) return false;
+      if (hasTrend()) {
+        if (!getTrend()
+            .equals(other.getTrend())) return false;
+      }
+      if (hasSeasonal() != other.hasSeasonal()) return false;
+      if (hasSeasonal()) {
+        if (!getSeasonal()
+            .equals(other.getSeasonal())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasNoise()) {
+        hash = (37 * hash) + NOISE_FIELD_NUMBER;
+        hash = (53 * hash) + getNoise().hashCode();
+      }
+      if (hasCycle()) {
+        hash = (37 * hash) + CYCLE_FIELD_NUMBER;
+        hash = (53 * hash) + getCycle().hashCode();
+      }
+      if (hasTrend()) {
+        hash = (37 * hash) + TREND_FIELD_NUMBER;
+        hash = (53 * hash) + getTrend().hashCode();
+      }
+      if (hasSeasonal()) {
+        hash = (37 * hash) + SEASONAL_FIELD_NUMBER;
+        hash = (53 * hash) + getSeasonal().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.BsmSpec parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.BsmSpec parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.BsmSpec parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.BsmSpec parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.BsmSpec parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.BsmSpec parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.BsmSpec parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.BsmSpec parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.BsmSpec parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.BsmSpec parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.BsmSpec parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sts.io.protobuf.StsProtos.BsmSpec parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.sts.io.protobuf.StsProtos.BsmSpec prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code sts.BsmSpec}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:sts.BsmSpec)
+        demetra.sts.io.protobuf.StsProtos.BsmSpecOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_BsmSpec_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_BsmSpec_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.sts.io.protobuf.StsProtos.BsmSpec.class, demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder.class);
+      }
+
+      // Construct using demetra.sts.io.protobuf.StsProtos.BsmSpec.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (noiseBuilder_ == null) {
+          noise_ = null;
+        } else {
+          noise_ = null;
+          noiseBuilder_ = null;
+        }
+        if (cycleBuilder_ == null) {
+          cycle_ = null;
+        } else {
+          cycle_ = null;
+          cycleBuilder_ = null;
+        }
+        if (trendBuilder_ == null) {
+          trend_ = null;
+        } else {
+          trend_ = null;
+          trendBuilder_ = null;
+        }
+        if (seasonalBuilder_ == null) {
+          seasonal_ = null;
+        } else {
+          seasonal_ = null;
+          seasonalBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_BsmSpec_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.BsmSpec getDefaultInstanceForType() {
+        return demetra.sts.io.protobuf.StsProtos.BsmSpec.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.BsmSpec build() {
+        demetra.sts.io.protobuf.StsProtos.BsmSpec result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.sts.io.protobuf.StsProtos.BsmSpec buildPartial() {
+        demetra.sts.io.protobuf.StsProtos.BsmSpec result = new demetra.sts.io.protobuf.StsProtos.BsmSpec(this);
+        if (noiseBuilder_ == null) {
+          result.noise_ = noise_;
+        } else {
+          result.noise_ = noiseBuilder_.build();
+        }
+        if (cycleBuilder_ == null) {
+          result.cycle_ = cycle_;
+        } else {
+          result.cycle_ = cycleBuilder_.build();
+        }
+        if (trendBuilder_ == null) {
+          result.trend_ = trend_;
+        } else {
+          result.trend_ = trendBuilder_.build();
+        }
+        if (seasonalBuilder_ == null) {
+          result.seasonal_ = seasonal_;
+        } else {
+          result.seasonal_ = seasonalBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.sts.io.protobuf.StsProtos.BsmSpec) {
+          return mergeFrom((demetra.sts.io.protobuf.StsProtos.BsmSpec)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.sts.io.protobuf.StsProtos.BsmSpec other) {
+        if (other == demetra.sts.io.protobuf.StsProtos.BsmSpec.getDefaultInstance()) return this;
+        if (other.hasNoise()) {
+          mergeNoise(other.getNoise());
+        }
+        if (other.hasCycle()) {
+          mergeCycle(other.getCycle());
+        }
+        if (other.hasTrend()) {
+          mergeTrend(other.getTrend());
+        }
+        if (other.hasSeasonal()) {
+          mergeSeasonal(other.getSeasonal());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.sts.io.protobuf.StsProtos.BsmSpec parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.sts.io.protobuf.StsProtos.BsmSpec) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent noise_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent, demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.Builder, demetra.sts.io.protobuf.StsProtos.NullableNoiseComponentOrBuilder> noiseBuilder_;
+      /**
+       * <code>.sts.NullableNoiseComponent noise = 1;</code>
+       * @return Whether the noise field is set.
+       */
+      public boolean hasNoise() {
+        return noiseBuilder_ != null || noise_ != null;
+      }
+      /**
+       * <code>.sts.NullableNoiseComponent noise = 1;</code>
+       * @return The noise.
+       */
+      public demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent getNoise() {
+        if (noiseBuilder_ == null) {
+          return noise_ == null ? demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.getDefaultInstance() : noise_;
+        } else {
+          return noiseBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.sts.NullableNoiseComponent noise = 1;</code>
+       */
+      public Builder setNoise(demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent value) {
+        if (noiseBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          noise_ = value;
+          onChanged();
+        } else {
+          noiseBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.sts.NullableNoiseComponent noise = 1;</code>
+       */
+      public Builder setNoise(
+          demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.Builder builderForValue) {
+        if (noiseBuilder_ == null) {
+          noise_ = builderForValue.build();
+          onChanged();
+        } else {
+          noiseBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.sts.NullableNoiseComponent noise = 1;</code>
+       */
+      public Builder mergeNoise(demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent value) {
+        if (noiseBuilder_ == null) {
+          if (noise_ != null) {
+            noise_ =
+              demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.newBuilder(noise_).mergeFrom(value).buildPartial();
+          } else {
+            noise_ = value;
+          }
+          onChanged();
+        } else {
+          noiseBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.sts.NullableNoiseComponent noise = 1;</code>
+       */
+      public Builder clearNoise() {
+        if (noiseBuilder_ == null) {
+          noise_ = null;
+          onChanged();
+        } else {
+          noise_ = null;
+          noiseBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.sts.NullableNoiseComponent noise = 1;</code>
+       */
+      public demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.Builder getNoiseBuilder() {
+        
+        onChanged();
+        return getNoiseFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.sts.NullableNoiseComponent noise = 1;</code>
+       */
+      public demetra.sts.io.protobuf.StsProtos.NullableNoiseComponentOrBuilder getNoiseOrBuilder() {
+        if (noiseBuilder_ != null) {
+          return noiseBuilder_.getMessageOrBuilder();
+        } else {
+          return noise_ == null ?
+              demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.getDefaultInstance() : noise_;
+        }
+      }
+      /**
+       * <code>.sts.NullableNoiseComponent noise = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent, demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.Builder, demetra.sts.io.protobuf.StsProtos.NullableNoiseComponentOrBuilder> 
+          getNoiseFieldBuilder() {
+        if (noiseBuilder_ == null) {
+          noiseBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent, demetra.sts.io.protobuf.StsProtos.NullableNoiseComponent.Builder, demetra.sts.io.protobuf.StsProtos.NullableNoiseComponentOrBuilder>(
+                  getNoise(),
+                  getParentForChildren(),
+                  isClean());
+          noise_ = null;
+        }
+        return noiseBuilder_;
+      }
+
+      private demetra.sts.io.protobuf.StsProtos.NullableCycleComponent cycle_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.NullableCycleComponent, demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.Builder, demetra.sts.io.protobuf.StsProtos.NullableCycleComponentOrBuilder> cycleBuilder_;
+      /**
+       * <code>.sts.NullableCycleComponent cycle = 2;</code>
+       * @return Whether the cycle field is set.
+       */
+      public boolean hasCycle() {
+        return cycleBuilder_ != null || cycle_ != null;
+      }
+      /**
+       * <code>.sts.NullableCycleComponent cycle = 2;</code>
+       * @return The cycle.
+       */
+      public demetra.sts.io.protobuf.StsProtos.NullableCycleComponent getCycle() {
+        if (cycleBuilder_ == null) {
+          return cycle_ == null ? demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.getDefaultInstance() : cycle_;
+        } else {
+          return cycleBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.sts.NullableCycleComponent cycle = 2;</code>
+       */
+      public Builder setCycle(demetra.sts.io.protobuf.StsProtos.NullableCycleComponent value) {
+        if (cycleBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          cycle_ = value;
+          onChanged();
+        } else {
+          cycleBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.sts.NullableCycleComponent cycle = 2;</code>
+       */
+      public Builder setCycle(
+          demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.Builder builderForValue) {
+        if (cycleBuilder_ == null) {
+          cycle_ = builderForValue.build();
+          onChanged();
+        } else {
+          cycleBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.sts.NullableCycleComponent cycle = 2;</code>
+       */
+      public Builder mergeCycle(demetra.sts.io.protobuf.StsProtos.NullableCycleComponent value) {
+        if (cycleBuilder_ == null) {
+          if (cycle_ != null) {
+            cycle_ =
+              demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.newBuilder(cycle_).mergeFrom(value).buildPartial();
+          } else {
+            cycle_ = value;
+          }
+          onChanged();
+        } else {
+          cycleBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.sts.NullableCycleComponent cycle = 2;</code>
+       */
+      public Builder clearCycle() {
+        if (cycleBuilder_ == null) {
+          cycle_ = null;
+          onChanged();
+        } else {
+          cycle_ = null;
+          cycleBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.sts.NullableCycleComponent cycle = 2;</code>
+       */
+      public demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.Builder getCycleBuilder() {
+        
+        onChanged();
+        return getCycleFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.sts.NullableCycleComponent cycle = 2;</code>
+       */
+      public demetra.sts.io.protobuf.StsProtos.NullableCycleComponentOrBuilder getCycleOrBuilder() {
+        if (cycleBuilder_ != null) {
+          return cycleBuilder_.getMessageOrBuilder();
+        } else {
+          return cycle_ == null ?
+              demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.getDefaultInstance() : cycle_;
+        }
+      }
+      /**
+       * <code>.sts.NullableCycleComponent cycle = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.NullableCycleComponent, demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.Builder, demetra.sts.io.protobuf.StsProtos.NullableCycleComponentOrBuilder> 
+          getCycleFieldBuilder() {
+        if (cycleBuilder_ == null) {
+          cycleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.sts.io.protobuf.StsProtos.NullableCycleComponent, demetra.sts.io.protobuf.StsProtos.NullableCycleComponent.Builder, demetra.sts.io.protobuf.StsProtos.NullableCycleComponentOrBuilder>(
+                  getCycle(),
+                  getParentForChildren(),
+                  isClean());
+          cycle_ = null;
+        }
+        return cycleBuilder_;
+      }
+
+      private demetra.sts.io.protobuf.StsProtos.NullableTrendComponent trend_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.NullableTrendComponent, demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.Builder, demetra.sts.io.protobuf.StsProtos.NullableTrendComponentOrBuilder> trendBuilder_;
+      /**
+       * <code>.sts.NullableTrendComponent trend = 3;</code>
+       * @return Whether the trend field is set.
+       */
+      public boolean hasTrend() {
+        return trendBuilder_ != null || trend_ != null;
+      }
+      /**
+       * <code>.sts.NullableTrendComponent trend = 3;</code>
+       * @return The trend.
+       */
+      public demetra.sts.io.protobuf.StsProtos.NullableTrendComponent getTrend() {
+        if (trendBuilder_ == null) {
+          return trend_ == null ? demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.getDefaultInstance() : trend_;
+        } else {
+          return trendBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.sts.NullableTrendComponent trend = 3;</code>
+       */
+      public Builder setTrend(demetra.sts.io.protobuf.StsProtos.NullableTrendComponent value) {
+        if (trendBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          trend_ = value;
+          onChanged();
+        } else {
+          trendBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.sts.NullableTrendComponent trend = 3;</code>
+       */
+      public Builder setTrend(
+          demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.Builder builderForValue) {
+        if (trendBuilder_ == null) {
+          trend_ = builderForValue.build();
+          onChanged();
+        } else {
+          trendBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.sts.NullableTrendComponent trend = 3;</code>
+       */
+      public Builder mergeTrend(demetra.sts.io.protobuf.StsProtos.NullableTrendComponent value) {
+        if (trendBuilder_ == null) {
+          if (trend_ != null) {
+            trend_ =
+              demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.newBuilder(trend_).mergeFrom(value).buildPartial();
+          } else {
+            trend_ = value;
+          }
+          onChanged();
+        } else {
+          trendBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.sts.NullableTrendComponent trend = 3;</code>
+       */
+      public Builder clearTrend() {
+        if (trendBuilder_ == null) {
+          trend_ = null;
+          onChanged();
+        } else {
+          trend_ = null;
+          trendBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.sts.NullableTrendComponent trend = 3;</code>
+       */
+      public demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.Builder getTrendBuilder() {
+        
+        onChanged();
+        return getTrendFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.sts.NullableTrendComponent trend = 3;</code>
+       */
+      public demetra.sts.io.protobuf.StsProtos.NullableTrendComponentOrBuilder getTrendOrBuilder() {
+        if (trendBuilder_ != null) {
+          return trendBuilder_.getMessageOrBuilder();
+        } else {
+          return trend_ == null ?
+              demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.getDefaultInstance() : trend_;
+        }
+      }
+      /**
+       * <code>.sts.NullableTrendComponent trend = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.NullableTrendComponent, demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.Builder, demetra.sts.io.protobuf.StsProtos.NullableTrendComponentOrBuilder> 
+          getTrendFieldBuilder() {
+        if (trendBuilder_ == null) {
+          trendBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.sts.io.protobuf.StsProtos.NullableTrendComponent, demetra.sts.io.protobuf.StsProtos.NullableTrendComponent.Builder, demetra.sts.io.protobuf.StsProtos.NullableTrendComponentOrBuilder>(
+                  getTrend(),
+                  getParentForChildren(),
+                  isClean());
+          trend_ = null;
+        }
+        return trendBuilder_;
+      }
+
+      private demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent seasonal_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent, demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.Builder, demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponentOrBuilder> seasonalBuilder_;
+      /**
+       * <code>.sts.NullableSeasonalComponent seasonal = 4;</code>
+       * @return Whether the seasonal field is set.
+       */
+      public boolean hasSeasonal() {
+        return seasonalBuilder_ != null || seasonal_ != null;
+      }
+      /**
+       * <code>.sts.NullableSeasonalComponent seasonal = 4;</code>
+       * @return The seasonal.
+       */
+      public demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent getSeasonal() {
+        if (seasonalBuilder_ == null) {
+          return seasonal_ == null ? demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.getDefaultInstance() : seasonal_;
+        } else {
+          return seasonalBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.sts.NullableSeasonalComponent seasonal = 4;</code>
+       */
+      public Builder setSeasonal(demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent value) {
+        if (seasonalBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          seasonal_ = value;
+          onChanged();
+        } else {
+          seasonalBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.sts.NullableSeasonalComponent seasonal = 4;</code>
+       */
+      public Builder setSeasonal(
+          demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.Builder builderForValue) {
+        if (seasonalBuilder_ == null) {
+          seasonal_ = builderForValue.build();
+          onChanged();
+        } else {
+          seasonalBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.sts.NullableSeasonalComponent seasonal = 4;</code>
+       */
+      public Builder mergeSeasonal(demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent value) {
+        if (seasonalBuilder_ == null) {
+          if (seasonal_ != null) {
+            seasonal_ =
+              demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.newBuilder(seasonal_).mergeFrom(value).buildPartial();
+          } else {
+            seasonal_ = value;
+          }
+          onChanged();
+        } else {
+          seasonalBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.sts.NullableSeasonalComponent seasonal = 4;</code>
+       */
+      public Builder clearSeasonal() {
+        if (seasonalBuilder_ == null) {
+          seasonal_ = null;
+          onChanged();
+        } else {
+          seasonal_ = null;
+          seasonalBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.sts.NullableSeasonalComponent seasonal = 4;</code>
+       */
+      public demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.Builder getSeasonalBuilder() {
+        
+        onChanged();
+        return getSeasonalFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.sts.NullableSeasonalComponent seasonal = 4;</code>
+       */
+      public demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponentOrBuilder getSeasonalOrBuilder() {
+        if (seasonalBuilder_ != null) {
+          return seasonalBuilder_.getMessageOrBuilder();
+        } else {
+          return seasonal_ == null ?
+              demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.getDefaultInstance() : seasonal_;
+        }
+      }
+      /**
+       * <code>.sts.NullableSeasonalComponent seasonal = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent, demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.Builder, demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponentOrBuilder> 
+          getSeasonalFieldBuilder() {
+        if (seasonalBuilder_ == null) {
+          seasonalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent, demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponent.Builder, demetra.sts.io.protobuf.StsProtos.NullableSeasonalComponentOrBuilder>(
+                  getSeasonal(),
+                  getParentForChildren(),
+                  isClean());
+          seasonal_ = null;
+        }
+        return seasonalBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:sts.BsmSpec)
+    }
+
+    // @@protoc_insertion_point(class_scope:sts.BsmSpec)
+    private static final demetra.sts.io.protobuf.StsProtos.BsmSpec DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.sts.io.protobuf.StsProtos.BsmSpec();
+    }
+
+    public static demetra.sts.io.protobuf.StsProtos.BsmSpec getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BsmSpec>
+        PARSER = new com.google.protobuf.AbstractParser<BsmSpec>() {
+      @java.lang.Override
+      public BsmSpec parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new BsmSpec(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<BsmSpec> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BsmSpec> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.sts.io.protobuf.StsProtos.BsmSpec getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_sts_BasicStructuralModel_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_sts_BasicStructuralModel_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_sts_SeasonalComponent_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_sts_SeasonalComponent_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_sts_NullableSeasonalComponent_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_sts_NullableSeasonalComponent_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_sts_LocalLevelComponent_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_sts_LocalLevelComponent_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_sts_LocalLinearTrendComponent_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_sts_LocalLinearTrendComponent_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_sts_NullableTrendComponent_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_sts_NullableTrendComponent_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_sts_NoiseComponent_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_sts_NoiseComponent_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_sts_NullableNoiseComponent_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_sts_NullableNoiseComponent_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_sts_CycleComponent_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_sts_CycleComponent_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_sts_NullableCycleComponent_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_sts_NullableCycleComponent_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_sts_BsmSpec_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_sts_BsmSpec_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1678,31 +10193,123 @@ public final class StsProtos {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\tsts.proto\022\003sts\032\rtoolkit.proto\"\225\002\n\024Basi" +
-      "cStructuralModel\022\016\n\006period\030\001 \001(\005\022\014\n\004nvar" +
-      "\030\002 \001(\001\022\r\n\005level\030\003 \001(\010\022\014\n\004lvar\030\004 \001(\001\022\r\n\005s" +
-      "lope\030\005 \001(\010\022\014\n\004svar\030\006 \001(\001\022\r\n\005cycle\030\007 \001(\010\022" +
-      "\024\n\014cycle_period\030\010 \001(\001\022\024\n\014cycle_factor\030\t " +
-      "\001(\001\022\014\n\004cvar\030\n \001(\001\022*\n\016seasonal_model\030\013 \001(" +
-      "\0162\022.sts.SeasonalModel\022\017\n\007seasvar\030\014 \001(\001\022\037" +
-      "\n\ncovariance\030\r \001(\0132\013.jd3.Matrix*p\n\rSeaso" +
-      "nalModel\022\r\n\tSEAS_NONE\020\000\022\016\n\nSEAS_DUMMY\020\001\022" +
-      "\026\n\022SEAS_TRIGONOMETRIC\020\002\022\030\n\024SEAS_HARRISON" +
-      "STEVENS\020\003\022\016\n\nSEAS_CRUDE\020\004B$\n\027demetra.sts" +
-      ".io.protobufB\tStsProtosP\000b\006proto3"
+      "\n\tsts.proto\022\003sts\032\rtoolkit.proto\032\034google/" +
+      "protobuf/struct.proto\"\364\001\n\024BasicStructura" +
+      "lModel\022\016\n\006period\030\001 \001(\005\022\014\n\004nvar\030\002 \001(\001\022\r\n\005" +
+      "level\030\003 \001(\010\022\014\n\004lvar\030\004 \001(\001\022\r\n\005slope\030\005 \001(\010" +
+      "\022\014\n\004svar\030\006 \001(\001\022\r\n\005cycle\030\007 \001(\010\022\024\n\014cycle_p" +
+      "eriod\030\010 \001(\001\022\024\n\014cycle_factor\030\t \001(\001\022\014\n\004cva" +
+      "r\030\n \001(\001\022*\n\016seasonal_model\030\013 \001(\0162\022.sts.Se" +
+      "asonalModel\022\017\n\007seasvar\030\014 \001(\001\"X\n\021Seasonal" +
+      "Component\022!\n\005model\030\001 \001(\0162\022.sts.SeasonalM" +
+      "odel\022 \n\010variance\030\002 \001(\0132\016.jd3.Parameter\"|" +
+      "\n\031NullableSeasonalComponent\022*\n\004null\030\001 \001(" +
+      "\0162\032.google.protobuf.NullValueH\000\022+\n\tcompo" +
+      "nent\030\002 \001(\0132\026.sts.SeasonalComponentH\000B\006\n\004" +
+      "kind\"<\n\023LocalLevelComponent\022%\n\rlevelVari" +
+      "ance\030\001 \001(\0132\016.jd3.Parameter\"i\n\031LocalLinea" +
+      "rTrendComponent\022%\n\rlevelVariance\030\001 \001(\0132\016" +
+      ".jd3.Parameter\022%\n\rslopeVariance\030\002 \001(\0132\016." +
+      "jd3.Parameter\"\273\001\n\026NullableTrendComponent" +
+      "\022*\n\004null\030\001 \001(\0162\032.google.protobuf.NullVal" +
+      "ueH\000\022/\n\013local_level\030\002 \001(\0132\030.sts.LocalLev" +
+      "elComponentH\000\022<\n\022local_linear_trend\030\003 \001(" +
+      "\0132\036.sts.LocalLinearTrendComponentH\000B\006\n\004k" +
+      "ind\"2\n\016NoiseComponent\022 \n\010variance\030\001 \001(\0132" +
+      "\016.jd3.Parameter\"v\n\026NullableNoiseComponen" +
+      "t\022*\n\004null\030\001 \001(\0162\032.google.protobuf.NullVa" +
+      "lueH\000\022(\n\tcomponent\030\002 \001(\0132\023.sts.NoiseComp" +
+      "onentH\000B\006\n\004kind\"~\n\016CycleComponent\022$\n\014cyc" +
+      "le_period\030\001 \001(\0132\016.jd3.Parameter\022$\n\014cycle" +
+      "_factor\030\002 \001(\0132\016.jd3.Parameter\022 \n\010varianc" +
+      "e\030\003 \001(\0132\016.jd3.Parameter\"v\n\026NullableCycle" +
+      "Component\022*\n\004null\030\001 \001(\0162\032.google.protobu" +
+      "f.NullValueH\000\022(\n\tcomponent\030\002 \001(\0132\023.sts.C" +
+      "ycleComponentH\000B\006\n\004kind\"\277\001\n\007BsmSpec\022*\n\005n" +
+      "oise\030\001 \001(\0132\033.sts.NullableNoiseComponent\022" +
+      "*\n\005cycle\030\002 \001(\0132\033.sts.NullableCycleCompon" +
+      "ent\022*\n\005trend\030\003 \001(\0132\033.sts.NullableTrendCo" +
+      "mponent\0220\n\010seasonal\030\004 \001(\0132\036.sts.Nullable" +
+      "SeasonalComponent*p\n\rSeasonalModel\022\r\n\tSE" +
+      "AS_NONE\020\000\022\016\n\nSEAS_DUMMY\020\001\022\026\n\022SEAS_TRIGON" +
+      "OMETRIC\020\002\022\030\n\024SEAS_HARRISONSTEVENS\020\003\022\016\n\nS" +
+      "EAS_CRUDE\020\004B$\n\027demetra.sts.io.protobufB\t" +
+      "StsProtosP\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor(),
+          com.google.protobuf.StructProto.getDescriptor(),
         });
     internal_static_sts_BasicStructuralModel_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_sts_BasicStructuralModel_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_sts_BasicStructuralModel_descriptor,
-        new java.lang.String[] { "Period", "Nvar", "Level", "Lvar", "Slope", "Svar", "Cycle", "CyclePeriod", "CycleFactor", "Cvar", "SeasonalModel", "Seasvar", "Covariance", });
+        new java.lang.String[] { "Period", "Nvar", "Level", "Lvar", "Slope", "Svar", "Cycle", "CyclePeriod", "CycleFactor", "Cvar", "SeasonalModel", "Seasvar", });
+    internal_static_sts_SeasonalComponent_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_sts_SeasonalComponent_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_sts_SeasonalComponent_descriptor,
+        new java.lang.String[] { "Model", "Variance", });
+    internal_static_sts_NullableSeasonalComponent_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_sts_NullableSeasonalComponent_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_sts_NullableSeasonalComponent_descriptor,
+        new java.lang.String[] { "Null", "Component", "Kind", });
+    internal_static_sts_LocalLevelComponent_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_sts_LocalLevelComponent_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_sts_LocalLevelComponent_descriptor,
+        new java.lang.String[] { "LevelVariance", });
+    internal_static_sts_LocalLinearTrendComponent_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_sts_LocalLinearTrendComponent_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_sts_LocalLinearTrendComponent_descriptor,
+        new java.lang.String[] { "LevelVariance", "SlopeVariance", });
+    internal_static_sts_NullableTrendComponent_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_sts_NullableTrendComponent_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_sts_NullableTrendComponent_descriptor,
+        new java.lang.String[] { "Null", "LocalLevel", "LocalLinearTrend", "Kind", });
+    internal_static_sts_NoiseComponent_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_sts_NoiseComponent_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_sts_NoiseComponent_descriptor,
+        new java.lang.String[] { "Variance", });
+    internal_static_sts_NullableNoiseComponent_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_sts_NullableNoiseComponent_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_sts_NullableNoiseComponent_descriptor,
+        new java.lang.String[] { "Null", "Component", "Kind", });
+    internal_static_sts_CycleComponent_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_sts_CycleComponent_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_sts_CycleComponent_descriptor,
+        new java.lang.String[] { "CyclePeriod", "CycleFactor", "Variance", });
+    internal_static_sts_NullableCycleComponent_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_sts_NullableCycleComponent_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_sts_NullableCycleComponent_descriptor,
+        new java.lang.String[] { "Null", "Component", "Kind", });
+    internal_static_sts_BsmSpec_descriptor =
+      getDescriptor().getMessageTypes().get(10);
+    internal_static_sts_BsmSpec_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_sts_BsmSpec_descriptor,
+        new java.lang.String[] { "Noise", "Cycle", "Trend", "Seasonal", });
     demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor();
+    com.google.protobuf.StructProto.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

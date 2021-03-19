@@ -16,12 +16,14 @@
  */
 package demetra.sts;
 
+import demetra.data.Parameter;
+
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-public class SeasonalComponentType {
-    @lombok.NonNull SeasonalModel model;
-    double variance;
+public class TrendComponent {
+    Parameter levelVariance;
+    Parameter slopeVariance;
 }

@@ -17,7 +17,7 @@
 
 package jdplus.regarima.diagnostics;
 
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import demetra.processing.DiagnosticsFactory;
 import demetra.processing.Diagnostics;
 import java.util.Arrays;
@@ -41,10 +41,10 @@ public class ResidualsDiagnosticsFactory<R> implements DiagnosticsFactory<R> {
     public static List<String> ALL = Collections.unmodifiableList(Arrays.asList(NORMALITY, INDEPENDENCE, TD_PEAK, S_PEAK));
 
     private final ResidualsDiagnosticsConfiguration config;
-    private final Function<R, ModelEstimation > extractor;
+    private final Function<R, RegSarimaModel > extractor;
     private boolean enabled=true;
 
-    public ResidualsDiagnosticsFactory(ResidualsDiagnosticsConfiguration config,Function<R, ModelEstimation > extractor) {
+    public ResidualsDiagnosticsFactory(ResidualsDiagnosticsConfiguration config,Function<R, RegSarimaModel > extractor) {
         this.config = config;
         this.extractor=extractor;
     }

@@ -8545,19 +8545,19 @@ public final class TramoSeatsProtos {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>.jd3.Parameter mean = 1;</code>
+       * <code>.jd3.NullableParameter mean = 1;</code>
        * @return Whether the mean field is set.
        */
       boolean hasMean();
       /**
-       * <code>.jd3.Parameter mean = 1;</code>
+       * <code>.jd3.NullableParameter mean = 1;</code>
        * @return The mean.
        */
-      demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getMean();
+      demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter getMean();
       /**
-       * <code>.jd3.Parameter mean = 1;</code>
+       * <code>.jd3.NullableParameter mean = 1;</code>
        */
-      demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getMeanOrBuilder();
+      demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder getMeanOrBuilder();
 
       /**
        * <code>.tramoseats.TramoSpec.TradingDaysSpec td = 2;</code>
@@ -8736,11 +8736,11 @@ public final class TramoSeatsProtos {
                 done = true;
                 break;
               case 10: {
-                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
+                demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder subBuilder = null;
                 if (mean_ != null) {
                   subBuilder = mean_.toBuilder();
                 }
-                mean_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry);
+                mean_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.parser(), extensionRegistry);
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(mean_);
                   mean_ = subBuilder.buildPartial();
@@ -8855,9 +8855,9 @@ public final class TramoSeatsProtos {
       }
 
       public static final int MEAN_FIELD_NUMBER = 1;
-      private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter mean_;
+      private demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter mean_;
       /**
-       * <code>.jd3.Parameter mean = 1;</code>
+       * <code>.jd3.NullableParameter mean = 1;</code>
        * @return Whether the mean field is set.
        */
       @java.lang.Override
@@ -8865,18 +8865,18 @@ public final class TramoSeatsProtos {
         return mean_ != null;
       }
       /**
-       * <code>.jd3.Parameter mean = 1;</code>
+       * <code>.jd3.NullableParameter mean = 1;</code>
        * @return The mean.
        */
       @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getMean() {
-        return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : mean_;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter getMean() {
+        return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.getDefaultInstance() : mean_;
       }
       /**
-       * <code>.jd3.Parameter mean = 1;</code>
+       * <code>.jd3.NullableParameter mean = 1;</code>
        */
       @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getMeanOrBuilder() {
+      public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder getMeanOrBuilder() {
         return getMean();
       }
 
@@ -9689,31 +9689,31 @@ public final class TramoSeatsProtos {
         }
         private int bitField0_;
 
-        private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter mean_;
+        private demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter mean_;
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> meanBuilder_;
+            demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder> meanBuilder_;
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          * @return Whether the mean field is set.
          */
         public boolean hasMean() {
           return meanBuilder_ != null || mean_ != null;
         }
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          * @return The mean.
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getMean() {
+        public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter getMean() {
           if (meanBuilder_ == null) {
-            return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : mean_;
+            return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.getDefaultInstance() : mean_;
           } else {
             return meanBuilder_.getMessage();
           }
         }
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          */
-        public Builder setMean(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        public Builder setMean(demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter value) {
           if (meanBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -9727,10 +9727,10 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          */
         public Builder setMean(
-            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+            demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder builderForValue) {
           if (meanBuilder_ == null) {
             mean_ = builderForValue.build();
             onChanged();
@@ -9741,13 +9741,13 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          */
-        public Builder mergeMean(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        public Builder mergeMean(demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter value) {
           if (meanBuilder_ == null) {
             if (mean_ != null) {
               mean_ =
-                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder(mean_).mergeFrom(value).buildPartial();
+                demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.newBuilder(mean_).mergeFrom(value).buildPartial();
             } else {
               mean_ = value;
             }
@@ -9759,7 +9759,7 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          */
         public Builder clearMean() {
           if (meanBuilder_ == null) {
@@ -9773,33 +9773,33 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getMeanBuilder() {
+        public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder getMeanBuilder() {
           
           onChanged();
           return getMeanFieldBuilder().getBuilder();
         }
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getMeanOrBuilder() {
+        public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder getMeanOrBuilder() {
           if (meanBuilder_ != null) {
             return meanBuilder_.getMessageOrBuilder();
           } else {
             return mean_ == null ?
-                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : mean_;
+                demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.getDefaultInstance() : mean_;
           }
         }
         /**
-         * <code>.jd3.Parameter mean = 1;</code>
+         * <code>.jd3.NullableParameter mean = 1;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
+            demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder> 
             getMeanFieldBuilder() {
           if (meanBuilder_ == null) {
             meanBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
+                demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder>(
                     getMean(),
                     getParentForChildren(),
                     isClean());
@@ -14556,7 +14556,7 @@ public final class TramoSeatsProtos {
       "\033\n\023seas_boundary_at_pi\030\006 \001(\001\022\027\n\017bias_cor" +
       "rection\030\007 \001(\010\022\017\n\007nfcasts\030\010 \001(\005\022\017\n\007nbcast" +
       "s\030\t \001(\005\022-\n\talgorithm\030\n \001(\0162\032.tramoseats." +
-      "SeatsAlgorithm\"\232\r\n\tTramoSpec\022.\n\005basic\030\001 " +
+      "SeatsAlgorithm\"\242\r\n\tTramoSpec\022.\n\005basic\030\001 " +
       "\001(\0132\037.tramoseats.TramoSpec.BasicSpec\0226\n\t" +
       "transform\030\002 \001(\0132#.tramoseats.TramoSpec.T" +
       "ransformSpec\0222\n\007outlier\030\003 \001(\0132!.tramosea" +
@@ -14588,36 +14588,36 @@ public final class TramoSeatsProtos {
       "ingDaysTest\022.\n\004auto\030\007 \001(\0162 .tramoseats.A" +
       "utomaticTradingDays\022\r\n\005ptest\030\010 \001(\001\022%\n\rtd" +
       "coefficient\030\n \003(\0132\016.jd3.Parameter\022%\n\rlpc" +
-      "oefficient\030\013 \001(\0132\016.jd3.Parameter\032\261\002\n\016Reg" +
-      "ressionSpec\022\034\n\004mean\030\001 \001(\0132\016.jd3.Paramete" +
-      "r\0221\n\002td\030\002 \001(\0132%.tramoseats.TramoSpec.Tra" +
-      "dingDaysSpec\0220\n\006easter\030\003 \001(\0132 .tramoseat" +
-      "s.TramoSpec.EasterSpec\022#\n\010outliers\030\004 \003(\013" +
-      "2\021.regarima.Outlier\022!\n\005users\030\005 \003(\0132\022.reg" +
-      "arima.Variable\0225\n\rinterventions\030\006 \003(\0132\036." +
-      "regarima.InterventionVariable\022\035\n\005ramps\030\007" +
-      " \003(\0132\016.regarima.Ramp\032U\n\014EstimateSpec\022\037\n\004" +
-      "span\030\001 \001(\0132\021.jd3.TimeSelector\022\n\n\002ml\030\002 \001(" +
-      "\010\022\013\n\003tol\030\003 \001(\001\022\013\n\003ubp\030\004 \001(\001\"\206\001\n\004Spec\022$\n\005" +
-      "tramo\030\001 \001(\0132\025.tramoseats.TramoSpec\022,\n\005se" +
-      "ats\030\002 \001(\0132\035.tramoseats.DecompositionSpec" +
-      "\022*\n\014benchmarking\030\003 \001(\0132\024.sa.Benchmarking" +
-      "Spec*n\n\022SeatsApproximation\022\031\n\025SEATS_APP_" +
-      "UNSPECIFIED\020\000\022\022\n\016SEATS_APP_NONE\020\001\022\024\n\020SEA" +
-      "TS_APP_LEGACY\020\002\022\023\n\017SEATS_APP_NOISY\020\003*_\n\016" +
-      "SeatsAlgorithm\022\031\n\025SEATS_ALG_UNSPECIFIED\020" +
-      "\000\022\024\n\020SEATS_ALG_BURMAN\020\001\022\034\n\030SEATS_ALG_KAL" +
-      "MANSMOOTHER\020\002*h\n\024AutomaticTradingDays\022\027\n" +
-      "\023TD_AUTO_UNSPECIFIED\020\000\022\016\n\nTD_AUTO_NO\020\001\022\021" +
-      "\n\rTD_AUTO_FTEST\020\002\022\024\n\020TD_AUTO_WALDTEST\020\003*" +
-      "g\n\017TradingDaysTest\022\027\n\023TD_TEST_UNSPECIFIE" +
-      "D\020\000\022\016\n\nTD_TEST_NO\020\001\022\026\n\022TD_TEST_SEPARATE_" +
-      "T\020\002\022\023\n\017TD_TEST_JOINT_F\020\003*\206\001\n\nEasterType\022" +
-      "\026\n\022EASTER_UNSPECIFIED\020\000\022\021\n\rEASTER_UNUSED" +
-      "\020\001\022\023\n\017EASTER_STANDARD\020\002\022\030\n\024EASTER_INCLUD" +
-      "EEASTER\020\003\022\036\n\032EASTER_INCLUDEEASTERMONDAY\020" +
-      "\004B2\n\036demetra.tramoseats.io.protobufB\020Tra" +
-      "moSeatsProtosP\000P\001P\002b\006proto3"
+      "oefficient\030\013 \001(\0132\016.jd3.Parameter\032\271\002\n\016Reg" +
+      "ressionSpec\022$\n\004mean\030\001 \001(\0132\026.jd3.Nullable" +
+      "Parameter\0221\n\002td\030\002 \001(\0132%.tramoseats.Tramo" +
+      "Spec.TradingDaysSpec\0220\n\006easter\030\003 \001(\0132 .t" +
+      "ramoseats.TramoSpec.EasterSpec\022#\n\010outlie" +
+      "rs\030\004 \003(\0132\021.regarima.Outlier\022!\n\005users\030\005 \003" +
+      "(\0132\022.regarima.Variable\0225\n\rinterventions\030" +
+      "\006 \003(\0132\036.regarima.InterventionVariable\022\035\n" +
+      "\005ramps\030\007 \003(\0132\016.regarima.Ramp\032U\n\014Estimate" +
+      "Spec\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeSelector\022\n\n" +
+      "\002ml\030\002 \001(\010\022\013\n\003tol\030\003 \001(\001\022\013\n\003ubp\030\004 \001(\001\"\206\001\n\004" +
+      "Spec\022$\n\005tramo\030\001 \001(\0132\025.tramoseats.TramoSp" +
+      "ec\022,\n\005seats\030\002 \001(\0132\035.tramoseats.Decomposi" +
+      "tionSpec\022*\n\014benchmarking\030\003 \001(\0132\024.sa.Benc" +
+      "hmarkingSpec*n\n\022SeatsApproximation\022\031\n\025SE" +
+      "ATS_APP_UNSPECIFIED\020\000\022\022\n\016SEATS_APP_NONE\020" +
+      "\001\022\024\n\020SEATS_APP_LEGACY\020\002\022\023\n\017SEATS_APP_NOI" +
+      "SY\020\003*_\n\016SeatsAlgorithm\022\031\n\025SEATS_ALG_UNSP" +
+      "ECIFIED\020\000\022\024\n\020SEATS_ALG_BURMAN\020\001\022\034\n\030SEATS" +
+      "_ALG_KALMANSMOOTHER\020\002*h\n\024AutomaticTradin" +
+      "gDays\022\027\n\023TD_AUTO_UNSPECIFIED\020\000\022\016\n\nTD_AUT" +
+      "O_NO\020\001\022\021\n\rTD_AUTO_FTEST\020\002\022\024\n\020TD_AUTO_WAL" +
+      "DTEST\020\003*g\n\017TradingDaysTest\022\027\n\023TD_TEST_UN" +
+      "SPECIFIED\020\000\022\016\n\nTD_TEST_NO\020\001\022\026\n\022TD_TEST_S" +
+      "EPARATE_T\020\002\022\023\n\017TD_TEST_JOINT_F\020\003*\206\001\n\nEas" +
+      "terType\022\026\n\022EASTER_UNSPECIFIED\020\000\022\021\n\rEASTE" +
+      "R_UNUSED\020\001\022\023\n\017EASTER_STANDARD\020\002\022\030\n\024EASTE" +
+      "R_INCLUDEEASTER\020\003\022\036\n\032EASTER_INCLUDEEASTE" +
+      "RMONDAY\020\004B2\n\036demetra.tramoseats.io.proto" +
+      "bufB\020TramoSeatsProtosP\000P\001P\002b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

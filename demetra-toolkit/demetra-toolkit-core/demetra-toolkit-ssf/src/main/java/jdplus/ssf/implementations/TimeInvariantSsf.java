@@ -17,12 +17,8 @@
 package jdplus.ssf.implementations;
 
 import jdplus.ssf.univariate.ISsf;
-import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.univariate.Ssf;
-import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.univariate.ISsfError;
-import jdplus.ssf.univariate.ISsfMeasurement;
-import jdplus.ssf.univariate.Measurement;
 
 /**
  *
@@ -33,7 +29,7 @@ public class TimeInvariantSsf {
 
     public static Ssf of(ISsf ssf) {
         if (!ssf.isTimeInvariant()) {
-            return null;
+            throw new IllegalArgumentException();
         }
         ISsfError e = ssf.measurementError();
         if (e != null) {

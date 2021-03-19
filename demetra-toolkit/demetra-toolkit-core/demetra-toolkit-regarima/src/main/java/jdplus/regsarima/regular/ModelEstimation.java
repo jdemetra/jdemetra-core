@@ -28,6 +28,7 @@ import jdplus.sarima.SarimaModel;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.likelihood.LikelihoodStatistics;
+import demetra.modelling.implementations.SarimaSpec;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.regression.TrendConstant;
@@ -53,6 +54,7 @@ import jdplus.timeseries.simplets.Transformations;
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
+@Deprecated
 public final class ModelEstimation {
 
     private static final boolean[] EB = new boolean[0];
@@ -97,8 +99,8 @@ public final class ModelEstimation {
         this.missing = description.getMissing();
         this.estimationDomain = description.getEstimationDomain();
 
-        SarimaComponent arima = description.getArimaComponent();
-        int free = arima.getFreeParametersCount(), all = arima.getParametersCount();
+        SarimaSpec arima = description.getArimaSpec();
+        int free = arima.freeParametersCount(), all = arima.parametersCount();
 
         List<Variable> vars = description.variables().sequential().collect(Collectors.toList());
         int nvars = (int) vars.size();
@@ -138,25 +140,26 @@ public final class ModelEstimation {
         this.statistics = estimation.statistics();
 
         LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = estimation.getMax();
-        freeArimaParametersCount = arima.getFreeParametersCount();
+        freeArimaParametersCount = arima.freeParametersCount();
         if (max == null) {
             this.arimaParameters = Doubles.EMPTYARRAY;
             this.arimaScore = Doubles.EMPTYARRAY;
             this.arimaCovariance = Matrix.EMPTY;
             this.fixedArimaParameters = EB;
         } else {
-            this.fixedArimaParameters = arima.fixedConstraints();
-            if (arima.getFixedParametersCount() == 0) {
-                this.arimaParameters = max.getParameters().toArray();
-                this.arimaScore = max.getScore().toArray();
-                this.arimaCovariance = max.asymptoticCovariance();
-            } else {
-                // expand parameters, score, pcov;
-                this.arimaParameters = arima.parameters();
-                expand(max.getParameters().toArray(), fixedArimaParameters, this.arimaParameters);
-                this.arimaScore = expand(max.getScore().toArray(), fixedArimaParameters, Double.NaN);
-                this.arimaCovariance = expand(max.asymptoticCovariance(), fixedArimaParameters);
-            }
+            this.fixedArimaParameters = null;
+//            this.fixedArimaParameters = arima.fixedConstraints();
+//            if (arima.fixedParametersCount() == 0) {
+            this.arimaParameters = max.getParameters().toArray();
+            this.arimaScore = max.getScore().toArray();
+            this.arimaCovariance = max.asymptoticCovariance();
+//            } else {
+//                // expand parameters, score, pcov;
+//                this.arimaParameters = arima.parameters();
+//                expand(max.getParameters().toArray(), fixedArimaParameters, this.arimaParameters);
+//                this.arimaScore = expand(max.getScore().toArray(), fixedArimaParameters, Double.NaN);
+//                this.arimaCovariance = expand(max.asymptoticCovariance(), fixedArimaParameters);
+//            }
         }
     }
 
@@ -386,14 +389,14 @@ public final class ModelEstimation {
         }
         return s;
     }
-    
-    public TsData fullResiduals(){
+
+    public TsData fullResiduals() {
         DoubleSeq res = RegArimaUtility.fullResiduals(model, concentratedLikelihood);
-        TsPeriod start=transformedSeries.getEnd().plus(-res.length());
+        TsPeriod start = transformedSeries.getEnd().plus(-res.length());
         return TsData.ofInternal(start, res);
     }
-    
-    public NiidTests residualsTests(){
+
+    public NiidTests residualsTests() {
         DoubleSeq res = RegArimaUtility.fullResiduals(model, concentratedLikelihood);
         return NiidTests.builder()
                 .data(res)
@@ -487,7 +490,7 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getDeterministicEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> ! (v.getCore() instanceof TrendConstant));
+        TsData s = deterministicEffect(domain, v -> !(v.getCore() instanceof TrendConstant));
         return backTransform(s, true);
     }
 

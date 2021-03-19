@@ -33,9 +33,8 @@ import demetra.x13.X13Preadjustment;
 import demetra.x13.X13Spec;
 import jdplus.x13.regarima.FastArimaForecasts;
 import jdplus.x13.regarima.RegArimaKernel;
-import java.util.Arrays;
 import jdplus.regarima.ami.ModellingUtility;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sa.modelling.RegArimaDecomposer;
 import jdplus.sa.modelling.SaVariablesMapping;
 import jdplus.sarima.SarimaModel;
@@ -76,7 +75,7 @@ public class X13Kernel {
         // Step 0. Preliminary checks
         TsData sc = preliminary.check(s, log);
         // Step 1. Preprocessing
-        ModelEstimation preprocessing = regarima.process(sc, log);
+        RegSarimaModel preprocessing = regarima.process(sc, log);
         // Step 2. Link between regarima and x11
         int nb = spec.getBackcastHorizon();
         if (nb < 0) {
@@ -97,8 +96,8 @@ public class X13Kernel {
         return new X13Results(preprocessing, preadjustment, xr, finals);
     }
 
-    private TsData initialStep(ModelEstimation model, int nb, int nf, X13Preadjustment.Builder astep) {
-        boolean mul = model.isLogTransformation();
+    private TsData initialStep(RegSarimaModel model, int nb, int nf, X13Preadjustment.Builder astep) {
+        boolean mul = model.getDescription().isLogTransformation();
         TsData series = model.interpolatedSeries(false);
         int n = series.length();
         TsDomain sdomain = series.getDomain();
@@ -142,11 +141,11 @@ public class X13Kernel {
 
         if (nb > 0 || nf > 0) {
             DoubleSeq lin = model.linearizedSeries().getValues();
-            SarimaModel arima = model.getModel().arima();
+            SarimaModel arima = model.arima();
             FastArimaForecasts fcasts = new FastArimaForecasts();
             double mean = 0;
-            if (model.getModel().isMean()) {
-                mean = model.getConcentratedLikelihood().coefficient(0);
+            if (model.getDescription().isMean()) {
+                mean = model.getEstimation().getCoefficients().get(0);
             }
             fcasts.prepare(arima, mean);
 
@@ -187,7 +186,7 @@ public class X13Kernel {
         return (mul ? TsData.divide(s, detlin) : TsData.subtract(s, detlin));
     }
 
-    private X11Spec updateSpec(X11Spec spec, ModelEstimation model) {
+    private X11Spec updateSpec(X11Spec spec, RegSarimaModel model) {
         int nb = spec.getBackcastHorizon(), nf = spec.getForecastHorizon();
         int period = model.getAnnualFrequency();
         X11Spec.Builder builder = spec.toBuilder()
@@ -195,7 +194,7 @@ public class X13Kernel {
                 .forecastHorizon(nf < 0 ? -nf * period : nf);
 
         if (spec.getMode() != DecompositionMode.PseudoAdditive) {
-            boolean mul = model.isLogTransformation();
+            boolean mul = model.getDescription().isLogTransformation();
             builder.mode(mul ? DecompositionMode.Multiplicative : DecompositionMode.Additive);
         }
         return builder.build();

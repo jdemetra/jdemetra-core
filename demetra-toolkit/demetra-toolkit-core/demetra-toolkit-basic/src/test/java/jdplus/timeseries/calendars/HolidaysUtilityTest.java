@@ -54,7 +54,7 @@ public class HolidaysUtilityTest {
         holidays.add(EasterRelatedDay.EASTERMONDAY);
         holidays.add(EasterRelatedDay.WHITMONDAY);
 
-        belgium = new Calendar(holidays.toArray(new Holiday[holidays.size()]), true);
+        belgium = new Calendar(holidays.toArray(new Holiday[holidays.size()]));
     }
 
     public HolidaysUtilityTest() {

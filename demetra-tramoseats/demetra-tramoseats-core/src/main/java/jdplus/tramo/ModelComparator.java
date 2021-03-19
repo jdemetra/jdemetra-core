@@ -6,6 +6,7 @@
 package jdplus.tramo;
 
 import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModelling;
 
 /**
  *
@@ -158,14 +159,14 @@ public class ModelComparator {
         this.ksk = builder.ksk;
     }
 
-    public int compare(ModelEstimation m1, ModelEstimation m2) {
+    public int compare(RegSarimaModelling m1, RegSarimaModelling m2) {
 
         if (m1 == m2) {
             return 0;
         }
 
-        ModelStatistics s1 = ModelStatistics.of(m1);
-        ModelStatistics s2 = ModelStatistics.of(m2);
+        ModelStatistics s1 = ModelStatistics.of(m1.getDescription(), m1.getEstimation().getConcentratedLikelihood());
+        ModelStatistics s2 = ModelStatistics.of(m2.getDescription(), m2.getEstimation().getConcentratedLikelihood());
 
         if ((preference == Preference.BIC && s2.getBic() < s1.getBic()) || preference == Preference.Second) {
             if (!preferSecondModel(s2, s1)) {

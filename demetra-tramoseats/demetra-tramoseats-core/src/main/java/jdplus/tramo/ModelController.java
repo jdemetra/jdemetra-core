@@ -8,7 +8,6 @@ package jdplus.tramo;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regsarima.regular.IModelEstimator;
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.ModelEstimation;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
@@ -51,7 +50,7 @@ abstract class ModelController {
         if (!desc.isMean()) {
             return true;
         }
-        int nhp = desc.getArimaComponent().getFreeParametersCount();
+        int nhp = desc.getArimaSpec().freeParametersCount();
         double ser = estimation.getConcentratedLikelihood().ser(0, nhp, true);
         return Math.abs(estimation.getConcentratedLikelihood().coefficient(0) / ser) >= 1.96;
     }

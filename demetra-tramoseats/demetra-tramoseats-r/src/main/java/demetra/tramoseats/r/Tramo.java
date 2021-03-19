@@ -29,9 +29,9 @@ import demetra.util.r.Dictionary;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import jdplus.math.matrices.Matrix;
-import jdplus.regarima.extractors.ModelEstimationExtractor;
+import jdplus.regarima.extractors.RegSarimaModelExtractor;
 import jdplus.regsarima.regular.Forecast;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.tramo.TramoKernel;
 
 /**
@@ -42,7 +42,7 @@ import jdplus.tramo.TramoKernel;
 public class Tramo {
     @lombok.Value
     public static class Results implements ProcResults{
-        private ModelEstimation core;
+        private RegSarimaModel core;
 
         public byte[] buffer() {
             return RegArimaEstimationProto.convert(core).toByteArray();
@@ -50,33 +50,33 @@ public class Tramo {
 
         @Override
         public boolean contains(String id) {
-            return ModelEstimationExtractor.getMapping().contains(id);
+            return RegSarimaModelExtractor.getMapping().contains(id);
         }
 
         @Override
         public Map<String, Class> getDictionary() {
             Map<String, Class> dic = new LinkedHashMap<>();
-            ModelEstimationExtractor.getMapping().fillDictionary(null, dic, true);
+            RegSarimaModelExtractor.getMapping().fillDictionary(null, dic, true);
             return dic;
         }
 
         @Override
         public <T> T getData(String id, Class<T> tclass) {
-            return ModelEstimationExtractor.getMapping().getData(core, id, tclass);
+            return RegSarimaModelExtractor.getMapping().getData(core, id, tclass);
         }
     }
     
     public Results process(TsData series, String defSpec){
         TramoSpec spec=TramoSpec.fromString(defSpec);
         TramoKernel tramo= TramoKernel.of(spec, null);
-        ModelEstimation estimation = tramo.process(series.cleanExtremities(), null);
+        RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
         return new Results(estimation);
     }
     
     public Results process(TsData series, TramoSpec spec, Dictionary dic){
         ModellingContext context=dic == null ? null : dic.toContext();
         TramoKernel tramo= TramoKernel.of(spec, context);
-        ModelEstimation estimation = tramo.process(series.cleanExtremities(), null);
+        RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
         return new Results(estimation);
     }
 

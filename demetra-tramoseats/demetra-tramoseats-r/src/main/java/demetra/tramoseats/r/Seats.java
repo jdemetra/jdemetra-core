@@ -16,7 +16,7 @@
  */
 package demetra.tramoseats.r;
 
-import demetra.arima.SarimaSpec;
+import demetra.modelling.implementations.SarimaSpec;
 import demetra.information.InformationMapping;
 import demetra.processing.DefaultProcessingLog;
 import demetra.processing.ProcResults;

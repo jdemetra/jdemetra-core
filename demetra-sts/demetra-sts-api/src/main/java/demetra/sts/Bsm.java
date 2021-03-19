@@ -21,7 +21,10 @@ package demetra.sts;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-public class TrendComponentType {
-    double levelVariance;
-    double slopeVariance;
+@lombok.Builder(toBuilder=true)
+public class Bsm {
+    NoiseComponent noiseVariance;
+    CycleComponent cycleComponent;
+    TrendComponent trendComponent;
+    SeasonalComponent seasonalComponent;
 }

@@ -16,27 +16,27 @@
  */
 package jdplus.regarima;
 
+import demetra.arima.SarimaOrders;
+import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
+import internal.jdplus.arima.FastKalmanFilter;
+import java.util.List;
 import jdplus.arima.IArimaModel;
 import jdplus.arima.StationaryTransformation;
-import internal.jdplus.arima.FastKalmanFilter;
 import jdplus.data.DataBlock;
-import demetra.data.DoubleSeqCursor;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.Likelihood;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.UnitRoots;
 import jdplus.regsarima.GlsSarimaProcessor;
-import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaOrders;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
-import java.util.List;
+import jdplus.sarima.SarimaModel;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import demetra.data.DoubleSeq;
-import jdplus.likelihood.Likelihood;
-import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 
 /**
  *
@@ -226,18 +226,21 @@ public class RegArimaUtility {
      */
     public double[] meanRegressionVariable(final BackFilter differencing, final int n) {
         double[] m = new double[n];
-
+        meanRegressionVariable(differencing, n, m, 0);
+        return m;
+    }
+    
+    public void meanRegressionVariable(final BackFilter differencing, final int n, double[] m, int start) {
         double[] D = differencing.asPolynomial().toArray();
         int d = D.length - 1;
-        m[d] = 1;
+        m[start+d] = 1;
         for (int i = d + 1; i < n; ++i) {
             double s = 1;
             for (int j = 1; j <= d; ++j) {
                 s -= m[i - j] * D[j];
             }
-            m[i] = s;
+            m[start+i] = s;
         }
-        return m;
     }
 
     public static int defaultLjungBoxLength(final int period) {

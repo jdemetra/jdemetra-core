@@ -187,7 +187,7 @@ public class DefaultRegressionTest implements IRegressionModule {
         RegArimaEstimation<SarimaModel> rslt = processor.process(regarima, currentModel.mapping());
         ConcentratedLikelihoodWithMissing ll = rslt.getConcentratedLikelihood();
 
-        int nhp = tmpModel.getArimaComponent().getFreeParametersCount();
+        int nhp = tmpModel.getArimaSpec().freeParametersCount();
         // td
         boolean usetd = false;
         if (td != null) {

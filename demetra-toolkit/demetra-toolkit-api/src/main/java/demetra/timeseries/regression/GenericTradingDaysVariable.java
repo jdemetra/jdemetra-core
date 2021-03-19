@@ -31,19 +31,17 @@ import demetra.timeseries.calendars.GenericTradingDays;
 public class GenericTradingDaysVariable implements ITradingDaysVariable, ISystemVariable {
 
     private DayClustering clustering;
-    private boolean contrast;
-    private boolean normalized;
+    private GenericTradingDays.Type type;
 
     public GenericTradingDaysVariable(GenericTradingDays td) {
         this.clustering = td.getClustering();
-        this.contrast = td.isContrast();
-        this.normalized = td.isNormalized();
+        this.type=td.getType();
     }
 
     @Override
     public int dim() {
         int n = clustering.getGroupsCount();
-        return contrast ? n - 1 : n;
+        return type == GenericTradingDays.Type.CONTRAST ? n - 1 : n;
     }
 
     @Override

@@ -24,6 +24,7 @@ import jdplus.math.matrices.MatrixFactory;
 import jdplus.math.matrices.Matrix;
 import jdplus.timeseries.calendars.HolidaysUtility;
 import demetra.timeseries.TimeSeriesInterval;
+import demetra.timeseries.calendars.GenericTradingDays;
 
 /**
  *
@@ -34,17 +35,17 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
 
     public static HolidaysCorrectionFactory FACTORY = new HolidaysCorrectionFactory();
 
-    public static HolidaysCorrector corrector(String name, CalendarManager mgr) {
+    public static HolidaysCorrector corrector(String name, CalendarManager mgr, boolean meanCorrection) {
         CalendarDefinition cur = mgr.get(name);
         if (cur == null) {
             return null;
         }
         if (cur instanceof Calendar) {
-            return corrector((Calendar) cur);
+            return corrector((Calendar) cur, meanCorrection);
         } else if (cur instanceof ChainedCalendar) {
             ChainedCalendar ccur = (ChainedCalendar) cur;
-            HolidaysCorrector beg = corrector(ccur.getFirst(), mgr);
-            HolidaysCorrector end = corrector(ccur.getSecond(), mgr);
+            HolidaysCorrector beg = corrector(ccur.getFirst(), mgr, meanCorrection);
+            HolidaysCorrector end = corrector(ccur.getSecond(), mgr, meanCorrection);
             if (beg == null || end == null) {
                 return null;
             }
@@ -55,7 +56,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
             HolidaysCorrector[] corr=new HolidaysCorrector[calendars.length];
             double[] weights=new double[calendars.length];
             for (int i=0; i<calendars.length; ++i){
-                corr[i]=corrector(calendars[i].getItem(), mgr);
+                corr[i]=corrector(calendars[i].getItem(), mgr, meanCorrection);
                 if (corr[i] == null)
                     return null;
                 weights[i]=calendars[i].getWeight();
@@ -70,13 +71,14 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
      * Usual corrections: the holidays are considered as Sundays
      *
      * @param calendar
+     * @param meanCorrection Apply mean correction on the generated series
      * @return
      */
-    public static HolidaysCorrector corrector(final Calendar calendar) {
+    public static HolidaysCorrector corrector(final Calendar calendar, boolean meanCorrection) {
         return (TsDomain domain) -> {
             MatrixType M = HolidaysUtility.holidays(calendar.getHolidays(), domain);
             Matrix Mc = Matrix.of(M);
-            if (calendar.isMeanCorrection()) {
+            if (meanCorrection) {
                 TsPeriod start = domain.getStartPeriod();
                 int freq = domain.getAnnualFrequency();
                 double[][] mean = HolidaysUtility.longTermMean(calendar.getHolidays(), freq);
@@ -151,10 +153,11 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
         for (int i = 0; i < 7; ++i) {
             days.column(i).apply(corr.column(i), (a, b) -> a + b);
         }
-        if (var.isContrast()) {
+        if (var.getType() == GenericTradingDays.Type.CONTRAST) {
             GenericTradingDaysFactory.fillContrasts(var.getClustering(), days, buffer);
         } else {
-            GenericTradingDaysFactory.fillNoContrasts(var.getClustering(), var.isNormalized() ? start : null, days, buffer);
+            GenericTradingDaysFactory.fillNoContrasts(var.getClustering(), var.getType() == GenericTradingDays.Type.NORMALIZED, 
+                    var.getType() == GenericTradingDays.Type.MEANCORRECTED ? start : null, days, buffer);
         }
         return true;
     }

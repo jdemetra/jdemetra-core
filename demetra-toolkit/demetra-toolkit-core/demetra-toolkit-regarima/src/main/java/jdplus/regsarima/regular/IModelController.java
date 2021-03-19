@@ -25,8 +25,8 @@ public interface IModelController {
     
     boolean control(RegSarimaModelling context);
     
-    ModelEstimation getReferenceModel();
-    void setReferenceModel(ModelEstimation model);
+    RegSarimaModel getReferenceModel();
+    void setReferenceModel(RegSarimaModel model);
     
     IModelEstimator getEstimator();
     void setEstimator(IModelEstimator estimator);

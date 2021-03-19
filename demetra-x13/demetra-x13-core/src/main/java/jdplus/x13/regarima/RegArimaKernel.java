@@ -16,30 +16,30 @@
  */
 package jdplus.x13.regarima;
 
+import demetra.arima.SarimaOrders;
+import demetra.math.Complex;
+import demetra.processing.ProcessingLog;
 import demetra.regarima.RegArimaException;
 import demetra.regarima.RegArimaSpec;
-import nbbrd.design.BuilderPattern;
-import nbbrd.design.Development;
-import demetra.math.Complex;
-import demetra.timeseries.regression.ModellingContext;
-import jdplus.regsarima.regular.ILogLevelModule;
-import jdplus.regsarima.regular.IRegressionModule;
-import jdplus.regsarima.regular.ProcessingResult;
-import jdplus.regsarima.regular.IModelBuilder;
-import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.timeseries.TsData;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import jdplus.regsarima.regular.IOutliersDetectionModule;
-import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.regsarima.regular.RegressionVariablesTest;
-import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaOrders;
-import demetra.processing.ProcessingLog;
+import demetra.timeseries.regression.ModellingContext;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.IAutoModellingModule;
+import jdplus.regsarima.regular.ILogLevelModule;
+import jdplus.regsarima.regular.IModelBuilder;
+import jdplus.regsarima.regular.IOutliersDetectionModule;
+import jdplus.regsarima.regular.IRegressionModule;
+import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.regsarima.regular.ProcessingResult;
+import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.regular.RegSarimaProcessor;
+import jdplus.regsarima.regular.RegressionVariablesTest;
+import jdplus.sarima.SarimaModel;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -206,7 +206,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
     }
 
     @Override
-    public ModelEstimation process(TsData originalTs, ProcessingLog log) {
+    public RegSarimaModel process(TsData originalTs, ProcessingLog log) {
         if (log == null)
             log=ProcessingLog.dummy();
         clear();
@@ -225,7 +225,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
             needOutliers = true;
         }
 
-        ModelEstimation rslt = calc(context);
+        RegSarimaModel rslt = calc(context);
 //        if (rslt != null) {
 //            rslt.info_ = context.information;
 //            rslt.addProcessingInformation(context.processingLog);
@@ -233,7 +233,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
         return rslt;
     }
 
-    private ModelEstimation calc(RegSarimaModelling context) {
+    private RegSarimaModel calc(RegSarimaModelling context) {
         try {
 
             if (transformation != null) {

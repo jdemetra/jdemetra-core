@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,18 +14,16 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.modelling;
+package demetra.sts;
 
-import demetra.likelihood.LikelihoodStatistics;
+import demetra.data.Parameter;
 
 /**
  *
- * @author PALATEJ
- * @param <S> Stochastic model
+ * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-public class StochasticLinearModel<S> {
-    LinearModel linear;
-    StochasticModel<S> stochastic;
-    LikelihoodStatistics likelihood;
+public class SeasonalComponent {
+    @lombok.NonNull SeasonalModel model;
+    Parameter variance;
 }

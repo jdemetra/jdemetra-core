@@ -20,7 +20,7 @@ import demetra.arima.SarimaModel;
 import demetra.processing.ProcessingLog;
 import demetra.sa.SeriesDecomposition;
 import demetra.seats.SeatsResults;
-import demetra.timeseries.regression.modelling.LinearModelEstimation;
+import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +32,7 @@ import java.util.Map;
 @lombok.Builder(builderClassName="Builder")
 public class TramoSeatsResults {
 
-    private LinearModelEstimation<SarimaModel> preprocessing;
+    private GeneralLinearModel<SarimaModel> preprocessing;
     private SeatsResults decomposition;
     private SeriesDecomposition finals;
     

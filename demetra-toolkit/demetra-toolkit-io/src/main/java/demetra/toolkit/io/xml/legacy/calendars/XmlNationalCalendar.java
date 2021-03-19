@@ -57,7 +57,7 @@ public class XmlNationalCalendar
             for (int i = 0; i < hol.length; ++i) {
                 hol[i] = XmlSpecialDayEvent.getAdapter().unmarshal(v.specialDayEvent.get(i));
             }
-            return new Calendar(hol, true);
+            return new Calendar(hol);
         }
 
         @Override

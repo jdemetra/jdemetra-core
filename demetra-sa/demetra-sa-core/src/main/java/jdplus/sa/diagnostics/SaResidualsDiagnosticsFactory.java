@@ -18,13 +18,9 @@ package jdplus.sa.diagnostics;
 
 import demetra.sa.SaDiagnosticsFactory;
 import java.util.function.Function;
-import jdplus.regarima.RegArimaModel;
-import jdplus.regarima.diagnostics.OutOfSampleDiagnosticsConfiguration;
-import jdplus.regarima.diagnostics.OutOfSampleDiagnosticsFactory;
 import jdplus.regarima.diagnostics.ResidualsDiagnosticsConfiguration;
 import jdplus.regarima.diagnostics.ResidualsDiagnosticsFactory;
-import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.sarima.SarimaModel;
+import jdplus.regsarima.regular.RegSarimaModel;
 
 /**
  *
@@ -33,7 +29,7 @@ import jdplus.sarima.SarimaModel;
  */
 public class SaResidualsDiagnosticsFactory<R> extends ResidualsDiagnosticsFactory<R> implements SaDiagnosticsFactory<R> {
 
-    public SaResidualsDiagnosticsFactory(ResidualsDiagnosticsConfiguration config, Function<R, ModelEstimation> extractor) {
+    public SaResidualsDiagnosticsFactory(ResidualsDiagnosticsConfiguration config, Function<R, RegSarimaModel> extractor) {
         super(config, extractor);
     }
 

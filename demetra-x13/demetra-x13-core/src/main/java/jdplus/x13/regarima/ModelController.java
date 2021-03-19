@@ -17,9 +17,10 @@
 
 package jdplus.x13.regarima;
 
+import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;
-import nbbrd.design.Development;
 import jdplus.linearmodel.LinearModel;
+import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArmaModel;
 import jdplus.regsarima.regular.IAmiController;
 import jdplus.regsarima.regular.ModelDescription;
@@ -27,8 +28,7 @@ import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
 import jdplus.stats.tests.LjungBox;
 import jdplus.stats.tests.StatisticalTest;
-import demetra.data.DoubleSeq;
-import jdplus.regarima.RegArimaEstimation;
+import nbbrd.design.Development;
 
 
 /**
@@ -71,7 +71,7 @@ public class ModelController implements IAmiController {
         fres = fres.drop(nres - nobs, 0);
         calcResStat(fres);
         int sp = desc.getAnnualFrequency();
-        if (!calcLb(fres, calcLbLength(sp, nobs), desc.getArimaComponent().getFreeParametersCount())) {
+        if (!calcLb(fres, calcLbLength(sp, nobs), desc.getArimaSpec().freeParametersCount())) {
             return false;
         }
         if ((1 - lbtest.getPValue()) > lb) {

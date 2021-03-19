@@ -32,7 +32,7 @@ import jdplus.data.DataBlock;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.modelling.extractors.SarimaExtractor;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
 
 /**
  *
@@ -42,7 +42,7 @@ import jdplus.regsarima.regular.ModelEstimation;
  * @author palatej
  */
 @lombok.experimental.UtilityClass
-public class ModelEstimationExtractor {
+public class RegSarimaModelExtractor {
 
     public static final int IMEAN = 0, ITD = 10, ILP = 11, IEASTER = 12,
             AO = 20, LS = 21, TC = 22, SO = 23, IOUTLIER = 29,
@@ -68,24 +68,24 @@ public class ModelEstimationExtractor {
             COEFF = "coefficients", COVAR = "covar", COEFFDESC = "description", REGTYPE = "type",
             PCOVAR = "pcovar", PCORR = "pcorr", SCORE = "pscore";
 
-    static final InformationMapping<ModelEstimation> MAPPING = new InformationMapping<>(ModelEstimation.class);
+    static final InformationMapping<RegSarimaModel> MAPPING = new InformationMapping<>(RegSarimaModel.class);
 
     static {
-        MAPPING.set(PERIOD, Integer.class, source -> source.getOriginalSeries().getAnnualFrequency());
-        MAPPING.set(InformationExtractor.concatenate(SPAN, START), TsPeriod.class, source -> source.getOriginalSeries().getStart());
-        MAPPING.set(InformationExtractor.concatenate(SPAN, END), TsPeriod.class, source -> source.getOriginalSeries().getDomain().getLastPeriod());
-        MAPPING.set(InformationExtractor.concatenate(SPAN, N), Integer.class, source -> source.getOriginalSeries().length());
-        MAPPING.set(InformationExtractor.concatenate(ESPAN, START), TsPeriod.class, source -> source.getEstimationDomain().getStartPeriod());
-        MAPPING.set(InformationExtractor.concatenate(ESPAN, END), TsPeriod.class, source -> source.getEstimationDomain().getLastPeriod());
-        MAPPING.set(InformationExtractor.concatenate(ESPAN, N), Integer.class, source -> source.getEstimationDomain().getLength());
-        MAPPING.set(LOG, Boolean.class, source -> source.isLogTransformation());
-        MAPPING.set(ADJUST, Boolean.class, source -> source.getLpTransformation() != LengthOfPeriodType.None);
-        MAPPING.set(InformationExtractor.concatenate(NM), Integer.class, source -> source.getMissing().length);
-        MAPPING.set(ModellingDictionary.Y, TsData.class, source -> source.getOriginalSeries());
-        MAPPING.set(InformationExtractor.concatenate(REGRESSION, COVAR), MatrixType.class, source -> source.getConcentratedLikelihood().covariance(source.getFreeArimaParametersCount(), true));
-        MAPPING.set(InformationExtractor.concatenate(REGRESSION, COEFF), double[].class, source -> source.getConcentratedLikelihood().coefficients().toArray());
+        MAPPING.set(PERIOD, Integer.class, source -> source.getDescription().getSeries().getAnnualFrequency());
+        MAPPING.set(InformationExtractor.concatenate(SPAN, START), TsPeriod.class, source -> source.getDescription().getSeries().getStart());
+        MAPPING.set(InformationExtractor.concatenate(SPAN, END), TsPeriod.class, source -> source.getDescription().getSeries().getDomain().getLastPeriod());
+        MAPPING.set(InformationExtractor.concatenate(SPAN, N), Integer.class, source -> source.getDescription().getSeries().length());
+        MAPPING.set(InformationExtractor.concatenate(ESPAN, START), TsPeriod.class, source -> source.getDetails().getEstimationDomain().getStartPeriod());
+        MAPPING.set(InformationExtractor.concatenate(ESPAN, END), TsPeriod.class, source -> source.getDetails().getEstimationDomain().getLastPeriod());
+        MAPPING.set(InformationExtractor.concatenate(ESPAN, N), Integer.class, source -> source.getDetails().getEstimationDomain().getLength());
+        MAPPING.set(LOG, Boolean.class, source -> source.getDescription().isLogTransformation());
+        MAPPING.set(ADJUST, Boolean.class, source -> source.getDescription().getLengthOfPeriodTransformation() != LengthOfPeriodType.None);
+        MAPPING.set(InformationExtractor.concatenate(NM), Integer.class, source -> source.getEstimation().getMissing().length);
+        MAPPING.set(ModellingDictionary.Y, TsData.class, source -> source.getDescription().getSeries());
+        MAPPING.set(InformationExtractor.concatenate(REGRESSION, COVAR), MatrixType.class, source -> source.getEstimation().getCoefficientsCovariance());
+        MAPPING.set(InformationExtractor.concatenate(REGRESSION, COEFF), double[].class, source -> source.getEstimation().getCoefficients().toArray());
         MAPPING.set(InformationExtractor.concatenate(REGRESSION, REGTYPE), int[].class, source -> {
-            Variable[] vars = source.getVariables();
+            Variable[] vars = source.getDescription().getVariables();
             if (vars.length == 0) {
                 return null;
             }
@@ -101,8 +101,8 @@ public class ModelEstimationExtractor {
             return tvars;
         });
         MAPPING.set(InformationExtractor.concatenate(REGRESSION, COEFFDESC), String[].class, source -> {
-            TsDomain domain = source.getOriginalSeries().getDomain();
-            Variable[] vars = source.getVariables();
+            TsDomain domain = source.getDescription().getSeries().getDomain();
+            Variable[] vars = source.getDescription().getVariables();
             if (vars.length == 0) {
                 return null;
             }
@@ -121,11 +121,11 @@ public class ModelEstimationExtractor {
             return nvars;
         });
 
-        MAPPING.delegate(SARIMA, SarimaExtractor.getMapping(), source -> source.getModel().arima());
-        MAPPING.delegate(LIKELIHOOD, LikelihoodStatisticsExtractor.getMapping(), source -> source.getStatistics());
-        MAPPING.set(InformationExtractor.concatenate(MAX, PCOVAR), MatrixType.class, source -> source.getArimaCovariance());
+        MAPPING.delegate(SARIMA, SarimaExtractor.getMapping(), source -> source.arima());
+        MAPPING.delegate(LIKELIHOOD, LikelihoodStatisticsExtractor.getMapping(), source -> source.getEstimation().getStatistics());
+        MAPPING.set(InformationExtractor.concatenate(MAX, PCOVAR), MatrixType.class, source -> source.getEstimation().getParameters().getCovariance());
         MAPPING.set(InformationExtractor.concatenate(MAX, PCORR), MatrixType.class, source -> {
-            Matrix cov = source.getArimaCovariance();
+            Matrix cov = Matrix.of(source.getEstimation().getParameters().getCovariance());
             DataBlock diag = cov.diagonal();
             for (int i = 0; i < cov.getRowsCount(); ++i) {
                 double vi = diag.get(i);
@@ -140,10 +140,10 @@ public class ModelEstimationExtractor {
             diag.set(1);
             return cov;
         });
-        MAPPING.set(InformationExtractor.concatenate(MAX, SCORE), double[].class, source -> source.getArimaScore());
+        MAPPING.set(InformationExtractor.concatenate(MAX, SCORE), double[].class, source -> source.getEstimation().getParameters().getScores().toArray());
     }
 
-    public InformationMapping<ModelEstimation> getMapping() {
+    public InformationMapping<RegSarimaModel> getMapping() {
         return MAPPING;
     }
 

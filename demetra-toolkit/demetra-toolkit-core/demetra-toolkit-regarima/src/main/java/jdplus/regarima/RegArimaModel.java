@@ -16,19 +16,19 @@
  */
 package jdplus.regarima;
 
-import jdplus.arima.IArimaModel;
-import jdplus.arima.StationaryTransformation;
-import nbbrd.design.BuilderPattern;
-import nbbrd.design.Development;
-import nbbrd.design.Immutable;
+import demetra.data.DoubleSeq;
+import demetra.math.matrices.MatrixType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import demetra.data.DoubleSeq;
-import jdplus.data.DataBlockIterator;
+import jdplus.arima.IArimaModel;
+import jdplus.arima.StationaryTransformation;
 import jdplus.math.matrices.Matrix;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Description of a generic regarima model
@@ -223,6 +223,19 @@ public final class RegArimaModel<M extends IArimaModel> {
     }
 
     /**
+     * @return y not corrected for missing
+     */
+    @NonNull
+    public DoubleSeq originalY() {
+        if (missing.length == 0)
+            return y;
+        double[] z = y.toArray();
+        for (int i=0; i<missing.length; ++i){
+            z[missing[i]]=Double.NaN;
+        }
+        return DoubleSeq.of(z);
+    }
+    /**
      * @return the x
      */
     @NonNull
@@ -239,6 +252,10 @@ public final class RegArimaModel<M extends IArimaModel> {
         return mean;
     }
     
+    /**
+     * Variables without AO corresponding to missing and without mean correction
+     * @return 
+     */
     public Matrix variables(){
         int n=y.length();
         Matrix m=Matrix.make(n, x.size());
@@ -249,6 +266,28 @@ public final class RegArimaModel<M extends IArimaModel> {
             pos+=n;
         }
         return m;
+    }
+
+    /**
+     * All variables, including mean correction (but not AO for missing)
+     * @return 
+     */
+    public MatrixType allVariables(){
+        int n=y.length();
+        int m=x.size();
+        if (mean)
+            ++m;
+        double[] storage = new double[n*m];
+        int pos=0;
+        if (mean){
+            RegArimaUtility.meanRegressionVariable(arima.getNonStationaryAr(), n, storage, 0);
+            pos+=n;
+        }
+        for (DoubleSeq xcur:x){
+            xcur.copyTo(storage, pos);
+            pos+=n;
+        }
+        return MatrixType.of(storage, n, m);
     }
 
     @NonNull

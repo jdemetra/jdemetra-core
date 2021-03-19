@@ -16,7 +16,7 @@
  */
 package demetra.regarima.io.protobuf;
 
-import demetra.arima.SarimaSpec;
+import demetra.modelling.implementations.SarimaSpec;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

@@ -25,26 +25,48 @@ import nbbrd.design.Development;
 @lombok.Value
 @Development(status = Development.Status.Alpha)
 public class GenericTradingDays {
+    
+    public static enum Type{
+        /**
+         * Number of days in each group
+         */
+        RAW,
+        /**
+         * Number of days in group(i)/#group[i)*#group(0) - numbers of days in group(0)
+         */
+        CONTRAST,
+        /**
+         * Number of days in group(i) - avg(Number of days in group(i))
+         */
+        MEANCORRECTED,
+        /**
+         * Number of days in group(i)/#group[i)
+         */
+        NORMALIZED
+    }
 
     private DayClustering clustering;
-    private boolean contrast;
-    private boolean normalized;
-
-    public static GenericTradingDays contrasts(DayClustering clustering) {
-        return new GenericTradingDays(clustering, true, false);
+    private Type type;
+    
+    public static GenericTradingDays contrasts(DayClustering clustering){
+        return new GenericTradingDays(clustering, Type.CONTRAST);
+    }
+ 
+    public static GenericTradingDays raw(DayClustering clustering){
+        return new GenericTradingDays(clustering, Type.RAW);
     }
 
-    public static GenericTradingDays of(DayClustering clustering) {
-        return new GenericTradingDays(clustering, false, false);
+    public static GenericTradingDays normalized(DayClustering clustering){
+        return new GenericTradingDays(clustering, Type.NORMALIZED);
     }
 
-    public static GenericTradingDays normalized(DayClustering clustering) {
-        return new GenericTradingDays(clustering, false, true);
+    public static GenericTradingDays meanCorrected(DayClustering clustering){
+        return new GenericTradingDays(clustering, Type.MEANCORRECTED);
     }
 
     public int getCount() {
         int n = clustering.getGroupsCount();
-        return contrast ? n - 1 : n;
+        return type == GenericTradingDays.Type.CONTRAST ? n - 1 : n;
     }
 
     public String getDescription(int idx) {

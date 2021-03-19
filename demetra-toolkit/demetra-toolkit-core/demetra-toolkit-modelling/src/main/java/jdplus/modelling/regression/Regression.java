@@ -112,6 +112,8 @@ public class Regression {
     }
 
     public <D extends TimeSeriesDomain> Matrix matrix(@NonNull D domain, @NonNull ITsVariable... vars) {
+        if (domain.isEmpty() || vars.length == 0)
+            return Matrix.EMPTY;
         int nvars = ITsVariable.dim(vars);
         int nobs = domain.length();
         Matrix M = Matrix.make(nobs, nvars);

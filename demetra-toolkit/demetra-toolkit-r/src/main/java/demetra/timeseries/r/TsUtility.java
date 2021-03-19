@@ -51,7 +51,7 @@ public class TsUtility {
                 return TsDomain.of(TsPeriod.monthly(year, start), len);
             default:
                 int c = 12 / freq;
-                TsPeriod pstart = TsPeriod.of(TsUnit.MONTH, LocalDate.of(year, (start - 1) * c + 1, 1));
+                TsPeriod pstart = TsPeriod.of(TsUnit.ofAnnualFrequency(freq), LocalDate.of(year, (start - 1) * c + 1, 1));
                 return TsDomain.of(pstart, len);
         }
     }

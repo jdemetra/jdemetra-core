@@ -48,7 +48,7 @@ public class TramoSeatsProcessor implements TramoSeats.Processor {
             }
         }
         return builder
-                .preprocessing(jdplus.regarima.ApiUtility.toApi(rslt.getPreprocessing()))
+ //               .preprocessing(jdplus.regarima.ApiUtility.toApi(rslt.getPreprocessing()))
                 .decomposition(ApiUtility.toApi(rslt.getDecomposition()))
                 .finals(rslt.getFinals())
                 .logs(log.all())

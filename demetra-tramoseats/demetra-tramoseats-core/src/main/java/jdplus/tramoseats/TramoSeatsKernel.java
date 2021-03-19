@@ -5,26 +5,18 @@
  */
 package jdplus.tramoseats;
 
-import demetra.arima.SarimaSpec;
+import demetra.modelling.implementations.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
-import demetra.modelling.ComponentInformation;
 import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
-import demetra.sa.DefaultSaDiagnostics;
 import demetra.sa.SeriesDecomposition;
-import demetra.sa.StationaryVarianceDecomposition;
 import demetra.seats.SeatsModelSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TransformSpec;
 import demetra.tramoseats.TramoSeatsSpec;
-import jdplus.regsarima.regular.ModelEstimation;
-import jdplus.sa.StationaryVarianceComputer;
-import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnostics;
-import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
-import jdplus.sa.diagnostics.ResidualTradingDaysDiagnostics;
-import jdplus.sa.diagnostics.ResidualTradingDaysDiagnosticsConfiguration;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sa.modelling.RegArimaDecomposer;
 import jdplus.sa.modelling.TwoStepsDecomposition;
 import jdplus.sarima.SarimaModel;
@@ -70,7 +62,7 @@ public class TramoSeatsKernel {
         // Step 0. Preliminary checks
         TsData sc = preliminary.check(s, log);
         // Step 1. Tramo
-        ModelEstimation preprocessing = tramo.process(sc, log);
+        RegSarimaModel preprocessing = tramo.process(sc, log);
         // Step 2. Link between tramo and seats
         SeatsModelSpec smodel = of(preprocessing);
         // Step 3. Seats
@@ -86,17 +78,17 @@ public class TramoSeatsKernel {
                 .build();
     }
 
-    private static SeatsModelSpec of(ModelEstimation model) {
+    private static SeatsModelSpec of(RegSarimaModel model) {
         TsData series = model.interpolatedSeries(false);
         TsData det = model.getDeterministicEffect(series.getDomain());
         TsData yreg = RegArimaDecomposer.deterministicEffect(model, series.getDomain(), ComponentType.Series, false);
-        if (model.isLogTransformation()) {
+        if (model.getDescription().isLogTransformation()) {
             series = TsData.divide(series, TsData.divide(det, yreg));
         } else {
             series = TsData.subtract(series, TsData.subtract(det, yreg));
         }
 
-        SarimaModel arima = model.getModel().arima();
+        SarimaModel arima = model.arima();
         SarimaSpec sarima = SarimaSpec.builder()
                 .d(arima.getRegularDifferenceOrder())
                 .bd(arima.getSeasonalDifferenceOrder())
@@ -108,8 +100,8 @@ public class TramoSeatsKernel {
 
         return SeatsModelSpec.builder()
                 .series(series)
-                .log(model.isLogTransformation())
-                .meanCorrection(model.getModel().isMean())
+                .log(model.getDescription().isLogTransformation())
+                .meanCorrection(model.getDescription().isMean())
                 .sarimaSpec(sarima)
                 .build();
     }

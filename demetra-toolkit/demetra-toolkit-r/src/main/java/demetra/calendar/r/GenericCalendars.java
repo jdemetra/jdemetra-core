@@ -38,7 +38,7 @@ public class GenericCalendars {
             GenericTradingDaysFactory.FACTORY.fill(gtd, domain.getStartPeriod(), m);
             return m.unmodifiable();
         } else {
-            GenericTradingDays gtd = GenericTradingDays.of(dc);
+            GenericTradingDays gtd = GenericTradingDays.raw(dc);
             Matrix m = Matrix.make(domain.getLength(), dc.getGroupsCount());
             GenericTradingDaysFactory.FACTORY.fill(gtd, domain.getStartPeriod(), m);
             return m.unmodifiable();

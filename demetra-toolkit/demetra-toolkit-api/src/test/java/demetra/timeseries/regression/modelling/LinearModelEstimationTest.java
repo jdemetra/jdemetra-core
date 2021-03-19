@@ -18,7 +18,6 @@ package demetra.timeseries.regression.modelling;
 
 import demetra.arima.SarimaModel;
 import java.util.Arrays;
-import java.util.Set;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -36,18 +35,18 @@ public class LinearModelEstimationTest {
         String[] keys=new String[]{"test1","test10","test0","test5","test3","test11",
             "test41","test61","test51","test91","test81","test14","test17",
             "test35","test36","test31","test19","test18"};
-        LinearModelEstimation.Builder<SarimaModel> builder = LinearModelEstimation.<SarimaModel>builder();
+        LightLinearModel.Builder<SarimaModel> builder = LightLinearModel.<SarimaModel>builder();
         for (int i=0; i<keys.length; ++i)
-            builder.addtionalResult(keys[i], null);
+            builder.additionalResult(keys[i], null);
                 
-        LinearModelEstimation<SarimaModel> lme = builder.build();
+        GeneralLinearModel<SarimaModel> lme = builder.build();
 
-        String[] keys2 = lme.getAddtionalResults().keySet().stream().toArray(n->new String[n]);
+        String[] keys2 = lme.getAdditionalResults().keySet().stream().toArray(n->new String[n]);
         assertTrue(Arrays.equals(keys, keys2));
 
         boolean ok = true;
         try {
-            lme.getAddtionalResults().clear();
+            lme.getAdditionalResults().clear();
             ok = false;
         } catch (UnsupportedOperationException err) {
         }

@@ -17,6 +17,7 @@
 package jdplus.sa.modelling;
 
 import demetra.data.Data;
+import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
 import demetra.sa.SaVariable;
 import demetra.timeseries.TsData;
@@ -29,9 +30,11 @@ import demetra.timeseries.regression.GenericTradingDaysVariable;
 import demetra.timeseries.regression.Variable;
 import java.util.ArrayList;
 import java.util.List;
+import jdplus.regarima.RegArimaEstimation;
 import jdplus.regsarima.RegSarimaProcessor;
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.ModelEstimation;
+import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.sarima.SarimaModel;
 import org.junit.Test;
 
 /**
@@ -56,8 +59,8 @@ public class RegArimaDecomposerTest {
                 .meanCorrection(EasterVariable.Correction.Theoretical)
                 .build();
         model.addVariable(Variable.builder().name("easter").core(easter).attribute(SaVariable.REGEFFECT, ComponentType.CalendarEffect.name()).build());
-        ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.PROCESSOR);
-
+        RegArimaEstimation<SarimaModel> estimation = RegSarimaProcessor.PROCESSOR.process(model.regarima(), model.mapping());
+        RegSarimaModel rslt=RegSarimaModel.of(model, estimation, ProcessingLog.dummy());
  
         List<TsData> all = new ArrayList<>();
         all.add(RegArimaDecomposer.deterministicEffect(rslt, model.getDomain(), ComponentType.Trend, false));
@@ -65,7 +68,7 @@ public class RegArimaDecomposerTest {
         all.add(RegArimaDecomposer.deterministicEffect(rslt, model.getDomain(), ComponentType.Seasonal, false));
         all.add(RegArimaDecomposer.deterministicEffect(rslt, model.getDomain(), ComponentType.Irregular, false));
         all.add(RegArimaDecomposer.deterministicEffect(rslt, model.getDomain(), ComponentType.Undefined, false));
-        all.add(rslt.getOriginalSeries());
+        all.add(model.getSeries());
         all.add(rslt.backTransform(rslt.linearizedSeries(), false));
         TsDataTable ts = TsDataTable.of(all);
 //        System.out.println(ts);

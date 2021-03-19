@@ -43,8 +43,8 @@ public class TramoSeatsFactoryTest {
         assertTrue(rslt2.getFinals() != null);
         TramoSeatsSpec nspec2 = TramoSeatsFactory.INSTANCE.generateSpec(nspec, rslt2);
         System.out.println(nspec2);
-        assertEquals(rslt.getPreprocessing().getConcentratedLikelihood().logLikelihood(),
-                rslt2.getPreprocessing().getConcentratedLikelihood().logLikelihood(), 1e-4);
+        assertEquals(rslt.getPreprocessing().getEstimation().getStatistics().getLogLikelihood(),
+                rslt2.getPreprocessing().getEstimation().getStatistics().getLogLikelihood(), 1e-4);
     }
     
     @Test

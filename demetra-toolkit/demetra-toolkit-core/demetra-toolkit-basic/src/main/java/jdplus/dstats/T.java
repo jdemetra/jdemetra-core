@@ -188,4 +188,5 @@ public class T implements ContinuousDistribution {
         sb.append(')');
         return sb.toString();
     }
+    
 }

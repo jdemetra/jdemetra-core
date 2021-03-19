@@ -17,14 +17,12 @@
 package jdplus.x13.spi;
 
 import demetra.processing.DefaultProcessingLog;
-import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.x13.X13;
 import demetra.x13.X13Results;
 import demetra.x13.X13Spec;
 import java.util.List;
-import jdplus.regarima.ApiUtility;
 import jdplus.x13.X13Kernel;
 import jdplus.x13.extractors.X13Extractor;
 import nbbrd.service.ServiceProvider;
@@ -50,7 +48,7 @@ public class X13Computer implements X13.Processor {
             }
         }
         return builder.preadjustment(rslt.getPreadjustment())
-                .preprocessing(ApiUtility.toApi(rslt.getPreprocessing()))
+//                .preprocessing(ApiUtility.toApi(rslt.getPreprocessing()))
                 .decomposition(rslt.getDecomposition())
                 .finals(rslt.getFinals())
                 .logs(log.all())

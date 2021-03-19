@@ -153,7 +153,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
         ModelDescription test6 = createTestModel(context, td, null);
         RegArimaEstimation<SarimaModel> regarima6 = processor.process(test6.regarima(), mapping);
         ConcentratedLikelihoodWithMissing ll = regarima6.getConcentratedLikelihood();
-        int nhp = test6.getArimaComponent().getFreeParametersCount();
+        int nhp = test6.getArimaSpec().freeParametersCount();
         int df = ll.degreesOfFreedom() - nhp;
         double sigma = ll.ssq() / df;
         LikelihoodStatistics td6Stats = regarima6.statistics();
