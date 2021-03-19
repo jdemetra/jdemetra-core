@@ -21,6 +21,7 @@ import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.data.Iterables;
 import demetra.likelihood.LikelihoodStatistics;
+import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.stats.TestResult;
 import demetra.timeseries.TimeSelector;
@@ -28,7 +29,6 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import jdplus.arima.IArimaModel;
 import jdplus.stats.tests.NiidTests;
@@ -145,7 +145,7 @@ public class ToolkitProtosUtility {
                 break;
 
             default:
-                builder.setType(ToolkitProtos.SelectionType.SPAN_UNSPECIFIED);
+                builder.setType(ToolkitProtos.SelectionType.SPAN_NONE);
         }
     }
 
@@ -221,6 +221,27 @@ public class ToolkitProtosUtility {
         return ToolkitProtos.Parameter.newBuilder()
                 .setType(convert(p.getType()))
                 .setValue(p.getValue())
+                .build();
+    }
+
+    public ToolkitProtos.ParametersEstimation convert(@NonNull ParametersEstimation p) {
+
+        ToolkitProtos.ParametersEstimation.Builder builder = ToolkitProtos.ParametersEstimation.newBuilder()
+                .addAllValue(Iterables.of(p.getValues()))
+                .addAllScore(Iterables.of(p.getScores()))
+                .setCovariance(convert(p.getCovariance()));
+        String description = p.getDescription();
+        if (description != null) {
+            builder.setDescription(description);
+        }
+        return builder.build();
+    }
+
+    public ToolkitProtos.Parameter convert(@NonNull Parameter p, String description) {
+        return ToolkitProtos.Parameter.newBuilder()
+                .setType(convert(p.getType()))
+                .setValue(p.getValue())
+                .setDescription(description)
                 .build();
     }
 

@@ -27,7 +27,7 @@ public class EstimationPolicy {
     
     public static final EstimationPolicy COMPLETE=new EstimationPolicy(EstimationPolicyType.Complete, null, null);
     public static final EstimationPolicy FIXED=new EstimationPolicy(EstimationPolicyType.Fixed, null, null);
-    public static final EstimationPolicy FIXEDAUTOREGRESSIVEOARAMETERS=new EstimationPolicy(EstimationPolicyType.FixedAutoRegressiveParameters, null, null);
+    public static final EstimationPolicy FIXEDAUTOREGRESSIVEPARAMETERS=new EstimationPolicy(EstimationPolicyType.FixedAutoRegressiveParameters, null, null);
     public static final EstimationPolicy FIXEDPARAMETERS=new EstimationPolicy(EstimationPolicyType.FixedParameters, null, null);
     public static final EstimationPolicy FREEPARAMETERS=new EstimationPolicy(EstimationPolicyType.FreeParameters, null, null);
     public static final EstimationPolicy INTERACTIVE=new EstimationPolicy(EstimationPolicyType.Interactive, null, null);

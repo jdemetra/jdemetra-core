@@ -560,6 +560,186 @@ public final class SaProtos {
     // @@protoc_insertion_point(enum_scope:sa.BenchmarkingBias)
   }
 
+  /**
+   * Protobuf enum {@code sa.EstimationPolicy}
+   */
+  public enum EstimationPolicy
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>POLICY_NONE = 0;</code>
+     */
+    POLICY_NONE(0),
+    /**
+     * <code>POLICY_CURRENT = 1;</code>
+     */
+    POLICY_CURRENT(1),
+    /**
+     * <code>POLICY_FIXED = 2;</code>
+     */
+    POLICY_FIXED(2),
+    /**
+     * <code>POLICY_FIXED_PARAMETERS = 3;</code>
+     */
+    POLICY_FIXED_PARAMETERS(3),
+    /**
+     * <code>POLICY_FIXED_AUTOREGRESSIVEPARAMETERS = 4;</code>
+     */
+    POLICY_FIXED_AUTOREGRESSIVEPARAMETERS(4),
+    /**
+     * <code>POLICY_FREE_PARAMETERS = 5;</code>
+     */
+    POLICY_FREE_PARAMETERS(5),
+    /**
+     * <code>POLICY_LASTOUTLIERS = 6;</code>
+     */
+    POLICY_LASTOUTLIERS(6),
+    /**
+     * <code>POLICY_OUTLIERS = 7;</code>
+     */
+    POLICY_OUTLIERS(7),
+    /**
+     * <code>POLICY_ARIMA = 8;</code>
+     */
+    POLICY_ARIMA(8),
+    /**
+     * <code>POLICY_COMPLETE = 9;</code>
+     */
+    POLICY_COMPLETE(9),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>POLICY_NONE = 0;</code>
+     */
+    public static final int POLICY_NONE_VALUE = 0;
+    /**
+     * <code>POLICY_CURRENT = 1;</code>
+     */
+    public static final int POLICY_CURRENT_VALUE = 1;
+    /**
+     * <code>POLICY_FIXED = 2;</code>
+     */
+    public static final int POLICY_FIXED_VALUE = 2;
+    /**
+     * <code>POLICY_FIXED_PARAMETERS = 3;</code>
+     */
+    public static final int POLICY_FIXED_PARAMETERS_VALUE = 3;
+    /**
+     * <code>POLICY_FIXED_AUTOREGRESSIVEPARAMETERS = 4;</code>
+     */
+    public static final int POLICY_FIXED_AUTOREGRESSIVEPARAMETERS_VALUE = 4;
+    /**
+     * <code>POLICY_FREE_PARAMETERS = 5;</code>
+     */
+    public static final int POLICY_FREE_PARAMETERS_VALUE = 5;
+    /**
+     * <code>POLICY_LASTOUTLIERS = 6;</code>
+     */
+    public static final int POLICY_LASTOUTLIERS_VALUE = 6;
+    /**
+     * <code>POLICY_OUTLIERS = 7;</code>
+     */
+    public static final int POLICY_OUTLIERS_VALUE = 7;
+    /**
+     * <code>POLICY_ARIMA = 8;</code>
+     */
+    public static final int POLICY_ARIMA_VALUE = 8;
+    /**
+     * <code>POLICY_COMPLETE = 9;</code>
+     */
+    public static final int POLICY_COMPLETE_VALUE = 9;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static EstimationPolicy valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static EstimationPolicy forNumber(int value) {
+      switch (value) {
+        case 0: return POLICY_NONE;
+        case 1: return POLICY_CURRENT;
+        case 2: return POLICY_FIXED;
+        case 3: return POLICY_FIXED_PARAMETERS;
+        case 4: return POLICY_FIXED_AUTOREGRESSIVEPARAMETERS;
+        case 5: return POLICY_FREE_PARAMETERS;
+        case 6: return POLICY_LASTOUTLIERS;
+        case 7: return POLICY_OUTLIERS;
+        case 8: return POLICY_ARIMA;
+        case 9: return POLICY_COMPLETE;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<EstimationPolicy>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        EstimationPolicy> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<EstimationPolicy>() {
+            public EstimationPolicy findValueByNumber(int number) {
+              return EstimationPolicy.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return demetra.sa.io.protobuf.SaProtos.getDescriptor().getEnumTypes().get(4);
+    }
+
+    private static final EstimationPolicy[] VALUES = values();
+
+    public static EstimationPolicy valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private EstimationPolicy(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:sa.EstimationPolicy)
+  }
+
   public interface ComponentOrBuilder extends
       // @@protoc_insertion_point(interface_extends:sa.Component)
       com.google.protobuf.MessageOrBuilder {
@@ -6784,9 +6964,15 @@ public final class SaProtos {
       "\n\035BENCH_TARGET_CALENDARADJUSTED\020\002*{\n\020Ben" +
       "chmarkingBias\022\032\n\026BENCH_BIAS_UNSPECIFIED\020" +
       "\000\022\023\n\017BENCH_BIAS_NONE\020\001\022\027\n\023BENCH_BIAS_ADD" +
-      "ITIVE\020\002\022\035\n\031BENCH_BIAS_MULTIPLICATIVE\020\003B\"" +
-      "\n\026demetra.sa.io.protobufB\010SaProtosP\000b\006pr" +
-      "oto3"
+      "ITIVE\020\002\022\035\n\031BENCH_BIAS_MULTIPLICATIVE\020\003*\202" +
+      "\002\n\020EstimationPolicy\022\017\n\013POLICY_NONE\020\000\022\022\n\016" +
+      "POLICY_CURRENT\020\001\022\020\n\014POLICY_FIXED\020\002\022\033\n\027PO" +
+      "LICY_FIXED_PARAMETERS\020\003\022)\n%POLICY_FIXED_" +
+      "AUTOREGRESSIVEPARAMETERS\020\004\022\032\n\026POLICY_FRE" +
+      "E_PARAMETERS\020\005\022\027\n\023POLICY_LASTOUTLIERS\020\006\022" +
+      "\023\n\017POLICY_OUTLIERS\020\007\022\020\n\014POLICY_ARIMA\020\010\022\023" +
+      "\n\017POLICY_COMPLETE\020\tB\"\n\026demetra.sa.io.pro" +
+      "tobufB\010SaProtosP\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

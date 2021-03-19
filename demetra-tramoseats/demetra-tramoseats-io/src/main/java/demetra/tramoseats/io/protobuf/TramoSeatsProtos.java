@@ -2970,7 +2970,7 @@ public final class TramoSeatsProtos {
       @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (transformation_ != demetra.regarima.io.protobuf.RegArimaProtos.Transformation.FN_UNSPECIFIED.getNumber()) {
+        if (transformation_ != demetra.regarima.io.protobuf.RegArimaProtos.Transformation.FN_LEVEL.getNumber()) {
           output.writeEnum(1, transformation_);
         }
         if (fct_ != 0D) {
@@ -2985,7 +2985,7 @@ public final class TramoSeatsProtos {
         if (size != -1) return size;
 
         size = 0;
-        if (transformation_ != demetra.regarima.io.protobuf.RegArimaProtos.Transformation.FN_UNSPECIFIED.getNumber()) {
+        if (transformation_ != demetra.regarima.io.protobuf.RegArimaProtos.Transformation.FN_LEVEL.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(1, transformation_);
         }
@@ -7156,10 +7156,10 @@ public final class TramoSeatsProtos {
       @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (td_ != demetra.regarima.io.protobuf.RegArimaProtos.TradingDays.TD_UNSPECIFIED.getNumber()) {
+        if (td_ != demetra.regarima.io.protobuf.RegArimaProtos.TradingDays.TD_NONE.getNumber()) {
           output.writeEnum(1, td_);
         }
-        if (lp_ != demetra.regarima.io.protobuf.RegArimaProtos.LengthOfPeriod.LP_UNSPECIFIED.getNumber()) {
+        if (lp_ != demetra.regarima.io.protobuf.RegArimaProtos.LengthOfPeriod.LP_NONE.getNumber()) {
           output.writeEnum(2, lp_);
         }
         if (!getHolidaysBytes().isEmpty()) {
@@ -7195,11 +7195,11 @@ public final class TramoSeatsProtos {
         if (size != -1) return size;
 
         size = 0;
-        if (td_ != demetra.regarima.io.protobuf.RegArimaProtos.TradingDays.TD_UNSPECIFIED.getNumber()) {
+        if (td_ != demetra.regarima.io.protobuf.RegArimaProtos.TradingDays.TD_NONE.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(1, td_);
         }
-        if (lp_ != demetra.regarima.io.protobuf.RegArimaProtos.LengthOfPeriod.LP_UNSPECIFIED.getNumber()) {
+        if (lp_ != demetra.regarima.io.protobuf.RegArimaProtos.LengthOfPeriod.LP_NONE.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(2, lp_);
         }
@@ -8614,27 +8614,27 @@ public final class TramoSeatsProtos {
           int index);
 
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
-      java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.Variable> 
+      java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.TsVariable> 
           getUsersList();
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
-      demetra.regarima.io.protobuf.RegArimaProtos.Variable getUsers(int index);
+      demetra.regarima.io.protobuf.RegArimaProtos.TsVariable getUsers(int index);
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
       int getUsersCount();
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
-      java.util.List<? extends demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder> 
+      java.util.List<? extends demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder> 
           getUsersOrBuilderList();
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
-      demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder getUsersOrBuilder(
+      demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder getUsersOrBuilder(
           int index);
 
       /**
@@ -8785,11 +8785,11 @@ public final class TramoSeatsProtos {
               }
               case 42: {
                 if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                  users_ = new java.util.ArrayList<demetra.regarima.io.protobuf.RegArimaProtos.Variable>();
+                  users_ = new java.util.ArrayList<demetra.regarima.io.protobuf.RegArimaProtos.TsVariable>();
                   mutable_bitField0_ |= 0x00000002;
                 }
                 users_.add(
-                    input.readMessage(demetra.regarima.io.protobuf.RegArimaProtos.Variable.parser(), extensionRegistry));
+                    input.readMessage(demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.parser(), extensionRegistry));
                 break;
               }
               case 50: {
@@ -8973,41 +8973,41 @@ public final class TramoSeatsProtos {
       }
 
       public static final int USERS_FIELD_NUMBER = 5;
-      private java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.Variable> users_;
+      private java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.TsVariable> users_;
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
       @java.lang.Override
-      public java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.Variable> getUsersList() {
+      public java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.TsVariable> getUsersList() {
         return users_;
       }
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
       @java.lang.Override
-      public java.util.List<? extends demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder> 
+      public java.util.List<? extends demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder> 
           getUsersOrBuilderList() {
         return users_;
       }
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
       @java.lang.Override
       public int getUsersCount() {
         return users_.size();
       }
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
       @java.lang.Override
-      public demetra.regarima.io.protobuf.RegArimaProtos.Variable getUsers(int index) {
+      public demetra.regarima.io.protobuf.RegArimaProtos.TsVariable getUsers(int index) {
         return users_.get(index);
       }
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
       @java.lang.Override
-      public demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder getUsersOrBuilder(
+      public demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder getUsersOrBuilder(
           int index) {
         return users_.get(index);
       }
@@ -10286,22 +10286,22 @@ public final class TramoSeatsProtos {
           return outliersBuilder_;
         }
 
-        private java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.Variable> users_ =
+        private java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.TsVariable> users_ =
           java.util.Collections.emptyList();
         private void ensureUsersIsMutable() {
           if (!((bitField0_ & 0x00000002) != 0)) {
-            users_ = new java.util.ArrayList<demetra.regarima.io.protobuf.RegArimaProtos.Variable>(users_);
+            users_ = new java.util.ArrayList<demetra.regarima.io.protobuf.RegArimaProtos.TsVariable>(users_);
             bitField0_ |= 0x00000002;
            }
         }
 
         private com.google.protobuf.RepeatedFieldBuilderV3<
-            demetra.regarima.io.protobuf.RegArimaProtos.Variable, demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder, demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder> usersBuilder_;
+            demetra.regarima.io.protobuf.RegArimaProtos.TsVariable, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder> usersBuilder_;
 
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.Variable> getUsersList() {
+        public java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.TsVariable> getUsersList() {
           if (usersBuilder_ == null) {
             return java.util.Collections.unmodifiableList(users_);
           } else {
@@ -10309,7 +10309,7 @@ public final class TramoSeatsProtos {
           }
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public int getUsersCount() {
           if (usersBuilder_ == null) {
@@ -10319,9 +10319,9 @@ public final class TramoSeatsProtos {
           }
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public demetra.regarima.io.protobuf.RegArimaProtos.Variable getUsers(int index) {
+        public demetra.regarima.io.protobuf.RegArimaProtos.TsVariable getUsers(int index) {
           if (usersBuilder_ == null) {
             return users_.get(index);
           } else {
@@ -10329,10 +10329,10 @@ public final class TramoSeatsProtos {
           }
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public Builder setUsers(
-            int index, demetra.regarima.io.protobuf.RegArimaProtos.Variable value) {
+            int index, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable value) {
           if (usersBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -10346,10 +10346,10 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public Builder setUsers(
-            int index, demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder builderForValue) {
+            int index, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder builderForValue) {
           if (usersBuilder_ == null) {
             ensureUsersIsMutable();
             users_.set(index, builderForValue.build());
@@ -10360,9 +10360,9 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public Builder addUsers(demetra.regarima.io.protobuf.RegArimaProtos.Variable value) {
+        public Builder addUsers(demetra.regarima.io.protobuf.RegArimaProtos.TsVariable value) {
           if (usersBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -10376,10 +10376,10 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public Builder addUsers(
-            int index, demetra.regarima.io.protobuf.RegArimaProtos.Variable value) {
+            int index, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable value) {
           if (usersBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -10393,10 +10393,10 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public Builder addUsers(
-            demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder builderForValue) {
+            demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder builderForValue) {
           if (usersBuilder_ == null) {
             ensureUsersIsMutable();
             users_.add(builderForValue.build());
@@ -10407,10 +10407,10 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public Builder addUsers(
-            int index, demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder builderForValue) {
+            int index, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder builderForValue) {
           if (usersBuilder_ == null) {
             ensureUsersIsMutable();
             users_.add(index, builderForValue.build());
@@ -10421,10 +10421,10 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public Builder addAllUsers(
-            java.lang.Iterable<? extends demetra.regarima.io.protobuf.RegArimaProtos.Variable> values) {
+            java.lang.Iterable<? extends demetra.regarima.io.protobuf.RegArimaProtos.TsVariable> values) {
           if (usersBuilder_ == null) {
             ensureUsersIsMutable();
             com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -10436,7 +10436,7 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public Builder clearUsers() {
           if (usersBuilder_ == null) {
@@ -10449,7 +10449,7 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public Builder removeUsers(int index) {
           if (usersBuilder_ == null) {
@@ -10462,16 +10462,16 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder getUsersBuilder(
+        public demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder getUsersBuilder(
             int index) {
           return getUsersFieldBuilder().getBuilder(index);
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder getUsersOrBuilder(
+        public demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder getUsersOrBuilder(
             int index) {
           if (usersBuilder_ == null) {
             return users_.get(index);  } else {
@@ -10479,9 +10479,9 @@ public final class TramoSeatsProtos {
           }
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public java.util.List<? extends demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder> 
+        public java.util.List<? extends demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder> 
              getUsersOrBuilderList() {
           if (usersBuilder_ != null) {
             return usersBuilder_.getMessageOrBuilderList();
@@ -10490,33 +10490,33 @@ public final class TramoSeatsProtos {
           }
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder addUsersBuilder() {
+        public demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder addUsersBuilder() {
           return getUsersFieldBuilder().addBuilder(
-              demetra.regarima.io.protobuf.RegArimaProtos.Variable.getDefaultInstance());
+              demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.getDefaultInstance());
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder addUsersBuilder(
+        public demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder addUsersBuilder(
             int index) {
           return getUsersFieldBuilder().addBuilder(
-              index, demetra.regarima.io.protobuf.RegArimaProtos.Variable.getDefaultInstance());
+              index, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.getDefaultInstance());
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder> 
+        public java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder> 
              getUsersBuilderList() {
           return getUsersFieldBuilder().getBuilderList();
         }
         private com.google.protobuf.RepeatedFieldBuilderV3<
-            demetra.regarima.io.protobuf.RegArimaProtos.Variable, demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder, demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder> 
+            demetra.regarima.io.protobuf.RegArimaProtos.TsVariable, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder> 
             getUsersFieldBuilder() {
           if (usersBuilder_ == null) {
             usersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                demetra.regarima.io.protobuf.RegArimaProtos.Variable, demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder, demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder>(
+                demetra.regarima.io.protobuf.RegArimaProtos.TsVariable, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder>(
                     users_,
                     ((bitField0_ & 0x00000002) != 0),
                     getParentForChildren(),
@@ -14556,7 +14556,7 @@ public final class TramoSeatsProtos {
       "\033\n\023seas_boundary_at_pi\030\006 \001(\001\022\027\n\017bias_cor" +
       "rection\030\007 \001(\010\022\017\n\007nfcasts\030\010 \001(\005\022\017\n\007nbcast" +
       "s\030\t \001(\005\022-\n\talgorithm\030\n \001(\0162\032.tramoseats." +
-      "SeatsAlgorithm\"\242\r\n\tTramoSpec\022.\n\005basic\030\001 " +
+      "SeatsAlgorithm\"\244\r\n\tTramoSpec\022.\n\005basic\030\001 " +
       "\001(\0132\037.tramoseats.TramoSpec.BasicSpec\0226\n\t" +
       "transform\030\002 \001(\0132#.tramoseats.TramoSpec.T" +
       "ransformSpec\0222\n\007outlier\030\003 \001(\0132!.tramosea" +
@@ -14588,36 +14588,36 @@ public final class TramoSeatsProtos {
       "ingDaysTest\022.\n\004auto\030\007 \001(\0162 .tramoseats.A" +
       "utomaticTradingDays\022\r\n\005ptest\030\010 \001(\001\022%\n\rtd" +
       "coefficient\030\n \003(\0132\016.jd3.Parameter\022%\n\rlpc" +
-      "oefficient\030\013 \001(\0132\016.jd3.Parameter\032\271\002\n\016Reg" +
+      "oefficient\030\013 \001(\0132\016.jd3.Parameter\032\273\002\n\016Reg" +
       "ressionSpec\022$\n\004mean\030\001 \001(\0132\026.jd3.Nullable" +
       "Parameter\0221\n\002td\030\002 \001(\0132%.tramoseats.Tramo" +
       "Spec.TradingDaysSpec\0220\n\006easter\030\003 \001(\0132 .t" +
       "ramoseats.TramoSpec.EasterSpec\022#\n\010outlie" +
-      "rs\030\004 \003(\0132\021.regarima.Outlier\022!\n\005users\030\005 \003" +
-      "(\0132\022.regarima.Variable\0225\n\rinterventions\030" +
-      "\006 \003(\0132\036.regarima.InterventionVariable\022\035\n" +
-      "\005ramps\030\007 \003(\0132\016.regarima.Ramp\032U\n\014Estimate" +
-      "Spec\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeSelector\022\n\n" +
-      "\002ml\030\002 \001(\010\022\013\n\003tol\030\003 \001(\001\022\013\n\003ubp\030\004 \001(\001\"\206\001\n\004" +
-      "Spec\022$\n\005tramo\030\001 \001(\0132\025.tramoseats.TramoSp" +
-      "ec\022,\n\005seats\030\002 \001(\0132\035.tramoseats.Decomposi" +
-      "tionSpec\022*\n\014benchmarking\030\003 \001(\0132\024.sa.Benc" +
-      "hmarkingSpec*n\n\022SeatsApproximation\022\031\n\025SE" +
-      "ATS_APP_UNSPECIFIED\020\000\022\022\n\016SEATS_APP_NONE\020" +
-      "\001\022\024\n\020SEATS_APP_LEGACY\020\002\022\023\n\017SEATS_APP_NOI" +
-      "SY\020\003*_\n\016SeatsAlgorithm\022\031\n\025SEATS_ALG_UNSP" +
-      "ECIFIED\020\000\022\024\n\020SEATS_ALG_BURMAN\020\001\022\034\n\030SEATS" +
-      "_ALG_KALMANSMOOTHER\020\002*h\n\024AutomaticTradin" +
-      "gDays\022\027\n\023TD_AUTO_UNSPECIFIED\020\000\022\016\n\nTD_AUT" +
-      "O_NO\020\001\022\021\n\rTD_AUTO_FTEST\020\002\022\024\n\020TD_AUTO_WAL" +
-      "DTEST\020\003*g\n\017TradingDaysTest\022\027\n\023TD_TEST_UN" +
-      "SPECIFIED\020\000\022\016\n\nTD_TEST_NO\020\001\022\026\n\022TD_TEST_S" +
-      "EPARATE_T\020\002\022\023\n\017TD_TEST_JOINT_F\020\003*\206\001\n\nEas" +
-      "terType\022\026\n\022EASTER_UNSPECIFIED\020\000\022\021\n\rEASTE" +
-      "R_UNUSED\020\001\022\023\n\017EASTER_STANDARD\020\002\022\030\n\024EASTE" +
-      "R_INCLUDEEASTER\020\003\022\036\n\032EASTER_INCLUDEEASTE" +
-      "RMONDAY\020\004B2\n\036demetra.tramoseats.io.proto" +
-      "bufB\020TramoSeatsProtosP\000P\001P\002b\006proto3"
+      "rs\030\004 \003(\0132\021.regarima.Outlier\022#\n\005users\030\005 \003" +
+      "(\0132\024.regarima.TsVariable\0225\n\rintervention" +
+      "s\030\006 \003(\0132\036.regarima.InterventionVariable\022" +
+      "\035\n\005ramps\030\007 \003(\0132\016.regarima.Ramp\032U\n\014Estima" +
+      "teSpec\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeSelector\022" +
+      "\n\n\002ml\030\002 \001(\010\022\013\n\003tol\030\003 \001(\001\022\013\n\003ubp\030\004 \001(\001\"\206\001" +
+      "\n\004Spec\022$\n\005tramo\030\001 \001(\0132\025.tramoseats.Tramo" +
+      "Spec\022,\n\005seats\030\002 \001(\0132\035.tramoseats.Decompo" +
+      "sitionSpec\022*\n\014benchmarking\030\003 \001(\0132\024.sa.Be" +
+      "nchmarkingSpec*n\n\022SeatsApproximation\022\031\n\025" +
+      "SEATS_APP_UNSPECIFIED\020\000\022\022\n\016SEATS_APP_NON" +
+      "E\020\001\022\024\n\020SEATS_APP_LEGACY\020\002\022\023\n\017SEATS_APP_N" +
+      "OISY\020\003*_\n\016SeatsAlgorithm\022\031\n\025SEATS_ALG_UN" +
+      "SPECIFIED\020\000\022\024\n\020SEATS_ALG_BURMAN\020\001\022\034\n\030SEA" +
+      "TS_ALG_KALMANSMOOTHER\020\002*h\n\024AutomaticTrad" +
+      "ingDays\022\027\n\023TD_AUTO_UNSPECIFIED\020\000\022\016\n\nTD_A" +
+      "UTO_NO\020\001\022\021\n\rTD_AUTO_FTEST\020\002\022\024\n\020TD_AUTO_W" +
+      "ALDTEST\020\003*g\n\017TradingDaysTest\022\027\n\023TD_TEST_" +
+      "UNSPECIFIED\020\000\022\016\n\nTD_TEST_NO\020\001\022\026\n\022TD_TEST" +
+      "_SEPARATE_T\020\002\022\023\n\017TD_TEST_JOINT_F\020\003*\206\001\n\nE" +
+      "asterType\022\026\n\022EASTER_UNSPECIFIED\020\000\022\021\n\rEAS" +
+      "TER_UNUSED\020\001\022\023\n\017EASTER_STANDARD\020\002\022\030\n\024EAS" +
+      "TER_INCLUDEEASTER\020\003\022\036\n\032EASTER_INCLUDEEAS" +
+      "TERMONDAY\020\004B2\n\036demetra.tramoseats.io.pro" +
+      "tobufB\020TramoSeatsProtosP\000P\001P\002b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

@@ -3926,10 +3926,10 @@ public final class X13Protos {
       @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (transformation_ != demetra.regarima.io.protobuf.RegArimaProtos.Transformation.FN_UNSPECIFIED.getNumber()) {
+        if (transformation_ != demetra.regarima.io.protobuf.RegArimaProtos.Transformation.FN_LEVEL.getNumber()) {
           output.writeEnum(1, transformation_);
         }
-        if (adjust_ != demetra.regarima.io.protobuf.RegArimaProtos.LengthOfPeriod.LP_UNSPECIFIED.getNumber()) {
+        if (adjust_ != demetra.regarima.io.protobuf.RegArimaProtos.LengthOfPeriod.LP_NONE.getNumber()) {
           output.writeEnum(2, adjust_);
         }
         if (aicdiff_ != 0D) {
@@ -3944,11 +3944,11 @@ public final class X13Protos {
         if (size != -1) return size;
 
         size = 0;
-        if (transformation_ != demetra.regarima.io.protobuf.RegArimaProtos.Transformation.FN_UNSPECIFIED.getNumber()) {
+        if (transformation_ != demetra.regarima.io.protobuf.RegArimaProtos.Transformation.FN_LEVEL.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(1, transformation_);
         }
-        if (adjust_ != demetra.regarima.io.protobuf.RegArimaProtos.LengthOfPeriod.LP_UNSPECIFIED.getNumber()) {
+        if (adjust_ != demetra.regarima.io.protobuf.RegArimaProtos.LengthOfPeriod.LP_NONE.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(2, adjust_);
         }
@@ -9232,10 +9232,10 @@ public final class X13Protos {
       @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (td_ != demetra.regarima.io.protobuf.RegArimaProtos.TradingDays.TD_UNSPECIFIED.getNumber()) {
+        if (td_ != demetra.regarima.io.protobuf.RegArimaProtos.TradingDays.TD_NONE.getNumber()) {
           output.writeEnum(1, td_);
         }
-        if (lp_ != demetra.regarima.io.protobuf.RegArimaProtos.LengthOfPeriod.LP_UNSPECIFIED.getNumber()) {
+        if (lp_ != demetra.regarima.io.protobuf.RegArimaProtos.LengthOfPeriod.LP_NONE.getNumber()) {
           output.writeEnum(2, lp_);
         }
         if (!getHolidaysBytes().isEmpty()) {
@@ -9268,11 +9268,11 @@ public final class X13Protos {
         if (size != -1) return size;
 
         size = 0;
-        if (td_ != demetra.regarima.io.protobuf.RegArimaProtos.TradingDays.TD_UNSPECIFIED.getNumber()) {
+        if (td_ != demetra.regarima.io.protobuf.RegArimaProtos.TradingDays.TD_NONE.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(1, td_);
         }
-        if (lp_ != demetra.regarima.io.protobuf.RegArimaProtos.LengthOfPeriod.LP_UNSPECIFIED.getNumber()) {
+        if (lp_ != demetra.regarima.io.protobuf.RegArimaProtos.LengthOfPeriod.LP_NONE.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(2, lp_);
         }
@@ -10619,27 +10619,27 @@ public final class X13Protos {
           int index);
 
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
-      java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.Variable> 
+      java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.TsVariable> 
           getUsersList();
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
-      demetra.regarima.io.protobuf.RegArimaProtos.Variable getUsers(int index);
+      demetra.regarima.io.protobuf.RegArimaProtos.TsVariable getUsers(int index);
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
       int getUsersCount();
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
-      java.util.List<? extends demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder> 
+      java.util.List<? extends demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder> 
           getUsersOrBuilderList();
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
-      demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder getUsersOrBuilder(
+      demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder getUsersOrBuilder(
           int index);
 
       /**
@@ -10790,11 +10790,11 @@ public final class X13Protos {
               }
               case 42: {
                 if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                  users_ = new java.util.ArrayList<demetra.regarima.io.protobuf.RegArimaProtos.Variable>();
+                  users_ = new java.util.ArrayList<demetra.regarima.io.protobuf.RegArimaProtos.TsVariable>();
                   mutable_bitField0_ |= 0x00000002;
                 }
                 users_.add(
-                    input.readMessage(demetra.regarima.io.protobuf.RegArimaProtos.Variable.parser(), extensionRegistry));
+                    input.readMessage(demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.parser(), extensionRegistry));
                 break;
               }
               case 50: {
@@ -10978,41 +10978,41 @@ public final class X13Protos {
       }
 
       public static final int USERS_FIELD_NUMBER = 5;
-      private java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.Variable> users_;
+      private java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.TsVariable> users_;
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
       @java.lang.Override
-      public java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.Variable> getUsersList() {
+      public java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.TsVariable> getUsersList() {
         return users_;
       }
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
       @java.lang.Override
-      public java.util.List<? extends demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder> 
+      public java.util.List<? extends demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder> 
           getUsersOrBuilderList() {
         return users_;
       }
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
       @java.lang.Override
       public int getUsersCount() {
         return users_.size();
       }
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
       @java.lang.Override
-      public demetra.regarima.io.protobuf.RegArimaProtos.Variable getUsers(int index) {
+      public demetra.regarima.io.protobuf.RegArimaProtos.TsVariable getUsers(int index) {
         return users_.get(index);
       }
       /**
-       * <code>repeated .regarima.Variable users = 5;</code>
+       * <code>repeated .regarima.TsVariable users = 5;</code>
        */
       @java.lang.Override
-      public demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder getUsersOrBuilder(
+      public demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder getUsersOrBuilder(
           int index) {
         return users_.get(index);
       }
@@ -12291,22 +12291,22 @@ public final class X13Protos {
           return outliersBuilder_;
         }
 
-        private java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.Variable> users_ =
+        private java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.TsVariable> users_ =
           java.util.Collections.emptyList();
         private void ensureUsersIsMutable() {
           if (!((bitField0_ & 0x00000002) != 0)) {
-            users_ = new java.util.ArrayList<demetra.regarima.io.protobuf.RegArimaProtos.Variable>(users_);
+            users_ = new java.util.ArrayList<demetra.regarima.io.protobuf.RegArimaProtos.TsVariable>(users_);
             bitField0_ |= 0x00000002;
            }
         }
 
         private com.google.protobuf.RepeatedFieldBuilderV3<
-            demetra.regarima.io.protobuf.RegArimaProtos.Variable, demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder, demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder> usersBuilder_;
+            demetra.regarima.io.protobuf.RegArimaProtos.TsVariable, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder> usersBuilder_;
 
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.Variable> getUsersList() {
+        public java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.TsVariable> getUsersList() {
           if (usersBuilder_ == null) {
             return java.util.Collections.unmodifiableList(users_);
           } else {
@@ -12314,7 +12314,7 @@ public final class X13Protos {
           }
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public int getUsersCount() {
           if (usersBuilder_ == null) {
@@ -12324,9 +12324,9 @@ public final class X13Protos {
           }
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public demetra.regarima.io.protobuf.RegArimaProtos.Variable getUsers(int index) {
+        public demetra.regarima.io.protobuf.RegArimaProtos.TsVariable getUsers(int index) {
           if (usersBuilder_ == null) {
             return users_.get(index);
           } else {
@@ -12334,10 +12334,10 @@ public final class X13Protos {
           }
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public Builder setUsers(
-            int index, demetra.regarima.io.protobuf.RegArimaProtos.Variable value) {
+            int index, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable value) {
           if (usersBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -12351,10 +12351,10 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public Builder setUsers(
-            int index, demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder builderForValue) {
+            int index, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder builderForValue) {
           if (usersBuilder_ == null) {
             ensureUsersIsMutable();
             users_.set(index, builderForValue.build());
@@ -12365,9 +12365,9 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public Builder addUsers(demetra.regarima.io.protobuf.RegArimaProtos.Variable value) {
+        public Builder addUsers(demetra.regarima.io.protobuf.RegArimaProtos.TsVariable value) {
           if (usersBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -12381,10 +12381,10 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public Builder addUsers(
-            int index, demetra.regarima.io.protobuf.RegArimaProtos.Variable value) {
+            int index, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable value) {
           if (usersBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -12398,10 +12398,10 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public Builder addUsers(
-            demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder builderForValue) {
+            demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder builderForValue) {
           if (usersBuilder_ == null) {
             ensureUsersIsMutable();
             users_.add(builderForValue.build());
@@ -12412,10 +12412,10 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public Builder addUsers(
-            int index, demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder builderForValue) {
+            int index, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder builderForValue) {
           if (usersBuilder_ == null) {
             ensureUsersIsMutable();
             users_.add(index, builderForValue.build());
@@ -12426,10 +12426,10 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public Builder addAllUsers(
-            java.lang.Iterable<? extends demetra.regarima.io.protobuf.RegArimaProtos.Variable> values) {
+            java.lang.Iterable<? extends demetra.regarima.io.protobuf.RegArimaProtos.TsVariable> values) {
           if (usersBuilder_ == null) {
             ensureUsersIsMutable();
             com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -12441,7 +12441,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public Builder clearUsers() {
           if (usersBuilder_ == null) {
@@ -12454,7 +12454,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
         public Builder removeUsers(int index) {
           if (usersBuilder_ == null) {
@@ -12467,16 +12467,16 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder getUsersBuilder(
+        public demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder getUsersBuilder(
             int index) {
           return getUsersFieldBuilder().getBuilder(index);
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder getUsersOrBuilder(
+        public demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder getUsersOrBuilder(
             int index) {
           if (usersBuilder_ == null) {
             return users_.get(index);  } else {
@@ -12484,9 +12484,9 @@ public final class X13Protos {
           }
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public java.util.List<? extends demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder> 
+        public java.util.List<? extends demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder> 
              getUsersOrBuilderList() {
           if (usersBuilder_ != null) {
             return usersBuilder_.getMessageOrBuilderList();
@@ -12495,33 +12495,33 @@ public final class X13Protos {
           }
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder addUsersBuilder() {
+        public demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder addUsersBuilder() {
           return getUsersFieldBuilder().addBuilder(
-              demetra.regarima.io.protobuf.RegArimaProtos.Variable.getDefaultInstance());
+              demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.getDefaultInstance());
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder addUsersBuilder(
+        public demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder addUsersBuilder(
             int index) {
           return getUsersFieldBuilder().addBuilder(
-              index, demetra.regarima.io.protobuf.RegArimaProtos.Variable.getDefaultInstance());
+              index, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.getDefaultInstance());
         }
         /**
-         * <code>repeated .regarima.Variable users = 5;</code>
+         * <code>repeated .regarima.TsVariable users = 5;</code>
          */
-        public java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder> 
+        public java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder> 
              getUsersBuilderList() {
           return getUsersFieldBuilder().getBuilderList();
         }
         private com.google.protobuf.RepeatedFieldBuilderV3<
-            demetra.regarima.io.protobuf.RegArimaProtos.Variable, demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder, demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder> 
+            demetra.regarima.io.protobuf.RegArimaProtos.TsVariable, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder> 
             getUsersFieldBuilder() {
           if (usersBuilder_ == null) {
             usersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                demetra.regarima.io.protobuf.RegArimaProtos.Variable, demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder, demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder>(
+                demetra.regarima.io.protobuf.RegArimaProtos.TsVariable, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder>(
                     users_,
                     ((bitField0_ & 0x00000002) != 0),
                     getParentForChildren(),
@@ -16422,7 +16422,7 @@ public final class X13Protos {
       "\004usig\030\006 \001(\001\022\017\n\007nfcasts\030\007 \001(\005\022\017\n\007nbcasts\030" +
       "\010 \001(\005\022!\n\005sigma\030\t \001(\0162\022.x13.CalendarSigma" +
       "\022\017\n\007vsigmas\030\n \003(\005\022\026\n\016exclude_fcasts\030\013 \001(" +
-      "\010\022!\n\004bias\030\014 \001(\0162\023.x13.BiasCorrection\"\233\016\n" +
+      "\010\022!\n\004bias\030\014 \001(\0162\023.x13.BiasCorrection\"\235\016\n" +
       "\014RegArimaSpec\022*\n\005basic\030\001 \001(\0132\033.x13.RegAr" +
       "imaSpec.BasicSpec\0222\n\ttransform\030\002 \001(\0132\037.x" +
       "13.RegArimaSpec.TransformSpec\022.\n\007outlier" +
@@ -16459,42 +16459,42 @@ public final class X13Protos {
       "st\030\006 \001(\0162\023.x13.RegressionTest\022\023\n\013auto_ad" +
       "just\030\007 \001(\010\022%\n\rtdcoefficient\030\n \003(\0132\016.jd3." +
       "Parameter\022%\n\rlpcoefficient\030\013 \001(\0132\016.jd3.P" +
-      "arameter\032\261\002\n\016RegressionSpec\022$\n\004mean\030\001 \001(" +
+      "arameter\032\263\002\n\016RegressionSpec\022$\n\004mean\030\001 \001(" +
       "\0132\026.jd3.NullableParameter\022-\n\002td\030\002 \001(\0132!." +
       "x13.RegArimaSpec.TradingDaysSpec\022,\n\006east" +
       "er\030\003 \001(\0132\034.x13.RegArimaSpec.EasterSpec\022#" +
-      "\n\010outliers\030\004 \003(\0132\021.regarima.Outlier\022!\n\005u" +
-      "sers\030\005 \003(\0132\022.regarima.Variable\0225\n\rinterv" +
-      "entions\030\006 \003(\0132\036.regarima.InterventionVar" +
-      "iable\022\035\n\005ramps\030\007 \003(\0132\016.regarima.Ramp\032<\n\014" +
-      "EstimateSpec\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeSel" +
-      "ector\022\013\n\003tol\030\002 \001(\001\"r\n\004Spec\022#\n\010regarima\030\001" +
-      " \001(\0132\021.x13.RegArimaSpec\022\031\n\003x11\030\002 \001(\0132\014.x" +
-      "13.X11Spec\022*\n\014benchmarking\030\003 \001(\0132\024.sa.Be" +
-      "nchmarkingSpec*g\n\021DecompositionMode\022\013\n\007U" +
-      "NKNOWN\020\000\022\014\n\010ADDITIVE\020\001\022\022\n\016MULTIPLICATIVE" +
-      "\020\002\022\017\n\013LOGADDITIVE\020\003\022\022\n\016PSEUDOADDITIVE\020\004*" +
-      "\211\002\n\016SeasonalFilter\022\037\n\033SEASONAL_FILTER_UN" +
-      "SPECIFIED\020\000\022\030\n\024SEASONAL_FILTER_S3X1\020\001\022\030\n" +
-      "\024SEASONAL_FILTER_S3X3\020\002\022\030\n\024SEASONAL_FILT" +
-      "ER_S3X5\020\003\022\030\n\024SEASONAL_FILTER_S3X9\020\004\022\031\n\025S" +
-      "EASONAL_FILTER_S3X15\020\005\022\027\n\023SEASONAL_FILTE" +
-      "R_MSR\020\006\022\032\n\026SEASONAL_FILTER_STABLE\020\007\022\036\n\032S" +
-      "EASONAL_FILTER_X11DEFAULT\020\010*i\n\rCalendarS" +
-      "igma\022\025\n\021SIGMA_UNSPECIFIED\020\000\022\016\n\nSIGMA_NON" +
-      "E\020\001\022\020\n\014SIGMA_SIGNIF\020\002\022\r\n\tSIGMA_ALL\020\003\022\020\n\014" +
-      "SIGMA_SELECT\020\004*g\n\016BiasCorrection\022\024\n\020BIAS" +
-      "_UNSPECIFIED\020\000\022\r\n\tBIAS_NONE\020\001\022\017\n\013BIAS_LE" +
-      "GACY\020\002\022\017\n\013BIAS_SMOOTH\020\003\022\016\n\nBIAS_RATIO\020\004*" +
-      "P\n\rOutlierMethod\022\027\n\023OUTLIER_UNSPECIFIED\020" +
-      "\000\022\022\n\016OUTLIER_ADDONE\020\001\022\022\n\016OUTLIER_ADDALL\020" +
-      "\002*n\n\nEasterType\022\026\n\022EASTER_UNSPECIFIED\020\000\022" +
-      "\021\n\rEASTER_UNUSED\020\001\022\023\n\017EASTER_STANDARD\020\002\022" +
-      "\021\n\rEASTER_JULIAN\020\003\022\r\n\tEASTER_SC\020\004*R\n\016Reg" +
-      "ressionTest\022\024\n\020TEST_UNSPECIFIED\020\000\022\013\n\007TES" +
-      "T_NO\020\001\022\014\n\010TEST_ADD\020\002\022\017\n\013TEST_REMOVE\020\003B$\n" +
-      "\027demetra.x13.io.protobufB\tX13ProtosP\000P\001P" +
-      "\002b\006proto3"
+      "\n\010outliers\030\004 \003(\0132\021.regarima.Outlier\022#\n\005u" +
+      "sers\030\005 \003(\0132\024.regarima.TsVariable\0225\n\rinte" +
+      "rventions\030\006 \003(\0132\036.regarima.InterventionV" +
+      "ariable\022\035\n\005ramps\030\007 \003(\0132\016.regarima.Ramp\032<" +
+      "\n\014EstimateSpec\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeS" +
+      "elector\022\013\n\003tol\030\002 \001(\001\"r\n\004Spec\022#\n\010regarima" +
+      "\030\001 \001(\0132\021.x13.RegArimaSpec\022\031\n\003x11\030\002 \001(\0132\014" +
+      ".x13.X11Spec\022*\n\014benchmarking\030\003 \001(\0132\024.sa." +
+      "BenchmarkingSpec*g\n\021DecompositionMode\022\013\n" +
+      "\007UNKNOWN\020\000\022\014\n\010ADDITIVE\020\001\022\022\n\016MULTIPLICATI" +
+      "VE\020\002\022\017\n\013LOGADDITIVE\020\003\022\022\n\016PSEUDOADDITIVE\020" +
+      "\004*\211\002\n\016SeasonalFilter\022\037\n\033SEASONAL_FILTER_" +
+      "UNSPECIFIED\020\000\022\030\n\024SEASONAL_FILTER_S3X1\020\001\022" +
+      "\030\n\024SEASONAL_FILTER_S3X3\020\002\022\030\n\024SEASONAL_FI" +
+      "LTER_S3X5\020\003\022\030\n\024SEASONAL_FILTER_S3X9\020\004\022\031\n" +
+      "\025SEASONAL_FILTER_S3X15\020\005\022\027\n\023SEASONAL_FIL" +
+      "TER_MSR\020\006\022\032\n\026SEASONAL_FILTER_STABLE\020\007\022\036\n" +
+      "\032SEASONAL_FILTER_X11DEFAULT\020\010*i\n\rCalenda" +
+      "rSigma\022\025\n\021SIGMA_UNSPECIFIED\020\000\022\016\n\nSIGMA_N" +
+      "ONE\020\001\022\020\n\014SIGMA_SIGNIF\020\002\022\r\n\tSIGMA_ALL\020\003\022\020" +
+      "\n\014SIGMA_SELECT\020\004*g\n\016BiasCorrection\022\024\n\020BI" +
+      "AS_UNSPECIFIED\020\000\022\r\n\tBIAS_NONE\020\001\022\017\n\013BIAS_" +
+      "LEGACY\020\002\022\017\n\013BIAS_SMOOTH\020\003\022\016\n\nBIAS_RATIO\020" +
+      "\004*P\n\rOutlierMethod\022\027\n\023OUTLIER_UNSPECIFIE" +
+      "D\020\000\022\022\n\016OUTLIER_ADDONE\020\001\022\022\n\016OUTLIER_ADDAL" +
+      "L\020\002*n\n\nEasterType\022\026\n\022EASTER_UNSPECIFIED\020" +
+      "\000\022\021\n\rEASTER_UNUSED\020\001\022\023\n\017EASTER_STANDARD\020" +
+      "\002\022\021\n\rEASTER_JULIAN\020\003\022\r\n\tEASTER_SC\020\004*R\n\016R" +
+      "egressionTest\022\024\n\020TEST_UNSPECIFIED\020\000\022\013\n\007T" +
+      "EST_NO\020\001\022\014\n\010TEST_ADD\020\002\022\017\n\013TEST_REMOVE\020\003B" +
+      "$\n\027demetra.x13.io.protobufB\tX13ProtosP\000P" +
+      "\001P\002b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

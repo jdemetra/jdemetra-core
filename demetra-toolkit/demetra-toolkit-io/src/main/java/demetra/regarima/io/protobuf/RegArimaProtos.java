@@ -20,17 +20,13 @@ public final class RegArimaProtos {
   public enum Transformation
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>FN_UNSPECIFIED = 0;</code>
+     * <code>FN_LEVEL = 0;</code>
      */
-    FN_UNSPECIFIED(0),
+    FN_LEVEL(0),
     /**
-     * <code>FN_LEVEL = 1;</code>
+     * <code>FN_LOG = 1;</code>
      */
-    FN_LEVEL(1),
-    /**
-     * <code>FN_LOG = 2;</code>
-     */
-    FN_LOG(2),
+    FN_LOG(1),
     /**
      * <code>FN_AUTO = 10;</code>
      */
@@ -39,17 +35,13 @@ public final class RegArimaProtos {
     ;
 
     /**
-     * <code>FN_UNSPECIFIED = 0;</code>
+     * <code>FN_LEVEL = 0;</code>
      */
-    public static final int FN_UNSPECIFIED_VALUE = 0;
+    public static final int FN_LEVEL_VALUE = 0;
     /**
-     * <code>FN_LEVEL = 1;</code>
+     * <code>FN_LOG = 1;</code>
      */
-    public static final int FN_LEVEL_VALUE = 1;
-    /**
-     * <code>FN_LOG = 2;</code>
-     */
-    public static final int FN_LOG_VALUE = 2;
+    public static final int FN_LOG_VALUE = 1;
     /**
      * <code>FN_AUTO = 10;</code>
      */
@@ -80,9 +72,8 @@ public final class RegArimaProtos {
      */
     public static Transformation forNumber(int value) {
       switch (value) {
-        case 0: return FN_UNSPECIFIED;
-        case 1: return FN_LEVEL;
-        case 2: return FN_LOG;
+        case 0: return FN_LEVEL;
+        case 1: return FN_LOG;
         case 10: return FN_AUTO;
         default: return null;
       }
@@ -146,40 +137,32 @@ public final class RegArimaProtos {
   public enum LengthOfPeriod
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>LP_UNSPECIFIED = 0;</code>
+     * <code>LP_NONE = 0;</code>
      */
-    LP_UNSPECIFIED(0),
+    LP_NONE(0),
     /**
-     * <code>LP_NONE = 1;</code>
+     * <code>LP_LEAPYEAR = 1;</code>
      */
-    LP_NONE(1),
+    LP_LEAPYEAR(1),
     /**
-     * <code>LP_LEAPYEAR = 2;</code>
+     * <code>LP_LENGTHOFPERIOD = 2;</code>
      */
-    LP_LEAPYEAR(2),
-    /**
-     * <code>LP_LENGTHOFPERIOD = 3;</code>
-     */
-    LP_LENGTHOFPERIOD(3),
+    LP_LENGTHOFPERIOD(2),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>LP_UNSPECIFIED = 0;</code>
+     * <code>LP_NONE = 0;</code>
      */
-    public static final int LP_UNSPECIFIED_VALUE = 0;
+    public static final int LP_NONE_VALUE = 0;
     /**
-     * <code>LP_NONE = 1;</code>
+     * <code>LP_LEAPYEAR = 1;</code>
      */
-    public static final int LP_NONE_VALUE = 1;
+    public static final int LP_LEAPYEAR_VALUE = 1;
     /**
-     * <code>LP_LEAPYEAR = 2;</code>
+     * <code>LP_LENGTHOFPERIOD = 2;</code>
      */
-    public static final int LP_LEAPYEAR_VALUE = 2;
-    /**
-     * <code>LP_LENGTHOFPERIOD = 3;</code>
-     */
-    public static final int LP_LENGTHOFPERIOD_VALUE = 3;
+    public static final int LP_LENGTHOFPERIOD_VALUE = 2;
 
 
     public final int getNumber() {
@@ -206,10 +189,9 @@ public final class RegArimaProtos {
      */
     public static LengthOfPeriod forNumber(int value) {
       switch (value) {
-        case 0: return LP_UNSPECIFIED;
-        case 1: return LP_NONE;
-        case 2: return LP_LEAPYEAR;
-        case 3: return LP_LENGTHOFPERIOD;
+        case 0: return LP_NONE;
+        case 1: return LP_LEAPYEAR;
+        case 2: return LP_LENGTHOFPERIOD;
         default: return null;
       }
     }
@@ -272,48 +254,40 @@ public final class RegArimaProtos {
   public enum TradingDays
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>TD_UNSPECIFIED = 0;</code>
+     * <code>TD_NONE = 0;</code>
      */
-    TD_UNSPECIFIED(0),
+    TD_NONE(0),
     /**
-     * <code>TD_NONE = 1;</code>
+     * <code>TD_WEEK = 1;</code>
      */
-    TD_NONE(1),
+    TD_WEEK(1),
     /**
-     * <code>TD_WEEK = 2;</code>
+     * <code>TD_3 = 2;</code>
      */
-    TD_WEEK(2),
+    TD_3(2),
     /**
-     * <code>TD_3 = 3;</code>
+     * <code>TD_FULL = 3;</code>
      */
-    TD_3(3),
-    /**
-     * <code>TD_FULL = 6;</code>
-     */
-    TD_FULL(6),
+    TD_FULL(3),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>TD_UNSPECIFIED = 0;</code>
+     * <code>TD_NONE = 0;</code>
      */
-    public static final int TD_UNSPECIFIED_VALUE = 0;
+    public static final int TD_NONE_VALUE = 0;
     /**
-     * <code>TD_NONE = 1;</code>
+     * <code>TD_WEEK = 1;</code>
      */
-    public static final int TD_NONE_VALUE = 1;
+    public static final int TD_WEEK_VALUE = 1;
     /**
-     * <code>TD_WEEK = 2;</code>
+     * <code>TD_3 = 2;</code>
      */
-    public static final int TD_WEEK_VALUE = 2;
+    public static final int TD_3_VALUE = 2;
     /**
-     * <code>TD_3 = 3;</code>
+     * <code>TD_FULL = 3;</code>
      */
-    public static final int TD_3_VALUE = 3;
-    /**
-     * <code>TD_FULL = 6;</code>
-     */
-    public static final int TD_FULL_VALUE = 6;
+    public static final int TD_FULL_VALUE = 3;
 
 
     public final int getNumber() {
@@ -340,11 +314,10 @@ public final class RegArimaProtos {
      */
     public static TradingDays forNumber(int value) {
       switch (value) {
-        case 0: return TD_UNSPECIFIED;
-        case 1: return TD_NONE;
-        case 2: return TD_WEEK;
-        case 3: return TD_3;
-        case 6: return TD_FULL;
+        case 0: return TD_NONE;
+        case 1: return TD_WEEK;
+        case 2: return TD_3;
+        case 3: return TD_FULL;
         default: return null;
       }
     }
@@ -406,109 +379,115 @@ public final class RegArimaProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>repeated .jd3.Parameter phi = 1;</code>
+     * <code>int32 period = 1;</code>
+     * @return The period.
+     */
+    int getPeriod();
+
+    /**
+     * <code>repeated .jd3.Parameter phi = 2;</code>
      */
     java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> 
         getPhiList();
     /**
-     * <code>repeated .jd3.Parameter phi = 1;</code>
+     * <code>repeated .jd3.Parameter phi = 2;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getPhi(int index);
     /**
-     * <code>repeated .jd3.Parameter phi = 1;</code>
+     * <code>repeated .jd3.Parameter phi = 2;</code>
      */
     int getPhiCount();
     /**
-     * <code>repeated .jd3.Parameter phi = 1;</code>
+     * <code>repeated .jd3.Parameter phi = 2;</code>
      */
     java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
         getPhiOrBuilderList();
     /**
-     * <code>repeated .jd3.Parameter phi = 1;</code>
+     * <code>repeated .jd3.Parameter phi = 2;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getPhiOrBuilder(
         int index);
 
     /**
-     * <code>int32 d = 2;</code>
+     * <code>int32 d = 3;</code>
      * @return The d.
      */
     int getD();
 
     /**
-     * <code>repeated .jd3.Parameter theta = 3;</code>
+     * <code>repeated .jd3.Parameter theta = 4;</code>
      */
     java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> 
         getThetaList();
     /**
-     * <code>repeated .jd3.Parameter theta = 3;</code>
+     * <code>repeated .jd3.Parameter theta = 4;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTheta(int index);
     /**
-     * <code>repeated .jd3.Parameter theta = 3;</code>
+     * <code>repeated .jd3.Parameter theta = 4;</code>
      */
     int getThetaCount();
     /**
-     * <code>repeated .jd3.Parameter theta = 3;</code>
+     * <code>repeated .jd3.Parameter theta = 4;</code>
      */
     java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
         getThetaOrBuilderList();
     /**
-     * <code>repeated .jd3.Parameter theta = 3;</code>
+     * <code>repeated .jd3.Parameter theta = 4;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getThetaOrBuilder(
         int index);
 
     /**
-     * <code>repeated .jd3.Parameter bphi = 4;</code>
+     * <code>repeated .jd3.Parameter bphi = 5;</code>
      */
     java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> 
         getBphiList();
     /**
-     * <code>repeated .jd3.Parameter bphi = 4;</code>
+     * <code>repeated .jd3.Parameter bphi = 5;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getBphi(int index);
     /**
-     * <code>repeated .jd3.Parameter bphi = 4;</code>
+     * <code>repeated .jd3.Parameter bphi = 5;</code>
      */
     int getBphiCount();
     /**
-     * <code>repeated .jd3.Parameter bphi = 4;</code>
+     * <code>repeated .jd3.Parameter bphi = 5;</code>
      */
     java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
         getBphiOrBuilderList();
     /**
-     * <code>repeated .jd3.Parameter bphi = 4;</code>
+     * <code>repeated .jd3.Parameter bphi = 5;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getBphiOrBuilder(
         int index);
 
     /**
-     * <code>int32 bd = 5;</code>
+     * <code>int32 bd = 6;</code>
      * @return The bd.
      */
     int getBd();
 
     /**
-     * <code>repeated .jd3.Parameter btheta = 6;</code>
+     * <code>repeated .jd3.Parameter btheta = 7;</code>
      */
     java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> 
         getBthetaList();
     /**
-     * <code>repeated .jd3.Parameter btheta = 6;</code>
+     * <code>repeated .jd3.Parameter btheta = 7;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getBtheta(int index);
     /**
-     * <code>repeated .jd3.Parameter btheta = 6;</code>
+     * <code>repeated .jd3.Parameter btheta = 7;</code>
      */
     int getBthetaCount();
     /**
-     * <code>repeated .jd3.Parameter btheta = 6;</code>
+     * <code>repeated .jd3.Parameter btheta = 7;</code>
      */
     java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
         getBthetaOrBuilderList();
     /**
-     * <code>repeated .jd3.Parameter btheta = 6;</code>
+     * <code>repeated .jd3.Parameter btheta = 7;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getBthetaOrBuilder(
         int index);
@@ -563,7 +542,12 @@ public final class RegArimaProtos {
             case 0:
               done = true;
               break;
-            case 10: {
+            case 8: {
+
+              period_ = input.readInt32();
+              break;
+            }
+            case 18: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
                 phi_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>();
                 mutable_bitField0_ |= 0x00000001;
@@ -572,12 +556,12 @@ public final class RegArimaProtos {
                   input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry));
               break;
             }
-            case 16: {
+            case 24: {
 
               d_ = input.readInt32();
               break;
             }
-            case 26: {
+            case 34: {
               if (!((mutable_bitField0_ & 0x00000002) != 0)) {
                 theta_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>();
                 mutable_bitField0_ |= 0x00000002;
@@ -586,7 +570,7 @@ public final class RegArimaProtos {
                   input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry));
               break;
             }
-            case 34: {
+            case 42: {
               if (!((mutable_bitField0_ & 0x00000004) != 0)) {
                 bphi_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>();
                 mutable_bitField0_ |= 0x00000004;
@@ -595,12 +579,12 @@ public final class RegArimaProtos {
                   input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry));
               break;
             }
-            case 40: {
+            case 48: {
 
               bd_ = input.readInt32();
               break;
             }
-            case 50: {
+            case 58: {
               if (!((mutable_bitField0_ & 0x00000008) != 0)) {
                 btheta_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>();
                 mutable_bitField0_ |= 0x00000008;
@@ -653,17 +637,28 @@ public final class RegArimaProtos {
               demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec.class, demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec.Builder.class);
     }
 
-    public static final int PHI_FIELD_NUMBER = 1;
+    public static final int PERIOD_FIELD_NUMBER = 1;
+    private int period_;
+    /**
+     * <code>int32 period = 1;</code>
+     * @return The period.
+     */
+    @java.lang.Override
+    public int getPeriod() {
+      return period_;
+    }
+
+    public static final int PHI_FIELD_NUMBER = 2;
     private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> phi_;
     /**
-     * <code>repeated .jd3.Parameter phi = 1;</code>
+     * <code>repeated .jd3.Parameter phi = 2;</code>
      */
     @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getPhiList() {
       return phi_;
     }
     /**
-     * <code>repeated .jd3.Parameter phi = 1;</code>
+     * <code>repeated .jd3.Parameter phi = 2;</code>
      */
     @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
@@ -671,21 +666,21 @@ public final class RegArimaProtos {
       return phi_;
     }
     /**
-     * <code>repeated .jd3.Parameter phi = 1;</code>
+     * <code>repeated .jd3.Parameter phi = 2;</code>
      */
     @java.lang.Override
     public int getPhiCount() {
       return phi_.size();
     }
     /**
-     * <code>repeated .jd3.Parameter phi = 1;</code>
+     * <code>repeated .jd3.Parameter phi = 2;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getPhi(int index) {
       return phi_.get(index);
     }
     /**
-     * <code>repeated .jd3.Parameter phi = 1;</code>
+     * <code>repeated .jd3.Parameter phi = 2;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getPhiOrBuilder(
@@ -693,10 +688,10 @@ public final class RegArimaProtos {
       return phi_.get(index);
     }
 
-    public static final int D_FIELD_NUMBER = 2;
+    public static final int D_FIELD_NUMBER = 3;
     private int d_;
     /**
-     * <code>int32 d = 2;</code>
+     * <code>int32 d = 3;</code>
      * @return The d.
      */
     @java.lang.Override
@@ -704,17 +699,17 @@ public final class RegArimaProtos {
       return d_;
     }
 
-    public static final int THETA_FIELD_NUMBER = 3;
+    public static final int THETA_FIELD_NUMBER = 4;
     private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> theta_;
     /**
-     * <code>repeated .jd3.Parameter theta = 3;</code>
+     * <code>repeated .jd3.Parameter theta = 4;</code>
      */
     @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getThetaList() {
       return theta_;
     }
     /**
-     * <code>repeated .jd3.Parameter theta = 3;</code>
+     * <code>repeated .jd3.Parameter theta = 4;</code>
      */
     @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
@@ -722,21 +717,21 @@ public final class RegArimaProtos {
       return theta_;
     }
     /**
-     * <code>repeated .jd3.Parameter theta = 3;</code>
+     * <code>repeated .jd3.Parameter theta = 4;</code>
      */
     @java.lang.Override
     public int getThetaCount() {
       return theta_.size();
     }
     /**
-     * <code>repeated .jd3.Parameter theta = 3;</code>
+     * <code>repeated .jd3.Parameter theta = 4;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTheta(int index) {
       return theta_.get(index);
     }
     /**
-     * <code>repeated .jd3.Parameter theta = 3;</code>
+     * <code>repeated .jd3.Parameter theta = 4;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getThetaOrBuilder(
@@ -744,17 +739,17 @@ public final class RegArimaProtos {
       return theta_.get(index);
     }
 
-    public static final int BPHI_FIELD_NUMBER = 4;
+    public static final int BPHI_FIELD_NUMBER = 5;
     private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> bphi_;
     /**
-     * <code>repeated .jd3.Parameter bphi = 4;</code>
+     * <code>repeated .jd3.Parameter bphi = 5;</code>
      */
     @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getBphiList() {
       return bphi_;
     }
     /**
-     * <code>repeated .jd3.Parameter bphi = 4;</code>
+     * <code>repeated .jd3.Parameter bphi = 5;</code>
      */
     @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
@@ -762,21 +757,21 @@ public final class RegArimaProtos {
       return bphi_;
     }
     /**
-     * <code>repeated .jd3.Parameter bphi = 4;</code>
+     * <code>repeated .jd3.Parameter bphi = 5;</code>
      */
     @java.lang.Override
     public int getBphiCount() {
       return bphi_.size();
     }
     /**
-     * <code>repeated .jd3.Parameter bphi = 4;</code>
+     * <code>repeated .jd3.Parameter bphi = 5;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getBphi(int index) {
       return bphi_.get(index);
     }
     /**
-     * <code>repeated .jd3.Parameter bphi = 4;</code>
+     * <code>repeated .jd3.Parameter bphi = 5;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getBphiOrBuilder(
@@ -784,10 +779,10 @@ public final class RegArimaProtos {
       return bphi_.get(index);
     }
 
-    public static final int BD_FIELD_NUMBER = 5;
+    public static final int BD_FIELD_NUMBER = 6;
     private int bd_;
     /**
-     * <code>int32 bd = 5;</code>
+     * <code>int32 bd = 6;</code>
      * @return The bd.
      */
     @java.lang.Override
@@ -795,17 +790,17 @@ public final class RegArimaProtos {
       return bd_;
     }
 
-    public static final int BTHETA_FIELD_NUMBER = 6;
+    public static final int BTHETA_FIELD_NUMBER = 7;
     private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> btheta_;
     /**
-     * <code>repeated .jd3.Parameter btheta = 6;</code>
+     * <code>repeated .jd3.Parameter btheta = 7;</code>
      */
     @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getBthetaList() {
       return btheta_;
     }
     /**
-     * <code>repeated .jd3.Parameter btheta = 6;</code>
+     * <code>repeated .jd3.Parameter btheta = 7;</code>
      */
     @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
@@ -813,21 +808,21 @@ public final class RegArimaProtos {
       return btheta_;
     }
     /**
-     * <code>repeated .jd3.Parameter btheta = 6;</code>
+     * <code>repeated .jd3.Parameter btheta = 7;</code>
      */
     @java.lang.Override
     public int getBthetaCount() {
       return btheta_.size();
     }
     /**
-     * <code>repeated .jd3.Parameter btheta = 6;</code>
+     * <code>repeated .jd3.Parameter btheta = 7;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getBtheta(int index) {
       return btheta_.get(index);
     }
     /**
-     * <code>repeated .jd3.Parameter btheta = 6;</code>
+     * <code>repeated .jd3.Parameter btheta = 7;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getBthetaOrBuilder(
@@ -849,23 +844,26 @@ public final class RegArimaProtos {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (period_ != 0) {
+        output.writeInt32(1, period_);
+      }
       for (int i = 0; i < phi_.size(); i++) {
-        output.writeMessage(1, phi_.get(i));
+        output.writeMessage(2, phi_.get(i));
       }
       if (d_ != 0) {
-        output.writeInt32(2, d_);
+        output.writeInt32(3, d_);
       }
       for (int i = 0; i < theta_.size(); i++) {
-        output.writeMessage(3, theta_.get(i));
+        output.writeMessage(4, theta_.get(i));
       }
       for (int i = 0; i < bphi_.size(); i++) {
-        output.writeMessage(4, bphi_.get(i));
+        output.writeMessage(5, bphi_.get(i));
       }
       if (bd_ != 0) {
-        output.writeInt32(5, bd_);
+        output.writeInt32(6, bd_);
       }
       for (int i = 0; i < btheta_.size(); i++) {
-        output.writeMessage(6, btheta_.get(i));
+        output.writeMessage(7, btheta_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -876,29 +874,33 @@ public final class RegArimaProtos {
       if (size != -1) return size;
 
       size = 0;
+      if (period_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, period_);
+      }
       for (int i = 0; i < phi_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, phi_.get(i));
+          .computeMessageSize(2, phi_.get(i));
       }
       if (d_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, d_);
+          .computeInt32Size(3, d_);
       }
       for (int i = 0; i < theta_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, theta_.get(i));
+          .computeMessageSize(4, theta_.get(i));
       }
       for (int i = 0; i < bphi_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, bphi_.get(i));
+          .computeMessageSize(5, bphi_.get(i));
       }
       if (bd_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, bd_);
+          .computeInt32Size(6, bd_);
       }
       for (int i = 0; i < btheta_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, btheta_.get(i));
+          .computeMessageSize(7, btheta_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -915,6 +917,8 @@ public final class RegArimaProtos {
       }
       demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec other = (demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec) obj;
 
+      if (getPeriod()
+          != other.getPeriod()) return false;
       if (!getPhiList()
           .equals(other.getPhiList())) return false;
       if (getD()
@@ -938,6 +942,8 @@ public final class RegArimaProtos {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + PERIOD_FIELD_NUMBER;
+      hash = (53 * hash) + getPeriod();
       if (getPhiCount() > 0) {
         hash = (37 * hash) + PHI_FIELD_NUMBER;
         hash = (53 * hash) + getPhiList().hashCode();
@@ -1095,6 +1101,8 @@ public final class RegArimaProtos {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        period_ = 0;
+
         if (phiBuilder_ == null) {
           phi_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000001);
@@ -1150,6 +1158,7 @@ public final class RegArimaProtos {
       public demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec buildPartial() {
         demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec result = new demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec(this);
         int from_bitField0_ = bitField0_;
+        result.period_ = period_;
         if (phiBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
             phi_ = java.util.Collections.unmodifiableList(phi_);
@@ -1236,6 +1245,9 @@ public final class RegArimaProtos {
 
       public Builder mergeFrom(demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec other) {
         if (other == demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec.getDefaultInstance()) return this;
+        if (other.getPeriod() != 0) {
+          setPeriod(other.getPeriod());
+        }
         if (phiBuilder_ == null) {
           if (!other.phi_.isEmpty()) {
             if (phi_.isEmpty()) {
@@ -1376,6 +1388,37 @@ public final class RegArimaProtos {
       }
       private int bitField0_;
 
+      private int period_ ;
+      /**
+       * <code>int32 period = 1;</code>
+       * @return The period.
+       */
+      @java.lang.Override
+      public int getPeriod() {
+        return period_;
+      }
+      /**
+       * <code>int32 period = 1;</code>
+       * @param value The period to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPeriod(int value) {
+        
+        period_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 period = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPeriod() {
+        
+        period_ = 0;
+        onChanged();
+        return this;
+      }
+
       private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> phi_ =
         java.util.Collections.emptyList();
       private void ensurePhiIsMutable() {
@@ -1389,7 +1432,7 @@ public final class RegArimaProtos {
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> phiBuilder_;
 
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getPhiList() {
         if (phiBuilder_ == null) {
@@ -1399,7 +1442,7 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public int getPhiCount() {
         if (phiBuilder_ == null) {
@@ -1409,7 +1452,7 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getPhi(int index) {
         if (phiBuilder_ == null) {
@@ -1419,7 +1462,7 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public Builder setPhi(
           int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
@@ -1436,7 +1479,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public Builder setPhi(
           int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -1450,7 +1493,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public Builder addPhi(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (phiBuilder_ == null) {
@@ -1466,7 +1509,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public Builder addPhi(
           int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
@@ -1483,7 +1526,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public Builder addPhi(
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -1497,7 +1540,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public Builder addPhi(
           int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -1511,7 +1554,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public Builder addAllPhi(
           java.lang.Iterable<? extends demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> values) {
@@ -1526,7 +1569,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public Builder clearPhi() {
         if (phiBuilder_ == null) {
@@ -1539,7 +1582,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public Builder removePhi(int index) {
         if (phiBuilder_ == null) {
@@ -1552,14 +1595,14 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getPhiBuilder(
           int index) {
         return getPhiFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getPhiOrBuilder(
           int index) {
@@ -1569,7 +1612,7 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
            getPhiOrBuilderList() {
@@ -1580,14 +1623,14 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addPhiBuilder() {
         return getPhiFieldBuilder().addBuilder(
             demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addPhiBuilder(
           int index) {
@@ -1595,7 +1638,7 @@ public final class RegArimaProtos {
             index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
       }
       /**
-       * <code>repeated .jd3.Parameter phi = 1;</code>
+       * <code>repeated .jd3.Parameter phi = 2;</code>
        */
       public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder> 
            getPhiBuilderList() {
@@ -1618,7 +1661,7 @@ public final class RegArimaProtos {
 
       private int d_ ;
       /**
-       * <code>int32 d = 2;</code>
+       * <code>int32 d = 3;</code>
        * @return The d.
        */
       @java.lang.Override
@@ -1626,7 +1669,7 @@ public final class RegArimaProtos {
         return d_;
       }
       /**
-       * <code>int32 d = 2;</code>
+       * <code>int32 d = 3;</code>
        * @param value The d to set.
        * @return This builder for chaining.
        */
@@ -1637,7 +1680,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>int32 d = 2;</code>
+       * <code>int32 d = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearD() {
@@ -1660,7 +1703,7 @@ public final class RegArimaProtos {
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> thetaBuilder_;
 
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getThetaList() {
         if (thetaBuilder_ == null) {
@@ -1670,7 +1713,7 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public int getThetaCount() {
         if (thetaBuilder_ == null) {
@@ -1680,7 +1723,7 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTheta(int index) {
         if (thetaBuilder_ == null) {
@@ -1690,7 +1733,7 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public Builder setTheta(
           int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
@@ -1707,7 +1750,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public Builder setTheta(
           int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -1721,7 +1764,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public Builder addTheta(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (thetaBuilder_ == null) {
@@ -1737,7 +1780,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public Builder addTheta(
           int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
@@ -1754,7 +1797,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public Builder addTheta(
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -1768,7 +1811,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public Builder addTheta(
           int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -1782,7 +1825,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public Builder addAllTheta(
           java.lang.Iterable<? extends demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> values) {
@@ -1797,7 +1840,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public Builder clearTheta() {
         if (thetaBuilder_ == null) {
@@ -1810,7 +1853,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public Builder removeTheta(int index) {
         if (thetaBuilder_ == null) {
@@ -1823,14 +1866,14 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getThetaBuilder(
           int index) {
         return getThetaFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getThetaOrBuilder(
           int index) {
@@ -1840,7 +1883,7 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
            getThetaOrBuilderList() {
@@ -1851,14 +1894,14 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addThetaBuilder() {
         return getThetaFieldBuilder().addBuilder(
             demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addThetaBuilder(
           int index) {
@@ -1866,7 +1909,7 @@ public final class RegArimaProtos {
             index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
       }
       /**
-       * <code>repeated .jd3.Parameter theta = 3;</code>
+       * <code>repeated .jd3.Parameter theta = 4;</code>
        */
       public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder> 
            getThetaBuilderList() {
@@ -1900,7 +1943,7 @@ public final class RegArimaProtos {
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> bphiBuilder_;
 
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getBphiList() {
         if (bphiBuilder_ == null) {
@@ -1910,7 +1953,7 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public int getBphiCount() {
         if (bphiBuilder_ == null) {
@@ -1920,7 +1963,7 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getBphi(int index) {
         if (bphiBuilder_ == null) {
@@ -1930,7 +1973,7 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public Builder setBphi(
           int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
@@ -1947,7 +1990,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public Builder setBphi(
           int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -1961,7 +2004,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public Builder addBphi(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (bphiBuilder_ == null) {
@@ -1977,7 +2020,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public Builder addBphi(
           int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
@@ -1994,7 +2037,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public Builder addBphi(
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -2008,7 +2051,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public Builder addBphi(
           int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -2022,7 +2065,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public Builder addAllBphi(
           java.lang.Iterable<? extends demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> values) {
@@ -2037,7 +2080,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public Builder clearBphi() {
         if (bphiBuilder_ == null) {
@@ -2050,7 +2093,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public Builder removeBphi(int index) {
         if (bphiBuilder_ == null) {
@@ -2063,14 +2106,14 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getBphiBuilder(
           int index) {
         return getBphiFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getBphiOrBuilder(
           int index) {
@@ -2080,7 +2123,7 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
            getBphiOrBuilderList() {
@@ -2091,14 +2134,14 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addBphiBuilder() {
         return getBphiFieldBuilder().addBuilder(
             demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addBphiBuilder(
           int index) {
@@ -2106,7 +2149,7 @@ public final class RegArimaProtos {
             index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
       }
       /**
-       * <code>repeated .jd3.Parameter bphi = 4;</code>
+       * <code>repeated .jd3.Parameter bphi = 5;</code>
        */
       public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder> 
            getBphiBuilderList() {
@@ -2129,7 +2172,7 @@ public final class RegArimaProtos {
 
       private int bd_ ;
       /**
-       * <code>int32 bd = 5;</code>
+       * <code>int32 bd = 6;</code>
        * @return The bd.
        */
       @java.lang.Override
@@ -2137,7 +2180,7 @@ public final class RegArimaProtos {
         return bd_;
       }
       /**
-       * <code>int32 bd = 5;</code>
+       * <code>int32 bd = 6;</code>
        * @param value The bd to set.
        * @return This builder for chaining.
        */
@@ -2148,7 +2191,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>int32 bd = 5;</code>
+       * <code>int32 bd = 6;</code>
        * @return This builder for chaining.
        */
       public Builder clearBd() {
@@ -2171,7 +2214,7 @@ public final class RegArimaProtos {
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> bthetaBuilder_;
 
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getBthetaList() {
         if (bthetaBuilder_ == null) {
@@ -2181,7 +2224,7 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public int getBthetaCount() {
         if (bthetaBuilder_ == null) {
@@ -2191,7 +2234,7 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getBtheta(int index) {
         if (bthetaBuilder_ == null) {
@@ -2201,7 +2244,7 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public Builder setBtheta(
           int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
@@ -2218,7 +2261,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public Builder setBtheta(
           int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -2232,7 +2275,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public Builder addBtheta(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (bthetaBuilder_ == null) {
@@ -2248,7 +2291,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public Builder addBtheta(
           int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
@@ -2265,7 +2308,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public Builder addBtheta(
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -2279,7 +2322,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public Builder addBtheta(
           int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -2293,7 +2336,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public Builder addAllBtheta(
           java.lang.Iterable<? extends demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> values) {
@@ -2308,7 +2351,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public Builder clearBtheta() {
         if (bthetaBuilder_ == null) {
@@ -2321,7 +2364,7 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public Builder removeBtheta(int index) {
         if (bthetaBuilder_ == null) {
@@ -2334,14 +2377,14 @@ public final class RegArimaProtos {
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getBthetaBuilder(
           int index) {
         return getBthetaFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getBthetaOrBuilder(
           int index) {
@@ -2351,7 +2394,7 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
            getBthetaOrBuilderList() {
@@ -2362,14 +2405,14 @@ public final class RegArimaProtos {
         }
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addBthetaBuilder() {
         return getBthetaFieldBuilder().addBuilder(
             demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addBthetaBuilder(
           int index) {
@@ -2377,7 +2420,7 @@ public final class RegArimaProtos {
             index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
       }
       /**
-       * <code>repeated .jd3.Parameter btheta = 6;</code>
+       * <code>repeated .jd3.Parameter btheta = 7;</code>
        */
       public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder> 
            getBthetaBuilderList() {
@@ -2450,8 +2493,8 @@ public final class RegArimaProtos {
 
   }
 
-  public interface VariableOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:regarima.Variable)
+  public interface TsVariableOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:regarima.TsVariable)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -2549,18 +2592,18 @@ public final class RegArimaProtos {
         java.lang.String key);
   }
   /**
-   * Protobuf type {@code regarima.Variable}
+   * Protobuf type {@code regarima.TsVariable}
    */
-  public static final class Variable extends
+  public static final class TsVariable extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:regarima.Variable)
-      VariableOrBuilder {
+      // @@protoc_insertion_point(message_implements:regarima.TsVariable)
+      TsVariableOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use Variable.newBuilder() to construct.
-    private Variable(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use TsVariable.newBuilder() to construct.
+    private TsVariable(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private Variable() {
+    private TsVariable() {
       name_ = "";
       id_ = "";
       coefficient_ = java.util.Collections.emptyList();
@@ -2570,7 +2613,7 @@ public final class RegArimaProtos {
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new Variable();
+      return new TsVariable();
     }
 
     @java.lang.Override
@@ -2578,7 +2621,7 @@ public final class RegArimaProtos {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private Variable(
+    private TsVariable(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2665,7 +2708,7 @@ public final class RegArimaProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_Variable_descriptor;
+      return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_TsVariable_descriptor;
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -2683,9 +2726,9 @@ public final class RegArimaProtos {
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_Variable_fieldAccessorTable
+      return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_TsVariable_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              demetra.regarima.io.protobuf.RegArimaProtos.Variable.class, demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder.class);
+              demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.class, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder.class);
     }
 
     public static final int NAME_FIELD_NUMBER = 1;
@@ -2832,7 +2875,7 @@ public final class RegArimaProtos {
           java.lang.String, java.lang.String> defaultEntry =
               com.google.protobuf.MapEntry
               .<java.lang.String, java.lang.String>newDefaultInstance(
-                  demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_Variable_MetadataEntry_descriptor, 
+                  demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_TsVariable_MetadataEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.STRING,
@@ -2989,10 +3032,10 @@ public final class RegArimaProtos {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof demetra.regarima.io.protobuf.RegArimaProtos.Variable)) {
+      if (!(obj instanceof demetra.regarima.io.protobuf.RegArimaProtos.TsVariable)) {
         return super.equals(obj);
       }
-      demetra.regarima.io.protobuf.RegArimaProtos.Variable other = (demetra.regarima.io.protobuf.RegArimaProtos.Variable) obj;
+      demetra.regarima.io.protobuf.RegArimaProtos.TsVariable other = (demetra.regarima.io.protobuf.RegArimaProtos.TsVariable) obj;
 
       if (!getName()
           .equals(other.getName())) return false;
@@ -3038,69 +3081,69 @@ public final class RegArimaProtos {
       return hash;
     }
 
-    public static demetra.regarima.io.protobuf.RegArimaProtos.Variable parseFrom(
+    public static demetra.regarima.io.protobuf.RegArimaProtos.TsVariable parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static demetra.regarima.io.protobuf.RegArimaProtos.Variable parseFrom(
+    public static demetra.regarima.io.protobuf.RegArimaProtos.TsVariable parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static demetra.regarima.io.protobuf.RegArimaProtos.Variable parseFrom(
+    public static demetra.regarima.io.protobuf.RegArimaProtos.TsVariable parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static demetra.regarima.io.protobuf.RegArimaProtos.Variable parseFrom(
+    public static demetra.regarima.io.protobuf.RegArimaProtos.TsVariable parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static demetra.regarima.io.protobuf.RegArimaProtos.Variable parseFrom(byte[] data)
+    public static demetra.regarima.io.protobuf.RegArimaProtos.TsVariable parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static demetra.regarima.io.protobuf.RegArimaProtos.Variable parseFrom(
+    public static demetra.regarima.io.protobuf.RegArimaProtos.TsVariable parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static demetra.regarima.io.protobuf.RegArimaProtos.Variable parseFrom(java.io.InputStream input)
+    public static demetra.regarima.io.protobuf.RegArimaProtos.TsVariable parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static demetra.regarima.io.protobuf.RegArimaProtos.Variable parseFrom(
+    public static demetra.regarima.io.protobuf.RegArimaProtos.TsVariable parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static demetra.regarima.io.protobuf.RegArimaProtos.Variable parseDelimitedFrom(java.io.InputStream input)
+    public static demetra.regarima.io.protobuf.RegArimaProtos.TsVariable parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static demetra.regarima.io.protobuf.RegArimaProtos.Variable parseDelimitedFrom(
+    public static demetra.regarima.io.protobuf.RegArimaProtos.TsVariable parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static demetra.regarima.io.protobuf.RegArimaProtos.Variable parseFrom(
+    public static demetra.regarima.io.protobuf.RegArimaProtos.TsVariable parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static demetra.regarima.io.protobuf.RegArimaProtos.Variable parseFrom(
+    public static demetra.regarima.io.protobuf.RegArimaProtos.TsVariable parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -3113,7 +3156,7 @@ public final class RegArimaProtos {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(demetra.regarima.io.protobuf.RegArimaProtos.Variable prototype) {
+    public static Builder newBuilder(demetra.regarima.io.protobuf.RegArimaProtos.TsVariable prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -3129,15 +3172,15 @@ public final class RegArimaProtos {
       return builder;
     }
     /**
-     * Protobuf type {@code regarima.Variable}
+     * Protobuf type {@code regarima.TsVariable}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:regarima.Variable)
-        demetra.regarima.io.protobuf.RegArimaProtos.VariableOrBuilder {
+        // @@protoc_insertion_point(builder_implements:regarima.TsVariable)
+        demetra.regarima.io.protobuf.RegArimaProtos.TsVariableOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_Variable_descriptor;
+        return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_TsVariable_descriptor;
       }
 
       @SuppressWarnings({"rawtypes"})
@@ -3165,12 +3208,12 @@ public final class RegArimaProtos {
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_Variable_fieldAccessorTable
+        return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_TsVariable_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                demetra.regarima.io.protobuf.RegArimaProtos.Variable.class, demetra.regarima.io.protobuf.RegArimaProtos.Variable.Builder.class);
+                demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.class, demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.Builder.class);
       }
 
-      // Construct using demetra.regarima.io.protobuf.RegArimaProtos.Variable.newBuilder()
+      // Construct using demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -3210,17 +3253,17 @@ public final class RegArimaProtos {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_Variable_descriptor;
+        return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_TsVariable_descriptor;
       }
 
       @java.lang.Override
-      public demetra.regarima.io.protobuf.RegArimaProtos.Variable getDefaultInstanceForType() {
-        return demetra.regarima.io.protobuf.RegArimaProtos.Variable.getDefaultInstance();
+      public demetra.regarima.io.protobuf.RegArimaProtos.TsVariable getDefaultInstanceForType() {
+        return demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.getDefaultInstance();
       }
 
       @java.lang.Override
-      public demetra.regarima.io.protobuf.RegArimaProtos.Variable build() {
-        demetra.regarima.io.protobuf.RegArimaProtos.Variable result = buildPartial();
+      public demetra.regarima.io.protobuf.RegArimaProtos.TsVariable build() {
+        demetra.regarima.io.protobuf.RegArimaProtos.TsVariable result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -3228,8 +3271,8 @@ public final class RegArimaProtos {
       }
 
       @java.lang.Override
-      public demetra.regarima.io.protobuf.RegArimaProtos.Variable buildPartial() {
-        demetra.regarima.io.protobuf.RegArimaProtos.Variable result = new demetra.regarima.io.protobuf.RegArimaProtos.Variable(this);
+      public demetra.regarima.io.protobuf.RegArimaProtos.TsVariable buildPartial() {
+        demetra.regarima.io.protobuf.RegArimaProtos.TsVariable result = new demetra.regarima.io.protobuf.RegArimaProtos.TsVariable(this);
         int from_bitField0_ = bitField0_;
         result.name_ = name_;
         result.id_ = id_;
@@ -3284,16 +3327,16 @@ public final class RegArimaProtos {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof demetra.regarima.io.protobuf.RegArimaProtos.Variable) {
-          return mergeFrom((demetra.regarima.io.protobuf.RegArimaProtos.Variable)other);
+        if (other instanceof demetra.regarima.io.protobuf.RegArimaProtos.TsVariable) {
+          return mergeFrom((demetra.regarima.io.protobuf.RegArimaProtos.TsVariable)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(demetra.regarima.io.protobuf.RegArimaProtos.Variable other) {
-        if (other == demetra.regarima.io.protobuf.RegArimaProtos.Variable.getDefaultInstance()) return this;
+      public Builder mergeFrom(demetra.regarima.io.protobuf.RegArimaProtos.TsVariable other) {
+        if (other == demetra.regarima.io.protobuf.RegArimaProtos.TsVariable.getDefaultInstance()) return this;
         if (!other.getName().isEmpty()) {
           name_ = other.name_;
           onChanged();
@@ -3351,11 +3394,11 @@ public final class RegArimaProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        demetra.regarima.io.protobuf.RegArimaProtos.Variable parsedMessage = null;
+        demetra.regarima.io.protobuf.RegArimaProtos.TsVariable parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (demetra.regarima.io.protobuf.RegArimaProtos.Variable) e.getUnfinishedMessage();
+          parsedMessage = (demetra.regarima.io.protobuf.RegArimaProtos.TsVariable) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -3960,41 +4003,41 @@ public final class RegArimaProtos {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:regarima.Variable)
+      // @@protoc_insertion_point(builder_scope:regarima.TsVariable)
     }
 
-    // @@protoc_insertion_point(class_scope:regarima.Variable)
-    private static final demetra.regarima.io.protobuf.RegArimaProtos.Variable DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:regarima.TsVariable)
+    private static final demetra.regarima.io.protobuf.RegArimaProtos.TsVariable DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new demetra.regarima.io.protobuf.RegArimaProtos.Variable();
+      DEFAULT_INSTANCE = new demetra.regarima.io.protobuf.RegArimaProtos.TsVariable();
     }
 
-    public static demetra.regarima.io.protobuf.RegArimaProtos.Variable getDefaultInstance() {
+    public static demetra.regarima.io.protobuf.RegArimaProtos.TsVariable getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<Variable>
-        PARSER = new com.google.protobuf.AbstractParser<Variable>() {
+    private static final com.google.protobuf.Parser<TsVariable>
+        PARSER = new com.google.protobuf.AbstractParser<TsVariable>() {
       @java.lang.Override
-      public Variable parsePartialFrom(
+      public TsVariable parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new Variable(input, extensionRegistry);
+        return new TsVariable(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<Variable> parser() {
+    public static com.google.protobuf.Parser<TsVariable> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<Variable> getParserForType() {
+    public com.google.protobuf.Parser<TsVariable> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public demetra.regarima.io.protobuf.RegArimaProtos.Variable getDefaultInstanceForType() {
+    public demetra.regarima.io.protobuf.RegArimaProtos.TsVariable getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -9378,15 +9421,15 @@ public final class RegArimaProtos {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_regarima_SarimaSpec_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_regarima_Variable_descriptor;
+    internal_static_regarima_TsVariable_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_regarima_Variable_fieldAccessorTable;
+      internal_static_regarima_TsVariable_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_regarima_Variable_MetadataEntry_descriptor;
+    internal_static_regarima_TsVariable_MetadataEntry_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_regarima_Variable_MetadataEntry_fieldAccessorTable;
+      internal_static_regarima_TsVariable_MetadataEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_regarima_Ramp_descriptor;
   private static final 
@@ -9432,41 +9475,40 @@ public final class RegArimaProtos {
   static {
     java.lang.String[] descriptorData = {
       "\n\016regarima.proto\022\010regarima\032\rtoolkit.prot" +
-      "o\"\235\001\n\nSarimaSpec\022\033\n\003phi\030\001 \003(\0132\016.jd3.Para" +
-      "meter\022\t\n\001d\030\002 \001(\005\022\035\n\005theta\030\003 \003(\0132\016.jd3.Pa" +
-      "rameter\022\034\n\004bphi\030\004 \003(\0132\016.jd3.Parameter\022\n\n" +
-      "\002bd\030\005 \001(\005\022\036\n\006btheta\030\006 \003(\0132\016.jd3.Paramete" +
-      "r\"\323\001\n\010Variable\022\014\n\004name\030\001 \001(\t\022\n\n\002id\030\002 \001(\t" +
-      "\022\021\n\tfirst_lag\030\003 \001(\005\022\020\n\010last_lag\030\004 \001(\005\022#\n" +
-      "\013coefficient\030\005 \003(\0132\016.jd3.Parameter\0222\n\010me" +
-      "tadata\030\006 \003(\0132 .regarima.Variable.Metadat" +
-      "aEntry\032/\n\rMetadataEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005" +
-      "value\030\002 \001(\t:\0028\001\"\314\001\n\004Ramp\022\014\n\004name\030\001 \001(\t\022\030" +
-      "\n\005start\030\002 \001(\0132\t.jd3.Date\022\026\n\003end\030\003 \001(\0132\t." +
-      "jd3.Date\022#\n\013coefficient\030\005 \001(\0132\016.jd3.Para" +
-      "meter\022.\n\010metadata\030\006 \003(\0132\034.regarima.Ramp." +
-      "MetadataEntry\032/\n\rMetadataEntry\022\013\n\003key\030\001 " +
-      "\001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\313\001\n\007Outlier\022\014\n\004na" +
-      "me\030\001 \001(\t\022\014\n\004code\030\002 \001(\t\022\033\n\010position\030\003 \001(\013" +
-      "2\t.jd3.Date\022#\n\013coefficient\030\005 \001(\0132\016.jd3.P" +
-      "arameter\0221\n\010metadata\030\006 \003(\0132\037.regarima.Ou" +
-      "tlier.MetadataEntry\032/\n\rMetadataEntry\022\013\n\003" +
-      "key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\333\002\n\024Interve" +
-      "ntionVariable\022\014\n\004name\030\001 \001(\t\022:\n\tsequences" +
-      "\030\002 \003(\0132\'.regarima.InterventionVariable.S" +
-      "equence\022\r\n\005delta\030\003 \001(\001\022\026\n\016seasonal_delta" +
-      "\030\004 \001(\001\022#\n\013coefficient\030\005 \001(\0132\016.jd3.Parame" +
-      "ter\022>\n\010metadata\030\006 \003(\0132,.regarima.Interve" +
-      "ntionVariable.MetadataEntry\032<\n\010Sequence\022" +
-      "\030\n\005start\030\001 \001(\0132\t.jd3.Date\022\026\n\003end\030\002 \001(\0132\t" +
-      ".jd3.Date\032/\n\rMetadataEntry\022\013\n\003key\030\001 \001(\t\022" +
-      "\r\n\005value\030\002 \001(\t:\0028\001*K\n\016Transformation\022\022\n\016" +
-      "FN_UNSPECIFIED\020\000\022\014\n\010FN_LEVEL\020\001\022\n\n\006FN_LOG" +
-      "\020\002\022\013\n\007FN_AUTO\020\n*Y\n\016LengthOfPeriod\022\022\n\016LP_" +
-      "UNSPECIFIED\020\000\022\013\n\007LP_NONE\020\001\022\017\n\013LP_LEAPYEA" +
-      "R\020\002\022\025\n\021LP_LENGTHOFPERIOD\020\003*R\n\013TradingDay" +
-      "s\022\022\n\016TD_UNSPECIFIED\020\000\022\013\n\007TD_NONE\020\001\022\013\n\007TD" +
-      "_WEEK\020\002\022\010\n\004TD_3\020\003\022\013\n\007TD_FULL\020\006B.\n\034demetr" +
+      "o\"\255\001\n\nSarimaSpec\022\016\n\006period\030\001 \001(\005\022\033\n\003phi\030" +
+      "\002 \003(\0132\016.jd3.Parameter\022\t\n\001d\030\003 \001(\005\022\035\n\005thet" +
+      "a\030\004 \003(\0132\016.jd3.Parameter\022\034\n\004bphi\030\005 \003(\0132\016." +
+      "jd3.Parameter\022\n\n\002bd\030\006 \001(\005\022\036\n\006btheta\030\007 \003(" +
+      "\0132\016.jd3.Parameter\"\327\001\n\nTsVariable\022\014\n\004name" +
+      "\030\001 \001(\t\022\n\n\002id\030\002 \001(\t\022\021\n\tfirst_lag\030\003 \001(\005\022\020\n" +
+      "\010last_lag\030\004 \001(\005\022#\n\013coefficient\030\005 \003(\0132\016.j" +
+      "d3.Parameter\0224\n\010metadata\030\006 \003(\0132\".regarim" +
+      "a.TsVariable.MetadataEntry\032/\n\rMetadataEn" +
+      "try\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\314\001\n\004" +
+      "Ramp\022\014\n\004name\030\001 \001(\t\022\030\n\005start\030\002 \001(\0132\t.jd3." +
+      "Date\022\026\n\003end\030\003 \001(\0132\t.jd3.Date\022#\n\013coeffici" +
+      "ent\030\005 \001(\0132\016.jd3.Parameter\022.\n\010metadata\030\006 " +
+      "\003(\0132\034.regarima.Ramp.MetadataEntry\032/\n\rMet" +
+      "adataEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\002" +
+      "8\001\"\313\001\n\007Outlier\022\014\n\004name\030\001 \001(\t\022\014\n\004code\030\002 \001" +
+      "(\t\022\033\n\010position\030\003 \001(\0132\t.jd3.Date\022#\n\013coeff" +
+      "icient\030\005 \001(\0132\016.jd3.Parameter\0221\n\010metadata" +
+      "\030\006 \003(\0132\037.regarima.Outlier.MetadataEntry\032" +
+      "/\n\rMetadataEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002" +
+      " \001(\t:\0028\001\"\333\002\n\024InterventionVariable\022\014\n\004nam" +
+      "e\030\001 \001(\t\022:\n\tsequences\030\002 \003(\0132\'.regarima.In" +
+      "terventionVariable.Sequence\022\r\n\005delta\030\003 \001" +
+      "(\001\022\026\n\016seasonal_delta\030\004 \001(\001\022#\n\013coefficien" +
+      "t\030\005 \001(\0132\016.jd3.Parameter\022>\n\010metadata\030\006 \003(" +
+      "\0132,.regarima.InterventionVariable.Metada" +
+      "taEntry\032<\n\010Sequence\022\030\n\005start\030\001 \001(\0132\t.jd3" +
+      ".Date\022\026\n\003end\030\002 \001(\0132\t.jd3.Date\032/\n\rMetadat" +
+      "aEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001*7" +
+      "\n\016Transformation\022\014\n\010FN_LEVEL\020\000\022\n\n\006FN_LOG" +
+      "\020\001\022\013\n\007FN_AUTO\020\n*E\n\016LengthOfPeriod\022\013\n\007LP_" +
+      "NONE\020\000\022\017\n\013LP_LEAPYEAR\020\001\022\025\n\021LP_LENGTHOFPE" +
+      "RIOD\020\002*>\n\013TradingDays\022\013\n\007TD_NONE\020\000\022\013\n\007TD" +
+      "_WEEK\020\001\022\010\n\004TD_3\020\002\022\013\n\007TD_FULL\020\003B.\n\034demetr" +
       "a.regarima.io.protobufB\016RegArimaProtosP\000" +
       "b\006proto3"
     };
@@ -9480,18 +9522,18 @@ public final class RegArimaProtos {
     internal_static_regarima_SarimaSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_regarima_SarimaSpec_descriptor,
-        new java.lang.String[] { "Phi", "D", "Theta", "Bphi", "Bd", "Btheta", });
-    internal_static_regarima_Variable_descriptor =
+        new java.lang.String[] { "Period", "Phi", "D", "Theta", "Bphi", "Bd", "Btheta", });
+    internal_static_regarima_TsVariable_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_regarima_Variable_fieldAccessorTable = new
+    internal_static_regarima_TsVariable_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_regarima_Variable_descriptor,
+        internal_static_regarima_TsVariable_descriptor,
         new java.lang.String[] { "Name", "Id", "FirstLag", "LastLag", "Coefficient", "Metadata", });
-    internal_static_regarima_Variable_MetadataEntry_descriptor =
-      internal_static_regarima_Variable_descriptor.getNestedTypes().get(0);
-    internal_static_regarima_Variable_MetadataEntry_fieldAccessorTable = new
+    internal_static_regarima_TsVariable_MetadataEntry_descriptor =
+      internal_static_regarima_TsVariable_descriptor.getNestedTypes().get(0);
+    internal_static_regarima_TsVariable_MetadataEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_regarima_Variable_MetadataEntry_descriptor,
+        internal_static_regarima_TsVariable_MetadataEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_regarima_Ramp_descriptor =
       getDescriptor().getMessageTypes().get(2);

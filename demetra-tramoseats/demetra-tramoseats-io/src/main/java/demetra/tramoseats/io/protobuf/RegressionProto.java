@@ -50,7 +50,7 @@ public class RegressionProto {
         }
         n = spec.getUsersCount();
         for (int i = 0; i < n; ++i) {
-            RegArimaProtos.Variable var = spec.getUsers(i);
+            RegArimaProtos.TsVariable var = spec.getUsers(i);
             builder.userDefinedVariable(RegArimaProtosUtility.convert(var));
         }
         n = spec.getInterventionsCount();

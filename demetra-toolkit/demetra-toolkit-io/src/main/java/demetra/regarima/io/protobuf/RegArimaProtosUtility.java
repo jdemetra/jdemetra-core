@@ -106,6 +106,7 @@ public class RegArimaProtosUtility {
 
     public SarimaSpec convert(RegArimaProtos.SarimaSpec spec) {
         return SarimaSpec.builder()
+                .period(spec.getPeriod())
                 .d(spec.getD())
                 .bd(spec.getBd())
                 .phi(ToolkitProtosUtility.convert(spec.getPhiList()))
@@ -117,6 +118,7 @@ public class RegArimaProtosUtility {
 
     public RegArimaProtos.SarimaSpec convert(SarimaSpec spec) {
         RegArimaProtos.SarimaSpec.Builder builder = RegArimaProtos.SarimaSpec.newBuilder()
+                .setPeriod(spec.getPeriod())
                 .setD(spec.getD())
                 .setBd(spec.getBd());
 
@@ -139,8 +141,8 @@ public class RegArimaProtosUtility {
         return builder.build();
     }
 
-    public RegArimaProtos.Variable convertTsContextVariable(Variable<TsContextVariable> v) {
-        return RegArimaProtos.Variable.newBuilder()
+    public RegArimaProtos.TsVariable convertTsContextVariable(Variable<TsContextVariable> v) {
+        return RegArimaProtos.TsVariable.newBuilder()
                 .setName(v.getName())
                 .setId(v.getCore().getId())
                 .setFirstLag(v.getCore().getFirstLag())
@@ -148,7 +150,7 @@ public class RegArimaProtosUtility {
                 .build();
     }
 
-    public Variable<TsContextVariable> convert(RegArimaProtos.Variable v) {
+    public Variable<TsContextVariable> convert(RegArimaProtos.TsVariable v) {
         return Variable.<TsContextVariable> builder()
                 .name(v.getName())
                 .core(new TsContextVariable(v.getId(), v.getFirstLag(), v.getLastLag()))
