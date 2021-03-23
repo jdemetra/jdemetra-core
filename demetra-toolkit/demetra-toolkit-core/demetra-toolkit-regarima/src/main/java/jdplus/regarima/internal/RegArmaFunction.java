@@ -42,7 +42,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
     public static class Builder<S extends IArimaModel> {
 
         // algorithms
-        private ConcentratedLikelihoodComputer cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER;
+        private ConcentratedLikelihoodComputer cll = ConcentratedLikelihoodComputer.DEFAULT_FULL_COMPUTER;
         private ToDoubleFunction<Likelihood> eval = DefaultLikelihoodEvaluation.deviance();
         private boolean mt = false;
         // model

@@ -109,14 +109,14 @@ public class TramoKernelTest {
 
     @Test
     public void testProd() {
-        DefaultProcessingLog log=new DefaultProcessingLog();
+        DefaultProcessingLog log = new DefaultProcessingLog();
         TramoKernel processor = TramoKernel.of(TramoSpec.TRfull, null);
         TsPeriod start = TsPeriod.monthly(1992, 1);
         TsData s = TsData.of(start, Doubles.of(Data.RETAIL_BOOKSTORES));
         RegSarimaModel rslt = processor.process(s, log);
         System.out.println("JD3");
         System.out.println(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
-        log.all().stream().forEach(z->System.out.println(z));
+        log.all().stream().forEach(z -> System.out.println(z));
     }
 
     @Test
@@ -163,8 +163,7 @@ public class TramoKernelTest {
 
         RegressionSpec regSpec = spec.getRegression();
         CalendarSpec calSpec = regSpec.getCalendar();
-        TradingDaysSpec tdSpec = TradingDaysSpec.automaticHolidays
-            ("france", AutoMethod.FTest, TradingDaysSpec.DEF_PFTD);
+        TradingDaysSpec tdSpec = TradingDaysSpec.automaticHolidays("france", AutoMethod.FTest, TradingDaysSpec.DEF_PFTD);
         spec = spec.toBuilder()
                 .regression(regSpec.toBuilder()
                         .calendar(calSpec.toBuilder()
@@ -369,10 +368,10 @@ public class TramoKernelTest {
     @Test
     public void testRetail5() {
         TsData[] all = Data.retail_us();
-        TramoKernel processor = TramoKernel.of(TramoSpec.TR5, null);
-        IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR5.build();
+        TramoKernel processor = TramoKernel.of(TramoSpec.TRfull, null);
+        IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
         int n = 0;
-        for (int i =0; i < all.length; ++i) {
+        for (int i = 0; i < all.length; ++i) {
             RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
@@ -391,6 +390,20 @@ public class TramoKernelTest {
         System.out.println("TR5-retail");
         System.out.println(n);
         assertTrue(n > .9 * all.length);
+    }
+
+    @Test
+    public void testIPI() {
+        TsData s = Data.SP_IPI_CN;
+        TramoKernel processor = TramoKernel.of(TramoSpec.TRfull, null);
+        IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
+        RegSarimaModel rslt = processor.process(Data.SP_IPI_CN, null);
+        TsPeriod start = s.getStart();
+        ec.tstoolkit.timeseries.simplets.TsData os = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(s.getAnnualFrequency()), start.year(), start.annualPosition(), s.getValues().toArray(), false);
+        ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(os, null);
+        double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+                - orslt.estimation.getStatistics().adjustedLogLikelihood;
+        System.out.println(del);
     }
 
 //    @Test
@@ -449,7 +462,7 @@ public class TramoKernelTest {
         System.out.println(t1 - t0);
     }
 
-    public static void main(String[] arg){
+    public static void main(String[] arg) {
 //        testInseeFull();
         testInseeFullc();
         stressTestProd();

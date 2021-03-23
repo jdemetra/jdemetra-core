@@ -88,8 +88,10 @@ public final class AutoCovarianceFunction {
         this.ar = ar;
         if (ar.degree() == 0) {
             this.sma = SymmetricFilter.convolutionOf(new BackFilter(ma), var);
-        } else {
-            this.sma = null;
+//        } else if (ma.isIdentity()){
+//            this.sma = SymmetricFilter.ONE;
+        }else{
+            this.sma=null;
         }
         this.ivar = var;
     }

@@ -48,7 +48,7 @@ class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
         private ToDoubleFunction<Likelihood> ll = LL;
         private ToDoubleFunction<Likelihood> ssqll = SSQLL;
         private Function<Likelihood, DoubleSeq> errors = ERRORS;
-        private ConcentratedLikelihoodComputer cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER;
+        private ConcentratedLikelihoodComputer cll = ConcentratedLikelihoodComputer.DEFAULT_FULL_COMPUTER;
         private boolean mt = false;
         // model
         private final DoubleSeq dy;

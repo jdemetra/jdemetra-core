@@ -124,6 +124,8 @@ class FinalEstimator implements IModelEstimator {
                     return true;
                 }
 //                context.information.subSet(RegArimaEstimator.OPTIMIZATION).set(RegArimaEstimator.SCORE, monitor.getScore());
+                if (pass == 0)
+                    return true;
                 if (checkUnitRoots(context)) {
                     nnsig = 0;
                     if (ami) {

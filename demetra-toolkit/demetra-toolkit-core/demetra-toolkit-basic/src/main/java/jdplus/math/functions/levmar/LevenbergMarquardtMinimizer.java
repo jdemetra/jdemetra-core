@@ -221,7 +221,7 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
                 double smu = Math.sqrt(mu);
                 JC.subDiagonal(-n).set(smu);
             }
-            QRSolution ls = QRSolver.robustLeastSquares(DoubleSeq.of(e), JC);
+            QRSolution ls = QRSolver.fastLeastSquares(DoubleSeq.of(e), JC);
             V=ls.RtR();
             DoubleSeq dp = ls.getB().times(-1);
             if (!Double.isFinite(dp.ssq())) {

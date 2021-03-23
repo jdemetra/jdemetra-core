@@ -17,7 +17,6 @@
 package jdplus.x13.regarima;
 
 import demetra.sa.SaVariable;
-import demetra.sa.SaVariable;
 import jdplus.regsarima.ami.ExactOutliersDetector;
 import nbbrd.design.BuilderPattern;
 import demetra.timeseries.regression.Variable;
@@ -44,7 +43,6 @@ import java.util.List;
 import java.util.Map;
 import jdplus.modelling.regression.IOutlierFactory;
 import jdplus.regarima.ami.ModellingUtility;
-import jdplus.sa.modelling.RegArimaDecomposer;
 
 /**
  *
@@ -52,8 +50,8 @@ import jdplus.sa.modelling.RegArimaDecomposer;
  */
 public class OutliersDetectionModule implements IOutliersDetectionModule {
 
-    public static int DEF_MAXROUND = 100;
-    public static int DEF_MAXOUTLIERS = 50;
+    public static int DEF_MAXROUND = 50;
+    public static int DEF_MAXOUTLIERS = 30;
     public static final double EPS = 1e-7, TCRATE=.7;
 
     public static Builder builder() {

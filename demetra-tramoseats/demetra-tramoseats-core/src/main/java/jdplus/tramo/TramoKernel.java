@@ -436,10 +436,11 @@ public class TramoKernel implements RegSarimaProcessor {
     }
 
     private boolean needOutliers(ModelDescription desc) {
+        
         if (!isOutliersDetection()) {
             return false;
         }
-        return round < 3;
+        return needOutliers;
     }
 
     private boolean needAutoModelling(ModelDescription desc) {
@@ -684,8 +685,7 @@ public class TramoKernel implements RegSarimaProcessor {
 
     private void testTransformation(RegSarimaModelling modelling) {
         TransformSpec tspec = spec.getTransform();
-        EstimateSpec espec = spec.getEstimate();
-        if (tspec.getFunction() == TransformationType.Auto) {
+         if (tspec.getFunction() == TransformationType.Auto) {
             LogLevelModule module = LogLevelModule.builder()
                     .logPreference(Math.log(tspec.getFct()))
                     .estimationPrecision(options.intermediatePrecision)

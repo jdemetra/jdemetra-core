@@ -49,8 +49,8 @@ import jdplus.regarima.ami.ModellingUtility;
  */
 public class OutliersDetectionModule implements IOutliersDetectionModule {
 
-    public static int DEF_MAXROUND = 100;
-    public static int DEF_MAXOUTLIERS = 50;
+    public static int DEF_MAXROUND = 50;
+    public static int DEF_MAXOUTLIERS = 30;
     public static final double EPS = 1e-7;
 
     public static Builder builder() {

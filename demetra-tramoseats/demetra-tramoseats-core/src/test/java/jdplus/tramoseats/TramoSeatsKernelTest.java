@@ -55,4 +55,18 @@ public class TramoSeatsKernelTest {
         ProcessingLog log = ProcessingLog.dummy();
         TramoSeatsResults rslt = ts.process(Data.SP_IPI, log);
     }
+
+    @Test
+    public void tesIPI10() {
+        TramoSeatsKernel ts = TramoSeatsKernel.of(TramoSeatsSpec.RSAfull, null);
+        ProcessingLog log = ProcessingLog.dummy();
+        TramoSeatsResults rslt = ts.process(Data.SP_IPI_10, log);
+    }
+
+    @Test
+    public void tesIPI72() {
+        TramoSeatsKernel ts = TramoSeatsKernel.of(TramoSeatsSpec.RSAfull, null);
+        ProcessingLog log = ProcessingLog.dummy();
+        TramoSeatsResults rslt = ts.process(Data.SP_IPI_72, log);
+    }
 }

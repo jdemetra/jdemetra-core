@@ -39,7 +39,7 @@ public class RootDecomposer extends SimpleModelDecomposer {
 
     private BackFilter m_sar, m_nar;
 
-    private SymmetricFilter m_sma, m_sfds, m_sfdn, m_sfcs, m_sfcn;
+    private SymmetricFilter m_sma, m_sfds, m_sfdn;
 
     /**
      *
@@ -74,7 +74,9 @@ public class RootDecomposer extends SimpleModelDecomposer {
         }
 
         splitRoots();
-        simplifyMA();
+        m_sma = model.symmetricMa();
+        m_sfds = SymmetricFilter.convolutionOf(m_sur.times(m_sar));
+        m_sfdn = SymmetricFilter.convolutionOf(m_nur.times(m_nar));
 
         if (!checkSpecialCases()) {
             return;
@@ -156,17 +158,16 @@ public class RootDecomposer extends SimpleModelDecomposer {
         SymmetricFilter sma = SymmetricFilter.ofInternal(rcs);
         SymmetricFilter nma = SymmetricFilter.ofInternal(rcn);
 
-        signal = new ArimaModel(m_sar, m_sur, m_sfcs != null ? m_sfcs.times(sma) : sma);
-        noise = new ArimaModel(m_nar, m_nur, m_sfcn != null ? m_sfcn.times(nma) : nma);
+        signal = new ArimaModel(m_sar, m_sur, sma);
+        noise = new ArimaModel(m_nar, m_nur, nma);
 //        ArimaModel check = model.minus(noise.plus(signal));
     }
 
     private boolean checkSpecialCases() {
         // No selected roots:
-        if (m_sfds == null || m_sfds.length() <= 1) {
+        if (m_sfds.length() <= 1) {
             signal = new ArimaModel(BackFilter.ONE, m_sur, BackFilter.ONE, 0);
-            noise = new ArimaModel(m_nar, m_nur, m_sfcn != null ? m_sma
-                    .times(m_sfcn) : m_sma);
+            noise = new ArimaModel(m_nar, m_nur, m_sma);
             return false;
         } else {
             return true;
@@ -186,8 +187,6 @@ public class RootDecomposer extends SimpleModelDecomposer {
         m_nar = null;
         m_sfds = null;
         m_sfdn = null;
-        m_sfcs = null;
-        m_sfcn = null;
         m_sma = null;
     }
 
@@ -206,52 +205,6 @@ public class RootDecomposer extends SimpleModelDecomposer {
     public void setSelector(final IRootSelector value) {
         m_selector = value;
         clear();
-    }
-
-    // search for possible common UR in MA and AR
-    private void simplifyMA() {
-        m_sma = model.symmetricMa();
-        //SymmetricFrequencyResponse.SimplifyingTool smp = new SymmetricFrequencyResponse.SimplifyingTool();
-        SymmetricFrequencyResponse sfma = new SymmetricFrequencyResponse(m_sma);
-        if (m_sur != null) {
-//	     if (smp.simplify(sfma, m_sur))
-//	     {
-//	     sfma = smp.getLeft();
-//	     m_sfcs = smp.getCommon().toSymmetriicFilter();
-//	     if (smp.getRight() != null)
-//	     m_sfds = smp.getRight().toSymmetriicFilter();
-//	     }
-//	     else
-            m_sfds = SymmetricFilter.convolutionOf(m_sur);
-        }
-        if (m_nur != null) {
-//	     if (smp.simplify(sfma, m_nur))
-//	     {
-//	     sfma = smp.getLeft();
-//	     m_sfcn = smp.getCommon().toSymmetriicFilter();
-//	     if (smp.getRight() != null)
-//	     m_sfdn = smp.getRight().toSymmetriicFilter();
-//	     }
-//	     else
-            m_sfdn = SymmetricFilter.convolutionOf(m_nur);
-        }
-        if (m_sfcs != null || m_sfcn != null) {
-            m_sma = sfma.toSymmetricFilter();
-        }
-        if (m_sar != null) {
-            if (m_sfds != null) {
-                m_sfds = m_sfds.times(SymmetricFilter.convolutionOf(m_sar));
-            } else {
-                m_sfds = SymmetricFilter.convolutionOf(m_sar);
-            }
-        }
-        if (m_nar != null) {
-            if (m_sfdn != null) {
-                m_sfdn = m_sfdn.times(SymmetricFilter.convolutionOf(m_nar));
-            } else {
-                m_sfdn = SymmetricFilter.convolutionOf(m_nar);
-            }
-        }
     }
 
     private void splitRoots() {
