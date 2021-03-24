@@ -147,9 +147,9 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
             ll = fn.cll.compute(regarma);
         }
 
-        public ConcentratedLikelihoodWithMissing getLikelihood() {
-            return ll;
-        }
+//        public ConcentratedLikelihoodWithMissing getLikelihood() {
+//            return ll;
+//        }
 
         @Override
         public DoubleSeq getParameters() {

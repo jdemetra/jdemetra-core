@@ -40,8 +40,8 @@ public class MstatisticsTest {
         process(0,1);
         process(0,11);
         process(1,0);
-        process(11,0);
-        process(11,1);
+        process(10,0);
+        process(9,1);
     }
     
     private void process(int bdrop, int edrop){
@@ -58,7 +58,7 @@ public class MstatisticsTest {
 
     private void compare(Mstatistics m, ec.satoolkit.x11.Mstatistics oldm) {
         for (int i = 1; i <= 11; ++i) {
-            assertEquals(m.getM(i), oldm.getM(i), 1e-6);
+            assertEquals(m.getM(i), oldm.getM(i), 1e-5);
         }
     }
 

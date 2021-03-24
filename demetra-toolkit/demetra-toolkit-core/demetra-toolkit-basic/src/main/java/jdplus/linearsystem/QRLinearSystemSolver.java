@@ -23,7 +23,6 @@ import jdplus.math.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import nbbrd.design.Development;
 import jdplus.data.normalizer.SafeNormalizer;
-import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
 import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
@@ -43,7 +42,7 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
     public static class Builder {
 
         private QRDecomposition.Decomposer decomposer = A -> new HouseholderWithPivoting().decompose(A, 0);
-        private double eps=1e-12;
+        private double eps=1e-13;
         private boolean normalize=false;
 
         private Builder() {

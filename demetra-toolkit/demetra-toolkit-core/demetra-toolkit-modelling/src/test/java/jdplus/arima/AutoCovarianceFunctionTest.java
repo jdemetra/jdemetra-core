@@ -47,4 +47,20 @@ public class AutoCovarianceFunctionTest {
         System.out.println(DoubleSeq.of(ac));
     }
 
+    @Test
+    public void testAR() {
+        SarimaOrders orders = new SarimaOrders(1);
+        orders.setP(3);
+        SarimaModel arima = SarimaModel.builder(orders)
+                .phi(-.2,-.20000001, -.2)
+                .build();
+        AutoCovarianceFunction acf = arima.getAutoCovarianceFunction();
+        double[] ac = acf.values(15);
+        System.out.println(DoubleSeq.of(ac));
+        ec.tstoolkit.maths.polynomials.Polynomial AR=ec.tstoolkit.maths.polynomials.Polynomial.of(new double[]{1,-.2,-.20000001,-.2});
+        ec.tstoolkit.maths.polynomials.Polynomial MA=ec.tstoolkit.maths.polynomials.Polynomial.ONE;
+        ec.tstoolkit.arima.AutoCovarianceFunction oacf=new ec.tstoolkit.arima.AutoCovarianceFunction(MA, AR, 1);
+        System.out.println(DoubleSeq.of(oacf.values(15)));
+        
+    }
 }

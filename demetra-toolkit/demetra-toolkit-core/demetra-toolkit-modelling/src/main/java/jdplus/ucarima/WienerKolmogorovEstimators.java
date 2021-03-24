@@ -276,7 +276,7 @@ public class WienerKolmogorovEstimators {
         BackFilter rnum = rf.getNumerator().mirror();
         double n0 = rnum.get(0);
 
-        ArimaModel rm = new ArimaModel(rf.getDenominator().mirror(), null, rnum.normalize(), rev.getInnovationVariance() * n0 * n0);
+        ArimaModel rm = new ArimaModel(rf.getDenominator().mirror(), BackFilter.ONE, rnum.normalize(), rev.getInnovationVariance() * n0 * n0);
         return fm.plus(rm).getAutoCovarianceFunction();
     }
 

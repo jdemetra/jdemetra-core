@@ -176,10 +176,10 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
             return fn.errors.apply(ll);
         }
 
-        public ConcentratedLikelihoodWithMissing getLikelihood() {
-            return ll;
-        }
-
+//        public ConcentratedLikelihoodWithMissing getLikelihood() {
+//            return ll;
+//        }
+//
         @Override
         public DoubleSeq getParameters() {
             return p;
@@ -193,6 +193,10 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
         @Override
         public ISsqFunction getSsqFunction() {
             return fn;
+        }
+
+        public DoubleSeq allCoefficients() {
+            return ll.allCoefficients();
         }
 
     }

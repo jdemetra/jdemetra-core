@@ -93,7 +93,7 @@ public class UcarimaModel implements Cloneable {
          */
         public final ArimaModel sum() {
             if (components.isEmpty()) {
-                return new ArimaModel(null, null, null, 0);
+                return ArimaModel.whiteNoise(0);
             }
             ArimaModel sum = components.get(0);
 
