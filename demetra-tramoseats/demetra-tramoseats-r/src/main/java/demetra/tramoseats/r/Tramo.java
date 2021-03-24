@@ -23,6 +23,7 @@ import demetra.regarima.io.protobuf.RegArimaEstimationProto;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TramoSpec;
+import demetra.tramoseats.io.protobuf.TramoOutput;
 import demetra.tramoseats.io.protobuf.TramoProto;
 import demetra.tramoseats.io.protobuf.TramoSeatsProtos;
 import demetra.util.r.Dictionary;
@@ -32,6 +33,7 @@ import jdplus.math.matrices.Matrix;
 import jdplus.regarima.extractors.RegSarimaModelExtractor;
 import jdplus.regsarima.regular.Forecast;
 import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.tramo.TramoFactory;
 import jdplus.tramo.TramoKernel;
 
 /**
@@ -103,7 +105,7 @@ public class Tramo {
         return TramoProto.convert(spec).toByteArray();
     }
 
-    public TramoSpec of(byte[] buffer) {
+    public TramoSpec specOf(byte[] buffer) {
        try {
             TramoSeatsProtos.TramoSpec spec = TramoSeatsProtos.TramoSpec.parseFrom(buffer);
             return TramoProto.convert(spec);
@@ -112,4 +114,31 @@ public class Tramo {
         }
     }
     
+    public byte[] generateOutput(TsData series, TramoSpec spec, Dictionary dic){
+        ModellingContext context=dic == null ? null : dic.toContext();
+        TramoKernel tramo= TramoKernel.of(spec, context);
+        RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
+        
+        TramoOutput output = TramoOutput.builder()
+                .estimationSpec(spec)
+                .result(estimation)
+                .resultSpec(estimation == null ? null : TramoFactory.INSTANCE.generateSpec(spec, estimation.getDescription()))
+                .build();
+        
+        return output.convert().toByteArray();
+    }
+    
+    public byte[] generateOutput(TsData series, String defSpec){
+        TramoSpec spec=TramoSpec.fromString(defSpec);
+        TramoKernel tramo= TramoKernel.of(spec, null);
+        RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
+        
+        TramoOutput output = TramoOutput.builder()
+                .estimationSpec(spec)
+                .result(estimation)
+                .resultSpec(estimation == null ? null : TramoFactory.INSTANCE.generateSpec(spec, estimation.getDescription()))
+                .build();
+        
+        return output.convert().toByteArray();
+    }
 }
