@@ -9,6 +9,8 @@ import demetra.data.Iterables;
 import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
 import demetra.sa.DefaultSaDiagnostics;
+import demetra.sa.EstimationPolicy;
+import demetra.sa.EstimationPolicyType;
 import demetra.sa.SeriesDecomposition;
 import demetra.sa.StationaryVarianceDecomposition;
 import demetra.sa.benchmarking.SaBenchmarkingSpec;
@@ -166,6 +168,56 @@ public class SaProtosUtility {
                 .setVarianceDecomposition(SaProtosUtility.convert(saDiags.getVarianceDecomposition()))
                 .build();
 
+    }
+
+    public SaProtos.EstimationPolicy convert(EstimationPolicyType policy) {
+        switch (policy) {
+            case Complete:
+                return SaProtos.EstimationPolicy.POLICY_COMPLETE;
+            case Outliers_StochasticComponent:
+                return SaProtos.EstimationPolicy.POLICY_ARIMA;
+            case Outliers:
+                return SaProtos.EstimationPolicy.POLICY_OUTLIERS;
+            case LastOutliers:
+                return SaProtos.EstimationPolicy.POLICY_LASTOUTLIERS;
+            case FreeParameters:
+                return SaProtos.EstimationPolicy.POLICY_FREE_PARAMETERS;
+            case FixedAutoRegressiveParameters:
+                return SaProtos.EstimationPolicy.POLICY_FIXED_AUTOREGRESSIVEPARAMETERS;
+            case FixedParameters:
+                return SaProtos.EstimationPolicy.POLICY_FIXED_PARAMETERS;
+            case Fixed:
+                return SaProtos.EstimationPolicy.POLICY_FIXED;
+            case Current:
+                return SaProtos.EstimationPolicy.POLICY_CURRENT;
+            default:
+                return SaProtos.EstimationPolicy.UNRECOGNIZED;
+        }
+    }
+
+    public EstimationPolicyType convert(SaProtos.EstimationPolicy policy) {
+        switch (policy) {
+            case POLICY_COMPLETE:
+                return EstimationPolicyType.Complete;
+            case POLICY_ARIMA:
+                return EstimationPolicyType.Outliers_StochasticComponent;
+            case POLICY_OUTLIERS:
+                return EstimationPolicyType.Outliers;
+            case POLICY_LASTOUTLIERS:
+                return EstimationPolicyType.LastOutliers;
+            case POLICY_FREE_PARAMETERS:
+                return EstimationPolicyType.FreeParameters;
+            case POLICY_FIXED_AUTOREGRESSIVEPARAMETERS:
+                return EstimationPolicyType.FixedAutoRegressiveParameters;
+            case POLICY_FIXED_PARAMETERS:
+                return EstimationPolicyType.FixedParameters;
+            case POLICY_FIXED:
+                return EstimationPolicyType.Fixed;
+            case POLICY_CURRENT:
+                return EstimationPolicyType.Current;
+            default:
+                return EstimationPolicyType.None;
+        }
     }
 
 }

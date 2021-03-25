@@ -33,7 +33,6 @@ import jdplus.sarima.SarimaModel;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.tramo.AutoModelSpec;
 import demetra.tramo.EasterSpec;
-import demetra.tramo.EstimateSpec;
 import demetra.tramo.OutlierSpec;
 import demetra.tramo.TradingDaysSpec;
 import demetra.tramo.TramoSpec;

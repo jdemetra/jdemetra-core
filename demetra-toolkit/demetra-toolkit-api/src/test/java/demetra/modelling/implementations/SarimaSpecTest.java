@@ -17,6 +17,8 @@
 package demetra.modelling.implementations;
 
 import demetra.arima.SarimaModel;
+import demetra.data.Parameter;
+import demetra.data.ParameterType;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -29,5 +31,14 @@ public class SarimaSpecTest {
     public SarimaSpecTest() {
     }
 
+    @Test
+    public void testFixed(){
+        SarimaSpec airline = SarimaSpec.airline();
+        airline=airline.toBuilder()
+                .theta(Parameter.of(new double[]{-.9}, ParameterType.Estimated))
+                .build();
+        Parameter.fixParameters(airline.getTheta());
+        assertTrue(! airline.hasFixedParameters());
+    }
     
 }

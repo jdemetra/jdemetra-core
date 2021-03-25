@@ -29,7 +29,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder(toBuilder = true, builderClassName = "Builder")
 public class TradingDaysSpec {
 
     private static final TradingDaysSpec NONE = new TradingDaysSpec(null, null, TradingDaysType.None,

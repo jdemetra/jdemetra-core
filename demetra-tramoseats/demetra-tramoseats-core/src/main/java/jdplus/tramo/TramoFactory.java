@@ -9,6 +9,9 @@ import demetra.modelling.implementations.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.modelling.TransformationType;
 import demetra.sa.EstimationPolicy;
+import demetra.sa.EstimationPolicyType;
+import demetra.timeseries.TimeSelector;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.timeseries.regression.Variable;
 import demetra.tramo.AutoModelSpec;
@@ -23,8 +26,15 @@ import java.util.Arrays;
 import java.util.Optional;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.EasterVariable;
+import demetra.timeseries.regression.IOutlier;
+import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.InterventionVariable;
+import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TrendConstant;
+import demetra.timeseries.regression.TsContextVariable;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
+import java.util.ArrayList;
+import java.util.List;
 import jdplus.regarima.ami.ModellingUtility;
 
 /**
@@ -37,9 +47,9 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
     public static final TramoFactory INSTANCE = new TramoFactory();
 
     public TramoSpec generateSpec(TramoSpec spec, GeneralLinearModel.Description<SarimaSpec> desc) {
-       TramoSpec.Builder builder = spec.toBuilder();
+        TramoSpec.Builder builder = spec.toBuilder();
         update(spec.getTransform(), desc, builder);
-        builder.arima(desc.getStochasticComponent());
+        update(spec.getArima(), desc, builder);
         update(spec.getAutoModel(), desc, builder);
         update(spec.getOutliers(), desc, builder);
         update(spec.getRegression(), desc, builder);
@@ -47,10 +57,41 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         return builder.build();
     }
 
-    public TramoSpec refreshSpec(TramoSpec currentSpec, TramoSpec domainSpec, EstimationPolicy policy) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public TramoSpec refreshSpec(TramoSpec currentSpec, TramoSpec domainSpec, EstimationPolicyType policy, TsDomain frozenDomain) {
+        TramoSpec.Builder builder = currentSpec.toBuilder();
+        switch (policy) {
+            case Complete:
+                return domainSpec;
+            case Outliers_StochasticComponent:
+                resetArima(currentSpec, domainSpec, builder);
+                removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
+                freeVariables(currentSpec, domainSpec, builder);
+            case Outliers:
+                removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
+                freeVariables(currentSpec, domainSpec, builder);
+            case LastOutliers:
+                removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
+                freeVariables(currentSpec, domainSpec, builder);
+            case FreeParameters:
+                freeArima(currentSpec, domainSpec, builder);
+                freeVariables(currentSpec, domainSpec, builder);
+            case FixedAutoRegressiveParameters:
+                fixAR(currentSpec, domainSpec, builder);
+                freeVariables(currentSpec, domainSpec, builder);
+                break;
+            case Fixed:
+                fixArima(currentSpec, domainSpec, builder);
+                freeVariables(currentSpec, domainSpec, builder);
+                break;
+            case Current:
+                fixArima(currentSpec, domainSpec, builder);
+                fixVariables(currentSpec, domainSpec, builder);
+                break;
+            default:
+                return currentSpec;
+        }
+        return builder.build();
     }
-
 
     private void update(TransformSpec transform, GeneralLinearModel.Description<SarimaSpec> rslts, TramoSpec.Builder builder) {
         if (transform.getFunction() == TransformationType.Auto) {
@@ -59,6 +100,11 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
                     .build();
             builder.transform(ntransform);
         }
+    }
+
+    private void update(SarimaSpec arima, GeneralLinearModel.Description<SarimaSpec> rslts, TramoSpec.Builder builder) {
+        SarimaSpec nspec = rslts.getStochasticComponent();
+        builder.arima(nspec);
     }
 
     private void update(AutoModelSpec ami, GeneralLinearModel.Description<SarimaSpec> rslts, TramoSpec.Builder builder) {
@@ -144,12 +190,12 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         if (ftd.isPresent()) {
             Variable v = ftd.get();
             if (tdspec.isAutomatic()) {
-                switch (v.getCore().dim()){
-                    case 1: 
-                        td=TradingDaysType.WorkingDays;
+                switch (v.getCore().dim()) {
+                    case 1:
+                        td = TradingDaysType.WorkingDays;
                         break;
-                    case 6: 
-                        td=TradingDaysType.TradingDays;
+                    case 6:
+                        td = TradingDaysType.TradingDays;
                         break;
                 }
             } else {
@@ -197,5 +243,215 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         builder.easter(espec);
     }
 
- 
+    private void resetArima(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
+        builder.arima(domainSpec.getArima());
+        builder.autoModel(domainSpec.getAutoModel());
+    }
+
+    private void removeOutliers(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder, TsDomain frozen) {
+        builder.outliers(domainSpec.getOutliers());
+        // remove existing automatic outliers...
+        List<Variable<IOutlier>> outliers = currentSpec.getRegression().getOutliers();
+        List<Variable<IOutlier>> defoutliers = domainSpec.getRegression().getOutliers();
+
+        RegressionSpec.Builder rbuilder = currentSpec.getRegression().toBuilder()
+                .clearOutliers();
+        // use frozen outliers and outliers specified in the domain spec (avoid doubles)
+        defoutliers.forEach(outlier -> {
+            rbuilder.outlier(outlier);
+        });
+
+        outliers.stream()
+                .filter(outlier -> !belongsTo(outlier, defoutliers))
+                .filter(outlier -> (frozen != null && frozen.contains(outlier.getCore().getPosition())))
+                .forEachOrdered(outlier -> {
+                    rbuilder.outlier(outlier);
+                });
+    }
+
+    private static boolean belongsTo(Variable<IOutlier> outlier, List<Variable<IOutlier>> defoutliers) {
+        return defoutliers.stream()
+                .filter(o -> o.getCore().getCode().equals(outlier.getCore().getCode()))
+                .anyMatch(o -> o.getCore().getPosition().equals(outlier.getCore().getPosition()));
+    }
+
+    private void freeArima(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
+        builder.arima(currentSpec.getArima().freeParameters(domainSpec.isUsingAutoModel() ? null : domainSpec.getArima()));
+    }
+
+    private void fixAR(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
+        SarimaSpec arima = currentSpec.getArima();
+        Parameter[] phi = Parameter.fixParameters(arima.getPhi());
+        Parameter[] bphi = Parameter.fixParameters(arima.getBphi());
+        SarimaSpec.Builder abuilder = arima.toBuilder()
+                .phi(phi)
+                .bphi(bphi);
+        if (domainSpec.isUsingAutoModel()) {
+            abuilder.theta(Parameter.freeParameters(arima.getTheta()))
+                    .btheta(Parameter.freeParameters(arima.getTheta()));
+        } else {
+            SarimaSpec refarima = domainSpec.getArima();
+            abuilder.theta(Parameter.freeParameters(arima.getTheta(), refarima.getTheta()))
+                    .btheta(Parameter.freeParameters(arima.getTheta(), refarima.getBtheta()));
+        }
+        builder.arima(abuilder.build());
+    }
+
+    private void fixArima(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
+        builder.arima(currentSpec.getArima().fixParameters());
+    }
+
+    private void freeVariables(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
+        RegressionSpec reg = currentSpec.getRegression();
+        RegressionSpec dreg = domainSpec.getRegression();
+        RegressionSpec.Builder rbuilder = reg.toBuilder();
+        Parameter mean = reg.getMean();
+        if (mean != null && mean.isFixed()) {
+            Parameter dc = dreg.getMean();
+            if (dc == null || !dc.isFixed()) {
+                mean = Parameter.initial(mean.getValue());
+            }
+        }
+
+        List<Variable<InterventionVariable>> iv = reg.getInterventionVariables();
+        List<Variable<InterventionVariable>> niv = new ArrayList<>();
+        iv.forEach(v -> {
+            niv.add(v.withCoefficient(freeCoefficients(v, dreg.getInterventionVariables())));
+        });
+
+        List<Variable<IOutlier>> o = reg.getOutliers();
+        List<Variable<IOutlier>> no = new ArrayList<>();
+        o.forEach(v -> {
+            no.add(v.withCoefficient(freeCoefficients(v, dreg.getOutliers())));
+        });
+
+        List<Variable<Ramp>> r = reg.getRamps();
+        List<Variable<Ramp>> nr = new ArrayList<>();
+        r.forEach(v -> {
+            nr.add(v.withCoefficient(freeCoefficients(v, dreg.getRamps())));
+        });
+
+        List<Variable<TsContextVariable>> u = reg.getUserDefinedVariables();
+        List<Variable<TsContextVariable>> nu = new ArrayList<>();
+        u.forEach(v -> {
+            nu.add(v.withCoefficient(freeCoefficients(v, dreg.getUserDefinedVariables())));
+        });
+
+        EasterSpec easter = reg.getCalendar().getEaster();
+        Parameter c = easter.getCoefficient();
+        if (c != null && c.isFixed()) {
+            Parameter dc = dreg.getCalendar().getEaster().getCoefficient();
+            if (dc == null || !dc.isFixed()) {
+                c = Parameter.initial(c.getValue());
+                easter = easter.toBuilder()
+                        .coefficient(c)
+                        .build();
+            }
+        }
+        TradingDaysSpec td = reg.getCalendar().getTradingDays();
+        c = td.getLpCoefficient();
+        Parameter[] tdc = td.getTdCoefficients();
+        if (c != null || tdc != null) {
+            if (c != null && c.isFixed()) {
+                Parameter dc = dreg.getCalendar().getTradingDays().getLpCoefficient();
+                if (dc == null || !dc.isFixed()) {
+                    c = Parameter.initial(c.getValue());
+                }
+            }
+            tdc=Parameter.freeParameters(tdc, dreg.getCalendar().getTradingDays().getTdCoefficients());
+            td = td.toBuilder()
+                    .lpCoefficient(c)
+                    .tdCoefficients(tdc)
+                    .build();
+        }
+
+        builder.regression(rbuilder
+                .mean(mean)
+                .clearInterventionVariables().interventionVariables(niv)
+                .clearOutliers().outliers(no)
+                .clearRamps().ramps(nr)
+                .clearUserDefinedVariables().userDefinedVariables(nu)
+                .calendar(CalendarSpec.builder()
+                        .easter(easter)
+                        .tradingDays(td)
+                        .build())
+                .build());
+    }
+
+    private static <S extends ITsVariable> Parameter[] freeCoefficients(Variable<S> var, List<Variable<S>> ref) {
+        Parameter[] c = var.getCoefficients();
+        if (c == null) {
+            return null;
+        }
+        Optional<Variable<S>> rvar = ref.stream().filter(v -> v.getName().equals(var.getName())).findFirst();
+        if (rvar.isPresent()) {
+            return Parameter.freeParameters(c, rvar.get().getCoefficients());
+        } else {
+            return Parameter.freeParameters(c);
+        }
+    }
+
+    private void fixVariables(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
+        RegressionSpec reg = currentSpec.getRegression();
+        RegressionSpec.Builder rbuilder = reg.toBuilder();
+        Parameter mean = reg.getMean();
+        if (mean != null && mean.isDefined()) {
+            mean = Parameter.fixed(mean.getValue());
+        }
+
+        List<Variable<InterventionVariable>> iv = reg.getInterventionVariables();
+        List<Variable<InterventionVariable>> niv = new ArrayList<>();
+        iv.forEach(v -> {
+            niv.add(v.withCoefficient(Parameter.fixParameters(v.getCoefficients())));
+        });
+
+        List<Variable<IOutlier>> o = reg.getOutliers();
+        List<Variable<IOutlier>> no = new ArrayList<>();
+        o.forEach(v -> {
+            no.add(v.withCoefficient(Parameter.fixParameters(v.getCoefficients())));
+        });
+
+        List<Variable<Ramp>> r = reg.getRamps();
+        List<Variable<Ramp>> nr = new ArrayList<>();
+        r.forEach(v -> {
+            nr.add(v.withCoefficient(Parameter.fixParameters(v.getCoefficients())));
+        });
+
+        List<Variable<TsContextVariable>> u = reg.getUserDefinedVariables();
+        List<Variable<TsContextVariable>> nu = new ArrayList<>();
+        u.forEach(v -> {
+            nu.add(v.withCoefficient(Parameter.fixParameters(v.getCoefficients())));
+        });
+
+        EasterSpec easter = reg.getCalendar().getEaster();
+        Parameter c = easter.getCoefficient();
+        if (c != null) {
+            easter = easter.toBuilder()
+                    .coefficient(Parameter.fixed(c.getValue()))
+                    .build();
+        }
+        TradingDaysSpec td = reg.getCalendar().getTradingDays();
+        c = td.getLpCoefficient();
+        Parameter[] tdc = td.getTdCoefficients();
+        if (c != null || tdc != null) {
+            td = td.toBuilder()
+                    .lpCoefficient(c == null ? null : Parameter.fixed(c.getValue()))
+                    .tdCoefficients(Parameter.fixParameters(tdc))
+                    .build();
+        }
+
+        builder.regression(rbuilder
+                .mean(mean)
+                .clearInterventionVariables().interventionVariables(niv)
+                .clearOutliers().outliers(no)
+                .clearRamps().ramps(nr)
+                .clearUserDefinedVariables().userDefinedVariables(nu)
+                .calendar(CalendarSpec.builder()
+                        .easter(easter)
+                        .tradingDays(td)
+                        .build())
+                .build());
+
+    }
+
 }

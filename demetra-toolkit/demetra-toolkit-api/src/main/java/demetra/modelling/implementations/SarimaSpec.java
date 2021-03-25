@@ -29,6 +29,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * run time).
  * The specification will provide information on the parameters (unknown, fixed,
  * or initial)
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
@@ -72,6 +73,23 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
     private int d, bd;
     private @NonNull
     Parameter[] phi, theta, bphi, btheta;
+
+    // Defensive getters !
+    public Parameter[] getPhi() {
+        return phi == EMPTY ? EMPTY : phi.clone();
+    }
+
+    public Parameter[] getBphi() {
+        return bphi == EMPTY ? EMPTY : bphi.clone();
+    }
+
+    public Parameter[] getTheta() {
+        return theta == EMPTY ? EMPTY : theta.clone();
+    }
+
+    public Parameter[] getBtheta() {
+        return btheta == EMPTY ? EMPTY : btheta.clone();
+    }
 
     private static final Parameter[] EMPTY = new Parameter[0];
 
@@ -134,19 +152,41 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
             return this;
         }
 
-        Builder free() {
-            Parameter.freeParameters(phi);
-            Parameter.freeParameters(theta);
-            Parameter.freeParameters(bphi);
-            Parameter.freeParameters(btheta);
+        Builder free(SarimaSpec ref) {
+            if (ref == null) {
+                phi = Parameter.freeParameters(phi);
+                bphi = Parameter.freeParameters(bphi);
+                theta = Parameter.freeParameters(theta);
+                btheta = Parameter.freeParameters(btheta);
+            } else {
+                phi = Parameter.freeParameters(phi, ref.phi);
+                bphi = Parameter.freeParameters(bphi, ref.bphi);
+                theta = Parameter.freeParameters(theta, ref.theta);
+                btheta = Parameter.freeParameters(btheta, ref.btheta);
+            }
             return this;
         }
 
-        Builder reset() {
-            Parameter.resetParameters(phi);
-            Parameter.resetParameters(theta);
-            Parameter.resetParameters(bphi);
-            Parameter.resetParameters(btheta);
+        Builder fix() {
+            Parameter.fixParameters(phi);
+            Parameter.fixParameters(theta);
+            Parameter.fixParameters(bphi);
+            Parameter.fixParameters(btheta);
+            return this;
+        }
+
+        Builder reset(SarimaSpec ref) {
+            if (ref == null) {
+                phi = Parameter.resetParameters(phi);
+                bphi = Parameter.resetParameters(bphi);
+                theta = Parameter.resetParameters(theta);
+                btheta = Parameter.resetParameters(btheta);
+            } else {
+                phi = Parameter.resetParameters(phi, ref.phi);
+                bphi = Parameter.resetParameters(bphi, ref.bphi);
+                theta = Parameter.resetParameters(theta, ref.theta);
+                btheta = Parameter.resetParameters(btheta, ref.btheta);
+            }
             return this;
         }
 
@@ -187,14 +227,14 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
     }
 
     public int parametersCount() {
-        return phi.length + bphi.length  + theta.length + btheta.length;
+        return phi.length + bphi.length + theta.length + btheta.length;
     }
 
     public int freeParametersCount() {
         return Parameter.freeParametersCount(phi) + Parameter.freeParametersCount(bphi)
                 + Parameter.freeParametersCount(theta) + Parameter.freeParametersCount(btheta);
     }
-    
+
     public boolean hasFixedParameters() {
         return !Parameter.isFree(phi) || !Parameter.isFree(bphi)
                 || !Parameter.isFree(theta) || !Parameter.isFree(btheta);
@@ -209,30 +249,32 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
         return Parameter.hasParameters(phi, ParameterType.Estimated) || Parameter.hasParameters(bphi, ParameterType.Estimated)
                 || !Parameter.hasParameters(theta, ParameterType.Estimated) || Parameter.hasParameters(btheta, ParameterType.Estimated);
     }
-    
-    public boolean isUndefined(){
+
+    public boolean isUndefined() {
         return Parameter.isDefault(phi) && Parameter.isDefault(theta)
                 && Parameter.isDefault(bphi) && Parameter.isDefault(btheta);
     }
-    
-    public SarimaSpec withPeriod(int period){
-        if (this.period == period)
-            return this;
-        return new SarimaSpec(null, period, d, bd, phi, theta, bphi, btheta );
-    }
 
-    public SarimaSpec resetParameters() {
-        if (!hasEstimatedParameters()) {
+    public SarimaSpec withPeriod(int period) {
+        if (this.period == period) {
             return this;
         }
-        return toBuilder().reset().build();
+        return new SarimaSpec(null, period, d, bd, phi, theta, bphi, btheta);
     }
 
-    public SarimaSpec freeParameters() {
-        if (!hasEstimatedParameters()) {
+    public SarimaSpec resetParameters(SarimaSpec ref) {
+        return toBuilder().reset(ref).build();
+    }
+
+    public SarimaSpec freeParameters(SarimaSpec ref) {
+        return toBuilder().free(ref).build();
+    }
+
+    public SarimaSpec fixParameters() {
+        if (!hasFreeParameters()) {
             return this;
         }
-        return toBuilder().free().build();
+        return toBuilder().fix().build();
     }
 
     public SarimaOrders orders() {

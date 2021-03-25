@@ -23,6 +23,7 @@ import demetra.tramoseats.TramoSeatsSpec;
  *
  * @author PALATEJ
  */
+@lombok.experimental.UtilityClass
 public class TramoSeatsProto {
 
     public TramoSeatsProtos.Spec convert(TramoSeatsSpec spec) {
