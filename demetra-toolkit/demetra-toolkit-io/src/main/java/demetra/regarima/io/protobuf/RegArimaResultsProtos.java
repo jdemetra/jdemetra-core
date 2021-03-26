@@ -3815,19 +3815,38 @@ public final class RegArimaResultsProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.jd3.NIIDTests residuals_tests = 1;</code>
-     * @return Whether the residualsTests field is set.
+     * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
      */
-    boolean hasResidualsTests();
+    int getResidualsTestsCount();
     /**
-     * <code>.jd3.NIIDTests residuals_tests = 1;</code>
-     * @return The residualsTests.
+     * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
      */
-    demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests getResidualsTests();
+    boolean containsResidualsTests(
+        java.lang.String key);
     /**
-     * <code>.jd3.NIIDTests residuals_tests = 1;</code>
+     * Use {@link #getResidualsTestsMap()} instead.
      */
-    demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTestsOrBuilder getResidualsTestsOrBuilder();
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest>
+    getResidualsTests();
+    /**
+     * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
+     */
+    java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest>
+    getResidualsTestsMap();
+    /**
+     * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
+     */
+
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getResidualsTestsOrDefault(
+        java.lang.String key,
+        demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest defaultValue);
+    /**
+     * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
+     */
+
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getResidualsTestsOrThrow(
+        java.lang.String key);
   }
   /**
    * Protobuf type {@code regarima.Diagnostics}
@@ -3864,6 +3883,7 @@ public final class RegArimaResultsProtos {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -3875,16 +3895,16 @@ public final class RegArimaResultsProtos {
               done = true;
               break;
             case 10: {
-              demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.Builder subBuilder = null;
-              if (residualsTests_ != null) {
-                subBuilder = residualsTests_.toBuilder();
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                residualsTests_ = com.google.protobuf.MapField.newMapField(
+                    ResidualsTestsDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000001;
               }
-              residualsTests_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(residualsTests_);
-                residualsTests_ = subBuilder.buildPartial();
-              }
-
+              com.google.protobuf.MapEntry<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest>
+              residualsTests__ = input.readMessage(
+                  ResidualsTestsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              residualsTests_.getMutableMap().put(
+                  residualsTests__.getKey(), residualsTests__.getValue());
               break;
             }
             default: {
@@ -3911,6 +3931,18 @@ public final class RegArimaResultsProtos {
       return demetra.regarima.io.protobuf.RegArimaResultsProtos.internal_static_regarima_Diagnostics_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 1:
+          return internalGetResidualsTests();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -3920,29 +3952,84 @@ public final class RegArimaResultsProtos {
     }
 
     public static final int RESIDUALS_TESTS_FIELD_NUMBER = 1;
-    private demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests residualsTests_;
-    /**
-     * <code>.jd3.NIIDTests residuals_tests = 1;</code>
-     * @return Whether the residualsTests field is set.
-     */
-    @java.lang.Override
-    public boolean hasResidualsTests() {
-      return residualsTests_ != null;
+    private static final class ResidualsTestsDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest>newDefaultInstance(
+                  demetra.regarima.io.protobuf.RegArimaResultsProtos.internal_static_regarima_Diagnostics_ResidualsTestsEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                  demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance());
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> residualsTests_;
+    private com.google.protobuf.MapField<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest>
+    internalGetResidualsTests() {
+      if (residualsTests_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            ResidualsTestsDefaultEntryHolder.defaultEntry);
+      }
+      return residualsTests_;
+    }
+
+    public int getResidualsTestsCount() {
+      return internalGetResidualsTests().getMap().size();
     }
     /**
-     * <code>.jd3.NIIDTests residuals_tests = 1;</code>
-     * @return The residualsTests.
+     * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
      */
+
     @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests getResidualsTests() {
-      return residualsTests_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.getDefaultInstance() : residualsTests_;
+    public boolean containsResidualsTests(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      return internalGetResidualsTests().getMap().containsKey(key);
     }
     /**
-     * <code>.jd3.NIIDTests residuals_tests = 1;</code>
+     * Use {@link #getResidualsTestsMap()} instead.
      */
     @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTestsOrBuilder getResidualsTestsOrBuilder() {
-      return getResidualsTests();
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> getResidualsTests() {
+      return getResidualsTestsMap();
+    }
+    /**
+     * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> getResidualsTestsMap() {
+      return internalGetResidualsTests().getMap();
+    }
+    /**
+     * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
+     */
+    @java.lang.Override
+
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getResidualsTestsOrDefault(
+        java.lang.String key,
+        demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> map =
+          internalGetResidualsTests().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
+     */
+    @java.lang.Override
+
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getResidualsTestsOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> map =
+          internalGetResidualsTests().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -3959,9 +4046,12 @@ public final class RegArimaResultsProtos {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (residualsTests_ != null) {
-        output.writeMessage(1, getResidualsTests());
-      }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetResidualsTests(),
+          ResidualsTestsDefaultEntryHolder.defaultEntry,
+          1);
       unknownFields.writeTo(output);
     }
 
@@ -3971,9 +4061,15 @@ public final class RegArimaResultsProtos {
       if (size != -1) return size;
 
       size = 0;
-      if (residualsTests_ != null) {
+      for (java.util.Map.Entry<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> entry
+           : internalGetResidualsTests().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest>
+        residualsTests__ = ResidualsTestsDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getResidualsTests());
+            .computeMessageSize(1, residualsTests__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -3990,11 +4086,8 @@ public final class RegArimaResultsProtos {
       }
       demetra.regarima.io.protobuf.RegArimaResultsProtos.Diagnostics other = (demetra.regarima.io.protobuf.RegArimaResultsProtos.Diagnostics) obj;
 
-      if (hasResidualsTests() != other.hasResidualsTests()) return false;
-      if (hasResidualsTests()) {
-        if (!getResidualsTests()
-            .equals(other.getResidualsTests())) return false;
-      }
+      if (!internalGetResidualsTests().equals(
+          other.internalGetResidualsTests())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -4006,9 +4099,9 @@ public final class RegArimaResultsProtos {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasResidualsTests()) {
+      if (!internalGetResidualsTests().getMap().isEmpty()) {
         hash = (37 * hash) + RESIDUALS_TESTS_FIELD_NUMBER;
-        hash = (53 * hash) + getResidualsTests().hashCode();
+        hash = (53 * hash) + internalGetResidualsTests().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -4117,6 +4210,28 @@ public final class RegArimaResultsProtos {
         return demetra.regarima.io.protobuf.RegArimaResultsProtos.internal_static_regarima_Diagnostics_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 1:
+            return internalGetResidualsTests();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 1:
+            return internalGetMutableResidualsTests();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -4143,12 +4258,7 @@ public final class RegArimaResultsProtos {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        if (residualsTestsBuilder_ == null) {
-          residualsTests_ = null;
-        } else {
-          residualsTests_ = null;
-          residualsTestsBuilder_ = null;
-        }
+        internalGetMutableResidualsTests().clear();
         return this;
       }
 
@@ -4175,11 +4285,9 @@ public final class RegArimaResultsProtos {
       @java.lang.Override
       public demetra.regarima.io.protobuf.RegArimaResultsProtos.Diagnostics buildPartial() {
         demetra.regarima.io.protobuf.RegArimaResultsProtos.Diagnostics result = new demetra.regarima.io.protobuf.RegArimaResultsProtos.Diagnostics(this);
-        if (residualsTestsBuilder_ == null) {
-          result.residualsTests_ = residualsTests_;
-        } else {
-          result.residualsTests_ = residualsTestsBuilder_.build();
-        }
+        int from_bitField0_ = bitField0_;
+        result.residualsTests_ = internalGetResidualsTests();
+        result.residualsTests_.makeImmutable();
         onBuilt();
         return result;
       }
@@ -4228,9 +4336,8 @@ public final class RegArimaResultsProtos {
 
       public Builder mergeFrom(demetra.regarima.io.protobuf.RegArimaResultsProtos.Diagnostics other) {
         if (other == demetra.regarima.io.protobuf.RegArimaResultsProtos.Diagnostics.getDefaultInstance()) return this;
-        if (other.hasResidualsTests()) {
-          mergeResidualsTests(other.getResidualsTests());
-        }
+        internalGetMutableResidualsTests().mergeFrom(
+            other.internalGetResidualsTests());
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -4259,124 +4366,134 @@ public final class RegArimaResultsProtos {
         }
         return this;
       }
+      private int bitField0_;
 
-      private demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests residualsTests_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests, demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTestsOrBuilder> residualsTestsBuilder_;
-      /**
-       * <code>.jd3.NIIDTests residuals_tests = 1;</code>
-       * @return Whether the residualsTests field is set.
-       */
-      public boolean hasResidualsTests() {
-        return residualsTestsBuilder_ != null || residualsTests_ != null;
-      }
-      /**
-       * <code>.jd3.NIIDTests residuals_tests = 1;</code>
-       * @return The residualsTests.
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests getResidualsTests() {
-        if (residualsTestsBuilder_ == null) {
-          return residualsTests_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.getDefaultInstance() : residualsTests_;
-        } else {
-          return residualsTestsBuilder_.getMessage();
+      private com.google.protobuf.MapField<
+          java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> residualsTests_;
+      private com.google.protobuf.MapField<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest>
+      internalGetResidualsTests() {
+        if (residualsTests_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              ResidualsTestsDefaultEntryHolder.defaultEntry);
         }
+        return residualsTests_;
       }
-      /**
-       * <code>.jd3.NIIDTests residuals_tests = 1;</code>
-       */
-      public Builder setResidualsTests(demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests value) {
-        if (residualsTestsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          residualsTests_ = value;
-          onChanged();
-        } else {
-          residualsTestsBuilder_.setMessage(value);
+      private com.google.protobuf.MapField<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest>
+      internalGetMutableResidualsTests() {
+        onChanged();;
+        if (residualsTests_ == null) {
+          residualsTests_ = com.google.protobuf.MapField.newMapField(
+              ResidualsTestsDefaultEntryHolder.defaultEntry);
         }
+        if (!residualsTests_.isMutable()) {
+          residualsTests_ = residualsTests_.copy();
+        }
+        return residualsTests_;
+      }
 
-        return this;
+      public int getResidualsTestsCount() {
+        return internalGetResidualsTests().getMap().size();
       }
       /**
-       * <code>.jd3.NIIDTests residuals_tests = 1;</code>
+       * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
        */
-      public Builder setResidualsTests(
-          demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.Builder builderForValue) {
-        if (residualsTestsBuilder_ == null) {
-          residualsTests_ = builderForValue.build();
-          onChanged();
-        } else {
-          residualsTestsBuilder_.setMessage(builderForValue.build());
-        }
 
-        return this;
+      @java.lang.Override
+      public boolean containsResidualsTests(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        return internalGetResidualsTests().getMap().containsKey(key);
       }
       /**
-       * <code>.jd3.NIIDTests residuals_tests = 1;</code>
+       * Use {@link #getResidualsTestsMap()} instead.
        */
-      public Builder mergeResidualsTests(demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests value) {
-        if (residualsTestsBuilder_ == null) {
-          if (residualsTests_ != null) {
-            residualsTests_ =
-              demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.newBuilder(residualsTests_).mergeFrom(value).buildPartial();
-          } else {
-            residualsTests_ = value;
-          }
-          onChanged();
-        } else {
-          residualsTestsBuilder_.mergeFrom(value);
-        }
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> getResidualsTests() {
+        return getResidualsTestsMap();
+      }
+      /**
+       * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
+       */
+      @java.lang.Override
 
-        return this;
+      public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> getResidualsTestsMap() {
+        return internalGetResidualsTests().getMap();
       }
       /**
-       * <code>.jd3.NIIDTests residuals_tests = 1;</code>
+       * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
        */
+      @java.lang.Override
+
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getResidualsTestsOrDefault(
+          java.lang.String key,
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest defaultValue) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> map =
+            internalGetResidualsTests().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
+       */
+      @java.lang.Override
+
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getResidualsTestsOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> map =
+            internalGetResidualsTests().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
       public Builder clearResidualsTests() {
-        if (residualsTestsBuilder_ == null) {
-          residualsTests_ = null;
-          onChanged();
-        } else {
-          residualsTests_ = null;
-          residualsTestsBuilder_ = null;
-        }
-
+        internalGetMutableResidualsTests().getMutableMap()
+            .clear();
         return this;
       }
       /**
-       * <code>.jd3.NIIDTests residuals_tests = 1;</code>
+       * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
        */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.Builder getResidualsTestsBuilder() {
-        
-        onChanged();
-        return getResidualsTestsFieldBuilder().getBuilder();
+
+      public Builder removeResidualsTests(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableResidualsTests().getMutableMap()
+            .remove(key);
+        return this;
       }
       /**
-       * <code>.jd3.NIIDTests residuals_tests = 1;</code>
+       * Use alternate mutation accessors instead.
        */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTestsOrBuilder getResidualsTestsOrBuilder() {
-        if (residualsTestsBuilder_ != null) {
-          return residualsTestsBuilder_.getMessageOrBuilder();
-        } else {
-          return residualsTests_ == null ?
-              demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.getDefaultInstance() : residualsTests_;
-        }
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest>
+      getMutableResidualsTests() {
+        return internalGetMutableResidualsTests().getMutableMap();
       }
       /**
-       * <code>.jd3.NIIDTests residuals_tests = 1;</code>
+       * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests, demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTestsOrBuilder> 
-          getResidualsTestsFieldBuilder() {
-        if (residualsTestsBuilder_ == null) {
-          residualsTestsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests, demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTests.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.NIIDTestsOrBuilder>(
-                  getResidualsTests(),
-                  getParentForChildren(),
-                  isClean());
-          residualsTests_ = null;
-        }
-        return residualsTestsBuilder_;
+      public Builder putResidualsTests(
+          java.lang.String key,
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (value == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableResidualsTests().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
+       */
+
+      public Builder putAllResidualsTests(
+          java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> values) {
+        internalGetMutableResidualsTests().getMutableMap()
+            .putAll(values);
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -9160,6 +9277,11 @@ public final class RegArimaResultsProtos {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_regarima_Diagnostics_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_regarima_Diagnostics_ResidualsTestsEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_regarima_Diagnostics_ResidualsTestsEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_regarima_RegArimaModel_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -9196,30 +9318,33 @@ public final class RegArimaResultsProtos {
       "arameter\032/\n\rMetadataEntry\022\013\n\003key\030\001 \001(\t\022\r" +
       "\n\005value\030\002 \001(\t:\0028\001\"B\n\021MissingEstimation\022\020" +
       "\n\010position\030\001 \001(\005\022\r\n\005value\030\n \001(\001\022\014\n\004stde\030" +
-      "\013 \001(\001\"6\n\013Diagnostics\022\'\n\017residuals_tests\030" +
-      "\001 \001(\0132\016.jd3.NIIDTests\"\373\004\n\rRegArimaModel\022" +
-      "8\n\013description\030\001 \001(\0132#.regarima.RegArima" +
-      "Model.Description\0226\n\nestimation\030\002 \001(\0132\"." +
-      "regarima.RegArimaModel.Estimation\022*\n\013dia" +
-      "gnostics\030\005 \001(\0132\025.regarima.Diagnostics\032\314\001" +
-      "\n\013Description\022\033\n\006series\030\001 \001(\0132\013.jd3.TsDa" +
-      "ta\022\013\n\003log\030\002 \001(\010\022/\n\rpreadjustment\030\003 \001(\0162\030" +
-      ".regarima.LengthOfPeriod\022\014\n\004mean\030\004 \001(\010\022/" +
-      "\n\tvariables\030\005 \003(\0132\034.regarima.RegressionV" +
-      "ariable\022#\n\005arima\030\006 \001(\0132\024.regarima.Sarima" +
-      "Spec\032\374\001\n\nEstimation\022\t\n\001y\030\001 \003(\001\022\026\n\001x\030\002 \001(" +
-      "\0132\013.jd3.Matrix\022\t\n\001b\030\003 \003(\001\022 \n\013bcovariance" +
-      "\030\004 \001(\0132\013.jd3.Matrix\022-\n\nparameters\030\005 \001(\0132" +
-      "\031.jd3.ParametersEstimation\022-\n\nlikelihood" +
-      "\030\006 \001(\0132\031.jd3.LikelihoodStatistics\022\021\n\tres" +
-      "iduals\030\007 \003(\001\022-\n\010missings\030\010 \003(\0132\033.regarim" +
-      "a.MissingEstimation*\264\001\n\014VariableType\022\023\n\017" +
-      "VAR_UNSPECIFIED\020\000\022\014\n\010VAR_MEAN\020\001\022\n\n\006VAR_T" +
-      "D\020\n\022\n\n\006VAR_LP\020\013\022\016\n\nVAR_EASTER\020\014\022\n\n\006VAR_A" +
-      "O\020\024\022\n\n\006VAR_LS\020\025\022\n\n\006VAR_TC\020\026\022\n\n\006VAR_SO\020\027\022" +
-      "\017\n\013VAR_OUTLIER\020\035\022\n\n\006VAR_IV\020\036\022\014\n\010VAR_RAMP" +
-      "\020(B5\n\034demetra.regarima.io.protobufB\025RegA" +
-      "rimaResultsProtosP\000P\001b\006proto3"
+      "\013 \001(\001\"\236\001\n\013Diagnostics\022B\n\017residuals_tests" +
+      "\030\001 \003(\0132).regarima.Diagnostics.ResidualsT" +
+      "estsEntry\032K\n\023ResidualsTestsEntry\022\013\n\003key\030" +
+      "\001 \001(\t\022#\n\005value\030\002 \001(\0132\024.jd3.StatisticalTe" +
+      "st:\0028\001\"\373\004\n\rRegArimaModel\0228\n\013description\030" +
+      "\001 \001(\0132#.regarima.RegArimaModel.Descripti" +
+      "on\0226\n\nestimation\030\002 \001(\0132\".regarima.RegAri" +
+      "maModel.Estimation\022*\n\013diagnostics\030\005 \001(\0132" +
+      "\025.regarima.Diagnostics\032\314\001\n\013Description\022\033" +
+      "\n\006series\030\001 \001(\0132\013.jd3.TsData\022\013\n\003log\030\002 \001(\010" +
+      "\022/\n\rpreadjustment\030\003 \001(\0162\030.regarima.Lengt" +
+      "hOfPeriod\022\014\n\004mean\030\004 \001(\010\022/\n\tvariables\030\005 \003" +
+      "(\0132\034.regarima.RegressionVariable\022#\n\005arim" +
+      "a\030\006 \001(\0132\024.regarima.SarimaSpec\032\374\001\n\nEstima" +
+      "tion\022\t\n\001y\030\001 \003(\001\022\026\n\001x\030\002 \001(\0132\013.jd3.Matrix\022" +
+      "\t\n\001b\030\003 \003(\001\022 \n\013bcovariance\030\004 \001(\0132\013.jd3.Ma" +
+      "trix\022-\n\nparameters\030\005 \001(\0132\031.jd3.Parameter" +
+      "sEstimation\022-\n\nlikelihood\030\006 \001(\0132\031.jd3.Li" +
+      "kelihoodStatistics\022\021\n\tresiduals\030\007 \003(\001\022-\n" +
+      "\010missings\030\010 \003(\0132\033.regarima.MissingEstima" +
+      "tion*\264\001\n\014VariableType\022\023\n\017VAR_UNSPECIFIED" +
+      "\020\000\022\014\n\010VAR_MEAN\020\001\022\n\n\006VAR_TD\020\n\022\n\n\006VAR_LP\020\013" +
+      "\022\016\n\nVAR_EASTER\020\014\022\n\n\006VAR_AO\020\024\022\n\n\006VAR_LS\020\025" +
+      "\022\n\n\006VAR_TC\020\026\022\n\n\006VAR_SO\020\027\022\017\n\013VAR_OUTLIER\020" +
+      "\035\022\n\n\006VAR_IV\020\036\022\014\n\010VAR_RAMP\020(B5\n\034demetra.r" +
+      "egarima.io.protobufB\025RegArimaResultsProt" +
+      "osP\000P\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -9257,6 +9382,12 @@ public final class RegArimaResultsProtos {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_regarima_Diagnostics_descriptor,
         new java.lang.String[] { "ResidualsTests", });
+    internal_static_regarima_Diagnostics_ResidualsTestsEntry_descriptor =
+      internal_static_regarima_Diagnostics_descriptor.getNestedTypes().get(0);
+    internal_static_regarima_Diagnostics_ResidualsTestsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_regarima_Diagnostics_ResidualsTestsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_regarima_RegArimaModel_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_regarima_RegArimaModel_fieldAccessorTable = new

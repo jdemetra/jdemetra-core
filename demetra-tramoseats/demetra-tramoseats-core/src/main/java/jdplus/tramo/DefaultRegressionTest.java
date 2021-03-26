@@ -25,7 +25,6 @@ import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.timeseries.regression.Variable;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regsarima.regular.IRegressionModule;
@@ -41,6 +40,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import jdplus.regarima.ami.ModellingUtility;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  * This module test for the presence of td, easter and mean in 
@@ -183,7 +183,7 @@ public class DefaultRegressionTest implements IRegressionModule {
         ModelDescription tmpModel = createTestModel(context);
         boolean changed = false;
         RegArimaModel<SarimaModel> regarima = tmpModel.regarima();
-        IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(true, precision);
+        IRegArimaComputer<SarimaModel> processor = RegArimaUtility.processor(true, precision);
         RegArimaEstimation<SarimaModel> rslt = processor.process(regarima, currentModel.mapping());
         ConcentratedLikelihoodWithMissing ll = rslt.getConcentratedLikelihood();
 

@@ -26,6 +26,7 @@ import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.processing.ProcessingLog;
+import demetra.stats.TestResult;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
@@ -62,7 +63,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
 
     private static final MissingValueEstimation[] NOMISSING = new MissingValueEstimation[0];
     
-    public static RegSarimaModel of(ModelDescription model, jdplus.regsarima.RegSarimaProcessor processor){
+    public static RegSarimaModel of(ModelDescription model, jdplus.regsarima.RegSarimaComputer processor){
         return RegSarimaModel.of(model, processor.process(model.regarima(), model.mapping()), ProcessingLog.dummy());
     }
 
@@ -150,20 +151,27 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
             }
             transformed = TsData.ofInternal(transformed.getStart(), datac);
         }
-        
+        DoubleSeq fullRes = RegArimaUtility.fullResiduals(model, ll);
         LightLinearModel.Estimation est = LightLinearModel.Estimation.builder()
                 .y(model.getY())
                 .X(model.allVariables())
                 .coefficients(ll.coefficients())
                 .coefficientsCovariance(ll.covariance(free, true))
                 .parameters(pestim)
-                .residuals(RegArimaUtility.fullResiduals(model, ll))
+                .residuals(fullRes)
                 .statistics(estimation.statistics())
                 .missing(missing)
                 .logs(log.all())
                 .build();
+        
+        int period=desc.getSeries().getAnnualFrequency();
+        NiidTests niid = NiidTests.builder()
+                .data(fullRes)
+                .period(period)
+                .hyperParametersCount(free)
+                .build();
 
-        Builder builder = RegSarimaModel.builder()
+        return RegSarimaModel.builder()
                 .description(desc)
                 .estimation(est)
                 .details(Details.builder()
@@ -171,11 +179,24 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
                         .interpolatedSeries(interpolated)
                         .transformedSeries(transformed)
                         .independentResiduals(ll.e())
-                        .build());
+                        .build())
+                .diagnostic("Mean", niid.meanTest().toSummary())
+                .diagnostic("Skewness", niid.skewness().toSummary())
+                .diagnostic("Kurtosis", niid.kurtosis().toSummary())
+                .diagnostic("Normality", niid.normalityTest().toSummary())
+                .diagnostic("LjungBox", niid.ljungBox().toSummary())
+                .diagnostic("SeasonalLjungBox", niid.seasonalLjungBox().toSummary())
+                .diagnostic("LjungBoxOnSquares", niid.ljungBoxOnSquare().toSummary())
+                .diagnostic("RunsNumber", niid.runsNumber().toSummary())
+                .diagnostic("RunsLength", niid.runsLength().toSummary())
+                .diagnostic("UpAndDownRunsNumber", niid.upAndDownRunsNumbber().toSummary())
+                .diagnostic("UpAndDownRunsLength", niid.upAndDownRunsLength().toSummary())
+                .build();
+     }
 
-        return builder.build();
-    }
-
+    @lombok.Singular
+    private Map<String, TestResult> diagnostics;
+    
     @lombok.Singular
     private Map<String, Object> additionalResults;
 
@@ -412,14 +433,6 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
         return description.getStochasticComponent().freeParametersCount();
     }
 
-    public NiidTests residualsTests() {
-        DoubleSeq res = estimation.getResiduals();
-        return NiidTests.builder()
-                .data(res)
-                .period(getAnnualFrequency())
-                .hyperParametersCount(freeArimaParametersCount())
-                .build();
-    }
 
     /**
      * tde
@@ -509,5 +522,5 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
         TsData s = deterministicEffect(domain, v -> !(v.getCore() instanceof TrendConstant));
         return backTransform(s, true);
     }
-
-}
+    
+ }

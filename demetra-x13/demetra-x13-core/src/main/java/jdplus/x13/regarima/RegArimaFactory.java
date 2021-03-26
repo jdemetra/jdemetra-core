@@ -3,25 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdplus.tramo;
+package jdplus.x13.regarima;
 
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.modelling.TransformationType;
+import demetra.regarima.AutoModelSpec;
+import demetra.regarima.EasterSpec;
+import demetra.regarima.OutlierSpec;
+import demetra.regarima.RegArimaSpec;
+import demetra.regarima.RegressionSpec;
+import demetra.regarima.RegressionTestSpec;
+import demetra.regarima.TradingDaysSpec;
+import demetra.regarima.TransformSpec;
 import demetra.sa.EstimationPolicy;
 import demetra.sa.EstimationPolicyType;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.timeseries.regression.Variable;
-import demetra.tramo.AutoModelSpec;
-import demetra.tramo.CalendarSpec;
-import demetra.tramo.EasterSpec;
-import demetra.tramo.OutlierSpec;
-import demetra.tramo.RegressionSpec;
-import demetra.tramo.TradingDaysSpec;
-import demetra.tramo.TramoSpec;
-import demetra.tramo.TransformSpec;
 import java.util.Arrays;
 import java.util.Optional;
 import demetra.timeseries.calendars.LengthOfPeriodType;
@@ -42,12 +42,12 @@ import jdplus.regarima.ami.ModellingUtility;
  * @author PALATEJ
  */
 //@ServiceProvider(SaProcessingFactory.class)
-public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, TramoSeatsResults>*/ {
+public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec, TramoSeatsResults>*/ {
 
-    public static final TramoFactory INSTANCE = new TramoFactory();
+    public static final RegArimaFactory INSTANCE = new RegArimaFactory();
 
-    public TramoSpec generateSpec(TramoSpec spec, GeneralLinearModel.Description<SarimaSpec> desc) {
-        TramoSpec.Builder builder = spec.toBuilder();
+    public RegArimaSpec generateSpec(RegArimaSpec spec, GeneralLinearModel.Description<SarimaSpec> desc) {
+        RegArimaSpec.Builder builder = spec.toBuilder();
         update(spec.getTransform(), desc, builder);
         update(spec.getArima(), desc, builder);
         update(spec.getAutoModel(), desc, builder);
@@ -57,8 +57,8 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         return builder.build();
     }
 
-    public TramoSpec refreshSpec(TramoSpec currentSpec, TramoSpec domainSpec, EstimationPolicyType policy, TsDomain frozenDomain) {
-        TramoSpec.Builder builder = currentSpec.toBuilder();
+    public RegArimaSpec refreshSpec(RegArimaSpec currentSpec, RegArimaSpec domainSpec, EstimationPolicyType policy, TsDomain frozenDomain) {
+        RegArimaSpec.Builder builder = currentSpec.toBuilder();
         switch (policy) {
             case Complete:
                 return domainSpec;
@@ -93,21 +93,22 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         return builder.build();
     }
 
-    private void update(TransformSpec transform, GeneralLinearModel.Description<SarimaSpec> rslts, TramoSpec.Builder builder) {
+    private void update(TransformSpec transform, GeneralLinearModel.Description<SarimaSpec> rslts, RegArimaSpec.Builder builder) {
         if (transform.getFunction() == TransformationType.Auto) {
             TransformSpec ntransform = transform.toBuilder()
                     .function(rslts.isLogTransformation() ? TransformationType.Log : TransformationType.None)
+                    .adjust(rslts.getLengthOfPeriodTransformation())
                     .build();
             builder.transform(ntransform);
         }
     }
 
-    private void update(SarimaSpec arima, GeneralLinearModel.Description<SarimaSpec> rslts, TramoSpec.Builder builder) {
+    private void update(SarimaSpec arima, GeneralLinearModel.Description<SarimaSpec> rslts, RegArimaSpec.Builder builder) {
         SarimaSpec nspec = rslts.getStochasticComponent();
         builder.arima(nspec);
     }
 
-    private void update(AutoModelSpec ami, GeneralLinearModel.Description<SarimaSpec> rslts, TramoSpec.Builder builder) {
+    private void update(AutoModelSpec ami, GeneralLinearModel.Description<SarimaSpec> rslts, RegArimaSpec.Builder builder) {
         // Disable ami
         AutoModelSpec nami = ami.toBuilder()
                 .enabled(false)
@@ -115,25 +116,23 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         builder.autoModel(nami);
     }
 
-    private void update(OutlierSpec outliers, GeneralLinearModel.Description<SarimaSpec> rslts, TramoSpec.Builder builder) {
+    private void update(OutlierSpec outliers, GeneralLinearModel.Description<SarimaSpec> rslts, RegArimaSpec.Builder builder) {
         if (outliers.isUsed()) {    // Disable outliers
             builder.outliers(
                     outliers.toBuilder()
-                            .ao(false)
-                            .ls(false)
-                            .tc(false)
-                            .so(false)
+                            .clearTypes()
                             .build());
         }
     }
 
-    private void update(RegressionSpec regression, GeneralLinearModel.Description<SarimaSpec> rslts, TramoSpec.Builder builder) {
+    private void update(RegressionSpec regression, GeneralLinearModel.Description<SarimaSpec> rslts, RegArimaSpec.Builder builder) {
         // The huge part
         RegressionSpec.Builder rbuilder = regression.toBuilder();
         // all the coefficients (fixed or free) of the variables have already been filled
         Variable[] variables = rslts.getVariables();
         updateMean(variables, rbuilder);
-        update(regression.getCalendar(), variables, rbuilder);
+        update(regression.getTradingDays(), variables, rbuilder);
+        update(regression.getEaster(), variables, rbuilder);
         updateOutliers(variables, rbuilder);
         builder.regression(rbuilder.build());
     }
@@ -156,16 +155,9 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
                 .forEach(v -> builder.outlier(v.replaceAttribute(ModellingUtility.AMI, ModellingUtility.AMI_PREVIOUS, "tramo")));
     }
 
-    private void update(CalendarSpec cspec, Variable[] variables, RegressionSpec.Builder builder) {
-        CalendarSpec.Builder cbuilder = CalendarSpec.builder();
-        update(cspec.getTradingDays(), variables, cbuilder);
-        update(cspec.getEaster(), variables, cbuilder);
-        builder.calendar(cbuilder.build());
-    }
-
-    private void update(TradingDaysSpec tdspec, Variable[] vars, CalendarSpec.Builder builder) {
+    private void update(TradingDaysSpec tdspec, Variable[] vars, RegressionSpec.Builder builder) {
         // Nothing to do
-        if (!tdspec.isUsed() || !(tdspec.isTest() || tdspec.isAutomatic())) {
+        if (!tdspec.isUsed() || tdspec.getRegressionTestType() == RegressionTestSpec.None) {
             return;
         }
         // leap year
@@ -189,18 +181,7 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         Parameter[] ctd = null;
         if (ftd.isPresent()) {
             Variable v = ftd.get();
-            if (tdspec.isAutomatic()) {
-                switch (v.getCore().dim()) {
-                    case 1:
-                        td = TradingDaysType.WorkingDays;
-                        break;
-                    case 6:
-                        td = TradingDaysType.TradingDays;
-                        break;
-                }
-            } else {
-                td = tdspec.getTradingDaysType();
-            }
+            td = tdspec.getTradingDaysType();
             ctd = v.getCoefficients();
         }
 
@@ -220,9 +201,9 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         builder.tradingDays(ntdspec);
     }
 
-    private void update(EasterSpec espec, Variable[] vars, CalendarSpec.Builder builder) {
+    private void update(EasterSpec espec, Variable[] vars, RegressionSpec.Builder builder) {
         // Nothing to do
-        if (!espec.isUsed() || !espec.isTest()) {
+        if (!espec.isUsed() || (!espec.isAutomatic() && espec.getTest() == RegressionTestSpec.None)) {
             return;
         }
         // Search for an optional easter variable
@@ -233,7 +214,8 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
             Variable ev = fe.get();
             EasterVariable evar = (EasterVariable) ev.getCore();
             espec = espec.toBuilder()
-                    .test(false)
+                    .test(RegressionTestSpec.None)
+                    .automatic(false)
                     .duration(evar.getDuration())
                     .coefficient(ev.getCoefficient(0))
                     .build();
@@ -243,12 +225,12 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         builder.easter(espec);
     }
 
-    private void resetArima(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
+    private void resetArima(RegArimaSpec currentSpec, RegArimaSpec domainSpec, RegArimaSpec.Builder builder) {
         builder.arima(domainSpec.getArima());
         builder.autoModel(domainSpec.getAutoModel());
     }
 
-    private void removeOutliers(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder, TsDomain frozen) {
+    private void removeOutliers(RegArimaSpec currentSpec, RegArimaSpec domainSpec, RegArimaSpec.Builder builder, TsDomain frozen) {
         builder.outliers(domainSpec.getOutliers());
         // remove existing automatic outliers...
         List<Variable<IOutlier>> outliers = currentSpec.getRegression().getOutliers();
@@ -275,11 +257,11 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
                 .anyMatch(o -> o.getCore().getPosition().equals(outlier.getCore().getPosition()));
     }
 
-    private void freeArima(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
+    private void freeArima(RegArimaSpec currentSpec, RegArimaSpec domainSpec, RegArimaSpec.Builder builder) {
         builder.arima(currentSpec.getArima().freeParameters(domainSpec.isUsingAutoModel() ? null : domainSpec.getArima()));
     }
 
-    private void fixAR(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
+    private void fixAR(RegArimaSpec currentSpec, RegArimaSpec domainSpec, RegArimaSpec.Builder builder) {
         SarimaSpec arima = currentSpec.getArima();
         Parameter[] phi = Parameter.fixParameters(arima.getPhi());
         Parameter[] bphi = Parameter.fixParameters(arima.getBphi());
@@ -297,11 +279,11 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         builder.arima(abuilder.build());
     }
 
-    private void fixArima(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
+    private void fixArima(RegArimaSpec currentSpec, RegArimaSpec domainSpec, RegArimaSpec.Builder builder) {
         builder.arima(currentSpec.getArima().fixParameters());
     }
 
-    private void freeVariables(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
+    private void freeVariables(RegArimaSpec currentSpec, RegArimaSpec domainSpec, RegArimaSpec.Builder builder) {
         RegressionSpec reg = currentSpec.getRegression();
         RegressionSpec dreg = domainSpec.getRegression();
         RegressionSpec.Builder rbuilder = reg.toBuilder();
@@ -337,10 +319,10 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
             nu.add(v.withCoefficient(freeCoefficients(v, dreg.getUserDefinedVariables())));
         });
 
-        EasterSpec easter = reg.getCalendar().getEaster();
+        EasterSpec easter = reg.getEaster();
         Parameter c = easter.getCoefficient();
         if (c != null && c.isFixed()) {
-            Parameter dc = dreg.getCalendar().getEaster().getCoefficient();
+            Parameter dc = dreg.getEaster().getCoefficient();
             if (dc == null || !dc.isFixed()) {
                 c = Parameter.initial(c.getValue());
                 easter = easter.toBuilder()
@@ -348,17 +330,17 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
                         .build();
             }
         }
-        TradingDaysSpec td = reg.getCalendar().getTradingDays();
+        TradingDaysSpec td = reg.getTradingDays();
         c = td.getLpCoefficient();
         Parameter[] tdc = td.getTdCoefficients();
         if (c != null || tdc != null) {
             if (c != null && c.isFixed()) {
-                Parameter dc = dreg.getCalendar().getTradingDays().getLpCoefficient();
+                Parameter dc = dreg.getTradingDays().getLpCoefficient();
                 if (dc == null || !dc.isFixed()) {
                     c = Parameter.initial(c.getValue());
                 }
             }
-            tdc=Parameter.freeParameters(tdc, dreg.getCalendar().getTradingDays().getTdCoefficients());
+            tdc = Parameter.freeParameters(tdc, dreg.getTradingDays().getTdCoefficients());
             td = td.withCoefficients(tdc, c);
         }
 
@@ -368,10 +350,8 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
                 .clearOutliers().outliers(no)
                 .clearRamps().ramps(nr)
                 .clearUserDefinedVariables().userDefinedVariables(nu)
-                .calendar(CalendarSpec.builder()
-                        .easter(easter)
-                        .tradingDays(td)
-                        .build())
+                .easter(easter)
+                .tradingDays(td)
                 .build());
     }
 
@@ -388,7 +368,7 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         }
     }
 
-    private void fixVariables(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
+    private void fixVariables(RegArimaSpec currentSpec, RegArimaSpec domainSpec, RegArimaSpec.Builder builder) {
         RegressionSpec reg = currentSpec.getRegression();
         RegressionSpec.Builder rbuilder = reg.toBuilder();
         Parameter mean = reg.getMean();
@@ -420,19 +400,19 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
             nu.add(v.withCoefficient(Parameter.fixParameters(v.getCoefficients())));
         });
 
-        EasterSpec easter = reg.getCalendar().getEaster();
+        EasterSpec easter = reg.getEaster();
         Parameter c = easter.getCoefficient();
         if (c != null) {
             easter = easter.toBuilder()
                     .coefficient(Parameter.fixed(c.getValue()))
                     .build();
         }
-        TradingDaysSpec td = reg.getCalendar().getTradingDays();
+        TradingDaysSpec td = reg.getTradingDays();
         c = td.getLpCoefficient();
         Parameter[] tdc = td.getTdCoefficients();
         if (c != null || tdc != null) {
             td = td.withCoefficients(Parameter.fixParameters(tdc), c == null ? null : Parameter.fixed(c.getValue()));
-         }
+        }
 
         builder.regression(rbuilder
                 .mean(mean)
@@ -440,10 +420,8 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
                 .clearOutliers().outliers(no)
                 .clearRamps().ramps(nr)
                 .clearUserDefinedVariables().userDefinedVariables(nu)
-                .calendar(CalendarSpec.builder()
-                        .easter(easter)
-                        .tradingDays(td)
-                        .build())
+                .easter(easter)
+                .tradingDays(td)
                 .build());
 
     }

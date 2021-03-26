@@ -21,7 +21,6 @@ import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.AICcComparator;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.regarima.ami.ModellingUtility;
@@ -33,6 +32,7 @@ import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -102,7 +102,7 @@ public class CalendarEffectsDetectionModule implements IRegressionModule {
     public ProcessingResult test(RegSarimaModelling context) {
 
         ModelDescription description = context.getDescription();
-        IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(true, eps);
+        IRegArimaComputer<SarimaModel> processor = RegArimaUtility.processor(true, eps);
 
         // builds models with and without td
         ModelDescription ntddesc = ModelDescription.copyOf(description, null);

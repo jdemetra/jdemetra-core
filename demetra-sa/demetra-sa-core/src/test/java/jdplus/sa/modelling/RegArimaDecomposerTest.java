@@ -31,7 +31,7 @@ import demetra.timeseries.regression.Variable;
 import java.util.ArrayList;
 import java.util.List;
 import jdplus.regarima.RegArimaEstimation;
-import jdplus.regsarima.RegSarimaProcessor;
+import jdplus.regsarima.RegSarimaComputer;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sarima.SarimaModel;
@@ -59,7 +59,7 @@ public class RegArimaDecomposerTest {
                 .meanCorrection(EasterVariable.Correction.Theoretical)
                 .build();
         model.addVariable(Variable.builder().name("easter").core(easter).attribute(SaVariable.REGEFFECT, ComponentType.CalendarEffect.name()).build());
-        RegArimaEstimation<SarimaModel> estimation = RegSarimaProcessor.PROCESSOR.process(model.regarima(), model.mapping());
+        RegArimaEstimation<SarimaModel> estimation = RegSarimaComputer.PROCESSOR.process(model.regarima(), model.mapping());
         RegSarimaModel rslt=RegSarimaModel.of(model, estimation, ProcessingLog.dummy());
  
         List<TsData> all = new ArrayList<>();

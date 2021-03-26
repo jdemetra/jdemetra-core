@@ -20,7 +20,6 @@ import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import demetra.modelling.TransformationType;
 import demetra.processing.ProcessingLog;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.ILogLevelModule;
 import jdplus.regsarima.regular.ModelDescription;
@@ -28,6 +27,7 @@ import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.sarima.SarimaModel;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  * Identification of log/level transformation
@@ -146,7 +146,7 @@ public class LogLevelModule implements ILogLevelModule {
             if (model.getSeries().getValues().anyMatch(z -> z <= 0)) {
                 return ProcessingResult.Failed;
             }
-            IRegArimaProcessor processor = X13Utility.processor(true, precision);
+            IRegArimaComputer processor = X13Utility.processor(true, precision);
             level = model.estimate(processor);
 
             ModelDescription logmodel = ModelDescription.copyOf(model);

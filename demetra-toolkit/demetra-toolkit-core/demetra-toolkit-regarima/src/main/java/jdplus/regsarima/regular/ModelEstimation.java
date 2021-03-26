@@ -23,7 +23,6 @@ import demetra.data.Doubles;
 import demetra.data.Parameter;
 import demetra.timeseries.regression.Variable;
 import nbbrd.design.Development;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.sarima.SarimaModel;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
@@ -47,6 +46,7 @@ import jdplus.regarima.RegArimaUtility;
 import jdplus.regarima.ami.ModellingUtility;
 import jdplus.stats.tests.NiidTests;
 import jdplus.timeseries.simplets.Transformations;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -82,7 +82,7 @@ public final class ModelEstimation {
 
     private LikelihoodStatistics statistics;
 
-    public static ModelEstimation of(ModelDescription builder, IRegArimaProcessor<SarimaModel> processor) {
+    public static ModelEstimation of(ModelDescription builder, IRegArimaComputer<SarimaModel> processor) {
         return new ModelEstimation(builder, builder.estimate(processor));
     }
 

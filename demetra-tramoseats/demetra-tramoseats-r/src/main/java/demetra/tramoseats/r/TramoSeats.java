@@ -18,21 +18,18 @@ package demetra.tramoseats.r;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.processing.ProcResults;
+import demetra.sa.EstimationPolicyType;
 import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ModellingContext;
-import demetra.tramo.TramoSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import demetra.tramoseats.io.protobuf.SpecProto;
-import demetra.tramoseats.io.protobuf.TramoOutput;
 import demetra.tramoseats.io.protobuf.TramoSeatsOutput;
 import demetra.tramoseats.io.protobuf.TramoSeatsProtos;
 import demetra.tramoseats.io.protobuf.TramoSeatsResultsProto;
 import demetra.util.r.Dictionary;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import jdplus.regsarima.regular.RegSarimaModel;
-import jdplus.tramo.TramoFactory;
-import jdplus.tramo.TramoKernel;
 import jdplus.tramoseats.TramoSeatsFactory;
 import jdplus.tramoseats.TramoSeatsKernel;
 import jdplus.tramoseats.TramoSeatsResults;
@@ -44,19 +41,21 @@ import jdplus.tramoseats.extractors.TramoSeatsExtractor;
  */
 @lombok.experimental.UtilityClass
 public class TramoSeats {
+
     @lombok.Value
-    public static class Results implements ProcResults{
+    public static class Results implements ProcResults {
+
         private TramoSeatsResults core;
-        
+
         public byte[] buffer() {
             return TramoSeatsResultsProto.convert(core).toByteArray();
         }
 
-        public Tramo.Results preprocessing(){
+        public Tramo.Results preprocessing() {
             return new Tramo.Results(core.getPreprocessing());
         }
 
-        public Seats.Results decomposition(){
+        public Seats.Results decomposition() {
             return new Seats.Results(core.getDecomposition());
         }
 
@@ -77,21 +76,25 @@ public class TramoSeats {
             return TramoSeatsExtractor.getMapping().getData(core, id, tclass);
         }
     }
-    
-    public Results process(TsData series, String defSpec){
-        TramoSeatsSpec spec=TramoSeatsSpec.fromString(defSpec);
-        TramoSeatsKernel kernel= TramoSeatsKernel.of(spec, null);
+
+    public Results process(TsData series, String defSpec) {
+        TramoSeatsSpec spec = TramoSeatsSpec.fromString(defSpec);
+        TramoSeatsKernel kernel = TramoSeatsKernel.of(spec, null);
         TramoSeatsResults estimation = kernel.process(series.cleanExtremities(), null);
         return new Results(estimation);
     }
-    
-    public Results process(TsData series, TramoSeatsSpec spec, Dictionary dic){
-        ModellingContext context=dic == null ? null : dic.toContext();
-        TramoSeatsKernel kernel= TramoSeatsKernel.of(spec, context);
+
+    public Results process(TsData series, TramoSeatsSpec spec, Dictionary dic) {
+        ModellingContext context = dic == null ? null : dic.toContext();
+        TramoSeatsKernel kernel = TramoSeatsKernel.of(spec, context);
         TramoSeatsResults estimation = kernel.process(series.cleanExtremities(), null);
         return new Results(estimation);
     }
-    
+
+    public TramoSeatsSpec refreshSpec(TramoSeatsSpec currentSpec, TramoSeatsSpec domainSpec, String policy, TsDomain domain) {
+        return TramoSeatsFactory.INSTANCE.refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);
+    }
+
     public byte[] toBuffer(TramoSeatsSpec spec) {
         return SpecProto.convert(spec).toByteArray();
     }
@@ -105,33 +108,26 @@ public class TramoSeats {
             return null;
         }
     }
-    
-    public byte[] generateOutput(TsData series, TramoSpec spec, Dictionary dic){
-        ModellingContext context=dic == null ? null : dic.toContext();
-        TramoKernel tramo= TramoKernel.of(spec, context);
-        RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
-        
-        TramoOutput output = TramoOutput.builder()
-                .estimationSpec(spec)
-                .result(estimation)
-                .resultSpec(estimation == null ? null : TramoFactory.INSTANCE.generateSpec(spec, estimation.getDescription()))
-                .build();
-        
-        return output.convert().toByteArray();
-    }
-    
-    public byte[] generateOutput(TsData series, String defSpec){
-        TramoSeatsSpec spec=TramoSeatsSpec.fromString(defSpec);
-        TramoSeatsKernel tramoseats= TramoSeatsKernel.of(spec, null);
+
+    public TramoSeatsOutput fullProcess(TsData series, TramoSeatsSpec spec, Dictionary dic) {
+        ModellingContext context = dic == null ? null : dic.toContext();
+        TramoSeatsKernel tramoseats = TramoSeatsKernel.of(spec, context);
         TramoSeatsResults estimation = tramoseats.process(series.cleanExtremities(), null);
-        
-        TramoSeatsOutput output = TramoSeatsOutput.builder()
+
+        return TramoSeatsOutput.builder()
                 .estimationSpec(spec)
                 .result(estimation)
                 .resultSpec(estimation == null ? null : TramoSeatsFactory.INSTANCE.generateSpec(spec, estimation.getPreprocessing().getDescription()))
                 .build();
-        
+    }
+
+    public TramoSeatsOutput fullProcess(TsData series, String defSpec) {
+        TramoSeatsSpec spec = TramoSeatsSpec.fromString(defSpec);
+        return fullProcess(series, spec, null);
+    }
+
+    public byte[] toBuffer(TramoSeatsOutput output) {
         return output.convert().toByteArray();
     }
-    
+
 }

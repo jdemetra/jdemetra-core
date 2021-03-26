@@ -25,6 +25,7 @@ import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.stats.ProbabilityType;
+import demetra.stats.TestResult;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.IEasterVariable;
@@ -41,6 +42,8 @@ import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.Variable;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
+import java.util.List;
+import java.util.Map;
 import jdplus.dstats.T;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sarima.SarimaModel;
@@ -52,9 +55,8 @@ import jdplus.sarima.SarimaModel;
 @lombok.experimental.UtilityClass
 public class RegArimaEstimationProto {
     
-    RegArimaResultsProtos.Sarima arima(RegSarimaModel model) {
-        SarimaModel arima = model.arima();
-        SarimaOrders orders = arima.orders();
+    RegArimaResultsProtos.Sarima arima(GeneralLinearModel<SarimaSpec> model) {
+        SarimaOrders orders = model.getDescription().getStochasticComponent().orders();
         ParametersEstimation parameters = model.getEstimation().getParameters();
         RegArimaResultsProtos.Sarima.Builder builder = RegArimaResultsProtos.Sarima.newBuilder()
                 .setPeriod(orders.getPeriod())
@@ -123,11 +125,11 @@ public class RegArimaEstimationProto {
         return builder.build();
     }
     
-    public RegArimaResultsProtos.RegArimaModel convert(RegSarimaModel model) {
+    public RegArimaResultsProtos.RegArimaModel convert(GeneralLinearModel<SarimaSpec> model) {
         return RegArimaResultsProtos.RegArimaModel.newBuilder()
                 .setDescription(convert(model.getDescription()))
                 .setEstimation(convert(model.getEstimation()))
-                .setDiagnostics(RegArimaProtosUtility.diagnosticsOf(model))
+                .setDiagnostics(diagnosticsOf(model))
                 .build();
         
     }
@@ -138,6 +140,13 @@ public class RegArimaEstimationProto {
                 .setValue(missing.getValue())
                 .setStde(missing.getStandardError())
                 .build();
+    }
+    
+    public RegArimaResultsProtos.Diagnostics diagnosticsOf(GeneralLinearModel<SarimaSpec> model){
+        
+        RegArimaResultsProtos.Diagnostics.Builder builder = RegArimaResultsProtos.Diagnostics.newBuilder();
+        model.getDiagnostics().forEach((k, v)->builder.putResidualsTests(k, ToolkitProtosUtility.convert(v)));
+        return builder.build();
     }
     
     public RegArimaResultsProtos.VariableType type(ITsVariable var) {

@@ -14,13 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramoseats.io.protobuf;
+package demetra.x13.io.protobuf;
 
 import demetra.processing.ProcessingLog;
-import demetra.regarima.io.protobuf.RegArimaEstimationProto;
-import demetra.tramo.TramoSpec;
+import demetra.x13.X13Spec;
 import java.util.Map;
-import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.x13.X13Results;
 
 /**
  *
@@ -28,27 +27,27 @@ import jdplus.regsarima.regular.RegSarimaModel;
  */
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder")
-public class TramoOutput {
-    RegSarimaModel result;
+public class X13Output {
+    X13Results result;
 
     @lombok.NonNull
-    TramoSpec estimationSpec;
+    X13Spec estimationSpec;
     
-    TramoSpec resultSpec;
+    X13Spec resultSpec;
 
     @lombok.Singular
     Map<String, Object> details;
     
     ProcessingLog logs;
     
-    public TramoSeatsResultsProtos.TramoOutput convert(){
-        TramoSeatsResultsProtos.TramoOutput.Builder builder = 
-                TramoSeatsResultsProtos.TramoOutput.newBuilder()
-                .setEstimationSpec(TramoProto.convert(estimationSpec));
+    public X13ResultsProtos.X13Output convert(){
+        X13ResultsProtos.X13Output.Builder builder = 
+                X13ResultsProtos.X13Output.newBuilder()
+                .setEstimationSpec(SpecProto.convert(estimationSpec));
         
         if (result != null){
-            builder.setResult(RegArimaEstimationProto.convert(result))
-                    .setResultSpec(TramoProto.convert(resultSpec));
+            builder.setResult(X13ResultsProto.convert(result))
+                    .setResultSpec(SpecProto.convert(resultSpec));
         }
         // TODO detail and logs
         

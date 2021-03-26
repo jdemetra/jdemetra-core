@@ -19,8 +19,8 @@ package jdplus.seats;
 import nbbrd.design.Development;
 import demetra.seats.DecompositionSpec;
 import demetra.seats.SeatsSpec;
-import jdplus.regsarima.GlsSarimaProcessor;
-import jdplus.regsarima.RegSarimaProcessor;
+import jdplus.regsarima.GlsSarimaComputer;
+import jdplus.regsarima.RegSarimaComputer;
 
 /**
  * @author Jean Palate
@@ -30,9 +30,9 @@ import jdplus.regsarima.RegSarimaProcessor;
 @lombok.Builder(builderClassName = "Builder")
 public class SeatsToolkit {
     
-    private static final RegSarimaProcessor PROCESSOR=RegSarimaProcessor
+    private static final RegSarimaComputer PROCESSOR=RegSarimaComputer
             .builder()
-            .startingPoint(RegSarimaProcessor.StartingPoint.HannanRissanen)
+            .startingPoint(RegSarimaComputer.StartingPoint.HannanRissanen)
             .precision(1e-7)
             .build();
 

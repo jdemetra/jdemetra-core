@@ -19,6 +19,7 @@ package demetra.x13.r;
 import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.math.matrices.MatrixType;
 import demetra.processing.ProcResults;
+import demetra.regarima.RegArimaOutput;
 import demetra.regarima.RegArimaSpec;
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
 import demetra.timeseries.TsData;
@@ -32,6 +33,7 @@ import jdplus.math.matrices.Matrix;
 import jdplus.regarima.extractors.RegSarimaModelExtractor;
 import jdplus.regsarima.regular.Forecast;
 import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.x13.regarima.RegArimaFactory;
 import jdplus.x13.regarima.RegArimaKernel;
 
 /**
@@ -40,8 +42,10 @@ import jdplus.x13.regarima.RegArimaKernel;
  */
 @lombok.experimental.UtilityClass
 public class RegArima {
+
     @lombok.Value
-    public static class Results implements ProcResults{
+    public static class Results implements ProcResults {
+
         private RegSarimaModel core;
 
         public byte[] buffer() {
@@ -65,52 +69,72 @@ public class RegArima {
             return RegSarimaModelExtractor.getMapping().getData(core, id, tclass);
         }
     }
-    
-    public Results process(TsData series, String defSpec){
-        RegArimaSpec spec=RegArimaSpec.fromString(defSpec);
-        RegArimaKernel tramo= RegArimaKernel.of(spec, null);
+
+    public Results process(TsData series, String defSpec) {
+        RegArimaSpec spec = RegArimaSpec.fromString(defSpec);
+        RegArimaKernel tramo = RegArimaKernel.of(spec, null);
         RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
         return new Results(estimation);
     }
-    
-    public Results process(TsData series, RegArimaSpec spec, Dictionary dic){
-        ModellingContext context=dic == null ? null : dic.toContext();
-        RegArimaKernel tramo= RegArimaKernel.of(spec, context);
+
+    public Results process(TsData series, RegArimaSpec spec, Dictionary dic) {
+        ModellingContext context = dic == null ? null : dic.toContext();
+        RegArimaKernel tramo = RegArimaKernel.of(spec, context);
         RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
         return new Results(estimation);
     }
-  
-    public MatrixType forecast(TsData series, String defSpec, int nf){
-        RegArimaSpec spec=RegArimaSpec.fromString(defSpec);
+
+    public MatrixType forecast(TsData series, String defSpec, int nf) {
+        RegArimaSpec spec = RegArimaSpec.fromString(defSpec);
         return forecast(series, spec, null, nf);
     }
-    
-    public MatrixType forecast(TsData series, RegArimaSpec spec, Dictionary dic, int nf){
-        ModellingContext context=dic == null ? null : dic.toContext();
-        RegArimaKernel kernel=RegArimaKernel.of(spec, context);
-        Forecast f=new Forecast(kernel, nf);
-        if (! f.process(series.cleanExtremities()))
-                return null;
-        Matrix R=Matrix.make(nf, 4);
+
+    public MatrixType forecast(TsData series, RegArimaSpec spec, Dictionary dic, int nf) {
+        ModellingContext context = dic == null ? null : dic.toContext();
+        RegArimaKernel kernel = RegArimaKernel.of(spec, context);
+        Forecast f = new Forecast(kernel, nf);
+        if (!f.process(series.cleanExtremities())) {
+            return null;
+        }
+        Matrix R = Matrix.make(nf, 4);
         R.column(0).copy(f.getForecasts());
         R.column(1).copy(f.getForecastsStdev());
         R.column(2).copy(f.getRawForecasts());
         R.column(3).copy(f.getRawForecastsStdev());
         return R;
     }
-    
-       public byte[] toBuffer(RegArimaSpec spec) {
+
+    public byte[] toBuffer(RegArimaSpec spec) {
         return RegArimaProto.convert(spec).toByteArray();
     }
 
-    public RegArimaSpec of(byte[] buffer) {
-       try {
+    public RegArimaSpec specOf(byte[] buffer) {
+        try {
             X13Protos.RegArimaSpec spec = X13Protos.RegArimaSpec.parseFrom(buffer);
             return RegArimaProto.convert(spec);
         } catch (InvalidProtocolBufferException ex) {
             return null;
         }
     }
-    
 
+    public RegArimaOutput fullProcess(TsData series, RegArimaSpec spec, Dictionary dic) {
+        ModellingContext context = dic == null ? null : dic.toContext();
+        RegArimaKernel tramo = RegArimaKernel.of(spec, context);
+        RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
+
+        return RegArimaOutput.builder()
+                .estimationSpec(spec)
+                .result(estimation)
+                .resultSpec(estimation == null ? null : RegArimaFactory.INSTANCE.generateSpec(spec, estimation.getDescription()))
+                .build();
+    }
+
+    public RegArimaOutput fullProcess(TsData series, String defSpec) {
+        RegArimaSpec spec = RegArimaSpec.fromString(defSpec);
+        return fullProcess(series, spec, null);
+    }
+
+    public byte[] toBuffer(RegArimaOutput output) {
+        return RegArimaProto.convert(output).toByteArray();
+    }
 }

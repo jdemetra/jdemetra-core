@@ -20,7 +20,6 @@ import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.internal.RegArmaEstimation;
@@ -39,20 +38,21 @@ import java.util.function.Function;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 import jdplus.sarima.SarimaModel;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
+public class RegSarimaComputer implements IRegArimaComputer<SarimaModel> {
 
-    public static final RegSarimaProcessor PROCESSOR = new Builder()
+    public static final RegSarimaComputer PROCESSOR = new Builder()
             .precision(1e-9)
             .startingPoint(StartingPoint.Multiple)
             .build();
 
-    @BuilderPattern(RegSarimaProcessor.class)
+    @BuilderPattern(RegSarimaComputer.class)
     public static class Builder {
 
         private double eps = DEF_EPS, feps = DEF_INTERNAL_EPS;
@@ -100,8 +100,8 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
             return this;
         }
 
-        public RegSarimaProcessor build() {
-            return new RegSarimaProcessor(min == null ? LevenbergMarquardtMinimizer.builder() : min,
+        public RegSarimaComputer build() {
+            return new RegSarimaComputer(min == null ? LevenbergMarquardtMinimizer.builder() : min,
                     eps, feps, ml, start, cdf, mt, fast);
         }
     }
@@ -133,7 +133,7 @@ public class RegSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
         return start;
     }
 
-    public RegSarimaProcessor(SsqFunctionMinimizer.Builder min, final double eps, final double feps,
+    public RegSarimaComputer(SsqFunctionMinimizer.Builder min, final double eps, final double feps,
             final boolean ml, final StartingPoint start, final boolean cdf, final boolean mt, final boolean fast) {
         this.min = min;
         this.eps = eps;

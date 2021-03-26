@@ -24,7 +24,6 @@ import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArmaModel;
@@ -45,6 +44,7 @@ import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.regarima.ami.GenericOutliersDetection;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -73,7 +73,7 @@ public class FastOutliersDetector implements GenericOutliersDetection<SarimaMode
 
         private double cv = 0;
         private boolean mvx;
-        private IRegArimaProcessor<SarimaModel> processor;
+        private IRegArimaComputer<SarimaModel> processor;
         private int maxOutliers = DEF_MAXOUTLIERS;
         private int maxRound = DEF_MAXROUND;
         private SingleOutlierDetector<SarimaModel> sod;
@@ -91,7 +91,7 @@ public class FastOutliersDetector implements GenericOutliersDetection<SarimaMode
             return this;
         }
 
-        public Builder processor(IRegArimaProcessor<SarimaModel> processor) {
+        public Builder processor(IRegArimaComputer<SarimaModel> processor) {
             this.processor = processor;
             return this;
         }
@@ -119,7 +119,7 @@ public class FastOutliersDetector implements GenericOutliersDetection<SarimaMode
     private final int maxRound, maxOutliers;
     private final ArrayList<int[]> outliers = new ArrayList<>(); // Outliers : (position, type)
     private final SingleOutlierDetector sod;
-    private final IRegArimaProcessor<SarimaModel> processor;
+    private final IRegArimaComputer<SarimaModel> processor;
     private final double cv;
     private final boolean mvx;
 
@@ -132,7 +132,7 @@ public class FastOutliersDetector implements GenericOutliersDetection<SarimaMode
     private DoubleSeq coeff, res;
     //
 
-    private FastOutliersDetector(final SingleOutlierDetector sod, final IRegArimaProcessor<SarimaModel> processor,
+    private FastOutliersDetector(final SingleOutlierDetector sod, final IRegArimaComputer<SarimaModel> processor,
             final int maxOutliers, final int maxRound, final double cv, final boolean mvx) {
         this.sod = sod;
         this.processor = processor;

@@ -26,6 +26,7 @@ import jdplus.regsarima.regular.SeasonalityDetector;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.arima.SarimaOrders;
+import demetra.modelling.implementations.RegSarimaProcessor;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import jdplus.regsarima.regular.ProcessingResult;
@@ -44,7 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.RegSarimaModel;
-import jdplus.regsarima.regular.RegSarimaProcessor;
 
 /**
  *
@@ -219,6 +219,7 @@ public class TramoKernel implements RegSarimaProcessor {
         RegSarimaModelling modelling = RegSarimaModelling.of(desc, log);
         RegSarimaModel rslt = ami(modelling, log);
         log.pop();
+        
         return rslt;
     }
 

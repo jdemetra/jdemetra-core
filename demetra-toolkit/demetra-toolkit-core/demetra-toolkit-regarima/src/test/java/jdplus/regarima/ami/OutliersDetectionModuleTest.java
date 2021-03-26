@@ -21,7 +21,7 @@ import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.outlier.ExactSingleOutlierDetector;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
-import jdplus.regsarima.GlsSarimaProcessor;
+import jdplus.regsarima.GlsSarimaComputer;
 import demetra.timeseries.TsPeriod;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -43,7 +43,7 @@ public class OutliersDetectionModuleTest {
         TsPeriod start = TsPeriod.monthly(1967, 1);
         HannanRissanenInitializer hr = HannanRissanenInitializer.builder().build();
         OutliersDetectionModule<SarimaModel> od = OutliersDetectionModule.build(SarimaModel.class)
-                .processor(GlsSarimaProcessor.builder().initializer(hr).build())
+                .processor(GlsSarimaComputer.builder().initializer(hr).build())
                 .detector(new ExactSingleOutlierDetector(null, null, null))
                 .setAll()
                 .build();
@@ -71,7 +71,7 @@ public class OutliersDetectionModuleTest {
         TsPeriod start = TsPeriod.monthly(1967, 1);
         HannanRissanenInitializer hr = HannanRissanenInitializer.builder().build();
         OutliersDetectionModule<SarimaModel> od = OutliersDetectionModule.build(SarimaModel.class)
-                .processor(GlsSarimaProcessor.builder().initializer(hr).build())
+                .processor(GlsSarimaComputer.builder().initializer(hr).build())
                 .setAll()
                 .build();
         od.setCriticalValue(3.0);

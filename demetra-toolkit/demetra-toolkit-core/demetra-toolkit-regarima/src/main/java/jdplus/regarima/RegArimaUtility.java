@@ -33,7 +33,7 @@ import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.UnitRoots;
-import jdplus.regsarima.GlsSarimaProcessor;
+import jdplus.regsarima.GlsSarimaComputer;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
 import jdplus.sarima.SarimaModel;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -173,12 +173,12 @@ public class RegArimaUtility {
 
     }
 
-    public IRegArimaProcessor<SarimaModel> processor(boolean ml, double eps) {
+    public IRegArimaComputer<SarimaModel> processor(boolean ml, double eps) {
         HannanRissanenInitializer initializer = HannanRissanenInitializer.builder()
                 .stabilize(true)
                 .useDefaultIfFailed(true)
                 .build();
-        return GlsSarimaProcessor.builder()
+        return GlsSarimaComputer.builder()
                 .minimizer(LevenbergMarquardtMinimizer.builder())
                 .precision(eps)
                 .initializer(initializer)

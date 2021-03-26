@@ -7,11 +7,14 @@ package jdplus.regsarima.regular;
 
 import demetra.data.DoubleSeq;
 import demetra.likelihood.LikelihoodStatistics;
+import demetra.modelling.implementations.RegSarimaProcessor;
+import demetra.modelling.implementations.SarimaSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.Variable;
+import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import java.util.Arrays;
 import jdplus.dstats.LogNormal;
 import jdplus.math.matrices.Matrix;
@@ -54,11 +57,11 @@ public class Forecast {
             if (!testSeries(data)) {
                 return false;
             }
-            RegSarimaModel model = kernel.process(data, null);
-            if (model == null) {
+            GeneralLinearModel<SarimaSpec> gmodel = kernel.process(data, null);
+            if (gmodel == null || !(gmodel instanceof RegSarimaModel)) {
                 return false;
             }
-
+            RegSarimaModel model = (RegSarimaModel) gmodel;
             RegArimaForecasts.Result fcasts;
             DoubleSeq b = model.getEstimation().getCoefficients();
             LikelihoodStatistics ll = model.getEstimation().getStatistics();

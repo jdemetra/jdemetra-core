@@ -26,10 +26,10 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.Regression;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
-import jdplus.regsarima.RegSarimaProcessor;
+import jdplus.regsarima.RegSarimaComputer;
 import jdplus.sarima.SarimaModel;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -57,14 +57,14 @@ public class RegSarimaModelling {
         modelling.estimation, ProcessingLog.dummy());
     }
 
-    public void estimate(IRegArimaProcessor<SarimaModel> processor) {
+    public void estimate(IRegArimaComputer<SarimaModel> processor) {
         estimation = description.estimate(processor);
     }
 
     public void estimate(double precision) {
-        RegSarimaProcessor processor = RegSarimaProcessor.builder()
+        RegSarimaComputer processor = RegSarimaComputer.builder()
                 .precision(precision)
-                .startingPoint(RegSarimaProcessor.StartingPoint.HannanRissanen)
+                .startingPoint(RegSarimaComputer.StartingPoint.HannanRissanen)
                 .build();
 
         estimation = description.estimate(processor);

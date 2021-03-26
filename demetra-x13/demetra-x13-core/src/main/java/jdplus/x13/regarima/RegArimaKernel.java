@@ -18,6 +18,7 @@ package jdplus.x13.regarima;
 
 import demetra.arima.SarimaOrders;
 import demetra.math.Complex;
+import demetra.modelling.implementations.RegSarimaProcessor;
 import demetra.processing.ProcessingLog;
 import demetra.regarima.RegArimaException;
 import demetra.regarima.RegArimaSpec;
@@ -34,7 +35,6 @@ import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
-import jdplus.regsarima.regular.RegSarimaProcessor;
 import jdplus.regsarima.regular.RegressionVariablesTest;
 import jdplus.sarima.SarimaModel;
 import nbbrd.design.BuilderPattern;

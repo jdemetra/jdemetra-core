@@ -23,7 +23,7 @@ import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import demetra.arima.SarimaOrders;
-import jdplus.regsarima.RegSarimaProcessor;
+import jdplus.regsarima.RegSarimaComputer;
 import demetra.util.IntList;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -70,12 +70,12 @@ public class ArimaEstimation {
         SarimaModel.Builder builder = SarimaModel.builder(spec);
         //
         SarimaModel arima = builder.setDefault().build();
-        RegSarimaProcessor monitor = RegSarimaProcessor.builder()
+        RegSarimaComputer monitor = RegSarimaComputer.builder()
                 .useParallelProcessing(true)
                 .useMaximumLikelihood(true)
                 .useCorrectedDegreesOfFreedom(false) // compatibility with R
                 .precision(1e-12)
-                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
+                .startingPoint(RegSarimaComputer.StartingPoint.Multiple)
                 .computeExactFinalDerivatives(true)
                 .build();
 

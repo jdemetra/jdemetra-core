@@ -16,9 +16,9 @@
  */
 package demetra.regarima.io.protobuf;
 
-import demetra.modelling.implementations.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.Range;
+import demetra.modelling.implementations.SarimaSpec;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
@@ -29,7 +29,6 @@ import demetra.timeseries.regression.Variable;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import jdplus.regsarima.regular.RegSarimaModel;
 
 /**
  *
@@ -216,12 +215,6 @@ public class RegArimaProtosUtility {
                 .core(builder.build())
                 .coefficients(new Parameter[]{ToolkitProtosUtility.convert(v.getCoefficient())})
                 .attributes(v.getMetadataMap())
-                .build();
-    }
-    
-    public RegArimaResultsProtos.Diagnostics diagnosticsOf(RegSarimaModel model){
-        return RegArimaResultsProtos.Diagnostics.newBuilder()
-                .setResidualsTests(ToolkitProtosUtility.convert(model.residualsTests()))
                 .build();
     }
    

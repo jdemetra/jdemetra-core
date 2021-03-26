@@ -21,7 +21,7 @@ import demetra.timeseries.regression.PeriodicContrasts;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
-import jdplus.regsarima.GlsSarimaProcessor;
+import jdplus.regsarima.GlsSarimaComputer;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import jdplus.stats.tests.StatisticalTest;
@@ -101,7 +101,7 @@ public class SeasonalFTest {
     }
 
     private boolean estimateModel() {
-        GlsSarimaProcessor processor = GlsSarimaProcessor.builder().build();
+        GlsSarimaComputer processor = GlsSarimaComputer.builder().build();
         seasonalModel = processor.process(regarima, null);
         return seasonalModel != null;
     }

@@ -16,7 +16,6 @@
  */
 package jdplus.regsarima;
 
-import demetra.data.DoubleSeq;
 import jdplus.sarima.estimation.SarimaMapping;
 import nbbrd.design.BuilderPattern;
 import jdplus.regarima.RegArimaEstimation;
@@ -30,27 +29,27 @@ import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.arima.estimation.IArimaMapping;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaMapping;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import java.util.function.Function;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 import jdplus.sarima.SarimaModel;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
+public class GlsSarimaComputer implements IRegArimaComputer<SarimaModel> {
     
-    public static final GlsSarimaProcessor PROCESSOR=new Builder()
+    public static final GlsSarimaComputer PROCESSOR=new Builder()
             .precision(1e-7)
             .build(); 
     
     public static final double DEF_EPS = 1e-7;
     
-    @BuilderPattern(GlsSarimaProcessor.class)
+    @BuilderPattern(GlsSarimaComputer.class)
     public static class Builder {
         
         private IArmaInitializer initializer;
@@ -88,11 +87,11 @@ public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
             return this;
         }
         
-        public GlsSarimaProcessor build() {
+        public GlsSarimaComputer build() {
             SsqFunctionMinimizer.Builder builder
                     = min == null ? LevenbergMarquardtMinimizer.builder() : min;
             
-            return new GlsSarimaProcessor(
+            return new GlsSarimaComputer(
                     initializer == null ? IArmaInitializer.defaultInitializer() : initializer,
                     builder.functionPrecision(eps).build(),
                     ml, mt, fast);
@@ -111,7 +110,7 @@ public class GlsSarimaProcessor implements IRegArimaProcessor<SarimaModel> {
     /**
      *
      */
-    private GlsSarimaProcessor(final IArmaInitializer initializer, final SsqFunctionMinimizer min,
+    private GlsSarimaComputer(final IArmaInitializer initializer, final SsqFunctionMinimizer min,
             final boolean ml, final boolean mt, final boolean fast) {
         this.initializer = initializer;
         this.min = min;

@@ -31,7 +31,7 @@ import demetra.timeseries.regression.Variable;
 import java.util.Arrays;
 import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.Regression;
-import jdplus.regsarima.RegSarimaProcessor;
+import jdplus.regsarima.RegSarimaComputer;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModel;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public class RegArimaForecastsTest {
                 .build();
         model.addVariable(Variable.variable("lp", lp));
         model.addVariable(Variable.variable("easter", easter));
-        RegSarimaModel rslt = RegSarimaModel.of(model, RegSarimaProcessor.PROCESSOR.process(model.regarima(), model.mapping()), ProcessingLog.dummy());
+        RegSarimaModel rslt = RegSarimaModel.of(model, RegSarimaComputer.PROCESSOR.process(model.regarima(), model.mapping()), ProcessingLog.dummy());
 
         TsDomain xdom = model.getEstimationDomain().extend(0, 24);
         Variable[] variables = rslt.getDescription().getVariables(); // could contain the trend const

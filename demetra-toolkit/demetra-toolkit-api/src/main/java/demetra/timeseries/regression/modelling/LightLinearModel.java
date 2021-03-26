@@ -22,6 +22,7 @@ import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.processing.ProcessingLog;
+import demetra.stats.TestResult;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.Variable;
@@ -39,6 +40,9 @@ public class LightLinearModel<M> implements GeneralLinearModel<M> {
 
     Description<M> description;
     Estimation estimation;
+
+    @lombok.Singular
+    private Map<String, TestResult> diagnostics;
 
     @lombok.Singular
     private Map<String, Object> additionalResults;

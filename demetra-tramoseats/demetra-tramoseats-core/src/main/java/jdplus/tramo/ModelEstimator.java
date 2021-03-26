@@ -8,7 +8,7 @@ package jdplus.tramo;
 import nbbrd.design.Development;
 import jdplus.regsarima.regular.IModelEstimator;
 import jdplus.regsarima.regular.RegSarimaModelling;
-import jdplus.regsarima.RegSarimaProcessor;
+import jdplus.regsarima.RegSarimaComputer;
 import jdplus.tramo.internal.OutliersDetectionModule;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.regarima.ami.ModellingUtility;
@@ -39,10 +39,10 @@ class ModelEstimator implements IModelEstimator {
     }
 
     private boolean calc(RegSarimaModelling context) {
-        RegSarimaProcessor processor = RegSarimaProcessor.builder()
+        RegSarimaComputer processor = RegSarimaComputer.builder()
                 .minimizer(LevenbergMarquardtMinimizer.builder())
                 .precision(eps)                
-//                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
+//                .startingPoint(RegSarimaComputer.StartingPoint.Multiple)
                 .build();
         context.estimate(processor);
         return true;

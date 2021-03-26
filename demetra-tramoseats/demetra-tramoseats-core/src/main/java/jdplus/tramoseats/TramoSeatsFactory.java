@@ -9,6 +9,7 @@ import demetra.modelling.implementations.SarimaSpec;
 import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
 import demetra.sa.EstimationPolicy;
+import demetra.sa.EstimationPolicyType;
 import demetra.sa.SaDiagnosticsFactory;
 import demetra.sa.SaProcessor;
 import demetra.sa.SaSpecification;
@@ -18,6 +19,7 @@ import demetra.tramoseats.TramoSeatsSpec;
 import nbbrd.service.ServiceProvider;
 import demetra.sa.SaProcessingFactory;
 import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import java.util.Collections;
 import java.util.List;
@@ -117,9 +119,13 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
     }
 
     @Override
-    public SaSpecification refreshSpec(TramoSeatsSpec currentSpec, TramoSeatsSpec domainSpec, EstimationPolicy policy) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public TramoSeatsSpec refreshSpec(TramoSeatsSpec currentSpec, TramoSeatsSpec domainSpec, EstimationPolicyType policy, TsDomain domain) {
+        // NOT COMPLETE
+        TramoSpec ntspec = TramoFactory.INSTANCE.refreshSpec(currentSpec.getTramo(), domainSpec.getTramo(), policy, domain);
+        return currentSpec.toBuilder()
+                .tramo(ntspec)
+                .build();
+   }
 
     private DecompositionSpec update(DecompositionSpec seats) {
         // Nothing to do (for the time being)

@@ -5,8 +5,10 @@
  */
 package demetra.tramoseats.io.protobuf;
 
+import demetra.regarima.io.protobuf.RegArimaEstimationProto;
 import demetra.tramo.TramoSpec;
 import demetra.regarima.io.protobuf.RegArimaProtosUtility;
+import demetra.tramo.TramoOutput;
 
 /**
  *
@@ -37,4 +39,19 @@ public class TramoProto {
                 .estimate(EstimateProto.convert(spec.getEstimate()))
                 .build();
     }
+    
+        public TramoSeatsResultsProtos.TramoOutput convert(TramoOutput output){
+        TramoSeatsResultsProtos.TramoOutput.Builder builder = 
+                TramoSeatsResultsProtos.TramoOutput.newBuilder()
+                .setEstimationSpec(TramoProto.convert(output.getEstimationSpec()));
+        
+        if (output.getResult() != null){
+            builder.setResult(RegArimaEstimationProto.convert(output.getResult()))
+                    .setResultSpec(TramoProto.convert(output.getResultSpec()));
+        }
+        // TODO detail and logs
+        
+        return builder.build();
+    }
+
 }

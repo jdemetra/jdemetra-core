@@ -20,7 +20,6 @@ import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import nbbrd.design.BuilderPattern;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
@@ -38,6 +37,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import jdplus.arima.estimation.IArimaMapping;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -54,7 +54,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
     public static class Builder<T extends IArimaModel> {
 
         private SingleOutlierDetector<T> sod = new FastOutlierDetector<>(null);
-        private IRegArimaProcessor<T> processor;
+        private IRegArimaComputer<T> processor;
         private int maxOutliers = DEF_MAXOUTLIERS;
         private int maxRound = DEF_MAXROUND;
         private final List<IOutlierFactory> factories=new ArrayList<>();
@@ -64,7 +64,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
             return this;
         }
 
-        public Builder<T> processor(IRegArimaProcessor<T> processor) {
+        public Builder<T> processor(IRegArimaComputer<T> processor) {
             this.processor = processor;
             return this;
         }
@@ -135,7 +135,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
     private ConcentratedLikelihoodWithMissing cll;
     private final ArrayList<int[]> outliers = new ArrayList<>(); // Outliers : (position, type)
     private final SingleOutlierDetector<T> sod;
-    private final IRegArimaProcessor<T> processor;
+    private final IRegArimaComputer<T> processor;
     private final int maxOutliers;
     private final int maxRound;
 
@@ -154,7 +154,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
         return new Builder<>();
     }
 
-    private OutliersDetectionModule(final SingleOutlierDetector sod, final IRegArimaProcessor<T> processor, final int maxOutliers, final int maxRound) {
+    private OutliersDetectionModule(final SingleOutlierDetector sod, final IRegArimaComputer<T> processor, final int maxOutliers, final int maxRound) {
         this.sod = sod;
         this.processor = processor;
         this.maxOutliers = maxOutliers;

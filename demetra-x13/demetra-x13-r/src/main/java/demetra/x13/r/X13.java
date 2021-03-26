@@ -18,15 +18,19 @@ package demetra.x13.r;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.processing.ProcResults;
+import demetra.sa.EstimationPolicyType;
 import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.util.r.Dictionary;
 import demetra.x13.X13Spec;
 import demetra.x13.io.protobuf.SpecProto;
+import demetra.x13.io.protobuf.X13Output;
 import demetra.x13.io.protobuf.X13Protos;
 import demetra.x13.io.protobuf.X13ResultsProto;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import jdplus.x13.X13Factory;
 import jdplus.x13.X13Kernel;
 import jdplus.x13.X13Results;
 import jdplus.x13.extractors.X13Extractor;
@@ -46,7 +50,7 @@ public class X13 {
         public byte[] buffer() {
             return X13ResultsProto.convert(core).toByteArray();
         }
-        
+
         public RegArima.Results preprocessing() {
             return new RegArima.Results(core.getPreprocessing());
         }
@@ -87,11 +91,15 @@ public class X13 {
         return new Results(estimation);
     }
 
+    public X13Spec refreshSpec(X13Spec currentSpec, X13Spec domainSpec, String policy, TsDomain domain) {
+        return X13Factory.INSTANCE.refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);
+    }
+
     public byte[] toBuffer(X13Spec spec) {
         return SpecProto.convert(spec).toByteArray();
     }
 
-    public X13Spec of(byte[] buffer) {
+    public X13Spec specOf(byte[] buffer) {
         try {
             X13Protos.Spec spec = X13Protos.Spec.parseFrom(buffer);
             return SpecProto.convert(spec);
@@ -99,4 +107,26 @@ public class X13 {
             return null;
         }
     }
+
+    public X13Output fullProcess(TsData series, X13Spec spec, Dictionary dic) {
+        ModellingContext context = dic == null ? null : dic.toContext();
+        X13Kernel tramoseats = X13Kernel.of(spec, context);
+        X13Results estimation = tramoseats.process(series.cleanExtremities(), null);
+
+        return X13Output.builder()
+                .estimationSpec(spec)
+                .result(estimation)
+                .resultSpec(estimation == null ? null : X13Factory.INSTANCE.generateSpec(spec, estimation))
+                .build();
+    }
+
+    public X13Output fullProcess(TsData series, String defSpec) {
+        X13Spec spec = X13Spec.fromString(defSpec);
+        return fullProcess(series, spec, null);
+    }
+
+    public byte[] toBuffer(X13Output output) {
+        return output.convert().toByteArray();
+    }
+
 }

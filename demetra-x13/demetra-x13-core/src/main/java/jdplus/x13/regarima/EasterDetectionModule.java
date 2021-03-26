@@ -19,7 +19,6 @@ package jdplus.x13.regarima;
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.AICcComparator;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.regsarima.regular.IModelComparator;
@@ -30,6 +29,7 @@ import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -86,7 +86,7 @@ public class EasterDetectionModule implements IRegressionModule {
         int icur = -1;
         ModelDescription[] desc = new ModelDescription[n];
         RegArimaEstimation[] est = new RegArimaEstimation[n];
-        IRegArimaProcessor<SarimaModel> processor = RegArimaUtility.processor(true, eps);
+        IRegArimaComputer<SarimaModel> processor = RegArimaUtility.processor(true, eps);
 
         ModelDescription refdesc = ModelDescription.copyOf(description);
         refdesc.remove("easter");

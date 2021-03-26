@@ -19,13 +19,13 @@ package jdplus.x13.regarima;
 import nbbrd.design.Development;
 import jdplus.arima.estimation.ResidualsComputer;
 import jdplus.data.DataBlock;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.outlier.CriticalValueComputer;
-import jdplus.regsarima.GlsSarimaProcessor;
+import jdplus.regsarima.GlsSarimaComputer;
 import jdplus.sarima.SarimaModel;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
-import jdplus.regsarima.RegSarimaProcessor;
+import jdplus.regsarima.RegSarimaComputer;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -41,11 +41,11 @@ public class X13Utility {
         return Math.max(CriticalValueComputer.advancedComputer().applyAsDouble(nobs), MINCV);
     }
 
-    public IRegArimaProcessor<SarimaModel> processor(boolean ml, double precision) {
-        return RegSarimaProcessor.builder()
+    public IRegArimaComputer<SarimaModel> processor(boolean ml, double precision) {
+        return RegSarimaComputer.builder()
                 .useMaximumLikelihood(ml)
                 .precision(precision)
-                .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
+                .startingPoint(RegSarimaComputer.StartingPoint.Multiple)
                 .build();
     }
 

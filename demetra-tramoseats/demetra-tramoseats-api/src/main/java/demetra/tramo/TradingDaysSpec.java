@@ -29,7 +29,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true, builderClassName = "Builder")
+@lombok.AllArgsConstructor(access=lombok.AccessLevel.PRIVATE)
 public class TradingDaysSpec {
 
     private static final TradingDaysSpec NONE = new TradingDaysSpec(null, null, TradingDaysType.None,
@@ -189,4 +189,9 @@ public class TradingDaysSpec {
         return this.equals(NONE);
     }
 
+    public TradingDaysSpec withCoefficients(Parameter[] tdc, Parameter lpc) {
+        return new TradingDaysSpec(holidays, userVariables, tradingDaysType, lengthOfPeriodType,
+                RegressionTestType.None, stockTradingDays, AutoMethod.Unused, probabilityForFTest, tdc, lpc);
+    }
+    
 }

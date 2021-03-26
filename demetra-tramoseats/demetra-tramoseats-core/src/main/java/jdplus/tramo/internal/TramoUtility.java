@@ -17,9 +17,8 @@
 package jdplus.tramo.internal;
 
 import nbbrd.design.Development;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.outlier.CriticalValueComputer;
-import jdplus.regsarima.GlsSarimaProcessor;
+import jdplus.regsarima.GlsSarimaComputer;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
@@ -27,6 +26,7 @@ import jdplus.stats.tests.LjungBox;
 import jdplus.stats.tests.StatisticalTest;
 import demetra.data.DoubleSeq;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -96,12 +96,12 @@ public class TramoUtility {
         return 1 - lb.getPValue();
     }
 
-    public IRegArimaProcessor<SarimaModel> processor(boolean ml, double precision) {
+    public IRegArimaComputer<SarimaModel> processor(boolean ml, double precision) {
         HannanRissanenInitializer initializer = HannanRissanenInitializer.builder()
                 .stabilize(true)
                 .useDefaultIfFailed(true)
                 .build();
-        return GlsSarimaProcessor.builder()
+        return GlsSarimaComputer.builder()
                 .initializer(initializer)
                 .useMaximumLikelihood(ml)
                 .minimizer(LevenbergMarquardtMinimizer.builder())

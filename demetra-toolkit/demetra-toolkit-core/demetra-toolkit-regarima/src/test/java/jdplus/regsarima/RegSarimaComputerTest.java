@@ -12,7 +12,6 @@ import jdplus.regarima.RegArimaModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
-import jdplus.math.functions.IFunctionPoint;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.sarima.SarimaModel;
 
@@ -20,9 +19,9 @@ import jdplus.sarima.SarimaModel;
  *
  * @author PALATEJ
  */
-public class RegSarimaProcessorTest {
+public class RegSarimaComputerTest {
     
-    public RegSarimaProcessorTest() {
+    public RegSarimaComputerTest() {
     }
 
     @Test
@@ -41,7 +40,7 @@ public class RegSarimaProcessorTest {
                 .arima(arima)
                 .meanCorrection(true)
                 .build();
-        RegArimaEstimation<SarimaModel> rslt = RegSarimaProcessor.builder()
+        RegArimaEstimation<SarimaModel> rslt = RegSarimaComputer.builder()
                 .minimizer(LevenbergMarquardtMinimizer.builder())
                 .precision(1e-9)
                 .build()
@@ -62,7 +61,7 @@ public class RegSarimaProcessorTest {
                 .arima(arima)
                 .meanCorrection(true)
                 .build();
-        RegArimaEstimation<SarimaModel> rslt = RegSarimaProcessor.builder()
+        RegArimaEstimation<SarimaModel> rslt = RegSarimaComputer.builder()
                 .minimizer(LevenbergMarquardtMinimizer.builder())
                 .precision(1e-9)
                 .build()

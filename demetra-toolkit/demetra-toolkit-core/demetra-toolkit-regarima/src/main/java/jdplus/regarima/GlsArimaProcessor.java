@@ -35,7 +35,7 @@ import jdplus.sarima.estimation.SarimaMapping;
  * @param <M>
  */
 @Development(status = Development.Status.Beta)
-public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaProcessor<M> {
+public class GlsArimaProcessor<M extends IArimaModel> implements IRegArimaComputer<M> {
 
     @BuilderPattern(GlsArimaProcessor.class)
     public static class Builder<M extends IArimaModel> {

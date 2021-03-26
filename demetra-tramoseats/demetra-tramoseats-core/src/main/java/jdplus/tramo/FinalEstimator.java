@@ -24,7 +24,7 @@ import jdplus.math.functions.IParametricMapping;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.regsarima.regular.IModelEstimator;
 import jdplus.regsarima.regular.RegSarimaModelling;
-import jdplus.regsarima.RegSarimaProcessor;
+import jdplus.regsarima.RegSarimaComputer;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
@@ -112,11 +112,11 @@ class FinalEstimator implements IModelEstimator {
         do {
             try {
                 IParametricMapping<SarimaModel> mapping = context.getDescription().mapping();
-                RegSarimaProcessor processor = RegSarimaProcessor.builder()
+                RegSarimaComputer processor = RegSarimaComputer.builder()
                         .minimizer(LevenbergMarquardtMinimizer.builder())
                         .precision(eps)
                         .computeExactFinalDerivatives(true)
-//                        .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
+//                        .startingPoint(RegSarimaComputer.StartingPoint.Multiple)
                         .build();
                 context.estimate(processor);
                 int ndim = mapping.getDim();

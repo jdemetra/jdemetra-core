@@ -28,7 +28,7 @@ import jdplus.arima.estimation.IArimaMapping;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public interface IRegArimaProcessor<M extends IArimaModel> {
+public interface IRegArimaComputer<M extends IArimaModel> {
 
     /**
      * 
