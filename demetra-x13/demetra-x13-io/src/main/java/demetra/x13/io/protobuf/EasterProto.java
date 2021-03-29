@@ -17,7 +17,9 @@
 package demetra.x13.io.protobuf;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import demetra.data.Parameter;
 import demetra.regarima.EasterSpec;
+import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 
 /**
  *
@@ -35,6 +37,9 @@ public class EasterProto {
     public X13Protos.RegArimaSpec.EasterSpec convert(EasterSpec spec) {
         X13Protos.RegArimaSpec.EasterSpec.Builder builder = X13Protos.RegArimaSpec.EasterSpec.newBuilder();
         fill(spec, builder);
+        Parameter c = spec.getCoefficient();
+        if (c != null)
+            builder.setCoefficient(ToolkitProtosUtility.convert(c));
         return builder.build();
     }
 
@@ -43,13 +48,16 @@ public class EasterProto {
     }
 
     public EasterSpec convert(X13Protos.RegArimaSpec.EasterSpec spec) {
-        return EasterSpec.builder()
+        
+        EasterSpec.Builder builder=EasterSpec.builder()
                 .automatic(spec.getDuration() == 0)
                 .duration(spec.getDuration())
                 .type(X13ProtosUtility.convert(spec.getType()))
-                .test(X13ProtosUtility.convert(spec.getTest()))
-                .build();
-
+                .test(X13ProtosUtility.convert(spec.getTest()));
+        
+        if (spec.hasCoefficient())
+            builder.coefficient(ToolkitProtosUtility.convert(spec.getCoefficient()));
+        return builder.build();
     }
 
     public EasterSpec of(byte[] bytes) throws InvalidProtocolBufferException {

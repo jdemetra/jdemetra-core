@@ -18,6 +18,7 @@ import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TransitoryChange;
 import demetra.timeseries.regression.TsContextVariable;
 import demetra.timeseries.regression.Variable;
+import demetra.toolkit.io.protobuf.ToolkitProtos;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import demetra.tramo.CalendarSpec;
 import java.time.LocalDate;
@@ -39,9 +40,8 @@ public class RegressionProto {
         if (spec.hasTd()) {
             cbuilder.tradingDays(TradingDaysProto.convert(spec.getTd()));
         }
-        
         RegressionSpec.Builder builder = RegressionSpec.builder()
-                .mean(ToolkitProtosUtility.convert(spec.getMean()))
+                .mean(RegArimaProtosUtility.convertConst(spec.getMean()))
                 .calendar(cbuilder.build());
         int n = spec.getOutliersCount();
         for (int i = 0; i < n; ++i) {
@@ -69,7 +69,7 @@ public class RegressionProto {
 
     public TramoSeatsProtos.TramoSpec.RegressionSpec convert(RegressionSpec spec) {
         TramoSeatsProtos.TramoSpec.RegressionSpec.Builder builder = TramoSeatsProtos.TramoSpec.RegressionSpec.newBuilder()
-                .setMean(ToolkitProtosUtility.convertNullable(spec.getMean()))
+                .setMean(RegArimaProtosUtility.convertConst(spec.getMean()))
                 .setEaster(EasterProto.convert(spec.getCalendar().getEaster()))
                 .setTd(TradingDaysProto.convert(spec.getCalendar().getTradingDays()));
         

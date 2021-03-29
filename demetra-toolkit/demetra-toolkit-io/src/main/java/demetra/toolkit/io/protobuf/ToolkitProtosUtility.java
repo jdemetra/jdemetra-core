@@ -183,14 +183,6 @@ public class ToolkitProtosUtility {
         }
     }
 
-    public Parameter convert(ToolkitProtos.NullableParameter p) {
-        if (p.hasData()) {
-            return convert(p.getData());
-        } else {
-            return null;
-        }
-    }
-
     public Parameter convert(ToolkitProtos.Parameter p) {
         switch (p.getType()) {
             case PARAMETER_FIXED:
@@ -202,18 +194,6 @@ public class ToolkitProtosUtility {
             default:
                 return Parameter.undefined();
 
-        }
-    }
-
-    public ToolkitProtos.NullableParameter convertNullable(Parameter p) {
-        if (p == null) {
-            return ToolkitProtos.NullableParameter.newBuilder()
-                    .setNull(NullValue.NULL_VALUE)
-                    .build();
-        } else {
-            return ToolkitProtos.NullableParameter.newBuilder()
-                    .setData(convert(p))
-                    .build();
         }
     }
 

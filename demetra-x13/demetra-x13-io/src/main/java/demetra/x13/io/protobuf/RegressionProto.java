@@ -17,7 +17,6 @@
 package demetra.x13.io.protobuf;
 
 import demetra.data.Parameter;
-import demetra.regarima.EasterSpec;
 import demetra.regarima.RegressionSpec;
 import demetra.regarima.io.protobuf.RegArimaProtos;
 import demetra.regarima.io.protobuf.RegArimaProtosUtility;
@@ -32,7 +31,6 @@ import demetra.timeseries.regression.TsContextVariable;
 import demetra.timeseries.regression.Variable;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -43,7 +41,7 @@ import java.util.List;
 public class RegressionProto {
     public RegressionSpec convert(X13Protos.RegArimaSpec.RegressionSpec spec, double tc) {
         RegressionSpec.Builder builder = RegressionSpec.builder()
-                .mean(ToolkitProtosUtility.convert(spec.getMean()))
+                .mean(RegArimaProtosUtility.convertConst(spec.getMean()))
                 .easter(EasterProto.convert(spec.getEaster()))
                 .tradingDays(TradingDaysProto.convert(spec.getTd()));
         int n = spec.getOutliersCount();
@@ -72,7 +70,7 @@ public class RegressionProto {
 
     public X13Protos.RegArimaSpec.RegressionSpec convert(RegressionSpec spec) {
         X13Protos.RegArimaSpec.RegressionSpec.Builder builder = X13Protos.RegArimaSpec.RegressionSpec.newBuilder()
-                .setMean(ToolkitProtosUtility.convertNullable(spec.getMean()))
+                .setMean(RegArimaProtosUtility.convertConst(spec.getMean()))
                 .setEaster(EasterProto.convert(spec.getEaster()))
                 .setTd(TradingDaysProto.convert(spec.getTradingDays()));
         

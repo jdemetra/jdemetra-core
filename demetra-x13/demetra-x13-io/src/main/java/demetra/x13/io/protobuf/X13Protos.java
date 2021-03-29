@@ -20,48 +20,48 @@ public final class X13Protos {
   public enum DecompositionMode
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>UNKNOWN = 0;</code>
+     * <code>MODE_UNKNOWN = 0;</code>
      */
-    UNKNOWN(0),
+    MODE_UNKNOWN(0),
     /**
-     * <code>ADDITIVE = 1;</code>
+     * <code>MODE_ADDITIVE = 1;</code>
      */
-    ADDITIVE(1),
+    MODE_ADDITIVE(1),
     /**
-     * <code>MULTIPLICATIVE = 2;</code>
+     * <code>MODE_MULTIPLICATIVE = 2;</code>
      */
-    MULTIPLICATIVE(2),
+    MODE_MULTIPLICATIVE(2),
     /**
-     * <code>LOGADDITIVE = 3;</code>
+     * <code>MODE_LOGADDITIVE = 3;</code>
      */
-    LOGADDITIVE(3),
+    MODE_LOGADDITIVE(3),
     /**
-     * <code>PSEUDOADDITIVE = 4;</code>
+     * <code>MODE_PSEUDOADDITIVE = 4;</code>
      */
-    PSEUDOADDITIVE(4),
+    MODE_PSEUDOADDITIVE(4),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>UNKNOWN = 0;</code>
+     * <code>MODE_UNKNOWN = 0;</code>
      */
-    public static final int UNKNOWN_VALUE = 0;
+    public static final int MODE_UNKNOWN_VALUE = 0;
     /**
-     * <code>ADDITIVE = 1;</code>
+     * <code>MODE_ADDITIVE = 1;</code>
      */
-    public static final int ADDITIVE_VALUE = 1;
+    public static final int MODE_ADDITIVE_VALUE = 1;
     /**
-     * <code>MULTIPLICATIVE = 2;</code>
+     * <code>MODE_MULTIPLICATIVE = 2;</code>
      */
-    public static final int MULTIPLICATIVE_VALUE = 2;
+    public static final int MODE_MULTIPLICATIVE_VALUE = 2;
     /**
-     * <code>LOGADDITIVE = 3;</code>
+     * <code>MODE_LOGADDITIVE = 3;</code>
      */
-    public static final int LOGADDITIVE_VALUE = 3;
+    public static final int MODE_LOGADDITIVE_VALUE = 3;
     /**
-     * <code>PSEUDOADDITIVE = 4;</code>
+     * <code>MODE_PSEUDOADDITIVE = 4;</code>
      */
-    public static final int PSEUDOADDITIVE_VALUE = 4;
+    public static final int MODE_PSEUDOADDITIVE_VALUE = 4;
 
 
     public final int getNumber() {
@@ -88,11 +88,11 @@ public final class X13Protos {
      */
     public static DecompositionMode forNumber(int value) {
       switch (value) {
-        case 0: return UNKNOWN;
-        case 1: return ADDITIVE;
-        case 2: return MULTIPLICATIVE;
-        case 3: return LOGADDITIVE;
-        case 4: return PSEUDOADDITIVE;
+        case 0: return MODE_UNKNOWN;
+        case 1: return MODE_ADDITIVE;
+        case 2: return MODE_MULTIPLICATIVE;
+        case 3: return MODE_LOGADDITIVE;
+        case 4: return MODE_PSEUDOADDITIVE;
         default: return null;
       }
     }
@@ -155,9 +155,9 @@ public final class X13Protos {
   public enum SeasonalFilter
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>SEASONAL_FILTER_UNSPECIFIED = 0;</code>
+     * <code>SEASONAL_FILTER_MSR = 0;</code>
      */
-    SEASONAL_FILTER_UNSPECIFIED(0),
+    SEASONAL_FILTER_MSR(0),
     /**
      * <code>SEASONAL_FILTER_S3X1 = 1;</code>
      */
@@ -179,24 +179,20 @@ public final class X13Protos {
      */
     SEASONAL_FILTER_S3X15(5),
     /**
-     * <code>SEASONAL_FILTER_MSR = 6;</code>
+     * <code>SEASONAL_FILTER_STABLE = 6;</code>
      */
-    SEASONAL_FILTER_MSR(6),
+    SEASONAL_FILTER_STABLE(6),
     /**
-     * <code>SEASONAL_FILTER_STABLE = 7;</code>
+     * <code>SEASONAL_FILTER_X11DEFAULT = 7;</code>
      */
-    SEASONAL_FILTER_STABLE(7),
-    /**
-     * <code>SEASONAL_FILTER_X11DEFAULT = 8;</code>
-     */
-    SEASONAL_FILTER_X11DEFAULT(8),
+    SEASONAL_FILTER_X11DEFAULT(7),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>SEASONAL_FILTER_UNSPECIFIED = 0;</code>
+     * <code>SEASONAL_FILTER_MSR = 0;</code>
      */
-    public static final int SEASONAL_FILTER_UNSPECIFIED_VALUE = 0;
+    public static final int SEASONAL_FILTER_MSR_VALUE = 0;
     /**
      * <code>SEASONAL_FILTER_S3X1 = 1;</code>
      */
@@ -218,17 +214,13 @@ public final class X13Protos {
      */
     public static final int SEASONAL_FILTER_S3X15_VALUE = 5;
     /**
-     * <code>SEASONAL_FILTER_MSR = 6;</code>
+     * <code>SEASONAL_FILTER_STABLE = 6;</code>
      */
-    public static final int SEASONAL_FILTER_MSR_VALUE = 6;
+    public static final int SEASONAL_FILTER_STABLE_VALUE = 6;
     /**
-     * <code>SEASONAL_FILTER_STABLE = 7;</code>
+     * <code>SEASONAL_FILTER_X11DEFAULT = 7;</code>
      */
-    public static final int SEASONAL_FILTER_STABLE_VALUE = 7;
-    /**
-     * <code>SEASONAL_FILTER_X11DEFAULT = 8;</code>
-     */
-    public static final int SEASONAL_FILTER_X11DEFAULT_VALUE = 8;
+    public static final int SEASONAL_FILTER_X11DEFAULT_VALUE = 7;
 
 
     public final int getNumber() {
@@ -255,15 +247,14 @@ public final class X13Protos {
      */
     public static SeasonalFilter forNumber(int value) {
       switch (value) {
-        case 0: return SEASONAL_FILTER_UNSPECIFIED;
+        case 0: return SEASONAL_FILTER_MSR;
         case 1: return SEASONAL_FILTER_S3X1;
         case 2: return SEASONAL_FILTER_S3X3;
         case 3: return SEASONAL_FILTER_S3X5;
         case 4: return SEASONAL_FILTER_S3X9;
         case 5: return SEASONAL_FILTER_S3X15;
-        case 6: return SEASONAL_FILTER_MSR;
-        case 7: return SEASONAL_FILTER_STABLE;
-        case 8: return SEASONAL_FILTER_X11DEFAULT;
+        case 6: return SEASONAL_FILTER_STABLE;
+        case 7: return SEASONAL_FILTER_X11DEFAULT;
         default: return null;
       }
     }
@@ -326,48 +317,40 @@ public final class X13Protos {
   public enum CalendarSigma
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>SIGMA_UNSPECIFIED = 0;</code>
+     * <code>SIGMA_NONE = 0;</code>
      */
-    SIGMA_UNSPECIFIED(0),
+    SIGMA_NONE(0),
     /**
-     * <code>SIGMA_NONE = 1;</code>
+     * <code>SIGMA_SIGNIF = 1;</code>
      */
-    SIGMA_NONE(1),
+    SIGMA_SIGNIF(1),
     /**
-     * <code>SIGMA_SIGNIF = 2;</code>
+     * <code>SIGMA_ALL = 2;</code>
      */
-    SIGMA_SIGNIF(2),
+    SIGMA_ALL(2),
     /**
-     * <code>SIGMA_ALL = 3;</code>
+     * <code>SIGMA_SELECT = 3;</code>
      */
-    SIGMA_ALL(3),
-    /**
-     * <code>SIGMA_SELECT = 4;</code>
-     */
-    SIGMA_SELECT(4),
+    SIGMA_SELECT(3),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>SIGMA_UNSPECIFIED = 0;</code>
+     * <code>SIGMA_NONE = 0;</code>
      */
-    public static final int SIGMA_UNSPECIFIED_VALUE = 0;
+    public static final int SIGMA_NONE_VALUE = 0;
     /**
-     * <code>SIGMA_NONE = 1;</code>
+     * <code>SIGMA_SIGNIF = 1;</code>
      */
-    public static final int SIGMA_NONE_VALUE = 1;
+    public static final int SIGMA_SIGNIF_VALUE = 1;
     /**
-     * <code>SIGMA_SIGNIF = 2;</code>
+     * <code>SIGMA_ALL = 2;</code>
      */
-    public static final int SIGMA_SIGNIF_VALUE = 2;
+    public static final int SIGMA_ALL_VALUE = 2;
     /**
-     * <code>SIGMA_ALL = 3;</code>
+     * <code>SIGMA_SELECT = 3;</code>
      */
-    public static final int SIGMA_ALL_VALUE = 3;
-    /**
-     * <code>SIGMA_SELECT = 4;</code>
-     */
-    public static final int SIGMA_SELECT_VALUE = 4;
+    public static final int SIGMA_SELECT_VALUE = 3;
 
 
     public final int getNumber() {
@@ -394,11 +377,10 @@ public final class X13Protos {
      */
     public static CalendarSigma forNumber(int value) {
       switch (value) {
-        case 0: return SIGMA_UNSPECIFIED;
-        case 1: return SIGMA_NONE;
-        case 2: return SIGMA_SIGNIF;
-        case 3: return SIGMA_ALL;
-        case 4: return SIGMA_SELECT;
+        case 0: return SIGMA_NONE;
+        case 1: return SIGMA_SIGNIF;
+        case 2: return SIGMA_ALL;
+        case 3: return SIGMA_SELECT;
         default: return null;
       }
     }
@@ -461,48 +443,40 @@ public final class X13Protos {
   public enum BiasCorrection
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>BIAS_UNSPECIFIED = 0;</code>
+     * <code>BIAS_NONE = 0;</code>
      */
-    BIAS_UNSPECIFIED(0),
+    BIAS_NONE(0),
     /**
-     * <code>BIAS_NONE = 1;</code>
+     * <code>BIAS_LEGACY = 1;</code>
      */
-    BIAS_NONE(1),
+    BIAS_LEGACY(1),
     /**
-     * <code>BIAS_LEGACY = 2;</code>
+     * <code>BIAS_SMOOTH = 2;</code>
      */
-    BIAS_LEGACY(2),
+    BIAS_SMOOTH(2),
     /**
-     * <code>BIAS_SMOOTH = 3;</code>
+     * <code>BIAS_RATIO = 3;</code>
      */
-    BIAS_SMOOTH(3),
-    /**
-     * <code>BIAS_RATIO = 4;</code>
-     */
-    BIAS_RATIO(4),
+    BIAS_RATIO(3),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>BIAS_UNSPECIFIED = 0;</code>
+     * <code>BIAS_NONE = 0;</code>
      */
-    public static final int BIAS_UNSPECIFIED_VALUE = 0;
+    public static final int BIAS_NONE_VALUE = 0;
     /**
-     * <code>BIAS_NONE = 1;</code>
+     * <code>BIAS_LEGACY = 1;</code>
      */
-    public static final int BIAS_NONE_VALUE = 1;
+    public static final int BIAS_LEGACY_VALUE = 1;
     /**
-     * <code>BIAS_LEGACY = 2;</code>
+     * <code>BIAS_SMOOTH = 2;</code>
      */
-    public static final int BIAS_LEGACY_VALUE = 2;
+    public static final int BIAS_SMOOTH_VALUE = 2;
     /**
-     * <code>BIAS_SMOOTH = 3;</code>
+     * <code>BIAS_RATIO = 3;</code>
      */
-    public static final int BIAS_SMOOTH_VALUE = 3;
-    /**
-     * <code>BIAS_RATIO = 4;</code>
-     */
-    public static final int BIAS_RATIO_VALUE = 4;
+    public static final int BIAS_RATIO_VALUE = 3;
 
 
     public final int getNumber() {
@@ -529,11 +503,10 @@ public final class X13Protos {
      */
     public static BiasCorrection forNumber(int value) {
       switch (value) {
-        case 0: return BIAS_UNSPECIFIED;
-        case 1: return BIAS_NONE;
-        case 2: return BIAS_LEGACY;
-        case 3: return BIAS_SMOOTH;
-        case 4: return BIAS_RATIO;
+        case 0: return BIAS_NONE;
+        case 1: return BIAS_LEGACY;
+        case 2: return BIAS_SMOOTH;
+        case 3: return BIAS_RATIO;
         default: return null;
       }
     }
@@ -596,32 +569,24 @@ public final class X13Protos {
   public enum OutlierMethod
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>OUTLIER_UNSPECIFIED = 0;</code>
+     * <code>OUTLIER_ADDONE = 0;</code>
      */
-    OUTLIER_UNSPECIFIED(0),
+    OUTLIER_ADDONE(0),
     /**
-     * <code>OUTLIER_ADDONE = 1;</code>
+     * <code>OUTLIER_ADDALL = 1;</code>
      */
-    OUTLIER_ADDONE(1),
-    /**
-     * <code>OUTLIER_ADDALL = 2;</code>
-     */
-    OUTLIER_ADDALL(2),
+    OUTLIER_ADDALL(1),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>OUTLIER_UNSPECIFIED = 0;</code>
+     * <code>OUTLIER_ADDONE = 0;</code>
      */
-    public static final int OUTLIER_UNSPECIFIED_VALUE = 0;
+    public static final int OUTLIER_ADDONE_VALUE = 0;
     /**
-     * <code>OUTLIER_ADDONE = 1;</code>
+     * <code>OUTLIER_ADDALL = 1;</code>
      */
-    public static final int OUTLIER_ADDONE_VALUE = 1;
-    /**
-     * <code>OUTLIER_ADDALL = 2;</code>
-     */
-    public static final int OUTLIER_ADDALL_VALUE = 2;
+    public static final int OUTLIER_ADDALL_VALUE = 1;
 
 
     public final int getNumber() {
@@ -648,9 +613,8 @@ public final class X13Protos {
      */
     public static OutlierMethod forNumber(int value) {
       switch (value) {
-        case 0: return OUTLIER_UNSPECIFIED;
-        case 1: return OUTLIER_ADDONE;
-        case 2: return OUTLIER_ADDALL;
+        case 0: return OUTLIER_ADDONE;
+        case 1: return OUTLIER_ADDALL;
         default: return null;
       }
     }
@@ -713,48 +677,40 @@ public final class X13Protos {
   public enum EasterType
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>EASTER_UNSPECIFIED = 0;</code>
+     * <code>EASTER_UNUSED = 0;</code>
      */
-    EASTER_UNSPECIFIED(0),
+    EASTER_UNUSED(0),
     /**
-     * <code>EASTER_UNUSED = 1;</code>
+     * <code>EASTER_STANDARD = 1;</code>
      */
-    EASTER_UNUSED(1),
+    EASTER_STANDARD(1),
     /**
-     * <code>EASTER_STANDARD = 2;</code>
+     * <code>EASTER_JULIAN = 2;</code>
      */
-    EASTER_STANDARD(2),
+    EASTER_JULIAN(2),
     /**
-     * <code>EASTER_JULIAN = 3;</code>
+     * <code>EASTER_SC = 3;</code>
      */
-    EASTER_JULIAN(3),
-    /**
-     * <code>EASTER_SC = 4;</code>
-     */
-    EASTER_SC(4),
+    EASTER_SC(3),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>EASTER_UNSPECIFIED = 0;</code>
+     * <code>EASTER_UNUSED = 0;</code>
      */
-    public static final int EASTER_UNSPECIFIED_VALUE = 0;
+    public static final int EASTER_UNUSED_VALUE = 0;
     /**
-     * <code>EASTER_UNUSED = 1;</code>
+     * <code>EASTER_STANDARD = 1;</code>
      */
-    public static final int EASTER_UNUSED_VALUE = 1;
+    public static final int EASTER_STANDARD_VALUE = 1;
     /**
-     * <code>EASTER_STANDARD = 2;</code>
+     * <code>EASTER_JULIAN = 2;</code>
      */
-    public static final int EASTER_STANDARD_VALUE = 2;
+    public static final int EASTER_JULIAN_VALUE = 2;
     /**
-     * <code>EASTER_JULIAN = 3;</code>
+     * <code>EASTER_SC = 3;</code>
      */
-    public static final int EASTER_JULIAN_VALUE = 3;
-    /**
-     * <code>EASTER_SC = 4;</code>
-     */
-    public static final int EASTER_SC_VALUE = 4;
+    public static final int EASTER_SC_VALUE = 3;
 
 
     public final int getNumber() {
@@ -781,11 +737,10 @@ public final class X13Protos {
      */
     public static EasterType forNumber(int value) {
       switch (value) {
-        case 0: return EASTER_UNSPECIFIED;
-        case 1: return EASTER_UNUSED;
-        case 2: return EASTER_STANDARD;
-        case 3: return EASTER_JULIAN;
-        case 4: return EASTER_SC;
+        case 0: return EASTER_UNUSED;
+        case 1: return EASTER_STANDARD;
+        case 2: return EASTER_JULIAN;
+        case 3: return EASTER_SC;
         default: return null;
       }
     }
@@ -848,40 +803,32 @@ public final class X13Protos {
   public enum RegressionTest
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>TEST_UNSPECIFIED = 0;</code>
+     * <code>TEST_NO = 0;</code>
      */
-    TEST_UNSPECIFIED(0),
+    TEST_NO(0),
     /**
-     * <code>TEST_NO = 1;</code>
+     * <code>TEST_ADD = 1;</code>
      */
-    TEST_NO(1),
+    TEST_ADD(1),
     /**
-     * <code>TEST_ADD = 2;</code>
+     * <code>TEST_REMOVE = 2;</code>
      */
-    TEST_ADD(2),
-    /**
-     * <code>TEST_REMOVE = 3;</code>
-     */
-    TEST_REMOVE(3),
+    TEST_REMOVE(2),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>TEST_UNSPECIFIED = 0;</code>
+     * <code>TEST_NO = 0;</code>
      */
-    public static final int TEST_UNSPECIFIED_VALUE = 0;
+    public static final int TEST_NO_VALUE = 0;
     /**
-     * <code>TEST_NO = 1;</code>
+     * <code>TEST_ADD = 1;</code>
      */
-    public static final int TEST_NO_VALUE = 1;
+    public static final int TEST_ADD_VALUE = 1;
     /**
-     * <code>TEST_ADD = 2;</code>
+     * <code>TEST_REMOVE = 2;</code>
      */
-    public static final int TEST_ADD_VALUE = 2;
-    /**
-     * <code>TEST_REMOVE = 3;</code>
-     */
-    public static final int TEST_REMOVE_VALUE = 3;
+    public static final int TEST_REMOVE_VALUE = 2;
 
 
     public final int getNumber() {
@@ -908,10 +855,9 @@ public final class X13Protos {
      */
     public static RegressionTest forNumber(int value) {
       switch (value) {
-        case 0: return TEST_UNSPECIFIED;
-        case 1: return TEST_NO;
-        case 2: return TEST_ADD;
-        case 3: return TEST_REMOVE;
+        case 0: return TEST_NO;
+        case 1: return TEST_ADD;
+        case 2: return TEST_REMOVE;
         default: return null;
       }
     }
@@ -1514,7 +1460,7 @@ public final class X13Protos {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (mode_ != demetra.x13.io.protobuf.X13Protos.DecompositionMode.UNKNOWN.getNumber()) {
+      if (mode_ != demetra.x13.io.protobuf.X13Protos.DecompositionMode.MODE_UNKNOWN.getNumber()) {
         output.writeEnum(1, mode_);
       }
       if (seasonal_ != false) {
@@ -1542,7 +1488,7 @@ public final class X13Protos {
       if (nbcasts_ != 0) {
         output.writeInt32(8, nbcasts_);
       }
-      if (sigma_ != demetra.x13.io.protobuf.X13Protos.CalendarSigma.SIGMA_UNSPECIFIED.getNumber()) {
+      if (sigma_ != demetra.x13.io.protobuf.X13Protos.CalendarSigma.SIGMA_NONE.getNumber()) {
         output.writeEnum(9, sigma_);
       }
       if (getVsigmasList().size() > 0) {
@@ -1555,7 +1501,7 @@ public final class X13Protos {
       if (excludeFcasts_ != false) {
         output.writeBool(11, excludeFcasts_);
       }
-      if (bias_ != demetra.x13.io.protobuf.X13Protos.BiasCorrection.BIAS_UNSPECIFIED.getNumber()) {
+      if (bias_ != demetra.x13.io.protobuf.X13Protos.BiasCorrection.BIAS_NONE.getNumber()) {
         output.writeEnum(12, bias_);
       }
       unknownFields.writeTo(output);
@@ -1567,7 +1513,7 @@ public final class X13Protos {
       if (size != -1) return size;
 
       size = 0;
-      if (mode_ != demetra.x13.io.protobuf.X13Protos.DecompositionMode.UNKNOWN.getNumber()) {
+      if (mode_ != demetra.x13.io.protobuf.X13Protos.DecompositionMode.MODE_UNKNOWN.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(1, mode_);
       }
@@ -1607,7 +1553,7 @@ public final class X13Protos {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(8, nbcasts_);
       }
-      if (sigma_ != demetra.x13.io.protobuf.X13Protos.CalendarSigma.SIGMA_UNSPECIFIED.getNumber()) {
+      if (sigma_ != demetra.x13.io.protobuf.X13Protos.CalendarSigma.SIGMA_NONE.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(9, sigma_);
       }
@@ -1629,7 +1575,7 @@ public final class X13Protos {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(11, excludeFcasts_);
       }
-      if (bias_ != demetra.x13.io.protobuf.X13Protos.BiasCorrection.BIAS_UNSPECIFIED.getNumber()) {
+      if (bias_ != demetra.x13.io.protobuf.X13Protos.BiasCorrection.BIAS_NONE.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(12, bias_);
       }
@@ -5440,7 +5386,7 @@ public final class X13Protos {
         if (defva_ != 0D) {
           output.writeDouble(3, defva_);
         }
-        if (method_ != demetra.x13.io.protobuf.X13Protos.OutlierMethod.OUTLIER_UNSPECIFIED.getNumber()) {
+        if (method_ != demetra.x13.io.protobuf.X13Protos.OutlierMethod.OUTLIER_ADDONE.getNumber()) {
           output.writeEnum(4, method_);
         }
         if (monthlyTcRate_ != 0D) {
@@ -5473,7 +5419,7 @@ public final class X13Protos {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(3, defva_);
         }
-        if (method_ != demetra.x13.io.protobuf.X13Protos.OutlierMethod.OUTLIER_UNSPECIFIED.getNumber()) {
+        if (method_ != demetra.x13.io.protobuf.X13Protos.OutlierMethod.OUTLIER_ADDONE.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(4, method_);
         }
@@ -8060,13 +8006,13 @@ public final class X13Protos {
       @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (type_ != demetra.x13.io.protobuf.X13Protos.EasterType.EASTER_UNSPECIFIED.getNumber()) {
+        if (type_ != demetra.x13.io.protobuf.X13Protos.EasterType.EASTER_UNUSED.getNumber()) {
           output.writeEnum(1, type_);
         }
         if (duration_ != 0) {
           output.writeInt32(2, duration_);
         }
-        if (test_ != demetra.x13.io.protobuf.X13Protos.RegressionTest.TEST_UNSPECIFIED.getNumber()) {
+        if (test_ != demetra.x13.io.protobuf.X13Protos.RegressionTest.TEST_NO.getNumber()) {
           output.writeEnum(3, test_);
         }
         if (coefficient_ != null) {
@@ -8081,7 +8027,7 @@ public final class X13Protos {
         if (size != -1) return size;
 
         size = 0;
-        if (type_ != demetra.x13.io.protobuf.X13Protos.EasterType.EASTER_UNSPECIFIED.getNumber()) {
+        if (type_ != demetra.x13.io.protobuf.X13Protos.EasterType.EASTER_UNUSED.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(1, type_);
         }
@@ -8089,7 +8035,7 @@ public final class X13Protos {
           size += com.google.protobuf.CodedOutputStream
             .computeInt32Size(2, duration_);
         }
-        if (test_ != demetra.x13.io.protobuf.X13Protos.RegressionTest.TEST_UNSPECIFIED.getNumber()) {
+        if (test_ != demetra.x13.io.protobuf.X13Protos.RegressionTest.TEST_NO.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(3, test_);
         }
@@ -8807,27 +8753,27 @@ public final class X13Protos {
       boolean getAutoAdjust();
 
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
       java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> 
-          getTdcoefficientList();
+          getTdcoefficientsList();
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
-      demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficient(int index);
+      demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficients(int index);
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
-      int getTdcoefficientCount();
+      int getTdcoefficientsCount();
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
       java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
-          getTdcoefficientOrBuilderList();
+          getTdcoefficientsOrBuilderList();
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
-      demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientOrBuilder(
+      demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientsOrBuilder(
           int index);
 
       /**
@@ -8863,7 +8809,7 @@ public final class X13Protos {
         holidays_ = "";
         users_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         test_ = 0;
-        tdcoefficient_ = java.util.Collections.emptyList();
+        tdcoefficients_ = java.util.Collections.emptyList();
       }
 
       @java.lang.Override
@@ -8942,10 +8888,10 @@ public final class X13Protos {
               }
               case 82: {
                 if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                  tdcoefficient_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>();
+                  tdcoefficients_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>();
                   mutable_bitField0_ |= 0x00000002;
                 }
-                tdcoefficient_.add(
+                tdcoefficients_.add(
                     input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry));
                 break;
               }
@@ -8981,7 +8927,7 @@ public final class X13Protos {
             users_ = users_.getUnmodifiableView();
           }
           if (((mutable_bitField0_ & 0x00000002) != 0)) {
-            tdcoefficient_ = java.util.Collections.unmodifiableList(tdcoefficient_);
+            tdcoefficients_ = java.util.Collections.unmodifiableList(tdcoefficients_);
           }
           this.unknownFields = unknownFields.build();
           makeExtensionsImmutable();
@@ -9152,44 +9098,44 @@ public final class X13Protos {
         return autoAdjust_;
       }
 
-      public static final int TDCOEFFICIENT_FIELD_NUMBER = 10;
-      private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> tdcoefficient_;
+      public static final int TDCOEFFICIENTS_FIELD_NUMBER = 10;
+      private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> tdcoefficients_;
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
       @java.lang.Override
-      public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getTdcoefficientList() {
-        return tdcoefficient_;
+      public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getTdcoefficientsList() {
+        return tdcoefficients_;
       }
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
       @java.lang.Override
       public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
-          getTdcoefficientOrBuilderList() {
-        return tdcoefficient_;
+          getTdcoefficientsOrBuilderList() {
+        return tdcoefficients_;
       }
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
       @java.lang.Override
-      public int getTdcoefficientCount() {
-        return tdcoefficient_.size();
+      public int getTdcoefficientsCount() {
+        return tdcoefficients_.size();
       }
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
       @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficient(int index) {
-        return tdcoefficient_.get(index);
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficients(int index) {
+        return tdcoefficients_.get(index);
       }
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
       @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientOrBuilder(
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientsOrBuilder(
           int index) {
-        return tdcoefficient_.get(index);
+        return tdcoefficients_.get(index);
       }
 
       public static final int LPCOEFFICIENT_FIELD_NUMBER = 11;
@@ -9247,14 +9193,14 @@ public final class X13Protos {
         if (w_ != 0) {
           output.writeInt32(5, w_);
         }
-        if (test_ != demetra.x13.io.protobuf.X13Protos.RegressionTest.TEST_UNSPECIFIED.getNumber()) {
+        if (test_ != demetra.x13.io.protobuf.X13Protos.RegressionTest.TEST_NO.getNumber()) {
           output.writeEnum(6, test_);
         }
         if (autoAdjust_ != false) {
           output.writeBool(7, autoAdjust_);
         }
-        for (int i = 0; i < tdcoefficient_.size(); i++) {
-          output.writeMessage(10, tdcoefficient_.get(i));
+        for (int i = 0; i < tdcoefficients_.size(); i++) {
+          output.writeMessage(10, tdcoefficients_.get(i));
         }
         if (lpcoefficient_ != null) {
           output.writeMessage(11, getLpcoefficient());
@@ -9291,7 +9237,7 @@ public final class X13Protos {
           size += com.google.protobuf.CodedOutputStream
             .computeInt32Size(5, w_);
         }
-        if (test_ != demetra.x13.io.protobuf.X13Protos.RegressionTest.TEST_UNSPECIFIED.getNumber()) {
+        if (test_ != demetra.x13.io.protobuf.X13Protos.RegressionTest.TEST_NO.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(6, test_);
         }
@@ -9299,9 +9245,9 @@ public final class X13Protos {
           size += com.google.protobuf.CodedOutputStream
             .computeBoolSize(7, autoAdjust_);
         }
-        for (int i = 0; i < tdcoefficient_.size(); i++) {
+        for (int i = 0; i < tdcoefficients_.size(); i++) {
           size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(10, tdcoefficient_.get(i));
+            .computeMessageSize(10, tdcoefficients_.get(i));
         }
         if (lpcoefficient_ != null) {
           size += com.google.protobuf.CodedOutputStream
@@ -9333,8 +9279,8 @@ public final class X13Protos {
         if (test_ != other.test_) return false;
         if (getAutoAdjust()
             != other.getAutoAdjust()) return false;
-        if (!getTdcoefficientList()
-            .equals(other.getTdcoefficientList())) return false;
+        if (!getTdcoefficientsList()
+            .equals(other.getTdcoefficientsList())) return false;
         if (hasLpcoefficient() != other.hasLpcoefficient()) return false;
         if (hasLpcoefficient()) {
           if (!getLpcoefficient()
@@ -9368,9 +9314,9 @@ public final class X13Protos {
         hash = (37 * hash) + AUTO_ADJUST_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
             getAutoAdjust());
-        if (getTdcoefficientCount() > 0) {
-          hash = (37 * hash) + TDCOEFFICIENT_FIELD_NUMBER;
-          hash = (53 * hash) + getTdcoefficientList().hashCode();
+        if (getTdcoefficientsCount() > 0) {
+          hash = (37 * hash) + TDCOEFFICIENTS_FIELD_NUMBER;
+          hash = (53 * hash) + getTdcoefficientsList().hashCode();
         }
         if (hasLpcoefficient()) {
           hash = (37 * hash) + LPCOEFFICIENT_FIELD_NUMBER;
@@ -9504,7 +9450,7 @@ public final class X13Protos {
         private void maybeForceBuilderInitialization() {
           if (com.google.protobuf.GeneratedMessageV3
                   .alwaysUseFieldBuilders) {
-            getTdcoefficientFieldBuilder();
+            getTdcoefficientsFieldBuilder();
           }
         }
         @java.lang.Override
@@ -9524,11 +9470,11 @@ public final class X13Protos {
 
           autoAdjust_ = false;
 
-          if (tdcoefficientBuilder_ == null) {
-            tdcoefficient_ = java.util.Collections.emptyList();
+          if (tdcoefficientsBuilder_ == null) {
+            tdcoefficients_ = java.util.Collections.emptyList();
             bitField0_ = (bitField0_ & ~0x00000002);
           } else {
-            tdcoefficientBuilder_.clear();
+            tdcoefficientsBuilder_.clear();
           }
           if (lpcoefficientBuilder_ == null) {
             lpcoefficient_ = null;
@@ -9574,14 +9520,14 @@ public final class X13Protos {
           result.w_ = w_;
           result.test_ = test_;
           result.autoAdjust_ = autoAdjust_;
-          if (tdcoefficientBuilder_ == null) {
+          if (tdcoefficientsBuilder_ == null) {
             if (((bitField0_ & 0x00000002) != 0)) {
-              tdcoefficient_ = java.util.Collections.unmodifiableList(tdcoefficient_);
+              tdcoefficients_ = java.util.Collections.unmodifiableList(tdcoefficients_);
               bitField0_ = (bitField0_ & ~0x00000002);
             }
-            result.tdcoefficient_ = tdcoefficient_;
+            result.tdcoefficients_ = tdcoefficients_;
           } else {
-            result.tdcoefficient_ = tdcoefficientBuilder_.build();
+            result.tdcoefficients_ = tdcoefficientsBuilder_.build();
           }
           if (lpcoefficientBuilder_ == null) {
             result.lpcoefficient_ = lpcoefficient_;
@@ -9665,29 +9611,29 @@ public final class X13Protos {
           if (other.getAutoAdjust() != false) {
             setAutoAdjust(other.getAutoAdjust());
           }
-          if (tdcoefficientBuilder_ == null) {
-            if (!other.tdcoefficient_.isEmpty()) {
-              if (tdcoefficient_.isEmpty()) {
-                tdcoefficient_ = other.tdcoefficient_;
+          if (tdcoefficientsBuilder_ == null) {
+            if (!other.tdcoefficients_.isEmpty()) {
+              if (tdcoefficients_.isEmpty()) {
+                tdcoefficients_ = other.tdcoefficients_;
                 bitField0_ = (bitField0_ & ~0x00000002);
               } else {
-                ensureTdcoefficientIsMutable();
-                tdcoefficient_.addAll(other.tdcoefficient_);
+                ensureTdcoefficientsIsMutable();
+                tdcoefficients_.addAll(other.tdcoefficients_);
               }
               onChanged();
             }
           } else {
-            if (!other.tdcoefficient_.isEmpty()) {
-              if (tdcoefficientBuilder_.isEmpty()) {
-                tdcoefficientBuilder_.dispose();
-                tdcoefficientBuilder_ = null;
-                tdcoefficient_ = other.tdcoefficient_;
+            if (!other.tdcoefficients_.isEmpty()) {
+              if (tdcoefficientsBuilder_.isEmpty()) {
+                tdcoefficientsBuilder_.dispose();
+                tdcoefficientsBuilder_ = null;
+                tdcoefficients_ = other.tdcoefficients_;
                 bitField0_ = (bitField0_ & ~0x00000002);
-                tdcoefficientBuilder_ = 
+                tdcoefficientsBuilder_ = 
                   com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                     getTdcoefficientFieldBuilder() : null;
+                     getTdcoefficientsFieldBuilder() : null;
               } else {
-                tdcoefficientBuilder_.addAllMessages(other.tdcoefficient_);
+                tdcoefficientsBuilder_.addAllMessages(other.tdcoefficients_);
               }
             }
           }
@@ -10134,244 +10080,244 @@ public final class X13Protos {
           return this;
         }
 
-        private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> tdcoefficient_ =
+        private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> tdcoefficients_ =
           java.util.Collections.emptyList();
-        private void ensureTdcoefficientIsMutable() {
+        private void ensureTdcoefficientsIsMutable() {
           if (!((bitField0_ & 0x00000002) != 0)) {
-            tdcoefficient_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>(tdcoefficient_);
+            tdcoefficients_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>(tdcoefficients_);
             bitField0_ |= 0x00000002;
            }
         }
 
         private com.google.protobuf.RepeatedFieldBuilderV3<
-            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> tdcoefficientBuilder_;
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> tdcoefficientsBuilder_;
 
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getTdcoefficientList() {
-          if (tdcoefficientBuilder_ == null) {
-            return java.util.Collections.unmodifiableList(tdcoefficient_);
+        public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getTdcoefficientsList() {
+          if (tdcoefficientsBuilder_ == null) {
+            return java.util.Collections.unmodifiableList(tdcoefficients_);
           } else {
-            return tdcoefficientBuilder_.getMessageList();
+            return tdcoefficientsBuilder_.getMessageList();
           }
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public int getTdcoefficientCount() {
-          if (tdcoefficientBuilder_ == null) {
-            return tdcoefficient_.size();
+        public int getTdcoefficientsCount() {
+          if (tdcoefficientsBuilder_ == null) {
+            return tdcoefficients_.size();
           } else {
-            return tdcoefficientBuilder_.getCount();
+            return tdcoefficientsBuilder_.getCount();
           }
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficient(int index) {
-          if (tdcoefficientBuilder_ == null) {
-            return tdcoefficient_.get(index);
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficients(int index) {
+          if (tdcoefficientsBuilder_ == null) {
+            return tdcoefficients_.get(index);
           } else {
-            return tdcoefficientBuilder_.getMessage(index);
+            return tdcoefficientsBuilder_.getMessage(index);
           }
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder setTdcoefficient(
+        public Builder setTdcoefficients(
             int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
-          if (tdcoefficientBuilder_ == null) {
+          if (tdcoefficientsBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
             }
-            ensureTdcoefficientIsMutable();
-            tdcoefficient_.set(index, value);
+            ensureTdcoefficientsIsMutable();
+            tdcoefficients_.set(index, value);
             onChanged();
           } else {
-            tdcoefficientBuilder_.setMessage(index, value);
+            tdcoefficientsBuilder_.setMessage(index, value);
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder setTdcoefficient(
+        public Builder setTdcoefficients(
             int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
-          if (tdcoefficientBuilder_ == null) {
-            ensureTdcoefficientIsMutable();
-            tdcoefficient_.set(index, builderForValue.build());
+          if (tdcoefficientsBuilder_ == null) {
+            ensureTdcoefficientsIsMutable();
+            tdcoefficients_.set(index, builderForValue.build());
             onChanged();
           } else {
-            tdcoefficientBuilder_.setMessage(index, builderForValue.build());
+            tdcoefficientsBuilder_.setMessage(index, builderForValue.build());
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder addTdcoefficient(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
-          if (tdcoefficientBuilder_ == null) {
+        public Builder addTdcoefficients(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+          if (tdcoefficientsBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
             }
-            ensureTdcoefficientIsMutable();
-            tdcoefficient_.add(value);
+            ensureTdcoefficientsIsMutable();
+            tdcoefficients_.add(value);
             onChanged();
           } else {
-            tdcoefficientBuilder_.addMessage(value);
+            tdcoefficientsBuilder_.addMessage(value);
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder addTdcoefficient(
+        public Builder addTdcoefficients(
             int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
-          if (tdcoefficientBuilder_ == null) {
+          if (tdcoefficientsBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
             }
-            ensureTdcoefficientIsMutable();
-            tdcoefficient_.add(index, value);
+            ensureTdcoefficientsIsMutable();
+            tdcoefficients_.add(index, value);
             onChanged();
           } else {
-            tdcoefficientBuilder_.addMessage(index, value);
+            tdcoefficientsBuilder_.addMessage(index, value);
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder addTdcoefficient(
+        public Builder addTdcoefficients(
             demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
-          if (tdcoefficientBuilder_ == null) {
-            ensureTdcoefficientIsMutable();
-            tdcoefficient_.add(builderForValue.build());
+          if (tdcoefficientsBuilder_ == null) {
+            ensureTdcoefficientsIsMutable();
+            tdcoefficients_.add(builderForValue.build());
             onChanged();
           } else {
-            tdcoefficientBuilder_.addMessage(builderForValue.build());
+            tdcoefficientsBuilder_.addMessage(builderForValue.build());
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder addTdcoefficient(
+        public Builder addTdcoefficients(
             int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
-          if (tdcoefficientBuilder_ == null) {
-            ensureTdcoefficientIsMutable();
-            tdcoefficient_.add(index, builderForValue.build());
+          if (tdcoefficientsBuilder_ == null) {
+            ensureTdcoefficientsIsMutable();
+            tdcoefficients_.add(index, builderForValue.build());
             onChanged();
           } else {
-            tdcoefficientBuilder_.addMessage(index, builderForValue.build());
+            tdcoefficientsBuilder_.addMessage(index, builderForValue.build());
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder addAllTdcoefficient(
+        public Builder addAllTdcoefficients(
             java.lang.Iterable<? extends demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> values) {
-          if (tdcoefficientBuilder_ == null) {
-            ensureTdcoefficientIsMutable();
+          if (tdcoefficientsBuilder_ == null) {
+            ensureTdcoefficientsIsMutable();
             com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                values, tdcoefficient_);
+                values, tdcoefficients_);
             onChanged();
           } else {
-            tdcoefficientBuilder_.addAllMessages(values);
+            tdcoefficientsBuilder_.addAllMessages(values);
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder clearTdcoefficient() {
-          if (tdcoefficientBuilder_ == null) {
-            tdcoefficient_ = java.util.Collections.emptyList();
+        public Builder clearTdcoefficients() {
+          if (tdcoefficientsBuilder_ == null) {
+            tdcoefficients_ = java.util.Collections.emptyList();
             bitField0_ = (bitField0_ & ~0x00000002);
             onChanged();
           } else {
-            tdcoefficientBuilder_.clear();
+            tdcoefficientsBuilder_.clear();
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder removeTdcoefficient(int index) {
-          if (tdcoefficientBuilder_ == null) {
-            ensureTdcoefficientIsMutable();
-            tdcoefficient_.remove(index);
+        public Builder removeTdcoefficients(int index) {
+          if (tdcoefficientsBuilder_ == null) {
+            ensureTdcoefficientsIsMutable();
+            tdcoefficients_.remove(index);
             onChanged();
           } else {
-            tdcoefficientBuilder_.remove(index);
+            tdcoefficientsBuilder_.remove(index);
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getTdcoefficientBuilder(
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getTdcoefficientsBuilder(
             int index) {
-          return getTdcoefficientFieldBuilder().getBuilder(index);
+          return getTdcoefficientsFieldBuilder().getBuilder(index);
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientOrBuilder(
+        public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientsOrBuilder(
             int index) {
-          if (tdcoefficientBuilder_ == null) {
-            return tdcoefficient_.get(index);  } else {
-            return tdcoefficientBuilder_.getMessageOrBuilder(index);
+          if (tdcoefficientsBuilder_ == null) {
+            return tdcoefficients_.get(index);  } else {
+            return tdcoefficientsBuilder_.getMessageOrBuilder(index);
           }
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
         public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
-             getTdcoefficientOrBuilderList() {
-          if (tdcoefficientBuilder_ != null) {
-            return tdcoefficientBuilder_.getMessageOrBuilderList();
+             getTdcoefficientsOrBuilderList() {
+          if (tdcoefficientsBuilder_ != null) {
+            return tdcoefficientsBuilder_.getMessageOrBuilderList();
           } else {
-            return java.util.Collections.unmodifiableList(tdcoefficient_);
+            return java.util.Collections.unmodifiableList(tdcoefficients_);
           }
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addTdcoefficientBuilder() {
-          return getTdcoefficientFieldBuilder().addBuilder(
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addTdcoefficientsBuilder() {
+          return getTdcoefficientsFieldBuilder().addBuilder(
               demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addTdcoefficientBuilder(
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addTdcoefficientsBuilder(
             int index) {
-          return getTdcoefficientFieldBuilder().addBuilder(
+          return getTdcoefficientsFieldBuilder().addBuilder(
               index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
         public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder> 
-             getTdcoefficientBuilderList() {
-          return getTdcoefficientFieldBuilder().getBuilderList();
+             getTdcoefficientsBuilderList() {
+          return getTdcoefficientsFieldBuilder().getBuilderList();
         }
         private com.google.protobuf.RepeatedFieldBuilderV3<
             demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
-            getTdcoefficientFieldBuilder() {
-          if (tdcoefficientBuilder_ == null) {
-            tdcoefficientBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            getTdcoefficientsFieldBuilder() {
+          if (tdcoefficientsBuilder_ == null) {
+            tdcoefficientsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
                 demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
-                    tdcoefficient_,
+                    tdcoefficients_,
                     ((bitField0_ & 0x00000002) != 0),
                     getParentForChildren(),
                     isClean());
-            tdcoefficient_ = null;
+            tdcoefficients_ = null;
           }
-          return tdcoefficientBuilder_;
+          return tdcoefficientsBuilder_;
         }
 
         private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter lpcoefficient_;
@@ -10550,19 +10496,19 @@ public final class X13Protos {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>.jd3.NullableParameter mean = 1;</code>
+       * <code>.regarima.TrendConstant mean = 1;</code>
        * @return Whether the mean field is set.
        */
       boolean hasMean();
       /**
-       * <code>.jd3.NullableParameter mean = 1;</code>
+       * <code>.regarima.TrendConstant mean = 1;</code>
        * @return The mean.
        */
-      demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter getMean();
+      demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant getMean();
       /**
-       * <code>.jd3.NullableParameter mean = 1;</code>
+       * <code>.regarima.TrendConstant mean = 1;</code>
        */
-      demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder getMeanOrBuilder();
+      demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder getMeanOrBuilder();
 
       /**
        * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
@@ -10741,11 +10687,11 @@ public final class X13Protos {
                 done = true;
                 break;
               case 10: {
-                demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder subBuilder = null;
+                demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder subBuilder = null;
                 if (mean_ != null) {
                   subBuilder = mean_.toBuilder();
                 }
-                mean_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.parser(), extensionRegistry);
+                mean_ = input.readMessage(demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.parser(), extensionRegistry);
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(mean_);
                   mean_ = subBuilder.buildPartial();
@@ -10860,9 +10806,9 @@ public final class X13Protos {
       }
 
       public static final int MEAN_FIELD_NUMBER = 1;
-      private demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter mean_;
+      private demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant mean_;
       /**
-       * <code>.jd3.NullableParameter mean = 1;</code>
+       * <code>.regarima.TrendConstant mean = 1;</code>
        * @return Whether the mean field is set.
        */
       @java.lang.Override
@@ -10870,18 +10816,18 @@ public final class X13Protos {
         return mean_ != null;
       }
       /**
-       * <code>.jd3.NullableParameter mean = 1;</code>
+       * <code>.regarima.TrendConstant mean = 1;</code>
        * @return The mean.
        */
       @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter getMean() {
-        return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.getDefaultInstance() : mean_;
+      public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant getMean() {
+        return mean_ == null ? demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.getDefaultInstance() : mean_;
       }
       /**
-       * <code>.jd3.NullableParameter mean = 1;</code>
+       * <code>.regarima.TrendConstant mean = 1;</code>
        */
       @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder getMeanOrBuilder() {
+      public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder getMeanOrBuilder() {
         return getMean();
       }
 
@@ -11694,31 +11640,31 @@ public final class X13Protos {
         }
         private int bitField0_;
 
-        private demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter mean_;
+        private demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant mean_;
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder> meanBuilder_;
+            demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder> meanBuilder_;
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          * @return Whether the mean field is set.
          */
         public boolean hasMean() {
           return meanBuilder_ != null || mean_ != null;
         }
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          * @return The mean.
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter getMean() {
+        public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant getMean() {
           if (meanBuilder_ == null) {
-            return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.getDefaultInstance() : mean_;
+            return mean_ == null ? demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.getDefaultInstance() : mean_;
           } else {
             return meanBuilder_.getMessage();
           }
         }
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          */
-        public Builder setMean(demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter value) {
+        public Builder setMean(demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant value) {
           if (meanBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -11732,10 +11678,10 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          */
         public Builder setMean(
-            demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder builderForValue) {
+            demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder builderForValue) {
           if (meanBuilder_ == null) {
             mean_ = builderForValue.build();
             onChanged();
@@ -11746,13 +11692,13 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          */
-        public Builder mergeMean(demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter value) {
+        public Builder mergeMean(demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant value) {
           if (meanBuilder_ == null) {
             if (mean_ != null) {
               mean_ =
-                demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.newBuilder(mean_).mergeFrom(value).buildPartial();
+                demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.newBuilder(mean_).mergeFrom(value).buildPartial();
             } else {
               mean_ = value;
             }
@@ -11764,7 +11710,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          */
         public Builder clearMean() {
           if (meanBuilder_ == null) {
@@ -11778,33 +11724,33 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder getMeanBuilder() {
+        public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder getMeanBuilder() {
           
           onChanged();
           return getMeanFieldBuilder().getBuilder();
         }
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder getMeanOrBuilder() {
+        public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder getMeanOrBuilder() {
           if (meanBuilder_ != null) {
             return meanBuilder_.getMessageOrBuilder();
           } else {
             return mean_ == null ?
-                demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.getDefaultInstance() : mean_;
+                demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.getDefaultInstance() : mean_;
           }
         }
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder> 
+            demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder> 
             getMeanFieldBuilder() {
           if (meanBuilder_ == null) {
             meanBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder>(
+                demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder>(
                     getMean(),
                     getParentForChildren(),
                     isClean());
@@ -16422,7 +16368,7 @@ public final class X13Protos {
       "\004usig\030\006 \001(\001\022\017\n\007nfcasts\030\007 \001(\005\022\017\n\007nbcasts\030" +
       "\010 \001(\005\022!\n\005sigma\030\t \001(\0162\022.x13.CalendarSigma" +
       "\022\017\n\007vsigmas\030\n \003(\005\022\026\n\016exclude_fcasts\030\013 \001(" +
-      "\010\022!\n\004bias\030\014 \001(\0162\023.x13.BiasCorrection\"\235\016\n" +
+      "\010\022!\n\004bias\030\014 \001(\0162\023.x13.BiasCorrection\"\237\016\n" +
       "\014RegArimaSpec\022*\n\005basic\030\001 \001(\0132\033.x13.RegAr" +
       "imaSpec.BasicSpec\0222\n\ttransform\030\002 \001(\0132\037.x" +
       "13.RegArimaSpec.TransformSpec\022.\n\007outlier" +
@@ -16452,49 +16398,46 @@ public final class X13Protos {
       "\010\032\205\001\n\nEasterSpec\022\035\n\004type\030\001 \001(\0162\017.x13.Eas" +
       "terType\022\020\n\010duration\030\002 \001(\005\022!\n\004test\030\003 \001(\0162" +
       "\023.x13.RegressionTest\022#\n\013coefficient\030\n \001(" +
-      "\0132\016.jd3.Parameter\032\214\002\n\017TradingDaysSpec\022!\n" +
+      "\0132\016.jd3.Parameter\032\215\002\n\017TradingDaysSpec\022!\n" +
       "\002td\030\001 \001(\0162\025.regarima.TradingDays\022$\n\002lp\030\002" +
       " \001(\0162\030.regarima.LengthOfPeriod\022\020\n\010holida" +
       "ys\030\003 \001(\t\022\r\n\005users\030\004 \003(\t\022\t\n\001w\030\005 \001(\005\022!\n\004te" +
       "st\030\006 \001(\0162\023.x13.RegressionTest\022\023\n\013auto_ad" +
-      "just\030\007 \001(\010\022%\n\rtdcoefficient\030\n \003(\0132\016.jd3." +
-      "Parameter\022%\n\rlpcoefficient\030\013 \001(\0132\016.jd3.P" +
-      "arameter\032\263\002\n\016RegressionSpec\022$\n\004mean\030\001 \001(" +
-      "\0132\026.jd3.NullableParameter\022-\n\002td\030\002 \001(\0132!." +
-      "x13.RegArimaSpec.TradingDaysSpec\022,\n\006east" +
-      "er\030\003 \001(\0132\034.x13.RegArimaSpec.EasterSpec\022#" +
-      "\n\010outliers\030\004 \003(\0132\021.regarima.Outlier\022#\n\005u" +
-      "sers\030\005 \003(\0132\024.regarima.TsVariable\0225\n\rinte" +
-      "rventions\030\006 \003(\0132\036.regarima.InterventionV" +
-      "ariable\022\035\n\005ramps\030\007 \003(\0132\016.regarima.Ramp\032<" +
-      "\n\014EstimateSpec\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeS" +
-      "elector\022\013\n\003tol\030\002 \001(\001\"r\n\004Spec\022#\n\010regarima" +
-      "\030\001 \001(\0132\021.x13.RegArimaSpec\022\031\n\003x11\030\002 \001(\0132\014" +
-      ".x13.X11Spec\022*\n\014benchmarking\030\003 \001(\0132\024.sa." +
-      "BenchmarkingSpec*g\n\021DecompositionMode\022\013\n" +
-      "\007UNKNOWN\020\000\022\014\n\010ADDITIVE\020\001\022\022\n\016MULTIPLICATI" +
-      "VE\020\002\022\017\n\013LOGADDITIVE\020\003\022\022\n\016PSEUDOADDITIVE\020" +
-      "\004*\211\002\n\016SeasonalFilter\022\037\n\033SEASONAL_FILTER_" +
-      "UNSPECIFIED\020\000\022\030\n\024SEASONAL_FILTER_S3X1\020\001\022" +
-      "\030\n\024SEASONAL_FILTER_S3X3\020\002\022\030\n\024SEASONAL_FI" +
-      "LTER_S3X5\020\003\022\030\n\024SEASONAL_FILTER_S3X9\020\004\022\031\n" +
-      "\025SEASONAL_FILTER_S3X15\020\005\022\027\n\023SEASONAL_FIL" +
-      "TER_MSR\020\006\022\032\n\026SEASONAL_FILTER_STABLE\020\007\022\036\n" +
-      "\032SEASONAL_FILTER_X11DEFAULT\020\010*i\n\rCalenda" +
-      "rSigma\022\025\n\021SIGMA_UNSPECIFIED\020\000\022\016\n\nSIGMA_N" +
-      "ONE\020\001\022\020\n\014SIGMA_SIGNIF\020\002\022\r\n\tSIGMA_ALL\020\003\022\020" +
-      "\n\014SIGMA_SELECT\020\004*g\n\016BiasCorrection\022\024\n\020BI" +
-      "AS_UNSPECIFIED\020\000\022\r\n\tBIAS_NONE\020\001\022\017\n\013BIAS_" +
-      "LEGACY\020\002\022\017\n\013BIAS_SMOOTH\020\003\022\016\n\nBIAS_RATIO\020" +
-      "\004*P\n\rOutlierMethod\022\027\n\023OUTLIER_UNSPECIFIE" +
-      "D\020\000\022\022\n\016OUTLIER_ADDONE\020\001\022\022\n\016OUTLIER_ADDAL" +
-      "L\020\002*n\n\nEasterType\022\026\n\022EASTER_UNSPECIFIED\020" +
-      "\000\022\021\n\rEASTER_UNUSED\020\001\022\023\n\017EASTER_STANDARD\020" +
-      "\002\022\021\n\rEASTER_JULIAN\020\003\022\r\n\tEASTER_SC\020\004*R\n\016R" +
-      "egressionTest\022\024\n\020TEST_UNSPECIFIED\020\000\022\013\n\007T" +
-      "EST_NO\020\001\022\014\n\010TEST_ADD\020\002\022\017\n\013TEST_REMOVE\020\003B" +
-      "$\n\027demetra.x13.io.protobufB\tX13ProtosP\000P" +
-      "\001P\002b\006proto3"
+      "just\030\007 \001(\010\022&\n\016tdcoefficients\030\n \003(\0132\016.jd3" +
+      ".Parameter\022%\n\rlpcoefficient\030\013 \001(\0132\016.jd3." +
+      "Parameter\032\264\002\n\016RegressionSpec\022%\n\004mean\030\001 \001" +
+      "(\0132\027.regarima.TrendConstant\022-\n\002td\030\002 \001(\0132" +
+      "!.x13.RegArimaSpec.TradingDaysSpec\022,\n\006ea" +
+      "ster\030\003 \001(\0132\034.x13.RegArimaSpec.EasterSpec" +
+      "\022#\n\010outliers\030\004 \003(\0132\021.regarima.Outlier\022#\n" +
+      "\005users\030\005 \003(\0132\024.regarima.TsVariable\0225\n\rin" +
+      "terventions\030\006 \003(\0132\036.regarima.Interventio" +
+      "nVariable\022\035\n\005ramps\030\007 \003(\0132\016.regarima.Ramp" +
+      "\032<\n\014EstimateSpec\022\037\n\004span\030\001 \001(\0132\021.jd3.Tim" +
+      "eSelector\022\013\n\003tol\030\002 \001(\001\"r\n\004Spec\022#\n\010regari" +
+      "ma\030\001 \001(\0132\021.x13.RegArimaSpec\022\031\n\003x11\030\002 \001(\013" +
+      "2\014.x13.X11Spec\022*\n\014benchmarking\030\003 \001(\0132\024.s" +
+      "a.BenchmarkingSpec*\200\001\n\021DecompositionMode" +
+      "\022\020\n\014MODE_UNKNOWN\020\000\022\021\n\rMODE_ADDITIVE\020\001\022\027\n" +
+      "\023MODE_MULTIPLICATIVE\020\002\022\024\n\020MODE_LOGADDITI" +
+      "VE\020\003\022\027\n\023MODE_PSEUDOADDITIVE\020\004*\350\001\n\016Season" +
+      "alFilter\022\027\n\023SEASONAL_FILTER_MSR\020\000\022\030\n\024SEA" +
+      "SONAL_FILTER_S3X1\020\001\022\030\n\024SEASONAL_FILTER_S" +
+      "3X3\020\002\022\030\n\024SEASONAL_FILTER_S3X5\020\003\022\030\n\024SEASO" +
+      "NAL_FILTER_S3X9\020\004\022\031\n\025SEASONAL_FILTER_S3X" +
+      "15\020\005\022\032\n\026SEASONAL_FILTER_STABLE\020\006\022\036\n\032SEAS" +
+      "ONAL_FILTER_X11DEFAULT\020\007*R\n\rCalendarSigm" +
+      "a\022\016\n\nSIGMA_NONE\020\000\022\020\n\014SIGMA_SIGNIF\020\001\022\r\n\tS" +
+      "IGMA_ALL\020\002\022\020\n\014SIGMA_SELECT\020\003*Q\n\016BiasCorr" +
+      "ection\022\r\n\tBIAS_NONE\020\000\022\017\n\013BIAS_LEGACY\020\001\022\017" +
+      "\n\013BIAS_SMOOTH\020\002\022\016\n\nBIAS_RATIO\020\003*7\n\rOutli" +
+      "erMethod\022\022\n\016OUTLIER_ADDONE\020\000\022\022\n\016OUTLIER_" +
+      "ADDALL\020\001*V\n\nEasterType\022\021\n\rEASTER_UNUSED\020" +
+      "\000\022\023\n\017EASTER_STANDARD\020\001\022\021\n\rEASTER_JULIAN\020" +
+      "\002\022\r\n\tEASTER_SC\020\003*<\n\016RegressionTest\022\013\n\007TE" +
+      "ST_NO\020\000\022\014\n\010TEST_ADD\020\001\022\017\n\013TEST_REMOVE\020\002B$" +
+      "\n\027demetra.x13.io.protobufB\tX13ProtosP\000P\001" +
+      "P\002b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -16556,7 +16499,7 @@ public final class X13Protos {
     internal_static_x13_RegArimaSpec_TradingDaysSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_x13_RegArimaSpec_TradingDaysSpec_descriptor,
-        new java.lang.String[] { "Td", "Lp", "Holidays", "Users", "W", "Test", "AutoAdjust", "Tdcoefficient", "Lpcoefficient", });
+        new java.lang.String[] { "Td", "Lp", "Holidays", "Users", "W", "Test", "AutoAdjust", "Tdcoefficients", "Lpcoefficient", });
     internal_static_x13_RegArimaSpec_RegressionSpec_descriptor =
       internal_static_x13_RegArimaSpec_descriptor.getNestedTypes().get(6);
     internal_static_x13_RegArimaSpec_RegressionSpec_fieldAccessorTable = new

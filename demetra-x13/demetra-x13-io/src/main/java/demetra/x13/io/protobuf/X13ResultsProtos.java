@@ -2358,7 +2358,7 @@ public final class X13ResultsProtos {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (mode_ != demetra.x13.io.protobuf.X13Protos.DecompositionMode.UNKNOWN.getNumber()) {
+      if (mode_ != demetra.x13.io.protobuf.X13Protos.DecompositionMode.MODE_UNKNOWN.getNumber()) {
         output.writeEnum(1, mode_);
       }
       if (d1_ != null) {
@@ -2497,7 +2497,7 @@ public final class X13ResultsProtos {
       if (size != -1) return size;
 
       size = 0;
-      if (mode_ != demetra.x13.io.protobuf.X13Protos.DecompositionMode.UNKNOWN.getNumber()) {
+      if (mode_ != demetra.x13.io.protobuf.X13Protos.DecompositionMode.MODE_UNKNOWN.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(1, mode_);
       }

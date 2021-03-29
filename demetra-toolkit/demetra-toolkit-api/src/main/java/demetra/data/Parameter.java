@@ -375,7 +375,7 @@ public class Parameter {
      * @return
      */
     public static boolean isDefined(Parameter p) {
-        return p != UNDEFINED;
+        return p != null && p != UNDEFINED;
     }
 
     // / <summary></summary>

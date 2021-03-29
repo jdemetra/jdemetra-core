@@ -18,9 +18,8 @@ package demetra.tramo;
 
 import demetra.data.Parameter;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import nbbrd.design.Development;
 import demetra.timeseries.calendars.TradingDaysType;
-import demetra.util.Validatable;
+import nbbrd.design.Development;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -109,7 +108,7 @@ public class TradingDaysSpec {
         if (type == TradingDaysType.None) {
             throw new IllegalArgumentException();
         }
-        if (lp == LengthOfPeriodType.None && lpcoeff != null) {
+        if (lp == LengthOfPeriodType.None && Parameter.isDefined(lpcoeff)) {
             throw new IllegalArgumentException();
         }
 

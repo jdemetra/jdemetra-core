@@ -150,13 +150,13 @@ public class RegArimaProtosUtility {
     }
 
     public Variable<TsContextVariable> convert(RegArimaProtos.TsVariable v) {
-        return Variable.<TsContextVariable> builder()
+        return Variable.<TsContextVariable>builder()
                 .name(v.getName())
                 .core(new TsContextVariable(v.getId(), v.getFirstLag(), v.getLastLag()))
                 .attributes(v.getMetadataMap())
                 .coefficients(ToolkitProtosUtility.convert(v.getCoefficientList()))
                 .build();
-     }
+    }
 
     public RegArimaProtos.Ramp convertRamp(Variable<Ramp> v) {
         return RegArimaProtos.Ramp.newBuilder()
@@ -171,7 +171,7 @@ public class RegArimaProtosUtility {
     public Variable<Ramp> convert(RegArimaProtos.Ramp v) {
         LocalDate start = ToolkitProtosUtility.convert(v.getStart());
         LocalDate end = ToolkitProtosUtility.convert(v.getEnd());
-        return Variable.<Ramp> builder()
+        return Variable.<Ramp>builder()
                 .name(v.getName())
                 .core(new Ramp(start.atStartOfDay(), end.atStartOfDay()))
                 .attributes(v.getMetadataMap())
@@ -217,5 +217,22 @@ public class RegArimaProtosUtility {
                 .attributes(v.getMetadataMap())
                 .build();
     }
-   
+
+    public Parameter convertConst(RegArimaProtos.TrendConstant v) {
+        if (!v.getUsed()) {
+            return null;
+        } else {
+            return ToolkitProtosUtility.convert(v.getCoefficient());
+        }
+    }
+
+    public RegArimaProtos.TrendConstant convertConst(Parameter v) {
+        RegArimaProtos.TrendConstant.Builder builder = RegArimaProtos.TrendConstant.newBuilder()
+                .setUsed(v != null);
+        if (v != null) {
+            builder.setCoefficient(ToolkitProtosUtility.convert(v));
+        }
+        return builder.build();
+    }
+
 }

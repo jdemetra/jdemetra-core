@@ -20,6 +20,7 @@ import demetra.arima.SarimaModel;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
+import demetra.tramo.TramoOutput;
 import demetra.tramo.TramoSpec;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -34,7 +35,7 @@ public class TramoTest {
     }
 
     @Test
-    public void testFull() {
+    public void test() {
         Tramo.Results rslt = Tramo.process(Data.TS_PROD, "TR5");
         assertTrue(rslt.getData("span.n", Integer.class) == Data.TS_PROD.length());
 //        System.out.println(DoubleSeq.of(rslt.getData("sarima.parameters", double[].class)));
@@ -45,6 +46,21 @@ public class TramoTest {
         assertTrue(desc != null);
     }
 
+    @Test
+    public void testFull() {
+        TramoOutput rslt = Tramo.fullProcess(Data.TS_PROD, "TR5");
+        byte[] bytes = Tramo.toBuffer(rslt);
+        assertTrue(bytes != null);
+        
+        TramoOutput rslt2 = Tramo.fullProcess(Data.TS_PROD, rslt.getResultSpec(), null);
+        byte[] bytes2 = Tramo.toBuffer(rslt2);
+        assertTrue(bytes2 != null);
+        
+        byte[] sbytes = Tramo.toBuffer(rslt.getEstimationSpec());
+        TramoSpec spec = Tramo.specOf(sbytes);
+        
+        assertTrue(spec != null);
+     }
      
    @Test
     public void testForecast0() {

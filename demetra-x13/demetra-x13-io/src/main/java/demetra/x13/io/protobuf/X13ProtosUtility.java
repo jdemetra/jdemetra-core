@@ -31,31 +31,29 @@ import demetra.x11.SeasonalFilterOption;
 public class X13ProtosUtility {
 
     public X13Protos.DecompositionMode convert(DecompositionMode mode) {
-        if (mode == null)
-            return X13Protos.DecompositionMode.UNKNOWN;
         switch (mode) {
             case Additive:
-                return X13Protos.DecompositionMode.ADDITIVE;
+                return X13Protos.DecompositionMode.MODE_ADDITIVE;
             case Multiplicative:
-                return X13Protos.DecompositionMode.MULTIPLICATIVE;
+                return X13Protos.DecompositionMode.MODE_MULTIPLICATIVE;
             case LogAdditive:
-                return X13Protos.DecompositionMode.LOGADDITIVE;
+                return X13Protos.DecompositionMode.MODE_LOGADDITIVE;
             case PseudoAdditive:
-                return X13Protos.DecompositionMode.PSEUDOADDITIVE;
+                return X13Protos.DecompositionMode.MODE_PSEUDOADDITIVE;
             default:
-                return X13Protos.DecompositionMode.UNKNOWN;
+                return X13Protos.DecompositionMode.MODE_UNKNOWN;
         }
     }
 
     public DecompositionMode convert(X13Protos.DecompositionMode mode) {
         switch (mode) {
-            case ADDITIVE:
+            case MODE_ADDITIVE:
                 return DecompositionMode.Additive;
-            case MULTIPLICATIVE:
+            case MODE_MULTIPLICATIVE:
                 return DecompositionMode.Multiplicative;
-            case LOGADDITIVE:
+            case MODE_LOGADDITIVE:
                 return DecompositionMode.LogAdditive;
-            case PSEUDOADDITIVE:
+            case MODE_PSEUDOADDITIVE:
                 return DecompositionMode.PseudoAdditive;
             default:
                 return DecompositionMode.Undefined;
@@ -64,8 +62,6 @@ public class X13ProtosUtility {
 
     public X13Protos.SeasonalFilter convert(SeasonalFilterOption sf) {
         switch (sf) {
-            case Msr:
-                return X13Protos.SeasonalFilter.SEASONAL_FILTER_MSR;
             case Stable:
                 return X13Protos.SeasonalFilter.SEASONAL_FILTER_STABLE;
             case X11Default:
@@ -81,14 +77,12 @@ public class X13ProtosUtility {
             case S3X15:
                 return X13Protos.SeasonalFilter.SEASONAL_FILTER_S3X15;
             default:
-                return X13Protos.SeasonalFilter.SEASONAL_FILTER_UNSPECIFIED;
+                return X13Protos.SeasonalFilter.SEASONAL_FILTER_MSR;
         }
     }
 
     public SeasonalFilterOption convert(X13Protos.SeasonalFilter sf) {
         switch (sf) {
-            case SEASONAL_FILTER_MSR:
-                return SeasonalFilterOption.Msr;
             case SEASONAL_FILTER_STABLE:
                 return SeasonalFilterOption.Stable;
             case SEASONAL_FILTER_S3X1:
@@ -101,8 +95,10 @@ public class X13ProtosUtility {
                 return SeasonalFilterOption.S3X9;
             case SEASONAL_FILTER_S3X15:
                 return SeasonalFilterOption.S3X15;
-            default:
+            case SEASONAL_FILTER_X11DEFAULT:
                 return SeasonalFilterOption.X11Default;
+            default:
+                return SeasonalFilterOption.Msr;
         }
     }
 

@@ -20,40 +20,32 @@ public final class TramoSeatsProtos {
   public enum SeatsApproximation
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>SEATS_APP_UNSPECIFIED = 0;</code>
+     * <code>SEATS_APP_NONE = 0;</code>
      */
-    SEATS_APP_UNSPECIFIED(0),
+    SEATS_APP_NONE(0),
     /**
-     * <code>SEATS_APP_NONE = 1;</code>
+     * <code>SEATS_APP_LEGACY = 1;</code>
      */
-    SEATS_APP_NONE(1),
+    SEATS_APP_LEGACY(1),
     /**
-     * <code>SEATS_APP_LEGACY = 2;</code>
+     * <code>SEATS_APP_NOISY = 2;</code>
      */
-    SEATS_APP_LEGACY(2),
-    /**
-     * <code>SEATS_APP_NOISY = 3;</code>
-     */
-    SEATS_APP_NOISY(3),
+    SEATS_APP_NOISY(2),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>SEATS_APP_UNSPECIFIED = 0;</code>
+     * <code>SEATS_APP_NONE = 0;</code>
      */
-    public static final int SEATS_APP_UNSPECIFIED_VALUE = 0;
+    public static final int SEATS_APP_NONE_VALUE = 0;
     /**
-     * <code>SEATS_APP_NONE = 1;</code>
+     * <code>SEATS_APP_LEGACY = 1;</code>
      */
-    public static final int SEATS_APP_NONE_VALUE = 1;
+    public static final int SEATS_APP_LEGACY_VALUE = 1;
     /**
-     * <code>SEATS_APP_LEGACY = 2;</code>
+     * <code>SEATS_APP_NOISY = 2;</code>
      */
-    public static final int SEATS_APP_LEGACY_VALUE = 2;
-    /**
-     * <code>SEATS_APP_NOISY = 3;</code>
-     */
-    public static final int SEATS_APP_NOISY_VALUE = 3;
+    public static final int SEATS_APP_NOISY_VALUE = 2;
 
 
     public final int getNumber() {
@@ -80,10 +72,9 @@ public final class TramoSeatsProtos {
      */
     public static SeatsApproximation forNumber(int value) {
       switch (value) {
-        case 0: return SEATS_APP_UNSPECIFIED;
-        case 1: return SEATS_APP_NONE;
-        case 2: return SEATS_APP_LEGACY;
-        case 3: return SEATS_APP_NOISY;
+        case 0: return SEATS_APP_NONE;
+        case 1: return SEATS_APP_LEGACY;
+        case 2: return SEATS_APP_NOISY;
         default: return null;
       }
     }
@@ -146,32 +137,24 @@ public final class TramoSeatsProtos {
   public enum SeatsAlgorithm
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>SEATS_ALG_UNSPECIFIED = 0;</code>
+     * <code>SEATS_ALG_BURMAN = 0;</code>
      */
-    SEATS_ALG_UNSPECIFIED(0),
+    SEATS_ALG_BURMAN(0),
     /**
-     * <code>SEATS_ALG_BURMAN = 1;</code>
+     * <code>SEATS_ALG_KALMANSMOOTHER = 1;</code>
      */
-    SEATS_ALG_BURMAN(1),
-    /**
-     * <code>SEATS_ALG_KALMANSMOOTHER = 2;</code>
-     */
-    SEATS_ALG_KALMANSMOOTHER(2),
+    SEATS_ALG_KALMANSMOOTHER(1),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>SEATS_ALG_UNSPECIFIED = 0;</code>
+     * <code>SEATS_ALG_BURMAN = 0;</code>
      */
-    public static final int SEATS_ALG_UNSPECIFIED_VALUE = 0;
+    public static final int SEATS_ALG_BURMAN_VALUE = 0;
     /**
-     * <code>SEATS_ALG_BURMAN = 1;</code>
+     * <code>SEATS_ALG_KALMANSMOOTHER = 1;</code>
      */
-    public static final int SEATS_ALG_BURMAN_VALUE = 1;
-    /**
-     * <code>SEATS_ALG_KALMANSMOOTHER = 2;</code>
-     */
-    public static final int SEATS_ALG_KALMANSMOOTHER_VALUE = 2;
+    public static final int SEATS_ALG_KALMANSMOOTHER_VALUE = 1;
 
 
     public final int getNumber() {
@@ -198,9 +181,8 @@ public final class TramoSeatsProtos {
      */
     public static SeatsAlgorithm forNumber(int value) {
       switch (value) {
-        case 0: return SEATS_ALG_UNSPECIFIED;
-        case 1: return SEATS_ALG_BURMAN;
-        case 2: return SEATS_ALG_KALMANSMOOTHER;
+        case 0: return SEATS_ALG_BURMAN;
+        case 1: return SEATS_ALG_KALMANSMOOTHER;
         default: return null;
       }
     }
@@ -263,40 +245,32 @@ public final class TramoSeatsProtos {
   public enum AutomaticTradingDays
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>TD_AUTO_UNSPECIFIED = 0;</code>
+     * <code>TD_AUTO_NO = 0;</code>
      */
-    TD_AUTO_UNSPECIFIED(0),
+    TD_AUTO_NO(0),
     /**
-     * <code>TD_AUTO_NO = 1;</code>
+     * <code>TD_AUTO_FTEST = 1;</code>
      */
-    TD_AUTO_NO(1),
+    TD_AUTO_FTEST(1),
     /**
-     * <code>TD_AUTO_FTEST = 2;</code>
+     * <code>TD_AUTO_WALDTEST = 2;</code>
      */
-    TD_AUTO_FTEST(2),
-    /**
-     * <code>TD_AUTO_WALDTEST = 3;</code>
-     */
-    TD_AUTO_WALDTEST(3),
+    TD_AUTO_WALDTEST(2),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>TD_AUTO_UNSPECIFIED = 0;</code>
+     * <code>TD_AUTO_NO = 0;</code>
      */
-    public static final int TD_AUTO_UNSPECIFIED_VALUE = 0;
+    public static final int TD_AUTO_NO_VALUE = 0;
     /**
-     * <code>TD_AUTO_NO = 1;</code>
+     * <code>TD_AUTO_FTEST = 1;</code>
      */
-    public static final int TD_AUTO_NO_VALUE = 1;
+    public static final int TD_AUTO_FTEST_VALUE = 1;
     /**
-     * <code>TD_AUTO_FTEST = 2;</code>
+     * <code>TD_AUTO_WALDTEST = 2;</code>
      */
-    public static final int TD_AUTO_FTEST_VALUE = 2;
-    /**
-     * <code>TD_AUTO_WALDTEST = 3;</code>
-     */
-    public static final int TD_AUTO_WALDTEST_VALUE = 3;
+    public static final int TD_AUTO_WALDTEST_VALUE = 2;
 
 
     public final int getNumber() {
@@ -323,10 +297,9 @@ public final class TramoSeatsProtos {
      */
     public static AutomaticTradingDays forNumber(int value) {
       switch (value) {
-        case 0: return TD_AUTO_UNSPECIFIED;
-        case 1: return TD_AUTO_NO;
-        case 2: return TD_AUTO_FTEST;
-        case 3: return TD_AUTO_WALDTEST;
+        case 0: return TD_AUTO_NO;
+        case 1: return TD_AUTO_FTEST;
+        case 2: return TD_AUTO_WALDTEST;
         default: return null;
       }
     }
@@ -389,40 +362,32 @@ public final class TramoSeatsProtos {
   public enum TradingDaysTest
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>TD_TEST_UNSPECIFIED = 0;</code>
+     * <code>TD_TEST_NO = 0;</code>
      */
-    TD_TEST_UNSPECIFIED(0),
+    TD_TEST_NO(0),
     /**
-     * <code>TD_TEST_NO = 1;</code>
+     * <code>TD_TEST_SEPARATE_T = 1;</code>
      */
-    TD_TEST_NO(1),
+    TD_TEST_SEPARATE_T(1),
     /**
-     * <code>TD_TEST_SEPARATE_T = 2;</code>
+     * <code>TD_TEST_JOINT_F = 2;</code>
      */
-    TD_TEST_SEPARATE_T(2),
-    /**
-     * <code>TD_TEST_JOINT_F = 3;</code>
-     */
-    TD_TEST_JOINT_F(3),
+    TD_TEST_JOINT_F(2),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>TD_TEST_UNSPECIFIED = 0;</code>
+     * <code>TD_TEST_NO = 0;</code>
      */
-    public static final int TD_TEST_UNSPECIFIED_VALUE = 0;
+    public static final int TD_TEST_NO_VALUE = 0;
     /**
-     * <code>TD_TEST_NO = 1;</code>
+     * <code>TD_TEST_SEPARATE_T = 1;</code>
      */
-    public static final int TD_TEST_NO_VALUE = 1;
+    public static final int TD_TEST_SEPARATE_T_VALUE = 1;
     /**
-     * <code>TD_TEST_SEPARATE_T = 2;</code>
+     * <code>TD_TEST_JOINT_F = 2;</code>
      */
-    public static final int TD_TEST_SEPARATE_T_VALUE = 2;
-    /**
-     * <code>TD_TEST_JOINT_F = 3;</code>
-     */
-    public static final int TD_TEST_JOINT_F_VALUE = 3;
+    public static final int TD_TEST_JOINT_F_VALUE = 2;
 
 
     public final int getNumber() {
@@ -449,10 +414,9 @@ public final class TramoSeatsProtos {
      */
     public static TradingDaysTest forNumber(int value) {
       switch (value) {
-        case 0: return TD_TEST_UNSPECIFIED;
-        case 1: return TD_TEST_NO;
-        case 2: return TD_TEST_SEPARATE_T;
-        case 3: return TD_TEST_JOINT_F;
+        case 0: return TD_TEST_NO;
+        case 1: return TD_TEST_SEPARATE_T;
+        case 2: return TD_TEST_JOINT_F;
         default: return null;
       }
     }
@@ -515,48 +479,40 @@ public final class TramoSeatsProtos {
   public enum EasterType
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>EASTER_UNSPECIFIED = 0;</code>
+     * <code>EASTER_UNUSED = 0;</code>
      */
-    EASTER_UNSPECIFIED(0),
+    EASTER_UNUSED(0),
     /**
-     * <code>EASTER_UNUSED = 1;</code>
+     * <code>EASTER_STANDARD = 1;</code>
      */
-    EASTER_UNUSED(1),
+    EASTER_STANDARD(1),
     /**
-     * <code>EASTER_STANDARD = 2;</code>
+     * <code>EASTER_INCLUDEEASTER = 2;</code>
      */
-    EASTER_STANDARD(2),
+    EASTER_INCLUDEEASTER(2),
     /**
-     * <code>EASTER_INCLUDEEASTER = 3;</code>
+     * <code>EASTER_INCLUDEEASTERMONDAY = 3;</code>
      */
-    EASTER_INCLUDEEASTER(3),
-    /**
-     * <code>EASTER_INCLUDEEASTERMONDAY = 4;</code>
-     */
-    EASTER_INCLUDEEASTERMONDAY(4),
+    EASTER_INCLUDEEASTERMONDAY(3),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>EASTER_UNSPECIFIED = 0;</code>
+     * <code>EASTER_UNUSED = 0;</code>
      */
-    public static final int EASTER_UNSPECIFIED_VALUE = 0;
+    public static final int EASTER_UNUSED_VALUE = 0;
     /**
-     * <code>EASTER_UNUSED = 1;</code>
+     * <code>EASTER_STANDARD = 1;</code>
      */
-    public static final int EASTER_UNUSED_VALUE = 1;
+    public static final int EASTER_STANDARD_VALUE = 1;
     /**
-     * <code>EASTER_STANDARD = 2;</code>
+     * <code>EASTER_INCLUDEEASTER = 2;</code>
      */
-    public static final int EASTER_STANDARD_VALUE = 2;
+    public static final int EASTER_INCLUDEEASTER_VALUE = 2;
     /**
-     * <code>EASTER_INCLUDEEASTER = 3;</code>
+     * <code>EASTER_INCLUDEEASTERMONDAY = 3;</code>
      */
-    public static final int EASTER_INCLUDEEASTER_VALUE = 3;
-    /**
-     * <code>EASTER_INCLUDEEASTERMONDAY = 4;</code>
-     */
-    public static final int EASTER_INCLUDEEASTERMONDAY_VALUE = 4;
+    public static final int EASTER_INCLUDEEASTERMONDAY_VALUE = 3;
 
 
     public final int getNumber() {
@@ -583,11 +539,10 @@ public final class TramoSeatsProtos {
      */
     public static EasterType forNumber(int value) {
       switch (value) {
-        case 0: return EASTER_UNSPECIFIED;
-        case 1: return EASTER_UNUSED;
-        case 2: return EASTER_STANDARD;
-        case 3: return EASTER_INCLUDEEASTER;
-        case 4: return EASTER_INCLUDEEASTERMONDAY;
+        case 0: return EASTER_UNUSED;
+        case 1: return EASTER_STANDARD;
+        case 2: return EASTER_INCLUDEEASTER;
+        case 3: return EASTER_INCLUDEEASTERMONDAY;
         default: return null;
       }
     }
@@ -992,7 +947,7 @@ public final class TramoSeatsProtos {
       if (xlBoundary_ != 0D) {
         output.writeDouble(1, xlBoundary_);
       }
-      if (approximation_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.SeatsApproximation.SEATS_APP_UNSPECIFIED.getNumber()) {
+      if (approximation_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.SeatsApproximation.SEATS_APP_NONE.getNumber()) {
         output.writeEnum(2, approximation_);
       }
       if (seastolerance_ != 0D) {
@@ -1016,7 +971,7 @@ public final class TramoSeatsProtos {
       if (nbcasts_ != 0) {
         output.writeInt32(9, nbcasts_);
       }
-      if (algorithm_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.SeatsAlgorithm.SEATS_ALG_UNSPECIFIED.getNumber()) {
+      if (algorithm_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.SeatsAlgorithm.SEATS_ALG_BURMAN.getNumber()) {
         output.writeEnum(10, algorithm_);
       }
       unknownFields.writeTo(output);
@@ -1032,7 +987,7 @@ public final class TramoSeatsProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(1, xlBoundary_);
       }
-      if (approximation_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.SeatsApproximation.SEATS_APP_UNSPECIFIED.getNumber()) {
+      if (approximation_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.SeatsApproximation.SEATS_APP_NONE.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(2, approximation_);
       }
@@ -1064,7 +1019,7 @@ public final class TramoSeatsProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(9, nbcasts_);
       }
-      if (algorithm_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.SeatsAlgorithm.SEATS_ALG_UNSPECIFIED.getNumber()) {
+      if (algorithm_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.SeatsAlgorithm.SEATS_ALG_BURMAN.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(10, algorithm_);
       }
@@ -5919,7 +5874,7 @@ public final class TramoSeatsProtos {
       @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (type_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.EasterType.EASTER_UNSPECIFIED.getNumber()) {
+        if (type_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.EasterType.EASTER_UNUSED.getNumber()) {
           output.writeEnum(1, type_);
         }
         if (duration_ != 0) {
@@ -5943,7 +5898,7 @@ public final class TramoSeatsProtos {
         if (size != -1) return size;
 
         size = 0;
-        if (type_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.EasterType.EASTER_UNSPECIFIED.getNumber()) {
+        if (type_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.EasterType.EASTER_UNUSED.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(1, type_);
         }
@@ -6705,27 +6660,27 @@ public final class TramoSeatsProtos {
       double getPtest();
 
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
       java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> 
-          getTdcoefficientList();
+          getTdcoefficientsList();
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
-      demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficient(int index);
+      demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficients(int index);
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
-      int getTdcoefficientCount();
+      int getTdcoefficientsCount();
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
       java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
-          getTdcoefficientOrBuilderList();
+          getTdcoefficientsOrBuilderList();
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
-      demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientOrBuilder(
+      demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientsOrBuilder(
           int index);
 
       /**
@@ -6762,7 +6717,7 @@ public final class TramoSeatsProtos {
         users_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         test_ = 0;
         auto_ = 0;
-        tdcoefficient_ = java.util.Collections.emptyList();
+        tdcoefficients_ = java.util.Collections.emptyList();
       }
 
       @java.lang.Override
@@ -6847,10 +6802,10 @@ public final class TramoSeatsProtos {
               }
               case 82: {
                 if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                  tdcoefficient_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>();
+                  tdcoefficients_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>();
                   mutable_bitField0_ |= 0x00000002;
                 }
-                tdcoefficient_.add(
+                tdcoefficients_.add(
                     input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry));
                 break;
               }
@@ -6886,7 +6841,7 @@ public final class TramoSeatsProtos {
             users_ = users_.getUnmodifiableView();
           }
           if (((mutable_bitField0_ & 0x00000002) != 0)) {
-            tdcoefficient_ = java.util.Collections.unmodifiableList(tdcoefficient_);
+            tdcoefficients_ = java.util.Collections.unmodifiableList(tdcoefficients_);
           }
           this.unknownFields = unknownFields.build();
           makeExtensionsImmutable();
@@ -7076,44 +7031,44 @@ public final class TramoSeatsProtos {
         return ptest_;
       }
 
-      public static final int TDCOEFFICIENT_FIELD_NUMBER = 10;
-      private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> tdcoefficient_;
+      public static final int TDCOEFFICIENTS_FIELD_NUMBER = 10;
+      private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> tdcoefficients_;
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
       @java.lang.Override
-      public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getTdcoefficientList() {
-        return tdcoefficient_;
+      public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getTdcoefficientsList() {
+        return tdcoefficients_;
       }
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
       @java.lang.Override
       public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
-          getTdcoefficientOrBuilderList() {
-        return tdcoefficient_;
+          getTdcoefficientsOrBuilderList() {
+        return tdcoefficients_;
       }
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
       @java.lang.Override
-      public int getTdcoefficientCount() {
-        return tdcoefficient_.size();
+      public int getTdcoefficientsCount() {
+        return tdcoefficients_.size();
       }
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
       @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficient(int index) {
-        return tdcoefficient_.get(index);
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficients(int index) {
+        return tdcoefficients_.get(index);
       }
       /**
-       * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
        */
       @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientOrBuilder(
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientsOrBuilder(
           int index) {
-        return tdcoefficient_.get(index);
+        return tdcoefficients_.get(index);
       }
 
       public static final int LPCOEFFICIENT_FIELD_NUMBER = 11;
@@ -7171,17 +7126,17 @@ public final class TramoSeatsProtos {
         if (w_ != 0) {
           output.writeInt32(5, w_);
         }
-        if (test_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.TradingDaysTest.TD_TEST_UNSPECIFIED.getNumber()) {
+        if (test_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.TradingDaysTest.TD_TEST_NO.getNumber()) {
           output.writeEnum(6, test_);
         }
-        if (auto_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_UNSPECIFIED.getNumber()) {
+        if (auto_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_NO.getNumber()) {
           output.writeEnum(7, auto_);
         }
         if (ptest_ != 0D) {
           output.writeDouble(8, ptest_);
         }
-        for (int i = 0; i < tdcoefficient_.size(); i++) {
-          output.writeMessage(10, tdcoefficient_.get(i));
+        for (int i = 0; i < tdcoefficients_.size(); i++) {
+          output.writeMessage(10, tdcoefficients_.get(i));
         }
         if (lpcoefficient_ != null) {
           output.writeMessage(11, getLpcoefficient());
@@ -7218,11 +7173,11 @@ public final class TramoSeatsProtos {
           size += com.google.protobuf.CodedOutputStream
             .computeInt32Size(5, w_);
         }
-        if (test_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.TradingDaysTest.TD_TEST_UNSPECIFIED.getNumber()) {
+        if (test_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.TradingDaysTest.TD_TEST_NO.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(6, test_);
         }
-        if (auto_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_UNSPECIFIED.getNumber()) {
+        if (auto_ != demetra.tramoseats.io.protobuf.TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_NO.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(7, auto_);
         }
@@ -7230,9 +7185,9 @@ public final class TramoSeatsProtos {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(8, ptest_);
         }
-        for (int i = 0; i < tdcoefficient_.size(); i++) {
+        for (int i = 0; i < tdcoefficients_.size(); i++) {
           size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(10, tdcoefficient_.get(i));
+            .computeMessageSize(10, tdcoefficients_.get(i));
         }
         if (lpcoefficient_ != null) {
           size += com.google.protobuf.CodedOutputStream
@@ -7266,8 +7221,8 @@ public final class TramoSeatsProtos {
         if (java.lang.Double.doubleToLongBits(getPtest())
             != java.lang.Double.doubleToLongBits(
                 other.getPtest())) return false;
-        if (!getTdcoefficientList()
-            .equals(other.getTdcoefficientList())) return false;
+        if (!getTdcoefficientsList()
+            .equals(other.getTdcoefficientsList())) return false;
         if (hasLpcoefficient() != other.hasLpcoefficient()) return false;
         if (hasLpcoefficient()) {
           if (!getLpcoefficient()
@@ -7303,9 +7258,9 @@ public final class TramoSeatsProtos {
         hash = (37 * hash) + PTEST_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
             java.lang.Double.doubleToLongBits(getPtest()));
-        if (getTdcoefficientCount() > 0) {
-          hash = (37 * hash) + TDCOEFFICIENT_FIELD_NUMBER;
-          hash = (53 * hash) + getTdcoefficientList().hashCode();
+        if (getTdcoefficientsCount() > 0) {
+          hash = (37 * hash) + TDCOEFFICIENTS_FIELD_NUMBER;
+          hash = (53 * hash) + getTdcoefficientsList().hashCode();
         }
         if (hasLpcoefficient()) {
           hash = (37 * hash) + LPCOEFFICIENT_FIELD_NUMBER;
@@ -7439,7 +7394,7 @@ public final class TramoSeatsProtos {
         private void maybeForceBuilderInitialization() {
           if (com.google.protobuf.GeneratedMessageV3
                   .alwaysUseFieldBuilders) {
-            getTdcoefficientFieldBuilder();
+            getTdcoefficientsFieldBuilder();
           }
         }
         @java.lang.Override
@@ -7461,11 +7416,11 @@ public final class TramoSeatsProtos {
 
           ptest_ = 0D;
 
-          if (tdcoefficientBuilder_ == null) {
-            tdcoefficient_ = java.util.Collections.emptyList();
+          if (tdcoefficientsBuilder_ == null) {
+            tdcoefficients_ = java.util.Collections.emptyList();
             bitField0_ = (bitField0_ & ~0x00000002);
           } else {
-            tdcoefficientBuilder_.clear();
+            tdcoefficientsBuilder_.clear();
           }
           if (lpcoefficientBuilder_ == null) {
             lpcoefficient_ = null;
@@ -7512,14 +7467,14 @@ public final class TramoSeatsProtos {
           result.test_ = test_;
           result.auto_ = auto_;
           result.ptest_ = ptest_;
-          if (tdcoefficientBuilder_ == null) {
+          if (tdcoefficientsBuilder_ == null) {
             if (((bitField0_ & 0x00000002) != 0)) {
-              tdcoefficient_ = java.util.Collections.unmodifiableList(tdcoefficient_);
+              tdcoefficients_ = java.util.Collections.unmodifiableList(tdcoefficients_);
               bitField0_ = (bitField0_ & ~0x00000002);
             }
-            result.tdcoefficient_ = tdcoefficient_;
+            result.tdcoefficients_ = tdcoefficients_;
           } else {
-            result.tdcoefficient_ = tdcoefficientBuilder_.build();
+            result.tdcoefficients_ = tdcoefficientsBuilder_.build();
           }
           if (lpcoefficientBuilder_ == null) {
             result.lpcoefficient_ = lpcoefficient_;
@@ -7606,29 +7561,29 @@ public final class TramoSeatsProtos {
           if (other.getPtest() != 0D) {
             setPtest(other.getPtest());
           }
-          if (tdcoefficientBuilder_ == null) {
-            if (!other.tdcoefficient_.isEmpty()) {
-              if (tdcoefficient_.isEmpty()) {
-                tdcoefficient_ = other.tdcoefficient_;
+          if (tdcoefficientsBuilder_ == null) {
+            if (!other.tdcoefficients_.isEmpty()) {
+              if (tdcoefficients_.isEmpty()) {
+                tdcoefficients_ = other.tdcoefficients_;
                 bitField0_ = (bitField0_ & ~0x00000002);
               } else {
-                ensureTdcoefficientIsMutable();
-                tdcoefficient_.addAll(other.tdcoefficient_);
+                ensureTdcoefficientsIsMutable();
+                tdcoefficients_.addAll(other.tdcoefficients_);
               }
               onChanged();
             }
           } else {
-            if (!other.tdcoefficient_.isEmpty()) {
-              if (tdcoefficientBuilder_.isEmpty()) {
-                tdcoefficientBuilder_.dispose();
-                tdcoefficientBuilder_ = null;
-                tdcoefficient_ = other.tdcoefficient_;
+            if (!other.tdcoefficients_.isEmpty()) {
+              if (tdcoefficientsBuilder_.isEmpty()) {
+                tdcoefficientsBuilder_.dispose();
+                tdcoefficientsBuilder_ = null;
+                tdcoefficients_ = other.tdcoefficients_;
                 bitField0_ = (bitField0_ & ~0x00000002);
-                tdcoefficientBuilder_ = 
+                tdcoefficientsBuilder_ = 
                   com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                     getTdcoefficientFieldBuilder() : null;
+                     getTdcoefficientsFieldBuilder() : null;
               } else {
-                tdcoefficientBuilder_.addAllMessages(other.tdcoefficient_);
+                tdcoefficientsBuilder_.addAllMessages(other.tdcoefficients_);
               }
             }
           }
@@ -8129,244 +8084,244 @@ public final class TramoSeatsProtos {
           return this;
         }
 
-        private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> tdcoefficient_ =
+        private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> tdcoefficients_ =
           java.util.Collections.emptyList();
-        private void ensureTdcoefficientIsMutable() {
+        private void ensureTdcoefficientsIsMutable() {
           if (!((bitField0_ & 0x00000002) != 0)) {
-            tdcoefficient_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>(tdcoefficient_);
+            tdcoefficients_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>(tdcoefficients_);
             bitField0_ |= 0x00000002;
            }
         }
 
         private com.google.protobuf.RepeatedFieldBuilderV3<
-            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> tdcoefficientBuilder_;
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> tdcoefficientsBuilder_;
 
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getTdcoefficientList() {
-          if (tdcoefficientBuilder_ == null) {
-            return java.util.Collections.unmodifiableList(tdcoefficient_);
+        public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getTdcoefficientsList() {
+          if (tdcoefficientsBuilder_ == null) {
+            return java.util.Collections.unmodifiableList(tdcoefficients_);
           } else {
-            return tdcoefficientBuilder_.getMessageList();
+            return tdcoefficientsBuilder_.getMessageList();
           }
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public int getTdcoefficientCount() {
-          if (tdcoefficientBuilder_ == null) {
-            return tdcoefficient_.size();
+        public int getTdcoefficientsCount() {
+          if (tdcoefficientsBuilder_ == null) {
+            return tdcoefficients_.size();
           } else {
-            return tdcoefficientBuilder_.getCount();
+            return tdcoefficientsBuilder_.getCount();
           }
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficient(int index) {
-          if (tdcoefficientBuilder_ == null) {
-            return tdcoefficient_.get(index);
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficients(int index) {
+          if (tdcoefficientsBuilder_ == null) {
+            return tdcoefficients_.get(index);
           } else {
-            return tdcoefficientBuilder_.getMessage(index);
+            return tdcoefficientsBuilder_.getMessage(index);
           }
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder setTdcoefficient(
+        public Builder setTdcoefficients(
             int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
-          if (tdcoefficientBuilder_ == null) {
+          if (tdcoefficientsBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
             }
-            ensureTdcoefficientIsMutable();
-            tdcoefficient_.set(index, value);
+            ensureTdcoefficientsIsMutable();
+            tdcoefficients_.set(index, value);
             onChanged();
           } else {
-            tdcoefficientBuilder_.setMessage(index, value);
+            tdcoefficientsBuilder_.setMessage(index, value);
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder setTdcoefficient(
+        public Builder setTdcoefficients(
             int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
-          if (tdcoefficientBuilder_ == null) {
-            ensureTdcoefficientIsMutable();
-            tdcoefficient_.set(index, builderForValue.build());
+          if (tdcoefficientsBuilder_ == null) {
+            ensureTdcoefficientsIsMutable();
+            tdcoefficients_.set(index, builderForValue.build());
             onChanged();
           } else {
-            tdcoefficientBuilder_.setMessage(index, builderForValue.build());
+            tdcoefficientsBuilder_.setMessage(index, builderForValue.build());
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder addTdcoefficient(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
-          if (tdcoefficientBuilder_ == null) {
+        public Builder addTdcoefficients(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+          if (tdcoefficientsBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
             }
-            ensureTdcoefficientIsMutable();
-            tdcoefficient_.add(value);
+            ensureTdcoefficientsIsMutable();
+            tdcoefficients_.add(value);
             onChanged();
           } else {
-            tdcoefficientBuilder_.addMessage(value);
+            tdcoefficientsBuilder_.addMessage(value);
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder addTdcoefficient(
+        public Builder addTdcoefficients(
             int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
-          if (tdcoefficientBuilder_ == null) {
+          if (tdcoefficientsBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
             }
-            ensureTdcoefficientIsMutable();
-            tdcoefficient_.add(index, value);
+            ensureTdcoefficientsIsMutable();
+            tdcoefficients_.add(index, value);
             onChanged();
           } else {
-            tdcoefficientBuilder_.addMessage(index, value);
+            tdcoefficientsBuilder_.addMessage(index, value);
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder addTdcoefficient(
+        public Builder addTdcoefficients(
             demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
-          if (tdcoefficientBuilder_ == null) {
-            ensureTdcoefficientIsMutable();
-            tdcoefficient_.add(builderForValue.build());
+          if (tdcoefficientsBuilder_ == null) {
+            ensureTdcoefficientsIsMutable();
+            tdcoefficients_.add(builderForValue.build());
             onChanged();
           } else {
-            tdcoefficientBuilder_.addMessage(builderForValue.build());
+            tdcoefficientsBuilder_.addMessage(builderForValue.build());
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder addTdcoefficient(
+        public Builder addTdcoefficients(
             int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
-          if (tdcoefficientBuilder_ == null) {
-            ensureTdcoefficientIsMutable();
-            tdcoefficient_.add(index, builderForValue.build());
+          if (tdcoefficientsBuilder_ == null) {
+            ensureTdcoefficientsIsMutable();
+            tdcoefficients_.add(index, builderForValue.build());
             onChanged();
           } else {
-            tdcoefficientBuilder_.addMessage(index, builderForValue.build());
+            tdcoefficientsBuilder_.addMessage(index, builderForValue.build());
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder addAllTdcoefficient(
+        public Builder addAllTdcoefficients(
             java.lang.Iterable<? extends demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> values) {
-          if (tdcoefficientBuilder_ == null) {
-            ensureTdcoefficientIsMutable();
+          if (tdcoefficientsBuilder_ == null) {
+            ensureTdcoefficientsIsMutable();
             com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                values, tdcoefficient_);
+                values, tdcoefficients_);
             onChanged();
           } else {
-            tdcoefficientBuilder_.addAllMessages(values);
+            tdcoefficientsBuilder_.addAllMessages(values);
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder clearTdcoefficient() {
-          if (tdcoefficientBuilder_ == null) {
-            tdcoefficient_ = java.util.Collections.emptyList();
+        public Builder clearTdcoefficients() {
+          if (tdcoefficientsBuilder_ == null) {
+            tdcoefficients_ = java.util.Collections.emptyList();
             bitField0_ = (bitField0_ & ~0x00000002);
             onChanged();
           } else {
-            tdcoefficientBuilder_.clear();
+            tdcoefficientsBuilder_.clear();
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public Builder removeTdcoefficient(int index) {
-          if (tdcoefficientBuilder_ == null) {
-            ensureTdcoefficientIsMutable();
-            tdcoefficient_.remove(index);
+        public Builder removeTdcoefficients(int index) {
+          if (tdcoefficientsBuilder_ == null) {
+            ensureTdcoefficientsIsMutable();
+            tdcoefficients_.remove(index);
             onChanged();
           } else {
-            tdcoefficientBuilder_.remove(index);
+            tdcoefficientsBuilder_.remove(index);
           }
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getTdcoefficientBuilder(
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getTdcoefficientsBuilder(
             int index) {
-          return getTdcoefficientFieldBuilder().getBuilder(index);
+          return getTdcoefficientsFieldBuilder().getBuilder(index);
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientOrBuilder(
+        public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientsOrBuilder(
             int index) {
-          if (tdcoefficientBuilder_ == null) {
-            return tdcoefficient_.get(index);  } else {
-            return tdcoefficientBuilder_.getMessageOrBuilder(index);
+          if (tdcoefficientsBuilder_ == null) {
+            return tdcoefficients_.get(index);  } else {
+            return tdcoefficientsBuilder_.getMessageOrBuilder(index);
           }
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
         public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
-             getTdcoefficientOrBuilderList() {
-          if (tdcoefficientBuilder_ != null) {
-            return tdcoefficientBuilder_.getMessageOrBuilderList();
+             getTdcoefficientsOrBuilderList() {
+          if (tdcoefficientsBuilder_ != null) {
+            return tdcoefficientsBuilder_.getMessageOrBuilderList();
           } else {
-            return java.util.Collections.unmodifiableList(tdcoefficient_);
+            return java.util.Collections.unmodifiableList(tdcoefficients_);
           }
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addTdcoefficientBuilder() {
-          return getTdcoefficientFieldBuilder().addBuilder(
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addTdcoefficientsBuilder() {
+          return getTdcoefficientsFieldBuilder().addBuilder(
               demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addTdcoefficientBuilder(
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addTdcoefficientsBuilder(
             int index) {
-          return getTdcoefficientFieldBuilder().addBuilder(
+          return getTdcoefficientsFieldBuilder().addBuilder(
               index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficient = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
          */
         public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder> 
-             getTdcoefficientBuilderList() {
-          return getTdcoefficientFieldBuilder().getBuilderList();
+             getTdcoefficientsBuilderList() {
+          return getTdcoefficientsFieldBuilder().getBuilderList();
         }
         private com.google.protobuf.RepeatedFieldBuilderV3<
             demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
-            getTdcoefficientFieldBuilder() {
-          if (tdcoefficientBuilder_ == null) {
-            tdcoefficientBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            getTdcoefficientsFieldBuilder() {
+          if (tdcoefficientsBuilder_ == null) {
+            tdcoefficientsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
                 demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
-                    tdcoefficient_,
+                    tdcoefficients_,
                     ((bitField0_ & 0x00000002) != 0),
                     getParentForChildren(),
                     isClean());
-            tdcoefficient_ = null;
+            tdcoefficients_ = null;
           }
-          return tdcoefficientBuilder_;
+          return tdcoefficientsBuilder_;
         }
 
         private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter lpcoefficient_;
@@ -8545,19 +8500,19 @@ public final class TramoSeatsProtos {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>.jd3.NullableParameter mean = 1;</code>
+       * <code>.regarima.TrendConstant mean = 1;</code>
        * @return Whether the mean field is set.
        */
       boolean hasMean();
       /**
-       * <code>.jd3.NullableParameter mean = 1;</code>
+       * <code>.regarima.TrendConstant mean = 1;</code>
        * @return The mean.
        */
-      demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter getMean();
+      demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant getMean();
       /**
-       * <code>.jd3.NullableParameter mean = 1;</code>
+       * <code>.regarima.TrendConstant mean = 1;</code>
        */
-      demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder getMeanOrBuilder();
+      demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder getMeanOrBuilder();
 
       /**
        * <code>.tramoseats.TramoSpec.TradingDaysSpec td = 2;</code>
@@ -8736,11 +8691,11 @@ public final class TramoSeatsProtos {
                 done = true;
                 break;
               case 10: {
-                demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder subBuilder = null;
+                demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder subBuilder = null;
                 if (mean_ != null) {
                   subBuilder = mean_.toBuilder();
                 }
-                mean_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.parser(), extensionRegistry);
+                mean_ = input.readMessage(demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.parser(), extensionRegistry);
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(mean_);
                   mean_ = subBuilder.buildPartial();
@@ -8855,9 +8810,9 @@ public final class TramoSeatsProtos {
       }
 
       public static final int MEAN_FIELD_NUMBER = 1;
-      private demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter mean_;
+      private demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant mean_;
       /**
-       * <code>.jd3.NullableParameter mean = 1;</code>
+       * <code>.regarima.TrendConstant mean = 1;</code>
        * @return Whether the mean field is set.
        */
       @java.lang.Override
@@ -8865,18 +8820,18 @@ public final class TramoSeatsProtos {
         return mean_ != null;
       }
       /**
-       * <code>.jd3.NullableParameter mean = 1;</code>
+       * <code>.regarima.TrendConstant mean = 1;</code>
        * @return The mean.
        */
       @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter getMean() {
-        return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.getDefaultInstance() : mean_;
+      public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant getMean() {
+        return mean_ == null ? demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.getDefaultInstance() : mean_;
       }
       /**
-       * <code>.jd3.NullableParameter mean = 1;</code>
+       * <code>.regarima.TrendConstant mean = 1;</code>
        */
       @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder getMeanOrBuilder() {
+      public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder getMeanOrBuilder() {
         return getMean();
       }
 
@@ -9689,31 +9644,31 @@ public final class TramoSeatsProtos {
         }
         private int bitField0_;
 
-        private demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter mean_;
+        private demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant mean_;
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder> meanBuilder_;
+            demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder> meanBuilder_;
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          * @return Whether the mean field is set.
          */
         public boolean hasMean() {
           return meanBuilder_ != null || mean_ != null;
         }
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          * @return The mean.
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter getMean() {
+        public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant getMean() {
           if (meanBuilder_ == null) {
-            return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.getDefaultInstance() : mean_;
+            return mean_ == null ? demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.getDefaultInstance() : mean_;
           } else {
             return meanBuilder_.getMessage();
           }
         }
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          */
-        public Builder setMean(demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter value) {
+        public Builder setMean(demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant value) {
           if (meanBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -9727,10 +9682,10 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          */
         public Builder setMean(
-            demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder builderForValue) {
+            demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder builderForValue) {
           if (meanBuilder_ == null) {
             mean_ = builderForValue.build();
             onChanged();
@@ -9741,13 +9696,13 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          */
-        public Builder mergeMean(demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter value) {
+        public Builder mergeMean(demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant value) {
           if (meanBuilder_ == null) {
             if (mean_ != null) {
               mean_ =
-                demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.newBuilder(mean_).mergeFrom(value).buildPartial();
+                demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.newBuilder(mean_).mergeFrom(value).buildPartial();
             } else {
               mean_ = value;
             }
@@ -9759,7 +9714,7 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          */
         public Builder clearMean() {
           if (meanBuilder_ == null) {
@@ -9773,33 +9728,33 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder getMeanBuilder() {
+        public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder getMeanBuilder() {
           
           onChanged();
           return getMeanFieldBuilder().getBuilder();
         }
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder getMeanOrBuilder() {
+        public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder getMeanOrBuilder() {
           if (meanBuilder_ != null) {
             return meanBuilder_.getMessageOrBuilder();
           } else {
             return mean_ == null ?
-                demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.getDefaultInstance() : mean_;
+                demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.getDefaultInstance() : mean_;
           }
         }
         /**
-         * <code>.jd3.NullableParameter mean = 1;</code>
+         * <code>.regarima.TrendConstant mean = 1;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder> 
+            demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder> 
             getMeanFieldBuilder() {
           if (meanBuilder_ == null) {
             meanBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.NullableParameterOrBuilder>(
+                demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder>(
                     getMean(),
                     getParentForChildren(),
                     isClean());
@@ -14556,7 +14511,7 @@ public final class TramoSeatsProtos {
       "\033\n\023seas_boundary_at_pi\030\006 \001(\001\022\027\n\017bias_cor" +
       "rection\030\007 \001(\010\022\017\n\007nfcasts\030\010 \001(\005\022\017\n\007nbcast" +
       "s\030\t \001(\005\022-\n\talgorithm\030\n \001(\0162\032.tramoseats." +
-      "SeatsAlgorithm\"\244\r\n\tTramoSpec\022.\n\005basic\030\001 " +
+      "SeatsAlgorithm\"\246\r\n\tTramoSpec\022.\n\005basic\030\001 " +
       "\001(\0132\037.tramoseats.TramoSpec.BasicSpec\0226\n\t" +
       "transform\030\002 \001(\0132#.tramoseats.TramoSpec.T" +
       "ransformSpec\0222\n\007outlier\030\003 \001(\0132!.tramosea" +
@@ -14580,44 +14535,41 @@ public final class TramoSeatsProtos {
       "compare\030\t \001(\010\032\207\001\n\nEasterSpec\022$\n\004type\030\001 \001" +
       "(\0162\026.tramoseats.EasterType\022\020\n\010duration\030\002" +
       " \001(\005\022\016\n\006julian\030\003 \001(\010\022\014\n\004test\030\004 \001(\010\022#\n\013co" +
-      "efficient\030\n \001(\0132\016.jd3.Parameter\032\276\002\n\017Trad" +
+      "efficient\030\n \001(\0132\016.jd3.Parameter\032\277\002\n\017Trad" +
       "ingDaysSpec\022!\n\002td\030\001 \001(\0162\025.regarima.Tradi" +
       "ngDays\022$\n\002lp\030\002 \001(\0162\030.regarima.LengthOfPe" +
       "riod\022\020\n\010holidays\030\003 \001(\t\022\r\n\005users\030\004 \003(\t\022\t\n" +
       "\001w\030\005 \001(\005\022)\n\004test\030\006 \001(\0162\033.tramoseats.Trad" +
       "ingDaysTest\022.\n\004auto\030\007 \001(\0162 .tramoseats.A" +
-      "utomaticTradingDays\022\r\n\005ptest\030\010 \001(\001\022%\n\rtd" +
-      "coefficient\030\n \003(\0132\016.jd3.Parameter\022%\n\rlpc" +
-      "oefficient\030\013 \001(\0132\016.jd3.Parameter\032\273\002\n\016Reg" +
-      "ressionSpec\022$\n\004mean\030\001 \001(\0132\026.jd3.Nullable" +
-      "Parameter\0221\n\002td\030\002 \001(\0132%.tramoseats.Tramo" +
-      "Spec.TradingDaysSpec\0220\n\006easter\030\003 \001(\0132 .t" +
-      "ramoseats.TramoSpec.EasterSpec\022#\n\010outlie" +
-      "rs\030\004 \003(\0132\021.regarima.Outlier\022#\n\005users\030\005 \003" +
-      "(\0132\024.regarima.TsVariable\0225\n\rintervention" +
-      "s\030\006 \003(\0132\036.regarima.InterventionVariable\022" +
-      "\035\n\005ramps\030\007 \003(\0132\016.regarima.Ramp\032U\n\014Estima" +
-      "teSpec\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeSelector\022" +
-      "\n\n\002ml\030\002 \001(\010\022\013\n\003tol\030\003 \001(\001\022\013\n\003ubp\030\004 \001(\001\"\206\001" +
-      "\n\004Spec\022$\n\005tramo\030\001 \001(\0132\025.tramoseats.Tramo" +
-      "Spec\022,\n\005seats\030\002 \001(\0132\035.tramoseats.Decompo" +
-      "sitionSpec\022*\n\014benchmarking\030\003 \001(\0132\024.sa.Be" +
-      "nchmarkingSpec*n\n\022SeatsApproximation\022\031\n\025" +
-      "SEATS_APP_UNSPECIFIED\020\000\022\022\n\016SEATS_APP_NON" +
-      "E\020\001\022\024\n\020SEATS_APP_LEGACY\020\002\022\023\n\017SEATS_APP_N" +
-      "OISY\020\003*_\n\016SeatsAlgorithm\022\031\n\025SEATS_ALG_UN" +
-      "SPECIFIED\020\000\022\024\n\020SEATS_ALG_BURMAN\020\001\022\034\n\030SEA" +
-      "TS_ALG_KALMANSMOOTHER\020\002*h\n\024AutomaticTrad" +
-      "ingDays\022\027\n\023TD_AUTO_UNSPECIFIED\020\000\022\016\n\nTD_A" +
-      "UTO_NO\020\001\022\021\n\rTD_AUTO_FTEST\020\002\022\024\n\020TD_AUTO_W" +
-      "ALDTEST\020\003*g\n\017TradingDaysTest\022\027\n\023TD_TEST_" +
-      "UNSPECIFIED\020\000\022\016\n\nTD_TEST_NO\020\001\022\026\n\022TD_TEST" +
-      "_SEPARATE_T\020\002\022\023\n\017TD_TEST_JOINT_F\020\003*\206\001\n\nE" +
-      "asterType\022\026\n\022EASTER_UNSPECIFIED\020\000\022\021\n\rEAS" +
-      "TER_UNUSED\020\001\022\023\n\017EASTER_STANDARD\020\002\022\030\n\024EAS" +
-      "TER_INCLUDEEASTER\020\003\022\036\n\032EASTER_INCLUDEEAS" +
-      "TERMONDAY\020\004B2\n\036demetra.tramoseats.io.pro" +
-      "tobufB\020TramoSeatsProtosP\000P\001P\002b\006proto3"
+      "utomaticTradingDays\022\r\n\005ptest\030\010 \001(\001\022&\n\016td" +
+      "coefficients\030\n \003(\0132\016.jd3.Parameter\022%\n\rlp" +
+      "coefficient\030\013 \001(\0132\016.jd3.Parameter\032\274\002\n\016Re" +
+      "gressionSpec\022%\n\004mean\030\001 \001(\0132\027.regarima.Tr" +
+      "endConstant\0221\n\002td\030\002 \001(\0132%.tramoseats.Tra" +
+      "moSpec.TradingDaysSpec\0220\n\006easter\030\003 \001(\0132 " +
+      ".tramoseats.TramoSpec.EasterSpec\022#\n\010outl" +
+      "iers\030\004 \003(\0132\021.regarima.Outlier\022#\n\005users\030\005" +
+      " \003(\0132\024.regarima.TsVariable\0225\n\rinterventi" +
+      "ons\030\006 \003(\0132\036.regarima.InterventionVariabl" +
+      "e\022\035\n\005ramps\030\007 \003(\0132\016.regarima.Ramp\032U\n\014Esti" +
+      "mateSpec\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeSelecto" +
+      "r\022\n\n\002ml\030\002 \001(\010\022\013\n\003tol\030\003 \001(\001\022\013\n\003ubp\030\004 \001(\001\"" +
+      "\206\001\n\004Spec\022$\n\005tramo\030\001 \001(\0132\025.tramoseats.Tra" +
+      "moSpec\022,\n\005seats\030\002 \001(\0132\035.tramoseats.Decom" +
+      "positionSpec\022*\n\014benchmarking\030\003 \001(\0132\024.sa." +
+      "BenchmarkingSpec*S\n\022SeatsApproximation\022\022" +
+      "\n\016SEATS_APP_NONE\020\000\022\024\n\020SEATS_APP_LEGACY\020\001" +
+      "\022\023\n\017SEATS_APP_NOISY\020\002*D\n\016SeatsAlgorithm\022" +
+      "\024\n\020SEATS_ALG_BURMAN\020\000\022\034\n\030SEATS_ALG_KALMA" +
+      "NSMOOTHER\020\001*O\n\024AutomaticTradingDays\022\016\n\nT" +
+      "D_AUTO_NO\020\000\022\021\n\rTD_AUTO_FTEST\020\001\022\024\n\020TD_AUT" +
+      "O_WALDTEST\020\002*N\n\017TradingDaysTest\022\016\n\nTD_TE" +
+      "ST_NO\020\000\022\026\n\022TD_TEST_SEPARATE_T\020\001\022\023\n\017TD_TE" +
+      "ST_JOINT_F\020\002*n\n\nEasterType\022\021\n\rEASTER_UNU" +
+      "SED\020\000\022\023\n\017EASTER_STANDARD\020\001\022\030\n\024EASTER_INC" +
+      "LUDEEASTER\020\002\022\036\n\032EASTER_INCLUDEEASTERMOND" +
+      "AY\020\003B2\n\036demetra.tramoseats.io.protobufB\020" +
+      "TramoSeatsProtosP\000P\001P\002b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -14673,7 +14625,7 @@ public final class TramoSeatsProtos {
     internal_static_tramoseats_TramoSpec_TradingDaysSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tramoseats_TramoSpec_TradingDaysSpec_descriptor,
-        new java.lang.String[] { "Td", "Lp", "Holidays", "Users", "W", "Test", "Auto", "Ptest", "Tdcoefficient", "Lpcoefficient", });
+        new java.lang.String[] { "Td", "Lp", "Holidays", "Users", "W", "Test", "Auto", "Ptest", "Tdcoefficients", "Lpcoefficient", });
     internal_static_tramoseats_TramoSpec_RegressionSpec_descriptor =
       internal_static_tramoseats_TramoSpec_descriptor.getNestedTypes().get(6);
     internal_static_tramoseats_TramoSpec_RegressionSpec_fieldAccessorTable = new
