@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package internal.jdplus.maths.functions.gsl.integration;
+package internal.jdplus.maths.functions.gsl;
 
 /**
  *
@@ -16,7 +16,7 @@ public class Utility {
             GSL_DBL_MIN = 2.2250738585072014e-308,
             GSL_DBL_MAX = 1.7976931348623157e+308;
 
-    double rescale_error(final double er, final double result_abs, final double result_asc) {
+    public double rescale_error(final double er, final double result_abs, final double result_asc) {
         double err = Math.abs(er);
 
         if (result_asc != 0 && err != 0) {
@@ -38,11 +38,11 @@ public class Utility {
         return err;
     }
 
-    boolean test_positivity(double result, double resabs) {
+    public boolean test_positivity(double result, double resabs) {
         return (Math.abs(result) >= (1 - 50 * GSL_DBL_EPSILON) * resabs);
     }
 
-    boolean subinterval_too_small(double a1, double a2, double b2) {
+    public boolean subinterval_too_small(double a1, double a2, double b2) {
         final double e = GSL_DBL_EPSILON;
         final double u = GSL_DBL_MIN;
         double tmp = (1 + 100 * e) * (Math.abs(a2) + 1000 * u);
