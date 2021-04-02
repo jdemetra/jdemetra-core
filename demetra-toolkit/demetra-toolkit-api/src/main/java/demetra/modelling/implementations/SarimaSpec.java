@@ -132,23 +132,39 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
             return this;
         }
 
-        public Builder phi(@NonNull Parameter[] value) {
-            phi = value.clone();
+        public Builder phi(Parameter[] value) {
+            if (value == null) {
+                phi = EMPTY;
+            } else {
+                phi = value.clone();
+            }
             return this;
         }
 
-        public Builder theta(@NonNull Parameter[] value) {
-            theta = value.clone();
+        public Builder theta(Parameter[] value) {
+            if (value == null) {
+                theta = EMPTY;
+            } else {
+                theta = value.clone();
+            }
             return this;
         }
 
-        public Builder bphi(@NonNull Parameter[] value) {
-            bphi = value.clone();
+        public Builder bphi(Parameter[] value) {
+            if (value == null) {
+                bphi = EMPTY;
+            } else {
+                bphi = value.clone();
+            }
             return this;
         }
 
-        public Builder btheta(@NonNull Parameter[] value) {
-            btheta = value.clone();
+        public Builder btheta(Parameter[] value) {
+            if (value == null) {
+                btheta = EMPTY;
+            } else {
+                btheta = value.clone();
+            }
             return this;
         }
 
@@ -168,10 +184,10 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
         }
 
         Builder fix() {
-            Parameter.fixParameters(phi);
-            Parameter.fixParameters(theta);
-            Parameter.fixParameters(bphi);
-            Parameter.fixParameters(btheta);
+            phi = Parameter.fixParameters(phi);
+            bphi = Parameter.fixParameters(bphi);
+            theta = Parameter.fixParameters(theta);
+            btheta = Parameter.fixParameters(btheta);
             return this;
         }
 

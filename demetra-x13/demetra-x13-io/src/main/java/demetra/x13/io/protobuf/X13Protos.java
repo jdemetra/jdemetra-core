@@ -10496,19 +10496,19 @@ public final class X13Protos {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>.regarima.TrendConstant mean = 1;</code>
+       * <code>.jd3.Parameter mean = 1;</code>
        * @return Whether the mean field is set.
        */
       boolean hasMean();
       /**
-       * <code>.regarima.TrendConstant mean = 1;</code>
+       * <code>.jd3.Parameter mean = 1;</code>
        * @return The mean.
        */
-      demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant getMean();
+      demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getMean();
       /**
-       * <code>.regarima.TrendConstant mean = 1;</code>
+       * <code>.jd3.Parameter mean = 1;</code>
        */
-      demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder getMeanOrBuilder();
+      demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getMeanOrBuilder();
 
       /**
        * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
@@ -10687,11 +10687,11 @@ public final class X13Protos {
                 done = true;
                 break;
               case 10: {
-                demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder subBuilder = null;
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
                 if (mean_ != null) {
                   subBuilder = mean_.toBuilder();
                 }
-                mean_ = input.readMessage(demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.parser(), extensionRegistry);
+                mean_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry);
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(mean_);
                   mean_ = subBuilder.buildPartial();
@@ -10806,9 +10806,9 @@ public final class X13Protos {
       }
 
       public static final int MEAN_FIELD_NUMBER = 1;
-      private demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant mean_;
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter mean_;
       /**
-       * <code>.regarima.TrendConstant mean = 1;</code>
+       * <code>.jd3.Parameter mean = 1;</code>
        * @return Whether the mean field is set.
        */
       @java.lang.Override
@@ -10816,18 +10816,18 @@ public final class X13Protos {
         return mean_ != null;
       }
       /**
-       * <code>.regarima.TrendConstant mean = 1;</code>
+       * <code>.jd3.Parameter mean = 1;</code>
        * @return The mean.
        */
       @java.lang.Override
-      public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant getMean() {
-        return mean_ == null ? demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.getDefaultInstance() : mean_;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getMean() {
+        return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : mean_;
       }
       /**
-       * <code>.regarima.TrendConstant mean = 1;</code>
+       * <code>.jd3.Parameter mean = 1;</code>
        */
       @java.lang.Override
-      public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder getMeanOrBuilder() {
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getMeanOrBuilder() {
         return getMean();
       }
 
@@ -11640,31 +11640,31 @@ public final class X13Protos {
         }
         private int bitField0_;
 
-        private demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant mean_;
+        private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter mean_;
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder> meanBuilder_;
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> meanBuilder_;
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          * @return Whether the mean field is set.
          */
         public boolean hasMean() {
           return meanBuilder_ != null || mean_ != null;
         }
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          * @return The mean.
          */
-        public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant getMean() {
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getMean() {
           if (meanBuilder_ == null) {
-            return mean_ == null ? demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.getDefaultInstance() : mean_;
+            return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : mean_;
           } else {
             return meanBuilder_.getMessage();
           }
         }
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          */
-        public Builder setMean(demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant value) {
+        public Builder setMean(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
           if (meanBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -11678,10 +11678,10 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          */
         public Builder setMean(
-            demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder builderForValue) {
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
           if (meanBuilder_ == null) {
             mean_ = builderForValue.build();
             onChanged();
@@ -11692,13 +11692,13 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          */
-        public Builder mergeMean(demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant value) {
+        public Builder mergeMean(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
           if (meanBuilder_ == null) {
             if (mean_ != null) {
               mean_ =
-                demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.newBuilder(mean_).mergeFrom(value).buildPartial();
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder(mean_).mergeFrom(value).buildPartial();
             } else {
               mean_ = value;
             }
@@ -11710,7 +11710,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          */
         public Builder clearMean() {
           if (meanBuilder_ == null) {
@@ -11724,33 +11724,33 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          */
-        public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder getMeanBuilder() {
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getMeanBuilder() {
           
           onChanged();
           return getMeanFieldBuilder().getBuilder();
         }
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          */
-        public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder getMeanOrBuilder() {
+        public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getMeanOrBuilder() {
           if (meanBuilder_ != null) {
             return meanBuilder_.getMessageOrBuilder();
           } else {
             return mean_ == null ?
-                demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.getDefaultInstance() : mean_;
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : mean_;
           }
         }
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder> 
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
             getMeanFieldBuilder() {
           if (meanBuilder_ == null) {
             meanBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder>(
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
                     getMean(),
                     getParentForChildren(),
                     isClean());
@@ -16368,7 +16368,7 @@ public final class X13Protos {
       "\004usig\030\006 \001(\001\022\017\n\007nfcasts\030\007 \001(\005\022\017\n\007nbcasts\030" +
       "\010 \001(\005\022!\n\005sigma\030\t \001(\0162\022.x13.CalendarSigma" +
       "\022\017\n\007vsigmas\030\n \003(\005\022\026\n\016exclude_fcasts\030\013 \001(" +
-      "\010\022!\n\004bias\030\014 \001(\0162\023.x13.BiasCorrection\"\237\016\n" +
+      "\010\022!\n\004bias\030\014 \001(\0162\023.x13.BiasCorrection\"\226\016\n" +
       "\014RegArimaSpec\022*\n\005basic\030\001 \001(\0132\033.x13.RegAr" +
       "imaSpec.BasicSpec\0222\n\ttransform\030\002 \001(\0132\037.x" +
       "13.RegArimaSpec.TransformSpec\022.\n\007outlier" +
@@ -16405,39 +16405,39 @@ public final class X13Protos {
       "st\030\006 \001(\0162\023.x13.RegressionTest\022\023\n\013auto_ad" +
       "just\030\007 \001(\010\022&\n\016tdcoefficients\030\n \003(\0132\016.jd3" +
       ".Parameter\022%\n\rlpcoefficient\030\013 \001(\0132\016.jd3." +
-      "Parameter\032\264\002\n\016RegressionSpec\022%\n\004mean\030\001 \001" +
-      "(\0132\027.regarima.TrendConstant\022-\n\002td\030\002 \001(\0132" +
-      "!.x13.RegArimaSpec.TradingDaysSpec\022,\n\006ea" +
-      "ster\030\003 \001(\0132\034.x13.RegArimaSpec.EasterSpec" +
-      "\022#\n\010outliers\030\004 \003(\0132\021.regarima.Outlier\022#\n" +
-      "\005users\030\005 \003(\0132\024.regarima.TsVariable\0225\n\rin" +
-      "terventions\030\006 \003(\0132\036.regarima.Interventio" +
-      "nVariable\022\035\n\005ramps\030\007 \003(\0132\016.regarima.Ramp" +
-      "\032<\n\014EstimateSpec\022\037\n\004span\030\001 \001(\0132\021.jd3.Tim" +
-      "eSelector\022\013\n\003tol\030\002 \001(\001\"r\n\004Spec\022#\n\010regari" +
-      "ma\030\001 \001(\0132\021.x13.RegArimaSpec\022\031\n\003x11\030\002 \001(\013" +
-      "2\014.x13.X11Spec\022*\n\014benchmarking\030\003 \001(\0132\024.s" +
-      "a.BenchmarkingSpec*\200\001\n\021DecompositionMode" +
-      "\022\020\n\014MODE_UNKNOWN\020\000\022\021\n\rMODE_ADDITIVE\020\001\022\027\n" +
-      "\023MODE_MULTIPLICATIVE\020\002\022\024\n\020MODE_LOGADDITI" +
-      "VE\020\003\022\027\n\023MODE_PSEUDOADDITIVE\020\004*\350\001\n\016Season" +
-      "alFilter\022\027\n\023SEASONAL_FILTER_MSR\020\000\022\030\n\024SEA" +
-      "SONAL_FILTER_S3X1\020\001\022\030\n\024SEASONAL_FILTER_S" +
-      "3X3\020\002\022\030\n\024SEASONAL_FILTER_S3X5\020\003\022\030\n\024SEASO" +
-      "NAL_FILTER_S3X9\020\004\022\031\n\025SEASONAL_FILTER_S3X" +
-      "15\020\005\022\032\n\026SEASONAL_FILTER_STABLE\020\006\022\036\n\032SEAS" +
-      "ONAL_FILTER_X11DEFAULT\020\007*R\n\rCalendarSigm" +
-      "a\022\016\n\nSIGMA_NONE\020\000\022\020\n\014SIGMA_SIGNIF\020\001\022\r\n\tS" +
-      "IGMA_ALL\020\002\022\020\n\014SIGMA_SELECT\020\003*Q\n\016BiasCorr" +
-      "ection\022\r\n\tBIAS_NONE\020\000\022\017\n\013BIAS_LEGACY\020\001\022\017" +
-      "\n\013BIAS_SMOOTH\020\002\022\016\n\nBIAS_RATIO\020\003*7\n\rOutli" +
-      "erMethod\022\022\n\016OUTLIER_ADDONE\020\000\022\022\n\016OUTLIER_" +
-      "ADDALL\020\001*V\n\nEasterType\022\021\n\rEASTER_UNUSED\020" +
-      "\000\022\023\n\017EASTER_STANDARD\020\001\022\021\n\rEASTER_JULIAN\020" +
-      "\002\022\r\n\tEASTER_SC\020\003*<\n\016RegressionTest\022\013\n\007TE" +
-      "ST_NO\020\000\022\014\n\010TEST_ADD\020\001\022\017\n\013TEST_REMOVE\020\002B$" +
-      "\n\027demetra.x13.io.protobufB\tX13ProtosP\000P\001" +
-      "P\002b\006proto3"
+      "Parameter\032\253\002\n\016RegressionSpec\022\034\n\004mean\030\001 \001" +
+      "(\0132\016.jd3.Parameter\022-\n\002td\030\002 \001(\0132!.x13.Reg" +
+      "ArimaSpec.TradingDaysSpec\022,\n\006easter\030\003 \001(" +
+      "\0132\034.x13.RegArimaSpec.EasterSpec\022#\n\010outli" +
+      "ers\030\004 \003(\0132\021.regarima.Outlier\022#\n\005users\030\005 " +
+      "\003(\0132\024.regarima.TsVariable\0225\n\rinterventio" +
+      "ns\030\006 \003(\0132\036.regarima.InterventionVariable" +
+      "\022\035\n\005ramps\030\007 \003(\0132\016.regarima.Ramp\032<\n\014Estim" +
+      "ateSpec\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeSelector" +
+      "\022\013\n\003tol\030\002 \001(\001\"r\n\004Spec\022#\n\010regarima\030\001 \001(\0132" +
+      "\021.x13.RegArimaSpec\022\031\n\003x11\030\002 \001(\0132\014.x13.X1" +
+      "1Spec\022*\n\014benchmarking\030\003 \001(\0132\024.sa.Benchma" +
+      "rkingSpec*\200\001\n\021DecompositionMode\022\020\n\014MODE_" +
+      "UNKNOWN\020\000\022\021\n\rMODE_ADDITIVE\020\001\022\027\n\023MODE_MUL" +
+      "TIPLICATIVE\020\002\022\024\n\020MODE_LOGADDITIVE\020\003\022\027\n\023M" +
+      "ODE_PSEUDOADDITIVE\020\004*\350\001\n\016SeasonalFilter\022" +
+      "\027\n\023SEASONAL_FILTER_MSR\020\000\022\030\n\024SEASONAL_FIL" +
+      "TER_S3X1\020\001\022\030\n\024SEASONAL_FILTER_S3X3\020\002\022\030\n\024" +
+      "SEASONAL_FILTER_S3X5\020\003\022\030\n\024SEASONAL_FILTE" +
+      "R_S3X9\020\004\022\031\n\025SEASONAL_FILTER_S3X15\020\005\022\032\n\026S" +
+      "EASONAL_FILTER_STABLE\020\006\022\036\n\032SEASONAL_FILT" +
+      "ER_X11DEFAULT\020\007*R\n\rCalendarSigma\022\016\n\nSIGM" +
+      "A_NONE\020\000\022\020\n\014SIGMA_SIGNIF\020\001\022\r\n\tSIGMA_ALL\020" +
+      "\002\022\020\n\014SIGMA_SELECT\020\003*Q\n\016BiasCorrection\022\r\n" +
+      "\tBIAS_NONE\020\000\022\017\n\013BIAS_LEGACY\020\001\022\017\n\013BIAS_SM" +
+      "OOTH\020\002\022\016\n\nBIAS_RATIO\020\003*7\n\rOutlierMethod\022" +
+      "\022\n\016OUTLIER_ADDONE\020\000\022\022\n\016OUTLIER_ADDALL\020\001*" +
+      "V\n\nEasterType\022\021\n\rEASTER_UNUSED\020\000\022\023\n\017EAST" +
+      "ER_STANDARD\020\001\022\021\n\rEASTER_JULIAN\020\002\022\r\n\tEAST" +
+      "ER_SC\020\003*<\n\016RegressionTest\022\013\n\007TEST_NO\020\000\022\014" +
+      "\n\010TEST_ADD\020\001\022\017\n\013TEST_REMOVE\020\002B$\n\027demetra" +
+      ".x13.io.protobufB\tX13ProtosP\000P\001P\002b\006proto" +
+      "3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

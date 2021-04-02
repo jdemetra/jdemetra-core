@@ -16,9 +16,7 @@ import demetra.regarima.RegressionSpec;
 import demetra.regarima.RegressionTestSpec;
 import demetra.regarima.TradingDaysSpec;
 import demetra.regarima.TransformSpec;
-import demetra.sa.EstimationPolicy;
 import demetra.sa.EstimationPolicyType;
-import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.timeseries.regression.Variable;
@@ -66,23 +64,24 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
                 resetArima(currentSpec, domainSpec, builder);
                 removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
                 freeVariables(currentSpec, domainSpec, builder);
+                break;
             case Outliers:
                 removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
                 freeVariables(currentSpec, domainSpec, builder);
+                break;
             case LastOutliers:
                 removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
                 freeVariables(currentSpec, domainSpec, builder);
+                break;
             case FreeParameters:
                 freeArima(currentSpec, domainSpec, builder);
                 freeVariables(currentSpec, domainSpec, builder);
+                break;
             case FixedAutoRegressiveParameters:
                 fixAR(currentSpec, domainSpec, builder);
                 freeVariables(currentSpec, domainSpec, builder);
                 break;
             case Fixed:
-                fixArima(currentSpec, domainSpec, builder);
-                freeVariables(currentSpec, domainSpec, builder);
-                break;
             case Current:
                 fixArima(currentSpec, domainSpec, builder);
                 fixVariables(currentSpec, domainSpec, builder);
@@ -249,6 +248,7 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
                 .forEachOrdered(outlier -> {
                     rbuilder.outlier(outlier);
                 });
+        builder.regression(rbuilder.build());
     }
 
     private static boolean belongsTo(Variable<IOutlier> outlier, List<Variable<IOutlier>> defoutliers) {

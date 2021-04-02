@@ -66,17 +66,9 @@ public class TradingDaysProto {
     public X13Protos.RegArimaSpec.TradingDaysSpec convert(TradingDaysSpec spec) {
         X13Protos.RegArimaSpec.TradingDaysSpec.Builder builder = X13Protos.RegArimaSpec.TradingDaysSpec.newBuilder();
         fill(spec, builder);
-        Parameter lpc = spec.getLpCoefficient();
-        Parameter[] tdc = spec.getTdCoefficients();
-        if (lpc != null) {
-            builder.setLpcoefficient(ToolkitProtosUtility.convert(lpc));
-        }
-        if (tdc != null) {
-            for (int i = 0; i < tdc.length; ++i) {
-                builder.addTdcoefficients(ToolkitProtosUtility.convert(tdc[i]));
-            }
-        }
-        return builder.build();
+        return builder.setLpcoefficient(ToolkitProtosUtility.convert(spec.getLpCoefficient()))
+                .addAllTdcoefficients(ToolkitProtosUtility.convert(spec.getTdCoefficients()))
+                .build();
     }
 
     public byte[] toBuffer(TradingDaysSpec spec) {

@@ -146,6 +146,7 @@ public class RegArimaProtosUtility {
                 .setId(v.getCore().getId())
                 .setFirstLag(v.getCore().getFirstLag())
                 .setLastLag(v.getCore().getLastLag())
+                .addAllCoefficient(ToolkitProtosUtility.convert(v.getCoefficients()))
                 .build();
     }
 
@@ -171,11 +172,12 @@ public class RegArimaProtosUtility {
     public Variable<Ramp> convert(RegArimaProtos.Ramp v) {
         LocalDate start = ToolkitProtosUtility.convert(v.getStart());
         LocalDate end = ToolkitProtosUtility.convert(v.getEnd());
+        Parameter c = ToolkitProtosUtility.convert(v.getCoefficient());
         return Variable.<Ramp>builder()
                 .name(v.getName())
                 .core(new Ramp(start.atStartOfDay(), end.atStartOfDay()))
                 .attributes(v.getMetadataMap())
-                .coefficients(new Parameter[]{ToolkitProtosUtility.convert(v.getCoefficient())})
+                .coefficients(c == null ? null : new Parameter[]{c})
                 .build();
     }
 
@@ -210,29 +212,12 @@ public class RegArimaProtosUtility {
             LocalDate end = ToolkitProtosUtility.convert(seq.getEnd());
             builder.add(start.atStartOfDay(), end.atStartOfDay());
         }
+        Parameter c = ToolkitProtosUtility.convert(v.getCoefficient());
         return Variable.<InterventionVariable>builder()
                 .name(v.getName())
                 .core(builder.build())
-                .coefficients(new Parameter[]{ToolkitProtosUtility.convert(v.getCoefficient())})
+                .coefficients(c == null ? null : new Parameter[]{c})
                 .attributes(v.getMetadataMap())
                 .build();
     }
-
-    public Parameter convertConst(RegArimaProtos.TrendConstant v) {
-        if (!v.getUsed()) {
-            return null;
-        } else {
-            return ToolkitProtosUtility.convert(v.getCoefficient());
-        }
-    }
-
-    public RegArimaProtos.TrendConstant convertConst(Parameter v) {
-        RegArimaProtos.TrendConstant.Builder builder = RegArimaProtos.TrendConstant.newBuilder()
-                .setUsed(v != null);
-        if (v != null) {
-            builder.setCoefficient(ToolkitProtosUtility.convert(v));
-        }
-        return builder.build();
-    }
-
 }

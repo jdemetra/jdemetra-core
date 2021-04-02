@@ -62,17 +62,10 @@ public class TradingDaysProto {
     public TramoSeatsProtos.TramoSpec.TradingDaysSpec convert(TradingDaysSpec spec) {
         TramoSeatsProtos.TramoSpec.TradingDaysSpec.Builder builder = TramoSeatsProtos.TramoSpec.TradingDaysSpec.newBuilder();
         fill(spec, builder);
-        Parameter lpc = spec.getLpCoefficient();
-        Parameter[] tdc = spec.getTdCoefficients();
-        if (lpc != null) {
-            builder.setLpcoefficient(ToolkitProtosUtility.convert(lpc));
-        }
-        if (tdc != null) {
-            for (int i = 0; i < tdc.length; ++i) {
-                builder.addTdcoefficients(ToolkitProtosUtility.convert(tdc[i]));
-            }
-        }
-        return builder.build();
+        return builder
+                .setLpcoefficient(ToolkitProtosUtility.convert(spec.getLpCoefficient()))
+                .addAllTdcoefficients(ToolkitProtosUtility.convert(spec.getTdCoefficients()))
+                .build();
     }
 
     public byte[] toBuffer(TradingDaysSpec spec) {

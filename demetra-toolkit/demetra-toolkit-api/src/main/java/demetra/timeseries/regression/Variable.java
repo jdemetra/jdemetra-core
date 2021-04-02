@@ -62,10 +62,15 @@ public class Variable <V extends ITsVariable> {
         return val != null && val.equals(value);
     }
 
+    @NonNull
     public Parameter getCoefficient(int i) {
         return coefficients == null ? Parameter.undefined() : coefficients[i];
     }
 
+    @NonNull
+    public Parameter[] getCoefficients() {
+        return coefficients == null ? Parameter.make(core.dim()) : coefficients.clone();
+    }
     /**
      *
      * @param variable Actual variable

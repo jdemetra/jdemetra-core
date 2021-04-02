@@ -8500,19 +8500,19 @@ public final class TramoSeatsProtos {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>.regarima.TrendConstant mean = 1;</code>
+       * <code>.jd3.Parameter mean = 1;</code>
        * @return Whether the mean field is set.
        */
       boolean hasMean();
       /**
-       * <code>.regarima.TrendConstant mean = 1;</code>
+       * <code>.jd3.Parameter mean = 1;</code>
        * @return The mean.
        */
-      demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant getMean();
+      demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getMean();
       /**
-       * <code>.regarima.TrendConstant mean = 1;</code>
+       * <code>.jd3.Parameter mean = 1;</code>
        */
-      demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder getMeanOrBuilder();
+      demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getMeanOrBuilder();
 
       /**
        * <code>.tramoseats.TramoSpec.TradingDaysSpec td = 2;</code>
@@ -8691,11 +8691,11 @@ public final class TramoSeatsProtos {
                 done = true;
                 break;
               case 10: {
-                demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder subBuilder = null;
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
                 if (mean_ != null) {
                   subBuilder = mean_.toBuilder();
                 }
-                mean_ = input.readMessage(demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.parser(), extensionRegistry);
+                mean_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry);
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(mean_);
                   mean_ = subBuilder.buildPartial();
@@ -8810,9 +8810,9 @@ public final class TramoSeatsProtos {
       }
 
       public static final int MEAN_FIELD_NUMBER = 1;
-      private demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant mean_;
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter mean_;
       /**
-       * <code>.regarima.TrendConstant mean = 1;</code>
+       * <code>.jd3.Parameter mean = 1;</code>
        * @return Whether the mean field is set.
        */
       @java.lang.Override
@@ -8820,18 +8820,18 @@ public final class TramoSeatsProtos {
         return mean_ != null;
       }
       /**
-       * <code>.regarima.TrendConstant mean = 1;</code>
+       * <code>.jd3.Parameter mean = 1;</code>
        * @return The mean.
        */
       @java.lang.Override
-      public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant getMean() {
-        return mean_ == null ? demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.getDefaultInstance() : mean_;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getMean() {
+        return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : mean_;
       }
       /**
-       * <code>.regarima.TrendConstant mean = 1;</code>
+       * <code>.jd3.Parameter mean = 1;</code>
        */
       @java.lang.Override
-      public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder getMeanOrBuilder() {
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getMeanOrBuilder() {
         return getMean();
       }
 
@@ -9644,31 +9644,31 @@ public final class TramoSeatsProtos {
         }
         private int bitField0_;
 
-        private demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant mean_;
+        private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter mean_;
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder> meanBuilder_;
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> meanBuilder_;
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          * @return Whether the mean field is set.
          */
         public boolean hasMean() {
           return meanBuilder_ != null || mean_ != null;
         }
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          * @return The mean.
          */
-        public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant getMean() {
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getMean() {
           if (meanBuilder_ == null) {
-            return mean_ == null ? demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.getDefaultInstance() : mean_;
+            return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : mean_;
           } else {
             return meanBuilder_.getMessage();
           }
         }
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          */
-        public Builder setMean(demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant value) {
+        public Builder setMean(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
           if (meanBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -9682,10 +9682,10 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          */
         public Builder setMean(
-            demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder builderForValue) {
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
           if (meanBuilder_ == null) {
             mean_ = builderForValue.build();
             onChanged();
@@ -9696,13 +9696,13 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          */
-        public Builder mergeMean(demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant value) {
+        public Builder mergeMean(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
           if (meanBuilder_ == null) {
             if (mean_ != null) {
               mean_ =
-                demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.newBuilder(mean_).mergeFrom(value).buildPartial();
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder(mean_).mergeFrom(value).buildPartial();
             } else {
               mean_ = value;
             }
@@ -9714,7 +9714,7 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          */
         public Builder clearMean() {
           if (meanBuilder_ == null) {
@@ -9728,33 +9728,33 @@ public final class TramoSeatsProtos {
           return this;
         }
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          */
-        public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder getMeanBuilder() {
+        public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getMeanBuilder() {
           
           onChanged();
           return getMeanFieldBuilder().getBuilder();
         }
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          */
-        public demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder getMeanOrBuilder() {
+        public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getMeanOrBuilder() {
           if (meanBuilder_ != null) {
             return meanBuilder_.getMessageOrBuilder();
           } else {
             return mean_ == null ?
-                demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.getDefaultInstance() : mean_;
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : mean_;
           }
         }
         /**
-         * <code>.regarima.TrendConstant mean = 1;</code>
+         * <code>.jd3.Parameter mean = 1;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder> 
+            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
             getMeanFieldBuilder() {
           if (meanBuilder_ == null) {
             meanBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstant.Builder, demetra.regarima.io.protobuf.RegArimaProtos.TrendConstantOrBuilder>(
+                demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
                     getMean(),
                     getParentForChildren(),
                     isClean());
@@ -14511,7 +14511,7 @@ public final class TramoSeatsProtos {
       "\033\n\023seas_boundary_at_pi\030\006 \001(\001\022\027\n\017bias_cor" +
       "rection\030\007 \001(\010\022\017\n\007nfcasts\030\010 \001(\005\022\017\n\007nbcast" +
       "s\030\t \001(\005\022-\n\talgorithm\030\n \001(\0162\032.tramoseats." +
-      "SeatsAlgorithm\"\246\r\n\tTramoSpec\022.\n\005basic\030\001 " +
+      "SeatsAlgorithm\"\235\r\n\tTramoSpec\022.\n\005basic\030\001 " +
       "\001(\0132\037.tramoseats.TramoSpec.BasicSpec\0226\n\t" +
       "transform\030\002 \001(\0132#.tramoseats.TramoSpec.T" +
       "ransformSpec\0222\n\007outlier\030\003 \001(\0132!.tramosea" +
@@ -14543,33 +14543,33 @@ public final class TramoSeatsProtos {
       "ingDaysTest\022.\n\004auto\030\007 \001(\0162 .tramoseats.A" +
       "utomaticTradingDays\022\r\n\005ptest\030\010 \001(\001\022&\n\016td" +
       "coefficients\030\n \003(\0132\016.jd3.Parameter\022%\n\rlp" +
-      "coefficient\030\013 \001(\0132\016.jd3.Parameter\032\274\002\n\016Re" +
-      "gressionSpec\022%\n\004mean\030\001 \001(\0132\027.regarima.Tr" +
-      "endConstant\0221\n\002td\030\002 \001(\0132%.tramoseats.Tra" +
-      "moSpec.TradingDaysSpec\0220\n\006easter\030\003 \001(\0132 " +
-      ".tramoseats.TramoSpec.EasterSpec\022#\n\010outl" +
-      "iers\030\004 \003(\0132\021.regarima.Outlier\022#\n\005users\030\005" +
-      " \003(\0132\024.regarima.TsVariable\0225\n\rinterventi" +
-      "ons\030\006 \003(\0132\036.regarima.InterventionVariabl" +
-      "e\022\035\n\005ramps\030\007 \003(\0132\016.regarima.Ramp\032U\n\014Esti" +
-      "mateSpec\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeSelecto" +
-      "r\022\n\n\002ml\030\002 \001(\010\022\013\n\003tol\030\003 \001(\001\022\013\n\003ubp\030\004 \001(\001\"" +
-      "\206\001\n\004Spec\022$\n\005tramo\030\001 \001(\0132\025.tramoseats.Tra" +
-      "moSpec\022,\n\005seats\030\002 \001(\0132\035.tramoseats.Decom" +
-      "positionSpec\022*\n\014benchmarking\030\003 \001(\0132\024.sa." +
-      "BenchmarkingSpec*S\n\022SeatsApproximation\022\022" +
-      "\n\016SEATS_APP_NONE\020\000\022\024\n\020SEATS_APP_LEGACY\020\001" +
-      "\022\023\n\017SEATS_APP_NOISY\020\002*D\n\016SeatsAlgorithm\022" +
-      "\024\n\020SEATS_ALG_BURMAN\020\000\022\034\n\030SEATS_ALG_KALMA" +
-      "NSMOOTHER\020\001*O\n\024AutomaticTradingDays\022\016\n\nT" +
-      "D_AUTO_NO\020\000\022\021\n\rTD_AUTO_FTEST\020\001\022\024\n\020TD_AUT" +
-      "O_WALDTEST\020\002*N\n\017TradingDaysTest\022\016\n\nTD_TE" +
-      "ST_NO\020\000\022\026\n\022TD_TEST_SEPARATE_T\020\001\022\023\n\017TD_TE" +
-      "ST_JOINT_F\020\002*n\n\nEasterType\022\021\n\rEASTER_UNU" +
-      "SED\020\000\022\023\n\017EASTER_STANDARD\020\001\022\030\n\024EASTER_INC" +
-      "LUDEEASTER\020\002\022\036\n\032EASTER_INCLUDEEASTERMOND" +
-      "AY\020\003B2\n\036demetra.tramoseats.io.protobufB\020" +
-      "TramoSeatsProtosP\000P\001P\002b\006proto3"
+      "coefficient\030\013 \001(\0132\016.jd3.Parameter\032\263\002\n\016Re" +
+      "gressionSpec\022\034\n\004mean\030\001 \001(\0132\016.jd3.Paramet" +
+      "er\0221\n\002td\030\002 \001(\0132%.tramoseats.TramoSpec.Tr" +
+      "adingDaysSpec\0220\n\006easter\030\003 \001(\0132 .tramosea" +
+      "ts.TramoSpec.EasterSpec\022#\n\010outliers\030\004 \003(" +
+      "\0132\021.regarima.Outlier\022#\n\005users\030\005 \003(\0132\024.re" +
+      "garima.TsVariable\0225\n\rinterventions\030\006 \003(\013" +
+      "2\036.regarima.InterventionVariable\022\035\n\005ramp" +
+      "s\030\007 \003(\0132\016.regarima.Ramp\032U\n\014EstimateSpec\022" +
+      "\037\n\004span\030\001 \001(\0132\021.jd3.TimeSelector\022\n\n\002ml\030\002" +
+      " \001(\010\022\013\n\003tol\030\003 \001(\001\022\013\n\003ubp\030\004 \001(\001\"\206\001\n\004Spec\022" +
+      "$\n\005tramo\030\001 \001(\0132\025.tramoseats.TramoSpec\022,\n" +
+      "\005seats\030\002 \001(\0132\035.tramoseats.DecompositionS" +
+      "pec\022*\n\014benchmarking\030\003 \001(\0132\024.sa.Benchmark" +
+      "ingSpec*S\n\022SeatsApproximation\022\022\n\016SEATS_A" +
+      "PP_NONE\020\000\022\024\n\020SEATS_APP_LEGACY\020\001\022\023\n\017SEATS" +
+      "_APP_NOISY\020\002*D\n\016SeatsAlgorithm\022\024\n\020SEATS_" +
+      "ALG_BURMAN\020\000\022\034\n\030SEATS_ALG_KALMANSMOOTHER" +
+      "\020\001*O\n\024AutomaticTradingDays\022\016\n\nTD_AUTO_NO" +
+      "\020\000\022\021\n\rTD_AUTO_FTEST\020\001\022\024\n\020TD_AUTO_WALDTES" +
+      "T\020\002*N\n\017TradingDaysTest\022\016\n\nTD_TEST_NO\020\000\022\026" +
+      "\n\022TD_TEST_SEPARATE_T\020\001\022\023\n\017TD_TEST_JOINT_" +
+      "F\020\002*n\n\nEasterType\022\021\n\rEASTER_UNUSED\020\000\022\023\n\017" +
+      "EASTER_STANDARD\020\001\022\030\n\024EASTER_INCLUDEEASTE" +
+      "R\020\002\022\036\n\032EASTER_INCLUDEEASTERMONDAY\020\003B2\n\036d" +
+      "emetra.tramoseats.io.protobufB\020TramoSeat" +
+      "sProtosP\000P\001P\002b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

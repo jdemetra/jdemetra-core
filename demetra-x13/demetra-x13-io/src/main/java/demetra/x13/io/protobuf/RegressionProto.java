@@ -41,7 +41,7 @@ import java.util.List;
 public class RegressionProto {
     public RegressionSpec convert(X13Protos.RegArimaSpec.RegressionSpec spec, double tc) {
         RegressionSpec.Builder builder = RegressionSpec.builder()
-                .mean(RegArimaProtosUtility.convertConst(spec.getMean()))
+                .mean(ToolkitProtosUtility.convert(spec.getMean()))
                 .easter(EasterProto.convert(spec.getEaster()))
                 .tradingDays(TradingDaysProto.convert(spec.getTd()));
         int n = spec.getOutliersCount();
@@ -70,7 +70,7 @@ public class RegressionProto {
 
     public X13Protos.RegArimaSpec.RegressionSpec convert(RegressionSpec spec) {
         X13Protos.RegArimaSpec.RegressionSpec.Builder builder = X13Protos.RegArimaSpec.RegressionSpec.newBuilder()
-                .setMean(RegArimaProtosUtility.convertConst(spec.getMean()))
+                .setMean(ToolkitProtosUtility.convert(spec.getMean()))
                 .setEaster(EasterProto.convert(spec.getEaster()))
                 .setTd(TradingDaysProto.convert(spec.getTradingDays()));
         
@@ -118,11 +118,11 @@ public class RegressionProto {
             default:
                 return null;
         }
-        
+        Parameter c = ToolkitProtosUtility.convert(outlier.getCoefficient());
         return Variable.<IOutlier>builder()
                 .core(o)
                 .name(outlier.getName())
-                .coefficients(new Parameter[]{ToolkitProtosUtility.convert(outlier.getCoefficient())})
+                .coefficients(c == null ? null : new Parameter[]{c})
                 .attributes(outlier.getMetadataMap())
                 .build();        
     }

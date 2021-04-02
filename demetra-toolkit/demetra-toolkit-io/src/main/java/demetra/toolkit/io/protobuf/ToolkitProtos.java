@@ -20,72 +20,72 @@ public final class ToolkitProtos {
   public enum SelectionType
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>SPAN_NONE = 0;</code>
+     * <code>SPAN_ALL = 0;</code>
      */
-    SPAN_NONE(0),
+    SPAN_ALL(0),
     /**
-     * <code>SPAN_ALL = 1;</code>
+     * <code>SPAN_FROM = 1;</code>
      */
-    SPAN_ALL(1),
+    SPAN_FROM(1),
     /**
-     * <code>SPAN_FROM = 2;</code>
+     * <code>SPAN_TO = 2;</code>
      */
-    SPAN_FROM(2),
+    SPAN_TO(2),
     /**
-     * <code>SPAN_TO = 3;</code>
+     * <code>SPAN_BETWEEN = 3;</code>
      */
-    SPAN_TO(3),
+    SPAN_BETWEEN(3),
     /**
-     * <code>SPAN_BETWEEN = 4;</code>
+     * <code>SPAN_LAST = 4;</code>
      */
-    SPAN_BETWEEN(4),
+    SPAN_LAST(4),
     /**
-     * <code>SPAN_LAST = 5;</code>
+     * <code>SPAN_FIRST = 5;</code>
      */
-    SPAN_LAST(5),
+    SPAN_FIRST(5),
     /**
-     * <code>SPAN_FIRST = 6;</code>
+     * <code>SPAN_EXCLUDING = 6;</code>
      */
-    SPAN_FIRST(6),
+    SPAN_EXCLUDING(6),
     /**
-     * <code>SPAN_EXCLUDING = 7;</code>
+     * <code>SPAN_NONE = 7;</code>
      */
-    SPAN_EXCLUDING(7),
+    SPAN_NONE(7),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>SPAN_NONE = 0;</code>
+     * <code>SPAN_ALL = 0;</code>
      */
-    public static final int SPAN_NONE_VALUE = 0;
+    public static final int SPAN_ALL_VALUE = 0;
     /**
-     * <code>SPAN_ALL = 1;</code>
+     * <code>SPAN_FROM = 1;</code>
      */
-    public static final int SPAN_ALL_VALUE = 1;
+    public static final int SPAN_FROM_VALUE = 1;
     /**
-     * <code>SPAN_FROM = 2;</code>
+     * <code>SPAN_TO = 2;</code>
      */
-    public static final int SPAN_FROM_VALUE = 2;
+    public static final int SPAN_TO_VALUE = 2;
     /**
-     * <code>SPAN_TO = 3;</code>
+     * <code>SPAN_BETWEEN = 3;</code>
      */
-    public static final int SPAN_TO_VALUE = 3;
+    public static final int SPAN_BETWEEN_VALUE = 3;
     /**
-     * <code>SPAN_BETWEEN = 4;</code>
+     * <code>SPAN_LAST = 4;</code>
      */
-    public static final int SPAN_BETWEEN_VALUE = 4;
+    public static final int SPAN_LAST_VALUE = 4;
     /**
-     * <code>SPAN_LAST = 5;</code>
+     * <code>SPAN_FIRST = 5;</code>
      */
-    public static final int SPAN_LAST_VALUE = 5;
+    public static final int SPAN_FIRST_VALUE = 5;
     /**
-     * <code>SPAN_FIRST = 6;</code>
+     * <code>SPAN_EXCLUDING = 6;</code>
      */
-    public static final int SPAN_FIRST_VALUE = 6;
+    public static final int SPAN_EXCLUDING_VALUE = 6;
     /**
-     * <code>SPAN_EXCLUDING = 7;</code>
+     * <code>SPAN_NONE = 7;</code>
      */
-    public static final int SPAN_EXCLUDING_VALUE = 7;
+    public static final int SPAN_NONE_VALUE = 7;
 
 
     public final int getNumber() {
@@ -112,14 +112,14 @@ public final class ToolkitProtos {
      */
     public static SelectionType forNumber(int value) {
       switch (value) {
-        case 0: return SPAN_NONE;
-        case 1: return SPAN_ALL;
-        case 2: return SPAN_FROM;
-        case 3: return SPAN_TO;
-        case 4: return SPAN_BETWEEN;
-        case 5: return SPAN_LAST;
-        case 6: return SPAN_FIRST;
-        case 7: return SPAN_EXCLUDING;
+        case 0: return SPAN_ALL;
+        case 1: return SPAN_FROM;
+        case 2: return SPAN_TO;
+        case 3: return SPAN_BETWEEN;
+        case 4: return SPAN_LAST;
+        case 5: return SPAN_FIRST;
+        case 6: return SPAN_EXCLUDING;
+        case 7: return SPAN_NONE;
         default: return null;
       }
     }
@@ -182,40 +182,64 @@ public final class ToolkitProtos {
   public enum ParameterType
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>PARAMETER_UNDEFINED = 0;</code>
+     * <pre>
+     * Similar to null
+     * </pre>
+     *
+     * <code>PARAMETER_UNUSED = 0;</code>
      */
-    PARAMETER_UNDEFINED(0),
+    PARAMETER_UNUSED(0),
     /**
-     * <code>PARAMETER_FIXED = 1;</code>
+     * <pre>
+     * Parameter is used but not defined (to be estimated)
+     * </pre>
+     *
+     * <code>PARAMETER_UNDEFINED = 1;</code>
      */
-    PARAMETER_FIXED(1),
+    PARAMETER_UNDEFINED(1),
     /**
-     * <code>PARAMETER_INITIAL = 2;</code>
+     * <code>PARAMETER_FIXED = 2;</code>
      */
-    PARAMETER_INITIAL(2),
+    PARAMETER_FIXED(2),
     /**
-     * <code>PARAMETER_ESTIMATED = 3;</code>
+     * <code>PARAMETER_INITIAL = 3;</code>
      */
-    PARAMETER_ESTIMATED(3),
+    PARAMETER_INITIAL(3),
+    /**
+     * <code>PARAMETER_ESTIMATED = 4;</code>
+     */
+    PARAMETER_ESTIMATED(4),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>PARAMETER_UNDEFINED = 0;</code>
+     * <pre>
+     * Similar to null
+     * </pre>
+     *
+     * <code>PARAMETER_UNUSED = 0;</code>
      */
-    public static final int PARAMETER_UNDEFINED_VALUE = 0;
+    public static final int PARAMETER_UNUSED_VALUE = 0;
     /**
-     * <code>PARAMETER_FIXED = 1;</code>
+     * <pre>
+     * Parameter is used but not defined (to be estimated)
+     * </pre>
+     *
+     * <code>PARAMETER_UNDEFINED = 1;</code>
      */
-    public static final int PARAMETER_FIXED_VALUE = 1;
+    public static final int PARAMETER_UNDEFINED_VALUE = 1;
     /**
-     * <code>PARAMETER_INITIAL = 2;</code>
+     * <code>PARAMETER_FIXED = 2;</code>
      */
-    public static final int PARAMETER_INITIAL_VALUE = 2;
+    public static final int PARAMETER_FIXED_VALUE = 2;
     /**
-     * <code>PARAMETER_ESTIMATED = 3;</code>
+     * <code>PARAMETER_INITIAL = 3;</code>
      */
-    public static final int PARAMETER_ESTIMATED_VALUE = 3;
+    public static final int PARAMETER_INITIAL_VALUE = 3;
+    /**
+     * <code>PARAMETER_ESTIMATED = 4;</code>
+     */
+    public static final int PARAMETER_ESTIMATED_VALUE = 4;
 
 
     public final int getNumber() {
@@ -242,10 +266,11 @@ public final class ToolkitProtos {
      */
     public static ParameterType forNumber(int value) {
       switch (value) {
-        case 0: return PARAMETER_UNDEFINED;
-        case 1: return PARAMETER_FIXED;
-        case 2: return PARAMETER_INITIAL;
-        case 3: return PARAMETER_ESTIMATED;
+        case 0: return PARAMETER_UNUSED;
+        case 1: return PARAMETER_UNDEFINED;
+        case 2: return PARAMETER_FIXED;
+        case 3: return PARAMETER_INITIAL;
+        case 4: return PARAMETER_ESTIMATED;
         default: return null;
       }
     }
@@ -1909,7 +1934,7 @@ public final class ToolkitProtos {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (type_ != demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType.SPAN_NONE.getNumber()) {
+      if (type_ != demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType.SPAN_ALL.getNumber()) {
         output.writeEnum(1, type_);
       }
       if (n0_ != 0) {
@@ -1933,7 +1958,7 @@ public final class ToolkitProtos {
       if (size != -1) return size;
 
       size = 0;
-      if (type_ != demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType.SPAN_NONE.getNumber()) {
+      if (type_ != demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType.SPAN_ALL.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(1, type_);
       }
@@ -2910,7 +2935,7 @@ public final class ToolkitProtos {
       if (value_ != 0D) {
         output.writeDouble(1, value_);
       }
-      if (type_ != demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType.PARAMETER_UNDEFINED.getNumber()) {
+      if (type_ != demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType.PARAMETER_UNUSED.getNumber()) {
         output.writeEnum(2, type_);
       }
       if (!getDescriptionBytes().isEmpty()) {
@@ -2929,7 +2954,7 @@ public final class ToolkitProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(1, value_);
       }
-      if (type_ != demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType.PARAMETER_UNDEFINED.getNumber()) {
+      if (type_ != demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType.PARAMETER_UNUSED.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(2, type_);
       }
@@ -31477,29 +31502,30 @@ public final class ToolkitProtos {
       " \001(\0162\024.jd3.InformationType\022&\n\007details\030\005 " +
       "\003(\0132\025.jd3.ProcessingDetail\"9\n\016Processing" +
       "Logs\022\'\n\003log\030\001 \003(\0132\032.jd3.ProcessingInform" +
-      "ation*\215\001\n\rSelectionType\022\r\n\tSPAN_NONE\020\000\022\014" +
-      "\n\010SPAN_ALL\020\001\022\r\n\tSPAN_FROM\020\002\022\013\n\007SPAN_TO\020\003" +
-      "\022\020\n\014SPAN_BETWEEN\020\004\022\r\n\tSPAN_LAST\020\005\022\016\n\nSPA" +
-      "N_FIRST\020\006\022\022\n\016SPAN_EXCLUDING\020\007*m\n\rParamet" +
-      "erType\022\027\n\023PARAMETER_UNDEFINED\020\000\022\023\n\017PARAM" +
-      "ETER_FIXED\020\001\022\025\n\021PARAMETER_INITIAL\020\002\022\027\n\023P" +
-      "ARAMETER_ESTIMATED\020\003*\243\004\n\rCalendarEvent\022\027" +
-      "\n\023HOLIDAY_UNSPECIFIED\020\000\022\023\n\017HOLIDAY_NEWYE" +
-      "AR\020\001\022\030\n\024HOLIDAY_SHROVEMONDAY\020\002\022\031\n\025HOLIDA" +
-      "Y_SHROVETUESDAY\020\003\022\030\n\024HOLIDAY_ASHWEDNESDA" +
-      "Y\020\004\022\022\n\016HOLIDAY_EASTER\020\005\022\030\n\024HOLIDAY_JULIA" +
-      "NEASTER\020\006\022\032\n\026HOLIDAY_MAUNDYTHURSDAY\020\007\022\026\n" +
-      "\022HOLIDAY_GOODFRIDAY\020\010\022\030\n\024HOLIDAY_EASTERM" +
-      "ONDAY\020\t\022\025\n\021HOLIDAY_ASCENSION\020\n\022\025\n\021HOLIDA" +
-      "Y_PENTECOST\020\013\022\031\n\025HOLIDAY_CORPUSCHRISTI\020\014" +
-      "\022\026\n\022HOLIDAY_WHITMONDAY\020\r\022\022\n\016HOLIDAY_MAYD" +
-      "AY\020\016\022\026\n\022HOLIDAY_ASSUMPTION\020\017\022\024\n\020HOLIDAY_" +
-      "LABORDAY\020\020\022\025\n\021HOLIDAY_HALLOWEEN\020\021\022\027\n\023HOL" +
-      "IDAY_ALLSAINTDAY\020\022\022\025\n\021HOLIDAY_ARMISTICE\020" +
-      "\023\022\030\n\024HOLIDAY_THANKSGIVING\020\024\022\025\n\021HOLIDAY_C" +
-      "HRISTMAS\020\025*3\n\017InformationType\022\010\n\004Info\020\000\022" +
-      "\013\n\007Warning\020\001\022\t\n\005Error\020\002B,\n\033demetra.toolk" +
-      "it.io.protobufB\rToolkitProtosb\006proto3"
+      "ation*\215\001\n\rSelectionType\022\014\n\010SPAN_ALL\020\000\022\r\n" +
+      "\tSPAN_FROM\020\001\022\013\n\007SPAN_TO\020\002\022\020\n\014SPAN_BETWEE" +
+      "N\020\003\022\r\n\tSPAN_LAST\020\004\022\016\n\nSPAN_FIRST\020\005\022\022\n\016SP" +
+      "AN_EXCLUDING\020\006\022\r\n\tSPAN_NONE\020\007*\203\001\n\rParame" +
+      "terType\022\024\n\020PARAMETER_UNUSED\020\000\022\027\n\023PARAMET" +
+      "ER_UNDEFINED\020\001\022\023\n\017PARAMETER_FIXED\020\002\022\025\n\021P" +
+      "ARAMETER_INITIAL\020\003\022\027\n\023PARAMETER_ESTIMATE" +
+      "D\020\004*\243\004\n\rCalendarEvent\022\027\n\023HOLIDAY_UNSPECI" +
+      "FIED\020\000\022\023\n\017HOLIDAY_NEWYEAR\020\001\022\030\n\024HOLIDAY_S" +
+      "HROVEMONDAY\020\002\022\031\n\025HOLIDAY_SHROVETUESDAY\020\003" +
+      "\022\030\n\024HOLIDAY_ASHWEDNESDAY\020\004\022\022\n\016HOLIDAY_EA" +
+      "STER\020\005\022\030\n\024HOLIDAY_JULIANEASTER\020\006\022\032\n\026HOLI" +
+      "DAY_MAUNDYTHURSDAY\020\007\022\026\n\022HOLIDAY_GOODFRID" +
+      "AY\020\010\022\030\n\024HOLIDAY_EASTERMONDAY\020\t\022\025\n\021HOLIDA" +
+      "Y_ASCENSION\020\n\022\025\n\021HOLIDAY_PENTECOST\020\013\022\031\n\025" +
+      "HOLIDAY_CORPUSCHRISTI\020\014\022\026\n\022HOLIDAY_WHITM" +
+      "ONDAY\020\r\022\022\n\016HOLIDAY_MAYDAY\020\016\022\026\n\022HOLIDAY_A" +
+      "SSUMPTION\020\017\022\024\n\020HOLIDAY_LABORDAY\020\020\022\025\n\021HOL" +
+      "IDAY_HALLOWEEN\020\021\022\027\n\023HOLIDAY_ALLSAINTDAY\020" +
+      "\022\022\025\n\021HOLIDAY_ARMISTICE\020\023\022\030\n\024HOLIDAY_THAN" +
+      "KSGIVING\020\024\022\025\n\021HOLIDAY_CHRISTMAS\020\025*3\n\017Inf" +
+      "ormationType\022\010\n\004Info\020\000\022\013\n\007Warning\020\001\022\t\n\005E" +
+      "rror\020\002B,\n\033demetra.toolkit.io.protobufB\rT" +
+      "oolkitProtosb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

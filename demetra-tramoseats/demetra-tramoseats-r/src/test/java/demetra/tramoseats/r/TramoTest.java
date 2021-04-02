@@ -20,6 +20,7 @@ import demetra.arima.SarimaModel;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
+import demetra.timeseries.TsDomain;
 import demetra.tramo.TramoOutput;
 import demetra.tramo.TramoSpec;
 import org.junit.Test;
@@ -75,5 +76,18 @@ public class TramoTest {
         assertTrue(terror != null);
  //       System.out.println(terror);
     }
+    
+    @Test
+    public void testRefresh() {
+        TramoOutput rslt = Tramo.fullProcess(Data.TS_PROD, "TR5");
+
+        TramoSpec fspec = Tramo.refreshSpec(rslt.getResultSpec(), rslt.getEstimationSpec(), null, "Fixed");
+        TramoSpec pspec = Tramo.refreshSpec(rslt.getResultSpec(), rslt.getEstimationSpec(), null, "FreeParameters");
+        TramoSpec ospec = Tramo.refreshSpec(rslt.getResultSpec(), rslt.getEstimationSpec(), null, "Outliers");
+        
+        byte[] b = Tramo.toBuffer(fspec);
+        TramoSpec fspec2 = Tramo.specOf(b);
+    }
+
     
 }

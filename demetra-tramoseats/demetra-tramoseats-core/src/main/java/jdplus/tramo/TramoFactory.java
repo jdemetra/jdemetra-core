@@ -66,23 +66,24 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
                 resetArima(currentSpec, domainSpec, builder);
                 removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
                 freeVariables(currentSpec, domainSpec, builder);
+                break;
             case Outliers:
                 removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
                 freeVariables(currentSpec, domainSpec, builder);
+                break;
             case LastOutliers:
                 removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
                 freeVariables(currentSpec, domainSpec, builder);
+                break;
             case FreeParameters:
                 freeArima(currentSpec, domainSpec, builder);
                 freeVariables(currentSpec, domainSpec, builder);
+                break;
             case FixedAutoRegressiveParameters:
                 fixAR(currentSpec, domainSpec, builder);
                 freeVariables(currentSpec, domainSpec, builder);
                 break;
             case Fixed:
-                fixArima(currentSpec, domainSpec, builder);
-                freeVariables(currentSpec, domainSpec, builder);
-                break;
             case Current:
                 fixArima(currentSpec, domainSpec, builder);
                 fixVariables(currentSpec, domainSpec, builder);
@@ -267,6 +268,7 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
                 .forEachOrdered(outlier -> {
                     rbuilder.outlier(outlier);
                 });
+        builder.regression(rbuilder.build());
     }
 
     private static boolean belongsTo(Variable<IOutlier> outlier, List<Variable<IOutlier>> defoutliers) {
