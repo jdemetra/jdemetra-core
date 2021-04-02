@@ -18,9 +18,8 @@ package demetra.tramo;
 
 import demetra.data.Parameter;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import nbbrd.design.Development;
 import demetra.timeseries.calendars.TradingDaysType;
-import demetra.util.Validatable;
+import nbbrd.design.Development;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -29,7 +28,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.AllArgsConstructor(access=lombok.AccessLevel.PRIVATE)
 public class TradingDaysSpec {
 
     private static final TradingDaysSpec NONE = new TradingDaysSpec(null, null, TradingDaysType.None,
@@ -109,7 +108,7 @@ public class TradingDaysSpec {
         if (type == TradingDaysType.None) {
             throw new IllegalArgumentException();
         }
-        if (lp == LengthOfPeriodType.None && lpcoeff != null) {
+        if (lp == LengthOfPeriodType.None && Parameter.isDefined(lpcoeff)) {
             throw new IllegalArgumentException();
         }
 
@@ -189,4 +188,9 @@ public class TradingDaysSpec {
         return this.equals(NONE);
     }
 
+    public TradingDaysSpec withCoefficients(Parameter[] tdc, Parameter lpc) {
+        return new TradingDaysSpec(holidays, userVariables, tradingDaysType, lengthOfPeriodType,
+                RegressionTestType.None, stockTradingDays, AutoMethod.Unused, probabilityForFTest, tdc, lpc);
+    }
+    
 }

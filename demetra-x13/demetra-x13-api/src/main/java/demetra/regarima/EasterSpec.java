@@ -60,7 +60,7 @@ public final class EasterSpec implements Validatable<EasterSpec> {
             throw new IllegalArgumentException("Should be in [1,25]");
         }
         if (test != RegressionTestSpec.None && Parameter.isFixed(coefficient)) {
-            throw new IllegalArgumentException("Coefficient should not be used with testing");
+            throw new IllegalArgumentException("Fixed coefficient should not be used with testing");
         }
 
         return this;

@@ -26,6 +26,7 @@ import jdplus.regsarima.regular.SeasonalityDetector;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.arima.SarimaOrders;
+import demetra.modelling.implementations.RegSarimaProcessor;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import jdplus.regsarima.regular.ProcessingResult;
@@ -33,7 +34,6 @@ import jdplus.sarima.SarimaModel;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.tramo.AutoModelSpec;
 import demetra.tramo.EasterSpec;
-import demetra.tramo.EstimateSpec;
 import demetra.tramo.OutlierSpec;
 import demetra.tramo.TradingDaysSpec;
 import demetra.tramo.TramoSpec;
@@ -45,7 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.RegSarimaModel;
-import jdplus.regsarima.regular.RegSarimaProcessor;
 
 /**
  *
@@ -220,6 +219,7 @@ public class TramoKernel implements RegSarimaProcessor {
         RegSarimaModelling modelling = RegSarimaModelling.of(desc, log);
         RegSarimaModel rslt = ami(modelling, log);
         log.pop();
+        
         return rslt;
     }
 
@@ -436,10 +436,11 @@ public class TramoKernel implements RegSarimaProcessor {
     }
 
     private boolean needOutliers(ModelDescription desc) {
+        
         if (!isOutliersDetection()) {
             return false;
         }
-        return round < 3;
+        return needOutliers;
     }
 
     private boolean needAutoModelling(ModelDescription desc) {
@@ -684,8 +685,7 @@ public class TramoKernel implements RegSarimaProcessor {
 
     private void testTransformation(RegSarimaModelling modelling) {
         TransformSpec tspec = spec.getTransform();
-        EstimateSpec espec = spec.getEstimate();
-        if (tspec.getFunction() == TransformationType.Auto) {
+         if (tspec.getFunction() == TransformationType.Auto) {
             LogLevelModule module = LogLevelModule.builder()
                     .logPreference(Math.log(tspec.getFct()))
                     .estimationPrecision(options.intermediatePrecision)

@@ -45,6 +45,10 @@ public class Parameter {
         return type == ParameterType.Estimated;
     }
 
+    public boolean isDefined() {
+        return type != ParameterType.Undefined;
+    }
+
     /**
      * Free parameters are either undefined or initial parameters.
      * They should be estimated
@@ -113,30 +117,109 @@ public class Parameter {
     }
 
     /**
-     * All the estimated parameters are set to undefined
+     * All the non fixed parameters are set to undefined
      *
      * @param spec
+     * @return
      */
-    public static void resetParameters(Parameter[] spec) {
+    public static Parameter[] resetParameters(Parameter[] spec) {
+        if (spec == null || spec.length == 0) {
+            return spec;
+        }
+        Parameter[] nspec = spec.clone();
         for (int i = 0; i < spec.length; ++i) {
-            if (spec[i].isEstimated()) {
-                spec[i] = UNDEFINED;
+            if (!nspec[i].isFixed()) {
+                nspec[i] = UNDEFINED;
             }
         }
+        return nspec;
     }
 
     /**
-     * All the estimated parameters are set to initial (keeping the current
+     * All the parameters are set to undefined, except those that are fixed
+     * in the reference (which are put in the current array)
+     *
+     * @param spec
+     * @param ref
+     * @return
+     */
+    public static Parameter[] resetParameters(Parameter[] spec, Parameter[] ref) {
+        if (spec == null || spec.length == 0) {
+            return spec;
+        }
+        Parameter[] nspec = spec.clone();
+        for (int i = 0; i < spec.length; ++i) {
+            if (ref == null || i >= ref.length || !ref[i].isFixed()) {
+                nspec[i] = UNDEFINED;
+            } else {
+                nspec[i] = ref[i];
+            }
+        }
+        return nspec;
+    }
+
+    /**
+     * All the fixed parameters are relaxed (as initial values)
+     *
+     * @param spec
+     * @return
+     */
+    public static Parameter[] freeParameters(Parameter[] spec) {
+        if (spec == null || !hasFixedParameters(spec)) {
+            return spec;
+        }
+        Parameter[] nspec = spec.clone();
+        for (int i = 0; i < nspec.length; ++i) {
+            if (nspec[i].isFixed()) {
+                nspec[i] = new Parameter(nspec[i].value, ParameterType.Initial);
+            }
+        }
+        return nspec;
+    }
+
+    /**
+     * All the fixed parameters are relaxed (as initial values), except those
+     * that are fixed in the reference (which are put in the current array)
+     *
+     * @param spec
+     * @param ref
+     * @return
+     */
+    public static Parameter[] freeParameters(Parameter[] spec, Parameter[] ref) {
+        if (spec == null || (!hasFixedParameters(spec) && !hasFixedParameters(ref))) {
+            return spec;
+        }
+        Parameter[] nspec = spec.clone();
+        for (int i = 0; i < nspec.length; ++i) {
+            if (ref == null || i >= ref.length || !ref[i].isFixed()) {
+                if (nspec[i].isFixed()) {
+                    nspec[i] = new Parameter(spec[i].value, ParameterType.Initial);
+                }
+            } else {
+                nspec[i] = ref[i];
+            }
+        }
+        return nspec;
+    }
+
+    /**
+     * All the defined parameters are fixed (keeping the current
      * value)
      *
      * @param spec
+     * @return
      */
-    public static void freeParameters(Parameter[] spec) {
-        for (int i = 0; i < spec.length; ++i) {
-            if (spec[i].isEstimated()) {
-                spec[i] = new Parameter(spec[i].value, ParameterType.Initial);
+    public static Parameter[] fixParameters(Parameter[] spec) {
+        if (spec == null || spec.length == 0) {
+            return spec;
+        }
+        Parameter[] nspec = spec.clone();
+        for (int i = 0; i < nspec.length; ++i) {
+            if (nspec[i].isDefined() && !nspec[i].isFixed()) {
+                nspec[i] = new Parameter(nspec[i].value, ParameterType.Fixed);
             }
         }
+        return nspec;
     }
 
     public static Parameter of(double val, ParameterType t) {
@@ -292,7 +375,7 @@ public class Parameter {
      * @return
      */
     public static boolean isDefined(Parameter p) {
-        return p != UNDEFINED;
+        return p != null && p != UNDEFINED;
     }
 
     // / <summary></summary>

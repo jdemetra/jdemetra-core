@@ -23,7 +23,9 @@ import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
+import demetra.modelling.implementations.SarimaSpec;
 import demetra.stats.ProbabilityType;
+import demetra.stats.TestResult;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.IEasterVariable;
@@ -38,7 +40,10 @@ import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TransitoryChange;
 import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.Variable;
+import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
+import java.util.List;
+import java.util.Map;
 import jdplus.dstats.T;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sarima.SarimaModel;
@@ -49,10 +54,9 @@ import jdplus.sarima.SarimaModel;
  */
 @lombok.experimental.UtilityClass
 public class RegArimaEstimationProto {
-
-    RegArimaResultsProtos.Sarima arima(RegSarimaModel model) {
-        SarimaModel arima = model.arima();
-        SarimaOrders orders = arima.orders();
+    
+    RegArimaResultsProtos.Sarima arima(GeneralLinearModel<SarimaSpec> model) {
+        SarimaOrders orders = model.getDescription().getStochasticComponent().orders();
         ParametersEstimation parameters = model.getEstimation().getParameters();
         RegArimaResultsProtos.Sarima.Builder builder = RegArimaResultsProtos.Sarima.newBuilder()
                 .setPeriod(orders.getPeriod())
@@ -67,72 +71,84 @@ public class RegArimaEstimationProto {
                 .addAllScore(Iterables.of(parameters.getScores()));
         return builder.build();
     }
-
-    public RegArimaResultsProtos.RegArimaEstimation convert(RegSarimaModel model) {
-        RegArimaResultsProtos.RegArimaEstimation.Builder builder = RegArimaResultsProtos.RegArimaEstimation.newBuilder();
-
-        Variable[] vars = model.getDescription().getVariables();
-        MatrixType cov = model.getEstimation().getCoefficientsCovariance();
-        TsDomain domain = model.getDescription().getSeries().getDomain();
-        LikelihoodStatistics statistics = model.getEstimation().getStatistics();
-
-        builder.addAllY(Iterables.of(model.getEstimation().getY()))
-                .setX(ToolkitProtosUtility.convert(model.getEstimation().getX()))
-                .setSarima(arima(model))
-                .setLikelihood(ToolkitProtosUtility.convert(statistics))
-                .addAllResiduals(Iterables.of(model.fullResiduals().getValues()))
-                .addAllCoefficients(Iterables.of(model.getEstimation().getCoefficients()))
-                .setCovariance(ToolkitProtosUtility.convert(cov))
-                .setTransformation(model.getDescription().isLogTransformation() ? RegArimaProtos.Transformation.FN_LOG : RegArimaProtos.Transformation.FN_LEVEL)
-                .setPreadjustment(RegArimaProtosUtility.convert(model.getDescription().getLengthOfPeriodTransformation()));
-
-        // variables
-        int ndf=statistics.getEffectiveObservationsCount()-statistics.getEstimatedParametersCount()+1;
-       T tstat = new T(ndf);
-        for (int i = 0, j = 0; i < vars.length; ++i) {
-            int m = vars[i].dim();
-            ITsVariable core = vars[i].getCore();
+    
+    public RegArimaResultsProtos.RegArimaModel.Description convert(GeneralLinearModel.Description<SarimaSpec> description) {
+        
+        RegArimaResultsProtos.RegArimaModel.Description.Builder builder = RegArimaResultsProtos.RegArimaModel.Description.newBuilder();
+        
+        TsDomain domain = description.getSeries().getDomain();
+        Variable[] vars = description.getVariables();
+        for (int i = 0; i < vars.length; ++i) {
+            Variable vari = vars[i];
+            int m = vari.dim();
+            ITsVariable core = vari.getCore();
             RegArimaResultsProtos.VariableType type = type(core);
+            RegArimaResultsProtos.RegressionVariable.Builder vbuilder = RegArimaResultsProtos.RegressionVariable.newBuilder()
+                    .setName(vari.getName())
+                    .setVarType(type)
+                    .putAllMetadata(vars[i].getAttributes());
             for (int k = 0; k < m; ++k) {
-                String name = m == 1 ? vars[i].getName() : vars[i].getCore().description(k, domain);
-                Parameter c = vars[i].getCoefficient(k);
-                double val = c.getValue(), e = 0;
-                if (!c.isFixed()) {
-                    e = Math.sqrt(cov.get(j, j));
-                    ++j;
-                }
-                RegArimaResultsProtos.RegressionVariable v = RegArimaResultsProtos.RegressionVariable.newBuilder()
-                        .setName(name)
-                        .setVarType(type)
-                        .setCoefficient(val)
-                        .setStde(e)
-                        .setPvalue(e == 0 ? Double.NaN : 2 * tstat.getProbability(Math.abs(val / e), ProbabilityType.Upper))
-                        .putAllMetadata(vars[i].getAttributes())
-                        .build();
-                builder.addVariables(v);
+                String pname = m == 1 ? vari.getName() : vari.getCore().description(k, domain);
+                vbuilder.addCoefficients(ToolkitProtosUtility.convert(vari.getCoefficient(k), pname));
             }
+            builder.addVariables(vbuilder.build());
         }
-        // missing
-        MissingValueEstimation[] missing = model.getEstimation().getMissing();
-        if (missing.length > 0) {
-            for (int i = 0; i < missing.length; ++i) {
-                 builder.addMissings(convert(missing[i]));
-            }
-        }
-
-        return builder
-                .setDiagnostics(RegArimaProtosUtility.diagnosticsOf(model))
+        
+        return builder.setSeries(ToolkitProtosUtility.convert(description.getSeries()))
+                .setMean(description.isMean())
+                .setLog(description.isLogTransformation())
+                .setArima(RegArimaProtosUtility.convert(description.getStochasticComponent()))
                 .build();
     }
     
-    public RegArimaResultsProtos.MissingEstimation convert(MissingValueEstimation missing){
+    public RegArimaResultsProtos.RegArimaModel.Estimation convert(GeneralLinearModel.Estimation estimation) {
+        RegArimaResultsProtos.RegArimaModel.Estimation.Builder builder = RegArimaResultsProtos.RegArimaModel.Estimation.newBuilder();
+        
+        MatrixType cov = estimation.getCoefficientsCovariance();
+        LikelihoodStatistics statistics = estimation.getStatistics();
+        
+        builder.addAllY(Iterables.of(estimation.getY()))
+                .setX(ToolkitProtosUtility.convert(estimation.getX()))
+                .setParameters(ToolkitProtosUtility.convert(estimation.getParameters()))
+                .setLikelihood(ToolkitProtosUtility.convert(statistics))
+                .addAllResiduals(Iterables.of(estimation.getResiduals()))
+                .addAllB(Iterables.of(estimation.getCoefficients()))
+                .setBcovariance(ToolkitProtosUtility.convert(cov));
+
+        // missing
+        MissingValueEstimation[] missing = estimation.getMissing();
+        if (missing.length > 0) {
+            for (int i = 0; i < missing.length; ++i) {
+                builder.addMissings(convert(missing[i]));
+            }
+        }
+        return builder.build();
+    }
+    
+    public RegArimaResultsProtos.RegArimaModel convert(GeneralLinearModel<SarimaSpec> model) {
+        return RegArimaResultsProtos.RegArimaModel.newBuilder()
+                .setDescription(convert(model.getDescription()))
+                .setEstimation(convert(model.getEstimation()))
+                .setDiagnostics(diagnosticsOf(model))
+                .build();
+        
+    }
+    
+    public RegArimaResultsProtos.MissingEstimation convert(MissingValueEstimation missing) {
         return RegArimaResultsProtos.MissingEstimation.newBuilder()
                 .setPosition(missing.getPosition())
                 .setValue(missing.getValue())
                 .setStde(missing.getStandardError())
                 .build();
     }
-
+    
+    public RegArimaResultsProtos.Diagnostics diagnosticsOf(GeneralLinearModel<SarimaSpec> model){
+        
+        RegArimaResultsProtos.Diagnostics.Builder builder = RegArimaResultsProtos.Diagnostics.newBuilder();
+        model.getDiagnostics().forEach((k, v)->builder.putResidualsTests(k, ToolkitProtosUtility.convert(v)));
+        return builder.build();
+    }
+    
     public RegArimaResultsProtos.VariableType type(ITsVariable var) {
         if (var instanceof TrendConstant) {
             return RegArimaResultsProtos.VariableType.VAR_MEAN;
@@ -169,5 +185,5 @@ public class RegArimaEstimationProto {
         }
         return RegArimaResultsProtos.VariableType.VAR_UNSPECIFIED;
     }
-
+    
 }

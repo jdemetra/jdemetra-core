@@ -23,7 +23,6 @@ import jdplus.dstats.F;
 import demetra.stats.ProbabilityType;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.timeseries.regression.Variable;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.ModelDescription;
@@ -35,6 +34,7 @@ import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.IEasterVariable;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.sarima.SarimaModel;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -142,7 +142,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         IArimaMapping<SarimaModel> mapping = current.mapping();
 //      First case TD=0 or Just test EE
         ModelDescription test0 = createTestModel(context, null, null);
-        IRegArimaProcessor processor = RegArimaUtility.processor(true, precision);
+        IRegArimaComputer processor = RegArimaUtility.processor(true, precision);
         RegArimaEstimation regarima0 = processor.process(test0.regarima(), mapping);
         ConcentratedLikelihoodWithMissing ll0 = regarima0.getConcentratedLikelihood();
         int nhp = test0.getArimaSpec().freeParametersCount();

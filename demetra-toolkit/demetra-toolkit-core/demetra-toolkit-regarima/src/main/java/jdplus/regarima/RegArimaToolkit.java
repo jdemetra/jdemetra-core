@@ -21,8 +21,8 @@ import jdplus.arima.estimation.IArimaMapping;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.sarima.SarimaModel;
-import jdplus.regsarima.GlsSarimaProcessor;
-import jdplus.regsarima.RegSarimaProcessor;
+import jdplus.regsarima.GlsSarimaComputer;
+import jdplus.regsarima.RegSarimaComputer;
 
 /**
  *
@@ -33,11 +33,11 @@ import jdplus.regsarima.RegSarimaProcessor;
 public class RegArimaToolkit {
 
     public RegArimaEstimation<SarimaModel> robustEstimation(RegArimaModel<SarimaModel> regarima, IArimaMapping<SarimaModel> mapping){
-        return RegSarimaProcessor.PROCESSOR.process(regarima, mapping);
+        return RegSarimaComputer.PROCESSOR.process(regarima, mapping);
     }
 
     public RegArimaEstimation<SarimaModel> fastEstimation(RegArimaModel<SarimaModel> regarima, IArimaMapping<SarimaModel> mapping){
-        return GlsSarimaProcessor.PROCESSOR.process(regarima, mapping);
+        return GlsSarimaComputer.PROCESSOR.process(regarima, mapping);
     }
     
     public RegArimaEstimation<SarimaModel> concentratedLikelihood(RegArimaModel<SarimaModel> regarima){

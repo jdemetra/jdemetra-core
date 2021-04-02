@@ -20,7 +20,7 @@ import jdplus.regarima.tests.OneStepAheadForecastingTest;
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import java.util.Collections;
-import jdplus.regsarima.RegSarimaProcessor;
+import jdplus.regsarima.RegSarimaComputer;
 import jdplus.sarima.SarimaModel;
 import java.util.List;
 import jdplus.regarima.RegArimaModel;
@@ -61,7 +61,7 @@ public class OutOfSampleDiagnostics implements Diagnostics {
         if (nback < 5) {
             nback = 5;
         }
-        RegSarimaProcessor processor = RegSarimaProcessor.builder().build();
+        RegSarimaComputer processor = RegSarimaComputer.builder().build();
         OneStepAheadForecastingTest<SarimaModel> xtest = new OneStepAheadForecastingTest<>(processor, nback);
         xtest.test(regarima);
         if (m) {

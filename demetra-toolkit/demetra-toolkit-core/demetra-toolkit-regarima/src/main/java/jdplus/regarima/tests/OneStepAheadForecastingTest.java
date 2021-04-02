@@ -20,7 +20,6 @@ import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.dstats.F;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
@@ -29,6 +28,7 @@ import jdplus.stats.tests.SampleMean;
 import jdplus.stats.tests.StatisticalTest;
 import jdplus.stats.tests.TestType;
 import demetra.data.DoubleSeq;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -37,7 +37,7 @@ import demetra.data.DoubleSeq;
  */
 public class OneStepAheadForecastingTest<M extends IArimaModel> {
 
-    private final IRegArimaProcessor<M> processor;
+    private final IRegArimaComputer<M> processor;
     private final int nback;
     // results
     private DoubleSeq residuals;
@@ -45,12 +45,12 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
     private int inSampleSize;
     private boolean mean;
 
-    public OneStepAheadForecastingTest(final IRegArimaProcessor<M> processor, final int nback) {
+    public OneStepAheadForecastingTest(final IRegArimaComputer<M> processor, final int nback) {
         this.processor = processor;
         this.nback = nback;
     }
 
-    public IRegArimaProcessor<M> getProcessor() {
+    public IRegArimaComputer<M> getProcessor() {
         return processor;
     }
 

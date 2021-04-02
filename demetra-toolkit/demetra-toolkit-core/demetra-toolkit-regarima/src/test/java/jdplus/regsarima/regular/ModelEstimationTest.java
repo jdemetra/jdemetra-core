@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import jdplus.data.interpolation.AverageInterpolator;
 import jdplus.regarima.ami.ModellingUtility;
-import jdplus.regsarima.RegSarimaProcessor;
+import jdplus.regsarima.RegSarimaComputer;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -55,7 +55,7 @@ public class ModelEstimationTest {
                 .meanCorrection(EasterVariable.Correction.Theoretical)
                 .build();
         model.addVariable(Variable.variable("easter", easter));
-        ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.PROCESSOR);
+        ModelEstimation rslt = ModelEstimation.of(model, RegSarimaComputer.PROCESSOR);
         List<TsData> all = new ArrayList<>();
         all.add(rslt.getOriginalSeries());
         all.add(rslt.getTransformedSeries());
@@ -77,7 +77,7 @@ public class ModelEstimationTest {
                 .meanCorrection(EasterVariable.Correction.Theoretical)
                 .build();
         model.addVariable(Variable.variable("easter", easter));
-        ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.PROCESSOR);
+        ModelEstimation rslt = ModelEstimation.of(model, RegSarimaComputer.PROCESSOR);
         List<TsData> all = new ArrayList<>();
         all.add(rslt.getOriginalSeries());
         all.add(rslt.getTransformedSeries());
@@ -102,7 +102,7 @@ public class ModelEstimationTest {
                 .meanCorrection(EasterVariable.Correction.Theoretical)
                 .build();
         model.addVariable(Variable.variable("easter", easter));
-        ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.PROCESSOR);
+        ModelEstimation rslt = ModelEstimation.of(model, RegSarimaComputer.PROCESSOR);
         List<TsData> all = new ArrayList<>();
         all.add(rslt.getOriginalSeries());
         all.add(rslt.interpolatedSeries(true));
@@ -127,7 +127,7 @@ public class ModelEstimationTest {
                 .meanCorrection(EasterVariable.Correction.Theoretical)
                 .build();
         model.addVariable(Variable.variable("easter", easter));
-        ModelEstimation rslt = ModelEstimation.of(model, RegSarimaProcessor.PROCESSOR);
+        ModelEstimation rslt = ModelEstimation.of(model, RegSarimaComputer.PROCESSOR);
         List<TsData> all = new ArrayList<>();
         all.add(rslt.getOriginalSeries());
         all.add(rslt.interpolatedSeries(false));

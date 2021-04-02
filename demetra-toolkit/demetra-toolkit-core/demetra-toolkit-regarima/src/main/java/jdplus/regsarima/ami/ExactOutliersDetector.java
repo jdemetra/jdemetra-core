@@ -19,7 +19,6 @@ package jdplus.regsarima.ami;
 import jdplus.data.DataBlock;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.outlier.SingleOutlierDetector;
@@ -28,6 +27,7 @@ import jdplus.modelling.regression.IOutlierFactory;
 import java.util.ArrayList;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.regarima.ami.GenericOutliersDetection;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -49,7 +49,7 @@ public class ExactOutliersDetector implements GenericOutliersDetection<SarimaMod
     public static class Builder {
 
         private double cv;
-        private IRegArimaProcessor<SarimaModel> processor;
+        private IRegArimaComputer<SarimaModel> processor;
         private int maxOutliers = DEF_MAXOUTLIERS;
         private int maxRound = DEF_MAXROUND;
         private SingleOutlierDetector<SarimaModel> sod;
@@ -67,7 +67,7 @@ public class ExactOutliersDetector implements GenericOutliersDetection<SarimaMod
             return this;
         }
 
-        public Builder processor(IRegArimaProcessor<SarimaModel> processor) {
+        public Builder processor(IRegArimaComputer<SarimaModel> processor) {
             this.processor = processor;
             return this;
         }
@@ -91,13 +91,13 @@ public class ExactOutliersDetector implements GenericOutliersDetection<SarimaMod
     private RegArimaModel<SarimaModel> regarima;
     private final ArrayList<int[]> outliers = new ArrayList<>(); // Outliers : (position, type)
     private final SingleOutlierDetector sod;
-    private final IRegArimaProcessor<SarimaModel> processor;
+    private final IRegArimaComputer<SarimaModel> processor;
     private final double cv;
     private double[] tstats;
     private int round;
     private boolean changed;
 
-    private ExactOutliersDetector(final SingleOutlierDetector sod, final double cv, final IRegArimaProcessor<SarimaModel> processor,
+    private ExactOutliersDetector(final SingleOutlierDetector sod, final double cv, final IRegArimaComputer<SarimaModel> processor,
             final int maxOutliers, final int maxRound) {
         this.sod = sod;
         this.cv = cv;

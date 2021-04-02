@@ -5,6 +5,8 @@
  */
 package demetra.tramoseats.io.protobuf;
 
+import demetra.data.Parameter;
+import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import demetra.tramo.EasterSpec;
 
 /**
@@ -24,17 +26,21 @@ public class EasterProto {
     public TramoSeatsProtos.TramoSpec.EasterSpec convert(EasterSpec spec) {
         TramoSeatsProtos.TramoSpec.EasterSpec.Builder builder = TramoSeatsProtos.TramoSpec.EasterSpec.newBuilder();
         fill(spec, builder);
+        Parameter c = spec.getCoefficient();
+        if (c != null)
+            builder.setCoefficient(ToolkitProtosUtility.convert(c));
         return builder.build();
     }
 
     public EasterSpec convert(TramoSeatsProtos.TramoSpec.EasterSpec spec) {
-        return EasterSpec.builder()
+        EasterSpec.Builder builder=EasterSpec.builder()
                 .duration(spec.getDuration())
                 .type(TramoSeatsProtosUtility.convert(spec.getType()))
                 .test(spec.getTest())
-                .julian(spec.getJulian())
-                .build();
-
+                .julian(spec.getJulian());
+        if (spec.hasCoefficient())
+            builder.coefficient(ToolkitProtosUtility.convert(spec.getCoefficient()));
+        return builder.build();
     }
 
 }

@@ -19,6 +19,7 @@ package demetra.sa;
 import demetra.information.InformationSet;
 import demetra.processing.ProcDiagnostic;
 import demetra.processing.ProcResults;
+import demetra.timeseries.TsDomain;
 import java.util.List;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
@@ -74,7 +75,7 @@ public interface SaProcessingFactory<I extends SaSpecification, R extends ProcRe
      */
     I generateSpec(I spec, R estimation);
 
-    SaSpecification refreshSpec(I currentSpec, I domainSpec, EstimationPolicy policy);
+    SaSpecification refreshSpec(I currentSpec, I domainSpec, EstimationPolicyType policy, TsDomain frozen);
 
     List<SaDiagnosticsFactory<R>> diagnostics();
 

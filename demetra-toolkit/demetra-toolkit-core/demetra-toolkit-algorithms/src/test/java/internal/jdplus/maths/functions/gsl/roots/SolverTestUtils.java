@@ -21,7 +21,7 @@ import internal.jdplus.maths.functions.gsl.roots.GslRootException;
 import internal.jdplus.maths.functions.gsl.roots.FDFSolver;
 import internal.jdplus.maths.functions.gsl.roots.FSolver;
 import java.util.function.DoubleUnaryOperator;
-import internal.jdplus.maths.functions.gsl.integration.Utility;
+import internal.jdplus.maths.functions.gsl.Utility;
 import static org.junit.Assert.*;
 
 /**

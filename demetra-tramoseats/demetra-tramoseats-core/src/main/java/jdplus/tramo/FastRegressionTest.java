@@ -128,7 +128,7 @@ public class FastRegressionTest implements IRegressionModule {
         }
 
         if (changed) {
-            context.clearEstimation();
+            context.set(currentModel, null);
         }
 
         return changed ? ProcessingResult.Changed : ProcessingResult.Unchanged;

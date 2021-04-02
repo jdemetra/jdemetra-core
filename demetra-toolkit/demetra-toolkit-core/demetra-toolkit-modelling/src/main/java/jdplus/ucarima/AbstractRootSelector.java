@@ -80,7 +80,7 @@ public abstract class AbstractRootSelector implements IRootSelector {
 		return true;
 	    } else {
 		Complex[] rs =sel.toArray(new Complex[sel.size()]);
-		Complex[] rn = nsel.toArray(new Complex[sel.size()]);
+		Complex[] rn = nsel.toArray(new Complex[nsel.size()]);
 
 		ComplexUtility.lejaOrder(rs);
 		ComplexUtility.lejaOrder(rn);

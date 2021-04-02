@@ -5,6 +5,7 @@
  */
 package internal.jdplus.maths.functions.gsl.integration;
 
+import internal.jdplus.maths.functions.gsl.Utility;
 import java.util.function.DoubleUnaryOperator;
 
 /**

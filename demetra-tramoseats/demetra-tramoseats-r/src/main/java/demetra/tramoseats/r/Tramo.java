@@ -20,9 +20,12 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.math.matrices.MatrixType;
 import demetra.processing.ProcResults;
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
+import demetra.sa.EstimationPolicyType;
 import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TramoSpec;
+import demetra.tramo.TramoOutput;
 import demetra.tramoseats.io.protobuf.TramoProto;
 import demetra.tramoseats.io.protobuf.TramoSeatsProtos;
 import demetra.util.r.Dictionary;
@@ -32,6 +35,7 @@ import jdplus.math.matrices.Matrix;
 import jdplus.regarima.extractors.RegSarimaModelExtractor;
 import jdplus.regsarima.regular.Forecast;
 import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.tramo.TramoFactory;
 import jdplus.tramo.TramoKernel;
 
 /**
@@ -40,8 +44,10 @@ import jdplus.tramo.TramoKernel;
  */
 @lombok.experimental.UtilityClass
 public class Tramo {
+
     @lombok.Value
-    public static class Results implements ProcResults{
+    public static class Results implements ProcResults {
+
         private RegSarimaModel core;
 
         public byte[] buffer() {
@@ -65,46 +71,70 @@ public class Tramo {
             return RegSarimaModelExtractor.getMapping().getData(core, id, tclass);
         }
     }
-    
-    public Results process(TsData series, String defSpec){
-        TramoSpec spec=TramoSpec.fromString(defSpec);
-        TramoKernel tramo= TramoKernel.of(spec, null);
-        RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
-        return new Results(estimation);
-    }
-    
-    public Results process(TsData series, TramoSpec spec, Dictionary dic){
-        ModellingContext context=dic == null ? null : dic.toContext();
-        TramoKernel tramo= TramoKernel.of(spec, context);
+
+    public Results process(TsData series, String defSpec) {
+        TramoSpec spec = TramoSpec.fromString(defSpec);
+        TramoKernel tramo = TramoKernel.of(spec, null);
         RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
         return new Results(estimation);
     }
 
-    public MatrixType forecast(TsData series, String defSpec, int nf){
-        TramoSpec spec=TramoSpec.fromString(defSpec);
+    public Results process(TsData series, TramoSpec spec, Dictionary dic) {
+        ModellingContext context = dic == null ? null : dic.toContext();
+        TramoKernel tramo = TramoKernel.of(spec, context);
+        RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
+        return new Results(estimation);
+    }
+
+    public TramoSpec refreshSpec(TramoSpec currentSpec, TramoSpec domainSpec, TsDomain domain, String policy) {
+        return TramoFactory.INSTANCE.refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);
+    }
+
+    public MatrixType forecast(TsData series, String defSpec, int nf) {
+        TramoSpec spec = TramoSpec.fromString(defSpec);
         return forecast(series, spec, null, nf);
     }
-    
-    public MatrixType forecast(TsData series, TramoSpec spec, Dictionary dic, int nf){
-        ModellingContext context=dic == null ? null : dic.toContext();
-        TramoKernel kernel=TramoKernel.of(spec, context);
-        Forecast f=new Forecast(kernel, nf);
-        if (! f.process(series.cleanExtremities()))
-                return null;
-        Matrix R=Matrix.make(nf, 4);
+
+    public MatrixType forecast(TsData series, TramoSpec spec, Dictionary dic, int nf) {
+        ModellingContext context = dic == null ? null : dic.toContext();
+        TramoKernel kernel = TramoKernel.of(spec, context);
+        Forecast f = new Forecast(kernel, nf);
+        if (!f.process(series.cleanExtremities())) {
+            return null;
+        }
+        Matrix R = Matrix.make(nf, 4);
         R.column(0).copy(f.getForecasts());
         R.column(1).copy(f.getForecastsStdev());
         R.column(2).copy(f.getRawForecasts());
         R.column(3).copy(f.getRawForecastsStdev());
         return R;
     }
+
+
+    public TramoOutput fullProcess(TsData series, TramoSpec spec, Dictionary dic) {
+        ModellingContext context = dic == null ? null : dic.toContext();
+        TramoKernel tramo = TramoKernel.of(spec, context);
+        RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
+
+        return TramoOutput.builder()
+                .estimationSpec(spec)
+                .result(estimation)
+                .resultSpec(estimation == null ? null : TramoFactory.INSTANCE.generateSpec(spec, estimation.getDescription()))
+                .build();
+    }
     
+    public TramoOutput fullProcess(TsData series, String defSpec) {
+        TramoSpec spec = TramoSpec.fromString(defSpec);
+        return fullProcess(series, spec, null);
+     }
+    
+
     public byte[] toBuffer(TramoSpec spec) {
         return TramoProto.convert(spec).toByteArray();
     }
 
-    public TramoSpec of(byte[] buffer) {
-       try {
+    public TramoSpec specOf(byte[] buffer) {
+        try {
             TramoSeatsProtos.TramoSpec spec = TramoSeatsProtos.TramoSpec.parseFrom(buffer);
             return TramoProto.convert(spec);
         } catch (InvalidProtocolBufferException ex) {
@@ -112,4 +142,8 @@ public class Tramo {
         }
     }
     
+    public byte[] toBuffer(TramoOutput output) {
+        return TramoProto.convert(output).toByteArray();
+    }
+
 }

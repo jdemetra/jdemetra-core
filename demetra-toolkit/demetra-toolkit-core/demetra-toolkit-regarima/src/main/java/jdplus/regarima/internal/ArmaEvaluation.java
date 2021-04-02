@@ -52,9 +52,9 @@ class ArmaEvaluation<S extends IArimaModel> implements ISsqFunctionPoint,
         return fn.errors.apply(ll);
     }
 
-    public ConcentratedLikelihoodWithMissing getLikelihood() {
-        return ll;
-    }
+//    public ConcentratedLikelihoodWithMissing getLikelihood() {
+//        return ll;
+//    }
 
     @Override
     public DoubleSeq getParameters() {

@@ -46,7 +46,7 @@ public class KalmanFilter implements ArmaFilter {
 
     private double ldet = Double.NaN, h0, var;
 
-    private static final double EPS = 1e-12;
+    private static final double EPS = 1e-15;
 
     /**
      *

@@ -42,7 +42,6 @@ import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.Regression;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.ami.ModellingUtility;
@@ -53,6 +52,7 @@ import jdplus.timeseries.simplets.Transformations;
 import jdplus.timeseries.simplets.TsDataTransformation;
 import nbbrd.design.Development;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -651,7 +651,7 @@ public final class ModelDescription {
         }
     }
 
-    public RegArimaEstimation<SarimaModel> estimate(IRegArimaProcessor<SarimaModel> processor) {
+    public RegArimaEstimation<SarimaModel> estimate(IRegArimaComputer<SarimaModel> processor) {
 
         RegArimaModel<SarimaModel> model = regarima();
         RegArimaEstimation<SarimaModel> rslt;
@@ -675,7 +675,7 @@ public final class ModelDescription {
     }
     
     public void freeArimaParameters(){
-        arima=arima.resetParameters();
+        arima=arima.resetParameters(null);
     }
 
     public void setFreeParameters(DoubleSeq p) {

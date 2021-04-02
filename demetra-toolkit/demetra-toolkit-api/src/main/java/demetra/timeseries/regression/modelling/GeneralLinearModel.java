@@ -25,9 +25,9 @@ import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.Variable;
+import demetra.stats.TestResult;
 import java.util.List;
 import java.util.Map;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -39,6 +39,8 @@ public interface GeneralLinearModel<M> {
     Description<M> getDescription();
 
     Estimation getEstimation();
+    
+    Map<String, TestResult> getDiagnostics();
 
     Map<String, Object> getAdditionalResults();
 

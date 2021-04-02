@@ -18,7 +18,6 @@ package jdplus.x13.regarima;
 
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;
@@ -29,6 +28,7 @@ import java.util.List;
 import java.util.Collections;
 import demetra.data.DoubleSeq;
 import jdplus.regarima.RegArimaUtility;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -139,7 +139,7 @@ public class ArmaModule {
          * @param eps
          */
         RegArmaBic(final DoubleSeq data, final SarmaOrders spec, double eps) {
-            IRegArimaProcessor processor = RegArimaUtility.processor(true, eps);
+            IRegArimaComputer processor = RegArimaUtility.processor(true, eps);
             RegArimaModel<SarimaModel> model = RegArimaModel.<SarimaModel>builder()
                     .y(data)
                     .arima(SarimaModel.builder(spec).setDefault().build())

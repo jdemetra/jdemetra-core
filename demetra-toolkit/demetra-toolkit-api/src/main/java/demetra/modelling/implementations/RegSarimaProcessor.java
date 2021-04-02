@@ -16,45 +16,18 @@
  */
 package demetra.modelling.implementations;
 
-import demetra.arima.SarimaModel;
-import demetra.design.Algorithm;
+import demetra.processing.ProcessingLog;
+import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import nbbrd.design.Development;
-import java.util.List;
-import nbbrd.service.Mutability;
-import nbbrd.service.Quantifier;
-import nbbrd.service.ServiceDefinition;
 
 /**
  * TODO
+ *
  * @author palatej
  */
-@Development(status = Development.Status.Temporary)
-@lombok.experimental.UtilityClass
-public class RegSarimaProcessor {
+@Development(status = Development.Status.Alpha)
+public interface RegSarimaProcessor {
 
-    private final RegSarimaProcessorLoader.Computer ENGINE = new RegSarimaProcessorLoader.Computer();
-
-    public void setEngine(Computer algorithm) {
-        ENGINE.set(algorithm);
-    }
-
-    public Computer getEngine() {
-        return ENGINE.get();
-    }
-
-    /**
-     *
-     */
-    @Algorithm
-    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT, fallback = NoComputer.class)
-    public static interface Computer {
-        
-    }
-    
-    public static class NoComputer implements Computer{
-        
-         
-    }
-
+    GeneralLinearModel<SarimaSpec> process(TsData originalTs, ProcessingLog log);
 }

@@ -2113,19 +2113,19 @@ public final class TramoSeatsResultsProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+     * <code>.regarima.RegArimaModel preprocessing = 1;</code>
      * @return Whether the preprocessing field is set.
      */
     boolean hasPreprocessing();
     /**
-     * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+     * <code>.regarima.RegArimaModel preprocessing = 1;</code>
      * @return The preprocessing.
      */
-    demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation getPreprocessing();
+    demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel getPreprocessing();
     /**
-     * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+     * <code>.regarima.RegArimaModel preprocessing = 1;</code>
      */
-    demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimationOrBuilder getPreprocessingOrBuilder();
+    demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModelOrBuilder getPreprocessingOrBuilder();
 
     /**
      * <code>.tramoseats.SeatsResults decomposition = 2;</code>
@@ -2218,11 +2218,11 @@ public final class TramoSeatsResultsProtos {
               done = true;
               break;
             case 10: {
-              demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.Builder subBuilder = null;
+              demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.Builder subBuilder = null;
               if (preprocessing_ != null) {
                 subBuilder = preprocessing_.toBuilder();
               }
-              preprocessing_ = input.readMessage(demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.parser(), extensionRegistry);
+              preprocessing_ = input.readMessage(demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(preprocessing_);
                 preprocessing_ = subBuilder.buildPartial();
@@ -2302,9 +2302,9 @@ public final class TramoSeatsResultsProtos {
     }
 
     public static final int PREPROCESSING_FIELD_NUMBER = 1;
-    private demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation preprocessing_;
+    private demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel preprocessing_;
     /**
-     * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+     * <code>.regarima.RegArimaModel preprocessing = 1;</code>
      * @return Whether the preprocessing field is set.
      */
     @java.lang.Override
@@ -2312,18 +2312,18 @@ public final class TramoSeatsResultsProtos {
       return preprocessing_ != null;
     }
     /**
-     * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+     * <code>.regarima.RegArimaModel preprocessing = 1;</code>
      * @return The preprocessing.
      */
     @java.lang.Override
-    public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation getPreprocessing() {
-      return preprocessing_ == null ? demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.getDefaultInstance() : preprocessing_;
+    public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel getPreprocessing() {
+      return preprocessing_ == null ? demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.getDefaultInstance() : preprocessing_;
     }
     /**
-     * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+     * <code>.regarima.RegArimaModel preprocessing = 1;</code>
      */
     @java.lang.Override
-    public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimationOrBuilder getPreprocessingOrBuilder() {
+    public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModelOrBuilder getPreprocessingOrBuilder() {
       return getPreprocessing();
     }
 
@@ -2810,31 +2810,31 @@ public final class TramoSeatsResultsProtos {
         return this;
       }
 
-      private demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation preprocessing_;
+      private demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel preprocessing_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.Builder, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimationOrBuilder> preprocessingBuilder_;
+          demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.Builder, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModelOrBuilder> preprocessingBuilder_;
       /**
-       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+       * <code>.regarima.RegArimaModel preprocessing = 1;</code>
        * @return Whether the preprocessing field is set.
        */
       public boolean hasPreprocessing() {
         return preprocessingBuilder_ != null || preprocessing_ != null;
       }
       /**
-       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+       * <code>.regarima.RegArimaModel preprocessing = 1;</code>
        * @return The preprocessing.
        */
-      public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation getPreprocessing() {
+      public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel getPreprocessing() {
         if (preprocessingBuilder_ == null) {
-          return preprocessing_ == null ? demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.getDefaultInstance() : preprocessing_;
+          return preprocessing_ == null ? demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.getDefaultInstance() : preprocessing_;
         } else {
           return preprocessingBuilder_.getMessage();
         }
       }
       /**
-       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+       * <code>.regarima.RegArimaModel preprocessing = 1;</code>
        */
-      public Builder setPreprocessing(demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation value) {
+      public Builder setPreprocessing(demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel value) {
         if (preprocessingBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2848,10 +2848,10 @@ public final class TramoSeatsResultsProtos {
         return this;
       }
       /**
-       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+       * <code>.regarima.RegArimaModel preprocessing = 1;</code>
        */
       public Builder setPreprocessing(
-          demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.Builder builderForValue) {
+          demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.Builder builderForValue) {
         if (preprocessingBuilder_ == null) {
           preprocessing_ = builderForValue.build();
           onChanged();
@@ -2862,13 +2862,13 @@ public final class TramoSeatsResultsProtos {
         return this;
       }
       /**
-       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+       * <code>.regarima.RegArimaModel preprocessing = 1;</code>
        */
-      public Builder mergePreprocessing(demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation value) {
+      public Builder mergePreprocessing(demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel value) {
         if (preprocessingBuilder_ == null) {
           if (preprocessing_ != null) {
             preprocessing_ =
-              demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.newBuilder(preprocessing_).mergeFrom(value).buildPartial();
+              demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.newBuilder(preprocessing_).mergeFrom(value).buildPartial();
           } else {
             preprocessing_ = value;
           }
@@ -2880,7 +2880,7 @@ public final class TramoSeatsResultsProtos {
         return this;
       }
       /**
-       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+       * <code>.regarima.RegArimaModel preprocessing = 1;</code>
        */
       public Builder clearPreprocessing() {
         if (preprocessingBuilder_ == null) {
@@ -2894,33 +2894,33 @@ public final class TramoSeatsResultsProtos {
         return this;
       }
       /**
-       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+       * <code>.regarima.RegArimaModel preprocessing = 1;</code>
        */
-      public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.Builder getPreprocessingBuilder() {
+      public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.Builder getPreprocessingBuilder() {
         
         onChanged();
         return getPreprocessingFieldBuilder().getBuilder();
       }
       /**
-       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+       * <code>.regarima.RegArimaModel preprocessing = 1;</code>
        */
-      public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimationOrBuilder getPreprocessingOrBuilder() {
+      public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModelOrBuilder getPreprocessingOrBuilder() {
         if (preprocessingBuilder_ != null) {
           return preprocessingBuilder_.getMessageOrBuilder();
         } else {
           return preprocessing_ == null ?
-              demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.getDefaultInstance() : preprocessing_;
+              demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.getDefaultInstance() : preprocessing_;
         }
       }
       /**
-       * <code>.regarima.RegArimaEstimation preprocessing = 1;</code>
+       * <code>.regarima.RegArimaModel preprocessing = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.Builder, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimationOrBuilder> 
+          demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.Builder, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModelOrBuilder> 
           getPreprocessingFieldBuilder() {
         if (preprocessingBuilder_ == null) {
           preprocessingBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimation.Builder, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaEstimationOrBuilder>(
+              demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.Builder, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModelOrBuilder>(
                   getPreprocessing(),
                   getParentForChildren(),
                   isClean());
@@ -3338,6 +3338,3106 @@ public final class TramoSeatsResultsProtos {
 
   }
 
+  public interface TramoOutputOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:tramoseats.TramoOutput)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.regarima.RegArimaModel result = 1;</code>
+     * @return Whether the result field is set.
+     */
+    boolean hasResult();
+    /**
+     * <code>.regarima.RegArimaModel result = 1;</code>
+     * @return The result.
+     */
+    demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel getResult();
+    /**
+     * <code>.regarima.RegArimaModel result = 1;</code>
+     */
+    demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModelOrBuilder getResultOrBuilder();
+
+    /**
+     * <code>.tramoseats.TramoSpec estimation_spec = 2;</code>
+     * @return Whether the estimationSpec field is set.
+     */
+    boolean hasEstimationSpec();
+    /**
+     * <code>.tramoseats.TramoSpec estimation_spec = 2;</code>
+     * @return The estimationSpec.
+     */
+    demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec getEstimationSpec();
+    /**
+     * <code>.tramoseats.TramoSpec estimation_spec = 2;</code>
+     */
+    demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpecOrBuilder getEstimationSpecOrBuilder();
+
+    /**
+     * <code>.tramoseats.TramoSpec result_spec = 3;</code>
+     * @return Whether the resultSpec field is set.
+     */
+    boolean hasResultSpec();
+    /**
+     * <code>.tramoseats.TramoSpec result_spec = 3;</code>
+     * @return The resultSpec.
+     */
+    demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec getResultSpec();
+    /**
+     * <code>.tramoseats.TramoSpec result_spec = 3;</code>
+     */
+    demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpecOrBuilder getResultSpecOrBuilder();
+
+    /**
+     * <code>.jd3.ProcessingLogs log = 4;</code>
+     * @return Whether the log field is set.
+     */
+    boolean hasLog();
+    /**
+     * <code>.jd3.ProcessingLogs log = 4;</code>
+     * @return The log.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs getLog();
+    /**
+     * <code>.jd3.ProcessingLogs log = 4;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogsOrBuilder getLogOrBuilder();
+
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+    int getDetailsCount();
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+    boolean containsDetails(
+        java.lang.String key);
+    /**
+     * Use {@link #getDetailsMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>
+    getDetails();
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+    java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>
+    getDetailsMap();
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+
+    demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail getDetailsOrDefault(
+        java.lang.String key,
+        demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail defaultValue);
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+
+    demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail getDetailsOrThrow(
+        java.lang.String key);
+  }
+  /**
+   * Protobuf type {@code tramoseats.TramoOutput}
+   */
+  public static final class TramoOutput extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:tramoseats.TramoOutput)
+      TramoOutputOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use TramoOutput.newBuilder() to construct.
+    private TramoOutput(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private TramoOutput() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new TramoOutput();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private TramoOutput(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.Builder subBuilder = null;
+              if (result_ != null) {
+                subBuilder = result_.toBuilder();
+              }
+              result_ = input.readMessage(demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(result_);
+                result_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 18: {
+              demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.Builder subBuilder = null;
+              if (estimationSpec_ != null) {
+                subBuilder = estimationSpec_.toBuilder();
+              }
+              estimationSpec_ = input.readMessage(demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(estimationSpec_);
+                estimationSpec_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 26: {
+              demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.Builder subBuilder = null;
+              if (resultSpec_ != null) {
+                subBuilder = resultSpec_.toBuilder();
+              }
+              resultSpec_ = input.readMessage(demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(resultSpec_);
+                resultSpec_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 34: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.Builder subBuilder = null;
+              if (log_ != null) {
+                subBuilder = log_.toBuilder();
+              }
+              log_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(log_);
+                log_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 42: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                details_ = com.google.protobuf.MapField.newMapField(
+                    DetailsDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000001;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>
+              details__ = input.readMessage(
+                  DetailsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              details_.getMutableMap().put(
+                  details__.getKey(), details__.getValue());
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.internal_static_tramoseats_TramoOutput_descriptor;
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 5:
+          return internalGetDetails();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.internal_static_tramoseats_TramoOutput_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput.class, demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput.Builder.class);
+    }
+
+    public static final int RESULT_FIELD_NUMBER = 1;
+    private demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel result_;
+    /**
+     * <code>.regarima.RegArimaModel result = 1;</code>
+     * @return Whether the result field is set.
+     */
+    @java.lang.Override
+    public boolean hasResult() {
+      return result_ != null;
+    }
+    /**
+     * <code>.regarima.RegArimaModel result = 1;</code>
+     * @return The result.
+     */
+    @java.lang.Override
+    public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel getResult() {
+      return result_ == null ? demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.getDefaultInstance() : result_;
+    }
+    /**
+     * <code>.regarima.RegArimaModel result = 1;</code>
+     */
+    @java.lang.Override
+    public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModelOrBuilder getResultOrBuilder() {
+      return getResult();
+    }
+
+    public static final int ESTIMATION_SPEC_FIELD_NUMBER = 2;
+    private demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec estimationSpec_;
+    /**
+     * <code>.tramoseats.TramoSpec estimation_spec = 2;</code>
+     * @return Whether the estimationSpec field is set.
+     */
+    @java.lang.Override
+    public boolean hasEstimationSpec() {
+      return estimationSpec_ != null;
+    }
+    /**
+     * <code>.tramoseats.TramoSpec estimation_spec = 2;</code>
+     * @return The estimationSpec.
+     */
+    @java.lang.Override
+    public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec getEstimationSpec() {
+      return estimationSpec_ == null ? demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.getDefaultInstance() : estimationSpec_;
+    }
+    /**
+     * <code>.tramoseats.TramoSpec estimation_spec = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpecOrBuilder getEstimationSpecOrBuilder() {
+      return getEstimationSpec();
+    }
+
+    public static final int RESULT_SPEC_FIELD_NUMBER = 3;
+    private demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec resultSpec_;
+    /**
+     * <code>.tramoseats.TramoSpec result_spec = 3;</code>
+     * @return Whether the resultSpec field is set.
+     */
+    @java.lang.Override
+    public boolean hasResultSpec() {
+      return resultSpec_ != null;
+    }
+    /**
+     * <code>.tramoseats.TramoSpec result_spec = 3;</code>
+     * @return The resultSpec.
+     */
+    @java.lang.Override
+    public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec getResultSpec() {
+      return resultSpec_ == null ? demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.getDefaultInstance() : resultSpec_;
+    }
+    /**
+     * <code>.tramoseats.TramoSpec result_spec = 3;</code>
+     */
+    @java.lang.Override
+    public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpecOrBuilder getResultSpecOrBuilder() {
+      return getResultSpec();
+    }
+
+    public static final int LOG_FIELD_NUMBER = 4;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs log_;
+    /**
+     * <code>.jd3.ProcessingLogs log = 4;</code>
+     * @return Whether the log field is set.
+     */
+    @java.lang.Override
+    public boolean hasLog() {
+      return log_ != null;
+    }
+    /**
+     * <code>.jd3.ProcessingLogs log = 4;</code>
+     * @return The log.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs getLog() {
+      return log_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.getDefaultInstance() : log_;
+    }
+    /**
+     * <code>.jd3.ProcessingLogs log = 4;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogsOrBuilder getLogOrBuilder() {
+      return getLog();
+    }
+
+    public static final int DETAILS_FIELD_NUMBER = 5;
+    private static final class DetailsDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>newDefaultInstance(
+                  demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.internal_static_tramoseats_TramoOutput_DetailsEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                  demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail.getDefaultInstance());
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> details_;
+    private com.google.protobuf.MapField<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>
+    internalGetDetails() {
+      if (details_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            DetailsDefaultEntryHolder.defaultEntry);
+      }
+      return details_;
+    }
+
+    public int getDetailsCount() {
+      return internalGetDetails().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsDetails(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      return internalGetDetails().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getDetailsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> getDetails() {
+      return getDetailsMap();
+    }
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> getDetailsMap() {
+      return internalGetDetails().getMap();
+    }
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+    @java.lang.Override
+
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail getDetailsOrDefault(
+        java.lang.String key,
+        demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> map =
+          internalGetDetails().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+    @java.lang.Override
+
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail getDetailsOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> map =
+          internalGetDetails().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (result_ != null) {
+        output.writeMessage(1, getResult());
+      }
+      if (estimationSpec_ != null) {
+        output.writeMessage(2, getEstimationSpec());
+      }
+      if (resultSpec_ != null) {
+        output.writeMessage(3, getResultSpec());
+      }
+      if (log_ != null) {
+        output.writeMessage(4, getLog());
+      }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetDetails(),
+          DetailsDefaultEntryHolder.defaultEntry,
+          5);
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (result_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getResult());
+      }
+      if (estimationSpec_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getEstimationSpec());
+      }
+      if (resultSpec_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getResultSpec());
+      }
+      if (log_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, getLog());
+      }
+      for (java.util.Map.Entry<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> entry
+           : internalGetDetails().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>
+        details__ = DetailsDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(5, details__);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput)) {
+        return super.equals(obj);
+      }
+      demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput other = (demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput) obj;
+
+      if (hasResult() != other.hasResult()) return false;
+      if (hasResult()) {
+        if (!getResult()
+            .equals(other.getResult())) return false;
+      }
+      if (hasEstimationSpec() != other.hasEstimationSpec()) return false;
+      if (hasEstimationSpec()) {
+        if (!getEstimationSpec()
+            .equals(other.getEstimationSpec())) return false;
+      }
+      if (hasResultSpec() != other.hasResultSpec()) return false;
+      if (hasResultSpec()) {
+        if (!getResultSpec()
+            .equals(other.getResultSpec())) return false;
+      }
+      if (hasLog() != other.hasLog()) return false;
+      if (hasLog()) {
+        if (!getLog()
+            .equals(other.getLog())) return false;
+      }
+      if (!internalGetDetails().equals(
+          other.internalGetDetails())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasResult()) {
+        hash = (37 * hash) + RESULT_FIELD_NUMBER;
+        hash = (53 * hash) + getResult().hashCode();
+      }
+      if (hasEstimationSpec()) {
+        hash = (37 * hash) + ESTIMATION_SPEC_FIELD_NUMBER;
+        hash = (53 * hash) + getEstimationSpec().hashCode();
+      }
+      if (hasResultSpec()) {
+        hash = (37 * hash) + RESULT_SPEC_FIELD_NUMBER;
+        hash = (53 * hash) + getResultSpec().hashCode();
+      }
+      if (hasLog()) {
+        hash = (37 * hash) + LOG_FIELD_NUMBER;
+        hash = (53 * hash) + getLog().hashCode();
+      }
+      if (!internalGetDetails().getMap().isEmpty()) {
+        hash = (37 * hash) + DETAILS_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetDetails().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code tramoseats.TramoOutput}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:tramoseats.TramoOutput)
+        demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutputOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.internal_static_tramoseats_TramoOutput_descriptor;
+      }
+
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 5:
+            return internalGetDetails();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 5:
+            return internalGetMutableDetails();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.internal_static_tramoseats_TramoOutput_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput.class, demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput.Builder.class);
+      }
+
+      // Construct using demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (resultBuilder_ == null) {
+          result_ = null;
+        } else {
+          result_ = null;
+          resultBuilder_ = null;
+        }
+        if (estimationSpecBuilder_ == null) {
+          estimationSpec_ = null;
+        } else {
+          estimationSpec_ = null;
+          estimationSpecBuilder_ = null;
+        }
+        if (resultSpecBuilder_ == null) {
+          resultSpec_ = null;
+        } else {
+          resultSpec_ = null;
+          resultSpecBuilder_ = null;
+        }
+        if (logBuilder_ == null) {
+          log_ = null;
+        } else {
+          log_ = null;
+          logBuilder_ = null;
+        }
+        internalGetMutableDetails().clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.internal_static_tramoseats_TramoOutput_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput getDefaultInstanceForType() {
+        return demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput build() {
+        demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput buildPartial() {
+        demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput result = new demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput(this);
+        int from_bitField0_ = bitField0_;
+        if (resultBuilder_ == null) {
+          result.result_ = result_;
+        } else {
+          result.result_ = resultBuilder_.build();
+        }
+        if (estimationSpecBuilder_ == null) {
+          result.estimationSpec_ = estimationSpec_;
+        } else {
+          result.estimationSpec_ = estimationSpecBuilder_.build();
+        }
+        if (resultSpecBuilder_ == null) {
+          result.resultSpec_ = resultSpec_;
+        } else {
+          result.resultSpec_ = resultSpecBuilder_.build();
+        }
+        if (logBuilder_ == null) {
+          result.log_ = log_;
+        } else {
+          result.log_ = logBuilder_.build();
+        }
+        result.details_ = internalGetDetails();
+        result.details_.makeImmutable();
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput) {
+          return mergeFrom((demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput other) {
+        if (other == demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput.getDefaultInstance()) return this;
+        if (other.hasResult()) {
+          mergeResult(other.getResult());
+        }
+        if (other.hasEstimationSpec()) {
+          mergeEstimationSpec(other.getEstimationSpec());
+        }
+        if (other.hasResultSpec()) {
+          mergeResultSpec(other.getResultSpec());
+        }
+        if (other.hasLog()) {
+          mergeLog(other.getLog());
+        }
+        internalGetMutableDetails().mergeFrom(
+            other.internalGetDetails());
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel result_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.Builder, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModelOrBuilder> resultBuilder_;
+      /**
+       * <code>.regarima.RegArimaModel result = 1;</code>
+       * @return Whether the result field is set.
+       */
+      public boolean hasResult() {
+        return resultBuilder_ != null || result_ != null;
+      }
+      /**
+       * <code>.regarima.RegArimaModel result = 1;</code>
+       * @return The result.
+       */
+      public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel getResult() {
+        if (resultBuilder_ == null) {
+          return result_ == null ? demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.getDefaultInstance() : result_;
+        } else {
+          return resultBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.regarima.RegArimaModel result = 1;</code>
+       */
+      public Builder setResult(demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel value) {
+        if (resultBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          result_ = value;
+          onChanged();
+        } else {
+          resultBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.regarima.RegArimaModel result = 1;</code>
+       */
+      public Builder setResult(
+          demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.Builder builderForValue) {
+        if (resultBuilder_ == null) {
+          result_ = builderForValue.build();
+          onChanged();
+        } else {
+          resultBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.regarima.RegArimaModel result = 1;</code>
+       */
+      public Builder mergeResult(demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel value) {
+        if (resultBuilder_ == null) {
+          if (result_ != null) {
+            result_ =
+              demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.newBuilder(result_).mergeFrom(value).buildPartial();
+          } else {
+            result_ = value;
+          }
+          onChanged();
+        } else {
+          resultBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.regarima.RegArimaModel result = 1;</code>
+       */
+      public Builder clearResult() {
+        if (resultBuilder_ == null) {
+          result_ = null;
+          onChanged();
+        } else {
+          result_ = null;
+          resultBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.regarima.RegArimaModel result = 1;</code>
+       */
+      public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.Builder getResultBuilder() {
+        
+        onChanged();
+        return getResultFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.regarima.RegArimaModel result = 1;</code>
+       */
+      public demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModelOrBuilder getResultOrBuilder() {
+        if (resultBuilder_ != null) {
+          return resultBuilder_.getMessageOrBuilder();
+        } else {
+          return result_ == null ?
+              demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.getDefaultInstance() : result_;
+        }
+      }
+      /**
+       * <code>.regarima.RegArimaModel result = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.Builder, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModelOrBuilder> 
+          getResultFieldBuilder() {
+        if (resultBuilder_ == null) {
+          resultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModel.Builder, demetra.regarima.io.protobuf.RegArimaResultsProtos.RegArimaModelOrBuilder>(
+                  getResult(),
+                  getParentForChildren(),
+                  isClean());
+          result_ = null;
+        }
+        return resultBuilder_;
+      }
+
+      private demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec estimationSpec_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.Builder, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpecOrBuilder> estimationSpecBuilder_;
+      /**
+       * <code>.tramoseats.TramoSpec estimation_spec = 2;</code>
+       * @return Whether the estimationSpec field is set.
+       */
+      public boolean hasEstimationSpec() {
+        return estimationSpecBuilder_ != null || estimationSpec_ != null;
+      }
+      /**
+       * <code>.tramoseats.TramoSpec estimation_spec = 2;</code>
+       * @return The estimationSpec.
+       */
+      public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec getEstimationSpec() {
+        if (estimationSpecBuilder_ == null) {
+          return estimationSpec_ == null ? demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.getDefaultInstance() : estimationSpec_;
+        } else {
+          return estimationSpecBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.tramoseats.TramoSpec estimation_spec = 2;</code>
+       */
+      public Builder setEstimationSpec(demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec value) {
+        if (estimationSpecBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          estimationSpec_ = value;
+          onChanged();
+        } else {
+          estimationSpecBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.TramoSpec estimation_spec = 2;</code>
+       */
+      public Builder setEstimationSpec(
+          demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.Builder builderForValue) {
+        if (estimationSpecBuilder_ == null) {
+          estimationSpec_ = builderForValue.build();
+          onChanged();
+        } else {
+          estimationSpecBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.TramoSpec estimation_spec = 2;</code>
+       */
+      public Builder mergeEstimationSpec(demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec value) {
+        if (estimationSpecBuilder_ == null) {
+          if (estimationSpec_ != null) {
+            estimationSpec_ =
+              demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.newBuilder(estimationSpec_).mergeFrom(value).buildPartial();
+          } else {
+            estimationSpec_ = value;
+          }
+          onChanged();
+        } else {
+          estimationSpecBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.TramoSpec estimation_spec = 2;</code>
+       */
+      public Builder clearEstimationSpec() {
+        if (estimationSpecBuilder_ == null) {
+          estimationSpec_ = null;
+          onChanged();
+        } else {
+          estimationSpec_ = null;
+          estimationSpecBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.TramoSpec estimation_spec = 2;</code>
+       */
+      public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.Builder getEstimationSpecBuilder() {
+        
+        onChanged();
+        return getEstimationSpecFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.tramoseats.TramoSpec estimation_spec = 2;</code>
+       */
+      public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpecOrBuilder getEstimationSpecOrBuilder() {
+        if (estimationSpecBuilder_ != null) {
+          return estimationSpecBuilder_.getMessageOrBuilder();
+        } else {
+          return estimationSpec_ == null ?
+              demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.getDefaultInstance() : estimationSpec_;
+        }
+      }
+      /**
+       * <code>.tramoseats.TramoSpec estimation_spec = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.Builder, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpecOrBuilder> 
+          getEstimationSpecFieldBuilder() {
+        if (estimationSpecBuilder_ == null) {
+          estimationSpecBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.Builder, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpecOrBuilder>(
+                  getEstimationSpec(),
+                  getParentForChildren(),
+                  isClean());
+          estimationSpec_ = null;
+        }
+        return estimationSpecBuilder_;
+      }
+
+      private demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec resultSpec_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.Builder, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpecOrBuilder> resultSpecBuilder_;
+      /**
+       * <code>.tramoseats.TramoSpec result_spec = 3;</code>
+       * @return Whether the resultSpec field is set.
+       */
+      public boolean hasResultSpec() {
+        return resultSpecBuilder_ != null || resultSpec_ != null;
+      }
+      /**
+       * <code>.tramoseats.TramoSpec result_spec = 3;</code>
+       * @return The resultSpec.
+       */
+      public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec getResultSpec() {
+        if (resultSpecBuilder_ == null) {
+          return resultSpec_ == null ? demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.getDefaultInstance() : resultSpec_;
+        } else {
+          return resultSpecBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.tramoseats.TramoSpec result_spec = 3;</code>
+       */
+      public Builder setResultSpec(demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec value) {
+        if (resultSpecBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          resultSpec_ = value;
+          onChanged();
+        } else {
+          resultSpecBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.TramoSpec result_spec = 3;</code>
+       */
+      public Builder setResultSpec(
+          demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.Builder builderForValue) {
+        if (resultSpecBuilder_ == null) {
+          resultSpec_ = builderForValue.build();
+          onChanged();
+        } else {
+          resultSpecBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.TramoSpec result_spec = 3;</code>
+       */
+      public Builder mergeResultSpec(demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec value) {
+        if (resultSpecBuilder_ == null) {
+          if (resultSpec_ != null) {
+            resultSpec_ =
+              demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.newBuilder(resultSpec_).mergeFrom(value).buildPartial();
+          } else {
+            resultSpec_ = value;
+          }
+          onChanged();
+        } else {
+          resultSpecBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.TramoSpec result_spec = 3;</code>
+       */
+      public Builder clearResultSpec() {
+        if (resultSpecBuilder_ == null) {
+          resultSpec_ = null;
+          onChanged();
+        } else {
+          resultSpec_ = null;
+          resultSpecBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.TramoSpec result_spec = 3;</code>
+       */
+      public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.Builder getResultSpecBuilder() {
+        
+        onChanged();
+        return getResultSpecFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.tramoseats.TramoSpec result_spec = 3;</code>
+       */
+      public demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpecOrBuilder getResultSpecOrBuilder() {
+        if (resultSpecBuilder_ != null) {
+          return resultSpecBuilder_.getMessageOrBuilder();
+        } else {
+          return resultSpec_ == null ?
+              demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.getDefaultInstance() : resultSpec_;
+        }
+      }
+      /**
+       * <code>.tramoseats.TramoSpec result_spec = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.Builder, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpecOrBuilder> 
+          getResultSpecFieldBuilder() {
+        if (resultSpecBuilder_ == null) {
+          resultSpecBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpec.Builder, demetra.tramoseats.io.protobuf.TramoSeatsProtos.TramoSpecOrBuilder>(
+                  getResultSpec(),
+                  getParentForChildren(),
+                  isClean());
+          resultSpec_ = null;
+        }
+        return resultSpecBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs log_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogsOrBuilder> logBuilder_;
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       * @return Whether the log field is set.
+       */
+      public boolean hasLog() {
+        return logBuilder_ != null || log_ != null;
+      }
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       * @return The log.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs getLog() {
+        if (logBuilder_ == null) {
+          return log_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.getDefaultInstance() : log_;
+        } else {
+          return logBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       */
+      public Builder setLog(demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs value) {
+        if (logBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          log_ = value;
+          onChanged();
+        } else {
+          logBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       */
+      public Builder setLog(
+          demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.Builder builderForValue) {
+        if (logBuilder_ == null) {
+          log_ = builderForValue.build();
+          onChanged();
+        } else {
+          logBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       */
+      public Builder mergeLog(demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs value) {
+        if (logBuilder_ == null) {
+          if (log_ != null) {
+            log_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.newBuilder(log_).mergeFrom(value).buildPartial();
+          } else {
+            log_ = value;
+          }
+          onChanged();
+        } else {
+          logBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       */
+      public Builder clearLog() {
+        if (logBuilder_ == null) {
+          log_ = null;
+          onChanged();
+        } else {
+          log_ = null;
+          logBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.Builder getLogBuilder() {
+        
+        onChanged();
+        return getLogFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogsOrBuilder getLogOrBuilder() {
+        if (logBuilder_ != null) {
+          return logBuilder_.getMessageOrBuilder();
+        } else {
+          return log_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.getDefaultInstance() : log_;
+        }
+      }
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogsOrBuilder> 
+          getLogFieldBuilder() {
+        if (logBuilder_ == null) {
+          logBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogsOrBuilder>(
+                  getLog(),
+                  getParentForChildren(),
+                  isClean());
+          log_ = null;
+        }
+        return logBuilder_;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> details_;
+      private com.google.protobuf.MapField<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>
+      internalGetDetails() {
+        if (details_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              DetailsDefaultEntryHolder.defaultEntry);
+        }
+        return details_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>
+      internalGetMutableDetails() {
+        onChanged();;
+        if (details_ == null) {
+          details_ = com.google.protobuf.MapField.newMapField(
+              DetailsDefaultEntryHolder.defaultEntry);
+        }
+        if (!details_.isMutable()) {
+          details_ = details_.copy();
+        }
+        return details_;
+      }
+
+      public int getDetailsCount() {
+        return internalGetDetails().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsDetails(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        return internalGetDetails().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getDetailsMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> getDetails() {
+        return getDetailsMap();
+      }
+      /**
+       * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> getDetailsMap() {
+        return internalGetDetails().getMap();
+      }
+      /**
+       * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+       */
+      @java.lang.Override
+
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail getDetailsOrDefault(
+          java.lang.String key,
+          demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail defaultValue) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> map =
+            internalGetDetails().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+       */
+      @java.lang.Override
+
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail getDetailsOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> map =
+            internalGetDetails().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearDetails() {
+        internalGetMutableDetails().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+       */
+
+      public Builder removeDetails(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableDetails().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>
+      getMutableDetails() {
+        return internalGetMutableDetails().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+       */
+      public Builder putDetails(
+          java.lang.String key,
+          demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail value) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (value == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableDetails().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+       */
+
+      public Builder putAllDetails(
+          java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> values) {
+        internalGetMutableDetails().getMutableMap()
+            .putAll(values);
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:tramoseats.TramoOutput)
+    }
+
+    // @@protoc_insertion_point(class_scope:tramoseats.TramoOutput)
+    private static final demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput();
+    }
+
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<TramoOutput>
+        PARSER = new com.google.protobuf.AbstractParser<TramoOutput>() {
+      @java.lang.Override
+      public TramoOutput parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new TramoOutput(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<TramoOutput> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<TramoOutput> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoOutput getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface TramoSeatsOutputOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:tramoseats.TramoSeatsOutput)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.tramoseats.TramoSeatsResults result = 1;</code>
+     * @return Whether the result field is set.
+     */
+    boolean hasResult();
+    /**
+     * <code>.tramoseats.TramoSeatsResults result = 1;</code>
+     * @return The result.
+     */
+    demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults getResult();
+    /**
+     * <code>.tramoseats.TramoSeatsResults result = 1;</code>
+     */
+    demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResultsOrBuilder getResultOrBuilder();
+
+    /**
+     * <code>.tramoseats.Spec estimation_spec = 2;</code>
+     * @return Whether the estimationSpec field is set.
+     */
+    boolean hasEstimationSpec();
+    /**
+     * <code>.tramoseats.Spec estimation_spec = 2;</code>
+     * @return The estimationSpec.
+     */
+    demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec getEstimationSpec();
+    /**
+     * <code>.tramoseats.Spec estimation_spec = 2;</code>
+     */
+    demetra.tramoseats.io.protobuf.TramoSeatsProtos.SpecOrBuilder getEstimationSpecOrBuilder();
+
+    /**
+     * <code>.tramoseats.Spec result_spec = 3;</code>
+     * @return Whether the resultSpec field is set.
+     */
+    boolean hasResultSpec();
+    /**
+     * <code>.tramoseats.Spec result_spec = 3;</code>
+     * @return The resultSpec.
+     */
+    demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec getResultSpec();
+    /**
+     * <code>.tramoseats.Spec result_spec = 3;</code>
+     */
+    demetra.tramoseats.io.protobuf.TramoSeatsProtos.SpecOrBuilder getResultSpecOrBuilder();
+
+    /**
+     * <code>.jd3.ProcessingLogs log = 4;</code>
+     * @return Whether the log field is set.
+     */
+    boolean hasLog();
+    /**
+     * <code>.jd3.ProcessingLogs log = 4;</code>
+     * @return The log.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs getLog();
+    /**
+     * <code>.jd3.ProcessingLogs log = 4;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogsOrBuilder getLogOrBuilder();
+
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+    int getDetailsCount();
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+    boolean containsDetails(
+        java.lang.String key);
+    /**
+     * Use {@link #getDetailsMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>
+    getDetails();
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+    java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>
+    getDetailsMap();
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+
+    demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail getDetailsOrDefault(
+        java.lang.String key,
+        demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail defaultValue);
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+
+    demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail getDetailsOrThrow(
+        java.lang.String key);
+  }
+  /**
+   * Protobuf type {@code tramoseats.TramoSeatsOutput}
+   */
+  public static final class TramoSeatsOutput extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:tramoseats.TramoSeatsOutput)
+      TramoSeatsOutputOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use TramoSeatsOutput.newBuilder() to construct.
+    private TramoSeatsOutput(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private TramoSeatsOutput() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new TramoSeatsOutput();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private TramoSeatsOutput(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults.Builder subBuilder = null;
+              if (result_ != null) {
+                subBuilder = result_.toBuilder();
+              }
+              result_ = input.readMessage(demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(result_);
+                result_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 18: {
+              demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.Builder subBuilder = null;
+              if (estimationSpec_ != null) {
+                subBuilder = estimationSpec_.toBuilder();
+              }
+              estimationSpec_ = input.readMessage(demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(estimationSpec_);
+                estimationSpec_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 26: {
+              demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.Builder subBuilder = null;
+              if (resultSpec_ != null) {
+                subBuilder = resultSpec_.toBuilder();
+              }
+              resultSpec_ = input.readMessage(demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(resultSpec_);
+                resultSpec_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 34: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.Builder subBuilder = null;
+              if (log_ != null) {
+                subBuilder = log_.toBuilder();
+              }
+              log_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(log_);
+                log_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 42: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                details_ = com.google.protobuf.MapField.newMapField(
+                    DetailsDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000001;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>
+              details__ = input.readMessage(
+                  DetailsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              details_.getMutableMap().put(
+                  details__.getKey(), details__.getValue());
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.internal_static_tramoseats_TramoSeatsOutput_descriptor;
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 5:
+          return internalGetDetails();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.internal_static_tramoseats_TramoSeatsOutput_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput.class, demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput.Builder.class);
+    }
+
+    public static final int RESULT_FIELD_NUMBER = 1;
+    private demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults result_;
+    /**
+     * <code>.tramoseats.TramoSeatsResults result = 1;</code>
+     * @return Whether the result field is set.
+     */
+    @java.lang.Override
+    public boolean hasResult() {
+      return result_ != null;
+    }
+    /**
+     * <code>.tramoseats.TramoSeatsResults result = 1;</code>
+     * @return The result.
+     */
+    @java.lang.Override
+    public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults getResult() {
+      return result_ == null ? demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults.getDefaultInstance() : result_;
+    }
+    /**
+     * <code>.tramoseats.TramoSeatsResults result = 1;</code>
+     */
+    @java.lang.Override
+    public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResultsOrBuilder getResultOrBuilder() {
+      return getResult();
+    }
+
+    public static final int ESTIMATION_SPEC_FIELD_NUMBER = 2;
+    private demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec estimationSpec_;
+    /**
+     * <code>.tramoseats.Spec estimation_spec = 2;</code>
+     * @return Whether the estimationSpec field is set.
+     */
+    @java.lang.Override
+    public boolean hasEstimationSpec() {
+      return estimationSpec_ != null;
+    }
+    /**
+     * <code>.tramoseats.Spec estimation_spec = 2;</code>
+     * @return The estimationSpec.
+     */
+    @java.lang.Override
+    public demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec getEstimationSpec() {
+      return estimationSpec_ == null ? demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.getDefaultInstance() : estimationSpec_;
+    }
+    /**
+     * <code>.tramoseats.Spec estimation_spec = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.tramoseats.io.protobuf.TramoSeatsProtos.SpecOrBuilder getEstimationSpecOrBuilder() {
+      return getEstimationSpec();
+    }
+
+    public static final int RESULT_SPEC_FIELD_NUMBER = 3;
+    private demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec resultSpec_;
+    /**
+     * <code>.tramoseats.Spec result_spec = 3;</code>
+     * @return Whether the resultSpec field is set.
+     */
+    @java.lang.Override
+    public boolean hasResultSpec() {
+      return resultSpec_ != null;
+    }
+    /**
+     * <code>.tramoseats.Spec result_spec = 3;</code>
+     * @return The resultSpec.
+     */
+    @java.lang.Override
+    public demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec getResultSpec() {
+      return resultSpec_ == null ? demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.getDefaultInstance() : resultSpec_;
+    }
+    /**
+     * <code>.tramoseats.Spec result_spec = 3;</code>
+     */
+    @java.lang.Override
+    public demetra.tramoseats.io.protobuf.TramoSeatsProtos.SpecOrBuilder getResultSpecOrBuilder() {
+      return getResultSpec();
+    }
+
+    public static final int LOG_FIELD_NUMBER = 4;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs log_;
+    /**
+     * <code>.jd3.ProcessingLogs log = 4;</code>
+     * @return Whether the log field is set.
+     */
+    @java.lang.Override
+    public boolean hasLog() {
+      return log_ != null;
+    }
+    /**
+     * <code>.jd3.ProcessingLogs log = 4;</code>
+     * @return The log.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs getLog() {
+      return log_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.getDefaultInstance() : log_;
+    }
+    /**
+     * <code>.jd3.ProcessingLogs log = 4;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogsOrBuilder getLogOrBuilder() {
+      return getLog();
+    }
+
+    public static final int DETAILS_FIELD_NUMBER = 5;
+    private static final class DetailsDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>newDefaultInstance(
+                  demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.internal_static_tramoseats_TramoSeatsOutput_DetailsEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                  demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail.getDefaultInstance());
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> details_;
+    private com.google.protobuf.MapField<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>
+    internalGetDetails() {
+      if (details_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            DetailsDefaultEntryHolder.defaultEntry);
+      }
+      return details_;
+    }
+
+    public int getDetailsCount() {
+      return internalGetDetails().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsDetails(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      return internalGetDetails().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getDetailsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> getDetails() {
+      return getDetailsMap();
+    }
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> getDetailsMap() {
+      return internalGetDetails().getMap();
+    }
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+    @java.lang.Override
+
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail getDetailsOrDefault(
+        java.lang.String key,
+        demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> map =
+          internalGetDetails().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+     */
+    @java.lang.Override
+
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail getDetailsOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> map =
+          internalGetDetails().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (result_ != null) {
+        output.writeMessage(1, getResult());
+      }
+      if (estimationSpec_ != null) {
+        output.writeMessage(2, getEstimationSpec());
+      }
+      if (resultSpec_ != null) {
+        output.writeMessage(3, getResultSpec());
+      }
+      if (log_ != null) {
+        output.writeMessage(4, getLog());
+      }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetDetails(),
+          DetailsDefaultEntryHolder.defaultEntry,
+          5);
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (result_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getResult());
+      }
+      if (estimationSpec_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getEstimationSpec());
+      }
+      if (resultSpec_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getResultSpec());
+      }
+      if (log_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, getLog());
+      }
+      for (java.util.Map.Entry<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> entry
+           : internalGetDetails().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>
+        details__ = DetailsDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(5, details__);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput)) {
+        return super.equals(obj);
+      }
+      demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput other = (demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput) obj;
+
+      if (hasResult() != other.hasResult()) return false;
+      if (hasResult()) {
+        if (!getResult()
+            .equals(other.getResult())) return false;
+      }
+      if (hasEstimationSpec() != other.hasEstimationSpec()) return false;
+      if (hasEstimationSpec()) {
+        if (!getEstimationSpec()
+            .equals(other.getEstimationSpec())) return false;
+      }
+      if (hasResultSpec() != other.hasResultSpec()) return false;
+      if (hasResultSpec()) {
+        if (!getResultSpec()
+            .equals(other.getResultSpec())) return false;
+      }
+      if (hasLog() != other.hasLog()) return false;
+      if (hasLog()) {
+        if (!getLog()
+            .equals(other.getLog())) return false;
+      }
+      if (!internalGetDetails().equals(
+          other.internalGetDetails())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasResult()) {
+        hash = (37 * hash) + RESULT_FIELD_NUMBER;
+        hash = (53 * hash) + getResult().hashCode();
+      }
+      if (hasEstimationSpec()) {
+        hash = (37 * hash) + ESTIMATION_SPEC_FIELD_NUMBER;
+        hash = (53 * hash) + getEstimationSpec().hashCode();
+      }
+      if (hasResultSpec()) {
+        hash = (37 * hash) + RESULT_SPEC_FIELD_NUMBER;
+        hash = (53 * hash) + getResultSpec().hashCode();
+      }
+      if (hasLog()) {
+        hash = (37 * hash) + LOG_FIELD_NUMBER;
+        hash = (53 * hash) + getLog().hashCode();
+      }
+      if (!internalGetDetails().getMap().isEmpty()) {
+        hash = (37 * hash) + DETAILS_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetDetails().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code tramoseats.TramoSeatsOutput}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:tramoseats.TramoSeatsOutput)
+        demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutputOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.internal_static_tramoseats_TramoSeatsOutput_descriptor;
+      }
+
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 5:
+            return internalGetDetails();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 5:
+            return internalGetMutableDetails();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.internal_static_tramoseats_TramoSeatsOutput_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput.class, demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput.Builder.class);
+      }
+
+      // Construct using demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (resultBuilder_ == null) {
+          result_ = null;
+        } else {
+          result_ = null;
+          resultBuilder_ = null;
+        }
+        if (estimationSpecBuilder_ == null) {
+          estimationSpec_ = null;
+        } else {
+          estimationSpec_ = null;
+          estimationSpecBuilder_ = null;
+        }
+        if (resultSpecBuilder_ == null) {
+          resultSpec_ = null;
+        } else {
+          resultSpec_ = null;
+          resultSpecBuilder_ = null;
+        }
+        if (logBuilder_ == null) {
+          log_ = null;
+        } else {
+          log_ = null;
+          logBuilder_ = null;
+        }
+        internalGetMutableDetails().clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.internal_static_tramoseats_TramoSeatsOutput_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput getDefaultInstanceForType() {
+        return demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput build() {
+        demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput buildPartial() {
+        demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput result = new demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput(this);
+        int from_bitField0_ = bitField0_;
+        if (resultBuilder_ == null) {
+          result.result_ = result_;
+        } else {
+          result.result_ = resultBuilder_.build();
+        }
+        if (estimationSpecBuilder_ == null) {
+          result.estimationSpec_ = estimationSpec_;
+        } else {
+          result.estimationSpec_ = estimationSpecBuilder_.build();
+        }
+        if (resultSpecBuilder_ == null) {
+          result.resultSpec_ = resultSpec_;
+        } else {
+          result.resultSpec_ = resultSpecBuilder_.build();
+        }
+        if (logBuilder_ == null) {
+          result.log_ = log_;
+        } else {
+          result.log_ = logBuilder_.build();
+        }
+        result.details_ = internalGetDetails();
+        result.details_.makeImmutable();
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput) {
+          return mergeFrom((demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput other) {
+        if (other == demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput.getDefaultInstance()) return this;
+        if (other.hasResult()) {
+          mergeResult(other.getResult());
+        }
+        if (other.hasEstimationSpec()) {
+          mergeEstimationSpec(other.getEstimationSpec());
+        }
+        if (other.hasResultSpec()) {
+          mergeResultSpec(other.getResultSpec());
+        }
+        if (other.hasLog()) {
+          mergeLog(other.getLog());
+        }
+        internalGetMutableDetails().mergeFrom(
+            other.internalGetDetails());
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults result_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults, demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults.Builder, demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResultsOrBuilder> resultBuilder_;
+      /**
+       * <code>.tramoseats.TramoSeatsResults result = 1;</code>
+       * @return Whether the result field is set.
+       */
+      public boolean hasResult() {
+        return resultBuilder_ != null || result_ != null;
+      }
+      /**
+       * <code>.tramoseats.TramoSeatsResults result = 1;</code>
+       * @return The result.
+       */
+      public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults getResult() {
+        if (resultBuilder_ == null) {
+          return result_ == null ? demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults.getDefaultInstance() : result_;
+        } else {
+          return resultBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.tramoseats.TramoSeatsResults result = 1;</code>
+       */
+      public Builder setResult(demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults value) {
+        if (resultBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          result_ = value;
+          onChanged();
+        } else {
+          resultBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.TramoSeatsResults result = 1;</code>
+       */
+      public Builder setResult(
+          demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults.Builder builderForValue) {
+        if (resultBuilder_ == null) {
+          result_ = builderForValue.build();
+          onChanged();
+        } else {
+          resultBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.TramoSeatsResults result = 1;</code>
+       */
+      public Builder mergeResult(demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults value) {
+        if (resultBuilder_ == null) {
+          if (result_ != null) {
+            result_ =
+              demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults.newBuilder(result_).mergeFrom(value).buildPartial();
+          } else {
+            result_ = value;
+          }
+          onChanged();
+        } else {
+          resultBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.TramoSeatsResults result = 1;</code>
+       */
+      public Builder clearResult() {
+        if (resultBuilder_ == null) {
+          result_ = null;
+          onChanged();
+        } else {
+          result_ = null;
+          resultBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.TramoSeatsResults result = 1;</code>
+       */
+      public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults.Builder getResultBuilder() {
+        
+        onChanged();
+        return getResultFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.tramoseats.TramoSeatsResults result = 1;</code>
+       */
+      public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResultsOrBuilder getResultOrBuilder() {
+        if (resultBuilder_ != null) {
+          return resultBuilder_.getMessageOrBuilder();
+        } else {
+          return result_ == null ?
+              demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults.getDefaultInstance() : result_;
+        }
+      }
+      /**
+       * <code>.tramoseats.TramoSeatsResults result = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults, demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults.Builder, demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResultsOrBuilder> 
+          getResultFieldBuilder() {
+        if (resultBuilder_ == null) {
+          resultBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults, demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResults.Builder, demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsResultsOrBuilder>(
+                  getResult(),
+                  getParentForChildren(),
+                  isClean());
+          result_ = null;
+        }
+        return resultBuilder_;
+      }
+
+      private demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec estimationSpec_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec, demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.Builder, demetra.tramoseats.io.protobuf.TramoSeatsProtos.SpecOrBuilder> estimationSpecBuilder_;
+      /**
+       * <code>.tramoseats.Spec estimation_spec = 2;</code>
+       * @return Whether the estimationSpec field is set.
+       */
+      public boolean hasEstimationSpec() {
+        return estimationSpecBuilder_ != null || estimationSpec_ != null;
+      }
+      /**
+       * <code>.tramoseats.Spec estimation_spec = 2;</code>
+       * @return The estimationSpec.
+       */
+      public demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec getEstimationSpec() {
+        if (estimationSpecBuilder_ == null) {
+          return estimationSpec_ == null ? demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.getDefaultInstance() : estimationSpec_;
+        } else {
+          return estimationSpecBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.tramoseats.Spec estimation_spec = 2;</code>
+       */
+      public Builder setEstimationSpec(demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec value) {
+        if (estimationSpecBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          estimationSpec_ = value;
+          onChanged();
+        } else {
+          estimationSpecBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.Spec estimation_spec = 2;</code>
+       */
+      public Builder setEstimationSpec(
+          demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.Builder builderForValue) {
+        if (estimationSpecBuilder_ == null) {
+          estimationSpec_ = builderForValue.build();
+          onChanged();
+        } else {
+          estimationSpecBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.Spec estimation_spec = 2;</code>
+       */
+      public Builder mergeEstimationSpec(demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec value) {
+        if (estimationSpecBuilder_ == null) {
+          if (estimationSpec_ != null) {
+            estimationSpec_ =
+              demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.newBuilder(estimationSpec_).mergeFrom(value).buildPartial();
+          } else {
+            estimationSpec_ = value;
+          }
+          onChanged();
+        } else {
+          estimationSpecBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.Spec estimation_spec = 2;</code>
+       */
+      public Builder clearEstimationSpec() {
+        if (estimationSpecBuilder_ == null) {
+          estimationSpec_ = null;
+          onChanged();
+        } else {
+          estimationSpec_ = null;
+          estimationSpecBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.Spec estimation_spec = 2;</code>
+       */
+      public demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.Builder getEstimationSpecBuilder() {
+        
+        onChanged();
+        return getEstimationSpecFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.tramoseats.Spec estimation_spec = 2;</code>
+       */
+      public demetra.tramoseats.io.protobuf.TramoSeatsProtos.SpecOrBuilder getEstimationSpecOrBuilder() {
+        if (estimationSpecBuilder_ != null) {
+          return estimationSpecBuilder_.getMessageOrBuilder();
+        } else {
+          return estimationSpec_ == null ?
+              demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.getDefaultInstance() : estimationSpec_;
+        }
+      }
+      /**
+       * <code>.tramoseats.Spec estimation_spec = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec, demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.Builder, demetra.tramoseats.io.protobuf.TramoSeatsProtos.SpecOrBuilder> 
+          getEstimationSpecFieldBuilder() {
+        if (estimationSpecBuilder_ == null) {
+          estimationSpecBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec, demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.Builder, demetra.tramoseats.io.protobuf.TramoSeatsProtos.SpecOrBuilder>(
+                  getEstimationSpec(),
+                  getParentForChildren(),
+                  isClean());
+          estimationSpec_ = null;
+        }
+        return estimationSpecBuilder_;
+      }
+
+      private demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec resultSpec_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec, demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.Builder, demetra.tramoseats.io.protobuf.TramoSeatsProtos.SpecOrBuilder> resultSpecBuilder_;
+      /**
+       * <code>.tramoseats.Spec result_spec = 3;</code>
+       * @return Whether the resultSpec field is set.
+       */
+      public boolean hasResultSpec() {
+        return resultSpecBuilder_ != null || resultSpec_ != null;
+      }
+      /**
+       * <code>.tramoseats.Spec result_spec = 3;</code>
+       * @return The resultSpec.
+       */
+      public demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec getResultSpec() {
+        if (resultSpecBuilder_ == null) {
+          return resultSpec_ == null ? demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.getDefaultInstance() : resultSpec_;
+        } else {
+          return resultSpecBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.tramoseats.Spec result_spec = 3;</code>
+       */
+      public Builder setResultSpec(demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec value) {
+        if (resultSpecBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          resultSpec_ = value;
+          onChanged();
+        } else {
+          resultSpecBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.Spec result_spec = 3;</code>
+       */
+      public Builder setResultSpec(
+          demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.Builder builderForValue) {
+        if (resultSpecBuilder_ == null) {
+          resultSpec_ = builderForValue.build();
+          onChanged();
+        } else {
+          resultSpecBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.Spec result_spec = 3;</code>
+       */
+      public Builder mergeResultSpec(demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec value) {
+        if (resultSpecBuilder_ == null) {
+          if (resultSpec_ != null) {
+            resultSpec_ =
+              demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.newBuilder(resultSpec_).mergeFrom(value).buildPartial();
+          } else {
+            resultSpec_ = value;
+          }
+          onChanged();
+        } else {
+          resultSpecBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.Spec result_spec = 3;</code>
+       */
+      public Builder clearResultSpec() {
+        if (resultSpecBuilder_ == null) {
+          resultSpec_ = null;
+          onChanged();
+        } else {
+          resultSpec_ = null;
+          resultSpecBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.tramoseats.Spec result_spec = 3;</code>
+       */
+      public demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.Builder getResultSpecBuilder() {
+        
+        onChanged();
+        return getResultSpecFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.tramoseats.Spec result_spec = 3;</code>
+       */
+      public demetra.tramoseats.io.protobuf.TramoSeatsProtos.SpecOrBuilder getResultSpecOrBuilder() {
+        if (resultSpecBuilder_ != null) {
+          return resultSpecBuilder_.getMessageOrBuilder();
+        } else {
+          return resultSpec_ == null ?
+              demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.getDefaultInstance() : resultSpec_;
+        }
+      }
+      /**
+       * <code>.tramoseats.Spec result_spec = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec, demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.Builder, demetra.tramoseats.io.protobuf.TramoSeatsProtos.SpecOrBuilder> 
+          getResultSpecFieldBuilder() {
+        if (resultSpecBuilder_ == null) {
+          resultSpecBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec, demetra.tramoseats.io.protobuf.TramoSeatsProtos.Spec.Builder, demetra.tramoseats.io.protobuf.TramoSeatsProtos.SpecOrBuilder>(
+                  getResultSpec(),
+                  getParentForChildren(),
+                  isClean());
+          resultSpec_ = null;
+        }
+        return resultSpecBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs log_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogsOrBuilder> logBuilder_;
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       * @return Whether the log field is set.
+       */
+      public boolean hasLog() {
+        return logBuilder_ != null || log_ != null;
+      }
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       * @return The log.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs getLog() {
+        if (logBuilder_ == null) {
+          return log_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.getDefaultInstance() : log_;
+        } else {
+          return logBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       */
+      public Builder setLog(demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs value) {
+        if (logBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          log_ = value;
+          onChanged();
+        } else {
+          logBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       */
+      public Builder setLog(
+          demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.Builder builderForValue) {
+        if (logBuilder_ == null) {
+          log_ = builderForValue.build();
+          onChanged();
+        } else {
+          logBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       */
+      public Builder mergeLog(demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs value) {
+        if (logBuilder_ == null) {
+          if (log_ != null) {
+            log_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.newBuilder(log_).mergeFrom(value).buildPartial();
+          } else {
+            log_ = value;
+          }
+          onChanged();
+        } else {
+          logBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       */
+      public Builder clearLog() {
+        if (logBuilder_ == null) {
+          log_ = null;
+          onChanged();
+        } else {
+          log_ = null;
+          logBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.Builder getLogBuilder() {
+        
+        onChanged();
+        return getLogFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogsOrBuilder getLogOrBuilder() {
+        if (logBuilder_ != null) {
+          return logBuilder_.getMessageOrBuilder();
+        } else {
+          return log_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.getDefaultInstance() : log_;
+        }
+      }
+      /**
+       * <code>.jd3.ProcessingLogs log = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogsOrBuilder> 
+          getLogFieldBuilder() {
+        if (logBuilder_ == null) {
+          logBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogs.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingLogsOrBuilder>(
+                  getLog(),
+                  getParentForChildren(),
+                  isClean());
+          log_ = null;
+        }
+        return logBuilder_;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> details_;
+      private com.google.protobuf.MapField<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>
+      internalGetDetails() {
+        if (details_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              DetailsDefaultEntryHolder.defaultEntry);
+        }
+        return details_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>
+      internalGetMutableDetails() {
+        onChanged();;
+        if (details_ == null) {
+          details_ = com.google.protobuf.MapField.newMapField(
+              DetailsDefaultEntryHolder.defaultEntry);
+        }
+        if (!details_.isMutable()) {
+          details_ = details_.copy();
+        }
+        return details_;
+      }
+
+      public int getDetailsCount() {
+        return internalGetDetails().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsDetails(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        return internalGetDetails().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getDetailsMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> getDetails() {
+        return getDetailsMap();
+      }
+      /**
+       * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> getDetailsMap() {
+        return internalGetDetails().getMap();
+      }
+      /**
+       * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+       */
+      @java.lang.Override
+
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail getDetailsOrDefault(
+          java.lang.String key,
+          demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail defaultValue) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> map =
+            internalGetDetails().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+       */
+      @java.lang.Override
+
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail getDetailsOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> map =
+            internalGetDetails().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearDetails() {
+        internalGetMutableDetails().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+       */
+
+      public Builder removeDetails(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableDetails().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail>
+      getMutableDetails() {
+        return internalGetMutableDetails().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+       */
+      public Builder putDetails(
+          java.lang.String key,
+          demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail value) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (value == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableDetails().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, .jd3.ProcessingDetail&gt; details = 5;</code>
+       */
+
+      public Builder putAllDetails(
+          java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> values) {
+        internalGetMutableDetails().getMutableMap()
+            .putAll(values);
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:tramoseats.TramoSeatsOutput)
+    }
+
+    // @@protoc_insertion_point(class_scope:tramoseats.TramoSeatsOutput)
+    private static final demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput();
+    }
+
+    public static demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<TramoSeatsOutput>
+        PARSER = new com.google.protobuf.AbstractParser<TramoSeatsOutput>() {
+      @java.lang.Override
+      public TramoSeatsOutput parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new TramoSeatsOutput(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<TramoSeatsOutput> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<TramoSeatsOutput> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.tramoseats.io.protobuf.TramoSeatsResultsProtos.TramoSeatsOutput getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_tramoseats_CanonicalDecomposition_descriptor;
   private static final 
@@ -3353,6 +6453,26 @@ public final class TramoSeatsResultsProtos {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_tramoseats_TramoSeatsResults_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_tramoseats_TramoOutput_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_tramoseats_TramoOutput_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_tramoseats_TramoOutput_DetailsEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_tramoseats_TramoOutput_DetailsEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_tramoseats_TramoSeatsOutput_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_tramoseats_TramoSeatsOutput_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_tramoseats_TramoSeatsOutput_DetailsEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_tramoseats_TramoSeatsOutput_DetailsEntry_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -3364,21 +6484,37 @@ public final class TramoSeatsResultsProtos {
     java.lang.String[] descriptorData = {
       "\n\030tramoseats_results.proto\022\ntramoseats\032\r" +
       "toolkit.proto\032\010sa.proto\032\016regarima.proto\032" +
-      "\026regarima_results.proto\"]\n\026CanonicalDeco" +
-      "mposition\022\036\n\005model\030\001 \001(\0132\017.jd3.ArimaMode" +
-      "l\022#\n\ncomponents\030\002 \003(\0132\017.jd3.ArimaModel\"\261" +
-      "\001\n\014SeatsResults\022$\n\013seats_model\030\001 \001(\0132\017.j" +
-      "d3.ArimaModel\022\014\n\004mean\030\002 \001(\010\022C\n\027canonical" +
-      "_decomposition\030\003 \001(\0132\".tramoseats.Canoni" +
-      "calDecomposition\022(\n\013stochastics\030\004 \001(\0132\023." +
-      "sa.SaDecomposition\"\306\001\n\021TramoSeatsResults" +
-      "\0223\n\rpreprocessing\030\001 \001(\0132\034.regarima.RegAr" +
-      "imaEstimation\022/\n\rdecomposition\030\002 \001(\0132\030.t" +
-      "ramoseats.SeatsResults\022\"\n\005final\030\003 \001(\0132\023." +
-      "sa.SaDecomposition\022\'\n\016diagnostics_sa\030\005 \001" +
-      "(\0132\017.sa.DiagnosticsB9\n\036demetra.tramoseat" +
-      "s.io.protobufB\027TramoSeatsResultsProtosP\000" +
-      "P\001P\002P\003b\006proto3"
+      "\020tramoseats.proto\032\026regarima_results.prot" +
+      "o\"]\n\026CanonicalDecomposition\022\036\n\005model\030\001 \001" +
+      "(\0132\017.jd3.ArimaModel\022#\n\ncomponents\030\002 \003(\0132" +
+      "\017.jd3.ArimaModel\"\261\001\n\014SeatsResults\022$\n\013sea" +
+      "ts_model\030\001 \001(\0132\017.jd3.ArimaModel\022\014\n\004mean\030" +
+      "\002 \001(\010\022C\n\027canonical_decomposition\030\003 \001(\0132\"" +
+      ".tramoseats.CanonicalDecomposition\022(\n\013st" +
+      "ochastics\030\004 \001(\0132\023.sa.SaDecomposition\"\301\001\n" +
+      "\021TramoSeatsResults\022.\n\rpreprocessing\030\001 \001(" +
+      "\0132\027.regarima.RegArimaModel\022/\n\rdecomposit" +
+      "ion\030\002 \001(\0132\030.tramoseats.SeatsResults\022\"\n\005f" +
+      "inal\030\003 \001(\0132\023.sa.SaDecomposition\022\'\n\016diagn" +
+      "ostics_sa\030\005 \001(\0132\017.sa.Diagnostics\"\262\002\n\013Tra" +
+      "moOutput\022\'\n\006result\030\001 \001(\0132\027.regarima.RegA" +
+      "rimaModel\022.\n\017estimation_spec\030\002 \001(\0132\025.tra" +
+      "moseats.TramoSpec\022*\n\013result_spec\030\003 \001(\0132\025" +
+      ".tramoseats.TramoSpec\022 \n\003log\030\004 \001(\0132\023.jd3" +
+      ".ProcessingLogs\0225\n\007details\030\005 \003(\0132$.tramo" +
+      "seats.TramoOutput.DetailsEntry\032E\n\014Detail" +
+      "sEntry\022\013\n\003key\030\001 \001(\t\022$\n\005value\030\002 \001(\0132\025.jd3" +
+      ".ProcessingDetail:\0028\001\"\270\002\n\020TramoSeatsOutp" +
+      "ut\022-\n\006result\030\001 \001(\0132\035.tramoseats.TramoSea" +
+      "tsResults\022)\n\017estimation_spec\030\002 \001(\0132\020.tra" +
+      "moseats.Spec\022%\n\013result_spec\030\003 \001(\0132\020.tram" +
+      "oseats.Spec\022 \n\003log\030\004 \001(\0132\023.jd3.Processin" +
+      "gLogs\022:\n\007details\030\005 \003(\0132).tramoseats.Tram" +
+      "oSeatsOutput.DetailsEntry\032E\n\014DetailsEntr" +
+      "y\022\013\n\003key\030\001 \001(\t\022$\n\005value\030\002 \001(\0132\025.jd3.Proc" +
+      "essingDetail:\0028\001B9\n\036demetra.tramoseats.i" +
+      "o.protobufB\027TramoSeatsResultsProtosP\000P\001P" +
+      "\002P\003P\004b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3386,6 +6522,7 @@ public final class TramoSeatsResultsProtos {
           demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor(),
           demetra.sa.io.protobuf.SaProtos.getDescriptor(),
           demetra.regarima.io.protobuf.RegArimaProtos.getDescriptor(),
+          demetra.tramoseats.io.protobuf.TramoSeatsProtos.getDescriptor(),
           demetra.regarima.io.protobuf.RegArimaResultsProtos.getDescriptor(),
         });
     internal_static_tramoseats_CanonicalDecomposition_descriptor =
@@ -3406,9 +6543,34 @@ public final class TramoSeatsResultsProtos {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tramoseats_TramoSeatsResults_descriptor,
         new java.lang.String[] { "Preprocessing", "Decomposition", "Final", "DiagnosticsSa", });
+    internal_static_tramoseats_TramoOutput_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_tramoseats_TramoOutput_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_tramoseats_TramoOutput_descriptor,
+        new java.lang.String[] { "Result", "EstimationSpec", "ResultSpec", "Log", "Details", });
+    internal_static_tramoseats_TramoOutput_DetailsEntry_descriptor =
+      internal_static_tramoseats_TramoOutput_descriptor.getNestedTypes().get(0);
+    internal_static_tramoseats_TramoOutput_DetailsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_tramoseats_TramoOutput_DetailsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_tramoseats_TramoSeatsOutput_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_tramoseats_TramoSeatsOutput_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_tramoseats_TramoSeatsOutput_descriptor,
+        new java.lang.String[] { "Result", "EstimationSpec", "ResultSpec", "Log", "Details", });
+    internal_static_tramoseats_TramoSeatsOutput_DetailsEntry_descriptor =
+      internal_static_tramoseats_TramoSeatsOutput_descriptor.getNestedTypes().get(0);
+    internal_static_tramoseats_TramoSeatsOutput_DetailsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_tramoseats_TramoSeatsOutput_DetailsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor();
     demetra.sa.io.protobuf.SaProtos.getDescriptor();
     demetra.regarima.io.protobuf.RegArimaProtos.getDescriptor();
+    demetra.tramoseats.io.protobuf.TramoSeatsProtos.getDescriptor();
     demetra.regarima.io.protobuf.RegArimaResultsProtos.getDescriptor();
   }
 

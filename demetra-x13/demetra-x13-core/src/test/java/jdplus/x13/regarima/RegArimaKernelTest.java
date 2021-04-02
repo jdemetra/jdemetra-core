@@ -253,7 +253,7 @@ public class RegArimaKernelTest {
 
     public static void stressTestProd() {
         long t0 = System.currentTimeMillis();
-        for (int i = 0; i < 250; ++i) {
+        for (int i = 0; i < 100; ++i) {
             RegArimaSpecification spec = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.clone();
             IPreprocessor processor = spec.build();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
@@ -262,7 +262,7 @@ public class RegArimaKernelTest {
         long t1 = System.currentTimeMillis();
         System.out.println("legacy: " + (t1 - t0));
         t0 = System.currentTimeMillis();
-        for (int i = 0; i < 250; ++i) {
+        for (int i = 0; i < 100; ++i) {
             RegArimaSpec spec = RegArimaSpec.RG5;
             RegArimaKernel processor = RegArimaKernel.of(spec, null);
             TsPeriod start = TsPeriod.monthly(1967, 1);

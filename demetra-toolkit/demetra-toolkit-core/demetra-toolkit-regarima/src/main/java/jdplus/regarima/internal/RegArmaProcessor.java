@@ -65,7 +65,7 @@ public class RegArmaProcessor {
             // otherwise, we might under-estimate the T-Stats.
             // the differences are usually very small;
             // it is normal: coeff and params are asymptotically independent...
-            DataBlock res = model.asLinearModel().calcResiduals(rslt.getLikelihood().allCoefficients());
+            DataBlock res = model.asLinearModel().calcResiduals(rslt.allCoefficients());
             int nm = model.getMissingCount();
             Matrix xm = Matrix.EMPTY;
             if (nm > 0) {

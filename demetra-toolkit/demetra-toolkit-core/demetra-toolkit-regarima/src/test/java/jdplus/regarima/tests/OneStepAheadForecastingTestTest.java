@@ -7,8 +7,8 @@ package jdplus.regarima.tests;
 
 import demetra.data.Data;
 import jdplus.regarima.RegArimaModel;
-import jdplus.regsarima.RegSarimaProcessor;
-import jdplus.regsarima.RegSarimaProcessorTest;
+import jdplus.regsarima.RegSarimaComputer;
+import jdplus.regsarima.RegSarimaComputerTest;
 import jdplus.sarima.SarimaModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -24,8 +24,8 @@ public class OneStepAheadForecastingTestTest {
 
     @Test
     public void testProd() {
-        RegArimaModel<SarimaModel> model = RegSarimaProcessorTest.prodAirline();
-        RegSarimaProcessor processor = RegSarimaProcessor.builder().build();
+        RegArimaModel<SarimaModel> model = RegSarimaComputerTest.prodAirline();
+        RegSarimaComputer processor = RegSarimaComputer.builder().build();
         OneStepAheadForecastingTest<SarimaModel> os = new OneStepAheadForecastingTest<>(processor, 18);
         os.test(model);
 //        System.out.println(os.inSampleMeanTest());

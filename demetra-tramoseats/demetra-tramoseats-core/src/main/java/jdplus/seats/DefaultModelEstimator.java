@@ -20,10 +20,10 @@ package jdplus.seats;
 
 import nbbrd.design.Development;
 import demetra.likelihood.LikelihoodStatistics;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
-import jdplus.regsarima.RegSarimaProcessor;
+import jdplus.regsarima.RegSarimaComputer;
 import jdplus.sarima.SarimaModel;
+import jdplus.regarima.IRegArimaComputer;
 
 
 /**
@@ -33,12 +33,12 @@ import jdplus.sarima.SarimaModel;
 public class DefaultModelEstimator implements IModelEstimator {
     
     private final IModelValidator validator;
-    private final IRegArimaProcessor<SarimaModel> processor;
+    private final IRegArimaComputer<SarimaModel> processor;
     
-    public DefaultModelEstimator(IModelValidator validator, IRegArimaProcessor<SarimaModel> processor){
+    public DefaultModelEstimator(IModelValidator validator, IRegArimaComputer<SarimaModel> processor){
         this.validator=validator;
         if (processor == null)
-            this.processor=RegSarimaProcessor.PROCESSOR;
+            this.processor=RegSarimaComputer.PROCESSOR;
         else
             this.processor=processor;
     }

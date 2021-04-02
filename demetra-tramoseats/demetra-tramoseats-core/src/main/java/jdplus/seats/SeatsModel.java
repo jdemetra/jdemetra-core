@@ -28,6 +28,7 @@ import demetra.sa.SeriesDecomposition;
 import demetra.seats.SeatsModelSpec;
 import demetra.timeseries.TsData;
 import jdplus.arima.ArimaModel;
+import jdplus.math.linearfilters.BackFilter;
 import static jdplus.math.linearfilters.BackFilter.D1;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaToolkit;
@@ -189,7 +190,7 @@ public class SeatsModel {
             UcarimaModel.Builder tmp = UcarimaModel.builder();
             ArimaModel tm = ucm.getComponent(0);
             if (tm.isNull()) {
-                tm = new ArimaModel(null, D1, D1, 0);
+                tm = new ArimaModel(BackFilter.ONE, D1, D1, 0);
             } else {
                 tm = new ArimaModel(tm.getStationaryAr(), tm.getNonStationaryAr().times(D1),
                         tm.getMa().times(D1),

@@ -22,7 +22,7 @@ import jdplus.data.DataBlock;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import static jdplus.math.linearfilters.FilterUtility.checkRoots;
-import jdplus.regsarima.RegSarimaProcessor;
+import jdplus.regsarima.RegSarimaComputer;
 import jdplus.regsarima.regular.IModelEstimator;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
@@ -52,10 +52,10 @@ public class FinalEstimator implements IModelEstimator {
             try {
                 IParametricMapping<SarimaModel> mapping = context.getDescription().mapping();
                 int ndim = mapping.getDim();
-                RegSarimaProcessor processor = RegSarimaProcessor.builder()
+                RegSarimaComputer processor = RegSarimaComputer.builder()
                         .minimizer(LevenbergMarquardtMinimizer.builder())
                         .precision(eps)
-                        .startingPoint(RegSarimaProcessor.StartingPoint.Multiple)
+                        .startingPoint(RegSarimaComputer.StartingPoint.Multiple)
                         .computeExactFinalDerivatives(true)
                         .build();
                 context.getDescription().freeArimaParameters();

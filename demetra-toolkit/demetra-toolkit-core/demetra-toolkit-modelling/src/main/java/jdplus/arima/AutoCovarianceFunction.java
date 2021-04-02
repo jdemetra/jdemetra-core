@@ -45,7 +45,8 @@ public final class AutoCovarianceFunction {
     public static interface Computer {
 
         /**
-         * Computes the auto-covariances for the given arima model for lags [0, rank[
+         * Computes the auto-covariances for the given arima model for lags [0,
+         * rank[
          *
          * @param ar
          * @param ma
@@ -61,7 +62,8 @@ public final class AutoCovarianceFunction {
     public static interface SymmetricComputer {
 
         /**
-         * Computes the auto-covariances for the given symmetric filter for lags [0, rank[
+         * Computes the auto-covariances for the given symmetric filter for lags
+         * [0, rank[
          *
          * @param ar
          * @param sma
@@ -88,10 +90,11 @@ public final class AutoCovarianceFunction {
         this.ar = ar;
         if (ar.degree() == 0) {
             this.sma = SymmetricFilter.convolutionOf(new BackFilter(ma), var);
+            this.ivar = 1;
         } else {
             this.sma = null;
+            this.ivar = var;
         }
-        this.ivar = var;
     }
 
     public AutoCovarianceFunction(final SymmetricFilter sma, final Polynomial ar) {
@@ -202,8 +205,8 @@ public final class AutoCovarianceFunction {
     public boolean hasBound() {
         return ar.degree() + 1 == 1;
     }
-    
-    public IntToDoubleFunction asFunction(){
-        return i->get(i);
+
+    public IntToDoubleFunction asFunction() {
+        return i -> get(i);
     }
 }

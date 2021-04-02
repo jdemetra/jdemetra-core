@@ -45,7 +45,7 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
     static class SsqBuilder<S extends IArimaModel> {
 
         // algorithms
-        private ConcentratedLikelihoodComputer cll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER;
+        private ConcentratedLikelihoodComputer cll = ConcentratedLikelihoodComputer.DEFAULT_FULL_COMPUTER;
         private ToDoubleFunction<Likelihood> eval = DefaultLikelihoodEvaluation.deviance();
         private Function<Likelihood, DoubleSeq> errors = DefaultLikelihoodEvaluation.v();
 
@@ -176,10 +176,10 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
             return fn.errors.apply(ll);
         }
 
-        public ConcentratedLikelihoodWithMissing getLikelihood() {
-            return ll;
-        }
-
+//        public ConcentratedLikelihoodWithMissing getLikelihood() {
+//            return ll;
+//        }
+//
         @Override
         public DoubleSeq getParameters() {
             return p;
@@ -193,6 +193,10 @@ class RegArmaSsqFunction<S extends IArimaModel> implements ISsqFunction {
         @Override
         public ISsqFunction getSsqFunction() {
             return fn;
+        }
+
+        public DoubleSeq allCoefficients() {
+            return ll.allCoefficients();
         }
 
     }

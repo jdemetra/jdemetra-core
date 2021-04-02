@@ -24,7 +24,6 @@ import demetra.likelihood.LikelihoodStatistics;
 import demetra.sa.ComponentType;
 import demetra.sa.SaVariable;
 import demetra.timeseries.regression.Variable;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regsarima.regular.IRegressionModule;
@@ -37,6 +36,7 @@ import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.IEasterVariable;
 import jdplus.arima.estimation.IArimaMapping;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  * * @author gianluca, jean Correction 22/7/2014. pre-specified Easter effect
@@ -148,7 +148,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
 
         ModelDescription current = context.getDescription();
         IArimaMapping<SarimaModel> mapping = current.mapping();
-        IRegArimaProcessor processor = RegArimaUtility.processor(true, precision);
+        IRegArimaComputer processor = RegArimaUtility.processor(true, precision);
         // We compute the full model
         ModelDescription test6 = createTestModel(context, td, null);
         RegArimaEstimation<SarimaModel> regarima6 = processor.process(test6.regarima(), mapping);

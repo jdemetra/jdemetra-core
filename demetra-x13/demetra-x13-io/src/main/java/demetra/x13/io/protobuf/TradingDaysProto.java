@@ -17,9 +17,12 @@
 package demetra.x13.io.protobuf;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import demetra.data.Parameter;
 import demetra.regarima.TradingDaysSpec;
 import demetra.regarima.io.protobuf.RegArimaProtosUtility;
+import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
+import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 
 /**
  *
@@ -63,21 +66,36 @@ public class TradingDaysProto {
     public X13Protos.RegArimaSpec.TradingDaysSpec convert(TradingDaysSpec spec) {
         X13Protos.RegArimaSpec.TradingDaysSpec.Builder builder = X13Protos.RegArimaSpec.TradingDaysSpec.newBuilder();
         fill(spec, builder);
-        return builder.build();
+        return builder.setLpcoefficient(ToolkitProtosUtility.convert(spec.getLpCoefficient()))
+                .addAllTdcoefficients(ToolkitProtosUtility.convert(spec.getTdCoefficients()))
+                .build();
     }
 
     public byte[] toBuffer(TradingDaysSpec spec) {
         return convert(spec).toByteArray();
     }
 
+    private boolean isTest(X13Protos.RegArimaSpec.TradingDaysSpec spec) {
+        return spec.getTest() == X13Protos.RegressionTest.TEST_ADD
+                || spec.getTest() == X13Protos.RegressionTest.TEST_REMOVE;
+    }
+
     public TradingDaysSpec convert(X13Protos.RegArimaSpec.TradingDaysSpec spec) {
+        TradingDaysType td = RegArimaProtosUtility.convert(spec.getTd());
+        LengthOfPeriodType lp = RegArimaProtosUtility.convert(spec.getLp());
+        Parameter lpc = ToolkitProtosUtility.convert(spec.getLpcoefficient());
+        Parameter[] tdc = ToolkitProtosUtility.convert(spec.getTdcoefficientsList());
+        boolean test = isTest(spec);
         String holidays = spec.getHolidays();
         if (holidays != null && holidays.length() > 0) {
-            return TradingDaysSpec.holidays(holidays,
-                    RegArimaProtosUtility.convert(spec.getTd()),
-                    RegArimaProtosUtility.convert(spec.getLp()),
-                    X13ProtosUtility.convert(spec.getTest()),
-                    spec.getAutoAdjust());
+            if (test) {
+                return TradingDaysSpec.holidays(holidays, td, lp,
+                        X13ProtosUtility.convert(spec.getTest()),
+                        spec.getAutoAdjust());
+            } else {
+                return TradingDaysSpec.holidays(holidays, td, lp, tdc, lpc);
+            }
+
         }
         int nusers = spec.getUsersCount();
         if (nusers > 0) {
@@ -85,20 +103,30 @@ public class TradingDaysProto {
             for (int i = 0; i < nusers; ++i) {
                 users[i] = spec.getUsers(i);
             }
-            return TradingDaysSpec.userDefined(users, X13ProtosUtility.convert(spec.getTest()));
+            if (test) {
+                return TradingDaysSpec.userDefined(users, X13ProtosUtility.convert(spec.getTest()));
+            } else {
+                return TradingDaysSpec.userDefined(users, tdc);
+            }
         }
         int w = spec.getW();
         if (w > 0) {
-            return TradingDaysSpec.stockTradingDays(w, X13ProtosUtility.convert(spec.getTest()));
+            if (test) {
+                return TradingDaysSpec.stockTradingDays(w, X13ProtosUtility.convert(spec.getTest()));
+            } else {
+                return TradingDaysSpec.stockTradingDays(w, tdc);
+            }
         }
-        TradingDaysType td = RegArimaProtosUtility.convert(spec.getTd());
         if (td == TradingDaysType.None) {
             return TradingDaysSpec.none();
         } else {
-            return TradingDaysSpec.td(td,
-                    RegArimaProtosUtility.convert(spec.getLp()),
-                    X13ProtosUtility.convert(spec.getTest()),
-                    spec.getAutoAdjust());
+            if (test) {
+                return TradingDaysSpec.td(td, lp,
+                        X13ProtosUtility.convert(spec.getTest()),
+                        spec.getAutoAdjust());
+            } else {
+                return TradingDaysSpec.td(td, lp, tdc, lpc);
+            }
         }
 
     }

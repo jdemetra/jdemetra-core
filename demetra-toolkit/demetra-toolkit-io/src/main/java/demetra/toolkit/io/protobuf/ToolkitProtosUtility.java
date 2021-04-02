@@ -16,11 +16,11 @@
  */
 package demetra.toolkit.io.protobuf;
 
-import com.google.protobuf.NullValue;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.data.Iterables;
 import demetra.likelihood.LikelihoodStatistics;
+import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.stats.TestResult;
 import demetra.timeseries.TimeSelector;
@@ -28,7 +28,8 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import jdplus.arima.IArimaModel;
 import jdplus.stats.tests.NiidTests;
@@ -145,7 +146,7 @@ public class ToolkitProtosUtility {
                 break;
 
             default:
-                builder.setType(ToolkitProtos.SelectionType.SPAN_UNSPECIFIED);
+                builder.setType(ToolkitProtos.SelectionType.SPAN_NONE);
         }
     }
 
@@ -170,7 +171,7 @@ public class ToolkitProtosUtility {
         }
     }
 
-    public ToolkitProtos.ParameterType convert(ParameterType t) {
+    public ToolkitProtos.ParameterType convert(@NonNull ParameterType t) {
         switch (t) {
             case Fixed:
                 return ToolkitProtos.ParameterType.PARAMETER_FIXED;
@@ -183,14 +184,6 @@ public class ToolkitProtosUtility {
         }
     }
 
-    public Parameter convert(ToolkitProtos.NullableParameter p) {
-        if (p.hasData()) {
-            return convert(p.getData());
-        } else {
-            return null;
-        }
-    }
-
     public Parameter convert(ToolkitProtos.Parameter p) {
         switch (p.getType()) {
             case PARAMETER_FIXED:
@@ -199,35 +192,57 @@ public class ToolkitProtosUtility {
                 return Parameter.initial(p.getValue());
             case PARAMETER_ESTIMATED:
                 return Parameter.estimated(p.getValue());
-            default:
+            case PARAMETER_UNDEFINED:
                 return Parameter.undefined();
-
+            default: // UNUSED
+                return null;
         }
     }
 
-    public ToolkitProtos.NullableParameter convertNullable(Parameter p) {
-        if (p == null) {
-            return ToolkitProtos.NullableParameter.newBuilder()
-                    .setNull(NullValue.NULL_VALUE)
-                    .build();
-        } else {
-            return ToolkitProtos.NullableParameter.newBuilder()
-                    .setData(convert(p))
-                    .build();
-        }
-    }
-
-    public ToolkitProtos.Parameter convert(@NonNull Parameter p) {
+    public ToolkitProtos.Parameter convert(Parameter p) {
+        if (p == null)
+            return ToolkitProtos.Parameter.getDefaultInstance();
         return ToolkitProtos.Parameter.newBuilder()
                 .setType(convert(p.getType()))
                 .setValue(p.getValue())
                 .build();
     }
 
+    public List<ToolkitProtos.Parameter> convert(Parameter[] p) {
+        if (p == null || p.length == 0)
+            return Collections.emptyList();
+        ArrayList<ToolkitProtos.Parameter> list=new ArrayList<>();
+        for (int i=0; i<p.length; ++i){
+            list.add(convert(p[i]));
+        }
+        return list;
+    }
+
+    public ToolkitProtos.ParametersEstimation convert(@NonNull ParametersEstimation p) {
+
+        ToolkitProtos.ParametersEstimation.Builder builder = ToolkitProtos.ParametersEstimation.newBuilder()
+                .addAllValue(Iterables.of(p.getValues()))
+                .addAllScore(Iterables.of(p.getScores()))
+                .setCovariance(convert(p.getCovariance()));
+        String description = p.getDescription();
+        if (description != null) {
+            builder.setDescription(description);
+        }
+        return builder.build();
+    }
+
+    public ToolkitProtos.Parameter convert(@NonNull Parameter p, String description) {
+        return ToolkitProtos.Parameter.newBuilder()
+                .setType(convert(p.getType()))
+                .setValue(p.getValue())
+                .setDescription(description)
+                .build();
+    }
+
     public Parameter[] convert(List<ToolkitProtos.Parameter> p) {
         int n = p.size();
         if (n == 0) {
-            return EMPTY_P;
+            return null;
         } else {
             Parameter[] np = new Parameter[n];
             for (int i = 0; i < n; ++i) {

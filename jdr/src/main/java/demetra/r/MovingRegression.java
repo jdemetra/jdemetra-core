@@ -15,7 +15,7 @@ import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
-import jdplus.regsarima.RegSarimaProcessor;
+import jdplus.regsarima.RegSarimaComputer;
 import jdplus.modelling.extractors.SarimaExtractor;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TimeSelector;
@@ -112,7 +112,7 @@ public class MovingRegression {
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         Matrix x = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(gtd));
 
-        RegSarimaProcessor monitor = RegSarimaProcessor.builder()
+        RegSarimaComputer monitor = RegSarimaComputer.builder()
                 .useParallelProcessing(true)
                 .useMaximumLikelihood(true)
                 .useCorrectedDegreesOfFreedom(false) // compatibility with R

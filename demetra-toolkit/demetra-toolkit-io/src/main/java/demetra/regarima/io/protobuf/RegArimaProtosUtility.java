@@ -16,9 +16,9 @@
  */
 package demetra.regarima.io.protobuf;
 
-import demetra.modelling.implementations.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.Range;
+import demetra.modelling.implementations.SarimaSpec;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
@@ -29,7 +29,6 @@ import demetra.timeseries.regression.Variable;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import jdplus.regsarima.regular.RegSarimaModel;
 
 /**
  *
@@ -106,6 +105,7 @@ public class RegArimaProtosUtility {
 
     public SarimaSpec convert(RegArimaProtos.SarimaSpec spec) {
         return SarimaSpec.builder()
+                .period(spec.getPeriod())
                 .d(spec.getD())
                 .bd(spec.getBd())
                 .phi(ToolkitProtosUtility.convert(spec.getPhiList()))
@@ -117,6 +117,7 @@ public class RegArimaProtosUtility {
 
     public RegArimaProtos.SarimaSpec convert(SarimaSpec spec) {
         RegArimaProtos.SarimaSpec.Builder builder = RegArimaProtos.SarimaSpec.newBuilder()
+                .setPeriod(spec.getPeriod())
                 .setD(spec.getD())
                 .setBd(spec.getBd());
 
@@ -139,23 +140,24 @@ public class RegArimaProtosUtility {
         return builder.build();
     }
 
-    public RegArimaProtos.Variable convertTsContextVariable(Variable<TsContextVariable> v) {
-        return RegArimaProtos.Variable.newBuilder()
+    public RegArimaProtos.TsVariable convertTsContextVariable(Variable<TsContextVariable> v) {
+        return RegArimaProtos.TsVariable.newBuilder()
                 .setName(v.getName())
                 .setId(v.getCore().getId())
                 .setFirstLag(v.getCore().getFirstLag())
                 .setLastLag(v.getCore().getLastLag())
+                .addAllCoefficient(ToolkitProtosUtility.convert(v.getCoefficients()))
                 .build();
     }
 
-    public Variable<TsContextVariable> convert(RegArimaProtos.Variable v) {
-        return Variable.<TsContextVariable> builder()
+    public Variable<TsContextVariable> convert(RegArimaProtos.TsVariable v) {
+        return Variable.<TsContextVariable>builder()
                 .name(v.getName())
                 .core(new TsContextVariable(v.getId(), v.getFirstLag(), v.getLastLag()))
                 .attributes(v.getMetadataMap())
                 .coefficients(ToolkitProtosUtility.convert(v.getCoefficientList()))
                 .build();
-     }
+    }
 
     public RegArimaProtos.Ramp convertRamp(Variable<Ramp> v) {
         return RegArimaProtos.Ramp.newBuilder()
@@ -170,11 +172,12 @@ public class RegArimaProtosUtility {
     public Variable<Ramp> convert(RegArimaProtos.Ramp v) {
         LocalDate start = ToolkitProtosUtility.convert(v.getStart());
         LocalDate end = ToolkitProtosUtility.convert(v.getEnd());
-        return Variable.<Ramp> builder()
+        Parameter c = ToolkitProtosUtility.convert(v.getCoefficient());
+        return Variable.<Ramp>builder()
                 .name(v.getName())
                 .core(new Ramp(start.atStartOfDay(), end.atStartOfDay()))
                 .attributes(v.getMetadataMap())
-                .coefficients(new Parameter[]{ToolkitProtosUtility.convert(v.getCoefficient())})
+                .coefficients(c == null ? null : new Parameter[]{c})
                 .build();
     }
 
@@ -209,18 +212,12 @@ public class RegArimaProtosUtility {
             LocalDate end = ToolkitProtosUtility.convert(seq.getEnd());
             builder.add(start.atStartOfDay(), end.atStartOfDay());
         }
+        Parameter c = ToolkitProtosUtility.convert(v.getCoefficient());
         return Variable.<InterventionVariable>builder()
                 .name(v.getName())
                 .core(builder.build())
-                .coefficients(new Parameter[]{ToolkitProtosUtility.convert(v.getCoefficient())})
+                .coefficients(c == null ? null : new Parameter[]{c})
                 .attributes(v.getMetadataMap())
                 .build();
     }
-    
-    public RegArimaResultsProtos.Diagnostics diagnosticsOf(RegSarimaModel model){
-        return RegArimaResultsProtos.Diagnostics.newBuilder()
-                .setResidualsTests(ToolkitProtosUtility.convert(model.residualsTests()))
-                .build();
-    }
-   
 }

@@ -46,7 +46,7 @@ import jdplus.regarima.RegArimaToolkit;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.regarima.outlier.ExactSingleOutlierDetector;
 import jdplus.regarima.outlier.SingleOutlierDetector;
-import jdplus.regsarima.RegSarimaProcessor;
+import jdplus.regsarima.RegSarimaComputer;
 import jdplus.regsarima.ami.ExactOutliersDetector;
 import jdplus.sarima.SarimaModel;
 import jdplus.sarima.estimation.SarimaMapping;
@@ -211,7 +211,7 @@ public class RegArimaOutliersDetection {
                 .y(y.getValues())
                 .addX(Matrix.of(x))
                 .build();
-        RegArimaEstimation<SarimaModel> estimation0 = RegSarimaProcessor.builder()
+        RegArimaEstimation<SarimaModel> estimation0 = RegSarimaComputer.builder()
                 .build()
                 .process(regarima, null);
 

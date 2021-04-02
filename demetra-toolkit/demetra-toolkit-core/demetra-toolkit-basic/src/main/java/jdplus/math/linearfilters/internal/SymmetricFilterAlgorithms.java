@@ -21,6 +21,7 @@ import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.linearsystem.LinearSystemSolver;
+import jdplus.linearsystem.QRLinearSystemSolver;
 import jdplus.math.matrices.Matrix;
 
 /**
@@ -67,7 +68,7 @@ public class SymmetricFilterAlgorithms {
             }
             DataBlock g = DataBlock.of(mc);
             if (solver == null) {
-                LinearSystemSolver.fastSolver().solve(a, g);
+                LinearSystemSolver.robustSolver().solve(a, g);
             } else {
                 solver.solve(a, g);
             }

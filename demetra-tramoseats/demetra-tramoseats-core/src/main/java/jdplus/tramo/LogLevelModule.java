@@ -20,7 +20,6 @@ import jdplus.tramo.internal.TramoUtility;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import demetra.modelling.TransformationType;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regsarima.regular.ProcessingResult;
@@ -31,6 +30,7 @@ import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.data.DoubleSeq;
 import demetra.processing.ProcessingLog;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -174,7 +174,7 @@ public class LogLevelModule implements ILogLevelModule {
     }
 
     public boolean process(RegArimaModel<SarimaModel> model, ProcessingLog logs) {
-        IRegArimaProcessor processor = TramoUtility.processor(true, precision);
+        IRegArimaComputer processor = TramoUtility.processor(true, precision);
         e = processor.process(model, null);
         if (e != null) {
             level = Math.log(e.getConcentratedLikelihood().ssq()

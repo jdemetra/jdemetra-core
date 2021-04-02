@@ -23,7 +23,6 @@ import nbbrd.design.VisibleForTesting;
 import demetra.math.Complex;
 import jdplus.math.linearfilters.BackFilter;
 import demetra.timeseries.regression.Variable;
-import jdplus.regarima.IRegArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
@@ -39,6 +38,7 @@ import internal.jdplus.arima.FastKalmanFilter;
 import jdplus.regarima.ami.ModellingUtility;
 import jdplus.sarima.estimation.HannanRissanen;
 import jdplus.sarima.estimation.SarimaMapping;
+import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -337,7 +337,7 @@ public class DifferencingModule  {
 
         if (usedefault || ml || useml) {
             lastModel=SarimaMapping.stabilize(lastModel);
-            IRegArimaProcessor processor = TramoUtility.processor(true, eps);
+            IRegArimaComputer processor = TramoUtility.processor(true, eps);
             SarimaModel arima = SarimaModel.builder(spec)
                     .parameters(lastModel.parameters())
                     .build();

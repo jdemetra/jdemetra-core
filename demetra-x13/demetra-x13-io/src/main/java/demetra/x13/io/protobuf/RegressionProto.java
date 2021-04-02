@@ -17,7 +17,6 @@
 package demetra.x13.io.protobuf;
 
 import demetra.data.Parameter;
-import demetra.regarima.EasterSpec;
 import demetra.regarima.RegressionSpec;
 import demetra.regarima.io.protobuf.RegArimaProtos;
 import demetra.regarima.io.protobuf.RegArimaProtosUtility;
@@ -32,7 +31,6 @@ import demetra.timeseries.regression.TsContextVariable;
 import demetra.timeseries.regression.Variable;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -53,7 +51,7 @@ public class RegressionProto {
         }
         n = spec.getUsersCount();
         for (int i = 0; i < n; ++i) {
-            RegArimaProtos.Variable var = spec.getUsers(i);
+            RegArimaProtos.TsVariable var = spec.getUsers(i);
             builder.userDefinedVariable(RegArimaProtosUtility.convert(var));
         }
         n = spec.getInterventionsCount();
@@ -72,7 +70,7 @@ public class RegressionProto {
 
     public X13Protos.RegArimaSpec.RegressionSpec convert(RegressionSpec spec) {
         X13Protos.RegArimaSpec.RegressionSpec.Builder builder = X13Protos.RegArimaSpec.RegressionSpec.newBuilder()
-                .setMean(ToolkitProtosUtility.convertNullable(spec.getMean()))
+                .setMean(ToolkitProtosUtility.convert(spec.getMean()))
                 .setEaster(EasterProto.convert(spec.getEaster()))
                 .setTd(TradingDaysProto.convert(spec.getTradingDays()));
         
@@ -120,11 +118,11 @@ public class RegressionProto {
             default:
                 return null;
         }
-        
+        Parameter c = ToolkitProtosUtility.convert(outlier.getCoefficient());
         return Variable.<IOutlier>builder()
                 .core(o)
                 .name(outlier.getName())
-                .coefficients(new Parameter[]{ToolkitProtosUtility.convert(outlier.getCoefficient())})
+                .coefficients(c == null ? null : new Parameter[]{c})
                 .attributes(outlier.getMetadataMap())
                 .build();        
     }
