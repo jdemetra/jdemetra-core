@@ -21,7 +21,6 @@ import jdplus.regsarima.regular.SeasonalFTest;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
-import demetra.timeseries.TsData;
 
 /**
  *
@@ -47,11 +46,11 @@ class SeasonalOverDifferencingTest {
         SeasonalFTest ftest = new SeasonalFTest();
         ftest.test(context.getDescription());
         int score = tests.getScore();
-        boolean fsign = ftest.getFTest().getPValue() < SIGNIF;
+        boolean fsign = ftest.getFTest().getPvalue() < SIGNIF;
         if (fsign) {
             ++score;
         }
-        if (score >= 2 || fsign || tests.getQs().getPValue()<SIGNIF) {
+        if (score >= 2 || fsign || tests.getQs().getPvalue()<SIGNIF) {
             return 1;
         } else {
             return 2;

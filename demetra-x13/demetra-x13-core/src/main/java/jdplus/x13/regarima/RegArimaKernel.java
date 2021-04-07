@@ -257,7 +257,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
                 reference = RegSarimaModelling.copyOf(context);
                 ModelController controller = new ModelController(.95);
                 boolean ok = controller.accept(context);
-                plbox0 = 1 - controller.getLjungBoxTest().getPValue();
+                plbox0 = 1 - controller.getLjungBoxTest().getPvalue();
                 rvr0 = controller.getRvr();
                 rtval0 = controller.getRTval();
                 if (!options.acceptAirline || !ok) {
@@ -368,7 +368,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
         controller.accept(context);
         double rtval = controller.getRTval();
         double rvr = controller.getRvr();
-        double plbox = 1 - controller.getLjungBoxTest().getPValue();
+        double plbox = 1 - controller.getLjungBoxTest().getPvalue();
         if (naut0 <= naut && (!spec0.equals(spec) || mu0 != mu)) {
             if (plbox < .95 && plbox < .75 && rvr0 < rvr) {
                 ichk = 1;
@@ -527,7 +527,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
         controller.accept(context);
         rtval0 = controller.getRTval();
         rvr0 = controller.getRvr();
-        plbox0 = 1 - controller.getLjungBoxTest().getPValue();
+        plbox0 = 1 - controller.getLjungBoxTest().getPvalue();
         reference = RegSarimaModelling.copyOf(context);
 
     }

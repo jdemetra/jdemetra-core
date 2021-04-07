@@ -9580,6 +9580,991 @@ public final class ToolkitProtos {
 
   }
 
+  public interface OneWayAnovaOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:jd3.OneWayAnova)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * sum_f(n_f(X_f-X)^2) = ss explained by the factors
+     * </pre>
+     *
+     * <code>double SSM = 1;</code>
+     * @return The sSM.
+     */
+    double getSSM();
+
+    /**
+     * <pre>
+     * nfactors-1
+     * </pre>
+     *
+     * <code>int32 dfm = 2;</code>
+     * @return The dfm.
+     */
+    int getDfm();
+
+    /**
+     * <pre>
+     * sum_f(sum_i(x_if-X_f)^2) = residual ss
+     * </pre>
+     *
+     * <code>double SSR = 3;</code>
+     * @return The sSR.
+     */
+    double getSSR();
+
+    /**
+     * <pre>
+     * N-nfactors
+     * </pre>
+     *
+     * <code>int32 dfr = 4;</code>
+     * @return The dfr.
+     */
+    int getDfr();
+
+    /**
+     * <code>.jd3.StatisticalTest test = 5;</code>
+     * @return Whether the test field is set.
+     */
+    boolean hasTest();
+    /**
+     * <code>.jd3.StatisticalTest test = 5;</code>
+     * @return The test.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getTest();
+    /**
+     * <code>.jd3.StatisticalTest test = 5;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getTestOrBuilder();
+  }
+  /**
+   * Protobuf type {@code jd3.OneWayAnova}
+   */
+  public static final class OneWayAnova extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:jd3.OneWayAnova)
+      OneWayAnovaOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use OneWayAnova.newBuilder() to construct.
+    private OneWayAnova(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private OneWayAnova() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new OneWayAnova();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private OneWayAnova(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 9: {
+
+              sSM_ = input.readDouble();
+              break;
+            }
+            case 16: {
+
+              dfm_ = input.readInt32();
+              break;
+            }
+            case 25: {
+
+              sSR_ = input.readDouble();
+              break;
+            }
+            case 32: {
+
+              dfr_ = input.readInt32();
+              break;
+            }
+            case 42: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder subBuilder = null;
+              if (test_ != null) {
+                subBuilder = test_.toBuilder();
+              }
+              test_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(test_);
+                test_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_OneWayAnova_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_OneWayAnova_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.class, demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.Builder.class);
+    }
+
+    public static final int SSM_FIELD_NUMBER = 1;
+    private double sSM_;
+    /**
+     * <pre>
+     * sum_f(n_f(X_f-X)^2) = ss explained by the factors
+     * </pre>
+     *
+     * <code>double SSM = 1;</code>
+     * @return The sSM.
+     */
+    @java.lang.Override
+    public double getSSM() {
+      return sSM_;
+    }
+
+    public static final int DFM_FIELD_NUMBER = 2;
+    private int dfm_;
+    /**
+     * <pre>
+     * nfactors-1
+     * </pre>
+     *
+     * <code>int32 dfm = 2;</code>
+     * @return The dfm.
+     */
+    @java.lang.Override
+    public int getDfm() {
+      return dfm_;
+    }
+
+    public static final int SSR_FIELD_NUMBER = 3;
+    private double sSR_;
+    /**
+     * <pre>
+     * sum_f(sum_i(x_if-X_f)^2) = residual ss
+     * </pre>
+     *
+     * <code>double SSR = 3;</code>
+     * @return The sSR.
+     */
+    @java.lang.Override
+    public double getSSR() {
+      return sSR_;
+    }
+
+    public static final int DFR_FIELD_NUMBER = 4;
+    private int dfr_;
+    /**
+     * <pre>
+     * N-nfactors
+     * </pre>
+     *
+     * <code>int32 dfr = 4;</code>
+     * @return The dfr.
+     */
+    @java.lang.Override
+    public int getDfr() {
+      return dfr_;
+    }
+
+    public static final int TEST_FIELD_NUMBER = 5;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest test_;
+    /**
+     * <code>.jd3.StatisticalTest test = 5;</code>
+     * @return Whether the test field is set.
+     */
+    @java.lang.Override
+    public boolean hasTest() {
+      return test_ != null;
+    }
+    /**
+     * <code>.jd3.StatisticalTest test = 5;</code>
+     * @return The test.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getTest() {
+      return test_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : test_;
+    }
+    /**
+     * <code>.jd3.StatisticalTest test = 5;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getTestOrBuilder() {
+      return getTest();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (sSM_ != 0D) {
+        output.writeDouble(1, sSM_);
+      }
+      if (dfm_ != 0) {
+        output.writeInt32(2, dfm_);
+      }
+      if (sSR_ != 0D) {
+        output.writeDouble(3, sSR_);
+      }
+      if (dfr_ != 0) {
+        output.writeInt32(4, dfr_);
+      }
+      if (test_ != null) {
+        output.writeMessage(5, getTest());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (sSM_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(1, sSM_);
+      }
+      if (dfm_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, dfm_);
+      }
+      if (sSR_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(3, sSR_);
+      }
+      if (dfr_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, dfr_);
+      }
+      if (test_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, getTest());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova)) {
+        return super.equals(obj);
+      }
+      demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova other = (demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova) obj;
+
+      if (java.lang.Double.doubleToLongBits(getSSM())
+          != java.lang.Double.doubleToLongBits(
+              other.getSSM())) return false;
+      if (getDfm()
+          != other.getDfm()) return false;
+      if (java.lang.Double.doubleToLongBits(getSSR())
+          != java.lang.Double.doubleToLongBits(
+              other.getSSR())) return false;
+      if (getDfr()
+          != other.getDfr()) return false;
+      if (hasTest() != other.hasTest()) return false;
+      if (hasTest()) {
+        if (!getTest()
+            .equals(other.getTest())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SSM_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getSSM()));
+      hash = (37 * hash) + DFM_FIELD_NUMBER;
+      hash = (53 * hash) + getDfm();
+      hash = (37 * hash) + SSR_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getSSR()));
+      hash = (37 * hash) + DFR_FIELD_NUMBER;
+      hash = (53 * hash) + getDfr();
+      if (hasTest()) {
+        hash = (37 * hash) + TEST_FIELD_NUMBER;
+        hash = (53 * hash) + getTest().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code jd3.OneWayAnova}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:jd3.OneWayAnova)
+        demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnovaOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_OneWayAnova_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_OneWayAnova_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.class, demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.Builder.class);
+      }
+
+      // Construct using demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        sSM_ = 0D;
+
+        dfm_ = 0;
+
+        sSR_ = 0D;
+
+        dfr_ = 0;
+
+        if (testBuilder_ == null) {
+          test_ = null;
+        } else {
+          test_ = null;
+          testBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_OneWayAnova_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova getDefaultInstanceForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova build() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova buildPartial() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova result = new demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova(this);
+        result.sSM_ = sSM_;
+        result.dfm_ = dfm_;
+        result.sSR_ = sSR_;
+        result.dfr_ = dfr_;
+        if (testBuilder_ == null) {
+          result.test_ = test_;
+        } else {
+          result.test_ = testBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova) {
+          return mergeFrom((demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova other) {
+        if (other == demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.getDefaultInstance()) return this;
+        if (other.getSSM() != 0D) {
+          setSSM(other.getSSM());
+        }
+        if (other.getDfm() != 0) {
+          setDfm(other.getDfm());
+        }
+        if (other.getSSR() != 0D) {
+          setSSR(other.getSSR());
+        }
+        if (other.getDfr() != 0) {
+          setDfr(other.getDfr());
+        }
+        if (other.hasTest()) {
+          mergeTest(other.getTest());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private double sSM_ ;
+      /**
+       * <pre>
+       * sum_f(n_f(X_f-X)^2) = ss explained by the factors
+       * </pre>
+       *
+       * <code>double SSM = 1;</code>
+       * @return The sSM.
+       */
+      @java.lang.Override
+      public double getSSM() {
+        return sSM_;
+      }
+      /**
+       * <pre>
+       * sum_f(n_f(X_f-X)^2) = ss explained by the factors
+       * </pre>
+       *
+       * <code>double SSM = 1;</code>
+       * @param value The sSM to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSSM(double value) {
+        
+        sSM_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * sum_f(n_f(X_f-X)^2) = ss explained by the factors
+       * </pre>
+       *
+       * <code>double SSM = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSSM() {
+        
+        sSM_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private int dfm_ ;
+      /**
+       * <pre>
+       * nfactors-1
+       * </pre>
+       *
+       * <code>int32 dfm = 2;</code>
+       * @return The dfm.
+       */
+      @java.lang.Override
+      public int getDfm() {
+        return dfm_;
+      }
+      /**
+       * <pre>
+       * nfactors-1
+       * </pre>
+       *
+       * <code>int32 dfm = 2;</code>
+       * @param value The dfm to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDfm(int value) {
+        
+        dfm_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * nfactors-1
+       * </pre>
+       *
+       * <code>int32 dfm = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDfm() {
+        
+        dfm_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private double sSR_ ;
+      /**
+       * <pre>
+       * sum_f(sum_i(x_if-X_f)^2) = residual ss
+       * </pre>
+       *
+       * <code>double SSR = 3;</code>
+       * @return The sSR.
+       */
+      @java.lang.Override
+      public double getSSR() {
+        return sSR_;
+      }
+      /**
+       * <pre>
+       * sum_f(sum_i(x_if-X_f)^2) = residual ss
+       * </pre>
+       *
+       * <code>double SSR = 3;</code>
+       * @param value The sSR to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSSR(double value) {
+        
+        sSR_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * sum_f(sum_i(x_if-X_f)^2) = residual ss
+       * </pre>
+       *
+       * <code>double SSR = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSSR() {
+        
+        sSR_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private int dfr_ ;
+      /**
+       * <pre>
+       * N-nfactors
+       * </pre>
+       *
+       * <code>int32 dfr = 4;</code>
+       * @return The dfr.
+       */
+      @java.lang.Override
+      public int getDfr() {
+        return dfr_;
+      }
+      /**
+       * <pre>
+       * N-nfactors
+       * </pre>
+       *
+       * <code>int32 dfr = 4;</code>
+       * @param value The dfr to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDfr(int value) {
+        
+        dfr_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * N-nfactors
+       * </pre>
+       *
+       * <code>int32 dfr = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDfr() {
+        
+        dfr_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest test_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> testBuilder_;
+      /**
+       * <code>.jd3.StatisticalTest test = 5;</code>
+       * @return Whether the test field is set.
+       */
+      public boolean hasTest() {
+        return testBuilder_ != null || test_ != null;
+      }
+      /**
+       * <code>.jd3.StatisticalTest test = 5;</code>
+       * @return The test.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getTest() {
+        if (testBuilder_ == null) {
+          return test_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : test_;
+        } else {
+          return testBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest test = 5;</code>
+       */
+      public Builder setTest(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (testBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          test_ = value;
+          onChanged();
+        } else {
+          testBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest test = 5;</code>
+       */
+      public Builder setTest(
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder builderForValue) {
+        if (testBuilder_ == null) {
+          test_ = builderForValue.build();
+          onChanged();
+        } else {
+          testBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest test = 5;</code>
+       */
+      public Builder mergeTest(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (testBuilder_ == null) {
+          if (test_ != null) {
+            test_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder(test_).mergeFrom(value).buildPartial();
+          } else {
+            test_ = value;
+          }
+          onChanged();
+        } else {
+          testBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest test = 5;</code>
+       */
+      public Builder clearTest() {
+        if (testBuilder_ == null) {
+          test_ = null;
+          onChanged();
+        } else {
+          test_ = null;
+          testBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest test = 5;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder getTestBuilder() {
+        
+        onChanged();
+        return getTestFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.StatisticalTest test = 5;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getTestOrBuilder() {
+        if (testBuilder_ != null) {
+          return testBuilder_.getMessageOrBuilder();
+        } else {
+          return test_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : test_;
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest test = 5;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> 
+          getTestFieldBuilder() {
+        if (testBuilder_ == null) {
+          testBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder>(
+                  getTest(),
+                  getParentForChildren(),
+                  isClean());
+          test_ = null;
+        }
+        return testBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:jd3.OneWayAnova)
+    }
+
+    // @@protoc_insertion_point(class_scope:jd3.OneWayAnova)
+    private static final demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova();
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<OneWayAnova>
+        PARSER = new com.google.protobuf.AbstractParser<OneWayAnova>() {
+      @java.lang.Override
+      public OneWayAnova parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new OneWayAnova(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<OneWayAnova> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<OneWayAnova> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface ParameterEstimationOrBuilder extends
       // @@protoc_insertion_point(interface_extends:jd3.ParameterEstimation)
       com.google.protobuf.MessageOrBuilder {
@@ -31299,6 +32284,11 @@ public final class ToolkitProtos {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_jd3_StatisticalTest_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_jd3_OneWayAnova_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_jd3_OneWayAnova_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_jd3_ParameterEstimation_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -31428,104 +32418,107 @@ public final class ToolkitProtos {
       "\nstart_year\030\003 \001(\005\022\024\n\014start_period\030\004 \001(\005\022" +
       "\033\n\006values\030\005 \001(\0132\013.jd3.Matrix\"E\n\017Statisti" +
       "calTest\022\r\n\005value\030\001 \001(\001\022\016\n\006pvalue\030\002 \001(\001\022\023" +
-      "\n\013description\030\003 \001(\t\"P\n\023ParameterEstimati" +
-      "on\022\014\n\004name\030\001 \001(\t\022\r\n\005value\030\002 \001(\001\022\014\n\004stde\030" +
-      "\003 \001(\001\022\016\n\006pvalue\030\004 \001(\001\"\210\002\n\024LikelihoodStat" +
-      "istics\022\014\n\004nobs\030\001 \001(\005\022\025\n\rneffectiveobs\030\002 " +
-      "\001(\005\022\017\n\007nparams\030\003 \001(\005\022\032\n\022degrees_of_freed" +
-      "om\030\004 \001(\005\022\026\n\016log_likelihood\030\005 \001(\001\022\037\n\027adju" +
-      "sted_log_likelihood\030\006 \001(\001\022\013\n\003aic\030\007 \001(\001\022\014" +
-      "\n\004aicc\030\010 \001(\001\022\013\n\003bic\030\t \001(\001\022\014\n\004bicc\030\n \001(\001\022" +
-      "\014\n\004bic2\030\013 \001(\001\022\024\n\014hannan_quinn\030\014 \001(\001\022\013\n\003s" +
-      "sq\030\r \001(\001\"^\n\nArimaModel\022\014\n\004name\030\001 \001(\t\022\033\n\023" +
-      "innovation_variance\030\002 \001(\001\022\n\n\002ar\030\003 \003(\001\022\r\n" +
-      "\005delta\030\004 \003(\001\022\n\n\002ma\030\005 \003(\001\"\212\005\n\tNIIDTests\022\"" +
-      "\n\004mean\030\001 \001(\0132\024.jd3.StatisticalTest\022&\n\010sk" +
-      "ewness\030\002 \001(\0132\024.jd3.StatisticalTest\022&\n\010ku" +
-      "rtosis\030\003 \001(\0132\024.jd3.StatisticalTest\022,\n\016do" +
-      "ornik_hansen\030\004 \001(\0132\024.jd3.StatisticalTest" +
-      "\022\'\n\tljung_box\030\005 \001(\0132\024.jd3.StatisticalTes" +
-      "t\022(\n\nbox_pierce\030\006 \001(\0132\024.jd3.StatisticalT" +
-      "est\0220\n\022seasonal_ljung_box\030\007 \001(\0132\024.jd3.St" +
-      "atisticalTest\0221\n\023seasonal_box_pierce\030\010 \001" +
-      "(\0132\024.jd3.StatisticalTest\022)\n\013runs_number\030" +
-      "\t \001(\0132\024.jd3.StatisticalTest\022)\n\013runs_leng" +
-      "th\030\n \001(\0132\024.jd3.StatisticalTest\0221\n\023up_dow" +
-      "n_runs_number\030\013 \001(\0132\024.jd3.StatisticalTes" +
-      "t\0221\n\023up_down_runs_length\030\014 \001(\0132\024.jd3.Sta" +
-      "tisticalTest\0222\n\024ljung_box_on_squares\030\r \001" +
-      "(\0132\024.jd3.StatisticalTest\0223\n\025box_pierce_o" +
-      "n_squares\030\016 \001(\0132\024.jd3.StatisticalTest\"B\n" +
-      "\016ValidityPeriod\022\030\n\005start\030\001 \001(\0132\t.jd3.Dat" +
-      "e\022\026\n\003end\030\002 \001(\0132\t.jd3.Date\"]\n\010FixedDay\022\r\n" +
-      "\005month\030\001 \001(\005\022\013\n\003day\030\002 \001(\005\022\016\n\006weight\030\003 \001(" +
-      "\001\022%\n\010validity\030\004 \001(\0132\023.jd3.ValidityPeriod" +
-      "\"i\n\020EasterRelatedDay\022\016\n\006offset\030\001 \001(\005\022\016\n\006" +
-      "julian\030\002 \001(\010\022\016\n\006weight\030\003 \001(\001\022%\n\010validity" +
-      "\030\004 \001(\0132\023.jd3.ValidityPeriod\"\177\n\023Prespecif" +
-      "iedHoliday\022!\n\005event\030\001 \001(\0162\022.jd3.Calendar" +
-      "Event\022\016\n\006offset\030\002 \001(\005\022\016\n\006weight\030\003 \001(\001\022%\n" +
-      "\010validity\030\004 \001(\0132\023.jd3.ValidityPeriod\"w\n\014" +
-      "FixedWeekDay\022\r\n\005month\030\001 \001(\005\022\020\n\010position\030" +
-      "\002 \001(\005\022\017\n\007weekday\030\003 \001(\005\022\016\n\006weight\030\004 \001(\001\022%" +
-      "\n\010validity\030\005 \001(\0132\023.jd3.ValidityPeriod\"\253\001" +
-      "\n\022CalendarDefinition\022!\n\010calendar\030\001 \001(\0132\r" +
-      ".jd3.CalendarH\000\0222\n\021weighted_calendar\030\002 \001" +
-      "(\0132\025.jd3.WeightedCalendarH\000\0220\n\020chained_c" +
-      "alendar\030\003 \001(\0132\024.jd3.ChainedCalendarH\000B\014\n" +
-      "\ndefinition\"\306\001\n\010Calendar\022!\n\nfixed_days\030\001" +
-      " \003(\0132\r.jd3.FixedDay\0222\n\023easter_related_da" +
-      "ys\030\002 \003(\0132\025.jd3.EasterRelatedDay\022*\n\017fixed" +
-      "_week_days\030\003 \003(\0132\021.jd3.FixedWeekDay\0227\n\025p" +
-      "respecified_holidays\030\004 \003(\0132\030.jd3.Prespec" +
-      "ifiedHoliday\"\200\001\n\020WeightedCalendar\022)\n\005ite" +
-      "ms\030\001 \003(\0132\032.jd3.WeightedCalendar.Item\032A\n\004" +
-      "Item\022)\n\010calendar\030\001 \001(\0132\027.jd3.CalendarDef" +
-      "inition\022\016\n\006weight\030\002 \001(\001\"\203\001\n\017ChainedCalen" +
-      "dar\022*\n\tcalendar1\030\001 \001(\0132\027.jd3.CalendarDef" +
-      "inition\022*\n\tcalendar2\030\002 \001(\0132\027.jd3.Calenda" +
-      "rDefinition\022\030\n\005break\030\003 \001(\0132\t.jd3.Date\"\216\002" +
-      "\n\020ModellingContext\0227\n\tcalendars\030\001 \003(\0132$." +
-      "jd3.ModellingContext.CalendarsEntry\0227\n\tv" +
-      "ariables\030\002 \003(\0132$.jd3.ModellingContext.Va" +
-      "riablesEntry\032I\n\016CalendarsEntry\022\013\n\003key\030\001 " +
-      "\001(\t\022&\n\005value\030\002 \001(\0132\027.jd3.CalendarDefinit" +
-      "ion:\0028\001\032=\n\016VariablesEntry\022\013\n\003key\030\001 \001(\t\022\032" +
-      "\n\005value\030\002 \001(\0132\013.jd3.TsData:\0028\001\"\320\001\n\020Proce" +
-      "ssingDetail\022\031\n\002ts\030\001 \001(\0132\013.jd3.TsDataH\000\022\035" +
-      "\n\005array\030\002 \001(\0132\014.jd3.DoublesH\000\022\035\n\006matrix\030" +
-      "\003 \001(\0132\013.jd3.MatrixH\000\022$\n\004test\030\004 \001(\0132\024.jd3" +
-      ".StatisticalTestH\000\022\021\n\007message\030\005 \001(\tH\000\022\020\n" +
-      "\006ivalue\030\006 \001(\005H\000\022\020\n\006dvalue\030\007 \001(\001H\000B\006\n\004dat" +
-      "a\"\216\001\n\025ProcessingInformation\022\014\n\004name\030\001 \001(" +
-      "\t\022\016\n\006origin\030\002 \001(\t\022\013\n\003msg\030\003 \001(\t\022\"\n\004type\030\004" +
-      " \001(\0162\024.jd3.InformationType\022&\n\007details\030\005 " +
-      "\003(\0132\025.jd3.ProcessingDetail\"9\n\016Processing" +
-      "Logs\022\'\n\003log\030\001 \003(\0132\032.jd3.ProcessingInform" +
-      "ation*\215\001\n\rSelectionType\022\014\n\010SPAN_ALL\020\000\022\r\n" +
-      "\tSPAN_FROM\020\001\022\013\n\007SPAN_TO\020\002\022\020\n\014SPAN_BETWEE" +
-      "N\020\003\022\r\n\tSPAN_LAST\020\004\022\016\n\nSPAN_FIRST\020\005\022\022\n\016SP" +
-      "AN_EXCLUDING\020\006\022\r\n\tSPAN_NONE\020\007*\203\001\n\rParame" +
-      "terType\022\024\n\020PARAMETER_UNUSED\020\000\022\027\n\023PARAMET" +
-      "ER_UNDEFINED\020\001\022\023\n\017PARAMETER_FIXED\020\002\022\025\n\021P" +
-      "ARAMETER_INITIAL\020\003\022\027\n\023PARAMETER_ESTIMATE" +
-      "D\020\004*\243\004\n\rCalendarEvent\022\027\n\023HOLIDAY_UNSPECI" +
-      "FIED\020\000\022\023\n\017HOLIDAY_NEWYEAR\020\001\022\030\n\024HOLIDAY_S" +
-      "HROVEMONDAY\020\002\022\031\n\025HOLIDAY_SHROVETUESDAY\020\003" +
-      "\022\030\n\024HOLIDAY_ASHWEDNESDAY\020\004\022\022\n\016HOLIDAY_EA" +
-      "STER\020\005\022\030\n\024HOLIDAY_JULIANEASTER\020\006\022\032\n\026HOLI" +
-      "DAY_MAUNDYTHURSDAY\020\007\022\026\n\022HOLIDAY_GOODFRID" +
-      "AY\020\010\022\030\n\024HOLIDAY_EASTERMONDAY\020\t\022\025\n\021HOLIDA" +
-      "Y_ASCENSION\020\n\022\025\n\021HOLIDAY_PENTECOST\020\013\022\031\n\025" +
-      "HOLIDAY_CORPUSCHRISTI\020\014\022\026\n\022HOLIDAY_WHITM" +
-      "ONDAY\020\r\022\022\n\016HOLIDAY_MAYDAY\020\016\022\026\n\022HOLIDAY_A" +
-      "SSUMPTION\020\017\022\024\n\020HOLIDAY_LABORDAY\020\020\022\025\n\021HOL" +
-      "IDAY_HALLOWEEN\020\021\022\027\n\023HOLIDAY_ALLSAINTDAY\020" +
-      "\022\022\025\n\021HOLIDAY_ARMISTICE\020\023\022\030\n\024HOLIDAY_THAN" +
-      "KSGIVING\020\024\022\025\n\021HOLIDAY_CHRISTMAS\020\025*3\n\017Inf" +
-      "ormationType\022\010\n\004Info\020\000\022\013\n\007Warning\020\001\022\t\n\005E" +
-      "rror\020\002B,\n\033demetra.toolkit.io.protobufB\rT" +
-      "oolkitProtosb\006proto3"
+      "\n\013description\030\003 \001(\t\"e\n\013OneWayAnova\022\013\n\003SS" +
+      "M\030\001 \001(\001\022\013\n\003dfm\030\002 \001(\005\022\013\n\003SSR\030\003 \001(\001\022\013\n\003dfr" +
+      "\030\004 \001(\005\022\"\n\004test\030\005 \001(\0132\024.jd3.StatisticalTe" +
+      "st\"P\n\023ParameterEstimation\022\014\n\004name\030\001 \001(\t\022" +
+      "\r\n\005value\030\002 \001(\001\022\014\n\004stde\030\003 \001(\001\022\016\n\006pvalue\030\004" +
+      " \001(\001\"\210\002\n\024LikelihoodStatistics\022\014\n\004nobs\030\001 " +
+      "\001(\005\022\025\n\rneffectiveobs\030\002 \001(\005\022\017\n\007nparams\030\003 " +
+      "\001(\005\022\032\n\022degrees_of_freedom\030\004 \001(\005\022\026\n\016log_l" +
+      "ikelihood\030\005 \001(\001\022\037\n\027adjusted_log_likeliho" +
+      "od\030\006 \001(\001\022\013\n\003aic\030\007 \001(\001\022\014\n\004aicc\030\010 \001(\001\022\013\n\003b" +
+      "ic\030\t \001(\001\022\014\n\004bicc\030\n \001(\001\022\014\n\004bic2\030\013 \001(\001\022\024\n\014" +
+      "hannan_quinn\030\014 \001(\001\022\013\n\003ssq\030\r \001(\001\"^\n\nArima" +
+      "Model\022\014\n\004name\030\001 \001(\t\022\033\n\023innovation_varian" +
+      "ce\030\002 \001(\001\022\n\n\002ar\030\003 \003(\001\022\r\n\005delta\030\004 \003(\001\022\n\n\002m" +
+      "a\030\005 \003(\001\"\212\005\n\tNIIDTests\022\"\n\004mean\030\001 \001(\0132\024.jd" +
+      "3.StatisticalTest\022&\n\010skewness\030\002 \001(\0132\024.jd" +
+      "3.StatisticalTest\022&\n\010kurtosis\030\003 \001(\0132\024.jd" +
+      "3.StatisticalTest\022,\n\016doornik_hansen\030\004 \001(" +
+      "\0132\024.jd3.StatisticalTest\022\'\n\tljung_box\030\005 \001" +
+      "(\0132\024.jd3.StatisticalTest\022(\n\nbox_pierce\030\006" +
+      " \001(\0132\024.jd3.StatisticalTest\0220\n\022seasonal_l" +
+      "jung_box\030\007 \001(\0132\024.jd3.StatisticalTest\0221\n\023" +
+      "seasonal_box_pierce\030\010 \001(\0132\024.jd3.Statisti" +
+      "calTest\022)\n\013runs_number\030\t \001(\0132\024.jd3.Stati" +
+      "sticalTest\022)\n\013runs_length\030\n \001(\0132\024.jd3.St" +
+      "atisticalTest\0221\n\023up_down_runs_number\030\013 \001" +
+      "(\0132\024.jd3.StatisticalTest\0221\n\023up_down_runs" +
+      "_length\030\014 \001(\0132\024.jd3.StatisticalTest\0222\n\024l" +
+      "jung_box_on_squares\030\r \001(\0132\024.jd3.Statisti" +
+      "calTest\0223\n\025box_pierce_on_squares\030\016 \001(\0132\024" +
+      ".jd3.StatisticalTest\"B\n\016ValidityPeriod\022\030" +
+      "\n\005start\030\001 \001(\0132\t.jd3.Date\022\026\n\003end\030\002 \001(\0132\t." +
+      "jd3.Date\"]\n\010FixedDay\022\r\n\005month\030\001 \001(\005\022\013\n\003d" +
+      "ay\030\002 \001(\005\022\016\n\006weight\030\003 \001(\001\022%\n\010validity\030\004 \001" +
+      "(\0132\023.jd3.ValidityPeriod\"i\n\020EasterRelated" +
+      "Day\022\016\n\006offset\030\001 \001(\005\022\016\n\006julian\030\002 \001(\010\022\016\n\006w" +
+      "eight\030\003 \001(\001\022%\n\010validity\030\004 \001(\0132\023.jd3.Vali" +
+      "dityPeriod\"\177\n\023PrespecifiedHoliday\022!\n\005eve" +
+      "nt\030\001 \001(\0162\022.jd3.CalendarEvent\022\016\n\006offset\030\002" +
+      " \001(\005\022\016\n\006weight\030\003 \001(\001\022%\n\010validity\030\004 \001(\0132\023" +
+      ".jd3.ValidityPeriod\"w\n\014FixedWeekDay\022\r\n\005m" +
+      "onth\030\001 \001(\005\022\020\n\010position\030\002 \001(\005\022\017\n\007weekday\030" +
+      "\003 \001(\005\022\016\n\006weight\030\004 \001(\001\022%\n\010validity\030\005 \001(\0132" +
+      "\023.jd3.ValidityPeriod\"\253\001\n\022CalendarDefinit" +
+      "ion\022!\n\010calendar\030\001 \001(\0132\r.jd3.CalendarH\000\0222" +
+      "\n\021weighted_calendar\030\002 \001(\0132\025.jd3.Weighted" +
+      "CalendarH\000\0220\n\020chained_calendar\030\003 \001(\0132\024.j" +
+      "d3.ChainedCalendarH\000B\014\n\ndefinition\"\306\001\n\010C" +
+      "alendar\022!\n\nfixed_days\030\001 \003(\0132\r.jd3.FixedD" +
+      "ay\0222\n\023easter_related_days\030\002 \003(\0132\025.jd3.Ea" +
+      "sterRelatedDay\022*\n\017fixed_week_days\030\003 \003(\0132" +
+      "\021.jd3.FixedWeekDay\0227\n\025prespecified_holid" +
+      "ays\030\004 \003(\0132\030.jd3.PrespecifiedHoliday\"\200\001\n\020" +
+      "WeightedCalendar\022)\n\005items\030\001 \003(\0132\032.jd3.We" +
+      "ightedCalendar.Item\032A\n\004Item\022)\n\010calendar\030" +
+      "\001 \001(\0132\027.jd3.CalendarDefinition\022\016\n\006weight" +
+      "\030\002 \001(\001\"\203\001\n\017ChainedCalendar\022*\n\tcalendar1\030" +
+      "\001 \001(\0132\027.jd3.CalendarDefinition\022*\n\tcalend" +
+      "ar2\030\002 \001(\0132\027.jd3.CalendarDefinition\022\030\n\005br" +
+      "eak\030\003 \001(\0132\t.jd3.Date\"\216\002\n\020ModellingContex" +
+      "t\0227\n\tcalendars\030\001 \003(\0132$.jd3.ModellingCont" +
+      "ext.CalendarsEntry\0227\n\tvariables\030\002 \003(\0132$." +
+      "jd3.ModellingContext.VariablesEntry\032I\n\016C" +
+      "alendarsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(" +
+      "\0132\027.jd3.CalendarDefinition:\0028\001\032=\n\016Variab" +
+      "lesEntry\022\013\n\003key\030\001 \001(\t\022\032\n\005value\030\002 \001(\0132\013.j" +
+      "d3.TsData:\0028\001\"\320\001\n\020ProcessingDetail\022\031\n\002ts" +
+      "\030\001 \001(\0132\013.jd3.TsDataH\000\022\035\n\005array\030\002 \001(\0132\014.j" +
+      "d3.DoublesH\000\022\035\n\006matrix\030\003 \001(\0132\013.jd3.Matri" +
+      "xH\000\022$\n\004test\030\004 \001(\0132\024.jd3.StatisticalTestH" +
+      "\000\022\021\n\007message\030\005 \001(\tH\000\022\020\n\006ivalue\030\006 \001(\005H\000\022\020" +
+      "\n\006dvalue\030\007 \001(\001H\000B\006\n\004data\"\216\001\n\025ProcessingI" +
+      "nformation\022\014\n\004name\030\001 \001(\t\022\016\n\006origin\030\002 \001(\t" +
+      "\022\013\n\003msg\030\003 \001(\t\022\"\n\004type\030\004 \001(\0162\024.jd3.Inform" +
+      "ationType\022&\n\007details\030\005 \003(\0132\025.jd3.Process" +
+      "ingDetail\"9\n\016ProcessingLogs\022\'\n\003log\030\001 \003(\013" +
+      "2\032.jd3.ProcessingInformation*\215\001\n\rSelecti" +
+      "onType\022\014\n\010SPAN_ALL\020\000\022\r\n\tSPAN_FROM\020\001\022\013\n\007S" +
+      "PAN_TO\020\002\022\020\n\014SPAN_BETWEEN\020\003\022\r\n\tSPAN_LAST\020" +
+      "\004\022\016\n\nSPAN_FIRST\020\005\022\022\n\016SPAN_EXCLUDING\020\006\022\r\n" +
+      "\tSPAN_NONE\020\007*\203\001\n\rParameterType\022\024\n\020PARAME" +
+      "TER_UNUSED\020\000\022\027\n\023PARAMETER_UNDEFINED\020\001\022\023\n" +
+      "\017PARAMETER_FIXED\020\002\022\025\n\021PARAMETER_INITIAL\020" +
+      "\003\022\027\n\023PARAMETER_ESTIMATED\020\004*\243\004\n\rCalendarE" +
+      "vent\022\027\n\023HOLIDAY_UNSPECIFIED\020\000\022\023\n\017HOLIDAY" +
+      "_NEWYEAR\020\001\022\030\n\024HOLIDAY_SHROVEMONDAY\020\002\022\031\n\025" +
+      "HOLIDAY_SHROVETUESDAY\020\003\022\030\n\024HOLIDAY_ASHWE" +
+      "DNESDAY\020\004\022\022\n\016HOLIDAY_EASTER\020\005\022\030\n\024HOLIDAY" +
+      "_JULIANEASTER\020\006\022\032\n\026HOLIDAY_MAUNDYTHURSDA" +
+      "Y\020\007\022\026\n\022HOLIDAY_GOODFRIDAY\020\010\022\030\n\024HOLIDAY_E" +
+      "ASTERMONDAY\020\t\022\025\n\021HOLIDAY_ASCENSION\020\n\022\025\n\021" +
+      "HOLIDAY_PENTECOST\020\013\022\031\n\025HOLIDAY_CORPUSCHR" +
+      "ISTI\020\014\022\026\n\022HOLIDAY_WHITMONDAY\020\r\022\022\n\016HOLIDA" +
+      "Y_MAYDAY\020\016\022\026\n\022HOLIDAY_ASSUMPTION\020\017\022\024\n\020HO" +
+      "LIDAY_LABORDAY\020\020\022\025\n\021HOLIDAY_HALLOWEEN\020\021\022" +
+      "\027\n\023HOLIDAY_ALLSAINTDAY\020\022\022\025\n\021HOLIDAY_ARMI" +
+      "STICE\020\023\022\030\n\024HOLIDAY_THANKSGIVING\020\024\022\025\n\021HOL" +
+      "IDAY_CHRISTMAS\020\025*3\n\017InformationType\022\010\n\004I" +
+      "nfo\020\000\022\013\n\007Warning\020\001\022\t\n\005Error\020\002B,\n\033demetra" +
+      ".toolkit.io.protobufB\rToolkitProtosb\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -31591,74 +32584,80 @@ public final class ToolkitProtos {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_StatisticalTest_descriptor,
         new java.lang.String[] { "Value", "Pvalue", "Description", });
-    internal_static_jd3_ParameterEstimation_descriptor =
+    internal_static_jd3_OneWayAnova_descriptor =
       getDescriptor().getMessageTypes().get(10);
+    internal_static_jd3_OneWayAnova_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_jd3_OneWayAnova_descriptor,
+        new java.lang.String[] { "SSM", "Dfm", "SSR", "Dfr", "Test", });
+    internal_static_jd3_ParameterEstimation_descriptor =
+      getDescriptor().getMessageTypes().get(11);
     internal_static_jd3_ParameterEstimation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ParameterEstimation_descriptor,
         new java.lang.String[] { "Name", "Value", "Stde", "Pvalue", });
     internal_static_jd3_LikelihoodStatistics_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_jd3_LikelihoodStatistics_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_LikelihoodStatistics_descriptor,
         new java.lang.String[] { "Nobs", "Neffectiveobs", "Nparams", "DegreesOfFreedom", "LogLikelihood", "AdjustedLogLikelihood", "Aic", "Aicc", "Bic", "Bicc", "Bic2", "HannanQuinn", "Ssq", });
     internal_static_jd3_ArimaModel_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_jd3_ArimaModel_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ArimaModel_descriptor,
         new java.lang.String[] { "Name", "InnovationVariance", "Ar", "Delta", "Ma", });
     internal_static_jd3_NIIDTests_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_jd3_NIIDTests_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_NIIDTests_descriptor,
         new java.lang.String[] { "Mean", "Skewness", "Kurtosis", "DoornikHansen", "LjungBox", "BoxPierce", "SeasonalLjungBox", "SeasonalBoxPierce", "RunsNumber", "RunsLength", "UpDownRunsNumber", "UpDownRunsLength", "LjungBoxOnSquares", "BoxPierceOnSquares", });
     internal_static_jd3_ValidityPeriod_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_jd3_ValidityPeriod_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ValidityPeriod_descriptor,
         new java.lang.String[] { "Start", "End", });
     internal_static_jd3_FixedDay_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_jd3_FixedDay_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_FixedDay_descriptor,
         new java.lang.String[] { "Month", "Day", "Weight", "Validity", });
     internal_static_jd3_EasterRelatedDay_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_jd3_EasterRelatedDay_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_EasterRelatedDay_descriptor,
         new java.lang.String[] { "Offset", "Julian", "Weight", "Validity", });
     internal_static_jd3_PrespecifiedHoliday_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_jd3_PrespecifiedHoliday_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_PrespecifiedHoliday_descriptor,
         new java.lang.String[] { "Event", "Offset", "Weight", "Validity", });
     internal_static_jd3_FixedWeekDay_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_jd3_FixedWeekDay_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_FixedWeekDay_descriptor,
         new java.lang.String[] { "Month", "Position", "Weekday", "Weight", "Validity", });
     internal_static_jd3_CalendarDefinition_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_jd3_CalendarDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_CalendarDefinition_descriptor,
         new java.lang.String[] { "Calendar", "WeightedCalendar", "ChainedCalendar", "Definition", });
     internal_static_jd3_Calendar_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_jd3_Calendar_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_Calendar_descriptor,
         new java.lang.String[] { "FixedDays", "EasterRelatedDays", "FixedWeekDays", "PrespecifiedHolidays", });
     internal_static_jd3_WeightedCalendar_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_jd3_WeightedCalendar_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_WeightedCalendar_descriptor,
@@ -31670,13 +32669,13 @@ public final class ToolkitProtos {
         internal_static_jd3_WeightedCalendar_Item_descriptor,
         new java.lang.String[] { "Calendar", "Weight", });
     internal_static_jd3_ChainedCalendar_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_jd3_ChainedCalendar_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ChainedCalendar_descriptor,
         new java.lang.String[] { "Calendar1", "Calendar2", "Break", });
     internal_static_jd3_ModellingContext_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_jd3_ModellingContext_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ModellingContext_descriptor,
@@ -31694,19 +32693,19 @@ public final class ToolkitProtos {
         internal_static_jd3_ModellingContext_VariablesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_jd3_ProcessingDetail_descriptor =
-      getDescriptor().getMessageTypes().get(24);
+      getDescriptor().getMessageTypes().get(25);
     internal_static_jd3_ProcessingDetail_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ProcessingDetail_descriptor,
         new java.lang.String[] { "Ts", "Array", "Matrix", "Test", "Message", "Ivalue", "Dvalue", "Data", });
     internal_static_jd3_ProcessingInformation_descriptor =
-      getDescriptor().getMessageTypes().get(25);
+      getDescriptor().getMessageTypes().get(26);
     internal_static_jd3_ProcessingInformation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ProcessingInformation_descriptor,
         new java.lang.String[] { "Name", "Origin", "Msg", "Type", "Details", });
     internal_static_jd3_ProcessingLogs_descriptor =
-      getDescriptor().getMessageTypes().get(26);
+      getDescriptor().getMessageTypes().get(27);
     internal_static_jd3_ProcessingLogs_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ProcessingLogs_descriptor,

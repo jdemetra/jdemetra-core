@@ -19,9 +19,9 @@ package jdplus.dstats.internal;
 import nbbrd.design.Development;
 import nbbrd.design.Internal;
 import demetra.stats.ProbabilityType;
-import jdplus.dstats.BoundaryType;
-import jdplus.dstats.ContinuousDistribution;
-import jdplus.dstats.DStatException;
+import demetra.dstats.BoundaryType;
+import demetra.dstats.ContinuousDistribution;
+import demetra.dstats.DStatException;
 
 /*
  * @author Jean Palate

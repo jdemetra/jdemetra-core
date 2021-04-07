@@ -25,7 +25,7 @@ import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.ISsfError;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 

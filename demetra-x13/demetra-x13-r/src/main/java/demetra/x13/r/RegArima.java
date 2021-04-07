@@ -17,7 +17,9 @@
 package demetra.x13.r;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
+import demetra.modelling.StationaryTransformation;
 import demetra.processing.ProcResults;
 import demetra.regarima.RegArimaOutput;
 import demetra.regarima.RegArimaSpec;
@@ -33,6 +35,7 @@ import jdplus.math.matrices.Matrix;
 import jdplus.regarima.extractors.RegSarimaModelExtractor;
 import jdplus.regsarima.regular.Forecast;
 import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.x13.regarima.DifferencingModule;
 import jdplus.x13.regarima.RegArimaFactory;
 import jdplus.x13.regarima.RegArimaKernel;
 
@@ -137,4 +140,19 @@ public class RegArima {
     public byte[] toBuffer(RegArimaOutput output) {
         return RegArimaProto.convert(output).toByteArray();
     }
+    
+    public StationaryTransformation doStationary(double[] data, int period){
+        DifferencingModule diff = DifferencingModule.builder()
+                .build();
+        
+        DoubleSeq s=DoubleSeq.of(data);
+        diff.process(s, period);
+        
+        return StationaryTransformation.builder()
+                .meanCorrection(diff.isMeanCorrection())
+                .difference(new StationaryTransformation.Differencing(1, diff.getD()))
+                .difference(new StationaryTransformation.Differencing(period, diff.getBd()))
+                .build();
+    }
+    
 }

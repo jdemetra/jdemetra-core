@@ -23,8 +23,8 @@ import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
 import jdplus.stats.tests.LjungBox;
-import jdplus.stats.tests.StatisticalTest;
 import demetra.data.DoubleSeq;
+import demetra.stats.StatisticalTest;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.regarima.IRegArimaComputer;
 
@@ -93,7 +93,7 @@ public class TramoUtility {
                 .hyperParametersCount(hp)
                 .lag(n)
                 .build();
-        return 1 - lb.getPValue();
+        return 1 - lb.getPvalue();
     }
 
     public IRegArimaComputer<SarimaModel> processor(boolean ml, double precision) {

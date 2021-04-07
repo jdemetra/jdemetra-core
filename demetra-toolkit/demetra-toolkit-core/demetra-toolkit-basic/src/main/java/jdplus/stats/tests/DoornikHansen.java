@@ -16,13 +16,14 @@
  */
 package jdplus.stats.tests;
 
+import demetra.stats.TestType;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import jdplus.dstats.Chi2;
 import jdplus.stats.DescriptiveStatistics;
 import demetra.stats.StatException;
 import demetra.data.DoubleSeq;
-
+import demetra.stats.StatisticalTest;
 
 /**
  *
@@ -30,50 +31,49 @@ import demetra.data.DoubleSeq;
  */
 @Development(status = Development.Status.Alpha)
 @BuilderPattern(StatisticalTest.class)
-public class DoornikHansen 
-{
+public class DoornikHansen {
+
     private final DescriptiveStatistics stats;
-    
-    public DoornikHansen(DoubleSeq data)
-    {
-        this.stats=DescriptiveStatistics.of(data);
+
+    public DoornikHansen(DoubleSeq data) {
+        this.stats = DescriptiveStatistics.of(data);
     }
 
-    public DoornikHansen(DescriptiveStatistics stats)
-    {
-        this.stats=stats;
+    public DoornikHansen(DescriptiveStatistics stats) {
+        this.stats = stats;
     }
 
     // calculate correction for Skewness (D'Agostino)
     public StatisticalTest build() {
-	double sk = stats.getSkewness();
-	double n = stats.getDataCount();
-	if (n <= 7)
-	    throw new StatException(StatException.NOT_ENOUGH_DATA);
-	double b = (3 * (n * n + 27 * n - 70) * (n + 1) * (n + 3))
-		/ ((n - 2) * (n + 5) * (n + 7) * (n + 9));
-	double w2 = -1 + Math.sqrt(2 * (b - 1));
-	double ds = 1.0 / (Math.sqrt(0.5 * Math.log(w2)));
-	double y = sk
-		* Math.sqrt((w2 - 1) * (n + 1) * (n + 3) / (12 * (n - 2)));
-	double z1 = ds * Math.log(y + Math.sqrt(y * y + 1.0));
+        double sk = stats.getSkewness();
+        double n = stats.getDataCount();
+        if (n <= 7) {
+            throw new StatException(StatException.NOT_ENOUGH_DATA);
+        }
+        double b = (3 * (n * n + 27 * n - 70) * (n + 1) * (n + 3))
+                / ((n - 2) * (n + 5) * (n + 7) * (n + 9));
+        double w2 = -1 + Math.sqrt(2 * (b - 1));
+        double ds = 1.0 / (Math.sqrt(0.5 * Math.log(w2)));
+        double y = sk
+                * Math.sqrt((w2 - 1) * (n + 1) * (n + 3) / (12 * (n - 2)));
+        double z1 = ds * Math.log(y + Math.sqrt(y * y + 1.0));
 
-	// calculate transformation of kurtosis from gamma to X2 distribution
-	// using Wilson-Hilferty
-	// cubed root transformation
-	double kr = stats.getKurtosis();
-	double dk = (n - 3) * (n + 1) * (n * n + 15 * n - 4);
-	double a = (n - 2) * (n + 5) * (n + 7) * (n * n + 27 * n - 70.0)
-		/ (dk * 6);
-	double c = (n - 7) * (n + 5) * (n + 7) * (n * n + 2 * n - 5) / (dk * 6);
-	double k = (n + 5) * (n + 7)
-		* (n * n * n + n * n * 37 + 11 * n - 313.0) / (dk * 12);
-	double alpha = a + c * sk * sk;
-	double chi = 2 * k * (kr - 1.0 - sk * sk);
-	double z2 = Math.sqrt(alpha * 9)
-		* (Math.pow(chi / (2 * alpha), 1 / 3.0) - 1 + 1 / (9 * alpha));
+        // calculate transformation of kurtosis from gamma to X2 distribution
+        // using Wilson-Hilferty
+        // cubed root transformation
+        double kr = stats.getKurtosis();
+        double dk = (n - 3) * (n + 1) * (n * n + 15 * n - 4);
+        double a = (n - 2) * (n + 5) * (n + 7) * (n * n + 27 * n - 70.0)
+                / (dk * 6);
+        double c = (n - 7) * (n + 5) * (n + 7) * (n * n + 2 * n - 5) / (dk * 6);
+        double k = (n + 5) * (n + 7)
+                * (n * n * n + n * n * 37 + 11 * n - 313.0) / (dk * 12);
+        double alpha = a + c * sk * sk;
+        double chi = 2 * k * (kr - 1.0 - sk * sk);
+        double z2 = Math.sqrt(alpha * 9)
+                * (Math.pow(chi / (2 * alpha), 1 / 3.0) - 1 + 1 / (9 * alpha));
 
-        return new StatisticalTest(new Chi2(2), z1 * z1 + z2 * z2, TestType.Upper, true);
+        return TestsUtility.testOf(z1 * z1 + z2 * z2, new Chi2(2), TestType.Upper);
     }
 
 }

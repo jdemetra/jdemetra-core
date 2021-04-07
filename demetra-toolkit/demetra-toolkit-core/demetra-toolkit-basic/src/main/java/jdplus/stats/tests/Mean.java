@@ -16,10 +16,12 @@
  */
 package jdplus.stats.tests;
 
+import demetra.stats.TestType;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import jdplus.dstats.T;
 import demetra.data.DoubleSeq;
+import demetra.stats.StatisticalTest;
 
 /**
  *
@@ -80,7 +82,7 @@ public class Mean {
 
     public StatisticalTest build() {
         double val = (mean - emean) / Math.sqrt(var / n);
-        return new StatisticalTest(new T(n), val, TestType.TwoSided, false);
+        return TestsUtility.testOf(val, new T(n), TestType.TwoSided);
     }
 
 }

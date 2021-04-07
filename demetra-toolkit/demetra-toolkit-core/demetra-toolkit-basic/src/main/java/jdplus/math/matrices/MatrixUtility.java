@@ -6,7 +6,7 @@
 package jdplus.math.matrices;
 
 import jdplus.random.MersenneTwister;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
 
 /**
  *

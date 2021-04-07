@@ -16,33 +16,35 @@
  */
 package jdplus.stats.tests;
 
+import demetra.stats.TestType;
 import demetra.data.DoubleSeqCursor;
 import nbbrd.design.Development;
 import jdplus.dstats.Chi2;
 import jdplus.dstats.Normal;
 import demetra.stats.StatException;
 import demetra.data.DoubleSeq;
-
+import demetra.stats.StatisticalTest;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class TestOfUpDownRuns 
-{
+public class TestOfUpDownRuns {
+
     private static double dfact(double x, final int k) {
-	for (int i = 2; i <= k; ++i)
-	    if (x == 0)
-		return 0;
-	    else
-		x /= i;
-	return x;
+        for (int i = 2; i <= k; ++i) {
+            if (x == 0) {
+                return 0;
+            } else {
+                x /= i;
+            }
+        }
+        return x;
     }
 
-    public TestOfUpDownRuns(DoubleSeq data)
-    {
-        obs=data.select( x->Double.isFinite(x));
+    public TestOfUpDownRuns(DoubleSeq data) {
+        obs = data.select(x -> Double.isFinite(x));
     }
 
     private int nruns;
@@ -50,75 +52,79 @@ public class TestOfUpDownRuns
     private DoubleSeq obs;
 
     private void races() {
-        if (runLengths!=null)
+        if (runLengths != null) {
             return;
-	int n = obs.length();
-	runLengths = new int[n - 1];
-	nruns = 1;
-	if (n < 2)
-	    throw new StatException(StatException.NOT_ENOUGH_DATA);
+        }
+        int n = obs.length();
+        runLengths = new int[n - 1];
+        nruns = 1;
+        if (n < 2) {
+            throw new StatException(StatException.NOT_ENOUGH_DATA);
+        }
         DoubleSeqCursor reader = obs.cursor();
-        double o0=reader.getAndNext(), o1=reader.getAndNext();
-	boolean up = o1 >= o0;
-	int curlength = 1;
-	for (int i = 2; i < n; ++i) {
-            o0=o1;
-            o1=reader.getAndNext();
-	    boolean curup = o1 >= o0;
-	    if (up != curup) {
-		++nruns;
-		up = curup;
-		++runLengths[curlength - 1];
-		curlength = 1;
-	    } else
-		++curlength;
-	}
-	++runLengths[curlength - 1];
+        double o0 = reader.getAndNext(), o1 = reader.getAndNext();
+        boolean up = o1 >= o0;
+        int curlength = 1;
+        for (int i = 2; i < n; ++i) {
+            o0 = o1;
+            o1 = reader.getAndNext();
+            boolean curup = o1 >= o0;
+            if (up != curup) {
+                ++nruns;
+                up = curup;
+                ++runLengths[curlength - 1];
+                curlength = 1;
+            } else {
+                ++curlength;
+            }
+        }
+        ++runLengths[curlength - 1];
     }
 
     /**
-     * 
+     *
      * @param length
      * @return
      */
-    public int runsCount(final int length)
-    {
-	return (length <= 0) ? nruns : runLengths[length - 1];
+    public int runsCount(final int length) {
+        return (length <= 0) ? nruns : runLengths[length - 1];
     }
 
     public StatisticalTest testLength() {
         races();
-	int n = obs.length();
-	double x = 0;
-	for (int i = 1; i < n; ++i) {
-	    double ei = 0;
-	    if (i != n - 1) {
-		ei = 2 * (n * (i * i + 3 * i + 1) - (i * i * i + 3 * i * i - i - 4));
-		ei = dfact(ei, i + 3);
-	    } else
-		ei = dfact(2.0, n);
+        int n = obs.length();
+        double x = 0;
+        for (int i = 1; i < n; ++i) {
+            double ei = 0;
+            if (i != n - 1) {
+                ei = 2 * (n * (i * i + 3 * i + 1) - (i * i * i + 3 * i * i - i - 4));
+                ei = dfact(ei, i + 3);
+            } else {
+                ei = dfact(2.0, n);
+            }
 
-	    double oi = runLengths[i - 1];
-	    if (oi == 0)
-		x += ei;
-	    else if (ei != 0)
-		x += (oi - ei) / ei * (oi - ei);
-	    else
-		x += 999999;
-	}
+            double oi = runLengths[i - 1];
+            if (oi == 0) {
+                x += ei;
+            } else if (ei != 0) {
+                x += (oi - ei) / ei * (oi - ei);
+            } else {
+                x += 999999;
+            }
+        }
 
-	Chi2 dist = new Chi2(n - 1);
-        return new StatisticalTest(dist, x, TestType.Upper, true);
+        Chi2 dist = new Chi2(n - 1);
+        return TestsUtility.testOf(x, dist, TestType.Upper);
     }
 
     public StatisticalTest testNumber() {
         races();
-	double n = obs.length();
-	double E = (2 * n - 1) / 3;
-	double V = (16 * n - 29) / 90;
+        double n = obs.length();
+        double E = (2 * n - 1) / 3;
+        double V = (16 * n - 29) / 90;
 
-	Normal dist = new Normal();
-        return new StatisticalTest(dist, (nruns - E) / Math.sqrt(V), TestType.TwoSided, true);
+        Normal dist = new Normal();
+        return TestsUtility.testOf((nruns - E) / Math.sqrt(V), dist, TestType.TwoSided);
     }
 
 }

@@ -18,7 +18,7 @@ package jdplus.dstats.internal;
 
 import nbbrd.design.Development;
 import static demetra.math.Constants.SQTPI;
-import jdplus.dstats.DStatException;
+import demetra.dstats.DStatException;
 
 /**
  * Defines several special Statistical and Mathematical functions

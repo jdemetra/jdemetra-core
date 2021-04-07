@@ -16,8 +16,11 @@
  */
 package demetra.regarima.io.protobuf;
 
+import demetra.data.DoubleSeq;
+import demetra.data.Iterables;
 import demetra.data.Parameter;
 import demetra.data.Range;
+import demetra.modelling.StationaryTransformation;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.calendars.LengthOfPeriodType;
@@ -220,4 +223,36 @@ public class RegArimaProtosUtility {
                 .attributes(v.getMetadataMap())
                 .build();
     }
+
+    public RegArimaProtos.StationaryTransformation convert(StationaryTransformation st) {
+        RegArimaProtos.StationaryTransformation.Builder builder = RegArimaProtos.StationaryTransformation.newBuilder()
+                .addAllStationarySeries(Iterables.of(st.getStationarySeries()))
+                .setMeanCorrection(st.isMeanCorrection());
+        for (StationaryTransformation.Differencing d : st.getDifferences()) {
+            builder.addDifferences(RegArimaProtos.StationaryTransformation.Differencing.newBuilder()
+                    .setLag(d.getLag())
+                    .setOrder(d.getOrder())
+                    .build()
+            );
+        }
+        return builder
+                .build();
+    }
+
+    public StationaryTransformation convert(RegArimaProtos.StationaryTransformation st) {
+        double[] ds = new double[st.getStationarySeriesCount()];
+        for (int i = 0; i < ds.length; ++i) {
+            ds[i] = st.getStationarySeries(i);
+        }
+        StationaryTransformation.Builder builder = StationaryTransformation.builder()
+                .stationarySeries(DoubleSeq.of(ds))
+                .meanCorrection(st.getMeanCorrection());
+        for (int i = 0; i < st.getDifferencesCount(); ++i) {
+            RegArimaProtos.StationaryTransformation.Differencing d = st.getDifferences(i);
+            builder.difference(new StationaryTransformation.Differencing(d.getLag(), d.getOrder()));
+        }
+        return builder
+                .build();
+    }
+
 }

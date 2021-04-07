@@ -16,7 +16,7 @@
  */
 package demetra.sa;
 
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTest;
 
 /**
  *
@@ -26,7 +26,10 @@ import demetra.stats.TestResult;
 @lombok.Builder(builderClassName="Builder")
 public class DefaultSaDiagnostics {
     StationaryVarianceDecomposition varianceDecomposition;
-    TestResult seasonalQsTestOnI, seasonalQsTestOnSa;
-    TestResult seasonalFTestOnI, seasonalFTestOnSa;
-    TestResult tdFTestOnI, tdFTestOnSa;
+    StatisticalTest seasonalQsTestOnI;
+    StatisticalTest seasonalQsTestOnSa;
+    StatisticalTest seasonalFTestOnI;
+    StatisticalTest seasonalFTestOnSa;
+    StatisticalTest tdFTestOnI;
+    StatisticalTest tdFTestOnSa;
 }

@@ -16,6 +16,9 @@
  */
 package jdplus.dstats;
 
+import demetra.dstats.BoundaryType;
+import demetra.dstats.ContinuousDistribution;
+import demetra.dstats.DStatException;
 import jdplus.dstats.internal.Utility;
 import jdplus.dstats.internal.SpecialFunctions;
 import demetra.stats.ProbabilityType;
@@ -24,7 +27,7 @@ import nbbrd.design.Development;
 import nbbrd.design.Immutable;
 import java.util.Formatter;
 import lombok.NonNull;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
 
 /**
  *

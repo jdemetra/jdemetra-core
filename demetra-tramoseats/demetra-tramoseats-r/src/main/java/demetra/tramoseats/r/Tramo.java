@@ -17,9 +17,12 @@
 package demetra.tramoseats.r;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
+import demetra.modelling.StationaryTransformation;
 import demetra.processing.ProcResults;
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
+import demetra.regarima.io.protobuf.RegArimaProtosUtility;
 import demetra.sa.EstimationPolicyType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
@@ -37,6 +40,7 @@ import jdplus.regsarima.regular.Forecast;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.tramo.TramoFactory;
 import jdplus.tramo.TramoKernel;
+import jdplus.tramo.internal.DifferencingModule;
 
 /**
  *
@@ -145,5 +149,19 @@ public class Tramo {
     public byte[] toBuffer(TramoOutput output) {
         return TramoProto.convert(output).toByteArray();
     }
-
+    
+    public StationaryTransformation doStationary(double[] data, int period){
+        DifferencingModule diff = DifferencingModule.builder()
+                .build();
+        
+        DoubleSeq s=DoubleSeq.of(data);
+        diff.process(s, period, 0, 0, true);
+        
+        return StationaryTransformation.builder()
+                .meanCorrection(diff.isMeanCorrection())
+                .difference(new StationaryTransformation.Differencing(1, diff.getD()))
+                .difference(new StationaryTransformation.Differencing(period, diff.getBd()))
+                .build();
+    }
+    
 }

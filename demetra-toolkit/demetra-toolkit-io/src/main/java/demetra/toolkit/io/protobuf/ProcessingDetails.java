@@ -19,8 +19,8 @@ package demetra.toolkit.io.protobuf;
 import demetra.data.DoubleSeq;
 import demetra.data.Iterables;
 import demetra.math.matrices.MatrixType;
+import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
-import jdplus.stats.tests.StatisticalTest;
 
 /**
  *

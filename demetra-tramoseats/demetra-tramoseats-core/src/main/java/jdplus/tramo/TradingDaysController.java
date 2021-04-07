@@ -87,7 +87,7 @@ class TradingDaysController extends ModelController {
             return false;
         }
         
-        return lsr.Ftest().getPValue()<ptd;
+        return lsr.Ftest().getPvalue()<ptd;
     }
 
     private ModelDescription newModel(RegSarimaModelling context) {

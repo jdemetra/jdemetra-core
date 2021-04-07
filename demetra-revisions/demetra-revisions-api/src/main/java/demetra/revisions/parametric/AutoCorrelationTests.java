@@ -16,7 +16,7 @@
  */
 package demetra.revisions.parametric;
 
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTest;
 
 /**
  *
@@ -26,7 +26,7 @@ import demetra.stats.TestResult;
 @lombok.Builder(builderClassName="Builder")
 public class AutoCorrelationTests {
     
-    TestResult breuschGodfrey;
+    StatisticalTest breuschGodfrey;
     double bgr2;
-    TestResult ljungBox;
+    StatisticalTest ljungBox;
 }

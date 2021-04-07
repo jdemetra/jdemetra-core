@@ -21,8 +21,7 @@ import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
 import jdplus.math.matrices.Matrix;
-import demetra.stats.TestResult;
-import jdplus.stats.tests.StatisticalTest;
+import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.DayClustering;
@@ -41,7 +40,7 @@ import static jdplus.timeseries.simplets.TsDataToolkit.delta;
 public class TradingDaysTests {
 
 
-    public TestResult ftest(TsData s, boolean ar, int ny) {
+    public StatisticalTest ftest(TsData s, boolean ar, int ny) {
         int freq = s.getTsUnit().ratioOf(TsUnit.YEAR);
 
         if (ar) {
@@ -59,7 +58,7 @@ public class TradingDaysTests {
 
     }
 
-    private TestResult process(TsData s) {
+    private StatisticalTest process(TsData s) {
         try {
             DataBlock y=DataBlock.of(s.getValues());
             y.sub(y.average());
@@ -67,15 +66,14 @@ public class TradingDaysTests {
             Matrix td = Regression.matrix(s.getDomain(), var);
             LinearModel reg=new LinearModel(y.getStorage(), false, td);
             LeastSquaresResults rslt = Ols.compute(reg);
-            StatisticalTest ftest = rslt.Ftest();
-            return ftest.toSummary();
+            return rslt.Ftest();
           
         } catch (Exception err) {
             return null;
         }
     }
 
-    private TestResult processAr(TsData s) {
+    private StatisticalTest processAr(TsData s) {
         try {
             DataBlock y=DataBlock.of(s.getValues());
             TsDomain domain = s.getDomain();
@@ -88,8 +86,7 @@ public class TradingDaysTests {
                     .build();
             
             LeastSquaresResults rslt = Ols.compute(reg);
-            StatisticalTest ftest = rslt.Ftest(1, td.getColumnsCount());
-            return ftest.toSummary();
+            return rslt.Ftest(1, td.getColumnsCount());
          } catch (Exception err) {
             return null;
         }

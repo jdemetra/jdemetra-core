@@ -28,10 +28,9 @@ import demetra.revisions.parametric.RegressionBasedAnalysis;
 import demetra.revisions.parametric.RevisionAnalysis;
 import demetra.revisions.parametric.SignalNoise;
 import demetra.revisions.parametric.UnitRoot;
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTest;
 import java.time.LocalDate;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.MatrixFactory;
 import jdplus.revisions.parametric.AutoCorrelationTestsComputer;
 import jdplus.revisions.parametric.BiasComputer;
 import jdplus.revisions.parametric.OlsTestsComputer;
@@ -382,10 +381,10 @@ public class Utility {
             return;
         }
         Coefficient[] c = reg.getCoefficients();
-        TestResult jb = reg.getDiagnostics().getJarqueBera();
-        TestResult bp = reg.getDiagnostics().getBreuschPagan();
-        TestResult w = reg.getDiagnostics().getWhite();
-        TestResult arch = reg.getDiagnostics().getArch();
+        StatisticalTest jb = reg.getDiagnostics().getJarqueBera();
+        StatisticalTest bp = reg.getDiagnostics().getBreuschPagan();
+        StatisticalTest w = reg.getDiagnostics().getWhite();
+        StatisticalTest arch = reg.getDiagnostics().getArch();
         cursor.setAndNext(reg.getN());
         cursor.setAndNext(reg.getR2());
         cursor.setAndNext(reg.getF());
@@ -413,8 +412,8 @@ public class Utility {
         if (ac == null) {
             return;
         }
-        TestResult bg = ac.getBreuschGodfrey();
-        TestResult lb = ac.getLjungBox();
+        StatisticalTest bg = ac.getBreuschGodfrey();
+        StatisticalTest lb = ac.getLjungBox();
         cursor.setAndNext(ac.getBgr2());
         cursor.setAndNext(bg.getValue());
         cursor.setAndNext(bg.getPvalue());

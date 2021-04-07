@@ -17,20 +17,17 @@
 package jdplus.tramo;
 
 import nbbrd.design.Development;
-import demetra.likelihood.LikelihoodStatistics;
 import jdplus.stats.AutoCovariances;
 import jdplus.stats.samples.Sample;
 import jdplus.stats.tests.LjungBox;
 import jdplus.stats.tests.Skewness;
-import jdplus.stats.tests.StatisticalTest;
 import jdplus.tramo.internal.TramoUtility;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
-import java.util.Arrays;
+import demetra.stats.StatisticalTest;
 import jdplus.likelihood.ConcentratedLikelihood;
 import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.RegSarimaModel;
 
 /**
  * @author Jean Palate
@@ -81,16 +78,16 @@ public class ModelStatistics {
                 .bic(bic)
                 .se(Math.sqrt(ll.ssq() / (ll.degreesOfFreedom() - nhp)))
                 .ljungBox(lb.getValue())
-                .ljungBoxPvalue(lb.getPValue())
+                .ljungBoxPvalue(lb.getPvalue())
                 .skewnessAbsvalue(Math.abs(sk.getValue()))
-                .skewnessPvalue(sk.getPValue());
+                .skewnessPvalue(sk.getPvalue());
         if (p > 1) {
             StatisticalTest lbs = p == 1 ? null : new LjungBox(acf, nres)
                     .autoCorrelationsCount(2)
                     .lag(p)
                     .build();
             builder.seasonalLjungBox(lbs.getValue())
-                    .seasonalLjungBoxPvalue(lbs.getPValue());
+                    .seasonalLjungBoxPvalue(lbs.getPvalue());
         }
         int nres2 = (1 + nres) / 2;
         int nlast = Math.min(nres2, 10 * p);
@@ -104,9 +101,9 @@ public class ModelStatistics {
 
         return builder
                 .stableMean(means.getValue())
-                .stableMeanPvalue(means.getPValue())
+                .stableMeanPvalue(means.getPvalue())
                 .stableVariance(vars.getValue())
-                .stableVariancePvalue(vars.getPValue())
+                .stableVariancePvalue(vars.getPvalue())
                 .build();
 
     }

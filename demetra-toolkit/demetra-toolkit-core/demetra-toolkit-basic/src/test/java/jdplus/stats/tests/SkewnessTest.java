@@ -16,6 +16,7 @@
  */
 package jdplus.stats.tests;
 
+import demetra.stats.StatisticalTest;
 import jdplus.data.DataBlock;
 import java.util.Random;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class SkewnessTest {
         ec.tstoolkit.stats.SkewnessTest sk2=new ec.tstoolkit.stats.SkewnessTest();
         sk2.test(new ec.tstoolkit.data.DescriptiveStatistics(data));
         
-        assertEquals(sk.getPValue(), sk2.getPValue(), 1e-9);
+        assertEquals(sk.getPvalue(), sk2.getPValue(), 1e-9);
     }
     
 }

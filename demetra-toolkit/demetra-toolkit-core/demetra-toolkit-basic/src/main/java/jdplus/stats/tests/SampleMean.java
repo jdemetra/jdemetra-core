@@ -16,6 +16,8 @@
  */
 package jdplus.stats.tests;
 
+import demetra.stats.StatisticalTest;
+import demetra.stats.TestType;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import jdplus.dstats.Normal;
@@ -56,9 +58,10 @@ public class SampleMean {
     }
 
     public SampleMean normalDistribution(boolean value) {
-        this.normalPopulation=value;
+        this.normalPopulation = value;
         return this;
     }
+
     /**
      *
      * @param value
@@ -83,11 +86,11 @@ public class SampleMean {
             throw new java.lang.IllegalStateException("undefined population variance");
         }
         double val = (sampleMean - populationMean) / Math.sqrt(populationVariance / sampleSize);
-        if (sampleSizeForVariance>0) {
-            return new StatisticalTest(new T(sampleSizeForVariance - 1), val, TestType.TwoSided, !normalPopulation);
+        if (sampleSizeForVariance > 0) {
+            return TestsUtility.testOf(val, new T(sampleSizeForVariance - 1), TestType.TwoSided);
         } else {
-            return new StatisticalTest(new Normal(), val, TestType.TwoSided, !normalPopulation);
+            return TestsUtility.testOf(val, new Normal(), TestType.TwoSided);
         }
     }
 
- }
+}

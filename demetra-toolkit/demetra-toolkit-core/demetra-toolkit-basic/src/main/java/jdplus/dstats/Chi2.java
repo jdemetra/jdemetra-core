@@ -16,11 +16,14 @@
  */
 package jdplus.dstats;
 
+import demetra.dstats.BoundaryType;
+import demetra.dstats.ContinuousDistribution;
+import demetra.dstats.DStatException;
 import jdplus.dstats.internal.ProbInvFinder;
 import jdplus.dstats.internal.SpecialFunctions;
 import demetra.stats.ProbabilityType;
 import nbbrd.design.Development;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
 
 
 /**

@@ -18,9 +18,9 @@ package jdplus.dstats.spi;
 
 import demetra.dstats.spi.Distributions;
 import jdplus.random.MersenneTwister;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
 import demetra.stats.ProbabilityType;
-import jdplus.dstats.ContinuousDistribution;
+import demetra.dstats.ContinuousDistribution;
 
 /**
  *

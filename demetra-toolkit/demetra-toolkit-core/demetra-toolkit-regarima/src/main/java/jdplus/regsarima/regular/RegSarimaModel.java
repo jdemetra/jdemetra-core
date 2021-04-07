@@ -26,7 +26,7 @@ import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.processing.ProcessingLog;
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
@@ -180,22 +180,22 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
                         .transformedSeries(transformed)
                         .independentResiduals(ll.e())
                         .build())
-                .diagnostic("Mean", niid.meanTest().toSummary())
-                .diagnostic("Skewness", niid.skewness().toSummary())
-                .diagnostic("Kurtosis", niid.kurtosis().toSummary())
-                .diagnostic("Normality", niid.normalityTest().toSummary())
-                .diagnostic("LjungBox", niid.ljungBox().toSummary())
-                .diagnostic("SeasonalLjungBox", niid.seasonalLjungBox().toSummary())
-                .diagnostic("LjungBoxOnSquares", niid.ljungBoxOnSquare().toSummary())
-                .diagnostic("RunsNumber", niid.runsNumber().toSummary())
-                .diagnostic("RunsLength", niid.runsLength().toSummary())
-                .diagnostic("UpAndDownRunsNumber", niid.upAndDownRunsNumbber().toSummary())
-                .diagnostic("UpAndDownRunsLength", niid.upAndDownRunsLength().toSummary())
+                .diagnostic("Mean", niid.meanTest())
+                .diagnostic("Skewness", niid.skewness())
+                .diagnostic("Kurtosis", niid.kurtosis())
+                .diagnostic("Normality", niid.normalityTest())
+                .diagnostic("LjungBox", niid.ljungBox())
+                .diagnostic("SeasonalLjungBox", niid.seasonalLjungBox())
+                .diagnostic("LjungBoxOnSquares", niid.ljungBoxOnSquare())
+                .diagnostic("RunsNumber", niid.runsNumber())
+                .diagnostic("RunsLength", niid.runsLength())
+                .diagnostic("UpAndDownRunsNumber", niid.upAndDownRunsNumbber())
+                .diagnostic("UpAndDownRunsLength", niid.upAndDownRunsLength())
                 .build();
      }
 
     @lombok.Singular
-    private Map<String, TestResult> diagnostics;
+    private Map<String, StatisticalTest> diagnostics;
     
     @lombok.Singular
     private Map<String, Object> additionalResults;

@@ -19,13 +19,12 @@ package jdplus.tramo;
 import jdplus.modelling.DifferencingResults;
 import jdplus.data.analysis.DiscreteWindowFunction;
 import jdplus.data.analysis.SmoothedPeriodogram;
-import jdplus.stats.tests.StatisticalTest;
-import jdplus.stats.tests.seasonal.Friedman;
-import jdplus.stats.tests.seasonal.PeriodogramTest;
-import jdplus.stats.tests.seasonal.Qs;
-import demetra.timeseries.TsData;
+import jdplus.sa.tests.Friedman;
+import jdplus.sa.tests.PeriodogramTest;
+import jdplus.sa.tests.Qs;
 import demetra.timeseries.TsException;
 import demetra.data.DoubleSeq;
+import demetra.stats.StatisticalTest;
 
 /**
  *

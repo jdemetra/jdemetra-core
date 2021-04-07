@@ -740,6 +740,132 @@ public final class SaProtos {
     // @@protoc_insertion_point(enum_scope:sa.EstimationPolicy)
   }
 
+  /**
+   * Protobuf enum {@code sa.IdentifiableSeasonality}
+   */
+  public enum IdentifiableSeasonality
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>SA_UNKNOWN = 0;</code>
+     */
+    SA_UNKNOWN(0),
+    /**
+     * <code>SA_NONE = 1;</code>
+     */
+    SA_NONE(1),
+    /**
+     * <code>SA_PROBABLY_NONE = 2;</code>
+     */
+    SA_PROBABLY_NONE(2),
+    /**
+     * <code>SA_PRESENT = 3;</code>
+     */
+    SA_PRESENT(3),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>SA_UNKNOWN = 0;</code>
+     */
+    public static final int SA_UNKNOWN_VALUE = 0;
+    /**
+     * <code>SA_NONE = 1;</code>
+     */
+    public static final int SA_NONE_VALUE = 1;
+    /**
+     * <code>SA_PROBABLY_NONE = 2;</code>
+     */
+    public static final int SA_PROBABLY_NONE_VALUE = 2;
+    /**
+     * <code>SA_PRESENT = 3;</code>
+     */
+    public static final int SA_PRESENT_VALUE = 3;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static IdentifiableSeasonality valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static IdentifiableSeasonality forNumber(int value) {
+      switch (value) {
+        case 0: return SA_UNKNOWN;
+        case 1: return SA_NONE;
+        case 2: return SA_PROBABLY_NONE;
+        case 3: return SA_PRESENT;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<IdentifiableSeasonality>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        IdentifiableSeasonality> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<IdentifiableSeasonality>() {
+            public IdentifiableSeasonality findValueByNumber(int number) {
+              return IdentifiableSeasonality.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return demetra.sa.io.protobuf.SaProtos.getDescriptor().getEnumTypes().get(5);
+    }
+
+    private static final IdentifiableSeasonality[] VALUES = values();
+
+    public static IdentifiableSeasonality valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private IdentifiableSeasonality(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:sa.IdentifiableSeasonality)
+  }
+
   public interface ComponentOrBuilder extends
       // @@protoc_insertion_point(interface_extends:sa.Component)
       com.google.protobuf.MessageOrBuilder {
@@ -6894,6 +7020,1140 @@ public final class SaProtos {
 
   }
 
+  public interface CombinedSeasonalityTestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:sa.CombinedSeasonalityTest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.sa.IdentifiableSeasonality seasonality = 1;</code>
+     * @return The enum numeric value on the wire for seasonality.
+     */
+    int getSeasonalityValue();
+    /**
+     * <code>.sa.IdentifiableSeasonality seasonality = 1;</code>
+     * @return The seasonality.
+     */
+    demetra.sa.io.protobuf.SaProtos.IdentifiableSeasonality getSeasonality();
+
+    /**
+     * <code>.jd3.StatisticalTest kruskal_wallis = 2;</code>
+     * @return Whether the kruskalWallis field is set.
+     */
+    boolean hasKruskalWallis();
+    /**
+     * <code>.jd3.StatisticalTest kruskal_wallis = 2;</code>
+     * @return The kruskalWallis.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getKruskalWallis();
+    /**
+     * <code>.jd3.StatisticalTest kruskal_wallis = 2;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getKruskalWallisOrBuilder();
+
+    /**
+     * <code>.jd3.OneWayAnova stable_seasonality = 3;</code>
+     * @return Whether the stableSeasonality field is set.
+     */
+    boolean hasStableSeasonality();
+    /**
+     * <code>.jd3.OneWayAnova stable_seasonality = 3;</code>
+     * @return The stableSeasonality.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova getStableSeasonality();
+    /**
+     * <code>.jd3.OneWayAnova stable_seasonality = 3;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnovaOrBuilder getStableSeasonalityOrBuilder();
+
+    /**
+     * <code>.jd3.OneWayAnova evolutive_seasonality = 4;</code>
+     * @return Whether the evolutiveSeasonality field is set.
+     */
+    boolean hasEvolutiveSeasonality();
+    /**
+     * <code>.jd3.OneWayAnova evolutive_seasonality = 4;</code>
+     * @return The evolutiveSeasonality.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova getEvolutiveSeasonality();
+    /**
+     * <code>.jd3.OneWayAnova evolutive_seasonality = 4;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnovaOrBuilder getEvolutiveSeasonalityOrBuilder();
+  }
+  /**
+   * Protobuf type {@code sa.CombinedSeasonalityTest}
+   */
+  public static final class CombinedSeasonalityTest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:sa.CombinedSeasonalityTest)
+      CombinedSeasonalityTestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use CombinedSeasonalityTest.newBuilder() to construct.
+    private CombinedSeasonalityTest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private CombinedSeasonalityTest() {
+      seasonality_ = 0;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new CombinedSeasonalityTest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private CombinedSeasonalityTest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              int rawValue = input.readEnum();
+
+              seasonality_ = rawValue;
+              break;
+            }
+            case 18: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder subBuilder = null;
+              if (kruskalWallis_ != null) {
+                subBuilder = kruskalWallis_.toBuilder();
+              }
+              kruskalWallis_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(kruskalWallis_);
+                kruskalWallis_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 26: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.Builder subBuilder = null;
+              if (stableSeasonality_ != null) {
+                subBuilder = stableSeasonality_.toBuilder();
+              }
+              stableSeasonality_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(stableSeasonality_);
+                stableSeasonality_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 34: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.Builder subBuilder = null;
+              if (evolutiveSeasonality_ != null) {
+                subBuilder = evolutiveSeasonality_.toBuilder();
+              }
+              evolutiveSeasonality_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(evolutiveSeasonality_);
+                evolutiveSeasonality_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.sa.io.protobuf.SaProtos.internal_static_sa_CombinedSeasonalityTest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.sa.io.protobuf.SaProtos.internal_static_sa_CombinedSeasonalityTest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest.class, demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest.Builder.class);
+    }
+
+    public static final int SEASONALITY_FIELD_NUMBER = 1;
+    private int seasonality_;
+    /**
+     * <code>.sa.IdentifiableSeasonality seasonality = 1;</code>
+     * @return The enum numeric value on the wire for seasonality.
+     */
+    @java.lang.Override public int getSeasonalityValue() {
+      return seasonality_;
+    }
+    /**
+     * <code>.sa.IdentifiableSeasonality seasonality = 1;</code>
+     * @return The seasonality.
+     */
+    @java.lang.Override public demetra.sa.io.protobuf.SaProtos.IdentifiableSeasonality getSeasonality() {
+      @SuppressWarnings("deprecation")
+      demetra.sa.io.protobuf.SaProtos.IdentifiableSeasonality result = demetra.sa.io.protobuf.SaProtos.IdentifiableSeasonality.valueOf(seasonality_);
+      return result == null ? demetra.sa.io.protobuf.SaProtos.IdentifiableSeasonality.UNRECOGNIZED : result;
+    }
+
+    public static final int KRUSKAL_WALLIS_FIELD_NUMBER = 2;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest kruskalWallis_;
+    /**
+     * <code>.jd3.StatisticalTest kruskal_wallis = 2;</code>
+     * @return Whether the kruskalWallis field is set.
+     */
+    @java.lang.Override
+    public boolean hasKruskalWallis() {
+      return kruskalWallis_ != null;
+    }
+    /**
+     * <code>.jd3.StatisticalTest kruskal_wallis = 2;</code>
+     * @return The kruskalWallis.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getKruskalWallis() {
+      return kruskalWallis_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : kruskalWallis_;
+    }
+    /**
+     * <code>.jd3.StatisticalTest kruskal_wallis = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getKruskalWallisOrBuilder() {
+      return getKruskalWallis();
+    }
+
+    public static final int STABLE_SEASONALITY_FIELD_NUMBER = 3;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova stableSeasonality_;
+    /**
+     * <code>.jd3.OneWayAnova stable_seasonality = 3;</code>
+     * @return Whether the stableSeasonality field is set.
+     */
+    @java.lang.Override
+    public boolean hasStableSeasonality() {
+      return stableSeasonality_ != null;
+    }
+    /**
+     * <code>.jd3.OneWayAnova stable_seasonality = 3;</code>
+     * @return The stableSeasonality.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova getStableSeasonality() {
+      return stableSeasonality_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.getDefaultInstance() : stableSeasonality_;
+    }
+    /**
+     * <code>.jd3.OneWayAnova stable_seasonality = 3;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnovaOrBuilder getStableSeasonalityOrBuilder() {
+      return getStableSeasonality();
+    }
+
+    public static final int EVOLUTIVE_SEASONALITY_FIELD_NUMBER = 4;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova evolutiveSeasonality_;
+    /**
+     * <code>.jd3.OneWayAnova evolutive_seasonality = 4;</code>
+     * @return Whether the evolutiveSeasonality field is set.
+     */
+    @java.lang.Override
+    public boolean hasEvolutiveSeasonality() {
+      return evolutiveSeasonality_ != null;
+    }
+    /**
+     * <code>.jd3.OneWayAnova evolutive_seasonality = 4;</code>
+     * @return The evolutiveSeasonality.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova getEvolutiveSeasonality() {
+      return evolutiveSeasonality_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.getDefaultInstance() : evolutiveSeasonality_;
+    }
+    /**
+     * <code>.jd3.OneWayAnova evolutive_seasonality = 4;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnovaOrBuilder getEvolutiveSeasonalityOrBuilder() {
+      return getEvolutiveSeasonality();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (seasonality_ != demetra.sa.io.protobuf.SaProtos.IdentifiableSeasonality.SA_UNKNOWN.getNumber()) {
+        output.writeEnum(1, seasonality_);
+      }
+      if (kruskalWallis_ != null) {
+        output.writeMessage(2, getKruskalWallis());
+      }
+      if (stableSeasonality_ != null) {
+        output.writeMessage(3, getStableSeasonality());
+      }
+      if (evolutiveSeasonality_ != null) {
+        output.writeMessage(4, getEvolutiveSeasonality());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (seasonality_ != demetra.sa.io.protobuf.SaProtos.IdentifiableSeasonality.SA_UNKNOWN.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, seasonality_);
+      }
+      if (kruskalWallis_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getKruskalWallis());
+      }
+      if (stableSeasonality_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getStableSeasonality());
+      }
+      if (evolutiveSeasonality_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, getEvolutiveSeasonality());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest)) {
+        return super.equals(obj);
+      }
+      demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest other = (demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest) obj;
+
+      if (seasonality_ != other.seasonality_) return false;
+      if (hasKruskalWallis() != other.hasKruskalWallis()) return false;
+      if (hasKruskalWallis()) {
+        if (!getKruskalWallis()
+            .equals(other.getKruskalWallis())) return false;
+      }
+      if (hasStableSeasonality() != other.hasStableSeasonality()) return false;
+      if (hasStableSeasonality()) {
+        if (!getStableSeasonality()
+            .equals(other.getStableSeasonality())) return false;
+      }
+      if (hasEvolutiveSeasonality() != other.hasEvolutiveSeasonality()) return false;
+      if (hasEvolutiveSeasonality()) {
+        if (!getEvolutiveSeasonality()
+            .equals(other.getEvolutiveSeasonality())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SEASONALITY_FIELD_NUMBER;
+      hash = (53 * hash) + seasonality_;
+      if (hasKruskalWallis()) {
+        hash = (37 * hash) + KRUSKAL_WALLIS_FIELD_NUMBER;
+        hash = (53 * hash) + getKruskalWallis().hashCode();
+      }
+      if (hasStableSeasonality()) {
+        hash = (37 * hash) + STABLE_SEASONALITY_FIELD_NUMBER;
+        hash = (53 * hash) + getStableSeasonality().hashCode();
+      }
+      if (hasEvolutiveSeasonality()) {
+        hash = (37 * hash) + EVOLUTIVE_SEASONALITY_FIELD_NUMBER;
+        hash = (53 * hash) + getEvolutiveSeasonality().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code sa.CombinedSeasonalityTest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:sa.CombinedSeasonalityTest)
+        demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.sa.io.protobuf.SaProtos.internal_static_sa_CombinedSeasonalityTest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.sa.io.protobuf.SaProtos.internal_static_sa_CombinedSeasonalityTest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest.class, demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest.Builder.class);
+      }
+
+      // Construct using demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        seasonality_ = 0;
+
+        if (kruskalWallisBuilder_ == null) {
+          kruskalWallis_ = null;
+        } else {
+          kruskalWallis_ = null;
+          kruskalWallisBuilder_ = null;
+        }
+        if (stableSeasonalityBuilder_ == null) {
+          stableSeasonality_ = null;
+        } else {
+          stableSeasonality_ = null;
+          stableSeasonalityBuilder_ = null;
+        }
+        if (evolutiveSeasonalityBuilder_ == null) {
+          evolutiveSeasonality_ = null;
+        } else {
+          evolutiveSeasonality_ = null;
+          evolutiveSeasonalityBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.sa.io.protobuf.SaProtos.internal_static_sa_CombinedSeasonalityTest_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest getDefaultInstanceForType() {
+        return demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest build() {
+        demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest buildPartial() {
+        demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest result = new demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest(this);
+        result.seasonality_ = seasonality_;
+        if (kruskalWallisBuilder_ == null) {
+          result.kruskalWallis_ = kruskalWallis_;
+        } else {
+          result.kruskalWallis_ = kruskalWallisBuilder_.build();
+        }
+        if (stableSeasonalityBuilder_ == null) {
+          result.stableSeasonality_ = stableSeasonality_;
+        } else {
+          result.stableSeasonality_ = stableSeasonalityBuilder_.build();
+        }
+        if (evolutiveSeasonalityBuilder_ == null) {
+          result.evolutiveSeasonality_ = evolutiveSeasonality_;
+        } else {
+          result.evolutiveSeasonality_ = evolutiveSeasonalityBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest) {
+          return mergeFrom((demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest other) {
+        if (other == demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest.getDefaultInstance()) return this;
+        if (other.seasonality_ != 0) {
+          setSeasonalityValue(other.getSeasonalityValue());
+        }
+        if (other.hasKruskalWallis()) {
+          mergeKruskalWallis(other.getKruskalWallis());
+        }
+        if (other.hasStableSeasonality()) {
+          mergeStableSeasonality(other.getStableSeasonality());
+        }
+        if (other.hasEvolutiveSeasonality()) {
+          mergeEvolutiveSeasonality(other.getEvolutiveSeasonality());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int seasonality_ = 0;
+      /**
+       * <code>.sa.IdentifiableSeasonality seasonality = 1;</code>
+       * @return The enum numeric value on the wire for seasonality.
+       */
+      @java.lang.Override public int getSeasonalityValue() {
+        return seasonality_;
+      }
+      /**
+       * <code>.sa.IdentifiableSeasonality seasonality = 1;</code>
+       * @param value The enum numeric value on the wire for seasonality to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSeasonalityValue(int value) {
+        
+        seasonality_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.sa.IdentifiableSeasonality seasonality = 1;</code>
+       * @return The seasonality.
+       */
+      @java.lang.Override
+      public demetra.sa.io.protobuf.SaProtos.IdentifiableSeasonality getSeasonality() {
+        @SuppressWarnings("deprecation")
+        demetra.sa.io.protobuf.SaProtos.IdentifiableSeasonality result = demetra.sa.io.protobuf.SaProtos.IdentifiableSeasonality.valueOf(seasonality_);
+        return result == null ? demetra.sa.io.protobuf.SaProtos.IdentifiableSeasonality.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.sa.IdentifiableSeasonality seasonality = 1;</code>
+       * @param value The seasonality to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSeasonality(demetra.sa.io.protobuf.SaProtos.IdentifiableSeasonality value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        seasonality_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.sa.IdentifiableSeasonality seasonality = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSeasonality() {
+        
+        seasonality_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest kruskalWallis_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> kruskalWallisBuilder_;
+      /**
+       * <code>.jd3.StatisticalTest kruskal_wallis = 2;</code>
+       * @return Whether the kruskalWallis field is set.
+       */
+      public boolean hasKruskalWallis() {
+        return kruskalWallisBuilder_ != null || kruskalWallis_ != null;
+      }
+      /**
+       * <code>.jd3.StatisticalTest kruskal_wallis = 2;</code>
+       * @return The kruskalWallis.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getKruskalWallis() {
+        if (kruskalWallisBuilder_ == null) {
+          return kruskalWallis_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : kruskalWallis_;
+        } else {
+          return kruskalWallisBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest kruskal_wallis = 2;</code>
+       */
+      public Builder setKruskalWallis(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (kruskalWallisBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          kruskalWallis_ = value;
+          onChanged();
+        } else {
+          kruskalWallisBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest kruskal_wallis = 2;</code>
+       */
+      public Builder setKruskalWallis(
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder builderForValue) {
+        if (kruskalWallisBuilder_ == null) {
+          kruskalWallis_ = builderForValue.build();
+          onChanged();
+        } else {
+          kruskalWallisBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest kruskal_wallis = 2;</code>
+       */
+      public Builder mergeKruskalWallis(demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest value) {
+        if (kruskalWallisBuilder_ == null) {
+          if (kruskalWallis_ != null) {
+            kruskalWallis_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.newBuilder(kruskalWallis_).mergeFrom(value).buildPartial();
+          } else {
+            kruskalWallis_ = value;
+          }
+          onChanged();
+        } else {
+          kruskalWallisBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest kruskal_wallis = 2;</code>
+       */
+      public Builder clearKruskalWallis() {
+        if (kruskalWallisBuilder_ == null) {
+          kruskalWallis_ = null;
+          onChanged();
+        } else {
+          kruskalWallis_ = null;
+          kruskalWallisBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.StatisticalTest kruskal_wallis = 2;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder getKruskalWallisBuilder() {
+        
+        onChanged();
+        return getKruskalWallisFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.StatisticalTest kruskal_wallis = 2;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getKruskalWallisOrBuilder() {
+        if (kruskalWallisBuilder_ != null) {
+          return kruskalWallisBuilder_.getMessageOrBuilder();
+        } else {
+          return kruskalWallis_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : kruskalWallis_;
+        }
+      }
+      /**
+       * <code>.jd3.StatisticalTest kruskal_wallis = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder> 
+          getKruskalWallisFieldBuilder() {
+        if (kruskalWallisBuilder_ == null) {
+          kruskalWallisBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder>(
+                  getKruskalWallis(),
+                  getParentForChildren(),
+                  isClean());
+          kruskalWallis_ = null;
+        }
+        return kruskalWallisBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova stableSeasonality_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova, demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnovaOrBuilder> stableSeasonalityBuilder_;
+      /**
+       * <code>.jd3.OneWayAnova stable_seasonality = 3;</code>
+       * @return Whether the stableSeasonality field is set.
+       */
+      public boolean hasStableSeasonality() {
+        return stableSeasonalityBuilder_ != null || stableSeasonality_ != null;
+      }
+      /**
+       * <code>.jd3.OneWayAnova stable_seasonality = 3;</code>
+       * @return The stableSeasonality.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova getStableSeasonality() {
+        if (stableSeasonalityBuilder_ == null) {
+          return stableSeasonality_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.getDefaultInstance() : stableSeasonality_;
+        } else {
+          return stableSeasonalityBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.OneWayAnova stable_seasonality = 3;</code>
+       */
+      public Builder setStableSeasonality(demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova value) {
+        if (stableSeasonalityBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          stableSeasonality_ = value;
+          onChanged();
+        } else {
+          stableSeasonalityBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.OneWayAnova stable_seasonality = 3;</code>
+       */
+      public Builder setStableSeasonality(
+          demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.Builder builderForValue) {
+        if (stableSeasonalityBuilder_ == null) {
+          stableSeasonality_ = builderForValue.build();
+          onChanged();
+        } else {
+          stableSeasonalityBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.OneWayAnova stable_seasonality = 3;</code>
+       */
+      public Builder mergeStableSeasonality(demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova value) {
+        if (stableSeasonalityBuilder_ == null) {
+          if (stableSeasonality_ != null) {
+            stableSeasonality_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.newBuilder(stableSeasonality_).mergeFrom(value).buildPartial();
+          } else {
+            stableSeasonality_ = value;
+          }
+          onChanged();
+        } else {
+          stableSeasonalityBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.OneWayAnova stable_seasonality = 3;</code>
+       */
+      public Builder clearStableSeasonality() {
+        if (stableSeasonalityBuilder_ == null) {
+          stableSeasonality_ = null;
+          onChanged();
+        } else {
+          stableSeasonality_ = null;
+          stableSeasonalityBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.OneWayAnova stable_seasonality = 3;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.Builder getStableSeasonalityBuilder() {
+        
+        onChanged();
+        return getStableSeasonalityFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.OneWayAnova stable_seasonality = 3;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnovaOrBuilder getStableSeasonalityOrBuilder() {
+        if (stableSeasonalityBuilder_ != null) {
+          return stableSeasonalityBuilder_.getMessageOrBuilder();
+        } else {
+          return stableSeasonality_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.getDefaultInstance() : stableSeasonality_;
+        }
+      }
+      /**
+       * <code>.jd3.OneWayAnova stable_seasonality = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova, demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnovaOrBuilder> 
+          getStableSeasonalityFieldBuilder() {
+        if (stableSeasonalityBuilder_ == null) {
+          stableSeasonalityBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova, demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnovaOrBuilder>(
+                  getStableSeasonality(),
+                  getParentForChildren(),
+                  isClean());
+          stableSeasonality_ = null;
+        }
+        return stableSeasonalityBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova evolutiveSeasonality_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova, demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnovaOrBuilder> evolutiveSeasonalityBuilder_;
+      /**
+       * <code>.jd3.OneWayAnova evolutive_seasonality = 4;</code>
+       * @return Whether the evolutiveSeasonality field is set.
+       */
+      public boolean hasEvolutiveSeasonality() {
+        return evolutiveSeasonalityBuilder_ != null || evolutiveSeasonality_ != null;
+      }
+      /**
+       * <code>.jd3.OneWayAnova evolutive_seasonality = 4;</code>
+       * @return The evolutiveSeasonality.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova getEvolutiveSeasonality() {
+        if (evolutiveSeasonalityBuilder_ == null) {
+          return evolutiveSeasonality_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.getDefaultInstance() : evolutiveSeasonality_;
+        } else {
+          return evolutiveSeasonalityBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.OneWayAnova evolutive_seasonality = 4;</code>
+       */
+      public Builder setEvolutiveSeasonality(demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova value) {
+        if (evolutiveSeasonalityBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          evolutiveSeasonality_ = value;
+          onChanged();
+        } else {
+          evolutiveSeasonalityBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.OneWayAnova evolutive_seasonality = 4;</code>
+       */
+      public Builder setEvolutiveSeasonality(
+          demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.Builder builderForValue) {
+        if (evolutiveSeasonalityBuilder_ == null) {
+          evolutiveSeasonality_ = builderForValue.build();
+          onChanged();
+        } else {
+          evolutiveSeasonalityBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.OneWayAnova evolutive_seasonality = 4;</code>
+       */
+      public Builder mergeEvolutiveSeasonality(demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova value) {
+        if (evolutiveSeasonalityBuilder_ == null) {
+          if (evolutiveSeasonality_ != null) {
+            evolutiveSeasonality_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.newBuilder(evolutiveSeasonality_).mergeFrom(value).buildPartial();
+          } else {
+            evolutiveSeasonality_ = value;
+          }
+          onChanged();
+        } else {
+          evolutiveSeasonalityBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.OneWayAnova evolutive_seasonality = 4;</code>
+       */
+      public Builder clearEvolutiveSeasonality() {
+        if (evolutiveSeasonalityBuilder_ == null) {
+          evolutiveSeasonality_ = null;
+          onChanged();
+        } else {
+          evolutiveSeasonality_ = null;
+          evolutiveSeasonalityBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.OneWayAnova evolutive_seasonality = 4;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.Builder getEvolutiveSeasonalityBuilder() {
+        
+        onChanged();
+        return getEvolutiveSeasonalityFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.OneWayAnova evolutive_seasonality = 4;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnovaOrBuilder getEvolutiveSeasonalityOrBuilder() {
+        if (evolutiveSeasonalityBuilder_ != null) {
+          return evolutiveSeasonalityBuilder_.getMessageOrBuilder();
+        } else {
+          return evolutiveSeasonality_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.getDefaultInstance() : evolutiveSeasonality_;
+        }
+      }
+      /**
+       * <code>.jd3.OneWayAnova evolutive_seasonality = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova, demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnovaOrBuilder> 
+          getEvolutiveSeasonalityFieldBuilder() {
+        if (evolutiveSeasonalityBuilder_ == null) {
+          evolutiveSeasonalityBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova, demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnova.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.OneWayAnovaOrBuilder>(
+                  getEvolutiveSeasonality(),
+                  getParentForChildren(),
+                  isClean());
+          evolutiveSeasonality_ = null;
+        }
+        return evolutiveSeasonalityBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:sa.CombinedSeasonalityTest)
+    }
+
+    // @@protoc_insertion_point(class_scope:sa.CombinedSeasonalityTest)
+    private static final demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest();
+    }
+
+    public static demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<CombinedSeasonalityTest>
+        PARSER = new com.google.protobuf.AbstractParser<CombinedSeasonalityTest>() {
+      @java.lang.Override
+      public CombinedSeasonalityTest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new CombinedSeasonalityTest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<CombinedSeasonalityTest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<CombinedSeasonalityTest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.sa.io.protobuf.SaProtos.CombinedSeasonalityTest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_sa_Component_descriptor;
   private static final 
@@ -6919,6 +8179,11 @@ public final class SaProtos {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_sa_Diagnostics_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_sa_CombinedSeasonalityTest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_sa_CombinedSeasonalityTest_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -6953,26 +8218,34 @@ public final class SaProtos {
       "\n\024seasonal_qtest_on_sa\030\005 \001(\0132\024.jd3.Stati" +
       "sticalTest\0223\n\025td_ftest_on_irregular\030\006 \001(" +
       "\0132\024.jd3.StatisticalTest\022,\n\016td_ftest_on_s" +
-      "a\030\007 \001(\0132\024.jd3.StatisticalTest*x\n\rCompone" +
-      "ntType\022\r\n\tUNDEFINED\020\000\022\n\n\006SERIES\020\001\022\t\n\005TRE" +
-      "ND\020\002\022\014\n\010SEASONAL\020\003\022\026\n\022SEASONALLYADJUSTED" +
-      "\020\004\022\r\n\tIRREGULAR\020\005\022\014\n\010CALENDAR\020\006*V\n\021Decom" +
-      "positionMode\022\013\n\007UNKNOWN\020\000\022\014\n\010ADDITIVE\020\001\022" +
-      "\022\n\016MULTIPLICATIVE\020\002\022\022\n\016PSEUDOADDITIVE\020\003*" +
-      "p\n\022BenchmarkingTarget\022\034\n\030BENCH_TARGET_UN" +
-      "SPECIFIED\020\000\022\031\n\025BENCH_TARGET_ORIGINAL\020\001\022!" +
-      "\n\035BENCH_TARGET_CALENDARADJUSTED\020\002*{\n\020Ben" +
-      "chmarkingBias\022\032\n\026BENCH_BIAS_UNSPECIFIED\020" +
-      "\000\022\023\n\017BENCH_BIAS_NONE\020\001\022\027\n\023BENCH_BIAS_ADD" +
-      "ITIVE\020\002\022\035\n\031BENCH_BIAS_MULTIPLICATIVE\020\003*\202" +
-      "\002\n\020EstimationPolicy\022\017\n\013POLICY_NONE\020\000\022\022\n\016" +
-      "POLICY_CURRENT\020\001\022\020\n\014POLICY_FIXED\020\002\022\033\n\027PO" +
-      "LICY_FIXED_PARAMETERS\020\003\022)\n%POLICY_FIXED_" +
-      "AUTOREGRESSIVEPARAMETERS\020\004\022\032\n\026POLICY_FRE" +
-      "E_PARAMETERS\020\005\022\027\n\023POLICY_LASTOUTLIERS\020\006\022" +
-      "\023\n\017POLICY_OUTLIERS\020\007\022\020\n\014POLICY_ARIMA\020\010\022\023" +
-      "\n\017POLICY_COMPLETE\020\tB\"\n\026demetra.sa.io.pro" +
-      "tobufB\010SaProtosP\000b\006proto3"
+      "a\030\007 \001(\0132\024.jd3.StatisticalTest\"\330\001\n\027Combin" +
+      "edSeasonalityTest\0220\n\013seasonality\030\001 \001(\0162\033" +
+      ".sa.IdentifiableSeasonality\022,\n\016kruskal_w" +
+      "allis\030\002 \001(\0132\024.jd3.StatisticalTest\022,\n\022sta" +
+      "ble_seasonality\030\003 \001(\0132\020.jd3.OneWayAnova\022" +
+      "/\n\025evolutive_seasonality\030\004 \001(\0132\020.jd3.One" +
+      "WayAnova*x\n\rComponentType\022\r\n\tUNDEFINED\020\000" +
+      "\022\n\n\006SERIES\020\001\022\t\n\005TREND\020\002\022\014\n\010SEASONAL\020\003\022\026\n" +
+      "\022SEASONALLYADJUSTED\020\004\022\r\n\tIRREGULAR\020\005\022\014\n\010" +
+      "CALENDAR\020\006*V\n\021DecompositionMode\022\013\n\007UNKNO" +
+      "WN\020\000\022\014\n\010ADDITIVE\020\001\022\022\n\016MULTIPLICATIVE\020\002\022\022" +
+      "\n\016PSEUDOADDITIVE\020\003*p\n\022BenchmarkingTarget" +
+      "\022\034\n\030BENCH_TARGET_UNSPECIFIED\020\000\022\031\n\025BENCH_" +
+      "TARGET_ORIGINAL\020\001\022!\n\035BENCH_TARGET_CALEND" +
+      "ARADJUSTED\020\002*{\n\020BenchmarkingBias\022\032\n\026BENC" +
+      "H_BIAS_UNSPECIFIED\020\000\022\023\n\017BENCH_BIAS_NONE\020" +
+      "\001\022\027\n\023BENCH_BIAS_ADDITIVE\020\002\022\035\n\031BENCH_BIAS" +
+      "_MULTIPLICATIVE\020\003*\202\002\n\020EstimationPolicy\022\017" +
+      "\n\013POLICY_NONE\020\000\022\022\n\016POLICY_CURRENT\020\001\022\020\n\014P" +
+      "OLICY_FIXED\020\002\022\033\n\027POLICY_FIXED_PARAMETERS" +
+      "\020\003\022)\n%POLICY_FIXED_AUTOREGRESSIVEPARAMET" +
+      "ERS\020\004\022\032\n\026POLICY_FREE_PARAMETERS\020\005\022\027\n\023POL" +
+      "ICY_LASTOUTLIERS\020\006\022\023\n\017POLICY_OUTLIERS\020\007\022" +
+      "\020\n\014POLICY_ARIMA\020\010\022\023\n\017POLICY_COMPLETE\020\t*\\" +
+      "\n\027IdentifiableSeasonality\022\016\n\nSA_UNKNOWN\020" +
+      "\000\022\013\n\007SA_NONE\020\001\022\024\n\020SA_PROBABLY_NONE\020\002\022\016\n\n" +
+      "SA_PRESENT\020\003B\"\n\026demetra.sa.io.protobufB\010" +
+      "SaProtosP\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -7009,6 +8282,12 @@ public final class SaProtos {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_sa_Diagnostics_descriptor,
         new java.lang.String[] { "VarianceDecomposition", "SeasonalFtestOnIrregular", "SeasonalFtestOnSa", "SeasonalQtestOnIrregular", "SeasonalQtestOnSa", "TdFtestOnIrregular", "TdFtestOnSa", });
+    internal_static_sa_CombinedSeasonalityTest_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_sa_CombinedSeasonalityTest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_sa_CombinedSeasonalityTest_descriptor,
+        new java.lang.String[] { "Seasonality", "KruskalWallis", "StableSeasonality", "EvolutiveSeasonality", });
     demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor();
   }
 

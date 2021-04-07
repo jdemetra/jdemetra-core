@@ -16,8 +16,10 @@
  */
 package jdplus.stats.tests;
 
+import demetra.stats.TestType;
 import demetra.data.DoubleSeq;
 import demetra.stats.ProbabilityType;
+import demetra.stats.StatisticalTest;
 import jdplus.dstats.Chi2;
 import jdplus.dstats.F;
 import jdplus.stats.DescriptiveStatistics;
@@ -49,7 +51,7 @@ public class Variances {
         vp/=N-k;
         q-=1.0/(N-k);
         double chi=((N-k)*Math.log(vp)-lv)/(1+q/(3*(k-1)));
-        return new StatisticalTest(new Chi2(k-1), chi, TestType.Upper, true);
+        return TestsUtility.testOf(chi, new Chi2(k-1), TestType.Upper);
     }
     
     public double cochranC(Sample[] data, int sequence) {
@@ -92,22 +94,22 @@ public class Variances {
         return 1.0 / (1 + (N - 1) / f.getProbabilityInverse(alpha / N, ProbabilityType.Upper));
     }
     
-    public OneWayAnova levene(Sample[] samples){
-        OneWayAnova anova=new OneWayAnova();
+    public AdvancedOneWayAnova levene(Sample[] samples){
+        AdvancedOneWayAnova anova=new AdvancedOneWayAnova();
         for (int i=0; i<samples.length; ++i){
             final double ybar=samples[i].mean();
             DoubleSeq z=samples[i].data().fn(x->Math.abs(x-ybar));
-            anova.add(new OneWayAnova.Group("g"+(i+1), z));
+            anova.add(new AdvancedOneWayAnova.Group("g"+(i+1), z));
         }
         return anova;
     }
 
-    public OneWayAnova brownForsythe(Sample[] samples){
-        OneWayAnova anova=new OneWayAnova();
+    public AdvancedOneWayAnova brownForsythe(Sample[] samples){
+        AdvancedOneWayAnova anova=new AdvancedOneWayAnova();
         for (int i=0; i<samples.length; ++i){
             final double ybar=DescriptiveStatistics.of(samples[i].data()).getMedian();
             DoubleSeq z=samples[i].data().fn(x->Math.abs(x-ybar));
-            anova.add(new OneWayAnova.Group("g"+(i+1), z));
+            anova.add(new AdvancedOneWayAnova.Group("g"+(i+1), z));
         }
         return anova;
     }

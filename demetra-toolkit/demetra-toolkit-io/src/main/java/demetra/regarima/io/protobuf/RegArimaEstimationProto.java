@@ -25,7 +25,7 @@ import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.stats.ProbabilityType;
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.IEasterVariable;

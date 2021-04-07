@@ -17,7 +17,7 @@
 package jdplus.tramo;
 
 import demetra.data.DoubleSeq;
-import jdplus.stats.tests.StatisticalTest;
+import demetra.stats.StatisticalTest;
 import jdplus.regsarima.regular.SeasonalityDetector;
 
 /**
@@ -46,19 +46,19 @@ public class TramoSeasonalityDetector implements SeasonalityDetector{
         int cqs = 0, cnp = 0;
         StatisticalTest qs = tests.getQs();
         StatisticalTest np = tests.getNonParametricTest();
-        if (qs.getPValue() < .01) {
+        if (qs.getPvalue() < .01) {
             cqs = 2;
             ++ost;
             ++ost95;
-        } else if (qs.getPValue() < .05) {
+        } else if (qs.getPvalue() < .05) {
             cqs = 1;
             ++ost95;
         }
-        if (np.getPValue() < .01) {
+        if (np.getPvalue() < .01) {
             cnp = 2;
             ++ost;
             ++ost95;
-        } else if (np.getPValue() < .05) {
+        } else if (np.getPvalue() < .05) {
             cnp = 1;
             ++ost95;
         }

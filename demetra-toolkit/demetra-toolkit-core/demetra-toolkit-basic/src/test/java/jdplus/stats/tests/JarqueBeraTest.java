@@ -16,6 +16,7 @@
  */
 package jdplus.stats.tests;
 
+import demetra.stats.StatisticalTest;
 import java.util.Random;
 import jdplus.data.DataBlock;
 import org.junit.Test;
@@ -48,10 +49,10 @@ public class JarqueBeraTest {
                 .correctionForSample()
                 .build();
 
-        assertEquals(test.getPValue(), test1.getPValue(), 1e-9);
+        assertEquals(test.getPvalue(), test1.getPvalue(), 1e-9);
         
-        System.out.println(test1.getPValue());
-        System.out.println(test2.getPValue());
+        System.out.println(test1.getPvalue());
+        System.out.println(test2.getPvalue());
     }
     
 }

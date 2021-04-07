@@ -24,7 +24,7 @@ import jdplus.regarima.RegArimaModel;
 import jdplus.regsarima.GlsSarimaComputer;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
-import jdplus.stats.tests.StatisticalTest;
+import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import jdplus.math.matrices.Matrix;

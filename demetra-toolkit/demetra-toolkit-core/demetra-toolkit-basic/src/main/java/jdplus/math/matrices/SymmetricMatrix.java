@@ -15,7 +15,7 @@ import jdplus.math.matrices.lapack.SYRK;
 import jdplus.math.matrices.decomposition.CroutDoolittle;
 import jdplus.math.matrices.decomposition.LUDecomposition;
 import jdplus.random.MersenneTwister;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;

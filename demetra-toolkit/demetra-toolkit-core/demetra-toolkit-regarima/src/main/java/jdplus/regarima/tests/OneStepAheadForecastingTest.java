@@ -25,10 +25,11 @@ import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.stats.tests.SampleMean;
-import jdplus.stats.tests.StatisticalTest;
-import jdplus.stats.tests.TestType;
+import demetra.stats.TestType;
 import demetra.data.DoubleSeq;
+import demetra.stats.StatisticalTest;
 import jdplus.regarima.IRegArimaComputer;
+import jdplus.stats.tests.TestsUtility;
 
 /**
  *
@@ -122,7 +123,7 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
 
     public StatisticalTest sameVarianceTest() {
         F f = new F(nback, inSampleSize);
-        return new StatisticalTest(f, mseOut / mseIn, TestType.Upper, false);
+        return TestsUtility.testOf(mseOut / mseIn, f, TestType.Upper);
     }
 
     public StatisticalTest inSampleMeanTest() {

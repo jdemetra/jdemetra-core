@@ -16,11 +16,13 @@
  */
 package jdplus.stats.tests;
 
+import demetra.stats.TestType;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import jdplus.dstats.Normal;
 import jdplus.stats.DescriptiveStatistics;
 import demetra.data.DoubleSeq;
+import demetra.stats.StatisticalTest;
 
 
 /**
@@ -46,6 +48,6 @@ public class Kurtosis {
     public StatisticalTest build() {
 	int n = stats.getObservationsCount();
 	Normal dist = new Normal(3, Math.sqrt(24.0 / n));
-        return new StatisticalTest(dist, stats.getKurtosis(), TestType.TwoSided, true);
+        return TestsUtility.testOf(stats.getKurtosis(), dist, TestType.TwoSided);
     }
 }

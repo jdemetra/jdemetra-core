@@ -27,8 +27,8 @@ import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.random.XorshiftRNG;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import jdplus.dstats.Distribution;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.Distribution;
+import demetra.dstats.RandomNumberGenerator;
 import jdplus.math.matrices.Matrix;
 
 /**

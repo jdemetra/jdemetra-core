@@ -19,13 +19,12 @@ package jdplus.revisions.parametric;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.revisions.parametric.AutoCorrelationTests;
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTest;
 import jdplus.linearmodel.BreuschGodfrey;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
 import jdplus.stats.tests.LjungBox;
-import jdplus.stats.tests.StatisticalTest;
 
 /**
  *
@@ -76,16 +75,16 @@ public class AutoCorrelationTestsComputer {
 
 //        AutoCorrelationTests.Builder builder = AutoCorrelationTests.builder()
 //                .bgr2(lsr2.getR2())
-//                .breuschGodfrey(new TestResult(0, 0, "Breusch-Godfrey"));
+//                .breuschGodfrey(new StatisticalTest(0, 0, "Breusch-Godfrey"));
         
         
         AutoCorrelationTests.Builder builder = AutoCorrelationTests.builder();
         if (bgtest != null) {
             builder.bgr2(bg.getLeastSquaresResults().getR2())
-                    .breuschGodfrey(new TestResult(bgtest.getValue(), bgtest.getPValue(), "Breusch-Godfrey"));
+                    .breuschGodfrey(new StatisticalTest(bgtest.getValue(), bgtest.getPvalue(), "Breusch-Godfrey"));
         }
         if (lbtest != null) {
-            builder.ljungBox(new TestResult(lbtest.getValue(), lbtest.getPValue(), "Ljung-Box"));
+            builder.ljungBox(new StatisticalTest(lbtest.getValue(), lbtest.getPvalue(), "Ljung-Box"));
         }
         return builder.build();
     }

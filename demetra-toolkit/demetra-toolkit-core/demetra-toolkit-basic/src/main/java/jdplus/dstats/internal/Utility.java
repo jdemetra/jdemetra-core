@@ -18,7 +18,7 @@ package jdplus.dstats.internal;
 
 import nbbrd.design.Development;
 import demetra.stats.ProbabilityType;
-import jdplus.dstats.DStatException;
+import demetra.dstats.DStatException;
 
 /**
  * 

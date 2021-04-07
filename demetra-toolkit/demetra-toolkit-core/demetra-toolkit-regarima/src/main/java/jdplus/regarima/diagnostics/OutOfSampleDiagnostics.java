@@ -65,12 +65,12 @@ public class OutOfSampleDiagnostics implements Diagnostics {
         OneStepAheadForecastingTest<SarimaModel> xtest = new OneStepAheadForecastingTest<>(processor, nback);
         xtest.test(regarima);
         if (m) {
-            mpval = xtest.outOfSampleMeanTest().getPValue();
+            mpval = xtest.outOfSampleMeanTest().getPvalue();
         } else {
             mpval = Double.NaN;
         }
         if (v) {
-            vpval = xtest.sameVarianceTest().getPValue();
+            vpval = xtest.sameVarianceTest().getPvalue();
         } else {
             vpval = Double.NaN;
         }

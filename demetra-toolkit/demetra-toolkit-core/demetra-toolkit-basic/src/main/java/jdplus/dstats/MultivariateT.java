@@ -23,7 +23,7 @@ import demetra.math.Constants;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import lombok.NonNull;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
 import demetra.data.DoubleSeq;
 import jdplus.math.matrices.Matrix;
 

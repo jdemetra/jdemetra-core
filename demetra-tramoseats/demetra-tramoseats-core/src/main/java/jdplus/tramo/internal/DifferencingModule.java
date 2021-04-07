@@ -434,7 +434,6 @@ public class DifferencingModule  {
      * @param seasonal
      * @return 
      */
-    @VisibleForTesting
     public boolean process(DoubleSeq data, int period, int d, int bd, boolean seasonal) {
         clear();
         y = data;

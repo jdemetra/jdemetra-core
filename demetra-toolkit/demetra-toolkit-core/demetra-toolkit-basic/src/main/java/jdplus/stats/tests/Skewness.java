@@ -16,11 +16,13 @@
  */
 package jdplus.stats.tests;
 
+import demetra.stats.TestType;
 import nbbrd.design.Development;
 import jdplus.dstats.Normal;
 import jdplus.stats.DescriptiveStatistics;
 import nbbrd.design.BuilderPattern;
 import demetra.data.DoubleSeq;
+import demetra.stats.StatisticalTest;
 
 
 /**
@@ -46,6 +48,6 @@ public class Skewness
     public StatisticalTest build() {
 	int n = stats.getObservationsCount();
 	Normal dist = new Normal(0, Math.sqrt(6.0 / n));
-        return new StatisticalTest(dist, stats.getSkewness(), TestType.TwoSided, true);
+        return TestsUtility.testOf(stats.getSkewness(), dist, TestType.TwoSided);
     }
 }

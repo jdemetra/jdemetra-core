@@ -16,7 +16,8 @@
  */
 package jdplus.revisions.parametric;
 
-import jdplus.stats.tests.StatisticalTest;
+import demetra.stats.StatisticalTest;
+
 
 /**
  *

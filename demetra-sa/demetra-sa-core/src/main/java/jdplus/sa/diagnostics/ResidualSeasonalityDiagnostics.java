@@ -20,12 +20,13 @@ import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import demetra.processing.ProcResults;
 import demetra.sa.SaDictionary;
+import demetra.stats.StatisticalTest;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
 import java.util.Collections;
 import java.util.List;
-import jdplus.stats.tests.StatisticalTest;
-import jdplus.stats.tests.seasonal.StableSeasonality;
+import jdplus.sa.tests.StableSeasonality;
+import jdplus.stats.tests.TestsUtility;
 
 /**
  *
@@ -69,14 +70,14 @@ public class ResidualSeasonalityDiagnostics implements Diagnostics {
             int freq = s.getAnnualFrequency();
             s = s.delta(Math.max(1, freq / 4));
             // computes the F-Test on the complete series...
-            saFTest = StableSeasonality.of(s.getValues(), freq).asTest();
+            saFTest = TestsUtility.ofAnova(StableSeasonality.of(s.getValues(), freq));
             TimeSelector sel = TimeSelector.last(freq * 3);
-            lastSaFTest = StableSeasonality.of(s.select(sel).getValues(),freq).asTest();
+            lastSaFTest = TestsUtility.ofAnova(StableSeasonality.of(s.select(sel).getValues(),freq));
         }
         s = rslts.getData(SaDictionary.I, TsData.class);
         if (s != null) {
             int freq = s.getAnnualFrequency();
-            irregularFTest = StableSeasonality.of(s.getValues(), freq).asTest();
+            irregularFTest = TestsUtility.ofAnova(StableSeasonality.of(s.getValues(), freq));
         }
         return true;
     }
@@ -159,11 +160,11 @@ public class ResidualSeasonalityDiagnostics implements Diagnostics {
     public double getValue(String test) {
         double val = 0;
         if (test.equals(ResidualSeasonalityDiagnosticsFactory.SA) && saFTest != null) {
-            val = saFTest.getPValue();
+            val = saFTest.getPvalue();
         } else if (test.equals(ResidualSeasonalityDiagnosticsFactory.SA_LAST) && lastSaFTest != null) {
-            val = lastSaFTest.getPValue();
+            val = lastSaFTest.getPvalue();
         } else if (irregularFTest != null) {
-            val = irregularFTest.getPValue();
+            val = irregularFTest.getPvalue();
         }
         return val;
     }
@@ -171,11 +172,11 @@ public class ResidualSeasonalityDiagnostics implements Diagnostics {
     private static ProcQuality test(StatisticalTest test, double[] b) {
         if (test == null) {
             return ProcQuality.Undefined;
-        } else if (test.getPValue() > b[0]) {
+        } else if (test.getPvalue() > b[0]) {
             return ProcQuality.Good;
-        } else if (test.getPValue() > b[1]) {
+        } else if (test.getPvalue() > b[1]) {
             return ProcQuality.Uncertain;
-        } else if (test.getPValue() > b[2]) {
+        } else if (test.getPvalue() > b[2]) {
             return ProcQuality.Bad;
         } else {
             return ProcQuality.Severe;

@@ -20,16 +20,16 @@ import demetra.data.DoubleSeq;
 import java.util.Random;
 import jdplus.data.DataBlock;
 import jdplus.dstats.Chi2;
-import jdplus.dstats.Distribution;
+import demetra.dstats.Distribution;
 import jdplus.dstats.Normal;
 import jdplus.dstats.Uniform;
 import jdplus.math.matrices.Matrix;
 import jdplus.random.MersenneTwister;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
+import demetra.stats.StatisticalTest;
+import demetra.stats.TestType;
 import jdplus.stats.DescriptiveStatistics;
-import jdplus.stats.samples.Sample;
-import jdplus.stats.tests.StatisticalTest;
-import jdplus.stats.tests.Variances;
+import jdplus.stats.tests.TestsUtility;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -63,28 +63,28 @@ public class HeteroskedasticityTestTest {
         StatisticalTest test = HeteroskedasticityTest.builder(lsr)
                 .build();
 
-        assertTrue(test.getPValue() > 1e-1);
+        assertTrue(test.getPvalue() > 1e-1);
 //        System.out.println(test.getPValue());
 
         StatisticalTest test2 = HeteroskedasticityTest.builder(lsr)
                 .fisherTest(true)
                 .build();
 
-        assertTrue(test2.getPValue() > 1e-1);
+        assertTrue(test2.getPvalue() > 1e-1);
 //        System.out.println(test2.getPValue());
 
         StatisticalTest test3 = HeteroskedasticityTest.builder(lsr)
                 .type(HeteroskedasticityTest.Type.White)
                 .build();
 
-        assertTrue(test3.getPValue() > 1e-1);
+        assertTrue(test3.getPvalue() > 1e-1);
 //        System.out.println(test3.getPValue());
 
         StatisticalTest test4 = HeteroskedasticityTest.builder(lsr)
                 .studentizedResiduals(true)
                 .build();
 
-        assertTrue(test4.getPValue() > 1e-1);
+        assertTrue(test4.getPvalue() > 1e-1);
 //        System.out.println(test4.getPValue());
 
         StatisticalTest test5 = HeteroskedasticityTest.builder(lsr)
@@ -92,7 +92,7 @@ public class HeteroskedasticityTestTest {
                 .fisherTest(true)
                 .build();
 
-        assertTrue(test5.getPValue() > 1e-1);
+        assertTrue(test5.getPvalue() > 1e-1);
 //        System.out.println(test5.getPValue());
 
         StatisticalTest test6 = HeteroskedasticityTest.builder(lsr)
@@ -100,7 +100,7 @@ public class HeteroskedasticityTestTest {
                 .type(HeteroskedasticityTest.Type.White)
                 .build();
 
-        assertTrue(test6.getPValue() > 1e-1);
+        assertTrue(test6.getPvalue() > 1e-1);
 //        System.out.println(test6.getPValue());
     }
 
@@ -125,28 +125,28 @@ public class HeteroskedasticityTestTest {
         StatisticalTest test = HeteroskedasticityTest.builder(lsr)
                 .build();
 
-        assertTrue(test.getPValue() < 1e-2);
+        assertTrue(test.getPvalue() < 1e-2);
 //        System.out.println(test.getPValue());
 
         StatisticalTest test2 = HeteroskedasticityTest.builder(lsr)
                 .fisherTest(true)
                 .build();
 
-        assertTrue(test2.getPValue() < 1e-2);
+        assertTrue(test2.getPvalue() < 1e-2);
 //        System.out.println(test2.getPValue());
 
         StatisticalTest test3 = HeteroskedasticityTest.builder(lsr)
                 .type(HeteroskedasticityTest.Type.White)
                 .build();
 
-        assertTrue(test3.getPValue() < 1e-2);
+        assertTrue(test3.getPvalue() < 1e-2);
 //        System.out.println(test3.getPValue());
 
         StatisticalTest test4 = HeteroskedasticityTest.builder(lsr)
                 .studentizedResiduals(true)
                 .build();
 
-        assertTrue(test4.getPValue() < 1e-2);
+        assertTrue(test4.getPvalue() < 1e-2);
 //        System.out.println(test4.getPValue());
 
         StatisticalTest test5 = HeteroskedasticityTest.builder(lsr)
@@ -154,7 +154,7 @@ public class HeteroskedasticityTestTest {
                 .fisherTest(true)
                 .build();
 
-        assertTrue(test5.getPValue() < 1e-2);
+        assertTrue(test5.getPvalue() < 1e-2);
 //        System.out.println(test5.getPValue());
 
         StatisticalTest test6 = HeteroskedasticityTest.builder(lsr)
@@ -162,7 +162,7 @@ public class HeteroskedasticityTestTest {
                 .type(HeteroskedasticityTest.Type.White)
                 .build();
 
-        assertTrue(test6.getPValue() < 1e-2);
+        assertTrue(test6.getPvalue() < 1e-2);
 //        System.out.println(test6.getPValue());
     }
 

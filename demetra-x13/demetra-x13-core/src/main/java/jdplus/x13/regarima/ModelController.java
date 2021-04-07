@@ -18,6 +18,7 @@
 package jdplus.x13.regarima;
 
 import demetra.data.DoubleSeq;
+import demetra.stats.StatisticalTest;
 import jdplus.data.DataBlock;
 import jdplus.linearmodel.LinearModel;
 import jdplus.regarima.RegArimaEstimation;
@@ -27,7 +28,6 @@ import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
 import jdplus.stats.tests.LjungBox;
-import jdplus.stats.tests.StatisticalTest;
 import nbbrd.design.Development;
 
 
@@ -74,7 +74,7 @@ public class ModelController implements IAmiController {
         if (!calcLb(fres, calcLbLength(sp, nobs), desc.getArimaSpec().freeParametersCount())) {
             return false;
         }
-        if ((1 - lbtest.getPValue()) > lb) {
+        if ((1 - lbtest.getPvalue()) > lb) {
             return false;
         }
 

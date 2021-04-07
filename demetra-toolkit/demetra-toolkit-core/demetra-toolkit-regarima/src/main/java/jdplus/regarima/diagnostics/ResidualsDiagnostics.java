@@ -22,10 +22,10 @@ import demetra.processing.ProcQuality;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.stats.tests.NiidTests;
-import jdplus.stats.tests.StatisticalTest;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.data.DoubleSeq;
+import demetra.stats.StatisticalTest;
 import java.util.Collections;
 
 /**
@@ -107,7 +107,7 @@ public class ResidualsDiagnostics implements Diagnostics {
                 if (dht == null) {
                     return ProcQuality.Undefined;
                 }
-                pval = dht.getPValue();
+                pval = dht.getPvalue();
                 if (pval > N0) {
                     return ProcQuality.Good;
                 } else if (pval < N1) {
@@ -123,7 +123,7 @@ public class ResidualsDiagnostics implements Diagnostics {
                 if (lbt == null) {
                     return ProcQuality.Undefined;
                 }
-                pval = lbt.getPValue();
+                pval = lbt.getPvalue();
                 if (pval > N0) {
                     return ProcQuality.Good;
                 } else if (pval < N1) {
@@ -212,13 +212,13 @@ public class ResidualsDiagnostics implements Diagnostics {
                 case ResidualsDiagnosticsFactory.NORMALITY:
                     if (stats != null) {
                         StatisticalTest dht = stats.normalityTest();
-                        pval = dht.getPValue();
+                        pval = dht.getPvalue();
                     }
                     break;
                 case ResidualsDiagnosticsFactory.INDEPENDENCE:
                     if (stats != null) {
                         StatisticalTest lbt = stats.ljungBox();
-                        pval = lbt.getPValue();
+                        pval = lbt.getPvalue();
                     }
                     break;
                 case ResidualsDiagnosticsFactory.TD_PEAK:

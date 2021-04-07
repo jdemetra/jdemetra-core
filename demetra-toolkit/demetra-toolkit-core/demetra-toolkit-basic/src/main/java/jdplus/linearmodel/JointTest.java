@@ -22,12 +22,13 @@ import jdplus.dstats.F;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.stats.tests.StatisticalTest;
-import jdplus.stats.tests.TestType;
+import demetra.stats.TestType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
+import demetra.stats.StatisticalTest;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixFactory;
+import jdplus.stats.tests.TestsUtility;
 
 /**
  * TODO: create tests with robust covariance matrix
@@ -116,7 +117,7 @@ public class JointTest {
         LowerTriangularMatrix.solveLx(rwr, rb);
         f = (rb.ssq() / nx) / (rss / df);
         F fdist = new F(nx, df);
-        return new StatisticalTest(fdist, f, TestType.Upper, !deterministicRegressors);
+        return TestsUtility.testOf(f, fdist, TestType.Upper);
     }
 
     private Matrix rwr() {

@@ -9415,6 +9415,1692 @@ public final class RegArimaProtos {
 
   }
 
+  public interface StationaryTransformationOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:regarima.StationaryTransformation)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bool mean_correction = 1;</code>
+     * @return The meanCorrection.
+     */
+    boolean getMeanCorrection();
+
+    /**
+     * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+     */
+    java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing> 
+        getDifferencesList();
+    /**
+     * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+     */
+    demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing getDifferences(int index);
+    /**
+     * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+     */
+    int getDifferencesCount();
+    /**
+     * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+     */
+    java.util.List<? extends demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.DifferencingOrBuilder> 
+        getDifferencesOrBuilderList();
+    /**
+     * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+     */
+    demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.DifferencingOrBuilder getDifferencesOrBuilder(
+        int index);
+
+    /**
+     * <pre>
+     * The length of the stationary series should be identical to the length of the original series, 
+     * with missing values (NaN) at the beginning
+     * </pre>
+     *
+     * <code>repeated double stationary_series = 3;</code>
+     * @return A list containing the stationarySeries.
+     */
+    java.util.List<java.lang.Double> getStationarySeriesList();
+    /**
+     * <pre>
+     * The length of the stationary series should be identical to the length of the original series, 
+     * with missing values (NaN) at the beginning
+     * </pre>
+     *
+     * <code>repeated double stationary_series = 3;</code>
+     * @return The count of stationarySeries.
+     */
+    int getStationarySeriesCount();
+    /**
+     * <pre>
+     * The length of the stationary series should be identical to the length of the original series, 
+     * with missing values (NaN) at the beginning
+     * </pre>
+     *
+     * <code>repeated double stationary_series = 3;</code>
+     * @param index The index of the element to return.
+     * @return The stationarySeries at the given index.
+     */
+    double getStationarySeries(int index);
+  }
+  /**
+   * <pre>
+   *This message describes the transformations to get a stationary series
+   * </pre>
+   *
+   * Protobuf type {@code regarima.StationaryTransformation}
+   */
+  public static final class StationaryTransformation extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:regarima.StationaryTransformation)
+      StationaryTransformationOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use StationaryTransformation.newBuilder() to construct.
+    private StationaryTransformation(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private StationaryTransformation() {
+      differences_ = java.util.Collections.emptyList();
+      stationarySeries_ = emptyDoubleList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new StationaryTransformation();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private StationaryTransformation(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              meanCorrection_ = input.readBool();
+              break;
+            }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                differences_ = new java.util.ArrayList<demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              differences_.add(
+                  input.readMessage(demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.parser(), extensionRegistry));
+              break;
+            }
+            case 25: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                stationarySeries_ = newDoubleList();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              stationarySeries_.addDouble(input.readDouble());
+              break;
+            }
+            case 26: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000002) != 0) && input.getBytesUntilLimit() > 0) {
+                stationarySeries_ = newDoubleList();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                stationarySeries_.addDouble(input.readDouble());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          differences_ = java.util.Collections.unmodifiableList(differences_);
+        }
+        if (((mutable_bitField0_ & 0x00000002) != 0)) {
+          stationarySeries_.makeImmutable(); // C
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_StationaryTransformation_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_StationaryTransformation_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.class, demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Builder.class);
+    }
+
+    public interface DifferencingOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:regarima.StationaryTransformation.Differencing)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>int32 lag = 1;</code>
+       * @return The lag.
+       */
+      int getLag();
+
+      /**
+       * <code>int32 order = 2;</code>
+       * @return The order.
+       */
+      int getOrder();
+    }
+    /**
+     * Protobuf type {@code regarima.StationaryTransformation.Differencing}
+     */
+    public static final class Differencing extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:regarima.StationaryTransformation.Differencing)
+        DifferencingOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use Differencing.newBuilder() to construct.
+      private Differencing(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private Differencing() {
+      }
+
+      @java.lang.Override
+      @SuppressWarnings({"unused"})
+      protected java.lang.Object newInstance(
+          UnusedPrivateParameter unused) {
+        return new Differencing();
+      }
+
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+      getUnknownFields() {
+        return this.unknownFields;
+      }
+      private Differencing(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        this();
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+
+                lag_ = input.readInt32();
+                break;
+              }
+              case 16: {
+
+                order_ = input.readInt32();
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_StationaryTransformation_Differencing_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_StationaryTransformation_Differencing_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.class, demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.Builder.class);
+      }
+
+      public static final int LAG_FIELD_NUMBER = 1;
+      private int lag_;
+      /**
+       * <code>int32 lag = 1;</code>
+       * @return The lag.
+       */
+      @java.lang.Override
+      public int getLag() {
+        return lag_;
+      }
+
+      public static final int ORDER_FIELD_NUMBER = 2;
+      private int order_;
+      /**
+       * <code>int32 order = 2;</code>
+       * @return The order.
+       */
+      @java.lang.Override
+      public int getOrder() {
+        return order_;
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (lag_ != 0) {
+          output.writeInt32(1, lag_);
+        }
+        if (order_ != 0) {
+          output.writeInt32(2, order_);
+        }
+        unknownFields.writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (lag_ != 0) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(1, lag_);
+        }
+        if (order_ != 0) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(2, order_);
+        }
+        size += unknownFields.getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing)) {
+          return super.equals(obj);
+        }
+        demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing other = (demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing) obj;
+
+        if (getLag()
+            != other.getLag()) return false;
+        if (getOrder()
+            != other.getOrder()) return false;
+        if (!unknownFields.equals(other.unknownFields)) return false;
+        return true;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + LAG_FIELD_NUMBER;
+        hash = (53 * hash) + getLag();
+        hash = (37 * hash) + ORDER_FIELD_NUMBER;
+        hash = (53 * hash) + getOrder();
+        hash = (29 * hash) + unknownFields.hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+      public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code regarima.StationaryTransformation.Differencing}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:regarima.StationaryTransformation.Differencing)
+          demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.DifferencingOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_StationaryTransformation_Differencing_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_StationaryTransformation_Differencing_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.class, demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.Builder.class);
+        }
+
+        // Construct using demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
+          }
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          lag_ = 0;
+
+          order_ = 0;
+
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_StationaryTransformation_Differencing_descriptor;
+        }
+
+        @java.lang.Override
+        public demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing getDefaultInstanceForType() {
+          return demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing build() {
+          demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing buildPartial() {
+          demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing result = new demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing(this);
+          result.lag_ = lag_;
+          result.order_ = order_;
+          onBuilt();
+          return result;
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing) {
+            return mergeFrom((demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing other) {
+          if (other == demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.getDefaultInstance()) return this;
+          if (other.getLag() != 0) {
+            setLag(other.getLag());
+          }
+          if (other.getOrder() != 0) {
+            setOrder(other.getOrder());
+          }
+          this.mergeUnknownFields(other.unknownFields);
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing) e.getUnfinishedMessage();
+            throw e.unwrapIOException();
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+
+        private int lag_ ;
+        /**
+         * <code>int32 lag = 1;</code>
+         * @return The lag.
+         */
+        @java.lang.Override
+        public int getLag() {
+          return lag_;
+        }
+        /**
+         * <code>int32 lag = 1;</code>
+         * @param value The lag to set.
+         * @return This builder for chaining.
+         */
+        public Builder setLag(int value) {
+          
+          lag_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>int32 lag = 1;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearLag() {
+          
+          lag_ = 0;
+          onChanged();
+          return this;
+        }
+
+        private int order_ ;
+        /**
+         * <code>int32 order = 2;</code>
+         * @return The order.
+         */
+        @java.lang.Override
+        public int getOrder() {
+          return order_;
+        }
+        /**
+         * <code>int32 order = 2;</code>
+         * @param value The order to set.
+         * @return This builder for chaining.
+         */
+        public Builder setOrder(int value) {
+          
+          order_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>int32 order = 2;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearOrder() {
+          
+          order_ = 0;
+          onChanged();
+          return this;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:regarima.StationaryTransformation.Differencing)
+      }
+
+      // @@protoc_insertion_point(class_scope:regarima.StationaryTransformation.Differencing)
+      private static final demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing();
+      }
+
+      public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<Differencing>
+          PARSER = new com.google.protobuf.AbstractParser<Differencing>() {
+        @java.lang.Override
+        public Differencing parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new Differencing(input, extensionRegistry);
+        }
+      };
+
+      public static com.google.protobuf.Parser<Differencing> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<Differencing> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    public static final int MEAN_CORRECTION_FIELD_NUMBER = 1;
+    private boolean meanCorrection_;
+    /**
+     * <code>bool mean_correction = 1;</code>
+     * @return The meanCorrection.
+     */
+    @java.lang.Override
+    public boolean getMeanCorrection() {
+      return meanCorrection_;
+    }
+
+    public static final int DIFFERENCES_FIELD_NUMBER = 2;
+    private java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing> differences_;
+    /**
+     * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing> getDifferencesList() {
+      return differences_;
+    }
+    /**
+     * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.DifferencingOrBuilder> 
+        getDifferencesOrBuilderList() {
+      return differences_;
+    }
+    /**
+     * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+     */
+    @java.lang.Override
+    public int getDifferencesCount() {
+      return differences_.size();
+    }
+    /**
+     * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing getDifferences(int index) {
+      return differences_.get(index);
+    }
+    /**
+     * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+     */
+    @java.lang.Override
+    public demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.DifferencingOrBuilder getDifferencesOrBuilder(
+        int index) {
+      return differences_.get(index);
+    }
+
+    public static final int STATIONARY_SERIES_FIELD_NUMBER = 3;
+    private com.google.protobuf.Internal.DoubleList stationarySeries_;
+    /**
+     * <pre>
+     * The length of the stationary series should be identical to the length of the original series, 
+     * with missing values (NaN) at the beginning
+     * </pre>
+     *
+     * <code>repeated double stationary_series = 3;</code>
+     * @return A list containing the stationarySeries.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Double>
+        getStationarySeriesList() {
+      return stationarySeries_;
+    }
+    /**
+     * <pre>
+     * The length of the stationary series should be identical to the length of the original series, 
+     * with missing values (NaN) at the beginning
+     * </pre>
+     *
+     * <code>repeated double stationary_series = 3;</code>
+     * @return The count of stationarySeries.
+     */
+    public int getStationarySeriesCount() {
+      return stationarySeries_.size();
+    }
+    /**
+     * <pre>
+     * The length of the stationary series should be identical to the length of the original series, 
+     * with missing values (NaN) at the beginning
+     * </pre>
+     *
+     * <code>repeated double stationary_series = 3;</code>
+     * @param index The index of the element to return.
+     * @return The stationarySeries at the given index.
+     */
+    public double getStationarySeries(int index) {
+      return stationarySeries_.getDouble(index);
+    }
+    private int stationarySeriesMemoizedSerializedSize = -1;
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (meanCorrection_ != false) {
+        output.writeBool(1, meanCorrection_);
+      }
+      for (int i = 0; i < differences_.size(); i++) {
+        output.writeMessage(2, differences_.get(i));
+      }
+      if (getStationarySeriesList().size() > 0) {
+        output.writeUInt32NoTag(26);
+        output.writeUInt32NoTag(stationarySeriesMemoizedSerializedSize);
+      }
+      for (int i = 0; i < stationarySeries_.size(); i++) {
+        output.writeDoubleNoTag(stationarySeries_.getDouble(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (meanCorrection_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, meanCorrection_);
+      }
+      for (int i = 0; i < differences_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, differences_.get(i));
+      }
+      {
+        int dataSize = 0;
+        dataSize = 8 * getStationarySeriesList().size();
+        size += dataSize;
+        if (!getStationarySeriesList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        stationarySeriesMemoizedSerializedSize = dataSize;
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation)) {
+        return super.equals(obj);
+      }
+      demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation other = (demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation) obj;
+
+      if (getMeanCorrection()
+          != other.getMeanCorrection()) return false;
+      if (!getDifferencesList()
+          .equals(other.getDifferencesList())) return false;
+      if (!getStationarySeriesList()
+          .equals(other.getStationarySeriesList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + MEAN_CORRECTION_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getMeanCorrection());
+      if (getDifferencesCount() > 0) {
+        hash = (37 * hash) + DIFFERENCES_FIELD_NUMBER;
+        hash = (53 * hash) + getDifferencesList().hashCode();
+      }
+      if (getStationarySeriesCount() > 0) {
+        hash = (37 * hash) + STATIONARY_SERIES_FIELD_NUMBER;
+        hash = (53 * hash) + getStationarySeriesList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *This message describes the transformations to get a stationary series
+     * </pre>
+     *
+     * Protobuf type {@code regarima.StationaryTransformation}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:regarima.StationaryTransformation)
+        demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformationOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_StationaryTransformation_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_StationaryTransformation_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.class, demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Builder.class);
+      }
+
+      // Construct using demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getDifferencesFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        meanCorrection_ = false;
+
+        if (differencesBuilder_ == null) {
+          differences_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          differencesBuilder_.clear();
+        }
+        stationarySeries_ = emptyDoubleList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.regarima.io.protobuf.RegArimaProtos.internal_static_regarima_StationaryTransformation_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation getDefaultInstanceForType() {
+        return demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation build() {
+        demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation buildPartial() {
+        demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation result = new demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation(this);
+        int from_bitField0_ = bitField0_;
+        result.meanCorrection_ = meanCorrection_;
+        if (differencesBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            differences_ = java.util.Collections.unmodifiableList(differences_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.differences_ = differences_;
+        } else {
+          result.differences_ = differencesBuilder_.build();
+        }
+        if (((bitField0_ & 0x00000002) != 0)) {
+          stationarySeries_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.stationarySeries_ = stationarySeries_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation) {
+          return mergeFrom((demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation other) {
+        if (other == demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.getDefaultInstance()) return this;
+        if (other.getMeanCorrection() != false) {
+          setMeanCorrection(other.getMeanCorrection());
+        }
+        if (differencesBuilder_ == null) {
+          if (!other.differences_.isEmpty()) {
+            if (differences_.isEmpty()) {
+              differences_ = other.differences_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureDifferencesIsMutable();
+              differences_.addAll(other.differences_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.differences_.isEmpty()) {
+            if (differencesBuilder_.isEmpty()) {
+              differencesBuilder_.dispose();
+              differencesBuilder_ = null;
+              differences_ = other.differences_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              differencesBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getDifferencesFieldBuilder() : null;
+            } else {
+              differencesBuilder_.addAllMessages(other.differences_);
+            }
+          }
+        }
+        if (!other.stationarySeries_.isEmpty()) {
+          if (stationarySeries_.isEmpty()) {
+            stationarySeries_ = other.stationarySeries_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureStationarySeriesIsMutable();
+            stationarySeries_.addAll(other.stationarySeries_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean meanCorrection_ ;
+      /**
+       * <code>bool mean_correction = 1;</code>
+       * @return The meanCorrection.
+       */
+      @java.lang.Override
+      public boolean getMeanCorrection() {
+        return meanCorrection_;
+      }
+      /**
+       * <code>bool mean_correction = 1;</code>
+       * @param value The meanCorrection to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMeanCorrection(boolean value) {
+        
+        meanCorrection_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool mean_correction = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMeanCorrection() {
+        
+        meanCorrection_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing> differences_ =
+        java.util.Collections.emptyList();
+      private void ensureDifferencesIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          differences_ = new java.util.ArrayList<demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing>(differences_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing, demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.Builder, demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.DifferencingOrBuilder> differencesBuilder_;
+
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing> getDifferencesList() {
+        if (differencesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(differences_);
+        } else {
+          return differencesBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public int getDifferencesCount() {
+        if (differencesBuilder_ == null) {
+          return differences_.size();
+        } else {
+          return differencesBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing getDifferences(int index) {
+        if (differencesBuilder_ == null) {
+          return differences_.get(index);
+        } else {
+          return differencesBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public Builder setDifferences(
+          int index, demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing value) {
+        if (differencesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureDifferencesIsMutable();
+          differences_.set(index, value);
+          onChanged();
+        } else {
+          differencesBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public Builder setDifferences(
+          int index, demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.Builder builderForValue) {
+        if (differencesBuilder_ == null) {
+          ensureDifferencesIsMutable();
+          differences_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          differencesBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public Builder addDifferences(demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing value) {
+        if (differencesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureDifferencesIsMutable();
+          differences_.add(value);
+          onChanged();
+        } else {
+          differencesBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public Builder addDifferences(
+          int index, demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing value) {
+        if (differencesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureDifferencesIsMutable();
+          differences_.add(index, value);
+          onChanged();
+        } else {
+          differencesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public Builder addDifferences(
+          demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.Builder builderForValue) {
+        if (differencesBuilder_ == null) {
+          ensureDifferencesIsMutable();
+          differences_.add(builderForValue.build());
+          onChanged();
+        } else {
+          differencesBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public Builder addDifferences(
+          int index, demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.Builder builderForValue) {
+        if (differencesBuilder_ == null) {
+          ensureDifferencesIsMutable();
+          differences_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          differencesBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public Builder addAllDifferences(
+          java.lang.Iterable<? extends demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing> values) {
+        if (differencesBuilder_ == null) {
+          ensureDifferencesIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, differences_);
+          onChanged();
+        } else {
+          differencesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public Builder clearDifferences() {
+        if (differencesBuilder_ == null) {
+          differences_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          differencesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public Builder removeDifferences(int index) {
+        if (differencesBuilder_ == null) {
+          ensureDifferencesIsMutable();
+          differences_.remove(index);
+          onChanged();
+        } else {
+          differencesBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.Builder getDifferencesBuilder(
+          int index) {
+        return getDifferencesFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.DifferencingOrBuilder getDifferencesOrBuilder(
+          int index) {
+        if (differencesBuilder_ == null) {
+          return differences_.get(index);  } else {
+          return differencesBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public java.util.List<? extends demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.DifferencingOrBuilder> 
+           getDifferencesOrBuilderList() {
+        if (differencesBuilder_ != null) {
+          return differencesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(differences_);
+        }
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.Builder addDifferencesBuilder() {
+        return getDifferencesFieldBuilder().addBuilder(
+            demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.Builder addDifferencesBuilder(
+          int index) {
+        return getDifferencesFieldBuilder().addBuilder(
+            index, demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .regarima.StationaryTransformation.Differencing differences = 2;</code>
+       */
+      public java.util.List<demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.Builder> 
+           getDifferencesBuilderList() {
+        return getDifferencesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing, demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.Builder, demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.DifferencingOrBuilder> 
+          getDifferencesFieldBuilder() {
+        if (differencesBuilder_ == null) {
+          differencesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing, demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.Differencing.Builder, demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation.DifferencingOrBuilder>(
+                  differences_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          differences_ = null;
+        }
+        return differencesBuilder_;
+      }
+
+      private com.google.protobuf.Internal.DoubleList stationarySeries_ = emptyDoubleList();
+      private void ensureStationarySeriesIsMutable() {
+        if (!((bitField0_ & 0x00000002) != 0)) {
+          stationarySeries_ = mutableCopy(stationarySeries_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      /**
+       * <pre>
+       * The length of the stationary series should be identical to the length of the original series, 
+       * with missing values (NaN) at the beginning
+       * </pre>
+       *
+       * <code>repeated double stationary_series = 3;</code>
+       * @return A list containing the stationarySeries.
+       */
+      public java.util.List<java.lang.Double>
+          getStationarySeriesList() {
+        return ((bitField0_ & 0x00000002) != 0) ?
+                 java.util.Collections.unmodifiableList(stationarySeries_) : stationarySeries_;
+      }
+      /**
+       * <pre>
+       * The length of the stationary series should be identical to the length of the original series, 
+       * with missing values (NaN) at the beginning
+       * </pre>
+       *
+       * <code>repeated double stationary_series = 3;</code>
+       * @return The count of stationarySeries.
+       */
+      public int getStationarySeriesCount() {
+        return stationarySeries_.size();
+      }
+      /**
+       * <pre>
+       * The length of the stationary series should be identical to the length of the original series, 
+       * with missing values (NaN) at the beginning
+       * </pre>
+       *
+       * <code>repeated double stationary_series = 3;</code>
+       * @param index The index of the element to return.
+       * @return The stationarySeries at the given index.
+       */
+      public double getStationarySeries(int index) {
+        return stationarySeries_.getDouble(index);
+      }
+      /**
+       * <pre>
+       * The length of the stationary series should be identical to the length of the original series, 
+       * with missing values (NaN) at the beginning
+       * </pre>
+       *
+       * <code>repeated double stationary_series = 3;</code>
+       * @param index The index to set the value at.
+       * @param value The stationarySeries to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStationarySeries(
+          int index, double value) {
+        ensureStationarySeriesIsMutable();
+        stationarySeries_.setDouble(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The length of the stationary series should be identical to the length of the original series, 
+       * with missing values (NaN) at the beginning
+       * </pre>
+       *
+       * <code>repeated double stationary_series = 3;</code>
+       * @param value The stationarySeries to add.
+       * @return This builder for chaining.
+       */
+      public Builder addStationarySeries(double value) {
+        ensureStationarySeriesIsMutable();
+        stationarySeries_.addDouble(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The length of the stationary series should be identical to the length of the original series, 
+       * with missing values (NaN) at the beginning
+       * </pre>
+       *
+       * <code>repeated double stationary_series = 3;</code>
+       * @param values The stationarySeries to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllStationarySeries(
+          java.lang.Iterable<? extends java.lang.Double> values) {
+        ensureStationarySeriesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, stationarySeries_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The length of the stationary series should be identical to the length of the original series, 
+       * with missing values (NaN) at the beginning
+       * </pre>
+       *
+       * <code>repeated double stationary_series = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearStationarySeries() {
+        stationarySeries_ = emptyDoubleList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:regarima.StationaryTransformation)
+    }
+
+    // @@protoc_insertion_point(class_scope:regarima.StationaryTransformation)
+    private static final demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation();
+    }
+
+    public static demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<StationaryTransformation>
+        PARSER = new com.google.protobuf.AbstractParser<StationaryTransformation>() {
+      @java.lang.Override
+      public StationaryTransformation parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new StationaryTransformation(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<StationaryTransformation> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<StationaryTransformation> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.regarima.io.protobuf.RegArimaProtos.StationaryTransformation getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_regarima_SarimaSpec_descriptor;
   private static final 
@@ -9465,6 +11151,16 @@ public final class RegArimaProtos {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_regarima_InterventionVariable_MetadataEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_regarima_StationaryTransformation_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_regarima_StationaryTransformation_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_regarima_StationaryTransformation_Differencing_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_regarima_StationaryTransformation_Differencing_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -9503,14 +11199,19 @@ public final class RegArimaProtos {
       "\0132,.regarima.InterventionVariable.Metada" +
       "taEntry\032<\n\010Sequence\022\030\n\005start\030\001 \001(\0132\t.jd3" +
       ".Date\022\026\n\003end\030\002 \001(\0132\t.jd3.Date\032/\n\rMetadat" +
-      "aEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001*7" +
-      "\n\016Transformation\022\014\n\010FN_LEVEL\020\000\022\n\n\006FN_LOG" +
-      "\020\001\022\013\n\007FN_AUTO\020\n*E\n\016LengthOfPeriod\022\013\n\007LP_" +
-      "NONE\020\000\022\017\n\013LP_LEAPYEAR\020\001\022\025\n\021LP_LENGTHOFPE" +
-      "RIOD\020\002*>\n\013TradingDays\022\013\n\007TD_NONE\020\000\022\013\n\007TD" +
-      "_WEEK\020\001\022\010\n\004TD_3\020\002\022\013\n\007TD_FULL\020\003B.\n\034demetr" +
-      "a.regarima.io.protobufB\016RegArimaProtosP\000" +
-      "b\006proto3"
+      "aEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\300" +
+      "\001\n\030StationaryTransformation\022\027\n\017mean_corr" +
+      "ection\030\001 \001(\010\022D\n\013differences\030\002 \003(\0132/.rega" +
+      "rima.StationaryTransformation.Differenci" +
+      "ng\022\031\n\021stationary_series\030\003 \003(\001\032*\n\014Differe" +
+      "ncing\022\013\n\003lag\030\001 \001(\005\022\r\n\005order\030\002 \001(\005*7\n\016Tra" +
+      "nsformation\022\014\n\010FN_LEVEL\020\000\022\n\n\006FN_LOG\020\001\022\013\n" +
+      "\007FN_AUTO\020\n*E\n\016LengthOfPeriod\022\013\n\007LP_NONE\020" +
+      "\000\022\017\n\013LP_LEAPYEAR\020\001\022\025\n\021LP_LENGTHOFPERIOD\020" +
+      "\002*>\n\013TradingDays\022\013\n\007TD_NONE\020\000\022\013\n\007TD_WEEK" +
+      "\020\001\022\010\n\004TD_3\020\002\022\013\n\007TD_FULL\020\003B.\n\034demetra.reg" +
+      "arima.io.protobufB\016RegArimaProtosP\000b\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -9577,6 +11278,18 @@ public final class RegArimaProtos {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_regarima_InterventionVariable_MetadataEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
+    internal_static_regarima_StationaryTransformation_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_regarima_StationaryTransformation_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_regarima_StationaryTransformation_descriptor,
+        new java.lang.String[] { "MeanCorrection", "Differences", "StationarySeries", });
+    internal_static_regarima_StationaryTransformation_Differencing_descriptor =
+      internal_static_regarima_StationaryTransformation_descriptor.getNestedTypes().get(0);
+    internal_static_regarima_StationaryTransformation_Differencing_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_regarima_StationaryTransformation_Differencing_descriptor,
+        new java.lang.String[] { "Lag", "Order", });
     demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor();
   }
 

@@ -16,6 +16,7 @@
  */
 package jdplus.stats.tests;
 
+import demetra.stats.StatisticalTest;
 import jdplus.data.DataBlock;
 import java.util.Random;
 import org.junit.Test;
@@ -49,7 +50,7 @@ public class BoxPierceTest {
         lb2.setLag(3);
         lb2.test(new ec.tstoolkit.data.ReadDataBlock(X.getStorage()));
 
-        assertEquals(test.getPValue(), lb2.getPValue(), 1e-9);
+        assertEquals(test.getPvalue(), lb2.getPValue(), 1e-9);
     }
 
 }
