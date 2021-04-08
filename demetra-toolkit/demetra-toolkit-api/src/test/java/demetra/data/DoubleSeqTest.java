@@ -105,10 +105,26 @@ public class DoubleSeqTest {
         o.copyTo(buffer, offset);
         return buffer;
     }
-    
+
     @Test
     public void testHasSameContentAs() {
         assertThat(PI.hasSameContentAs(Doubles.of(Math.PI))).isTrue();
         assertThat(Doubles.of(Double.NaN).hasSameContentAs(Doubles.of(Double.NaN))).isTrue();
     }
+
+    @Test
+    public void testCleanExtremities() {
+        double[] a = new double[]{0, 1, 2, 3};
+        DoubleSeq A = DoubleSeq.of(a);
+        assertThat(A.cleanExtremities().length()).isEqualTo(4);
+
+        double[] b = new double[]{Double.NaN, 1, Double.NaN, Double.NaN};
+        DoubleSeq B = DoubleSeq.of(b);
+        assertThat(B.cleanExtremities().length()).isEqualTo(1);
+
+        double[] c = new double[]{Double.NaN, Double.NaN, Double.NaN};
+        DoubleSeq C = DoubleSeq.of(c);
+        assertThat(C.cleanExtremities().length()).isEqualTo(0);
+    }
+
 }

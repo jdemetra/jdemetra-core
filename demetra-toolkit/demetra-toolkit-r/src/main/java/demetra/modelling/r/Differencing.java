@@ -8,6 +8,7 @@ package demetra.modelling.r;
 import demetra.data.DoubleSeq;
 import demetra.modelling.StationaryTransformation;
 import demetra.regarima.io.protobuf.RegArimaProtosUtility;
+import jdplus.data.DataBlock;
 import jdplus.modelling.DifferencingResults;
 import jdplus.regarima.ami.FastDifferencingModule;
 
@@ -17,7 +18,19 @@ import jdplus.regarima.ami.FastDifferencingModule;
  */
 @lombok.experimental.UtilityClass
 public class Differencing {
-
+    
+    public double[] differences(double[] data, int[] dlags, boolean mean) {
+        DataBlock z = DataBlock.of(data.clone());
+        for (int i = 0; i < dlags.length; ++i) {
+            z.autoApply(-dlags[i], (a, b) -> a - b);
+            z = z.drop(dlags[i], 0);
+        }
+        if (mean) {
+            z.sub(z.average());
+        }
+        return z.toArray();
+    }
+    
     public StationaryTransformation doStationary(double[] data, int period) {
         DifferencingResults dr = DifferencingResults.of(DoubleSeq.of(data), period, -1, true);
         return StationaryTransformation.builder()
@@ -26,7 +39,7 @@ public class Differencing {
                 .stationarySeries(dr.getDifferenced())
                 .build();
     }
-
+    
     public StationaryTransformation fastDifferencing(double[] data, int period, boolean mad, double centile, double k) {
         FastDifferencingModule diff = FastDifferencingModule.builder()
                 .mad(mad)
@@ -35,7 +48,7 @@ public class Differencing {
                 .build();
         DoubleSeq x = DoubleSeq.of(data);
         int[] D = diff.process(x, new int[]{1, period}, null);
-
+        
         if (D[0] != 0) {
             x = x.delta(1, D[0]);
         }
@@ -45,7 +58,7 @@ public class Differencing {
         if (diff.isMeanCorrection()) {
             x = x.removeMean();
         }
-
+        
         return StationaryTransformation.builder()
                 .meanCorrection(diff.isMeanCorrection())
                 .difference(new StationaryTransformation.Differencing(1, D[0]))
@@ -53,7 +66,7 @@ public class Differencing {
                 .stationarySeries(x)
                 .build();
     }
-
+    
     public byte[] toBuffer(StationaryTransformation st) {
         return RegArimaProtosUtility.convert(st).toByteArray();
     }

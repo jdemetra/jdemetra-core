@@ -17,8 +17,9 @@
 package demetra.sa.r;
 
 import demetra.data.Data;
-import demetra.data.DoubleSeq;
+import demetra.sa.diagnostics.CombinedSeasonalityTest.IdentifiableSeasonality;
 import demetra.stats.StatisticalTest;
+import jdplus.sa.tests.CombinedSeasonality;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -33,7 +34,7 @@ public class SeasonalityTestsTest {
 
     @Test
     public void testFTest() {
-        StatisticalTest test = SeasonalityTests.fTest(Data.ABS_RETAIL, 12, 0, "AR");
+        StatisticalTest test = SeasonalityTests.fTest(Data.ABS_RETAIL, 12, "AR", 0);
 //        System.out.println(test);
         assertTrue(test.getPvalue() <.01);
     }
@@ -52,4 +53,15 @@ public class SeasonalityTestsTest {
         assertTrue(test.getPvalue() >.01);
     }
 
+    @Test
+    public void testCombinedTest() {
+        CombinedSeasonality test = SeasonalityTests.combinedTest(Data.PROD.clone(), 12, 0, false);
+        
+        ec.satoolkit.diagnostics.CombinedSeasonalityTest otest=new ec.satoolkit.diagnostics.CombinedSeasonalityTest(
+                new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0,
+                        Data.PROD, true), false);
+        ec.satoolkit.diagnostics.CombinedSeasonalityTest.IdentifiableSeasonality summary = otest.getSummary();
+ //        System.out.println(test);
+        assertTrue(test.getSummary() != IdentifiableSeasonality.None);
+    }
 }

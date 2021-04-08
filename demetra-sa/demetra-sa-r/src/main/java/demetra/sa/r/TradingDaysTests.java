@@ -16,21 +16,9 @@
  */
 package demetra.sa.r;
 
-import jdplus.data.DataBlock;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
-import jdplus.math.matrices.Matrix;
 import demetra.stats.StatisticalTest;
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsUnit;
-import demetra.timeseries.calendars.DayClustering;
-import demetra.timeseries.regression.GenericTradingDaysVariable;
-import jdplus.modelling.regression.Regression;
 import demetra.timeseries.TsData;
-import demetra.timeseries.calendars.GenericTradingDays;
-import static jdplus.timeseries.simplets.TsDataToolkit.drop;
-import static jdplus.timeseries.simplets.TsDataToolkit.delta;
+import jdplus.modelling.regular.tests.TradingDaysTest;
 
 /**
  *
@@ -39,56 +27,25 @@ import static jdplus.timeseries.simplets.TsDataToolkit.delta;
 @lombok.experimental.UtilityClass
 public class TradingDaysTests {
 
-
-    public StatisticalTest ftest(TsData s, boolean ar, int ny) {
-        int freq = s.getTsUnit().ratioOf(TsUnit.YEAR);
-
-        if (ar) {
+    public StatisticalTest fTest(TsData s, String model, int ny) {
+        s = s.cleanExtremities();
+        int freq = s.getAnnualFrequency();
+        if (model.equalsIgnoreCase("AR")) {
+            TsData slast = s;
             if (ny != 0) {
-                s = drop(s, Math.max(0, s.length() - freq * ny - 1), 0);
+                slast = s.drop(Math.max(0, s.length() - freq * ny - 1), 0);
             }
-            return processAr(s);
+            return TradingDaysTest.olsTest2(slast);
         } else {
-            s = delta(s, 1);
-            if (ny != 0) {
-                s = drop(s, Math.max(0, s.length() - freq * ny), 0);
+            if (model.equalsIgnoreCase("D1")) {
+                s = s.delta(1);
             }
-            return process(s);
-        }
-
-    }
-
-    private StatisticalTest process(TsData s) {
-        try {
-            DataBlock y=DataBlock.of(s.getValues());
-            y.sub(y.average());
-            GenericTradingDaysVariable var=new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD7));
-            Matrix td = Regression.matrix(s.getDomain(), var);
-            LinearModel reg=new LinearModel(y.getStorage(), false, td);
-            LeastSquaresResults rslt = Ols.compute(reg);
-            return rslt.Ftest();
-          
-        } catch (Exception err) {
-            return null;
+            TsData slast = s;
+            if (ny != 0) {
+                slast = s.drop(Math.max(0, s.length() - freq * ny), 0);
+            }
+            return TradingDaysTest.olsTest(slast);
         }
     }
 
-    private StatisticalTest processAr(TsData s) {
-        try {
-            DataBlock y=DataBlock.of(s.getValues());
-            TsDomain domain = s.getDomain();
-            GenericTradingDaysVariable var=new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD7));
-            Matrix td = Regression.matrix(domain.range(1, domain.length()), var);
-            LinearModel reg=LinearModel.builder()
-                    .y(y.drop(1, 0))
-                    .addX(y.drop(0, 1))
-                    .addX(td)
-                    .build();
-            
-            LeastSquaresResults rslt = Ols.compute(reg);
-            return rslt.Ftest(1, td.getColumnsCount());
-         } catch (Exception err) {
-            return null;
-        }
-    }
 }
