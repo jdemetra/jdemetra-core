@@ -14,7 +14,7 @@
     <description>A TS Provider that handles JDBC sources such as Oracle and MySql.</description>
 
     <properties>
-        <hsqldb.version>2.5.1</hsqldb.version>
+        <hsqldb.version>2.6.0</hsqldb.version>
     </properties>
 
     <dependencies>
