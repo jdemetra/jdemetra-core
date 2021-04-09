@@ -68,7 +68,7 @@ public class OlsTestsComputer {
             StatisticalTest wtest = w.build();
 
             JarqueBera jb = new JarqueBera(lsr.residuals())
-                    .correctionForSample()
+                    .correctionForSample(true)
                     .degreeOfFreedomCorrection(1);
             StatisticalTest jbtest = jb.build();
 

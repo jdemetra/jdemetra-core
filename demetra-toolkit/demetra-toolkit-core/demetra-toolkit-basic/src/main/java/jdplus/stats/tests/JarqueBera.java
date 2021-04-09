@@ -55,8 +55,8 @@ public class JarqueBera {
         return this;
     }
 
-    public JarqueBera correctionForSample() {
-        corrected = true;
+    public JarqueBera correctionForSample(boolean scorr) {
+        corrected = scorr;
         return this;
     }
 

@@ -105,6 +105,16 @@ public class LjungBox {
         return this;
     }
 
+    /**
+     * 
+     * @param s s=1: positive autocorr, s=-1: negative autocorr, s=0: all autocorr
+     * @return 
+     */
+    public LjungBox sign(int s) {
+        this.sign = s;
+        return this;
+    }
+
     public StatisticalTest build() {
 
         double res = 0.0;

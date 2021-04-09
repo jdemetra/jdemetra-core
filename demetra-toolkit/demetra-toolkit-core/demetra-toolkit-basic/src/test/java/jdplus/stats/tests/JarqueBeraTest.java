@@ -46,7 +46,7 @@ public class JarqueBeraTest {
                 .build();
 
         StatisticalTest test2 = new JarqueBera(X)
-                .correctionForSample()
+                .correctionForSample(true)
                 .build();
 
         assertEquals(test.getPvalue(), test1.getPvalue(), 1e-9);

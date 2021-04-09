@@ -17,6 +17,7 @@
 package demetra.sa.r;
 
 import demetra.data.Data;
+import demetra.data.DoubleSeq;
 import demetra.sa.diagnostics.CombinedSeasonalityTest.IdentifiableSeasonality;
 import demetra.stats.StatisticalTest;
 import jdplus.sa.tests.CombinedSeasonality;
@@ -28,40 +29,44 @@ import static org.junit.Assert.*;
  * @author Jean Palate
  */
 public class SeasonalityTestsTest {
-    
+
     public SeasonalityTestsTest() {
     }
 
     @Test
     public void testFTest() {
-        StatisticalTest test = SeasonalityTests.fTest(Data.ABS_RETAIL, 12, "AR", 0);
-//        System.out.println(test);
-        assertTrue(test.getPvalue() <.01);
-    }
-    
-    @Test
-    public void testQsTest() {
-        StatisticalTest test = SeasonalityTests.qsTest(Data.ABS_RETAIL, 12, 0);
+        DoubleSeq x=DoubleSeq.of(Data.ABS_RETAIL).delta(1).removeMean();
+        StatisticalTest test = SeasonalityTests.fTest(x.toArray(), 12, "AR", 0);
 //        System.out.println(test);
         assertTrue(test.getPvalue() < .01);
     }
-    
+
+    @Test
+    public void testQsTest() {
+        DoubleSeq x=DoubleSeq.of(Data.ABS_RETAIL).delta(1).removeMean();
+        StatisticalTest test = SeasonalityTests.qsTest(x.toArray(), 12, 0);
+//        System.out.println(test);
+        assertTrue(test.getPvalue() < .01);
+    }
+
     @Test
     public void testPeriodicQsTest() {
-        StatisticalTest test = SeasonalityTests.periodicQsTest(Data.ABS_RETAIL, new double[]{17, 1});
+        DoubleSeq x=DoubleSeq.of(Data.ABS_RETAIL).delta(1).removeMean();
+        StatisticalTest test = SeasonalityTests.periodicQsTest(x.toArray(), new double[]{17, 1});
 //        System.out.println(test);
-        assertTrue(test.getPvalue() >.01);
+        assertTrue(test.getPvalue() > .01);
     }
 
     @Test
     public void testCombinedTest() {
-        CombinedSeasonality test = SeasonalityTests.combinedTest(Data.PROD.clone(), 12, 0, false);
-        
-        ec.satoolkit.diagnostics.CombinedSeasonalityTest otest=new ec.satoolkit.diagnostics.CombinedSeasonalityTest(
+        DoubleSeq x=DoubleSeq.of(Data.ABS_RETAIL).delta(1).removeMean();
+        CombinedSeasonality test = SeasonalityTests.combinedTest(x.toArray(), 12, 0, false);
+
+        ec.satoolkit.diagnostics.CombinedSeasonalityTest otest = new ec.satoolkit.diagnostics.CombinedSeasonalityTest(
                 new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0,
-                        Data.PROD, true), false);
+                        x.toArray(), false), false);
         ec.satoolkit.diagnostics.CombinedSeasonalityTest.IdentifiableSeasonality summary = otest.getSummary();
- //        System.out.println(test);
-        assertTrue(test.getSummary() != IdentifiableSeasonality.None);
+        //        System.out.println(test);
+        assertEquals(test.mvalue(), otest.mvalue(), 1e-9);
     }
 }
