@@ -7,7 +7,7 @@ package demetra.modelling.r;
 
 import demetra.data.DoubleSeq;
 import demetra.modelling.StationaryTransformation;
-import demetra.regarima.io.protobuf.RegArimaProtosUtility;
+import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import jdplus.data.DataBlock;
 import jdplus.modelling.DifferencingResults;
 import jdplus.regarima.ami.FastDifferencingModule;
@@ -68,7 +68,7 @@ public class Differencing {
     }
     
     public byte[] toBuffer(StationaryTransformation st) {
-        return RegArimaProtosUtility.convert(st).toByteArray();
+        return ModellingProtosUtility.convert(st).toByteArray();
     }
     
 }

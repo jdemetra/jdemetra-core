@@ -40,9 +40,9 @@ public class TramoSeatsOutput {
     
     ProcessingLog logs;
     
-    public TramoSeatsResultsProtos.TramoSeatsOutput convert(){
-        TramoSeatsResultsProtos.TramoSeatsOutput.Builder builder = 
-                TramoSeatsResultsProtos.TramoSeatsOutput.newBuilder()
+    public TramoSeatsProtos.TramoSeatsOutput convert(){
+        TramoSeatsProtos.TramoSeatsOutput.Builder builder = 
+                TramoSeatsProtos.TramoSeatsOutput.newBuilder()
                 .setEstimationSpec(TramoSeatsProto.convert(estimationSpec));
         
         if (result != null){

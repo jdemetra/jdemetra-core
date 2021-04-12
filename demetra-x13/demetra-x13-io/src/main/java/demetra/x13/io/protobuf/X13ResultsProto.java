@@ -32,8 +32,8 @@ import jdplus.x13.X13Results;
 @lombok.experimental.UtilityClass
 public class X13ResultsProto {
     
-    public X13ResultsProtos.X13Finals convert(X13Finals finals){
-        return X13ResultsProtos.X13Finals.newBuilder()
+    public X13Protos.X13Finals convert(X13Finals finals){
+        return X13Protos.X13Finals.newBuilder()
                 .setD10Final(ToolkitProtosUtility.convert(finals.getD10final()))
                 .setD11Final(ToolkitProtosUtility.convert(finals.getD11final()))
                 .setD12Final(ToolkitProtosUtility.convert(finals.getD12final()))
@@ -53,21 +53,21 @@ public class X13ResultsProto {
                 .build();
     }
     
-    public X13ResultsProtos.X13Results convert(X13Results rslts) {
-        X13ResultsProtos.X13Results.Builder builder = X13ResultsProtos.X13Results.newBuilder();
+    public X13Protos.X13Results convert(X13Results rslts) {
+        X13Protos.X13Results.Builder builder = X13Protos.X13Results.newBuilder();
         X13Diagnostics diags=X13Diagnostics.of(rslts);
         builder.setPreprocessing(RegArimaEstimationProto.convert(rslts.getPreprocessing()))
                 .setDecomposition(X11ResultsProto.convert(rslts.getDecomposition()))
                 .setFinal(convert(rslts.getFinals()))
-                .setDiagnosticsX13(X13ResultsProtos.Diagnostics.newBuilder()
+                .setDiagnosticsX13(X13Protos.Diagnostics.newBuilder()
                         .setMstatistics(convert(diags.getMstatistics()))
                         .build())
                 .setDiagnosticsSa(SaProtosUtility.of(diags.getSaDiagnostics()));
         return builder.build();
     }
     
-    public X13ResultsProtos.MStatistics convert(Mstatistics mstats){
-        return X13ResultsProtos.MStatistics.newBuilder()
+    public X13Protos.MStatistics convert(Mstatistics mstats){
+        return X13Protos.MStatistics.newBuilder()
                 .setM1(mstats.getM(1))
                 .setM2(mstats.getM(2))
                 .setM3(mstats.getM(3))

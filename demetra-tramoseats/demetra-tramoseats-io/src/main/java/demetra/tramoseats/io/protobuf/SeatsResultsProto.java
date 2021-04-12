@@ -16,7 +16,7 @@
  */
 package demetra.tramoseats.io.protobuf;
 
-import demetra.sa.ComponentType;
+import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import demetra.sa.io.protobuf.SaProtosUtility;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import jdplus.seats.SeatsResults;
@@ -29,10 +29,10 @@ import jdplus.ucarima.UcarimaModel;
 @lombok.experimental.UtilityClass
 public class SeatsResultsProto {
 
-    TramoSeatsResultsProtos.CanonicalDecomposition convert(UcarimaModel ucm) {
+    TramoSeatsProtos.CanonicalDecomposition convert(UcarimaModel ucm) {
 
-        TramoSeatsResultsProtos.CanonicalDecomposition.Builder builder = TramoSeatsResultsProtos.CanonicalDecomposition.newBuilder()
-                .setModel(ToolkitProtosUtility.convert(ucm.getModel(), "model"));
+        TramoSeatsProtos.CanonicalDecomposition.Builder builder = TramoSeatsProtos.CanonicalDecomposition.newBuilder()
+                .setArima(ToolkitProtosUtility.convert(ucm.getModel(), "model"));
 
         if (ucm.getComponentsCount() == 4) {
             return builder
@@ -52,10 +52,10 @@ public class SeatsResultsProto {
         }
     }
 
-    public TramoSeatsResultsProtos.SeatsResults convert(SeatsResults seats) {
+    public TramoSeatsProtos.SeatsResults convert(SeatsResults seats) {
 
-        return TramoSeatsResultsProtos.SeatsResults.newBuilder()
-                .setSeatsModel(ToolkitProtosUtility.convert(seats.getFinalModel(), "seatsmodel"))
+        return TramoSeatsProtos.SeatsResults.newBuilder()
+                .setSeatsArima(ModellingProtosUtility.convert(seats.getFinalModel(), "seatsmodel"))
                 .setMean(seats.isMeanCorrection())
                 .setCanonicalDecomposition(convert(seats.getUcarimaModel()))
                 .setStochastics(SaProtosUtility.convert(seats.getInitialComponents()))

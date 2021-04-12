@@ -7,8 +7,8 @@ package demetra.tramoseats.io.protobuf;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.data.Parameter;
+import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import demetra.tramo.TradingDaysSpec;
-import demetra.regarima.io.protobuf.RegArimaProtosUtility;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
@@ -25,8 +25,8 @@ public class TradingDaysProto {
         String holidays = spec.getHolidays();
         if (holidays != null) {
             builder.setHolidays(holidays)
-                    .setLp(RegArimaProtosUtility.convert(spec.getLengthOfPeriodType()))
-                    .setTd(RegArimaProtosUtility.convert(spec.getTradingDaysType()))
+                    .setLp(ModellingProtosUtility.convert(spec.getLengthOfPeriodType()))
+                    .setTd(ModellingProtosUtility.convert(spec.getTradingDaysType()))
                     .setTest(TramoSeatsProtosUtility.convert(spec.getRegressionTestType()));
             return;
         }
@@ -46,15 +46,15 @@ public class TradingDaysProto {
             return;
         }
         if (spec.isAutomatic()) {
-            builder.setLp(RegArimaProtosUtility.convert(spec.getLengthOfPeriodType()))
-                    .setTd(RegArimaProtosUtility.convert(spec.getTradingDaysType()))
+            builder.setLp(ModellingProtosUtility.convert(spec.getLengthOfPeriodType()))
+                    .setTd(ModellingProtosUtility.convert(spec.getTradingDaysType()))
                     .setTest(TramoSeatsProtosUtility.convert(spec.getRegressionTestType()))
                     .setAuto(TramoSeatsProtosUtility.convert(spec.getAutomaticMethod()))
                     .setPtest(spec.getProbabilityForFTest());
 
         } else {
-            builder.setLp(RegArimaProtosUtility.convert(spec.getLengthOfPeriodType()))
-                    .setTd(RegArimaProtosUtility.convert(spec.getTradingDaysType()))
+            builder.setLp(ModellingProtosUtility.convert(spec.getLengthOfPeriodType()))
+                    .setTd(ModellingProtosUtility.convert(spec.getTradingDaysType()))
                     .setTest(TramoSeatsProtosUtility.convert(spec.getRegressionTestType()));
         }
     }
@@ -81,8 +81,8 @@ public class TradingDaysProto {
 
     public TradingDaysSpec convert(TramoSeatsProtos.TramoSpec.TradingDaysSpec spec) {
         String holidays = spec.getHolidays();
-        TradingDaysType td = RegArimaProtosUtility.convert(spec.getTd());
-        LengthOfPeriodType lp = RegArimaProtosUtility.convert(spec.getLp());
+        TradingDaysType td = ModellingProtosUtility.convert(spec.getTd());
+        LengthOfPeriodType lp = ModellingProtosUtility.convert(spec.getLp());
         Parameter lpc = ToolkitProtosUtility.convert(spec.getLpcoefficient());
         Parameter[] tdc = ToolkitProtosUtility.convert(spec.getTdcoefficientsList());
         boolean test = isTest(spec);

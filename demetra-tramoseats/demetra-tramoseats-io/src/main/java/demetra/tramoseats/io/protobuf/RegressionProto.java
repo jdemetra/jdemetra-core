@@ -6,8 +6,9 @@
 package demetra.tramoseats.io.protobuf;
 
 import demetra.data.Parameter;
+import demetra.modelling.io.protobuf.ModellingProtos;
+import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import demetra.tramo.RegressionSpec;
-import demetra.regarima.io.protobuf.RegArimaProtos;
 import demetra.regarima.io.protobuf.RegArimaProtosUtility;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.IOutlier;
@@ -43,23 +44,23 @@ public class RegressionProto {
                 .calendar(cbuilder.build());
         int n = spec.getOutliersCount();
         for (int i = 0; i < n; ++i) {
-            RegArimaProtos.Outlier outlier = spec.getOutliers(i);
+            ModellingProtos.Outlier outlier = spec.getOutliers(i);
             builder.outlier(convert(outlier, tc));
         }
         n = spec.getUsersCount();
         for (int i = 0; i < n; ++i) {
-            RegArimaProtos.TsVariable var = spec.getUsers(i);
-            builder.userDefinedVariable(RegArimaProtosUtility.convert(var));
+            ModellingProtos.TsVariable var = spec.getUsers(i);
+            builder.userDefinedVariable(ModellingProtosUtility.convert(var));
         }
         n = spec.getInterventionsCount();
         for (int i = 0; i < n; ++i) {
-            RegArimaProtos.InterventionVariable var = spec.getInterventions(i);
-            builder.interventionVariable(RegArimaProtosUtility.convert(var));
+            ModellingProtos.InterventionVariable var = spec.getInterventions(i);
+            builder.interventionVariable(ModellingProtosUtility.convert(var));
         }
         n = spec.getRampsCount();
         for (int i = 0; i < n; ++i) {
-            RegArimaProtos.Ramp var = spec.getRamps(i);
-            builder.ramp(RegArimaProtosUtility.convert(var));
+            ModellingProtos.Ramp var = spec.getRamps(i);
+            builder.ramp(ModellingProtosUtility.convert(var));
         }
         
         return builder.build();
@@ -77,21 +78,21 @@ public class RegressionProto {
         });
         List<Variable<TsContextVariable>> users = spec.getUserDefinedVariables();
         users.forEach(user -> {
-            builder.addUsers(RegArimaProtosUtility.convertTsContextVariable(user));
+            builder.addUsers(ModellingProtosUtility.convertTsContextVariable(user));
         });
         List<Variable<InterventionVariable>> ivs = spec.getInterventionVariables();
         ivs.forEach(iv -> {
-            builder.addInterventions(RegArimaProtosUtility.convertInterventionVariable(iv));
+            builder.addInterventions(ModellingProtosUtility.convertInterventionVariable(iv));
         });
         List<Variable<Ramp>> ramps = spec.getRamps();
         ramps.forEach(ramp -> {
-            builder.addRamps(RegArimaProtosUtility.convertRamp(ramp));
+            builder.addRamps(ModellingProtosUtility.convertRamp(ramp));
         });
         
         return builder.build();
     }
 
-    public Variable<IOutlier> convert(RegArimaProtos.Outlier outlier, double tc) {
+    public Variable<IOutlier> convert(ModellingProtos.Outlier outlier, double tc) {
         LocalDate ldt = ToolkitProtosUtility.convert(outlier.getPosition());
         IOutlier o;
         switch (outlier.getCode()) {
@@ -124,9 +125,9 @@ public class RegressionProto {
                 .build();        
     }
     
-    public RegArimaProtos.Outlier convert(Variable<IOutlier> v){
+    public ModellingProtos.Outlier convert(Variable<IOutlier> v){
         IOutlier outlier = v.getCore();
-        return RegArimaProtos.Outlier.newBuilder()
+        return ModellingProtos.Outlier.newBuilder()
                 .setName(v.getName())
                 .setCode(outlier.getCode())
                 .setPosition(ToolkitProtosUtility.convert(outlier.getPosition().toLocalDate()))

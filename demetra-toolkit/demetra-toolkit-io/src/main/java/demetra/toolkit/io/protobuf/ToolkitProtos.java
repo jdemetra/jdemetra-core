@@ -12695,1220 +12695,6 @@ public final class ToolkitProtos {
 
   }
 
-  public interface ArimaModelOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:jd3.ArimaModel)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>string name = 1;</code>
-     * @return The name.
-     */
-    java.lang.String getName();
-    /**
-     * <code>string name = 1;</code>
-     * @return The bytes for name.
-     */
-    com.google.protobuf.ByteString
-        getNameBytes();
-
-    /**
-     * <code>double innovation_variance = 2;</code>
-     * @return The innovationVariance.
-     */
-    double getInnovationVariance();
-
-    /**
-     * <code>repeated double ar = 3;</code>
-     * @return A list containing the ar.
-     */
-    java.util.List<java.lang.Double> getArList();
-    /**
-     * <code>repeated double ar = 3;</code>
-     * @return The count of ar.
-     */
-    int getArCount();
-    /**
-     * <code>repeated double ar = 3;</code>
-     * @param index The index of the element to return.
-     * @return The ar at the given index.
-     */
-    double getAr(int index);
-
-    /**
-     * <code>repeated double delta = 4;</code>
-     * @return A list containing the delta.
-     */
-    java.util.List<java.lang.Double> getDeltaList();
-    /**
-     * <code>repeated double delta = 4;</code>
-     * @return The count of delta.
-     */
-    int getDeltaCount();
-    /**
-     * <code>repeated double delta = 4;</code>
-     * @param index The index of the element to return.
-     * @return The delta at the given index.
-     */
-    double getDelta(int index);
-
-    /**
-     * <code>repeated double ma = 5;</code>
-     * @return A list containing the ma.
-     */
-    java.util.List<java.lang.Double> getMaList();
-    /**
-     * <code>repeated double ma = 5;</code>
-     * @return The count of ma.
-     */
-    int getMaCount();
-    /**
-     * <code>repeated double ma = 5;</code>
-     * @param index The index of the element to return.
-     * @return The ma at the given index.
-     */
-    double getMa(int index);
-  }
-  /**
-   * Protobuf type {@code jd3.ArimaModel}
-   */
-  public static final class ArimaModel extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:jd3.ArimaModel)
-      ArimaModelOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use ArimaModel.newBuilder() to construct.
-    private ArimaModel(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private ArimaModel() {
-      name_ = "";
-      ar_ = emptyDoubleList();
-      delta_ = emptyDoubleList();
-      ma_ = emptyDoubleList();
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new ArimaModel();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private ArimaModel(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              name_ = s;
-              break;
-            }
-            case 17: {
-
-              innovationVariance_ = input.readDouble();
-              break;
-            }
-            case 25: {
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                ar_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              ar_.addDouble(input.readDouble());
-              break;
-            }
-            case 26: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
-                ar_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              while (input.getBytesUntilLimit() > 0) {
-                ar_.addDouble(input.readDouble());
-              }
-              input.popLimit(limit);
-              break;
-            }
-            case 33: {
-              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                delta_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000002;
-              }
-              delta_.addDouble(input.readDouble());
-              break;
-            }
-            case 34: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000002) != 0) && input.getBytesUntilLimit() > 0) {
-                delta_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000002;
-              }
-              while (input.getBytesUntilLimit() > 0) {
-                delta_.addDouble(input.readDouble());
-              }
-              input.popLimit(limit);
-              break;
-            }
-            case 41: {
-              if (!((mutable_bitField0_ & 0x00000004) != 0)) {
-                ma_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000004;
-              }
-              ma_.addDouble(input.readDouble());
-              break;
-            }
-            case 42: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000004) != 0) && input.getBytesUntilLimit() > 0) {
-                ma_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000004;
-              }
-              while (input.getBytesUntilLimit() > 0) {
-                ma_.addDouble(input.readDouble());
-              }
-              input.popLimit(limit);
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          ar_.makeImmutable(); // C
-        }
-        if (((mutable_bitField0_ & 0x00000002) != 0)) {
-          delta_.makeImmutable(); // C
-        }
-        if (((mutable_bitField0_ & 0x00000004) != 0)) {
-          ma_.makeImmutable(); // C
-        }
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_ArimaModel_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_ArimaModel_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.class, demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.Builder.class);
-    }
-
-    public static final int NAME_FIELD_NUMBER = 1;
-    private volatile java.lang.Object name_;
-    /**
-     * <code>string name = 1;</code>
-     * @return The name.
-     */
-    @java.lang.Override
-    public java.lang.String getName() {
-      java.lang.Object ref = name_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        name_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string name = 1;</code>
-     * @return The bytes for name.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getNameBytes() {
-      java.lang.Object ref = name_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        name_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int INNOVATION_VARIANCE_FIELD_NUMBER = 2;
-    private double innovationVariance_;
-    /**
-     * <code>double innovation_variance = 2;</code>
-     * @return The innovationVariance.
-     */
-    @java.lang.Override
-    public double getInnovationVariance() {
-      return innovationVariance_;
-    }
-
-    public static final int AR_FIELD_NUMBER = 3;
-    private com.google.protobuf.Internal.DoubleList ar_;
-    /**
-     * <code>repeated double ar = 3;</code>
-     * @return A list containing the ar.
-     */
-    @java.lang.Override
-    public java.util.List<java.lang.Double>
-        getArList() {
-      return ar_;
-    }
-    /**
-     * <code>repeated double ar = 3;</code>
-     * @return The count of ar.
-     */
-    public int getArCount() {
-      return ar_.size();
-    }
-    /**
-     * <code>repeated double ar = 3;</code>
-     * @param index The index of the element to return.
-     * @return The ar at the given index.
-     */
-    public double getAr(int index) {
-      return ar_.getDouble(index);
-    }
-    private int arMemoizedSerializedSize = -1;
-
-    public static final int DELTA_FIELD_NUMBER = 4;
-    private com.google.protobuf.Internal.DoubleList delta_;
-    /**
-     * <code>repeated double delta = 4;</code>
-     * @return A list containing the delta.
-     */
-    @java.lang.Override
-    public java.util.List<java.lang.Double>
-        getDeltaList() {
-      return delta_;
-    }
-    /**
-     * <code>repeated double delta = 4;</code>
-     * @return The count of delta.
-     */
-    public int getDeltaCount() {
-      return delta_.size();
-    }
-    /**
-     * <code>repeated double delta = 4;</code>
-     * @param index The index of the element to return.
-     * @return The delta at the given index.
-     */
-    public double getDelta(int index) {
-      return delta_.getDouble(index);
-    }
-    private int deltaMemoizedSerializedSize = -1;
-
-    public static final int MA_FIELD_NUMBER = 5;
-    private com.google.protobuf.Internal.DoubleList ma_;
-    /**
-     * <code>repeated double ma = 5;</code>
-     * @return A list containing the ma.
-     */
-    @java.lang.Override
-    public java.util.List<java.lang.Double>
-        getMaList() {
-      return ma_;
-    }
-    /**
-     * <code>repeated double ma = 5;</code>
-     * @return The count of ma.
-     */
-    public int getMaCount() {
-      return ma_.size();
-    }
-    /**
-     * <code>repeated double ma = 5;</code>
-     * @param index The index of the element to return.
-     * @return The ma at the given index.
-     */
-    public double getMa(int index) {
-      return ma_.getDouble(index);
-    }
-    private int maMemoizedSerializedSize = -1;
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (!getNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
-      }
-      if (innovationVariance_ != 0D) {
-        output.writeDouble(2, innovationVariance_);
-      }
-      if (getArList().size() > 0) {
-        output.writeUInt32NoTag(26);
-        output.writeUInt32NoTag(arMemoizedSerializedSize);
-      }
-      for (int i = 0; i < ar_.size(); i++) {
-        output.writeDoubleNoTag(ar_.getDouble(i));
-      }
-      if (getDeltaList().size() > 0) {
-        output.writeUInt32NoTag(34);
-        output.writeUInt32NoTag(deltaMemoizedSerializedSize);
-      }
-      for (int i = 0; i < delta_.size(); i++) {
-        output.writeDoubleNoTag(delta_.getDouble(i));
-      }
-      if (getMaList().size() > 0) {
-        output.writeUInt32NoTag(42);
-        output.writeUInt32NoTag(maMemoizedSerializedSize);
-      }
-      for (int i = 0; i < ma_.size(); i++) {
-        output.writeDoubleNoTag(ma_.getDouble(i));
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!getNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
-      }
-      if (innovationVariance_ != 0D) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(2, innovationVariance_);
-      }
-      {
-        int dataSize = 0;
-        dataSize = 8 * getArList().size();
-        size += dataSize;
-        if (!getArList().isEmpty()) {
-          size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
-        }
-        arMemoizedSerializedSize = dataSize;
-      }
-      {
-        int dataSize = 0;
-        dataSize = 8 * getDeltaList().size();
-        size += dataSize;
-        if (!getDeltaList().isEmpty()) {
-          size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
-        }
-        deltaMemoizedSerializedSize = dataSize;
-      }
-      {
-        int dataSize = 0;
-        dataSize = 8 * getMaList().size();
-        size += dataSize;
-        if (!getMaList().isEmpty()) {
-          size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
-        }
-        maMemoizedSerializedSize = dataSize;
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel)) {
-        return super.equals(obj);
-      }
-      demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel other = (demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel) obj;
-
-      if (!getName()
-          .equals(other.getName())) return false;
-      if (java.lang.Double.doubleToLongBits(getInnovationVariance())
-          != java.lang.Double.doubleToLongBits(
-              other.getInnovationVariance())) return false;
-      if (!getArList()
-          .equals(other.getArList())) return false;
-      if (!getDeltaList()
-          .equals(other.getDeltaList())) return false;
-      if (!getMaList()
-          .equals(other.getMaList())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + NAME_FIELD_NUMBER;
-      hash = (53 * hash) + getName().hashCode();
-      hash = (37 * hash) + INNOVATION_VARIANCE_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          java.lang.Double.doubleToLongBits(getInnovationVariance()));
-      if (getArCount() > 0) {
-        hash = (37 * hash) + AR_FIELD_NUMBER;
-        hash = (53 * hash) + getArList().hashCode();
-      }
-      if (getDeltaCount() > 0) {
-        hash = (37 * hash) + DELTA_FIELD_NUMBER;
-        hash = (53 * hash) + getDeltaList().hashCode();
-      }
-      if (getMaCount() > 0) {
-        hash = (37 * hash) + MA_FIELD_NUMBER;
-        hash = (53 * hash) + getMaList().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code jd3.ArimaModel}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:jd3.ArimaModel)
-        demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModelOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_ArimaModel_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_ArimaModel_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.class, demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.Builder.class);
-      }
-
-      // Construct using demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        name_ = "";
-
-        innovationVariance_ = 0D;
-
-        ar_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        delta_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        ma_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000004);
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_ArimaModel_descriptor;
-      }
-
-      @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel getDefaultInstanceForType() {
-        return demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel build() {
-        demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel buildPartial() {
-        demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel result = new demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel(this);
-        int from_bitField0_ = bitField0_;
-        result.name_ = name_;
-        result.innovationVariance_ = innovationVariance_;
-        if (((bitField0_ & 0x00000001) != 0)) {
-          ar_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.ar_ = ar_;
-        if (((bitField0_ & 0x00000002) != 0)) {
-          delta_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000002);
-        }
-        result.delta_ = delta_;
-        if (((bitField0_ & 0x00000004) != 0)) {
-          ma_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000004);
-        }
-        result.ma_ = ma_;
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel) {
-          return mergeFrom((demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel other) {
-        if (other == demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel.getDefaultInstance()) return this;
-        if (!other.getName().isEmpty()) {
-          name_ = other.name_;
-          onChanged();
-        }
-        if (other.getInnovationVariance() != 0D) {
-          setInnovationVariance(other.getInnovationVariance());
-        }
-        if (!other.ar_.isEmpty()) {
-          if (ar_.isEmpty()) {
-            ar_ = other.ar_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureArIsMutable();
-            ar_.addAll(other.ar_);
-          }
-          onChanged();
-        }
-        if (!other.delta_.isEmpty()) {
-          if (delta_.isEmpty()) {
-            delta_ = other.delta_;
-            bitField0_ = (bitField0_ & ~0x00000002);
-          } else {
-            ensureDeltaIsMutable();
-            delta_.addAll(other.delta_);
-          }
-          onChanged();
-        }
-        if (!other.ma_.isEmpty()) {
-          if (ma_.isEmpty()) {
-            ma_ = other.ma_;
-            bitField0_ = (bitField0_ & ~0x00000004);
-          } else {
-            ensureMaIsMutable();
-            ma_.addAll(other.ma_);
-          }
-          onChanged();
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      private java.lang.Object name_ = "";
-      /**
-       * <code>string name = 1;</code>
-       * @return The name.
-       */
-      public java.lang.String getName() {
-        java.lang.Object ref = name_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          name_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string name = 1;</code>
-       * @return The bytes for name.
-       */
-      public com.google.protobuf.ByteString
-          getNameBytes() {
-        java.lang.Object ref = name_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          name_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string name = 1;</code>
-       * @param value The name to set.
-       * @return This builder for chaining.
-       */
-      public Builder setName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        name_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string name = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearName() {
-        
-        name_ = getDefaultInstance().getName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string name = 1;</code>
-       * @param value The bytes for name to set.
-       * @return This builder for chaining.
-       */
-      public Builder setNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        name_ = value;
-        onChanged();
-        return this;
-      }
-
-      private double innovationVariance_ ;
-      /**
-       * <code>double innovation_variance = 2;</code>
-       * @return The innovationVariance.
-       */
-      @java.lang.Override
-      public double getInnovationVariance() {
-        return innovationVariance_;
-      }
-      /**
-       * <code>double innovation_variance = 2;</code>
-       * @param value The innovationVariance to set.
-       * @return This builder for chaining.
-       */
-      public Builder setInnovationVariance(double value) {
-        
-        innovationVariance_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>double innovation_variance = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearInnovationVariance() {
-        
-        innovationVariance_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.Internal.DoubleList ar_ = emptyDoubleList();
-      private void ensureArIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          ar_ = mutableCopy(ar_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-      /**
-       * <code>repeated double ar = 3;</code>
-       * @return A list containing the ar.
-       */
-      public java.util.List<java.lang.Double>
-          getArList() {
-        return ((bitField0_ & 0x00000001) != 0) ?
-                 java.util.Collections.unmodifiableList(ar_) : ar_;
-      }
-      /**
-       * <code>repeated double ar = 3;</code>
-       * @return The count of ar.
-       */
-      public int getArCount() {
-        return ar_.size();
-      }
-      /**
-       * <code>repeated double ar = 3;</code>
-       * @param index The index of the element to return.
-       * @return The ar at the given index.
-       */
-      public double getAr(int index) {
-        return ar_.getDouble(index);
-      }
-      /**
-       * <code>repeated double ar = 3;</code>
-       * @param index The index to set the value at.
-       * @param value The ar to set.
-       * @return This builder for chaining.
-       */
-      public Builder setAr(
-          int index, double value) {
-        ensureArIsMutable();
-        ar_.setDouble(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated double ar = 3;</code>
-       * @param value The ar to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAr(double value) {
-        ensureArIsMutable();
-        ar_.addDouble(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated double ar = 3;</code>
-       * @param values The ar to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllAr(
-          java.lang.Iterable<? extends java.lang.Double> values) {
-        ensureArIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, ar_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated double ar = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearAr() {
-        ar_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.Internal.DoubleList delta_ = emptyDoubleList();
-      private void ensureDeltaIsMutable() {
-        if (!((bitField0_ & 0x00000002) != 0)) {
-          delta_ = mutableCopy(delta_);
-          bitField0_ |= 0x00000002;
-         }
-      }
-      /**
-       * <code>repeated double delta = 4;</code>
-       * @return A list containing the delta.
-       */
-      public java.util.List<java.lang.Double>
-          getDeltaList() {
-        return ((bitField0_ & 0x00000002) != 0) ?
-                 java.util.Collections.unmodifiableList(delta_) : delta_;
-      }
-      /**
-       * <code>repeated double delta = 4;</code>
-       * @return The count of delta.
-       */
-      public int getDeltaCount() {
-        return delta_.size();
-      }
-      /**
-       * <code>repeated double delta = 4;</code>
-       * @param index The index of the element to return.
-       * @return The delta at the given index.
-       */
-      public double getDelta(int index) {
-        return delta_.getDouble(index);
-      }
-      /**
-       * <code>repeated double delta = 4;</code>
-       * @param index The index to set the value at.
-       * @param value The delta to set.
-       * @return This builder for chaining.
-       */
-      public Builder setDelta(
-          int index, double value) {
-        ensureDeltaIsMutable();
-        delta_.setDouble(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated double delta = 4;</code>
-       * @param value The delta to add.
-       * @return This builder for chaining.
-       */
-      public Builder addDelta(double value) {
-        ensureDeltaIsMutable();
-        delta_.addDouble(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated double delta = 4;</code>
-       * @param values The delta to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllDelta(
-          java.lang.Iterable<? extends java.lang.Double> values) {
-        ensureDeltaIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, delta_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated double delta = 4;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearDelta() {
-        delta_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.Internal.DoubleList ma_ = emptyDoubleList();
-      private void ensureMaIsMutable() {
-        if (!((bitField0_ & 0x00000004) != 0)) {
-          ma_ = mutableCopy(ma_);
-          bitField0_ |= 0x00000004;
-         }
-      }
-      /**
-       * <code>repeated double ma = 5;</code>
-       * @return A list containing the ma.
-       */
-      public java.util.List<java.lang.Double>
-          getMaList() {
-        return ((bitField0_ & 0x00000004) != 0) ?
-                 java.util.Collections.unmodifiableList(ma_) : ma_;
-      }
-      /**
-       * <code>repeated double ma = 5;</code>
-       * @return The count of ma.
-       */
-      public int getMaCount() {
-        return ma_.size();
-      }
-      /**
-       * <code>repeated double ma = 5;</code>
-       * @param index The index of the element to return.
-       * @return The ma at the given index.
-       */
-      public double getMa(int index) {
-        return ma_.getDouble(index);
-      }
-      /**
-       * <code>repeated double ma = 5;</code>
-       * @param index The index to set the value at.
-       * @param value The ma to set.
-       * @return This builder for chaining.
-       */
-      public Builder setMa(
-          int index, double value) {
-        ensureMaIsMutable();
-        ma_.setDouble(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated double ma = 5;</code>
-       * @param value The ma to add.
-       * @return This builder for chaining.
-       */
-      public Builder addMa(double value) {
-        ensureMaIsMutable();
-        ma_.addDouble(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated double ma = 5;</code>
-       * @param values The ma to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllMa(
-          java.lang.Iterable<? extends java.lang.Double> values) {
-        ensureMaIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, ma_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated double ma = 5;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearMa() {
-        ma_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000004);
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:jd3.ArimaModel)
-    }
-
-    // @@protoc_insertion_point(class_scope:jd3.ArimaModel)
-    private static final demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel();
-    }
-
-    public static demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<ArimaModel>
-        PARSER = new com.google.protobuf.AbstractParser<ArimaModel>() {
-      @java.lang.Override
-      public ArimaModel parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new ArimaModel(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<ArimaModel> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ArimaModel> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public demetra.toolkit.io.protobuf.ToolkitProtos.ArimaModel getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   public interface NIIDTestsOrBuilder extends
       // @@protoc_insertion_point(interface_extends:jd3.NIIDTests)
       com.google.protobuf.MessageOrBuilder {
@@ -32299,11 +31085,6 @@ public final class ToolkitProtos {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_jd3_LikelihoodStatistics_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_jd3_ArimaModel_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_jd3_ArimaModel_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_jd3_NIIDTests_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -32429,96 +31210,93 @@ public final class ToolkitProtos {
       "ikelihood\030\005 \001(\001\022\037\n\027adjusted_log_likeliho" +
       "od\030\006 \001(\001\022\013\n\003aic\030\007 \001(\001\022\014\n\004aicc\030\010 \001(\001\022\013\n\003b" +
       "ic\030\t \001(\001\022\014\n\004bicc\030\n \001(\001\022\014\n\004bic2\030\013 \001(\001\022\024\n\014" +
-      "hannan_quinn\030\014 \001(\001\022\013\n\003ssq\030\r \001(\001\"^\n\nArima" +
-      "Model\022\014\n\004name\030\001 \001(\t\022\033\n\023innovation_varian" +
-      "ce\030\002 \001(\001\022\n\n\002ar\030\003 \003(\001\022\r\n\005delta\030\004 \003(\001\022\n\n\002m" +
-      "a\030\005 \003(\001\"\212\005\n\tNIIDTests\022\"\n\004mean\030\001 \001(\0132\024.jd" +
-      "3.StatisticalTest\022&\n\010skewness\030\002 \001(\0132\024.jd" +
-      "3.StatisticalTest\022&\n\010kurtosis\030\003 \001(\0132\024.jd" +
-      "3.StatisticalTest\022,\n\016doornik_hansen\030\004 \001(" +
-      "\0132\024.jd3.StatisticalTest\022\'\n\tljung_box\030\005 \001" +
-      "(\0132\024.jd3.StatisticalTest\022(\n\nbox_pierce\030\006" +
-      " \001(\0132\024.jd3.StatisticalTest\0220\n\022seasonal_l" +
-      "jung_box\030\007 \001(\0132\024.jd3.StatisticalTest\0221\n\023" +
-      "seasonal_box_pierce\030\010 \001(\0132\024.jd3.Statisti" +
-      "calTest\022)\n\013runs_number\030\t \001(\0132\024.jd3.Stati" +
-      "sticalTest\022)\n\013runs_length\030\n \001(\0132\024.jd3.St" +
-      "atisticalTest\0221\n\023up_down_runs_number\030\013 \001" +
-      "(\0132\024.jd3.StatisticalTest\0221\n\023up_down_runs" +
-      "_length\030\014 \001(\0132\024.jd3.StatisticalTest\0222\n\024l" +
-      "jung_box_on_squares\030\r \001(\0132\024.jd3.Statisti" +
-      "calTest\0223\n\025box_pierce_on_squares\030\016 \001(\0132\024" +
-      ".jd3.StatisticalTest\"B\n\016ValidityPeriod\022\030" +
-      "\n\005start\030\001 \001(\0132\t.jd3.Date\022\026\n\003end\030\002 \001(\0132\t." +
-      "jd3.Date\"]\n\010FixedDay\022\r\n\005month\030\001 \001(\005\022\013\n\003d" +
-      "ay\030\002 \001(\005\022\016\n\006weight\030\003 \001(\001\022%\n\010validity\030\004 \001" +
-      "(\0132\023.jd3.ValidityPeriod\"i\n\020EasterRelated" +
-      "Day\022\016\n\006offset\030\001 \001(\005\022\016\n\006julian\030\002 \001(\010\022\016\n\006w" +
-      "eight\030\003 \001(\001\022%\n\010validity\030\004 \001(\0132\023.jd3.Vali" +
-      "dityPeriod\"\177\n\023PrespecifiedHoliday\022!\n\005eve" +
-      "nt\030\001 \001(\0162\022.jd3.CalendarEvent\022\016\n\006offset\030\002" +
-      " \001(\005\022\016\n\006weight\030\003 \001(\001\022%\n\010validity\030\004 \001(\0132\023" +
-      ".jd3.ValidityPeriod\"w\n\014FixedWeekDay\022\r\n\005m" +
-      "onth\030\001 \001(\005\022\020\n\010position\030\002 \001(\005\022\017\n\007weekday\030" +
-      "\003 \001(\005\022\016\n\006weight\030\004 \001(\001\022%\n\010validity\030\005 \001(\0132" +
-      "\023.jd3.ValidityPeriod\"\253\001\n\022CalendarDefinit" +
-      "ion\022!\n\010calendar\030\001 \001(\0132\r.jd3.CalendarH\000\0222" +
-      "\n\021weighted_calendar\030\002 \001(\0132\025.jd3.Weighted" +
-      "CalendarH\000\0220\n\020chained_calendar\030\003 \001(\0132\024.j" +
-      "d3.ChainedCalendarH\000B\014\n\ndefinition\"\306\001\n\010C" +
-      "alendar\022!\n\nfixed_days\030\001 \003(\0132\r.jd3.FixedD" +
-      "ay\0222\n\023easter_related_days\030\002 \003(\0132\025.jd3.Ea" +
-      "sterRelatedDay\022*\n\017fixed_week_days\030\003 \003(\0132" +
-      "\021.jd3.FixedWeekDay\0227\n\025prespecified_holid" +
-      "ays\030\004 \003(\0132\030.jd3.PrespecifiedHoliday\"\200\001\n\020" +
-      "WeightedCalendar\022)\n\005items\030\001 \003(\0132\032.jd3.We" +
-      "ightedCalendar.Item\032A\n\004Item\022)\n\010calendar\030" +
-      "\001 \001(\0132\027.jd3.CalendarDefinition\022\016\n\006weight" +
-      "\030\002 \001(\001\"\203\001\n\017ChainedCalendar\022*\n\tcalendar1\030" +
-      "\001 \001(\0132\027.jd3.CalendarDefinition\022*\n\tcalend" +
-      "ar2\030\002 \001(\0132\027.jd3.CalendarDefinition\022\030\n\005br" +
-      "eak\030\003 \001(\0132\t.jd3.Date\"\216\002\n\020ModellingContex" +
-      "t\0227\n\tcalendars\030\001 \003(\0132$.jd3.ModellingCont" +
-      "ext.CalendarsEntry\0227\n\tvariables\030\002 \003(\0132$." +
-      "jd3.ModellingContext.VariablesEntry\032I\n\016C" +
-      "alendarsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(" +
-      "\0132\027.jd3.CalendarDefinition:\0028\001\032=\n\016Variab" +
-      "lesEntry\022\013\n\003key\030\001 \001(\t\022\032\n\005value\030\002 \001(\0132\013.j" +
-      "d3.TsData:\0028\001\"\320\001\n\020ProcessingDetail\022\031\n\002ts" +
-      "\030\001 \001(\0132\013.jd3.TsDataH\000\022\035\n\005array\030\002 \001(\0132\014.j" +
-      "d3.DoublesH\000\022\035\n\006matrix\030\003 \001(\0132\013.jd3.Matri" +
-      "xH\000\022$\n\004test\030\004 \001(\0132\024.jd3.StatisticalTestH" +
-      "\000\022\021\n\007message\030\005 \001(\tH\000\022\020\n\006ivalue\030\006 \001(\005H\000\022\020" +
-      "\n\006dvalue\030\007 \001(\001H\000B\006\n\004data\"\216\001\n\025ProcessingI" +
-      "nformation\022\014\n\004name\030\001 \001(\t\022\016\n\006origin\030\002 \001(\t" +
-      "\022\013\n\003msg\030\003 \001(\t\022\"\n\004type\030\004 \001(\0162\024.jd3.Inform" +
-      "ationType\022&\n\007details\030\005 \003(\0132\025.jd3.Process" +
-      "ingDetail\"9\n\016ProcessingLogs\022\'\n\003log\030\001 \003(\013" +
-      "2\032.jd3.ProcessingInformation*\215\001\n\rSelecti" +
-      "onType\022\014\n\010SPAN_ALL\020\000\022\r\n\tSPAN_FROM\020\001\022\013\n\007S" +
-      "PAN_TO\020\002\022\020\n\014SPAN_BETWEEN\020\003\022\r\n\tSPAN_LAST\020" +
-      "\004\022\016\n\nSPAN_FIRST\020\005\022\022\n\016SPAN_EXCLUDING\020\006\022\r\n" +
-      "\tSPAN_NONE\020\007*\203\001\n\rParameterType\022\024\n\020PARAME" +
-      "TER_UNUSED\020\000\022\027\n\023PARAMETER_UNDEFINED\020\001\022\023\n" +
-      "\017PARAMETER_FIXED\020\002\022\025\n\021PARAMETER_INITIAL\020" +
-      "\003\022\027\n\023PARAMETER_ESTIMATED\020\004*\243\004\n\rCalendarE" +
-      "vent\022\027\n\023HOLIDAY_UNSPECIFIED\020\000\022\023\n\017HOLIDAY" +
-      "_NEWYEAR\020\001\022\030\n\024HOLIDAY_SHROVEMONDAY\020\002\022\031\n\025" +
-      "HOLIDAY_SHROVETUESDAY\020\003\022\030\n\024HOLIDAY_ASHWE" +
-      "DNESDAY\020\004\022\022\n\016HOLIDAY_EASTER\020\005\022\030\n\024HOLIDAY" +
-      "_JULIANEASTER\020\006\022\032\n\026HOLIDAY_MAUNDYTHURSDA" +
-      "Y\020\007\022\026\n\022HOLIDAY_GOODFRIDAY\020\010\022\030\n\024HOLIDAY_E" +
-      "ASTERMONDAY\020\t\022\025\n\021HOLIDAY_ASCENSION\020\n\022\025\n\021" +
-      "HOLIDAY_PENTECOST\020\013\022\031\n\025HOLIDAY_CORPUSCHR" +
-      "ISTI\020\014\022\026\n\022HOLIDAY_WHITMONDAY\020\r\022\022\n\016HOLIDA" +
-      "Y_MAYDAY\020\016\022\026\n\022HOLIDAY_ASSUMPTION\020\017\022\024\n\020HO" +
-      "LIDAY_LABORDAY\020\020\022\025\n\021HOLIDAY_HALLOWEEN\020\021\022" +
-      "\027\n\023HOLIDAY_ALLSAINTDAY\020\022\022\025\n\021HOLIDAY_ARMI" +
-      "STICE\020\023\022\030\n\024HOLIDAY_THANKSGIVING\020\024\022\025\n\021HOL" +
-      "IDAY_CHRISTMAS\020\025*3\n\017InformationType\022\010\n\004I" +
-      "nfo\020\000\022\013\n\007Warning\020\001\022\t\n\005Error\020\002B,\n\033demetra" +
-      ".toolkit.io.protobufB\rToolkitProtosb\006pro" +
-      "to3"
+      "hannan_quinn\030\014 \001(\001\022\013\n\003ssq\030\r \001(\001\"\212\005\n\tNIID" +
+      "Tests\022\"\n\004mean\030\001 \001(\0132\024.jd3.StatisticalTes" +
+      "t\022&\n\010skewness\030\002 \001(\0132\024.jd3.StatisticalTes" +
+      "t\022&\n\010kurtosis\030\003 \001(\0132\024.jd3.StatisticalTes" +
+      "t\022,\n\016doornik_hansen\030\004 \001(\0132\024.jd3.Statisti" +
+      "calTest\022\'\n\tljung_box\030\005 \001(\0132\024.jd3.Statist" +
+      "icalTest\022(\n\nbox_pierce\030\006 \001(\0132\024.jd3.Stati" +
+      "sticalTest\0220\n\022seasonal_ljung_box\030\007 \001(\0132\024" +
+      ".jd3.StatisticalTest\0221\n\023seasonal_box_pie" +
+      "rce\030\010 \001(\0132\024.jd3.StatisticalTest\022)\n\013runs_" +
+      "number\030\t \001(\0132\024.jd3.StatisticalTest\022)\n\013ru" +
+      "ns_length\030\n \001(\0132\024.jd3.StatisticalTest\0221\n" +
+      "\023up_down_runs_number\030\013 \001(\0132\024.jd3.Statist" +
+      "icalTest\0221\n\023up_down_runs_length\030\014 \001(\0132\024." +
+      "jd3.StatisticalTest\0222\n\024ljung_box_on_squa" +
+      "res\030\r \001(\0132\024.jd3.StatisticalTest\0223\n\025box_p" +
+      "ierce_on_squares\030\016 \001(\0132\024.jd3.Statistical" +
+      "Test\"B\n\016ValidityPeriod\022\030\n\005start\030\001 \001(\0132\t." +
+      "jd3.Date\022\026\n\003end\030\002 \001(\0132\t.jd3.Date\"]\n\010Fixe" +
+      "dDay\022\r\n\005month\030\001 \001(\005\022\013\n\003day\030\002 \001(\005\022\016\n\006weig" +
+      "ht\030\003 \001(\001\022%\n\010validity\030\004 \001(\0132\023.jd3.Validit" +
+      "yPeriod\"i\n\020EasterRelatedDay\022\016\n\006offset\030\001 " +
+      "\001(\005\022\016\n\006julian\030\002 \001(\010\022\016\n\006weight\030\003 \001(\001\022%\n\010v" +
+      "alidity\030\004 \001(\0132\023.jd3.ValidityPeriod\"\177\n\023Pr" +
+      "especifiedHoliday\022!\n\005event\030\001 \001(\0162\022.jd3.C" +
+      "alendarEvent\022\016\n\006offset\030\002 \001(\005\022\016\n\006weight\030\003" +
+      " \001(\001\022%\n\010validity\030\004 \001(\0132\023.jd3.ValidityPer" +
+      "iod\"w\n\014FixedWeekDay\022\r\n\005month\030\001 \001(\005\022\020\n\010po" +
+      "sition\030\002 \001(\005\022\017\n\007weekday\030\003 \001(\005\022\016\n\006weight\030" +
+      "\004 \001(\001\022%\n\010validity\030\005 \001(\0132\023.jd3.ValidityPe" +
+      "riod\"\253\001\n\022CalendarDefinition\022!\n\010calendar\030" +
+      "\001 \001(\0132\r.jd3.CalendarH\000\0222\n\021weighted_calen" +
+      "dar\030\002 \001(\0132\025.jd3.WeightedCalendarH\000\0220\n\020ch" +
+      "ained_calendar\030\003 \001(\0132\024.jd3.ChainedCalend" +
+      "arH\000B\014\n\ndefinition\"\306\001\n\010Calendar\022!\n\nfixed" +
+      "_days\030\001 \003(\0132\r.jd3.FixedDay\0222\n\023easter_rel" +
+      "ated_days\030\002 \003(\0132\025.jd3.EasterRelatedDay\022*" +
+      "\n\017fixed_week_days\030\003 \003(\0132\021.jd3.FixedWeekD" +
+      "ay\0227\n\025prespecified_holidays\030\004 \003(\0132\030.jd3." +
+      "PrespecifiedHoliday\"\200\001\n\020WeightedCalendar" +
+      "\022)\n\005items\030\001 \003(\0132\032.jd3.WeightedCalendar.I" +
+      "tem\032A\n\004Item\022)\n\010calendar\030\001 \001(\0132\027.jd3.Cale" +
+      "ndarDefinition\022\016\n\006weight\030\002 \001(\001\"\203\001\n\017Chain" +
+      "edCalendar\022*\n\tcalendar1\030\001 \001(\0132\027.jd3.Cale" +
+      "ndarDefinition\022*\n\tcalendar2\030\002 \001(\0132\027.jd3." +
+      "CalendarDefinition\022\030\n\005break\030\003 \001(\0132\t.jd3." +
+      "Date\"\216\002\n\020ModellingContext\0227\n\tcalendars\030\001" +
+      " \003(\0132$.jd3.ModellingContext.CalendarsEnt" +
+      "ry\0227\n\tvariables\030\002 \003(\0132$.jd3.ModellingCon" +
+      "text.VariablesEntry\032I\n\016CalendarsEntry\022\013\n" +
+      "\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.jd3.Calendar" +
+      "Definition:\0028\001\032=\n\016VariablesEntry\022\013\n\003key\030" +
+      "\001 \001(\t\022\032\n\005value\030\002 \001(\0132\013.jd3.TsData:\0028\001\"\320\001" +
+      "\n\020ProcessingDetail\022\031\n\002ts\030\001 \001(\0132\013.jd3.TsD" +
+      "ataH\000\022\035\n\005array\030\002 \001(\0132\014.jd3.DoublesH\000\022\035\n\006" +
+      "matrix\030\003 \001(\0132\013.jd3.MatrixH\000\022$\n\004test\030\004 \001(" +
+      "\0132\024.jd3.StatisticalTestH\000\022\021\n\007message\030\005 \001" +
+      "(\tH\000\022\020\n\006ivalue\030\006 \001(\005H\000\022\020\n\006dvalue\030\007 \001(\001H\000" +
+      "B\006\n\004data\"\216\001\n\025ProcessingInformation\022\014\n\004na" +
+      "me\030\001 \001(\t\022\016\n\006origin\030\002 \001(\t\022\013\n\003msg\030\003 \001(\t\022\"\n" +
+      "\004type\030\004 \001(\0162\024.jd3.InformationType\022&\n\007det" +
+      "ails\030\005 \003(\0132\025.jd3.ProcessingDetail\"9\n\016Pro" +
+      "cessingLogs\022\'\n\003log\030\001 \003(\0132\032.jd3.Processin" +
+      "gInformation*\215\001\n\rSelectionType\022\014\n\010SPAN_A" +
+      "LL\020\000\022\r\n\tSPAN_FROM\020\001\022\013\n\007SPAN_TO\020\002\022\020\n\014SPAN" +
+      "_BETWEEN\020\003\022\r\n\tSPAN_LAST\020\004\022\016\n\nSPAN_FIRST\020" +
+      "\005\022\022\n\016SPAN_EXCLUDING\020\006\022\r\n\tSPAN_NONE\020\007*\203\001\n" +
+      "\rParameterType\022\024\n\020PARAMETER_UNUSED\020\000\022\027\n\023" +
+      "PARAMETER_UNDEFINED\020\001\022\023\n\017PARAMETER_FIXED" +
+      "\020\002\022\025\n\021PARAMETER_INITIAL\020\003\022\027\n\023PARAMETER_E" +
+      "STIMATED\020\004*\243\004\n\rCalendarEvent\022\027\n\023HOLIDAY_" +
+      "UNSPECIFIED\020\000\022\023\n\017HOLIDAY_NEWYEAR\020\001\022\030\n\024HO" +
+      "LIDAY_SHROVEMONDAY\020\002\022\031\n\025HOLIDAY_SHROVETU" +
+      "ESDAY\020\003\022\030\n\024HOLIDAY_ASHWEDNESDAY\020\004\022\022\n\016HOL" +
+      "IDAY_EASTER\020\005\022\030\n\024HOLIDAY_JULIANEASTER\020\006\022" +
+      "\032\n\026HOLIDAY_MAUNDYTHURSDAY\020\007\022\026\n\022HOLIDAY_G" +
+      "OODFRIDAY\020\010\022\030\n\024HOLIDAY_EASTERMONDAY\020\t\022\025\n" +
+      "\021HOLIDAY_ASCENSION\020\n\022\025\n\021HOLIDAY_PENTECOS" +
+      "T\020\013\022\031\n\025HOLIDAY_CORPUSCHRISTI\020\014\022\026\n\022HOLIDA" +
+      "Y_WHITMONDAY\020\r\022\022\n\016HOLIDAY_MAYDAY\020\016\022\026\n\022HO" +
+      "LIDAY_ASSUMPTION\020\017\022\024\n\020HOLIDAY_LABORDAY\020\020" +
+      "\022\025\n\021HOLIDAY_HALLOWEEN\020\021\022\027\n\023HOLIDAY_ALLSA" +
+      "INTDAY\020\022\022\025\n\021HOLIDAY_ARMISTICE\020\023\022\030\n\024HOLID" +
+      "AY_THANKSGIVING\020\024\022\025\n\021HOLIDAY_CHRISTMAS\020\025" +
+      "*3\n\017InformationType\022\010\n\004Info\020\000\022\013\n\007Warning" +
+      "\020\001\022\t\n\005Error\020\002B,\n\033demetra.toolkit.io.prot" +
+      "obufB\rToolkitProtosb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -32602,62 +31380,56 @@ public final class ToolkitProtos {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_LikelihoodStatistics_descriptor,
         new java.lang.String[] { "Nobs", "Neffectiveobs", "Nparams", "DegreesOfFreedom", "LogLikelihood", "AdjustedLogLikelihood", "Aic", "Aicc", "Bic", "Bicc", "Bic2", "HannanQuinn", "Ssq", });
-    internal_static_jd3_ArimaModel_descriptor =
-      getDescriptor().getMessageTypes().get(13);
-    internal_static_jd3_ArimaModel_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_jd3_ArimaModel_descriptor,
-        new java.lang.String[] { "Name", "InnovationVariance", "Ar", "Delta", "Ma", });
     internal_static_jd3_NIIDTests_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_jd3_NIIDTests_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_NIIDTests_descriptor,
         new java.lang.String[] { "Mean", "Skewness", "Kurtosis", "DoornikHansen", "LjungBox", "BoxPierce", "SeasonalLjungBox", "SeasonalBoxPierce", "RunsNumber", "RunsLength", "UpDownRunsNumber", "UpDownRunsLength", "LjungBoxOnSquares", "BoxPierceOnSquares", });
     internal_static_jd3_ValidityPeriod_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_jd3_ValidityPeriod_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ValidityPeriod_descriptor,
         new java.lang.String[] { "Start", "End", });
     internal_static_jd3_FixedDay_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_jd3_FixedDay_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_FixedDay_descriptor,
         new java.lang.String[] { "Month", "Day", "Weight", "Validity", });
     internal_static_jd3_EasterRelatedDay_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_jd3_EasterRelatedDay_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_EasterRelatedDay_descriptor,
         new java.lang.String[] { "Offset", "Julian", "Weight", "Validity", });
     internal_static_jd3_PrespecifiedHoliday_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_jd3_PrespecifiedHoliday_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_PrespecifiedHoliday_descriptor,
         new java.lang.String[] { "Event", "Offset", "Weight", "Validity", });
     internal_static_jd3_FixedWeekDay_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_jd3_FixedWeekDay_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_FixedWeekDay_descriptor,
         new java.lang.String[] { "Month", "Position", "Weekday", "Weight", "Validity", });
     internal_static_jd3_CalendarDefinition_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_jd3_CalendarDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_CalendarDefinition_descriptor,
         new java.lang.String[] { "Calendar", "WeightedCalendar", "ChainedCalendar", "Definition", });
     internal_static_jd3_Calendar_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_jd3_Calendar_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_Calendar_descriptor,
         new java.lang.String[] { "FixedDays", "EasterRelatedDays", "FixedWeekDays", "PrespecifiedHolidays", });
     internal_static_jd3_WeightedCalendar_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_jd3_WeightedCalendar_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_WeightedCalendar_descriptor,
@@ -32669,13 +31441,13 @@ public final class ToolkitProtos {
         internal_static_jd3_WeightedCalendar_Item_descriptor,
         new java.lang.String[] { "Calendar", "Weight", });
     internal_static_jd3_ChainedCalendar_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_jd3_ChainedCalendar_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ChainedCalendar_descriptor,
         new java.lang.String[] { "Calendar1", "Calendar2", "Break", });
     internal_static_jd3_ModellingContext_descriptor =
-      getDescriptor().getMessageTypes().get(24);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_jd3_ModellingContext_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ModellingContext_descriptor,
@@ -32693,19 +31465,19 @@ public final class ToolkitProtos {
         internal_static_jd3_ModellingContext_VariablesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_jd3_ProcessingDetail_descriptor =
-      getDescriptor().getMessageTypes().get(25);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_jd3_ProcessingDetail_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ProcessingDetail_descriptor,
         new java.lang.String[] { "Ts", "Array", "Matrix", "Test", "Message", "Ivalue", "Dvalue", "Data", });
     internal_static_jd3_ProcessingInformation_descriptor =
-      getDescriptor().getMessageTypes().get(26);
+      getDescriptor().getMessageTypes().get(25);
     internal_static_jd3_ProcessingInformation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ProcessingInformation_descriptor,
         new java.lang.String[] { "Name", "Origin", "Msg", "Type", "Details", });
     internal_static_jd3_ProcessingLogs_descriptor =
-      getDescriptor().getMessageTypes().get(27);
+      getDescriptor().getMessageTypes().get(26);
     internal_static_jd3_ProcessingLogs_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ProcessingLogs_descriptor,

@@ -111,15 +111,15 @@ class EasterFactory implements RegressionVariableFactory<EasterVariable>  {
                     m = (dur - day) / dur - .5;
                     a = -m;
                 }
-            } else // use long mean correction. Mean correction should be adapted
+            } else {
+            // use long mean correction. Mean correction should be adapted
             // to take into account the new solution proposed in tramo (easter, easter monday)
             // included in the holiday
-            {
                 double m_av = 0, a_av = 0;
                 if (meanCorrection == EasterVariable.Correction.PreComputed) {
                     m_av = MEANS_MAR[25 - duration]; //(21 + dur) / 70.0;
                     a_av = MEANS_APR[25 - duration];//(49 - dur) / 70.0;
-                } else {
+                } else if (meanCorrection == EasterVariable.Correction.Theoretical){
                     /*
                      * Raw estimation of the probability to get Easter at a specific date is defined below:
                      * 22/3 (1/7)*1/LUNARY

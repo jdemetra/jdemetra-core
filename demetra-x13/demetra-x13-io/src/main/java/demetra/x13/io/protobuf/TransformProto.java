@@ -16,8 +16,8 @@
  */
 package demetra.x13.io.protobuf;
 
+import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import demetra.regarima.TransformSpec;
-import demetra.regarima.io.protobuf.RegArimaProtosUtility;
 
 /**
  *
@@ -27,8 +27,8 @@ import demetra.regarima.io.protobuf.RegArimaProtosUtility;
 public class TransformProto {
 
     public void fill(TransformSpec spec, X13Protos.RegArimaSpec.TransformSpec.Builder builder) {
-        builder.setTransformation(RegArimaProtosUtility.convert(spec.getFunction()))
-                .setAdjust(RegArimaProtosUtility.convert(spec.getAdjust()))
+        builder.setTransformation(ModellingProtosUtility.convert(spec.getFunction()))
+                .setAdjust(ModellingProtosUtility.convert(spec.getAdjust()))
                 .setAicdiff(spec.getAicDiff());
     }
 
@@ -40,8 +40,8 @@ public class TransformProto {
 
     public TransformSpec convert(X13Protos.RegArimaSpec.TransformSpec spec) {
         return TransformSpec.builder()
-                .function(RegArimaProtosUtility.convert(spec.getTransformation()))
-                .adjust(RegArimaProtosUtility.convert(spec.getAdjust()))
+                .function(ModellingProtosUtility.convert(spec.getTransformation()))
+                .adjust(ModellingProtosUtility.convert(spec.getAdjust()))
                 .aicDiff(spec.getAicdiff())
                 .build();
 

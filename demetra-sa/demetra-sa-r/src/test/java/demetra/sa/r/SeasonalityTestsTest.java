@@ -59,13 +59,14 @@ public class SeasonalityTestsTest {
 
     @Test
     public void testCombinedTest() {
-        DoubleSeq x=DoubleSeq.of(Data.ABS_RETAIL).delta(1).removeMean();
-        CombinedSeasonality test = SeasonalityTests.combinedTest(x.toArray(), 12, 0, false);
+        DoubleSeq x=DoubleSeq.of(Data.EXPORTS).delta(1).removeMean();
+        CombinedSeasonality test = SeasonalityTests.combinedTest(x.toArray(), 12, 1, false);
+        IdentifiableSeasonality summary = test.getSummary();
 
         ec.satoolkit.diagnostics.CombinedSeasonalityTest otest = new ec.satoolkit.diagnostics.CombinedSeasonalityTest(
-                new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0,
+                new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 1,
                         x.toArray(), false), false);
-        ec.satoolkit.diagnostics.CombinedSeasonalityTest.IdentifiableSeasonality summary = otest.getSummary();
+        ec.satoolkit.diagnostics.CombinedSeasonalityTest.IdentifiableSeasonality osummary = otest.getSummary();
         //        System.out.println(test);
         assertEquals(test.mvalue(), otest.mvalue(), 1e-9);
     }

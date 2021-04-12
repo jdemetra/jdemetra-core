@@ -40,9 +40,9 @@ public class TramoProto {
                 .build();
     }
     
-        public TramoSeatsResultsProtos.TramoOutput convert(TramoOutput output){
-        TramoSeatsResultsProtos.TramoOutput.Builder builder = 
-                TramoSeatsResultsProtos.TramoOutput.newBuilder()
+        public TramoSeatsProtos.TramoOutput convert(TramoOutput output){
+        TramoSeatsProtos.TramoOutput.Builder builder = 
+                TramoSeatsProtos.TramoOutput.newBuilder()
                 .setEstimationSpec(TramoProto.convert(output.getEstimationSpec()));
         
         if (output.getResult() != null){

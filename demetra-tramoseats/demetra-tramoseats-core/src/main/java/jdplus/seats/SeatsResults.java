@@ -16,7 +16,6 @@
  */
 package jdplus.seats;
 
-import demetra.data.DoubleSeq;
 import demetra.processing.ProcResults;
 import demetra.sa.SeriesDecomposition;
 import java.util.LinkedHashMap;

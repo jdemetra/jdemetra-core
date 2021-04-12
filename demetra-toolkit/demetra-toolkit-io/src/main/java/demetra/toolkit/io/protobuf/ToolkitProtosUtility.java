@@ -22,6 +22,7 @@ import demetra.data.Iterables;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
+import demetra.modelling.io.protobuf.ModellingProtos;
 import demetra.stats.OneWayAnova;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TimeSelector;
@@ -308,11 +309,11 @@ public class ToolkitProtosUtility {
 
     }
 
-    public ToolkitProtos.ArimaModel convert(IArimaModel arima, String name) {
+    public ModellingProtos.ArimaModel convert(IArimaModel arima, String name) {
         if (arima == null) {
-            return ToolkitProtos.ArimaModel.getDefaultInstance();
+            return ModellingProtos.ArimaModel.getDefaultInstance();
         }
-        return ToolkitProtos.ArimaModel.newBuilder()
+        return ModellingProtos.ArimaModel.newBuilder()
                 .addAllAr(Iterables.of(arima.getStationaryAr().asPolynomial().coefficients()))
                 .addAllDelta(Iterables.of(arima.getNonStationaryAr().asPolynomial().coefficients()))
                 .addAllMa(Iterables.of(arima.getMa().asPolynomial().coefficients()))
