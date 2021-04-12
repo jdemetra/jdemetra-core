@@ -16,11 +16,11 @@
  */
 package jdplus.seats;
 
-import nbbrd.design.Development;
 import demetra.processing.ProcessingLog;
-import demetra.seats.SeatsModelSpec;
 import demetra.seats.SeatsException;
+import demetra.seats.SeatsModelSpec;
 import jdplus.ucarima.UcarimaModel;
+import nbbrd.design.Development;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -94,7 +94,7 @@ public class SeatsKernel {
         int nround = 0;
         while (++nround <= 10) {
             log.step("Canonical decomposition");
-            ucm = decomposer.decompose(model.getCurrentModel(), model.getOriginalModel().getFrequency());
+            ucm = decomposer.decompose(model.getCurrentModel(), model.getOriginalModel().getPeriod());
             if (ucm == null && nround == 1) {
                 log.warning(NON_DECOMPOSABLE);
             }

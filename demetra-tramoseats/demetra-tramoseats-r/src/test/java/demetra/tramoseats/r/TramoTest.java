@@ -18,13 +18,12 @@ package demetra.tramoseats.r;
 
 import demetra.arima.SarimaModel;
 import demetra.data.Data;
-import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsDomain;
 import demetra.tramo.TramoOutput;
 import demetra.tramo.TramoSpec;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -64,6 +63,13 @@ public class TramoTest {
      }
      
    @Test
+    public void testSpec() {
+        byte[] bytes = Tramo.toBuffer(TramoSpec.TRfull);
+        TramoSpec trf = Tramo.specOf(bytes);
+        assertTrue(trf.equals(TramoSpec.TRfull));
+    }
+
+    @Test
     public void testForecast0() {
         MatrixType terror = Tramo.forecast(Data.TS_PROD, TramoSpec.TR0, null, 12);
         assertTrue(terror != null);

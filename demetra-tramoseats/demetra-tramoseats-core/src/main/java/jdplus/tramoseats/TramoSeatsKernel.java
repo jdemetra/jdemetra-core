@@ -90,12 +90,12 @@ public class TramoSeatsKernel {
 
         SarimaModel arima = model.arima();
         SarimaSpec sarima = SarimaSpec.builder()
-                .d(arima.getRegularDifferenceOrder())
-                .bd(arima.getSeasonalDifferenceOrder())
-                .phi(Parameter.of(arima.phi(), ParameterType.Estimated))
-                .theta(Parameter.of(arima.theta(), ParameterType.Estimated))
-                .bphi(Parameter.of(arima.bphi(), ParameterType.Estimated))
-                .btheta(Parameter.of(arima.btheta(), ParameterType.Estimated))
+                .d(arima.getD())
+                .bd(arima.getBd())
+                .phi(Parameter.of(arima.getPhi(), ParameterType.Estimated))
+                .theta(Parameter.of(arima.getTheta(), ParameterType.Estimated))
+                .bphi(Parameter.of(arima.getBphi(), ParameterType.Estimated))
+                .btheta(Parameter.of(arima.getBtheta(), ParameterType.Estimated))
                 .build();
 
         return SeatsModelSpec.builder()

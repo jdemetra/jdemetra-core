@@ -45,7 +45,7 @@ public class RangeMeanTest {
             return false;
         }
 
-        int ifreq = model.arima().getFrequency();
+        int ifreq = model.arima().getPeriod();
         log = useLogs(ifreq, data);
         return true;
     }

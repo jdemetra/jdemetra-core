@@ -50,18 +50,18 @@ public class ApiUtility {
     // SARIMA
     public demetra.arima.SarimaModel toApi(SarimaModel model, String name){
         return demetra.arima.SarimaModel.builder()
-                .phi(model.phi())
-                .bphi(model.bphi())
-                .theta(model.theta())
-                .btheta(model.btheta())
-                .d(model.getRegularDifferenceOrder())
-                .bd(model.getSeasonalDifferenceOrder())
+                .phi(model.getPhi())
+                .bphi(model.getBphi())
+                .theta(model.getTheta())
+                .btheta(model.getBtheta())
+                .d(model.getD())
+                .bd(model.getBd())
                 .name(name)
                 .build();
     }
 
     public SarimaModel fromApi(demetra.arima.SarimaModel model){
-        SarimaOrders spec = model.specification();
+        SarimaOrders spec = model.orders();
         return SarimaModel.builder(spec)
                 .phi(model.getPhi())
                 .bphi(model.getBphi())

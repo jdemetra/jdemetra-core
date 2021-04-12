@@ -164,9 +164,9 @@ public class DefaultModelValidator implements IModelValidator {
     private boolean fixMaUnitRoots() {
         boolean changed = false;
         double ur = 1 - eps;
-        double[] q = newModel.theta(), bq = newModel.btheta();
+        double[] q = newModel.getTheta(), bq = newModel.getBtheta();
         if (bq.length > 0) {
-            double sur = Math.pow(ur, newModel.getFrequency());
+            double sur = Math.pow(ur, newModel.getPeriod());
             double bth = bq[0];
             if (bth < -sur) {
                 bq[0] = -1;
@@ -223,7 +223,7 @@ public class DefaultModelValidator implements IModelValidator {
     private boolean changeMA() {
         if (xl < 1) {
             boolean rslt = false;
-            double[] q = newModel.theta(), bq = newModel.btheta();
+            double[] q = newModel.getTheta(), bq = newModel.getBtheta();
             if (stabilizeMA(xl, q)) {
                 rslt = true;
             }
@@ -249,8 +249,8 @@ public class DefaultModelValidator implements IModelValidator {
     }
 
     private boolean simplifyModel() {
-        if (canSimplify(newModel.phi()) || canSimplify(newModel.bphi())
-                || canSimplify(newModel.theta()) || canSimplify(newModel.btheta())) {
+        if (canSimplify(newModel.getPhi()) || canSimplify(newModel.getBphi())
+                || canSimplify(newModel.getTheta()) || canSimplify(newModel.getBtheta())) {
             newModel = newModel.toBuilder()
                     .adjustOrders(true)
                     .build();

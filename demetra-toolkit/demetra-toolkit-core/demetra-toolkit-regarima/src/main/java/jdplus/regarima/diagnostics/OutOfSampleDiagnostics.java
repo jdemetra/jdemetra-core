@@ -56,7 +56,7 @@ public class OutOfSampleDiagnostics implements Diagnostics {
     }
 
     private void test(RegArimaModel<SarimaModel> regarima, double len, boolean m, boolean v) {
-        int ifreq = regarima.arima().getFrequency();
+        int ifreq = regarima.arima().getPeriod();
         int nback = (int) (len * ifreq);
         if (nback < 5) {
             nback = 5;
