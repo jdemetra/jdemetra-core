@@ -24,7 +24,9 @@ import demetra.processing.ProcResults;
 import demetra.regarima.RegArimaOutput;
 import demetra.regarima.RegArimaSpec;
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
+import demetra.sa.EstimationPolicyType;
 import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.util.r.Dictionary;
 import demetra.x13.io.protobuf.RegArimaProto;
@@ -87,6 +89,10 @@ public class RegArima {
         return new Results(estimation);
     }
 
+    public RegArimaSpec refreshSpec(RegArimaSpec currentSpec, RegArimaSpec domainSpec, TsDomain domain, String policy) {
+        return RegArimaFactory.INSTANCE.refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);
+    }
+
     public MatrixType forecast(TsData series, String defSpec, int nf) {
         RegArimaSpec spec = RegArimaSpec.fromString(defSpec);
         return forecast(series, spec, null, nf);
@@ -140,19 +146,19 @@ public class RegArima {
     public byte[] toBuffer(RegArimaOutput output) {
         return RegArimaProto.convert(output).toByteArray();
     }
-    
-    public StationaryTransformation doStationary(double[] data, int period){
+
+    public StationaryTransformation doStationary(double[] data, int period) {
         DifferencingModule diff = DifferencingModule.builder()
                 .build();
-        
-        DoubleSeq s=DoubleSeq.of(data);
+
+        DoubleSeq s = DoubleSeq.of(data);
         diff.process(s, period);
-        
+
         return StationaryTransformation.builder()
                 .meanCorrection(diff.isMeanCorrection())
                 .difference(new StationaryTransformation.Differencing(1, diff.getD()))
                 .difference(new StationaryTransformation.Differencing(period, diff.getBd()))
                 .build();
     }
-    
+
 }

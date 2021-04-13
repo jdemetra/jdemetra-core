@@ -91,7 +91,7 @@ public class X13 {
         return new Results(estimation);
     }
 
-    public X13Spec refreshSpec(X13Spec currentSpec, X13Spec domainSpec, String policy, TsDomain domain) {
+    public X13Spec refreshSpec(X13Spec currentSpec, X13Spec domainSpec, TsDomain domain, String policy) {
         return X13Factory.INSTANCE.refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);
     }
 

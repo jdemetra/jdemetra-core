@@ -91,7 +91,7 @@ public class TramoSeats {
         return new Results(estimation);
     }
 
-    public TramoSeatsSpec refreshSpec(TramoSeatsSpec currentSpec, TramoSeatsSpec domainSpec, String policy, TsDomain domain) {
+    public TramoSeatsSpec refreshSpec(TramoSeatsSpec currentSpec, TramoSeatsSpec domainSpec, TsDomain domain, String policy) {
         return TramoSeatsFactory.INSTANCE.refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);
     }
 

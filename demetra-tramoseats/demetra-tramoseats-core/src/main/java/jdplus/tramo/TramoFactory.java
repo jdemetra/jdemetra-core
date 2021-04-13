@@ -68,10 +68,12 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
                 freeVariables(currentSpec, domainSpec, builder);
                 break;
             case Outliers:
+                clearArima(currentSpec, domainSpec, builder);
                 removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
                 freeVariables(currentSpec, domainSpec, builder);
                 break;
             case LastOutliers:
+                clearArima(currentSpec, domainSpec, builder);
                 removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
                 freeVariables(currentSpec, domainSpec, builder);
                 break;
@@ -81,6 +83,10 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
                 break;
             case FixedAutoRegressiveParameters:
                 fixAR(currentSpec, domainSpec, builder);
+                freeVariables(currentSpec, domainSpec, builder);
+                break;
+            case FixedParameters:
+                fixArima(currentSpec, domainSpec, builder);
                 freeVariables(currentSpec, domainSpec, builder);
                 break;
             case Fixed:
@@ -281,6 +287,10 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         builder.arima(currentSpec.getArima().freeParameters(domainSpec.isUsingAutoModel() ? null : domainSpec.getArima()));
     }
 
+    private void clearArima(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
+        builder.arima(currentSpec.getArima().resetParameters(domainSpec.isUsingAutoModel() ? null : domainSpec.getArima()));
+    }
+    
     private void fixAR(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
         SarimaSpec arima = currentSpec.getArima();
         Parameter[] phi = Parameter.fixParameters(arima.getPhi());

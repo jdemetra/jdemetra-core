@@ -66,13 +66,13 @@ public class Tests {
                 .build();
     }
     
-    public StatisticalTest testsOfRuns(double[] data, boolean mean, boolean number){
+    public StatisticalTest testOfRuns(double[] data, boolean mean, boolean number){
         TestOfRuns test = new TestOfRuns(DoubleSeq.of(data))
                 .useMean(mean);
         return number ? test.testNumber() : test.testLength();
     }
 
-    public StatisticalTest testsOfUpDownRuns(double[] data, boolean mean, boolean number){
+    public StatisticalTest testOfUpDownRuns(double[] data, boolean number){
         TestOfUpDownRuns test = new TestOfUpDownRuns(DoubleSeq.of(data));
         return number ? test.testNumber() : test.testLength();
     }

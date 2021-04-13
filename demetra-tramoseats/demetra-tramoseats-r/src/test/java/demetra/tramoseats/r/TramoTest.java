@@ -87,7 +87,7 @@ public class TramoTest {
     public void testRefresh() {
         TramoOutput rslt = Tramo.fullProcess(Data.TS_PROD, "TR5");
 
-        TramoSpec fspec = Tramo.refreshSpec(rslt.getResultSpec(), rslt.getEstimationSpec(), null, "Fixed");
+        TramoSpec fspec = Tramo.refreshSpec(rslt.getResultSpec(), TramoSpec.TRfull, null, "Fixed");
         TramoSpec pspec = Tramo.refreshSpec(rslt.getResultSpec(), rslt.getEstimationSpec(), null, "FreeParameters");
         TramoSpec ospec = Tramo.refreshSpec(rslt.getResultSpec(), rslt.getEstimationSpec(), null, "Outliers");
         
