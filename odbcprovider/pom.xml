@@ -26,29 +26,29 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-service-util</groupId>
             <artifactId>java-service-processor</artifactId>
             <scope>provided</scope>
         </dependency>
         
         <!-- compile and runtime -->
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>demetra-tss</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>demetra-jdbc</artifactId>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-sql-util</groupId>
             <artifactId>java-sql-odbc</artifactId>
             <version>${sql-util.version}</version>
         </dependency>
         
         <!-- test only -->
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>demetra-tck</artifactId>
             <scope>test</scope>
         </dependency>

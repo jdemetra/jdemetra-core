@@ -14,7 +14,7 @@
     <description>A TS Provider that handles Excel and OpenDocument spreadsheets.</description>
 
     <properties>
-        <spreadsheet4j.version>2.2.5</spreadsheet4j.version>
+        <spreadsheet4j.version>2.2.6</spreadsheet4j.version>
     </properties>
 
     <dependencies>
@@ -25,47 +25,49 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-service-util</groupId>
             <artifactId>java-service-processor</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <!-- compile and runtime -->
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-api</artifactId>
             <version>${spreadsheet4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-html</artifactId>
             <version>${spreadsheet4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-od</artifactId>
             <version>${spreadsheet4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-poi</artifactId>
             <version>${spreadsheet4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-xmlss</artifactId>
             <version>${spreadsheet4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>demetra-tss</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>demetra-utils</artifactId>
         </dependency>
+
         <!-- test only -->
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>demetra-tck</artifactId>
             <scope>test</scope>
         </dependency>

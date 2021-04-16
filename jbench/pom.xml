@@ -15,13 +15,14 @@
     <dependencies>
         <!-- compile and runtime -->
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>demetra-tstoolkit</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>demetra-utils</artifactId>
         </dependency>
+
         <!-- test only -->
         <dependency>
             <groupId>junit</groupId>

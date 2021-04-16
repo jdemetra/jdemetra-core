@@ -55,7 +55,7 @@
     </modules>
 
     <properties>
-        <sql-util.version>1.0.1</sql-util.version>
+        <sql-util.version>1.0.2</sql-util.version>
     </properties>
 
     <dependencyManagement>
@@ -86,57 +86,57 @@
 
             <!-- modules > -->
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>demetra-tstoolkit</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>demetra-tstoolkit2</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>demetra-tss</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>demetra-utils</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>demetra-odbc</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>demetra-jdbc</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>demetra-spreadsheet</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>demetra-sdmx</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>demetra-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>demetra-workspace</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>demetra-tck</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -206,7 +206,7 @@
             </activation>
             <properties>
                 <lombok.version>1.18.20</lombok.version>
-                <java-service.version>1.3.0</java-service.version>
+                <java-service.version>1.3.2</java-service.version>
             </properties>
             <dependencyManagement>
                 <dependencies>
@@ -216,12 +216,12 @@
                         <version>${lombok.version}</version>
                     </dependency>
                     <dependency>
-                        <groupId>be.nbb.rd</groupId>
+                        <groupId>com.github.nbbrd.java-service-util</groupId>
                         <artifactId>java-service-annotation</artifactId>
                         <version>${java-service.version}</version>
                     </dependency>
                     <dependency>
-                        <groupId>be.nbb.rd</groupId>
+                        <groupId>com.github.nbbrd.java-service-util</groupId>
                         <artifactId>java-service-processor</artifactId>
                         <version>${java-service.version}</version>
                     </dependency>
@@ -240,7 +240,7 @@
                                     <version>${lombok.version}</version>
                                 </path>
                                 <path>
-                                    <groupId>be.nbb.rd</groupId>
+                                    <groupId>com.github.nbbrd.java-service-util</groupId>
                                     <artifactId>java-service-processor</artifactId>
                                     <version>${java-service.version}</version>
                                 </path>
@@ -468,21 +468,4 @@
             </build>
         </profile>
     </profiles>
-
-    <repositories>
-        <repository>
-            <id>oss-jfrog-artifactory-releases</id>
-            <url>https://oss.jfrog.org/artifactory/oss-release-local</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>oss-jfrog-artifactory-snapshots</id>
-            <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 </project>

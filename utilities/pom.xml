@@ -16,7 +16,7 @@
     <properties>
         <slf4j.version>1.7.30</slf4j.version>
         <guava.version>29.0-jre</guava.version>
-        <java-io-util.version>0.0.11</java-io-util.version>
+        <java-io-util.version>0.0.12</java-io-util.version>
     </properties>
 
     <dependencyManagement>
@@ -55,7 +55,7 @@
             </dependency> 
             <!-- java-io-util -->
             <dependency>
-                <groupId>be.nbb.rd</groupId>
+                <groupId>com.github.nbbrd.java-io-util</groupId>
                 <artifactId>java-io-xml</artifactId>
                 <version>${java-io-util.version}</version>
             </dependency>
@@ -69,6 +69,7 @@
             <artifactId>checker-qual</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <!-- compile and runtime -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -79,9 +80,10 @@
             <artifactId>guava</artifactId>     
         </dependency> 
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-xml</artifactId>
         </dependency>
+
         <!-- test only -->
         <dependency>
             <groupId>junit</groupId>
