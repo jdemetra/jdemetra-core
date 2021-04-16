@@ -10,7 +10,11 @@
     </parent>
     
     <artifactId>jbench</artifactId>
+    <packaging>jar</packaging>
+
     <name>jbench</name>
+    <description>Seasonal Adjustment Toolkit - jbench</description>
+    <url>https://github.com/jdemetra/jdemetra-core</url>
 
     <dependencies>
         <!-- compile and runtime -->

@@ -9,9 +9,11 @@
     </parent>
   
     <artifactId>demetra-jdbc</artifactId>
+    <packaging>jar</packaging>
 
     <name>Demetra - JDBC</name>
     <description>A TS Provider that handles JDBC sources such as Oracle and MySql.</description>
+    <url>https://github.com/jdemetra/jdemetra-core</url>
 
     <properties>
         <hsqldb.version>2.5.1</hsqldb.version>

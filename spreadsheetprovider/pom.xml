@@ -9,9 +9,11 @@
     </parent>
 
     <artifactId>demetra-spreadsheet</artifactId>
+    <packaging>jar</packaging>
 
     <name>Demetra - Spreadsheet</name>
     <description>A TS Provider that handles Excel and OpenDocument spreadsheets.</description>
+    <url>https://github.com/jdemetra/jdemetra-core</url>
 
     <properties>
         <spreadsheet4j.version>2.2.6</spreadsheet4j.version>

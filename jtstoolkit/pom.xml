@@ -9,8 +9,11 @@
     </parent>
   
     <artifactId>demetra-tstoolkit</artifactId>
-    
+    <packaging>jar</packaging>
+
     <name>jtstoolkit</name>
+    <description>Seasonal Adjustment Toolkit - jtstoolkit</description>
+    <url>https://github.com/jdemetra/jdemetra-core</url>
 
     <properties>
         <project.x.binaries>${project.basedir}/../binaries</project.x.binaries>
@@ -32,24 +35,61 @@
 
     <build>
         <plugins>
+            <!-- Copies files to binaries -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.0.0</version>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>
-                        <configuration>
-                            <target>
-                                <copy file="${project.build.directory}/${project.build.finalName}.jar"
-                                      tofile="${project.x.binaries}/${project.build.finalName}.jar"/>
-                            </target>
-                        </configuration>
+                        <phase>install</phase>
                         <goals>
-                            <goal>run</goal>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.x.binaries}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}</directory>
+                                    <includes>
+                                        <include>${project.build.finalName}.jar</include>
+                                        <include>${project.build.finalName}.jar.asc</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Generates SHA256 on binaries -->
+            <plugin>
+                <groupId>net.nicoulaj.maven.plugins</groupId>
+                <artifactId>checksum-maven-plugin</artifactId>
+                <version>1.9</version>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>files</goal>
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <algorithms>
+                        <algorithm>SHA-256</algorithm>
+                    </algorithms>
+                    <fileSets>
+                        <fileSet>
+                            <directory>${project.x.binaries}</directory>
+                            <excludes>
+                                <exclude>*.sha256</exclude>
+                                <exclude>*.asc</exclude>
+                            </excludes>
+                        </fileSet>
+                    </fileSets>
+                    <csvSummary>false</csvSummary>
+                </configuration>
             </plugin>
         </plugins>
     </build>

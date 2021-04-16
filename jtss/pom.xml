@@ -9,8 +9,10 @@
     </parent>
   
     <artifactId>demetra-tss</artifactId>
+    <packaging>jar</packaging>
 
     <name>jtss</name>
+    <url>https://github.com/jdemetra/jdemetra-core</url>
 
     <dependencies>
         <!-- compile only -->

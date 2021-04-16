@@ -13,6 +13,7 @@
 
     <name>Demetra - Common</name>
     <description>A TS Provider that handles several sources such as csv files.</description>
+    <url>https://github.com/jdemetra/jdemetra-core</url>
 
     <properties>
         <opencsv.version>2.3</opencsv.version>

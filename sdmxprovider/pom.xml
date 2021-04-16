@@ -9,9 +9,11 @@
     </parent>
   
     <artifactId>demetra-sdmx</artifactId>
-    
+    <packaging>jar</packaging>
+
     <name>Demetra - SDMX</name>
     <description>A TS Provider that handles SDMX files.</description>
+    <url>https://github.com/jdemetra/jdemetra-core</url>
 
     <dependencies>
         <!-- compile only -->

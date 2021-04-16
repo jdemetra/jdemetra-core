@@ -1,15 +1,3 @@
-/jtstoolkit/target/
-/jtss/target/
-/utilities/target/
-/jdbcprovider/target/
-/odbcprovider/target/
-/spreadsheetprovider/target/
-/sdmxprovider/target/
-/commonprovider/target/
-/jbench/target/
-/jwsacruncher/target/
-/spreadsheet/*/target/
-/demetra-tck/target/
-/demetra-workspace/target/
+target/
 /jtss/nbproject/
 /binaries/

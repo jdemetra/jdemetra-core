@@ -12,6 +12,8 @@
     <packaging>jar</packaging>
     
     <name>Demetra - TCK</name>
+    <description>Seasonal Adjustment Toolkit - TCK</description>
+    <url>https://github.com/jdemetra/jdemetra-core</url>
 
     <dependencies>
         <!-- compile only -->

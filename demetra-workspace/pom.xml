@@ -9,8 +9,12 @@
     </parent>
 
     <artifactId>demetra-workspace</artifactId>
+    <packaging>jar</packaging>
+
     <name>Demetra - Workspace</name>
-    
+    <description>Seasonal Adjustment Toolkit - Workspace</description>
+    <url>https://github.com/jdemetra/jdemetra-core</url>
+
     <properties>
         <jimfs.version>1.2</jimfs.version>
     </properties>
