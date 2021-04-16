@@ -12,6 +12,7 @@
     <packaging>jar</packaging>
 
     <name>jtss</name>
+    <description>Seasonal Adjustment Toolkit - jtss</description>
     <url>https://github.com/jdemetra/jdemetra-core</url>
 
     <dependencies>
