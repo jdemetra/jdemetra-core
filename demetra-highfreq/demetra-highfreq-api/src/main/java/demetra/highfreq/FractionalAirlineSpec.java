@@ -12,7 +12,7 @@ import demetra.math.matrices.MatrixType;
  * @author palatej
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class FractionalAirlineSpec {
     // series
     private double[] y;

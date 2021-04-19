@@ -31,7 +31,7 @@ import jdplus.sarima.SarimaModel;
  */
 @Development(status = Development.Status.Alpha)
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder", toBuilder = true)
+@lombok.Builder( toBuilder = true)
 public class SarimaMapping2 implements IArimaMapping<SarimaModel> {
 
     public static final double ARMAX = 0.99999;

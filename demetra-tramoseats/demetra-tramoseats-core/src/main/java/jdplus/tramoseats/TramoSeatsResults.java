@@ -29,7 +29,7 @@ import jdplus.tramoseats.extractors.TramoSeatsExtractor;
  * @author palatej
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 public class TramoSeatsResults implements ProcResults {
 
     private RegSarimaModel preprocessing;

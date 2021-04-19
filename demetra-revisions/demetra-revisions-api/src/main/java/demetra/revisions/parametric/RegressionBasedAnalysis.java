@@ -23,7 +23,7 @@ import java.util.List;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 public class RegressionBasedAnalysis<K extends Comparable> {
     
     public static enum Type{

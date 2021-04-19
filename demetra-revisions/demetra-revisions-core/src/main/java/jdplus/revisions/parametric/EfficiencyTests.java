@@ -23,7 +23,7 @@ import jdplus.stats.tests.StatisticalTest;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 public class EfficiencyTests {
     StatisticalTest breuschPagan;
     StatisticalTest white;

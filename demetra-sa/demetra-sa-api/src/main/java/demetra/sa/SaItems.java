@@ -24,7 +24,7 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder", toBuilder=true)
+@lombok.Builder( toBuilder=true)
 public class SaItems {
     
     String name;

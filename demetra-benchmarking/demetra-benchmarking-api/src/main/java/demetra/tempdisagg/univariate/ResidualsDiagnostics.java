@@ -24,7 +24,7 @@ import demetra.timeseries.TsData;
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 public class ResidualsDiagnostics {
     
     TsData fullResiduals;

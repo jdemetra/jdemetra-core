@@ -30,7 +30,7 @@ import jdplus.ucarima.UcarimaModel;
  * @author palatej
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class SeatsResults implements ProcResults {
 
     private SarimaModel originalModel;

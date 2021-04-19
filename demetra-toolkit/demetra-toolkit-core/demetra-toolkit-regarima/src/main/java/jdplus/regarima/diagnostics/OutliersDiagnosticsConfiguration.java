@@ -24,7 +24,7 @@ package jdplus.regarima.diagnostics;
  * @author Kristof Bayens
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class OutliersDiagnosticsConfiguration{
     public static final double SEV = .10, BAD = .05, UNC = .03;
     

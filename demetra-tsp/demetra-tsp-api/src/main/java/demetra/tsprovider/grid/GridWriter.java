@@ -41,7 +41,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @author Philippe Charles
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder", toBuilder = true)
+@lombok.Builder( toBuilder = true)
 public final class GridWriter {
 
     public static final GridWriter DEFAULT = builder().build();

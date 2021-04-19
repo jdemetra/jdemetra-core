@@ -37,7 +37,7 @@ import jdplus.regsarima.regular.RegSarimaModel;
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class ModelStatistics {
 
     private int outliersCount;

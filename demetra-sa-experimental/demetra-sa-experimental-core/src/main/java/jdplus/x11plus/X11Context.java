@@ -17,7 +17,7 @@ import jdplus.filters.LocalPolynomialFilterSpec;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 public class X11Context {
 
     @lombok.NonNull

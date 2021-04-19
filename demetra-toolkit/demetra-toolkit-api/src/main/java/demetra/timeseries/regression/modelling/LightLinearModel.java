@@ -35,7 +35,7 @@ import java.util.Map;
  * @param <M>
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class LightLinearModel<M> implements GeneralLinearModel<M> {
 
     Description<M> description;
@@ -48,7 +48,7 @@ public class LightLinearModel<M> implements GeneralLinearModel<M> {
     private Map<String, Object> additionalResults;
 
     @lombok.Value
-    @lombok.Builder(builderClassName = "Builder")
+    @lombok.Builder
     public static class Description<M> implements GeneralLinearModel.Description<M> {
 
         /**
@@ -84,7 +84,7 @@ public class LightLinearModel<M> implements GeneralLinearModel<M> {
     }
 
     @lombok.Value
-    @lombok.Builder(builderClassName = "Builder")
+    @lombok.Builder
     public static class Estimation implements GeneralLinearModel.Estimation {
 
         /**

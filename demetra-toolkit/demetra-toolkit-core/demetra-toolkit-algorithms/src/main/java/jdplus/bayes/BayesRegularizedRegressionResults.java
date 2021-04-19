@@ -13,7 +13,7 @@ import java.util.List;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 public class BayesRegularizedRegressionResults {
     @lombok.Value
     public static class Result {

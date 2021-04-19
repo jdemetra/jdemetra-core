@@ -203,7 +203,7 @@ public class FSTFilter {
     }
 
     @lombok.Value
-    @lombok.Builder(builderClassName = "Builder")
+    @lombok.Builder
     public static class Results {
 
         private FiniteFilter filter;

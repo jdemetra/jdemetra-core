@@ -33,7 +33,7 @@ import demetra.util.Validatable;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
 public final class SaBenchmarkingSpec implements Validatable<SaBenchmarkingSpec> {
 
     public static double DEF_LAMBDA = 1, DEF_RHO = 1;

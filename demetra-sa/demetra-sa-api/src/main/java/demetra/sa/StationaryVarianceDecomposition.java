@@ -21,7 +21,7 @@ package demetra.sa;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 public class StationaryVarianceDecomposition {
     
     public static enum TrendType{

@@ -23,7 +23,7 @@ import jdplus.stats.samples.Moments;
 public class BayesRegularizedRegressionProcessor {
 
     @lombok.Value
-    @lombok.Builder(builderClassName = "Builder")
+    @lombok.Builder
     public static class Spec {
 
         public static Builder builder() {

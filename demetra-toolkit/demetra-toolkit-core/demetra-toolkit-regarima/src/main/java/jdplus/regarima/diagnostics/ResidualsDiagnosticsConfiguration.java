@@ -22,7 +22,7 @@ import nbbrd.design.LombokWorkaround;
  *
  * @author Jean Palate
  */
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 @lombok.Value
 public class ResidualsDiagnosticsConfiguration {
 

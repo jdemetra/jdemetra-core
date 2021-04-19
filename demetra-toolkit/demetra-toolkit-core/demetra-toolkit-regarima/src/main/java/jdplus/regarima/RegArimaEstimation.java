@@ -37,7 +37,7 @@ import demetra.data.DoubleSeq;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class RegArimaEstimation<M extends IArimaModel> {
 
     /**

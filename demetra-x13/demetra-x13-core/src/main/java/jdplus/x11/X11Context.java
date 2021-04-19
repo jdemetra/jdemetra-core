@@ -59,8 +59,8 @@ public class X11Context {
     @NonFinal
     IExtremeValuesCorrector extremeValuesCorrector;
 
-    public static X11ContextBuilder builder() {
-        X11ContextBuilder builder = new X11ContextBuilder();
+    public static Builder builder() {
+        Builder builder = new Builder();
         builder.mode = DecompositionMode.Multiplicative;
         builder.trendFilterLength = 13;
         builder.localPolynomialDegree = 3;

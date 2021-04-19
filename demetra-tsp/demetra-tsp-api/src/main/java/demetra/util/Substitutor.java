@@ -34,7 +34,7 @@ import nbbrd.design.LombokWorkaround;
  * @author Philippe Charles
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public final class Substitutor {
 
     @NonNull

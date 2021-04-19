@@ -34,16 +34,12 @@ import java.util.List;
 @lombok.AllArgsConstructor(access=lombok.AccessLevel.PRIVATE)
 @lombok.Builder
 public class InterventionVariable implements ISystemVariable{
-    
-    public static Builder builder() {
-        return new Builder();
-    }
-    
+
     @BuilderPattern(InterventionVariable.class)
     public static class Builder {
         
         private double delta, deltaSeasonal;
-        private final List<Range<LocalDateTime>> sequences = new ArrayList<>();
+        private List<Range<LocalDateTime>> sequences = new ArrayList<>();
         
         public Builder delta(double delta) {
             this.delta = delta;

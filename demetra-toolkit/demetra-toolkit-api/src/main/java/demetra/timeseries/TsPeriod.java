@@ -29,7 +29,7 @@ import demetra.time.IsoConverter;
  * @author Philippe Charles
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder", toBuilder = true)
+@lombok.Builder( toBuilder = true)
 public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod> {
 
     @lombok.NonNull

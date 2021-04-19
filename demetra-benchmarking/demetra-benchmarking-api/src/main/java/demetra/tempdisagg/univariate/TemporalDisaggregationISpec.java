@@ -31,7 +31,7 @@ import demetra.util.Validatable;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
 public final class TemporalDisaggregationISpec implements ProcSpecification, Validatable<TemporalDisaggregationISpec> {
 
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("temporaldisaggregation", "modelI", null);

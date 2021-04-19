@@ -12,7 +12,7 @@ import demetra.timeseries.TsData;
  * @author palatej
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 public class X13Finals {
     
     TsData d10final, d11final, d12final, d13final, d16, d18;

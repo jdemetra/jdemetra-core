@@ -27,7 +27,7 @@ import demetra.util.Validatable;
  */
 @Development(status = Development.Status.Alpha)
 @lombok.Value
-@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
 public final class SeatsModelSpec implements Validatable<SeatsModelSpec> {
 
 

@@ -21,7 +21,7 @@ package demetra.revisions.parametric;
  * @author palatej
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 public class UnitRoot {
     @lombok.Value
     public static class Test{

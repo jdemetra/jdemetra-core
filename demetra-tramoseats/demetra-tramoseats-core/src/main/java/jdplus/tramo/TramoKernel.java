@@ -66,8 +66,8 @@ public class TramoKernel implements RegSarimaProcessor {
         double ljungBoxLimit;
         boolean acceptAirline;
 
-        public static AmiOptionsBuilder builder() {
-            return new AmiOptionsBuilder()
+        public static Builder builder() {
+            return new Builder()
                     .intermediatePrecision(1e-5)
                     .precision(1e-7)
                     .ur(.96)

@@ -21,7 +21,7 @@ package demetra.revisions.parametric;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 public class Bias {
     /**
      * Number of observations used

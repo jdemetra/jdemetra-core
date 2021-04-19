@@ -26,7 +26,7 @@ import jdplus.x13.X13Results;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class X13Output {
     X13Results result;
 

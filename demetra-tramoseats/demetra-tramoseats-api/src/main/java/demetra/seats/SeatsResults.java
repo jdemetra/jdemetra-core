@@ -26,7 +26,7 @@ import java.util.Map;
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class SeatsResults {
 
     private SarimaModel initialModel, finalModel;

@@ -23,7 +23,7 @@ import demetra.stats.TestResult;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 public class RegressionTests {
     TestResult breuschPagan;
     double bpr2;

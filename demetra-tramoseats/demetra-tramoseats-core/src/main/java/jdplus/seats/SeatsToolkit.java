@@ -27,7 +27,7 @@ import jdplus.regsarima.RegSarimaComputer;
  */
 @Development(status = Development.Status.Release)
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class SeatsToolkit {
     
     private static final RegSarimaComputer PROCESSOR=RegSarimaComputer

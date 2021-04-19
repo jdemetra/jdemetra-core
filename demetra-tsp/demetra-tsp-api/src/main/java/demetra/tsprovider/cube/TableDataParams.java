@@ -24,7 +24,7 @@ import demetra.tsprovider.util.ObsFormat;
  * @since 2.2.0
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class TableDataParams {
 
     String periodColumn;

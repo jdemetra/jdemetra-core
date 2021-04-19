@@ -28,7 +28,7 @@ import demetra.util.Validatable;
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
-@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
 public final class TransformSpec implements Validatable<TransformSpec> {
 
     public static final double DEF_FCT = 0.95;

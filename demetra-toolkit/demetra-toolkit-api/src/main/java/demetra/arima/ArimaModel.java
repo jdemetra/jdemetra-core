@@ -29,7 +29,7 @@ import nbbrd.design.Development;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @Development(status = Development.Status.Release)
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 @lombok.Value
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class ArimaModel {

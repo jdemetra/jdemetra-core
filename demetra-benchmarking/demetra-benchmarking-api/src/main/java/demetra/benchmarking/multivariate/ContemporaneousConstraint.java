@@ -57,7 +57,7 @@ public class ContemporaneousConstraint {
      * @return
      */
     public ContemporaneousConstraint expand(Collection<String> input) {
-        ContemporaneousConstraintBuilder builder = builder()
+        Builder builder = builder()
                 .constant(constant)
                 .constraint(constraint);
         for (WeightedItem<String> ws : components) {

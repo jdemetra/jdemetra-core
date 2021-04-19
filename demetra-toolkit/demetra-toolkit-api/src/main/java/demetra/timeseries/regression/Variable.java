@@ -30,7 +30,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 @Development(status = Development.Status.Release)
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder", toBuilder = true)
+@lombok.Builder( toBuilder = true)
 public class Variable <V extends ITsVariable> {
 
     @lombok.NonNull

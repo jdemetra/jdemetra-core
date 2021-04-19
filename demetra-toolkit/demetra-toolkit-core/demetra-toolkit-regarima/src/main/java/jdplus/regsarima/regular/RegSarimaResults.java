@@ -10,7 +10,7 @@ import java.util.Map;
  */
 
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 public class RegSarimaResults {
     private ModelEstimation regarima;
 

@@ -24,7 +24,7 @@ import demetra.timeseries.TimeSelector;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class Specification {
 
     
