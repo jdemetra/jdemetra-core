@@ -72,7 +72,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Deploy snapshot with Maven if settings defined
-        run: (test -f ci.settings.xml && mvn -B -ntp deploy -DskipTests=true -s ci.settings.xml -P base-deploy,snapshot-deploy,!non-deployable-modules) || echo "No Maven deployment"
+        run: test ! -f ci.settings.xml || mvn -B -ntp deploy -DskipTests=true -s ci.settings.xml -P base-deploy,snapshot-deploy,!non-deployable-modules
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
@@ -109,7 +109,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Deploy with Maven if settings defined
-        run: (test -f ci.settings.xml && mvn -B -ntp deploy -DskipTests=true -s ci.settings.xml -P base-deploy,release-deploy,!non-deployable-modules) || echo "No Maven deployment"
+        run: test ! -f ci.settings.xml || mvn -B -ntp deploy -DskipTests=true -s ci.settings.xml -P base-deploy,release-deploy,!non-deployable-modules
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
