@@ -26495,62 +26495,152 @@ public final class X13Protos {
     demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getD18AOrBuilder();
 
     /**
-     * <code>.jd3.TsData e1 = 12;</code>
+     * <code>.jd3.TsData a1 = 12;</code>
+     * @return Whether the a1 field is set.
+     */
+    boolean hasA1();
+    /**
+     * <code>.jd3.TsData a1 = 12;</code>
+     * @return The a1.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA1();
+    /**
+     * <code>.jd3.TsData a1 = 12;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA1OrBuilder();
+
+    /**
+     * <code>.jd3.TsData a1a = 13;</code>
+     * @return Whether the a1a field is set.
+     */
+    boolean hasA1A();
+    /**
+     * <code>.jd3.TsData a1a = 13;</code>
+     * @return The a1a.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA1A();
+    /**
+     * <code>.jd3.TsData a1a = 13;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA1AOrBuilder();
+
+    /**
+     * <code>.jd3.TsData a6 = 14;</code>
+     * @return Whether the a6 field is set.
+     */
+    boolean hasA6();
+    /**
+     * <code>.jd3.TsData a6 = 14;</code>
+     * @return The a6.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA6();
+    /**
+     * <code>.jd3.TsData a6 = 14;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA6OrBuilder();
+
+    /**
+     * <code>.jd3.TsData a7 = 15;</code>
+     * @return Whether the a7 field is set.
+     */
+    boolean hasA7();
+    /**
+     * <code>.jd3.TsData a7 = 15;</code>
+     * @return The a7.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA7();
+    /**
+     * <code>.jd3.TsData a7 = 15;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA7OrBuilder();
+
+    /**
+     * <code>.jd3.TsData a8 = 16;</code>
+     * @return Whether the a8 field is set.
+     */
+    boolean hasA8();
+    /**
+     * <code>.jd3.TsData a8 = 16;</code>
+     * @return The a8.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA8();
+    /**
+     * <code>.jd3.TsData a8 = 16;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA8OrBuilder();
+
+    /**
+     * <code>.jd3.TsData a9 = 17;</code>
+     * @return Whether the a9 field is set.
+     */
+    boolean hasA9();
+    /**
+     * <code>.jd3.TsData a9 = 17;</code>
+     * @return The a9.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA9();
+    /**
+     * <code>.jd3.TsData a9 = 17;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA9OrBuilder();
+
+    /**
+     * <code>.jd3.TsData e1 = 30;</code>
      * @return Whether the e1 field is set.
      */
     boolean hasE1();
     /**
-     * <code>.jd3.TsData e1 = 12;</code>
+     * <code>.jd3.TsData e1 = 30;</code>
      * @return The e1.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.TsData getE1();
     /**
-     * <code>.jd3.TsData e1 = 12;</code>
+     * <code>.jd3.TsData e1 = 30;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getE1OrBuilder();
 
     /**
-     * <code>.jd3.TsData e2 = 13;</code>
+     * <code>.jd3.TsData e2 = 31;</code>
      * @return Whether the e2 field is set.
      */
     boolean hasE2();
     /**
-     * <code>.jd3.TsData e2 = 13;</code>
+     * <code>.jd3.TsData e2 = 31;</code>
      * @return The e2.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.TsData getE2();
     /**
-     * <code>.jd3.TsData e2 = 13;</code>
+     * <code>.jd3.TsData e2 = 31;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getE2OrBuilder();
 
     /**
-     * <code>.jd3.TsData e3 = 14;</code>
+     * <code>.jd3.TsData e3 = 32;</code>
      * @return Whether the e3 field is set.
      */
     boolean hasE3();
     /**
-     * <code>.jd3.TsData e3 = 14;</code>
+     * <code>.jd3.TsData e3 = 32;</code>
      * @return The e3.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.TsData getE3();
     /**
-     * <code>.jd3.TsData e3 = 14;</code>
+     * <code>.jd3.TsData e3 = 32;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getE3OrBuilder();
 
     /**
-     * <code>.jd3.TsData e11 = 15;</code>
+     * <code>.jd3.TsData e11 = 33;</code>
      * @return Whether the e11 field is set.
      */
     boolean hasE11();
     /**
-     * <code>.jd3.TsData e11 = 15;</code>
+     * <code>.jd3.TsData e11 = 33;</code>
      * @return The e11.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.TsData getE11();
     /**
-     * <code>.jd3.TsData e11 = 15;</code>
+     * <code>.jd3.TsData e11 = 33;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getE11OrBuilder();
   }
@@ -26744,6 +26834,84 @@ public final class X13Protos {
             }
             case 98: {
               demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder subBuilder = null;
+              if (a1_ != null) {
+                subBuilder = a1_.toBuilder();
+              }
+              a1_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.TsData.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(a1_);
+                a1_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 106: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder subBuilder = null;
+              if (a1A_ != null) {
+                subBuilder = a1A_.toBuilder();
+              }
+              a1A_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.TsData.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(a1A_);
+                a1A_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 114: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder subBuilder = null;
+              if (a6_ != null) {
+                subBuilder = a6_.toBuilder();
+              }
+              a6_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.TsData.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(a6_);
+                a6_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 122: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder subBuilder = null;
+              if (a7_ != null) {
+                subBuilder = a7_.toBuilder();
+              }
+              a7_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.TsData.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(a7_);
+                a7_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 130: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder subBuilder = null;
+              if (a8_ != null) {
+                subBuilder = a8_.toBuilder();
+              }
+              a8_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.TsData.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(a8_);
+                a8_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 138: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder subBuilder = null;
+              if (a9_ != null) {
+                subBuilder = a9_.toBuilder();
+              }
+              a9_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.TsData.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(a9_);
+                a9_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 242: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder subBuilder = null;
               if (e1_ != null) {
                 subBuilder = e1_.toBuilder();
               }
@@ -26755,7 +26923,7 @@ public final class X13Protos {
 
               break;
             }
-            case 106: {
+            case 250: {
               demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder subBuilder = null;
               if (e2_ != null) {
                 subBuilder = e2_.toBuilder();
@@ -26768,7 +26936,7 @@ public final class X13Protos {
 
               break;
             }
-            case 114: {
+            case 258: {
               demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder subBuilder = null;
               if (e3_ != null) {
                 subBuilder = e3_.toBuilder();
@@ -26781,7 +26949,7 @@ public final class X13Protos {
 
               break;
             }
-            case 122: {
+            case 266: {
               demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder subBuilder = null;
               if (e11_ != null) {
                 subBuilder = e11_.toBuilder();
@@ -27112,10 +27280,166 @@ public final class X13Protos {
       return getD18A();
     }
 
-    public static final int E1_FIELD_NUMBER = 12;
+    public static final int A1_FIELD_NUMBER = 12;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.TsData a1_;
+    /**
+     * <code>.jd3.TsData a1 = 12;</code>
+     * @return Whether the a1 field is set.
+     */
+    @java.lang.Override
+    public boolean hasA1() {
+      return a1_ != null;
+    }
+    /**
+     * <code>.jd3.TsData a1 = 12;</code>
+     * @return The a1.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA1() {
+      return a1_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a1_;
+    }
+    /**
+     * <code>.jd3.TsData a1 = 12;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA1OrBuilder() {
+      return getA1();
+    }
+
+    public static final int A1A_FIELD_NUMBER = 13;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.TsData a1A_;
+    /**
+     * <code>.jd3.TsData a1a = 13;</code>
+     * @return Whether the a1a field is set.
+     */
+    @java.lang.Override
+    public boolean hasA1A() {
+      return a1A_ != null;
+    }
+    /**
+     * <code>.jd3.TsData a1a = 13;</code>
+     * @return The a1a.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA1A() {
+      return a1A_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a1A_;
+    }
+    /**
+     * <code>.jd3.TsData a1a = 13;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA1AOrBuilder() {
+      return getA1A();
+    }
+
+    public static final int A6_FIELD_NUMBER = 14;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.TsData a6_;
+    /**
+     * <code>.jd3.TsData a6 = 14;</code>
+     * @return Whether the a6 field is set.
+     */
+    @java.lang.Override
+    public boolean hasA6() {
+      return a6_ != null;
+    }
+    /**
+     * <code>.jd3.TsData a6 = 14;</code>
+     * @return The a6.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA6() {
+      return a6_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a6_;
+    }
+    /**
+     * <code>.jd3.TsData a6 = 14;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA6OrBuilder() {
+      return getA6();
+    }
+
+    public static final int A7_FIELD_NUMBER = 15;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.TsData a7_;
+    /**
+     * <code>.jd3.TsData a7 = 15;</code>
+     * @return Whether the a7 field is set.
+     */
+    @java.lang.Override
+    public boolean hasA7() {
+      return a7_ != null;
+    }
+    /**
+     * <code>.jd3.TsData a7 = 15;</code>
+     * @return The a7.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA7() {
+      return a7_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a7_;
+    }
+    /**
+     * <code>.jd3.TsData a7 = 15;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA7OrBuilder() {
+      return getA7();
+    }
+
+    public static final int A8_FIELD_NUMBER = 16;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.TsData a8_;
+    /**
+     * <code>.jd3.TsData a8 = 16;</code>
+     * @return Whether the a8 field is set.
+     */
+    @java.lang.Override
+    public boolean hasA8() {
+      return a8_ != null;
+    }
+    /**
+     * <code>.jd3.TsData a8 = 16;</code>
+     * @return The a8.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA8() {
+      return a8_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a8_;
+    }
+    /**
+     * <code>.jd3.TsData a8 = 16;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA8OrBuilder() {
+      return getA8();
+    }
+
+    public static final int A9_FIELD_NUMBER = 17;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.TsData a9_;
+    /**
+     * <code>.jd3.TsData a9 = 17;</code>
+     * @return Whether the a9 field is set.
+     */
+    @java.lang.Override
+    public boolean hasA9() {
+      return a9_ != null;
+    }
+    /**
+     * <code>.jd3.TsData a9 = 17;</code>
+     * @return The a9.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA9() {
+      return a9_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a9_;
+    }
+    /**
+     * <code>.jd3.TsData a9 = 17;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA9OrBuilder() {
+      return getA9();
+    }
+
+    public static final int E1_FIELD_NUMBER = 30;
     private demetra.toolkit.io.protobuf.ToolkitProtos.TsData e1_;
     /**
-     * <code>.jd3.TsData e1 = 12;</code>
+     * <code>.jd3.TsData e1 = 30;</code>
      * @return Whether the e1 field is set.
      */
     @java.lang.Override
@@ -27123,7 +27447,7 @@ public final class X13Protos {
       return e1_ != null;
     }
     /**
-     * <code>.jd3.TsData e1 = 12;</code>
+     * <code>.jd3.TsData e1 = 30;</code>
      * @return The e1.
      */
     @java.lang.Override
@@ -27131,17 +27455,17 @@ public final class X13Protos {
       return e1_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : e1_;
     }
     /**
-     * <code>.jd3.TsData e1 = 12;</code>
+     * <code>.jd3.TsData e1 = 30;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getE1OrBuilder() {
       return getE1();
     }
 
-    public static final int E2_FIELD_NUMBER = 13;
+    public static final int E2_FIELD_NUMBER = 31;
     private demetra.toolkit.io.protobuf.ToolkitProtos.TsData e2_;
     /**
-     * <code>.jd3.TsData e2 = 13;</code>
+     * <code>.jd3.TsData e2 = 31;</code>
      * @return Whether the e2 field is set.
      */
     @java.lang.Override
@@ -27149,7 +27473,7 @@ public final class X13Protos {
       return e2_ != null;
     }
     /**
-     * <code>.jd3.TsData e2 = 13;</code>
+     * <code>.jd3.TsData e2 = 31;</code>
      * @return The e2.
      */
     @java.lang.Override
@@ -27157,17 +27481,17 @@ public final class X13Protos {
       return e2_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : e2_;
     }
     /**
-     * <code>.jd3.TsData e2 = 13;</code>
+     * <code>.jd3.TsData e2 = 31;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getE2OrBuilder() {
       return getE2();
     }
 
-    public static final int E3_FIELD_NUMBER = 14;
+    public static final int E3_FIELD_NUMBER = 32;
     private demetra.toolkit.io.protobuf.ToolkitProtos.TsData e3_;
     /**
-     * <code>.jd3.TsData e3 = 14;</code>
+     * <code>.jd3.TsData e3 = 32;</code>
      * @return Whether the e3 field is set.
      */
     @java.lang.Override
@@ -27175,7 +27499,7 @@ public final class X13Protos {
       return e3_ != null;
     }
     /**
-     * <code>.jd3.TsData e3 = 14;</code>
+     * <code>.jd3.TsData e3 = 32;</code>
      * @return The e3.
      */
     @java.lang.Override
@@ -27183,17 +27507,17 @@ public final class X13Protos {
       return e3_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : e3_;
     }
     /**
-     * <code>.jd3.TsData e3 = 14;</code>
+     * <code>.jd3.TsData e3 = 32;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getE3OrBuilder() {
       return getE3();
     }
 
-    public static final int E11_FIELD_NUMBER = 15;
+    public static final int E11_FIELD_NUMBER = 33;
     private demetra.toolkit.io.protobuf.ToolkitProtos.TsData e11_;
     /**
-     * <code>.jd3.TsData e11 = 15;</code>
+     * <code>.jd3.TsData e11 = 33;</code>
      * @return Whether the e11 field is set.
      */
     @java.lang.Override
@@ -27201,7 +27525,7 @@ public final class X13Protos {
       return e11_ != null;
     }
     /**
-     * <code>.jd3.TsData e11 = 15;</code>
+     * <code>.jd3.TsData e11 = 33;</code>
      * @return The e11.
      */
     @java.lang.Override
@@ -27209,7 +27533,7 @@ public final class X13Protos {
       return e11_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : e11_;
     }
     /**
-     * <code>.jd3.TsData e11 = 15;</code>
+     * <code>.jd3.TsData e11 = 33;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getE11OrBuilder() {
@@ -27263,17 +27587,35 @@ public final class X13Protos {
       if (d18A_ != null) {
         output.writeMessage(11, getD18A());
       }
+      if (a1_ != null) {
+        output.writeMessage(12, getA1());
+      }
+      if (a1A_ != null) {
+        output.writeMessage(13, getA1A());
+      }
+      if (a6_ != null) {
+        output.writeMessage(14, getA6());
+      }
+      if (a7_ != null) {
+        output.writeMessage(15, getA7());
+      }
+      if (a8_ != null) {
+        output.writeMessage(16, getA8());
+      }
+      if (a9_ != null) {
+        output.writeMessage(17, getA9());
+      }
       if (e1_ != null) {
-        output.writeMessage(12, getE1());
+        output.writeMessage(30, getE1());
       }
       if (e2_ != null) {
-        output.writeMessage(13, getE2());
+        output.writeMessage(31, getE2());
       }
       if (e3_ != null) {
-        output.writeMessage(14, getE3());
+        output.writeMessage(32, getE3());
       }
       if (e11_ != null) {
-        output.writeMessage(15, getE11());
+        output.writeMessage(33, getE11());
       }
       unknownFields.writeTo(output);
     }
@@ -27328,21 +27670,45 @@ public final class X13Protos {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(11, getD18A());
       }
+      if (a1_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(12, getA1());
+      }
+      if (a1A_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(13, getA1A());
+      }
+      if (a6_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(14, getA6());
+      }
+      if (a7_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(15, getA7());
+      }
+      if (a8_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(16, getA8());
+      }
+      if (a9_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(17, getA9());
+      }
       if (e1_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(12, getE1());
+          .computeMessageSize(30, getE1());
       }
       if (e2_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(13, getE2());
+          .computeMessageSize(31, getE2());
       }
       if (e3_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(14, getE3());
+          .computeMessageSize(32, getE3());
       }
       if (e11_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(15, getE11());
+          .computeMessageSize(33, getE11());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -27413,6 +27779,36 @@ public final class X13Protos {
       if (hasD18A()) {
         if (!getD18A()
             .equals(other.getD18A())) return false;
+      }
+      if (hasA1() != other.hasA1()) return false;
+      if (hasA1()) {
+        if (!getA1()
+            .equals(other.getA1())) return false;
+      }
+      if (hasA1A() != other.hasA1A()) return false;
+      if (hasA1A()) {
+        if (!getA1A()
+            .equals(other.getA1A())) return false;
+      }
+      if (hasA6() != other.hasA6()) return false;
+      if (hasA6()) {
+        if (!getA6()
+            .equals(other.getA6())) return false;
+      }
+      if (hasA7() != other.hasA7()) return false;
+      if (hasA7()) {
+        if (!getA7()
+            .equals(other.getA7())) return false;
+      }
+      if (hasA8() != other.hasA8()) return false;
+      if (hasA8()) {
+        if (!getA8()
+            .equals(other.getA8())) return false;
+      }
+      if (hasA9() != other.hasA9()) return false;
+      if (hasA9()) {
+        if (!getA9()
+            .equals(other.getA9())) return false;
       }
       if (hasE1() != other.hasE1()) return false;
       if (hasE1()) {
@@ -27488,6 +27884,30 @@ public final class X13Protos {
       if (hasD18A()) {
         hash = (37 * hash) + D18A_FIELD_NUMBER;
         hash = (53 * hash) + getD18A().hashCode();
+      }
+      if (hasA1()) {
+        hash = (37 * hash) + A1_FIELD_NUMBER;
+        hash = (53 * hash) + getA1().hashCode();
+      }
+      if (hasA1A()) {
+        hash = (37 * hash) + A1A_FIELD_NUMBER;
+        hash = (53 * hash) + getA1A().hashCode();
+      }
+      if (hasA6()) {
+        hash = (37 * hash) + A6_FIELD_NUMBER;
+        hash = (53 * hash) + getA6().hashCode();
+      }
+      if (hasA7()) {
+        hash = (37 * hash) + A7_FIELD_NUMBER;
+        hash = (53 * hash) + getA7().hashCode();
+      }
+      if (hasA8()) {
+        hash = (37 * hash) + A8_FIELD_NUMBER;
+        hash = (53 * hash) + getA8().hashCode();
+      }
+      if (hasA9()) {
+        hash = (37 * hash) + A9_FIELD_NUMBER;
+        hash = (53 * hash) + getA9().hashCode();
       }
       if (hasE1()) {
         hash = (37 * hash) + E1_FIELD_NUMBER;
@@ -27704,6 +28124,42 @@ public final class X13Protos {
           d18A_ = null;
           d18ABuilder_ = null;
         }
+        if (a1Builder_ == null) {
+          a1_ = null;
+        } else {
+          a1_ = null;
+          a1Builder_ = null;
+        }
+        if (a1ABuilder_ == null) {
+          a1A_ = null;
+        } else {
+          a1A_ = null;
+          a1ABuilder_ = null;
+        }
+        if (a6Builder_ == null) {
+          a6_ = null;
+        } else {
+          a6_ = null;
+          a6Builder_ = null;
+        }
+        if (a7Builder_ == null) {
+          a7_ = null;
+        } else {
+          a7_ = null;
+          a7Builder_ = null;
+        }
+        if (a8Builder_ == null) {
+          a8_ = null;
+        } else {
+          a8_ = null;
+          a8Builder_ = null;
+        }
+        if (a9Builder_ == null) {
+          a9_ = null;
+        } else {
+          a9_ = null;
+          a9Builder_ = null;
+        }
         if (e1Builder_ == null) {
           e1_ = null;
         } else {
@@ -27809,6 +28265,36 @@ public final class X13Protos {
         } else {
           result.d18A_ = d18ABuilder_.build();
         }
+        if (a1Builder_ == null) {
+          result.a1_ = a1_;
+        } else {
+          result.a1_ = a1Builder_.build();
+        }
+        if (a1ABuilder_ == null) {
+          result.a1A_ = a1A_;
+        } else {
+          result.a1A_ = a1ABuilder_.build();
+        }
+        if (a6Builder_ == null) {
+          result.a6_ = a6_;
+        } else {
+          result.a6_ = a6Builder_.build();
+        }
+        if (a7Builder_ == null) {
+          result.a7_ = a7_;
+        } else {
+          result.a7_ = a7Builder_.build();
+        }
+        if (a8Builder_ == null) {
+          result.a8_ = a8_;
+        } else {
+          result.a8_ = a8Builder_.build();
+        }
+        if (a9Builder_ == null) {
+          result.a9_ = a9_;
+        } else {
+          result.a9_ = a9Builder_.build();
+        }
         if (e1Builder_ == null) {
           result.e1_ = e1_;
         } else {
@@ -27909,6 +28395,24 @@ public final class X13Protos {
         }
         if (other.hasD18A()) {
           mergeD18A(other.getD18A());
+        }
+        if (other.hasA1()) {
+          mergeA1(other.getA1());
+        }
+        if (other.hasA1A()) {
+          mergeA1A(other.getA1A());
+        }
+        if (other.hasA6()) {
+          mergeA6(other.getA6());
+        }
+        if (other.hasA7()) {
+          mergeA7(other.getA7());
+        }
+        if (other.hasA8()) {
+          mergeA8(other.getA8());
+        }
+        if (other.hasA9()) {
+          mergeA9(other.getA9());
         }
         if (other.hasE1()) {
           mergeE1(other.getE1());
@@ -29260,18 +29764,732 @@ public final class X13Protos {
         return d18ABuilder_;
       }
 
+      private demetra.toolkit.io.protobuf.ToolkitProtos.TsData a1_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> a1Builder_;
+      /**
+       * <code>.jd3.TsData a1 = 12;</code>
+       * @return Whether the a1 field is set.
+       */
+      public boolean hasA1() {
+        return a1Builder_ != null || a1_ != null;
+      }
+      /**
+       * <code>.jd3.TsData a1 = 12;</code>
+       * @return The a1.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA1() {
+        if (a1Builder_ == null) {
+          return a1_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a1_;
+        } else {
+          return a1Builder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.TsData a1 = 12;</code>
+       */
+      public Builder setA1(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (a1Builder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          a1_ = value;
+          onChanged();
+        } else {
+          a1Builder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a1 = 12;</code>
+       */
+      public Builder setA1(
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder builderForValue) {
+        if (a1Builder_ == null) {
+          a1_ = builderForValue.build();
+          onChanged();
+        } else {
+          a1Builder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a1 = 12;</code>
+       */
+      public Builder mergeA1(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (a1Builder_ == null) {
+          if (a1_ != null) {
+            a1_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.newBuilder(a1_).mergeFrom(value).buildPartial();
+          } else {
+            a1_ = value;
+          }
+          onChanged();
+        } else {
+          a1Builder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a1 = 12;</code>
+       */
+      public Builder clearA1() {
+        if (a1Builder_ == null) {
+          a1_ = null;
+          onChanged();
+        } else {
+          a1_ = null;
+          a1Builder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a1 = 12;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder getA1Builder() {
+        
+        onChanged();
+        return getA1FieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.TsData a1 = 12;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA1OrBuilder() {
+        if (a1Builder_ != null) {
+          return a1Builder_.getMessageOrBuilder();
+        } else {
+          return a1_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a1_;
+        }
+      }
+      /**
+       * <code>.jd3.TsData a1 = 12;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> 
+          getA1FieldBuilder() {
+        if (a1Builder_ == null) {
+          a1Builder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder>(
+                  getA1(),
+                  getParentForChildren(),
+                  isClean());
+          a1_ = null;
+        }
+        return a1Builder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.TsData a1A_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> a1ABuilder_;
+      /**
+       * <code>.jd3.TsData a1a = 13;</code>
+       * @return Whether the a1a field is set.
+       */
+      public boolean hasA1A() {
+        return a1ABuilder_ != null || a1A_ != null;
+      }
+      /**
+       * <code>.jd3.TsData a1a = 13;</code>
+       * @return The a1a.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA1A() {
+        if (a1ABuilder_ == null) {
+          return a1A_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a1A_;
+        } else {
+          return a1ABuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.TsData a1a = 13;</code>
+       */
+      public Builder setA1A(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (a1ABuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          a1A_ = value;
+          onChanged();
+        } else {
+          a1ABuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a1a = 13;</code>
+       */
+      public Builder setA1A(
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder builderForValue) {
+        if (a1ABuilder_ == null) {
+          a1A_ = builderForValue.build();
+          onChanged();
+        } else {
+          a1ABuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a1a = 13;</code>
+       */
+      public Builder mergeA1A(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (a1ABuilder_ == null) {
+          if (a1A_ != null) {
+            a1A_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.newBuilder(a1A_).mergeFrom(value).buildPartial();
+          } else {
+            a1A_ = value;
+          }
+          onChanged();
+        } else {
+          a1ABuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a1a = 13;</code>
+       */
+      public Builder clearA1A() {
+        if (a1ABuilder_ == null) {
+          a1A_ = null;
+          onChanged();
+        } else {
+          a1A_ = null;
+          a1ABuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a1a = 13;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder getA1ABuilder() {
+        
+        onChanged();
+        return getA1AFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.TsData a1a = 13;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA1AOrBuilder() {
+        if (a1ABuilder_ != null) {
+          return a1ABuilder_.getMessageOrBuilder();
+        } else {
+          return a1A_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a1A_;
+        }
+      }
+      /**
+       * <code>.jd3.TsData a1a = 13;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> 
+          getA1AFieldBuilder() {
+        if (a1ABuilder_ == null) {
+          a1ABuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder>(
+                  getA1A(),
+                  getParentForChildren(),
+                  isClean());
+          a1A_ = null;
+        }
+        return a1ABuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.TsData a6_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> a6Builder_;
+      /**
+       * <code>.jd3.TsData a6 = 14;</code>
+       * @return Whether the a6 field is set.
+       */
+      public boolean hasA6() {
+        return a6Builder_ != null || a6_ != null;
+      }
+      /**
+       * <code>.jd3.TsData a6 = 14;</code>
+       * @return The a6.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA6() {
+        if (a6Builder_ == null) {
+          return a6_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a6_;
+        } else {
+          return a6Builder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.TsData a6 = 14;</code>
+       */
+      public Builder setA6(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (a6Builder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          a6_ = value;
+          onChanged();
+        } else {
+          a6Builder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a6 = 14;</code>
+       */
+      public Builder setA6(
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder builderForValue) {
+        if (a6Builder_ == null) {
+          a6_ = builderForValue.build();
+          onChanged();
+        } else {
+          a6Builder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a6 = 14;</code>
+       */
+      public Builder mergeA6(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (a6Builder_ == null) {
+          if (a6_ != null) {
+            a6_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.newBuilder(a6_).mergeFrom(value).buildPartial();
+          } else {
+            a6_ = value;
+          }
+          onChanged();
+        } else {
+          a6Builder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a6 = 14;</code>
+       */
+      public Builder clearA6() {
+        if (a6Builder_ == null) {
+          a6_ = null;
+          onChanged();
+        } else {
+          a6_ = null;
+          a6Builder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a6 = 14;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder getA6Builder() {
+        
+        onChanged();
+        return getA6FieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.TsData a6 = 14;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA6OrBuilder() {
+        if (a6Builder_ != null) {
+          return a6Builder_.getMessageOrBuilder();
+        } else {
+          return a6_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a6_;
+        }
+      }
+      /**
+       * <code>.jd3.TsData a6 = 14;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> 
+          getA6FieldBuilder() {
+        if (a6Builder_ == null) {
+          a6Builder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder>(
+                  getA6(),
+                  getParentForChildren(),
+                  isClean());
+          a6_ = null;
+        }
+        return a6Builder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.TsData a7_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> a7Builder_;
+      /**
+       * <code>.jd3.TsData a7 = 15;</code>
+       * @return Whether the a7 field is set.
+       */
+      public boolean hasA7() {
+        return a7Builder_ != null || a7_ != null;
+      }
+      /**
+       * <code>.jd3.TsData a7 = 15;</code>
+       * @return The a7.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA7() {
+        if (a7Builder_ == null) {
+          return a7_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a7_;
+        } else {
+          return a7Builder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.TsData a7 = 15;</code>
+       */
+      public Builder setA7(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (a7Builder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          a7_ = value;
+          onChanged();
+        } else {
+          a7Builder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a7 = 15;</code>
+       */
+      public Builder setA7(
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder builderForValue) {
+        if (a7Builder_ == null) {
+          a7_ = builderForValue.build();
+          onChanged();
+        } else {
+          a7Builder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a7 = 15;</code>
+       */
+      public Builder mergeA7(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (a7Builder_ == null) {
+          if (a7_ != null) {
+            a7_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.newBuilder(a7_).mergeFrom(value).buildPartial();
+          } else {
+            a7_ = value;
+          }
+          onChanged();
+        } else {
+          a7Builder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a7 = 15;</code>
+       */
+      public Builder clearA7() {
+        if (a7Builder_ == null) {
+          a7_ = null;
+          onChanged();
+        } else {
+          a7_ = null;
+          a7Builder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a7 = 15;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder getA7Builder() {
+        
+        onChanged();
+        return getA7FieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.TsData a7 = 15;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA7OrBuilder() {
+        if (a7Builder_ != null) {
+          return a7Builder_.getMessageOrBuilder();
+        } else {
+          return a7_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a7_;
+        }
+      }
+      /**
+       * <code>.jd3.TsData a7 = 15;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> 
+          getA7FieldBuilder() {
+        if (a7Builder_ == null) {
+          a7Builder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder>(
+                  getA7(),
+                  getParentForChildren(),
+                  isClean());
+          a7_ = null;
+        }
+        return a7Builder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.TsData a8_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> a8Builder_;
+      /**
+       * <code>.jd3.TsData a8 = 16;</code>
+       * @return Whether the a8 field is set.
+       */
+      public boolean hasA8() {
+        return a8Builder_ != null || a8_ != null;
+      }
+      /**
+       * <code>.jd3.TsData a8 = 16;</code>
+       * @return The a8.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA8() {
+        if (a8Builder_ == null) {
+          return a8_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a8_;
+        } else {
+          return a8Builder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.TsData a8 = 16;</code>
+       */
+      public Builder setA8(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (a8Builder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          a8_ = value;
+          onChanged();
+        } else {
+          a8Builder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a8 = 16;</code>
+       */
+      public Builder setA8(
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder builderForValue) {
+        if (a8Builder_ == null) {
+          a8_ = builderForValue.build();
+          onChanged();
+        } else {
+          a8Builder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a8 = 16;</code>
+       */
+      public Builder mergeA8(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (a8Builder_ == null) {
+          if (a8_ != null) {
+            a8_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.newBuilder(a8_).mergeFrom(value).buildPartial();
+          } else {
+            a8_ = value;
+          }
+          onChanged();
+        } else {
+          a8Builder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a8 = 16;</code>
+       */
+      public Builder clearA8() {
+        if (a8Builder_ == null) {
+          a8_ = null;
+          onChanged();
+        } else {
+          a8_ = null;
+          a8Builder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a8 = 16;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder getA8Builder() {
+        
+        onChanged();
+        return getA8FieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.TsData a8 = 16;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA8OrBuilder() {
+        if (a8Builder_ != null) {
+          return a8Builder_.getMessageOrBuilder();
+        } else {
+          return a8_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a8_;
+        }
+      }
+      /**
+       * <code>.jd3.TsData a8 = 16;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> 
+          getA8FieldBuilder() {
+        if (a8Builder_ == null) {
+          a8Builder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder>(
+                  getA8(),
+                  getParentForChildren(),
+                  isClean());
+          a8_ = null;
+        }
+        return a8Builder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.TsData a9_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> a9Builder_;
+      /**
+       * <code>.jd3.TsData a9 = 17;</code>
+       * @return Whether the a9 field is set.
+       */
+      public boolean hasA9() {
+        return a9Builder_ != null || a9_ != null;
+      }
+      /**
+       * <code>.jd3.TsData a9 = 17;</code>
+       * @return The a9.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getA9() {
+        if (a9Builder_ == null) {
+          return a9_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a9_;
+        } else {
+          return a9Builder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.TsData a9 = 17;</code>
+       */
+      public Builder setA9(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (a9Builder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          a9_ = value;
+          onChanged();
+        } else {
+          a9Builder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a9 = 17;</code>
+       */
+      public Builder setA9(
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder builderForValue) {
+        if (a9Builder_ == null) {
+          a9_ = builderForValue.build();
+          onChanged();
+        } else {
+          a9Builder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a9 = 17;</code>
+       */
+      public Builder mergeA9(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (a9Builder_ == null) {
+          if (a9_ != null) {
+            a9_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.newBuilder(a9_).mergeFrom(value).buildPartial();
+          } else {
+            a9_ = value;
+          }
+          onChanged();
+        } else {
+          a9Builder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a9 = 17;</code>
+       */
+      public Builder clearA9() {
+        if (a9Builder_ == null) {
+          a9_ = null;
+          onChanged();
+        } else {
+          a9_ = null;
+          a9Builder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData a9 = 17;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder getA9Builder() {
+        
+        onChanged();
+        return getA9FieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.TsData a9 = 17;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getA9OrBuilder() {
+        if (a9Builder_ != null) {
+          return a9Builder_.getMessageOrBuilder();
+        } else {
+          return a9_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : a9_;
+        }
+      }
+      /**
+       * <code>.jd3.TsData a9 = 17;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> 
+          getA9FieldBuilder() {
+        if (a9Builder_ == null) {
+          a9Builder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder>(
+                  getA9(),
+                  getParentForChildren(),
+                  isClean());
+          a9_ = null;
+        }
+        return a9Builder_;
+      }
+
       private demetra.toolkit.io.protobuf.ToolkitProtos.TsData e1_;
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> e1Builder_;
       /**
-       * <code>.jd3.TsData e1 = 12;</code>
+       * <code>.jd3.TsData e1 = 30;</code>
        * @return Whether the e1 field is set.
        */
       public boolean hasE1() {
         return e1Builder_ != null || e1_ != null;
       }
       /**
-       * <code>.jd3.TsData e1 = 12;</code>
+       * <code>.jd3.TsData e1 = 30;</code>
        * @return The e1.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getE1() {
@@ -29282,7 +30500,7 @@ public final class X13Protos {
         }
       }
       /**
-       * <code>.jd3.TsData e1 = 12;</code>
+       * <code>.jd3.TsData e1 = 30;</code>
        */
       public Builder setE1(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
         if (e1Builder_ == null) {
@@ -29298,7 +30516,7 @@ public final class X13Protos {
         return this;
       }
       /**
-       * <code>.jd3.TsData e1 = 12;</code>
+       * <code>.jd3.TsData e1 = 30;</code>
        */
       public Builder setE1(
           demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder builderForValue) {
@@ -29312,7 +30530,7 @@ public final class X13Protos {
         return this;
       }
       /**
-       * <code>.jd3.TsData e1 = 12;</code>
+       * <code>.jd3.TsData e1 = 30;</code>
        */
       public Builder mergeE1(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
         if (e1Builder_ == null) {
@@ -29330,7 +30548,7 @@ public final class X13Protos {
         return this;
       }
       /**
-       * <code>.jd3.TsData e1 = 12;</code>
+       * <code>.jd3.TsData e1 = 30;</code>
        */
       public Builder clearE1() {
         if (e1Builder_ == null) {
@@ -29344,7 +30562,7 @@ public final class X13Protos {
         return this;
       }
       /**
-       * <code>.jd3.TsData e1 = 12;</code>
+       * <code>.jd3.TsData e1 = 30;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder getE1Builder() {
         
@@ -29352,7 +30570,7 @@ public final class X13Protos {
         return getE1FieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.TsData e1 = 12;</code>
+       * <code>.jd3.TsData e1 = 30;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getE1OrBuilder() {
         if (e1Builder_ != null) {
@@ -29363,7 +30581,7 @@ public final class X13Protos {
         }
       }
       /**
-       * <code>.jd3.TsData e1 = 12;</code>
+       * <code>.jd3.TsData e1 = 30;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> 
@@ -29383,14 +30601,14 @@ public final class X13Protos {
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> e2Builder_;
       /**
-       * <code>.jd3.TsData e2 = 13;</code>
+       * <code>.jd3.TsData e2 = 31;</code>
        * @return Whether the e2 field is set.
        */
       public boolean hasE2() {
         return e2Builder_ != null || e2_ != null;
       }
       /**
-       * <code>.jd3.TsData e2 = 13;</code>
+       * <code>.jd3.TsData e2 = 31;</code>
        * @return The e2.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getE2() {
@@ -29401,7 +30619,7 @@ public final class X13Protos {
         }
       }
       /**
-       * <code>.jd3.TsData e2 = 13;</code>
+       * <code>.jd3.TsData e2 = 31;</code>
        */
       public Builder setE2(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
         if (e2Builder_ == null) {
@@ -29417,7 +30635,7 @@ public final class X13Protos {
         return this;
       }
       /**
-       * <code>.jd3.TsData e2 = 13;</code>
+       * <code>.jd3.TsData e2 = 31;</code>
        */
       public Builder setE2(
           demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder builderForValue) {
@@ -29431,7 +30649,7 @@ public final class X13Protos {
         return this;
       }
       /**
-       * <code>.jd3.TsData e2 = 13;</code>
+       * <code>.jd3.TsData e2 = 31;</code>
        */
       public Builder mergeE2(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
         if (e2Builder_ == null) {
@@ -29449,7 +30667,7 @@ public final class X13Protos {
         return this;
       }
       /**
-       * <code>.jd3.TsData e2 = 13;</code>
+       * <code>.jd3.TsData e2 = 31;</code>
        */
       public Builder clearE2() {
         if (e2Builder_ == null) {
@@ -29463,7 +30681,7 @@ public final class X13Protos {
         return this;
       }
       /**
-       * <code>.jd3.TsData e2 = 13;</code>
+       * <code>.jd3.TsData e2 = 31;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder getE2Builder() {
         
@@ -29471,7 +30689,7 @@ public final class X13Protos {
         return getE2FieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.TsData e2 = 13;</code>
+       * <code>.jd3.TsData e2 = 31;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getE2OrBuilder() {
         if (e2Builder_ != null) {
@@ -29482,7 +30700,7 @@ public final class X13Protos {
         }
       }
       /**
-       * <code>.jd3.TsData e2 = 13;</code>
+       * <code>.jd3.TsData e2 = 31;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> 
@@ -29502,14 +30720,14 @@ public final class X13Protos {
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> e3Builder_;
       /**
-       * <code>.jd3.TsData e3 = 14;</code>
+       * <code>.jd3.TsData e3 = 32;</code>
        * @return Whether the e3 field is set.
        */
       public boolean hasE3() {
         return e3Builder_ != null || e3_ != null;
       }
       /**
-       * <code>.jd3.TsData e3 = 14;</code>
+       * <code>.jd3.TsData e3 = 32;</code>
        * @return The e3.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getE3() {
@@ -29520,7 +30738,7 @@ public final class X13Protos {
         }
       }
       /**
-       * <code>.jd3.TsData e3 = 14;</code>
+       * <code>.jd3.TsData e3 = 32;</code>
        */
       public Builder setE3(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
         if (e3Builder_ == null) {
@@ -29536,7 +30754,7 @@ public final class X13Protos {
         return this;
       }
       /**
-       * <code>.jd3.TsData e3 = 14;</code>
+       * <code>.jd3.TsData e3 = 32;</code>
        */
       public Builder setE3(
           demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder builderForValue) {
@@ -29550,7 +30768,7 @@ public final class X13Protos {
         return this;
       }
       /**
-       * <code>.jd3.TsData e3 = 14;</code>
+       * <code>.jd3.TsData e3 = 32;</code>
        */
       public Builder mergeE3(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
         if (e3Builder_ == null) {
@@ -29568,7 +30786,7 @@ public final class X13Protos {
         return this;
       }
       /**
-       * <code>.jd3.TsData e3 = 14;</code>
+       * <code>.jd3.TsData e3 = 32;</code>
        */
       public Builder clearE3() {
         if (e3Builder_ == null) {
@@ -29582,7 +30800,7 @@ public final class X13Protos {
         return this;
       }
       /**
-       * <code>.jd3.TsData e3 = 14;</code>
+       * <code>.jd3.TsData e3 = 32;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder getE3Builder() {
         
@@ -29590,7 +30808,7 @@ public final class X13Protos {
         return getE3FieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.TsData e3 = 14;</code>
+       * <code>.jd3.TsData e3 = 32;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getE3OrBuilder() {
         if (e3Builder_ != null) {
@@ -29601,7 +30819,7 @@ public final class X13Protos {
         }
       }
       /**
-       * <code>.jd3.TsData e3 = 14;</code>
+       * <code>.jd3.TsData e3 = 32;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> 
@@ -29621,14 +30839,14 @@ public final class X13Protos {
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> e11Builder_;
       /**
-       * <code>.jd3.TsData e11 = 15;</code>
+       * <code>.jd3.TsData e11 = 33;</code>
        * @return Whether the e11 field is set.
        */
       public boolean hasE11() {
         return e11Builder_ != null || e11_ != null;
       }
       /**
-       * <code>.jd3.TsData e11 = 15;</code>
+       * <code>.jd3.TsData e11 = 33;</code>
        * @return The e11.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getE11() {
@@ -29639,7 +30857,7 @@ public final class X13Protos {
         }
       }
       /**
-       * <code>.jd3.TsData e11 = 15;</code>
+       * <code>.jd3.TsData e11 = 33;</code>
        */
       public Builder setE11(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
         if (e11Builder_ == null) {
@@ -29655,7 +30873,7 @@ public final class X13Protos {
         return this;
       }
       /**
-       * <code>.jd3.TsData e11 = 15;</code>
+       * <code>.jd3.TsData e11 = 33;</code>
        */
       public Builder setE11(
           demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder builderForValue) {
@@ -29669,7 +30887,7 @@ public final class X13Protos {
         return this;
       }
       /**
-       * <code>.jd3.TsData e11 = 15;</code>
+       * <code>.jd3.TsData e11 = 33;</code>
        */
       public Builder mergeE11(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
         if (e11Builder_ == null) {
@@ -29687,7 +30905,7 @@ public final class X13Protos {
         return this;
       }
       /**
-       * <code>.jd3.TsData e11 = 15;</code>
+       * <code>.jd3.TsData e11 = 33;</code>
        */
       public Builder clearE11() {
         if (e11Builder_ == null) {
@@ -29701,7 +30919,7 @@ public final class X13Protos {
         return this;
       }
       /**
-       * <code>.jd3.TsData e11 = 15;</code>
+       * <code>.jd3.TsData e11 = 33;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder getE11Builder() {
         
@@ -29709,7 +30927,7 @@ public final class X13Protos {
         return getE11FieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.TsData e11 = 15;</code>
+       * <code>.jd3.TsData e11 = 33;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getE11OrBuilder() {
         if (e11Builder_ != null) {
@@ -29720,7 +30938,7 @@ public final class X13Protos {
         }
       }
       /**
-       * <code>.jd3.TsData e11 = 15;</code>
+       * <code>.jd3.TsData e11 = 33;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> 
@@ -35146,7 +36364,7 @@ public final class X13Protos {
       "\003 \001(\001\022\n\n\002m4\030\004 \001(\001\022\n\n\002m5\030\005 \001(\001\022\n\n\002m6\030\006 \001(" +
       "\001\022\n\n\002m7\030\007 \001(\001\022\n\n\002m8\030\010 \001(\001\022\n\n\002m9\030\t \001(\001\022\013\n" +
       "\003m10\030\n \001(\001\022\013\n\003m11\030\013 \001(\001\022\t\n\001q\030\014 \001(\001\022\013\n\003qm" +
-      "2\030\r \001(\001\"\247\003\n\tX13Finals\022\035\n\010d10final\030\001 \001(\0132" +
+      "2\030\r \001(\001\"\276\004\n\tX13Finals\022\035\n\010d10final\030\001 \001(\0132" +
       "\013.jd3.TsData\022\035\n\010d11final\030\002 \001(\0132\013.jd3.TsD" +
       "ata\022\035\n\010d12final\030\003 \001(\0132\013.jd3.TsData\022\035\n\010d1" +
       "3final\030\004 \001(\0132\013.jd3.TsData\022\030\n\003d16\030\005 \001(\0132\013" +
@@ -35154,50 +36372,54 @@ public final class X13Protos {
       "\004d10a\030\007 \001(\0132\013.jd3.TsData\022\031\n\004d11a\030\010 \001(\0132\013" +
       ".jd3.TsData\022\031\n\004d12a\030\t \001(\0132\013.jd3.TsData\022\031" +
       "\n\004d16a\030\n \001(\0132\013.jd3.TsData\022\031\n\004d18a\030\013 \001(\0132" +
-      "\013.jd3.TsData\022\027\n\002e1\030\014 \001(\0132\013.jd3.TsData\022\027\n" +
-      "\002e2\030\r \001(\0132\013.jd3.TsData\022\027\n\002e3\030\016 \001(\0132\013.jd3" +
-      ".TsData\022\030\n\003e11\030\017 \001(\0132\013.jd3.TsData\"4\n\013Dia" +
-      "gnostics\022%\n\013mstatistics\030\001 \001(\0132\020.x13.MSta" +
-      "tistics\"\327\001\n\nX13Results\022.\n\rpreprocessing\030" +
-      "\001 \001(\0132\027.regarima.RegArimaModel\022&\n\rdecomp" +
-      "osition\030\002 \001(\0132\017.x13.X11Results\022\035\n\005final\030" +
-      "\003 \001(\0132\016.x13.X13Finals\022)\n\017diagnostics_x13" +
-      "\030\004 \001(\0132\020.x13.Diagnostics\022\'\n\016diagnostics_" +
-      "sa\030\005 \001(\0132\017.sa.Diagnostics\"\251\002\n\016RegArimaOu" +
-      "tput\022\'\n\006result\030\001 \001(\0132\027.regarima.RegArima" +
-      "Model\022*\n\017estimation_spec\030\002 \001(\0132\021.x13.Reg" +
-      "ArimaSpec\022&\n\013result_spec\030\003 \001(\0132\021.x13.Reg" +
-      "ArimaSpec\022 \n\003log\030\004 \001(\0132\023.jd3.ProcessingL" +
-      "ogs\0221\n\007details\030\005 \003(\0132 .x13.RegArimaOutpu" +
-      "t.DetailsEntry\032E\n\014DetailsEntry\022\013\n\003key\030\001 " +
-      "\001(\t\022$\n\005value\030\002 \001(\0132\025.jd3.ProcessingDetai" +
-      "l:\0028\001\"\207\002\n\tX13Output\022\037\n\006result\030\001 \001(\0132\017.x1" +
-      "3.X13Results\022\"\n\017estimation_spec\030\002 \001(\0132\t." +
-      "x13.Spec\022\036\n\013result_spec\030\003 \001(\0132\t.x13.Spec" +
-      "\022 \n\003log\030\004 \001(\0132\023.jd3.ProcessingLogs\022,\n\007de" +
-      "tails\030\005 \003(\0132\033.x13.X13Output.DetailsEntry" +
-      "\032E\n\014DetailsEntry\022\013\n\003key\030\001 \001(\t\022$\n\005value\030\002" +
-      " \001(\0132\025.jd3.ProcessingDetail:\0028\001*\200\001\n\021Deco" +
-      "mpositionMode\022\020\n\014MODE_UNKNOWN\020\000\022\021\n\rMODE_" +
-      "ADDITIVE\020\001\022\027\n\023MODE_MULTIPLICATIVE\020\002\022\024\n\020M" +
-      "ODE_LOGADDITIVE\020\003\022\027\n\023MODE_PSEUDOADDITIVE" +
-      "\020\004*\350\001\n\016SeasonalFilter\022\027\n\023SEASONAL_FILTER" +
-      "_MSR\020\000\022\030\n\024SEASONAL_FILTER_S3X1\020\001\022\030\n\024SEAS" +
-      "ONAL_FILTER_S3X3\020\002\022\030\n\024SEASONAL_FILTER_S3" +
-      "X5\020\003\022\030\n\024SEASONAL_FILTER_S3X9\020\004\022\031\n\025SEASON" +
-      "AL_FILTER_S3X15\020\005\022\032\n\026SEASONAL_FILTER_STA" +
-      "BLE\020\006\022\036\n\032SEASONAL_FILTER_X11DEFAULT\020\007*R\n" +
-      "\rCalendarSigma\022\016\n\nSIGMA_NONE\020\000\022\020\n\014SIGMA_" +
-      "SIGNIF\020\001\022\r\n\tSIGMA_ALL\020\002\022\020\n\014SIGMA_SELECT\020" +
-      "\003*Q\n\016BiasCorrection\022\r\n\tBIAS_NONE\020\000\022\017\n\013BI" +
-      "AS_LEGACY\020\001\022\017\n\013BIAS_SMOOTH\020\002\022\016\n\nBIAS_RAT" +
-      "IO\020\003*7\n\rOutlierMethod\022\022\n\016OUTLIER_ADDONE\020" +
-      "\000\022\022\n\016OUTLIER_ADDALL\020\001*V\n\nEasterType\022\021\n\rE" +
-      "ASTER_UNUSED\020\000\022\023\n\017EASTER_STANDARD\020\001\022\021\n\rE" +
-      "ASTER_JULIAN\020\002\022\r\n\tEASTER_SC\020\003*<\n\016Regress" +
-      "ionTest\022\013\n\007TEST_NO\020\000\022\014\n\010TEST_ADD\020\001\022\017\n\013TE" +
-      "ST_REMOVE\020\002B$\n\027demetra.x13.io.protobufB\t" +
-      "X13ProtosP\000P\001P\002P\003b\006proto3"
+      "\013.jd3.TsData\022\027\n\002a1\030\014 \001(\0132\013.jd3.TsData\022\030\n" +
+      "\003a1a\030\r \001(\0132\013.jd3.TsData\022\027\n\002a6\030\016 \001(\0132\013.jd" +
+      "3.TsData\022\027\n\002a7\030\017 \001(\0132\013.jd3.TsData\022\027\n\002a8\030" +
+      "\020 \001(\0132\013.jd3.TsData\022\027\n\002a9\030\021 \001(\0132\013.jd3.TsD" +
+      "ata\022\027\n\002e1\030\036 \001(\0132\013.jd3.TsData\022\027\n\002e2\030\037 \001(\013" +
+      "2\013.jd3.TsData\022\027\n\002e3\030  \001(\0132\013.jd3.TsData\022\030" +
+      "\n\003e11\030! \001(\0132\013.jd3.TsData\"4\n\013Diagnostics\022" +
+      "%\n\013mstatistics\030\001 \001(\0132\020.x13.MStatistics\"\327" +
+      "\001\n\nX13Results\022.\n\rpreprocessing\030\001 \001(\0132\027.r" +
+      "egarima.RegArimaModel\022&\n\rdecomposition\030\002" +
+      " \001(\0132\017.x13.X11Results\022\035\n\005final\030\003 \001(\0132\016.x" +
+      "13.X13Finals\022)\n\017diagnostics_x13\030\004 \001(\0132\020." +
+      "x13.Diagnostics\022\'\n\016diagnostics_sa\030\005 \001(\0132" +
+      "\017.sa.Diagnostics\"\251\002\n\016RegArimaOutput\022\'\n\006r" +
+      "esult\030\001 \001(\0132\027.regarima.RegArimaModel\022*\n\017" +
+      "estimation_spec\030\002 \001(\0132\021.x13.RegArimaSpec" +
+      "\022&\n\013result_spec\030\003 \001(\0132\021.x13.RegArimaSpec" +
+      "\022 \n\003log\030\004 \001(\0132\023.jd3.ProcessingLogs\0221\n\007de" +
+      "tails\030\005 \003(\0132 .x13.RegArimaOutput.Details" +
+      "Entry\032E\n\014DetailsEntry\022\013\n\003key\030\001 \001(\t\022$\n\005va" +
+      "lue\030\002 \001(\0132\025.jd3.ProcessingDetail:\0028\001\"\207\002\n" +
+      "\tX13Output\022\037\n\006result\030\001 \001(\0132\017.x13.X13Resu" +
+      "lts\022\"\n\017estimation_spec\030\002 \001(\0132\t.x13.Spec\022" +
+      "\036\n\013result_spec\030\003 \001(\0132\t.x13.Spec\022 \n\003log\030\004" +
+      " \001(\0132\023.jd3.ProcessingLogs\022,\n\007details\030\005 \003" +
+      "(\0132\033.x13.X13Output.DetailsEntry\032E\n\014Detai" +
+      "lsEntry\022\013\n\003key\030\001 \001(\t\022$\n\005value\030\002 \001(\0132\025.jd" +
+      "3.ProcessingDetail:\0028\001*\200\001\n\021Decomposition" +
+      "Mode\022\020\n\014MODE_UNKNOWN\020\000\022\021\n\rMODE_ADDITIVE\020" +
+      "\001\022\027\n\023MODE_MULTIPLICATIVE\020\002\022\024\n\020MODE_LOGAD" +
+      "DITIVE\020\003\022\027\n\023MODE_PSEUDOADDITIVE\020\004*\350\001\n\016Se" +
+      "asonalFilter\022\027\n\023SEASONAL_FILTER_MSR\020\000\022\030\n" +
+      "\024SEASONAL_FILTER_S3X1\020\001\022\030\n\024SEASONAL_FILT" +
+      "ER_S3X3\020\002\022\030\n\024SEASONAL_FILTER_S3X5\020\003\022\030\n\024S" +
+      "EASONAL_FILTER_S3X9\020\004\022\031\n\025SEASONAL_FILTER" +
+      "_S3X15\020\005\022\032\n\026SEASONAL_FILTER_STABLE\020\006\022\036\n\032" +
+      "SEASONAL_FILTER_X11DEFAULT\020\007*R\n\rCalendar" +
+      "Sigma\022\016\n\nSIGMA_NONE\020\000\022\020\n\014SIGMA_SIGNIF\020\001\022" +
+      "\r\n\tSIGMA_ALL\020\002\022\020\n\014SIGMA_SELECT\020\003*Q\n\016Bias" +
+      "Correction\022\r\n\tBIAS_NONE\020\000\022\017\n\013BIAS_LEGACY" +
+      "\020\001\022\017\n\013BIAS_SMOOTH\020\002\022\016\n\nBIAS_RATIO\020\003*7\n\rO" +
+      "utlierMethod\022\022\n\016OUTLIER_ADDONE\020\000\022\022\n\016OUTL" +
+      "IER_ADDALL\020\001*V\n\nEasterType\022\021\n\rEASTER_UNU" +
+      "SED\020\000\022\023\n\017EASTER_STANDARD\020\001\022\021\n\rEASTER_JUL" +
+      "IAN\020\002\022\r\n\tEASTER_SC\020\003*<\n\016RegressionTest\022\013" +
+      "\n\007TEST_NO\020\000\022\014\n\010TEST_ADD\020\001\022\017\n\013TEST_REMOVE" +
+      "\020\002B$\n\027demetra.x13.io.protobufB\tX13Protos" +
+      "P\000P\001P\002P\003b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -35296,7 +36518,7 @@ public final class X13Protos {
     internal_static_x13_X13Finals_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_x13_X13Finals_descriptor,
-        new java.lang.String[] { "D10Final", "D11Final", "D12Final", "D13Final", "D16", "D18", "D10A", "D11A", "D12A", "D16A", "D18A", "E1", "E2", "E3", "E11", });
+        new java.lang.String[] { "D10Final", "D11Final", "D12Final", "D13Final", "D16", "D18", "D10A", "D11A", "D12A", "D16A", "D18A", "A1", "A1A", "A6", "A7", "A8", "A9", "E1", "E2", "E3", "E11", });
     internal_static_x13_Diagnostics_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_x13_Diagnostics_fieldAccessorTable = new

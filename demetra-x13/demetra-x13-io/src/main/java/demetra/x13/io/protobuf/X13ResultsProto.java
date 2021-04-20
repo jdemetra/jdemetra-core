@@ -21,6 +21,7 @@ import demetra.sa.io.protobuf.SaProtos;
 import demetra.sa.io.protobuf.SaProtosUtility;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import demetra.x13.X13Finals;
+import demetra.x13.X13Preadjustment;
 import jdplus.x13.Mstatistics;
 import jdplus.x13.X13Diagnostics;
 import jdplus.x13.X13Results;
@@ -32,8 +33,15 @@ import jdplus.x13.X13Results;
 @lombok.experimental.UtilityClass
 public class X13ResultsProto {
     
-    public X13Protos.X13Finals convert(X13Finals finals){
+    public X13Protos.X13Finals convert(X13Preadjustment preadjust, X13Finals finals){
         return X13Protos.X13Finals.newBuilder()
+                .setA1(ToolkitProtosUtility.convert(preadjust.getA1()))
+                .setA1A(ToolkitProtosUtility.convert(preadjust.getA1a()))
+                .setA6(ToolkitProtosUtility.convert(preadjust.getA6()))
+                .setA7(ToolkitProtosUtility.convert(preadjust.getA7()))
+                .setA8(ToolkitProtosUtility.convert(preadjust.getA8()))
+                .setA9(ToolkitProtosUtility.convert(preadjust.getA9()))
+                .setD10Final(ToolkitProtosUtility.convert(finals.getD10final()))
                 .setD10Final(ToolkitProtosUtility.convert(finals.getD10final()))
                 .setD11Final(ToolkitProtosUtility.convert(finals.getD11final()))
                 .setD12Final(ToolkitProtosUtility.convert(finals.getD12final()))
@@ -58,7 +66,7 @@ public class X13ResultsProto {
         X13Diagnostics diags=X13Diagnostics.of(rslts);
         builder.setPreprocessing(RegArimaEstimationProto.convert(rslts.getPreprocessing()))
                 .setDecomposition(X11ResultsProto.convert(rslts.getDecomposition()))
-                .setFinal(convert(rslts.getFinals()))
+                .setFinal(convert(rslts.getPreadjustment(), rslts.getFinals()))
                 .setDiagnosticsX13(X13Protos.Diagnostics.newBuilder()
                         .setMstatistics(convert(diags.getMstatistics()))
                         .build())
