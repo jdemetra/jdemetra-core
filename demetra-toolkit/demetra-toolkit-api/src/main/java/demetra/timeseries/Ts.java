@@ -26,7 +26,7 @@ import internal.timeseries.LombokHelper;
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder", toBuilder = true)
+@lombok.Builder( toBuilder = true)
 public class Ts implements TsResource<TsData> {
 
     @lombok.NonNull

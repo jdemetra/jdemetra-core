@@ -26,7 +26,7 @@ import jdplus.tramoseats.TramoSeatsResults;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class TramoSeatsOutput {
     TramoSeatsResults result;
 

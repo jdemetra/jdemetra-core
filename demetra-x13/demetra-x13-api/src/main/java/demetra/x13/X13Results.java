@@ -28,7 +28,7 @@ import java.util.Map;
  * @author palatej
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 public class X13Results {
     private GeneralLinearModel<SarimaModel> preprocessing;
     private X13Preadjustment preadjustment;

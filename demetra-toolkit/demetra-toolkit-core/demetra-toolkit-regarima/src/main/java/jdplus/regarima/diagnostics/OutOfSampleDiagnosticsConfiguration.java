@@ -23,7 +23,7 @@ import nbbrd.design.LombokWorkaround;
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class OutOfSampleDiagnosticsConfiguration {
 
     public static final double BAD = .01, UNC = .1, LENGTH = 1.5;

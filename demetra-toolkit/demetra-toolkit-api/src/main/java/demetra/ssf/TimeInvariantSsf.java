@@ -24,7 +24,7 @@ import demetra.math.matrices.MatrixType;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 public class TimeInvariantSsf {
 
     // Initialization

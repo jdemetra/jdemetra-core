@@ -23,7 +23,7 @@ import demetra.DemetraException;
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class ResidualTradingDaysDiagnosticsConfiguration {
 
     public static final ResidualTradingDaysDiagnosticsConfiguration DEFAULT = builder().build();

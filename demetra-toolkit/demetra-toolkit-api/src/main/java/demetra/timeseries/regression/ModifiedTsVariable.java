@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Development(status = Development.Status.Alpha)
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder", toBuilder = true)
+@lombok.Builder( toBuilder = true)
 public class ModifiedTsVariable implements ITsVariable {
     
     public static interface Modifier {

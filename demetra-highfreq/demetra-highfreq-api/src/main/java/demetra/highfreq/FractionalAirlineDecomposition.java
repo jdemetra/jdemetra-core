@@ -19,7 +19,7 @@ import java.util.Map;
  * @author palatej
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class FractionalAirlineDecomposition implements ProcResults {
 
     FractionalAirline model;

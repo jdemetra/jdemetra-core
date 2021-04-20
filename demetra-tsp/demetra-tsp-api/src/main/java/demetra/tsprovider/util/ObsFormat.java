@@ -44,7 +44,7 @@ import nbbrd.io.text.Parser;
  * @author Philippe Charles
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public final class ObsFormat {
 
     public static final ObsFormat DEFAULT = new ObsFormat(null, null, null, false);

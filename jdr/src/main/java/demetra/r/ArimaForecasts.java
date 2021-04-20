@@ -80,7 +80,7 @@ public class ArimaForecasts {
 
     public Results process(RegArimaModel regarima, double mean, int nf, int nb, String method) {
         if (!method.equalsIgnoreCase("all")) {
-            Results.ResultsBuilder builder = Results.builder();
+            Results.Builder builder = Results.builder();
             boolean exact = method.equalsIgnoreCase("exact");
             jdplus.arima.estimation.ArimaForecasts fcasts = exact ? new ExactArimaForecasts() : new FastArimaForecasts();
             if (exact) {
@@ -127,7 +127,7 @@ public class ArimaForecasts {
             ssf = RegSsf.ssf(ssf, x);
         }
         DefaultSmoothingResults ss = DkToolkit.sqrtSmooth(ssf, new SsfData(yc), true, true);
-        Results.ResultsBuilder builder = Results.builder();
+        Results.Builder builder = Results.builder();
         ISsfLoading loading = ssf.loading();
         if (nb > 0) {
             double[] b = new double[nb], eb = new double[nb];

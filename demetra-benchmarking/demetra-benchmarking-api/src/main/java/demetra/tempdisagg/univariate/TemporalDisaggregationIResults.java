@@ -25,7 +25,7 @@ import demetra.timeseries.TsData;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class TemporalDisaggregationIResults {
 
     private @lombok.NonNull

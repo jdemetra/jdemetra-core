@@ -34,7 +34,7 @@ import demetra.x11.X11Spec;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
 public class X13Spec implements Validatable<X13Spec>, SaSpecification {
 
     public static final String METHOD = "x13";

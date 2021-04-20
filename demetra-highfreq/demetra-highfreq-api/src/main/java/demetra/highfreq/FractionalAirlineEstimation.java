@@ -22,7 +22,7 @@ import java.util.Map;
  * @author palatej
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class FractionalAirlineEstimation implements ProcResults{
 
     double[] y;

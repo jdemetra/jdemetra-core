@@ -29,7 +29,7 @@ import java.util.List;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder", toBuilder=true)
+@lombok.Builder( toBuilder=true)
 public class SaEstimation {
     
     /**

@@ -28,7 +28,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 @DemetraPlusLegacy
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 class LegacyOdbcId {
 
     @lombok.NonNull

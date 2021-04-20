@@ -23,7 +23,7 @@ import demetra.data.DoubleSeq;
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 class DiscreteModelEvaluation{
     DiscreteModel model;
     DoubleSeq coefficients;

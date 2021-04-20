@@ -175,7 +175,7 @@ public class FiltersToolkit {
     }
     
     @lombok.Value
-    @lombok.Builder(builderClassName="Builder")
+    @lombok.Builder
     public static class FSTResult{
 
         private FiniteFilter filter;

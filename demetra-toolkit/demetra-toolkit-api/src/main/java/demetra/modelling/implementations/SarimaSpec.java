@@ -34,7 +34,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 @Development(status = Development.Status.Release)
 @lombok.Value
-@lombok.Builder(toBuilder = true, builderClassName = "Builder", buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
 public final class SarimaSpec implements Validatable<SarimaSpec> {
 
     @Override

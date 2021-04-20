@@ -23,7 +23,7 @@ import demetra.util.Table;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 public class VECMTest {
     /**
      * Coefficients of the VEC-representation

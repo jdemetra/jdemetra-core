@@ -52,8 +52,8 @@ public class RegArimaKernel implements RegSarimaProcessor {
     @lombok.Builder
     public static class AmiOptions {
 
-        public static AmiOptionsBuilder builder() {
-            AmiOptionsBuilder builder = new AmiOptionsBuilder();
+        public static Builder builder() {
+            Builder builder = new Builder();
             builder.checkMu = true;
             builder.precision = 1e-7;
             builder.va=0;

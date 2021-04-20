@@ -34,7 +34,7 @@ import demetra.math.matrices.MatrixType;
  */
 @Development(status = Development.Status.Release)
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class DeprecatedLinearModel {
 
     @lombok.NonNull

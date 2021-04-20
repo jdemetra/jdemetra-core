@@ -31,7 +31,7 @@ import java.util.Map;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 @Development(status = Development.Status.Alpha)
 public class TemporalDisaggregationResults {
 

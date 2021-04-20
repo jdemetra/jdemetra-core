@@ -22,7 +22,7 @@ package demetra.revisions.parametric;
  */
 
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 public class OlsTests {
     int n;
     double R2, F;

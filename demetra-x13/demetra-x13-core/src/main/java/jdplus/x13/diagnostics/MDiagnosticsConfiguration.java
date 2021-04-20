@@ -23,7 +23,7 @@ import nbbrd.design.Development;
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 @Development(status = Development.Status.Release)
 public class MDiagnosticsConfiguration {
 

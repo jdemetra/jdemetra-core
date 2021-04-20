@@ -30,7 +30,7 @@ import java.time.LocalDate;
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
-@lombok.Builder(toBuilder=true, builderClassName="Builder", buildMethodName="buildWithoutValidation")
+@lombok.Builder(toBuilder=true,  buildMethodName="buildWithoutValidation")
 public class CalendarizationSpec implements ProcSpecification, Validatable<CalendarizationSpec> {
 
     public static final String FAMILY = "Benchmarking";

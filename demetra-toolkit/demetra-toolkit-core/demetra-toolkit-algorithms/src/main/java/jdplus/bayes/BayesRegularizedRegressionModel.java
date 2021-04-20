@@ -13,7 +13,7 @@ import demetra.data.DoubleSeq;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class BayesRegularizedRegressionModel {
 
     public static enum ModelType {

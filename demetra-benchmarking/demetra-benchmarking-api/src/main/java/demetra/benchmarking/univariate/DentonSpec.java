@@ -28,7 +28,7 @@ import demetra.util.Validatable;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder=true, builderClassName="Builder", buildMethodName="buildWithoutValidation")
+@lombok.Builder(toBuilder=true, buildMethodName="buildWithoutValidation")
 public class DentonSpec implements ProcSpecification, Validatable<DentonSpec> {
 
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "denton", null);

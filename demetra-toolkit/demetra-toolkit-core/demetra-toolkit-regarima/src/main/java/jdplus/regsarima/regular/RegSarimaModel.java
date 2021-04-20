@@ -58,7 +58,7 @@ import jdplus.timeseries.simplets.Transformations;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
 
     private static final MissingValueEstimation[] NOMISSING = new MissingValueEstimation[0];
@@ -201,7 +201,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
     private Map<String, Object> additionalResults;
 
     @lombok.Value
-    @lombok.Builder(builderClassName = "Builder")
+    @lombok.Builder
     public static class Details {
 
         TsDomain estimationDomain;

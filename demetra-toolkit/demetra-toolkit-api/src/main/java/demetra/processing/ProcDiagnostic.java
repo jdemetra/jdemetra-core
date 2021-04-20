@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Development(status = Development.Status.Release)
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class ProcDiagnostic {
 
     double value;

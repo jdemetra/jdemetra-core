@@ -21,7 +21,7 @@ package jdplus.sa.diagnostics;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class ResidualSeasonalityDiagnosticsConfiguration {
     
     public static final ResidualSeasonalityDiagnosticsConfiguration DEFAULT=builder().build();

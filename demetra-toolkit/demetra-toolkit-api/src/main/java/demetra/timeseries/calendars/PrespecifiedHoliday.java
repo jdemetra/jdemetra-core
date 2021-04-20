@@ -27,7 +27,7 @@ import java.time.LocalDate;
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
+@lombok.Builder
 @Development(status = Development.Status.Beta)
 public class PrespecifiedHoliday implements Holiday {
 
