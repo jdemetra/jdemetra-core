@@ -17,6 +17,9 @@
 package demetra.tramoseats.io.information;
 
 import demetra.information.InformationSet;
+import demetra.modelling.implementations.SarimaSpec;
+import demetra.tramo.RegressionSpec;
+import demetra.tramo.TramoSpec;
 import java.util.Map;
 
 /**
@@ -25,6 +28,7 @@ import java.util.Map;
  */
 @lombok.experimental.UtilityClass
 public class TramoSpecMapping {
+
     public static final String TRANSFORM = "transform",
             AUTOMDL = "automdl", ARIMA = "arima",
             REGRESSION = "regression", OUTLIER = "outlier", ESTIMATE = "esimate";
@@ -38,4 +42,36 @@ public class TramoSpecMapping {
         RegressionSpecMapping.fillDictionary(InformationSet.item(prefix, REGRESSION), dic);
     }
 
+    public TramoSpec read(InformationSet info) {
+        TramoSpec.Builder builder = TramoSpec.builder();
+        InformationSet tinfo = info.getSubSet(TRANSFORM);
+        InformationSet oinfo = info.getSubSet(OUTLIER);
+        InformationSet ainfo = info.getSubSet(ARIMA);
+        InformationSet amiinfo = info.getSubSet(AUTOMDL);
+        InformationSet einfo = info.getSubSet(ESTIMATE);
+        InformationSet rinfo = info.getSubSet(REGRESSION);
+        if (tinfo != null) {
+            builder.transform(TransformSpecMapping.read(tinfo));
+        }
+        if (oinfo != null) {
+            builder.outliers(OutlierSpecMapping.read(oinfo));
+        }
+        SarimaSpec.Builder ab = SarimaSpec.builder();
+        RegressionSpec.Builder rb = RegressionSpec.builder();
+        if (ainfo != null) {
+            ArimaSpecMapping.read(ainfo, ab, rb);
+            builder.arima(ab.build());
+        }
+        if (amiinfo != null) {
+            builder.autoModel(AutoModelSpecMapping.read(amiinfo));
+        }
+        if (einfo != null) {
+            builder.estimate(EstimateSpecMapping.read(einfo));
+        }
+        if (rinfo != null) {
+            RegressionSpecMapping.read(rinfo, rb);
+            builder.regression(rb.build());
+        }
+        return builder.build();
+    }
 }

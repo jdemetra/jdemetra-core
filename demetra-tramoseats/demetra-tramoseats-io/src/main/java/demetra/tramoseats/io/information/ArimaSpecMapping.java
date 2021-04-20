@@ -19,6 +19,7 @@ package demetra.tramoseats.io.information;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.information.InformationSet;
+import demetra.tramo.RegressionSpec;
 import java.util.Map;
 
 /**
@@ -26,13 +27,13 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class ArimaSpecMapping {
+class ArimaSpecMapping {
 
-    public static final String MEAN = "mean", MU = "mu",
+    static final String MEAN = "mean", MU = "mu",
             THETA = "theta", D = "d", PHI = "phi",
             BTHETA = "btheta", BD = "bd", BPHI = "bphi";
 
-    public static void fillDictionary(String prefix, Map<String, Class> dic) {
+    static void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, MEAN), Boolean.class);
         dic.put(InformationSet.item(prefix, MU), Parameter.class);
         dic.put(InformationSet.item(prefix, D), Integer.class);
@@ -43,7 +44,7 @@ public class ArimaSpecMapping {
         dic.put(InformationSet.item(prefix, BPHI), Parameter[].class);
     }
 
-    public InformationSet write(SarimaSpec spec, boolean verbose) {
+    InformationSet write(SarimaSpec spec, boolean verbose) {
         if (SarimaSpec.airline().equals(spec)) {
             return null;
         }
@@ -75,24 +76,62 @@ public class ArimaSpecMapping {
         return info;
     }
 
-    public SarimaSpec read(InformationSet info) {
+    void read(InformationSet info, SarimaSpec.Builder ab, RegressionSpec.Builder rb) {
         if (info == null) {
-            return SarimaSpec.airline();
+            ab.airline();
+            return;
         }
         // default values
-        SarimaSpec.Builder builder = SarimaSpec.builder();
         Integer d = info.get(D, Integer.class);
         if (d != null) {
-            builder.d(d);
+            ab.d(d);
         }
         Integer bd = info.get(BD, Integer.class);
         if (bd != null) {
-            builder.bd(bd);
+            ab.bd(bd);
         }
-        return builder.phi(info.get(PHI, Parameter[].class))
+        ab.phi(info.get(PHI, Parameter[].class))
                 .theta(info.get(THETA, Parameter[].class))
                 .bphi(info.get(BPHI, Parameter[].class))
-                .btheta(info.get(BTHETA, Parameter[].class))
-                .build();
+                .btheta(info.get(BTHETA, Parameter[].class));
+
+        Boolean mean = info.get(MEAN, Boolean.class);
+        if (mean != null) {
+            rb.mean(Parameter.undefined());
+        }
+        Parameter m = info.get(MU, Parameter.class);
+        if (m != null) {
+            rb.mean(m);
+        }
     }
+
+    // For compatibility issues, ARIMA contains mean correction
+    InformationSet write(SarimaSpec aspec, RegressionSpec rspec, boolean verbose) {
+        InformationSet info = new InformationSet();
+        Parameter mu = rspec.getMean();
+        if (mu != null) {
+            info.add(MU, mu);
+        }
+        if (aspec.getP() != 0) {
+            info.add(PHI, aspec.getPhi());
+        }
+        if (verbose || aspec.getD() != 1) {
+            info.add(D, aspec.getD());
+        }
+        if (aspec.getQ() != 0) {
+            info.add(THETA, aspec.getTheta());
+        }
+        if (aspec.getBp() != 0) {
+            info.add(BPHI,aspec.getBphi());
+        }
+        if (verbose || aspec.getBd() != 1) {
+            info.add(BD, aspec.getBd());
+        }
+        if (aspec.getBq()!= 0) {
+            info.add(BTHETA, aspec.getBtheta());
+        }
+        return info;
+
+    }
+
 }

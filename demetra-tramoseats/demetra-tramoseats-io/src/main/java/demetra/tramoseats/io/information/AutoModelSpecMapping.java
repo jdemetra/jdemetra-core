@@ -25,9 +25,9 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class AutoModelSpecMapping {
+class AutoModelSpecMapping {
 
-    public final String ENABLED = "enabled",
+    final String ENABLED = "enabled",
             PCR = "pcr",
             UB1 = "ub1",
             UB2 = "ub2",
@@ -37,7 +37,7 @@ public class AutoModelSpecMapping {
             FAL = "fal",
             AMICOMPARE = "compare";
 
-    public void fillDictionary(String prefix, Map<String, Class> dic) {
+    void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, CANCEL), Double.class);
         dic.put(InformationSet.item(prefix, UB1), Double.class);
         dic.put(InformationSet.item(prefix, UB2), Double.class);
@@ -49,7 +49,7 @@ public class AutoModelSpecMapping {
         dic.put(InformationSet.item(prefix, AMICOMPARE), Boolean.class);
     }
 
-    public InformationSet write(AutoModelSpec spec, boolean verbose) {
+    InformationSet write(AutoModelSpec spec, boolean verbose) {
         if (!spec.isEnabled()) {
             return null;
         }
@@ -96,7 +96,7 @@ public class AutoModelSpecMapping {
         return info;
     }
 
-    public AutoModelSpec read(InformationSet info) {
+    AutoModelSpec read(InformationSet info) {
         if (info == null) {
             return AutoModelSpec.DEFAULT_DISABLED;
         }

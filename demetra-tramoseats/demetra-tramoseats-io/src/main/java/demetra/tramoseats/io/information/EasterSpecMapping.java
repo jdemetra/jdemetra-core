@@ -16,6 +16,7 @@
  */
 package demetra.tramoseats.io.information;
 
+import demetra.data.Parameter;
 import demetra.information.InformationSet;
 import demetra.tramo.EasterSpec;
 import java.util.Map;
@@ -25,58 +26,70 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class EasterSpecMapping {
+class EasterSpecMapping {
 
-    public final String DURATION = "duration", TYPE = "type", TEST = "test", JULIAN = "julian";
+    final String DURATION = "duration", TYPE = "type", TEST = "test", JULIAN = "julian";
 
-    public void fillDictionary(String prefix, Map<String, Class> dic) {
+    String varName() {
+        return "easter";
+    }
+
+    void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, TYPE), String.class);
         dic.put(InformationSet.item(prefix, DURATION), Integer.class);
         dic.put(InformationSet.item(prefix, TEST), String.class);
         dic.put(InformationSet.item(prefix, JULIAN), Boolean.class);
     }
 
-    public InformationSet write(EasterSpec spec, boolean verbose) {
+    void write(InformationSet regInfo, EasterSpec spec, boolean verbose) {
         if (!verbose && spec.isDefault()) {
-            return null;
+            return;
         }
-        InformationSet info = new InformationSet();
+        InformationSet cinfo = regInfo.subSet(RegressionSpecMapping.CALENDAR);
+        InformationSet easterInfo = cinfo.subSet(CalendarSpecMapping.EASTER);
         if (verbose || spec.getDuration() != EasterSpec.DEF_IDUR) {
-            info.add(DURATION, spec.getDuration());
+            easterInfo.add(DURATION, spec.getDuration());
         }
         if (verbose || spec.getType() != EasterSpec.Type.Unused) {
-            info.add(TYPE, spec.getType().name());
+            easterInfo.add(TYPE, spec.getType().name());
         }
         if (verbose || spec.isTest()) {
-            info.add(TEST, spec.isTest());
+            easterInfo.add(TEST, spec.isTest());
         }
         if (verbose || spec.isJulian() != EasterSpec.DEF_JULIAN) {
-            info.add(JULIAN, spec.isJulian());
+            easterInfo.add(JULIAN, spec.isJulian());
         }
-        return info;
+        Parameter coef = spec.getCoefficient();
+        RegressionSpecMapping.add(regInfo, varName(), coef);
     }
 
-    public EasterSpec read(InformationSet info) {
-        if (info == null) {
+    EasterSpec read(InformationSet regInfo) {
+        InformationSet cinfo = regInfo.getSubSet(RegressionSpecMapping.CALENDAR);
+        if (cinfo == null) {
+            return EasterSpec.DEFAULT_UNUSED;
+        }
+        InformationSet easterInfo = cinfo.getSubSet(CalendarSpecMapping.EASTER);
+        if (easterInfo == null) {
             return EasterSpec.DEFAULT_UNUSED;
         }
         EasterSpec.Builder builder = EasterSpec.builder();
-        Integer d = info.get(DURATION, Integer.class);
+        Integer d = easterInfo.get(DURATION, Integer.class);
         if (d != null) {
             builder = builder.duration(d);
         }
-        String type = info.get(TYPE, String.class);
+        String type = easterInfo.get(TYPE, String.class);
         if (type != null) {
             builder = builder.type(EasterSpec.Type.valueOf(type));
         }
-        Boolean test = info.get(TEST, Boolean.class);
+        Boolean test = easterInfo.get(TEST, Boolean.class);
         if (test != null) {
             builder = builder.test(test);
         }
-        Boolean jul = info.get(JULIAN, Boolean.class);
+        Boolean jul = easterInfo.get(JULIAN, Boolean.class);
         if (jul != null) {
             builder = builder.julian(jul);
         }
-        return builder.build();
+        return builder.coefficient(RegressionSpecMapping.coefficientOf(regInfo, varName()))
+                .build();
     }
 }

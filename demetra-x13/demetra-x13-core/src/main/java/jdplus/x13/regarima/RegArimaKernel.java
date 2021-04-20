@@ -49,11 +49,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public class RegArimaKernel implements RegSarimaProcessor {
 
     @lombok.Value
-    @lombok.Builder
+    @lombok.Builder(builderClassName="AmiBuilder")
     public static class AmiOptions {
-
-        public static Builder builder() {
-            Builder builder = new Builder();
+        public static AmiBuilder builder() {
+            AmiBuilder builder = new AmiBuilder();
             builder.checkMu = true;
             builder.precision = 1e-7;
             builder.va=0;

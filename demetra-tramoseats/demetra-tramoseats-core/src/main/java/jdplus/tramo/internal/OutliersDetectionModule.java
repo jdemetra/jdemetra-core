@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import jdplus.modelling.regression.IOutlierFactory;
+import jdplus.modelling.regression.PeriodicOutlierFactory;
 import jdplus.regarima.ami.ModellingUtility;
 
 /**
@@ -161,7 +162,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         }
 
         FastOutliersDetector.Builder builder = FastOutliersDetector.builder()
-                .singleOutlierDetector(factories())
+                .singleOutlierDetector(factories(desc.getAnnualFrequency()))
                 .criticalValue(cv)
                 .maximumLikelihood(cmvx)
                 .maxOutliers(maxOutliers)
@@ -190,9 +191,9 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         return impl;
     }
 
-    private SingleOutlierDetector<SarimaModel> factories() {
+    private SingleOutlierDetector<SarimaModel> factories(int period) {
         FastOutlierDetector detector = new FastOutlierDetector(null);
-        List<IOutlierFactory> factories=new ArrayList<>();
+        List<IOutlierFactory> factories = new ArrayList<>();
         if (ao) {
             factories.add(AdditiveOutlierFactory.FACTORY);
         }
@@ -202,12 +203,15 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         if (tc) {
             factories.add(new TransitoryChangeFactory(tcrate));
         }
+        if (so && period > 1) {
+            factories.add(new PeriodicOutlierFactory(period, true));
+        }
         detector.setOutlierFactories(factories.toArray(new IOutlierFactory[factories.size()]));
         return detector;
     }
-    
-    private Map<String, String> attributes(IOutlier o){
-        HashMap<String, String> attributes=new HashMap<>();
+
+    private Map<String, String> attributes(IOutlier o) {
+        HashMap<String, String> attributes = new HashMap<>();
         attributes.put(ModellingUtility.AMI, "tramo");
         attributes.put(SaVariable.REGEFFECT, SaVariable.defaultComponentTypeOf(o).name());
         return attributes;

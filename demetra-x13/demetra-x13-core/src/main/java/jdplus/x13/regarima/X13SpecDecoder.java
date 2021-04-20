@@ -87,8 +87,8 @@ final class X13SpecDecoder {
         AutoModelSpec amiSpec = spec.getAutoModel();
         DifferencingModule diff = DifferencingModule.builder()
                 .cancel(amiSpec.getCancel())
-                .ub1(1/amiSpec.getUb1())
-                .ub2(1/amiSpec.getUb2())
+                .ub1(1 / amiSpec.getUb1())
+                .ub2(1 / amiSpec.getUb2())
                 .build();
         ArmaModule arma = ArmaModule.builder()
                 .balanced(amiSpec.isBalanced())
@@ -123,15 +123,15 @@ final class X13SpecDecoder {
         }
         builder.outliers(
                 obuilder.span(outliers.getSpan())
-                .maxRound(outliers.getMaxIter())
-                .tcrate(outliers.getMonthlyTCRate())
-                .build());
+                        .maxRound(outliers.getMaxIter())
+                        .tcrate(outliers.getMonthlyTCRate())
+                        .build());
     }
 
     private void readRegression(final RegArimaSpec spec, ModellingContext context) {
         TradingDaysSpec tdspec = spec.getRegression().getTradingDays();
         AICcComparator comparator = new AICcComparator(spec.getRegression().getAicDiff());
-        if (tdspec.getRegressionTestType()!= RegressionTestSpec.None) {
+        if (tdspec.getRegressionTestType() != RegressionTestSpec.None) {
             CalendarEffectsDetectionModule cal = CalendarEffectsDetectionModule.builder()
                     .tradingDays(X13ModelBuilder.tradingDays(spec, context))
                     .leapYear(X13ModelBuilder.leapYear(tdspec))
@@ -160,7 +160,7 @@ final class X13SpecDecoder {
         }
 
         RegressionVariablesTest.Builder rbuilder = RegressionVariablesTest.builder();
-        if (tdspec.getRegressionTestType()!= RegressionTestSpec.None) {
+        if (tdspec.getRegressionTestType() != RegressionTestSpec.None) {
             rbuilder.tdTest(RegressionVariablesTest.CVAL, true);
         }
         if (espec != null && espec.getTest() != RegressionTestSpec.None) {
@@ -181,13 +181,13 @@ final class X13SpecDecoder {
         AutoModelSpec ami = spec.getAutoModel();
         builder.options(
                 AmiOptions.builder()
-                .precision(spec.getEstimate().getTol())
-                .va(spec.getOutliers().getDefaultCriticalValue())
-                .reduceVa(ami.getPredcv())
-                .ljungBoxLimit(ami.getLjungBoxLimit())
-                .checkMu(spec.isUsingAutoModel())
-                .mixedModel(ami.isMixed())
-                .build());
+                        .precision(spec.getEstimate().getTol())
+                        .va(spec.getOutliers().getDefaultCriticalValue())
+                        .reduceVa(ami.getPredcv())
+                        .ljungBoxLimit(ami.getLjungBoxLimit())
+                        .checkMu(spec.isUsingAutoModel())
+                        .mixedModel(ami.isMixed())
+                        .build());
 
     }
 

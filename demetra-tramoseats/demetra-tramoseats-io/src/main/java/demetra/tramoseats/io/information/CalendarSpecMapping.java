@@ -25,45 +25,31 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class CalendarSpecMapping {
+class CalendarSpecMapping {
 
-   public final String TD = "td", EASTER = "easter";
+    final String TD = "td", EASTER = "easter";
 
-    public void fillDictionary(String prefix, Map<String, Class> dic) {
-         EasterSpecMapping.fillDictionary(InformationSet.item(prefix, EASTER), dic);
-         TradingDaysSpecMapping.fillDictionary(InformationSet.item(prefix, TD), dic);
-   }
-    
-    public InformationSet write(CalendarSpec spec, boolean verbose) {
-        if (!verbose && spec.isDefault()) {
-            return null;
-        }
-        InformationSet specInfo = new InformationSet();
-        if (verbose || !spec.getTradingDays().isDefault()) {
-            InformationSet tdinfo = TradingDaysSpecMapping.write(spec.getTradingDays(), verbose);
-            if (tdinfo != null) {
-                specInfo.add(TD, tdinfo);
-            }
-        }
-        if (verbose || !spec.getEaster().isDefault()) {
-            InformationSet einfo = EasterSpecMapping.write(spec.getEaster(), verbose);
-            if (einfo != null) {
-                specInfo.add(EASTER, einfo);
-            }
-        }
-        return specInfo;
+    void fillDictionary(String prefix, Map<String, Class> dic) {
+        EasterSpecMapping.fillDictionary(InformationSet.item(prefix, EASTER), dic);
+        TradingDaysSpecMapping.fillDictionary(InformationSet.item(prefix, TD), dic);
     }
 
-    public CalendarSpec read(InformationSet info) {
-        if (info == null)
+    void write(InformationSet regInfo, CalendarSpec spec, boolean verbose) {
+        TradingDaysSpecMapping.write(regInfo, spec.getTradingDays(), verbose);
+        EasterSpecMapping.write(regInfo, spec.getEaster(), verbose);
+    }
+
+    CalendarSpec read(InformationSet regInfo) {
+        if (regInfo == null) {
             return CalendarSpec.DEFAULT;
-       CalendarSpec.Builder builder = CalendarSpec.builder();
-              
-       return builder
-               .tradingDays(TradingDaysSpecMapping.read(info.getSubSet(TD)))
-               .easter(EasterSpecMapping.read(info.getSubSet(TD)))
-               .build();
+        }
+
+        CalendarSpec.Builder builder = CalendarSpec.builder();
+
+        return builder
+                .tradingDays(TradingDaysSpecMapping.read(regInfo))
+                .easter(EasterSpecMapping.read(regInfo))
+                .build();
     }
-    
-    
+
 }
