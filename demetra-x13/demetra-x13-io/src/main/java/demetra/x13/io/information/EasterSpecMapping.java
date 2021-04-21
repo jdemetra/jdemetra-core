@@ -105,7 +105,7 @@ class EasterSpecMapping {
     private void readProperties(InformationSet easterInfo, EasterSpec.Builder builder) {
         String type = easterInfo.get(TYPE, String.class);
         EasterSpec.Type mtype = EasterSpec.Type.Unused;
-        if (type == null) {
+        if (type != null) {
             mtype = EasterSpec.Type.valueOf(type);
         }
         Integer w = easterInfo.get(PARAM, Integer.class);

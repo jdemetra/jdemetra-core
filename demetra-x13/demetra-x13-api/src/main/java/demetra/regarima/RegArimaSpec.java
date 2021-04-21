@@ -16,8 +16,8 @@
  */
 package demetra.regarima;
 
-import demetra.modelling.implementations.SarimaSpec;
 import demetra.modelling.TransformationType;
+import demetra.modelling.implementations.SarimaSpec;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.util.Validatable;
@@ -130,8 +130,8 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
 
         OutlierSpec o = OutlierSpec.builder()
                 .type(new SingleOutlierSpec("AO", 0))
-                .type(new SingleOutlierSpec("TC",0))
                 .type(new SingleOutlierSpec("LS", 0))
+                .type(new SingleOutlierSpec("TC",0))
                 .build();
 
         RG0 = RegArimaSpec.DEFAULT_ENABLED;

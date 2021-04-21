@@ -17,7 +17,6 @@
 package demetra.x13.io.information;
 
 import demetra.data.Parameter;
-import demetra.data.ParameterType;
 import demetra.information.InformationSet;
 import demetra.regarima.RegressionTestSpec;
 import demetra.regarima.TradingDaysSpec;
@@ -144,7 +143,7 @@ class TradingDaysSpecMapping {
         if (lp != null) {
             lptype = LengthOfPeriodType.valueOf(lp);
         }
-        boolean auto = false;
+        boolean auto = true;
         Boolean adj = tdInfo.get(ADJUST, Boolean.class);
         if (adj != null) {
             auto = adj;

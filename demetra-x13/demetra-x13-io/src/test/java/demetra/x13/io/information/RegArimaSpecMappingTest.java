@@ -18,8 +18,8 @@ package demetra.x13.io.information;
 
 import demetra.information.InformationSet;
 import demetra.regarima.RegArimaSpec;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -30,50 +30,50 @@ public class RegArimaSpecMappingTest {
     public RegArimaSpecMappingTest() {
     }
 
-//    @Test
-//    public void testAll() {
-//        test(RegArimaSpec.RG0);
-//        test(RegArimaSpec.RG1);
-//        test(RegArimaSpec.RG2);
-//        test(RegArimaSpec.RG3);
-//        test(RegArimaSpec.RG4);
-//        test(RegArimaSpec.RG5);
-//    }
-//
-//    private void test(RegArimaSpec spec) {
-//        InformationSet info = RegArimaSpecMapping.write(spec, true);
-//        RegArimaSpec nspec = RegArimaSpecMapping.read(info);
+    @Test
+    public void testAll() {
+        test(RegArimaSpec.RG0);
+        test(RegArimaSpec.RG1);
+        test(RegArimaSpec.RG2);
+        test(RegArimaSpec.RG3);
+        test(RegArimaSpec.RG4);
+        test(RegArimaSpec.RG5);
+    }
+
+    private void test(RegArimaSpec spec) {
+        InformationSet info = RegArimaSpecMapping.write(spec, true);
+        RegArimaSpec nspec = RegArimaSpecMapping.read(info);
 //        System.out.println(spec);
 //        System.out.println(nspec);
-//        assertEquals(nspec, spec);
-//        info = RegArimaSpecMapping.write(spec, false);
-//        nspec = RegArimaSpecMapping.read(info);
+        assertEquals(nspec, spec);
+        info = RegArimaSpecMapping.write(spec, false);
+        nspec = RegArimaSpecMapping.read(info);
 //        System.out.println(spec);
 //        System.out.println(nspec);
-//        assertEquals(nspec, spec);
-//    }
-//
-//    @Test
-//    public void testAllLegacy() {
-//        testLegacy(RegArimaSpec.RG0);
-//        testLegacy(RegArimaSpec.RG1);
-//        testLegacy(RegArimaSpec.RG2);
-//        testLegacy(RegArimaSpec.RG3);
-//        testLegacy(RegArimaSpec.RG4);
-//        testLegacy(RegArimaSpec.RG5);
-//    }
-//
-//    private void testLegacy(RegArimaSpec spec) {
-//        InformationSet info = RegArimaSpecMapping.writeLegacy(spec, true);
-//        RegArimaSpec nspec = RegArimaSpecMapping.readLegacy(info);
+        assertEquals(nspec, spec);
+    }
+
+    @Test
+    public void testAllLegacy() {
+        testLegacy(RegArimaSpec.RG0);
+        testLegacy(RegArimaSpec.RG1);
+        testLegacy(RegArimaSpec.RG2);
+        testLegacy(RegArimaSpec.RG3);
+        testLegacy(RegArimaSpec.RG4);
+        testLegacy(RegArimaSpec.RG5);
+    }
+
+    private void testLegacy(RegArimaSpec spec) {
+        InformationSet info = RegArimaSpecMapping.writeLegacy(spec, true);
+        RegArimaSpec nspec = RegArimaSpecMapping.readLegacy(info);
 //        System.out.println(spec);
 //        System.out.println(nspec);
-//        assertEquals(nspec, spec);
-//        info = RegArimaSpecMapping.writeLegacy(spec, false);
-//        nspec = RegArimaSpecMapping.readLegacy(info);
+        assertEquals(nspec, spec);
+        info = RegArimaSpecMapping.writeLegacy(spec, false);
+        nspec = RegArimaSpecMapping.readLegacy(info);
 //        System.out.println(spec);
 //        System.out.println(nspec);
-//        assertEquals(nspec, spec);
-//    }
+        assertEquals(nspec, spec);
+    }
     
 }

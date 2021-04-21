@@ -25,7 +25,6 @@ import demetra.timeseries.regression.LevelShift;
 import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.TransitoryChange;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  *
@@ -69,21 +68,8 @@ class OutlierSpecMapping {
         if (verbose || span.getType() != TimeSelector.SelectionType.All) {
             info.add(SPAN, span);
         }
-        Optional<SingleOutlierSpec> first = spec.getTypes().stream().filter(o -> o.getType().equals(AdditiveOutlier.CODE)).findFirst();
-        if (first.isPresent()) {
-            info.add(AO, first.get().getCriticalValue());
-        }
-        first = spec.getTypes().stream().filter(o -> o.getType().equals(LevelShift.CODE)).findFirst();
-        if (first.isPresent()) {
-            info.add(LS, first.get().getCriticalValue());
-        }
-        first = spec.getTypes().stream().filter(o -> o.getType().equals(TransitoryChange.CODE)).findFirst();
-        if (first.isPresent()) {
-            info.add(TC, first.get().getCriticalValue());
-        }
-        first = spec.getTypes().stream().filter(o -> o.getType().equals(PeriodicOutlier.CODE)).findFirst();
-        if (first.isPresent()) {
-            info.add(SO, first.get().getCriticalValue());
+        for (SingleOutlierSpec s : spec.getTypes()){
+            info.add(s.getType().toLowerCase(), s.getCriticalValue());
         }
         if (verbose || spec.getDefaultCriticalValue() != 0) {
             info.add(DEFCV, spec.getDefaultCriticalValue());
