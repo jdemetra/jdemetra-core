@@ -57,41 +57,41 @@ class AutoModelSpecMapping {
         if (spec.isDefault())
             return info;
         // ALWAYS ENABLED
-//        info.add(ENABLED, true);
+//        info.set(ENABLED, true);
 //        if (spec.isDefault()) {
 //            return info;
 //        }
         double pcr = spec.getPcr();
         if (verbose || pcr != AutoModelSpec.DEF_PCR) {
-            info.add(PCR, pcr);
+            info.set(PCR, pcr);
         }
         double pc = spec.getPc();
         if (verbose || pc != AutoModelSpec.DEF_PC) {
-            info.add(PC, pc);
+            info.set(PC, pc);
         }
         double ub1 = spec.getUb1();
         if (verbose || ub1 != AutoModelSpec.DEF_UB1) {
-            info.add(UB1, ub1);
+            info.set(UB1, ub1);
         }
         double ub2 = spec.getUb2();
         if (verbose || ub2 != AutoModelSpec.DEF_UB2) {
-            info.add(UB2, ub2);
+            info.set(UB2, ub2);
         }
         double cancel = spec.getCancel();
         if (verbose || cancel != AutoModelSpec.DEF_CANCEL) {
-            info.add(CANCEL, cancel);
+            info.set(CANCEL, cancel);
         }
         boolean fal = spec.isAcceptDefault();
         if (verbose || fal != AutoModelSpec.DEF_FAL) {
-            info.add(FAL, fal);
+            info.set(FAL, fal);
         }
         boolean amiCompare = spec.isAmiCompare();
         if (verbose || amiCompare != AutoModelSpec.DEF_AMICOMPARE) {
-            info.add(AMICOMPARE, amiCompare);
+            info.set(AMICOMPARE, amiCompare);
         }
         double tsig = spec.getTsig();
         if (verbose || tsig != AutoModelSpec.DEF_TSIG) {
-            info.add(TSIG, tsig);
+            info.set(TSIG, tsig);
         }
         return info;
     }

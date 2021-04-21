@@ -14,11 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramoseats.io.information;
+package demetra.x13.io.information;
 
 import demetra.data.Parameter;
 import demetra.information.InformationSet;
-import demetra.tramo.EasterSpec;
+import demetra.regarima.EasterSpec;
 import java.util.Map;
 
 /**

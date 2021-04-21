@@ -14,13 +14,13 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramoseats.io.information;
+package demetra.x13.io.information;
 
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.information.InformationSet;
-import demetra.tramo.RegressionSpec;
-import demetra.tramo.SarimaValidator;
+import demetra.regarima.RegressionSpec;
+import demetra.regarima.SarimaValidator;
 import java.util.Map;
 
 /**

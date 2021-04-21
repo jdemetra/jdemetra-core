@@ -14,11 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramoseats.io.information;
+package demetra.x13.io.information;
 
 import demetra.information.InformationSet;
+import demetra.regarima.EstimateSpec;
 import demetra.timeseries.TimeSelector;
-import demetra.tramo.EstimateSpec;
 import java.util.Map;
 
 /**
@@ -28,18 +28,13 @@ import java.util.Map;
 @lombok.experimental.UtilityClass
 public class EstimateSpecMapping {
 
-    public final String SPAN = "span",
-            EML = "eml",
-            TOL = "tol",
-            UBP = "ubp";
+    public static final String SPAN = "span",
+            TOL = "tol";
 
     public void fillDictionary(String prefix, Map<String, Class> dic) {
-        dic.put(InformationSet.item(prefix, EML), Boolean.class);
         dic.put(InformationSet.item(prefix, TOL), Double.class);
-        dic.put(InformationSet.item(prefix, UBP), Double.class);
         dic.put(InformationSet.item(prefix, SPAN), TimeSelector.class);
     }
-
 
     public InformationSet write(EstimateSpec spec, boolean verbose) {
         if (!verbose && spec.isDefault()) {
@@ -49,14 +44,8 @@ public class EstimateSpecMapping {
         if (verbose || spec.getSpan().getType() != TimeSelector.SelectionType.All) {
             info.set(SPAN, spec.getSpan());
         }
-        if (verbose || spec.isMaximumLikelihood() != EstimateSpec.DEF_EML) {
-            info.set(EML, spec.isMaximumLikelihood());
-        }
         if (verbose || spec.getTol() != EstimateSpec.DEF_TOL) {
             info.set(TOL, spec.getTol());
-        }
-        if (verbose || spec.getUbp() != EstimateSpec.DEF_UBP) {
-            info.set(UBP, spec.getUbp());
         }
         return info;
     }
@@ -75,14 +64,6 @@ public class EstimateSpecMapping {
         Double tol = info.get(TOL, Double.class);
         if (tol != null) {
             builder.tol(tol);
-        }
-        Double ubp = info.get(UBP, Double.class);
-        if (ubp != null) {
-            builder.ubp(ubp);
-        }
-        Boolean eml = info.get(EML, Boolean.class);
-        if (eml != null) {
-            builder.maximumLikelihood(eml);
         }
 
         return builder.build();
