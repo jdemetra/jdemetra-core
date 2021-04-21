@@ -27,7 +27,7 @@ import java.util.Map;
 @lombok.experimental.UtilityClass
 class AutoModelSpecMapping {
 
-    static final String ENABLED = "enabled",
+    final String ENABLED = "enabled",
             ACCEPTDEFAULT = "acceptdefault",
             MIXED = "mixed",
             BALANCED = "balanced",
@@ -44,7 +44,7 @@ class AutoModelSpecMapping {
             ARMA = "arma",
             DIFF = "diff";
 
-    static void fillDictionary(String prefix, Map<String, Class> dic) {
+    void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, CANCEL), Double.class);
         dic.put(InformationSet.item(prefix, UB1), Double.class);
         dic.put(InformationSet.item(prefix, UB2), Double.class);

@@ -36,8 +36,6 @@ class TradingDaysSpecMapping {
             HOLIDAYS = "holidays", USER = "user", TEST = "test", TESTTYPE = "testtype", W = "stocktd",
             LPCOEF = "lpcoef", TDCOEF = "tdcoef";
 
-    ;
-
     void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, AUTO), Boolean.class);
         dic.put(InformationSet.item(prefix, MAUTO), String.class);
@@ -186,7 +184,7 @@ class TradingDaysSpecMapping {
             }
         } else if (w != null && w != 0) {
             if (tdcoef != null) {
-                return TradingDaysSpec.userDefined(user, tdcoef);
+                return TradingDaysSpec.stockTradingDays(w, tdcoef);
             } else {
                 return TradingDaysSpec.stockTradingDays(w, reg);
             }

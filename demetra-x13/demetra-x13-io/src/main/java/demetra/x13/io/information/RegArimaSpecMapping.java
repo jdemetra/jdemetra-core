@@ -19,9 +19,9 @@ package demetra.x13.io.information;
 import demetra.information.InformationSet;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.processing.AlgorithmDescriptor;
-import demetra.tramo.RegressionSpec;
-import demetra.tramo.SarimaValidator;
-import demetra.tramo.TramoSpec;
+import demetra.regarima.RegArimaSpec;
+import demetra.regarima.RegressionSpec;
+import demetra.regarima.SarimaValidator;
 import java.util.Map;
 
 /**
@@ -29,7 +29,7 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class TramoSpecMapping {
+public class RegArimaSpecMapping {
 
     public static final String METHOD = "tramo";
     public static final String FAMILY = "Modelling";
@@ -39,21 +39,23 @@ public class TramoSpecMapping {
     public static final String VERSION_V3 = "3.0.0";
     public static final AlgorithmDescriptor DESCRIPTOR_V3 = new AlgorithmDescriptor(FAMILY, METHOD, VERSION_V3);
 
-    public static final String TRANSFORM = "transform",
+    public static final String BASIC = "basic", TRANSFORM = "transform",
             AUTOMDL = "automdl", ARIMA = "arima",
             REGRESSION = "regression", OUTLIER = "outlier", ESTIMATE = "esimate";
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
         EstimateSpecMapping.fillDictionary(InformationSet.item(prefix, ESTIMATE), dic);
         TransformSpecMapping.fillDictionary(InformationSet.item(prefix, TRANSFORM), dic);
+        BasicSpecMapping.fillDictionary(InformationSet.item(prefix, BASIC), dic);
         AutoModelSpecMapping.fillDictionary(InformationSet.item(prefix, AUTOMDL), dic);
         ArimaSpecMapping.fillDictionary(InformationSet.item(prefix, ARIMA), dic);
         OutlierSpecMapping.fillDictionary(InformationSet.item(prefix, OUTLIER), dic);
         RegressionSpecMapping.fillDictionary(InformationSet.item(prefix, REGRESSION), dic);
     }
 
-    public TramoSpec read(InformationSet info) {
-        return TramoSpec.builder()
+    public RegArimaSpec read(InformationSet info) {
+        return RegArimaSpec.builder()
+                .basic(BasicSpecMapping.read(info.getSubSet(BASIC)))
                 .transform(TransformSpecMapping.read(info.getSubSet(TRANSFORM)))
                 .arima(ArimaSpecMapping.read(info.getSubSet(ARIMA)))
                 .autoModel(AutoModelSpecMapping.read(info.getSubSet(AUTOMDL)))
@@ -63,9 +65,13 @@ public class TramoSpecMapping {
                 .build();
     }
 
-    public InformationSet write(TramoSpec spec, boolean verbose) {
+    public InformationSet write(RegArimaSpec spec, boolean verbose) {
         InformationSet specInfo = new InformationSet();
-        specInfo.set("algorithm", TramoSpecMapping.DESCRIPTOR_V3);
+        specInfo.set("algorithm", RegArimaSpecMapping.DESCRIPTOR_V3);
+        InformationSet binfo = BasicSpecMapping.write(spec.getBasic(), verbose);
+        if (binfo != null) {
+            specInfo.set(BASIC, binfo);
+        }
         InformationSet tinfo = TransformSpecMapping.write(spec.getTransform(), verbose);
         if (tinfo != null) {
             specInfo.set(TRANSFORM, tinfo);
@@ -93,14 +99,18 @@ public class TramoSpecMapping {
         return specInfo;
     }
 
-    public TramoSpec readLegacy(InformationSet info) {
-        TramoSpec.Builder builder = TramoSpec.builder();
+    public RegArimaSpec readLegacy(InformationSet info) {
+        RegArimaSpec.Builder builder = RegArimaSpec.builder();
+        InformationSet binfo = info.getSubSet(BASIC);
         InformationSet tinfo = info.getSubSet(TRANSFORM);
         InformationSet oinfo = info.getSubSet(OUTLIER);
         InformationSet ainfo = info.getSubSet(ARIMA);
         InformationSet amiinfo = info.getSubSet(AUTOMDL);
         InformationSet einfo = info.getSubSet(ESTIMATE);
         InformationSet rinfo = info.getSubSet(REGRESSION);
+        if (binfo != null) {
+            builder.basic(BasicSpecMapping.read(tinfo));
+        }
         if (tinfo != null) {
             builder.transform(TransformSpecMapping.read(tinfo));
         }
@@ -108,7 +118,8 @@ public class TramoSpecMapping {
             builder.outliers(OutlierSpecMapping.read(oinfo));
         }
         SarimaSpec.Builder ab = SarimaSpec.builder()
-                .validator(SarimaValidator.VALIDATOR);
+//                .validator(SarimaValidator.VALIDATOR)
+                ;
         RegressionSpec.Builder rb = RegressionSpec.builder();
         if (ainfo != null) {
             ArimaSpecMapping.readLegacy(ainfo, ab, rb);
@@ -127,9 +138,13 @@ public class TramoSpecMapping {
         return builder.build();
     }
 
-    public InformationSet writeLegacy(TramoSpec spec, boolean verbose) {
+    public InformationSet writeLegacy(RegArimaSpec spec, boolean verbose) {
         InformationSet specInfo = new InformationSet();
-        specInfo.set("algorithm", TramoSpecMapping.DESCRIPTOR_LEGACY);
+        specInfo.set("algorithm", RegArimaSpecMapping.DESCRIPTOR_LEGACY);
+        InformationSet binfo = BasicSpecMapping.write(spec.getBasic(), verbose);
+        if (binfo != null) {
+            specInfo.set(BASIC, binfo);
+        }
         InformationSet tinfo = TransformSpecMapping.write(spec.getTransform(), verbose);
         if (tinfo != null) {
             specInfo.set(TRANSFORM, tinfo);

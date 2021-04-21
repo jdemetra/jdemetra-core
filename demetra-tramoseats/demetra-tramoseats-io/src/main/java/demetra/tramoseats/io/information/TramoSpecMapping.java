@@ -108,7 +108,8 @@ public class TramoSpecMapping {
             builder.outliers(OutlierSpecMapping.read(oinfo));
         }
         SarimaSpec.Builder ab = SarimaSpec.builder()
-                .validator(SarimaValidator.VALIDATOR);
+//                .validator(SarimaValidator.VALIDATOR)
+                ;
         RegressionSpec.Builder rb = RegressionSpec.builder();
         if (ainfo != null) {
             ArimaSpecMapping.readLegacy(ainfo, ab, rb);

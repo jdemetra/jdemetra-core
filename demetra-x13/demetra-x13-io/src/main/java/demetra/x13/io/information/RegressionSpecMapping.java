@@ -26,8 +26,7 @@ import demetra.timeseries.regression.LevelShift;
 import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.TransitoryChange;
 import demetra.timeseries.regression.Variable;
-import demetra.tramo.CalendarSpec;
-import demetra.tramo.RegressionSpec;
+import demetra.regarima.RegressionSpec;
 import java.util.Map;
 
 /**
@@ -37,20 +36,17 @@ import java.util.Map;
 @lombok.experimental.UtilityClass
 class RegressionSpecMapping {
 
-    final String CALENDAR = "calendar",
-            OUTLIERS = "outliers",
-            USER = "user", USERS = "user*", RAMPS = "ramps",
+    final String AICDIFF = "aicdiff",
+            MU = "mu",
+            TD = "tradingdays", EASTER = "easter",
+            MH = "mh", MHS = "mh*",
+            OUTLIER = "outlier", OUTLIERS = "outliers",
+            RAMP = "ramp", RAMPS = "ramps",
+            USER = "user", USERS = "user*",
             INTERVENTION = "intervention", INTERVENTIONS = "intervention*",
-            COEFF = "coefficients", FCOEFF = "fixedcoefficients",
-            MU = "mu"
-            ;
+            COEFF = "coefficients", FCOEFF = "fixedcoefficients";
 
     void fillDictionary(String prefix, Map<String, Class> dic) {
-        dic.put(InformationSet.item(prefix, OUTLIERS), String[].class);
-        dic.put(InformationSet.item(prefix, RAMPS), String[].class);
-        CalendarSpecMapping.fillDictionary(InformationSet.item(prefix, CALENDAR), dic);
-        InterventionVariableMapping.fillDictionary(InformationSet.item(prefix, INTERVENTIONS), dic);
-//        TsContextVariableMapping.fillDictionary(InformationSet.item(prefix, USERS), dic);
     }
 
     Parameter coefficientOf(InformationSet regInfo, String name) {
@@ -123,11 +119,14 @@ class RegressionSpecMapping {
                 : COEFF);
         scoefs.set(name, Parameter.values(p));
     }
-    
-    void readLegacy(InformationSet regInfo, RegressionSpec.Builder builder){
-        
-        CalendarSpec cspec = CalendarSpecMapping.readLegacy(regInfo);
-        builder.calendar(cspec);
+
+    void readLegacy(InformationSet regInfo, RegressionSpec.Builder builder) {
+        if (regInfo == null) {
+            return;
+        }
+
+        builder.tradingDays(TradingDaysSpecMapping.readLegacy(regInfo))
+                .easter(EasterSpecMapping.readLegacy(regInfo));
         // LEGACY
         String[] outliers = regInfo.get(OUTLIERS, String[].class);
         if (outliers != null) {
@@ -136,42 +135,55 @@ class RegressionSpecMapping {
                 if (o != null) {
                     Parameter c = RegressionSpecMapping.coefficientOf(regInfo, outliers[i]);
                     builder.outlier(Variable.variable(outliers[i], outlier(o)).withCoefficient(c));
-                } 
+                }
             }
         }
     }
-    
-    RegressionSpec read(InformationSet info){
+
+    RegressionSpec read(InformationSet info) {
+        if (info == null) {
+            return RegressionSpec.DEFAULT;
+        }
+
         return RegressionSpec.builder()
                 .mean(info.get(MU, Parameter.class))
-                .calendar(CalendarSpecMapping.read(info.getSubSet(CALENDAR)))
+                .tradingDays(TradingDaysSpecMapping.read(info.getSubSet(TD)))
+                .easter(EasterSpecMapping.read(info.getSubSet(EASTER)))
                 .build();
     }
 
-    InformationSet write(RegressionSpec spec, boolean verbose){
-        if (! spec.isUsed())
+    InformationSet write(RegressionSpec spec, boolean verbose) {
+        if (!spec.isUsed()) {
             return null;
-        InformationSet info=new InformationSet();
+        }
+        InformationSet info = new InformationSet();
         Parameter mean = spec.getMean();
-        if (mean != null)
+        if (mean != null) {
             info.set(MU, mean);
-        InformationSet cinfo=CalendarSpecMapping.write(spec.getCalendar(), verbose);
-        if (cinfo != null){
-            info.set(CALENDAR, cinfo);
+        }
+        InformationSet tdinfo = TradingDaysSpecMapping.write(spec.getTradingDays(), verbose);
+        if (tdinfo != null) {
+            info.set(TD, tdinfo);
+        }
+        InformationSet einfo = EasterSpecMapping.write(spec.getEaster(), verbose);
+        if (einfo != null) {
+            info.set(EASTER, einfo);
         }
         return info;
     }
 
-    InformationSet writeLegacy(RegressionSpec spec, boolean verbose){
-        if (! spec.isUsed())
+    InformationSet writeLegacy(RegressionSpec spec, boolean verbose) {
+        if (!spec.isUsed()) {
             return null;
-        InformationSet info=new InformationSet();
-        CalendarSpecMapping.writeLegacy(info, spec.getCalendar(), verbose);
+        }
+        InformationSet info = new InformationSet();
+        TradingDaysSpecMapping.writeLegacy(info, spec.getTradingDays(), verbose);
+        EasterSpecMapping.writeLegacy(info, spec.getEaster(), verbose);
         return info;
     }
 
-    IOutlier outlier(OutlierDefinition def){
-        switch (def.getCode()){
+    IOutlier outlier(OutlierDefinition def) {
+        switch (def.getCode()) {
             case "AO":
             case "ao":
                 return new AdditiveOutlier(def.getPosition().atStartOfDay());

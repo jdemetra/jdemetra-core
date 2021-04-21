@@ -18,7 +18,9 @@ package demetra.x13.io.information;
 
 import demetra.data.Parameter;
 import demetra.information.InformationSet;
+import demetra.regarima.ChangeOfRegimeSpec;
 import demetra.regarima.EasterSpec;
+import demetra.regarima.RegressionTestSpec;
 import java.util.Map;
 
 /**
@@ -28,7 +30,7 @@ import java.util.Map;
 @lombok.experimental.UtilityClass
 class EasterSpecMapping {
 
-    final String DURATION = "duration", TYPE = "type", TEST = "test", JULIAN = "julian", COEF="coefficient";
+    final String TYPE = "type", PARAM = "param", TEST = "test", CHANGEOFREGIME = "changeofregime", COEF = "coef";
 
     String varName() {
         return "easter";
@@ -36,107 +38,92 @@ class EasterSpecMapping {
 
     void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, TYPE), String.class);
-        dic.put(InformationSet.item(prefix, DURATION), Integer.class);
+        dic.put(InformationSet.item(prefix, PARAM), Integer.class);
         dic.put(InformationSet.item(prefix, TEST), String.class);
-        dic.put(InformationSet.item(prefix, JULIAN), Boolean.class);
+        dic.put(InformationSet.item(prefix, CHANGEOFREGIME), String.class);
+        dic.put(InformationSet.item(prefix, COEF), Parameter.class);
     }
 
     void writeLegacy(InformationSet regInfo, EasterSpec spec, boolean verbose) {
         if (!verbose && spec.isDefault()) {
             return;
         }
-        InformationSet cinfo = regInfo.subSet(RegressionSpecMapping.CALENDAR);
-        InformationSet easterInfo = cinfo.subSet(CalendarSpecMapping.EASTER);
+        InformationSet easterInfo = regInfo.subSet(RegressionSpecMapping.MH + 1);
         writeProperties(easterInfo, spec, verbose);
         Parameter coef = spec.getCoefficient();
         RegressionSpecMapping.set(regInfo, varName(), coef);
     }
-    
+
     InformationSet write(EasterSpec spec, boolean verbose) {
         if (!verbose && spec.isDefault()) {
             return null;
         }
-        InformationSet easterInfo=new InformationSet();
+        InformationSet easterInfo = new InformationSet();
         writeProperties(easterInfo, spec, verbose);
         Parameter coef = spec.getCoefficient();
-        if (coef != null)
+        if (coef != null) {
             easterInfo.set(COEF, coef);
+        }
         return easterInfo;
     }
 
-    private void writeProperties(InformationSet easterInfo, EasterSpec spec, boolean verbose){
-        if (verbose || spec.getDuration() != EasterSpec.DEF_IDUR) {
-            easterInfo.set(DURATION, spec.getDuration());
+    private void writeProperties(InformationSet easterInfo, EasterSpec spec, boolean verbose) {
+        easterInfo.add(TYPE, spec.getType().name());
+        if (verbose || spec.getDuration() != 0) {
+            easterInfo.add(PARAM, spec.getDuration());
         }
-        if (verbose || spec.getType() != EasterSpec.Type.Unused) {
-            easterInfo.set(TYPE, spec.getType().name());
+        if (verbose || spec.getTest() != RegressionTestSpec.None) {
+            easterInfo.add(TEST, spec.getTest().name());
         }
-        if (verbose || spec.isTest()) {
-            easterInfo.set(TEST, spec.isTest());
-        }
-        if (verbose || spec.isJulian() != EasterSpec.DEF_JULIAN) {
-            easterInfo.set(JULIAN, spec.isJulian());
-        }
+//        if (spec.getChangeOfRegime() != null) {
+//            easterInfo.add(CHANGEOFREGIME, spec.getChangeOfRegime().toString());
+//        }
     }
 
     EasterSpec readLegacy(InformationSet regInfo) {
-        InformationSet cinfo = regInfo.getSubSet(RegressionSpecMapping.CALENDAR);
-        if (cinfo == null) {
-            return EasterSpec.DEFAULT_UNUSED;
-        }
-        InformationSet easterInfo = cinfo.getSubSet(CalendarSpecMapping.EASTER);
+        InformationSet easterInfo = regInfo.getSubSet(RegressionSpecMapping.MH + 1);
         if (easterInfo == null) {
             return EasterSpec.DEFAULT_UNUSED;
         }
         EasterSpec.Builder builder = EasterSpec.builder();
-        Integer d = easterInfo.get(DURATION, Integer.class);
-        if (d != null) {
-            builder = builder.duration(d);
-        }
-        String type = easterInfo.get(TYPE, String.class);
-        if (type != null) {
-            builder = builder.type(EasterSpec.Type.valueOf(type));
-        }
-        Boolean test = easterInfo.get(TEST, Boolean.class);
-        if (test != null) {
-            builder = builder.test(test);
-        }
-        Boolean jul = easterInfo.get(JULIAN, Boolean.class);
-        if (jul != null) {
-            builder = builder.julian(jul);
-        }
+        readProperties(easterInfo, builder);
         return builder.coefficient(RegressionSpecMapping.coefficientOf(regInfo, varName()))
                 .build();
     }
-    
+
     EasterSpec read(InformationSet easterInfo) {
         if (easterInfo == null) {
             return EasterSpec.DEFAULT_UNUSED;
         }
         EasterSpec.Builder builder = EasterSpec.builder();
         readProperties(easterInfo, builder);
-        Parameter c=easterInfo.get(COEF, Parameter.class);
+        Parameter c = easterInfo.get(COEF, Parameter.class);
         return builder.coefficient(c)
                 .build();
     }
- 
-    private void readProperties(InformationSet easterInfo,  EasterSpec.Builder builder) {
-        Integer d = easterInfo.get(DURATION, Integer.class);
-        if (d != null) {
-            builder.duration(d);
-        }
+
+    private void readProperties(InformationSet easterInfo, EasterSpec.Builder builder) {
         String type = easterInfo.get(TYPE, String.class);
-        if (type != null) {
-            builder.type(EasterSpec.Type.valueOf(type));
+        EasterSpec.Type mtype = EasterSpec.Type.Unused;
+        if (type == null) {
+            mtype = EasterSpec.Type.valueOf(type);
         }
-        Boolean test = easterInfo.get(TEST, Boolean.class);
+        Integer w = easterInfo.get(PARAM, Integer.class);
+        String test = easterInfo.get(TEST, String.class);
+        RegressionTestSpec rtest = RegressionTestSpec.None;
         if (test != null) {
-            builder.test(test);
+            rtest = RegressionTestSpec.valueOf(test);
         }
-        Boolean jul = easterInfo.get(JULIAN, Boolean.class);
-        if (jul != null) {
-            builder.julian(jul);
+        String cr = easterInfo.get(CHANGEOFREGIME, String.class);
+        ChangeOfRegimeSpec cor = null;
+        if (cr != null) {
+            cor = ChangeOfRegimeSpec.fromString(cr);
         }
+
+        builder.duration(w == null ? EasterSpec.DEF_EASTERDUR : w)
+                .type(mtype)
+                .test(rtest)
+//                .changeOfRegime(cor)
+                ;
     }
-    
 }

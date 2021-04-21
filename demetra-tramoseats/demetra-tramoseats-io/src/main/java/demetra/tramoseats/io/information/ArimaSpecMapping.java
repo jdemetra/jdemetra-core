@@ -50,7 +50,8 @@ class ArimaSpecMapping {
             return SarimaSpec.airline();
         }
         SarimaSpec.Builder builder=SarimaSpec.builder()
-                .validator(SarimaValidator.VALIDATOR);
+//                .validator(SarimaValidator.VALIDATOR)
+                ;
         readProperties(info, builder);
          return builder.build();
     }

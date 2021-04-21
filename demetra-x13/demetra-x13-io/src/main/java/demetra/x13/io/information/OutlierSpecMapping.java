@@ -17,39 +17,51 @@
 package demetra.x13.io.information;
 
 import demetra.information.InformationSet;
+import demetra.regarima.OutlierSpec;
+import demetra.regarima.SingleOutlierSpec;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.LevelShift;
 import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.TransitoryChange;
-import demetra.tramo.OutlierSpec;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  *
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class OutlierSpecMapping {
+class OutlierSpecMapping {
 
-    public final String SPAN = "span",
-            TYPES = "types",
-            VA = "va",
-            EML = "eml",
-            DELTATC = "deltatc";
+    final String SPAN = "span",
+            AO = "ao", LS = "ls", TC = "tc", SO = "so",
+            IO = "io", SLS = "sls", WO = "wo", TLS = "tls",
+            DEFCV = "defcv",
+            METHOD = "method",
+            LSRUN = "lsrun",
+            TCRATE = "tcrate",
+            MAXITER = "maxiter";
 
-    public static void fillDictionary(String prefix, Map<String, Class> dic) {
+    void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, SPAN), TimeSelector.class);
-        dic.put(InformationSet.item(prefix, EML), Boolean.class);
-        dic.put(InformationSet.item(prefix, TYPES), String[].class);
-        dic.put(InformationSet.item(prefix, VA), Double.class);
-        dic.put(InformationSet.item(prefix, DELTATC), Double.class);
+        dic.put(InformationSet.item(prefix, AO), Boolean.class);
+        dic.put(InformationSet.item(prefix, LS), Boolean.class);
+        dic.put(InformationSet.item(prefix, TC), Boolean.class);
+        dic.put(InformationSet.item(prefix, SO), Boolean.class);
+        dic.put(InformationSet.item(prefix, IO), Boolean.class);
+        dic.put(InformationSet.item(prefix, SLS), Boolean.class);
+        dic.put(InformationSet.item(prefix, WO), Boolean.class);
+        dic.put(InformationSet.item(prefix, TLS), Boolean.class);
+        dic.put(InformationSet.item(prefix, DEFCV), Double.class);
+        dic.put(InformationSet.item(prefix, METHOD), String.class);
+        dic.put(InformationSet.item(prefix, LSRUN), Integer.class);
+        dic.put(InformationSet.item(prefix, TCRATE), Double.class);
+        dic.put(InformationSet.item(prefix, MAXITER), Integer.class);
     }
 
-    public InformationSet write(OutlierSpec spec, boolean verbose) {
-        if (!verbose && spec.isDefault()) {
+    InformationSet write(OutlierSpec spec, boolean verbose) {
+        if (!verbose && !spec.isUsed()) {
             return null;
         }
         InformationSet info = new InformationSet();
@@ -57,40 +69,43 @@ public class OutlierSpecMapping {
         if (verbose || span.getType() != TimeSelector.SelectionType.All) {
             info.add(SPAN, span);
         }
-        if (spec.isUsed()) {
-            List<String> types = new ArrayList<>();
-            if (spec.isAo()) {
-                types.add(AdditiveOutlier.CODE);
-            }
-            if (spec.isLs()) {
-                types.add(LevelShift.CODE);
-            }
-            if (spec.isTc()) {
-                types.add(TransitoryChange.CODE);
-            }
-            if (spec.isSo()) {
-                types.add(PeriodicOutlier.CODE);
-            }
-            info.add(TYPES, types.toArray(new String[types.size()]));
+        Optional<SingleOutlierSpec> first = spec.getTypes().stream().filter(o -> o.getType().equals(AdditiveOutlier.CODE)).findFirst();
+        if (first.isPresent()) {
+            info.add(AO, first.get().getCriticalValue());
         }
-        double cv = spec.getCriticalValue();
-        if (verbose || cv != 0) {
-            info.add(VA, cv);
+        first = spec.getTypes().stream().filter(o -> o.getType().equals(LevelShift.CODE)).findFirst();
+        if (first.isPresent()) {
+            info.add(LS, first.get().getCriticalValue());
         }
-        boolean eml = spec.isMaximumLikelihood();
-        if (verbose || eml != OutlierSpec.DEF_EML) {
-            info.add(EML, eml);
+        first = spec.getTypes().stream().filter(o -> o.getType().equals(TransitoryChange.CODE)).findFirst();
+        if (first.isPresent()) {
+            info.add(TC, first.get().getCriticalValue());
         }
-        double tc = spec.getDeltaTC();
-        if (verbose || tc != OutlierSpec.DEF_DELTATC) {
-            info.add(DELTATC, tc);
+        first = spec.getTypes().stream().filter(o -> o.getType().equals(PeriodicOutlier.CODE)).findFirst();
+        if (first.isPresent()) {
+            info.add(SO, first.get().getCriticalValue());
+        }
+        if (verbose || spec.getDefaultCriticalValue() != 0) {
+            info.add(DEFCV, spec.getDefaultCriticalValue());
+        }
+        if (verbose || spec.getMethod() != OutlierSpec.Method.AddOne) {
+            info.add(METHOD, spec.getMethod().name());
+        }
+        if (verbose || spec.getLsRun() != 0) {
+            info.add(LSRUN, spec.getLsRun());
+        }
+        if (verbose || spec.getMonthlyTCRate() != OutlierSpec.DEF_TCRATE) {
+            info.add(TCRATE, spec.getMonthlyTCRate());
+        }
+        if (verbose || spec.getMaxIter() != OutlierSpec.DEF_NMAX) {
+            info.add(MAXITER, spec.getMaxIter());
         }
         return info;
     }
 
-    public OutlierSpec read(InformationSet info) {
+    OutlierSpec read(InformationSet info) {
         if (info == null) {
-            return OutlierSpec.DEFAULT_DISABLED;
+            return OutlierSpec.DEFAULT_UNUSED;
         }
 
         OutlierSpec.Builder builder = OutlierSpec.builder();
@@ -99,38 +114,42 @@ public class OutlierSpecMapping {
         if (span != null) {
             builder = builder.span(span);
         }
-        String[] types = info.get(TYPES, String[].class);
-        if (types != null) {
-            for (int i = 0; i < types.length; ++i) {
-                switch (types[i]) {
-                    case AdditiveOutlier.CODE:
-                        builder = builder.ao(true);
-                        break;
-                    case LevelShift.CODE:
-                        builder = builder.ls(true);
-                        break;
-                    case TransitoryChange.CODE:
-                        builder = builder.tc(true);
-                        break;
-                    case PeriodicOutlier.CODE:
-                        builder = builder.so(true);
-                        break;
-                }
-            }
+        Double ao = info.get(AO, Double.class);
+        if (ao != null) {
+            builder.type(new SingleOutlierSpec(AdditiveOutlier.CODE, ao));
         }
-        Double cv = info.get(VA, Double.class);
-        if (cv != null) {
-            builder = builder.criticalValue(cv);
+        Double ls = info.get(LS, Double.class);
+        if (ls != null) {
+            builder.type(new SingleOutlierSpec(LevelShift.CODE, ls));
         }
-        Double tc = info.get(DELTATC, Double.class);
+        Double tc = info.get(TC, Double.class);
         if (tc != null) {
-            builder = builder.deltaTC(tc);
+            builder.type(new SingleOutlierSpec(TransitoryChange.CODE, tc));
         }
-        Boolean eml = info.get(EML, Boolean.class);
-        if (eml != null) {
-            builder = builder.maximumLikelihood(eml);
+        Double so = info.get(SO, Double.class);
+        if (so != null) {
+            builder.type(new SingleOutlierSpec(PeriodicOutlier.CODE, so));
         }
-
+        Double defcv = info.get(DEFCV, Double.class);
+        if (defcv != null) {
+            builder.defaultCriticalValue(defcv);
+        }
+        Double tcr = info.get(TCRATE, Double.class);
+        if (tcr != null) {
+            builder.monthlyTCRate(tcr);
+        }
+        String method = info.get(METHOD, String.class);
+        if (method != null) {
+            builder.method(OutlierSpec.Method.valueOf(method));
+        }
+        Integer lsrun = info.get(LSRUN, Integer.class);
+        if (lsrun != null) {
+            builder.lsRun(lsrun);
+        }
+        Integer nmax = info.get(MAXITER, Integer.class);
+        if (nmax != null) {
+            builder.maxIter(nmax);
+        }
         return builder.build();
     }
 

@@ -17,7 +17,7 @@
 package demetra.x13.io.information;
 
 import demetra.information.InformationSet;
-import demetra.regarima.EstimateSpec;
+import demetra.regarima.BasicSpec;
 import demetra.timeseries.TimeSelector;
 import java.util.Map;
 
@@ -26,46 +26,53 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-class EstimateSpecMapping {
+class BasicSpecMapping {
 
-    final String SPAN = "span",
-            TOL = "tol";
+    final String SPAN = "span", PREPROCESS = "preprocess", PRELIMINARYCHECK = "preliminarycheck";
 
     void fillDictionary(String prefix, Map<String, Class> dic) {
-        dic.put(InformationSet.item(prefix, TOL), Double.class);
         dic.put(InformationSet.item(prefix, SPAN), TimeSelector.class);
+        dic.put(InformationSet.item(prefix, PREPROCESS), Boolean.class);
+        dic.put(InformationSet.item(prefix, PRELIMINARYCHECK), Boolean.class);
     }
 
-    InformationSet write(EstimateSpec spec, boolean verbose) {
+    InformationSet write(BasicSpec spec, boolean verbose) {
         if (!verbose && spec.isDefault()) {
             return null;
         }
         InformationSet info = new InformationSet();
         if (verbose || spec.getSpan().getType() != TimeSelector.SelectionType.All) {
-            info.set(SPAN, spec.getSpan());
+            info.add(SPAN, spec.getSpan());
         }
-        if (verbose || spec.getTol() != EstimateSpec.DEF_TOL) {
-            info.set(TOL, spec.getTol());
+        if (verbose || spec.isPreprocessing() != BasicSpec.DEF_PREPROCESSING) {
+            info.add(PREPROCESS, spec.isPreprocessing());
+        }
+        if (verbose || spec.isPreliminaryCheck() != BasicSpec.DEF_PRELIMINARYCHECK) {
+            info.add(PRELIMINARYCHECK, spec.isPreliminaryCheck());
         }
         return info;
     }
 
-    EstimateSpec read(InformationSet info) {
+    BasicSpec read(InformationSet info) {
+
         if (info == null) {
-            return EstimateSpec.DEFAULT;
+            return BasicSpec.DEFAULT_ENABLED;
         }
 
-        EstimateSpec.Builder builder = EstimateSpec.builder();
-
+        BasicSpec.Builder builder = BasicSpec.builder();
         TimeSelector span = info.get(SPAN, TimeSelector.class);
         if (span != null) {
             builder.span(span);
         }
-        Double tol = info.get(TOL, Double.class);
-        if (tol != null) {
-            builder.tol(tol);
+        Boolean preprocess = info.get(PREPROCESS, Boolean.class);
+        if (preprocess != null) {
+            builder.preprocessing(preprocess);
         }
-
+        Boolean preliminaryChecks = info.get(PRELIMINARYCHECK, Boolean.class);
+        if (preliminaryChecks != null) {
+            builder.preliminaryCheck(preliminaryChecks);
+        }
         return builder.build();
     }
+
 }

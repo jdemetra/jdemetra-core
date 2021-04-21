@@ -30,11 +30,11 @@ import java.util.Map;
 @lombok.experimental.UtilityClass
 class ArimaSpecMapping {
 
-    static final String MEAN = "mean", MU = "mu",
+    final String MEAN = "mean", MU = "mu",
             THETA = "theta", D = "d", PHI = "phi",
             BTHETA = "btheta", BD = "bd", BPHI = "bphi";
 
-    static void fillDictionary(String prefix, Map<String, Class> dic) {
+    void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, MEAN), Boolean.class);
         dic.put(InformationSet.item(prefix, MU), Parameter.class);
         dic.put(InformationSet.item(prefix, D), Integer.class);
@@ -50,7 +50,8 @@ class ArimaSpecMapping {
             return SarimaSpec.airline();
         }
         SarimaSpec.Builder builder=SarimaSpec.builder()
-                .validator(SarimaValidator.VALIDATOR);
+//                .validator(SarimaValidator.VALIDATOR)
+                ;
         readProperties(info, builder);
          return builder.build();
     }

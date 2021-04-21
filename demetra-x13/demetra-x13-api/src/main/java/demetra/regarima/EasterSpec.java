@@ -38,7 +38,7 @@ public final class EasterSpec implements Validatable<EasterSpec> {
         Unused, Easter, JulianEaster, SCEaster
     }
 
-    private ChangeOfRegimeSpec changeOfRegime;
+//    private ChangeOfRegimeSpec changeOfRegime;
     private boolean automatic;
     private int duration;
     private RegressionTestSpec test;
@@ -50,8 +50,7 @@ public final class EasterSpec implements Validatable<EasterSpec> {
         return new Builder()
                 .type(Type.Unused)
                 .duration(DEF_EASTERDUR)
-                .test(RegressionTestSpec.None)
-                .coefficient(Parameter.undefined());
+                .test(RegressionTestSpec.None);
     }
 
     @Override
