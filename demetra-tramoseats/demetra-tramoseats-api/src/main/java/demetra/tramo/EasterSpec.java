@@ -61,8 +61,7 @@ public final class EasterSpec implements Validatable<EasterSpec> {
                 .test(false)
                 .julian(DEF_JULIAN)
                 .type(Type.Unused)
-                .duration(DEF_IDUR)
-                .coefficient(Parameter.undefined());
+                .duration(DEF_IDUR);
     }
 
     @Override

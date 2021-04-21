@@ -29,6 +29,7 @@ import demetra.timeseries.TsException;
 public class EasterVariable implements IEasterVariable, ISystemVariable{
     
     public static enum Correction {
+        None,
         Simple,
         PreComputed,
         Theoretical

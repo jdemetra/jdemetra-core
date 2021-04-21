@@ -19,6 +19,8 @@ package demetra.tramoseats.io.information;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.information.InformationSet;
+import demetra.tramo.RegressionSpec;
+import demetra.tramo.SarimaValidator;
 import java.util.Map;
 
 /**
@@ -26,13 +28,13 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class ArimaSpecMapping {
+class ArimaSpecMapping {
 
-    public static final String MEAN = "mean", MU = "mu",
+    static final String MEAN = "mean", MU = "mu",
             THETA = "theta", D = "d", PHI = "phi",
             BTHETA = "btheta", BD = "bd", BPHI = "bphi";
 
-    public static void fillDictionary(String prefix, Map<String, Class> dic) {
+    static void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, MEAN), Boolean.class);
         dic.put(InformationSet.item(prefix, MU), Parameter.class);
         dic.put(InformationSet.item(prefix, D), Integer.class);
@@ -43,56 +45,97 @@ public class ArimaSpecMapping {
         dic.put(InformationSet.item(prefix, BPHI), Parameter[].class);
     }
 
-    public InformationSet write(SarimaSpec spec, boolean verbose) {
+    SarimaSpec read(InformationSet info) {
+        if (info == null) {
+            return SarimaSpec.airline();
+        }
+        SarimaSpec.Builder builder=SarimaSpec.builder()
+//                .validator(SarimaValidator.VALIDATOR)
+                ;
+        readProperties(info, builder);
+         return builder.build();
+    }
+
+    InformationSet write(SarimaSpec spec, boolean verbose) {
         if (SarimaSpec.airline().equals(spec)) {
             return null;
         }
         InformationSet info = new InformationSet();
-        demetra.data.Parameter[] phi = spec.getPhi();
-        if (phi.length > 0) {
-            info.add(PHI, phi);
-        }
-        int d = spec.getD();
-        if (verbose || d != 1) {
-            info.add(D, d);
-        }
-        demetra.data.Parameter[] th = spec.getTheta();
-        if (th.length > 0) {
-            info.add(THETA, th);
-        }
-        demetra.data.Parameter[] bphi = spec.getBphi();
-        if (bphi.length > 0) {
-            info.add(BPHI, bphi);
-        }
-        int bd = spec.getBd();
-        if (verbose || bd != 1) {
-            info.add(BD, bd);
-        }
-        demetra.data.Parameter[] bth = spec.getBtheta();
-        if (bth.length > 0) {
-            info.add(BTHETA, bth);
-        }
+        writeProperties(info, spec, verbose);
         return info;
     }
 
-    public SarimaSpec read(InformationSet info) {
-        if (info == null) {
-            return SarimaSpec.airline();
-        }
-        // default values
-        SarimaSpec.Builder builder = SarimaSpec.builder();
+    private void readProperties(InformationSet info, SarimaSpec.Builder ab) {
+         // default values
         Integer d = info.get(D, Integer.class);
         if (d != null) {
-            builder.d(d);
+            ab.d(d);
         }
         Integer bd = info.get(BD, Integer.class);
         if (bd != null) {
-            builder.bd(bd);
+            ab.bd(bd);
         }
-        return builder.phi(info.get(PHI, Parameter[].class))
+        ab.phi(info.get(PHI, Parameter[].class))
                 .theta(info.get(THETA, Parameter[].class))
                 .bphi(info.get(BPHI, Parameter[].class))
-                .btheta(info.get(BTHETA, Parameter[].class))
-                .build();
+                .btheta(info.get(BTHETA, Parameter[].class));
     }
+
+    private void writeProperties(InformationSet info, SarimaSpec spec, boolean verbose){
+        demetra.data.Parameter[] phi = spec.getPhi();
+        if (phi.length > 0) {
+            info.set(PHI, phi);
+        }
+        int d = spec.getD();
+        if (verbose || d != 1) {
+            info.set(D, d);
+        }
+        demetra.data.Parameter[] th = spec.getTheta();
+        if (th.length > 0) {
+            info.set(THETA, th);
+        }
+        demetra.data.Parameter[] bphi = spec.getBphi();
+        if (bphi.length > 0) {
+            info.set(BPHI, bphi);
+        }
+        int bd = spec.getBd();
+        if (verbose || bd != 1) {
+            info.set(BD, bd);
+        }
+        demetra.data.Parameter[] bth = spec.getBtheta();
+        if (bth.length > 0) {
+            info.set(BTHETA, bth);
+        }
+    }
+
+    // For compatibility issues, ARIMA contains mean correction
+    void readLegacy(InformationSet info, SarimaSpec.Builder ab, RegressionSpec.Builder rb) {
+        ab.airline();
+        readProperties(info, ab);
+
+        // mean
+        Boolean mean = info.get(MEAN, Boolean.class);
+        if (mean != null) {
+            rb.mean(Parameter.undefined());
+        }
+        Parameter m = info.get(MU, Parameter.class);
+        if (m != null) {
+            rb.mean(m);
+        }
+    }
+
+    // For compatibility issues, ARIMA contains mean correction
+    InformationSet writeLegacy(SarimaSpec aspec, RegressionSpec rspec, boolean verbose) {
+        InformationSet info = new InformationSet();
+        
+        // mean
+        Parameter mu = rspec.getMean();
+        if (mu != null) {
+            info.set(MU, mu);
+        }
+        writeProperties(info, aspec, verbose);
+        return info;
+
+    }
+
 }

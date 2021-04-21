@@ -35,18 +35,18 @@ public class SarimaExtractor {
     private final InformationMapping<SarimaModel> MAPPING = new InformationMapping<>(SarimaModel.class);
 
     static {
-        MAPPING.set(P, Integer.class, source -> source.getRegularAROrder());
-        MAPPING.set(D, Integer.class, source -> source.getRegularDifferenceOrder());
-        MAPPING.set(Q, Integer.class, source -> source.getRegularMAOrder());
-        MAPPING.set(BP, Integer.class, source -> source.getSeasonalAROrder());
-        MAPPING.set(BQ, Integer.class, source -> source.getSeasonalMAOrder());
-        MAPPING.set(BD, Integer.class, source -> source.getSeasonalDifferenceOrder());
+        MAPPING.set(P, Integer.class, source -> source.getP());
+        MAPPING.set(D, Integer.class, source -> source.getD());
+        MAPPING.set(Q, Integer.class, source -> source.getQ());
+        MAPPING.set(BP, Integer.class, source -> source.getBp());
+        MAPPING.set(BQ, Integer.class, source -> source.getBq());
+        MAPPING.set(BD, Integer.class, source -> source.getBd());
         MAPPING.set(PARAMETERS, double[].class, source -> parameters(source, true));
         MAPPING.set(PARAMETERS2, double[].class, source -> parameters(source, false));
-        MAPPING.set(PHI, double[].class, source -> source.phi());
-        MAPPING.set(BPHI, double[].class, source -> source.bphi());
-        MAPPING.set(THETA, double[].class, source -> source.theta());
-        MAPPING.set(BTHETA, double[].class, source -> source.btheta());
+        MAPPING.set(PHI, double[].class, source -> source.getPhi());
+        MAPPING.set(BPHI, double[].class, source -> source.getBphi());
+        MAPPING.set(THETA, double[].class, source -> source.getTheta());
+        MAPPING.set(BTHETA, double[].class, source -> source.getBtheta());
     }
 
     public InformationMapping<SarimaModel> getMapping() {
@@ -54,7 +54,7 @@ public class SarimaExtractor {
     }
 
     private double[] parameters(SarimaModel source, boolean trueSigns) {
-        double[] phi = source.phi(), bphi = source.bphi(), th = source.theta(), bth = source.btheta();
+        double[] phi = source.getPhi(), bphi = source.getBphi(), th = source.getTheta(), bth = source.getBtheta();
         int n = phi.length + bphi.length + th.length + bth.length;
         int pos = 0;
         double[] all = new double[n];

@@ -21,8 +21,7 @@ import nbbrd.design.Immutable;
 import jdplus.dstats.F;
 import jdplus.dstats.T;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.stats.tests.StatisticalTest;
-import jdplus.stats.tests.TestType;
+import demetra.stats.TestType;
 import nbbrd.design.BuilderPattern;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
@@ -30,10 +29,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.math.matrices.MatrixType;
+import demetra.stats.StatisticalTest;
 import jdplus.data.DataBlockIterator;
 import jdplus.dstats.Chi2;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.QuadraticForm;
+import jdplus.stats.tests.TestsUtility;
 
 /**
  *
@@ -288,12 +289,12 @@ public final class LeastSquaresResults {
     public StatisticalTest Ftest() {
         F f = new F(degreesOfFreedom(), n - nx);
         double num = getRegressionMeanSquare();
-        return new StatisticalTest(f, num == 0 ? 0 : num / getResidualMeanSquare(), TestType.Upper, false);
+        return TestsUtility.testOf(num == 0 ? 0 : num / getResidualMeanSquare(), f, TestType.Upper);
     }
 
     public StatisticalTest Khi2Test() {
         Chi2 chi = new Chi2(mean ? nx - 1 : nx);
-        return new StatisticalTest(chi, n * getR2(), TestType.Upper, true);
+        return TestsUtility.testOf(n * getR2(), chi, TestType.Upper);
     }
 
     /**
@@ -310,7 +311,7 @@ public final class LeastSquaresResults {
         LowerTriangularMatrix.solveLx(bvar, b);
         double fval = b.ssq() / nvars / (ssq / (n - nx));
         F f = new F(nvars, n - nx);
-        return new StatisticalTest(f, fval, TestType.Upper, false);
+        return TestsUtility.testOf(fval, f, TestType.Upper);
 
     }
 
@@ -343,7 +344,7 @@ public final class LeastSquaresResults {
         if (!Double.isFinite(t)) {
             return null;
         } else {
-            return new StatisticalTest(new T(n - nx), t, TestType.TwoSided, false);
+            return TestsUtility.testOf(t, new T(n - nx), TestType.TwoSided);
         }
     }
 

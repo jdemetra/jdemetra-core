@@ -40,9 +40,9 @@ public class X13Output {
     
     ProcessingLog logs;
     
-    public X13ResultsProtos.X13Output convert(){
-        X13ResultsProtos.X13Output.Builder builder = 
-                X13ResultsProtos.X13Output.newBuilder()
+    public X13Protos.X13Output convert(){
+        X13Protos.X13Output.Builder builder = 
+                X13Protos.X13Output.newBuilder()
                 .setEstimationSpec(SpecProto.convert(estimationSpec));
         
         if (result != null){

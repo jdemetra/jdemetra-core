@@ -31,7 +31,7 @@ import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
 import jdplus.stats.AutoCovariances;
-import jdplus.stats.tests.seasonal.CombinedSeasonality;
+import jdplus.sa.tests.CombinedSeasonality;
 import jdplus.x11.X11Utility;
 import jdplus.x13.X13Results;
 

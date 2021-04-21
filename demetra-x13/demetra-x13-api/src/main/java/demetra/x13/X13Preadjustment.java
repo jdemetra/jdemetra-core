@@ -5,9 +5,7 @@
  */
 package demetra.x13;
 
-import demetra.sa.DecompositionMode;
 import demetra.timeseries.TsData;
-import demetra.x11.SeasonalFilterOption;
 
 /**
  *

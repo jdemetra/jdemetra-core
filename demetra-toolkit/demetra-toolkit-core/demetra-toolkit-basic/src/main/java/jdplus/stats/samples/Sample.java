@@ -18,10 +18,11 @@ package jdplus.stats.samples;
 
 import demetra.data.DoubleSeqCursor;
 import demetra.data.DoubleSeq;
+import demetra.stats.StatisticalTest;
 import jdplus.dstats.F;
 import jdplus.dstats.T;
-import jdplus.stats.tests.StatisticalTest;
-import jdplus.stats.tests.TestType;
+import demetra.stats.TestType;
+import jdplus.stats.tests.TestsUtility;
 
 /**
  *
@@ -155,7 +156,7 @@ public class Sample {
 
     public static StatisticalTest compareVariances(Sample s0, Sample s1) {
         F f = new F(s1.observationsCount - 1, s0.observationsCount - 1);
-        return new StatisticalTest(f, s1.variance / s0.variance, TestType.Upper, false);
+        return TestsUtility.testOf(s1.variance / s0.variance, f, TestType.Upper);
     }
 
     public static StatisticalTest compareMeans(Sample s0, Sample s1, boolean samevar) {
@@ -175,6 +176,6 @@ public class Sample {
 //            df=(z*z)/(1.0/(n0*n0*(n0-1))+f*f/(n1*n1*(n1-1)));
         }
         T dist = new T(df);
-        return new StatisticalTest(dist, t, TestType.TwoSided, false);
+        return TestsUtility.testOf(t, dist, TestType.TwoSided);
     }
 }

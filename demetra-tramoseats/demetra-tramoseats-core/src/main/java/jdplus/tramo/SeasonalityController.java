@@ -12,8 +12,7 @@ import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.regular.SeasonalFTest;
 import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
-import jdplus.stats.tests.StatisticalTest;
-import demetra.timeseries.TsData;
+import demetra.stats.StatisticalTest;
 import static jdplus.tramo.SeasonalityTests.MSHORT;
 import static jdplus.tramo.SeasonalityTests.SHORT;
 
@@ -84,7 +83,7 @@ class SeasonalityController extends ModelController {
         SeasonalFTest f = new SeasonalFTest();
         f.test(getReferenceModel().getDescription());
         ftest = f.getFTest();
-        boolean fs = ftest.getPValue() < .01;
+        boolean fs = ftest.getPvalue() < .01;
         if (fs) {
             ++score;
             ++nscore;

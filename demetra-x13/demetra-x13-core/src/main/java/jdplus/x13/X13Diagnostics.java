@@ -16,21 +16,15 @@
  */
 package jdplus.x13;
 
-import demetra.modelling.ComponentInformation;
-import demetra.sa.ComponentType;
 import demetra.sa.DefaultSaDiagnostics;
 import demetra.sa.StationaryVarianceDecomposition;
-import demetra.stats.TestResult;
 import demetra.timeseries.TsData;
 import demetra.x11.X11Results;
 import jdplus.regsarima.regular.RegSarimaModel;
-import jdplus.sa.StationaryVarianceComputer;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnostics;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
 import jdplus.sa.diagnostics.ResidualTradingDaysDiagnostics;
 import jdplus.sa.diagnostics.ResidualTradingDaysDiagnosticsConfiguration;
-import jdplus.stats.tests.StatisticalTest;
-
 /**
  *
  * @author PALATEJ
@@ -56,14 +50,10 @@ public class X13Diagnostics {
         ResidualTradingDaysDiagnostics.Input tdinput = new ResidualTradingDaysDiagnostics.Input(mul, sa, i);
         ResidualTradingDaysDiagnostics rtd = ResidualTradingDaysDiagnostics.of(ResidualTradingDaysDiagnosticsConfiguration.DEFAULT, tdinput);
         if (rtd != null) {
-            sadiags.tdFTestOnI(summary(rtd.FTestOnI()))
-                    .tdFTestOnSa(summary(rtd.FTestOnSa()));
+            sadiags.tdFTestOnI(rtd.FTestOnI())
+                    .tdFTestOnSa(rtd.FTestOnSa());
         }
         return new X13Diagnostics(mstats, sadiags.build());
-    }
-
-    private static TestResult summary(StatisticalTest t) {
-        return t == null ? null : t.toSummary();
     }
 
     private static StationaryVarianceDecomposition varDecomposition(Mstatistics m) {

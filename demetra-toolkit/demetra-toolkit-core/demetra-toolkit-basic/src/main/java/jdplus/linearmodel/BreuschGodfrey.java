@@ -20,9 +20,10 @@ import demetra.data.DoubleSeq;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import demetra.math.matrices.MatrixType;
+import demetra.stats.StatisticalTest;
 import jdplus.dstats.Chi2;
-import jdplus.stats.tests.StatisticalTest;
-import jdplus.stats.tests.TestType;
+import demetra.stats.TestType;
+import jdplus.stats.tests.TestsUtility;
 
 /**
  *
@@ -69,7 +70,7 @@ public class BreuschGodfrey {
         lsr2 = Ols.compute(builder.build());
         double val = lsr2.getR2()*(n-lag);
         Chi2 chi = new Chi2(lag);
-        return new StatisticalTest(chi, val, TestType.Upper, true);
+        return TestsUtility.testOf(val, chi, TestType.Upper);
     }
 
     public LeastSquaresResults getLeastSquaresResults(){

@@ -22,7 +22,7 @@ import demetra.information.Information;
 import demetra.information.InformationSet;
 import demetra.math.matrices.MatrixType;
 import demetra.processing.AlgorithmDescriptor;
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTest;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsCollection;
@@ -121,11 +121,11 @@ public class XmlInformation {
         fromXmlMap.put(XmlRegItem.class, regitemMapper);
         toXmlMap.put(RegressionItem.class, regitemMapper);
 
-        XmlConverterAdapter<XmlStatisticalTest, TestResult> statsMapper =
+        XmlConverterAdapter<XmlStatisticalTest, StatisticalTest> statsMapper =
                 new XmlConverterAdapter<>(XmlStatisticalTest.class);
 
         fromXmlMap.put(XmlStatisticalTest.class, statsMapper);
-        toXmlMap.put(TestResult.class, statsMapper);
+        toXmlMap.put(StatisticalTest.class, statsMapper);
         
         fromXmlMap.put(XmlMatrix.class, XmlMatrix.getAdapter());
         toXmlMap.put(MatrixType.class, XmlMatrix.getAdapter());

@@ -16,16 +16,16 @@
  */
 package jdplus.math.functions.ssq;
 
-import jdplus.data.DataBlock;
-import nbbrd.design.Development;
-import jdplus.math.functions.IFunction;
+import demetra.data.DoubleSeq;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import demetra.data.DoubleSeq;
+import jdplus.data.DataBlock;
+import jdplus.math.functions.IFunction;
 import jdplus.math.matrices.Matrix;
+import nbbrd.design.Development;
 
 /**
  *

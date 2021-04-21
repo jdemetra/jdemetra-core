@@ -40,8 +40,6 @@ public class EstimateSpecMapping {
         dic.put(InformationSet.item(prefix, SPAN), TimeSelector.class);
     }
 
-    public final double DEF_TOL = 1e-7, DEF_UBP = .96;
-    public final boolean DEF_EML = true;
 
     public InformationSet write(EstimateSpec spec, boolean verbose) {
         if (!verbose && spec.isDefault()) {
@@ -49,16 +47,16 @@ public class EstimateSpecMapping {
         }
         InformationSet info = new InformationSet();
         if (verbose || spec.getSpan().getType() != TimeSelector.SelectionType.All) {
-            info.add(SPAN, spec.getSpan());
+            info.set(SPAN, spec.getSpan());
         }
-        if (verbose || spec.isMaximumLikelihood() != DEF_EML) {
-            info.add(EML, spec.isMaximumLikelihood());
+        if (verbose || spec.isMaximumLikelihood() != EstimateSpec.DEF_EML) {
+            info.set(EML, spec.isMaximumLikelihood());
         }
-        if (verbose || spec.getTol() != DEF_TOL) {
-            info.add(TOL, spec.getTol());
+        if (verbose || spec.getTol() != EstimateSpec.DEF_TOL) {
+            info.set(TOL, spec.getTol());
         }
-        if (verbose || spec.getUbp() != DEF_UBP) {
-            info.add(UBP, spec.getUbp());
+        if (verbose || spec.getUbp() != EstimateSpec.DEF_UBP) {
+            info.set(UBP, spec.getUbp());
         }
         return info;
     }

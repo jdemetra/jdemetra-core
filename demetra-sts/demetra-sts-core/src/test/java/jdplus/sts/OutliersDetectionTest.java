@@ -23,7 +23,7 @@ import jdplus.math.matrices.MatrixFactory;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.modelling.regression.GenericTradingDaysFactory;
 import jdplus.random.JdkRNG;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
 import jdplus.ssf.akf.AugmentedSmoother;
 import jdplus.ssf.akf.SmoothationsComputer;
 import jdplus.ssf.dk.DkToolkit;

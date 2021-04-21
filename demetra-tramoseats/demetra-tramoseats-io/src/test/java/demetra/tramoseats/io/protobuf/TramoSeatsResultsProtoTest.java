@@ -40,7 +40,7 @@ public class TramoSeatsResultsProtoTest {
         TramoSeatsKernel ts = TramoSeatsKernel.of(TramoSeatsSpec.RSAfull, null);
         ProcessingLog log=ProcessingLog.dummy();
         TramoSeatsResults rslt = ts.process(Data.TS_PROD, log);
-        TramoSeatsResultsProtos.TramoSeatsResults pb = TramoSeatsResultsProto.convert(rslt);
+        TramoSeatsProtos.TramoSeatsResults pb = TramoSeatsResultsProto.convert(rslt);
         assertTrue(pb.toByteArray() != null);
    }
     
@@ -51,7 +51,7 @@ public class TramoSeatsResultsProtoTest {
         TramoSeatsKernel ts = TramoSeatsKernel.of(TramoSeatsSpec.RSAfull, null);
         ProcessingLog log=ProcessingLog.dummy();
         TramoSeatsResults rslt = ts.process(s, log);
-        TramoSeatsResultsProtos.TramoSeatsResults pb = TramoSeatsResultsProto.convert(rslt);
+        TramoSeatsProtos.TramoSeatsResults pb = TramoSeatsResultsProto.convert(rslt);
         assertTrue(pb.toByteArray() != null);
    }
 }

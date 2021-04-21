@@ -165,14 +165,12 @@ public class Parameter {
      * @return
      */
     public static Parameter[] freeParameters(Parameter[] spec) {
-        if (spec == null || !hasFixedParameters(spec)) {
+        if (spec == null || spec.length == 0) {
             return spec;
         }
         Parameter[] nspec = spec.clone();
         for (int i = 0; i < nspec.length; ++i) {
-            if (nspec[i].isFixed()) {
-                nspec[i] = new Parameter(nspec[i].value, ParameterType.Initial);
-            }
+            nspec[i] = new Parameter(nspec[i].value, ParameterType.Initial);
         }
         return nspec;
     }
@@ -186,15 +184,13 @@ public class Parameter {
      * @return
      */
     public static Parameter[] freeParameters(Parameter[] spec, Parameter[] ref) {
-        if (spec == null || (!hasFixedParameters(spec) && !hasFixedParameters(ref))) {
+        if (spec == null || spec.length == 0) {
             return spec;
         }
         Parameter[] nspec = spec.clone();
         for (int i = 0; i < nspec.length; ++i) {
             if (ref == null || i >= ref.length || !ref[i].isFixed()) {
-                if (nspec[i].isFixed()) {
-                    nspec[i] = new Parameter(spec[i].value, ParameterType.Initial);
-                }
+                nspec[i] = new Parameter(spec[i].value, ParameterType.Initial);
             } else {
                 nspec[i] = ref[i];
             }

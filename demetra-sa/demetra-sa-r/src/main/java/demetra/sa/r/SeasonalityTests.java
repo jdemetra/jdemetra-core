@@ -16,20 +16,18 @@
  */
 package demetra.sa.r;
 
-import jdplus.data.DataBlock;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
-import jdplus.math.matrices.Matrix;
-import demetra.timeseries.regression.PeriodicContrasts;
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTest;
 import jdplus.stats.tests.LjungBox;
-import jdplus.stats.tests.StatisticalTest;
-import jdplus.stats.tests.seasonal.CanovaHansen;
-import jdplus.stats.tests.seasonal.CanovaHansen2;
-import jdplus.stats.tests.seasonal.PeriodicLjungBox;
-import jdplus.modelling.regression.PeriodicContrastsFactory;
+import jdplus.sa.tests.CanovaHansen;
+import jdplus.sa.tests.CanovaHansen2;
+import jdplus.sa.tests.PeriodicLjungBox;
 import demetra.data.DoubleSeq;
+import demetra.sa.io.protobuf.SaProtosUtility;
+import jdplus.sa.tests.CombinedSeasonality;
+import jdplus.sa.tests.FTest;
+import jdplus.sa.tests.Friedman;
+import jdplus.sa.tests.KruskalWallis;
+import jdplus.sa.tests.PeriodogramTest;
 
 /**
  *
@@ -38,79 +36,62 @@ import demetra.data.DoubleSeq;
 @lombok.experimental.UtilityClass
 public class SeasonalityTests {
 
-    public TestResult fTest(double[] s, int period, boolean ar, int ny) {
-
-        DoubleSeq y = DoubleSeq.of(s);
-        if (ar) {
-            if (ny != 0) {
-                y = y.drop(Math.max(0, s.length - period * ny - 1), 0);
-            }
-            return processAr(y, period);
-        } else {
-            double[] ds = new double[s.length - 1];
-            for (int i = 0; i < ds.length; ++i) {
-                ds[i] = s[i + 1] - s[i];
-            }
-            y = DoubleSeq.of(ds);
-            if (ny != 0) {
-                y = y.drop(Math.max(0, s.length - period * ny), 0);
-            }
-            return process(y, period);
-        }
-    }
-
-    public TestResult qsTest(double[] s, int period, int ny) {
-
-        for (int i = s.length - 1; i > 0; --i) {
-            s[i] -= s[i - 1];
-        }
-        DoubleSeq y = DoubleSeq.of(s, 1, s.length - 1);
+    public StatisticalTest qsTest(double[] s, int period, int ny) {
+        DoubleSeq y = DoubleSeq.of(s).cleanExtremities();
         if (ny != 0) {
             y = y.drop(Math.max(0, y.length() - period * ny), 0);
         }
-        StatisticalTest test = new LjungBox(y)
+        return new LjungBox(y)
                 .lag(period)
                 .autoCorrelationsCount(2)
                 .usePositiveAutoCorrelations()
                 .build();
-        return test.toSummary();
     }
 
-    public TestResult periodicQsTest(double[] s, double[] periods) {
-        DoubleSeq y;
-        if (periods.length == 1) {
-            for (int j = s.length - 1; j > 0; --j) {
-                s[j] -= s[j - 1];
-            }
-            y = DoubleSeq.of(s, 1, s.length - 1);
-        } else {
-            int del = 0;
-            for (int i = 1; i < periods.length; ++i) {
-                int p = (int) periods[i];
-                del += p;
-                for (int j = s.length - 1; j >= del; --j) {
-                    s[j] -= s[j - p];
-                }
-            }
-            y = DoubleSeq.of(s, del, s.length - del);
+    public StatisticalTest kruskalWallisTest(double[] s, int period, int ny) {
+        DoubleSeq y = DoubleSeq.of(s).cleanExtremities();
+        if (ny != 0) {
+            y = y.drop(Math.max(0, y.length() - period * ny), 0);
         }
-        StatisticalTest test = new PeriodicLjungBox(y, 0)
+        return new KruskalWallis(y, period)
+                .build();
+    }
+
+    public StatisticalTest friedmanTest(double[] s, int period, int ny) {
+        DoubleSeq y = DoubleSeq.of(s).cleanExtremities();
+       if (ny != 0) {
+            y = y.drop(Math.max(0, y.length() - period * ny), 0);
+        }
+        return new Friedman(y, period)
+                .build();
+    }
+
+    public StatisticalTest periodogramTest(double[] s, int period, int ny) {
+        DoubleSeq y = DoubleSeq.of(s).cleanExtremities();
+       if (ny != 0) {
+            y = y.drop(Math.max(0, y.length() - period * ny), 0);
+        }
+        return new PeriodogramTest(y, period).buildF();
+    }
+
+    public StatisticalTest periodicQsTest(double[] s, double[] periods) {
+        DoubleSeq y = DoubleSeq.of(s).cleanExtremities();
+        return new PeriodicLjungBox(y, 0)
                 .lags(periods[0], 2)
                 .usePositiveAutocorrelations()
                 .build();
-        return test.toSummary();
     }
 
     public double[] canovaHansenTest(double[] s, int start, int end, boolean original) {
+        DoubleSeq x = DoubleSeq.of(s).cleanExtremities();
         double[] rslt = new double[end - start];
-        DoubleSeq x = DoubleSeq.of(s);
         for (int i = start; i < end; ++i) {
-            if (original){
+            if (original) {
                 rslt[i - start] = CanovaHansen.test(x)
                         .specific(i, 1)
                         .build()
                         .testAll();
-            }else{
+            } else {
                 rslt[i - start] = CanovaHansen2.of(x)
                         .periodicity(i)
                         .compute();
@@ -119,42 +100,25 @@ public class SeasonalityTests {
         return rslt;
     }
 
-    private TestResult process(DoubleSeq s, int freq) {
+    public StatisticalTest fTest(double[] s, int freq, String model, int ny) {
+        DoubleSeq y = DoubleSeq.of(s).cleanExtremities();
+        FTest.Model M = FTest.Model.valueOf(model);
         try {
-            DataBlock y = DataBlock.of(s);
-            y.sub(y.average());
-            PeriodicContrasts var = new PeriodicContrasts(freq);
-            Matrix sd = PeriodicContrastsFactory.matrix(var, s.length(), 0);
-            LinearModel reg = new LinearModel(y.getStorage(), false, sd);
-            LeastSquaresResults rslt = Ols.compute(reg);
-
-            StatisticalTest ftest = rslt.Ftest();
-            return ftest.toSummary();
-
-        } catch (Exception err) {
-            return null;
-        }
-    }
-
-    private TestResult processAr(DoubleSeq s, int freq) {
-        try {
-            PeriodicContrasts var = new PeriodicContrasts(freq);
-
-            Matrix sd = PeriodicContrastsFactory.matrix(var, s.length() - 1, 0);
-
-            LinearModel reg = LinearModel.builder()
-                    .y(s.drop(1, 0))
-                    .addX(s.drop(0, 1))
-                    .addX(sd)
-                    .meanCorrection(true)
+            return new FTest(y, freq)
+                    .model(M)
+                    .ncycles(ny)
                     .build();
-
-            LeastSquaresResults rslt = Ols.compute(reg);
-            StatisticalTest ftest = rslt.Ftest(2, sd.getColumnsCount());
-            return ftest.toSummary();
         } catch (Exception err) {
             return null;
         }
     }
 
+    public CombinedSeasonality combinedTest(double[] s, int period, int startperiod, boolean mul) {
+        DoubleSeq y = DoubleSeq.of(s).cleanExtremities();
+        return new CombinedSeasonality(y, period, startperiod, mul);
+    }
+
+    public byte[] toBuffer(CombinedSeasonality cs) {
+        return SaProtosUtility.convert(cs).toByteArray();
+    }
 }

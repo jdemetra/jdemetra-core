@@ -16,11 +16,13 @@
  */
 package jdplus.stats.tests;
 
+import demetra.stats.TestType;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import jdplus.dstats.Chi2;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatException;
+import demetra.stats.StatisticalTest;
 import jdplus.stats.samples.Moments;
 
 /**
@@ -53,8 +55,8 @@ public class JarqueBera {
         return this;
     }
 
-    public JarqueBera correctionForSample() {
-        corrected = true;
+    public JarqueBera correctionForSample(boolean scorr) {
+        corrected = scorr;
         return this;
     }
 
@@ -68,7 +70,7 @@ public class JarqueBera {
         kurtosis = Moments.excessKurtosis(x, m, v, corrected);
         double val = (n - k) * (skewness * skewness / 6 + (kurtosis) * (kurtosis) / 24);
         Chi2 chi = new Chi2(2);
-        return new StatisticalTest(chi, val, TestType.Upper, true);
+        return TestsUtility.testOf(val, chi, TestType.Upper);
     }
 
     public double getSkewness() {

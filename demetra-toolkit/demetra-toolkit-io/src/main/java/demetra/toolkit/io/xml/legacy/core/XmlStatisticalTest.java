@@ -17,7 +17,7 @@
 
 package demetra.toolkit.io.xml.legacy.core;
 
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTest;
 import demetra.toolkit.io.xml.legacy.IXmlConverter;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author Jean Palate
  */
 @XmlType(name = XmlStatisticalTest.NAME)
-public class XmlStatisticalTest implements IXmlConverter<TestResult> {
+public class XmlStatisticalTest implements IXmlConverter<StatisticalTest> {
 
     static final String NAME = "StatisticalTestType";
     @XmlElement(name="Description")
@@ -38,12 +38,12 @@ public class XmlStatisticalTest implements IXmlConverter<TestResult> {
     public double pvalue;
 
     @Override
-    public TestResult create() {
-        return new TestResult(value, pvalue, description);
+    public StatisticalTest create() {
+        return new StatisticalTest(value, pvalue, description);
     }
 
     @Override
-    public void copy(TestResult t) {
+    public void copy(StatisticalTest t) {
         description = t.getDescription();
         value = t.getValue();
         pvalue = t.getPvalue();

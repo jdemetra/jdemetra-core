@@ -16,10 +16,18 @@
  */
 package demetra.tramoseats.io.information;
 
+import demetra.data.Parameter;
 import demetra.information.InformationSet;
 import demetra.modelling.io.information.InterventionVariableMapping;
+import demetra.modelling.io.information.OutlierDefinition;
+import demetra.timeseries.regression.AdditiveOutlier;
+import demetra.timeseries.regression.IOutlier;
+import demetra.timeseries.regression.LevelShift;
+import demetra.timeseries.regression.PeriodicOutlier;
+import demetra.timeseries.regression.TransitoryChange;
+import demetra.timeseries.regression.Variable;
+import demetra.tramo.CalendarSpec;
 import demetra.tramo.RegressionSpec;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,31 +35,169 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class RegressionSpecMapping {
+class RegressionSpecMapping {
 
-    public final String CALENDAR = "calendar",
+    final String CALENDAR = "calendar",
             OUTLIERS = "outliers",
             USER = "user", USERS = "user*", RAMPS = "ramps",
             INTERVENTION = "intervention", INTERVENTIONS = "intervention*",
-            COEFF = "coefficients", FCOEFF = "fixedcoefficients";
-    
-    public void fillDictionary(String prefix, Map<String, Class> dic) {
+            COEFF = "coefficients", FCOEFF = "fixedcoefficients",
+            MU = "mu"
+            ;
+
+    void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, OUTLIERS), String[].class);
         dic.put(InformationSet.item(prefix, RAMPS), String[].class);
         CalendarSpecMapping.fillDictionary(InformationSet.item(prefix, CALENDAR), dic);
         InterventionVariableMapping.fillDictionary(InformationSet.item(prefix, INTERVENTIONS), dic);
 //        TsContextVariableMapping.fillDictionary(InformationSet.item(prefix, USERS), dic);
     }
+
+    Parameter coefficientOf(InformationSet regInfo, String name) {
+        InformationSet scoefs = regInfo.getSubSet(RegressionSpecMapping.COEFF);
+        if (scoefs != null) {
+            double[] coef = scoefs.get(name, double[].class);
+            if (coef != null) {
+                if (coef.length == 1) {
+                    return Parameter.estimated(coef[0]);
+                } else {
+                    return null;
+                }
+            }
+        }
+        return fixedCoefficientOf(regInfo, name);
+    }
+
+    Parameter[] coefficientsOf(InformationSet regInfo, String name) {
+        InformationSet scoefs = regInfo.getSubSet(COEFF);
+        if (scoefs != null) {
+            double[] coef = scoefs.get(name, double[].class);
+            if (coef != null) {
+                return Parameter.of(coef, demetra.data.ParameterType.Estimated);
+            }
+        }
+        return fixedCoefficientsOf(regInfo, name);
+    }
+
+    Parameter fixedCoefficientOf(InformationSet regInfo, String name) {
+        InformationSet fcoefs = regInfo.getSubSet(RegressionSpecMapping.FCOEFF);
+        if (fcoefs != null) {
+            double[] coef = fcoefs.get(name, double[].class);
+            if (coef != null) {
+                if (coef.length == 1) {
+                    return Parameter.fixed(coef[0]);
+                } else {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    Parameter[] fixedCoefficientsOf(InformationSet regInfo, String name) {
+        InformationSet fcoefs = regInfo.getSubSet(FCOEFF);
+        if (fcoefs != null) {
+            double[] coef = fcoefs.get(name, double[].class);
+            if (coef != null) {
+                return Parameter.of(coef, demetra.data.ParameterType.Fixed);
+            }
+        }
+        return null;
+    }
+
+    void set(InformationSet regInfo, String name, Parameter p) {
+        if (p == null || !p.isDefined()) {
+            return;
+        }
+        InformationSet scoefs = regInfo.subSet(p.isFixed() ? FCOEFF
+                : COEFF);
+        scoefs.set(name, new double[]{p.getValue()});
+    }
+
+    void set(InformationSet regInfo, String name, Parameter[] p) {
+        if (p == null || Parameter.isDefault(p)) {
+            return;
+        }
+        // TODO Split in case of partially fixed parameters
+        InformationSet scoefs = regInfo.subSet(Parameter.hasFixedParameters(p) ? FCOEFF
+                : COEFF);
+        scoefs.set(name, Parameter.values(p));
+    }
     
-//    public InformationSet write(RegressionSpec spec, boolean verbose) {
+    void readLegacy(InformationSet regInfo, RegressionSpec.Builder builder){
+        
+        CalendarSpec cspec = CalendarSpecMapping.readLegacy(regInfo);
+        builder.calendar(cspec);
+        // LEGACY
+        String[] outliers = regInfo.get(OUTLIERS, String[].class);
+        if (outliers != null) {
+            for (int i = 0; i < outliers.length; ++i) {
+                OutlierDefinition o = OutlierDefinition.fromString(outliers[i]);
+                if (o != null) {
+                    Parameter c = RegressionSpecMapping.coefficientOf(regInfo, outliers[i]);
+                    builder.outlier(Variable.variable(outliers[i], outlier(o)).withCoefficient(c));
+                } 
+            }
+        }
+    }
+    
+    RegressionSpec read(InformationSet info){
+        return RegressionSpec.builder()
+                .mean(info.get(MU, Parameter.class))
+                .calendar(CalendarSpecMapping.read(info.getSubSet(CALENDAR)))
+                .build();
+    }
+
+    InformationSet write(RegressionSpec spec, boolean verbose){
+        if (! spec.isUsed())
+            return null;
+        InformationSet info=new InformationSet();
+        Parameter mean = spec.getMean();
+        if (mean != null)
+            info.set(MU, mean);
+        InformationSet cinfo=CalendarSpecMapping.write(spec.getCalendar(), verbose);
+        if (cinfo != null){
+            info.set(CALENDAR, cinfo);
+        }
+        return info;
+    }
+
+    InformationSet writeLegacy(RegressionSpec spec, boolean verbose){
+        if (! spec.isUsed())
+            return null;
+        InformationSet info=new InformationSet();
+        CalendarSpecMapping.writeLegacy(info, spec.getCalendar(), verbose);
+        return info;
+    }
+
+    IOutlier outlier(OutlierDefinition def){
+        switch (def.getCode()){
+            case "AO":
+            case "ao":
+                return new AdditiveOutlier(def.getPosition().atStartOfDay());
+            case "LS":
+            case "ls":
+                return new LevelShift(def.getPosition().atStartOfDay(), true);
+            case "TC":
+            case "tc":
+                return new TransitoryChange(def.getPosition().atStartOfDay(), .7);
+            case "SO":
+            case "s0":
+                return new PeriodicOutlier(def.getPosition().atStartOfDay(), 0, true);
+            default:
+                return null;
+        }
+    }
+
+//    public InformationSet writeLegacy(RegressionSpec spec, boolean verbose) {
 //        if (!isUsed()) {
 //            return null;
 //        }
 //        InformationSet specInfo = new InformationSet();
 //        if (verbose || !calendar_.isDefault()) {
-//            InformationSet cinfo = calendar_.write(verbose);
+//            InformationSet cinfo = calendar_.writeLegacy(verbose);
 //            if (cinfo != null) {
-//                specInfo.add(CALENDAR, cinfo);
+//                specInfo.set(CALENDAR, cinfo);
 //            }
 //        }
 //        if (!outliers_.isEmpty()) {
@@ -59,27 +205,27 @@ public class RegressionSpecMapping {
 //            for (int i = 0; i < outliers.length; ++i) {
 //                outliers[i] = outliers_.get(i).toString();
 //            }
-//            specInfo.add(OUTLIERS, outliers);
+//            specInfo.set(OUTLIERS, outliers);
 //        }
 //        if (!ramps_.isEmpty()) {
 //            String[] ramps = new String[ramps_.size()];
 //            for (int i = 0; i < ramps.length; ++i) {
 //                ramps[i] = ramps_.get(i).toString();
 //            }
-//            specInfo.add(RAMPS, ramps);
+//            specInfo.set(RAMPS, ramps);
 //        }
 //        int idx = 1;
 //        for (TsVariableDescriptor desc : users_) {
-//            InformationSet cur = desc.write(verbose);
+//            InformationSet cur = desc.writeLegacy(verbose);
 //            if (cur != null) {
-//                specInfo.add(USER + Integer.toString(idx++), cur);
+//                specInfo.set(USER + Integer.toString(idx++), cur);
 //            }
 //        }
 //        idx = 1;
 //        for (InterventionVariable ivar : interventions_) {
-//            InformationSet cur = ivar.write(verbose);
+//            InformationSet cur = ivar.writeLegacy(verbose);
 //            if (cur != null) {
-//                specInfo.add(INTERVENTION + Integer.toString(idx++), cur);
+//                specInfo.set(INTERVENTION + Integer.toString(idx++), cur);
 //            }
 //        }
 //        if (!fcoeff.isEmpty()) {
@@ -93,10 +239,10 @@ public class RegressionSpecMapping {
 //        return specInfo;
 //    }
 //
-//    public RegressionSpec read(InformationSet info) {
+//    public RegressionSpec readLegacy(InformationSet info) {
 //         InformationSet cinfo = info.getSubSet(CALENDAR);
 //        if (cinfo != null) {
-//            boolean tok = calendar_.read(cinfo);
+//            boolean tok = calendar_.readLegacy(cinfo);
 //            if (!tok) {
 //                return false;
 //            }
@@ -106,7 +252,7 @@ public class RegressionSpecMapping {
 //            for (int i = 0; i < outliers.length; ++i) {
 //                OutlierDefinition o = OutlierDefinition.fromString(outliers[i]);
 //                if (o != null) {
-//                    outliers_.add(o);
+//                    outliers_.set(o);
 //                } else {
 //                    return false;
 //                }
@@ -117,7 +263,7 @@ public class RegressionSpecMapping {
 //            for (int i = 0; i < ramps.length; ++i) {
 //                Ramp r = Ramp.fromString(ramps[i]);
 //                if (r != null) {
-//                    ramps_.add(r);
+//                    ramps_.set(r);
 //                } else {
 //                    return false;
 //                }
@@ -126,15 +272,15 @@ public class RegressionSpecMapping {
 //        List<Information<InformationSet>> usel = info.select(USERS, InformationSet.class);
 //        usel.forEach((item) -> {
 //            TsVariableDescriptor cur = new TsVariableDescriptor();
-//            if (cur.read(item.value)) {
-//                users_.add(cur);
+//            if (cur.readLegacy(item.value)) {
+//                users_.set(cur);
 //            }
 //        });
 //        List<Information<InformationSet>> isel = info.select(INTERVENTIONS, InformationSet.class);
 //        isel.forEach((item) -> {
 //            InterventionVariable cur = new InterventionVariable();
-//            if (cur.read(item.value)) {
-//                interventions_.add(cur);
+//            if (cur.readLegacy(item.value)) {
+//                interventions_.set(cur);
 //            }
 //        });
 //        InformationSet ifcoeff = info.getSubSet(FCOEFF);
@@ -175,5 +321,4 @@ public class RegressionSpecMapping {
 //        return true;
 //    }
 //
-
 }

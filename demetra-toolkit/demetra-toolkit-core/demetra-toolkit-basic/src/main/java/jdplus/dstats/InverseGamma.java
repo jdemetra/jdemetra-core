@@ -16,9 +16,12 @@
  */
 package jdplus.dstats;
 
+import demetra.dstats.BoundaryType;
+import demetra.dstats.ContinuousDistribution;
+import demetra.dstats.DStatException;
 import demetra.stats.ProbabilityType;
 import static jdplus.dstats.Gamma.logGamma;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
 
 /**
  *

@@ -5,6 +5,8 @@
  */
 package jdplus.dstats;
 
+import demetra.dstats.DStatException;
+import demetra.dstats.Distribution;
 import demetra.stats.ProbabilityType;
 import java.util.Random;
 import jdplus.random.JdkRNG;
@@ -12,7 +14,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
 
 /**
  *

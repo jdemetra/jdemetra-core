@@ -13,7 +13,7 @@ import jdplus.dstats.Normal;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.random.MersenneTwister;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
 import jdplus.stats.samples.Moments;
 
 /**

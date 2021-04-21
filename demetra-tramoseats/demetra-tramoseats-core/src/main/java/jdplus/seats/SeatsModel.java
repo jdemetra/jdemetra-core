@@ -156,7 +156,7 @@ public class SeatsModel {
     }
 
     public int getPeriod() {
-        return originalModel.getFrequency();
+        return originalModel.getPeriod();
     }
 
     public int extrapolationCount(int nf) {

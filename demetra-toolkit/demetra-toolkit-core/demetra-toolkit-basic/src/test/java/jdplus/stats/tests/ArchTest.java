@@ -16,6 +16,7 @@
  */
 package jdplus.stats.tests;
 
+import demetra.stats.StatisticalTest;
 import java.util.Random;
 import jdplus.data.DataBlock;
 import org.junit.Test;
@@ -43,9 +44,9 @@ public class ArchTest {
             StatisticalTest lb = Arch.porteManteau(X)
                     .autoCorrelationsCount(i)
                     .build();
-            System.out.print(lm.getPValue());
+            System.out.print(lm.getPvalue());
             System.out.print('\t');
-            System.out.println(lb.getPValue());
+            System.out.println(lb.getPvalue());
         }
     }
 

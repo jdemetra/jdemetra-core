@@ -27,11 +27,13 @@ import nbbrd.design.LombokWorkaround;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true, buildMethodName = "buildWithoutValidation")
 public final class BasicSpec implements Validatable<BasicSpec> {
 
     public static final BasicSpec DEFAULT_ENABLED = BasicSpec.builder().build();
     public static final BasicSpec DEFAULT_DISABLED = BasicSpec.builder().preprocessing(false).build();
+
+    public static final boolean DEF_PREPROCESSING = true, DEF_PRELIMINARYCHECK = true;
 
     @lombok.NonNull
     private TimeSelector span;
@@ -42,8 +44,8 @@ public final class BasicSpec implements Validatable<BasicSpec> {
     public static Builder builder() {
         return new Builder()
                 .span(TimeSelector.all())
-                .preprocessing(true)
-                .preliminaryCheck(true);
+                .preprocessing(DEF_PREPROCESSING)
+                .preliminaryCheck(DEF_PRELIMINARYCHECK);
     }
 
     @Override

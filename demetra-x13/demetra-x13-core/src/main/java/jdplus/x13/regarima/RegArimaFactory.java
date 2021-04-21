@@ -66,10 +66,12 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
                 freeVariables(currentSpec, domainSpec, builder);
                 break;
             case Outliers:
+                clearArima(currentSpec, domainSpec, builder);
                 removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
                 freeVariables(currentSpec, domainSpec, builder);
                 break;
             case LastOutliers:
+                clearArima(currentSpec, domainSpec, builder);
                 removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
                 freeVariables(currentSpec, domainSpec, builder);
                 break;
@@ -79,6 +81,10 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
                 break;
             case FixedAutoRegressiveParameters:
                 fixAR(currentSpec, domainSpec, builder);
+                freeVariables(currentSpec, domainSpec, builder);
+                break;
+            case FixedParameters:
+                fixArima(currentSpec, domainSpec, builder);
                 freeVariables(currentSpec, domainSpec, builder);
                 break;
             case Fixed:
@@ -255,6 +261,10 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
         return defoutliers.stream()
                 .filter(o -> o.getCore().getCode().equals(outlier.getCore().getCode()))
                 .anyMatch(o -> o.getCore().getPosition().equals(outlier.getCore().getPosition()));
+    }
+
+    private void clearArima(RegArimaSpec currentSpec, RegArimaSpec domainSpec, RegArimaSpec.Builder builder) {
+        builder.arima(currentSpec.getArima().resetParameters(domainSpec.isUsingAutoModel() ? null : domainSpec.getArima()));
     }
 
     private void freeArima(RegArimaSpec currentSpec, RegArimaSpec domainSpec, RegArimaSpec.Builder builder) {

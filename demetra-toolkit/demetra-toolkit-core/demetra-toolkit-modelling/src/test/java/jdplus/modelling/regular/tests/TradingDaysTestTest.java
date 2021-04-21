@@ -17,8 +17,8 @@
 package jdplus.modelling.regular.tests;
 
 import demetra.data.Data;
+import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
-import jdplus.stats.tests.StatisticalTest;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -35,10 +35,10 @@ public class TradingDaysTestTest {
     public void testProd() {
         TsData s = Data.TS_PROD.log().delta(12);
         StatisticalTest olsTest2 = TradingDaysTest.olsTest2(s);
-        assertTrue(olsTest2.getPValue() < 1e-3);
+        assertTrue(olsTest2.getPvalue() < 1e-3);
 
         s=s.delta(1);
         StatisticalTest olsTest = TradingDaysTest.olsTest(s);
-        assertTrue(olsTest2.getPValue() < 1e-3);
+        assertTrue(olsTest2.getPvalue() < 1e-3);
     }
 }

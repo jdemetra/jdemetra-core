@@ -16,11 +16,13 @@
  */
 package jdplus.stats.tests;
 
+import demetra.stats.TestType;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import jdplus.dstats.Chi2;
 import jdplus.stats.DescriptiveStatistics;
 import demetra.data.DoubleSeq;
+import demetra.stats.StatisticalTest;
 
 /**
  *
@@ -48,7 +50,7 @@ public class BowmanShenton
 	double m4 = stats.getKurtosis() - 3.0;
 	double val = n / 6.0 * m3 * m3 + n / 24.0 * m4 * m4;
 	Chi2 chi = new Chi2(2);
-        return new StatisticalTest(chi, val, TestType.Upper, true);
+        return TestsUtility.testOf(val, chi, TestType.Upper);
     }
 
 }

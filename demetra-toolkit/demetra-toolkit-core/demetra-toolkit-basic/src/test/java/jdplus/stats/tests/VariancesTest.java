@@ -17,14 +17,14 @@
 package jdplus.stats.tests;
 
 import demetra.data.DoubleSeq;
-import java.util.Arrays;
 import java.util.Random;
 import jdplus.dstats.Chi2;
-import jdplus.dstats.Distribution;
+import demetra.dstats.Distribution;
 import jdplus.dstats.Normal;
 import jdplus.dstats.Uniform;
 import jdplus.random.MersenneTwister;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
+import demetra.stats.StatisticalTest;
 import jdplus.stats.DescriptiveStatistics;
 import jdplus.stats.samples.Population;
 import jdplus.stats.samples.Sample;
@@ -58,17 +58,17 @@ public class VariancesTest {
         }
 
         StatisticalTest bartlett = Variances.bartlett(samples);
-        assertTrue(bartlett.getPValue() > 0.05);
+        assertTrue(bartlett.getPvalue() > 0.05);
         StatisticalTest levene = Variances.levene(samples).build();
-        assertTrue(levene.getPValue() > 0.05);
+        assertTrue(levene.getPvalue() > 0.05);
         StatisticalTest brown = Variances.brownForsythe(samples).build();
-        assertTrue(brown.getPValue() > 0.05);
+        assertTrue(brown.getPvalue() > 0.05);
         System.out.print("Bartlett:\t");
-        System.out.println(bartlett.getPValue());
+        System.out.println(bartlett.getPvalue());
         System.out.print("Levene:\t");
-        System.out.println(levene.getPValue());
+        System.out.println(levene.getPvalue());
         System.out.print("BrownForsythe:\t");
-        System.out.println(brown.getPValue());
+        System.out.println(brown.getPvalue());
     }
 
     @Test
@@ -88,17 +88,17 @@ public class VariancesTest {
             samples[i] = Sample.build(DoubleSeq.of(data), false, population);
         }
         StatisticalTest bartlett = Variances.bartlett(samples);
-        assertTrue(bartlett.getPValue() < 0.01);
+        assertTrue(bartlett.getPvalue() < 0.01);
         StatisticalTest levene = Variances.levene(samples).build();
-        assertTrue(levene.getPValue() < 0.01);
+        assertTrue(levene.getPvalue() < 0.01);
         StatisticalTest brown = Variances.brownForsythe(samples).build();
-        assertTrue(brown.getPValue() < 0.01);
+        assertTrue(brown.getPvalue() < 0.01);
         System.out.print("Bartlett:\t");
-        System.out.println(bartlett.getPValue());
+        System.out.println(bartlett.getPvalue());
         System.out.print("Levene:\t");
-        System.out.println(levene.getPValue());
+        System.out.println(levene.getPvalue());
         System.out.print("BrownForsythe:\t");
-        System.out.println(brown.getPValue());
+        System.out.println(brown.getPvalue());
     }
 
     @Test

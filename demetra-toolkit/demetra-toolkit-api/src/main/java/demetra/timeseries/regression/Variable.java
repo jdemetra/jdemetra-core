@@ -30,8 +30,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 @Development(status = Development.Status.Release)
 @lombok.Value
-@lombok.Builder( toBuilder = true)
-public class Variable <V extends ITsVariable> {
+@lombok.Builder(toBuilder = true)
+public class Variable<V extends ITsVariable> {
 
     @lombok.NonNull
     private String name;
@@ -71,6 +71,7 @@ public class Variable <V extends ITsVariable> {
     public Parameter[] getCoefficients() {
         return coefficients == null ? Parameter.make(core.dim()) : coefficients.clone();
     }
+
     /**
      *
      * @param variable Actual variable
@@ -127,12 +128,18 @@ public class Variable <V extends ITsVariable> {
         if (core.dim() != 1) {
             throw new IllegalArgumentException();
         }
-        return new Variable(name, core, new Parameter[]{coefficient}, attributes);
+        if (coefficient == null && this.coefficients == null) {
+            return this;
+        }
+        return new Variable(name, core, coefficient == null ? null : new Parameter[]{coefficient}, attributes);
     }
 
     public Variable withCoefficient(Parameter[] coefficients) {
         if (coefficients != null && core.dim() != coefficients.length) {
             throw new IllegalArgumentException();
+        }
+        if (coefficients == null && this.coefficients == null) {
+            return this;
         }
         return new Variable(name, core, coefficients, attributes);
     }
@@ -145,12 +152,13 @@ public class Variable <V extends ITsVariable> {
     }
 
     public Variable withoutAttribute(String key) {
-        if (!attributes.containsKey(key))
+        if (!attributes.containsKey(key)) {
             return this;
+        }
         Map<String, String> natts;
         natts = new HashMap<>(attributes);
         natts.remove(key);
-        return natts.isEmpty()? new Variable(name, core, coefficients, Collections.emptyMap())
+        return natts.isEmpty() ? new Variable(name, core, coefficients, Collections.emptyMap())
                 : new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
     }
 
@@ -163,10 +171,11 @@ public class Variable <V extends ITsVariable> {
 
     /**
      * Same as without(oldkey).addAttribute(newKey, newValue)
+     *
      * @param oldkey
      * @param newkey
      * @param newvalue
-     * @return 
+     * @return
      */
     public Variable replaceAttribute(String oldkey, String newkey, String newvalue) {
         Map<String, String> natts;
@@ -187,5 +196,5 @@ public class Variable <V extends ITsVariable> {
         natts.putAll(additionalAttributes);
         return new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
     }
-    
+
 }

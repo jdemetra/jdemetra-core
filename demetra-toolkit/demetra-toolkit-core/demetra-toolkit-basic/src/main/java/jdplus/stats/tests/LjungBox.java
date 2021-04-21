@@ -16,12 +16,14 @@
  */
 package jdplus.stats.tests;
 
+import demetra.stats.TestType;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import jdplus.dstats.Chi2;
 import jdplus.stats.AutoCovariances;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
+import demetra.stats.StatisticalTest;
 
 /**
  *
@@ -103,6 +105,16 @@ public class LjungBox {
         return this;
     }
 
+    /**
+     * 
+     * @param s s=1: positive autocorr, s=-1: negative autocorr, s=0: all autocorr
+     * @return 
+     */
+    public LjungBox sign(int s) {
+        this.sign = s;
+        return this;
+    }
+
     public StatisticalTest build() {
 
         double res = 0.0;
@@ -114,7 +126,7 @@ public class LjungBox {
         }
         double val = res * n * (n + 2);
         Chi2 chi = new Chi2(lag == 1 ? (k - nhp) : k);
-        return new StatisticalTest(chi, val, TestType.Upper, true);
+        return TestsUtility.testOf(val, chi, TestType.Upper);
     }
 
 }

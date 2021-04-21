@@ -30,7 +30,7 @@ import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.univariate.ISsfError;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
 import demetra.data.DoubleSeq;
 
 /**

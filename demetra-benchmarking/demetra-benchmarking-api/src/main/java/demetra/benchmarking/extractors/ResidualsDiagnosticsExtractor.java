@@ -18,7 +18,7 @@ package demetra.benchmarking.extractors;
 
 import nbbrd.design.Development;
 import demetra.information.InformationMapping;
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTest;
 import demetra.tempdisagg.univariate.ResidualsDiagnostics;
 import demetra.timeseries.TsData;
 
@@ -40,15 +40,15 @@ public class ResidualsDiagnosticsExtractor {
 
     static {
         MAPPING.set(FRES, TsData.class, source->source.getFullResiduals());
-        MAPPING.set(MEAN, TestResult.class, source->source.getMean());
-        MAPPING.set(SKEWNESS, TestResult.class, source->source.getSkewness());
-        MAPPING.set(KURTOSIS, TestResult.class, source->source.getKurtosis());
-        MAPPING.set(DH, TestResult.class, source->source.getDoornikHansen());
-        MAPPING.set(LJUNGBOX, TestResult.class, source->source.getLjungBox());
-        MAPPING.set(RUNS_NUMBER, TestResult.class, source->source.getRunsNumber());
-        MAPPING.set(RUNS_LENGTH, TestResult.class, source->source.getRunsLength());
-        MAPPING.set(UDRUNS_NUMBER, TestResult.class, source->source.getUdRunsNumber());
-        MAPPING.set(UDRUNS_LENGTH, TestResult.class, source->source.getUdRunsLength());
+        MAPPING.set(MEAN, StatisticalTest.class, source->source.getMean());
+        MAPPING.set(SKEWNESS, StatisticalTest.class, source->source.getSkewness());
+        MAPPING.set(KURTOSIS, StatisticalTest.class, source->source.getKurtosis());
+        MAPPING.set(DH, StatisticalTest.class, source->source.getDoornikHansen());
+        MAPPING.set(LJUNGBOX, StatisticalTest.class, source->source.getLjungBox());
+        MAPPING.set(RUNS_NUMBER, StatisticalTest.class, source->source.getRunsNumber());
+        MAPPING.set(RUNS_LENGTH, StatisticalTest.class, source->source.getRunsLength());
+        MAPPING.set(UDRUNS_NUMBER, StatisticalTest.class, source->source.getUdRunsNumber());
+        MAPPING.set(UDRUNS_LENGTH, StatisticalTest.class, source->source.getUdRunsLength());
         MAPPING.set(DW, Double.class, source->source.getDurbinWatson());
     }
 

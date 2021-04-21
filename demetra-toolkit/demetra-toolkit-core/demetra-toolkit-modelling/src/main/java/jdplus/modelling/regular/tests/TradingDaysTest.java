@@ -17,6 +17,7 @@
 package jdplus.modelling.regular.tests;
 
 import demetra.data.DoubleSeq;
+import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayClustering;
@@ -28,7 +29,6 @@ import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
 import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.Regression;
-import jdplus.stats.tests.StatisticalTest;
 
 /**
  *

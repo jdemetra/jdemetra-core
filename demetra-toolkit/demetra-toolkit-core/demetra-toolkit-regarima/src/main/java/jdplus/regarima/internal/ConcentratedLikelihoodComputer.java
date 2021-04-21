@@ -16,23 +16,23 @@
  */
 package jdplus.regarima.internal;
 
-import jdplus.arima.IArimaModel;
-import internal.jdplus.arima.KalmanFilter;
-import jdplus.data.DataBlock;
-import nbbrd.design.Immutable;
-import demetra.eco.EcoException;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.math.matrices.Matrix;
-import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
+import demetra.eco.EcoException;
+import internal.jdplus.arima.KalmanFilter;
+import jdplus.arima.IArimaModel;
+import jdplus.arima.estimation.ArmaFilter;
+import jdplus.data.DataBlock;
 import jdplus.data.LogSign;
 import jdplus.leastsquares.QRSolution;
 import jdplus.leastsquares.QRSolver;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import jdplus.math.matrices.decomposition.QRDecomposition;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArmaModel;
+import nbbrd.design.Immutable;
 
 /**
  *

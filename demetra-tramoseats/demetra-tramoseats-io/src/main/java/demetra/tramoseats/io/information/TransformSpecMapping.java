@@ -27,22 +27,22 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class TransformSpecMapping {
+class TransformSpecMapping {
 
-    public final String SPAN = "span",
+    final String SPAN = "span",
             FN = "function",
             FCT = "fct",
             UNITS = "units",
             PRELIMINARYCHECK = "preliminarycheck";
 
-    public void fillDictionary(String prefix, Map<String, Class> dic) {
+    void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, FN), String.class);
         dic.put(InformationSet.item(prefix, FCT), Double.class);
         dic.put(InformationSet.item(prefix, UNITS), Boolean.class);
         dic.put(InformationSet.item(prefix, SPAN), TimeSelector.class);
     }
 
-    public InformationSet write(TransformSpec spec, boolean verbose) {
+    InformationSet write(TransformSpec spec, boolean verbose) {
         if (!verbose && spec.isDefault()) {
             return null;
         }
@@ -62,7 +62,7 @@ public class TransformSpecMapping {
         return info;
     }
 
-    public TransformSpec read(InformationSet info) {
+    TransformSpec read(InformationSet info) {
         if (info == null) {
             return TransformSpec.DEFAULT;
         }

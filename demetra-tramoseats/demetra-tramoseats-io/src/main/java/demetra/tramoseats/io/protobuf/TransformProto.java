@@ -5,9 +5,8 @@
  */
 package demetra.tramoseats.io.protobuf;
 
-import com.google.protobuf.InvalidProtocolBufferException;
+import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import demetra.tramo.TransformSpec;
-import demetra.regarima.io.protobuf.RegArimaProtosUtility;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 
 /**
@@ -18,7 +17,7 @@ import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 public class TransformProto {
     
     public void fill(TransformSpec spec, TramoSeatsProtos.TramoSpec.TransformSpec.Builder builder) {
-        builder.setTransformation(RegArimaProtosUtility.convert(spec.getFunction()))
+        builder.setTransformation(ModellingProtosUtility.convert(spec.getFunction()))
                 .setFct(spec.getFct());
     }
     
@@ -32,7 +31,7 @@ public class TransformProto {
         return TransformSpec.builder()
                 .span(ToolkitProtosUtility.convert(bspec.getSpan()))
                 .preliminaryCheck(bspec.getPreliminaryCheck())
-                .function(RegArimaProtosUtility.convert(tspec.getTransformation()))
+                .function(ModellingProtosUtility.convert(tspec.getTransformation()))
                 .fct(tspec.getFct())
                 .build();
     }

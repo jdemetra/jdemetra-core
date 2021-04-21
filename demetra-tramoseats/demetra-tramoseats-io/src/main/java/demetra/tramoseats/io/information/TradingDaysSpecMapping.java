@@ -16,6 +16,8 @@
  */
 package demetra.tramoseats.io.information;
 
+import demetra.data.Parameter;
+import demetra.data.ParameterType;
 import demetra.information.InformationSet;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.tramo.RegressionTestType;
@@ -28,11 +30,13 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class TradingDaysSpecMapping {
+class TradingDaysSpecMapping {
 
-    public final String AUTO = "auto", MAUTO = "mauto", PFTD = "pftd", TDOPTION = "option", LPOPTION = "leapyear", HOLIDAYS = "holidays", USER = "user", TEST = "test", TESTTYPE = "testtype", W = "stocktd";
+    final String AUTO = "auto", MAUTO = "mauto", PFTD = "pftd", TDOPTION = "option", LPOPTION = "leapyear",
+            HOLIDAYS = "holidays", USER = "user", TEST = "test", TESTTYPE = "testtype", W = "stocktd",
+            LPCOEF = "lpcoef", TDCOEF = "tdcoef";
 
-    public void fillDictionary(String prefix, Map<String, Class> dic) {
+    void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, AUTO), Boolean.class);
         dic.put(InformationSet.item(prefix, MAUTO), String.class);
         dic.put(InformationSet.item(prefix, PFTD), Double.class);
@@ -44,61 +48,124 @@ public class TradingDaysSpecMapping {
         dic.put(InformationSet.item(prefix, TESTTYPE), String.class);
     }
 
-    public InformationSet write(TradingDaysSpec spec, boolean verbose) {
+    String lpName() {
+        return "lp";
+    }
+
+    String tdName() {
+        return "td";
+    }
+
+    void writeLegacy(InformationSet regInfo, TradingDaysSpec spec, boolean verbose) {
+        if (!verbose && spec.isDefault()) {
+            return;
+        }
+        InformationSet cinfo = regInfo.subSet(RegressionSpecMapping.CALENDAR);
+        InformationSet tdInfo = cinfo.subSet(CalendarSpecMapping.TD);
+
+        writeProperties(tdInfo, spec, verbose);
+
+        Parameter lcoef = spec.getLpCoefficient();
+        RegressionSpecMapping.set(regInfo, lpName(), lcoef);
+        Parameter[] tcoef = spec.getTdCoefficients();
+        RegressionSpecMapping.set(regInfo, tdName(), tcoef);
+    }
+
+    InformationSet write(TradingDaysSpec spec, boolean verbose) {
         if (!verbose && spec.isDefault()) {
             return null;
         }
-        InformationSet info = new InformationSet();
-        if (verbose || spec.isAutomatic()) {
-            info.add(MAUTO, spec.getAutomaticMethod().name());
+        InformationSet tdInfo = new InformationSet();
+
+        writeProperties(tdInfo, spec, verbose);
+
+        Parameter lcoef = spec.getLpCoefficient();
+        Parameter[] tcoef = spec.getTdCoefficients();
+        if (lcoef != null) {
+            tdInfo.set(LPCOEF, lcoef);
         }
-        if (verbose || spec.getProbabilityForFTest() != TradingDaysSpec.DEF_PFTD) {
-            info.add(PFTD, spec.getProbabilityForFTest());
+        if (tcoef != null) {
+            tdInfo.set(TDCOEF, tcoef);
         }
-        if (verbose || spec.getTradingDaysType() != TradingDaysType.None) {
-            info.add(TDOPTION, spec.getTradingDaysType().name());
-        }
-        if (verbose || spec.getLengthOfPeriodType() != LengthOfPeriodType.None) {
-            info.add(LPOPTION, spec.getLengthOfPeriodType().name());
-        }
-        if (spec.isHolidays()) {
-            info.add(HOLIDAYS, spec.getHolidays());
-        }
-        if (spec.isUserDefined()) {
-            info.add(USER, spec.getUserVariables());
-        }
-        if (verbose || spec.isStockTradingDays()) {
-            info.add(W, spec.getStockTradingDays());
-        }
-        if (verbose || spec.isTest()) {
-            info.add(TESTTYPE, spec.getRegressionTestType().name());
-        }
-        return info;
+        return tdInfo;
     }
 
-    public TradingDaysSpec read(InformationSet info) {
-        if (info == null) {
+    void writeProperties(InformationSet tdInfo, TradingDaysSpec spec, boolean verbose) {
+
+        if (verbose || spec.isAutomatic()) {
+            tdInfo.set(MAUTO, spec.getAutomaticMethod().name());
+        }
+        if (verbose || spec.getProbabilityForFTest() != TradingDaysSpec.DEF_PFTD) {
+            tdInfo.set(PFTD, spec.getProbabilityForFTest());
+        }
+        if (verbose || spec.getTradingDaysType() != TradingDaysType.None) {
+            tdInfo.set(TDOPTION, spec.getTradingDaysType().name());
+        }
+        if (verbose || spec.getLengthOfPeriodType() != LengthOfPeriodType.None) {
+            tdInfo.set(LPOPTION, spec.getLengthOfPeriodType().name());
+        }
+        if (spec.isHolidays()) {
+            tdInfo.set(HOLIDAYS, spec.getHolidays());
+        }
+        if (spec.isUserDefined()) {
+            tdInfo.set(USER, spec.getUserVariables());
+        }
+        if (verbose || spec.isStockTradingDays()) {
+            tdInfo.set(W, spec.getStockTradingDays());
+        }
+        if (verbose || spec.isTest()) {
+            tdInfo.set(TESTTYPE, spec.getRegressionTestType().name());
+        }
+    }
+
+    TradingDaysSpec readLegacy(InformationSet regInfo) {
+        InformationSet cinfo = regInfo.getSubSet(RegressionSpecMapping.CALENDAR);
+        if (cinfo == null) {
             return TradingDaysSpec.none();
         }
-        Boolean auto = info.get(AUTO, Boolean.class);
-        String mauto = info.get(MAUTO, String.class);
-        Double pftd = info.get(PFTD, Double.class);
-        String td = info.get(TDOPTION, String.class);
-        Boolean lp = info.get(LPOPTION, Boolean.class);
-        String lpt = info.get(LPOPTION, String.class);
-        String holidays = info.get(HOLIDAYS, String.class);
-        String[] user = info.get(USER, String[].class);
-        Integer w = info.get(W, Integer.class);
-        Boolean test = info.get(TEST, Boolean.class);
-        String testtype = info.get(TESTTYPE, String.class);
+        InformationSet tdInfo = cinfo.getSubSet(CalendarSpecMapping.TD);
+        if (tdInfo == null) {
+            return TradingDaysSpec.none();
+        }
+        Parameter lcoef = RegressionSpecMapping.coefficientOf(regInfo, lpName());
+        Parameter[] tdcoef = RegressionSpecMapping.coefficientsOf(regInfo, tdName());
+
+        return readProperties(tdInfo, lcoef, tdcoef);
+    }
+
+    TradingDaysSpec read(InformationSet tdInfo) {
+        if (tdInfo == null) {
+            return TradingDaysSpec.none();
+        }
+        Parameter lcoef = tdInfo.get(LPCOEF, Parameter.class);
+        Parameter[] tdcoef = tdInfo.get(TDCOEF, Parameter[].class);
+
+        return readProperties(tdInfo, lcoef, tdcoef);
+    }
+
+    TradingDaysSpec readProperties(InformationSet tdInfo, Parameter lcoef, Parameter[] tdcoef) {
+        Boolean auto = tdInfo.get(AUTO, Boolean.class);
+        String mauto = tdInfo.get(MAUTO, String.class);
+        Double pftd = tdInfo.get(PFTD, Double.class);
+        String td = tdInfo.get(TDOPTION, String.class);
+        Boolean lp = tdInfo.get(LPOPTION, Boolean.class);
+        String lpt = tdInfo.get(LPOPTION, String.class);
+        String holidays = tdInfo.get(HOLIDAYS, String.class);
+        String[] user = tdInfo.get(USER, String[].class);
+        Integer w = tdInfo.get(W, Integer.class);
+        Boolean test = tdInfo.get(TEST, Boolean.class);
+        String testtype = tdInfo.get(TESTTYPE, String.class);
 
         TradingDaysType tdo = td == null ? TradingDaysType.None : TradingDaysType.valueOf(td);
         LengthOfPeriodType lpo = lp == null ? LengthOfPeriodType.None : LengthOfPeriodType.LeapYear;
         if (lpt != null) {
             lpo = LengthOfPeriodType.valueOf(lpt);
         }
+        TradingDaysSpec.AutoMethod method=TradingDaysSpec.AutoMethod.Unused;
         if ((auto != null && auto) || mauto != null) {
-            TradingDaysSpec.AutoMethod method = mauto == null ? TradingDaysSpec.AutoMethod.FTest : TradingDaysSpec.AutoMethod.valueOf(mauto);
+            method = mauto == null ? TradingDaysSpec.AutoMethod.FTest : TradingDaysSpec.AutoMethod.valueOf(mauto);
+        }
+        if (method != TradingDaysSpec.AutoMethod.Unused){
             if (holidays != null) {
                 return TradingDaysSpec.automaticHolidays(holidays, method, pftd == null ? TradingDaysSpec.DEF_PFTD : pftd);
             } else {
@@ -110,14 +177,32 @@ public class TradingDaysSpecMapping {
             reg = RegressionTestType.valueOf(testtype);
         }
         if (user != null) {
-            return TradingDaysSpec.userDefined(user, reg);
-        } else if (w != null) {
-            return TradingDaysSpec.stockTradingDays(w, reg);
+            if (tdcoef != null) {
+                return TradingDaysSpec.userDefined(user, tdcoef);
+            } else {
+                return TradingDaysSpec.userDefined(user, reg);
+            }
+        } else if (w != null && w != 0) {
+            if (tdcoef != null) {
+                return TradingDaysSpec.stockTradingDays(w, tdcoef);
+            } else {
+                return TradingDaysSpec.stockTradingDays(w, reg);
+            }
         } else if (tdo == TradingDaysType.None && lpo == LengthOfPeriodType.None) {
             return TradingDaysSpec.none();
+        } else if (holidays != null) {
+            if (tdcoef != null || lcoef != null) {
+                return TradingDaysSpec.holidays(holidays, tdo, lpo, tdcoef, lcoef);
+            } else {
+                return TradingDaysSpec.holidays(holidays, tdo, lpo, reg);
+            }
+
         } else {
-            return TradingDaysSpec.td(tdo, lpo, reg);
+            if (tdcoef != null || lcoef != null) {
+                return TradingDaysSpec.td(tdo, lpo, tdcoef, lcoef);
+            } else {
+                return TradingDaysSpec.td(tdo, lpo, reg);
+            }
         }
     }
-
 }

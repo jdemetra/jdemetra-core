@@ -25,7 +25,7 @@ import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.Variable;
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTest;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +40,7 @@ public interface GeneralLinearModel<M> {
 
     Estimation getEstimation();
     
-    Map<String, TestResult> getDiagnostics();
+    Map<String, StatisticalTest> getDiagnostics();
 
     Map<String, Object> getAdditionalResults();
 

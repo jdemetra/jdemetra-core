@@ -127,12 +127,12 @@ public class AutoCovariances {
 
     /**
      * Computes the auto-covariance of a sample from a population with known
-     * mean.
+     * mean.=sum(lag:n-1)((x(t)-mu)(x(t-lag)-mu))/n
      *
-     * =sum(lag:n-1)((x(t)-mu)(x(t-lag)-mu))/n
      *
      * @param data The sample
      * @param mean Mean of the population
+     * @param lag
      * @return
      */
     public double autoCovarianceNoMissing(DoubleSeq data, double mean, int lag) {
@@ -177,9 +177,10 @@ public class AutoCovariances {
 
     /**
      * Same as varianceNoMissing. The data can contain missing values
+     *
      * @param data
      * @param mean
-     * @return 
+     * @return
      */
     public double variance(DoubleSeq data, double mean) {
         double v = 0;
@@ -224,6 +225,35 @@ public class AutoCovariances {
         } else {
             return v / m;
         }
+    }
+
+    public double[] partialAutoCorrelations(IntToDoubleFunction acfn, int kmax) {
+        double[] pac = new double[kmax];
+        double[] tmp = new double[kmax];
+        double[] coeff = new double[kmax];
+        double[] ac = new double[kmax];
+        for (int i = 0; i < kmax; ++i) {
+            ac[i] = acfn.applyAsDouble(i + 1);
+        }
+
+        pac[0] = coeff[0] = ac[0]; // K = 1
+        for (int K = 2; K <= kmax; ++K) {
+            double n = 0, d = 0;
+            for (int k = 1; k <= K - 1; ++k) {
+                double x = coeff[k - 1];
+                n += ac[K - k - 1] * x;
+                d += ac[k - 1] * x;
+            }
+            pac[K - 1] = coeff[K - 1] = (ac[K - 1] - n) / (1 - d);
+
+            for (int i = 0; i < K; ++i) {
+                tmp[i] = coeff[i];
+            }
+            for (int j = 1; j <= K - 1; ++j) {
+                coeff[j - 1] = tmp[j - 1] - tmp[K - 1] * tmp[K - j - 1];
+            }
+        }
+        return pac;
     }
 
 }

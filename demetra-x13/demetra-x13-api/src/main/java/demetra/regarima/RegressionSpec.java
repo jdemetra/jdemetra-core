@@ -40,7 +40,7 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
 
     public static final double DEF_AICCDIFF = 0;
 
-    private static final RegressionSpec DEFAULT = RegressionSpec.builder().build();
+    public static final RegressionSpec DEFAULT = RegressionSpec.builder().build();
 
     private double aicDiff;
 

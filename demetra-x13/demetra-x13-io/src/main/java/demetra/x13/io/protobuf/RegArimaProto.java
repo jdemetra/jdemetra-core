@@ -16,6 +16,7 @@
  */
 package demetra.x13.io.protobuf;
 
+import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import demetra.regarima.RegArimaOutput;
 import demetra.regarima.RegArimaSpec;
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
@@ -52,9 +53,9 @@ public class RegArimaProto {
                 .build();
     }
     
-        public X13ResultsProtos.RegArimaOutput convert(RegArimaOutput output){
-        X13ResultsProtos.RegArimaOutput.Builder builder = 
-                X13ResultsProtos.RegArimaOutput.newBuilder()
+        public X13Protos.RegArimaOutput convert(RegArimaOutput output){
+        X13Protos.RegArimaOutput.Builder builder = 
+                X13Protos.RegArimaOutput.newBuilder()
                 .setEstimationSpec(convert(output.getEstimationSpec()));
         
         if (output.getResult() != null){

@@ -34,7 +34,7 @@ import nbbrd.design.Development;
 @lombok.Value
 @lombok.Builder(toBuilder = true, builderClassName = "Builder")
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-public class SarimaModel {
+public class SarimaModel implements ISarimaModel{
 
     /**
      * Period of the seasonal model
@@ -73,18 +73,22 @@ public class SarimaModel {
      */
     private String name;
 
+    @Override
     public int getP() {
         return phi.length;
     }
 
+    @Override
     public int getBp() {
         return bphi.length;
     }
 
+    @Override
     public int getQ() {
         return theta.length;
     }
 
+    @Override
     public int getBq() {
         return btheta.length;
     }
@@ -93,7 +97,8 @@ public class SarimaModel {
      * Gets the underlying specification
      * @return
      */
-    public SarimaOrders specification() {
+    @Override
+    public SarimaOrders orders() {
         SarimaOrders spec = new SarimaOrders(period);
         spec.setD(d);
         spec.setBd(bd);
@@ -142,6 +147,11 @@ public class SarimaModel {
             all[pos++] = btheta[i];
         }
         return all;
+    }
+    
+    @Override
+    public DoubleSeq parameters(){
+        return DoubleSeq.of(parameters(true));
     }
 
     public static Builder builder() {

@@ -18,8 +18,8 @@ package demetra.x13.io.protobuf;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.data.Parameter;
+import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import demetra.regarima.TradingDaysSpec;
-import demetra.regarima.io.protobuf.RegArimaProtosUtility;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
@@ -36,8 +36,8 @@ public class TradingDaysProto {
         String holidays = spec.getHolidays();
         if (holidays != null) {
             builder.setHolidays(holidays)
-                    .setLp(RegArimaProtosUtility.convert(spec.getLengthOfPeriodType()))
-                    .setTd(RegArimaProtosUtility.convert(spec.getTradingDaysType()))
+                    .setLp(ModellingProtosUtility.convert(spec.getLengthOfPeriodType()))
+                    .setTd(ModellingProtosUtility.convert(spec.getTradingDaysType()))
                     .setTest(X13ProtosUtility.convert(spec.getRegressionTestType()))
                     .setAutoAdjust(spec.isAutoAdjust());
             return;
@@ -57,8 +57,8 @@ public class TradingDaysProto {
                     .setTest(X13ProtosUtility.convert(spec.getRegressionTestType()));
             return;
         }
-        builder.setLp(RegArimaProtosUtility.convert(spec.getLengthOfPeriodType()))
-                .setTd(RegArimaProtosUtility.convert(spec.getTradingDaysType()))
+        builder.setLp(ModellingProtosUtility.convert(spec.getLengthOfPeriodType()))
+                .setTd(ModellingProtosUtility.convert(spec.getTradingDaysType()))
                 .setTest(X13ProtosUtility.convert(spec.getRegressionTestType()))
                 .setAutoAdjust(spec.isAutoAdjust());
     }
@@ -81,8 +81,8 @@ public class TradingDaysProto {
     }
 
     public TradingDaysSpec convert(X13Protos.RegArimaSpec.TradingDaysSpec spec) {
-        TradingDaysType td = RegArimaProtosUtility.convert(spec.getTd());
-        LengthOfPeriodType lp = RegArimaProtosUtility.convert(spec.getLp());
+        TradingDaysType td = ModellingProtosUtility.convert(spec.getTd());
+        LengthOfPeriodType lp = ModellingProtosUtility.convert(spec.getLp());
         Parameter lpc = ToolkitProtosUtility.convert(spec.getLpcoefficient());
         Parameter[] tdc = ToolkitProtosUtility.convert(spec.getTdcoefficientsList());
         boolean test = isTest(spec);

@@ -30,7 +30,7 @@ import demetra.util.Validatable;
 @lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
 public final class EstimateSpec implements Validatable<EstimateSpec> {
 
-    private static final EstimateSpec DEFAULT = EstimateSpec.builder().build();
+    public static final EstimateSpec DEFAULT = EstimateSpec.builder().build();
 
     public static final double DEF_TOL = 1e-7;
 

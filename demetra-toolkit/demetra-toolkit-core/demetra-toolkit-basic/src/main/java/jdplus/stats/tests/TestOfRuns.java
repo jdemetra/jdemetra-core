@@ -16,12 +16,14 @@
  */
 package jdplus.stats.tests;
 
+import demetra.stats.TestType;
 import nbbrd.design.Development;
 import jdplus.dstats.Chi2;
 import jdplus.dstats.Normal;
 import jdplus.stats.DescriptiveStatistics;
 import demetra.stats.StatException;
 import demetra.data.DoubleSeq;
+import demetra.stats.StatisticalTest;
 
 
 /**
@@ -168,7 +170,7 @@ public class TestOfRuns
 		x += 999999;
 	}
 	Chi2 dist = new Chi2(n);
-        return new StatisticalTest(dist, x, TestType.Upper, true);
+        return TestsUtility.testOf(x, dist, TestType.Upper);
     }
 
     public StatisticalTest testNumber() {
@@ -180,7 +182,7 @@ public class TestOfRuns
 	if (V < 1e-9)
 	    V = 1e-9;
 	Normal dist = new Normal();
-       return new StatisticalTest(dist, (nruns - E) / Math.sqrt(V), TestType.TwoSided, true);
+       return TestsUtility.testOf((nruns - E) / Math.sqrt(V), dist, TestType.TwoSided);
     }
 
 }

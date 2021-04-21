@@ -16,7 +16,7 @@
  */
 package demetra.tempdisagg.univariate;
 
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 
 /**
@@ -28,7 +28,8 @@ import demetra.timeseries.TsData;
 public class ResidualsDiagnostics {
     
     TsData fullResiduals;
-    TestResult ljungBox, mean, 
+    StatisticalTest ljungBox; 
+    StatisticalTest mean, 
             doornikHansen, skewness, kurtosis, runsNumber, runsLength,
             udRunsNumber, udRunsLength;
     double durbinWatson;

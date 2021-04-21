@@ -28,7 +28,7 @@ import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.ISsfMeasurement;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
 
 /**
  *

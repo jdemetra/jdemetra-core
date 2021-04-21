@@ -31,6 +31,7 @@ import demetra.util.Validatable;
 public final class EstimateSpec implements Validatable<EstimateSpec> {
 
     public static final double DEF_TOL = 1e-7, DEF_UBP = .96;
+    public static final boolean DEF_EML = true;
 
     @lombok.NonNull
     private TimeSelector span;
@@ -44,7 +45,7 @@ public final class EstimateSpec implements Validatable<EstimateSpec> {
     public static Builder builder() {
         return new Builder()
                 .span(TimeSelector.all())
-                .maximumLikelihood(true)
+                .maximumLikelihood(DEF_EML)
                 .tol(DEF_TOL)
                 .ubp(DEF_UBP);
     }

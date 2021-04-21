@@ -56,7 +56,7 @@ public class OutOfSampleDiagnostics implements Diagnostics {
     }
 
     private void test(RegArimaModel<SarimaModel> regarima, double len, boolean m, boolean v) {
-        int ifreq = regarima.arima().getFrequency();
+        int ifreq = regarima.arima().getPeriod();
         int nback = (int) (len * ifreq);
         if (nback < 5) {
             nback = 5;
@@ -65,12 +65,12 @@ public class OutOfSampleDiagnostics implements Diagnostics {
         OneStepAheadForecastingTest<SarimaModel> xtest = new OneStepAheadForecastingTest<>(processor, nback);
         xtest.test(regarima);
         if (m) {
-            mpval = xtest.outOfSampleMeanTest().getPValue();
+            mpval = xtest.outOfSampleMeanTest().getPvalue();
         } else {
             mpval = Double.NaN;
         }
         if (v) {
-            vpval = xtest.sameVarianceTest().getPValue();
+            vpval = xtest.sameVarianceTest().getPvalue();
         } else {
             vpval = Double.NaN;
         }

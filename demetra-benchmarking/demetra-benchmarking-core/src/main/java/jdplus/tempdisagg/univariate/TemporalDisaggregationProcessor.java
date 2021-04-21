@@ -445,16 +445,16 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
                 .seasonal(false)
                 .build();
         return ResidualsDiagnostics.builder()
-                .mean(tests.meanTest() == null ? null : tests.meanTest().toSummary())
-                .skewness(tests.skewness() == null ? null : tests.skewness().toSummary())
-                .kurtosis(tests.kurtosis() == null ? null : tests.kurtosis().toSummary())
-                .doornikHansen(tests.normalityTest() == null ? null : tests.normalityTest().toSummary())
-                .ljungBox(tests.ljungBox() == null ? null : tests.ljungBox().toSummary())
+                .mean(tests.meanTest() == null ? null : tests.meanTest())
+                .skewness(tests.skewness() == null ? null : tests.skewness())
+                .kurtosis(tests.kurtosis() == null ? null : tests.kurtosis())
+                .doornikHansen(tests.normalityTest() == null ? null : tests.normalityTest())
+                .ljungBox(tests.ljungBox() == null ? null : tests.ljungBox())
                 .fullResiduals(fres)
-                .runsNumber(tests.runsNumber() == null ? null : tests.runsNumber().toSummary())
-                .udRunsNumber(tests.upAndDownRunsNumbber() == null ? null : tests.upAndDownRunsNumbber().toSummary())
-                .runsLength(tests.runsLength() == null ? null : tests.runsLength().toSummary())
-                .udRunsLength(tests.upAndDownRunsLength() == null ? null : tests.upAndDownRunsLength().toSummary())
+                .runsNumber(tests.runsNumber() == null ? null : tests.runsNumber())
+                .udRunsNumber(tests.upAndDownRunsNumbber() == null ? null : tests.upAndDownRunsNumbber())
+                .runsLength(tests.runsLength() == null ? null : tests.runsLength())
+                .udRunsLength(tests.upAndDownRunsLength() == null ? null : tests.upAndDownRunsLength())
                 .build();
     }
 

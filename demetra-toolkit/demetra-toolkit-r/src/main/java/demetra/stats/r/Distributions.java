@@ -15,7 +15,7 @@ import jdplus.dstats.InverseGaussian;
 import jdplus.dstats.LogNormal;
 import jdplus.dstats.Normal;
 import jdplus.dstats.T;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
 import jdplus.random.XorshiftRNG;
 
 /**

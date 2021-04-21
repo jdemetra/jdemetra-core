@@ -58,7 +58,7 @@ public class LeastSquaresResultsTest {
         double khi2=lsr.getRegressionSumOfSquares()/lsr.getResidualMeanSquare();
         // khi2(5), mean=5
         assertTrue(khi2>2 && khi2<15);
-        assertEquals(lsr.Ftest().getPValue(), lsr.Khi2Test().getPValue(), 0.2);
+        assertEquals(lsr.Ftest().getPvalue(), lsr.Khi2Test().getPvalue(), 0.2);
     }
     
 }

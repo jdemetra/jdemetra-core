@@ -22,7 +22,7 @@ import demetra.math.Constants;
 import demetra.revisions.parametric.Coefficient;
 import demetra.revisions.parametric.OlsTests;
 import demetra.revisions.parametric.RegressionTests;
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTest;
 import jdplus.data.DataBlock;
 import jdplus.linearmodel.HeteroskedasticityTest;
 import jdplus.linearmodel.LeastSquaresResults;
@@ -30,7 +30,6 @@ import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
 import jdplus.stats.tests.Arch;
 import jdplus.stats.tests.JarqueBera;
-import jdplus.stats.tests.StatisticalTest;
 
 /**
  *
@@ -69,7 +68,7 @@ public class OlsTestsComputer {
             StatisticalTest wtest = w.build();
 
             JarqueBera jb = new JarqueBera(lsr.residuals())
-                    .correctionForSample()
+                    .correctionForSample(true)
                     .degreeOfFreedomCorrection(1);
             StatisticalTest jbtest = jb.build();
 
@@ -77,27 +76,27 @@ public class OlsTestsComputer {
             StatisticalTest artest = arch.build();
 
             RegressionTests.Builder tbuilder = RegressionTests.builder()
-                    .jarqueBera(new TestResult(jbtest.getValue(), jbtest.getPValue(), "Jarque-Bera"))
+                    .jarqueBera(new StatisticalTest(jbtest.getValue(), jbtest.getPvalue(), "Jarque-Bera"))
                     .kurtosis(jb.getKurtosis())
                     .skewness(jb.getSkewness());
 
             if (bptest != null) {
                 tbuilder.bpr2(bp.getLeastSquaresResultsOnSquaredResiduals().getR2())
-                        .breuschPagan(new TestResult(bptest.getValue(), bptest.getPValue(), "Breusch-Pagan"));
+                        .breuschPagan(new StatisticalTest(bptest.getValue(), bptest.getPvalue(), "Breusch-Pagan"));
             }
             if (wtest != null) {
                 tbuilder.wr2(w.getLeastSquaresResultsOnSquaredResiduals().getR2())
-                        .white(new TestResult(wtest.getValue(), wtest.getPValue(), "White"));
+                        .white(new StatisticalTest(wtest.getValue(), wtest.getPvalue(), "White"));
             }
             if (artest != null) {
                 tbuilder.archr2(arch.getLeastSquaresResults().getR2())
-                        .arch(new TestResult(artest.getValue(), artest.getPValue(), "Arch"));
+                        .arch(new StatisticalTest(artest.getValue(), artest.getPvalue(), "Arch"));
             }
 
             Coefficient[] c = new Coefficient[1 + x.length];
             for (int i = 0; i < c.length; ++i) {
                 StatisticalTest t = lsr.Ttest(i);
-                c[i] = new Coefficient(coef.get(i), Math.sqrt(diag.get(i)), t.getValue(), t.getPValue());
+                c[i] = new Coefficient(coef.get(i), Math.sqrt(diag.get(i)), t.getValue(), t.getPvalue());
             };
 
             builder.R2(lsr.getR2())

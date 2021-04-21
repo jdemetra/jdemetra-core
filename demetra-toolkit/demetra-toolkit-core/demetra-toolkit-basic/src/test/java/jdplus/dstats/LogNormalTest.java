@@ -8,7 +8,7 @@ package jdplus.dstats;
 import demetra.stats.ProbabilityType;
 import java.util.Random;
 import static jdplus.dstats.NormalTest.TOLERANCE;
-import jdplus.random.RandomNumberGenerator;
+import demetra.dstats.RandomNumberGenerator;
 import org.assertj.core.api.Assertions;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;

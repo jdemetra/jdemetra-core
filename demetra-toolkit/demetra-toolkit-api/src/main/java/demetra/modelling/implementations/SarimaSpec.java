@@ -34,7 +34,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 @Development(status = Development.Status.Release)
 @lombok.Value
-@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true, buildMethodName = "buildWithoutValidation")
 public final class SarimaSpec implements Validatable<SarimaSpec> {
 
     @Override
@@ -133,7 +133,7 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
         }
 
         public Builder phi(Parameter[] value) {
-            if (value == null) {
+            if (value == null || value.length == 0) {
                 phi = EMPTY;
             } else {
                 phi = value.clone();
@@ -142,7 +142,7 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
         }
 
         public Builder theta(Parameter[] value) {
-            if (value == null) {
+            if (value == null || value.length == 0) {
                 theta = EMPTY;
             } else {
                 theta = value.clone();
@@ -151,7 +151,7 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
         }
 
         public Builder bphi(Parameter[] value) {
-            if (value == null) {
+            if (value == null || value.length == 0) {
                 bphi = EMPTY;
             } else {
                 bphi = value.clone();
@@ -160,11 +160,21 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
         }
 
         public Builder btheta(Parameter[] value) {
-            if (value == null) {
+            if (value == null || value.length == 0) {
                 btheta = EMPTY;
             } else {
                 btheta = value.clone();
             }
+            return this;
+        }
+
+        public Builder airline() {
+            phi = EMPTY;
+            bphi = EMPTY;
+            theta = Parameter.make(1);
+            btheta = Parameter.make(1);
+            d = 1;
+            bd = 1;
             return this;
         }
 

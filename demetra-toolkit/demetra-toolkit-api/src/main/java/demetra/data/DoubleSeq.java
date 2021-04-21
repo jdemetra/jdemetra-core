@@ -413,6 +413,20 @@ public interface DoubleSeq extends BaseSeq {
     default DoubleSeq range(int beg, int end) {
         return end <= beg ? map(0, i -> -1) : extract(beg, end - beg);
     }
+    
+    /**
+     * Removes missing values at the extremities
+     * @return 
+     */
+    default DoubleSeq cleanExtremities(){
+        int first=indexOf(x->Double.isFinite(x));
+        if (first == -1)
+            return Doubles.EMPTY;
+        int last=1+lastIndexOf(x->Double.isFinite(x));
+        if (first == 0 && last == length())
+            return this;
+        return range(first, last);
+    }
 
     /**
      * Returns a new array of doubles in reverse order

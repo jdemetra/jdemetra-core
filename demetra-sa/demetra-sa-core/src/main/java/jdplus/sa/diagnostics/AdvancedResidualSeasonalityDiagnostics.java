@@ -20,15 +20,15 @@ import demetra.data.DoubleSeq;
 import nbbrd.design.Development;
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
+import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import jdplus.modelling.DifferencingResults;
 import jdplus.stats.DescriptiveStatistics;
-import jdplus.stats.tests.StatisticalTest;
-import jdplus.stats.tests.seasonal.FTest;
-import jdplus.stats.tests.seasonal.Qs;
+import jdplus.sa.tests.FTest;
+import jdplus.sa.tests.Qs;
 
 /**
  *
@@ -239,7 +239,7 @@ public class AdvancedResidualSeasonalityDiagnostics implements Diagnostics {
         if (test == null) {
             return ProcQuality.Undefined;
         }
-        double pval = test.getPValue();
+        double pval = test.getPvalue();
         if (pval < sev) {
             return ProcQuality.Severe;
         } else if (pval < bad) {
@@ -252,7 +252,7 @@ public class AdvancedResidualSeasonalityDiagnostics implements Diagnostics {
     }
 
     private double pvalue(StatisticalTest test) {
-        return test == null ? Double.NaN : test.getPValue();
+        return test == null ? Double.NaN : test.getPvalue();
     }
 
 }

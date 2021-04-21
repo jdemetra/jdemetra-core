@@ -18,12 +18,13 @@ package jdplus.stats.tests;
 
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
-import jdplus.dstats.DStatException;
+import demetra.dstats.DStatException;
 import jdplus.stats.AutoCovariances;
 import jdplus.stats.DescriptiveStatistics;
 import demetra.stats.StatException;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
+import demetra.stats.StatisticalTest;
 
 /**
  *

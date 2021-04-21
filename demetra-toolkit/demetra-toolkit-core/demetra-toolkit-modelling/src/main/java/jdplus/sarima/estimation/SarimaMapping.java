@@ -16,16 +16,16 @@
  */
 package jdplus.sarima.estimation;
 
+import demetra.arima.SarimaOrders;
+import demetra.data.DoubleSeq;
+import demetra.math.Complex;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.data.DataBlock;
-import nbbrd.design.Development;
 import jdplus.math.functions.FunctionException;
 import jdplus.math.functions.ParamValidation;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.sarima.SarimaModel;
-import demetra.arima.SarimaOrders;
-import demetra.data.DoubleSeq;
-import demetra.math.Complex;
+import nbbrd.design.Development;
 
 /**
  *
@@ -35,7 +35,7 @@ import demetra.math.Complex;
 public class SarimaMapping implements IArimaMapping<SarimaModel> {
 
     static final double MAX = 0.99999;
-    public static final double STEP = Math.sqrt(2.220446e-16);
+    public static final double STEP = Math.pow(2.220446e-16, 0.5);
 
     /**
      *

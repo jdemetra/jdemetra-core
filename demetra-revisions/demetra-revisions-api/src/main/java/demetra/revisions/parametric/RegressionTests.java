@@ -16,7 +16,8 @@
  */
 package demetra.revisions.parametric;
 
-import demetra.stats.TestResult;
+import demetra.stats.StatisticalTest;
+
 
 /**
  *
@@ -25,13 +26,13 @@ import demetra.stats.TestResult;
 @lombok.Value
 @lombok.Builder
 public class RegressionTests {
-    TestResult breuschPagan;
+    StatisticalTest breuschPagan;
     double bpr2;
-    TestResult white;
+    StatisticalTest white;
     double wr2;
-    TestResult jarqueBera;
+    StatisticalTest jarqueBera;
     double skewness, kurtosis;
-    TestResult arch;
+    StatisticalTest arch;
     double archr2;
     
 }

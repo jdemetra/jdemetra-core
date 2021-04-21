@@ -14,8 +14,10 @@ import demetra.sa.EstimationPolicyType;
 import demetra.sa.SeriesDecomposition;
 import demetra.sa.StationaryVarianceDecomposition;
 import demetra.sa.benchmarking.SaBenchmarkingSpec;
+import demetra.sa.diagnostics.CombinedSeasonalityTest;
 import demetra.timeseries.TsData;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
+import jdplus.sa.tests.CombinedSeasonality;
 
 /**
  *
@@ -218,6 +220,24 @@ public class SaProtosUtility {
             default:
                 return EstimationPolicyType.None;
         }
+    }
+    
+    public SaProtos.IdentifiableSeasonality convert(CombinedSeasonalityTest.IdentifiableSeasonality seas){
+        switch (seas){
+            case None: return SaProtos.IdentifiableSeasonality.SA_NONE;
+            case ProbablyNone: return SaProtos.IdentifiableSeasonality.SA_PROBABLY_NONE;
+            case Present: return SaProtos.IdentifiableSeasonality.SA_PRESENT;
+            default: return SaProtos.IdentifiableSeasonality.SA_UNKNOWN;
+        }
+    }
+    
+    public SaProtos.CombinedSeasonalityTest convert(CombinedSeasonality cs){
+        return SaProtos.CombinedSeasonalityTest.newBuilder()
+                .setKruskalWallis(ToolkitProtosUtility.convert(cs.getNonParametricTestForStableSeasonality().build()))
+                .setStableSeasonality(ToolkitProtosUtility.convert(cs.getStableSeasonalityTest()))
+                .setEvolutiveSeasonality(ToolkitProtosUtility.convert(cs.getEvolutiveSeasonalityTest()))
+                .setSeasonality(convert(cs.getSummary()))
+                .build();
     }
 
 }

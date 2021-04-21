@@ -22,7 +22,9 @@ import demetra.data.Iterables;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
-import demetra.stats.TestResult;
+import demetra.modelling.io.protobuf.ModellingProtos;
+import demetra.stats.OneWayAnova;
+import demetra.stats.StatisticalTest;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
@@ -33,7 +35,6 @@ import java.util.Collections;
 import java.util.List;
 import jdplus.arima.IArimaModel;
 import jdplus.stats.tests.NiidTests;
-import jdplus.stats.tests.StatisticalTest;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -200,8 +201,9 @@ public class ToolkitProtosUtility {
     }
 
     public ToolkitProtos.Parameter convert(Parameter p) {
-        if (p == null)
+        if (p == null) {
             return ToolkitProtos.Parameter.getDefaultInstance();
+        }
         return ToolkitProtos.Parameter.newBuilder()
                 .setType(convert(p.getType()))
                 .setValue(p.getValue())
@@ -209,10 +211,11 @@ public class ToolkitProtosUtility {
     }
 
     public List<ToolkitProtos.Parameter> convert(Parameter[] p) {
-        if (p == null || p.length == 0)
+        if (p == null || p.length == 0) {
             return Collections.emptyList();
-        ArrayList<ToolkitProtos.Parameter> list=new ArrayList<>();
-        for (int i=0; i<p.length; ++i){
+        }
+        ArrayList<ToolkitProtos.Parameter> list = new ArrayList<>();
+        for (int i = 0; i < p.length; ++i) {
             list.add(convert(p[i]));
         }
         return list;
@@ -306,11 +309,11 @@ public class ToolkitProtosUtility {
 
     }
 
-    public ToolkitProtos.ArimaModel convert(IArimaModel arima, String name) {
+    public ModellingProtos.ArimaModel convert(IArimaModel arima, String name) {
         if (arima == null) {
-            return ToolkitProtos.ArimaModel.getDefaultInstance();
+            return ModellingProtos.ArimaModel.getDefaultInstance();
         }
-        return ToolkitProtos.ArimaModel.newBuilder()
+        return ModellingProtos.ArimaModel.newBuilder()
                 .addAllAr(Iterables.of(arima.getStationaryAr().asPolynomial().coefficients()))
                 .addAllDelta(Iterables.of(arima.getNonStationaryAr().asPolynomial().coefficients()))
                 .addAllMa(Iterables.of(arima.getMa().asPolynomial().coefficients()))
@@ -324,22 +327,19 @@ public class ToolkitProtosUtility {
         } else {
             return ToolkitProtos.StatisticalTest.newBuilder()
                     .setValue(test.getValue())
-                    .setPvalue(test.getPValue())
-                    .setDescription(test.getDistribution().toString())
-                    .build();
-        }
-    }
-
-    public ToolkitProtos.StatisticalTest convert(TestResult test) {
-        if (test == null) {
-            return ToolkitProtos.StatisticalTest.getDefaultInstance();
-        } else {
-            return ToolkitProtos.StatisticalTest.newBuilder()
-                    .setValue(test.getValue())
                     .setPvalue(test.getPvalue())
                     .setDescription(test.getDescription())
                     .build();
         }
+    }
+
+    public ToolkitProtos.OneWayAnova convert(OneWayAnova anova) {
+        return ToolkitProtos.OneWayAnova.newBuilder()
+                .setSSM(anova.getSsm())
+                .setDfm(anova.getDfm())
+                .setSSR(anova.getSsr())
+                .setDfr(anova.getDfr())
+                .build();
     }
 
     public ToolkitProtos.NIIDTests convert(NiidTests tests) {

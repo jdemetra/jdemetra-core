@@ -56,7 +56,7 @@ public class ModelVerifier {
             return false;
         }
         // QStat
-        if (niid.ljungBox().getPValue() < QSTAT) {
+        if (niid.ljungBox().getPvalue() < QSTAT) {
             return false;
         }
         // skewness
@@ -68,7 +68,7 @@ public class ModelVerifier {
             return false;
         }
         // mean
-        if (niid.meanTest().getPValue() < .01) {
+        if (niid.meanTest().getPvalue() < .01) {
             return false;
         }
         // qs

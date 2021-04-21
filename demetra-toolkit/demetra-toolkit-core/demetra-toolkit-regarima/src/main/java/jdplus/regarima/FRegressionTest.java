@@ -16,12 +16,11 @@
  */
 package jdplus.regarima;
 
+import demetra.stats.StatisticalTest;
 import nbbrd.design.Development;
-import demetra.information.InformationSet;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.linearmodel.JointTest;
 import jdplus.regsarima.regular.IRegressionTest;
-import jdplus.stats.tests.StatisticalTest;
 
 
 /**
@@ -53,6 +52,6 @@ public class FRegressionTest implements IRegressionTest {
                 .variableSelection(ireg, nregs)
                 .hyperParametersCount(nhp)
                 .build();
-        return Math.abs(stat.getPValue())< eps;
+        return Math.abs(stat.getPvalue())< eps;
     }
 }

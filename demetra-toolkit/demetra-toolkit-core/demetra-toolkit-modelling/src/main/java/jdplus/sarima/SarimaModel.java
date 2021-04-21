@@ -16,25 +16,25 @@
  */
 package jdplus.sarima;
 
-import demetra.arima.SarmaOrders;
+import demetra.arima.ISarimaModel;
 import demetra.arima.SarimaOrders;
-import jdplus.arima.AbstractArimaModel;
-import jdplus.arima.StationaryTransformation;
-import jdplus.data.DataBlock;
-import nbbrd.design.Development;
-import nbbrd.design.Immutable;
-import jdplus.math.linearfilters.BackFilter;
-import jdplus.math.linearfilters.FilterUtility;
-import jdplus.math.polynomials.Polynomial;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import demetra.data.DoubleSeqCursor;
-import nbbrd.design.BuilderPattern;
-import nbbrd.design.SkipProcessing;
+import demetra.arima.SarmaOrders;
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
 import demetra.modelling.implementations.SarimaSpec;
 import java.util.Arrays;
+import jdplus.arima.AbstractArimaModel;
+import jdplus.arima.StationaryTransformation;
+import jdplus.data.DataBlock;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.FilterUtility;
+import jdplus.math.polynomials.Polynomial;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
+import nbbrd.design.Immutable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Box-Jenkins seasonal arima model AR(B)* SAR(B)*D(B)*SD(B) y(t) =
@@ -49,7 +49,7 @@ import java.util.Arrays;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public final class SarimaModel extends AbstractArimaModel {
+public final class SarimaModel extends AbstractArimaModel implements ISarimaModel {
 
     @BuilderPattern(SarimaModel.class)
     public static class Builder {
@@ -282,7 +282,8 @@ public final class SarimaModel extends AbstractArimaModel {
      *
      * @return
      */
-    public DoubleSeq parameters() {
+    @Override
+    public DoubleSeq parameters(){
         double[] p = new double[phi.length + bphi.length + th.length + bth.length];
         int pos = 0;
         if (phi.length > 0) {
@@ -316,7 +317,7 @@ public final class SarimaModel extends AbstractArimaModel {
         return x == Doubles.EMPTYARRAY ? Doubles.EMPTYARRAY : x.clone();
     }
 
-    public double[] phi() {
+    public double[] getPhi() {
         return clone(phi);
     }
 
@@ -329,7 +330,8 @@ public final class SarimaModel extends AbstractArimaModel {
         return bphi[lag - 1];
     }
 
-    public double[] bphi() {
+    @Override
+    public double[] getBphi() {
         return clone(bphi);
     }
 
@@ -342,7 +344,8 @@ public final class SarimaModel extends AbstractArimaModel {
         return th[lag - 1];
     }
 
-    public double[] theta() {
+    @Override
+    public double[] getTheta() {
         return clone(th);
     }
 
@@ -355,7 +358,8 @@ public final class SarimaModel extends AbstractArimaModel {
         return bth[lag - 1];
     }
 
-    public double[] btheta() {
+    @Override
+    public double[] getBtheta() {
         return clone(bth);
     }
 
@@ -395,7 +399,8 @@ public final class SarimaModel extends AbstractArimaModel {
      *
      * @return
      */
-    public int getFrequency() {
+    @Override
+    public int getPeriod() {
         return s;
     }
 
@@ -472,15 +477,18 @@ public final class SarimaModel extends AbstractArimaModel {
      *
      * @return
      */
-    public int getRegularDifferenceOrder() {
+    @Override
+    public int getD() {
         return d;
     }
 
-    public int getRegularAROrder() {
+    @Override
+    public int getP() {
         return phi.length;
     }
 
-    public int getRegularMAOrder() {
+    @Override
+    public int getQ() {
         return th.length;
     }
 
@@ -548,15 +556,18 @@ public final class SarimaModel extends AbstractArimaModel {
      *
      * @return
      */
-    public int getSeasonalDifferenceOrder() {
+    @Override
+    public int getBd() {
         return bd;
     }
 
-    public int getSeasonalAROrder() {
+    @Override
+    public int getBp() {
         return bphi.length;
     }
 
-    public int getSeasonalMAOrder() {
+    @Override
+    public int getBq() {
         return bth.length;
     }
 
