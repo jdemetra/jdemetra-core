@@ -355,6 +355,18 @@ public class Parameter {
         return false;
     }
 
+    public static boolean hasDefinedParameters(Parameter[] p) {
+        if (p == null) {
+            return false;
+        }
+        for (int i = 0; i < p.length; ++i) {
+            if (p[i].isDefined()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean isFixed(Parameter p) {
         if (p == null) {
             return false;

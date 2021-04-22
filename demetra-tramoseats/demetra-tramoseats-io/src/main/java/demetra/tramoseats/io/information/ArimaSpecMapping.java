@@ -30,7 +30,7 @@ import java.util.Map;
 @lombok.experimental.UtilityClass
 class ArimaSpecMapping {
 
-    static final String MEAN = "mean", MU = "mu",
+    static final String MEAN = "mean", MU = "mu", PERIOD = "period",
             THETA = "theta", D = "d", PHI = "phi",
             BTHETA = "btheta", BD = "bd", BPHI = "bphi";
 
@@ -49,11 +49,9 @@ class ArimaSpecMapping {
         if (info == null) {
             return SarimaSpec.airline();
         }
-        SarimaSpec.Builder builder=SarimaSpec.builder()
-//                .validator(SarimaValidator.VALIDATOR)
-                ;
+        SarimaSpec.Builder builder = SarimaSpec.builder();
         readProperties(info, builder);
-         return builder.build();
+        return builder.build();
     }
 
     InformationSet write(SarimaSpec spec, boolean verbose) {
@@ -66,7 +64,11 @@ class ArimaSpecMapping {
     }
 
     private void readProperties(InformationSet info, SarimaSpec.Builder ab) {
-         // default values
+        // default values
+        Integer period = info.get(PERIOD, Integer.class);
+        if (period != null) {
+            ab.period(period);
+        }
         Integer d = info.get(D, Integer.class);
         if (d != null) {
             ab.d(d);
@@ -81,13 +83,17 @@ class ArimaSpecMapping {
                 .btheta(info.get(BTHETA, Parameter[].class));
     }
 
-    private void writeProperties(InformationSet info, SarimaSpec spec, boolean verbose){
+    private void writeProperties(InformationSet info, SarimaSpec spec, boolean verbose) {
         demetra.data.Parameter[] phi = spec.getPhi();
+        int period = spec.getPeriod();
+        if (verbose || period != 0) {
+            info.set(PERIOD, period);
+        }
         if (phi.length > 0) {
             info.set(PHI, phi);
         }
         int d = spec.getD();
-        if (verbose || d != 1) {
+        if (verbose || d != 0) {
             info.set(D, d);
         }
         demetra.data.Parameter[] th = spec.getTheta();
@@ -99,7 +105,7 @@ class ArimaSpecMapping {
             info.set(BPHI, bphi);
         }
         int bd = spec.getBd();
-        if (verbose || bd != 1) {
+        if (verbose || bd != 0) {
             info.set(BD, bd);
         }
         demetra.data.Parameter[] bth = spec.getBtheta();
@@ -127,7 +133,7 @@ class ArimaSpecMapping {
     // For compatibility issues, ARIMA contains mean correction
     InformationSet writeLegacy(SarimaSpec aspec, RegressionSpec rspec, boolean verbose) {
         InformationSet info = new InformationSet();
-        
+
         // mean
         Parameter mu = rspec.getMean();
         if (mu != null) {

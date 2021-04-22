@@ -92,7 +92,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
                 for (int j = 0; j < nfree; ++j) {
                     p[j] = Parameter.estimated(cursor.getAndNext());
                 }
-                variables[k++] = var.withCoefficient(p);
+                variables[k++] = var.withCoefficients(p);
             } else if (nfree > 0) {
                 Parameter[] p = var.getCoefficients();
                 for (int j = 0; j < p.length; ++j) {
@@ -100,7 +100,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
                         p[j] = Parameter.estimated(cursor.getAndNext());
                     }
                 }
-                variables[k++] = var.withCoefficient(p);
+                variables[k++] = var.withCoefficients(p);
             } else {
                 variables[k++] = var;
             }

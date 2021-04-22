@@ -16,8 +16,12 @@
  */
 package demetra.tramoseats.io.information;
 
+import demetra.data.Data;
 import demetra.information.InformationSet;
 import demetra.tramo.TramoSpec;
+import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.tramo.TramoFactory;
+import jdplus.tramo.TramoKernel;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -40,6 +44,15 @@ public class TramoSpecMappingTest {
         test(TramoSpec.TR5);
         test(TramoSpec.TRfull);
     }
+    
+    @Test
+    public void testSpecific() {
+        TramoKernel kernel = TramoKernel.of(TramoSpec.TRfull, null);
+        RegSarimaModel rslt = kernel.process(Data.TS_PROD, null);
+        TramoSpec pspec = TramoFactory.INSTANCE.generateSpec(TramoSpec.TRfull, rslt.getDescription());
+        test(pspec);        
+        testLegacy(pspec);        
+   }
 
     private void test(TramoSpec spec) {
         InformationSet info = TramoSpecMapping.write(spec, true);

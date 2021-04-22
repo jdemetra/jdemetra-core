@@ -30,6 +30,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 @Development(status = Development.Status.Release)
 @lombok.Value
+@lombok.EqualsAndHashCode(exclude = {"attributes"})
 @lombok.Builder(toBuilder = true)
 public class Variable<V extends ITsVariable> {
 
@@ -134,7 +135,7 @@ public class Variable<V extends ITsVariable> {
         return new Variable(name, core, coefficient == null ? null : new Parameter[]{coefficient}, attributes);
     }
 
-    public Variable withCoefficient(Parameter[] coefficients) {
+    public Variable withCoefficients(Parameter[] coefficients) {
         if (coefficients != null && core.dim() != coefficients.length) {
             throw new IllegalArgumentException();
         }
@@ -166,6 +167,13 @@ public class Variable<V extends ITsVariable> {
         Map<String, String> natts;
         natts = new HashMap<>(attributes);
         natts.put(key, value);
+        return new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
+    }
+
+    public Variable removeAttribute(String key) {
+        Map<String, String> natts;
+        natts = new HashMap<>(attributes);
+        natts.remove(key);
         return new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
     }
 

@@ -17,6 +17,7 @@
 package demetra.tramoseats.r;
 
 import demetra.math.matrices.MatrixType;
+import demetra.modelling.TransformationType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TramoSpec;
@@ -39,6 +40,16 @@ public class Terror {
     
     public MatrixType process(TsData series, TramoSpec spec, Dictionary dic, int nback){
         ModellingContext context=dic == null ? null : dic.toContext();
+        series=series.cleanExtremities();
+        int n=series.length();
+        boolean needlevel=series.getValues().range(n-nback, n).anyMatch(x->Double.isFinite(x) && x <=0);
+        if (needlevel && spec.getTransform().getFunction() != TransformationType.None){
+            spec=spec.toBuilder()
+                    .transform(spec.getTransform().toBuilder()
+                            .function(TransformationType.None)
+                            .build())
+                    .build();
+        }
         TramoKernel kernel=TramoKernel.of(spec, context);
         CheckLast cl=new CheckLast(kernel, nback);
         if (! cl.check(series.cleanExtremities()))
