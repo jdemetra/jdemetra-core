@@ -261,7 +261,15 @@ public class Parameter {
         return all;
     }
 
-    /**
+     public static Parameter[] zero(int n) {
+        Parameter[] all = new Parameter[n];
+        for (int i = 0; i < n; ++i) {
+            all[i] = ZERO;
+        }
+        return all;
+    }
+
+     /**
      * Checks that all the parameters are free. Derived parameters are not
      * considered
      *
@@ -420,5 +428,5 @@ public class Parameter {
         }
     }
 
-    private static final Parameter UNDEFINED = new Parameter(0, ParameterType.Undefined);
+    private static final Parameter UNDEFINED = new Parameter(0, ParameterType.Undefined), ZERO = new Parameter(0, ParameterType.Fixed);
 }

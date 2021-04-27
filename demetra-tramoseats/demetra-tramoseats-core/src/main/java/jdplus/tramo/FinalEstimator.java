@@ -38,8 +38,8 @@ import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 class FinalEstimator implements IModelEstimator {
 
     private static final int MAXD = 2, MAXBD = 1;
-    
-    public static Builder builder(){
+
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -50,40 +50,40 @@ class FinalEstimator implements IModelEstimator {
         private double significanceThreshold = 1;
         private double unitRootThreshold = .96;
         private double precision = .0001;
-        private int pass=0;
-        private boolean ami=false, outliers=false;
+        private int pass = 0;
+        private boolean ami = false, outliers = false;
 
         public FinalEstimator build() {
             return new FinalEstimator(this);
         }
-        
-        public Builder precision(double precision){
-            this.precision=precision;
-            return this;
-        }
-        
-        public Builder cancel(double cancel){
-            this.cancel=cancel;
-            return this;
-        }
-        
-        public Builder unitRootThreshold(double ur){
-            this.unitRootThreshold=ur;
-            return this;
-        }
-        
-        public Builder pass(int pass){
-            this.pass=pass;
+
+        public Builder precision(double precision) {
+            this.precision = precision;
             return this;
         }
 
-        public Builder ami(boolean ami){
-            this.ami=ami;
+        public Builder cancel(double cancel) {
+            this.cancel = cancel;
             return this;
         }
 
-        public Builder outliers(boolean outliers){
-            this.outliers=outliers;
+        public Builder unitRootThreshold(double ur) {
+            this.unitRootThreshold = ur;
+            return this;
+        }
+
+        public Builder pass(int pass) {
+            this.pass = pass;
+            return this;
+        }
+
+        public Builder ami(boolean ami) {
+            this.ami = ami;
+            return this;
+        }
+
+        public Builder outliers(boolean outliers) {
+            this.outliers = outliers;
             return this;
         }
     }
@@ -101,9 +101,9 @@ class FinalEstimator implements IModelEstimator {
         this.eps = builder.precision;
         this.tsig = builder.significanceThreshold;
         this.ur = builder.unitRootThreshold;
-        this.pass=builder.pass;
-        this.ami=builder.ami;
-        this.outliers=builder.outliers;
+        this.pass = builder.pass;
+        this.ami = builder.ami;
+        this.outliers = builder.outliers;
     }
 
     @Override
@@ -116,7 +116,7 @@ class FinalEstimator implements IModelEstimator {
                         .minimizer(LevenbergMarquardtMinimizer.builder())
                         .precision(eps)
                         .computeExactFinalDerivatives(true)
-//                        .startingPoint(RegSarimaComputer.StartingPoint.Multiple)
+                        //                        .startingPoint(RegSarimaComputer.StartingPoint.Multiple)
                         .build();
                 context.estimate(processor);
                 int ndim = mapping.getDim();
@@ -124,16 +124,15 @@ class FinalEstimator implements IModelEstimator {
                     return true;
                 }
 //                context.information.subSet(RegArimaEstimator.OPTIMIZATION).set(RegArimaEstimator.SCORE, monitor.getScore());
-                if (pass == 0)
+                if (!ami) {
                     return true;
+                }
                 if (checkUnitRoots(context)) {
                     nnsig = 0;
-                    if (ami) {
-                        if (!checkCommonRoots(context)) {
-                            nnsig = 2;
-                        } else {
-                            nnsig = test(context);
-                        }
+                    if (!checkCommonRoots(context)) {
+                        nnsig = 2;
+                    } else {
+                        nnsig = test(context);
                     }
                     if (nnsig == 0) {
                         return true;

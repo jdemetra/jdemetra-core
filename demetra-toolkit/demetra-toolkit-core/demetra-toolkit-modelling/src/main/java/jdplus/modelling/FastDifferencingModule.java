@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.regarima.ami;
+package jdplus.modelling;
 
 import jdplus.data.DataBlock;
 import nbbrd.design.BuilderPattern;
@@ -25,7 +25,7 @@ import demetra.data.DoubleSeq;
  *
  * @author Jean Palate
  */
-public class FastDifferencingModule implements IGenericDifferencingModule {
+public class FastDifferencingModule {
 
     public static Builder builder() {
         return new Builder();
@@ -95,7 +95,6 @@ public class FastDifferencingModule implements IGenericDifferencingModule {
         this.centile=centile;
     }
 
-    @Override
     public boolean isMeanCorrection() {
         return Math.abs(tmean) > tstat;
     }
@@ -111,13 +110,11 @@ public class FastDifferencingModule implements IGenericDifferencingModule {
     /**
      *
      * @param x
-     * @param z
      * @param periods
      * @param start
      * @return
      */
-    @Override
-    public int[] process(DoubleSeq x, int[] periods, int[] start) {
+     public int[] process(DoubleSeq x, int[] periods, int[] start) {
         DataBlock z = DataBlock.of(x);
         if (start != null) {
             for (int j = 0; j < periods.length; ++j) {

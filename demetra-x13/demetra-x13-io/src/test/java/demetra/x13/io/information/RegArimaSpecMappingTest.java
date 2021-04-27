@@ -16,8 +16,12 @@
  */
 package demetra.x13.io.information;
 
+import demetra.data.Data;
 import demetra.information.InformationSet;
 import demetra.regarima.RegArimaSpec;
+import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.x13.regarima.RegArimaFactory;
+import jdplus.x13.regarima.RegArimaKernel;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -76,4 +80,13 @@ public class RegArimaSpecMappingTest {
         assertEquals(nspec, spec);
     }
     
+    @Test
+    public void testSpecific() {
+        RegArimaKernel kernel = RegArimaKernel.of(RegArimaSpec.RG5, null);
+        RegSarimaModel rslt = kernel.process(Data.TS_PROD, null);
+        RegArimaSpec pspec = RegArimaFactory.INSTANCE.generateSpec(RegArimaSpec.RG5, rslt.getDescription());
+        test(pspec);        
+        testLegacy(pspec);        
+   }
+
 }
