@@ -69,9 +69,9 @@ class LengthOfPeriodTransformation implements TsDataTransformation {
     @Override
     public TsData transform(TsData data, LogJacobian ljacobian) {
         int ratio = data.getTsUnit().ratioOf(TsUnit.YEAR);
-        if (ratio < 2) {
-            throw new TsException(TsException.INCOMPATIBLE_DOMAIN);
-        }
+//        if (ratio < 2) {
+//            throw new TsException(TsException.INCOMPATIBLE_DOMAIN);
+//        }
         if (type == LengthOfPeriodType.LengthOfPeriod) {
             return length(data, ratio, ljacobian);
         } else {
@@ -190,10 +190,16 @@ class LengthOfPeriodTransformation implements TsDataTransformation {
         }
 
         int ndays = 0;
-        if (freq == 12) {
-            ndays = 28;
-        } else {
-            ndays = CalendarUtility.getCumulatedMonthDays(1 + 12 / freq);
+        switch (freq) {
+            case 12:
+                ndays = 28;
+                break;
+            case 1:
+                ndays=365;
+                break;
+            default:
+                ndays = CalendarUtility.getCumulatedMonthDays(1 + 12 / freq);
+                break;
         }
         double[] data = tsdata.getValues().toArray();
         if (back) {

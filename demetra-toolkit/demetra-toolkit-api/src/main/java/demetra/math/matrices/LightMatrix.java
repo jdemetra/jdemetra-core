@@ -25,8 +25,9 @@ import demetra.data.Doubles;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
+@lombok.EqualsAndHashCode
 class LightMatrix implements MatrixType {
-    
+
     private final double[] storage;
     private final int nrows, ncolumns;
 
@@ -35,9 +36,9 @@ class LightMatrix implements MatrixType {
         this.nrows = nrows;
         this.ncolumns = ncolumns;
     }
-    
+
     @Override
-     public double[] toArray(){
+    public double[] toArray() {
         return storage.clone();
     }
 
@@ -105,7 +106,7 @@ class LightMatrix implements MatrixType {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return MatrixType.format(this);
     }
 }

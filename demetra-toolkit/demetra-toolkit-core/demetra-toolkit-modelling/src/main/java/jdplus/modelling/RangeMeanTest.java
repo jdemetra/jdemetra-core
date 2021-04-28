@@ -90,8 +90,6 @@ public class RangeMeanTest {
      */
     public LeastSquaresResults compute(DoubleSeq data) {
         int n = data.length();
-        groupLength = 0;
-        trim = 0;
         int npoints = n / groupLength;
         if (npoints <= 3) {
             if (groupLength == 0) {

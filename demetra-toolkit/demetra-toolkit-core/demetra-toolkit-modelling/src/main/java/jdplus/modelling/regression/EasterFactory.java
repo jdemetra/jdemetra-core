@@ -57,6 +57,8 @@ class EasterFactory implements RegressionVariableFactory<EasterVariable>  {
 
     @Override
     public boolean fill(EasterVariable var, TsPeriod start, Matrix buffer) {
+        if (start.getUnit().getAnnualFrequency()<= 3)
+            return false;
         int duration =var.getDuration();
         int endPosition=var.getEndPosition();
         EasterVariable.Correction meanCorrection = var.getMeanCorrection();

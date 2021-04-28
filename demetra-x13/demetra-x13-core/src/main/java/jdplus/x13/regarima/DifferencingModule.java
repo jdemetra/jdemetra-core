@@ -40,7 +40,7 @@ import jdplus.regarima.IRegArimaComputer;
 public class DifferencingModule {
 
     public static final int MAXD = 2, MAXBD = 1;
-    
+
     public static Builder builder() {
         return new Builder();
     }
@@ -338,7 +338,7 @@ public class DifferencingModule {
             lastModel = SarimaMapping.stabilize(lastModel);
 
             IRegArimaComputer processor = RegArimaUtility.processor(true, eps);
-            SarimaModel arima=SarimaModel.builder(spec)
+            SarimaModel arima = SarimaModel.builder(spec)
                     .parameters(lastModel.parameters())
                     .build();
             RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder()
@@ -368,7 +368,7 @@ public class DifferencingModule {
 
     private int maincondition() {
         double ar = lastModel.phi(1), ma = lastModel.theta(1), sar = 0, sma = 0;
-        if (spec.getPeriod() > 1) {
+        if (hasSeas()) {
             sar = lastModel.bphi(1);
             sma = lastModel.btheta(1);
         }
@@ -473,7 +473,9 @@ public class DifferencingModule {
         initstep(true);
         if (spec.getD() != 0 || spec.getBd() != 0) {
             rmax = lastModel.phi(1);
-            rsmax = lastModel.bphi(1);
+            if (hasSeas()) {
+                rsmax = lastModel.bphi(1);
+            }
         }
 
         Complex[] rar = lastModel.getRegularAR().mirror().roots();

@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package demetra.toolkit.io.xml.legacy.core;
 
 import demetra.data.Parameter;
@@ -33,6 +32,8 @@ import demetra.toolkit.io.xml.legacy.DummyAdapter;
 import demetra.toolkit.io.xml.legacy.XmlConverterAdapter;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
@@ -49,8 +50,8 @@ public class XmlInformation {
 
     static final String NAME = "informationType";
     static final String RNAME = "information";
-    static final HashMap<Type, XmlAdapter> fromXmlMap = new HashMap<>();
-    static final HashMap<Type, XmlAdapter> toXmlMap = new HashMap<>();
+    static final HashMap<Class, XmlAdapter> fromXmlMap = new HashMap<>();
+    static final HashMap<Class, XmlAdapter> toXmlMap = new HashMap<>();
 
     // default mapping
     static {
@@ -68,28 +69,28 @@ public class XmlInformation {
         toXmlMap.put(boolean[].class, dummy);
         //toXmlMap.put(String[].class, dummy);
 
-        XmlConverterAdapter<XmlStrings, String[]> strMapper =
-                new XmlConverterAdapter<>(XmlStrings.class);
+        XmlConverterAdapter<XmlStrings, String[]> strMapper
+                = new XmlConverterAdapter<>(XmlStrings.class);
         fromXmlMap.put(XmlStrings.class, strMapper);
         toXmlMap.put(String[].class, strMapper);
 
-        XmlConverterAdapter<XmlDoubles, double[]> doublesMapper =
-                new XmlConverterAdapter<>(XmlDoubles.class);
+        XmlConverterAdapter<XmlDoubles, double[]> doublesMapper
+                = new XmlConverterAdapter<>(XmlDoubles.class);
         fromXmlMap.put(XmlDoubles.class, doublesMapper);
         toXmlMap.put(double[].class, doublesMapper);
 
-        XmlConverterAdapter<XmlIntegers, int[]> intsMapper =
-                new XmlConverterAdapter<>(XmlIntegers.class);
+        XmlConverterAdapter<XmlIntegers, int[]> intsMapper
+                = new XmlConverterAdapter<>(XmlIntegers.class);
         fromXmlMap.put(XmlIntegers.class, intsMapper);
         toXmlMap.put(int[].class, intsMapper);
 
-        XmlConverterAdapter<XmlInformationSet, InformationSet> infoMapper =
-                new XmlConverterAdapter<>(XmlInformationSet.class);
+        XmlConverterAdapter<XmlInformationSet, InformationSet> infoMapper
+                = new XmlConverterAdapter<>(XmlInformationSet.class);
         fromXmlMap.put(XmlInformationSet.class, infoMapper);
         toXmlMap.put(InformationSet.class, infoMapper);
 
-        XmlConverterAdapter<XmlAlgorithm, AlgorithmDescriptor> algMapper =
-                new XmlConverterAdapter<>(XmlAlgorithm.class);
+        XmlConverterAdapter<XmlAlgorithm, AlgorithmDescriptor> algMapper
+                = new XmlConverterAdapter<>(XmlAlgorithm.class);
 
         fromXmlMap.put(XmlAlgorithm.class, algMapper);
         toXmlMap.put(AlgorithmDescriptor.class, algMapper);
@@ -111,48 +112,52 @@ public class XmlInformation {
 
         fromXmlMap.put(XmlTs.class, XmlTs.getTsAdapter());
         toXmlMap.put(Ts.class, XmlTs.getTsAdapter());
-        
+
         fromXmlMap.put(XmlTsCollection.class, XmlTsCollection.getTsAdapter());
         toXmlMap.put(TsCollection.class, XmlTsCollection.getTsAdapter());
 
-        XmlConverterAdapter<XmlRegItem, RegressionItem> regitemMapper =
-                new XmlConverterAdapter<>(XmlRegItem.class);
+        XmlConverterAdapter<XmlRegItem, RegressionItem> regitemMapper
+                = new XmlConverterAdapter<>(XmlRegItem.class);
 
         fromXmlMap.put(XmlRegItem.class, regitemMapper);
         toXmlMap.put(RegressionItem.class, regitemMapper);
 
-        XmlConverterAdapter<XmlStatisticalTest, StatisticalTest> statsMapper =
-                new XmlConverterAdapter<>(XmlStatisticalTest.class);
+        XmlConverterAdapter<XmlStatisticalTest, StatisticalTest> statsMapper
+                = new XmlConverterAdapter<>(XmlStatisticalTest.class);
 
         fromXmlMap.put(XmlStatisticalTest.class, statsMapper);
         toXmlMap.put(StatisticalTest.class, statsMapper);
-        
+
         fromXmlMap.put(XmlMatrix.class, XmlMatrix.getAdapter());
         toXmlMap.put(MatrixType.class, XmlMatrix.getAdapter());
-        
+
     }
-    
-    @XmlAttribute
+
+     @XmlAttribute
     public String name;
     @XmlElements(value = {
-        @XmlElement(type = Boolean.class, name = "Boolean"),
-        @XmlElement(type = Double.class, name = "Double"),
-        @XmlElement(type = Integer.class, name = "Integer"),
-        @XmlElement(type = String.class, name = "String"),
-        @XmlElement(type = XmlIntegers.class, name = "Integers"),
-        @XmlElement(type = XmlDoubles.class, name = "Doubles"),
-        @XmlElement(type = boolean[].class, name = "Booleans"),
-        @XmlElement(type = XmlStrings.class, name = "Strings"),
-        @XmlElement(type = XmlInformationSet.class, name = "Subset"),
-        @XmlElement(type = XmlAlgorithm.class, name = "Method"),
-        @XmlElement(type = XmlTsData.class, name = "TsData"),
-        @XmlElement(type = XmlTs.class, name = "Ts"),
-        @XmlElement(type = XmlTsCollection.class, name = "TsCollection"),
-        @XmlElement(type = XmlStatisticalTest.class, name = "StatisticalTest"),
-        @XmlElement(type = XmlRegItem.class, name = "RegressionItem"),
-        @XmlElement(type = XmlParameter.class, name = "Parameter"),
-        @XmlElement(type = XmlParameters.class, name = "Parameters"),       
-        @XmlElement(type = XmlMatrix.class, name = "Matrix")})
+        @XmlElement(type = Boolean.class, name = "boolean"),
+        @XmlElement(type = Double.class, name = "double"),
+        @XmlElement(type = Integer.class, name = "integer"),
+        @XmlElement(type = String.class, name = "string"),
+        @XmlElement(type = XmlIntegers.class, name = "integers"),
+        @XmlElement(type = XmlDoubles.class, name = "doubles"),
+        @XmlElement(type = boolean[].class, name = "booleans"),
+        @XmlElement(type = XmlStrings.class, name = "strings"),
+        @XmlElement(type = XmlInformationSet.class, name = "subset"),
+        @XmlElement(type = XmlAlgorithm.class, name = "method"),
+        @XmlElement(type = XmlTsData.class, name = "tsdata"),
+        @XmlElement(type = XmlTsMoniker.class, name = "moniker"),
+        @XmlElement(type = XmlTs.class, name = "ts"),
+        @XmlElement(type = XmlTsCollection.class, name = "tscollection"),
+        @XmlElement(type = XmlPeriodSelection.class, name = "span"),
+        @XmlElement(type = XmlStatisticalTest.class, name = "test"),
+//        @XmlElement(type = XmlInterventionVariable.class, name = "ivar"),
+//        @XmlElement(type = XmlRamp.class, name = "ramp"),
+        @XmlElement(type = XmlRegItem.class, name = "regitem"),
+        @XmlElement(type = XmlParameter.class, name = "param"),
+        @XmlElement(type = XmlParameters.class, name = "params"),       
+        @XmlElement(type = XmlMatrix.class, name = "matrix")})
     Object information;
 
     public Information<Object> toInformation() throws Exception {
@@ -182,6 +187,12 @@ public class XmlInformation {
         } else if (info.getValue().getClass().isEnum()) {
             return new XmlInformation(info.getName(), info.getValue().toString());
         } else {
+            // try to find a compatible mapping
+            for (Entry<Class, XmlAdapter> entry : toXmlMap.entrySet()) {
+                if (entry.getKey().isInstance(info.getValue())) {
+                    return new XmlInformation(info.getName(), entry.getValue().marshal(info.getValue()));
+                }
+            }
             return null;
         }
     }

@@ -43,21 +43,21 @@ public class StsProtosUtility {
         }
     }
 
-    public StsProtos.BasicStructuralModel convert(BasicStructuralModel bsm) {
-        BsmSpec spec = bsm.specification();
-        return StsProtos.BasicStructuralModel.newBuilder()
-                .setPeriod(bsm.getPeriod())
-                .setNvar(spec.hasNoise() ? bsm.getVariance(Component.Noise) : 0)
-                .setLevel(spec.hasLevel())
-                .setNvar(spec.hasLevel() ? bsm.getVariance(Component.Level) : 0)
-                .setSlope(spec.hasSlope())
-                .setSvar(spec.hasSlope() ? bsm.getVariance(Component.Slope) : 0)
-                .setCycle(spec.hasCycle())
-                .setCyclePeriod(spec.hasCycle() ? bsm.getCyclicalPeriod() : 0)
-                .setCycleFactor(spec.hasCycle() ? bsm.getCyclicalDumpingFactor() : 0)
-                .setCvar(spec.hasCycle()? bsm.getVariance(Component.Cycle) : 0)
-                .setSeasonalModel(convert(spec.getSeasonalModel()))
-                .setSeasvar(spec.hasSeasonal() ? bsm.getVariance(Component.Seasonal) : 0)
-                .build();
-    }
+//    public StsProtos.BasicStructuralModel convert(BasicStructuralModel bsm) {
+//        BsmSpec spec = bsm.specification();
+//        return StsProtos.BasicStructuralModel.newBuilder()
+//                .setPeriod(bsm.getPeriod())
+//                .setNvar(spec.hasNoise() ? bsm.getVariance(Component.Noise) : 0)
+//                .setLevel(spec.hasLevel())
+//                .setNvar(spec.hasLevel() ? bsm.getVariance(Component.Level) : 0)
+//                .setSlope(spec.hasSlope())
+//                .setSvar(spec.hasSlope() ? bsm.getVariance(Component.Slope) : 0)
+//                .setCycle(spec.hasCycle())
+//                .setCyclePeriod(spec.hasCycle() ? bsm.getCyclicalPeriod() : 0)
+//                .setCycleFactor(spec.hasCycle() ? bsm.getCyclicalDumpingFactor() : 0)
+//                .setCvar(spec.hasCycle()? bsm.getVariance(Component.Cycle) : 0)
+//                .setSeasonalModel(convert(spec.getSeasonalModel()))
+//                .setSeasvar(spec.hasSeasonal() ? bsm.getVariance(Component.Seasonal) : 0)
+//                .build();
+//    }
 }
