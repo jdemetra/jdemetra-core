@@ -17,6 +17,7 @@
 package demetra.sts.r;
 
 import demetra.data.Doubles;
+import demetra.data.Parameter;
 import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import demetra.information.InformationMapping;
 import jdplus.math.functions.IFunctionDerivatives;
@@ -33,7 +34,7 @@ import demetra.sts.Component;
 import demetra.sts.ComponentUse;
 import demetra.sts.SeasonalModel;
 import jdplus.sts.SsfBsm;
-import jdplus.sts.internal.BsmMonitor;
+import jdplus.sts.internal.BsmKernel;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
@@ -92,13 +93,13 @@ public class StsEstimation {
         private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
 
         static {
-            MAPPING.set(LVAR, Double.class, source -> source.variance(Component.Level));
-            MAPPING.set(SVAR, Double.class, source -> source.variance(Component.Slope));
-            MAPPING.set(CVAR, Double.class, source -> source.variance(Component.Cycle));
-            MAPPING.set(SEASVAR, Double.class, source -> source.variance(Component.Seasonal));
-            MAPPING.set(NVAR, Double.class, source -> source.variance(Component.Noise));
-            MAPPING.set(CDUMP, Double.class, source -> source.getBsm().getCyclicalDumpingFactor());
-            MAPPING.set(CLENGTH, Double.class, source -> source.getBsm().getCyclicalPeriod() / (6 * source.getBsm().getPeriod()));
+            MAPPING.set(LVAR, Double.class, source -> source.getBsm().getLevelVar());
+            MAPPING.set(SVAR, Double.class, source -> source.getBsm().getSlopeVar());
+            MAPPING.set(CVAR, Double.class, source -> source.getBsm().getCycleVar());
+            MAPPING.set(SEASVAR, Double.class, source -> source.getBsm().getSeasonalVar());
+            MAPPING.set(NVAR, Double.class, source -> source.getBsm().getNoiseVar());
+            MAPPING.set(CDUMP, Double.class, source -> source.getBsm().getCycleDumpingFactor());
+            MAPPING.set(CLENGTH, Double.class, source -> source.getBsm().getCycleLength());
             MAPPING.set(Y, TsData.class, source -> source.getY());
             MAPPING.set(T, TsData.class, source -> source.getT());
             MAPPING.set(S, TsData.class, source -> source.getS());
@@ -109,28 +110,19 @@ public class StsEstimation {
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
         }
 
-        private double variance(Component cmp) {
-            double v = bsm.getVariance(cmp);
-            if (v > 0) {
-                v *= likelihood.sigma();
-            }
-            return v;
-        }
     }
 
     public Results process(TsData y, int level, int slope, int cycle, int noise, String seasmodel) {
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
-        BsmSpec mspec = new BsmSpec();
-        mspec.setLevelUse(of(level));
-        mspec.setSlopeUse(of(slope));
-        mspec.setCycleUse(of(cycle));
-        mspec.setNoiseUse(of(noise));
-        mspec.setSeasonalModel(sm);
+        BsmSpec mspec = BsmSpec.builder()
+                .level(of(level), of(slope))
+                .cycle(cycle != 0)
+                .noise(of(noise))
+                .seasonal(sm)
+                .build();
 
-        BsmMonitor monitor = new BsmMonitor();
-        monitor.setSpecification(mspec);
-        BsmEstimationSpec espec = new BsmEstimationSpec();
-        if (!monitor.process(y.getValues(), y.getTsUnit().ratioOf(TsUnit.YEAR))) {
+        BsmKernel monitor = new BsmKernel(null);
+        if (!monitor.process(y.getValues(), y.getTsUnit().ratioOf(TsUnit.YEAR), mspec)) {
             return null;
         }
 
@@ -140,7 +132,7 @@ public class StsEstimation {
 
         TsData t = null, c = null, s = null, seas = null, n = null;
         TsPeriod start = y.getStart();
-        mspec=bsm.specification();
+        mspec=monitor.finalSpecification();
         if (mspec.hasLevel()) {
             int pos = SsfBsm.searchPosition(bsm, Component.Level);
             t = TsData.of(start, Doubles.of(sr.getComponent(pos)));
@@ -186,13 +178,13 @@ public class StsEstimation {
                 .build();
     }
 
-    private ComponentUse of(int p) {
+    private Parameter of(int p) {
         if (p == 0) {
-            return ComponentUse.Fixed;
+            return Parameter.zero();
         } else if (p > 0) {
-            return ComponentUse.Free;
+            return Parameter.undefined();
         } else {
-            return ComponentUse.Unused;
+            return null;
         }
     }
 }

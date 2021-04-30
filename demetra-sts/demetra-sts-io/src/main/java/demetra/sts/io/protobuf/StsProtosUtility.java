@@ -19,6 +19,7 @@ package demetra.sts.io.protobuf;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import demetra.sts.SeasonalModel;
+import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import jdplus.sts.BasicStructuralModel;
 
 /**
@@ -41,6 +42,30 @@ public class StsProtosUtility {
             default:
                 return StsProtos.SeasonalModel.SEAS_NONE;
         }
+    }
+
+    public SeasonalModel convert(StsProtos.SeasonalModel m) {
+        switch (m) {
+            case SEAS_DUMMY:
+                return SeasonalModel.Dummy;
+            case SEAS_TRIGONOMETRIC:
+                return SeasonalModel.Trigonometric;
+            case SEAS_HARRISONSTEVENS:
+                return SeasonalModel.HarrisonStevens;
+            case SEAS_CRUDE:
+                return SeasonalModel.Crude;
+            default:
+                return null;
+        }
+    }
+
+    public BsmSpec convert(StsProtos.BsmSpec spec) {
+        return BsmSpec.builder()
+                .level(ToolkitProtosUtility.convert(spec.getLevel()), ToolkitProtosUtility.convert(spec.getSlope()))
+                .seasonal(convert(spec.getSeasonalModel()), ToolkitProtosUtility.convert(spec.getSeas()))
+                .noise(ToolkitProtosUtility.convert(spec.getNoise()))
+                .cycle(ToolkitProtosUtility.convert(spec.getCycle()), ToolkitProtosUtility.convert(spec.getCycleFactor()), ToolkitProtosUtility.convert(spec.getCyclePeriod()))
+                .build();
     }
 
 //    public StsProtos.BasicStructuralModel convert(BasicStructuralModel bsm) {

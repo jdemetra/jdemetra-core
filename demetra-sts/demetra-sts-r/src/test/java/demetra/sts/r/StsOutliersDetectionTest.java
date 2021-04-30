@@ -6,6 +6,7 @@
 package demetra.sts.r;
 
 import demetra.data.Data;
+import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import java.util.Random;
@@ -60,7 +61,7 @@ public class StsOutliersDetectionTest {
     public void testSeasonalBreaks() {
         TsData y = TsData.ofInternal(TsPeriod.monthly(1974, 1), sugar);
         double[] rslt = StsOutliersDetection.seasonalBreaks(y, 1, 1, 1, "HarrisonStevens", null);
-        //       System.out.println(DoubleSeq.of(rslt));
+               System.out.println(DoubleSeq.of(rslt));
     }
 
 }

@@ -8,12 +8,14 @@ package demetra.sts.r;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Iterables;
+import demetra.data.Parameter;
 import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
 import demetra.outliers.io.protobuf.OutliersProtos;
 import demetra.processing.ProcResults;
+import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import demetra.sts.ComponentUse;
@@ -39,7 +41,7 @@ import jdplus.sts.OutliersDetection;
 import jdplus.sts.SsfBsm;
 import jdplus.sts.extractors.BasicStructuralModelExtractor;
 import jdplus.sts.internal.BsmMapping;
-import jdplus.sts.internal.BsmMonitor;
+import jdplus.sts.internal.BsmKernel;
 
 /**
  *
@@ -54,7 +56,7 @@ public class StsOutliersDetection {
 
         public byte[] buffer() {
             int nx = x == null ? 0 : x.getColumnsCount();
-            BsmMapping mapping=new BsmMapping(spec, period);
+            BsmMapping mapping=new BsmMapping(spec, period, null);
             StsOutliersProtos.StsSolution.Builder builder = StsOutliersProtos.StsSolution.newBuilder()
                     .addAllBsmInitial(Iterables.of(mapping.map(initialBsm)))
                     .addAllBsmFinal(Iterables.of(mapping.map(finalBsm)))
@@ -191,12 +193,12 @@ public class StsOutliersDetection {
             x=x.extract(start, y.length(), 0, x.getColumnsCount());
         }
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
-        BsmSpec spec = new BsmSpec();
-        spec.setLevelUse(of(level));
-        spec.setSlopeUse(of(slope));
-        spec.setNoiseUse(of(noise));
-        spec.setSeasonalModel(sm);
-        OutliersDetection.Estimation fe = OutliersDetection.Estimation.valueOf(forwardEstimation);
+        BsmSpec spec = BsmSpec.builder()
+                .seasonal(sm)
+                .level(of(level), of(slope))
+                .noise(of(noise))
+                .build();
+         OutliersDetection.Estimation fe = OutliersDetection.Estimation.valueOf(forwardEstimation);
         OutliersDetection.Estimation be = OutliersDetection.Estimation.valueOf(backwardEstimation);
         OutliersDetection od = OutliersDetection.builder()
                 .bsm(spec)
@@ -258,7 +260,7 @@ public class StsOutliersDetection {
         sig2 = od.getLikelihood().sigma();
         Matrix tau1 = tau(n, ssf.getStateDim(), model, sd, sig2);
 
-        int np = spec.getParametersCount();
+        int np = spec.getFreeParametersCount();
 
         return Results.builder()
                 .spec(spec)
@@ -347,29 +349,30 @@ public class StsOutliersDetection {
         return tau;
     }
 
-    private ComponentUse of(int p) {
+    private Parameter of(int p) {
         if (p == 0) {
-            return ComponentUse.Fixed;
+            return Parameter.zero();
         } else if (p > 0) {
-            return ComponentUse.Free;
+            return Parameter.undefined();
         } else {
-            return ComponentUse.Unused;
+            return null;
         }
     }
 
     public double[] seasonalBreaks(TsData y, int level, int slope, int noise, String seasmodel, MatrixType x) {
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
-        BsmSpec mspec = new BsmSpec();
-        mspec.setLevelUse(of(level));
-        mspec.setSlopeUse(of(slope));
-        mspec.setNoiseUse(of(noise));
-        mspec.setSeasonalModel(sm);
-        BsmMonitor monitor = new BsmMonitor();
-        monitor.setSpecification(mspec);
-        monitor.useDiffuseRegressors(true);
-        int freq = y.getAnnualFrequency();
+        BsmSpec mspec = BsmSpec.builder()
+                .seasonal(sm)
+                .level(of(level), of(slope))
+                .noise(of(noise))
+                .build();
+        BsmEstimationSpec espec=BsmEstimationSpec.builder()
+                .diffuseRegression(true)
+                .build();
+        BsmKernel monitor = new BsmKernel(espec);
+         int freq = y.getAnnualFrequency();
         Matrix X = Matrix.of(x);
-        if (!monitor.process(y.getValues(), X, freq)) {
+        if (!monitor.process(y.getValues(), X, freq, mspec)) {
             return null;
         }
         BasicStructuralModel bsm = monitor.getResult();
@@ -391,7 +394,7 @@ public class StsOutliersDetection {
         smoother.process(ssf, data, sd);
 
         int spos = 0;
-        if (bsm.getVariance(Component.Noise) != 0) {
+        if (bsm.getNoiseVar() != 0) {
             ++spos;
         }
         if (mspec.hasLevel()) {

@@ -7,6 +7,7 @@ package demetra.sa.io.protobuf;
 
 import demetra.data.Iterables;
 import demetra.modelling.ComponentInformation;
+import demetra.modelling.io.protobuf.ModellingProtos;
 import demetra.sa.ComponentType;
 import demetra.sa.DefaultSaDiagnostics;
 import demetra.sa.EstimationPolicy;
@@ -109,7 +110,7 @@ public class SaProtosUtility {
                 .build();
     }
 
-    public SaProtos.Component convert(SeriesDecomposition decomp, ComponentType type) {
+    public ModellingProtos.Component convert(SeriesDecomposition decomp, ComponentType type) {
         TsData s = decomp.getSeries(type, ComponentInformation.Value);
         TsData fs = decomp.getSeries(type, ComponentInformation.Forecast);
         TsData bs = decomp.getSeries(type, ComponentInformation.Backcast);
@@ -120,7 +121,7 @@ public class SaProtosUtility {
         TsData S = TsData.concatenate(bs, s, fs);
         TsData ES = TsData.concatenate(ebs, es, efs);
 
-        SaProtos.Component.Builder builder = SaProtos.Component.newBuilder()
+        ModellingProtos.Component.Builder builder = ModellingProtos.Component.newBuilder()
                 .setData(ToolkitProtosUtility.convert(S))
                 .setNbcasts(bs == null ? 0 : bs.length())
                 .setNfcasts(fs == null ? 0 : fs.length());

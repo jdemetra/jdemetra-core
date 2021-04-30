@@ -46,10 +46,9 @@ public class OutliersDetectionTest {
 
     @Test
     public void testNile() {
-        BsmSpec spec = new BsmSpec();
-        spec.setSeasUse(ComponentUse.Unused);
-        spec.setSlopeUse(ComponentUse.Free);
-        spec.setLevelUse(ComponentUse.Free);
+        BsmSpec spec = BsmSpec.builder()
+                .seasonal(null)
+                .build();
 
         OutliersDetection od = OutliersDetection.builder()
                 .bsm(spec)
@@ -75,11 +74,9 @@ public class OutliersDetectionTest {
 
     @Test
     public void testProd() {
-        BsmSpec spec = new BsmSpec();
-        spec.setSeasUse(ComponentUse.Free);
-        spec.setSeasonalModel(SeasonalModel.HarrisonStevens);
-        spec.setSlopeUse(ComponentUse.Free);
-        spec.setLevelUse(ComponentUse.Free);
+        BsmSpec spec = BsmSpec.builder()
+                .seasonal(SeasonalModel.HarrisonStevens)
+                .build();
 
         long t0 = System.currentTimeMillis();
         OutliersDetection od = OutliersDetection.builder()
@@ -120,11 +117,9 @@ public class OutliersDetectionTest {
 
     public static void stressTest() {
         int K = 1000;
-        BsmSpec spec = new BsmSpec();
-        spec.setSeasUse(ComponentUse.Free);
-        spec.setSeasonalModel(SeasonalModel.HarrisonStevens);
-        spec.setSlopeUse(ComponentUse.Free);
-        spec.setLevelUse(ComponentUse.Free);
+        BsmSpec spec = BsmSpec.builder()
+                .seasonal(SeasonalModel.HarrisonStevens)
+                .build();
         double[] A = Data.PROD.clone();
         A[14] *= 1.3;
         A[55] *= .7;
@@ -170,12 +165,9 @@ public class OutliersDetectionTest {
             System.out.println("");
             for (int q = 0; q < 3; ++q) {
 
-                BsmSpec spec = new BsmSpec();
-                spec.setSeasUse(ComponentUse.Unused);
-                spec.setSeasUse(ComponentUse.Free);
-                spec.setSeasonalModel(SeasonalModel.HarrisonStevens);
-                spec.setSlopeUse(ComponentUse.Free);
-                spec.setLevelUse(ComponentUse.Free);
+                BsmSpec spec = BsmSpec.builder()
+                        .seasonal(SeasonalModel.HarrisonStevens)
+                        .build();
                 int period = 4;
 
                 Matrix M = Matrix.make(N, K);
@@ -254,9 +246,9 @@ public class OutliersDetectionTest {
     }
 
     public static BasicStructuralModel[] randomBsm(BsmSpec spec, int period, Matrix simul) {
-        double[] p = new double[spec.getParametersCount()];
+        double[] p = new double[spec.getFreeParametersCount()];
         Random rnd = new Random();
-        BsmMapping mapping = new BsmMapping(spec, period, BsmMapping.Transformation.None);
+        BsmMapping mapping = new BsmMapping(spec, period, null);
         BasicStructuralModel[] models = new BasicStructuralModel[simul.getColumnsCount()];
 
         DataBlockIterator cols = simul.columnsIterator();
@@ -281,10 +273,10 @@ public class OutliersDetectionTest {
         Ssf wssf = W == null ? ssf : RegSsf.ssf(ssf, W);
         SsfData data = new SsfData(y);
         int n = data.length();
-        SmoothationsComputer computer=new SmoothationsComputer();
+        SmoothationsComputer computer = new SmoothationsComputer();
         computer.process(wssf, data);
         double sig2 = computer.getFilteringResults().var();
-        boolean isnoise = model.getVariance(Component.Noise) != 0;
+        boolean isnoise = model.getNoiseVar() > 0;
         for (int i = 0; i < n; ++i) {
             try {
                 DataBlock R = computer.R(i);

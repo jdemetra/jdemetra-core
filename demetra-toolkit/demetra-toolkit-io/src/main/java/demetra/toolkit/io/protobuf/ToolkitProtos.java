@@ -27190,6 +27190,11 @@ public final class ToolkitProtos {
 
     /**
      * <code>string message = 5;</code>
+     * @return Whether the message field is set.
+     */
+    boolean hasMessage();
+    /**
+     * <code>string message = 5;</code>
      * @return The message.
      */
     java.lang.String getMessage();
@@ -27202,10 +27207,20 @@ public final class ToolkitProtos {
 
     /**
      * <code>int32 ivalue = 6;</code>
+     * @return Whether the ivalue field is set.
+     */
+    boolean hasIvalue();
+    /**
+     * <code>int32 ivalue = 6;</code>
      * @return The ivalue.
      */
     int getIvalue();
 
+    /**
+     * <code>double dvalue = 7;</code>
+     * @return Whether the dvalue field is set.
+     */
+    boolean hasDvalue();
     /**
      * <code>double dvalue = 7;</code>
      * @return The dvalue.
@@ -27541,6 +27556,13 @@ public final class ToolkitProtos {
     public static final int MESSAGE_FIELD_NUMBER = 5;
     /**
      * <code>string message = 5;</code>
+     * @return Whether the message field is set.
+     */
+    public boolean hasMessage() {
+      return dataCase_ == 5;
+    }
+    /**
+     * <code>string message = 5;</code>
      * @return The message.
      */
     public java.lang.String getMessage() {
@@ -27586,6 +27608,14 @@ public final class ToolkitProtos {
     public static final int IVALUE_FIELD_NUMBER = 6;
     /**
      * <code>int32 ivalue = 6;</code>
+     * @return Whether the ivalue field is set.
+     */
+    @java.lang.Override
+    public boolean hasIvalue() {
+      return dataCase_ == 6;
+    }
+    /**
+     * <code>int32 ivalue = 6;</code>
      * @return The ivalue.
      */
     @java.lang.Override
@@ -27597,6 +27627,14 @@ public final class ToolkitProtos {
     }
 
     public static final int DVALUE_FIELD_NUMBER = 7;
+    /**
+     * <code>double dvalue = 7;</code>
+     * @return Whether the dvalue field is set.
+     */
+    @java.lang.Override
+    public boolean hasDvalue() {
+      return dataCase_ == 7;
+    }
     /**
      * <code>double dvalue = 7;</code>
      * @return The dvalue.
@@ -28669,6 +28707,14 @@ public final class ToolkitProtos {
 
       /**
        * <code>string message = 5;</code>
+       * @return Whether the message field is set.
+       */
+      @java.lang.Override
+      public boolean hasMessage() {
+        return dataCase_ == 5;
+      }
+      /**
+       * <code>string message = 5;</code>
        * @return The message.
        */
       @java.lang.Override
@@ -28758,6 +28804,13 @@ public final class ToolkitProtos {
 
       /**
        * <code>int32 ivalue = 6;</code>
+       * @return Whether the ivalue field is set.
+       */
+      public boolean hasIvalue() {
+        return dataCase_ == 6;
+      }
+      /**
+       * <code>int32 ivalue = 6;</code>
        * @return The ivalue.
        */
       public int getIvalue() {
@@ -28790,6 +28843,13 @@ public final class ToolkitProtos {
         return this;
       }
 
+      /**
+       * <code>double dvalue = 7;</code>
+       * @return Whether the dvalue field is set.
+       */
+      public boolean hasDvalue() {
+        return dataCase_ == 7;
+      }
       /**
        * <code>double dvalue = 7;</code>
        * @return The dvalue.

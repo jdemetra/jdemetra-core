@@ -16,17 +16,22 @@
  */
 package jdplus.sts.internal;
 
-import jdplus.data.DataBlock;
+import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import nbbrd.design.Development;
+import demetra.data.Parameter;
+import demetra.sts.BsmSpec;
+import demetra.sts.Component;
+import demetra.sts.SeasonalModel;
+import jdplus.data.DataBlock;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.ParamValidation;
-import demetra.sts.Component;
-import demetra.sts.BsmSpec;
-import demetra.data.DoubleSeq;
 import jdplus.sts.BasicStructuralModel;
+import nbbrd.design.Development;
 
 /**
+ * Order of the parameters:
+ * lvar, svar, seasvar, nvar, cvar, cdump, clength
+ * Unused parameters are set to -1 (they are always fixed)
  *
  * @author Jean Palate
  */
@@ -34,16 +39,15 @@ import jdplus.sts.BasicStructuralModel;
 public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
 
     static final double STEP = 1e-6, STEP2 = 1e-4;
-    private static double RMIN = 0, RMAX = 0.999, RDEF = 0.5;
-    private static double PMIN = .25, PMAX = 2.5, PDEF = 1;
+    private static double RMIN = 0.2, RMAX = 0.999, RDEF = 0.75;
+    private static double PMIN = .25, PMAX = 3, PDEF = 1;
 
-    private static final Component[] CMPS = {Component.Level, Component.Slope, Component.Seasonal, Component.Noise, Component.Cycle};
+    private static final int L = 0, S = 1, SEAS = 2, N = 3, C = 4, CDUMP = 5, CLEN = 6, NVARS = 5, NP = 7;
 
     /**
      *
      */
     public enum Transformation {
-
         /**
          *
          */
@@ -58,137 +62,139 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
         Square
     }
 
-    private Component cFixed = Component.Undefined;
+    // parameters
+    private final double[] p = new double[NP];
+    private final boolean[] fp = new boolean[NP];
+    private final int period;
+    private final SeasonalModel sm;
 
-    /**
-     *
-     */
     public final Transformation transformation;
 
     /**
      *
-     */
-    public final BsmSpec spec;
-
-    /**
-     *
-     */
-    public final int freq;
-
-    /**
-     *
      * @param spec
-     * @param freq
+     * @param period
+     * @param fixedVar
      */
-    public BsmMapping(BsmSpec spec, int freq) {
-        transformation = Transformation.Square;
-        this.spec = spec;
-        this.freq = freq;
+    public BsmMapping(BsmSpec spec, int period, Component fixedVar) {
+        this(spec, period, fixedVar, Transformation.Square);
     }
 
     /**
      *
      * @param spec
-     * @param freq
+     * @param period
+     * @param fixedVar
      * @param tr
      */
-    public BsmMapping(BsmSpec spec, int freq, Transformation tr) {
+    public BsmMapping(BsmSpec spec, int period, Component fixedVar, Transformation tr) {
         this.transformation = tr;
-        this.spec = spec;
-        this.freq = freq;
+        this.period = period;
+        this.sm = spec.getSeasonalModel();
+        init(spec.getLevelVar(), L);
+        init(spec.getSlopeVar(), S);
+        init(spec.getSeasonalVar(), SEAS);
+        init(spec.getNoiseVar(), N);
+        init(spec.getCycleVar(), C);
+        init(spec.getCycleDumpingFactor(), CDUMP);
+        init(spec.getCycleLength(), CLEN);
+        int vp = varPos(fixedVar);
+        if (vp >= 0) {
+            fp[vp] = true;
+        }
     }
 
-    public int getVarsCount() {
+    private static int varPos(Component cmp) {
+        if (cmp == null)
+            return -1;
+        switch (cmp) {
+            case Level:
+                return L;
+            case Slope:
+                return S;
+            case Seasonal:
+                return SEAS;
+            case Noise:
+                return N;
+            case Cycle:
+                return C;
+            default:
+                return -1;
+        }
+    }
+
+    private void init(Parameter param, int idx) {
+        if (param == null) {
+            p[idx] = -1;
+            fp[idx] = true;
+        } else {
+            p[idx] = param.getValue();
+            fp[idx] = param.isFixed();
+        }
+    }
+
+    public int varsCount() {
         int n = 0;
-        for (int i = 0; i < CMPS.length; ++i) {
-            if (hasFreeComponent(CMPS[i])) {
+        for (int i = 0; i < NVARS; ++i) {
+            if (!fp[i]) {
                 ++n;
             }
         }
         return n;
     }
 
-    public boolean hasCycleDumpingFactor() {
-        return spec.hasCycle() && spec.getCycleDumpingFactor() == 0;
-    }
-
-    public boolean hasCycleLength() {
-        return spec.hasCycle() && spec.getCycleLength() == 0;
-    }
-
-    public boolean hasFreeComponent(Component cmp) {
-        return cFixed != cmp && spec.hasFreeComponent(cmp);
-    }
-
-    int pCycle() {
-        if (!spec.hasCycle()) {
-            return 0;
-        }
-        int n = 0;
-        if (spec.getCycleDumpingFactor() == 0) {
-            ++n;
-        }
-        if (spec.getCycleLength() == 0) {
-            ++n;
-        }
-        return n;
-    }
-
     @Override
-    public boolean checkBoundaries(DoubleSeq p) {
-        int pc = pCycle();
-        int nvar = p.length() - pc;
+    public boolean checkBoundaries(DoubleSeq seq) {
+        int nvars = varsCount();
         if (transformation == Transformation.None) {
-            for (int i = 0; i < nvar; ++i) {
-                if (p.get(i) <= 0) {
+            for (int i = 0; i < nvars; ++i) {
+                if (seq.get(i) <= 0) {
                     return false;
                 }
             }
         } else if (transformation == Transformation.Square) {
-            for (int i = 0; i < nvar; ++i) {
-                if (p.get(i) < -.1 || p.get(i) > 10) {
+            for (int i = 0; i < nvars; ++i) {
+                if (seq.get(i) < -.1 || seq.get(i) > 10) {
                     return false;
                 }
             }
         }
-        if (pc > 0) {
-            // rho
-            if (hasCycleDumpingFactor()) {
-                double rho = p.get(nvar++);
-                if (rho < RMIN || rho > RMAX) {
-                    return false;
-                }
+
+        // rho
+        if (!fp[CDUMP]) {
+            double rho = seq.get(nvars++);
+            if (rho < RMIN || rho > RMAX) {
+                return false;
             }
-            if (hasCycleLength()) {
-                double period = p.get(nvar);
-                if (period < PMIN || period > PMAX) {
-                    return false;
-                }
+        }
+        if (!fp[CLEN]) {
+            double np = seq.get(nvars);
+            if (np < PMIN || np > PMAX) {
+                return false;
             }
         }
         return true;
     }
 
     @Override
-    public double epsilon(DoubleSeq p, int idx) {
-        int pc = pCycle();
-        int nvar = p.length() - pc;
-        if (idx < nvar) {
-            double x = p.get(idx);
+    public double epsilon(DoubleSeq seq, int idx) {
+        int nvars = varsCount();
+        if (idx < nvars) {
+            double x = seq.get(idx);
             if (x < .5) {
                 return STEP;
             } else {
                 return -STEP;
             }
-        } else if (idx == nvar && hasCycleDumpingFactor()) {
-            double x = p.get(idx);
+        } else if (idx == nvars && fp[CDUMP]) {
+            double x = seq.get(idx);
             if (x < .5) {
                 return STEP;
             } else {
                 return -STEP;
             }
         } else {
-            double x = p.get(idx);
+            double x = seq.get(idx);
             if (x < 1) {
                 return STEP2;
             } else {
@@ -197,38 +203,18 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
         }
     }
 
-    /**
-     *
-     * @param idx
-     * @return
-     */
-    public Component getComponent(final int idx) {
-        int cur = idx;
-        for (int i = 0; i < CMPS.length; ++i) {
-            if (hasFreeComponent(CMPS[i])) {
-                if (cur == 0) {
-                    return CMPS[i];
-                }
-                --cur;
-            }
-        }
-        return Component.Undefined;
-    }
-
     @Override
     public int getDim() {
-        return getVarsCount() + pCycle();
+        int n = 0;
+        for (int i = 0; i < NP; ++i) {
+            if (!fp[i]) {
+                ++n;
+            }
+        }
+        return n;
     }
 
-    /**
-     *
-     * @return
-     */
-    public Component getFixedComponent() {
-        return cFixed;
-    }
-
-    private double inparam(double d) {
+    private double invar(double d) {
         switch (transformation) {
             case None:
                 return d;
@@ -246,60 +232,40 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
     }
 
     public DoubleSeq map(BasicStructuralModel t) {
-        double[] p = new double[getDim()];
+        double[] np = new double[getDim()];
         int idx = 0;
 
-        for (int i = 0; i < CMPS.length; ++i) {
-            if (hasFreeComponent(CMPS[i])) {
-                p[idx++] = outparam(t.getVariance(CMPS[i]));
+        for (int i = 0; i < NVARS; ++i) {
+            if (!fp[i]) {
+                np[idx++] = outvar(p[i]);
             }
         }
-        if (spec.hasCycle()) {
-            double pm = spec.getCycleDumpingFactor();
-            if (pm == 0) {
-                p[idx++] = t.getCyclicalDumpingFactor();
-            }
-            pm = spec.getCycleLength();
-            if (pm == 0) {
-                p[idx++] = t.getCyclicalPeriod() / (6 * freq);
-            }
+        if (!fp[CDUMP]) {
+            np[idx++] = p[CDUMP];
         }
-        return DoubleSeq.of(p);
+        if (!fp[CLEN]) {
+            np[idx++] = p[CLEN] / (6 * period);
+        }
+        return DoubleSeq.of(np);
     }
 
     @Override
-    public BasicStructuralModel map(DoubleSeq p) {
-        BasicStructuralModel t = new BasicStructuralModel(spec, freq);
-        int idx = 0;
-        DoubleSeqCursor reader = p.cursor();
-        for (int i = 0; i < CMPS.length; ++i) {
-            if (hasFreeComponent(CMPS[i])) {
-                t.setVariance(CMPS[i], inparam(reader.getAndNext()));
-            }
-        }
-        if (spec.hasCycle()) {
-            double cdump, clen;
-            double pm = spec.getCycleDumpingFactor();
-            if (pm == 0) {
-                cdump = reader.getAndNext();
-            } else {
-                cdump = pm;
-            }
-            pm = spec.getCycleLength();
-            if (pm == 0) {
-                clen = 6 * freq * reader.getAndNext();
-            } else {
-                clen = freq * pm;
-            }
-            t.setCycle(cdump, clen);
-        }
-        if (cFixed != Component.Undefined) {
-            t.setVariance(cFixed, 1);
-        }
-        return t;
+    public BasicStructuralModel map(DoubleSeq seq) {
+        DoubleSeqCursor cur = seq.cursor();
+        return BasicStructuralModel.builder()
+                .period(period)
+                .seasonalModel(sm)
+                .levelVar(fp[L] ? p[L] : invar(cur.getAndNext()))
+                .slopeVar(fp[S] ? p[S] : invar(cur.getAndNext()))
+                .seasonalVar(fp[SEAS] ? p[SEAS] : invar(cur.getAndNext()))
+                .noiseVar(fp[N] ? p[N] : invar(cur.getAndNext()))
+                .cycleVar(fp[C] ? p[C] : invar(cur.getAndNext()))
+                .cycleDumpingFactor(fp[CDUMP] ? p[CDUMP] : cur.getAndNext())
+                .cycleLength(fp[CLEN] ? p[CLEN] : (6 * period) * cur.getAndNext())
+                .build();
     }
 
-    private double outparam(double d) {
+    private double outvar(double d) {
         switch (transformation) {
             case None:
                 return d;
@@ -310,14 +276,6 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
         }
     }
 
-    /**
-     *
-     * @param value
-     */
-    public void setFixedComponent(Component value) {
-        cFixed = value;
-    }
-
     @Override
     public double ubound(int idx) {
         return Double.POSITIVE_INFINITY;
@@ -326,13 +284,9 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
     @Override
     public ParamValidation validate(DataBlock ioparams) {
         ParamValidation status = ParamValidation.Valid;
-        if (ioparams.length() == 0) {
-            return ParamValidation.Valid;
-        }
-        int pc = pCycle();
-        int nvar = ioparams.length() - pc;
+        int nvars = varsCount();
         if (transformation == Transformation.Square) {
-            for (int i = 0; i < nvar; ++i) {
+            for (int i = 0; i < nvars; ++i) {
                 if (ioparams.get(i) > 10) {
                     ioparams.set(i, 10);
                     status = ParamValidation.Changed;
@@ -342,36 +296,34 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
                 }
             }
         } else if (transformation == Transformation.None) {
-            for (int i = 0; i < nvar; ++i) {
+            for (int i = 0; i < nvars; ++i) {
                 if (ioparams.get(i) < 1e-9) {
                     ioparams.set(i, 1e-9);
                     status = ParamValidation.Changed;
                 }
             }
         }
-        if (pc > 0) {
-            if (hasCycleDumpingFactor()) {
-                double rho = ioparams.get(nvar);
-                if (rho < RMIN) {
-                    ioparams.set(nvar, 0.1);
-                    status = ParamValidation.Changed;
-                }
-                if (rho > RMAX) {
-                    ioparams.set(nvar, .9);
-                    status = ParamValidation.Changed;
-                }
-                ++nvar;
+        if (!fp[CDUMP]) {
+            double rho = ioparams.get(nvars);
+            if (rho < RMIN) {
+                ioparams.set(nvars, 0.3);
+                status = ParamValidation.Changed;
             }
-            if (hasCycleLength()) {
-                double p = ioparams.get(nvar);
-                if (p < PMIN) {
-                    ioparams.set(nvar, PMIN);
-                    status = ParamValidation.Changed;
-                }
-                if (p > PMAX) {
-                    ioparams.set(nvar, PMAX);
-                    status = ParamValidation.Changed;
-                }
+            if (rho > RMAX) {
+                ioparams.set(nvars, .9);
+                status = ParamValidation.Changed;
+            }
+            ++nvars;
+        }
+        if (!fp[CLEN]) {
+            double pcur = ioparams.get(nvars);
+            if (pcur < PMIN) {
+                ioparams.set(nvars, PMIN);
+                status = ParamValidation.Changed;
+            }
+            if (pcur > PMAX) {
+                ioparams.set(nvars, PMAX);
+                status = ParamValidation.Changed;
             }
         }
         return status;
@@ -379,23 +331,82 @@ public class BsmMapping implements IParametricMapping<BasicStructuralModel> {
 
     @Override
     public String getDescription(final int idx) {
-        int n = getVarsCount();
-        if (idx < n) {
-            return getComponent(idx).name() + " var.";
+        int j = 0;
+        if (!fp[L]) {
+            if (j++ == idx) {
+                return "level var.";
+            }
         }
-        if (idx == n && this.hasCycleDumpingFactor()) {
-            return "Cycle dumping factor";
-        } else {
-            return "Cycle length";
+        if (!fp[S]) {
+            if (j++ == idx) {
+                return "slope var.";
+            }
         }
+        if (!fp[SEAS]) {
+            if (j++ == idx) {
+                return "seasonal var.";
+            }
+        }
+        if (!fp[N]) {
+            if (j++ == idx) {
+                return "noise var.";
+            }
+        }
+        if (!fp[C]) {
+            if (j++ == idx) {
+                return "cycle var.";
+            }
+        }
+        if (!fp[CDUMP]) {
+            if (j++ == idx) {
+                return "Cycle dumping factor";
+            }
+        }
+        if (!fp[CLEN]) {
+            if (j == idx) {
+                return "Cycle length";
+            }
+        }
+        return "Unexpected";
     }
 
     @Override
     public DoubleSeq getDefaultParameters() {
         double[] x = new double[getDim()];
         for (int i = 0; i < x.length; ++i) {
-            x[i] = outparam(.2);
+            x[i] = outvar(.5);
         }
         return DoubleSeq.of(x);
+    }
+
+
+    public Component varPosition(final int idx) {
+        int j = 0;
+        if (!fp[L]) {
+            if (j++ == idx) {
+                return Component.Level;
+            }
+        }
+        if (!fp[S]) {
+            if (j++ == idx) {
+                return Component.Slope;
+            }
+        }
+        if (!fp[SEAS]) {
+            if (j++ == idx) {
+                return Component.Seasonal;
+            }
+        }
+        if (!fp[N]) {
+            if (j++ == idx) {
+                return Component.Noise;
+            }
+        }
+        if (!fp[C]) {
+            if (j == idx) {
+                return Component.Cycle;
+            }
+        }
+        return Component.Undefined;
     }
 }

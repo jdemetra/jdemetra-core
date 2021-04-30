@@ -7,6 +7,7 @@ package jdplus.sts;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
+import demetra.sts.BsmEstimationSpec;
 import nbbrd.design.BuilderPattern;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
@@ -29,7 +30,7 @@ import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.stats.RobustStandardDeviationComputer;
 import jdplus.sts.internal.BsmMapping;
-import jdplus.sts.internal.BsmMonitor;
+import jdplus.sts.internal.BsmKernel;
 
 /**
  *
@@ -126,7 +127,7 @@ public class OutliersDetection {
 
     private OutliersDetection(BsmSpec spec, boolean ao, boolean ls, boolean so, double cv, double tcv,
             int maxIter, Estimation forwardEstimation, Estimation backwardEstimation, double eps, double ft) {
-        this.spec = spec.clone();
+        this.spec = spec;
         this.ao = ao;
         this.ls = ls;
         this.so = so;
@@ -326,13 +327,15 @@ public class OutliersDetection {
     }
 
     private boolean fullEstimation(DoubleSeq y, Matrix W, int period, double eps) {
-        BsmMonitor monitor = new BsmMonitor();
-        monitor.setSpecification(spec);
-        monitor.useDiffuseRegressors(true);
-        monitor.setPrecision(eps);
-        monitor.process(y, W, period);
+        BsmEstimationSpec espec = BsmEstimationSpec.builder()
+                .diffuseRegression(true)
+                .precision(eps)
+                .build();
+        BsmKernel monitor = new BsmKernel(espec);
+        monitor.process(y, W, period, spec);
         curp = monitor.maxLikelihoodFunction().getParameters();
         model = monitor.getResult();
+        curSpec = monitor.finalSpecification();
         likelihood = monitor.getLikelihood();
         return model != null;
     }
@@ -364,7 +367,7 @@ public class OutliersDetection {
     }
 
     private boolean estimate(DoubleSeq y, Matrix W, Estimation method) {
-        if (full || !spec.equals(model.specification())) {
+        if (full) {
             return fullEstimation(y, W, model.getPeriod(), eps2);
         }
         try {
@@ -425,7 +428,7 @@ public class OutliersDetection {
     }
 
     SsfFunction<BasicStructuralModel, SsfBsm2> currentFunction(DoubleSeq y, Matrix W) {
-        BsmMapping mapper = new BsmMapping(model.specification(), model.getPeriod(), BsmMapping.Transformation.None);
+        BsmMapping mapper = new BsmMapping(curSpec == null ? spec : curSpec, model.getPeriod(), null);
         int[] diffuse = null;
         if (W != null) {
             diffuse = new int[W.getColumnsCount()];
@@ -447,6 +450,7 @@ public class OutliersDetection {
     private final IntList soPositions = new IntList();
     private int period;
     private BasicStructuralModel initialModel, model;
+    private BsmSpec curSpec;
     private DiffuseConcentratedLikelihood initialLikelihood, likelihood;
     private DoubleSeq curp;
     private Matrix regressors;

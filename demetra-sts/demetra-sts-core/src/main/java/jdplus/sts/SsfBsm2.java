@@ -44,28 +44,28 @@ public class SsfBsm2 extends Ssf {
      */
     private static int[] calcCmpsIndexes(BasicStructuralModel model) {
         int n = 0;
-        if (model.cVar >= 0) {
+        if (model.getCycleVar() >= 0) {
             ++n;
         }
-        if (model.lVar >= 0) {
+        if (model.getLevelVar() >= 0) {
             ++n;
         }
-        if (model.seasVar >= 0) {
+        if (model.getSeasonalVar() >= 0) {
             ++n;
         }
         int[] cmps = new int[n];
         int i = 0, j = 0;
-        if (model.cVar >= 0) {
+        if (model.getCycleVar() >= 0) {
             cmps[i++] = j;
             j += 2;
         }
-        if (model.lVar >= 0) {
+        if (model.getLevelVar() >= 0) {
             cmps[i++] = j++;
         }
-        if (model.sVar >= 0) {
+        if (model.getSlopeVar() >= 0) {
             ++j;
         }
-        if (model.seasVar >= 0) {
+        if (model.getSeasonalVar() >= 0) {
             cmps[i] = j;
         }
         return cmps;

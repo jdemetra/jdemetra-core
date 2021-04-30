@@ -7036,124 +7036,94 @@ public final class StsProtos {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>.jd3.Matrix filtering_states = 1;</code>
-       * @return Whether the filteringStates field is set.
-       */
-      boolean hasFilteringStates();
-      /**
-       * <code>.jd3.Matrix filtering_states = 1;</code>
-       * @return The filteringStates.
-       */
-      demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getFilteringStates();
-      /**
-       * <code>.jd3.Matrix filtering_states = 1;</code>
-       */
-      demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getFilteringStatesOrBuilder();
-
-      /**
-       * <code>.jd3.Matrix smooth_states = 2;</code>
-       * @return Whether the smoothStates field is set.
-       */
-      boolean hasSmoothStates();
-      /**
-       * <code>.jd3.Matrix smooth_states = 2;</code>
-       * @return The smoothStates.
-       */
-      demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getSmoothStates();
-      /**
-       * <code>.jd3.Matrix smooth_states = 2;</code>
-       */
-      demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getSmoothStatesOrBuilder();
-
-      /**
-       * <code>.sa.Component series = 10;</code>
+       * <code>.modelling.Component series = 10;</code>
        * @return Whether the series field is set.
        */
       boolean hasSeries();
       /**
-       * <code>.sa.Component series = 10;</code>
+       * <code>.modelling.Component series = 10;</code>
        * @return The series.
        */
-      demetra.sa.io.protobuf.SaProtos.Component getSeries();
+      demetra.modelling.io.protobuf.ModellingProtos.Component getSeries();
       /**
-       * <code>.sa.Component series = 10;</code>
+       * <code>.modelling.Component series = 10;</code>
        */
-      demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getSeriesOrBuilder();
+      demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSeriesOrBuilder();
 
       /**
-       * <code>.sa.Component level = 11;</code>
+       * <code>.modelling.Component level = 11;</code>
        * @return Whether the level field is set.
        */
       boolean hasLevel();
       /**
-       * <code>.sa.Component level = 11;</code>
+       * <code>.modelling.Component level = 11;</code>
        * @return The level.
        */
-      demetra.sa.io.protobuf.SaProtos.Component getLevel();
+      demetra.modelling.io.protobuf.ModellingProtos.Component getLevel();
       /**
-       * <code>.sa.Component level = 11;</code>
+       * <code>.modelling.Component level = 11;</code>
        */
-      demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getLevelOrBuilder();
+      demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getLevelOrBuilder();
 
       /**
-       * <code>.sa.Component slope = 12;</code>
+       * <code>.modelling.Component slope = 12;</code>
        * @return Whether the slope field is set.
        */
       boolean hasSlope();
       /**
-       * <code>.sa.Component slope = 12;</code>
+       * <code>.modelling.Component slope = 12;</code>
        * @return The slope.
        */
-      demetra.sa.io.protobuf.SaProtos.Component getSlope();
+      demetra.modelling.io.protobuf.ModellingProtos.Component getSlope();
       /**
-       * <code>.sa.Component slope = 12;</code>
+       * <code>.modelling.Component slope = 12;</code>
        */
-      demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getSlopeOrBuilder();
+      demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSlopeOrBuilder();
 
       /**
-       * <code>.sa.Component cycle = 13;</code>
+       * <code>.modelling.Component cycle = 13;</code>
        * @return Whether the cycle field is set.
        */
       boolean hasCycle();
       /**
-       * <code>.sa.Component cycle = 13;</code>
+       * <code>.modelling.Component cycle = 13;</code>
        * @return The cycle.
        */
-      demetra.sa.io.protobuf.SaProtos.Component getCycle();
+      demetra.modelling.io.protobuf.ModellingProtos.Component getCycle();
       /**
-       * <code>.sa.Component cycle = 13;</code>
+       * <code>.modelling.Component cycle = 13;</code>
        */
-      demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getCycleOrBuilder();
+      demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getCycleOrBuilder();
 
       /**
-       * <code>.sa.Component seasonal = 14;</code>
+       * <code>.modelling.Component seasonal = 14;</code>
        * @return Whether the seasonal field is set.
        */
       boolean hasSeasonal();
       /**
-       * <code>.sa.Component seasonal = 14;</code>
+       * <code>.modelling.Component seasonal = 14;</code>
        * @return The seasonal.
        */
-      demetra.sa.io.protobuf.SaProtos.Component getSeasonal();
+      demetra.modelling.io.protobuf.ModellingProtos.Component getSeasonal();
       /**
-       * <code>.sa.Component seasonal = 14;</code>
+       * <code>.modelling.Component seasonal = 14;</code>
        */
-      demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getSeasonalOrBuilder();
+      demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSeasonalOrBuilder();
 
       /**
-       * <code>.sa.Component noise = 15;</code>
+       * <code>.modelling.Component noise = 15;</code>
        * @return Whether the noise field is set.
        */
       boolean hasNoise();
       /**
-       * <code>.sa.Component noise = 15;</code>
+       * <code>.modelling.Component noise = 15;</code>
        * @return The noise.
        */
-      demetra.sa.io.protobuf.SaProtos.Component getNoise();
+      demetra.modelling.io.protobuf.ModellingProtos.Component getNoise();
       /**
-       * <code>.sa.Component noise = 15;</code>
+       * <code>.modelling.Component noise = 15;</code>
        */
-      demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getNoiseOrBuilder();
+      demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getNoiseOrBuilder();
     }
     /**
      * <pre>
@@ -7204,38 +7174,12 @@ public final class StsProtos {
               case 0:
                 done = true;
                 break;
-              case 10: {
-                demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder subBuilder = null;
-                if (filteringStates_ != null) {
-                  subBuilder = filteringStates_.toBuilder();
-                }
-                filteringStates_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.parser(), extensionRegistry);
-                if (subBuilder != null) {
-                  subBuilder.mergeFrom(filteringStates_);
-                  filteringStates_ = subBuilder.buildPartial();
-                }
-
-                break;
-              }
-              case 18: {
-                demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder subBuilder = null;
-                if (smoothStates_ != null) {
-                  subBuilder = smoothStates_.toBuilder();
-                }
-                smoothStates_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.parser(), extensionRegistry);
-                if (subBuilder != null) {
-                  subBuilder.mergeFrom(smoothStates_);
-                  smoothStates_ = subBuilder.buildPartial();
-                }
-
-                break;
-              }
               case 82: {
-                demetra.sa.io.protobuf.SaProtos.Component.Builder subBuilder = null;
+                demetra.modelling.io.protobuf.ModellingProtos.Component.Builder subBuilder = null;
                 if (series_ != null) {
                   subBuilder = series_.toBuilder();
                 }
-                series_ = input.readMessage(demetra.sa.io.protobuf.SaProtos.Component.parser(), extensionRegistry);
+                series_ = input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.Component.parser(), extensionRegistry);
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(series_);
                   series_ = subBuilder.buildPartial();
@@ -7244,11 +7188,11 @@ public final class StsProtos {
                 break;
               }
               case 90: {
-                demetra.sa.io.protobuf.SaProtos.Component.Builder subBuilder = null;
+                demetra.modelling.io.protobuf.ModellingProtos.Component.Builder subBuilder = null;
                 if (level_ != null) {
                   subBuilder = level_.toBuilder();
                 }
-                level_ = input.readMessage(demetra.sa.io.protobuf.SaProtos.Component.parser(), extensionRegistry);
+                level_ = input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.Component.parser(), extensionRegistry);
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(level_);
                   level_ = subBuilder.buildPartial();
@@ -7257,11 +7201,11 @@ public final class StsProtos {
                 break;
               }
               case 98: {
-                demetra.sa.io.protobuf.SaProtos.Component.Builder subBuilder = null;
+                demetra.modelling.io.protobuf.ModellingProtos.Component.Builder subBuilder = null;
                 if (slope_ != null) {
                   subBuilder = slope_.toBuilder();
                 }
-                slope_ = input.readMessage(demetra.sa.io.protobuf.SaProtos.Component.parser(), extensionRegistry);
+                slope_ = input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.Component.parser(), extensionRegistry);
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(slope_);
                   slope_ = subBuilder.buildPartial();
@@ -7270,11 +7214,11 @@ public final class StsProtos {
                 break;
               }
               case 106: {
-                demetra.sa.io.protobuf.SaProtos.Component.Builder subBuilder = null;
+                demetra.modelling.io.protobuf.ModellingProtos.Component.Builder subBuilder = null;
                 if (cycle_ != null) {
                   subBuilder = cycle_.toBuilder();
                 }
-                cycle_ = input.readMessage(demetra.sa.io.protobuf.SaProtos.Component.parser(), extensionRegistry);
+                cycle_ = input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.Component.parser(), extensionRegistry);
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(cycle_);
                   cycle_ = subBuilder.buildPartial();
@@ -7283,11 +7227,11 @@ public final class StsProtos {
                 break;
               }
               case 114: {
-                demetra.sa.io.protobuf.SaProtos.Component.Builder subBuilder = null;
+                demetra.modelling.io.protobuf.ModellingProtos.Component.Builder subBuilder = null;
                 if (seasonal_ != null) {
                   subBuilder = seasonal_.toBuilder();
                 }
-                seasonal_ = input.readMessage(demetra.sa.io.protobuf.SaProtos.Component.parser(), extensionRegistry);
+                seasonal_ = input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.Component.parser(), extensionRegistry);
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(seasonal_);
                   seasonal_ = subBuilder.buildPartial();
@@ -7296,11 +7240,11 @@ public final class StsProtos {
                 break;
               }
               case 122: {
-                demetra.sa.io.protobuf.SaProtos.Component.Builder subBuilder = null;
+                demetra.modelling.io.protobuf.ModellingProtos.Component.Builder subBuilder = null;
                 if (noise_ != null) {
                   subBuilder = noise_.toBuilder();
                 }
-                noise_ = input.readMessage(demetra.sa.io.protobuf.SaProtos.Component.parser(), extensionRegistry);
+                noise_ = input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.Component.parser(), extensionRegistry);
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(noise_);
                   noise_ = subBuilder.buildPartial();
@@ -7340,62 +7284,10 @@ public final class StsProtos {
                 demetra.sts.io.protobuf.StsProtos.Bsm.Components.class, demetra.sts.io.protobuf.StsProtos.Bsm.Components.Builder.class);
       }
 
-      public static final int FILTERING_STATES_FIELD_NUMBER = 1;
-      private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix filteringStates_;
-      /**
-       * <code>.jd3.Matrix filtering_states = 1;</code>
-       * @return Whether the filteringStates field is set.
-       */
-      @java.lang.Override
-      public boolean hasFilteringStates() {
-        return filteringStates_ != null;
-      }
-      /**
-       * <code>.jd3.Matrix filtering_states = 1;</code>
-       * @return The filteringStates.
-       */
-      @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getFilteringStates() {
-        return filteringStates_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : filteringStates_;
-      }
-      /**
-       * <code>.jd3.Matrix filtering_states = 1;</code>
-       */
-      @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getFilteringStatesOrBuilder() {
-        return getFilteringStates();
-      }
-
-      public static final int SMOOTH_STATES_FIELD_NUMBER = 2;
-      private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix smoothStates_;
-      /**
-       * <code>.jd3.Matrix smooth_states = 2;</code>
-       * @return Whether the smoothStates field is set.
-       */
-      @java.lang.Override
-      public boolean hasSmoothStates() {
-        return smoothStates_ != null;
-      }
-      /**
-       * <code>.jd3.Matrix smooth_states = 2;</code>
-       * @return The smoothStates.
-       */
-      @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getSmoothStates() {
-        return smoothStates_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : smoothStates_;
-      }
-      /**
-       * <code>.jd3.Matrix smooth_states = 2;</code>
-       */
-      @java.lang.Override
-      public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getSmoothStatesOrBuilder() {
-        return getSmoothStates();
-      }
-
       public static final int SERIES_FIELD_NUMBER = 10;
-      private demetra.sa.io.protobuf.SaProtos.Component series_;
+      private demetra.modelling.io.protobuf.ModellingProtos.Component series_;
       /**
-       * <code>.sa.Component series = 10;</code>
+       * <code>.modelling.Component series = 10;</code>
        * @return Whether the series field is set.
        */
       @java.lang.Override
@@ -7403,25 +7295,25 @@ public final class StsProtos {
         return series_ != null;
       }
       /**
-       * <code>.sa.Component series = 10;</code>
+       * <code>.modelling.Component series = 10;</code>
        * @return The series.
        */
       @java.lang.Override
-      public demetra.sa.io.protobuf.SaProtos.Component getSeries() {
-        return series_ == null ? demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : series_;
+      public demetra.modelling.io.protobuf.ModellingProtos.Component getSeries() {
+        return series_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : series_;
       }
       /**
-       * <code>.sa.Component series = 10;</code>
+       * <code>.modelling.Component series = 10;</code>
        */
       @java.lang.Override
-      public demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getSeriesOrBuilder() {
+      public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSeriesOrBuilder() {
         return getSeries();
       }
 
       public static final int LEVEL_FIELD_NUMBER = 11;
-      private demetra.sa.io.protobuf.SaProtos.Component level_;
+      private demetra.modelling.io.protobuf.ModellingProtos.Component level_;
       /**
-       * <code>.sa.Component level = 11;</code>
+       * <code>.modelling.Component level = 11;</code>
        * @return Whether the level field is set.
        */
       @java.lang.Override
@@ -7429,25 +7321,25 @@ public final class StsProtos {
         return level_ != null;
       }
       /**
-       * <code>.sa.Component level = 11;</code>
+       * <code>.modelling.Component level = 11;</code>
        * @return The level.
        */
       @java.lang.Override
-      public demetra.sa.io.protobuf.SaProtos.Component getLevel() {
-        return level_ == null ? demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : level_;
+      public demetra.modelling.io.protobuf.ModellingProtos.Component getLevel() {
+        return level_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : level_;
       }
       /**
-       * <code>.sa.Component level = 11;</code>
+       * <code>.modelling.Component level = 11;</code>
        */
       @java.lang.Override
-      public demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getLevelOrBuilder() {
+      public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getLevelOrBuilder() {
         return getLevel();
       }
 
       public static final int SLOPE_FIELD_NUMBER = 12;
-      private demetra.sa.io.protobuf.SaProtos.Component slope_;
+      private demetra.modelling.io.protobuf.ModellingProtos.Component slope_;
       /**
-       * <code>.sa.Component slope = 12;</code>
+       * <code>.modelling.Component slope = 12;</code>
        * @return Whether the slope field is set.
        */
       @java.lang.Override
@@ -7455,25 +7347,25 @@ public final class StsProtos {
         return slope_ != null;
       }
       /**
-       * <code>.sa.Component slope = 12;</code>
+       * <code>.modelling.Component slope = 12;</code>
        * @return The slope.
        */
       @java.lang.Override
-      public demetra.sa.io.protobuf.SaProtos.Component getSlope() {
-        return slope_ == null ? demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : slope_;
+      public demetra.modelling.io.protobuf.ModellingProtos.Component getSlope() {
+        return slope_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : slope_;
       }
       /**
-       * <code>.sa.Component slope = 12;</code>
+       * <code>.modelling.Component slope = 12;</code>
        */
       @java.lang.Override
-      public demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getSlopeOrBuilder() {
+      public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSlopeOrBuilder() {
         return getSlope();
       }
 
       public static final int CYCLE_FIELD_NUMBER = 13;
-      private demetra.sa.io.protobuf.SaProtos.Component cycle_;
+      private demetra.modelling.io.protobuf.ModellingProtos.Component cycle_;
       /**
-       * <code>.sa.Component cycle = 13;</code>
+       * <code>.modelling.Component cycle = 13;</code>
        * @return Whether the cycle field is set.
        */
       @java.lang.Override
@@ -7481,25 +7373,25 @@ public final class StsProtos {
         return cycle_ != null;
       }
       /**
-       * <code>.sa.Component cycle = 13;</code>
+       * <code>.modelling.Component cycle = 13;</code>
        * @return The cycle.
        */
       @java.lang.Override
-      public demetra.sa.io.protobuf.SaProtos.Component getCycle() {
-        return cycle_ == null ? demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : cycle_;
+      public demetra.modelling.io.protobuf.ModellingProtos.Component getCycle() {
+        return cycle_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : cycle_;
       }
       /**
-       * <code>.sa.Component cycle = 13;</code>
+       * <code>.modelling.Component cycle = 13;</code>
        */
       @java.lang.Override
-      public demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getCycleOrBuilder() {
+      public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getCycleOrBuilder() {
         return getCycle();
       }
 
       public static final int SEASONAL_FIELD_NUMBER = 14;
-      private demetra.sa.io.protobuf.SaProtos.Component seasonal_;
+      private demetra.modelling.io.protobuf.ModellingProtos.Component seasonal_;
       /**
-       * <code>.sa.Component seasonal = 14;</code>
+       * <code>.modelling.Component seasonal = 14;</code>
        * @return Whether the seasonal field is set.
        */
       @java.lang.Override
@@ -7507,25 +7399,25 @@ public final class StsProtos {
         return seasonal_ != null;
       }
       /**
-       * <code>.sa.Component seasonal = 14;</code>
+       * <code>.modelling.Component seasonal = 14;</code>
        * @return The seasonal.
        */
       @java.lang.Override
-      public demetra.sa.io.protobuf.SaProtos.Component getSeasonal() {
-        return seasonal_ == null ? demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : seasonal_;
+      public demetra.modelling.io.protobuf.ModellingProtos.Component getSeasonal() {
+        return seasonal_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : seasonal_;
       }
       /**
-       * <code>.sa.Component seasonal = 14;</code>
+       * <code>.modelling.Component seasonal = 14;</code>
        */
       @java.lang.Override
-      public demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getSeasonalOrBuilder() {
+      public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSeasonalOrBuilder() {
         return getSeasonal();
       }
 
       public static final int NOISE_FIELD_NUMBER = 15;
-      private demetra.sa.io.protobuf.SaProtos.Component noise_;
+      private demetra.modelling.io.protobuf.ModellingProtos.Component noise_;
       /**
-       * <code>.sa.Component noise = 15;</code>
+       * <code>.modelling.Component noise = 15;</code>
        * @return Whether the noise field is set.
        */
       @java.lang.Override
@@ -7533,18 +7425,18 @@ public final class StsProtos {
         return noise_ != null;
       }
       /**
-       * <code>.sa.Component noise = 15;</code>
+       * <code>.modelling.Component noise = 15;</code>
        * @return The noise.
        */
       @java.lang.Override
-      public demetra.sa.io.protobuf.SaProtos.Component getNoise() {
-        return noise_ == null ? demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : noise_;
+      public demetra.modelling.io.protobuf.ModellingProtos.Component getNoise() {
+        return noise_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : noise_;
       }
       /**
-       * <code>.sa.Component noise = 15;</code>
+       * <code>.modelling.Component noise = 15;</code>
        */
       @java.lang.Override
-      public demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getNoiseOrBuilder() {
+      public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getNoiseOrBuilder() {
         return getNoise();
       }
 
@@ -7562,12 +7454,6 @@ public final class StsProtos {
       @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (filteringStates_ != null) {
-          output.writeMessage(1, getFilteringStates());
-        }
-        if (smoothStates_ != null) {
-          output.writeMessage(2, getSmoothStates());
-        }
         if (series_ != null) {
           output.writeMessage(10, getSeries());
         }
@@ -7595,14 +7481,6 @@ public final class StsProtos {
         if (size != -1) return size;
 
         size = 0;
-        if (filteringStates_ != null) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(1, getFilteringStates());
-        }
-        if (smoothStates_ != null) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(2, getSmoothStates());
-        }
         if (series_ != null) {
           size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(10, getSeries());
@@ -7642,16 +7520,6 @@ public final class StsProtos {
         }
         demetra.sts.io.protobuf.StsProtos.Bsm.Components other = (demetra.sts.io.protobuf.StsProtos.Bsm.Components) obj;
 
-        if (hasFilteringStates() != other.hasFilteringStates()) return false;
-        if (hasFilteringStates()) {
-          if (!getFilteringStates()
-              .equals(other.getFilteringStates())) return false;
-        }
-        if (hasSmoothStates() != other.hasSmoothStates()) return false;
-        if (hasSmoothStates()) {
-          if (!getSmoothStates()
-              .equals(other.getSmoothStates())) return false;
-        }
         if (hasSeries() != other.hasSeries()) return false;
         if (hasSeries()) {
           if (!getSeries()
@@ -7693,14 +7561,6 @@ public final class StsProtos {
         }
         int hash = 41;
         hash = (19 * hash) + getDescriptor().hashCode();
-        if (hasFilteringStates()) {
-          hash = (37 * hash) + FILTERING_STATES_FIELD_NUMBER;
-          hash = (53 * hash) + getFilteringStates().hashCode();
-        }
-        if (hasSmoothStates()) {
-          hash = (37 * hash) + SMOOTH_STATES_FIELD_NUMBER;
-          hash = (53 * hash) + getSmoothStates().hashCode();
-        }
         if (hasSeries()) {
           hash = (37 * hash) + SERIES_FIELD_NUMBER;
           hash = (53 * hash) + getSeries().hashCode();
@@ -7862,18 +7722,6 @@ public final class StsProtos {
         @java.lang.Override
         public Builder clear() {
           super.clear();
-          if (filteringStatesBuilder_ == null) {
-            filteringStates_ = null;
-          } else {
-            filteringStates_ = null;
-            filteringStatesBuilder_ = null;
-          }
-          if (smoothStatesBuilder_ == null) {
-            smoothStates_ = null;
-          } else {
-            smoothStates_ = null;
-            smoothStatesBuilder_ = null;
-          }
           if (seriesBuilder_ == null) {
             series_ = null;
           } else {
@@ -7936,16 +7784,6 @@ public final class StsProtos {
         @java.lang.Override
         public demetra.sts.io.protobuf.StsProtos.Bsm.Components buildPartial() {
           demetra.sts.io.protobuf.StsProtos.Bsm.Components result = new demetra.sts.io.protobuf.StsProtos.Bsm.Components(this);
-          if (filteringStatesBuilder_ == null) {
-            result.filteringStates_ = filteringStates_;
-          } else {
-            result.filteringStates_ = filteringStatesBuilder_.build();
-          }
-          if (smoothStatesBuilder_ == null) {
-            result.smoothStates_ = smoothStates_;
-          } else {
-            result.smoothStates_ = smoothStatesBuilder_.build();
-          }
           if (seriesBuilder_ == null) {
             result.series_ = series_;
           } else {
@@ -8024,12 +7862,6 @@ public final class StsProtos {
 
         public Builder mergeFrom(demetra.sts.io.protobuf.StsProtos.Bsm.Components other) {
           if (other == demetra.sts.io.protobuf.StsProtos.Bsm.Components.getDefaultInstance()) return this;
-          if (other.hasFilteringStates()) {
-            mergeFilteringStates(other.getFilteringStates());
-          }
-          if (other.hasSmoothStates()) {
-            mergeSmoothStates(other.getSmoothStates());
-          }
           if (other.hasSeries()) {
             mergeSeries(other.getSeries());
           }
@@ -8077,269 +7909,31 @@ public final class StsProtos {
           return this;
         }
 
-        private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix filteringStates_;
+        private demetra.modelling.io.protobuf.ModellingProtos.Component series_;
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> filteringStatesBuilder_;
+            demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> seriesBuilder_;
         /**
-         * <code>.jd3.Matrix filtering_states = 1;</code>
-         * @return Whether the filteringStates field is set.
-         */
-        public boolean hasFilteringStates() {
-          return filteringStatesBuilder_ != null || filteringStates_ != null;
-        }
-        /**
-         * <code>.jd3.Matrix filtering_states = 1;</code>
-         * @return The filteringStates.
-         */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getFilteringStates() {
-          if (filteringStatesBuilder_ == null) {
-            return filteringStates_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : filteringStates_;
-          } else {
-            return filteringStatesBuilder_.getMessage();
-          }
-        }
-        /**
-         * <code>.jd3.Matrix filtering_states = 1;</code>
-         */
-        public Builder setFilteringStates(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
-          if (filteringStatesBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            filteringStates_ = value;
-            onChanged();
-          } else {
-            filteringStatesBuilder_.setMessage(value);
-          }
-
-          return this;
-        }
-        /**
-         * <code>.jd3.Matrix filtering_states = 1;</code>
-         */
-        public Builder setFilteringStates(
-            demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder builderForValue) {
-          if (filteringStatesBuilder_ == null) {
-            filteringStates_ = builderForValue.build();
-            onChanged();
-          } else {
-            filteringStatesBuilder_.setMessage(builderForValue.build());
-          }
-
-          return this;
-        }
-        /**
-         * <code>.jd3.Matrix filtering_states = 1;</code>
-         */
-        public Builder mergeFilteringStates(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
-          if (filteringStatesBuilder_ == null) {
-            if (filteringStates_ != null) {
-              filteringStates_ =
-                demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.newBuilder(filteringStates_).mergeFrom(value).buildPartial();
-            } else {
-              filteringStates_ = value;
-            }
-            onChanged();
-          } else {
-            filteringStatesBuilder_.mergeFrom(value);
-          }
-
-          return this;
-        }
-        /**
-         * <code>.jd3.Matrix filtering_states = 1;</code>
-         */
-        public Builder clearFilteringStates() {
-          if (filteringStatesBuilder_ == null) {
-            filteringStates_ = null;
-            onChanged();
-          } else {
-            filteringStates_ = null;
-            filteringStatesBuilder_ = null;
-          }
-
-          return this;
-        }
-        /**
-         * <code>.jd3.Matrix filtering_states = 1;</code>
-         */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder getFilteringStatesBuilder() {
-          
-          onChanged();
-          return getFilteringStatesFieldBuilder().getBuilder();
-        }
-        /**
-         * <code>.jd3.Matrix filtering_states = 1;</code>
-         */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getFilteringStatesOrBuilder() {
-          if (filteringStatesBuilder_ != null) {
-            return filteringStatesBuilder_.getMessageOrBuilder();
-          } else {
-            return filteringStates_ == null ?
-                demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : filteringStates_;
-          }
-        }
-        /**
-         * <code>.jd3.Matrix filtering_states = 1;</code>
-         */
-        private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> 
-            getFilteringStatesFieldBuilder() {
-          if (filteringStatesBuilder_ == null) {
-            filteringStatesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder>(
-                    getFilteringStates(),
-                    getParentForChildren(),
-                    isClean());
-            filteringStates_ = null;
-          }
-          return filteringStatesBuilder_;
-        }
-
-        private demetra.toolkit.io.protobuf.ToolkitProtos.Matrix smoothStates_;
-        private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> smoothStatesBuilder_;
-        /**
-         * <code>.jd3.Matrix smooth_states = 2;</code>
-         * @return Whether the smoothStates field is set.
-         */
-        public boolean hasSmoothStates() {
-          return smoothStatesBuilder_ != null || smoothStates_ != null;
-        }
-        /**
-         * <code>.jd3.Matrix smooth_states = 2;</code>
-         * @return The smoothStates.
-         */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getSmoothStates() {
-          if (smoothStatesBuilder_ == null) {
-            return smoothStates_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : smoothStates_;
-          } else {
-            return smoothStatesBuilder_.getMessage();
-          }
-        }
-        /**
-         * <code>.jd3.Matrix smooth_states = 2;</code>
-         */
-        public Builder setSmoothStates(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
-          if (smoothStatesBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            smoothStates_ = value;
-            onChanged();
-          } else {
-            smoothStatesBuilder_.setMessage(value);
-          }
-
-          return this;
-        }
-        /**
-         * <code>.jd3.Matrix smooth_states = 2;</code>
-         */
-        public Builder setSmoothStates(
-            demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder builderForValue) {
-          if (smoothStatesBuilder_ == null) {
-            smoothStates_ = builderForValue.build();
-            onChanged();
-          } else {
-            smoothStatesBuilder_.setMessage(builderForValue.build());
-          }
-
-          return this;
-        }
-        /**
-         * <code>.jd3.Matrix smooth_states = 2;</code>
-         */
-        public Builder mergeSmoothStates(demetra.toolkit.io.protobuf.ToolkitProtos.Matrix value) {
-          if (smoothStatesBuilder_ == null) {
-            if (smoothStates_ != null) {
-              smoothStates_ =
-                demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.newBuilder(smoothStates_).mergeFrom(value).buildPartial();
-            } else {
-              smoothStates_ = value;
-            }
-            onChanged();
-          } else {
-            smoothStatesBuilder_.mergeFrom(value);
-          }
-
-          return this;
-        }
-        /**
-         * <code>.jd3.Matrix smooth_states = 2;</code>
-         */
-        public Builder clearSmoothStates() {
-          if (smoothStatesBuilder_ == null) {
-            smoothStates_ = null;
-            onChanged();
-          } else {
-            smoothStates_ = null;
-            smoothStatesBuilder_ = null;
-          }
-
-          return this;
-        }
-        /**
-         * <code>.jd3.Matrix smooth_states = 2;</code>
-         */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder getSmoothStatesBuilder() {
-          
-          onChanged();
-          return getSmoothStatesFieldBuilder().getBuilder();
-        }
-        /**
-         * <code>.jd3.Matrix smooth_states = 2;</code>
-         */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getSmoothStatesOrBuilder() {
-          if (smoothStatesBuilder_ != null) {
-            return smoothStatesBuilder_.getMessageOrBuilder();
-          } else {
-            return smoothStates_ == null ?
-                demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : smoothStates_;
-          }
-        }
-        /**
-         * <code>.jd3.Matrix smooth_states = 2;</code>
-         */
-        private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder> 
-            getSmoothStatesFieldBuilder() {
-          if (smoothStatesBuilder_ == null) {
-            smoothStatesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.toolkit.io.protobuf.ToolkitProtos.Matrix, demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder>(
-                    getSmoothStates(),
-                    getParentForChildren(),
-                    isClean());
-            smoothStates_ = null;
-          }
-          return smoothStatesBuilder_;
-        }
-
-        private demetra.sa.io.protobuf.SaProtos.Component series_;
-        private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> seriesBuilder_;
-        /**
-         * <code>.sa.Component series = 10;</code>
+         * <code>.modelling.Component series = 10;</code>
          * @return Whether the series field is set.
          */
         public boolean hasSeries() {
           return seriesBuilder_ != null || series_ != null;
         }
         /**
-         * <code>.sa.Component series = 10;</code>
+         * <code>.modelling.Component series = 10;</code>
          * @return The series.
          */
-        public demetra.sa.io.protobuf.SaProtos.Component getSeries() {
+        public demetra.modelling.io.protobuf.ModellingProtos.Component getSeries() {
           if (seriesBuilder_ == null) {
-            return series_ == null ? demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : series_;
+            return series_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : series_;
           } else {
             return seriesBuilder_.getMessage();
           }
         }
         /**
-         * <code>.sa.Component series = 10;</code>
+         * <code>.modelling.Component series = 10;</code>
          */
-        public Builder setSeries(demetra.sa.io.protobuf.SaProtos.Component value) {
+        public Builder setSeries(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
           if (seriesBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -8353,10 +7947,10 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component series = 10;</code>
+         * <code>.modelling.Component series = 10;</code>
          */
         public Builder setSeries(
-            demetra.sa.io.protobuf.SaProtos.Component.Builder builderForValue) {
+            demetra.modelling.io.protobuf.ModellingProtos.Component.Builder builderForValue) {
           if (seriesBuilder_ == null) {
             series_ = builderForValue.build();
             onChanged();
@@ -8367,13 +7961,13 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component series = 10;</code>
+         * <code>.modelling.Component series = 10;</code>
          */
-        public Builder mergeSeries(demetra.sa.io.protobuf.SaProtos.Component value) {
+        public Builder mergeSeries(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
           if (seriesBuilder_ == null) {
             if (series_ != null) {
               series_ =
-                demetra.sa.io.protobuf.SaProtos.Component.newBuilder(series_).mergeFrom(value).buildPartial();
+                demetra.modelling.io.protobuf.ModellingProtos.Component.newBuilder(series_).mergeFrom(value).buildPartial();
             } else {
               series_ = value;
             }
@@ -8385,7 +7979,7 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component series = 10;</code>
+         * <code>.modelling.Component series = 10;</code>
          */
         public Builder clearSeries() {
           if (seriesBuilder_ == null) {
@@ -8399,33 +7993,33 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component series = 10;</code>
+         * <code>.modelling.Component series = 10;</code>
          */
-        public demetra.sa.io.protobuf.SaProtos.Component.Builder getSeriesBuilder() {
+        public demetra.modelling.io.protobuf.ModellingProtos.Component.Builder getSeriesBuilder() {
           
           onChanged();
           return getSeriesFieldBuilder().getBuilder();
         }
         /**
-         * <code>.sa.Component series = 10;</code>
+         * <code>.modelling.Component series = 10;</code>
          */
-        public demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getSeriesOrBuilder() {
+        public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSeriesOrBuilder() {
           if (seriesBuilder_ != null) {
             return seriesBuilder_.getMessageOrBuilder();
           } else {
             return series_ == null ?
-                demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : series_;
+                demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : series_;
           }
         }
         /**
-         * <code>.sa.Component series = 10;</code>
+         * <code>.modelling.Component series = 10;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> 
+            demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> 
             getSeriesFieldBuilder() {
           if (seriesBuilder_ == null) {
             seriesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder>(
+                demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder>(
                     getSeries(),
                     getParentForChildren(),
                     isClean());
@@ -8434,31 +8028,31 @@ public final class StsProtos {
           return seriesBuilder_;
         }
 
-        private demetra.sa.io.protobuf.SaProtos.Component level_;
+        private demetra.modelling.io.protobuf.ModellingProtos.Component level_;
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> levelBuilder_;
+            demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> levelBuilder_;
         /**
-         * <code>.sa.Component level = 11;</code>
+         * <code>.modelling.Component level = 11;</code>
          * @return Whether the level field is set.
          */
         public boolean hasLevel() {
           return levelBuilder_ != null || level_ != null;
         }
         /**
-         * <code>.sa.Component level = 11;</code>
+         * <code>.modelling.Component level = 11;</code>
          * @return The level.
          */
-        public demetra.sa.io.protobuf.SaProtos.Component getLevel() {
+        public demetra.modelling.io.protobuf.ModellingProtos.Component getLevel() {
           if (levelBuilder_ == null) {
-            return level_ == null ? demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : level_;
+            return level_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : level_;
           } else {
             return levelBuilder_.getMessage();
           }
         }
         /**
-         * <code>.sa.Component level = 11;</code>
+         * <code>.modelling.Component level = 11;</code>
          */
-        public Builder setLevel(demetra.sa.io.protobuf.SaProtos.Component value) {
+        public Builder setLevel(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
           if (levelBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -8472,10 +8066,10 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component level = 11;</code>
+         * <code>.modelling.Component level = 11;</code>
          */
         public Builder setLevel(
-            demetra.sa.io.protobuf.SaProtos.Component.Builder builderForValue) {
+            demetra.modelling.io.protobuf.ModellingProtos.Component.Builder builderForValue) {
           if (levelBuilder_ == null) {
             level_ = builderForValue.build();
             onChanged();
@@ -8486,13 +8080,13 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component level = 11;</code>
+         * <code>.modelling.Component level = 11;</code>
          */
-        public Builder mergeLevel(demetra.sa.io.protobuf.SaProtos.Component value) {
+        public Builder mergeLevel(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
           if (levelBuilder_ == null) {
             if (level_ != null) {
               level_ =
-                demetra.sa.io.protobuf.SaProtos.Component.newBuilder(level_).mergeFrom(value).buildPartial();
+                demetra.modelling.io.protobuf.ModellingProtos.Component.newBuilder(level_).mergeFrom(value).buildPartial();
             } else {
               level_ = value;
             }
@@ -8504,7 +8098,7 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component level = 11;</code>
+         * <code>.modelling.Component level = 11;</code>
          */
         public Builder clearLevel() {
           if (levelBuilder_ == null) {
@@ -8518,33 +8112,33 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component level = 11;</code>
+         * <code>.modelling.Component level = 11;</code>
          */
-        public demetra.sa.io.protobuf.SaProtos.Component.Builder getLevelBuilder() {
+        public demetra.modelling.io.protobuf.ModellingProtos.Component.Builder getLevelBuilder() {
           
           onChanged();
           return getLevelFieldBuilder().getBuilder();
         }
         /**
-         * <code>.sa.Component level = 11;</code>
+         * <code>.modelling.Component level = 11;</code>
          */
-        public demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getLevelOrBuilder() {
+        public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getLevelOrBuilder() {
           if (levelBuilder_ != null) {
             return levelBuilder_.getMessageOrBuilder();
           } else {
             return level_ == null ?
-                demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : level_;
+                demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : level_;
           }
         }
         /**
-         * <code>.sa.Component level = 11;</code>
+         * <code>.modelling.Component level = 11;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> 
+            demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> 
             getLevelFieldBuilder() {
           if (levelBuilder_ == null) {
             levelBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder>(
+                demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder>(
                     getLevel(),
                     getParentForChildren(),
                     isClean());
@@ -8553,31 +8147,31 @@ public final class StsProtos {
           return levelBuilder_;
         }
 
-        private demetra.sa.io.protobuf.SaProtos.Component slope_;
+        private demetra.modelling.io.protobuf.ModellingProtos.Component slope_;
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> slopeBuilder_;
+            demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> slopeBuilder_;
         /**
-         * <code>.sa.Component slope = 12;</code>
+         * <code>.modelling.Component slope = 12;</code>
          * @return Whether the slope field is set.
          */
         public boolean hasSlope() {
           return slopeBuilder_ != null || slope_ != null;
         }
         /**
-         * <code>.sa.Component slope = 12;</code>
+         * <code>.modelling.Component slope = 12;</code>
          * @return The slope.
          */
-        public demetra.sa.io.protobuf.SaProtos.Component getSlope() {
+        public demetra.modelling.io.protobuf.ModellingProtos.Component getSlope() {
           if (slopeBuilder_ == null) {
-            return slope_ == null ? demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : slope_;
+            return slope_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : slope_;
           } else {
             return slopeBuilder_.getMessage();
           }
         }
         /**
-         * <code>.sa.Component slope = 12;</code>
+         * <code>.modelling.Component slope = 12;</code>
          */
-        public Builder setSlope(demetra.sa.io.protobuf.SaProtos.Component value) {
+        public Builder setSlope(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
           if (slopeBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -8591,10 +8185,10 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component slope = 12;</code>
+         * <code>.modelling.Component slope = 12;</code>
          */
         public Builder setSlope(
-            demetra.sa.io.protobuf.SaProtos.Component.Builder builderForValue) {
+            demetra.modelling.io.protobuf.ModellingProtos.Component.Builder builderForValue) {
           if (slopeBuilder_ == null) {
             slope_ = builderForValue.build();
             onChanged();
@@ -8605,13 +8199,13 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component slope = 12;</code>
+         * <code>.modelling.Component slope = 12;</code>
          */
-        public Builder mergeSlope(demetra.sa.io.protobuf.SaProtos.Component value) {
+        public Builder mergeSlope(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
           if (slopeBuilder_ == null) {
             if (slope_ != null) {
               slope_ =
-                demetra.sa.io.protobuf.SaProtos.Component.newBuilder(slope_).mergeFrom(value).buildPartial();
+                demetra.modelling.io.protobuf.ModellingProtos.Component.newBuilder(slope_).mergeFrom(value).buildPartial();
             } else {
               slope_ = value;
             }
@@ -8623,7 +8217,7 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component slope = 12;</code>
+         * <code>.modelling.Component slope = 12;</code>
          */
         public Builder clearSlope() {
           if (slopeBuilder_ == null) {
@@ -8637,33 +8231,33 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component slope = 12;</code>
+         * <code>.modelling.Component slope = 12;</code>
          */
-        public demetra.sa.io.protobuf.SaProtos.Component.Builder getSlopeBuilder() {
+        public demetra.modelling.io.protobuf.ModellingProtos.Component.Builder getSlopeBuilder() {
           
           onChanged();
           return getSlopeFieldBuilder().getBuilder();
         }
         /**
-         * <code>.sa.Component slope = 12;</code>
+         * <code>.modelling.Component slope = 12;</code>
          */
-        public demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getSlopeOrBuilder() {
+        public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSlopeOrBuilder() {
           if (slopeBuilder_ != null) {
             return slopeBuilder_.getMessageOrBuilder();
           } else {
             return slope_ == null ?
-                demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : slope_;
+                demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : slope_;
           }
         }
         /**
-         * <code>.sa.Component slope = 12;</code>
+         * <code>.modelling.Component slope = 12;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> 
+            demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> 
             getSlopeFieldBuilder() {
           if (slopeBuilder_ == null) {
             slopeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder>(
+                demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder>(
                     getSlope(),
                     getParentForChildren(),
                     isClean());
@@ -8672,31 +8266,31 @@ public final class StsProtos {
           return slopeBuilder_;
         }
 
-        private demetra.sa.io.protobuf.SaProtos.Component cycle_;
+        private demetra.modelling.io.protobuf.ModellingProtos.Component cycle_;
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> cycleBuilder_;
+            demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> cycleBuilder_;
         /**
-         * <code>.sa.Component cycle = 13;</code>
+         * <code>.modelling.Component cycle = 13;</code>
          * @return Whether the cycle field is set.
          */
         public boolean hasCycle() {
           return cycleBuilder_ != null || cycle_ != null;
         }
         /**
-         * <code>.sa.Component cycle = 13;</code>
+         * <code>.modelling.Component cycle = 13;</code>
          * @return The cycle.
          */
-        public demetra.sa.io.protobuf.SaProtos.Component getCycle() {
+        public demetra.modelling.io.protobuf.ModellingProtos.Component getCycle() {
           if (cycleBuilder_ == null) {
-            return cycle_ == null ? demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : cycle_;
+            return cycle_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : cycle_;
           } else {
             return cycleBuilder_.getMessage();
           }
         }
         /**
-         * <code>.sa.Component cycle = 13;</code>
+         * <code>.modelling.Component cycle = 13;</code>
          */
-        public Builder setCycle(demetra.sa.io.protobuf.SaProtos.Component value) {
+        public Builder setCycle(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
           if (cycleBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -8710,10 +8304,10 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component cycle = 13;</code>
+         * <code>.modelling.Component cycle = 13;</code>
          */
         public Builder setCycle(
-            demetra.sa.io.protobuf.SaProtos.Component.Builder builderForValue) {
+            demetra.modelling.io.protobuf.ModellingProtos.Component.Builder builderForValue) {
           if (cycleBuilder_ == null) {
             cycle_ = builderForValue.build();
             onChanged();
@@ -8724,13 +8318,13 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component cycle = 13;</code>
+         * <code>.modelling.Component cycle = 13;</code>
          */
-        public Builder mergeCycle(demetra.sa.io.protobuf.SaProtos.Component value) {
+        public Builder mergeCycle(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
           if (cycleBuilder_ == null) {
             if (cycle_ != null) {
               cycle_ =
-                demetra.sa.io.protobuf.SaProtos.Component.newBuilder(cycle_).mergeFrom(value).buildPartial();
+                demetra.modelling.io.protobuf.ModellingProtos.Component.newBuilder(cycle_).mergeFrom(value).buildPartial();
             } else {
               cycle_ = value;
             }
@@ -8742,7 +8336,7 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component cycle = 13;</code>
+         * <code>.modelling.Component cycle = 13;</code>
          */
         public Builder clearCycle() {
           if (cycleBuilder_ == null) {
@@ -8756,33 +8350,33 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component cycle = 13;</code>
+         * <code>.modelling.Component cycle = 13;</code>
          */
-        public demetra.sa.io.protobuf.SaProtos.Component.Builder getCycleBuilder() {
+        public demetra.modelling.io.protobuf.ModellingProtos.Component.Builder getCycleBuilder() {
           
           onChanged();
           return getCycleFieldBuilder().getBuilder();
         }
         /**
-         * <code>.sa.Component cycle = 13;</code>
+         * <code>.modelling.Component cycle = 13;</code>
          */
-        public demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getCycleOrBuilder() {
+        public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getCycleOrBuilder() {
           if (cycleBuilder_ != null) {
             return cycleBuilder_.getMessageOrBuilder();
           } else {
             return cycle_ == null ?
-                demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : cycle_;
+                demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : cycle_;
           }
         }
         /**
-         * <code>.sa.Component cycle = 13;</code>
+         * <code>.modelling.Component cycle = 13;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> 
+            demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> 
             getCycleFieldBuilder() {
           if (cycleBuilder_ == null) {
             cycleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder>(
+                demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder>(
                     getCycle(),
                     getParentForChildren(),
                     isClean());
@@ -8791,31 +8385,31 @@ public final class StsProtos {
           return cycleBuilder_;
         }
 
-        private demetra.sa.io.protobuf.SaProtos.Component seasonal_;
+        private demetra.modelling.io.protobuf.ModellingProtos.Component seasonal_;
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> seasonalBuilder_;
+            demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> seasonalBuilder_;
         /**
-         * <code>.sa.Component seasonal = 14;</code>
+         * <code>.modelling.Component seasonal = 14;</code>
          * @return Whether the seasonal field is set.
          */
         public boolean hasSeasonal() {
           return seasonalBuilder_ != null || seasonal_ != null;
         }
         /**
-         * <code>.sa.Component seasonal = 14;</code>
+         * <code>.modelling.Component seasonal = 14;</code>
          * @return The seasonal.
          */
-        public demetra.sa.io.protobuf.SaProtos.Component getSeasonal() {
+        public demetra.modelling.io.protobuf.ModellingProtos.Component getSeasonal() {
           if (seasonalBuilder_ == null) {
-            return seasonal_ == null ? demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : seasonal_;
+            return seasonal_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : seasonal_;
           } else {
             return seasonalBuilder_.getMessage();
           }
         }
         /**
-         * <code>.sa.Component seasonal = 14;</code>
+         * <code>.modelling.Component seasonal = 14;</code>
          */
-        public Builder setSeasonal(demetra.sa.io.protobuf.SaProtos.Component value) {
+        public Builder setSeasonal(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
           if (seasonalBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -8829,10 +8423,10 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component seasonal = 14;</code>
+         * <code>.modelling.Component seasonal = 14;</code>
          */
         public Builder setSeasonal(
-            demetra.sa.io.protobuf.SaProtos.Component.Builder builderForValue) {
+            demetra.modelling.io.protobuf.ModellingProtos.Component.Builder builderForValue) {
           if (seasonalBuilder_ == null) {
             seasonal_ = builderForValue.build();
             onChanged();
@@ -8843,13 +8437,13 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component seasonal = 14;</code>
+         * <code>.modelling.Component seasonal = 14;</code>
          */
-        public Builder mergeSeasonal(demetra.sa.io.protobuf.SaProtos.Component value) {
+        public Builder mergeSeasonal(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
           if (seasonalBuilder_ == null) {
             if (seasonal_ != null) {
               seasonal_ =
-                demetra.sa.io.protobuf.SaProtos.Component.newBuilder(seasonal_).mergeFrom(value).buildPartial();
+                demetra.modelling.io.protobuf.ModellingProtos.Component.newBuilder(seasonal_).mergeFrom(value).buildPartial();
             } else {
               seasonal_ = value;
             }
@@ -8861,7 +8455,7 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component seasonal = 14;</code>
+         * <code>.modelling.Component seasonal = 14;</code>
          */
         public Builder clearSeasonal() {
           if (seasonalBuilder_ == null) {
@@ -8875,33 +8469,33 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component seasonal = 14;</code>
+         * <code>.modelling.Component seasonal = 14;</code>
          */
-        public demetra.sa.io.protobuf.SaProtos.Component.Builder getSeasonalBuilder() {
+        public demetra.modelling.io.protobuf.ModellingProtos.Component.Builder getSeasonalBuilder() {
           
           onChanged();
           return getSeasonalFieldBuilder().getBuilder();
         }
         /**
-         * <code>.sa.Component seasonal = 14;</code>
+         * <code>.modelling.Component seasonal = 14;</code>
          */
-        public demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getSeasonalOrBuilder() {
+        public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSeasonalOrBuilder() {
           if (seasonalBuilder_ != null) {
             return seasonalBuilder_.getMessageOrBuilder();
           } else {
             return seasonal_ == null ?
-                demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : seasonal_;
+                demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : seasonal_;
           }
         }
         /**
-         * <code>.sa.Component seasonal = 14;</code>
+         * <code>.modelling.Component seasonal = 14;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> 
+            demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> 
             getSeasonalFieldBuilder() {
           if (seasonalBuilder_ == null) {
             seasonalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder>(
+                demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder>(
                     getSeasonal(),
                     getParentForChildren(),
                     isClean());
@@ -8910,31 +8504,31 @@ public final class StsProtos {
           return seasonalBuilder_;
         }
 
-        private demetra.sa.io.protobuf.SaProtos.Component noise_;
+        private demetra.modelling.io.protobuf.ModellingProtos.Component noise_;
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> noiseBuilder_;
+            demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> noiseBuilder_;
         /**
-         * <code>.sa.Component noise = 15;</code>
+         * <code>.modelling.Component noise = 15;</code>
          * @return Whether the noise field is set.
          */
         public boolean hasNoise() {
           return noiseBuilder_ != null || noise_ != null;
         }
         /**
-         * <code>.sa.Component noise = 15;</code>
+         * <code>.modelling.Component noise = 15;</code>
          * @return The noise.
          */
-        public demetra.sa.io.protobuf.SaProtos.Component getNoise() {
+        public demetra.modelling.io.protobuf.ModellingProtos.Component getNoise() {
           if (noiseBuilder_ == null) {
-            return noise_ == null ? demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : noise_;
+            return noise_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : noise_;
           } else {
             return noiseBuilder_.getMessage();
           }
         }
         /**
-         * <code>.sa.Component noise = 15;</code>
+         * <code>.modelling.Component noise = 15;</code>
          */
-        public Builder setNoise(demetra.sa.io.protobuf.SaProtos.Component value) {
+        public Builder setNoise(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
           if (noiseBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -8948,10 +8542,10 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component noise = 15;</code>
+         * <code>.modelling.Component noise = 15;</code>
          */
         public Builder setNoise(
-            demetra.sa.io.protobuf.SaProtos.Component.Builder builderForValue) {
+            demetra.modelling.io.protobuf.ModellingProtos.Component.Builder builderForValue) {
           if (noiseBuilder_ == null) {
             noise_ = builderForValue.build();
             onChanged();
@@ -8962,13 +8556,13 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component noise = 15;</code>
+         * <code>.modelling.Component noise = 15;</code>
          */
-        public Builder mergeNoise(demetra.sa.io.protobuf.SaProtos.Component value) {
+        public Builder mergeNoise(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
           if (noiseBuilder_ == null) {
             if (noise_ != null) {
               noise_ =
-                demetra.sa.io.protobuf.SaProtos.Component.newBuilder(noise_).mergeFrom(value).buildPartial();
+                demetra.modelling.io.protobuf.ModellingProtos.Component.newBuilder(noise_).mergeFrom(value).buildPartial();
             } else {
               noise_ = value;
             }
@@ -8980,7 +8574,7 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component noise = 15;</code>
+         * <code>.modelling.Component noise = 15;</code>
          */
         public Builder clearNoise() {
           if (noiseBuilder_ == null) {
@@ -8994,33 +8588,33 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sa.Component noise = 15;</code>
+         * <code>.modelling.Component noise = 15;</code>
          */
-        public demetra.sa.io.protobuf.SaProtos.Component.Builder getNoiseBuilder() {
+        public demetra.modelling.io.protobuf.ModellingProtos.Component.Builder getNoiseBuilder() {
           
           onChanged();
           return getNoiseFieldBuilder().getBuilder();
         }
         /**
-         * <code>.sa.Component noise = 15;</code>
+         * <code>.modelling.Component noise = 15;</code>
          */
-        public demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder getNoiseOrBuilder() {
+        public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getNoiseOrBuilder() {
           if (noiseBuilder_ != null) {
             return noiseBuilder_.getMessageOrBuilder();
           } else {
             return noise_ == null ?
-                demetra.sa.io.protobuf.SaProtos.Component.getDefaultInstance() : noise_;
+                demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : noise_;
           }
         }
         /**
-         * <code>.sa.Component noise = 15;</code>
+         * <code>.modelling.Component noise = 15;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder> 
+            demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> 
             getNoiseFieldBuilder() {
           if (noiseBuilder_ == null) {
             noiseBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.sa.io.protobuf.SaProtos.Component, demetra.sa.io.protobuf.SaProtos.Component.Builder, demetra.sa.io.protobuf.SaProtos.ComponentOrBuilder>(
+                demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder>(
                     getNoise(),
                     getParentForChildren(),
                     isClean());
@@ -10344,7 +9938,7 @@ public final class StsProtos {
       "\"\215\001\n\021DiffuseLikelihood\022\022\n\nlikelihood\030\001 \001" +
       "(\001\022\014\n\004nobs\030\002 \001(\005\022\020\n\010ndiffuse\030\003 \001(\005\022\016\n\006ss" +
       "qerr\030\004 \001(\001\022\014\n\004ldet\030\005 \001(\001\022\023\n\013dcorrection\030" +
-      "\006 \001(\001\022\021\n\tresiduals\030\007 \003(\001\"\233\007\n\003Bsm\022)\n\013desc" +
+      "\006 \001(\001\022\021\n\tresiduals\030\007 \003(\001\"\372\006\n\003Bsm\022)\n\013desc" +
       "ription\030\001 \001(\0132\024.sts.Bsm.Description\022\'\n\ne" +
       "stimation\030\002 \001(\0132\023.sts.Bsm.Estimation\022\'\n\n" +
       "components\030\003 \001(\0132\023.sts.Bsm.Components\022\"\n" +
@@ -10360,18 +9954,18 @@ public final class StsProtos {
       "\n\nparameters\030\005 \001(\0132\031.jd3.ParametersEstim" +
       "ation\022*\n\nlikelihood\030\006 \001(\0132\026.sts.DiffuseL" +
       "ikelihood\022\021\n\tresiduals\030\007 \003(\001\022.\n\010missings" +
-      "\030\010 \003(\0132\034.modelling.MissingEstimation\032\217\002\n" +
-      "\nComponents\022%\n\020filtering_states\030\001 \001(\0132\013." +
-      "jd3.Matrix\022\"\n\rsmooth_states\030\002 \001(\0132\013.jd3." +
-      "Matrix\022\035\n\006series\030\n \001(\0132\r.sa.Component\022\034\n" +
-      "\005level\030\013 \001(\0132\r.sa.Component\022\034\n\005slope\030\014 \001" +
-      "(\0132\r.sa.Component\022\034\n\005cycle\030\r \001(\0132\r.sa.Co" +
-      "mponent\022\037\n\010seasonal\030\016 \001(\0132\r.sa.Component" +
-      "\022\034\n\005noise\030\017 \001(\0132\r.sa.Component*p\n\rSeason" +
-      "alModel\022\r\n\tSEAS_NONE\020\000\022\016\n\nSEAS_DUMMY\020\001\022\026" +
-      "\n\022SEAS_TRIGONOMETRIC\020\002\022\030\n\024SEAS_HARRISONS" +
-      "TEVENS\020\003\022\016\n\nSEAS_CRUDE\020\004B$\n\027demetra.sts." +
-      "io.protobufB\tStsProtosP\000P\001P\002b\006proto3"
+      "\030\010 \003(\0132\034.modelling.MissingEstimation\032\356\001\n" +
+      "\nComponents\022$\n\006series\030\n \001(\0132\024.modelling." +
+      "Component\022#\n\005level\030\013 \001(\0132\024.modelling.Com" +
+      "ponent\022#\n\005slope\030\014 \001(\0132\024.modelling.Compon" +
+      "ent\022#\n\005cycle\030\r \001(\0132\024.modelling.Component" +
+      "\022&\n\010seasonal\030\016 \001(\0132\024.modelling.Component" +
+      "\022#\n\005noise\030\017 \001(\0132\024.modelling.Component*p\n" +
+      "\rSeasonalModel\022\r\n\tSEAS_NONE\020\000\022\016\n\nSEAS_DU" +
+      "MMY\020\001\022\026\n\022SEAS_TRIGONOMETRIC\020\002\022\030\n\024SEAS_HA" +
+      "RRISONSTEVENS\020\003\022\016\n\nSEAS_CRUDE\020\004B$\n\027demet" +
+      "ra.sts.io.protobufB\tStsProtosP\000P\001P\002b\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -10415,7 +10009,7 @@ public final class StsProtos {
     internal_static_sts_Bsm_Components_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_sts_Bsm_Components_descriptor,
-        new java.lang.String[] { "FilteringStates", "SmoothStates", "Series", "Level", "Slope", "Cycle", "Seasonal", "Noise", });
+        new java.lang.String[] { "Series", "Level", "Slope", "Cycle", "Seasonal", "Noise", });
     demetra.toolkit.io.protobuf.ToolkitProtos.getDescriptor();
     demetra.modelling.io.protobuf.ModellingProtos.getDescriptor();
     demetra.sa.io.protobuf.SaProtos.getDescriptor();

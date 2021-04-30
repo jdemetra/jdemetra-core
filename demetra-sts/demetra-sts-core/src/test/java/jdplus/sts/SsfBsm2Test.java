@@ -41,9 +41,7 @@ public class SsfBsm2Test {
     static final SsfBsm2 BSM;
 
     static {
-        BsmSpec mspec = new BsmSpec();
-        //mspec.setSeasonalModel(SeasonalModel.Crude);
-        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
+        BasicStructuralModel model = new BasicStructuralModel(BsmSpec.DEFAULT, 12);
         BSM = SsfBsm2.of(model);
 
     }
@@ -53,78 +51,79 @@ public class SsfBsm2Test {
 
     @Test
     public void testAggregate1() {
-        BsmSpec mspec = new BsmSpec();
-        //mspec.setSeasonalModel(SeasonalModel.Crude);
-        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
-        StateComponent t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope));
-        StateComponent seas = SeasonalComponent.of(model.specification().getSeasonalModel(), 12, model.getVariance(Component.Seasonal));
-        CompositeSsf composite = CompositeSsf.builder()
-                .add(t, LocalLinearTrend.defaultLoading())
-                .add(seas, SeasonalComponent.defaultLoading())
-                .measurementError(model.getVariance(Component.Noise))
-                .build();
-
-        SsfData data = new SsfData(Data.EXPORTS);
-        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(composite, data);
-        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(SsfBsm2.of(model), data);
-        assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
+//        BsmSpec mspec = BsmSpec.builder()
+//                .build();
+//        //mspec.setSeasonalModel(SeasonalModel.Crude);
+//        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
+//        StateComponent t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope));
+//        StateComponent seas = SeasonalComponent.of(model.specification().getSeasonalModel(), 12, model.getVariance(Component.Seasonal));
+//        CompositeSsf composite = CompositeSsf.builder()
+//                .add(t, LocalLinearTrend.defaultLoading())
+//                .add(seas, SeasonalComponent.defaultLoading())
+//                .measurementError(model.getVariance(Component.Noise))
+//                .build();
+//
+//        SsfData data = new SsfData(Data.EXPORTS);
+//        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(composite, data);
+//        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(SsfBsm2.of(model), data);
+//        assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
     }
 
     @Test
     public void testAggregate2() {
-        BsmSpec mspec = new BsmSpec();
-        mspec.setSeasonalModel(SeasonalModel.Crude);
-        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
-        StateComponent t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope));
-        StateComponent seas = SeasonalComponent.of(model.specification().getSeasonalModel(), 12, model.getVariance(Component.Seasonal));
-        CompositeSsf composite = CompositeSsf.builder()
-                .add(t, LocalLinearTrend.defaultLoading())
-                .add(seas, SeasonalComponent.defaultLoading())
-                .measurementError(model.getVariance(Component.Noise))
-                .build();
-
-        SsfData data = new SsfData(Data.EXPORTS);
-        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(composite, data);
-        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(SsfBsm2.of(model), data);
-        assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
+//        BsmSpec mspec = new BsmSpec();
+//        mspec.setSeasonalModel(SeasonalModel.Crude);
+//        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
+//        StateComponent t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope));
+//        StateComponent seas = SeasonalComponent.of(model.specification().getSeasonalModel(), 12, model.getVariance(Component.Seasonal));
+//        CompositeSsf composite = CompositeSsf.builder()
+//                .add(t, LocalLinearTrend.defaultLoading())
+//                .add(seas, SeasonalComponent.defaultLoading())
+//                .measurementError(model.getVariance(Component.Noise))
+//                .build();
+//
+//        SsfData data = new SsfData(Data.EXPORTS);
+//        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(composite, data);
+//        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(SsfBsm2.of(model), data);
+//        assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
     }
 
     @Test
     public void testAggregate3() {
-        BsmSpec mspec = new BsmSpec();
-        mspec.setSeasonalModel(SeasonalModel.Dummy);
-        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
-        StateComponent t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope));
-        StateComponent seas = SeasonalComponent.of(model.specification().getSeasonalModel(), 12, model.getVariance(Component.Seasonal));
-        CompositeSsf composite = CompositeSsf.builder()
-                .add(t, LocalLinearTrend.defaultLoading())
-                .add(seas, SeasonalComponent.defaultLoading())
-                .measurementError(model.getVariance(Component.Noise))
-                .build();
-
-        SsfData data = new SsfData(Data.EXPORTS);
-        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(composite, data);
-        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(SsfBsm2.of(model), data);
-        assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
+//        BsmSpec mspec = new BsmSpec();
+//        mspec.setSeasonalModel(SeasonalModel.Dummy);
+//        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
+//        StateComponent t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope));
+//        StateComponent seas = SeasonalComponent.of(model.specification().getSeasonalModel(), 12, model.getVariance(Component.Seasonal));
+//        CompositeSsf composite = CompositeSsf.builder()
+//                .add(t, LocalLinearTrend.defaultLoading())
+//                .add(seas, SeasonalComponent.defaultLoading())
+//                .measurementError(model.getVariance(Component.Noise))
+//                .build();
+//
+//        SsfData data = new SsfData(Data.EXPORTS);
+//        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(composite, data);
+//        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(SsfBsm2.of(model), data);
+//        assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
     }
 
     @Test
     public void testAggregate4() {
-        BsmSpec mspec = new BsmSpec();
-        mspec.setSeasonalModel(SeasonalModel.HarrisonStevens);
-        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
-        StateComponent t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope));
-        StateComponent seas = SeasonalComponent.of(model.specification().getSeasonalModel(), 12, model.getVariance(Component.Seasonal));
-        CompositeSsf composite = CompositeSsf.builder()
-                .add(t, LocalLinearTrend.defaultLoading())
-                .add(seas, SeasonalComponent.defaultLoading())
-                .measurementError(model.getVariance(Component.Noise))
-                .build();
-
-        SsfData data = new SsfData(Data.EXPORTS);
-        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(composite, data);
-        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(SsfBsm2.of(model), data);
-        assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
+//        BsmSpec mspec = new BsmSpec();
+//        mspec.setSeasonalModel(SeasonalModel.HarrisonStevens);
+//        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
+//        StateComponent t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope));
+//        StateComponent seas = SeasonalComponent.of(model.specification().getSeasonalModel(), 12, model.getVariance(Component.Seasonal));
+//        CompositeSsf composite = CompositeSsf.builder()
+//                .add(t, LocalLinearTrend.defaultLoading())
+//                .add(seas, SeasonalComponent.defaultLoading())
+//                .measurementError(model.getVariance(Component.Noise))
+//                .build();
+//
+//        SsfData data = new SsfData(Data.EXPORTS);
+//        DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(composite, data);
+//        DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(SsfBsm2.of(model), data);
+//        assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
     }
 
     @Test
@@ -138,54 +137,54 @@ public class SsfBsm2Test {
     }
 
     public static void stressTestBsm() {
-        SsfData data = new SsfData(Data.EXPORTS);
-        long t0 = System.currentTimeMillis();
-        for (int i = 0; i < N; ++i) {
-            DkToolkit.likelihoodComputer(true, true, false).compute(BSM, data);
-        }
-        long t1 = System.currentTimeMillis();
-        System.out.println("dk filter (sqr)");
-        System.out.println(t1 - t0);
-        t0 = System.currentTimeMillis();
-        for (int i = 0; i < N; ++i) {
-            DkToolkit.likelihoodComputer(false, true, false).compute(BSM, data);
-        }
-        t1 = System.currentTimeMillis();
-        System.out.println("dk filter");
-        System.out.println(t1 - t0);
-        t0 = System.currentTimeMillis();
-        for (int i = 0; i < N; ++i) {
-            AkfToolkit.likelihoodComputer(true, true, false).compute(BSM, data);
-        }
-        t1 = System.currentTimeMillis();
-        System.out.println("akf filter");
-        System.out.println(t1 - t0);
-        t0 = System.currentTimeMillis();
-        for (int i = 0; i < N; ++i) {
-            CkmsToolkit.likelihoodComputer(true).compute(BSM, data);
-        }
-        t1 = System.currentTimeMillis();
-        System.out.println("ckms filter");
-        System.out.println(t1 - t0);
-
-        BsmSpec mspec = new BsmSpec();
-        //mspec.setSeasonalModel(SeasonalModel.Crude);
-        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
-        StateComponent t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope));
-        StateComponent seas = SeasonalComponent.of(model.specification().getSeasonalModel(), 12, model.getVariance(Component.Seasonal));
-        CompositeSsf composite = CompositeSsf.builder()
-                .add(t, LocalLinearTrend.defaultLoading())
-                .add(seas, SeasonalComponent.defaultLoading())
-                .measurementError(model.getVariance(Component.Noise))
-                .build();
-        t0 = System.currentTimeMillis();
-        for (int i = 0; i < N; ++i) {
-            CkmsToolkit.likelihoodComputer(true).compute(composite, data);
-        }
-        t1 = System.currentTimeMillis();
-        System.out.println("ckms filter / composite");
-        System.out.println(t1 - t0);
-
+//        SsfData data = new SsfData(Data.EXPORTS);
+//        long t0 = System.currentTimeMillis();
+//        for (int i = 0; i < N; ++i) {
+//            DkToolkit.likelihoodComputer(true, true, false).compute(BSM, data);
+//        }
+//        long t1 = System.currentTimeMillis();
+//        System.out.println("dk filter (sqr)");
+//        System.out.println(t1 - t0);
+//        t0 = System.currentTimeMillis();
+//        for (int i = 0; i < N; ++i) {
+//            DkToolkit.likelihoodComputer(false, true, false).compute(BSM, data);
+//        }
+//        t1 = System.currentTimeMillis();
+//        System.out.println("dk filter");
+//        System.out.println(t1 - t0);
+//        t0 = System.currentTimeMillis();
+//        for (int i = 0; i < N; ++i) {
+//            AkfToolkit.likelihoodComputer(true, true, false).compute(BSM, data);
+//        }
+//        t1 = System.currentTimeMillis();
+//        System.out.println("akf filter");
+//        System.out.println(t1 - t0);
+//        t0 = System.currentTimeMillis();
+//        for (int i = 0; i < N; ++i) {
+//            CkmsToolkit.likelihoodComputer(true).compute(BSM, data);
+//        }
+//        t1 = System.currentTimeMillis();
+//        System.out.println("ckms filter");
+//        System.out.println(t1 - t0);
+//
+//        BsmSpec mspec = new BsmSpec();
+//        //mspec.setSeasonalModel(SeasonalModel.Crude);
+//        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
+//        StateComponent t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope));
+//        StateComponent seas = SeasonalComponent.of(model.specification().getSeasonalModel(), 12, model.getVariance(Component.Seasonal));
+//        CompositeSsf composite = CompositeSsf.builder()
+//                .add(t, LocalLinearTrend.defaultLoading())
+//                .add(seas, SeasonalComponent.defaultLoading())
+//                .measurementError(model.getVariance(Component.Noise))
+//                .build();
+//        t0 = System.currentTimeMillis();
+//        for (int i = 0; i < N; ++i) {
+//            CkmsToolkit.likelihoodComputer(true).compute(composite, data);
+//        }
+//        t1 = System.currentTimeMillis();
+//        System.out.println("ckms filter / composite");
+//        System.out.println(t1 - t0);
+//
     }
 
     public static void main(String[] args) {

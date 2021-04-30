@@ -42,31 +42,31 @@ public class SsfBsm extends Ssf {
 
     public static int searchPosition(BasicStructuralModel model, Component type) {
         int n = 0;
-        if (model.nVar > 0) {
+        if (model.getNoiseVar() > 0) {
             if (type == Component.Noise) {
                 return n;
             }
             ++n;
         }
-        if (model.cVar >= 0) {
+        if (model.getCycleVar() >= 0) {
             if (type == Component.Cycle) {
                 return n;
             }
             n += 2;
         }
-        if (model.lVar >= 0) {
+        if (model.getLevelVar() >= 0) {
             if (type == Component.Level) {
                 return n;
             }
             ++n;
         }
-        if (model.sVar >= 0) {
+        if (model.getSlopeVar() >= 0) {
             if (type == Component.Slope) {
                 return n;
             }
             ++n;
         }
-        if (model.seasVar >= 0 && type == Component.Seasonal) {
+        if (model.getSeasonalVar() >= 0 && type == Component.Seasonal) {
             return n;
         } else {
             return -1;
@@ -75,19 +75,19 @@ public class SsfBsm extends Ssf {
 
     public static int calcDim(BasicStructuralModel model) {
         int n = 0;
-        if (model.nVar > 0) {
+        if (model.getNoiseVar() > 0) {
             ++n;
         }
-        if (model.cVar >= 0) {
+        if (model.getCycleVar() >= 0) {
             n += 2;
         }
-        if (model.lVar >= 0) {
+        if (model.getLevelVar() >= 0) {
             ++n;
         }
-        if (model.sVar >= 0) {
+        if (model.getSlopeVar() >= 0) {
             ++n;
         }
-        if (model.seasVar >= 0) {
+        if (model.getSeasonalVar() >= 0) {
             n += model.getPeriod() - 1;
         }
         return n;
@@ -98,34 +98,34 @@ public class SsfBsm extends Ssf {
      */
     private static int[] calcCmpsIndexes(BasicStructuralModel model) {
         int n = 0;
-        if (model.nVar > 0) {
+        if (model.getNoiseVar() > 0) {
             ++n;
         }
-        if (model.cVar >= 0) {
+        if (model.getCycleVar() >= 0) {
             ++n;
         }
-        if (model.lVar >= 0) {
+        if (model.getLevelVar() >= 0) {
             ++n;
         }
-        if (model.seasVar >= 0) {
+        if (model.getSeasonalVar() >= 0) {
             ++n;
         }
         int[] cmps = new int[n];
         int i = 0, j = 0;
-        if (model.nVar > 0) {
+        if (model.getNoiseVar() > 0) {
             cmps[i++] = j++;
         }
-        if (model.cVar >= 0) {
+        if (model.getCycleVar() >= 0) {
             cmps[i++] = j;
             j += 2;
         }
-        if (model.lVar >= 0) {
+        if (model.getLevelVar() >= 0) {
             cmps[i++] = j++;
         }
-        if (model.sVar >= 0) {
+        if (model.getSlopeVar() >= 0) {
             ++j;
         }
-        if (model.seasVar >= 0) {
+        if (model.getSeasonalVar() >= 0) {
             cmps[i] = j;
         }
         return cmps;
@@ -137,8 +137,8 @@ public class SsfBsm extends Ssf {
         BsmInitialization initialization = new BsmInitialization(data);
         BsmDynamics dynamics = new BsmDynamics(data);
         ISsfLoading loading = Loading.fromPositions(idx);
-            return new SsfBsm(initialization, dynamics, new Measurement(loading, null));
-      }
+        return new SsfBsm(initialization, dynamics, new Measurement(loading, null));
+    }
 
     static class BsmData {
 
@@ -149,20 +149,27 @@ public class SsfBsm extends Ssf {
         final SeasonalModel seasModel;
 
         BsmData(BasicStructuralModel model) {
-            lVar = model.lVar;
-            sVar = model.sVar;
-            seasVar = model.seasVar;
-            cVar = model.cVar;
-            nVar = model.nVar <= 0 ? 0 : model.nVar;
-            cDump = model.cDump;
-            ccos = model.ccos;
-            csin = model.csin;
-            seasModel = model.seasModel;
-            period = model.period;
+            lVar = model.getLevelVar();
+            sVar = model.getSlopeVar();
+            seasVar = model.getSeasonalVar();
+            nVar = model.getNoiseVar();
+            cVar = model.getCycleVar();
+            if (cVar >= 0) {
+                cDump = model.getCycleDumpingFactor();
+                double q = Math.PI * 2 / model.getCycleLength();
+                ccos = cDump * Math.cos(q);
+                csin = cDump * Math.sin(q);
+            } else {
+                cDump = 0;
+                ccos = 0;
+                csin = 0;
+            }
+            seasModel = model.getSeasonalModel();
+            period = model.getPeriod();
             if (seasVar > 0) {
                 tsvar = SeasonalComponent.tsVar(seasModel, period);
                 tsvar.mul(seasVar);
-                if (model.seasModel != SeasonalModel.Crude && model.seasModel != SeasonalModel.Dummy) {
+                if (model.getSeasonalModel() != SeasonalModel.Crude && model.getSeasonalModel() != SeasonalModel.Dummy) {
                     ltsvar = SeasonalComponent.tslVar(seasModel, period);
                     ltsvar.mul(Math.sqrt(seasVar));
                 } else {

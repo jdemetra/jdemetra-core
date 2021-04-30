@@ -269,6 +269,9 @@ public class Parameter {
         return all;
     }
 
+    public static Parameter zero() {
+        return ZERO;
+    }
      /**
      * Checks that all the parameters are free. Derived parameters are not
      * considered
