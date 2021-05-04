@@ -42,7 +42,7 @@ public class SsfBsm2 extends Ssf {
     /**
      *
      */
-    private static int[] calcCmpsIndexes(BasicStructuralModel model) {
+    private static int[] calcCmpsIndexes(BsmData model) {
         int n = 0;
         if (model.getCycleVar() >= 0) {
             ++n;
@@ -71,9 +71,9 @@ public class SsfBsm2 extends Ssf {
         return cmps;
     }
 
-    public static SsfBsm2 of(BasicStructuralModel model) {
+    public static SsfBsm2 of(BsmData model) {
         int[] idx = calcCmpsIndexes(model);
-        SsfBsm.BsmData data = new SsfBsm.BsmData(model);
+        SsfBsm.Bsm data = new SsfBsm.Bsm(model);
         Bsm2Initialization initialization = new Bsm2Initialization(data);
         Bsm2Dynamics dynamics = new Bsm2Dynamics(data);
         ISsfLoading loading = Loading.fromPositions(idx);
@@ -82,9 +82,9 @@ public class SsfBsm2 extends Ssf {
 
     static class Bsm2Initialization implements ISsfInitialization {
 
-        private final SsfBsm.BsmData data;
+        private final SsfBsm.Bsm data;
 
-        Bsm2Initialization(SsfBsm.BsmData data) {
+        Bsm2Initialization(SsfBsm.Bsm data) {
             this.data = data;
         }
 
@@ -192,9 +192,9 @@ public class SsfBsm2 extends Ssf {
 
     public static class Bsm2Dynamics implements ISsfDynamics {
 
-        private final SsfBsm.BsmData data;
+        private final SsfBsm.Bsm data;
 
-        Bsm2Dynamics(SsfBsm.BsmData data) {
+        Bsm2Dynamics(SsfBsm.Bsm data) {
             this.data = data;
         }
 

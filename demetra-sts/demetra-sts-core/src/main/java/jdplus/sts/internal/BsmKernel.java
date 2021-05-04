@@ -23,6 +23,7 @@ import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import jdplus.data.DataBlock;
+import jdplus.data.normalizer.AbsMeanNormalizer;
 import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.math.functions.FunctionMinimizer;
 import jdplus.math.functions.IFunction;
@@ -37,7 +38,7 @@ import jdplus.math.matrices.Matrix;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;
 import jdplus.ssf.univariate.SsfData;
-import jdplus.sts.BasicStructuralModel;
+import jdplus.sts.BsmData;
 import jdplus.sts.SsfBsm2;
 import nbbrd.design.Development;
 
@@ -53,26 +54,28 @@ public class BsmKernel {
     private double[] y;
     private int period;
     private Matrix X;
+    private double factor;
 
     // mapper definition
     private BsmSpec modelSpec;
     private Component fixedVar = Component.Undefined;
-    private BasicStructuralModel bsm;
+    private BsmData bsm;
     private boolean converged = false;
 
     private DiffuseConcentratedLikelihood likelihood;
-    private SsfFunction<BasicStructuralModel, SsfBsm2> fn_;
-    private SsfFunctionPoint<BasicStructuralModel, SsfBsm2> fnmax_;
+    private SsfFunction<BsmData, SsfBsm2> fn_;
+    private SsfFunctionPoint<BsmData, SsfBsm2> fnmax_;
     private double m_factor;
-    
-    private void clear(){
-        modelSpec=null;
-        bsm=null;
-        converged=false;
-        fixedVar=Component.Undefined;
-        likelihood=null;
-        fn_=null;
-        fnmax_=null;
+
+    private void clear() {
+        modelSpec = null;
+        bsm = null;
+        converged = false;
+        fixedVar = Component.Undefined;
+        likelihood = null;
+        fn_ = null;
+        fnmax_ = null;
+        factor = 1;
     }
 
     /**
@@ -95,19 +98,19 @@ public class BsmKernel {
         fnmax_ = null;
 
         if (isScaling()) {
-            BsmMapping mapping = new BsmMapping(modelSpec, period, fixedVar);
             FunctionMinimizer fmin = minimizer(estimationSpec.getPrecision(), 10);
             for (int i = 0; i < 3; ++i) {
-                fn_ = buildFunction(mapping, estimationSpec.isScalingFactor());
+                BsmMapping mapping = new BsmMapping(modelSpec, period, fixedVar);
+                fn_ = buildFunction(mapping, true);
                 DoubleSeq parameters = mapping.map(bsm);
                 converged = fmin.minimize(fn_.evaluate(parameters));
-                fnmax_ = (SsfFunctionPoint<BasicStructuralModel, SsfBsm2>) fmin.getResult();
+                fnmax_ = (SsfFunctionPoint<BsmData, SsfBsm2>) fmin.getResult();
                 bsm = fnmax_.getCore();
                 likelihood = fnmax_.getLikelihood();
 
-                BasicStructuralModel.ComponentVariance max = bsm.maxVariance();
+                BsmData.ComponentVariance max = bsm.maxVariance();
                 bsm = bsm.scaleVariances(1 / max.getVariance());
-            updateSpec();
+                updateSpec();
                 if (fixedVar != max.getComponent()) {
                     fixedVar = max.getComponent();
                 } else {
@@ -122,11 +125,11 @@ public class BsmKernel {
             fn_ = buildFunction(mapping, isScaling());
             DoubleSeq parameters = mapping.map(bsm);
             converged = fmin.minimize(fn_.evaluate(parameters));
-            fnmax_ = (SsfFunctionPoint<BasicStructuralModel, SsfBsm2>) fmin.getResult();
+            fnmax_ = (SsfFunctionPoint<BsmData, SsfBsm2>) fmin.getResult();
             bsm = fnmax_.getCore();
             likelihood = fnmax_.getLikelihood();
             if (isScaling()) {
-                BasicStructuralModel.ComponentVariance max = bsm.maxVariance();
+                BsmData.ComponentVariance max = bsm.maxVariance();
                 bsm = bsm.scaleVariances(1 / max.getVariance());
                 if (fixedVar != max.getComponent()) {
                     fixedVar = max.getComponent();
@@ -141,7 +144,7 @@ public class BsmKernel {
             BsmMapping mapping = new BsmMapping(modelSpec, period, isScaling() ? fixedVar : null);
             fn_ = buildFunction(mapping, isScaling());
             DoubleSeq parameters = mapping.map(bsm);
-            fnmax_ = (SsfFunctionPoint<BasicStructuralModel, SsfBsm2>) fn_.evaluate(parameters);
+            fnmax_ = (SsfFunctionPoint<BsmData, SsfBsm2>) fn_.evaluate(parameters);
             likelihood = fnmax_.getLikelihood();
             bsm = fnmax_.getCore();
             updateSpec();
@@ -158,15 +161,15 @@ public class BsmKernel {
                 .build();
     }
 
-    private SsfFunction<BasicStructuralModel, SsfBsm2> buildFunction(BsmMapping mapping, boolean ssq) {
+    private SsfFunction<BsmData, SsfBsm2> buildFunction(BsmMapping mapping, boolean scaling) {
         SsfData data = new SsfData(y);
 
         return SsfFunction.builder(data, mapping, model -> SsfBsm2.of(model))
                 .regression(X, diffuseItems())
                 .useFastAlgorithm(true)
                 .useParallelProcessing(false)
-                .useLog(!ssq)
-                .useScalingFactor(isScaling())
+                .useLog(!scaling)
+                .useScalingFactor(scaling)
                 .build();
 
     }
@@ -192,18 +195,18 @@ public class BsmKernel {
 
     }
 
-    private boolean fixSmallVariance(BasicStructuralModel model) {
+    private boolean fixSmallVariance(BsmData model) {
         // return false;
         double vmin = estimationSpec.getLikelihoodRatioThreshold();
         int imin = -1;
         BsmMapping mapping = new BsmMapping(modelSpec, period, isScaling() ? fixedVar : null);
-        SsfFunction<BasicStructuralModel, SsfBsm2> fn = buildFunction(mapping, isScaling());
+        SsfFunction<BsmData, SsfBsm2> fn = buildFunction(mapping, isScaling());
         DoubleSeq p = mapping.map(model);
         SsfFunctionPoint instance = new SsfFunctionPoint(fn, p);
         double ll = instance.getLikelihood().logLikelihood();
         int nvars = mapping.varsCount();
         for (int i = 0; i < nvars; ++i) {
-            if (p.get(i) < 1e-2) {
+            if (p.get(i) < 0.2) {
                 DataBlock np = DataBlock.of(p);
                 np.set(i, 0);
                 instance = new SsfFunctionPoint(fn, np);
@@ -237,7 +240,7 @@ public class BsmKernel {
      *
      * @return
      */
-    public BasicStructuralModel getResult() {
+    public BsmData getResult() {
         if (bsm == null && y != null) {
             estimate();
         }
@@ -260,31 +263,99 @@ public class BsmKernel {
         return converged;
     }
 
-    @SuppressWarnings("unchecked")
-    private BasicStructuralModel initialize() {
-        BsmMapping mapping = new BsmMapping(modelSpec, period, fixedVar);
+    public static final double RVAR = 5;
+
+    private SsfFunctionPoint<BsmData, SsfBsm2> ll(Component cmp) {
+        BsmMapping mapping = new BsmMapping(modelSpec, period, cmp);
+        SsfFunction<BsmData, SsfBsm2> fn = buildFunction(mapping, true);
+        Bfgs bfgs = Bfgs.builder()
+                .functionPrecision(1e-5)
+                .maxIter(10)
+                .build();
+        bfgs.minimize(fn.evaluate(mapping.getDefaultParameters()));
+        return (SsfFunctionPoint<BsmData, SsfBsm2>) bfgs.getResult();
+    }
+
+    private BsmData initialize2() {
+        // Set default values
+        BsmMapping mapping = new BsmMapping(modelSpec, period, null);
+        bsm=mapping.map(mapping.getDefaultParameters());
+        updateSpec();
+        BsmData bsm0=bsm;
+        //
+        double llmax = 0;
+        Component cmax = Component.Undefined;
+        if (modelSpec.hasNoise()) {
+            SsfFunctionPoint<BsmData, SsfBsm2> lcur = ll(Component.Noise);
+            llmax = lcur.getLikelihood().logLikelihood();
+            bsm0 = lcur.getCore();
+            cmax = Component.Noise;
+        }
+        if (modelSpec.hasLevel()) {
+            SsfFunctionPoint<BsmData, SsfBsm2> lcur = ll(Component.Level);
+            double ll = lcur.getLikelihood().logLikelihood();
+            if (bsm0 == null || ll > llmax) {
+                llmax = ll;
+                bsm0 = lcur.getCore();
+                cmax = Component.Level;
+            }
+        }
+        if (modelSpec.hasSlope()) {
+            SsfFunctionPoint<BsmData, SsfBsm2> lcur = ll(Component.Slope);
+            double ll = lcur.getLikelihood().logLikelihood();
+            if (bsm0 == null || ll > llmax) {
+                llmax = ll;
+                bsm0 = lcur.getCore();
+                cmax = Component.Slope;
+            }
+        }
+        if (modelSpec.hasSeasonal()) {
+            SsfFunctionPoint<BsmData, SsfBsm2> lcur = ll(Component.Seasonal);
+            double ll = lcur.getLikelihood().logLikelihood();
+            if (bsm0 == null || ll > llmax) {
+                llmax = ll;
+                bsm0 = lcur.getCore();
+                cmax = Component.Seasonal;
+            }
+        }
+        if (modelSpec.hasCycle()) {
+            SsfFunctionPoint<BsmData, SsfBsm2> lcur = ll(Component.Cycle);
+            double ll = lcur.getLikelihood().logLikelihood();
+            if (bsm0 == null || ll > llmax) {
+                llmax = ll;
+                bsm0 = lcur.getCore();
+                cmax = Component.Cycle;
+            }
+        }
+        this.fixedVar = cmax;
+        return bsm0;
+    }
+
+    private BsmData initialize() {
+        BsmMapping mapping = new BsmMapping(modelSpec, period, null);
         DoubleSeq p = mapping.getDefaultParameters();
-        BasicStructuralModel start = mapping.map(p);
+        BsmData start = mapping.map(p);
         if (!isScaling()) {
             return start;
         }
 
-        SsfFunction<BasicStructuralModel, SsfBsm2> fn = buildFunction(mapping,
+        SsfFunction<BsmData, SsfBsm2> fn = buildFunction(mapping,
                 true);
 
         SsfFunctionPoint instance = new SsfFunctionPoint(fn, p);
         double lmax = instance.getLikelihood().logLikelihood();
         int imax = -1;
         int nvars = mapping.varsCount();
+        DoubleSeq refp = p;
         for (int i = 0; i < nvars; ++i) {
             DataBlock np = DataBlock.of(p);
-            np.set(.5);
-            np.set(i, 1);
+            np.mul(i, RVAR);
             instance = new SsfFunctionPoint(fn, np);
             double nll = instance.getLikelihood().logLikelihood();
             if (nll > lmax) {
                 lmax = nll;
                 imax = i;
+                refp = np;
             }
         }
         if (imax < 0) {
@@ -297,11 +368,7 @@ public class BsmKernel {
             }
             return start;
         } else {
-            DataBlock np = DataBlock.of(p);
-            for (int i = 0; i < nvars; ++i) {
-                np.set(i, i == imax ? 1 : .1);
-            }
-            BasicStructuralModel nbsm = mapping.map(np);
+            BsmData nbsm = mapping.map(refp);
             fixedVar = mapping.varPosition(imax);
             return nbsm;
         }
@@ -329,10 +396,15 @@ public class BsmKernel {
     public boolean process(DoubleSeq y, MatrixType x, int period, BsmSpec model) {
         clear();
         this.y = y.toArray();
+        AbsMeanNormalizer normalizer = new AbsMeanNormalizer();
+        factor = normalizer.normalize(DataBlock.of(this.y));
         this.X = Matrix.of(x);
         this.period = period;
         modelSpec = model;
         boolean rslt = estimate();
+        if (rslt) {
+            likelihood = likelihood.rescale(factor, null);
+        }
         return rslt;
     }
 
@@ -359,7 +431,7 @@ public class BsmKernel {
 
     public IFunction likelihoodFunction() {
         BsmMapping mapper = new BsmMapping(modelSpec, period, fixedVar);
-        SsfFunction<BasicStructuralModel, SsfBsm2> fn = buildFunction(mapper, false);
+        SsfFunction<BsmData, SsfBsm2> fn = buildFunction(mapper, false);
         double a = (likelihood.dim() - likelihood.ndiffuse());
 //        double a = (likelihood.dim() - likelihood.ndiffuse()) * Math.log(m_factor);
         return new TransformedFunction(fn, TransformedFunction.linearTransformation(-a, 1));
@@ -376,7 +448,7 @@ public class BsmKernel {
                 .level(nparam(modelSpec.getLevelVar(), bsm.getLevelVar()), nparam(modelSpec.getSlopeVar(), bsm.getSlopeVar()))
                 .seasonal(modelSpec.getSeasonalModel(), nparam(modelSpec.getSeasonalVar(), bsm.getSeasonalVar()))
                 .noise(nparam(modelSpec.getNoiseVar(), bsm.getNoiseVar()))
-                .cycle(nparam(modelSpec.getCycleVar(), bsm.getCycleVar()), 
+                .cycle(nparam(modelSpec.getCycleVar(), bsm.getCycleVar()),
                         nparam(modelSpec.getCycleDumpingFactor(), bsm.getCycleDumpingFactor()),
                         nparam(modelSpec.getCycleLength(), bsm.getCycleLength()))
                 .build();

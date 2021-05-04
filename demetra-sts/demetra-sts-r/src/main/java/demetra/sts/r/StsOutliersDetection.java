@@ -36,7 +36,7 @@ import jdplus.ssf.implementations.RegSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
-import jdplus.sts.BasicStructuralModel;
+import jdplus.sts.BsmData;
 import jdplus.sts.OutliersDetection;
 import jdplus.sts.SsfBsm;
 import jdplus.sts.extractors.BasicStructuralModelExtractor;
@@ -84,7 +84,8 @@ public class StsOutliersDetection {
 
         BsmSpec spec;
         int period;
-        BasicStructuralModel initialBsm, finalBsm;
+        BsmData initialBsm;
+        BasicStructuralModel finalBsm;
 
         DoubleSeq y;
         MatrixType x;
@@ -233,7 +234,7 @@ public class StsOutliersDetection {
         SsfData data = new SsfData(y.getValues());
 
         DiffuseConcentratedLikelihood ll0 = od.getInitialLikelihood();
-        BasicStructuralModel model0 = od.getInitialModel();
+        BsmData model0 = od.getInitialModel();
         SsfBsm ssf0 = SsfBsm.of(model0);
         Ssf xssf = x == null ? ssf0 : RegSsf.ssf(ssf0, Matrix.of(x));
         DefaultSmoothingResults sd0 = DefaultSmoothingResults.full();
@@ -246,7 +247,7 @@ public class StsOutliersDetection {
 
         Matrix W = od.getRegressors();
         DiffuseConcentratedLikelihood ll = od.getLikelihood();
-        BasicStructuralModel model = od.getModel();
+        BsmData model = od.getModel();
         SsfBsm ssf = SsfBsm.of(model);
         Ssf wssf = W == null ? ssf : RegSsf.ssf(ssf, W);
         DefaultSmoothingResults sd = DefaultSmoothingResults.full();
@@ -283,7 +284,7 @@ public class StsOutliersDetection {
                 .build();
     }
 
-    private Matrix components(int n, BasicStructuralModel model, DefaultSmoothingResults sd) {
+    private Matrix components(int n, BsmData model, DefaultSmoothingResults sd) {
 
         Matrix cmps = Matrix.make(n, 4);
         int cmp = SsfBsm.searchPosition(model, Component.Noise);
@@ -305,7 +306,7 @@ public class StsOutliersDetection {
         return cmps;
     }
 
-    private Matrix tau(int n, int dim, BasicStructuralModel model, DefaultSmoothingResults sd, double sig2) {
+    private Matrix tau(int n, int dim, BsmData model, DefaultSmoothingResults sd, double sig2) {
         Matrix tau = Matrix.make(n, 6);
         int cmpn = SsfBsm.searchPosition(model, Component.Noise);
         int cmpl = SsfBsm.searchPosition(model, Component.Level);
@@ -375,7 +376,7 @@ public class StsOutliersDetection {
         if (!monitor.process(y.getValues(), X, freq, mspec)) {
             return null;
         }
-        BasicStructuralModel bsm = monitor.getResult();
+        BsmData bsm = monitor.getResult();
 
         Ssf ssf = SsfBsm.of(bsm);
         int nx = 0;

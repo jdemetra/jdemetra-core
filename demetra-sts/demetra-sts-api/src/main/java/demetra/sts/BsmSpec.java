@@ -399,8 +399,15 @@ public final class BsmSpec {
         return new double[]{cro * Math.cos(q), cro * Math.sin(q)};
     }
 
-    public static double valueOf(Parameter p) {
-        return p == null ? -1 : p.getValue();
+    public static double valueOf(Parameter p, double defValue) {
+        if(p == null)
+            return -1;
+        if (p.isDefined())
+            return p.getValue();
+        else
+            return defValue;
     }
+    
+    public static final double DEF_VAR=1, DEF_CDUMP=.9, DEF_CLENGTH=6;
 
 }

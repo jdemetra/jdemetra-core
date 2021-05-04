@@ -40,7 +40,7 @@ public class SsfBsm extends Ssf {
         super(initialization, dynamics, measurement);
     }
 
-    public static int searchPosition(BasicStructuralModel model, Component type) {
+    public static int searchPosition(BsmData model, Component type) {
         int n = 0;
         if (model.getNoiseVar() > 0) {
             if (type == Component.Noise) {
@@ -73,7 +73,7 @@ public class SsfBsm extends Ssf {
         }
     }
 
-    public static int calcDim(BasicStructuralModel model) {
+    public static int calcDim(BsmData model) {
         int n = 0;
         if (model.getNoiseVar() > 0) {
             ++n;
@@ -96,7 +96,7 @@ public class SsfBsm extends Ssf {
     /**
      *
      */
-    private static int[] calcCmpsIndexes(BasicStructuralModel model) {
+    private static int[] calcCmpsIndexes(BsmData model) {
         int n = 0;
         if (model.getNoiseVar() > 0) {
             ++n;
@@ -131,16 +131,16 @@ public class SsfBsm extends Ssf {
         return cmps;
     }
 
-    public static SsfBsm of(BasicStructuralModel model) {
+    public static SsfBsm of(BsmData model) {
         int[] idx = calcCmpsIndexes(model);
-        BsmData data = new BsmData(model);
+        Bsm data = new Bsm(model);
         BsmInitialization initialization = new BsmInitialization(data);
         BsmDynamics dynamics = new BsmDynamics(data);
         ISsfLoading loading = Loading.fromPositions(idx);
         return new SsfBsm(initialization, dynamics, new Measurement(loading, null));
     }
 
-    static class BsmData {
+    static class Bsm {
 
         final Matrix tsvar, ltsvar;
         final double lVar, sVar, seasVar, cVar, nVar, cDump;
@@ -148,15 +148,15 @@ public class SsfBsm extends Ssf {
         final int period;
         final SeasonalModel seasModel;
 
-        BsmData(BasicStructuralModel model) {
+        Bsm(BsmData model) {
             lVar = model.getLevelVar();
             sVar = model.getSlopeVar();
             seasVar = model.getSeasonalVar();
-            nVar = model.getNoiseVar();
+            nVar = model.getNoiseVar() > 0 ? model.getNoiseVar() : 0;
             cVar = model.getCycleVar();
             if (cVar >= 0) {
                 cDump = model.getCycleDumpingFactor();
-                double q = Math.PI * 2 / model.getCycleLength();
+                double q = Math.PI * 2 / (model.getPeriod() * model.getCycleLength());
                 ccos = cDump * Math.cos(q);
                 csin = cDump * Math.sin(q);
             } else {
@@ -184,9 +184,9 @@ public class SsfBsm extends Ssf {
 
     static class BsmInitialization implements ISsfInitialization {
 
-        private final BsmData data;
+        private final Bsm data;
 
-        BsmInitialization(BsmData data) {
+        BsmInitialization(Bsm data) {
             this.data = data;
         }
 
@@ -300,9 +300,9 @@ public class SsfBsm extends Ssf {
 
     static class BsmDynamics implements ISsfDynamics {
 
-        private final BsmData data;
+        private final Bsm data;
 
-        BsmDynamics(BsmData data) {
+        BsmDynamics(Bsm data) {
             this.data = data;
         }
 

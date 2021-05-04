@@ -20,7 +20,7 @@ import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import demetra.sts.SeasonalModel;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
-import jdplus.sts.BasicStructuralModel;
+import jdplus.sts.BsmData;
 
 /**
  *
@@ -68,9 +68,9 @@ public class StsProtosUtility {
                 .build();
     }
 
-//    public StsProtos.BasicStructuralModel convert(BasicStructuralModel bsm) {
+//    public StsProtos.BsmData convert(BsmData bsm) {
 //        BsmSpec spec = bsm.specification();
-//        return StsProtos.BasicStructuralModel.newBuilder()
+//        return StsProtos.BsmData.newBuilder()
 //                .setPeriod(bsm.getPeriod())
 //                .setNvar(spec.hasNoise() ? bsm.getVariance(Component.Noise) : 0)
 //                .setLevel(spec.hasLevel())

@@ -143,7 +143,7 @@ public class OutliersDetectionTest {
         for (int l = 0; l < length.length; ++l) {
             long t0 = System.currentTimeMillis();
             for (int k = 0; k < K; ++k) {
-                BasicStructuralModel model = new BasicStructuralModel(spec, 12);
+                BsmData model = new BsmData(spec, 12);
                 forwardstep(model, Y.log().range(0, length[l]), td.extract(0, length[l], 0, td.getColumnsCount()));
 //                OutliersDetection od = OutliersDetection.builder()
 //                        .bsm(spec)
@@ -175,7 +175,7 @@ public class OutliersDetectionTest {
                 double[] SLS = new double[K];
                 double[] SSO = new double[K];
                 double[] SALL = new double[K];
-                BasicStructuralModel[] models = randomBsm(spec, period, M);
+                BsmData[] models = randomBsm(spec, period, M);
                 DataBlockIterator cols = M.columnsIterator();
                 int k = 0;
                 while (cols.hasNext()) {
@@ -245,11 +245,11 @@ public class OutliersDetectionTest {
         }
     }
 
-    public static BasicStructuralModel[] randomBsm(BsmSpec spec, int period, Matrix simul) {
+    public static BsmData[] randomBsm(BsmSpec spec, int period, Matrix simul) {
         double[] p = new double[spec.getFreeParametersCount()];
         Random rnd = new Random();
         BsmMapping mapping = new BsmMapping(spec, period, null);
-        BasicStructuralModel[] models = new BasicStructuralModel[simul.getColumnsCount()];
+        BsmData[] models = new BsmData[simul.getColumnsCount()];
 
         DataBlockIterator cols = simul.columnsIterator();
         int i = 0;
@@ -257,7 +257,7 @@ public class OutliersDetectionTest {
             for (int j = 0; j < p.length; ++j) {
                 p[j] = Math.exp(rnd.nextGaussian());
             }
-            BasicStructuralModel bsm = mapping.map(DoubleSeq.of(p));
+            BsmData bsm = mapping.map(DoubleSeq.of(p));
             SsfBsm ssf = SsfBsm.of(bsm);
             RandomSsfGenerator generator = new RandomSsfGenerator(ssf, 1, simul.getRowsCount());
             generator.newSimulation(cols.next(), RNG);
@@ -268,7 +268,7 @@ public class OutliersDetectionTest {
 
     private static final RandomNumberGenerator RNG = JdkRNG.newRandom();
 
-    private static boolean forwardstep(BasicStructuralModel model, DoubleSeq y, Matrix W) {
+    private static boolean forwardstep(BsmData model, DoubleSeq y, Matrix W) {
         SsfBsm ssf = SsfBsm.of(model);
         Ssf wssf = W == null ? ssf : RegSsf.ssf(ssf, W);
         SsfData data = new SsfData(y);

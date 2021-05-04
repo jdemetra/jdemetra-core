@@ -29,7 +29,7 @@ import demetra.sts.SeasonalModel;
 @lombok.Value
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 @lombok.Builder(builderClassName = "Builder", toBuilder = true)
-public final class BasicStructuralModel {
+public final class BsmData {
 
     int period;
     // LLT
@@ -42,16 +42,16 @@ public final class BasicStructuralModel {
     // CYCLE
     double cycleVar, cycleDumpingFactor, cycleLength;
 
-    public BasicStructuralModel(BsmSpec spec, int period) {
+    public BsmData(BsmSpec spec, int period) {
         this.period = period;
-        this.levelVar = BsmSpec.valueOf(spec.getLevelVar());
-        this.slopeVar = BsmSpec.valueOf(spec.getSlopeVar());
-        this.seasonalVar = BsmSpec.valueOf(spec.getSeasonalVar());
+        this.levelVar = BsmSpec.valueOf(spec.getLevelVar(), BsmSpec.DEF_VAR);
+        this.slopeVar = BsmSpec.valueOf(spec.getSlopeVar(), BsmSpec.DEF_VAR);
+        this.seasonalVar = BsmSpec.valueOf(spec.getSeasonalVar(), BsmSpec.DEF_VAR);
         this.seasonalModel = spec.getSeasonalModel();
-        this.noiseVar = BsmSpec.valueOf(spec.getNoiseVar());
-        this.cycleVar = BsmSpec.valueOf(spec.getCycleVar());
-        this.cycleDumpingFactor = BsmSpec.valueOf(spec.getCycleDumpingFactor());
-        this.cycleLength = BsmSpec.valueOf(spec.getCycleLength());
+        this.noiseVar = BsmSpec.valueOf(spec.getNoiseVar(), BsmSpec.DEF_VAR);
+        this.cycleVar = BsmSpec.valueOf(spec.getCycleVar(), BsmSpec.DEF_VAR);
+        this.cycleDumpingFactor = BsmSpec.valueOf(spec.getCycleDumpingFactor(), BsmSpec.DEF_CDUMP);
+        this.cycleLength = BsmSpec.valueOf(spec.getCycleLength(), BsmSpec.DEF_CLENGTH);
     }
     
     @lombok.Value
@@ -86,8 +86,8 @@ public final class BasicStructuralModel {
         return new ComponentVariance(cmp, max);
     }
 
-    public BasicStructuralModel scaleVariances(double factor) {
-        return new BasicStructuralModel(period,
+    public BsmData scaleVariances(double factor) {
+        return new BsmData(period,
                 levelVar > 0 ? levelVar * factor : levelVar,
                 slopeVar > 0 ? slopeVar * factor : slopeVar,
                 seasonalVar > 0 ? seasonalVar * factor : seasonalVar, seasonalModel,
@@ -167,7 +167,7 @@ public final class BasicStructuralModel {
 //     * @param spec
 //     * @param period
 //     */
-//    public BasicStructuralModel(BsmSpec spec, int period) {
+//    public BsmData(BsmSpec spec, int period) {
 //        this.period = period;
 //        seasModel = spec.getSeasonalModel();
 //        switch (spec.getNoiseUse()) {
@@ -245,9 +245,9 @@ public final class BasicStructuralModel {
 //    }
 //    
 //    @Override
-//    public BasicStructuralModel clone(){
+//    public BsmData clone(){
 //        try {
-//            return (BasicStructuralModel) super.clone();
+//            return (BsmData) super.clone();
 //        } catch (CloneNotSupportedException ex) {
 //            return null;
 //        }

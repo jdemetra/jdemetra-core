@@ -44,7 +44,7 @@ public class SsfBsmTest {
         BsmSpec mspec = BsmSpec.builder()
                 .seasonal(SeasonalModel.Crude, Parameter.fixed(100))
                 .build();
-        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
+        BsmData model = new BsmData(mspec, 12);
         BSM = SsfBsm2.of(model);
     }
 

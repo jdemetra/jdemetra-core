@@ -341,15 +341,15 @@ public class OutliersDetection {
     }
 
     private void pointEstimation(DoubleSeq y, Matrix W) {
-        SsfFunction<BasicStructuralModel, SsfBsm2> fn = currentFunction(y, W);
-        SsfFunctionPoint<BasicStructuralModel, SsfBsm2> pt = fn.evaluate(curp);
+        SsfFunction<BsmData, SsfBsm2> fn = currentFunction(y, W);
+        SsfFunctionPoint<BsmData, SsfBsm2> pt = fn.evaluate(curp);
         likelihood = pt.getLikelihood();
         model = pt.getCore();
     }
 
     private void scoreEstimation(DoubleSeq y, Matrix W) {
-        SsfFunction<BasicStructuralModel, SsfBsm2> fn = currentFunction(y, W);
-        SsfFunctionPoint<BasicStructuralModel, SsfBsm2> pt = fn.evaluate(curp);
+        SsfFunction<BsmData, SsfBsm2> fn = currentFunction(y, W);
+        SsfFunctionPoint<BsmData, SsfBsm2> pt = fn.evaluate(curp);
         try {
             IFunctionDerivatives D = pt.derivatives();
             Matrix H = D.hessian();
@@ -386,7 +386,7 @@ public class OutliersDetection {
         }
     }
 
-//    private static double robustSigma(DoubleSeq y, Matrix W, BasicStructuralModel model) {
+//    private static double robustSigma(DoubleSeq y, Matrix W, BsmData model) {
 //        SsfBsm2 ssf = SsfBsm2.of(model);
 //        Ssf wssf = W == null ? ssf : RegSsf.ssf(ssf, W);
 //        DiffusePredictionErrorDecomposition e = new DiffusePredictionErrorDecomposition(true);
@@ -427,7 +427,7 @@ public class OutliersDetection {
         return W;
     }
 
-    SsfFunction<BasicStructuralModel, SsfBsm2> currentFunction(DoubleSeq y, Matrix W) {
+    SsfFunction<BsmData, SsfBsm2> currentFunction(DoubleSeq y, Matrix W) {
         BsmMapping mapper = new BsmMapping(curSpec == null ? spec : curSpec, model.getPeriod(), null);
         int[] diffuse = null;
         if (W != null) {
@@ -449,7 +449,7 @@ public class OutliersDetection {
     private final IntList lsPositions = new IntList();
     private final IntList soPositions = new IntList();
     private int period;
-    private BasicStructuralModel initialModel, model;
+    private BsmData initialModel, model;
     private BsmSpec curSpec;
     private DiffuseConcentratedLikelihood initialLikelihood, likelihood;
     private DoubleSeq curp;
@@ -481,14 +481,14 @@ public class OutliersDetection {
     /**
      * @return the model
      */
-    public BasicStructuralModel getModel() {
+    public BsmData getModel() {
         return model;
     }
 
     /**
      * @return the initialModel
      */
-    public BasicStructuralModel getInitialModel() {
+    public BsmData getInitialModel() {
         return initialModel;
     }
 

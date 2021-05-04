@@ -8,7 +8,7 @@ package jdplus.sts.extractors;
 import nbbrd.design.Development;
 import demetra.information.InformationMapping;
 import demetra.sts.Component;
-import jdplus.sts.BasicStructuralModel;
+import jdplus.sts.BsmData;
 
 /**
  *
@@ -23,7 +23,7 @@ public class BasicStructuralModelExtractor {
                 CDUMP = "cycledumpingfactor", CLENGTH = "cycleLength";
 
 
-    private final InformationMapping<BasicStructuralModel> MAPPING = new InformationMapping<>(BasicStructuralModel.class);
+    private final InformationMapping<BsmData> MAPPING = new InformationMapping<>(BsmData.class);
 
     static {
             MAPPING.set(LVAR, Double.class, source -> source.getLevelVar());
@@ -35,7 +35,7 @@ public class BasicStructuralModelExtractor {
             MAPPING.set(CLENGTH, Double.class, source -> source.getCycleLength());
     }
 
-    public InformationMapping<BasicStructuralModel> getMapping() {
+    public InformationMapping<BsmData> getMapping() {
         return MAPPING;
     }
 

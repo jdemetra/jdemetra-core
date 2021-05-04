@@ -27,7 +27,7 @@ import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.SsfData;
-import jdplus.sts.BasicStructuralModel;
+import jdplus.sts.BsmData;
 import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
@@ -57,7 +57,7 @@ public class StsEstimation {
     public static class Results implements ProcResults {
 
         TsData y, t, s, i;
-        BasicStructuralModel bsm;
+        BsmData bsm;
         DiffuseConcentratedLikelihood likelihood;
         Matrix parametersCovariance;
         double[] score;
@@ -126,7 +126,7 @@ public class StsEstimation {
             return null;
         }
 
-        BasicStructuralModel bsm = monitor.getResult();
+        BsmData bsm = monitor.getResult();
         SsfBsm ssf = SsfBsm.of(bsm);
         DefaultSmoothingResults sr = DkToolkit.sqrtSmooth(ssf, new SsfData(y.getValues()), true, true);
 

@@ -41,7 +41,7 @@ public class SsfBsm2Test {
     static final SsfBsm2 BSM;
 
     static {
-        BasicStructuralModel model = new BasicStructuralModel(BsmSpec.DEFAULT, 12);
+        BsmData model = new BsmData(BsmSpec.DEFAULT, 12);
         BSM = SsfBsm2.of(model);
 
     }
@@ -54,7 +54,7 @@ public class SsfBsm2Test {
 //        BsmSpec mspec = BsmSpec.builder()
 //                .build();
 //        //mspec.setSeasonalModel(SeasonalModel.Crude);
-//        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
+//        BsmData model = new BsmData(mspec, 12);
 //        StateComponent t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope));
 //        StateComponent seas = SeasonalComponent.of(model.specification().getSeasonalModel(), 12, model.getVariance(Component.Seasonal));
 //        CompositeSsf composite = CompositeSsf.builder()
@@ -73,7 +73,7 @@ public class SsfBsm2Test {
     public void testAggregate2() {
 //        BsmSpec mspec = new BsmSpec();
 //        mspec.setSeasonalModel(SeasonalModel.Crude);
-//        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
+//        BsmData model = new BsmData(mspec, 12);
 //        StateComponent t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope));
 //        StateComponent seas = SeasonalComponent.of(model.specification().getSeasonalModel(), 12, model.getVariance(Component.Seasonal));
 //        CompositeSsf composite = CompositeSsf.builder()
@@ -92,7 +92,7 @@ public class SsfBsm2Test {
     public void testAggregate3() {
 //        BsmSpec mspec = new BsmSpec();
 //        mspec.setSeasonalModel(SeasonalModel.Dummy);
-//        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
+//        BsmData model = new BsmData(mspec, 12);
 //        StateComponent t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope));
 //        StateComponent seas = SeasonalComponent.of(model.specification().getSeasonalModel(), 12, model.getVariance(Component.Seasonal));
 //        CompositeSsf composite = CompositeSsf.builder()
@@ -111,7 +111,7 @@ public class SsfBsm2Test {
     public void testAggregate4() {
 //        BsmSpec mspec = new BsmSpec();
 //        mspec.setSeasonalModel(SeasonalModel.HarrisonStevens);
-//        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
+//        BsmData model = new BsmData(mspec, 12);
 //        StateComponent t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope));
 //        StateComponent seas = SeasonalComponent.of(model.specification().getSeasonalModel(), 12, model.getVariance(Component.Seasonal));
 //        CompositeSsf composite = CompositeSsf.builder()
@@ -169,7 +169,7 @@ public class SsfBsm2Test {
 //
 //        BsmSpec mspec = new BsmSpec();
 //        //mspec.setSeasonalModel(SeasonalModel.Crude);
-//        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
+//        BsmData model = new BsmData(mspec, 12);
 //        StateComponent t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope));
 //        StateComponent seas = SeasonalComponent.of(model.specification().getSeasonalModel(), 12, model.getVariance(Component.Seasonal));
 //        CompositeSsf composite = CompositeSsf.builder()
