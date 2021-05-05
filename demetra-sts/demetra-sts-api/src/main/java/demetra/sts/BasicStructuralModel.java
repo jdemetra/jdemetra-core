@@ -5,6 +5,8 @@
  */
 package demetra.sts;
 
+import demetra.sa.SeriesDecomposition;
+
 /**
  *
  * @author PALATEJ
@@ -13,5 +15,6 @@ public interface BasicStructuralModel {
     
     BsmDescription getDescription();
     BsmEstimation getEstimation();
-
+    BsmDecomposition getBsmDecomposition();
+    SeriesDecomposition getFinalDecomposition();
  }

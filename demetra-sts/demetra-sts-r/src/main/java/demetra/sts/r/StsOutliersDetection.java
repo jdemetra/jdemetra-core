@@ -85,7 +85,7 @@ public class StsOutliersDetection {
         BsmSpec spec;
         int period;
         BsmData initialBsm;
-        BasicStructuralModel finalBsm;
+        BsmData finalBsm;
 
         DoubleSeq y;
         MatrixType x;
