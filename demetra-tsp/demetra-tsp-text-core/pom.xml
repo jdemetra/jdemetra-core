@@ -36,7 +36,7 @@
             <version>2.3</version>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-xml</artifactId>
             <version>${java-io-util.version}</version>
         </dependency>
