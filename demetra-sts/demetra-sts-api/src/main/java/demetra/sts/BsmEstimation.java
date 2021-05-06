@@ -5,6 +5,7 @@
  */
 package demetra.sts;
 
+import demetra.likelihood.DiffuseLikelihoodStatistics;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
@@ -15,26 +16,31 @@ import demetra.math.matrices.MatrixType;
  * @author PALATEJ
  */
 public interface BsmEstimation {
-       DoubleSeq getY();
-        MatrixType getX();
-        DoubleSeq getCoefficients();
-        MatrixType getCoefficientsCovariance();
-        MissingValueEstimation[] getMissing();
 
-        /**
-         * Parameters of the stochastic component.Fixed parameters are not
-         * included
-         *
-         * @return
-         */
-        ParametersEstimation getParameters();
+    DoubleSeq getY();
 
-        /**
-         *
-         * @return
-         */
-        DiffuseLikelihoodStatistics getStatistics();
+    MatrixType getX();
 
-        DoubleSeq getResiduals();
-    
+    DoubleSeq getCoefficients();
+
+    MatrixType getCoefficientsCovariance();
+
+    MissingValueEstimation[] getMissing();
+
+    /**
+     * Parameters of the stochastic component.Fixed parameters are not
+     * included
+     *
+     * @return
+     */
+    ParametersEstimation getParameters();
+
+    /**
+     *
+     * @return
+     */
+    DiffuseLikelihoodStatistics getStatistics();
+
+    DoubleSeq getResiduals();
+
 }

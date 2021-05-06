@@ -16,6 +16,7 @@
  */
 package demetra.sts;
 
+import demetra.likelihood.DiffuseLikelihoodStatistics;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;

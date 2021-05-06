@@ -28,11 +28,8 @@ import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.sts.BsmData;
-import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
-import demetra.sts.ComponentUse;
-import demetra.sts.SeasonalModel;
 import jdplus.sts.SsfBsm;
 import jdplus.sts.internal.BsmKernel;
 import demetra.timeseries.TsPeriod;
@@ -41,6 +38,8 @@ import demetra.timeseries.TsData;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.processing.ProcResults;
+import demetra.sts.SeasonalModel;
+import demetra.toolkit.extractors.DiffuseLikelihoodStatisticsExtractor;
 import jdplus.math.matrices.Matrix;
 import static jdplus.timeseries.simplets.TsDataToolkit.add;
 import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
@@ -105,11 +104,10 @@ public class StsEstimation {
             MAPPING.set(S, TsData.class, source -> source.getS());
             MAPPING.set(I, TsData.class, source -> source.getI());
             MAPPING.set(SA, TsData.class, source -> subtract(source.getY(), source.getS()));
-            MAPPING.delegate(LL, LikelihoodStatisticsExtractor.getMapping(), r -> r.getLikelihood().stats(0, r.getNparams()));
+            MAPPING.delegate(LL, DiffuseLikelihoodStatisticsExtractor.getMapping(), r -> r.getLikelihood().stats(0, r.getNparams()));
             MAPPING.set(PCOV, Matrix.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
         }
-
     }
 
     public Results process(TsData y, int level, int slope, int cycle, int noise, String seasmodel) {

@@ -154,124 +154,118 @@ public final class StsProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int32 period = 1;</code>
-     * @return The period.
-     */
-    int getPeriod();
-
-    /**
-     * <code>.jd3.Parameter noise = 2;</code>
+     * <code>.jd3.Parameter noise = 1;</code>
      * @return Whether the noise field is set.
      */
     boolean hasNoise();
     /**
-     * <code>.jd3.Parameter noise = 2;</code>
+     * <code>.jd3.Parameter noise = 1;</code>
      * @return The noise.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getNoise();
     /**
-     * <code>.jd3.Parameter noise = 2;</code>
+     * <code>.jd3.Parameter noise = 1;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getNoiseOrBuilder();
 
     /**
-     * <code>.jd3.Parameter level = 3;</code>
+     * <code>.jd3.Parameter level = 2;</code>
      * @return Whether the level field is set.
      */
     boolean hasLevel();
     /**
-     * <code>.jd3.Parameter level = 3;</code>
+     * <code>.jd3.Parameter level = 2;</code>
      * @return The level.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getLevel();
     /**
-     * <code>.jd3.Parameter level = 3;</code>
+     * <code>.jd3.Parameter level = 2;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getLevelOrBuilder();
 
     /**
-     * <code>.jd3.Parameter slope = 4;</code>
+     * <code>.jd3.Parameter slope = 3;</code>
      * @return Whether the slope field is set.
      */
     boolean hasSlope();
     /**
-     * <code>.jd3.Parameter slope = 4;</code>
+     * <code>.jd3.Parameter slope = 3;</code>
      * @return The slope.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getSlope();
     /**
-     * <code>.jd3.Parameter slope = 4;</code>
+     * <code>.jd3.Parameter slope = 3;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getSlopeOrBuilder();
 
     /**
-     * <code>.jd3.Parameter seas = 5;</code>
+     * <code>.jd3.Parameter seas = 4;</code>
      * @return Whether the seas field is set.
      */
     boolean hasSeas();
     /**
-     * <code>.jd3.Parameter seas = 5;</code>
+     * <code>.jd3.Parameter seas = 4;</code>
      * @return The seas.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getSeas();
     /**
-     * <code>.jd3.Parameter seas = 5;</code>
+     * <code>.jd3.Parameter seas = 4;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getSeasOrBuilder();
 
     /**
-     * <code>.sts.SeasonalModel seasonal_model = 6;</code>
+     * <code>.sts.SeasonalModel seasonal_model = 5;</code>
      * @return The enum numeric value on the wire for seasonalModel.
      */
     int getSeasonalModelValue();
     /**
-     * <code>.sts.SeasonalModel seasonal_model = 6;</code>
+     * <code>.sts.SeasonalModel seasonal_model = 5;</code>
      * @return The seasonalModel.
      */
     demetra.sts.io.protobuf.StsProtos.SeasonalModel getSeasonalModel();
 
     /**
-     * <code>.jd3.Parameter cycle = 7;</code>
+     * <code>.jd3.Parameter cycle = 6;</code>
      * @return Whether the cycle field is set.
      */
     boolean hasCycle();
     /**
-     * <code>.jd3.Parameter cycle = 7;</code>
+     * <code>.jd3.Parameter cycle = 6;</code>
      * @return The cycle.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCycle();
     /**
-     * <code>.jd3.Parameter cycle = 7;</code>
+     * <code>.jd3.Parameter cycle = 6;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCycleOrBuilder();
 
     /**
-     * <code>.jd3.Parameter cycle_period = 8;</code>
+     * <code>.jd3.Parameter cycle_period = 7;</code>
      * @return Whether the cyclePeriod field is set.
      */
     boolean hasCyclePeriod();
     /**
-     * <code>.jd3.Parameter cycle_period = 8;</code>
+     * <code>.jd3.Parameter cycle_period = 7;</code>
      * @return The cyclePeriod.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCyclePeriod();
     /**
-     * <code>.jd3.Parameter cycle_period = 8;</code>
+     * <code>.jd3.Parameter cycle_period = 7;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCyclePeriodOrBuilder();
 
     /**
-     * <code>.jd3.Parameter cycle_factor = 9;</code>
+     * <code>.jd3.Parameter cycle_factor = 8;</code>
      * @return Whether the cycleFactor field is set.
      */
     boolean hasCycleFactor();
     /**
-     * <code>.jd3.Parameter cycle_factor = 9;</code>
+     * <code>.jd3.Parameter cycle_factor = 8;</code>
      * @return The cycleFactor.
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCycleFactor();
     /**
-     * <code>.jd3.Parameter cycle_factor = 9;</code>
+     * <code>.jd3.Parameter cycle_factor = 8;</code>
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCycleFactorOrBuilder();
   }
@@ -321,12 +315,7 @@ public final class StsProtos {
             case 0:
               done = true;
               break;
-            case 8: {
-
-              period_ = input.readInt32();
-              break;
-            }
-            case 18: {
+            case 10: {
               demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
               if (noise_ != null) {
                 subBuilder = noise_.toBuilder();
@@ -339,7 +328,7 @@ public final class StsProtos {
 
               break;
             }
-            case 26: {
+            case 18: {
               demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
               if (level_ != null) {
                 subBuilder = level_.toBuilder();
@@ -352,7 +341,7 @@ public final class StsProtos {
 
               break;
             }
-            case 34: {
+            case 26: {
               demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
               if (slope_ != null) {
                 subBuilder = slope_.toBuilder();
@@ -365,7 +354,7 @@ public final class StsProtos {
 
               break;
             }
-            case 42: {
+            case 34: {
               demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
               if (seas_ != null) {
                 subBuilder = seas_.toBuilder();
@@ -378,13 +367,13 @@ public final class StsProtos {
 
               break;
             }
-            case 48: {
+            case 40: {
               int rawValue = input.readEnum();
 
               seasonalModel_ = rawValue;
               break;
             }
-            case 58: {
+            case 50: {
               demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
               if (cycle_ != null) {
                 subBuilder = cycle_.toBuilder();
@@ -397,7 +386,7 @@ public final class StsProtos {
 
               break;
             }
-            case 66: {
+            case 58: {
               demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
               if (cyclePeriod_ != null) {
                 subBuilder = cyclePeriod_.toBuilder();
@@ -410,7 +399,7 @@ public final class StsProtos {
 
               break;
             }
-            case 74: {
+            case 66: {
               demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
               if (cycleFactor_ != null) {
                 subBuilder = cycleFactor_.toBuilder();
@@ -455,21 +444,10 @@ public final class StsProtos {
               demetra.sts.io.protobuf.StsProtos.BsmSpec.class, demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder.class);
     }
 
-    public static final int PERIOD_FIELD_NUMBER = 1;
-    private int period_;
-    /**
-     * <code>int32 period = 1;</code>
-     * @return The period.
-     */
-    @java.lang.Override
-    public int getPeriod() {
-      return period_;
-    }
-
-    public static final int NOISE_FIELD_NUMBER = 2;
+    public static final int NOISE_FIELD_NUMBER = 1;
     private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter noise_;
     /**
-     * <code>.jd3.Parameter noise = 2;</code>
+     * <code>.jd3.Parameter noise = 1;</code>
      * @return Whether the noise field is set.
      */
     @java.lang.Override
@@ -477,7 +455,7 @@ public final class StsProtos {
       return noise_ != null;
     }
     /**
-     * <code>.jd3.Parameter noise = 2;</code>
+     * <code>.jd3.Parameter noise = 1;</code>
      * @return The noise.
      */
     @java.lang.Override
@@ -485,17 +463,17 @@ public final class StsProtos {
       return noise_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : noise_;
     }
     /**
-     * <code>.jd3.Parameter noise = 2;</code>
+     * <code>.jd3.Parameter noise = 1;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getNoiseOrBuilder() {
       return getNoise();
     }
 
-    public static final int LEVEL_FIELD_NUMBER = 3;
+    public static final int LEVEL_FIELD_NUMBER = 2;
     private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter level_;
     /**
-     * <code>.jd3.Parameter level = 3;</code>
+     * <code>.jd3.Parameter level = 2;</code>
      * @return Whether the level field is set.
      */
     @java.lang.Override
@@ -503,7 +481,7 @@ public final class StsProtos {
       return level_ != null;
     }
     /**
-     * <code>.jd3.Parameter level = 3;</code>
+     * <code>.jd3.Parameter level = 2;</code>
      * @return The level.
      */
     @java.lang.Override
@@ -511,17 +489,17 @@ public final class StsProtos {
       return level_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : level_;
     }
     /**
-     * <code>.jd3.Parameter level = 3;</code>
+     * <code>.jd3.Parameter level = 2;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getLevelOrBuilder() {
       return getLevel();
     }
 
-    public static final int SLOPE_FIELD_NUMBER = 4;
+    public static final int SLOPE_FIELD_NUMBER = 3;
     private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter slope_;
     /**
-     * <code>.jd3.Parameter slope = 4;</code>
+     * <code>.jd3.Parameter slope = 3;</code>
      * @return Whether the slope field is set.
      */
     @java.lang.Override
@@ -529,7 +507,7 @@ public final class StsProtos {
       return slope_ != null;
     }
     /**
-     * <code>.jd3.Parameter slope = 4;</code>
+     * <code>.jd3.Parameter slope = 3;</code>
      * @return The slope.
      */
     @java.lang.Override
@@ -537,17 +515,17 @@ public final class StsProtos {
       return slope_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : slope_;
     }
     /**
-     * <code>.jd3.Parameter slope = 4;</code>
+     * <code>.jd3.Parameter slope = 3;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getSlopeOrBuilder() {
       return getSlope();
     }
 
-    public static final int SEAS_FIELD_NUMBER = 5;
+    public static final int SEAS_FIELD_NUMBER = 4;
     private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter seas_;
     /**
-     * <code>.jd3.Parameter seas = 5;</code>
+     * <code>.jd3.Parameter seas = 4;</code>
      * @return Whether the seas field is set.
      */
     @java.lang.Override
@@ -555,7 +533,7 @@ public final class StsProtos {
       return seas_ != null;
     }
     /**
-     * <code>.jd3.Parameter seas = 5;</code>
+     * <code>.jd3.Parameter seas = 4;</code>
      * @return The seas.
      */
     @java.lang.Override
@@ -563,24 +541,24 @@ public final class StsProtos {
       return seas_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : seas_;
     }
     /**
-     * <code>.jd3.Parameter seas = 5;</code>
+     * <code>.jd3.Parameter seas = 4;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getSeasOrBuilder() {
       return getSeas();
     }
 
-    public static final int SEASONAL_MODEL_FIELD_NUMBER = 6;
+    public static final int SEASONAL_MODEL_FIELD_NUMBER = 5;
     private int seasonalModel_;
     /**
-     * <code>.sts.SeasonalModel seasonal_model = 6;</code>
+     * <code>.sts.SeasonalModel seasonal_model = 5;</code>
      * @return The enum numeric value on the wire for seasonalModel.
      */
     @java.lang.Override public int getSeasonalModelValue() {
       return seasonalModel_;
     }
     /**
-     * <code>.sts.SeasonalModel seasonal_model = 6;</code>
+     * <code>.sts.SeasonalModel seasonal_model = 5;</code>
      * @return The seasonalModel.
      */
     @java.lang.Override public demetra.sts.io.protobuf.StsProtos.SeasonalModel getSeasonalModel() {
@@ -589,10 +567,10 @@ public final class StsProtos {
       return result == null ? demetra.sts.io.protobuf.StsProtos.SeasonalModel.UNRECOGNIZED : result;
     }
 
-    public static final int CYCLE_FIELD_NUMBER = 7;
+    public static final int CYCLE_FIELD_NUMBER = 6;
     private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter cycle_;
     /**
-     * <code>.jd3.Parameter cycle = 7;</code>
+     * <code>.jd3.Parameter cycle = 6;</code>
      * @return Whether the cycle field is set.
      */
     @java.lang.Override
@@ -600,7 +578,7 @@ public final class StsProtos {
       return cycle_ != null;
     }
     /**
-     * <code>.jd3.Parameter cycle = 7;</code>
+     * <code>.jd3.Parameter cycle = 6;</code>
      * @return The cycle.
      */
     @java.lang.Override
@@ -608,17 +586,17 @@ public final class StsProtos {
       return cycle_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : cycle_;
     }
     /**
-     * <code>.jd3.Parameter cycle = 7;</code>
+     * <code>.jd3.Parameter cycle = 6;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCycleOrBuilder() {
       return getCycle();
     }
 
-    public static final int CYCLE_PERIOD_FIELD_NUMBER = 8;
+    public static final int CYCLE_PERIOD_FIELD_NUMBER = 7;
     private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter cyclePeriod_;
     /**
-     * <code>.jd3.Parameter cycle_period = 8;</code>
+     * <code>.jd3.Parameter cycle_period = 7;</code>
      * @return Whether the cyclePeriod field is set.
      */
     @java.lang.Override
@@ -626,7 +604,7 @@ public final class StsProtos {
       return cyclePeriod_ != null;
     }
     /**
-     * <code>.jd3.Parameter cycle_period = 8;</code>
+     * <code>.jd3.Parameter cycle_period = 7;</code>
      * @return The cyclePeriod.
      */
     @java.lang.Override
@@ -634,17 +612,17 @@ public final class StsProtos {
       return cyclePeriod_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : cyclePeriod_;
     }
     /**
-     * <code>.jd3.Parameter cycle_period = 8;</code>
+     * <code>.jd3.Parameter cycle_period = 7;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCyclePeriodOrBuilder() {
       return getCyclePeriod();
     }
 
-    public static final int CYCLE_FACTOR_FIELD_NUMBER = 9;
+    public static final int CYCLE_FACTOR_FIELD_NUMBER = 8;
     private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter cycleFactor_;
     /**
-     * <code>.jd3.Parameter cycle_factor = 9;</code>
+     * <code>.jd3.Parameter cycle_factor = 8;</code>
      * @return Whether the cycleFactor field is set.
      */
     @java.lang.Override
@@ -652,7 +630,7 @@ public final class StsProtos {
       return cycleFactor_ != null;
     }
     /**
-     * <code>.jd3.Parameter cycle_factor = 9;</code>
+     * <code>.jd3.Parameter cycle_factor = 8;</code>
      * @return The cycleFactor.
      */
     @java.lang.Override
@@ -660,7 +638,7 @@ public final class StsProtos {
       return cycleFactor_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : cycleFactor_;
     }
     /**
-     * <code>.jd3.Parameter cycle_factor = 9;</code>
+     * <code>.jd3.Parameter cycle_factor = 8;</code>
      */
     @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCycleFactorOrBuilder() {
@@ -681,32 +659,29 @@ public final class StsProtos {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (period_ != 0) {
-        output.writeInt32(1, period_);
-      }
       if (noise_ != null) {
-        output.writeMessage(2, getNoise());
+        output.writeMessage(1, getNoise());
       }
       if (level_ != null) {
-        output.writeMessage(3, getLevel());
+        output.writeMessage(2, getLevel());
       }
       if (slope_ != null) {
-        output.writeMessage(4, getSlope());
+        output.writeMessage(3, getSlope());
       }
       if (seas_ != null) {
-        output.writeMessage(5, getSeas());
+        output.writeMessage(4, getSeas());
       }
       if (seasonalModel_ != demetra.sts.io.protobuf.StsProtos.SeasonalModel.SEAS_NONE.getNumber()) {
-        output.writeEnum(6, seasonalModel_);
+        output.writeEnum(5, seasonalModel_);
       }
       if (cycle_ != null) {
-        output.writeMessage(7, getCycle());
+        output.writeMessage(6, getCycle());
       }
       if (cyclePeriod_ != null) {
-        output.writeMessage(8, getCyclePeriod());
+        output.writeMessage(7, getCyclePeriod());
       }
       if (cycleFactor_ != null) {
-        output.writeMessage(9, getCycleFactor());
+        output.writeMessage(8, getCycleFactor());
       }
       unknownFields.writeTo(output);
     }
@@ -717,41 +692,37 @@ public final class StsProtos {
       if (size != -1) return size;
 
       size = 0;
-      if (period_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, period_);
-      }
       if (noise_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getNoise());
+          .computeMessageSize(1, getNoise());
       }
       if (level_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, getLevel());
+          .computeMessageSize(2, getLevel());
       }
       if (slope_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getSlope());
+          .computeMessageSize(3, getSlope());
       }
       if (seas_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getSeas());
+          .computeMessageSize(4, getSeas());
       }
       if (seasonalModel_ != demetra.sts.io.protobuf.StsProtos.SeasonalModel.SEAS_NONE.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(6, seasonalModel_);
+          .computeEnumSize(5, seasonalModel_);
       }
       if (cycle_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, getCycle());
+          .computeMessageSize(6, getCycle());
       }
       if (cyclePeriod_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(8, getCyclePeriod());
+          .computeMessageSize(7, getCyclePeriod());
       }
       if (cycleFactor_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(9, getCycleFactor());
+          .computeMessageSize(8, getCycleFactor());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -768,8 +739,6 @@ public final class StsProtos {
       }
       demetra.sts.io.protobuf.StsProtos.BsmSpec other = (demetra.sts.io.protobuf.StsProtos.BsmSpec) obj;
 
-      if (getPeriod()
-          != other.getPeriod()) return false;
       if (hasNoise() != other.hasNoise()) return false;
       if (hasNoise()) {
         if (!getNoise()
@@ -817,8 +786,6 @@ public final class StsProtos {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + PERIOD_FIELD_NUMBER;
-      hash = (53 * hash) + getPeriod();
       if (hasNoise()) {
         hash = (37 * hash) + NOISE_FIELD_NUMBER;
         hash = (53 * hash) + getNoise().hashCode();
@@ -982,8 +949,6 @@ public final class StsProtos {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        period_ = 0;
-
         if (noiseBuilder_ == null) {
           noise_ = null;
         } else {
@@ -1054,7 +1019,6 @@ public final class StsProtos {
       @java.lang.Override
       public demetra.sts.io.protobuf.StsProtos.BsmSpec buildPartial() {
         demetra.sts.io.protobuf.StsProtos.BsmSpec result = new demetra.sts.io.protobuf.StsProtos.BsmSpec(this);
-        result.period_ = period_;
         if (noiseBuilder_ == null) {
           result.noise_ = noise_;
         } else {
@@ -1139,9 +1103,6 @@ public final class StsProtos {
 
       public Builder mergeFrom(demetra.sts.io.protobuf.StsProtos.BsmSpec other) {
         if (other == demetra.sts.io.protobuf.StsProtos.BsmSpec.getDefaultInstance()) return this;
-        if (other.getPeriod() != 0) {
-          setPeriod(other.getPeriod());
-        }
         if (other.hasNoise()) {
           mergeNoise(other.getNoise());
         }
@@ -1195,49 +1156,18 @@ public final class StsProtos {
         return this;
       }
 
-      private int period_ ;
-      /**
-       * <code>int32 period = 1;</code>
-       * @return The period.
-       */
-      @java.lang.Override
-      public int getPeriod() {
-        return period_;
-      }
-      /**
-       * <code>int32 period = 1;</code>
-       * @param value The period to set.
-       * @return This builder for chaining.
-       */
-      public Builder setPeriod(int value) {
-        
-        period_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>int32 period = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearPeriod() {
-        
-        period_ = 0;
-        onChanged();
-        return this;
-      }
-
       private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter noise_;
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> noiseBuilder_;
       /**
-       * <code>.jd3.Parameter noise = 2;</code>
+       * <code>.jd3.Parameter noise = 1;</code>
        * @return Whether the noise field is set.
        */
       public boolean hasNoise() {
         return noiseBuilder_ != null || noise_ != null;
       }
       /**
-       * <code>.jd3.Parameter noise = 2;</code>
+       * <code>.jd3.Parameter noise = 1;</code>
        * @return The noise.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getNoise() {
@@ -1248,7 +1178,7 @@ public final class StsProtos {
         }
       }
       /**
-       * <code>.jd3.Parameter noise = 2;</code>
+       * <code>.jd3.Parameter noise = 1;</code>
        */
       public Builder setNoise(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (noiseBuilder_ == null) {
@@ -1264,7 +1194,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter noise = 2;</code>
+       * <code>.jd3.Parameter noise = 1;</code>
        */
       public Builder setNoise(
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -1278,7 +1208,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter noise = 2;</code>
+       * <code>.jd3.Parameter noise = 1;</code>
        */
       public Builder mergeNoise(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (noiseBuilder_ == null) {
@@ -1296,7 +1226,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter noise = 2;</code>
+       * <code>.jd3.Parameter noise = 1;</code>
        */
       public Builder clearNoise() {
         if (noiseBuilder_ == null) {
@@ -1310,7 +1240,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter noise = 2;</code>
+       * <code>.jd3.Parameter noise = 1;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getNoiseBuilder() {
         
@@ -1318,7 +1248,7 @@ public final class StsProtos {
         return getNoiseFieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.Parameter noise = 2;</code>
+       * <code>.jd3.Parameter noise = 1;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getNoiseOrBuilder() {
         if (noiseBuilder_ != null) {
@@ -1329,7 +1259,7 @@ public final class StsProtos {
         }
       }
       /**
-       * <code>.jd3.Parameter noise = 2;</code>
+       * <code>.jd3.Parameter noise = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
@@ -1349,14 +1279,14 @@ public final class StsProtos {
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> levelBuilder_;
       /**
-       * <code>.jd3.Parameter level = 3;</code>
+       * <code>.jd3.Parameter level = 2;</code>
        * @return Whether the level field is set.
        */
       public boolean hasLevel() {
         return levelBuilder_ != null || level_ != null;
       }
       /**
-       * <code>.jd3.Parameter level = 3;</code>
+       * <code>.jd3.Parameter level = 2;</code>
        * @return The level.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getLevel() {
@@ -1367,7 +1297,7 @@ public final class StsProtos {
         }
       }
       /**
-       * <code>.jd3.Parameter level = 3;</code>
+       * <code>.jd3.Parameter level = 2;</code>
        */
       public Builder setLevel(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (levelBuilder_ == null) {
@@ -1383,7 +1313,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter level = 3;</code>
+       * <code>.jd3.Parameter level = 2;</code>
        */
       public Builder setLevel(
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -1397,7 +1327,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter level = 3;</code>
+       * <code>.jd3.Parameter level = 2;</code>
        */
       public Builder mergeLevel(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (levelBuilder_ == null) {
@@ -1415,7 +1345,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter level = 3;</code>
+       * <code>.jd3.Parameter level = 2;</code>
        */
       public Builder clearLevel() {
         if (levelBuilder_ == null) {
@@ -1429,7 +1359,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter level = 3;</code>
+       * <code>.jd3.Parameter level = 2;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getLevelBuilder() {
         
@@ -1437,7 +1367,7 @@ public final class StsProtos {
         return getLevelFieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.Parameter level = 3;</code>
+       * <code>.jd3.Parameter level = 2;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getLevelOrBuilder() {
         if (levelBuilder_ != null) {
@@ -1448,7 +1378,7 @@ public final class StsProtos {
         }
       }
       /**
-       * <code>.jd3.Parameter level = 3;</code>
+       * <code>.jd3.Parameter level = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
@@ -1468,14 +1398,14 @@ public final class StsProtos {
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> slopeBuilder_;
       /**
-       * <code>.jd3.Parameter slope = 4;</code>
+       * <code>.jd3.Parameter slope = 3;</code>
        * @return Whether the slope field is set.
        */
       public boolean hasSlope() {
         return slopeBuilder_ != null || slope_ != null;
       }
       /**
-       * <code>.jd3.Parameter slope = 4;</code>
+       * <code>.jd3.Parameter slope = 3;</code>
        * @return The slope.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getSlope() {
@@ -1486,7 +1416,7 @@ public final class StsProtos {
         }
       }
       /**
-       * <code>.jd3.Parameter slope = 4;</code>
+       * <code>.jd3.Parameter slope = 3;</code>
        */
       public Builder setSlope(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (slopeBuilder_ == null) {
@@ -1502,7 +1432,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter slope = 4;</code>
+       * <code>.jd3.Parameter slope = 3;</code>
        */
       public Builder setSlope(
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -1516,7 +1446,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter slope = 4;</code>
+       * <code>.jd3.Parameter slope = 3;</code>
        */
       public Builder mergeSlope(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (slopeBuilder_ == null) {
@@ -1534,7 +1464,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter slope = 4;</code>
+       * <code>.jd3.Parameter slope = 3;</code>
        */
       public Builder clearSlope() {
         if (slopeBuilder_ == null) {
@@ -1548,7 +1478,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter slope = 4;</code>
+       * <code>.jd3.Parameter slope = 3;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getSlopeBuilder() {
         
@@ -1556,7 +1486,7 @@ public final class StsProtos {
         return getSlopeFieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.Parameter slope = 4;</code>
+       * <code>.jd3.Parameter slope = 3;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getSlopeOrBuilder() {
         if (slopeBuilder_ != null) {
@@ -1567,7 +1497,7 @@ public final class StsProtos {
         }
       }
       /**
-       * <code>.jd3.Parameter slope = 4;</code>
+       * <code>.jd3.Parameter slope = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
@@ -1587,14 +1517,14 @@ public final class StsProtos {
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> seasBuilder_;
       /**
-       * <code>.jd3.Parameter seas = 5;</code>
+       * <code>.jd3.Parameter seas = 4;</code>
        * @return Whether the seas field is set.
        */
       public boolean hasSeas() {
         return seasBuilder_ != null || seas_ != null;
       }
       /**
-       * <code>.jd3.Parameter seas = 5;</code>
+       * <code>.jd3.Parameter seas = 4;</code>
        * @return The seas.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getSeas() {
@@ -1605,7 +1535,7 @@ public final class StsProtos {
         }
       }
       /**
-       * <code>.jd3.Parameter seas = 5;</code>
+       * <code>.jd3.Parameter seas = 4;</code>
        */
       public Builder setSeas(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (seasBuilder_ == null) {
@@ -1621,7 +1551,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter seas = 5;</code>
+       * <code>.jd3.Parameter seas = 4;</code>
        */
       public Builder setSeas(
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -1635,7 +1565,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter seas = 5;</code>
+       * <code>.jd3.Parameter seas = 4;</code>
        */
       public Builder mergeSeas(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (seasBuilder_ == null) {
@@ -1653,7 +1583,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter seas = 5;</code>
+       * <code>.jd3.Parameter seas = 4;</code>
        */
       public Builder clearSeas() {
         if (seasBuilder_ == null) {
@@ -1667,7 +1597,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter seas = 5;</code>
+       * <code>.jd3.Parameter seas = 4;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getSeasBuilder() {
         
@@ -1675,7 +1605,7 @@ public final class StsProtos {
         return getSeasFieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.Parameter seas = 5;</code>
+       * <code>.jd3.Parameter seas = 4;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getSeasOrBuilder() {
         if (seasBuilder_ != null) {
@@ -1686,7 +1616,7 @@ public final class StsProtos {
         }
       }
       /**
-       * <code>.jd3.Parameter seas = 5;</code>
+       * <code>.jd3.Parameter seas = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
@@ -1704,14 +1634,14 @@ public final class StsProtos {
 
       private int seasonalModel_ = 0;
       /**
-       * <code>.sts.SeasonalModel seasonal_model = 6;</code>
+       * <code>.sts.SeasonalModel seasonal_model = 5;</code>
        * @return The enum numeric value on the wire for seasonalModel.
        */
       @java.lang.Override public int getSeasonalModelValue() {
         return seasonalModel_;
       }
       /**
-       * <code>.sts.SeasonalModel seasonal_model = 6;</code>
+       * <code>.sts.SeasonalModel seasonal_model = 5;</code>
        * @param value The enum numeric value on the wire for seasonalModel to set.
        * @return This builder for chaining.
        */
@@ -1722,7 +1652,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.sts.SeasonalModel seasonal_model = 6;</code>
+       * <code>.sts.SeasonalModel seasonal_model = 5;</code>
        * @return The seasonalModel.
        */
       @java.lang.Override
@@ -1732,7 +1662,7 @@ public final class StsProtos {
         return result == null ? demetra.sts.io.protobuf.StsProtos.SeasonalModel.UNRECOGNIZED : result;
       }
       /**
-       * <code>.sts.SeasonalModel seasonal_model = 6;</code>
+       * <code>.sts.SeasonalModel seasonal_model = 5;</code>
        * @param value The seasonalModel to set.
        * @return This builder for chaining.
        */
@@ -1746,7 +1676,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.sts.SeasonalModel seasonal_model = 6;</code>
+       * <code>.sts.SeasonalModel seasonal_model = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearSeasonalModel() {
@@ -1760,14 +1690,14 @@ public final class StsProtos {
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> cycleBuilder_;
       /**
-       * <code>.jd3.Parameter cycle = 7;</code>
+       * <code>.jd3.Parameter cycle = 6;</code>
        * @return Whether the cycle field is set.
        */
       public boolean hasCycle() {
         return cycleBuilder_ != null || cycle_ != null;
       }
       /**
-       * <code>.jd3.Parameter cycle = 7;</code>
+       * <code>.jd3.Parameter cycle = 6;</code>
        * @return The cycle.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCycle() {
@@ -1778,7 +1708,7 @@ public final class StsProtos {
         }
       }
       /**
-       * <code>.jd3.Parameter cycle = 7;</code>
+       * <code>.jd3.Parameter cycle = 6;</code>
        */
       public Builder setCycle(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (cycleBuilder_ == null) {
@@ -1794,7 +1724,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter cycle = 7;</code>
+       * <code>.jd3.Parameter cycle = 6;</code>
        */
       public Builder setCycle(
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -1808,7 +1738,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter cycle = 7;</code>
+       * <code>.jd3.Parameter cycle = 6;</code>
        */
       public Builder mergeCycle(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (cycleBuilder_ == null) {
@@ -1826,7 +1756,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter cycle = 7;</code>
+       * <code>.jd3.Parameter cycle = 6;</code>
        */
       public Builder clearCycle() {
         if (cycleBuilder_ == null) {
@@ -1840,7 +1770,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter cycle = 7;</code>
+       * <code>.jd3.Parameter cycle = 6;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getCycleBuilder() {
         
@@ -1848,7 +1778,7 @@ public final class StsProtos {
         return getCycleFieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.Parameter cycle = 7;</code>
+       * <code>.jd3.Parameter cycle = 6;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCycleOrBuilder() {
         if (cycleBuilder_ != null) {
@@ -1859,7 +1789,7 @@ public final class StsProtos {
         }
       }
       /**
-       * <code>.jd3.Parameter cycle = 7;</code>
+       * <code>.jd3.Parameter cycle = 6;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
@@ -1879,14 +1809,14 @@ public final class StsProtos {
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> cyclePeriodBuilder_;
       /**
-       * <code>.jd3.Parameter cycle_period = 8;</code>
+       * <code>.jd3.Parameter cycle_period = 7;</code>
        * @return Whether the cyclePeriod field is set.
        */
       public boolean hasCyclePeriod() {
         return cyclePeriodBuilder_ != null || cyclePeriod_ != null;
       }
       /**
-       * <code>.jd3.Parameter cycle_period = 8;</code>
+       * <code>.jd3.Parameter cycle_period = 7;</code>
        * @return The cyclePeriod.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCyclePeriod() {
@@ -1897,7 +1827,7 @@ public final class StsProtos {
         }
       }
       /**
-       * <code>.jd3.Parameter cycle_period = 8;</code>
+       * <code>.jd3.Parameter cycle_period = 7;</code>
        */
       public Builder setCyclePeriod(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (cyclePeriodBuilder_ == null) {
@@ -1913,7 +1843,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter cycle_period = 8;</code>
+       * <code>.jd3.Parameter cycle_period = 7;</code>
        */
       public Builder setCyclePeriod(
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -1927,7 +1857,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter cycle_period = 8;</code>
+       * <code>.jd3.Parameter cycle_period = 7;</code>
        */
       public Builder mergeCyclePeriod(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (cyclePeriodBuilder_ == null) {
@@ -1945,7 +1875,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter cycle_period = 8;</code>
+       * <code>.jd3.Parameter cycle_period = 7;</code>
        */
       public Builder clearCyclePeriod() {
         if (cyclePeriodBuilder_ == null) {
@@ -1959,7 +1889,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter cycle_period = 8;</code>
+       * <code>.jd3.Parameter cycle_period = 7;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getCyclePeriodBuilder() {
         
@@ -1967,7 +1897,7 @@ public final class StsProtos {
         return getCyclePeriodFieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.Parameter cycle_period = 8;</code>
+       * <code>.jd3.Parameter cycle_period = 7;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCyclePeriodOrBuilder() {
         if (cyclePeriodBuilder_ != null) {
@@ -1978,7 +1908,7 @@ public final class StsProtos {
         }
       }
       /**
-       * <code>.jd3.Parameter cycle_period = 8;</code>
+       * <code>.jd3.Parameter cycle_period = 7;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
@@ -1998,14 +1928,14 @@ public final class StsProtos {
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> cycleFactorBuilder_;
       /**
-       * <code>.jd3.Parameter cycle_factor = 9;</code>
+       * <code>.jd3.Parameter cycle_factor = 8;</code>
        * @return Whether the cycleFactor field is set.
        */
       public boolean hasCycleFactor() {
         return cycleFactorBuilder_ != null || cycleFactor_ != null;
       }
       /**
-       * <code>.jd3.Parameter cycle_factor = 9;</code>
+       * <code>.jd3.Parameter cycle_factor = 8;</code>
        * @return The cycleFactor.
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCycleFactor() {
@@ -2016,7 +1946,7 @@ public final class StsProtos {
         }
       }
       /**
-       * <code>.jd3.Parameter cycle_factor = 9;</code>
+       * <code>.jd3.Parameter cycle_factor = 8;</code>
        */
       public Builder setCycleFactor(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (cycleFactorBuilder_ == null) {
@@ -2032,7 +1962,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter cycle_factor = 9;</code>
+       * <code>.jd3.Parameter cycle_factor = 8;</code>
        */
       public Builder setCycleFactor(
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -2046,7 +1976,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter cycle_factor = 9;</code>
+       * <code>.jd3.Parameter cycle_factor = 8;</code>
        */
       public Builder mergeCycleFactor(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (cycleFactorBuilder_ == null) {
@@ -2064,7 +1994,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter cycle_factor = 9;</code>
+       * <code>.jd3.Parameter cycle_factor = 8;</code>
        */
       public Builder clearCycleFactor() {
         if (cycleFactorBuilder_ == null) {
@@ -2078,7 +2008,7 @@ public final class StsProtos {
         return this;
       }
       /**
-       * <code>.jd3.Parameter cycle_factor = 9;</code>
+       * <code>.jd3.Parameter cycle_factor = 8;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getCycleFactorBuilder() {
         
@@ -2086,7 +2016,7 @@ public final class StsProtos {
         return getCycleFactorFieldBuilder().getBuilder();
       }
       /**
-       * <code>.jd3.Parameter cycle_factor = 9;</code>
+       * <code>.jd3.Parameter cycle_factor = 8;</code>
        */
       public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCycleFactorOrBuilder() {
         if (cycleFactorBuilder_ != null) {
@@ -2097,7 +2027,7 @@ public final class StsProtos {
         }
       }
       /**
-       * <code>.jd3.Parameter cycle_factor = 9;</code>
+       * <code>.jd3.Parameter cycle_factor = 8;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
@@ -2160,1046 +2090,6 @@ public final class StsProtos {
 
     @java.lang.Override
     public demetra.sts.io.protobuf.StsProtos.BsmSpec getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface DiffuseLikelihoodOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:sts.DiffuseLikelihood)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>double likelihood = 1;</code>
-     * @return The likelihood.
-     */
-    double getLikelihood();
-
-    /**
-     * <code>int32 nobs = 2;</code>
-     * @return The nobs.
-     */
-    int getNobs();
-
-    /**
-     * <code>int32 ndiffuse = 3;</code>
-     * @return The ndiffuse.
-     */
-    int getNdiffuse();
-
-    /**
-     * <code>double ssqerr = 4;</code>
-     * @return The ssqerr.
-     */
-    double getSsqerr();
-
-    /**
-     * <code>double ldet = 5;</code>
-     * @return The ldet.
-     */
-    double getLdet();
-
-    /**
-     * <code>double dcorrection = 6;</code>
-     * @return The dcorrection.
-     */
-    double getDcorrection();
-
-    /**
-     * <code>repeated double residuals = 7;</code>
-     * @return A list containing the residuals.
-     */
-    java.util.List<java.lang.Double> getResidualsList();
-    /**
-     * <code>repeated double residuals = 7;</code>
-     * @return The count of residuals.
-     */
-    int getResidualsCount();
-    /**
-     * <code>repeated double residuals = 7;</code>
-     * @param index The index of the element to return.
-     * @return The residuals at the given index.
-     */
-    double getResiduals(int index);
-  }
-  /**
-   * Protobuf type {@code sts.DiffuseLikelihood}
-   */
-  public static final class DiffuseLikelihood extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:sts.DiffuseLikelihood)
-      DiffuseLikelihoodOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use DiffuseLikelihood.newBuilder() to construct.
-    private DiffuseLikelihood(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private DiffuseLikelihood() {
-      residuals_ = emptyDoubleList();
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new DiffuseLikelihood();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private DiffuseLikelihood(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 9: {
-
-              likelihood_ = input.readDouble();
-              break;
-            }
-            case 16: {
-
-              nobs_ = input.readInt32();
-              break;
-            }
-            case 24: {
-
-              ndiffuse_ = input.readInt32();
-              break;
-            }
-            case 33: {
-
-              ssqerr_ = input.readDouble();
-              break;
-            }
-            case 41: {
-
-              ldet_ = input.readDouble();
-              break;
-            }
-            case 49: {
-
-              dcorrection_ = input.readDouble();
-              break;
-            }
-            case 57: {
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                residuals_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              residuals_.addDouble(input.readDouble());
-              break;
-            }
-            case 58: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
-                residuals_ = newDoubleList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              while (input.getBytesUntilLimit() > 0) {
-                residuals_.addDouble(input.readDouble());
-              }
-              input.popLimit(limit);
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          residuals_.makeImmutable(); // C
-        }
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_DiffuseLikelihood_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return demetra.sts.io.protobuf.StsProtos.internal_static_sts_DiffuseLikelihood_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.class, demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.Builder.class);
-    }
-
-    public static final int LIKELIHOOD_FIELD_NUMBER = 1;
-    private double likelihood_;
-    /**
-     * <code>double likelihood = 1;</code>
-     * @return The likelihood.
-     */
-    @java.lang.Override
-    public double getLikelihood() {
-      return likelihood_;
-    }
-
-    public static final int NOBS_FIELD_NUMBER = 2;
-    private int nobs_;
-    /**
-     * <code>int32 nobs = 2;</code>
-     * @return The nobs.
-     */
-    @java.lang.Override
-    public int getNobs() {
-      return nobs_;
-    }
-
-    public static final int NDIFFUSE_FIELD_NUMBER = 3;
-    private int ndiffuse_;
-    /**
-     * <code>int32 ndiffuse = 3;</code>
-     * @return The ndiffuse.
-     */
-    @java.lang.Override
-    public int getNdiffuse() {
-      return ndiffuse_;
-    }
-
-    public static final int SSQERR_FIELD_NUMBER = 4;
-    private double ssqerr_;
-    /**
-     * <code>double ssqerr = 4;</code>
-     * @return The ssqerr.
-     */
-    @java.lang.Override
-    public double getSsqerr() {
-      return ssqerr_;
-    }
-
-    public static final int LDET_FIELD_NUMBER = 5;
-    private double ldet_;
-    /**
-     * <code>double ldet = 5;</code>
-     * @return The ldet.
-     */
-    @java.lang.Override
-    public double getLdet() {
-      return ldet_;
-    }
-
-    public static final int DCORRECTION_FIELD_NUMBER = 6;
-    private double dcorrection_;
-    /**
-     * <code>double dcorrection = 6;</code>
-     * @return The dcorrection.
-     */
-    @java.lang.Override
-    public double getDcorrection() {
-      return dcorrection_;
-    }
-
-    public static final int RESIDUALS_FIELD_NUMBER = 7;
-    private com.google.protobuf.Internal.DoubleList residuals_;
-    /**
-     * <code>repeated double residuals = 7;</code>
-     * @return A list containing the residuals.
-     */
-    @java.lang.Override
-    public java.util.List<java.lang.Double>
-        getResidualsList() {
-      return residuals_;
-    }
-    /**
-     * <code>repeated double residuals = 7;</code>
-     * @return The count of residuals.
-     */
-    public int getResidualsCount() {
-      return residuals_.size();
-    }
-    /**
-     * <code>repeated double residuals = 7;</code>
-     * @param index The index of the element to return.
-     * @return The residuals at the given index.
-     */
-    public double getResiduals(int index) {
-      return residuals_.getDouble(index);
-    }
-    private int residualsMemoizedSerializedSize = -1;
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (likelihood_ != 0D) {
-        output.writeDouble(1, likelihood_);
-      }
-      if (nobs_ != 0) {
-        output.writeInt32(2, nobs_);
-      }
-      if (ndiffuse_ != 0) {
-        output.writeInt32(3, ndiffuse_);
-      }
-      if (ssqerr_ != 0D) {
-        output.writeDouble(4, ssqerr_);
-      }
-      if (ldet_ != 0D) {
-        output.writeDouble(5, ldet_);
-      }
-      if (dcorrection_ != 0D) {
-        output.writeDouble(6, dcorrection_);
-      }
-      if (getResidualsList().size() > 0) {
-        output.writeUInt32NoTag(58);
-        output.writeUInt32NoTag(residualsMemoizedSerializedSize);
-      }
-      for (int i = 0; i < residuals_.size(); i++) {
-        output.writeDoubleNoTag(residuals_.getDouble(i));
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (likelihood_ != 0D) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(1, likelihood_);
-      }
-      if (nobs_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, nobs_);
-      }
-      if (ndiffuse_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, ndiffuse_);
-      }
-      if (ssqerr_ != 0D) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(4, ssqerr_);
-      }
-      if (ldet_ != 0D) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(5, ldet_);
-      }
-      if (dcorrection_ != 0D) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(6, dcorrection_);
-      }
-      {
-        int dataSize = 0;
-        dataSize = 8 * getResidualsList().size();
-        size += dataSize;
-        if (!getResidualsList().isEmpty()) {
-          size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
-        }
-        residualsMemoizedSerializedSize = dataSize;
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood)) {
-        return super.equals(obj);
-      }
-      demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood other = (demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood) obj;
-
-      if (java.lang.Double.doubleToLongBits(getLikelihood())
-          != java.lang.Double.doubleToLongBits(
-              other.getLikelihood())) return false;
-      if (getNobs()
-          != other.getNobs()) return false;
-      if (getNdiffuse()
-          != other.getNdiffuse()) return false;
-      if (java.lang.Double.doubleToLongBits(getSsqerr())
-          != java.lang.Double.doubleToLongBits(
-              other.getSsqerr())) return false;
-      if (java.lang.Double.doubleToLongBits(getLdet())
-          != java.lang.Double.doubleToLongBits(
-              other.getLdet())) return false;
-      if (java.lang.Double.doubleToLongBits(getDcorrection())
-          != java.lang.Double.doubleToLongBits(
-              other.getDcorrection())) return false;
-      if (!getResidualsList()
-          .equals(other.getResidualsList())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + LIKELIHOOD_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          java.lang.Double.doubleToLongBits(getLikelihood()));
-      hash = (37 * hash) + NOBS_FIELD_NUMBER;
-      hash = (53 * hash) + getNobs();
-      hash = (37 * hash) + NDIFFUSE_FIELD_NUMBER;
-      hash = (53 * hash) + getNdiffuse();
-      hash = (37 * hash) + SSQERR_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          java.lang.Double.doubleToLongBits(getSsqerr()));
-      hash = (37 * hash) + LDET_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          java.lang.Double.doubleToLongBits(getLdet()));
-      hash = (37 * hash) + DCORRECTION_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          java.lang.Double.doubleToLongBits(getDcorrection()));
-      if (getResidualsCount() > 0) {
-        hash = (37 * hash) + RESIDUALS_FIELD_NUMBER;
-        hash = (53 * hash) + getResidualsList().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code sts.DiffuseLikelihood}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:sts.DiffuseLikelihood)
-        demetra.sts.io.protobuf.StsProtos.DiffuseLikelihoodOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_DiffuseLikelihood_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_DiffuseLikelihood_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.class, demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.Builder.class);
-      }
-
-      // Construct using demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        likelihood_ = 0D;
-
-        nobs_ = 0;
-
-        ndiffuse_ = 0;
-
-        ssqerr_ = 0D;
-
-        ldet_ = 0D;
-
-        dcorrection_ = 0D;
-
-        residuals_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_DiffuseLikelihood_descriptor;
-      }
-
-      @java.lang.Override
-      public demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood getDefaultInstanceForType() {
-        return demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood build() {
-        demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood buildPartial() {
-        demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood result = new demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood(this);
-        int from_bitField0_ = bitField0_;
-        result.likelihood_ = likelihood_;
-        result.nobs_ = nobs_;
-        result.ndiffuse_ = ndiffuse_;
-        result.ssqerr_ = ssqerr_;
-        result.ldet_ = ldet_;
-        result.dcorrection_ = dcorrection_;
-        if (((bitField0_ & 0x00000001) != 0)) {
-          residuals_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.residuals_ = residuals_;
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood) {
-          return mergeFrom((demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood other) {
-        if (other == demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.getDefaultInstance()) return this;
-        if (other.getLikelihood() != 0D) {
-          setLikelihood(other.getLikelihood());
-        }
-        if (other.getNobs() != 0) {
-          setNobs(other.getNobs());
-        }
-        if (other.getNdiffuse() != 0) {
-          setNdiffuse(other.getNdiffuse());
-        }
-        if (other.getSsqerr() != 0D) {
-          setSsqerr(other.getSsqerr());
-        }
-        if (other.getLdet() != 0D) {
-          setLdet(other.getLdet());
-        }
-        if (other.getDcorrection() != 0D) {
-          setDcorrection(other.getDcorrection());
-        }
-        if (!other.residuals_.isEmpty()) {
-          if (residuals_.isEmpty()) {
-            residuals_ = other.residuals_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureResidualsIsMutable();
-            residuals_.addAll(other.residuals_);
-          }
-          onChanged();
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      private double likelihood_ ;
-      /**
-       * <code>double likelihood = 1;</code>
-       * @return The likelihood.
-       */
-      @java.lang.Override
-      public double getLikelihood() {
-        return likelihood_;
-      }
-      /**
-       * <code>double likelihood = 1;</code>
-       * @param value The likelihood to set.
-       * @return This builder for chaining.
-       */
-      public Builder setLikelihood(double value) {
-        
-        likelihood_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>double likelihood = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearLikelihood() {
-        
-        likelihood_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private int nobs_ ;
-      /**
-       * <code>int32 nobs = 2;</code>
-       * @return The nobs.
-       */
-      @java.lang.Override
-      public int getNobs() {
-        return nobs_;
-      }
-      /**
-       * <code>int32 nobs = 2;</code>
-       * @param value The nobs to set.
-       * @return This builder for chaining.
-       */
-      public Builder setNobs(int value) {
-        
-        nobs_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>int32 nobs = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearNobs() {
-        
-        nobs_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int ndiffuse_ ;
-      /**
-       * <code>int32 ndiffuse = 3;</code>
-       * @return The ndiffuse.
-       */
-      @java.lang.Override
-      public int getNdiffuse() {
-        return ndiffuse_;
-      }
-      /**
-       * <code>int32 ndiffuse = 3;</code>
-       * @param value The ndiffuse to set.
-       * @return This builder for chaining.
-       */
-      public Builder setNdiffuse(int value) {
-        
-        ndiffuse_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>int32 ndiffuse = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearNdiffuse() {
-        
-        ndiffuse_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private double ssqerr_ ;
-      /**
-       * <code>double ssqerr = 4;</code>
-       * @return The ssqerr.
-       */
-      @java.lang.Override
-      public double getSsqerr() {
-        return ssqerr_;
-      }
-      /**
-       * <code>double ssqerr = 4;</code>
-       * @param value The ssqerr to set.
-       * @return This builder for chaining.
-       */
-      public Builder setSsqerr(double value) {
-        
-        ssqerr_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>double ssqerr = 4;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearSsqerr() {
-        
-        ssqerr_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double ldet_ ;
-      /**
-       * <code>double ldet = 5;</code>
-       * @return The ldet.
-       */
-      @java.lang.Override
-      public double getLdet() {
-        return ldet_;
-      }
-      /**
-       * <code>double ldet = 5;</code>
-       * @param value The ldet to set.
-       * @return This builder for chaining.
-       */
-      public Builder setLdet(double value) {
-        
-        ldet_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>double ldet = 5;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearLdet() {
-        
-        ldet_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double dcorrection_ ;
-      /**
-       * <code>double dcorrection = 6;</code>
-       * @return The dcorrection.
-       */
-      @java.lang.Override
-      public double getDcorrection() {
-        return dcorrection_;
-      }
-      /**
-       * <code>double dcorrection = 6;</code>
-       * @param value The dcorrection to set.
-       * @return This builder for chaining.
-       */
-      public Builder setDcorrection(double value) {
-        
-        dcorrection_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>double dcorrection = 6;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearDcorrection() {
-        
-        dcorrection_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.Internal.DoubleList residuals_ = emptyDoubleList();
-      private void ensureResidualsIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          residuals_ = mutableCopy(residuals_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-      /**
-       * <code>repeated double residuals = 7;</code>
-       * @return A list containing the residuals.
-       */
-      public java.util.List<java.lang.Double>
-          getResidualsList() {
-        return ((bitField0_ & 0x00000001) != 0) ?
-                 java.util.Collections.unmodifiableList(residuals_) : residuals_;
-      }
-      /**
-       * <code>repeated double residuals = 7;</code>
-       * @return The count of residuals.
-       */
-      public int getResidualsCount() {
-        return residuals_.size();
-      }
-      /**
-       * <code>repeated double residuals = 7;</code>
-       * @param index The index of the element to return.
-       * @return The residuals at the given index.
-       */
-      public double getResiduals(int index) {
-        return residuals_.getDouble(index);
-      }
-      /**
-       * <code>repeated double residuals = 7;</code>
-       * @param index The index to set the value at.
-       * @param value The residuals to set.
-       * @return This builder for chaining.
-       */
-      public Builder setResiduals(
-          int index, double value) {
-        ensureResidualsIsMutable();
-        residuals_.setDouble(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated double residuals = 7;</code>
-       * @param value The residuals to add.
-       * @return This builder for chaining.
-       */
-      public Builder addResiduals(double value) {
-        ensureResidualsIsMutable();
-        residuals_.addDouble(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated double residuals = 7;</code>
-       * @param values The residuals to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllResiduals(
-          java.lang.Iterable<? extends java.lang.Double> values) {
-        ensureResidualsIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, residuals_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated double residuals = 7;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearResiduals() {
-        residuals_ = emptyDoubleList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:sts.DiffuseLikelihood)
-    }
-
-    // @@protoc_insertion_point(class_scope:sts.DiffuseLikelihood)
-    private static final demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood();
-    }
-
-    public static demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<DiffuseLikelihood>
-        PARSER = new com.google.protobuf.AbstractParser<DiffuseLikelihood>() {
-      @java.lang.Override
-      public DiffuseLikelihood parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new DiffuseLikelihood(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<DiffuseLikelihood> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<DiffuseLikelihood> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -4899,19 +3789,19 @@ public final class StsProtos {
       demetra.toolkit.io.protobuf.ToolkitProtos.ParametersEstimationOrBuilder getParametersOrBuilder();
 
       /**
-       * <code>.sts.DiffuseLikelihood likelihood = 6;</code>
+       * <code>.jd3.DiffuseLikelihoodStatistics likelihood = 6;</code>
        * @return Whether the likelihood field is set.
        */
       boolean hasLikelihood();
       /**
-       * <code>.sts.DiffuseLikelihood likelihood = 6;</code>
+       * <code>.jd3.DiffuseLikelihoodStatistics likelihood = 6;</code>
        * @return The likelihood.
        */
-      demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood getLikelihood();
+      demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics getLikelihood();
       /**
-       * <code>.sts.DiffuseLikelihood likelihood = 6;</code>
+       * <code>.jd3.DiffuseLikelihoodStatistics likelihood = 6;</code>
        */
-      demetra.sts.io.protobuf.StsProtos.DiffuseLikelihoodOrBuilder getLikelihoodOrBuilder();
+      demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatisticsOrBuilder getLikelihoodOrBuilder();
 
       /**
        * <code>repeated double residuals = 7;</code>
@@ -5086,11 +3976,11 @@ public final class StsProtos {
                 break;
               }
               case 50: {
-                demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.Builder subBuilder = null;
+                demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.Builder subBuilder = null;
                 if (likelihood_ != null) {
                   subBuilder = likelihood_.toBuilder();
                 }
-                likelihood_ = input.readMessage(demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.parser(), extensionRegistry);
+                likelihood_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.parser(), extensionRegistry);
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(likelihood_);
                   likelihood_ = subBuilder.buildPartial();
@@ -5319,9 +4209,9 @@ public final class StsProtos {
       }
 
       public static final int LIKELIHOOD_FIELD_NUMBER = 6;
-      private demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood likelihood_;
+      private demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics likelihood_;
       /**
-       * <code>.sts.DiffuseLikelihood likelihood = 6;</code>
+       * <code>.jd3.DiffuseLikelihoodStatistics likelihood = 6;</code>
        * @return Whether the likelihood field is set.
        */
       @java.lang.Override
@@ -5329,18 +4219,18 @@ public final class StsProtos {
         return likelihood_ != null;
       }
       /**
-       * <code>.sts.DiffuseLikelihood likelihood = 6;</code>
+       * <code>.jd3.DiffuseLikelihoodStatistics likelihood = 6;</code>
        * @return The likelihood.
        */
       @java.lang.Override
-      public demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood getLikelihood() {
-        return likelihood_ == null ? demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.getDefaultInstance() : likelihood_;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics getLikelihood() {
+        return likelihood_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.getDefaultInstance() : likelihood_;
       }
       /**
-       * <code>.sts.DiffuseLikelihood likelihood = 6;</code>
+       * <code>.jd3.DiffuseLikelihoodStatistics likelihood = 6;</code>
        */
       @java.lang.Override
-      public demetra.sts.io.protobuf.StsProtos.DiffuseLikelihoodOrBuilder getLikelihoodOrBuilder() {
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatisticsOrBuilder getLikelihoodOrBuilder() {
         return getLikelihood();
       }
 
@@ -6541,31 +5431,31 @@ public final class StsProtos {
           return parametersBuilder_;
         }
 
-        private demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood likelihood_;
+        private demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics likelihood_;
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood, demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.Builder, demetra.sts.io.protobuf.StsProtos.DiffuseLikelihoodOrBuilder> likelihoodBuilder_;
+            demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatisticsOrBuilder> likelihoodBuilder_;
         /**
-         * <code>.sts.DiffuseLikelihood likelihood = 6;</code>
+         * <code>.jd3.DiffuseLikelihoodStatistics likelihood = 6;</code>
          * @return Whether the likelihood field is set.
          */
         public boolean hasLikelihood() {
           return likelihoodBuilder_ != null || likelihood_ != null;
         }
         /**
-         * <code>.sts.DiffuseLikelihood likelihood = 6;</code>
+         * <code>.jd3.DiffuseLikelihoodStatistics likelihood = 6;</code>
          * @return The likelihood.
          */
-        public demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood getLikelihood() {
+        public demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics getLikelihood() {
           if (likelihoodBuilder_ == null) {
-            return likelihood_ == null ? demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.getDefaultInstance() : likelihood_;
+            return likelihood_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.getDefaultInstance() : likelihood_;
           } else {
             return likelihoodBuilder_.getMessage();
           }
         }
         /**
-         * <code>.sts.DiffuseLikelihood likelihood = 6;</code>
+         * <code>.jd3.DiffuseLikelihoodStatistics likelihood = 6;</code>
          */
-        public Builder setLikelihood(demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood value) {
+        public Builder setLikelihood(demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics value) {
           if (likelihoodBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -6579,10 +5469,10 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sts.DiffuseLikelihood likelihood = 6;</code>
+         * <code>.jd3.DiffuseLikelihoodStatistics likelihood = 6;</code>
          */
         public Builder setLikelihood(
-            demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.Builder builderForValue) {
+            demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.Builder builderForValue) {
           if (likelihoodBuilder_ == null) {
             likelihood_ = builderForValue.build();
             onChanged();
@@ -6593,13 +5483,13 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sts.DiffuseLikelihood likelihood = 6;</code>
+         * <code>.jd3.DiffuseLikelihoodStatistics likelihood = 6;</code>
          */
-        public Builder mergeLikelihood(demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood value) {
+        public Builder mergeLikelihood(demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics value) {
           if (likelihoodBuilder_ == null) {
             if (likelihood_ != null) {
               likelihood_ =
-                demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.newBuilder(likelihood_).mergeFrom(value).buildPartial();
+                demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.newBuilder(likelihood_).mergeFrom(value).buildPartial();
             } else {
               likelihood_ = value;
             }
@@ -6611,7 +5501,7 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sts.DiffuseLikelihood likelihood = 6;</code>
+         * <code>.jd3.DiffuseLikelihoodStatistics likelihood = 6;</code>
          */
         public Builder clearLikelihood() {
           if (likelihoodBuilder_ == null) {
@@ -6625,33 +5515,33 @@ public final class StsProtos {
           return this;
         }
         /**
-         * <code>.sts.DiffuseLikelihood likelihood = 6;</code>
+         * <code>.jd3.DiffuseLikelihoodStatistics likelihood = 6;</code>
          */
-        public demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.Builder getLikelihoodBuilder() {
+        public demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.Builder getLikelihoodBuilder() {
           
           onChanged();
           return getLikelihoodFieldBuilder().getBuilder();
         }
         /**
-         * <code>.sts.DiffuseLikelihood likelihood = 6;</code>
+         * <code>.jd3.DiffuseLikelihoodStatistics likelihood = 6;</code>
          */
-        public demetra.sts.io.protobuf.StsProtos.DiffuseLikelihoodOrBuilder getLikelihoodOrBuilder() {
+        public demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatisticsOrBuilder getLikelihoodOrBuilder() {
           if (likelihoodBuilder_ != null) {
             return likelihoodBuilder_.getMessageOrBuilder();
           } else {
             return likelihood_ == null ?
-                demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.getDefaultInstance() : likelihood_;
+                demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.getDefaultInstance() : likelihood_;
           }
         }
         /**
-         * <code>.sts.DiffuseLikelihood likelihood = 6;</code>
+         * <code>.jd3.DiffuseLikelihoodStatistics likelihood = 6;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood, demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.Builder, demetra.sts.io.protobuf.StsProtos.DiffuseLikelihoodOrBuilder> 
+            demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatisticsOrBuilder> 
             getLikelihoodFieldBuilder() {
           if (likelihoodBuilder_ == null) {
             likelihoodBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood, demetra.sts.io.protobuf.StsProtos.DiffuseLikelihood.Builder, demetra.sts.io.protobuf.StsProtos.DiffuseLikelihoodOrBuilder>(
+                demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics, demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatisticsOrBuilder>(
                     getLikelihood(),
                     getParentForChildren(),
                     isClean());
@@ -9893,11 +8783,6 @@ public final class StsProtos {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_sts_BsmSpec_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_sts_DiffuseLikelihood_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_sts_DiffuseLikelihood_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_sts_Bsm_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -9927,18 +8812,14 @@ public final class StsProtos {
   static {
     java.lang.String[] descriptorData = {
       "\n\tsts.proto\022\003sts\032\rtoolkit.proto\032\017modelli" +
-      "ng.proto\032\010sa.proto\"\253\002\n\007BsmSpec\022\016\n\006period" +
-      "\030\001 \001(\005\022\035\n\005noise\030\002 \001(\0132\016.jd3.Parameter\022\035\n" +
-      "\005level\030\003 \001(\0132\016.jd3.Parameter\022\035\n\005slope\030\004 " +
-      "\001(\0132\016.jd3.Parameter\022\034\n\004seas\030\005 \001(\0132\016.jd3." +
-      "Parameter\022*\n\016seasonal_model\030\006 \001(\0162\022.sts." +
-      "SeasonalModel\022\035\n\005cycle\030\007 \001(\0132\016.jd3.Param" +
-      "eter\022$\n\014cycle_period\030\010 \001(\0132\016.jd3.Paramet" +
-      "er\022$\n\014cycle_factor\030\t \001(\0132\016.jd3.Parameter" +
-      "\"\215\001\n\021DiffuseLikelihood\022\022\n\nlikelihood\030\001 \001" +
-      "(\001\022\014\n\004nobs\030\002 \001(\005\022\020\n\010ndiffuse\030\003 \001(\005\022\016\n\006ss" +
-      "qerr\030\004 \001(\001\022\014\n\004ldet\030\005 \001(\001\022\023\n\013dcorrection\030" +
-      "\006 \001(\001\022\021\n\tresiduals\030\007 \003(\001\"\372\006\n\003Bsm\022)\n\013desc" +
+      "ng.proto\032\010sa.proto\"\233\002\n\007BsmSpec\022\035\n\005noise\030" +
+      "\001 \001(\0132\016.jd3.Parameter\022\035\n\005level\030\002 \001(\0132\016.j" +
+      "d3.Parameter\022\035\n\005slope\030\003 \001(\0132\016.jd3.Parame" +
+      "ter\022\034\n\004seas\030\004 \001(\0132\016.jd3.Parameter\022*\n\016sea" +
+      "sonal_model\030\005 \001(\0162\022.sts.SeasonalModel\022\035\n" +
+      "\005cycle\030\006 \001(\0132\016.jd3.Parameter\022$\n\014cycle_pe" +
+      "riod\030\007 \001(\0132\016.jd3.Parameter\022$\n\014cycle_fact" +
+      "or\030\010 \001(\0132\016.jd3.Parameter\"\204\007\n\003Bsm\022)\n\013desc" +
       "ription\030\001 \001(\0132\024.sts.Bsm.Description\022\'\n\ne" +
       "stimation\030\002 \001(\0132\023.sts.Bsm.Estimation\022\'\n\n" +
       "components\030\003 \001(\0132\023.sts.Bsm.Components\022\"\n" +
@@ -9948,24 +8829,24 @@ public final class StsProtos {
       "ata\022\013\n\003log\030\002 \001(\010\0220\n\rpreadjustment\030\003 \001(\0162" +
       "\031.modelling.LengthOfPeriod\0220\n\tvariables\030" +
       "\004 \003(\0132\035.modelling.RegressionVariable\022\031\n\003" +
-      "bsm\030\005 \001(\0132\014.sts.BsmSpec\032\372\001\n\nEstimation\022\t" +
+      "bsm\030\005 \001(\0132\014.sts.BsmSpec\032\204\002\n\nEstimation\022\t" +
       "\n\001y\030\001 \003(\001\022\026\n\001x\030\002 \001(\0132\013.jd3.Matrix\022\t\n\001b\030\003" +
       " \003(\001\022 \n\013bcovariance\030\004 \001(\0132\013.jd3.Matrix\022-" +
       "\n\nparameters\030\005 \001(\0132\031.jd3.ParametersEstim" +
-      "ation\022*\n\nlikelihood\030\006 \001(\0132\026.sts.DiffuseL" +
-      "ikelihood\022\021\n\tresiduals\030\007 \003(\001\022.\n\010missings" +
-      "\030\010 \003(\0132\034.modelling.MissingEstimation\032\356\001\n" +
-      "\nComponents\022$\n\006series\030\n \001(\0132\024.modelling." +
-      "Component\022#\n\005level\030\013 \001(\0132\024.modelling.Com" +
-      "ponent\022#\n\005slope\030\014 \001(\0132\024.modelling.Compon" +
-      "ent\022#\n\005cycle\030\r \001(\0132\024.modelling.Component" +
-      "\022&\n\010seasonal\030\016 \001(\0132\024.modelling.Component" +
-      "\022#\n\005noise\030\017 \001(\0132\024.modelling.Component*p\n" +
-      "\rSeasonalModel\022\r\n\tSEAS_NONE\020\000\022\016\n\nSEAS_DU" +
-      "MMY\020\001\022\026\n\022SEAS_TRIGONOMETRIC\020\002\022\030\n\024SEAS_HA" +
-      "RRISONSTEVENS\020\003\022\016\n\nSEAS_CRUDE\020\004B$\n\027demet" +
-      "ra.sts.io.protobufB\tStsProtosP\000P\001P\002b\006pro" +
-      "to3"
+      "ation\0224\n\nlikelihood\030\006 \001(\0132 .jd3.DiffuseL" +
+      "ikelihoodStatistics\022\021\n\tresiduals\030\007 \003(\001\022." +
+      "\n\010missings\030\010 \003(\0132\034.modelling.MissingEsti" +
+      "mation\032\356\001\n\nComponents\022$\n\006series\030\n \001(\0132\024." +
+      "modelling.Component\022#\n\005level\030\013 \001(\0132\024.mod" +
+      "elling.Component\022#\n\005slope\030\014 \001(\0132\024.modell" +
+      "ing.Component\022#\n\005cycle\030\r \001(\0132\024.modelling" +
+      ".Component\022&\n\010seasonal\030\016 \001(\0132\024.modelling" +
+      ".Component\022#\n\005noise\030\017 \001(\0132\024.modelling.Co" +
+      "mponent*p\n\rSeasonalModel\022\r\n\tSEAS_NONE\020\000\022" +
+      "\016\n\nSEAS_DUMMY\020\001\022\026\n\022SEAS_TRIGONOMETRIC\020\002\022" +
+      "\030\n\024SEAS_HARRISONSTEVENS\020\003\022\016\n\nSEAS_CRUDE\020" +
+      "\004B$\n\027demetra.sts.io.protobufB\tStsProtosP" +
+      "\000P\001P\002b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -9979,15 +8860,9 @@ public final class StsProtos {
     internal_static_sts_BsmSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_sts_BsmSpec_descriptor,
-        new java.lang.String[] { "Period", "Noise", "Level", "Slope", "Seas", "SeasonalModel", "Cycle", "CyclePeriod", "CycleFactor", });
-    internal_static_sts_DiffuseLikelihood_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_sts_DiffuseLikelihood_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_sts_DiffuseLikelihood_descriptor,
-        new java.lang.String[] { "Likelihood", "Nobs", "Ndiffuse", "Ssqerr", "Ldet", "Dcorrection", "Residuals", });
+        new java.lang.String[] { "Noise", "Level", "Slope", "Seas", "SeasonalModel", "Cycle", "CyclePeriod", "CycleFactor", });
     internal_static_sts_Bsm_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(1);
     internal_static_sts_Bsm_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_sts_Bsm_descriptor,

@@ -30,8 +30,8 @@ import jdplus.math.matrices.Matrix;
  */
 @Development(status = Development.Status.Release)
 @Immutable
-final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentratedLikelihood{
-    
+final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentratedLikelihood {
+
     private final double ll, ssqerr, ldet, lddet;
     private final int nobs, nd;
     private final double[] res;
@@ -171,8 +171,8 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
                 }
             }
         }
-        double[] nb = null;
-        Matrix nbvar = null;
+        double[] nb = b;
+        Matrix nbvar = bvar;
         if (b != null) {
             int nx = b.length;
             if (xfactor != null) {
@@ -194,9 +194,7 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
                 for (int i = 0; i < nx; ++i) {
                     nb[i] = b[i] / yfactor;
                 }
-            } else {
-                nb = b;
-            }
+            } 
         }
         double nldet = ldet;
         if (!scalingFactor) {
@@ -224,5 +222,5 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
         builder.append("dcorr=").append(this.diffuseCorrection()).append(System.lineSeparator());
         return builder.toString();
     }
-    
+
 }

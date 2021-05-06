@@ -35,8 +35,10 @@ import jdplus.sarima.estimation.SarimaMapping;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
+import demetra.likelihood.DiffuseLikelihoodStatistics;
 import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import demetra.likelihood.LikelihoodStatistics;
+import demetra.toolkit.extractors.DiffuseLikelihoodStatisticsExtractor;
 import jdplus.math.matrices.Matrix;
 import jdplus.modelling.ApiUtility;
 import jdplus.ssf.univariate.Ssf;
@@ -65,8 +67,8 @@ public class TimeVaryingRegression {
         Matrix coefficients;
         Matrix coefficientsStde;
         SarimaModel arima0, arima;
-        LikelihoodStatistics ll0;
-        LikelihoodStatistics ll;
+        DiffuseLikelihoodStatistics ll0;
+        DiffuseLikelihoodStatistics ll;
         double nvar;
 
         private static final String ARIMA0 = "arima0", LL0 = "likelihood0",
@@ -76,11 +78,11 @@ public class TimeVaryingRegression {
 
         static {
 //            MAPPING.delegate(ARIMA0,SarimaExtractor.getMapping(), r ->  ApiUtility.toApi(r.getArima0(), null));
-            MAPPING.delegate(LL0, LikelihoodStatisticsExtractor.getMapping(), r -> r.getLl0());
+            MAPPING.delegate(LL0, DiffuseLikelihoodStatisticsExtractor.getMapping(), r -> r.getLl0());
 //            MAPPING.delegate(ARIMA, SarimaExtractor.getMapping(), r -> ApiUtility.toApi(r.getArima(), null));
-            MAPPING.delegate(LL, LikelihoodStatisticsExtractor.getMapping(), r -> r.getLl());
-            MAPPING.set("aic0", Double.class, r -> r.getLl0().getAIC());
-            MAPPING.set("aic", Double.class, r -> r.getLl().getAIC());
+            MAPPING.delegate(LL, DiffuseLikelihoodStatisticsExtractor.getMapping(), r -> r.getLl());
+            MAPPING.set("aic0", Double.class, r -> r.getLl0().aic());
+            MAPPING.set("aic", Double.class, r -> r.getLl().aic());
             MAPPING.set("tdvar", Double.class, r -> r.getNvar());
             MAPPING.set(COEFF, Matrix.class, r -> r.getCoefficients());
             MAPPING.set(STDCOEFF, Matrix.class, r -> r.getCoefficientsStde());

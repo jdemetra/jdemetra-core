@@ -12695,6 +12695,1352 @@ public final class ToolkitProtos {
 
   }
 
+  public interface DiffuseLikelihoodStatisticsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:jd3.DiffuseLikelihoodStatistics)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>int32 nobs = 1;</code>
+     * @return The nobs.
+     */
+    int getNobs();
+
+    /**
+     * <code>int32 ndiffuse = 2;</code>
+     * @return The ndiffuse.
+     */
+    int getNdiffuse();
+
+    /**
+     * <code>int32 nparams = 3;</code>
+     * @return The nparams.
+     */
+    int getNparams();
+
+    /**
+     * <code>int32 degrees_of_freedom = 4;</code>
+     * @return The degreesOfFreedom.
+     */
+    int getDegreesOfFreedom();
+
+    /**
+     * <code>double log_likelihood = 5;</code>
+     * @return The logLikelihood.
+     */
+    double getLogLikelihood();
+
+    /**
+     * <code>double adjusted_log_likelihood = 6;</code>
+     * @return The adjustedLogLikelihood.
+     */
+    double getAdjustedLogLikelihood();
+
+    /**
+     * <code>double aic = 7;</code>
+     * @return The aic.
+     */
+    double getAic();
+
+    /**
+     * <code>double aicc = 8;</code>
+     * @return The aicc.
+     */
+    double getAicc();
+
+    /**
+     * <code>double bic = 9;</code>
+     * @return The bic.
+     */
+    double getBic();
+
+    /**
+     * <code>double ssq = 13;</code>
+     * @return The ssq.
+     */
+    double getSsq();
+
+    /**
+     * <code>double ssqerr = 14;</code>
+     * @return The ssqerr.
+     */
+    double getSsqerr();
+
+    /**
+     * <code>double ldet = 15;</code>
+     * @return The ldet.
+     */
+    double getLdet();
+
+    /**
+     * <code>double dcorrection = 16;</code>
+     * @return The dcorrection.
+     */
+    double getDcorrection();
+  }
+  /**
+   * Protobuf type {@code jd3.DiffuseLikelihoodStatistics}
+   */
+  public static final class DiffuseLikelihoodStatistics extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:jd3.DiffuseLikelihoodStatistics)
+      DiffuseLikelihoodStatisticsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use DiffuseLikelihoodStatistics.newBuilder() to construct.
+    private DiffuseLikelihoodStatistics(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private DiffuseLikelihoodStatistics() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new DiffuseLikelihoodStatistics();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private DiffuseLikelihoodStatistics(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              nobs_ = input.readInt32();
+              break;
+            }
+            case 16: {
+
+              ndiffuse_ = input.readInt32();
+              break;
+            }
+            case 24: {
+
+              nparams_ = input.readInt32();
+              break;
+            }
+            case 32: {
+
+              degreesOfFreedom_ = input.readInt32();
+              break;
+            }
+            case 41: {
+
+              logLikelihood_ = input.readDouble();
+              break;
+            }
+            case 49: {
+
+              adjustedLogLikelihood_ = input.readDouble();
+              break;
+            }
+            case 57: {
+
+              aic_ = input.readDouble();
+              break;
+            }
+            case 65: {
+
+              aicc_ = input.readDouble();
+              break;
+            }
+            case 73: {
+
+              bic_ = input.readDouble();
+              break;
+            }
+            case 105: {
+
+              ssq_ = input.readDouble();
+              break;
+            }
+            case 113: {
+
+              ssqerr_ = input.readDouble();
+              break;
+            }
+            case 121: {
+
+              ldet_ = input.readDouble();
+              break;
+            }
+            case 129: {
+
+              dcorrection_ = input.readDouble();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_DiffuseLikelihoodStatistics_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_DiffuseLikelihoodStatistics_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.class, demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.Builder.class);
+    }
+
+    public static final int NOBS_FIELD_NUMBER = 1;
+    private int nobs_;
+    /**
+     * <code>int32 nobs = 1;</code>
+     * @return The nobs.
+     */
+    @java.lang.Override
+    public int getNobs() {
+      return nobs_;
+    }
+
+    public static final int NDIFFUSE_FIELD_NUMBER = 2;
+    private int ndiffuse_;
+    /**
+     * <code>int32 ndiffuse = 2;</code>
+     * @return The ndiffuse.
+     */
+    @java.lang.Override
+    public int getNdiffuse() {
+      return ndiffuse_;
+    }
+
+    public static final int NPARAMS_FIELD_NUMBER = 3;
+    private int nparams_;
+    /**
+     * <code>int32 nparams = 3;</code>
+     * @return The nparams.
+     */
+    @java.lang.Override
+    public int getNparams() {
+      return nparams_;
+    }
+
+    public static final int DEGREES_OF_FREEDOM_FIELD_NUMBER = 4;
+    private int degreesOfFreedom_;
+    /**
+     * <code>int32 degrees_of_freedom = 4;</code>
+     * @return The degreesOfFreedom.
+     */
+    @java.lang.Override
+    public int getDegreesOfFreedom() {
+      return degreesOfFreedom_;
+    }
+
+    public static final int LOG_LIKELIHOOD_FIELD_NUMBER = 5;
+    private double logLikelihood_;
+    /**
+     * <code>double log_likelihood = 5;</code>
+     * @return The logLikelihood.
+     */
+    @java.lang.Override
+    public double getLogLikelihood() {
+      return logLikelihood_;
+    }
+
+    public static final int ADJUSTED_LOG_LIKELIHOOD_FIELD_NUMBER = 6;
+    private double adjustedLogLikelihood_;
+    /**
+     * <code>double adjusted_log_likelihood = 6;</code>
+     * @return The adjustedLogLikelihood.
+     */
+    @java.lang.Override
+    public double getAdjustedLogLikelihood() {
+      return adjustedLogLikelihood_;
+    }
+
+    public static final int AIC_FIELD_NUMBER = 7;
+    private double aic_;
+    /**
+     * <code>double aic = 7;</code>
+     * @return The aic.
+     */
+    @java.lang.Override
+    public double getAic() {
+      return aic_;
+    }
+
+    public static final int AICC_FIELD_NUMBER = 8;
+    private double aicc_;
+    /**
+     * <code>double aicc = 8;</code>
+     * @return The aicc.
+     */
+    @java.lang.Override
+    public double getAicc() {
+      return aicc_;
+    }
+
+    public static final int BIC_FIELD_NUMBER = 9;
+    private double bic_;
+    /**
+     * <code>double bic = 9;</code>
+     * @return The bic.
+     */
+    @java.lang.Override
+    public double getBic() {
+      return bic_;
+    }
+
+    public static final int SSQ_FIELD_NUMBER = 13;
+    private double ssq_;
+    /**
+     * <code>double ssq = 13;</code>
+     * @return The ssq.
+     */
+    @java.lang.Override
+    public double getSsq() {
+      return ssq_;
+    }
+
+    public static final int SSQERR_FIELD_NUMBER = 14;
+    private double ssqerr_;
+    /**
+     * <code>double ssqerr = 14;</code>
+     * @return The ssqerr.
+     */
+    @java.lang.Override
+    public double getSsqerr() {
+      return ssqerr_;
+    }
+
+    public static final int LDET_FIELD_NUMBER = 15;
+    private double ldet_;
+    /**
+     * <code>double ldet = 15;</code>
+     * @return The ldet.
+     */
+    @java.lang.Override
+    public double getLdet() {
+      return ldet_;
+    }
+
+    public static final int DCORRECTION_FIELD_NUMBER = 16;
+    private double dcorrection_;
+    /**
+     * <code>double dcorrection = 16;</code>
+     * @return The dcorrection.
+     */
+    @java.lang.Override
+    public double getDcorrection() {
+      return dcorrection_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (nobs_ != 0) {
+        output.writeInt32(1, nobs_);
+      }
+      if (ndiffuse_ != 0) {
+        output.writeInt32(2, ndiffuse_);
+      }
+      if (nparams_ != 0) {
+        output.writeInt32(3, nparams_);
+      }
+      if (degreesOfFreedom_ != 0) {
+        output.writeInt32(4, degreesOfFreedom_);
+      }
+      if (logLikelihood_ != 0D) {
+        output.writeDouble(5, logLikelihood_);
+      }
+      if (adjustedLogLikelihood_ != 0D) {
+        output.writeDouble(6, adjustedLogLikelihood_);
+      }
+      if (aic_ != 0D) {
+        output.writeDouble(7, aic_);
+      }
+      if (aicc_ != 0D) {
+        output.writeDouble(8, aicc_);
+      }
+      if (bic_ != 0D) {
+        output.writeDouble(9, bic_);
+      }
+      if (ssq_ != 0D) {
+        output.writeDouble(13, ssq_);
+      }
+      if (ssqerr_ != 0D) {
+        output.writeDouble(14, ssqerr_);
+      }
+      if (ldet_ != 0D) {
+        output.writeDouble(15, ldet_);
+      }
+      if (dcorrection_ != 0D) {
+        output.writeDouble(16, dcorrection_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (nobs_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, nobs_);
+      }
+      if (ndiffuse_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, ndiffuse_);
+      }
+      if (nparams_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, nparams_);
+      }
+      if (degreesOfFreedom_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, degreesOfFreedom_);
+      }
+      if (logLikelihood_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(5, logLikelihood_);
+      }
+      if (adjustedLogLikelihood_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(6, adjustedLogLikelihood_);
+      }
+      if (aic_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(7, aic_);
+      }
+      if (aicc_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(8, aicc_);
+      }
+      if (bic_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(9, bic_);
+      }
+      if (ssq_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(13, ssq_);
+      }
+      if (ssqerr_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(14, ssqerr_);
+      }
+      if (ldet_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(15, ldet_);
+      }
+      if (dcorrection_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(16, dcorrection_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics)) {
+        return super.equals(obj);
+      }
+      demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics other = (demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics) obj;
+
+      if (getNobs()
+          != other.getNobs()) return false;
+      if (getNdiffuse()
+          != other.getNdiffuse()) return false;
+      if (getNparams()
+          != other.getNparams()) return false;
+      if (getDegreesOfFreedom()
+          != other.getDegreesOfFreedom()) return false;
+      if (java.lang.Double.doubleToLongBits(getLogLikelihood())
+          != java.lang.Double.doubleToLongBits(
+              other.getLogLikelihood())) return false;
+      if (java.lang.Double.doubleToLongBits(getAdjustedLogLikelihood())
+          != java.lang.Double.doubleToLongBits(
+              other.getAdjustedLogLikelihood())) return false;
+      if (java.lang.Double.doubleToLongBits(getAic())
+          != java.lang.Double.doubleToLongBits(
+              other.getAic())) return false;
+      if (java.lang.Double.doubleToLongBits(getAicc())
+          != java.lang.Double.doubleToLongBits(
+              other.getAicc())) return false;
+      if (java.lang.Double.doubleToLongBits(getBic())
+          != java.lang.Double.doubleToLongBits(
+              other.getBic())) return false;
+      if (java.lang.Double.doubleToLongBits(getSsq())
+          != java.lang.Double.doubleToLongBits(
+              other.getSsq())) return false;
+      if (java.lang.Double.doubleToLongBits(getSsqerr())
+          != java.lang.Double.doubleToLongBits(
+              other.getSsqerr())) return false;
+      if (java.lang.Double.doubleToLongBits(getLdet())
+          != java.lang.Double.doubleToLongBits(
+              other.getLdet())) return false;
+      if (java.lang.Double.doubleToLongBits(getDcorrection())
+          != java.lang.Double.doubleToLongBits(
+              other.getDcorrection())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + NOBS_FIELD_NUMBER;
+      hash = (53 * hash) + getNobs();
+      hash = (37 * hash) + NDIFFUSE_FIELD_NUMBER;
+      hash = (53 * hash) + getNdiffuse();
+      hash = (37 * hash) + NPARAMS_FIELD_NUMBER;
+      hash = (53 * hash) + getNparams();
+      hash = (37 * hash) + DEGREES_OF_FREEDOM_FIELD_NUMBER;
+      hash = (53 * hash) + getDegreesOfFreedom();
+      hash = (37 * hash) + LOG_LIKELIHOOD_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getLogLikelihood()));
+      hash = (37 * hash) + ADJUSTED_LOG_LIKELIHOOD_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getAdjustedLogLikelihood()));
+      hash = (37 * hash) + AIC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getAic()));
+      hash = (37 * hash) + AICC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getAicc()));
+      hash = (37 * hash) + BIC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBic()));
+      hash = (37 * hash) + SSQ_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getSsq()));
+      hash = (37 * hash) + SSQERR_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getSsqerr()));
+      hash = (37 * hash) + LDET_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getLdet()));
+      hash = (37 * hash) + DCORRECTION_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getDcorrection()));
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code jd3.DiffuseLikelihoodStatistics}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:jd3.DiffuseLikelihoodStatistics)
+        demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatisticsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_DiffuseLikelihoodStatistics_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_DiffuseLikelihoodStatistics_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.class, demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.Builder.class);
+      }
+
+      // Construct using demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        nobs_ = 0;
+
+        ndiffuse_ = 0;
+
+        nparams_ = 0;
+
+        degreesOfFreedom_ = 0;
+
+        logLikelihood_ = 0D;
+
+        adjustedLogLikelihood_ = 0D;
+
+        aic_ = 0D;
+
+        aicc_ = 0D;
+
+        bic_ = 0D;
+
+        ssq_ = 0D;
+
+        ssqerr_ = 0D;
+
+        ldet_ = 0D;
+
+        dcorrection_ = 0D;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_DiffuseLikelihoodStatistics_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics getDefaultInstanceForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics build() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics buildPartial() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics result = new demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics(this);
+        result.nobs_ = nobs_;
+        result.ndiffuse_ = ndiffuse_;
+        result.nparams_ = nparams_;
+        result.degreesOfFreedom_ = degreesOfFreedom_;
+        result.logLikelihood_ = logLikelihood_;
+        result.adjustedLogLikelihood_ = adjustedLogLikelihood_;
+        result.aic_ = aic_;
+        result.aicc_ = aicc_;
+        result.bic_ = bic_;
+        result.ssq_ = ssq_;
+        result.ssqerr_ = ssqerr_;
+        result.ldet_ = ldet_;
+        result.dcorrection_ = dcorrection_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics) {
+          return mergeFrom((demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics other) {
+        if (other == demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics.getDefaultInstance()) return this;
+        if (other.getNobs() != 0) {
+          setNobs(other.getNobs());
+        }
+        if (other.getNdiffuse() != 0) {
+          setNdiffuse(other.getNdiffuse());
+        }
+        if (other.getNparams() != 0) {
+          setNparams(other.getNparams());
+        }
+        if (other.getDegreesOfFreedom() != 0) {
+          setDegreesOfFreedom(other.getDegreesOfFreedom());
+        }
+        if (other.getLogLikelihood() != 0D) {
+          setLogLikelihood(other.getLogLikelihood());
+        }
+        if (other.getAdjustedLogLikelihood() != 0D) {
+          setAdjustedLogLikelihood(other.getAdjustedLogLikelihood());
+        }
+        if (other.getAic() != 0D) {
+          setAic(other.getAic());
+        }
+        if (other.getAicc() != 0D) {
+          setAicc(other.getAicc());
+        }
+        if (other.getBic() != 0D) {
+          setBic(other.getBic());
+        }
+        if (other.getSsq() != 0D) {
+          setSsq(other.getSsq());
+        }
+        if (other.getSsqerr() != 0D) {
+          setSsqerr(other.getSsqerr());
+        }
+        if (other.getLdet() != 0D) {
+          setLdet(other.getLdet());
+        }
+        if (other.getDcorrection() != 0D) {
+          setDcorrection(other.getDcorrection());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int nobs_ ;
+      /**
+       * <code>int32 nobs = 1;</code>
+       * @return The nobs.
+       */
+      @java.lang.Override
+      public int getNobs() {
+        return nobs_;
+      }
+      /**
+       * <code>int32 nobs = 1;</code>
+       * @param value The nobs to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNobs(int value) {
+        
+        nobs_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 nobs = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNobs() {
+        
+        nobs_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int ndiffuse_ ;
+      /**
+       * <code>int32 ndiffuse = 2;</code>
+       * @return The ndiffuse.
+       */
+      @java.lang.Override
+      public int getNdiffuse() {
+        return ndiffuse_;
+      }
+      /**
+       * <code>int32 ndiffuse = 2;</code>
+       * @param value The ndiffuse to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNdiffuse(int value) {
+        
+        ndiffuse_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 ndiffuse = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNdiffuse() {
+        
+        ndiffuse_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int nparams_ ;
+      /**
+       * <code>int32 nparams = 3;</code>
+       * @return The nparams.
+       */
+      @java.lang.Override
+      public int getNparams() {
+        return nparams_;
+      }
+      /**
+       * <code>int32 nparams = 3;</code>
+       * @param value The nparams to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNparams(int value) {
+        
+        nparams_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 nparams = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNparams() {
+        
+        nparams_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int degreesOfFreedom_ ;
+      /**
+       * <code>int32 degrees_of_freedom = 4;</code>
+       * @return The degreesOfFreedom.
+       */
+      @java.lang.Override
+      public int getDegreesOfFreedom() {
+        return degreesOfFreedom_;
+      }
+      /**
+       * <code>int32 degrees_of_freedom = 4;</code>
+       * @param value The degreesOfFreedom to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDegreesOfFreedom(int value) {
+        
+        degreesOfFreedom_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 degrees_of_freedom = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDegreesOfFreedom() {
+        
+        degreesOfFreedom_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private double logLikelihood_ ;
+      /**
+       * <code>double log_likelihood = 5;</code>
+       * @return The logLikelihood.
+       */
+      @java.lang.Override
+      public double getLogLikelihood() {
+        return logLikelihood_;
+      }
+      /**
+       * <code>double log_likelihood = 5;</code>
+       * @param value The logLikelihood to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLogLikelihood(double value) {
+        
+        logLikelihood_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double log_likelihood = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLogLikelihood() {
+        
+        logLikelihood_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double adjustedLogLikelihood_ ;
+      /**
+       * <code>double adjusted_log_likelihood = 6;</code>
+       * @return The adjustedLogLikelihood.
+       */
+      @java.lang.Override
+      public double getAdjustedLogLikelihood() {
+        return adjustedLogLikelihood_;
+      }
+      /**
+       * <code>double adjusted_log_likelihood = 6;</code>
+       * @param value The adjustedLogLikelihood to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAdjustedLogLikelihood(double value) {
+        
+        adjustedLogLikelihood_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double adjusted_log_likelihood = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAdjustedLogLikelihood() {
+        
+        adjustedLogLikelihood_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double aic_ ;
+      /**
+       * <code>double aic = 7;</code>
+       * @return The aic.
+       */
+      @java.lang.Override
+      public double getAic() {
+        return aic_;
+      }
+      /**
+       * <code>double aic = 7;</code>
+       * @param value The aic to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAic(double value) {
+        
+        aic_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double aic = 7;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAic() {
+        
+        aic_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double aicc_ ;
+      /**
+       * <code>double aicc = 8;</code>
+       * @return The aicc.
+       */
+      @java.lang.Override
+      public double getAicc() {
+        return aicc_;
+      }
+      /**
+       * <code>double aicc = 8;</code>
+       * @param value The aicc to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAicc(double value) {
+        
+        aicc_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double aicc = 8;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAicc() {
+        
+        aicc_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double bic_ ;
+      /**
+       * <code>double bic = 9;</code>
+       * @return The bic.
+       */
+      @java.lang.Override
+      public double getBic() {
+        return bic_;
+      }
+      /**
+       * <code>double bic = 9;</code>
+       * @param value The bic to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBic(double value) {
+        
+        bic_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double bic = 9;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBic() {
+        
+        bic_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double ssq_ ;
+      /**
+       * <code>double ssq = 13;</code>
+       * @return The ssq.
+       */
+      @java.lang.Override
+      public double getSsq() {
+        return ssq_;
+      }
+      /**
+       * <code>double ssq = 13;</code>
+       * @param value The ssq to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSsq(double value) {
+        
+        ssq_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double ssq = 13;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSsq() {
+        
+        ssq_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double ssqerr_ ;
+      /**
+       * <code>double ssqerr = 14;</code>
+       * @return The ssqerr.
+       */
+      @java.lang.Override
+      public double getSsqerr() {
+        return ssqerr_;
+      }
+      /**
+       * <code>double ssqerr = 14;</code>
+       * @param value The ssqerr to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSsqerr(double value) {
+        
+        ssqerr_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double ssqerr = 14;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSsqerr() {
+        
+        ssqerr_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double ldet_ ;
+      /**
+       * <code>double ldet = 15;</code>
+       * @return The ldet.
+       */
+      @java.lang.Override
+      public double getLdet() {
+        return ldet_;
+      }
+      /**
+       * <code>double ldet = 15;</code>
+       * @param value The ldet to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLdet(double value) {
+        
+        ldet_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double ldet = 15;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLdet() {
+        
+        ldet_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double dcorrection_ ;
+      /**
+       * <code>double dcorrection = 16;</code>
+       * @return The dcorrection.
+       */
+      @java.lang.Override
+      public double getDcorrection() {
+        return dcorrection_;
+      }
+      /**
+       * <code>double dcorrection = 16;</code>
+       * @param value The dcorrection to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDcorrection(double value) {
+        
+        dcorrection_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double dcorrection = 16;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDcorrection() {
+        
+        dcorrection_ = 0D;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:jd3.DiffuseLikelihoodStatistics)
+    }
+
+    // @@protoc_insertion_point(class_scope:jd3.DiffuseLikelihoodStatistics)
+    private static final demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics();
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<DiffuseLikelihoodStatistics>
+        PARSER = new com.google.protobuf.AbstractParser<DiffuseLikelihoodStatistics>() {
+      @java.lang.Override
+      public DiffuseLikelihoodStatistics parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new DiffuseLikelihoodStatistics(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<DiffuseLikelihoodStatistics> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<DiffuseLikelihoodStatistics> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.DiffuseLikelihoodStatistics getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface NIIDTestsOrBuilder extends
       // @@protoc_insertion_point(interface_extends:jd3.NIIDTests)
       com.google.protobuf.MessageOrBuilder {
@@ -31145,6 +32491,11 @@ public final class ToolkitProtos {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_jd3_LikelihoodStatistics_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_jd3_DiffuseLikelihoodStatistics_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_jd3_DiffuseLikelihoodStatistics_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_jd3_NIIDTests_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -31270,93 +32621,100 @@ public final class ToolkitProtos {
       "ikelihood\030\005 \001(\001\022\037\n\027adjusted_log_likeliho" +
       "od\030\006 \001(\001\022\013\n\003aic\030\007 \001(\001\022\014\n\004aicc\030\010 \001(\001\022\013\n\003b" +
       "ic\030\t \001(\001\022\014\n\004bicc\030\n \001(\001\022\014\n\004bic2\030\013 \001(\001\022\024\n\014" +
-      "hannan_quinn\030\014 \001(\001\022\013\n\003ssq\030\r \001(\001\"\212\005\n\tNIID" +
-      "Tests\022\"\n\004mean\030\001 \001(\0132\024.jd3.StatisticalTes" +
-      "t\022&\n\010skewness\030\002 \001(\0132\024.jd3.StatisticalTes" +
-      "t\022&\n\010kurtosis\030\003 \001(\0132\024.jd3.StatisticalTes" +
-      "t\022,\n\016doornik_hansen\030\004 \001(\0132\024.jd3.Statisti" +
-      "calTest\022\'\n\tljung_box\030\005 \001(\0132\024.jd3.Statist" +
-      "icalTest\022(\n\nbox_pierce\030\006 \001(\0132\024.jd3.Stati" +
-      "sticalTest\0220\n\022seasonal_ljung_box\030\007 \001(\0132\024" +
-      ".jd3.StatisticalTest\0221\n\023seasonal_box_pie" +
-      "rce\030\010 \001(\0132\024.jd3.StatisticalTest\022)\n\013runs_" +
-      "number\030\t \001(\0132\024.jd3.StatisticalTest\022)\n\013ru" +
-      "ns_length\030\n \001(\0132\024.jd3.StatisticalTest\0221\n" +
-      "\023up_down_runs_number\030\013 \001(\0132\024.jd3.Statist" +
-      "icalTest\0221\n\023up_down_runs_length\030\014 \001(\0132\024." +
-      "jd3.StatisticalTest\0222\n\024ljung_box_on_squa" +
-      "res\030\r \001(\0132\024.jd3.StatisticalTest\0223\n\025box_p" +
-      "ierce_on_squares\030\016 \001(\0132\024.jd3.Statistical" +
-      "Test\"B\n\016ValidityPeriod\022\030\n\005start\030\001 \001(\0132\t." +
-      "jd3.Date\022\026\n\003end\030\002 \001(\0132\t.jd3.Date\"]\n\010Fixe" +
-      "dDay\022\r\n\005month\030\001 \001(\005\022\013\n\003day\030\002 \001(\005\022\016\n\006weig" +
-      "ht\030\003 \001(\001\022%\n\010validity\030\004 \001(\0132\023.jd3.Validit" +
-      "yPeriod\"i\n\020EasterRelatedDay\022\016\n\006offset\030\001 " +
-      "\001(\005\022\016\n\006julian\030\002 \001(\010\022\016\n\006weight\030\003 \001(\001\022%\n\010v" +
-      "alidity\030\004 \001(\0132\023.jd3.ValidityPeriod\"\177\n\023Pr" +
-      "especifiedHoliday\022!\n\005event\030\001 \001(\0162\022.jd3.C" +
-      "alendarEvent\022\016\n\006offset\030\002 \001(\005\022\016\n\006weight\030\003" +
-      " \001(\001\022%\n\010validity\030\004 \001(\0132\023.jd3.ValidityPer" +
-      "iod\"w\n\014FixedWeekDay\022\r\n\005month\030\001 \001(\005\022\020\n\010po" +
-      "sition\030\002 \001(\005\022\017\n\007weekday\030\003 \001(\005\022\016\n\006weight\030" +
-      "\004 \001(\001\022%\n\010validity\030\005 \001(\0132\023.jd3.ValidityPe" +
-      "riod\"\253\001\n\022CalendarDefinition\022!\n\010calendar\030" +
-      "\001 \001(\0132\r.jd3.CalendarH\000\0222\n\021weighted_calen" +
-      "dar\030\002 \001(\0132\025.jd3.WeightedCalendarH\000\0220\n\020ch" +
-      "ained_calendar\030\003 \001(\0132\024.jd3.ChainedCalend" +
-      "arH\000B\014\n\ndefinition\"\306\001\n\010Calendar\022!\n\nfixed" +
-      "_days\030\001 \003(\0132\r.jd3.FixedDay\0222\n\023easter_rel" +
-      "ated_days\030\002 \003(\0132\025.jd3.EasterRelatedDay\022*" +
-      "\n\017fixed_week_days\030\003 \003(\0132\021.jd3.FixedWeekD" +
-      "ay\0227\n\025prespecified_holidays\030\004 \003(\0132\030.jd3." +
-      "PrespecifiedHoliday\"\200\001\n\020WeightedCalendar" +
-      "\022)\n\005items\030\001 \003(\0132\032.jd3.WeightedCalendar.I" +
-      "tem\032A\n\004Item\022)\n\010calendar\030\001 \001(\0132\027.jd3.Cale" +
-      "ndarDefinition\022\016\n\006weight\030\002 \001(\001\"\203\001\n\017Chain" +
-      "edCalendar\022*\n\tcalendar1\030\001 \001(\0132\027.jd3.Cale" +
-      "ndarDefinition\022*\n\tcalendar2\030\002 \001(\0132\027.jd3." +
-      "CalendarDefinition\022\030\n\005break\030\003 \001(\0132\t.jd3." +
-      "Date\"\216\002\n\020ModellingContext\0227\n\tcalendars\030\001" +
-      " \003(\0132$.jd3.ModellingContext.CalendarsEnt" +
-      "ry\0227\n\tvariables\030\002 \003(\0132$.jd3.ModellingCon" +
-      "text.VariablesEntry\032I\n\016CalendarsEntry\022\013\n" +
-      "\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.jd3.Calendar" +
-      "Definition:\0028\001\032=\n\016VariablesEntry\022\013\n\003key\030" +
-      "\001 \001(\t\022\032\n\005value\030\002 \001(\0132\013.jd3.TsData:\0028\001\"\320\001" +
-      "\n\020ProcessingDetail\022\031\n\002ts\030\001 \001(\0132\013.jd3.TsD" +
-      "ataH\000\022\035\n\005array\030\002 \001(\0132\014.jd3.DoublesH\000\022\035\n\006" +
-      "matrix\030\003 \001(\0132\013.jd3.MatrixH\000\022$\n\004test\030\004 \001(" +
-      "\0132\024.jd3.StatisticalTestH\000\022\021\n\007message\030\005 \001" +
-      "(\tH\000\022\020\n\006ivalue\030\006 \001(\005H\000\022\020\n\006dvalue\030\007 \001(\001H\000" +
-      "B\006\n\004data\"\216\001\n\025ProcessingInformation\022\014\n\004na" +
-      "me\030\001 \001(\t\022\016\n\006origin\030\002 \001(\t\022\013\n\003msg\030\003 \001(\t\022\"\n" +
-      "\004type\030\004 \001(\0162\024.jd3.InformationType\022&\n\007det" +
-      "ails\030\005 \003(\0132\025.jd3.ProcessingDetail\"9\n\016Pro" +
-      "cessingLogs\022\'\n\003log\030\001 \003(\0132\032.jd3.Processin" +
-      "gInformation*\215\001\n\rSelectionType\022\014\n\010SPAN_A" +
-      "LL\020\000\022\r\n\tSPAN_FROM\020\001\022\013\n\007SPAN_TO\020\002\022\020\n\014SPAN" +
-      "_BETWEEN\020\003\022\r\n\tSPAN_LAST\020\004\022\016\n\nSPAN_FIRST\020" +
-      "\005\022\022\n\016SPAN_EXCLUDING\020\006\022\r\n\tSPAN_NONE\020\007*\203\001\n" +
-      "\rParameterType\022\024\n\020PARAMETER_UNUSED\020\000\022\027\n\023" +
-      "PARAMETER_UNDEFINED\020\001\022\023\n\017PARAMETER_FIXED" +
-      "\020\002\022\025\n\021PARAMETER_INITIAL\020\003\022\027\n\023PARAMETER_E" +
-      "STIMATED\020\004*\243\004\n\rCalendarEvent\022\027\n\023HOLIDAY_" +
-      "UNSPECIFIED\020\000\022\023\n\017HOLIDAY_NEWYEAR\020\001\022\030\n\024HO" +
-      "LIDAY_SHROVEMONDAY\020\002\022\031\n\025HOLIDAY_SHROVETU" +
-      "ESDAY\020\003\022\030\n\024HOLIDAY_ASHWEDNESDAY\020\004\022\022\n\016HOL" +
-      "IDAY_EASTER\020\005\022\030\n\024HOLIDAY_JULIANEASTER\020\006\022" +
-      "\032\n\026HOLIDAY_MAUNDYTHURSDAY\020\007\022\026\n\022HOLIDAY_G" +
-      "OODFRIDAY\020\010\022\030\n\024HOLIDAY_EASTERMONDAY\020\t\022\025\n" +
-      "\021HOLIDAY_ASCENSION\020\n\022\025\n\021HOLIDAY_PENTECOS" +
-      "T\020\013\022\031\n\025HOLIDAY_CORPUSCHRISTI\020\014\022\026\n\022HOLIDA" +
-      "Y_WHITMONDAY\020\r\022\022\n\016HOLIDAY_MAYDAY\020\016\022\026\n\022HO" +
-      "LIDAY_ASSUMPTION\020\017\022\024\n\020HOLIDAY_LABORDAY\020\020" +
-      "\022\025\n\021HOLIDAY_HALLOWEEN\020\021\022\027\n\023HOLIDAY_ALLSA" +
-      "INTDAY\020\022\022\025\n\021HOLIDAY_ARMISTICE\020\023\022\030\n\024HOLID" +
-      "AY_THANKSGIVING\020\024\022\025\n\021HOLIDAY_CHRISTMAS\020\025" +
-      "*3\n\017InformationType\022\010\n\004Info\020\000\022\013\n\007Warning" +
-      "\020\001\022\t\n\005Error\020\002B,\n\033demetra.toolkit.io.prot" +
-      "obufB\rToolkitProtosb\006proto3"
+      "hannan_quinn\030\014 \001(\001\022\013\n\003ssq\030\r \001(\001\"\213\002\n\033Diff" +
+      "useLikelihoodStatistics\022\014\n\004nobs\030\001 \001(\005\022\020\n" +
+      "\010ndiffuse\030\002 \001(\005\022\017\n\007nparams\030\003 \001(\005\022\032\n\022degr" +
+      "ees_of_freedom\030\004 \001(\005\022\026\n\016log_likelihood\030\005" +
+      " \001(\001\022\037\n\027adjusted_log_likelihood\030\006 \001(\001\022\013\n" +
+      "\003aic\030\007 \001(\001\022\014\n\004aicc\030\010 \001(\001\022\013\n\003bic\030\t \001(\001\022\013\n" +
+      "\003ssq\030\r \001(\001\022\016\n\006ssqerr\030\016 \001(\001\022\014\n\004ldet\030\017 \001(\001" +
+      "\022\023\n\013dcorrection\030\020 \001(\001\"\212\005\n\tNIIDTests\022\"\n\004m" +
+      "ean\030\001 \001(\0132\024.jd3.StatisticalTest\022&\n\010skewn" +
+      "ess\030\002 \001(\0132\024.jd3.StatisticalTest\022&\n\010kurto" +
+      "sis\030\003 \001(\0132\024.jd3.StatisticalTest\022,\n\016doorn" +
+      "ik_hansen\030\004 \001(\0132\024.jd3.StatisticalTest\022\'\n" +
+      "\tljung_box\030\005 \001(\0132\024.jd3.StatisticalTest\022(" +
+      "\n\nbox_pierce\030\006 \001(\0132\024.jd3.StatisticalTest" +
+      "\0220\n\022seasonal_ljung_box\030\007 \001(\0132\024.jd3.Stati" +
+      "sticalTest\0221\n\023seasonal_box_pierce\030\010 \001(\0132" +
+      "\024.jd3.StatisticalTest\022)\n\013runs_number\030\t \001" +
+      "(\0132\024.jd3.StatisticalTest\022)\n\013runs_length\030" +
+      "\n \001(\0132\024.jd3.StatisticalTest\0221\n\023up_down_r" +
+      "uns_number\030\013 \001(\0132\024.jd3.StatisticalTest\0221" +
+      "\n\023up_down_runs_length\030\014 \001(\0132\024.jd3.Statis" +
+      "ticalTest\0222\n\024ljung_box_on_squares\030\r \001(\0132" +
+      "\024.jd3.StatisticalTest\0223\n\025box_pierce_on_s" +
+      "quares\030\016 \001(\0132\024.jd3.StatisticalTest\"B\n\016Va" +
+      "lidityPeriod\022\030\n\005start\030\001 \001(\0132\t.jd3.Date\022\026" +
+      "\n\003end\030\002 \001(\0132\t.jd3.Date\"]\n\010FixedDay\022\r\n\005mo" +
+      "nth\030\001 \001(\005\022\013\n\003day\030\002 \001(\005\022\016\n\006weight\030\003 \001(\001\022%" +
+      "\n\010validity\030\004 \001(\0132\023.jd3.ValidityPeriod\"i\n" +
+      "\020EasterRelatedDay\022\016\n\006offset\030\001 \001(\005\022\016\n\006jul" +
+      "ian\030\002 \001(\010\022\016\n\006weight\030\003 \001(\001\022%\n\010validity\030\004 " +
+      "\001(\0132\023.jd3.ValidityPeriod\"\177\n\023Prespecified" +
+      "Holiday\022!\n\005event\030\001 \001(\0162\022.jd3.CalendarEve" +
+      "nt\022\016\n\006offset\030\002 \001(\005\022\016\n\006weight\030\003 \001(\001\022%\n\010va" +
+      "lidity\030\004 \001(\0132\023.jd3.ValidityPeriod\"w\n\014Fix" +
+      "edWeekDay\022\r\n\005month\030\001 \001(\005\022\020\n\010position\030\002 \001" +
+      "(\005\022\017\n\007weekday\030\003 \001(\005\022\016\n\006weight\030\004 \001(\001\022%\n\010v" +
+      "alidity\030\005 \001(\0132\023.jd3.ValidityPeriod\"\253\001\n\022C" +
+      "alendarDefinition\022!\n\010calendar\030\001 \001(\0132\r.jd" +
+      "3.CalendarH\000\0222\n\021weighted_calendar\030\002 \001(\0132" +
+      "\025.jd3.WeightedCalendarH\000\0220\n\020chained_cale" +
+      "ndar\030\003 \001(\0132\024.jd3.ChainedCalendarH\000B\014\n\nde" +
+      "finition\"\306\001\n\010Calendar\022!\n\nfixed_days\030\001 \003(" +
+      "\0132\r.jd3.FixedDay\0222\n\023easter_related_days\030" +
+      "\002 \003(\0132\025.jd3.EasterRelatedDay\022*\n\017fixed_we" +
+      "ek_days\030\003 \003(\0132\021.jd3.FixedWeekDay\0227\n\025pres" +
+      "pecified_holidays\030\004 \003(\0132\030.jd3.Prespecifi" +
+      "edHoliday\"\200\001\n\020WeightedCalendar\022)\n\005items\030" +
+      "\001 \003(\0132\032.jd3.WeightedCalendar.Item\032A\n\004Ite" +
+      "m\022)\n\010calendar\030\001 \001(\0132\027.jd3.CalendarDefini" +
+      "tion\022\016\n\006weight\030\002 \001(\001\"\203\001\n\017ChainedCalendar" +
+      "\022*\n\tcalendar1\030\001 \001(\0132\027.jd3.CalendarDefini" +
+      "tion\022*\n\tcalendar2\030\002 \001(\0132\027.jd3.CalendarDe" +
+      "finition\022\030\n\005break\030\003 \001(\0132\t.jd3.Date\"\216\002\n\020M" +
+      "odellingContext\0227\n\tcalendars\030\001 \003(\0132$.jd3" +
+      ".ModellingContext.CalendarsEntry\0227\n\tvari" +
+      "ables\030\002 \003(\0132$.jd3.ModellingContext.Varia" +
+      "blesEntry\032I\n\016CalendarsEntry\022\013\n\003key\030\001 \001(\t" +
+      "\022&\n\005value\030\002 \001(\0132\027.jd3.CalendarDefinition" +
+      ":\0028\001\032=\n\016VariablesEntry\022\013\n\003key\030\001 \001(\t\022\032\n\005v" +
+      "alue\030\002 \001(\0132\013.jd3.TsData:\0028\001\"\320\001\n\020Processi" +
+      "ngDetail\022\031\n\002ts\030\001 \001(\0132\013.jd3.TsDataH\000\022\035\n\005a" +
+      "rray\030\002 \001(\0132\014.jd3.DoublesH\000\022\035\n\006matrix\030\003 \001" +
+      "(\0132\013.jd3.MatrixH\000\022$\n\004test\030\004 \001(\0132\024.jd3.St" +
+      "atisticalTestH\000\022\021\n\007message\030\005 \001(\tH\000\022\020\n\006iv" +
+      "alue\030\006 \001(\005H\000\022\020\n\006dvalue\030\007 \001(\001H\000B\006\n\004data\"\216" +
+      "\001\n\025ProcessingInformation\022\014\n\004name\030\001 \001(\t\022\016" +
+      "\n\006origin\030\002 \001(\t\022\013\n\003msg\030\003 \001(\t\022\"\n\004type\030\004 \001(" +
+      "\0162\024.jd3.InformationType\022&\n\007details\030\005 \003(\013" +
+      "2\025.jd3.ProcessingDetail\"9\n\016ProcessingLog" +
+      "s\022\'\n\003log\030\001 \003(\0132\032.jd3.ProcessingInformati" +
+      "on*\215\001\n\rSelectionType\022\014\n\010SPAN_ALL\020\000\022\r\n\tSP" +
+      "AN_FROM\020\001\022\013\n\007SPAN_TO\020\002\022\020\n\014SPAN_BETWEEN\020\003" +
+      "\022\r\n\tSPAN_LAST\020\004\022\016\n\nSPAN_FIRST\020\005\022\022\n\016SPAN_" +
+      "EXCLUDING\020\006\022\r\n\tSPAN_NONE\020\007*\203\001\n\rParameter" +
+      "Type\022\024\n\020PARAMETER_UNUSED\020\000\022\027\n\023PARAMETER_" +
+      "UNDEFINED\020\001\022\023\n\017PARAMETER_FIXED\020\002\022\025\n\021PARA" +
+      "METER_INITIAL\020\003\022\027\n\023PARAMETER_ESTIMATED\020\004" +
+      "*\243\004\n\rCalendarEvent\022\027\n\023HOLIDAY_UNSPECIFIE" +
+      "D\020\000\022\023\n\017HOLIDAY_NEWYEAR\020\001\022\030\n\024HOLIDAY_SHRO" +
+      "VEMONDAY\020\002\022\031\n\025HOLIDAY_SHROVETUESDAY\020\003\022\030\n" +
+      "\024HOLIDAY_ASHWEDNESDAY\020\004\022\022\n\016HOLIDAY_EASTE" +
+      "R\020\005\022\030\n\024HOLIDAY_JULIANEASTER\020\006\022\032\n\026HOLIDAY" +
+      "_MAUNDYTHURSDAY\020\007\022\026\n\022HOLIDAY_GOODFRIDAY\020" +
+      "\010\022\030\n\024HOLIDAY_EASTERMONDAY\020\t\022\025\n\021HOLIDAY_A" +
+      "SCENSION\020\n\022\025\n\021HOLIDAY_PENTECOST\020\013\022\031\n\025HOL" +
+      "IDAY_CORPUSCHRISTI\020\014\022\026\n\022HOLIDAY_WHITMOND" +
+      "AY\020\r\022\022\n\016HOLIDAY_MAYDAY\020\016\022\026\n\022HOLIDAY_ASSU" +
+      "MPTION\020\017\022\024\n\020HOLIDAY_LABORDAY\020\020\022\025\n\021HOLIDA" +
+      "Y_HALLOWEEN\020\021\022\027\n\023HOLIDAY_ALLSAINTDAY\020\022\022\025" +
+      "\n\021HOLIDAY_ARMISTICE\020\023\022\030\n\024HOLIDAY_THANKSG" +
+      "IVING\020\024\022\025\n\021HOLIDAY_CHRISTMAS\020\025*3\n\017Inform" +
+      "ationType\022\010\n\004Info\020\000\022\013\n\007Warning\020\001\022\t\n\005Erro" +
+      "r\020\002B,\n\033demetra.toolkit.io.protobufB\rTool" +
+      "kitProtosb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -31440,56 +32798,62 @@ public final class ToolkitProtos {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_LikelihoodStatistics_descriptor,
         new java.lang.String[] { "Nobs", "Neffectiveobs", "Nparams", "DegreesOfFreedom", "LogLikelihood", "AdjustedLogLikelihood", "Aic", "Aicc", "Bic", "Bicc", "Bic2", "HannanQuinn", "Ssq", });
-    internal_static_jd3_NIIDTests_descriptor =
+    internal_static_jd3_DiffuseLikelihoodStatistics_descriptor =
       getDescriptor().getMessageTypes().get(13);
+    internal_static_jd3_DiffuseLikelihoodStatistics_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_jd3_DiffuseLikelihoodStatistics_descriptor,
+        new java.lang.String[] { "Nobs", "Ndiffuse", "Nparams", "DegreesOfFreedom", "LogLikelihood", "AdjustedLogLikelihood", "Aic", "Aicc", "Bic", "Ssq", "Ssqerr", "Ldet", "Dcorrection", });
+    internal_static_jd3_NIIDTests_descriptor =
+      getDescriptor().getMessageTypes().get(14);
     internal_static_jd3_NIIDTests_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_NIIDTests_descriptor,
         new java.lang.String[] { "Mean", "Skewness", "Kurtosis", "DoornikHansen", "LjungBox", "BoxPierce", "SeasonalLjungBox", "SeasonalBoxPierce", "RunsNumber", "RunsLength", "UpDownRunsNumber", "UpDownRunsLength", "LjungBoxOnSquares", "BoxPierceOnSquares", });
     internal_static_jd3_ValidityPeriod_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_jd3_ValidityPeriod_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ValidityPeriod_descriptor,
         new java.lang.String[] { "Start", "End", });
     internal_static_jd3_FixedDay_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_jd3_FixedDay_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_FixedDay_descriptor,
         new java.lang.String[] { "Month", "Day", "Weight", "Validity", });
     internal_static_jd3_EasterRelatedDay_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_jd3_EasterRelatedDay_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_EasterRelatedDay_descriptor,
         new java.lang.String[] { "Offset", "Julian", "Weight", "Validity", });
     internal_static_jd3_PrespecifiedHoliday_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_jd3_PrespecifiedHoliday_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_PrespecifiedHoliday_descriptor,
         new java.lang.String[] { "Event", "Offset", "Weight", "Validity", });
     internal_static_jd3_FixedWeekDay_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_jd3_FixedWeekDay_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_FixedWeekDay_descriptor,
         new java.lang.String[] { "Month", "Position", "Weekday", "Weight", "Validity", });
     internal_static_jd3_CalendarDefinition_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_jd3_CalendarDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_CalendarDefinition_descriptor,
         new java.lang.String[] { "Calendar", "WeightedCalendar", "ChainedCalendar", "Definition", });
     internal_static_jd3_Calendar_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_jd3_Calendar_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_Calendar_descriptor,
         new java.lang.String[] { "FixedDays", "EasterRelatedDays", "FixedWeekDays", "PrespecifiedHolidays", });
     internal_static_jd3_WeightedCalendar_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_jd3_WeightedCalendar_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_WeightedCalendar_descriptor,
@@ -31501,13 +32865,13 @@ public final class ToolkitProtos {
         internal_static_jd3_WeightedCalendar_Item_descriptor,
         new java.lang.String[] { "Calendar", "Weight", });
     internal_static_jd3_ChainedCalendar_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_jd3_ChainedCalendar_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ChainedCalendar_descriptor,
         new java.lang.String[] { "Calendar1", "Calendar2", "Break", });
     internal_static_jd3_ModellingContext_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_jd3_ModellingContext_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ModellingContext_descriptor,
@@ -31525,19 +32889,19 @@ public final class ToolkitProtos {
         internal_static_jd3_ModellingContext_VariablesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_jd3_ProcessingDetail_descriptor =
-      getDescriptor().getMessageTypes().get(24);
+      getDescriptor().getMessageTypes().get(25);
     internal_static_jd3_ProcessingDetail_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ProcessingDetail_descriptor,
         new java.lang.String[] { "Ts", "Array", "Matrix", "Test", "Message", "Ivalue", "Dvalue", "Data", });
     internal_static_jd3_ProcessingInformation_descriptor =
-      getDescriptor().getMessageTypes().get(25);
+      getDescriptor().getMessageTypes().get(26);
     internal_static_jd3_ProcessingInformation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ProcessingInformation_descriptor,
         new java.lang.String[] { "Name", "Origin", "Msg", "Type", "Details", });
     internal_static_jd3_ProcessingLogs_descriptor =
-      getDescriptor().getMessageTypes().get(26);
+      getDescriptor().getMessageTypes().get(27);
     internal_static_jd3_ProcessingLogs_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ProcessingLogs_descriptor,

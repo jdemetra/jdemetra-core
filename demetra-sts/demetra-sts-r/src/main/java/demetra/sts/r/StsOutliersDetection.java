@@ -10,6 +10,7 @@ import demetra.data.DoubleSeqCursor;
 import demetra.data.Iterables;
 import demetra.data.Parameter;
 import demetra.information.InformationMapping;
+import demetra.likelihood.DiffuseLikelihoodStatistics;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
@@ -22,6 +23,7 @@ import demetra.sts.ComponentUse;
 import demetra.sts.SeasonalModel;
 import demetra.sts.outliers.io.protobuf.StsOutliersProtos;
 import demetra.timeseries.TsData;
+import demetra.toolkit.extractors.DiffuseLikelihoodStatisticsExtractor;
 import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.util.LinkedHashMap;
@@ -56,15 +58,15 @@ public class StsOutliersDetection {
 
         public byte[] buffer() {
             int nx = x == null ? 0 : x.getColumnsCount();
-            BsmMapping mapping=new BsmMapping(spec, period, null);
+            BsmMapping mapping = new BsmMapping(spec, period, null);
             StsOutliersProtos.StsSolution.Builder builder = StsOutliersProtos.StsSolution.newBuilder()
                     .addAllBsmInitial(Iterables.of(mapping.map(initialBsm)))
                     .addAllBsmFinal(Iterables.of(mapping.map(finalBsm)))
                     .addAllCoefficients(Iterables.of(coefficients))
                     .setCovariance(ToolkitProtosUtility.convert(coefficientsCovariance))
                     .setRegressors(ToolkitProtosUtility.convert(regressors))
-                    .setLikelihoodInitial(ToolkitProtosUtility.convert(initialLikelihood))
-                    .setLikelihoodFinal(ToolkitProtosUtility.convert(finalLikelihood))
+                    //                    .setLikelihoodInitial(ToolkitProtosUtility.convert(initialLikelihood))
+                    //                    .setLikelihoodFinal(ToolkitProtosUtility.convert(finalLikelihood))
                     .setComponents(ToolkitProtosUtility.convert(components))
                     .setTauInitial(ToolkitProtosUtility.convert(initialTau))
                     .setTauFinal(ToolkitProtosUtility.convert(finalTau))
@@ -99,7 +101,7 @@ public class StsOutliersDetection {
         DoubleSeq residuals;
         MatrixType initialTau, finalTau;
 
-        LikelihoodStatistics initialLikelihood, finalLikelihood;
+        DiffuseLikelihoodStatistics initialLikelihood, finalLikelihood;
 
         public double[] tstats() {
             double[] t = coefficients.clone();
@@ -147,8 +149,8 @@ public class StsOutliersDetection {
         static {
             MAPPING.delegate(BSM0, BasicStructuralModelExtractor.getMapping(), r -> r.getInitialBsm());
             MAPPING.delegate(BSM1, BasicStructuralModelExtractor.getMapping(), r -> r.getFinalBsm());
-            MAPPING.delegate(LL0, LikelihoodStatisticsExtractor.getMapping(), r -> r.getInitialLikelihood());
-            MAPPING.delegate(LL1, LikelihoodStatisticsExtractor.getMapping(), r -> r.getFinalLikelihood());
+            MAPPING.delegate(LL0, DiffuseLikelihoodStatisticsExtractor.getMapping(), r -> r.getInitialLikelihood());
+            MAPPING.delegate(LL1, DiffuseLikelihoodStatisticsExtractor.getMapping(), r -> r.getFinalLikelihood());
             MAPPING.set(B, double[].class, source -> source.getCoefficients());
             MAPPING.set(T, double[].class, source -> source.tstats());
             MAPPING.set(BVAR, MatrixType.class, source -> source.getCoefficientsCovariance());
@@ -189,9 +191,9 @@ public class StsOutliersDetection {
     public Results process(TsData ts, int level, int slope, int noise, String seasmodel, MatrixType x,
             boolean bao, boolean bls, boolean bso, double cv, double tcv, String forwardEstimation, String backwardEstimation) {
         TsData y = ts.cleanExtremities();
-        if (x != null && ts.length() != y.length()){
-            int start=ts.getStart().until(y.getStart());
-            x=x.extract(start, y.length(), 0, x.getColumnsCount());
+        if (x != null && ts.length() != y.length()) {
+            int start = ts.getStart().until(y.getStart());
+            x = x.extract(start, y.length(), 0, x.getColumnsCount());
         }
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
         BsmSpec spec = BsmSpec.builder()
@@ -199,7 +201,7 @@ public class StsOutliersDetection {
                 .level(of(level), of(slope))
                 .noise(of(noise))
                 .build();
-         OutliersDetection.Estimation fe = OutliersDetection.Estimation.valueOf(forwardEstimation);
+        OutliersDetection.Estimation fe = OutliersDetection.Estimation.valueOf(forwardEstimation);
         OutliersDetection.Estimation be = OutliersDetection.Estimation.valueOf(backwardEstimation);
         OutliersDetection od = OutliersDetection.builder()
                 .bsm(spec)
@@ -367,11 +369,11 @@ public class StsOutliersDetection {
                 .level(of(level), of(slope))
                 .noise(of(noise))
                 .build();
-        BsmEstimationSpec espec=BsmEstimationSpec.builder()
+        BsmEstimationSpec espec = BsmEstimationSpec.builder()
                 .diffuseRegression(true)
                 .build();
         BsmKernel monitor = new BsmKernel(espec);
-         int freq = y.getAnnualFrequency();
+        int freq = y.getAnnualFrequency();
         Matrix X = Matrix.of(x);
         if (!monitor.process(y.getValues(), X, freq, mspec)) {
             return null;

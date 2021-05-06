@@ -6,11 +6,17 @@
 package demetra.sts.r;
 
 import demetra.data.DoubleSeq;
+import demetra.data.Parameter;
+import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
+import demetra.sts.BsmEstimation;
 import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
+import demetra.sts.LightBasicStructuralModel;
+import demetra.sts.SeasonalModel;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.calendars.LengthOfPeriodType;
@@ -31,6 +37,7 @@ import jdplus.ssf.univariate.SsfData;
 import jdplus.sts.BsmData;
 import jdplus.sts.SsfBsm;
 import jdplus.sts.internal.BsmKernel;
+import jdplus.sts.internal.BsmMapping;
 
 /**
  *
@@ -38,6 +45,45 @@ import jdplus.sts.internal.BsmKernel;
  */
 @lombok.experimental.UtilityClass
 public class Bsm {
+
+    public BsmEstimation process(TsData y, MatrixType X, int level, int slope, int cycle, int noise, String seasmodel) {
+        SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
+        BsmSpec mspec = BsmSpec.builder()
+                .level(of(level), of(slope))
+                .cycle(cycle != 0)
+                .noise(of(noise))
+                .seasonal(sm)
+                .build();
+
+        BsmKernel kernel = new BsmKernel(null);
+        if (!kernel.process(y.getValues(), y.getAnnualFrequency(), mspec)) {
+            return null;
+        }
+        
+        int nhp = kernel.finalSpecification().getFreeParametersCount();
+        BsmMapping mapping=new BsmMapping(kernel.finalSpecification(), y.getAnnualFrequency(), null);
+        DoubleSeq params = mapping.map(kernel.getResult());
+        ParametersEstimation parameters=new ParametersEstimation(params, null, null, "bsm");
+
+        return LightBasicStructuralModel.Estimation.builder()
+                .y(y.getValues())
+                .X(X)
+                .coefficients(kernel.getLikelihood().coefficients())
+                .coefficientsCovariance(kernel.getLikelihood().covariance(nhp, true))
+                .parameters(parameters)
+                .statistics(kernel.getLikelihood().stats(0, nhp))
+                .build();
+    }
+
+    private Parameter of(int p) {
+        if (p == 0) {
+            return Parameter.zero();
+        } else if (p > 0) {
+            return Parameter.undefined();
+        } else {
+            return null;
+        }
+    }
 
     public MatrixType forecast(TsData series, String model, int nf) {
         double[] y = extend(series, nf);
