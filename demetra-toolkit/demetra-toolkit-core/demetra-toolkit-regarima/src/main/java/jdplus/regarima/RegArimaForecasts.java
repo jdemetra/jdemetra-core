@@ -110,9 +110,9 @@ public class RegArimaForecasts {
         if (nx > 0) {
             // compute DX = X-LX 
             Matrix xall = Matrix.of(X);
-            Matrix dx = xall.extract(n, nf, 0, nx).deepClone();
-            filter.filter(xall);
-            dx.sub(xall.extract(n, nf, 0, nx));
+             filter.filter(xall);
+             Matrix dx = xall.extract(n, nf, 0, nx);
+//          dx.sub(xall.extract(n, nf, 0, nx));
             // F += DX * b, varF += DX*varB*DX'
             DataBlockIterator xrows = dx.rowsIterator();
             int j = 0;

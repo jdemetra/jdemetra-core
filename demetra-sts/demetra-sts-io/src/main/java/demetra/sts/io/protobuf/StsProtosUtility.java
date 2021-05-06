@@ -16,6 +16,8 @@
  */
 package demetra.sts.io.protobuf;
 
+import demetra.data.Iterables;
+import demetra.sts.BsmEstimation;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import demetra.sts.SeasonalModel;
@@ -65,6 +67,18 @@ public class StsProtosUtility {
                 .seasonal(convert(spec.getSeasonalModel()), ToolkitProtosUtility.convert(spec.getSeas()))
                 .noise(ToolkitProtosUtility.convert(spec.getNoise()))
                 .cycle(ToolkitProtosUtility.convert(spec.getCycle()), ToolkitProtosUtility.convert(spec.getCycleFactor()), ToolkitProtosUtility.convert(spec.getCyclePeriod()))
+                .build();
+    }
+    
+    public StsProtos.Bsm.Estimation convert(BsmEstimation e){
+        return StsProtos.Bsm.Estimation.newBuilder()
+                .addAllY(Iterables.of(e.getY()))
+                .setX(ToolkitProtosUtility.convert(e.getX()))
+                .addAllB(Iterables.of(e.getCoefficients()))
+                .addAllResiduals(Iterables.of(e.getResiduals()))
+                .setBcovariance(ToolkitProtosUtility.convert(e.getCoefficientsCovariance()))
+                .setParameters(ToolkitProtosUtility.convert(e.getParameters()))
+                .setLikelihood(ToolkitProtosUtility.convert(e.getStatistics()))
                 .build();
     }
 

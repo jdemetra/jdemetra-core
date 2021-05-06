@@ -19,7 +19,9 @@ package demetra.tramoseats.r;
 import demetra.arima.SarimaModel;
 import demetra.data.Data;
 import demetra.math.matrices.MatrixType;
+import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
 import demetra.tramo.TramoOutput;
 import demetra.tramo.TramoSpec;
 import static org.junit.Assert.*;
@@ -78,9 +80,11 @@ public class TramoTest {
 
     @Test
     public void testForecast() {
-        MatrixType terror = Tramo.forecast(Data.TS_PROD, TramoSpec.TRfull, null, 12);
+         TsData s = TsData.ofInternal(TsPeriod.monthly(1992,1), Data.RETAIL_BOOKSTORES).drop(0, 12);
+       MatrixType terror = Tramo.forecast(s, TramoSpec.TRfull, null, 12);
         assertTrue(terror != null);
  //       System.out.println(terror);
+      
     }
     
     @Test

@@ -881,9 +881,8 @@ public interface DoubleSeq extends BaseSeq {
         return new InternalDoubleSeq.RegularlySpacedDoubles(data, start, len, inc);
     }
 
-    @Deprecated
     @NonNull
-    static Doubles empty() {
+    static DoubleSeq empty() {
         return Doubles.EMPTY;
     }
 

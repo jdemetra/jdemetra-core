@@ -14,28 +14,36 @@ package demetra.likelihood;
 public class DiffuseLikelihoodStatistics {
 
     double logLikelihood, transformationAdjustment;
-    
+
     int observationsCount;
     int estimatedParametersCount;
     int diffuseCount;
 
     // decomposition of the likelihood
     double ssqErr, logDeterminant, diffuseCorrection;
-    
-    public double getAdjustedLogLikelihood(){
-        return logLikelihood+transformationAdjustment;
-    }
-    
-    public double aic(){
-        return -2 * (getAdjustedLogLikelihood() - estimatedParametersCount);
+
+    public double getAdjustedLogLikelihood() {
+        return logLikelihood + transformationAdjustment;
     }
 
-    public double aicc(){
-        return -2 * (getAdjustedLogLikelihood() - (estimatedParametersCount*observationsCount)/(observationsCount-estimatedParametersCount-1));
+    public double getEffectiveObservationsCount() {
+        return observationsCount-diffuseCount;
     }
 
-    public double bic(){
-        return -2 * getAdjustedLogLikelihood() + estimatedParametersCount * Math.log(observationsCount);
+    public double aic() {
+        return 2 * estimatedParametersCount - 2 * getAdjustedLogLikelihood();
     }
-    
+
+    public double aicc() {
+        double neff=getEffectiveObservationsCount();
+        double nhp=estimatedParametersCount;
+        return -2 * (getAdjustedLogLikelihood() - (nhp*neff) / (neff - nhp - 1));
+    }
+
+    public double bic() {
+        double neff=getEffectiveObservationsCount();
+        double nhp=estimatedParametersCount;
+        return -2 * getAdjustedLogLikelihood() + nhp * Math.log(neff);
+    }
+
 }

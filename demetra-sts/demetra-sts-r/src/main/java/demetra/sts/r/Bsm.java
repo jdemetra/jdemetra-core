@@ -14,9 +14,9 @@ import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
 import demetra.sts.LightBasicStructuralModel;
 import demetra.sts.SeasonalModel;
+import demetra.sts.io.protobuf.StsProtosUtility;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.calendars.LengthOfPeriodType;
@@ -24,9 +24,7 @@ import demetra.timeseries.regression.EasterVariable;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.LengthOfPeriod;
-import jdplus.data.DataBlock;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.MatrixWindow;
 import jdplus.modelling.regression.Regression;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.dk.DkToolkit;
@@ -46,16 +44,20 @@ import jdplus.sts.internal.BsmMapping;
 @lombok.experimental.UtilityClass
 public class Bsm {
 
-    public BsmEstimation process(TsData y, MatrixType X, int level, int slope, int cycle, int noise, String seasmodel) {
-        SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
+    public BsmEstimation process(TsData y, MatrixType X, int level, int slope, int cycle, int noise, String seasmodel, double tol) {
+        SeasonalModel sm = seasmodel == null || seasmodel.equalsIgnoreCase("none") ? null : SeasonalModel.valueOf(seasmodel);
         BsmSpec mspec = BsmSpec.builder()
                 .level(of(level), of(slope))
-                .cycle(cycle != 0)
+                .cycle(cycle != -1)
                 .noise(of(noise))
                 .seasonal(sm)
                 .build();
 
-        BsmKernel kernel = new BsmKernel(null);
+        BsmEstimationSpec espec = BsmEstimationSpec.builder()
+                .diffuseRegression(true)
+                .precision(tol)
+                .build();
+        BsmKernel kernel = new BsmKernel(espec);
         if (!kernel.process(y.getValues(), y.getAnnualFrequency(), mspec)) {
             return null;
         }
@@ -63,7 +65,7 @@ public class Bsm {
         int nhp = kernel.finalSpecification().getFreeParametersCount();
         BsmMapping mapping=new BsmMapping(kernel.finalSpecification(), y.getAnnualFrequency(), null);
         DoubleSeq params = mapping.map(kernel.getResult());
-        ParametersEstimation parameters=new ParametersEstimation(params, null, null, "bsm");
+        ParametersEstimation parameters=new ParametersEstimation(params, "bsm");
 
         return LightBasicStructuralModel.Estimation.builder()
                 .y(y.getValues())
@@ -71,8 +73,13 @@ public class Bsm {
                 .coefficients(kernel.getLikelihood().coefficients())
                 .coefficientsCovariance(kernel.getLikelihood().covariance(nhp, true))
                 .parameters(parameters)
+                .residuals(kernel.getLikelihood().e())
                 .statistics(kernel.getLikelihood().stats(0, nhp))
                 .build();
+    }
+    
+    public byte[] toBuffer(BsmEstimation estimation){
+        return StsProtosUtility.convert(estimation).toByteArray();
     }
 
     private Parameter of(int p) {

@@ -69,7 +69,7 @@ public class Iterables {
 
         @Override
         public boolean hasNext() {
-            return pos < data.length;
+            return data != null && pos < data.length;
         }
 
         @Override

@@ -6,6 +6,7 @@
 package jdplus.tramoseats.legacy;
 
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.implementations.SarimaSpec;
@@ -95,7 +96,7 @@ public class LegacyUtility {
         RegArimaModel<SarimaModel> regArima = model.estimation.getRegArima();
         LightLinearModel.Estimation.Builder ebuilder = LightLinearModel.Estimation.builder()
                 .residuals(DoubleSeq.of(model.getFullResiduals().internalStorage()))
-                .parameters(new ParametersEstimation(fromLegacy(model.estimation.getArima().getParameters()), fromLegacy(model.estimation.getParametersCovariance()), null, null))
+                .parameters(new ParametersEstimation(fromLegacy(model.estimation.getArima().getParameters()), fromLegacy(model.estimation.getParametersCovariance()), DoubleSeq.empty(), null))
                 .statistics(nstat);
         
         return LightLinearModel.<SarimaSpec>builder()

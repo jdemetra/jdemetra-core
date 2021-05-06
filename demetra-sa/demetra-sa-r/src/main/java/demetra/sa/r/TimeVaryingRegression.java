@@ -36,11 +36,8 @@ import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.likelihood.DiffuseLikelihoodStatistics;
-import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
-import demetra.likelihood.LikelihoodStatistics;
 import demetra.toolkit.extractors.DiffuseLikelihoodStatisticsExtractor;
 import jdplus.math.matrices.Matrix;
-import jdplus.modelling.ApiUtility;
 import jdplus.ssf.univariate.Ssf;
 
 /**
