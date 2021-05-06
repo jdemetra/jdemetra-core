@@ -10,8 +10,8 @@ import demetra.math.matrices.MatrixType;
 import demetra.sts.BsmEstimation;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *

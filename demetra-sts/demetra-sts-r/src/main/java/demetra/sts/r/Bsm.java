@@ -24,6 +24,7 @@ import demetra.timeseries.regression.EasterVariable;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.LengthOfPeriod;
+import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.ssf.ISsfLoading;
@@ -114,11 +115,12 @@ public class Bsm {
         }
         DefaultDiffuseSquareRootFilteringResults frslts = DkToolkit.sqrtFilter(ssf, new SsfData(y), true);
         double[] fcasts = new double[nf * 2];
-
+        DiffuseConcentratedLikelihood ll = kernel.getLikelihood();
+        double var=ll.sigma();
         ISsfLoading loading = ssf.measurement().loading();
         for (int i = 0, j = series.length(); i < nf; ++i, ++j) {
             fcasts[i] = loading.ZX(j, frslts.a(j));
-            double v = loading.ZVZ(j, frslts.P(j));
+            double v = loading.ZVZ(j, frslts.P(j))*var;
             fcasts[nf + i] = v <= 0 ? 0 : Math.sqrt(v);
         }
         return MatrixType.of(fcasts, nf, 2);
