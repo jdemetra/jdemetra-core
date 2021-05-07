@@ -1,36 +1,40 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.bridge;
 
 import demetra.tsprovider.FileLoader;
-import ec.tss.tsproviders.DataSource;
-import ec.tss.tsproviders.IFileBean;
-import ec.tss.tsproviders.IFileLoader;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.File;
+import java.util.Objects;
 
 /**
- *
  * @author Philippe Charles
- * @param <T>
  */
-public class FromFileLoader<T extends FileLoader> extends FromDataSourceLoader<T> implements IFileLoader {
+public class FromFileLoader extends FromDataSourceLoader implements ec.tss.tsproviders.IFileLoader {
 
-    public FromFileLoader(T delegate) {
+    public FromFileLoader(@NonNull FileLoader<?> delegate) {
         super(delegate);
+    }
+
+    @Override
+    public @NonNull FileLoader<?> getDelegate() {
+        return (FileLoader<?>) super.getDelegate();
     }
 
     @Override
@@ -44,29 +48,36 @@ public class FromFileLoader<T extends FileLoader> extends FromDataSourceLoader<T
     }
 
     @Override
-    public void setPaths(File[] paths) {
+    public void setPaths(@Nullable File[] paths) {
         getDelegate().setPaths(paths);
     }
 
     @Override
-    public File[] getPaths() {
+    public @NonNull File[] getPaths() {
         return getDelegate().getPaths();
     }
 
     @Override
-    public IFileBean newBean() {
+    public ec.tss.tsproviders.@NonNull IFileBean newBean() {
         return new FromFileBean(getDelegate().newBean());
     }
 
     @Override
-    public IFileBean decodeBean(ec.tss.tsproviders.DataSource dataSource) throws IllegalArgumentException {
+    public ec.tss.tsproviders.@NonNull IFileBean decodeBean(ec.tss.tsproviders.@NonNull DataSource dataSource) throws IllegalArgumentException {
+        Objects.requireNonNull(dataSource);
         return new FromFileBean(getDelegate().decodeBean(TsConverter.toDataSource(dataSource)));
     }
 
     @Override
-    public DataSource encodeBean(Object bean) throws IllegalArgumentException {
+    public ec.tss.tsproviders.@NonNull DataSource encodeBean(@NonNull Object bean) throws IllegalArgumentException {
+        Objects.requireNonNull(bean);
+        FromFileBean fileBean = getFileBean(bean);
+        return TsConverter.fromDataSource(getDelegate().encodeBean(fileBean.getDelegate()));
+    }
+
+    private FromFileBean getFileBean(Object bean) throws IllegalArgumentException {
         try {
-            return TsConverter.fromDataSource(getDelegate().encodeBean(((FromFileBean) bean).getDelegate()));
+            return (FromFileBean) bean;
         } catch (ClassCastException ex) {
             throw new IllegalArgumentException(ex);
         }

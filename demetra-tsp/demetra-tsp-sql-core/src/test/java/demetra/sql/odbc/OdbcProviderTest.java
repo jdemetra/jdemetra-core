@@ -42,7 +42,7 @@ public class OdbcProviderTest {
 
     @Test
     public void testTspCompliance() {
-        IDataSourceLoaderAssert.Sampler<FromDataSourceLoader<OdbcProvider>> sampler = o -> OdbcSamples.TABLE2.getBean3(o.getDelegate());
+        IDataSourceLoaderAssert.Sampler<FromDataSourceLoader> sampler = o -> OdbcSamples.TABLE2.getBean3((OdbcProvider) o.getDelegate());
         IDataSourceLoaderAssert.assertCompliance(() -> new FromDataSourceLoader(OdbcSamples.TABLE2.getProvider3()), sampler);
     }
 

@@ -1,38 +1,27 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.bridge;
 
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsPeriod;
-import demetra.timeseries.TsUnit;
-import demetra.timeseries.TsData;
+import demetra.timeseries.*;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
-import demetra.timeseries.Ts;
-import demetra.timeseries.TsCollection;
-import demetra.timeseries.TsInformationType;
-import demetra.timeseries.TsMoniker;
-import demetra.timeseries.TsResource;
-import ec.tss.TsBypass;
-import ec.tss.TsCollectionInformation;
-import ec.tss.TsInformation;
-import ec.tss.TsStatus;
-import ec.tss.tsproviders.utils.OptionalTsData;
-import ec.tstoolkit.MetaData;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -43,14 +32,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- *
  * @author Philippe Charles
  */
 @lombok.experimental.UtilityClass
 public class TsConverter {
 
     //<editor-fold defaultstate="collapsed" desc="TsUnit / TsFrequency">
-    public TsUnit toTsUnit(ec.tstoolkit.timeseries.simplets.TsFrequency o) {
+    public @NonNull TsUnit toTsUnit(ec.tstoolkit.timeseries.simplets.@NonNull TsFrequency o) {
         switch (o) {
             case BiMonthly:
                 return TsUnit.of(2, ChronoUnit.MONTHS);
@@ -67,11 +55,11 @@ public class TsConverter {
             case Yearly:
                 return TsUnit.YEAR;
             default:
-                throw new RuntimeException();
+                throw ConverterException.notPossible(o);
         }
     }
 
-    public ec.tstoolkit.timeseries.simplets.TsFrequency fromTsUnit(TsUnit o) throws ConverterException {
+    public ec.tstoolkit.timeseries.simplets.@NonNull TsFrequency fromTsUnit(@NonNull TsUnit o) throws ConverterException {
         if (o.equals(TsUnit.of(2, ChronoUnit.MONTHS))) {
             return ec.tstoolkit.timeseries.simplets.TsFrequency.BiMonthly;
         }
@@ -98,37 +86,37 @@ public class TsConverter {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="LocalDateTime / Day">
-    public LocalDateTime toDateTime(ec.tstoolkit.timeseries.Day o) {
+    public @NonNull LocalDateTime toDateTime(ec.tstoolkit.timeseries.@NonNull Day o) {
         return LocalDateTime.ofInstant(o.getTime().toInstant(), ZoneId.systemDefault());
     }
 
-    public ec.tstoolkit.timeseries.Day fromDateTime(LocalDateTime o) {
+    public ec.tstoolkit.timeseries.@NonNull Day fromDateTime(@NonNull LocalDateTime o) {
         return new ec.tstoolkit.timeseries.Day(o.getYear(), ec.tstoolkit.timeseries.Month.valueOf(o.getMonthValue() - 1), o.getDayOfMonth() - 1);
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="TsPeriod">
-    public TsPeriod toTsPeriod(ec.tstoolkit.timeseries.simplets.TsPeriod o) {
+    public @NonNull TsPeriod toTsPeriod(ec.tstoolkit.timeseries.simplets.@NonNull TsPeriod o) {
         return TsPeriod.of(toTsUnit(o.getFrequency()), toDateTime(o.firstday()));
     }
 
-    public ec.tstoolkit.timeseries.simplets.TsPeriod fromTsPeriod(TsPeriod o) throws ConverterException {
+    public ec.tstoolkit.timeseries.simplets.@NonNull TsPeriod fromTsPeriod(@NonNull TsPeriod o) throws ConverterException {
         return new ec.tstoolkit.timeseries.simplets.TsPeriod(fromTsUnit(o.getUnit()), fromDateTime(o.start()));
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="TsDomain">
-    public TsDomain toTsDomain(ec.tstoolkit.timeseries.simplets.TsDomain o) {
+    public @NonNull TsDomain toTsDomain(ec.tstoolkit.timeseries.simplets.@NonNull TsDomain o) {
         return TsDomain.of(toTsPeriod(o.getStart()), o.getLength());
     }
 
-    public ec.tstoolkit.timeseries.simplets.TsDomain fromTsDomain(TsDomain o) throws ConverterException {
+    public ec.tstoolkit.timeseries.simplets.@NonNull TsDomain fromTsDomain(@NonNull TsDomain o) throws ConverterException {
         return new ec.tstoolkit.timeseries.simplets.TsDomain(fromTsPeriod(o.getStartPeriod()), o.getLength());
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="TsData / OptionalTsData">
-    public TsData toTsData(OptionalTsData o) {
+    public @NonNull TsData toTsData(ec.tss.tsproviders.utils.@NonNull OptionalTsData o) {
         if (o.isPresent()) {
             ec.tstoolkit.timeseries.simplets.TsData data = o.get();
             return TsData.ofInternal(toTsPeriod(data.getStart()), data.internalStorage());
@@ -136,34 +124,33 @@ public class TsConverter {
         return TsData.empty(o.getCause());
     }
 
-    public OptionalTsData fromTsData(TsData o) throws ConverterException {
-        if (!o.isEmpty()) {
-            return OptionalTsData.present(new ec.tstoolkit.timeseries.simplets.TsData(fromTsPeriod(o.getStart()), o.getValues().toArray(), false));
-        }
-        return OptionalTsData.absent(o.getCause());
+    public ec.tss.tsproviders.utils.@NonNull OptionalTsData fromTsData(@NonNull TsData o) throws ConverterException {
+        return !o.isEmpty()
+                ? ec.tss.tsproviders.utils.OptionalTsData.present(new ec.tstoolkit.timeseries.simplets.TsData(fromTsPeriod(o.getStart()), o.getValues().toArray(), false))
+                : ec.tss.tsproviders.utils.OptionalTsData.absent(o.getCause());
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="DataSource">
-    public DataSource toDataSource(ec.tss.tsproviders.DataSource o) {
+    public @NonNull DataSource toDataSource(ec.tss.tsproviders.@NonNull DataSource o) {
         return DataSource.builder(o.getProviderName(), o.getVersion()).putAll(o.getParams()).build();
     }
 
-    public ec.tss.tsproviders.DataSource fromDataSource(DataSource o) {
+    public ec.tss.tsproviders.@NonNull DataSource fromDataSource(@NonNull DataSource o) {
         return ec.tss.tsproviders.DataSource.builder(o.getProviderName(), o.getVersion()).putAll(o.getParams()).build();
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="DataSet">
-    public DataSet toDataSet(ec.tss.tsproviders.DataSet o) {
+    public @NonNull DataSet toDataSet(ec.tss.tsproviders.@NonNull DataSet o) {
         return DataSet.builder(toDataSource(o.getDataSource()), toKind(o.getKind())).putAll(o.getParams()).build();
     }
 
-    public ec.tss.tsproviders.DataSet fromDataSet(DataSet o) {
+    public ec.tss.tsproviders.@NonNull DataSet fromDataSet(@NonNull DataSet o) {
         return ec.tss.tsproviders.DataSet.builder(fromDataSource(o.getDataSource()), fromKind(o.getKind())).putAll(o.getParams()).build();
     }
 
-    public DataSet.Kind toKind(ec.tss.tsproviders.DataSet.Kind o) {
+    public DataSet.@NonNull Kind toKind(ec.tss.tsproviders.DataSet.@NonNull Kind o) {
         switch (o) {
             case COLLECTION:
                 return DataSet.Kind.COLLECTION;
@@ -172,11 +159,11 @@ public class TsConverter {
             case SERIES:
                 return DataSet.Kind.SERIES;
             default:
-                throw new RuntimeException();
+                throw ConverterException.notPossible(o);
         }
     }
 
-    public ec.tss.tsproviders.DataSet.Kind fromKind(DataSet.Kind o) {
+    public ec.tss.tsproviders.DataSet.@NonNull Kind fromKind(DataSet.@NonNull Kind o) {
         switch (o) {
             case COLLECTION:
                 return ec.tss.tsproviders.DataSet.Kind.COLLECTION;
@@ -185,7 +172,7 @@ public class TsConverter {
             case SERIES:
                 return ec.tss.tsproviders.DataSet.Kind.SERIES;
             default:
-                throw new RuntimeException();
+                throw ConverterException.notPossible(o);
         }
     }
     //</editor-fold>
@@ -194,31 +181,39 @@ public class TsConverter {
     private static final String ANONYMOUS_PREFIX = "anonymous:";
 
     @SuppressWarnings("null")
-    public TsMoniker toTsMoniker(ec.tss.TsMoniker o) {
+    public @NonNull TsMoniker toTsMoniker(ec.tss.@NonNull TsMoniker o) {
         switch (o.getType()) {
             case ANONYMOUS:
-                return TsMoniker.of("", ANONYMOUS_PREFIX + TsBypass.uuid(o));
+                return TsMoniker.of("", ANONYMOUS_PREFIX + ec.tss.TsBypass.uuid(o));
             case DYNAMIC:
-                return TsMoniker.of("", TsBypass.uuid(o).toString());
+                return TsMoniker.of("", ec.tss.TsBypass.uuid(o).toString());
             case PROVIDED:
-                return TsMoniker.of(o.getSource(), o.getId());
+                String source = o.getSource();
+                if (source == null) {
+                    throw new ConverterException("Unexpected null source");
+                }
+                String id = o.getId();
+                if (id == null) {
+                    throw new ConverterException("Unexpected null id");
+                }
+                return TsMoniker.of(source, id);
             default:
-                throw new RuntimeException();
+                throw ConverterException.notPossible(o.getType());
         }
     }
 
-    public ec.tss.TsMoniker fromTsMoniker(TsMoniker o) {
+    public ec.tss.@NonNull TsMoniker fromTsMoniker(@NonNull TsMoniker o) {
         if (o.getSource().isEmpty() && !o.getId().isEmpty()) {
             return o.getId().startsWith(ANONYMOUS_PREFIX)
-                    ? TsBypass.moniker(false, UUID.fromString(o.getId().substring(ANONYMOUS_PREFIX.length())))
-                    : TsBypass.moniker(true, UUID.fromString(o.getId()));
+                    ? ec.tss.TsBypass.moniker(false, UUID.fromString(o.getId().substring(ANONYMOUS_PREFIX.length())))
+                    : ec.tss.TsBypass.moniker(true, UUID.fromString(o.getId()));
         }
         return ec.tss.TsMoniker.createProvidedMoniker(o.getSource(), o.getId());
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="TsInformationType">
-    public TsInformationType toType(ec.tss.TsInformationType o) {
+    public @NonNull TsInformationType toType(ec.tss.@NonNull TsInformationType o) {
         switch (o) {
             case All:
                 return TsInformationType.All;
@@ -235,11 +230,11 @@ public class TsConverter {
             case UserDefined:
                 return TsInformationType.UserDefined;
             default:
-                throw new RuntimeException();
+                throw ConverterException.notPossible(o);
         }
     }
 
-    public ec.tss.TsInformationType fromType(TsInformationType o) {
+    public ec.tss.@NonNull TsInformationType fromType(@NonNull TsInformationType o) {
         switch (o) {
             case All:
                 return ec.tss.TsInformationType.All;
@@ -256,28 +251,28 @@ public class TsConverter {
             case UserDefined:
                 return ec.tss.TsInformationType.UserDefined;
             default:
-                throw new RuntimeException();
+                throw ConverterException.notPossible(o);
         }
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Map / MetaData">
-    public Map<String, String> toMeta(MetaData o) {
+    public @NonNull Map<String, String> toMeta(ec.tstoolkit.@Nullable MetaData o) {
         return o != null ? Collections.unmodifiableMap(o) : Collections.emptyMap();
     }
 
-    public MetaData fromMeta(Map<String, String> o) {
-        return new MetaData(o);
+    public ec.tstoolkit.@NonNull MetaData fromMeta(@NonNull Map<String, String> o) {
+        return new ec.tstoolkit.MetaData(o);
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Ts + Builder/Info">
-    public void fillTsInformation(TsResource<TsData> from, TsInformation to) {
+    public void fillTsInformation(@NonNull TsResource<TsData> from, ec.tss.@NonNull TsInformation to) {
         to.moniker = fromTsMoniker(from.getMoniker());
         to.type = fromType(from.getType());
         to.name = from.getName();
         to.metaData = fromMeta(from.getMeta());
-        OptionalTsData data = fromTsData(from.getData());
+        ec.tss.tsproviders.utils.OptionalTsData data = fromTsData(from.getData());
         if (data.isPresent()) {
             to.data = data.get();
             to.invalidDataCause = null;
@@ -287,43 +282,43 @@ public class TsConverter {
         }
     }
 
-    public TsInformation fromTsBuilder(TsResource<TsData> o) {
-        TsInformation result = new TsInformation();
+    public ec.tss.@NonNull TsInformation fromTsBuilder(@NonNull TsResource<TsData> o) {
+        ec.tss.TsInformation result = new ec.tss.TsInformation();
         fillTsInformation(o, result);
         return result;
     }
 
-    public Ts.Builder toTsBuilder(TsInformation o) {
+    public Ts.@NonNull Builder toTsBuilder(ec.tss.@NonNull TsInformation o) {
         return Ts.builder()
                 .name(o.name)
                 .moniker(toTsMoniker(o.moniker))
                 .type(toType(o.type))
                 .meta(toMeta(o.metaData))
-                .data(toTsData(o.invalidDataCause != null ? OptionalTsData.absent(o.invalidDataCause) : OptionalTsData.present(o.data)));
+                .data(toTsData(o.invalidDataCause != null ? ec.tss.tsproviders.utils.OptionalTsData.absent(o.invalidDataCause) : ec.tss.tsproviders.utils.OptionalTsData.present(o.data)));
     }
 
-    public ec.tss.Ts fromTs(TsResource<TsData> o) {
-        OptionalTsData data = fromTsData(o.getData());
-        ec.tss.Ts result = TsBypass.series(o.getName(), fromTsMoniker(o.getMoniker()), fromMeta(o.getMeta()), data.orNull());
+    public ec.tss.@NonNull Ts fromTs(@NonNull TsResource<TsData> o) {
+        ec.tss.tsproviders.utils.OptionalTsData data = fromTsData(o.getData());
+        ec.tss.Ts result = ec.tss.TsBypass.series(o.getName(), fromTsMoniker(o.getMoniker()), fromMeta(o.getMeta()), data.orNull());
         if (!data.isPresent()) {
             result.setInvalidDataCause(data.getCause());
         }
         return result;
     }
 
-    public Ts toTs(ec.tss.Ts o) {
+    public @NonNull Ts toTs(ec.tss.@NonNull Ts o) {
         return Ts.builder()
                 .name(o.getName())
                 .moniker(toTsMoniker(o.getMoniker()))
                 .type(toType(o.getInformationType()))
                 .meta(toMeta(o.getMetaData()))
-                .data(toTsData(o.hasData().equals(TsStatus.Valid) ? OptionalTsData.present(o.getTsData()) : OptionalTsData.absent(o.getInvalidDataCause() != null ? o.getInvalidDataCause() : "")))
+                .data(toTsData(o.hasData().equals(ec.tss.TsStatus.Valid) ? ec.tss.tsproviders.utils.OptionalTsData.present(o.getTsData()) : ec.tss.tsproviders.utils.OptionalTsData.absent(o.getInvalidDataCause() != null ? o.getInvalidDataCause() : "")))
                 .build();
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="TsCollection + Builder/Info">
-    public void fillTsCollectionInformation(TsResource<List<Ts>> from, TsCollectionInformation to) {
+    public void fillTsCollectionInformation(@NonNull TsResource<List<Ts>> from, ec.tss.@NonNull TsCollectionInformation to) {
         to.moniker = fromTsMoniker(from.getMoniker());
         to.type = fromType(from.getType());
         to.name = from.getName();
@@ -331,13 +326,13 @@ public class TsConverter {
         from.getData().forEach(x -> to.items.add(fromTsBuilder(x)));
     }
 
-    public TsCollectionInformation fromTsCollectionBuilder(TsResource<List<Ts>> o) {
-        TsCollectionInformation result = new TsCollectionInformation();
+    public ec.tss.@NonNull TsCollectionInformation fromTsCollectionBuilder(@NonNull TsResource<List<Ts>> o) {
+        ec.tss.TsCollectionInformation result = new ec.tss.TsCollectionInformation();
         fillTsCollectionInformation(o, result);
         return result;
     }
 
-    public TsCollection.Builder toTsCollectionBuilder(TsCollectionInformation o) {
+    public TsCollection.@NonNull Builder toTsCollectionBuilder(ec.tss.@NonNull TsCollectionInformation o) {
         return TsCollection.builder()
                 .name(o.name)
                 .moniker(toTsMoniker(o.moniker))
@@ -346,11 +341,11 @@ public class TsConverter {
                 .data(o.items.stream().map(TsConverter::toTsBuilder).map(Ts.Builder::build).collect(Collectors.toList()));
     }
 
-    public ec.tss.TsCollection fromTsCollection(TsResource<List<Ts>> o) {
-        return TsBypass.col(o.getName(), fromTsMoniker(o.getMoniker()), fromMeta(o.getMeta()), o.getData().stream().map(TsConverter::fromTs).collect(Collectors.toList()));
+    public ec.tss.@NonNull TsCollection fromTsCollection(@NonNull TsResource<List<Ts>> o) {
+        return ec.tss.TsBypass.col(o.getName(), fromTsMoniker(o.getMoniker()), fromMeta(o.getMeta()), o.getData().stream().map(TsConverter::fromTs).collect(Collectors.toList()));
     }
 
-    public TsCollection toTsCollection(ec.tss.TsCollection o) {
+    public @NonNull TsCollection toTsCollection(ec.tss.@NonNull TsCollection o) {
         return TsCollection.builder()
                 .name(o.getName())
                 .moniker(toTsMoniker(o.getMoniker()))
