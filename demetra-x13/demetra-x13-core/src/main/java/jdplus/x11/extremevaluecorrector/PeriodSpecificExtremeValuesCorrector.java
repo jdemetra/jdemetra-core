@@ -6,6 +6,7 @@
 package jdplus.x11.extremevaluecorrector;
 
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 import nbbrd.design.Development;
 import java.util.Arrays;
 import jdplus.data.DataBlock;
@@ -85,6 +86,6 @@ public class PeriodSpecificExtremeValuesCorrector extends DefaultExtremeValuesCo
 
             }
         }
-        return DoubleSeq.copyOf(w);
+        return Doubles.of(w);
     }
 }

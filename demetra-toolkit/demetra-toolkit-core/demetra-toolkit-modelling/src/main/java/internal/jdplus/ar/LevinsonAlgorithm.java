@@ -16,6 +16,7 @@
  */
 package internal.jdplus.ar;
 
+import demetra.data.Doubles;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Fast;
 import nbbrd.service.ServiceProvider;
@@ -51,7 +52,7 @@ public class LevinsonAlgorithm implements AutoRegressiveEstimation {
 
     @Override
     public DoubleSeq data() {
-        return DoubleSeq.copyOf(y);
+        return Doubles.of(y);
     }
 
     private boolean calc(int m) {

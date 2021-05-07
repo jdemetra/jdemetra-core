@@ -16,12 +16,12 @@
  */
 package jdplus.linearmodel;
 
-import jdplus.linearmodel.LinearModel;
 import jdplus.data.DataBlock;
 import java.util.Random;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.data.DoubleSeq;
+
 import demetra.data.Doubles;
 
 /**
@@ -63,7 +63,7 @@ public class LinearModelTest {
                 .addX(x1, x2)
                 .build();
         assertTrue(lm != null);
-        assertTrue(lm.calcResiduals(DoubleSeq.copyOf(new double[]{.5, -.2, .3})) != null);
+        assertTrue(lm.calcResiduals(Doubles.of(new double[]{.5, -.2, .3})) != null);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class LinearModelTest {
                 .addX(x1, x2)
                 .build();
         assertTrue(lm != null);
-        assertTrue(lm.calcResiduals(DoubleSeq.copyOf(new double[]{-.002, .003})) != null);
+        assertTrue(lm.calcResiduals(Doubles.of(new double[]{-.002, .003})) != null);
     }
 
 }

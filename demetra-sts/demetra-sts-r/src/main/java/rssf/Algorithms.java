@@ -5,7 +5,7 @@
  */
 package rssf;
 
-import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 import jdplus.msts.CompositeModel;
 import jdplus.msts.MstsMonitor;
 import jdplus.ssf.StateStorage;
@@ -72,7 +72,7 @@ public class Algorithms {
     
     public double diffuseLikelihood(CompositeModel model, Matrix data, double[] parameters){
         MstsMapping mapping = model.mapping();
-        MultivariateCompositeSsf mssf = mapping.map(DoubleSeq.copyOf(parameters));
+        MultivariateCompositeSsf mssf = mapping.map(Doubles.of(parameters));
         DiffuseLikelihood likelihood = DkToolkit.likelihood(mssf, new SsfMatrix(data), true, false);
         return likelihood.logLikelihood();
     }

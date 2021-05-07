@@ -17,14 +17,11 @@
 package jdplus.tramo.internal;
 
 import demetra.data.Data;
+import demetra.data.Doubles;
 import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
-import jdplus.tramo.internal.ArmaModule;
-import jdplus.tramo.internal.ArmaModelSelector;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import demetra.data.DoubleSeq;
 
 /**
  *
@@ -40,7 +37,7 @@ public class ArmaModuleTest {
         ArmaModule test = ArmaModule.builder().build();
         SarimaOrders spec = SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
-        RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(Doubles.of(Data.PROD)).arima(sarima).build();
         SarimaOrders nspec = test.process(regarima, true);
 //        System.out.println("Prod");
 //        System.out.println(nspec);
@@ -51,7 +48,7 @@ public class ArmaModuleTest {
         ArmaModule test = ArmaModule.builder().build();
         SarimaOrders spec = SarimaOrders.airline(12);
         SarimaModel sarima = SarimaModel.builder(spec).setDefault().build();
-        RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.EXPORTS)).arima(sarima).build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(Doubles.of(Data.EXPORTS)).arima(sarima).build();
         SarimaOrders nspec = test.process(regarima, true);
 //        System.out.println("X");
 //        System.out.println(nspec);

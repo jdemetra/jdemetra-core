@@ -16,14 +16,13 @@
  */
 package jdplus.stl;
 
-import jdplus.stl.StlSpecification;
-import jdplus.stl.Stl;
+import demetra.data.Doubles;
 import demetra.data.Data;
 import jdplus.data.DataBlock;
 import java.util.Random;
+
 import org.junit.Ignore;
 import org.junit.Test;
-import demetra.data.DoubleSeq;
 
 /**
  *
@@ -40,7 +39,7 @@ public class StlTest {
         Stl stl = new Stl(spec);
         spec.setNo(5);
         spec.setMultiplicative(true);
-        stl.process(DoubleSeq.copyOf(Data.EXPORTS));
+        stl.process(Doubles.of(Data.EXPORTS));
 //        System.out.println(new DataBlock(stl.trend));
 //        System.out.println(new DataBlock(stl.season));
 //        System.out.println(new DataBlock(stl.irr));
@@ -69,7 +68,7 @@ public class StlTest {
 
         StlSpecification spec = StlSpecification.defaultSpec(12, 21, false);
         Stl stl = new Stl(spec);
-        stl.process(DoubleSeq.copyOf(Data.EXPORTS));
+        stl.process(Doubles.of(Data.EXPORTS));
 //        System.out.println(new DataBlock(stl.trend));
 //        System.out.println(new DataBlock(stl.season));
 //        System.out.println(new DataBlock(stl.irr));
@@ -81,7 +80,7 @@ public class StlTest {
         spec.setMultiplicative(true);
         Stl stl = new Stl(spec);
         spec.setNo(5);
-        stl.process(DoubleSeq.copyOf(Data.EXPORTS));
+        stl.process(Doubles.of(Data.EXPORTS));
 //        System.out.println(new DataBlock(stl.trend));
 //        System.out.println(new DataBlock(stl.season));
 //        System.out.println(new DataBlock(stl.irr));
@@ -95,7 +94,7 @@ public class StlTest {
             StlSpecification spec = StlSpecification.defaultSpec(12, 7, false);
             spec.setNo(5);
             Stl stl = new Stl(spec);
-            stl.process(DoubleSeq.copyOf(Data.EXPORTS));
+            stl.process(Doubles.of(Data.EXPORTS));
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
@@ -106,7 +105,7 @@ public class StlTest {
     public void testInner() {
         StlSpecification spec = StlSpecification.defaultSpec(12, 9, true);
         Stl stl = new Stl(spec);
-        stl.process(DoubleSeq.copyOf(Data.EXPORTS));
+        stl.process(Doubles.of(Data.EXPORTS));
 //        System.out.println(new DataBlock(stl.trend));
 //        System.out.println(new DataBlock(stl.season));
 //        System.out.println(new DataBlock(stl.irr));

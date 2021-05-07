@@ -16,6 +16,7 @@
  */
 package jdplus.tramo.internal;
 
+import demetra.data.Doubles;
 import jdplus.regsarima.ami.FastOutliersDetector;
 import demetra.data.Data;
 import jdplus.regarima.RegArimaModel;
@@ -26,8 +27,6 @@ import demetra.arima.SarimaOrders;
 import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import java.util.List;
-import org.junit.Test;
-import demetra.data.DoubleSeq;
 
 /**
  *
@@ -58,7 +57,7 @@ public class OutliersDetectionModuleTest {
                 .processor(RegArimaUtility.processor(true, 1e-7))
                 .maximumLikelihood(true)
                 .build();
-        RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(Doubles.of(Data.PROD)).arima(sarima).build();
         od.prepare(regarima.getObservationsCount());
         od.process(regarima, SarimaMapping.of(spec));
         int[][] outliers = od.getOutliers();
@@ -86,7 +85,7 @@ public class OutliersDetectionModuleTest {
                 .criticalValue(3)
                 .processor(RegArimaUtility.processor(true, 1e-7))
                 .build();
-        RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(DoubleSeq.copyOf(Data.PROD)).arima(sarima).build();
+        RegArimaModel<SarimaModel> regarima = RegArimaModel.<SarimaModel>builder().y(Doubles.of(Data.PROD)).arima(sarima).build();
         od.prepare(regarima.getObservationsCount());
         od.process(regarima, SarimaMapping.of(spec));
         int[][] outliers = od.getOutliers();
