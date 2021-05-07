@@ -6,6 +6,7 @@
 package jdplus.x11;
 
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 import demetra.sa.DecompositionMode;
 import demetra.timeseries.TsData;
 import demetra.x11.CalendarSigmaOption;
@@ -291,6 +292,6 @@ public class X11Context {
                 stc[i] = m;
             }
         }
-        return DoubleSeq.copyOf(stc);
+        return Doubles.of(stc);
     }
 }

@@ -5,6 +5,7 @@
  */
 package jdplus.x11;
 
+import demetra.data.Doubles;
 import demetra.math.Constants;
 import demetra.sa.DecompositionMode;
 import ec.satoolkit.x11.BiasCorrection;
@@ -13,6 +14,7 @@ import ec.satoolkit.x11.X11Specification;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.concurrent.ThreadLocalRandom;
+
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Test;
@@ -268,7 +270,7 @@ public class X11DStepTest {
     }
 
     private void process(X11DStep instance, X11Context context, double[] input) {
-        DoubleSeq b1 = DoubleSeq.copyOf(input);
+        DoubleSeq b1 = Doubles.of(input);
         if (context.isLogAdd()) {
             b1 = b1.log();
         }

@@ -16,6 +16,7 @@
  */
 package jdplus.fractionalairline;
 
+import demetra.data.Doubles;
 import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.math.functions.ParamValidation;
@@ -104,7 +105,7 @@ public class FractionalAirlineMapping implements IArimaMapping<ArimaModel> {
         } else {
             p[1] = -ma.get(p0);
         }
-        return DoubleSeq.copyOf(p);
+        return Doubles.of(p);
     }
 
     @Override

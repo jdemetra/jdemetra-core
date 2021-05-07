@@ -17,8 +17,10 @@
 package jdplus.x11.extremevaluecorrector;
 
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 import nbbrd.design.Development;
 import jdplus.x11.X11Context;
+
 import java.util.Arrays;
 
 /**
@@ -313,7 +315,7 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
                 iend = n;
             }
         }
-        return DoubleSeq.copyOf(w);
+        return Doubles.of(w);
     }
 
     private DoubleSeq removeExtremes(DoubleSeq in, DoubleSeq weights) {
@@ -324,7 +326,7 @@ public class DefaultExtremeValuesCorrector implements IExtremeValuesCorrector {
                 cin[i] = Double.NaN;
             }
         }
-        return DoubleSeq.copyOf(cin);
+        return Doubles.of(cin);
     }
 
     private int[] searchPositionsForOutlierCorrection(int p, final int period) {

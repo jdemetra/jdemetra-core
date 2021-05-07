@@ -132,7 +132,9 @@ public class TsConverterTest {
                                     .meta(meta)
                                     .data(data)
                                     .type(type);
-                            assertThat(toTsBuilder(fromTsBuilder(x))).isEqualToComparingFieldByField(x);
+                            assertThat(toTsBuilder(fromTsBuilder(x)))
+                                    .usingRecursiveComparison()
+                                    .isEqualTo(x);
                         }
                     }
                 }
@@ -188,7 +190,9 @@ public class TsConverterTest {
                                     .meta(meta)
                                     .data(items)
                                     .type(type);
-                            assertThat(toTsCollectionBuilder(fromTsCollectionBuilder(x))).isEqualToComparingFieldByField(x);
+                            assertThat(toTsCollectionBuilder(fromTsCollectionBuilder(x)))
+                                    .usingRecursiveComparison()
+                                    .isEqualTo(x);
                         }
                     }
                 }

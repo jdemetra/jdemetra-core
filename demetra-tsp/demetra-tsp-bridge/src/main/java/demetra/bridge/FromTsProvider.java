@@ -1,17 +1,17 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.bridge;
@@ -19,32 +19,25 @@ package demetra.bridge;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsCollection;
 import demetra.timeseries.TsProvider;
-import ec.tss.ITsProvider;
-import ec.tss.TsAsyncMode;
-import ec.tss.TsCollectionInformation;
-import ec.tss.TsInformation;
-import ec.tss.TsInformationType;
-import ec.tss.TsMoniker;
-import ec.tss.tsproviders.utils.AbstractTsProvider;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.io.IOException;
 import java.util.Objects;
 
 /**
- *
  * @author Philippe Charles
- * @param <T>
  */
 @lombok.extern.slf4j.Slf4j
-public class FromTsProvider<T extends TsProvider> extends AbstractTsProvider implements ITsProvider {
+public class FromTsProvider extends ec.tss.tsproviders.utils.AbstractTsProvider implements ec.tss.ITsProvider {
 
-    private final T delegate;
+    private final TsProvider delegate;
 
-    public FromTsProvider(T delegate) {
-        super(log, delegate.getSource(), TsAsyncMode.Once);
+    public FromTsProvider(@NonNull TsProvider delegate) {
+        super(log, delegate.getSource(), ec.tss.TsAsyncMode.Once);
         this.delegate = delegate;
     }
 
-    public T getDelegate() {
+    public @NonNull TsProvider getDelegate() {
         return delegate;
     }
 
@@ -60,21 +53,21 @@ public class FromTsProvider<T extends TsProvider> extends AbstractTsProvider imp
     }
 
     @Override
-    public boolean queryTs(TsMoniker moniker, TsInformationType type) {
+    public boolean queryTs(ec.tss.@NonNull TsMoniker moniker, ec.tss.@NonNull TsInformationType type) {
         Objects.requireNonNull(moniker, "Moniker cannot be null");
         Objects.requireNonNull(type, "Type cannot be null");
         return super.queryTs(moniker, type);
     }
 
     @Override
-    public boolean queryTsCollection(TsMoniker moniker, TsInformationType type) {
+    public boolean queryTsCollection(ec.tss.@NonNull TsMoniker moniker, ec.tss.@NonNull TsInformationType type) {
         Objects.requireNonNull(moniker, "Moniker cannot be null");
         Objects.requireNonNull(type, "Type cannot be null");
         return super.queryTsCollection(moniker, type);
     }
 
     @Override
-    protected boolean process(TsCollectionInformation info) {
+    protected boolean process(ec.tss.@NonNull TsCollectionInformation info) {
         try {
             TsCollection result = getDelegate().getTsCollection(TsConverter.toTsMoniker(info.moniker), TsConverter.toType(info.type));
             TsConverter.fillTsCollectionInformation(result, info);
@@ -86,7 +79,7 @@ public class FromTsProvider<T extends TsProvider> extends AbstractTsProvider imp
     }
 
     @Override
-    protected boolean process(TsInformation info) {
+    protected boolean process(ec.tss.@NonNull TsInformation info) {
         try {
             Ts result = getDelegate().getTs(TsConverter.toTsMoniker(info.moniker), TsConverter.toType(info.type));
             TsConverter.fillTsInformation(result, info);

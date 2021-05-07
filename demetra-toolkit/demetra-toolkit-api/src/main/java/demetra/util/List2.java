@@ -38,7 +38,7 @@ public class List2 {
     @ReturnImmutable
     @SafeVarargs
     @NonNull
-    public <E> List<E> of​(@NonNull E... elements) {
+    public static <E> List<E> of(@NonNull E... elements) {
         switch (elements.length) {
             case 0:
                 return Collections.emptyList();
@@ -56,7 +56,7 @@ public class List2 {
     @NextJdk(NextJdk.JDK10)
     @ReturnImmutable
     @NonNull
-    public <E> List<E> copyOf​(@NonNull Collection<? extends E> coll) {
+    public static <E> List<E> copyOf(@NonNull Collection<? extends E> coll) {
         switch (coll.size()) {
             case 0:
                 return Collections.emptyList();
@@ -74,15 +74,15 @@ public class List2 {
     @NextJdk(NextJdk.JDK10)
     @ReturnImmutable
     @NonNull
-    public <T> Collector<T, ?, List<T>> toUnmodifiableList() {
+    public static <T> Collector<T, ?, List<T>> toUnmodifiableList() {
         return Collector.of((Supplier<List<T>>) ArrayList::new, List2::accumulate, List2::combine, Collections::unmodifiableList);
     }
 
-    private <T> void accumulate(List<T> r, T t) {
+    private static <T> void accumulate(List<T> r, T t) {
         r.add(Objects.requireNonNull(t));
     }
 
-    private <T> List<T> combine(List<T> l, List<T> r) {
+    private static <T> List<T> combine(List<T> l, List<T> r) {
         l.addAll(r);
         return l;
     }

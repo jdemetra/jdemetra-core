@@ -16,11 +16,11 @@
  */
 package jdplus.tramo;
 
+import demetra.data.Doubles;
 import jdplus.tramo.internal.DifferencingModule;
 import demetra.data.Data;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.data.DoubleSeq;
 
 /**
  *
@@ -34,7 +34,7 @@ public class DifferencingModuleTest {
     @Test
     public void testProd() {
         DifferencingModule test = DifferencingModule.builder().build();
-        test.process(DoubleSeq.copyOf(Data.PROD), 12, 0, 0, true);
+        test.process(Doubles.of(Data.PROD), 12, 0, 0, true);
         assertTrue(test.getD() == 1 && test.getBd() == 1);
 //        System.out.println(diff[0]);
 //        System.out.println(diff[1]);
@@ -44,7 +44,7 @@ public class DifferencingModuleTest {
     @Test
     public void testX() {
         DifferencingModule test = DifferencingModule.builder().build();
-        test.process(DoubleSeq.copyOf(Data.EXPORTS), 12, 0, 0, true);
+        test.process(Doubles.of(Data.EXPORTS), 12, 0, 0, true);
         assertTrue(test.getD() == 0 && test.getBd() == 1);
 //        System.out.println(diff[0]);
 //        System.out.println(diff[1]);

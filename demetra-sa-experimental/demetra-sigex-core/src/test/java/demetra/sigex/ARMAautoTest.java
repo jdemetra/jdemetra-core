@@ -6,6 +6,7 @@
 package demetra.sigex;
 
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -20,7 +21,7 @@ public class ARMAautoTest {
 
     @Test
     public void test1() {
-        DoubleSeq acf = ARMAauto.compute(DoubleSeq.of(.25), DoubleSeq.empty(), 10);
+        DoubleSeq acf = ARMAauto.compute(DoubleSeq.of(.25), Doubles.EMPTY, 10);
         //System.out.println(acf);
         assertEquals(acf.get(0), 1.066666666, 1e-5);
         assertTrue(acf.allMatch(x->x>0));
@@ -28,7 +29,7 @@ public class ARMAautoTest {
     
     @Test
     public void test2() {
-        DoubleSeq acf = ARMAauto.compute(DoubleSeq.of(-.25), DoubleSeq.empty(), 10);
+        DoubleSeq acf = ARMAauto.compute(DoubleSeq.of(-.25), Doubles.EMPTY, 10);
 //        System.out.println(acf);
         assertEquals(acf.get(0), 1.066666666, 1e-5);
         assertEquals(acf.get(1)/acf.get(0), -.25, 1e-9);

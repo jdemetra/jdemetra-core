@@ -32,10 +32,10 @@ import nbbrd.design.ThreadSafe;
  * </code>
  *
  * @author Philippe Charles
- * @param <B> bean type
+ * @param <BEAN> bean type
  * @since 1.0.0
  */
 @ThreadSafe
-public interface DataSourceLoader<B> extends DataSourceProvider, HasDataSourceMutableList, HasDataSourceBean<B> {
+public interface DataSourceLoader<BEAN> extends DataSourceProvider, HasDataSourceMutableList, HasDataSourceBean<BEAN> {
 
 }

@@ -1,38 +1,39 @@
 /*
  * Copyright 2016 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.spreadsheet;
 
 import _test.SpreadSheetSamples;
-import demetra.timeseries.TsPeriod;
-import demetra.timeseries.TsData;
-import demetra.tsprovider.DataSet;
-import demetra.tsprovider.DataSource;
-import demetra.timeseries.TsInformationType;
-import demetra.timeseries.TsMoniker;
 import demetra.bridge.FromFileBean;
 import demetra.bridge.FromFileLoader;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsInformationType;
+import demetra.timeseries.TsMoniker;
+import demetra.timeseries.TsPeriod;
+import demetra.tsprovider.DataSet;
+import demetra.tsprovider.DataSource;
 import ec.tss.tsproviders.IFileLoaderAssert;
 import internal.spreadsheet.SpreadSheetSupport;
-import java.io.IOException;
 import org.junit.Test;
+
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- *
  * @author Philippe Charles
  */
 public class SpreadSheetProviderTest {
@@ -48,7 +49,7 @@ public class SpreadSheetProviderTest {
 
     @Test
     public void testTspCompliance() {
-        IFileLoaderAssert.Sampler<FromFileLoader<SpreadSheetProvider>> sampler = o -> new FromFileBean(SpreadSheetSamples.TOP5.getBean3(o.getDelegate()));
+        IFileLoaderAssert.Sampler<FromFileLoader> sampler = o -> new FromFileBean(SpreadSheetSamples.TOP5.getBean3((SpreadSheetProvider) o.getDelegate()));
         IFileLoaderAssert.assertCompliance(() -> new FromFileLoader(SpreadSheetSamples.TOP5.getProvider3()), sampler);
     }
 
