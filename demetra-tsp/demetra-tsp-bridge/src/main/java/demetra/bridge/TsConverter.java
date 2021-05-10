@@ -19,6 +19,7 @@ package demetra.bridge;
 import demetra.timeseries.*;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
+import demetra.tsprovider.util.ObsFormat;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -355,4 +356,12 @@ public class TsConverter {
                 .build();
     }
     //</editor-fold>
+
+    public ec.tss.tsproviders.utils.@NonNull DataFormat fromObsFormat(@NonNull ObsFormat o) {
+        return ec.tss.tsproviders.utils.DataFormat.of(o.getLocale(), o.getDateTimePattern(), o.getNumberPattern());
+    }
+
+    public @NonNull ObsFormat toObsFormat(ec.tss.tsproviders.utils.@NonNull DataFormat o) {
+        return ObsFormat.of(o.getLocale(), o.getDatePattern(), o.getNumberPattern());
+    }
 }
