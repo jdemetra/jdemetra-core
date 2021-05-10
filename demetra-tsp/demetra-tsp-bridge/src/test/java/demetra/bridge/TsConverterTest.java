@@ -25,14 +25,13 @@ import demetra.timeseries.Ts;
 import demetra.timeseries.TsCollection;
 import demetra.timeseries.TsInformationType;
 import demetra.timeseries.TsMoniker;
+import demetra.tsprovider.util.ObsFormat;
+import ec.tss.tsproviders.utils.DataFormat;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
@@ -198,6 +197,27 @@ public class TsConverterTest {
                 }
             }
         }
+    }
+
+    @Test
+    public void testObsFormat() {
+        assertThat(TsConverter.fromObsFormat(ObsFormat.DEFAULT))
+                .isEqualTo(DataFormat.DEFAULT);
+
+        assertThat(TsConverter.fromObsFormat(ObsFormat.ROOT))
+                .isEqualTo(DataFormat.ROOT);
+
+        assertThat(TsConverter.fromObsFormat(ObsFormat.of(Locale.FRENCH, "yyyy-MMM", "#")))
+                .isEqualTo(DataFormat.of(Locale.FRENCH, "yyyy-MMM", "#"));
+
+        assertThat(TsConverter.toObsFormat(DataFormat.DEFAULT))
+                .isEqualTo(ObsFormat.DEFAULT);
+
+        assertThat(TsConverter.toObsFormat(DataFormat.ROOT))
+                .isEqualTo(ObsFormat.ROOT);
+
+        assertThat(TsConverter.toObsFormat(DataFormat.of(Locale.FRENCH, "yyyy-MMM", "#")))
+                .isEqualTo(ObsFormat.of(Locale.FRENCH, "yyyy-MMM", "#"));
     }
 
     private final TsUnit[] supportedUnits = Stream.of(TsFrequency.values()).map(o -> toTsUnit(o)).filter(o -> !o.equals(TsUnit.UNDEFINED)).toArray(TsUnit[]::new);
