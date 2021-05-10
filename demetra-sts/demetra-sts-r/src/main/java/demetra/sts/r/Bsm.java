@@ -9,6 +9,7 @@ import demetra.data.DoubleSeq;
 import demetra.data.Parameter;
 import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
+import demetra.sts.BasicStructuralModel;
 import demetra.sts.BsmEstimation;
 import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
@@ -17,6 +18,7 @@ import demetra.sts.SeasonalModel;
 import demetra.sts.io.protobuf.StsProtosUtility;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.calendars.LengthOfPeriodType;
@@ -24,6 +26,8 @@ import demetra.timeseries.regression.EasterVariable;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.LengthOfPeriod;
+import demetra.timeseries.regression.UserVariable;
+import demetra.timeseries.regression.Variable;
 import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.Regression;
@@ -45,7 +49,7 @@ import jdplus.sts.internal.BsmMapping;
 @lombok.experimental.UtilityClass
 public class Bsm {
 
-    public BsmEstimation process(TsData y, MatrixType X, int level, int slope, int cycle, int noise, String seasmodel, double tol) {
+    public BasicStructuralModel process(TsData y, MatrixType X, int level, int slope, int cycle, int noise, String seasmodel, double tol) {
         SeasonalModel sm = seasmodel == null || seasmodel.equalsIgnoreCase("none") ? null : SeasonalModel.valueOf(seasmodel);
         BsmSpec mspec = BsmSpec.builder()
                 .level(of(level), of(slope))
@@ -68,19 +72,44 @@ public class Bsm {
         DoubleSeq params = mapping.map(kernel.getResult());
         ParametersEstimation parameters=new ParametersEstimation(params, "bsm");
 
-        return LightBasicStructuralModel.Estimation.builder()
+        DoubleSeq coef = kernel.getLikelihood().coefficients();
+        LightBasicStructuralModel.Estimation estimation = LightBasicStructuralModel.Estimation.builder()
                 .y(y.getValues())
                 .X(X)
-                .coefficients(kernel.getLikelihood().coefficients())
+                .coefficients(coef)
                 .coefficientsCovariance(kernel.getLikelihood().covariance(nhp, true))
                 .parameters(parameters)
                 .residuals(kernel.getLikelihood().e())
                 .statistics(kernel.getLikelihood().stats(0, nhp))
                 .build();
+        
+        Variable[] vars= X == null ? new Variable[0] : new Variable[X.getColumnsCount()];
+        TsPeriod start = y.getStart();
+        for (int i=0; i<vars.length; ++i){
+            UserVariable uvar=new UserVariable("var-"+(i+1), TsData.ofInternal(start, X.column(i)));
+            vars[i]=Variable.variable("var-"+(i+1), uvar).withCoefficient(Parameter.estimated(coef.get(i)));
+        }
+        
+        LightBasicStructuralModel.Description description = LightBasicStructuralModel.Description.builder()
+                .series(y)
+                .logTransformation(false)
+                .lengthOfPeriodTransformation(LengthOfPeriodType.None)
+                .specification(kernel.finalSpecification())
+                .variables(vars)
+                .build();
+        
+        return LightBasicStructuralModel.builder()
+                .description(description)
+                .estimation(estimation)
+                .build();
     }
     
     public byte[] toBuffer(BsmEstimation estimation){
         return StsProtosUtility.convert(estimation).toByteArray();
+    }
+
+    public byte[] toBuffer(BasicStructuralModel bsm){
+        return StsProtosUtility.convert(bsm).toByteArray();
     }
 
     private Parameter of(int p) {
@@ -116,11 +145,10 @@ public class Bsm {
         DefaultDiffuseSquareRootFilteringResults frslts = DkToolkit.sqrtFilter(ssf, new SsfData(y), true);
         double[] fcasts = new double[nf * 2];
         DiffuseConcentratedLikelihood ll = kernel.getLikelihood();
-        double var=ll.sigma();
         ISsfLoading loading = ssf.measurement().loading();
         for (int i = 0, j = series.length(); i < nf; ++i, ++j) {
             fcasts[i] = loading.ZX(j, frslts.a(j));
-            double v = loading.ZVZ(j, frslts.P(j))*var;
+            double v = loading.ZVZ(j, frslts.P(j));
             fcasts[nf + i] = v <= 0 ? 0 : Math.sqrt(v);
         }
         return MatrixType.of(fcasts, nf, 2);

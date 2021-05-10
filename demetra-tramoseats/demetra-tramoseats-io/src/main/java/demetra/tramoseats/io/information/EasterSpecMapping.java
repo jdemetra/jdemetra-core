@@ -34,13 +34,13 @@ class EasterSpecMapping {
         return "easter";
     }
 
-    void fillDictionary(String prefix, Map<String, Class> dic) {
-        dic.put(InformationSet.item(prefix, TYPE), String.class);
-        dic.put(InformationSet.item(prefix, DURATION), Integer.class);
-        dic.put(InformationSet.item(prefix, TEST), String.class);
-        dic.put(InformationSet.item(prefix, JULIAN), Boolean.class);
-    }
-
+//    void fillDictionary(String prefix, Map<String, Class> dic) {
+//        dic.put(InformationSet.item(prefix, TYPE), String.class);
+//        dic.put(InformationSet.item(prefix, DURATION), Integer.class);
+//        dic.put(InformationSet.item(prefix, TEST), String.class);
+//        dic.put(InformationSet.item(prefix, JULIAN), Boolean.class);
+//    }
+//
     void writeLegacy(InformationSet regInfo, EasterSpec spec, boolean verbose) {
         if (!verbose && spec.isDefault()) {
             return;

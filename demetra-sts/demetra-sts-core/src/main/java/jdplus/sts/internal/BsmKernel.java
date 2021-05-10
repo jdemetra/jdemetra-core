@@ -279,9 +279,9 @@ public class BsmKernel {
     private BsmData initialize2() {
         // Set default values
         BsmMapping mapping = new BsmMapping(modelSpec, period, null);
-        bsm=mapping.map(mapping.getDefaultParameters());
+        bsm = mapping.map(mapping.getDefaultParameters());
         updateSpec();
-        BsmData bsm0=bsm;
+        BsmData bsm0 = bsm;
         //
         double llmax = 0;
         Component cmax = Component.Undefined;
@@ -404,6 +404,10 @@ public class BsmKernel {
         boolean rslt = estimate();
         if (rslt) {
             likelihood = likelihood.rescale(factor, null);
+            if (fixedVar != null && fixedVar != Component.Undefined) {
+                bsm = bsm.scaleVariances(likelihood.sigma2());
+            }
+            updateSpec();
         }
         return rslt;
     }

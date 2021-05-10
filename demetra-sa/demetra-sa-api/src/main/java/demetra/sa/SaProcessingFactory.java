@@ -16,7 +16,6 @@
  */
 package demetra.sa;
 
-import demetra.information.InformationSet;
 import demetra.processing.ProcDiagnostic;
 import demetra.processing.ProcResults;
 import demetra.timeseries.TsDomain;

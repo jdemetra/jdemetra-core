@@ -18,8 +18,6 @@ package demetra.tramoseats.io.information;
 
 import demetra.data.Data;
 import demetra.information.InformationSet;
-import demetra.math.matrices.MatrixType;
-import demetra.timeseries.TsData;
 import demetra.toolkit.io.xml.legacy.core.XmlInformationSet;
 import demetra.tramo.TramoSpec;
 import java.io.FileInputStream;
@@ -71,12 +69,12 @@ public class TramoSpecMappingTest {
 
     private void test(TramoSpec spec) {
         InformationSet info = TramoSpecMapping.write(spec, true);
-        TramoSpec nspec = TramoSpecMapping.read(info);
+        TramoSpec nspec = TramoSpecMapping.readV3(info);
 //        System.out.println(spec);
 //        System.out.println(nspec);
         assertEquals(nspec, spec);
         info = TramoSpecMapping.write(spec, false);
-        nspec = TramoSpecMapping.read(info);
+        nspec = TramoSpecMapping.readV3(info);
 //        System.out.println(spec);
 //        System.out.println(nspec);
         assertEquals(nspec, spec);

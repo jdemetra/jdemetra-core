@@ -220,7 +220,7 @@ public final class DiffuseLikelihood implements Likelihood {
     }
 
     @Override
-    public double sigma() {
+    public double sigma2() {
         return ssqerr / (m());
     }
 

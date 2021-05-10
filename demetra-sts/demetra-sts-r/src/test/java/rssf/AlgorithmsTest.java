@@ -167,7 +167,7 @@ public class AlgorithmsTest {
         System.out.println("SAE+TD");
         System.out.println(DataBlock.of(p));
         System.out.println(rslt.getLikelihood().logLikelihood());
-        System.out.println(rslt.getLikelihood().sigma());
+        System.out.println(rslt.getLikelihood().sigma2());
     }
 
     @Test

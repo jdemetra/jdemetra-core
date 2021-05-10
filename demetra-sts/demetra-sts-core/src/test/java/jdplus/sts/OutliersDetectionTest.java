@@ -187,7 +187,7 @@ public class OutliersDetectionTest {
                     DefaultSmoothingResults sd = DefaultSmoothingResults.full();
                     sd.prepare(ssf.getStateDim(), 0, data.length());
                     smoother.process(ssf, data, sd);
-                    double sig2 = DkToolkit.likelihood(ssf, data, true, false).sigma();
+                    double sig2 = DkToolkit.likelihood(ssf, data, true, false).sigma2();
                     double saomax = 0, slsmax = 0, ssomax = 0, smax = 0;
                     for (int i = 4; i < N - 4; ++i) {
                         DataBlock R = DataBlock.of(sd.R(i));

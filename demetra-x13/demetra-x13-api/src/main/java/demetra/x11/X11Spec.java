@@ -28,14 +28,13 @@ import nbbrd.design.LombokWorkaround;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true, buildMethodName = "buildWithoutValidation")
 public final class X11Spec implements Validatable<X11Spec> {
 
     public static final double DEFAULT_LOWER_SIGMA = 1.5, DEFAULT_UPPER_SIGMA = 2.5;
     public static final int DEFAULT_FORECAST_HORIZON = 0, DEFAULT_BACKCAST_HORIZON = 0;
-    
-    private static final SeasonalFilterOption[] MSR=new SeasonalFilterOption[]{SeasonalFilterOption.Msr};
 
+    private static final SeasonalFilterOption[] MSR = new SeasonalFilterOption[]{SeasonalFilterOption.Msr};
 
     /**
      * Decomposition mode of X11

@@ -241,7 +241,7 @@ public class StsOutliersDetection {
         sd0.prepare(xssf.getStateDim(), 0, data.length());
         smoother.process(xssf, data, sd0);
 
-        double sig2 = ll0.sigma();
+        double sig2 = ll0.sigma2();
         Matrix tau0 = tau(n, ssf0.getStateDim(), model0, sd0, sig2);
 
         Matrix W = od.getRegressors();
@@ -257,7 +257,7 @@ public class StsOutliersDetection {
         lin.add(cmps.column(1));
         lin.add(cmps.column(3));
 
-        sig2 = od.getLikelihood().sigma();
+        sig2 = od.getLikelihood().sigma2();
         Matrix tau1 = tau(n, ssf.getStateDim(), model, sd, sig2);
 
         int np = spec.getFreeParametersCount();
@@ -389,7 +389,7 @@ public class StsOutliersDetection {
         SsfData data = new SsfData(y.getValues());
         DefaultSmoothingResults sd = DefaultSmoothingResults.full();
         int n = data.length();
-        double sig2 = monitor.getLikelihood().sigma();
+        double sig2 = monitor.getLikelihood().sigma2();
         sd.prepare(ssf.getStateDim(), 0, data.length());
         smoother.process(ssf, data, sd);
 

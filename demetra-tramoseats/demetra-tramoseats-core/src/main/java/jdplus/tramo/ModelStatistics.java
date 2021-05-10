@@ -70,7 +70,7 @@ public class ModelStatistics {
                 .build();
         StatisticalTest sk = new Skewness(e).build();
         int nobs = ll.dim();
-        double bic = Math.log(ll.sigma()) + nhp * Math.log(nobs) / nobs; // TRAMO-like
+        double bic = Math.log(ll.sigma2()) + nhp * Math.log(nobs) / nobs; // TRAMO-like
         Builder builder = builder()
                 .outliersCount((int) m.variables().filter(var -> ModellingUtility.isOutlier(var, true)).count())
                 .observationsCount(m.getEstimationDomain().getLength())

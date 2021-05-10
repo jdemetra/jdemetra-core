@@ -51,8 +51,8 @@ import nbbrd.design.BuilderPattern;
  * <br> - n = dim()
  * <br> - ldet = logDeterminant()
  * <br> - ssq = ssq()
- * <br> -sig2 =ssq/n is given by sigma()
- * <br>
+ * <br> -sig2 =ssq/n is given by sigma2()
+ <br>
  * Maximizing the concentrated likelihood is equivalent to minimizing the
  * function:
  * <br>
@@ -163,7 +163,7 @@ public interface Likelihood {
     }
 
     /**
-     * Gets the sqrt of sigma.
+     * Gets the sqrt of sigma2.
      *
      * @return A positive number. 1 if the likelihood is not concentrated.
      */
@@ -176,7 +176,7 @@ public interface Likelihood {
      *
      * @return A positive number. 1 if the likelihood is not concentrated.
      */
-    default double sigma() {
+    default double sigma2() {
         return isScalingFactor() ? ssq() / dim() : 1;
     }
 

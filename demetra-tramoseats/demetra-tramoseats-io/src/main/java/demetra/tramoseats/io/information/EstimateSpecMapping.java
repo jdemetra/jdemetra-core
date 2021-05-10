@@ -26,22 +26,22 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class EstimateSpecMapping {
+class EstimateSpecMapping {
 
-    public final String SPAN = "span",
+    final String SPAN = "span",
             EML = "eml",
             TOL = "tol",
             UBP = "ubp";
 
-    public void fillDictionary(String prefix, Map<String, Class> dic) {
-        dic.put(InformationSet.item(prefix, EML), Boolean.class);
-        dic.put(InformationSet.item(prefix, TOL), Double.class);
-        dic.put(InformationSet.item(prefix, UBP), Double.class);
-        dic.put(InformationSet.item(prefix, SPAN), TimeSelector.class);
-    }
+//    void fillDictionary(String prefix, Map<String, Class> dic) {
+//        dic.put(InformationSet.item(prefix, EML), Boolean.class);
+//        dic.put(InformationSet.item(prefix, TOL), Double.class);
+//        dic.put(InformationSet.item(prefix, UBP), Double.class);
+//        dic.put(InformationSet.item(prefix, SPAN), TimeSelector.class);
+//    }
+//
 
-
-    public InformationSet write(EstimateSpec spec, boolean verbose) {
+    InformationSet write(EstimateSpec spec, boolean verbose) {
         if (!verbose && spec.isDefault()) {
             return null;
         }
@@ -61,7 +61,7 @@ public class EstimateSpecMapping {
         return info;
     }
 
-    public EstimateSpec read(InformationSet info) {
+    EstimateSpec read(InformationSet info) {
         if (info == null) {
             return EstimateSpec.DEFAULT;
         }

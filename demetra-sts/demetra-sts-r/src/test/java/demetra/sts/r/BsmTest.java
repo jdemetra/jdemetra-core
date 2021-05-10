@@ -7,6 +7,7 @@ package demetra.sts.r;
 
 import demetra.data.Data;
 import demetra.math.matrices.MatrixType;
+import demetra.sts.BasicStructuralModel;
 import demetra.sts.BsmEstimation;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
@@ -26,8 +27,8 @@ public class BsmTest {
     public void testForecasts() {
         TsData s = TsData.ofInternal(TsPeriod.monthly(1992,1), Data.RETAIL_BOOKSTORES);
         MatrixType fcast = Bsm.forecast(s, "none", 24);
-//        System.out.println(fcast.column(0));
-//        System.out.println(fcast.column(1));
+        System.out.println(fcast.column(0));
+        System.out.println(fcast.column(1));
         fcast = Bsm.forecast(s, "td2", 24);
 //        System.out.println(fcast.column(0));
 //        System.out.println(fcast.column(1));
@@ -44,9 +45,9 @@ public class BsmTest {
 
     @Test
     public void testEstimation() {
-        TsData s = Data.TS_PROD;
-        BsmEstimation estimation = Bsm.process(s, null, 1, 1, -1, 1, "Crude", 1e-9);
-        byte[] bytes = Bsm.toBuffer(estimation);
+        TsData s = TsData.ofInternal(TsPeriod.monthly(1992,1), Data.RETAIL_BOOKSTORES);
+        BasicStructuralModel bsm = Bsm.process(s, null, 1, 1, -1, 1, "Trigonometric", 1e-12);
+        byte[] bytes = Bsm.toBuffer(bsm);
         assertTrue(bytes != null);
     }
 

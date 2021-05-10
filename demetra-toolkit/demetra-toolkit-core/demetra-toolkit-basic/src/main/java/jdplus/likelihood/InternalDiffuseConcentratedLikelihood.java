@@ -123,7 +123,7 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
     }
 
     @Override
-    public double sigma() {
+    public double sigma2() {
         return ssqerr / (m());
     }
 

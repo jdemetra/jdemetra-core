@@ -51,13 +51,13 @@ class RegressionSpecMapping {
             COEFF = "coefficients", FCOEFF = "fixedcoefficients",
             MU = "mu";
 
-    void fillDictionary(String prefix, Map<String, Class> dic) {
-        dic.put(InformationSet.item(prefix, OUTLIERS_LEGACY), String[].class);
-        dic.put(InformationSet.item(prefix, RAMPS_LEGACY), String[].class);
-        CalendarSpecMapping.fillDictionary(InformationSet.item(prefix, CALENDAR), dic);
-        InterventionVariableMapping.fillDictionary(InformationSet.item(prefix, INTERVENTIONS), dic);
-//        TsContextVariableMapping.fillDictionary(InformationSet.item(prefix, USERS), dic);
-    }
+//    void fillDictionary(String prefix, Map<String, Class> dic) {
+//        dic.put(InformationSet.item(prefix, OUTLIERS_LEGACY), String[].class);
+//        dic.put(InformationSet.item(prefix, RAMPS_LEGACY), String[].class);
+//        CalendarSpecMapping.fillDictionary(InformationSet.item(prefix, CALENDAR), dic);
+//        InterventionVariableMapping.fillDictionary(InformationSet.item(prefix, INTERVENTIONS), dic);
+////        TsContextVariableMapping.fillDictionary(InformationSet.item(prefix, USERS), dic);
+//    }
 
     Parameter coefficientOf(InformationSet regInfo, String name) {
         InformationSet scoefs = regInfo.getSubSet(RegressionSpecMapping.COEFF);

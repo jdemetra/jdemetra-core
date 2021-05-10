@@ -34,17 +34,17 @@ class ArimaSpecMapping {
             THETA = "theta", D = "d", PHI = "phi",
             BTHETA = "btheta", BD = "bd", BPHI = "bphi";
 
-    static void fillDictionary(String prefix, Map<String, Class> dic) {
-        dic.put(InformationSet.item(prefix, MEAN), Boolean.class);
-        dic.put(InformationSet.item(prefix, MU), Parameter.class);
-        dic.put(InformationSet.item(prefix, D), Integer.class);
-        dic.put(InformationSet.item(prefix, BD), Integer.class);
-        dic.put(InformationSet.item(prefix, THETA), Parameter[].class);
-        dic.put(InformationSet.item(prefix, PHI), Parameter[].class);
-        dic.put(InformationSet.item(prefix, BTHETA), Parameter[].class);
-        dic.put(InformationSet.item(prefix, BPHI), Parameter[].class);
-    }
-
+//    static void fillDictionary(String prefix, Map<String, Class> dic) {
+//        dic.put(InformationSet.item(prefix, MEAN), Boolean.class);
+//        dic.put(InformationSet.item(prefix, MU), Parameter.class);
+//        dic.put(InformationSet.item(prefix, D), Integer.class);
+//        dic.put(InformationSet.item(prefix, BD), Integer.class);
+//        dic.put(InformationSet.item(prefix, THETA), Parameter[].class);
+//        dic.put(InformationSet.item(prefix, PHI), Parameter[].class);
+//        dic.put(InformationSet.item(prefix, BTHETA), Parameter[].class);
+//        dic.put(InformationSet.item(prefix, BPHI), Parameter[].class);
+//    }
+//
     SarimaSpec read(InformationSet info) {
         if (info == null) {
             return SarimaSpec.airline();

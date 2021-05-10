@@ -18,6 +18,7 @@ package demetra.regarima;
 
 import demetra.modelling.TransformationType;
 import demetra.modelling.implementations.SarimaSpec;
+import demetra.processing.AlgorithmDescriptor;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.util.Validatable;
@@ -34,6 +35,14 @@ import nbbrd.design.LombokWorkaround;
 
 @lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
 public final class RegArimaSpec implements Validatable<RegArimaSpec> {
+
+    public static final String METHOD = "regarima";
+    public static final String FAMILY = "Modelling";
+    public static final String VERSION_LEGACY = "0.1.0.0";
+    public static final AlgorithmDescriptor DESCRIPTOR_LEGACY = new AlgorithmDescriptor(FAMILY, METHOD, VERSION_LEGACY);
+
+    public static final String VERSION_V3 = "3.0.0";
+    public static final AlgorithmDescriptor DESCRIPTOR_V3 = new AlgorithmDescriptor(FAMILY, METHOD, VERSION_V3);
 
     public static final RegArimaSpec DEFAULT_ENABLED = RegArimaSpec.builder().build();
     public static final RegArimaSpec DEFAULT_DISABLED = RegArimaSpec.builder().basic(BasicSpec.DEFAULT_ENABLED).build();
