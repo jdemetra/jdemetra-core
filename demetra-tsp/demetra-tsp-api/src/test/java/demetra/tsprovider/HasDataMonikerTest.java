@@ -49,8 +49,8 @@ public class HasDataMonikerTest {
     @SuppressWarnings("null")
     public void testToDataSource() {
         HasDataMoniker support = HasDataMoniker.usingUri(providerName);
-        assertThat(support.toDataSource(goodDataSourceMoniker)).isEqualTo(goodDataSource);
-        assertThat(support.toDataSource(goodDataSetMoniker)).isNull();
+        assertThat(support.toDataSource(goodDataSourceMoniker)).hasValue(goodDataSource);
+        assertThat(support.toDataSource(goodDataSetMoniker)).isEmpty();
         assertThatThrownBy(() -> support.toDataSource(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> support.toDataSource(badDataSourceMoniker)).isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> support.toDataSource(badDataSetMoniker)).isInstanceOf(IllegalArgumentException.class);
@@ -60,8 +60,8 @@ public class HasDataMonikerTest {
     @SuppressWarnings("null")
     public void testToDataSet() {
         HasDataMoniker support = HasDataMoniker.usingUri(providerName);
-        assertThat(support.toDataSet(goodDataSetMoniker)).isEqualTo(goodDataSet);
-        assertThat(support.toDataSet(goodDataSourceMoniker)).isNull();
+        assertThat(support.toDataSet(goodDataSetMoniker)).hasValue(goodDataSet);
+        assertThat(support.toDataSet(goodDataSourceMoniker)).isEmpty();
         assertThatThrownBy(() -> support.toDataSet(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> support.toDataSet(badDataSourceMoniker)).isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> support.toDataSet(badDataSetMoniker)).isInstanceOf(IllegalArgumentException.class);

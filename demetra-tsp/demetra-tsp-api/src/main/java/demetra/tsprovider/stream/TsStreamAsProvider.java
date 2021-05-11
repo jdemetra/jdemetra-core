@@ -1,39 +1,36 @@
 /*
  * Copyright 2016 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.tsprovider.stream;
 
-import nbbrd.design.ThreadSafe;
-import demetra.timeseries.TsCollection;
-import demetra.timeseries.Ts;
-import demetra.timeseries.TsInformationType;
+import demetra.timeseries.*;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.HasDataMoniker;
-import demetra.timeseries.TsMoniker;
-import demetra.timeseries.TsProvider;
 import demetra.tsprovider.util.DataSourcePreconditions;
+import nbbrd.design.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- *
  * @author Philippe Charles
  */
 @ThreadSafe
@@ -43,8 +40,8 @@ public final class TsStreamAsProvider implements TsProvider {
      * Creates a new instance of TsFiller using cursors.
      *
      * @param providerName
-     * @param hdc a non-null ts cursor support
-     * @param hdm a non-null data moniker support
+     * @param hdc          a non-null ts cursor support
+     * @param hdm          a non-null data moniker support
      * @param cacheCleaner
      * @return a non-null instance
      */
@@ -108,15 +105,15 @@ public final class TsStreamAsProvider implements TsProvider {
      * @throws java.io.IOException
      */
     private void fillCollection(TsCollection.Builder info) throws IOException {
-        DataSource dataSource = toDataSource(info);
-        if (isCollection(dataSource)) {
-            fill(info, dataSource);
+        Optional<DataSource> dataSource = toDataSource(info);
+        if (dataSource.isPresent()) {
+            fill(info, dataSource.get());
             return;
         }
 
-        DataSet dataSet = toDataSet(info);
-        if (isCollection(dataSet)) {
-            fill(info, dataSet);
+        Optional<DataSet> dataSet = toDataSet(info);
+        if (dataSet.filter(TsStreamAsProvider::isCollection).isPresent()) {
+            fill(info, dataSet.get());
             return;
         }
 
@@ -130,36 +127,32 @@ public final class TsStreamAsProvider implements TsProvider {
      * @throws java.io.IOException
      */
     private void fillSeries(Ts.Builder info) throws IOException {
-        DataSet dataSet = toDataSet(info);
-        if (isSeries(dataSet)) {
-            fill(info, dataSet);
+        Optional<DataSet> dataSet = toDataSet(info);
+        if (dataSet.filter(TsStreamAsProvider::isSeries).isPresent()) {
+            fill(info, dataSet.get());
             return;
         }
 
         throw new IllegalArgumentException("Invalid moniker");
     }
 
-    private static boolean isCollection(DataSource dataSource) {
-        return dataSource != null;
-    }
-
     private static boolean isCollection(DataSet dataSet) {
-        return dataSet != null && DataSet.Kind.COLLECTION.equals(dataSet.getKind());
+        return DataSet.Kind.COLLECTION.equals(dataSet.getKind());
     }
 
     private static boolean isSeries(DataSet dataSet) {
-        return dataSet != null && DataSet.Kind.SERIES.equals(dataSet.getKind());
+        return DataSet.Kind.SERIES.equals(dataSet.getKind());
     }
 
-    private DataSource toDataSource(TsCollection.Builder info) {
+    private Optional<DataSource> toDataSource(TsCollection.Builder info) {
         return hdm.toDataSource(info.getMoniker());
     }
 
-    private DataSet toDataSet(TsCollection.Builder info) {
+    private Optional<DataSet> toDataSet(TsCollection.Builder info) {
         return hdm.toDataSet(info.getMoniker());
     }
 
-    private DataSet toDataSet(Ts.Builder info) {
+    private Optional<DataSet> toDataSet(Ts.Builder info) {
         return hdm.toDataSet(info.getMoniker());
     }
 
