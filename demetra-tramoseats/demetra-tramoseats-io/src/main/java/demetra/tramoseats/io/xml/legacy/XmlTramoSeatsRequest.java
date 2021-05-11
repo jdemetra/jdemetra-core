@@ -16,7 +16,7 @@
  */
 package demetra.tramoseats.io.xml.legacy;
 
-import internal.workspace.file.xml.XmlProcessingContext;
+import demetra.toolkit.io.xml.legacy.processing.XmlProcessingContext;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
