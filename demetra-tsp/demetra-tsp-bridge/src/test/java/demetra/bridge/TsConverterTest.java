@@ -1,43 +1,38 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.bridge;
 
-import static demetra.bridge.TsConverter.*;
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsPeriod;
-import demetra.timeseries.TsUnit;
-import demetra.timeseries.TsData;
-import demetra.timeseries.Ts;
-import demetra.timeseries.TsCollection;
-import demetra.timeseries.TsInformationType;
-import demetra.timeseries.TsMoniker;
+import demetra.timeseries.*;
 import demetra.tsprovider.util.ObsFormat;
 import ec.tss.tsproviders.utils.DataFormat;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
+import org.junit.Test;
+
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
+
+import static demetra.bridge.TsConverter.*;
 import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
 
 /**
- *
  * @author Philippe Charles
  */
 public class TsConverterTest {
@@ -218,6 +213,34 @@ public class TsConverterTest {
 
         assertThat(TsConverter.toObsFormat(DataFormat.of(Locale.FRENCH, "yyyy-MMM", "#")))
                 .isEqualTo(ObsFormat.of(Locale.FRENCH, "yyyy-MMM", "#"));
+    }
+
+    @Test
+    public void testTimeSelector() {
+        assertThatNullPointerException()
+                .isThrownBy(() -> TsConverter.fromTimeSelector(null));
+
+        assertThatNullPointerException()
+                .isThrownBy(() -> TsConverter.toTimeSelector(null));
+
+        LocalDateTime d0 = LocalDate.of(2009, 1, 1).atStartOfDay();
+        LocalDateTime d1 = LocalDate.of(2009, 1, 1).atStartOfDay();
+
+        TimeSelector[] z = {
+                TimeSelector.all(),
+                TimeSelector.none(),
+                TimeSelector.from(d0),
+                TimeSelector.to(d1),
+                TimeSelector.between(d0, d1),
+                TimeSelector.first(10),
+                TimeSelector.last(5),
+                TimeSelector.excluding(10, 5)
+        };
+
+        for (TimeSelector x : z) {
+            assertThat(TsConverter.toTimeSelector(TsConverter.fromTimeSelector(x)))
+                    .isEqualTo(x);
+        }
     }
 
     private final TsUnit[] supportedUnits = Stream.of(TsFrequency.values()).map(o -> toTsUnit(o)).filter(o -> !o.equals(TsUnit.UNDEFINED)).toArray(TsUnit[]::new);
