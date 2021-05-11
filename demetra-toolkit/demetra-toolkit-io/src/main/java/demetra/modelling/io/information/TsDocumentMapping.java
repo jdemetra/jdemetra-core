@@ -19,7 +19,9 @@ package demetra.modelling.io.information;
 import demetra.information.Information;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
+import demetra.processing.ProcResults;
 import demetra.processing.ProcSpecification;
+import demetra.processing.TsDataProcessorFactory;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsDocument;
 import java.util.List;
@@ -34,6 +36,20 @@ public class TsDocumentMapping {
 
     public static final String INPUT = "input", SPEC = "specification", RESULTS = "results", METADATA = "metadata";
     public static final String SERIES = "series";
+    
+    public <S extends ProcSpecification, R> InformationSetSerializer<TsDocument<S,R>> serializer(InformationSetSerializer<S> ispec, TsDataProcessorFactory<S, R> processor){
+        return new InformationSetSerializer<TsDocument<S,R>>() {
+            @Override
+            public InformationSet write(TsDocument<S, R> object, boolean verbose) {
+                return TsDocumentMapping.write(object, ispec, false, false);
+            }
+
+            @Override
+            public TsDocument<S, R> read(InformationSet info) {
+                return TsDocumentMapping.<S, R>read(info, ispec).withProcessor(processor);
+            }
+        };
+    }
 
     public <S extends ProcSpecification, R> InformationSet write(TsDocument<S, R> doc, InformationSetSerializer<S> ispec, boolean verbose, boolean legacy) {
 

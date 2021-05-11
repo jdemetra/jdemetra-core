@@ -40,11 +40,6 @@ public class X13SpecMapping {
         public X13Spec read(InformationSet info) {
             return X13SpecMapping.read(info);
         }
-
-        @Override
-        public Class<X13Spec> supportedType() {
-            return X13Spec.class;
-        }
     };
 
     public static final InformationSetSerializer<X13Spec> SERIALIZER_LEGACY = new InformationSetSerializer<X13Spec>() {
@@ -56,11 +51,6 @@ public class X13SpecMapping {
         @Override
         public X13Spec read(InformationSet info) {
             return X13SpecMapping.readLegacy(info);
-        }
-
-        @Override
-        public Class<X13Spec> supportedType() {
-            return X13Spec.class;
         }
     };
 

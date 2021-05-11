@@ -15,17 +15,15 @@
 * limitations under the Licence.
 */
 
-package demetra.information;
+package internal.workspace.file.xml;
 
-import demetra.information.InformationSet;
+import javax.xml.bind.annotation.XmlAttribute;
 
 /**
  *
  * @author Jean Palate
- * @param <T>
  */
-public interface InformationSetSerializer<T> {
-    InformationSet write(T object, boolean verbose);
-    T read(InformationSet info);
-    
+public abstract class XmlNamedObject {
+    @XmlAttribute
+    public String name;
 }

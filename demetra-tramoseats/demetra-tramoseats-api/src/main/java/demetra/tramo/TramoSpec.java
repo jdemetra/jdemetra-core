@@ -22,6 +22,7 @@ import demetra.modelling.TransformationType;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.processing.AlgorithmDescriptor;
+import demetra.processing.ProcSpecification;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.util.Validatable;
@@ -36,7 +37,7 @@ import lombok.NonNull;
 @Development(status = Development.Status.Beta)
 @lombok.Value
 @lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
-public final class TramoSpec implements Validatable<TramoSpec> {
+public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecification {
 
     public static final String METHOD = "tramo";
     public static final String FAMILY = "Modelling";
@@ -150,6 +151,10 @@ public final class TramoSpec implements Validatable<TramoSpec> {
         return this;
     }
 
+    @Override
+    public AlgorithmDescriptor getAlgorithmDescriptor(){
+        return DESCRIPTOR_V3;
+    }
     /**
      * Checks that the AMI is enabled
      *

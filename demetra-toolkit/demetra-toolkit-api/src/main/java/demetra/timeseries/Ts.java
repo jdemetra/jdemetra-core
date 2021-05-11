@@ -20,14 +20,25 @@ import java.util.Map;
 import nbbrd.design.LombokWorkaround;
 import internal.timeseries.util.TsDataBuilderUtil;
 import internal.timeseries.LombokHelper;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder( toBuilder = true)
+@lombok.Builder(toBuilder = true)
 public class Ts implements TsResource<TsData> {
+
+    public static final String SOURCE_OLD = "tsmoniker.source", ID_OLD = "tsmoniker.id",
+            DYNAMIC = "dynamic";
+    // Additional metadata.
+    public static final String BEG = "@beg", END = "@end", CONFIDENTIAL = "@confidential";
 
     @lombok.NonNull
     private TsMoniker moniker;
@@ -81,4 +92,94 @@ public class Ts implements TsResource<TsData> {
             return data;
         }
     }
+
+    public Ts withName(String newName) {
+        if (newName.equals(name)) {
+            return this;
+        }
+        return new Ts(moniker, type, newName, meta, data);
+    }
+
+    public Ts withData(TsInformationType info) {
+        if (type == info) {
+            return this;
+        }
+        if (type == TsInformationType.UserDefined || info == TsInformationType.UserDefined) {
+            throw new IllegalArgumentException();
+        }
+        if (type.encompass(info)) {
+            return this;
+        }
+        return TsFactory.makeTs(moniker, info);
+    }
+
+    public Ts freeze() {
+        if (! moniker.isProvided()) {
+            return this;
+        }
+        Builder builder = this.toBuilder();
+        putFreezeMeta(builder, moniker);
+        
+        return builder.moniker(TsMoniker.of())
+                .type(TsInformationType.UserDefined)
+                .build();
+    }
+
+    public Ts unfreeze() {
+        if (moniker.isProvided())
+            return this;
+        TsMoniker pmoniker=getFreezeMeta(meta);
+        if (pmoniker == null)
+            return this;
+        return TsFactory.makeTs(pmoniker, type);
+    }
+
+    private static void putFreezeMeta(@NonNull Builder builder, @NonNull TsMoniker origin) {
+        builder.meta(TsFactory.SOURCE, origin.getSource());
+        builder.meta(TsFactory.ID, origin.getId());
+        builder.meta(TsFactory.DATE, LocalDateTime.now().format(DateTimeFormatter.ISO_DATE));
+    }
+
+    private static boolean containsFreezeMeta(@NonNull Map<String, String> md) {
+        if (md.containsKey(TsFactory.SOURCE)) {
+            return true;
+        }
+        // legacy
+        if (md.containsKey(SOURCE_OLD)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Nullable
+    private static TsMoniker getFreezeMeta(@NonNull Map<String, String> md) {
+
+        String source = md.get(TsFactory.SOURCE);
+        // Legacy
+        if (source == null) {
+            source = md.get(SOURCE_OLD);
+        }
+        if (source == null) {
+            return null;
+        }
+
+        if (source.length() == 0) {
+            return TsMoniker.of();
+        }
+        // Legacy
+        if (DYNAMIC.equals(source)) {
+            return TsMoniker.of();
+        }
+        String id = md.get(TsFactory.ID);
+        if (id == null) {
+            id = md.get(ID_OLD);
+        }
+        if (id == null) {
+            return null;
+        } else {
+            return TsMoniker.of(source, id);
+        }
+    }
+
 }

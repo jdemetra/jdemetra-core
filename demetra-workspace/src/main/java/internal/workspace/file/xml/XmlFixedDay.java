@@ -13,28 +13,40 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
- */
+*/
+
 package internal.workspace.file.xml;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import demetra.timeseries.ValidityPeriod;
+import demetra.timeseries.calendars.FixedDay;
+import demetra.toolkit.io.xml.legacy.IXmlConverter;
+import java.time.Month;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * @author Kristof Bayens
+ * @author Jean Palate
  */
-@XmlType(name = XmlLegacyWorkspaceItem.NAME)
-public final class XmlLegacyWorkspaceItem {
-
-    static final String NAME = "demetraItemType";
-
-    @XmlElement
-    public String name;
+@XmlType(name = XmlFixedDay.NAME)
+public class XmlFixedDay extends AbstractXmlDay implements IXmlConverter<FixedDay> {
+    static final String NAME = "fixedDayType";
 
     @XmlElement
-    public String file;
+    public Month month;
+    @XmlElement
+    public int day;
 
-    @XmlAttribute
-    public boolean readOnly;
+    @Override
+    public FixedDay create() {
+        return new FixedDay(day, month.getValue(), getWeight(), ValidityPeriod.ALWAYS);
+    }
+
+    @Override
+    public void copy(FixedDay t) {
+        day=t.getDay();
+        month=Month.of(t.getMonth());
+        setWeight(t.getWeight());
+    }
 }
+

@@ -41,10 +41,6 @@ public class TramoSeatsSpecMapping {
             return TramoSeatsSpecMapping.read(info);
         }
 
-        @Override
-        public Class<TramoSeatsSpec> supportedType() {
-            return TramoSeatsSpec.class;
-        }
     };
 
     public static final InformationSetSerializer<TramoSeatsSpec> SERIALIZER_LEGACY=new InformationSetSerializer<TramoSeatsSpec>() {
@@ -58,10 +54,6 @@ public class TramoSeatsSpecMapping {
             return TramoSeatsSpecMapping.readLegacy(info);
         }
 
-        @Override
-        public Class<TramoSeatsSpec> supportedType() {
-            return TramoSeatsSpec.class;
-        }
     };
 
     public static final String TRAMO = "tramo", SEATS = "seats", BENCH = "benchmarking", RSA = "method";

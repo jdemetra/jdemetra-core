@@ -29,7 +29,7 @@ import demetra.timeseries.TsData;
  * @param <R> Results (output) class
  */
 @Development(status = Development.Status.Exploratory)
-public interface TsDataProcessorFactory<S extends ProcSpecification, R extends ProcResults>  extends
+public interface TsDataProcessorFactory<S extends ProcSpecification, R>  extends
        ProcessorFactory<S, TsData, R>  {
 
     /**

@@ -15,17 +15,17 @@
 * limitations under the Licence.
 */
 
-package demetra.information;
 
-import demetra.information.InformationSet;
+package internal.workspace.file.xml;
+
+import demetra.timeseries.calendars.CalendarManager;
+
 
 /**
  *
- * @author Jean Palate
- * @param <T>
+ * @author Kristof Bayens
  */
-public interface InformationSetSerializer<T> {
-    InformationSet write(T object, boolean verbose);
-    T read(InformationSet info);
+public abstract class AbstractXmlCalendar extends XmlNamedObject {
     
+    public abstract boolean addTo(CalendarManager info);
 }

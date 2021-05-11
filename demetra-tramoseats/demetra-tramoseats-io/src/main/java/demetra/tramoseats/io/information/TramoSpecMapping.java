@@ -42,11 +42,6 @@ public class TramoSpecMapping {
         public TramoSpec read(InformationSet info) {
             return TramoSpecMapping.read(info);
         }
-
-        @Override
-        public Class<TramoSpec> supportedType() {
-            return TramoSpec.class;
-        }
     };
 
     public static final InformationSetSerializer<TramoSpec> SERIALIZER_LEGACY = new InformationSetSerializer<TramoSpec>() {
@@ -58,11 +53,6 @@ public class TramoSpecMapping {
         @Override
         public TramoSpec read(InformationSet info) {
             return TramoSpecMapping.readLegacy(info);
-        }
-
-        @Override
-        public Class<TramoSpec> supportedType() {
-            return TramoSpec.class;
         }
     };
 

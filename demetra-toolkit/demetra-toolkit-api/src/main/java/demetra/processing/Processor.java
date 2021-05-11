@@ -26,7 +26,7 @@ import nbbrd.design.Development;
  * @param <R>
  */
 @Development(status = Development.Status.Exploratory)
-public interface Processor <I, R extends ProcResults> {
+public interface Processor <I, R> {
 
     public static enum Status {
         Unprocessed,

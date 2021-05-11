@@ -42,12 +42,10 @@ public final class InformationSetSupport implements FileSupport {
 
     private final String repository;
     private final InformationSetSerializer factory;
-    private final Class type;
 
     private InformationSetSupport(InformationSetSerializer factory, String repository) {
         this.repository = Objects.requireNonNull(repository);
         this.factory = Objects.requireNonNull(factory);
-        this.type = factory.supportedType();
     }
 
     @Override

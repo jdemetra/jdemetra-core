@@ -18,6 +18,8 @@ package internal.workspace.file;
 
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
+import demetra.workspace.file.FileWorkspace;
+import static internal.test.TestResources.GENERIC_INDEX;
 import internal.workspace.file.spi.FamilyHandlerLoader;
 import java.io.IOException;
 import java.nio.file.FileSystem;
@@ -36,7 +38,7 @@ import org.junit.BeforeClass;
  * @author Philippe Charles
  */
 public class FileWorkspaceImplTest {
-//
+
 //    private static FileSystem JIM_FS;
 //
 //    @BeforeClass
@@ -49,8 +51,8 @@ public class FileWorkspaceImplTest {
 //        JIM_FS.close();
 //    }
 //
-//    @Test
-//    public void testLoadGeneric() throws IOException {
+    @Test
+    public void testLoadGeneric() throws IOException {
 //        try (FileWorkspace ws = openGenericUsingServiceLoader(GENERIC_INDEX)) {
 //            assertThat(ws.getName()).isEqualTo("my_workspace");
 //            assertThat(ws.getFileFormat()).isEqualTo(FileFormat.GENERIC);
@@ -78,7 +80,7 @@ public class FileWorkspaceImplTest {
 //            assertThat(ws.load(GENERIC_UTIL_CAL)).isInstanceOf(GregorianCalendarManager.class);
 //            assertThat(ws.load(GENERIC_UTIL_VAR)).isInstanceOf(TsVariables.class);
 //        }
-//    }
+    }
 //
 //    @Test
 //    public void testLoadLegacy() throws IOException {

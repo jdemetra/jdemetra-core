@@ -19,6 +19,7 @@ package demetra.regarima;
 import demetra.modelling.TransformationType;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.processing.AlgorithmDescriptor;
+import demetra.processing.ProcSpecification;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.util.Validatable;
@@ -34,7 +35,7 @@ import nbbrd.design.LombokWorkaround;
 @lombok.Value
 
 @lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
-public final class RegArimaSpec implements Validatable<RegArimaSpec> {
+public final class RegArimaSpec implements Validatable<RegArimaSpec>, ProcSpecification {
 
     public static final String METHOD = "regarima";
     public static final String FAMILY = "Modelling";
@@ -54,6 +55,11 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec> {
     private AutoModelSpec autoModel;
     private SarimaSpec arima;
     private EstimateSpec estimate;
+    
+    @Override
+    public AlgorithmDescriptor getAlgorithmDescriptor(){
+        return DESCRIPTOR_V3;
+    }
 
     @LombokWorkaround
     public static Builder builder() {

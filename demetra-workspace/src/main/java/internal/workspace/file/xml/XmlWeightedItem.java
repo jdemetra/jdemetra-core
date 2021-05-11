@@ -15,17 +15,25 @@
 * limitations under the Licence.
 */
 
-package demetra.information;
 
-import demetra.information.InformationSet;
+package internal.workspace.file.xml;
+
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * @author Jean Palate
- * @param <T>
+ * @author Kristof Bayens
  */
-public interface InformationSetSerializer<T> {
-    InformationSet write(T object, boolean verbose);
-    T read(InformationSet info);
-    
+@XmlType(name = XmlWeightedItem.NAME)
+public class XmlWeightedItem {
+    static final String NAME = "weightedItemType";
+
+    @XmlElement
+    public String item;
+    @XmlElement
+    public double weight;
+    @XmlAttribute(name="ref")
+    public String reference;
 }

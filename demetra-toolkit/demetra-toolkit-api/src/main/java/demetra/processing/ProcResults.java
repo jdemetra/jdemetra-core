@@ -18,6 +18,7 @@ package demetra.processing;
 
 import nbbrd.design.Development;
 import demetra.util.WildCards;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -38,14 +39,14 @@ public interface ProcResults {
      * @param id Information item
      * @return
      */
-    boolean contains(String id);
+    default boolean contains(String id){return false;}
 
     /**
      * Gets the dictionary of all the possible results
      *
      * @return
      */
-    Map<String, Class> getDictionary();
+    default Map<String, Class> getDictionary(){return Collections.emptyMap();}
 
     /**
      * Gets information related to the specified id
@@ -57,7 +58,9 @@ public interface ProcResults {
      * @param tclass Class of the information
      * @return null if this information is not available
      */
-    <T> T getData(String id, Class<T> tclass);
+    default <T> T getData(String id, Class<T> tclass){
+        return null;
+    }
     
     default Object getData(String id){
         return getData(id, Object.class);

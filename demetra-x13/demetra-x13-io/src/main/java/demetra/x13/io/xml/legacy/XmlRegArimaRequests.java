@@ -16,7 +16,7 @@
  */
 package demetra.x13.io.xml.legacy;
 
-import demetra.toolkit.io.xml.legacy.processing.XmlProcessingContext;
+import internal.workspace.file.xml.XmlProcessingContext;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;

@@ -71,22 +71,22 @@ public class TestResources {
             GENERIC_MOD_DOC_REGARIMA, GENERIC_SA_DOC_TRAMOSEATS})
     );
 
-    public static final Path LEGACY_INDEX = PathUtil.get(TestResources.class.getResource("/legacy_ws.xml"));
-    public static final Path LEGACY_ROOT = PathUtil.get(TestResources.class.getResource("/legacy_ws"));
-
-    public static final WorkspaceItem LEGACY_SA_MULTI = of(SA_MULTI, "SAProcessing-1");
-    public static final WorkspaceItem LEGACY_SA_DOC_X13 = of(SA_DOC_X13, "X12 [1]");
-    public static final WorkspaceItem LEGACY_SA_DOC_TRAMOSEATS = of(SA_DOC_TRAMOSEATS, "TramoSeats [1]");
-    public static final WorkspaceItem LEGACY_SA_SPEC_X13 = of(SA_SPEC_X13, "X12Spec-1");
-    public static final WorkspaceItem LEGACY_SA_SPEC_TRAMOSEATS = of(SA_SPEC_TRAMOSEATS, "TramoSeatsSpec-1");
-
-    public static final WorkspaceItem LEGACY_UTIL_CAL = of(UTIL_CAL, "Calendars");
-    public static final WorkspaceItem LEGACY_UTIL_VAR = of(UTIL_VAR, "Variables");
-
-    public static final List<WorkspaceItem> LEGACY_ITEMS = Collections.unmodifiableList(Arrays.asList(new WorkspaceItem[]{
-            LEGACY_SA_MULTI, LEGACY_SA_DOC_X13, LEGACY_UTIL_VAR, LEGACY_SA_SPEC_TRAMOSEATS,
-            LEGACY_SA_SPEC_X13, LEGACY_UTIL_CAL, LEGACY_SA_DOC_TRAMOSEATS})
-    );
+//    public static final Path LEGACY_INDEX = PathUtil.get(TestResources.class.getResource("/legacy_ws.xml"));
+//    public static final Path LEGACY_ROOT = PathUtil.get(TestResources.class.getResource("/legacy_ws"));
+//
+//    public static final WorkspaceItem LEGACY_SA_MULTI = of(SA_MULTI, "SAProcessing-1");
+//    public static final WorkspaceItem LEGACY_SA_DOC_X13 = of(SA_DOC_X13, "X12 [1]");
+//    public static final WorkspaceItem LEGACY_SA_DOC_TRAMOSEATS = of(SA_DOC_TRAMOSEATS, "TramoSeats [1]");
+//    public static final WorkspaceItem LEGACY_SA_SPEC_X13 = of(SA_SPEC_X13, "X12Spec-1");
+//    public static final WorkspaceItem LEGACY_SA_SPEC_TRAMOSEATS = of(SA_SPEC_TRAMOSEATS, "TramoSeatsSpec-1");
+//
+//    public static final WorkspaceItem LEGACY_UTIL_CAL = of(UTIL_CAL, "Calendars");
+//    public static final WorkspaceItem LEGACY_UTIL_VAR = of(UTIL_VAR, "Variables");
+//
+//    public static final List<WorkspaceItem> LEGACY_ITEMS = Collections.unmodifiableList(Arrays.asList(new WorkspaceItem[]{
+//            LEGACY_SA_MULTI, LEGACY_SA_DOC_X13, LEGACY_UTIL_VAR, LEGACY_SA_SPEC_TRAMOSEATS,
+//            LEGACY_SA_SPEC_X13, LEGACY_UTIL_CAL, LEGACY_SA_DOC_TRAMOSEATS})
+//    );
 
     private WorkspaceItem of(WorkspaceFamily family, String name) {
         return WorkspaceItem.builder().family(family).id(name).label(name).build();

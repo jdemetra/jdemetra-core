@@ -23,7 +23,6 @@ import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
 import demetra.regarima.RegArimaSpec;
 import demetra.regarima.RegressionSpec;
-import demetra.regarima.SarimaValidator;
 import java.util.Map;
 
 /**
@@ -43,11 +42,6 @@ public class RegArimaSpecMapping {
         public RegArimaSpec read(InformationSet info) {
             return RegArimaSpecMapping.read(info);
         }
-
-        @Override
-        public Class<RegArimaSpec> supportedType() {
-            return RegArimaSpec.class;
-        }
     };
 
     public static final InformationSetSerializer<RegArimaSpec> SERIALIZER_LEGACY=new InformationSetSerializer<RegArimaSpec>() {
@@ -59,11 +53,6 @@ public class RegArimaSpecMapping {
         @Override
         public RegArimaSpec read(InformationSet info) {
             return RegArimaSpecMapping.readLegacy(info);
-        }
-
-        @Override
-        public Class<RegArimaSpec> supportedType() {
-            return RegArimaSpec.class;
         }
     };
     
