@@ -65,7 +65,7 @@ public class SpreadSheetProviderTest {
                 .build();
 
         try (SpreadSheetProvider p = new SpreadSheetProvider()) {
-            assertThat(p.toDataSet(TsMoniker.of("XCLPRVDR", legacy))).isEqualTo(expected);
+            assertThat(p.toDataSet(TsMoniker.of("XCLPRVDR", legacy))).hasValue(expected);
         }
     }
 
@@ -89,7 +89,7 @@ public class SpreadSheetProviderTest {
                 .build();
 
         try (SpreadSheetProvider p = new SpreadSheetProvider()) {
-            assertThat(p.toDataSet(TsMoniker.of("XCLPRVDR", uri))).isEqualTo(expected);
+            assertThat(p.toDataSet(TsMoniker.of("XCLPRVDR", uri))).hasValue(expected);
         }
     }
 

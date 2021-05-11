@@ -16,6 +16,8 @@
  */
 package demetra.bridge;
 
+import demetra.tsprovider.DataSet;
+import demetra.tsprovider.DataSource;
 import demetra.tsprovider.DataSourceListener;
 import demetra.tsprovider.DataSourceProvider;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -24,6 +26,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -131,15 +134,15 @@ public class FromDataSourceProvider extends FromTsProvider implements ec.tss.tsp
     @Override
     public ec.tss.tsproviders.@Nullable DataSource toDataSource(ec.tss.@NonNull TsMoniker moniker) throws IllegalArgumentException {
         Objects.requireNonNull(moniker);
-        demetra.tsprovider.DataSource result = getDelegate().toDataSource(TsConverter.toTsMoniker(moniker));
-        return result != null ? TsConverter.fromDataSource(result) : null;
+        Optional<DataSource> result = getDelegate().toDataSource(TsConverter.toTsMoniker(moniker));
+        return result.isPresent() ? TsConverter.fromDataSource(result.get()) : null;
     }
 
     @Override
     public ec.tss.tsproviders.@Nullable DataSet toDataSet(ec.tss.@NonNull TsMoniker moniker) throws IllegalArgumentException {
         Objects.requireNonNull(moniker);
-        demetra.tsprovider.DataSet result = getDelegate().toDataSet(TsConverter.toTsMoniker(moniker));
-        return result != null ? TsConverter.fromDataSet(result) : null;
+        Optional<DataSet> result = getDelegate().toDataSet(TsConverter.toTsMoniker(moniker));
+        return result.isPresent() ? TsConverter.fromDataSet(result.get()) : null;
     }
 
     @lombok.AllArgsConstructor

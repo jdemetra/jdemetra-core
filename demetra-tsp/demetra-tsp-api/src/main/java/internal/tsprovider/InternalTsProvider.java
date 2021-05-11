@@ -1,53 +1,39 @@
 /*
  * Copyright 2016 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package internal.tsprovider;
 
-import demetra.tsprovider.DataSet;
-import demetra.tsprovider.DataSource;
-import demetra.tsprovider.DataSourceListener;
-import demetra.tsprovider.HasDataDisplayName;
-import demetra.tsprovider.HasDataHierarchy;
-import demetra.tsprovider.HasDataMoniker;
-import demetra.tsprovider.HasDataSourceBean;
-import demetra.tsprovider.HasDataSourceList;
-import demetra.tsprovider.HasDataSourceMutableList;
-import demetra.tsprovider.HasFilePaths;
 import demetra.timeseries.TsMoniker;
+import demetra.tsprovider.*;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.IParam;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import demetra.util.List2;
 import internal.util.Strings;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.logging.Level;
-import java.util.stream.StreamSupport;
 import nbbrd.io.text.Formatter;
 import nbbrd.io.text.Parser;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.stream.StreamSupport;
 
 /**
  * Package-private supporting class for ts providers.
@@ -158,15 +144,15 @@ public class InternalTsProvider {
         }
 
         @Override
-        public DataSet toDataSet(TsMoniker moniker) throws IllegalArgumentException {
+        public Optional<DataSet> toDataSet(TsMoniker moniker) throws IllegalArgumentException {
             checkProvider(moniker);
-            return dataSetParser.parse(moniker.getId());
+            return dataSetParser.parseValue(moniker.getId());
         }
 
         @Override
-        public DataSource toDataSource(TsMoniker moniker) throws IllegalArgumentException {
+        public Optional<DataSource> toDataSource(TsMoniker moniker) throws IllegalArgumentException {
             checkProvider(moniker);
-            return dataSourceParser.parse(moniker.getId());
+            return dataSourceParser.parseValue(moniker.getId());
         }
     }
 

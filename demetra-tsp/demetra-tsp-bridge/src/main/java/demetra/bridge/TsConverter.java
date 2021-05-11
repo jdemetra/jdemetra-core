@@ -357,6 +357,7 @@ public class TsConverter {
     }
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="ObsFormat / DataFormat">
     public ec.tss.tsproviders.utils.@NonNull DataFormat fromObsFormat(@NonNull ObsFormat o) {
         return ec.tss.tsproviders.utils.DataFormat.of(o.getLocale(), o.getDateTimePattern(), o.getNumberPattern());
     }
@@ -364,4 +365,63 @@ public class TsConverter {
     public @NonNull ObsFormat toObsFormat(ec.tss.tsproviders.utils.@NonNull DataFormat o) {
         return ObsFormat.of(o.getLocale(), o.getDatePattern(), o.getNumberPattern());
     }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="TimeSelector / TsPeriodSelector">
+    public ec.tstoolkit.timeseries.@NonNull TsPeriodSelector fromTimeSelector(@NonNull TimeSelector o) {
+        ec.tstoolkit.timeseries.TsPeriodSelector result = new ec.tstoolkit.timeseries.TsPeriodSelector();
+        switch (o.getType()) {
+            case All:
+                result.all();
+                break;
+            case Between:
+                result.between(fromDateTime(o.getD0()), fromDateTime(o.getD1()));
+                break;
+            case Excluding:
+                result.excluding(o.getN0(), o.getN1());
+                break;
+            case First:
+                result.first(o.getN0());
+                break;
+            case From:
+                result.from(fromDateTime(o.getD0()));
+                break;
+            case Last:
+                result.last(o.getN1());
+                break;
+            case None:
+                result.none();
+                break;
+            case To:
+                result.to(fromDateTime(o.getD1()));
+                break;
+            default:
+                throw ConverterException.notPossible(o.getType());
+        }
+        return result;
+    }
+
+    public @NonNull TimeSelector toTimeSelector(ec.tstoolkit.timeseries.@NonNull TsPeriodSelector o) {
+        switch (o.getType()) {
+            case All:
+                return TimeSelector.all();
+            case Between:
+                return TimeSelector.between(toDateTime(o.getD0()), toDateTime(o.getD1()));
+            case Excluding:
+                return TimeSelector.excluding(o.getN0(), o.getN1());
+            case First:
+                return TimeSelector.first(o.getN0());
+            case From:
+                return TimeSelector.from(toDateTime(o.getD0()));
+            case Last:
+                return TimeSelector.last(o.getN1());
+            case None:
+                return TimeSelector.none();
+            case To:
+                return TimeSelector.to(toDateTime(o.getD1()));
+            default:
+                throw ConverterException.notPossible(o.getType());
+        }
+    }
+    //</editor-fold>
 }

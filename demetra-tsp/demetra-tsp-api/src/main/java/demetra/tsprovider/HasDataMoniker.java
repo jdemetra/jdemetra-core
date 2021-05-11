@@ -22,6 +22,8 @@ import internal.tsprovider.InternalTsProvider;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Optional;
+
 /**
  * Defines the ability to convert a moniker from/to a DataSource or a DataSet.
  * Note that the implementations must be thread-safe.
@@ -60,23 +62,21 @@ public interface HasDataMoniker {
      * Creates a DataSource from a moniker.
      *
      * @param moniker a non-null moniker
-     * @return a data source if possible, null otherwise
+     * @return an optional data source
      * @throws IllegalArgumentException if the moniker doesn't belong to this
      * provider.
      */
-    @Nullable
-    DataSource toDataSource(@NonNull TsMoniker moniker) throws IllegalArgumentException;
+    @NonNull Optional<DataSource> toDataSource(@NonNull TsMoniker moniker) throws IllegalArgumentException;
 
     /**
      * Creates a DataSet from a moniker.
      *
      * @param moniker a non-null moniker
-     * @return a dataset if possible, null otherwise
+     * @return an optional dataset
      * @throws IllegalArgumentException if the moniker doesn't belong to this
      * provider.
      */
-    @Nullable
-    DataSet toDataSet(@NonNull TsMoniker moniker) throws IllegalArgumentException;
+    @NonNull Optional<DataSet> toDataSet(@NonNull TsMoniker moniker) throws IllegalArgumentException;
 
     /**
      * Creates a new instance of HasDataMoniker using uri parser/formatter.

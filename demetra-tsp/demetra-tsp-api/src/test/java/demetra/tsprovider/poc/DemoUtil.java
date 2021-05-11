@@ -2,31 +2,30 @@ package demetra.tsprovider.poc;
 
 /*
  * Copyright 2015 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-import demetra.timeseries.TsData;
+
+import demetra.timeseries.*;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.DataSourceProvider;
-import demetra.timeseries.TsCollection;
-import demetra.timeseries.Ts;
-import demetra.timeseries.TsInformationType;
 import demetra.tsprovider.TsProviders;
 import demetra.tsprovider.util.MultiLineNameUtil;
-import demetra.timeseries.TsDomain;
 import demetra.util.TreeTraverser;
+import nbbrd.io.function.IOFunction;
+
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Duration;
@@ -36,10 +35,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import nbbrd.io.function.IOFunction;
 
 /**
- *
  * @author Philippe Charles
  */
 @lombok.experimental.UtilityClass
@@ -69,7 +66,7 @@ class DemoUtil {
     }
 
     void printSeries(DataSourceProvider provider, Ts ts) {
-        printId(provider, provider.toDataSet(ts.getMoniker()));
+        printId(provider, provider.toDataSet(ts.getMoniker()).orElse(null));
         printLabel(ts.getName());
         printMetaData(ts.getMeta());
         printData(ts.getData());
