@@ -19,6 +19,7 @@ package demetra.data;
 import nbbrd.design.Demo;
 import java.util.stream.DoubleStream;
 import static org.assertj.core.api.Assertions.*;
+
 import org.junit.Test;
 
 /**
@@ -29,14 +30,14 @@ public class DoubleSeqTest {
 
     @Demo
     public static void main(String[] args) {
-        DoubleSeq values = DoubleSeq.copyOf(new double[]{3.14, 3, 5, 7});
-        System.out.println(DoubleSeq.copyOf(values.stream().skip(1).map(o -> o * 2)));
+        DoubleSeq values = Doubles.of(new double[]{3.14, 3, 5, 7});
+        System.out.println(Doubles.of(values.stream().skip(1).map(o -> o * 2)));
 
         double[] tmp = values.toArray();
         tmp[2] = 123;
         System.out.println(DoubleSeq.of(tmp));
 
-        System.out.println(DoubleSeq.copyOf(DoubleStream.concat(DoubleStream.of(777), values.stream())));
+        System.out.println(Doubles.of(DoubleStream.concat(DoubleStream.of(777), values.stream())));
 
         double[] buffer = new double[values.length() + 1];
         values.copyTo(buffer, 1);
@@ -53,11 +54,11 @@ public class DoubleSeqTest {
 
         assertThat(Doubles.EMPTY.length()).isEqualTo(0);
         assertThat(Doubles.of(3.14).length()).isEqualTo(1);
-        assertThatThrownBy(() -> DoubleSeq.copyOf((double[]) null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> Doubles.of((double[]) null)).isInstanceOf(NullPointerException.class);
 
-        assertThat(DoubleSeq.copyOf(DoubleStream.of()).length()).isEqualTo(0);
-        assertThat(DoubleSeq.copyOf(DoubleStream.of(3.14)).length()).isEqualTo(1);
-        assertThatThrownBy(() -> DoubleSeq.copyOf((DoubleStream) null)).isInstanceOf(NullPointerException.class);
+        assertThat(Doubles.of(DoubleStream.of()).length()).isEqualTo(0);
+        assertThat(Doubles.of(DoubleStream.of(3.14)).length()).isEqualTo(1);
+        assertThatThrownBy(() -> Doubles.of((DoubleStream) null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test

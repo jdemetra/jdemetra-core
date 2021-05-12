@@ -15,17 +15,15 @@
 * limitations under the Licence.
 */
 
+package internal.workspace.file.xml.util;
 
-package internal.workspace.file.xml;
-
-import demetra.timeseries.calendars.CalendarManager;
-
+import javax.xml.bind.annotation.XmlAttribute;
 
 /**
  *
- * @author Kristof Bayens
+ * @author Jean Palate
  */
-public abstract class AbstractXmlCalendar extends XmlNamedObject {
-    
-    public abstract boolean addTo(CalendarManager info);
+public abstract class XmlNamedObject {
+    @XmlAttribute
+    public String name;
 }

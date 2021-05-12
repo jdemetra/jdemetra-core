@@ -15,10 +15,11 @@
 * limitations under the Licence.
 */
 
-package internal.workspace.file.xml;
+package internal.workspace.file.xml.util;
 
 import demetra.timeseries.ValidityPeriod;
-import demetra.timeseries.calendars.EasterRelatedDay;
+import demetra.timeseries.calendars.DayEvent;
+import demetra.timeseries.calendars.PrespecifiedHoliday;
 import demetra.toolkit.io.xml.legacy.IXmlConverter;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -28,28 +29,35 @@ import javax.xml.bind.annotation.XmlType;
  *
  * @author Jean Palate
  */
-@XmlType(name = XmlEasterRelatedDay.NAME)
-public class XmlEasterRelatedDay extends AbstractXmlDay implements IXmlConverter<EasterRelatedDay> {
+@XmlType(name = XmlSpecialCalendarDay.NAME)
+public class XmlSpecialCalendarDay extends AbstractXmlDay implements IXmlConverter<PrespecifiedHoliday> {
 
-    static final String NAME = "easterRelatedDayType";
+    static final String NAME = "specialCalendarDayType";
+    @XmlElement(name = "event")
+    public DayEvent ev;
     @XmlElement
     public Integer offset;
     @XmlAttribute
     public Boolean julian;
 
     @Override
-    public EasterRelatedDay create() {
-        return isJulian() ? EasterRelatedDay.julian(getOffset(), getWeight(), ValidityPeriod.ALWAYS) : 
-                EasterRelatedDay.gregorian(getOffset(), getWeight(), ValidityPeriod.ALWAYS);
+    public PrespecifiedHoliday create() {
+        return PrespecifiedHoliday.builder()
+                .event(ev)
+                .julian(isJulian())
+                .offset(getOffset())
+                .weight(getWeight())
+                .build();
     }
 
     @Override
-    public void copy(EasterRelatedDay t) {
+    public void copy(PrespecifiedHoliday t) {
+        ev=t.getEvent();
         setOffset(t.getOffset());
         setWeight(t.getWeight());
         setJulian(t.isJulian());
     }
-
+    
     private void setOffset(int val) {
         if (val == 0) {
             offset = null;
@@ -57,13 +65,6 @@ public class XmlEasterRelatedDay extends AbstractXmlDay implements IXmlConverter
         else {
             offset = val;
         }
-    }
-    
-    private void setJulian(boolean j){
-        if (j)
-            julian=true;
-        else
-            julian=null;
     }
 
     private int getOffset() {
@@ -75,11 +76,17 @@ public class XmlEasterRelatedDay extends AbstractXmlDay implements IXmlConverter
         }
     }
     
+    private void setJulian(boolean j) {
+        if (j)
+            julian = true;
+        else
+            julian = null;
+    }
+    
     private boolean isJulian() {
         if (julian == null) {
             return false;
-        }
-        else {
+        } else {
             return julian;
         }
     }

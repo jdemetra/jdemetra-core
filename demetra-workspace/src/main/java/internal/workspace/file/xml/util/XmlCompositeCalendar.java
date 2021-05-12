@@ -15,7 +15,7 @@
 * limitations under the Licence.
 */
 
-package internal.workspace.file.xml;
+package internal.workspace.file.xml.util;
 
 import demetra.timeseries.calendars.CalendarDefinition;
 import demetra.timeseries.calendars.CalendarManager;

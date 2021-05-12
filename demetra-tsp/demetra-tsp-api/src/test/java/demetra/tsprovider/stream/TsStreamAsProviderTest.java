@@ -1,52 +1,43 @@
 /*
  * Copyright 2016 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.tsprovider.stream;
 
 import _util.tsproviders.FailingTsCursorSupport;
-import _util.tsproviders.NoOpTsCursorSupport;
 import com.google.common.collect.ImmutableMap;
-import demetra.timeseries.TsUnit;
-import demetra.timeseries.TsData;
+import demetra.timeseries.*;
 import demetra.tsprovider.DataSet;
-import static demetra.tsprovider.DataSet.Kind.COLLECTION;
-import static demetra.tsprovider.DataSet.Kind.SERIES;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.HasDataMoniker;
-import demetra.timeseries.Ts;
-import demetra.timeseries.TsCollection;
-import demetra.timeseries.TsInformationType;
-import static demetra.timeseries.TsInformationType.All;
-import static demetra.timeseries.TsInformationType.Data;
-import static demetra.timeseries.TsInformationType.MetaData;
-import static demetra.timeseries.TsInformationType.None;
-import demetra.timeseries.TsMoniker;
-import demetra.timeseries.TsProvider;
 import internal.timeseries.util.TsDataBuilderUtil;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
+import static demetra.timeseries.TsInformationType.*;
+import static demetra.tsprovider.DataSet.Kind.COLLECTION;
+import static demetra.tsprovider.DataSet.Kind.SERIES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.junit.Test;
 
 /**
- *
  * @author Philippe Charles
  */
 public class TsStreamAsProviderTest {
@@ -93,10 +84,10 @@ public class TsStreamAsProviderTest {
                     };
                     return Stream.of(s1, s2, s3)
                             .map(ts -> new DataSetTs(
-                            toDataSet.apply(ts),
-                            ts.getName(),
-                            type.encompass(MetaData) ? ts.getMeta() : Collections.emptyMap(),
-                            type.encompass(Data) ? ts.getData() : DataSetTs.DATA_NOT_REQUESTED)
+                                    toDataSet.apply(ts),
+                                    ts.getName(),
+                                    type.encompass(MetaData) ? ts.getMeta() : Collections.emptyMap(),
+                                    type.encompass(Data) ? ts.getData() : DataSetTs.DATA_NOT_REQUESTED)
                             );
                 }
                 throw new IOException();
@@ -113,7 +104,7 @@ public class TsStreamAsProviderTest {
     @Test
     @SuppressWarnings("null")
     public void testFactory() {
-        HasTsStream noOpCursor = new NoOpTsCursorSupport(provider);
+        HasTsStream noOpCursor = HasTsStream.noOp(provider);
 
         assertThatThrownBy(() -> TsStreamAsProvider.of(provider, null, monikers, doNothing))
                 .isInstanceOf(NullPointerException.class)

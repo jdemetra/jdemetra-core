@@ -15,6 +15,7 @@
     <description>Seasonal Adjustment Toolkit - Workspace</description>
 
     <properties>
+        <guava.version>30.1.1-jre</guava.version>
         <jimfs.version>1.2</jimfs.version>
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
         <jd3-toolkit.version>1.0.0-SNAPSHOT</jd3-toolkit.version>
@@ -83,6 +84,12 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>     
+            <groupId>com.google.guava</groupId>     
+            <artifactId>guava</artifactId>     
+            <version>${guava.version}</version> 
+            <scope>test</scope>
+        </dependency> 
         <dependency>
             <groupId>com.google.jimfs</groupId>
             <artifactId>jimfs</artifactId>

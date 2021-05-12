@@ -16,6 +16,7 @@
  */
 package jdplus.sarima.estimation;
 
+import demetra.data.Doubles;
 import jdplus.data.normalizer.AbsMeanNormalizer;
 import jdplus.data.DataBlock;
 import nbbrd.design.Development;
@@ -317,7 +318,7 @@ public class HannanRissanen {
                 ar=AutoRegressiveEstimation.levinson();
                 break;
         }
-        ar.estimate(DoubleSeq.copyOf(m_data), npi());
+        ar.estimate(Doubles.of(m_data), npi());
         m_a=ar.residuals().toArray();
     }
 

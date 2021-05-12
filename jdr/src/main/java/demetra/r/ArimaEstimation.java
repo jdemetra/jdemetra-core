@@ -16,6 +16,7 @@
  */
 package demetra.r;
 
+import demetra.data.Doubles;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import demetra.information.InformationMapping;
@@ -82,7 +83,7 @@ public class ArimaEstimation {
         IntList missings = new IntList();
         jdplus.data.interpolation.AverageInterpolator.cleanMissings(y, missings);
         RegArimaModel.Builder<SarimaModel> rbuilder = RegArimaModel.<SarimaModel>builder()
-                .y(DoubleSeq.copyOf(y))
+                .y(Doubles.of(y))
                 .arima(arima)
                 .meanCorrection(mean)
                 .missing(missings.toArray());

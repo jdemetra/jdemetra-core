@@ -15,15 +15,25 @@
 * limitations under the Licence.
 */
 
-package internal.workspace.file.xml;
+
+package internal.workspace.file.xml.util;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * @author Jean Palate
+ * @author Kristof Bayens
  */
-public abstract class XmlNamedObject {
-    @XmlAttribute
-    public String name;
+@XmlType(name = XmlWeightedItem.NAME)
+public class XmlWeightedItem {
+    static final String NAME = "weightedItemType";
+
+    @XmlElement
+    public String item;
+    @XmlElement
+    public double weight;
+    @XmlAttribute(name="ref")
+    public String reference;
 }

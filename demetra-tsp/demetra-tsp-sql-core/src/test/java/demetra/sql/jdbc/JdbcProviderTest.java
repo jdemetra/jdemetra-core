@@ -1,34 +1,35 @@
 /*
  * Copyright 2016 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.sql.jdbc;
 
 import _test.JdbcSamples;
 import demetra.bridge.FromDataSourceLoader;
+import demetra.timeseries.TsMoniker;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.DataSourceProvider;
-import demetra.timeseries.TsMoniker;
 import ec.tss.tsproviders.IDataSourceLoaderAssert;
-import java.io.IOException;
-import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
 
+import java.io.IOException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
- *
  * @author Philippe Charles
  */
 public class JdbcProviderTest {
@@ -42,7 +43,7 @@ public class JdbcProviderTest {
 
     @Test
     public void testTspCompliance() {
-        IDataSourceLoaderAssert.Sampler<FromDataSourceLoader<JdbcProvider>> sampler = o -> JdbcSamples.TABLE2.getBean3(o.getDelegate());
+        IDataSourceLoaderAssert.Sampler<FromDataSourceLoader> sampler = o -> JdbcSamples.TABLE2.getBean3((JdbcProvider) o.getDelegate());
         IDataSourceLoaderAssert.assertCompliance(() -> new FromDataSourceLoader(JdbcSamples.TABLE2.getProvider3()), sampler);
     }
 
@@ -78,7 +79,7 @@ public class JdbcProviderTest {
                 .build();
 
         try (DataSourceProvider p = new JdbcProvider()) {
-            assertThat(p.toDataSet(TsMoniker.of("JNDI-JDBC", uri))).isEqualTo(expected);
+            assertThat(p.toDataSet(TsMoniker.of("JNDI-JDBC", uri))).hasValue(expected);
         }
     }
 }

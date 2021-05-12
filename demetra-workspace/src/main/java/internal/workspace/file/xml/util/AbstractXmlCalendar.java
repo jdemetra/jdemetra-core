@@ -13,29 +13,19 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
- */
-package demetra.tsprovider;
+*/
 
-import nbbrd.design.ThreadSafe;
+
+package internal.workspace.file.xml.util;
+
+import demetra.timeseries.calendars.CalendarManager;
 
 
 /**
- * Defines a provider whose content can be changed programmatically.<br>
- * DataSource & DataSet being read-only and generic, a provider will handle its
- * specific configuration by using beans.<p>
- * Typical use is:<br>
- * <code>
- * Object bean = loader.newBean();<br>
- * // use it through reflection<br>
- * DataSource dataSource = loader.encodeBean(bean);<br>
- * loader.open(dataSource);
- * </code>
  *
- * @author Philippe Charles
- * @param <BEAN> bean type
- * @since 1.0.0
+ * @author Kristof Bayens
  */
-@ThreadSafe
-public interface DataSourceLoader<BEAN> extends DataSourceProvider, HasDataSourceMutableList, HasDataSourceBean<BEAN> {
-
+public abstract class AbstractXmlCalendar extends XmlNamedObject {
+    
+    public abstract boolean addTo(CalendarManager info);
 }

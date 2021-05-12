@@ -42,7 +42,7 @@ public class OdbcProviderTest {
 
     @Test
     public void testTspCompliance() {
-        IDataSourceLoaderAssert.Sampler<FromDataSourceLoader<OdbcProvider>> sampler = o -> OdbcSamples.TABLE2.getBean3(o.getDelegate());
+        IDataSourceLoaderAssert.Sampler<FromDataSourceLoader> sampler = o -> OdbcSamples.TABLE2.getBean3((OdbcProvider) o.getDelegate());
         IDataSourceLoaderAssert.assertCompliance(() -> new FromDataSourceLoader(OdbcSamples.TABLE2.getProvider3()), sampler);
     }
 
@@ -78,7 +78,7 @@ public class OdbcProviderTest {
                 .build();
 
         try (DataSourceProvider p = new OdbcProvider()) {
-            assertThat(p.toDataSet(TsMoniker.of("ODBCPRVDR", uri))).isEqualTo(expected);
+            assertThat(p.toDataSet(TsMoniker.of("ODBCPRVDR", uri))).hasValue(expected);
         }
     }
 }

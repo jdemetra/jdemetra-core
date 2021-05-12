@@ -39,18 +39,18 @@ import org.junit.BeforeClass;
  */
 public class FileWorkspaceImplTest {
 
-//    private static FileSystem JIM_FS;
-//
-//    @BeforeClass
-//    public static void beforeClass() {
-//        JIM_FS = Jimfs.newFileSystem(Configuration.unix());
-//    }
-//
-//    @AfterClass
-//    public static void afterClass() throws IOException {
-//        JIM_FS.close();
-//    }
-//
+    private static FileSystem JIM_FS;
+
+    @BeforeClass
+    public static void beforeClass() {
+        JIM_FS = Jimfs.newFileSystem(Configuration.unix());
+    }
+
+    @AfterClass
+    public static void afterClass() throws IOException {
+        JIM_FS.close();
+    }
+
     @Test
     public void testLoadGeneric() throws IOException {
 //        try (FileWorkspace ws = openGenericUsingServiceLoader(GENERIC_INDEX)) {

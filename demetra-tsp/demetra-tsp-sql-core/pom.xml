@@ -15,7 +15,7 @@
 
     <properties>
         <hsqldb.version>2.5.1</hsqldb.version>
-        <java-sql-util.version>1.0.1</java-sql-util.version>
+        <java-sql-util.version>1.0.2</java-sql-util.version>
     </properties>
 
     <dependencies>
@@ -25,17 +25,17 @@
             <artifactId>demetra-tsp-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-sql-util</groupId>
             <artifactId>java-sql-jdbc</artifactId>
             <version>${java-sql-util.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-sql-util</groupId>
             <artifactId>java-sql-odbc</artifactId>
             <version>${java-sql-util.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-sql-util</groupId>
             <artifactId>java-sql-lhod</artifactId>
             <version>${java-sql-util.version}</version>
             <scope>runtime</scope>
@@ -58,6 +58,16 @@
             <artifactId>demetra-odbc</artifactId>
             <version>${jd2.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>be.nbb.rd</groupId>
+                    <artifactId>java-sql-odbc</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>be.nbb.rd</groupId>
+                    <artifactId>java-sql-jdbc</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>     
             <groupId>org.hsqldb</groupId>     

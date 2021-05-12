@@ -5,6 +5,7 @@
  */
 package jdplus.x11;
 
+import demetra.data.Doubles;
 import demetra.sa.DecompositionMode;
 import ec.satoolkit.x11.CalendarSigma;
 import ec.satoolkit.x11.X11Specification;
@@ -77,7 +78,7 @@ public class ExcludeFcastTest {
             filters_old[i] = ec.satoolkit.x11.SeasonalFilterOption.S3X3;
         }
 
-        DoubleSeq b1 = DoubleSeq.copyOf(B1);
+        DoubleSeq b1 = Doubles.of(B1);
         jdplus.x11.X11Context context = jdplus.x11.X11Context.builder()
                 .mode(DecompositionMode.Additive)
                 .finalSeasonalFilter(filters_new)

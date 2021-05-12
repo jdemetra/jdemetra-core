@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package internal.workspace.file.xml;
+package internal.workspace.file.xml.util;
 
 import demetra.timeseries.ValidityPeriod;
 import demetra.toolkit.io.xml.legacy.IXmlConverter;

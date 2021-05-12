@@ -100,7 +100,9 @@ public class HasDataSourceBeanTest {
         assertThat(support.newBean())
                 .isNotNull()
                 .isNotSameAs(support.newBean())
-                .isEqualToComparingFieldByField(support.newBean())
+                .usingRecursiveComparison()
+                .isEqualTo(support.newBean());
+        assertThat(support.newBean())
                 .extracting("file", "details")
                 .containsExactly(new File("defaultFile"), "defaultValue");
     }

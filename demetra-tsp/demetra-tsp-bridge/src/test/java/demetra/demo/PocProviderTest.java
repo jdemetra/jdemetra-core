@@ -36,14 +36,14 @@ public class PocProviderTest {
 
     @Test
     public void testTspCompliance() {
-        IDataSourceProviderAssert.Sampler<FromDataSourceProvider<PocProvider>> sampler = new IDataSourceProviderAssert.Sampler<FromDataSourceProvider<PocProvider>>() {
+        IDataSourceProviderAssert.Sampler<FromDataSourceProvider> sampler = new IDataSourceProviderAssert.Sampler<FromDataSourceProvider>() {
             @Override
-            public Optional<ec.tss.tsproviders.DataSource> dataSource(FromDataSourceProvider<PocProvider> p) {
+            public Optional<ec.tss.tsproviders.DataSource> dataSource(FromDataSourceProvider p) {
                 return p.getDataSources().stream().findFirst();
             }
 
             @Override
-            public Optional<ec.tss.tsproviders.DataSet> tsDataSet(FromDataSourceProvider<PocProvider> p) {
+            public Optional<ec.tss.tsproviders.DataSet> tsDataSet(FromDataSourceProvider p) {
                 return dataSource(p).map(o -> {
                     try {
                         return p.children(o).get(0);
@@ -55,7 +55,7 @@ public class PocProviderTest {
             }
 
             @Override
-            public Optional<ec.tss.tsproviders.DataSet> tsCollectionDataSet(FromDataSourceProvider<PocProvider> p) {
+            public Optional<ec.tss.tsproviders.DataSet> tsCollectionDataSet(FromDataSourceProvider p) {
                 return dataSource(p).map(o -> {
                     try {
                         return p.children(o).get(0);

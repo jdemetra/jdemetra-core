@@ -21,6 +21,7 @@ import static demetra.timeseries.TsUnit.*;
 import nbbrd.design.Demo;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.*;
 import static demetra.timeseries.TsPeriod.DEFAULT_EPOCH;
@@ -102,12 +103,12 @@ public class TsDataTest {
         assertThatNullPointerException().isThrownBy(() -> TsData.of(null, Doubles.of(values)));
         assertThatNullPointerException().isThrownBy(() -> TsData.of(start, null));
 
-        x = TsData.ofInternal(start, DoubleSeq.copyOf(values));
+        x = TsData.ofInternal(start, Doubles.of(values));
         assertThat(x.getStart()).isEqualTo(start);
         assertThat(x.getValues().toArray()).containsExactly(values);
         assertThat(x.getCause()).isNull();
 
-        assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(null, DoubleSeq.copyOf(values)));
+        assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(null, Doubles.of(values)));
         assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(start, (DoubleSeq) null));
 
         x = TsData.ofInternal(start, values);

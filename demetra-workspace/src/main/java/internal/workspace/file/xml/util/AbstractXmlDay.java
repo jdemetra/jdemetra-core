@@ -16,7 +16,7 @@
 */
 
 
-package internal.workspace.file.xml;
+package internal.workspace.file.xml.util;
 
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;

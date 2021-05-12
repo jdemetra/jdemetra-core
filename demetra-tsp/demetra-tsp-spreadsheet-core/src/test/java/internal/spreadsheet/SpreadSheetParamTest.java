@@ -66,7 +66,8 @@ public class SpreadSheetParamTest {
 
         assertThat(v1.newBean())
                 .isNotSameAs(v1.newBean())
-                .isEqualToComparingFieldByField(v1.newBean());
+                .usingRecursiveComparison()
+                .isEqualTo(v1.newBean());
 
         assertThat(v1.encodeBean(v1.newBean()))
                 .isNotSameAs(v1.encodeBean(v1.newBean()))
@@ -83,10 +84,12 @@ public class SpreadSheetParamTest {
 
         assertThat(v1.decodeBean(v1.encodeBean(v1.newBean())))
                 .isNotSameAs(v1.newBean())
-                .isEqualToComparingFieldByField(v1.newBean());
+                .usingRecursiveComparison()
+                .isEqualTo(v1.newBean());
 
         assertThat(v1.decodeBean(v1.encodeBean(sample)))
                 .isNotSameAs(sample)
-                .isEqualToComparingFieldByField(sample);
+                .usingRecursiveComparison()
+                .isEqualTo(sample);
     }
 }

@@ -14,12 +14,15 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-@XmlSchema(namespace = "ec/tss.demetra",
-        elementFormDefault = XmlNsForm.QUALIFIED,
-        attributeFormDefault = XmlNsForm.UNQUALIFIED,
-        xmlns = {@XmlNs(prefix = "", namespaceURI = "ec/tss.core")})
-package internal.workspace.file.xml;
 
+@XmlSchema(namespace = XmlConstants.CORE, elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
+        xmlns = { 
+            @XmlNs(prefix = "tss", namespaceURI = XmlConstants.CORE), 
+            @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") 
+        })
+package internal.workspace.file.xml.util;
+
+import demetra.toolkit.io.xml.legacy.XmlConstants;
 import javax.xml.bind.annotation.XmlNs;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlSchema;

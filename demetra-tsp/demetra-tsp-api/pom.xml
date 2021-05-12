@@ -20,7 +20,7 @@
             <version>${jd3-basic.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-base</artifactId>
             <version>${java-io-util.version}</version>
         </dependency>

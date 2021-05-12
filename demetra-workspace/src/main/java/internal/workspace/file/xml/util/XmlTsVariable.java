@@ -13,40 +13,38 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
+ */
+package internal.workspace.file.xml.util;
 
-package internal.workspace.file.xml;
-
-import demetra.timeseries.ValidityPeriod;
-import demetra.timeseries.calendars.FixedDay;
+import demetra.timeseries.StaticTsDataSupplier;
 import demetra.toolkit.io.xml.legacy.IXmlConverter;
-import java.time.Month;
+import demetra.toolkit.io.xml.legacy.core.XmlTsData;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * @author Jean Palate
+ * @author Kristof Bayens
  */
-@XmlType(name = XmlFixedDay.NAME)
-public class XmlFixedDay extends AbstractXmlDay implements IXmlConverter<FixedDay> {
-    static final String NAME = "fixedDayType";
+public class XmlTsVariable extends XmlNamedObject implements IXmlConverter<StaticTsDataSupplier> {
 
+    static final String NAME = "TsVariableType";
     @XmlElement
-    public Month month;
-    @XmlElement
-    public int day;
+    public XmlTsData tsdata;
 
-    @Override
-    public FixedDay create() {
-        return new FixedDay(day, month.getValue(), getWeight(), ValidityPeriod.ALWAYS);
+    public XmlTsVariable() {
     }
 
     @Override
-    public void copy(FixedDay t) {
-        day=t.getDay();
-        month=Month.of(t.getMonth());
-        setWeight(t.getWeight());
+    public StaticTsDataSupplier create() {
+        if (tsdata == null) {
+            return null;
+        }
+        return new StaticTsDataSupplier(XmlTsData.unmarshal(tsdata));
+     }
+
+    @Override
+    public void copy(StaticTsDataSupplier t) {
+        tsdata = new XmlTsData();
+        XmlTsData.marshal(t.getData(), tsdata);
     }
 }
-

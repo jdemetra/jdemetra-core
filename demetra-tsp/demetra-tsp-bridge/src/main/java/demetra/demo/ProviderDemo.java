@@ -86,7 +86,7 @@ public class ProviderDemo {
     }
 
     public void printSeries(DataSourceProvider provider, Ts ts) {
-        printId(provider, provider.toDataSet(ts.getMoniker()));
+        printId(provider, provider.toDataSet(ts.getMoniker()).orElse(null));
         printLabel(ts.getName());
         printMetaData(ts.getMeta());
         printDataSummary(ts.getData());
@@ -176,7 +176,7 @@ public class ProviderDemo {
     public void printDataTable(DataSourceProvider provider, DataSource dataSource, TsDataTable.DistributionType distribution) throws IOException {
         TsCollection col = provider.getTsCollection(provider.toMoniker(dataSource), TsInformationType.Data);
 
-        Function<Ts, String> toDisplayNodeName = o -> provider.getDisplayNodeName(provider.toDataSet(o.getMoniker()));
+        Function<Ts, String> toDisplayNodeName = o -> provider.getDisplayNodeName(provider.toDataSet(o.getMoniker()).orElseThrow(RuntimeException::new));
         System.out.println("\t" + col.getData().stream().map(toDisplayNodeName).collect(Collectors.joining("\t")));
 
         TsDataTable table = TsDataTable.of(col.getData(), Ts::getData);

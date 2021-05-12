@@ -17,9 +17,8 @@
 package jdplus.data.analysis;
 
 import demetra.data.Data;
-import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -39,7 +38,7 @@ public class SmoothedPeriodogramTest {
     @Test
     public void testBlackmanTukey() {
         SmoothedPeriodogram periodogram = SmoothedPeriodogram.builder()
-                .data(DoubleSeq.copyOf(data))
+                .data(Doubles.of(data))
                 .taper(new TukeyHanningTaper(.1))
                 .windowLength(45)
                 .windowFunction(DiscreteWindowFunction.Tukey)
