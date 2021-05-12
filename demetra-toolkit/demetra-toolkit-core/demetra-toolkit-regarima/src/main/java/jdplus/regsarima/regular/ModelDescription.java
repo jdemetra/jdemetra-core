@@ -182,22 +182,6 @@ public final class ModelDescription {
         sortedVariables = true;
     }
 
-    private int differencingOrder() {
-        return arima.getDifferencingOrder();
-    }
-
-//        public BackFilter getDifferencingFilter() {
-//        UnitRoots ur = new UnitRoots();
-//        if (period > 1) {
-//            for (int i = 0; i < bd; ++i) {
-//                ur.add(period);
-//            }
-//        }
-//        for (int i = 0; i < d; ++i) {
-//            ur.add(1);
-//        }
-//        return new BackFilter(ur.asPolynomial());
-//    }
     private void buildTransformation() {
         if (transformedData == null) {
             int diff = arima.getDifferencingOrder();
@@ -291,18 +275,26 @@ public final class ModelDescription {
                 .missing(missingc)
                 .meanCorrection(mean)
                 .arima(SarimaModel.builder(arima).build());
+        List<Variable> excluded = new ArrayList<>();
         for (Variable v : variables) {
             if (!v.isPreadjustment()) {
                 Matrix x = Regression.matrix(domain, v.getCore());
-                DataBlockIterator columns = x.columnsIterator();
-                int ic = 0;
-                while (columns.hasNext()) {
-                    DataBlock col = columns.next();
-                    if (v.getCoefficient(ic++).isFree()) {
-                        builder.addX(col.unmodifiable());
+                if (x == null) {
+                    excluded.add(v);
+                } else {
+                    DataBlockIterator columns = x.columnsIterator();
+                    int ic = 0;
+                    while (columns.hasNext()) {
+                        DataBlock col = columns.next();
+                        if (v.getCoefficient(ic++).isFree()) {
+                            builder.addX(col.unmodifiable());
+                        }
                     }
                 }
             }
+        }
+        if (! excluded.isEmpty()){
+            variables.replaceAll(v->v.exclude(true));
         }
         return builder.build();
     }
@@ -655,7 +647,7 @@ public final class ModelDescription {
 
         RegArimaModel<SarimaModel> model = regarima();
         RegArimaEstimation<SarimaModel> rslt;
-        if (arima.hasFreeParameters()) {
+        if (!arima.hasFixedParameters()) {
             rslt = processor.process(model, mapping());
         } else {
             rslt = processor.optimize(model, mapping());
@@ -673,9 +665,9 @@ public final class ModelDescription {
                 .llAdjustment(llCorrection)
                 .build();
     }
-    
-    public void freeArimaParameters(){
-        arima=arima.resetParameters(null);
+
+    public void freeArimaParameters() {
+        arima = arima.resetParameters(null);
     }
 
     public void setFreeParameters(DoubleSeq p) {

@@ -50,7 +50,7 @@ public class CompositeModels {
             MAPPING.set("likelihood.ll", Double.class, source -> source.getLikelihood().logLikelihood());
             MAPPING.set("likelihood.ser", Double.class, source -> source.getLikelihood().ser());
             MAPPING.set("likelihood.residuals", double[].class, source -> source.getLikelihood().e().toArray());
-            MAPPING.set("scalingfactor", Double.class, source -> source.getLikelihood().sigma());
+            MAPPING.set("scalingfactor", Double.class, source -> source.getLikelihood().sigma2());
             MAPPING.set("ssf.ncmps", Integer.class, source -> source.getCmpPos().length);
             MAPPING.set("ssf.cmppos", int[].class, source -> source.getCmpPos());
             MAPPING.set("ssf.cmpnames", String[].class, source -> source.getCmpName());

@@ -17,12 +17,10 @@
 package demetra.modelling.io.information;
 
 import demetra.data.Range;
-import demetra.information.InformationException;
 import demetra.information.InformationSet;
 import demetra.timeseries.regression.InterventionVariable;
-import java.time.LocalDate;
+import demetra.timeseries.regression.Variable;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 /**
@@ -32,41 +30,27 @@ import java.util.Map;
 @lombok.experimental.UtilityClass
 public class InterventionVariableMapping {
 
-    public final String NAME = "name",
-            DELTA = "delta",
+    public final String DELTA = "delta",
             DELTAS = "deltas",
-            SEQS = "sequences";
+            SEQS = "sequences",
+            NAME_LEGACY = "name";
 
-    private final String INVALID = "Invalid intervention variable";
 
     public void fillDictionary(String prefix, Map<String, Class> dic) {
         dic.put(InformationSet.item(prefix, SEQS), String[].class);
-        dic.put(InformationSet.item(prefix, NAME), String.class);
         dic.put(InformationSet.item(prefix, DELTA), Double.class);
         dic.put(InformationSet.item(prefix, DELTAS), Double.class);
     }
-
-    public String toShortString(Range<LocalDateTime> seq) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(seq.start().toLocalDate().format(DateTimeFormatter.ISO_DATE))
-                .append(InformationSet.SEP).append(seq.end().toLocalDate().format(DateTimeFormatter.ISO_DATE));
-        return builder.toString();
+    
+    public InformationSet writeLegacy(Variable<InterventionVariable> var, boolean verbose){
+        InformationSet info = write(var.getCore(), verbose);
+        info.set(NAME_LEGACY, var.getName());
+        return info;
     }
 
-    public Range<LocalDateTime> fromShortString(String s) {
-        String[] ss = InformationSet.split(s);
-        if (ss.length == 1) {
-            LocalDate start = LocalDate.parse(ss[0], DateTimeFormatter.ISO_DATE);
-            if (start != null) {
-                return Range.of(start.atStartOfDay(), start.atStartOfDay());
-            }
-        }
-        if (ss.length != 2) {
-            throw new InformationException(INVALID);
-        }
-        LocalDate start = LocalDate.parse(ss[0], DateTimeFormatter.ISO_DATE);
-        LocalDate end = LocalDate.parse(ss[1], DateTimeFormatter.ISO_DATE);
-        return Range.of(start.atStartOfDay(), end.atStartOfDay());
+    public Variable<InterventionVariable> readLegacy( InformationSet info){
+        InterventionVariable iv = read(info);
+        return Variable.variable(info.get(NAME_LEGACY, String.class), iv);
     }
 
     public InformationSet write(InterventionVariable var, boolean verbose) {
@@ -80,7 +64,7 @@ public class InterventionVariableMapping {
         Range<LocalDateTime>[] sequences = var.getSequences();
         String[] seqs = new String[sequences.length];
         for (int i = 0; i < sequences.length; ++i) {
-            seqs[i] = toShortString(sequences[i]);
+            seqs[i] = VariableMapping.rangeToShortString(sequences[i]);
         }
         info.add(SEQS, seqs);
         return info;
@@ -99,7 +83,7 @@ public class InterventionVariableMapping {
         String[] seqs = info.get(SEQS, String[].class);
         if (seqs != null) {
             for (int i = 0; i < seqs.length; ++i) {
-                Range<LocalDateTime> cur = fromShortString(seqs[i]);
+                Range<LocalDateTime> cur = VariableMapping.rangeFromShortString(seqs[i]);
                 if (cur != null) {
                     builder.add(cur.start(), cur.end());
                 }

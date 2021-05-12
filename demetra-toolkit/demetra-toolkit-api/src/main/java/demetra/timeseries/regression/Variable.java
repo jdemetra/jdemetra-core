@@ -30,43 +30,44 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 @Development(status = Development.Status.Release)
 @lombok.Value
+@lombok.EqualsAndHashCode(exclude = {"attributes"})
 @lombok.Builder(toBuilder = true)
 public class Variable<V extends ITsVariable> {
-
+    
     @lombok.NonNull
     private String name;
-
+    
     @lombok.NonNull
     private V core;
-
+    
     private Parameter[] coefficients;
-
+    
     @lombok.NonNull
     @lombok.Singular
     private Map<String, String> attributes;
-
+    
     public int dim() {
         return core.dim();
     }
-
+    
     public boolean hasAttribute(String id) {
         return attributes.containsKey(id);
     }
-
+    
     public String attribute(String id) {
         return attributes.get(id);
     }
-
+    
     public boolean isAttribute(String key, String value) {
         String val = attributes.get(key);
         return val != null && val.equals(value);
     }
-
+    
     @NonNull
     public Parameter getCoefficient(int i) {
         return coefficients == null ? Parameter.undefined() : coefficients[i];
     }
-
+    
     @NonNull
     public Parameter[] getCoefficients() {
         return coefficients == null ? Parameter.make(core.dim()) : coefficients.clone();
@@ -86,11 +87,11 @@ public class Variable<V extends ITsVariable> {
             return new Variable(name, variable, null, Collections.unmodifiableMap(attributes));
         }
     }
-
+    
     public static Variable variable(@NonNull final String name, @NonNull final ITsVariable variable) {
         return new Variable(name, variable, null, Collections.emptyMap());
     }
-
+    
     public int freeCoefficientsCount() {
         if (coefficients == null) {
             return core.dim();
@@ -115,7 +116,7 @@ public class Variable<V extends ITsVariable> {
     public boolean isFree() {
         return coefficients == null || Parameter.isFree(coefficients);
     }
-
+    
     public Variable rename(String name) {
         if (name.equals(this.name)) {
             return this;
@@ -123,7 +124,7 @@ public class Variable<V extends ITsVariable> {
             return new Variable(name, core, coefficients, attributes);
         }
     }
-
+    
     public Variable withCoefficient(Parameter coefficient) {
         if (core.dim() != 1) {
             throw new IllegalArgumentException();
@@ -133,8 +134,8 @@ public class Variable<V extends ITsVariable> {
         }
         return new Variable(name, core, coefficient == null ? null : new Parameter[]{coefficient}, attributes);
     }
-
-    public Variable withCoefficient(Parameter[] coefficients) {
+    
+    public Variable withCoefficients(Parameter[] coefficients) {
         if (coefficients != null && core.dim() != coefficients.length) {
             throw new IllegalArgumentException();
         }
@@ -143,14 +144,14 @@ public class Variable<V extends ITsVariable> {
         }
         return new Variable(name, core, coefficients, attributes);
     }
-
+    
     public Variable withCore(ITsVariable ncore) {
         if (coefficients != null && ncore.dim() != coefficients.length) {
             throw new IllegalArgumentException();
         }
         return new Variable(name, ncore, coefficients, attributes);
     }
-
+    
     public Variable withoutAttribute(String key) {
         if (!attributes.containsKey(key)) {
             return this;
@@ -161,11 +162,18 @@ public class Variable<V extends ITsVariable> {
         return natts.isEmpty() ? new Variable(name, core, coefficients, Collections.emptyMap())
                 : new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
     }
-
+    
     public Variable addAttribute(String key, String value) {
         Map<String, String> natts;
         natts = new HashMap<>(attributes);
         natts.put(key, value);
+        return new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
+    }
+    
+    public Variable removeAttribute(String key) {
+        Map<String, String> natts;
+        natts = new HashMap<>(attributes);
+        natts.remove(key);
         return new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
     }
 
@@ -184,7 +192,7 @@ public class Variable<V extends ITsVariable> {
         natts.put(newkey, newvalue);
         return new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
     }
-
+    
     public Variable addAttributes(Map<String, String> additionalAttributes) {
         if (additionalAttributes.isEmpty()) {
             return this;
@@ -196,5 +204,22 @@ public class Variable<V extends ITsVariable> {
         natts.putAll(additionalAttributes);
         return new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
     }
-
+    
+    public static final String EXCLUDED = "excluded";
+    
+    public boolean isExcluded() {
+        return attributes.containsKey(EXCLUDED);
+    }
+    
+    public Variable exclude(boolean excluded) {
+        if (isExcluded() == excluded) {
+            return this;
+        }
+        if (!excluded) {
+            return removeAttribute(EXCLUDED).withCoefficients(null);
+        } else {
+            return addAttribute(EXCLUDED, Boolean.toString(excluded)).withCoefficients(Parameter.zero(core.dim()));
+        }
+    }
+    
 }

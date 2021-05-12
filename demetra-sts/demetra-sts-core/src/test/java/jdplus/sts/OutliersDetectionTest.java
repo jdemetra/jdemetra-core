@@ -46,10 +46,9 @@ public class OutliersDetectionTest {
 
     @Test
     public void testNile() {
-        BsmSpec spec = new BsmSpec();
-        spec.setSeasUse(ComponentUse.Unused);
-        spec.setSlopeUse(ComponentUse.Free);
-        spec.setLevelUse(ComponentUse.Free);
+        BsmSpec spec = BsmSpec.builder()
+                .seasonal(null)
+                .build();
 
         OutliersDetection od = OutliersDetection.builder()
                 .bsm(spec)
@@ -75,11 +74,9 @@ public class OutliersDetectionTest {
 
     @Test
     public void testProd() {
-        BsmSpec spec = new BsmSpec();
-        spec.setSeasUse(ComponentUse.Free);
-        spec.setSeasonalModel(SeasonalModel.HarrisonStevens);
-        spec.setSlopeUse(ComponentUse.Free);
-        spec.setLevelUse(ComponentUse.Free);
+        BsmSpec spec = BsmSpec.builder()
+                .seasonal(SeasonalModel.HarrisonStevens)
+                .build();
 
         long t0 = System.currentTimeMillis();
         OutliersDetection od = OutliersDetection.builder()
@@ -120,11 +117,9 @@ public class OutliersDetectionTest {
 
     public static void stressTest() {
         int K = 1000;
-        BsmSpec spec = new BsmSpec();
-        spec.setSeasUse(ComponentUse.Free);
-        spec.setSeasonalModel(SeasonalModel.HarrisonStevens);
-        spec.setSlopeUse(ComponentUse.Free);
-        spec.setLevelUse(ComponentUse.Free);
+        BsmSpec spec = BsmSpec.builder()
+                .seasonal(SeasonalModel.HarrisonStevens)
+                .build();
         double[] A = Data.PROD.clone();
         A[14] *= 1.3;
         A[55] *= .7;
@@ -148,7 +143,7 @@ public class OutliersDetectionTest {
         for (int l = 0; l < length.length; ++l) {
             long t0 = System.currentTimeMillis();
             for (int k = 0; k < K; ++k) {
-                BasicStructuralModel model = new BasicStructuralModel(spec, 12);
+                BsmData model = new BsmData(spec, 12);
                 forwardstep(model, Y.log().range(0, length[l]), td.extract(0, length[l], 0, td.getColumnsCount()));
 //                OutliersDetection od = OutliersDetection.builder()
 //                        .bsm(spec)
@@ -170,12 +165,9 @@ public class OutliersDetectionTest {
             System.out.println("");
             for (int q = 0; q < 3; ++q) {
 
-                BsmSpec spec = new BsmSpec();
-                spec.setSeasUse(ComponentUse.Unused);
-                spec.setSeasUse(ComponentUse.Free);
-                spec.setSeasonalModel(SeasonalModel.HarrisonStevens);
-                spec.setSlopeUse(ComponentUse.Free);
-                spec.setLevelUse(ComponentUse.Free);
+                BsmSpec spec = BsmSpec.builder()
+                        .seasonal(SeasonalModel.HarrisonStevens)
+                        .build();
                 int period = 4;
 
                 Matrix M = Matrix.make(N, K);
@@ -183,7 +175,7 @@ public class OutliersDetectionTest {
                 double[] SLS = new double[K];
                 double[] SSO = new double[K];
                 double[] SALL = new double[K];
-                BasicStructuralModel[] models = randomBsm(spec, period, M);
+                BsmData[] models = randomBsm(spec, period, M);
                 DataBlockIterator cols = M.columnsIterator();
                 int k = 0;
                 while (cols.hasNext()) {
@@ -195,7 +187,7 @@ public class OutliersDetectionTest {
                     DefaultSmoothingResults sd = DefaultSmoothingResults.full();
                     sd.prepare(ssf.getStateDim(), 0, data.length());
                     smoother.process(ssf, data, sd);
-                    double sig2 = DkToolkit.likelihood(ssf, data, true, false).sigma();
+                    double sig2 = DkToolkit.likelihood(ssf, data, true, false).sigma2();
                     double saomax = 0, slsmax = 0, ssomax = 0, smax = 0;
                     for (int i = 4; i < N - 4; ++i) {
                         DataBlock R = DataBlock.of(sd.R(i));
@@ -253,11 +245,11 @@ public class OutliersDetectionTest {
         }
     }
 
-    public static BasicStructuralModel[] randomBsm(BsmSpec spec, int period, Matrix simul) {
-        double[] p = new double[spec.getParametersCount()];
+    public static BsmData[] randomBsm(BsmSpec spec, int period, Matrix simul) {
+        double[] p = new double[spec.getFreeParametersCount()];
         Random rnd = new Random();
-        BsmMapping mapping = new BsmMapping(spec, period, BsmMapping.Transformation.None);
-        BasicStructuralModel[] models = new BasicStructuralModel[simul.getColumnsCount()];
+        BsmMapping mapping = new BsmMapping(spec, period, null);
+        BsmData[] models = new BsmData[simul.getColumnsCount()];
 
         DataBlockIterator cols = simul.columnsIterator();
         int i = 0;
@@ -265,7 +257,7 @@ public class OutliersDetectionTest {
             for (int j = 0; j < p.length; ++j) {
                 p[j] = Math.exp(rnd.nextGaussian());
             }
-            BasicStructuralModel bsm = mapping.map(DoubleSeq.of(p));
+            BsmData bsm = mapping.map(DoubleSeq.of(p));
             SsfBsm ssf = SsfBsm.of(bsm);
             RandomSsfGenerator generator = new RandomSsfGenerator(ssf, 1, simul.getRowsCount());
             generator.newSimulation(cols.next(), RNG);
@@ -276,15 +268,15 @@ public class OutliersDetectionTest {
 
     private static final RandomNumberGenerator RNG = JdkRNG.newRandom();
 
-    private static boolean forwardstep(BasicStructuralModel model, DoubleSeq y, Matrix W) {
+    private static boolean forwardstep(BsmData model, DoubleSeq y, Matrix W) {
         SsfBsm ssf = SsfBsm.of(model);
         Ssf wssf = W == null ? ssf : RegSsf.ssf(ssf, W);
         SsfData data = new SsfData(y);
         int n = data.length();
-        SmoothationsComputer computer=new SmoothationsComputer();
+        SmoothationsComputer computer = new SmoothationsComputer();
         computer.process(wssf, data);
         double sig2 = computer.getFilteringResults().var();
-        boolean isnoise = model.getVariance(Component.Noise) != 0;
+        boolean isnoise = model.getNoiseVar() > 0;
         for (int i = 0; i < n; ++i) {
             try {
                 DataBlock R = computer.R(i);

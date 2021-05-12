@@ -58,6 +58,8 @@ class JulianEasterFactory implements RegressionVariableFactory<JulianEasterVaria
 
     @Override
     public boolean fill(JulianEasterVariable var, TsPeriod start, Matrix buffer) {
+        if (start.getUnit().getAnnualFrequency()<= 2)
+            return false;
         // very inefficient code.Should be improved
         DataBlock data=buffer.column(0);
         int freq = start.getUnit().getAnnualFrequency();

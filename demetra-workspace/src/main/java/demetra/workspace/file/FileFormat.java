@@ -1,12 +1,12 @@
 /*
- * Copyright 2020 National Bank of Belgium
+ * Copyright 2017 National Bank of Belgium
  * 
- * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  * 
- * https://joinup.ec.europa.eu/software/page/eupl
+ * http://ec.europa.eu/idabc/eupl
  * 
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
@@ -14,17 +14,23 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sts;
+package demetra.workspace.file;
 
 /**
+ * Closed list of file formats used by file workspaces.
  *
- * @author Jean Palate <jean.palate@nbb.be>
+ * @author Philippe Charles
+ * @since 2.2.0
  */
-@lombok.Value
-@lombok.Builder(toBuilder=true)
-public class Bsm {
-    NoiseComponent noiseVariance;
-    CycleComponent cycleComponent;
-    TrendComponent trendComponent;
-    SeasonalComponent seasonalComponent;
+public enum FileFormat {
+
+    /**
+     * Represents the default format of JDemetra+
+     */
+    GENERIC,
+    /**
+     * Represents the format of Demetra+
+     */
+    LEGACY;
+
 }

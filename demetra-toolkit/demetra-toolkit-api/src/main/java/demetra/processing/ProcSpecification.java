@@ -26,5 +26,7 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Exploratory)
 public interface ProcSpecification{
 
+    public static final String ALGORITHM = "algorithm";
+
     AlgorithmDescriptor getAlgorithmDescriptor();
 }

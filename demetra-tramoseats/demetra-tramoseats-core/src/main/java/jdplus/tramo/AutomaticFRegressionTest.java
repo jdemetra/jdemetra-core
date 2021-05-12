@@ -220,14 +220,14 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         }
         if (aTd != null && lp != null) {
             int pos = test.findPosition(lp);
-            if (Math.abs(ll.tstat(pos, nhp, true)) > tlp) {
+            if (pos >= 0 && Math.abs(ll.tstat(pos, nhp, true)) > tlp) {
                 current.addVariable(Variable.variable("lp", lp, TramoModelBuilder.calendarAMI));
                 changed = true;
             }
         }
         if (easter != null) {
             int pos = test.findPosition(easter);
-            if (Math.abs(ll.tstat(pos, nhp, true)) > teaster) {
+            if (pos >= 0 && Math.abs(ll.tstat(pos, nhp, true)) > teaster) {
                 current.addVariable(Variable.variable("easter", easter, TramoModelBuilder.calendarAMI));
                 changed = true;
             }

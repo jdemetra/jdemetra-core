@@ -189,7 +189,10 @@ public class RegArimaKernel implements RegSarimaProcessor {
         this.regressionTest0 = builder.regressionTest0;
         this.regressionTest1 = builder.regressionTest1;
         if (autoModel != null) {
-            finalEstimator = new FinalEstimator(options.precision);
+            finalEstimator = FinalEstimator.builder()
+                    .ami(true)
+                    .precision(options.precision)
+                    .build();
         } else {
             finalEstimator = null;
         }

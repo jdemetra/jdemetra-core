@@ -261,7 +261,18 @@ public class Parameter {
         return all;
     }
 
-    /**
+     public static Parameter[] zero(int n) {
+        Parameter[] all = new Parameter[n];
+        for (int i = 0; i < n; ++i) {
+            all[i] = ZERO;
+        }
+        return all;
+    }
+
+    public static Parameter zero() {
+        return ZERO;
+    }
+     /**
      * Checks that all the parameters are free. Derived parameters are not
      * considered
      *
@@ -355,6 +366,18 @@ public class Parameter {
         return false;
     }
 
+    public static boolean hasDefinedParameters(Parameter[] p) {
+        if (p == null) {
+            return false;
+        }
+        for (int i = 0; i < p.length; ++i) {
+            if (p[i].isDefined()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean isFixed(Parameter p) {
         if (p == null) {
             return false;
@@ -408,5 +431,5 @@ public class Parameter {
         }
     }
 
-    private static final Parameter UNDEFINED = new Parameter(0, ParameterType.Undefined);
+    private static final Parameter UNDEFINED = new Parameter(0, ParameterType.Undefined), ZERO = new Parameter(0, ParameterType.Fixed);
 }

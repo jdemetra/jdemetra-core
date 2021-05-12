@@ -285,7 +285,11 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
         if (this.period == period) {
             return this;
         }
-        return new SarimaSpec(null, period, d, bd, phi, theta, bphi, btheta);
+        if (period == 1) {
+            return new SarimaSpec(null, 1, d, 0, phi, theta, EMPTY, EMPTY);
+        } else {
+            return new SarimaSpec(null, period, d, bd, phi, theta, bphi, btheta);
+        }
     }
 
     public SarimaSpec resetParameters(SarimaSpec ref) {

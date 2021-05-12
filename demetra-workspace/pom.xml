@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>eu.europa.ec.joinup.sat</groupId>
+        <artifactId>demetra-parent</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>demetra-workspace</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Demetra - Workspace</name>
+    <description>Seasonal Adjustment Toolkit - Workspace</description>
+
+    <properties>
+        <guava.version>30.1.1-jre</guava.version>
+        <jimfs.version>1.2</jimfs.version>
+        <demetra.version>3.0.0-SNAPSHOT</demetra.version>
+        <jd3-toolkit.version>1.0.0-SNAPSHOT</jd3-toolkit.version>
+        <jd3-sa.version>1.0.0-SNAPSHOT</jd3-sa.version>
+        <jd3-tramoseats.version>1.0.0-SNAPSHOT</jd3-tramoseats.version>
+        <jd3-x13.version>1.0.0-SNAPSHOT</jd3-x13.version>
+        <slf4j.version>1.7.30</slf4j.version>
+    </properties>
+   
+    <dependencies>
+        <!-- compile only -->
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- compile and runtime -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-toolkit-api</artifactId>
+            <version>${jd3-toolkit.version}</version>            
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-toolkit-io</artifactId>
+            <version>${jd3-toolkit.version}</version>            
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tramoseats-api</artifactId>
+            <version>${jd3-tramoseats.version}</version>            
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tramoseats-io</artifactId>
+            <version>${jd3-tramoseats.version}</version>            
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-x13-api</artifactId>
+            <version>${jd3-x13.version}</version>            
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-x13-io</artifactId>
+            <version>${jd3-x13.version}</version>            
+        </dependency>
+        <!-- test only -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>     
+            <groupId>com.google.guava</groupId>     
+            <artifactId>guava</artifactId>     
+            <version>${guava.version}</version> 
+            <scope>test</scope>
+        </dependency> 
+        <dependency>
+            <groupId>com.google.jimfs</groupId>
+            <artifactId>jimfs</artifactId>
+            <version>${jimfs.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>be.nbb.rd</groupId>
+            <artifactId>java-io-xml</artifactId>
+            <version>0.0.11</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>  
+</project>

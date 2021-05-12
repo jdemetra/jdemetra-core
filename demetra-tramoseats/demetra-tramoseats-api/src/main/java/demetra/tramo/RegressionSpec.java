@@ -50,7 +50,7 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
     @lombok.Singular
     List< Variable<TsContextVariable> > userDefinedVariables;
 
-    private static final RegressionSpec DEFAULT = RegressionSpec.builder().build();
+    public static final RegressionSpec DEFAULT = RegressionSpec.builder().build();
 
     @LombokWorkaround
     public static Builder builder() {

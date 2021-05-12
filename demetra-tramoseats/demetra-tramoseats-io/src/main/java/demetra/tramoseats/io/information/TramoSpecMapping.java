@@ -17,10 +17,11 @@
 package demetra.tramoseats.io.information;
 
 import demetra.information.InformationSet;
+import demetra.information.InformationSetSerializer;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.processing.AlgorithmDescriptor;
+import demetra.processing.ProcSpecification;
 import demetra.tramo.RegressionSpec;
-import demetra.tramo.SarimaValidator;
 import demetra.tramo.TramoSpec;
 import java.util.Map;
 
@@ -31,28 +32,59 @@ import java.util.Map;
 @lombok.experimental.UtilityClass
 public class TramoSpecMapping {
 
-    public static final String METHOD = "tramo";
-    public static final String FAMILY = "Modelling";
-    public static final String VERSION_LEGACY = "0.1.0.0";
-    public static final AlgorithmDescriptor DESCRIPTOR_LEGACY = new AlgorithmDescriptor(FAMILY, METHOD, VERSION_LEGACY);
+    public static final InformationSetSerializer<TramoSpec> SERIALIZER_V3 = new InformationSetSerializer<TramoSpec>() {
+        @Override
+        public InformationSet write(TramoSpec object, boolean verbose) {
+            return TramoSpecMapping.write(object, verbose);
+        }
 
-    public static final String VERSION_V3 = "3.0.0";
-    public static final AlgorithmDescriptor DESCRIPTOR_V3 = new AlgorithmDescriptor(FAMILY, METHOD, VERSION_V3);
+        @Override
+        public TramoSpec read(InformationSet info) {
+            return TramoSpecMapping.read(info);
+        }
+    };
+
+    public static final InformationSetSerializer<TramoSpec> SERIALIZER_LEGACY = new InformationSetSerializer<TramoSpec>() {
+        @Override
+        public InformationSet write(TramoSpec object, boolean verbose) {
+            return TramoSpecMapping.writeLegacy(object, verbose);
+        }
+
+        @Override
+        public TramoSpec read(InformationSet info) {
+            return TramoSpecMapping.readLegacy(info);
+        }
+    };
 
     public static final String TRANSFORM = "transform",
             AUTOMDL = "automdl", ARIMA = "arima",
             REGRESSION = "regression", OUTLIER = "outlier", ESTIMATE = "esimate";
 
-    public static void fillDictionary(String prefix, Map<String, Class> dic) {
-        EstimateSpecMapping.fillDictionary(InformationSet.item(prefix, ESTIMATE), dic);
-        TransformSpecMapping.fillDictionary(InformationSet.item(prefix, TRANSFORM), dic);
-        AutoModelSpecMapping.fillDictionary(InformationSet.item(prefix, AUTOMDL), dic);
-        ArimaSpecMapping.fillDictionary(InformationSet.item(prefix, ARIMA), dic);
-        OutlierSpecMapping.fillDictionary(InformationSet.item(prefix, OUTLIER), dic);
-        RegressionSpecMapping.fillDictionary(InformationSet.item(prefix, REGRESSION), dic);
+//    public static void fillDictionary(String prefix, Map<String, Class> dic) {
+//        EstimateSpecMapping.fillDictionary(InformationSet.item(prefix, ESTIMATE), dic);
+//        TransformSpecMapping.fillDictionary(InformationSet.item(prefix, TRANSFORM), dic);
+//        AutoModelSpecMapping.fillDictionary(InformationSet.item(prefix, AUTOMDL), dic);
+//        ArimaSpecMapping.fillDictionary(InformationSet.item(prefix, ARIMA), dic);
+//        OutlierSpecMapping.fillDictionary(InformationSet.item(prefix, OUTLIER), dic);
+//        RegressionSpecMapping.fillDictionary(InformationSet.item(prefix, REGRESSION), dic);
+//    }
+//
+    public TramoSpec read(InformationSet info) {
+        if (info == null) {
+            return TramoSpec.DEFAULT;
+        }
+        AlgorithmDescriptor desc = info.get(ProcSpecification.ALGORITHM, AlgorithmDescriptor.class);
+        if (desc != null && desc.equals(TramoSpec.DESCRIPTOR_LEGACY)) {
+            return readLegacy(info);
+        } else {
+            return readV3(info);
+        }
     }
 
-    public TramoSpec read(InformationSet info) {
+    public TramoSpec readV3(InformationSet info) {
+        if (info == null) {
+            return TramoSpec.DEFAULT;
+        }
         return TramoSpec.builder()
                 .transform(TransformSpecMapping.read(info.getSubSet(TRANSFORM)))
                 .arima(ArimaSpecMapping.read(info.getSubSet(ARIMA)))
@@ -65,7 +97,7 @@ public class TramoSpecMapping {
 
     public InformationSet write(TramoSpec spec, boolean verbose) {
         InformationSet specInfo = new InformationSet();
-        specInfo.set("algorithm", TramoSpecMapping.DESCRIPTOR_V3);
+        specInfo.set(ProcSpecification.ALGORITHM, TramoSpec.DESCRIPTOR_V3);
         InformationSet tinfo = TransformSpecMapping.write(spec.getTransform(), verbose);
         if (tinfo != null) {
             specInfo.set(TRANSFORM, tinfo);
@@ -107,8 +139,7 @@ public class TramoSpecMapping {
         if (oinfo != null) {
             builder.outliers(OutlierSpecMapping.read(oinfo));
         }
-        SarimaSpec.Builder ab = SarimaSpec.builder()
-//                .validator(SarimaValidator.VALIDATOR)
+        SarimaSpec.Builder ab = SarimaSpec.builder() //                .validator(SarimaValidator.VALIDATOR)
                 ;
         RegressionSpec.Builder rb = RegressionSpec.builder();
         if (ainfo != null) {
@@ -130,7 +161,7 @@ public class TramoSpecMapping {
 
     public InformationSet writeLegacy(TramoSpec spec, boolean verbose) {
         InformationSet specInfo = new InformationSet();
-        specInfo.set("algorithm", TramoSpecMapping.DESCRIPTOR_LEGACY);
+        specInfo.set(ProcSpecification.ALGORITHM, TramoSpec.DESCRIPTOR_LEGACY);
         InformationSet tinfo = TransformSpecMapping.write(spec.getTransform(), verbose);
         if (tinfo != null) {
             specInfo.set(TRANSFORM, tinfo);

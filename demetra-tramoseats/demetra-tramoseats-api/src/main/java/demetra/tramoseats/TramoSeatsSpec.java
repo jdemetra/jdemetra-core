@@ -19,11 +19,9 @@ package demetra.tramoseats;
 import nbbrd.design.Development;
 import nbbrd.design.LombokWorkaround;
 import demetra.processing.AlgorithmDescriptor;
-import demetra.sa.ComponentType;
 import demetra.sa.SaSpecification;
 import demetra.sa.benchmarking.SaBenchmarkingSpec;
 import demetra.seats.DecompositionSpec;
-import demetra.seats.SeatsSpec;
 import demetra.tramo.TramoSpec;
 import demetra.util.Validatable;
 
@@ -37,12 +35,14 @@ import demetra.util.Validatable;
 public final class TramoSeatsSpec implements Validatable<TramoSeatsSpec>, SaSpecification{
     
     public static final String METHOD = "tramoseats";
-    public static final String VERSION = "1.0.0.0";
-    public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, METHOD, VERSION);
+    public static final String VERSION_LEGACY = "0.1.0.0";
+    public static final String VERSION_V3 = "3.0.0";
+    public static final AlgorithmDescriptor DESCRIPTOR_LEGACY = new AlgorithmDescriptor(FAMILY, METHOD, VERSION_LEGACY);
+    public static final AlgorithmDescriptor DESCRIPTOR_V3 = new AlgorithmDescriptor(FAMILY, METHOD, VERSION_V3);
 
     @Override
     public AlgorithmDescriptor getAlgorithmDescriptor() {
-        return DESCRIPTOR;
+        return DESCRIPTOR_V3;
     }
 
     public static final TramoSeatsSpec DEFAULT = TramoSeatsSpec.builder().build();

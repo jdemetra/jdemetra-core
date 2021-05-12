@@ -32,23 +32,24 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class OutlierSpecMapping {
+class OutlierSpecMapping {
 
-    public final String SPAN = "span",
+    final String SPAN = "span",
             TYPES = "types",
             VA = "va",
             EML = "eml",
             DELTATC = "deltatc";
 
-    public static void fillDictionary(String prefix, Map<String, Class> dic) {
-        dic.put(InformationSet.item(prefix, SPAN), TimeSelector.class);
-        dic.put(InformationSet.item(prefix, EML), Boolean.class);
-        dic.put(InformationSet.item(prefix, TYPES), String[].class);
-        dic.put(InformationSet.item(prefix, VA), Double.class);
-        dic.put(InformationSet.item(prefix, DELTATC), Double.class);
-    }
-
-    public InformationSet write(OutlierSpec spec, boolean verbose) {
+//    static void fillDictionary(String prefix, Map<String, Class> dic) {
+//        dic.put(InformationSet.item(prefix, SPAN), TimeSelector.class);
+//        dic.put(InformationSet.item(prefix, EML), Boolean.class);
+//        dic.put(InformationSet.item(prefix, TYPES), String[].class);
+//        dic.put(InformationSet.item(prefix, VA), Double.class);
+//        dic.put(InformationSet.item(prefix, DELTATC), Double.class);
+//    }
+//
+    
+    InformationSet write(OutlierSpec spec, boolean verbose) {
         if (!verbose && spec.isDefault()) {
             return null;
         }
@@ -88,7 +89,7 @@ public class OutlierSpecMapping {
         return info;
     }
 
-    public OutlierSpec read(InformationSet info) {
+    OutlierSpec read(InformationSet info) {
         if (info == null) {
             return OutlierSpec.DEFAULT_DISABLED;
         }

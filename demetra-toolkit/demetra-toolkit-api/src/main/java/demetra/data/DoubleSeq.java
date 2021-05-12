@@ -882,6 +882,23 @@ public interface DoubleSeq extends BaseSeq {
     }
 
     @NonNull
+    static DoubleSeq empty() {
+        return Doubles.EMPTY;
+    }
+
+    @Deprecated
+    @NonNull
+    static Doubles copyOf(@NonNull double[] data) {
+        return Doubles.of(data);
+    }
+
+    @Deprecated
+    @NonNull
+    static Doubles copyOf(@NonNull DoubleStream stream) {
+        return Doubles.of(stream);
+    }
+
+    @NonNull
     static DoubleSeq onMapping(@NonNegative int length, @NonNull IntToDoubleFunction getter) {
         return new InternalDoubleSeq.MappingDoubleSeq(length, getter);
     }

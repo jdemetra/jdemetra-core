@@ -153,7 +153,7 @@ public class DifferencingModule  {
             final double ub1, final double ub2, final double cancel,
             final double eps, final boolean seasonal, final boolean initial) {
         this.maxd = maxd;
-        this.maxbd = maxbd;
+        this.maxbd = seasonal ? maxbd : 0;
         this.ub1 = ub1;
         this.ub2 = ub2;
         this.cancel = cancel;
@@ -293,7 +293,7 @@ public class DifferencingModule  {
             }
             spec.setQ(0);
             spec.setBq(0);
-            if (maxbd > 0) {
+            if (seasonal) {
                 spec.setBp(1);
             }
         } else {

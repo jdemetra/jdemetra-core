@@ -82,6 +82,8 @@ public class EasterDetectionModule implements IRegressionModule {
     @Override
     public ProcessingResult test(RegSarimaModelling context) {
         ModelDescription description = context.getDescription();
+        if (description.getAnnualFrequency() <= 2)
+            return ProcessingResult.Unprocessed;
         int n = easters.length;
         int icur = -1;
         ModelDescription[] desc = new ModelDescription[n];

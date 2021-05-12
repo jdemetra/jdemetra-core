@@ -8,19 +8,20 @@ package demetra.sts.r;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Iterables;
+import demetra.data.Parameter;
 import demetra.information.InformationMapping;
-import demetra.likelihood.LikelihoodStatistics;
+import demetra.likelihood.DiffuseLikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
 import demetra.outliers.io.protobuf.OutliersProtos;
 import demetra.processing.ProcResults;
+import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
-import demetra.sts.ComponentUse;
 import demetra.sts.SeasonalModel;
 import demetra.sts.outliers.io.protobuf.StsOutliersProtos;
 import demetra.timeseries.TsData;
-import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
+import demetra.toolkit.extractors.DiffuseLikelihoodStatisticsExtractor;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -34,12 +35,12 @@ import jdplus.ssf.implementations.RegSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
-import jdplus.sts.BasicStructuralModel;
+import jdplus.sts.BsmData;
 import jdplus.sts.OutliersDetection;
 import jdplus.sts.SsfBsm;
 import jdplus.sts.extractors.BasicStructuralModelExtractor;
 import jdplus.sts.internal.BsmMapping;
-import jdplus.sts.internal.BsmMonitor;
+import jdplus.sts.internal.BsmKernel;
 
 /**
  *
@@ -54,15 +55,15 @@ public class StsOutliersDetection {
 
         public byte[] buffer() {
             int nx = x == null ? 0 : x.getColumnsCount();
-            BsmMapping mapping=new BsmMapping(spec, period);
+            BsmMapping mapping = new BsmMapping(spec, period, null);
             StsOutliersProtos.StsSolution.Builder builder = StsOutliersProtos.StsSolution.newBuilder()
                     .addAllBsmInitial(Iterables.of(mapping.map(initialBsm)))
                     .addAllBsmFinal(Iterables.of(mapping.map(finalBsm)))
                     .addAllCoefficients(Iterables.of(coefficients))
                     .setCovariance(ToolkitProtosUtility.convert(coefficientsCovariance))
                     .setRegressors(ToolkitProtosUtility.convert(regressors))
-                    .setLikelihoodInitial(ToolkitProtosUtility.convert(initialLikelihood))
-                    .setLikelihoodFinal(ToolkitProtosUtility.convert(finalLikelihood))
+                    //                    .setLikelihoodInitial(ToolkitProtosUtility.convert(initialLikelihood))
+                    //                    .setLikelihoodFinal(ToolkitProtosUtility.convert(finalLikelihood))
                     .setComponents(ToolkitProtosUtility.convert(components))
                     .setTauInitial(ToolkitProtosUtility.convert(initialTau))
                     .setTauFinal(ToolkitProtosUtility.convert(finalTau))
@@ -82,7 +83,8 @@ public class StsOutliersDetection {
 
         BsmSpec spec;
         int period;
-        BasicStructuralModel initialBsm, finalBsm;
+        BsmData initialBsm;
+        BsmData finalBsm;
 
         DoubleSeq y;
         MatrixType x;
@@ -96,7 +98,7 @@ public class StsOutliersDetection {
         DoubleSeq residuals;
         MatrixType initialTau, finalTau;
 
-        LikelihoodStatistics initialLikelihood, finalLikelihood;
+        DiffuseLikelihoodStatistics initialLikelihood, finalLikelihood;
 
         public double[] tstats() {
             double[] t = coefficients.clone();
@@ -144,8 +146,8 @@ public class StsOutliersDetection {
         static {
             MAPPING.delegate(BSM0, BasicStructuralModelExtractor.getMapping(), r -> r.getInitialBsm());
             MAPPING.delegate(BSM1, BasicStructuralModelExtractor.getMapping(), r -> r.getFinalBsm());
-            MAPPING.delegate(LL0, LikelihoodStatisticsExtractor.getMapping(), r -> r.getInitialLikelihood());
-            MAPPING.delegate(LL1, LikelihoodStatisticsExtractor.getMapping(), r -> r.getFinalLikelihood());
+            MAPPING.delegate(LL0, DiffuseLikelihoodStatisticsExtractor.getMapping(), r -> r.getInitialLikelihood());
+            MAPPING.delegate(LL1, DiffuseLikelihoodStatisticsExtractor.getMapping(), r -> r.getFinalLikelihood());
             MAPPING.set(B, double[].class, source -> source.getCoefficients());
             MAPPING.set(T, double[].class, source -> source.tstats());
             MAPPING.set(BVAR, MatrixType.class, source -> source.getCoefficientsCovariance());
@@ -186,16 +188,16 @@ public class StsOutliersDetection {
     public Results process(TsData ts, int level, int slope, int noise, String seasmodel, MatrixType x,
             boolean bao, boolean bls, boolean bso, double cv, double tcv, String forwardEstimation, String backwardEstimation) {
         TsData y = ts.cleanExtremities();
-        if (x != null && ts.length() != y.length()){
-            int start=ts.getStart().until(y.getStart());
-            x=x.extract(start, y.length(), 0, x.getColumnsCount());
+        if (x != null && ts.length() != y.length()) {
+            int start = ts.getStart().until(y.getStart());
+            x = x.extract(start, y.length(), 0, x.getColumnsCount());
         }
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
-        BsmSpec spec = new BsmSpec();
-        spec.setLevelUse(of(level));
-        spec.setSlopeUse(of(slope));
-        spec.setNoiseUse(of(noise));
-        spec.setSeasonalModel(sm);
+        BsmSpec spec = BsmSpec.builder()
+                .seasonal(sm)
+                .level(of(level), of(slope))
+                .noise(of(noise))
+                .build();
         OutliersDetection.Estimation fe = OutliersDetection.Estimation.valueOf(forwardEstimation);
         OutliersDetection.Estimation be = OutliersDetection.Estimation.valueOf(backwardEstimation);
         OutliersDetection od = OutliersDetection.builder()
@@ -231,7 +233,7 @@ public class StsOutliersDetection {
         SsfData data = new SsfData(y.getValues());
 
         DiffuseConcentratedLikelihood ll0 = od.getInitialLikelihood();
-        BasicStructuralModel model0 = od.getInitialModel();
+        BsmData model0 = od.getInitialModel();
         SsfBsm ssf0 = SsfBsm.of(model0);
         Ssf xssf = x == null ? ssf0 : RegSsf.ssf(ssf0, Matrix.of(x));
         DefaultSmoothingResults sd0 = DefaultSmoothingResults.full();
@@ -239,12 +241,12 @@ public class StsOutliersDetection {
         sd0.prepare(xssf.getStateDim(), 0, data.length());
         smoother.process(xssf, data, sd0);
 
-        double sig2 = ll0.sigma();
+        double sig2 = ll0.sigma2();
         Matrix tau0 = tau(n, ssf0.getStateDim(), model0, sd0, sig2);
 
         Matrix W = od.getRegressors();
         DiffuseConcentratedLikelihood ll = od.getLikelihood();
-        BasicStructuralModel model = od.getModel();
+        BsmData model = od.getModel();
         SsfBsm ssf = SsfBsm.of(model);
         Ssf wssf = W == null ? ssf : RegSsf.ssf(ssf, W);
         DefaultSmoothingResults sd = DefaultSmoothingResults.full();
@@ -255,10 +257,10 @@ public class StsOutliersDetection {
         lin.add(cmps.column(1));
         lin.add(cmps.column(3));
 
-        sig2 = od.getLikelihood().sigma();
+        sig2 = od.getLikelihood().sigma2();
         Matrix tau1 = tau(n, ssf.getStateDim(), model, sd, sig2);
 
-        int np = spec.getParametersCount();
+        int np = spec.getFreeParametersCount();
 
         return Results.builder()
                 .spec(spec)
@@ -281,7 +283,7 @@ public class StsOutliersDetection {
                 .build();
     }
 
-    private Matrix components(int n, BasicStructuralModel model, DefaultSmoothingResults sd) {
+    private Matrix components(int n, BsmData model, DefaultSmoothingResults sd) {
 
         Matrix cmps = Matrix.make(n, 4);
         int cmp = SsfBsm.searchPosition(model, Component.Noise);
@@ -303,7 +305,7 @@ public class StsOutliersDetection {
         return cmps;
     }
 
-    private Matrix tau(int n, int dim, BasicStructuralModel model, DefaultSmoothingResults sd, double sig2) {
+    private Matrix tau(int n, int dim, BsmData model, DefaultSmoothingResults sd, double sig2) {
         Matrix tau = Matrix.make(n, 6);
         int cmpn = SsfBsm.searchPosition(model, Component.Noise);
         int cmpl = SsfBsm.searchPosition(model, Component.Level);
@@ -347,32 +349,33 @@ public class StsOutliersDetection {
         return tau;
     }
 
-    private ComponentUse of(int p) {
+    private Parameter of(int p) {
         if (p == 0) {
-            return ComponentUse.Fixed;
+            return Parameter.zero();
         } else if (p > 0) {
-            return ComponentUse.Free;
+            return Parameter.undefined();
         } else {
-            return ComponentUse.Unused;
+            return null;
         }
     }
 
     public double[] seasonalBreaks(TsData y, int level, int slope, int noise, String seasmodel, MatrixType x) {
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
-        BsmSpec mspec = new BsmSpec();
-        mspec.setLevelUse(of(level));
-        mspec.setSlopeUse(of(slope));
-        mspec.setNoiseUse(of(noise));
-        mspec.setSeasonalModel(sm);
-        BsmMonitor monitor = new BsmMonitor();
-        monitor.setSpecification(mspec);
-        monitor.useDiffuseRegressors(true);
+        BsmSpec mspec = BsmSpec.builder()
+                .seasonal(sm)
+                .level(of(level), of(slope))
+                .noise(of(noise))
+                .build();
+        BsmEstimationSpec espec = BsmEstimationSpec.builder()
+                .diffuseRegression(true)
+                .build();
+        BsmKernel monitor = new BsmKernel(espec);
         int freq = y.getAnnualFrequency();
         Matrix X = Matrix.of(x);
-        if (!monitor.process(y.getValues(), X, freq)) {
+        if (!monitor.process(y.getValues(), X, freq, mspec)) {
             return null;
         }
-        BasicStructuralModel bsm = monitor.getResult();
+        BsmData bsm = monitor.getResult();
 
         Ssf ssf = SsfBsm.of(bsm);
         int nx = 0;
@@ -386,12 +389,12 @@ public class StsOutliersDetection {
         SsfData data = new SsfData(y.getValues());
         DefaultSmoothingResults sd = DefaultSmoothingResults.full();
         int n = data.length();
-        double sig2 = monitor.getLikelihood().sigma();
+        double sig2 = monitor.getLikelihood().sigma2();
         sd.prepare(ssf.getStateDim(), 0, data.length());
         smoother.process(ssf, data, sd);
 
         int spos = 0;
-        if (bsm.getVariance(Component.Noise) != 0) {
+        if (bsm.getNoiseVar() != 0) {
             ++spos;
         }
         if (mspec.hasLevel()) {

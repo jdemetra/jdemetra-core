@@ -5,6 +5,7 @@
  */
 package jdplus.regarima.ami;
 
+import jdplus.modelling.FastDifferencingModule;
 import demetra.data.Data;
 import demetra.timeseries.TsData;
 import org.junit.Test;

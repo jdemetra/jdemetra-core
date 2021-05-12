@@ -8,7 +8,7 @@ package jdplus.sts.extractors;
 import nbbrd.design.Development;
 import demetra.information.InformationMapping;
 import demetra.sts.Component;
-import jdplus.sts.BasicStructuralModel;
+import jdplus.sts.BsmData;
 
 /**
  *
@@ -23,19 +23,19 @@ public class BasicStructuralModelExtractor {
                 CDUMP = "cycledumpingfactor", CLENGTH = "cycleLength";
 
 
-    private final InformationMapping<BasicStructuralModel> MAPPING = new InformationMapping<>(BasicStructuralModel.class);
+    private final InformationMapping<BsmData> MAPPING = new InformationMapping<>(BsmData.class);
 
     static {
-            MAPPING.set(LVAR, Double.class, source -> source.getVariance(Component.Level));
-            MAPPING.set(SVAR, Double.class, source -> source.getVariance(Component.Slope));
-            MAPPING.set(CVAR, Double.class, source -> source.getVariance(Component.Cycle));
-            MAPPING.set(SEASVAR, Double.class, source -> source.getVariance(Component.Seasonal));
-            MAPPING.set(NVAR, Double.class, source -> source.getVariance(Component.Noise));
-            MAPPING.set(CDUMP, Double.class, source -> source.getCyclicalDumpingFactor());
-            MAPPING.set(CLENGTH, Double.class, source -> source.getCyclicalPeriod() / (6 * source.getPeriod()));
+            MAPPING.set(LVAR, Double.class, source -> source.getLevelVar());
+            MAPPING.set(SVAR, Double.class, source -> source.getSlopeVar());
+            MAPPING.set(CVAR, Double.class, source -> source.getCycleVar());
+            MAPPING.set(SEASVAR, Double.class, source -> source.getSeasonalVar());
+            MAPPING.set(NVAR, Double.class, source -> source.getNoiseVar());
+            MAPPING.set(CDUMP, Double.class, source -> source.getCycleDumpingFactor());
+            MAPPING.set(CLENGTH, Double.class, source -> source.getCycleLength());
     }
 
-    public InformationMapping<BasicStructuralModel> getMapping() {
+    public InformationMapping<BsmData> getMapping() {
         return MAPPING;
     }
 

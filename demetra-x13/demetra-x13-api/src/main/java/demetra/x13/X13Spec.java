@@ -25,7 +25,6 @@ import demetra.sa.SaSpecification;
 import static demetra.sa.SaSpecification.FAMILY;
 import demetra.sa.benchmarking.SaBenchmarkingSpec;
 import demetra.util.Validatable;
-import demetra.x11.SeasonalFilterOption;
 import demetra.x11.X11Spec;
 
 /**
@@ -38,12 +37,14 @@ import demetra.x11.X11Spec;
 public class X13Spec implements Validatable<X13Spec>, SaSpecification {
 
     public static final String METHOD = "x13";
-    public static final String VERSION = "1.0.0.0";
-    public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, METHOD, VERSION);
+    public static final String VERSION = "0.1.0.0";
+    public static final String VERSION_V3 = "3.0.0";
+    public static final AlgorithmDescriptor DESCRIPTOR_LEGACY = new AlgorithmDescriptor(FAMILY, METHOD, VERSION);
+    public static final AlgorithmDescriptor DESCRIPTOR_V3 = new AlgorithmDescriptor(FAMILY, METHOD, VERSION_V3);
 
     @Override
     public AlgorithmDescriptor getAlgorithmDescriptor() {
-        return DESCRIPTOR;
+        return DESCRIPTOR_V3;
     }
     private static final X13Spec DEFAULT = X13Spec.builder().build();
 

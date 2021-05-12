@@ -57,6 +57,7 @@
         <module>demetra-tsp</module>
         <module>demetra-revisions</module>
         <module>demetra-calendars</module>
+        <module>demetra-workspace</module>
     </modules>
 
     <dependencyManagement>

@@ -46,9 +46,9 @@ class LPFactory implements RegressionVariableFactory<LengthOfPeriod> {
 
     private void lp(TsDomain domain, DataBlock buffer) {
         int freq = domain.getAnnualFrequency();
-        if (freq < 2) {
-            throw new TsException(TsException.INCOMPATIBLE_DOMAIN);
-        }
+//        if (freq < 2) {
+//            throw new TsException(TsException.INCOMPATIBLE_DOMAIN);
+//        }
         TsPeriod start = domain.getStartPeriod();
         if (!start.getEpoch().equals(TsPeriod.DEFAULT_EPOCH)) {
             throw new UnsupportedOperationException();
@@ -78,9 +78,9 @@ class LPFactory implements RegressionVariableFactory<LengthOfPeriod> {
 
     private void length(TsDomain domain, DataBlock buffer) {
         int freq = domain.getAnnualFrequency();
-        if (freq < 2) {
-            throw new TsException(TsException.INCOMPATIBLE_DOMAIN);
-        }
+//        if (freq < 2) {
+//            throw new TsException(TsException.INCOMPATIBLE_DOMAIN);
+//        }
         TsPeriod start = domain.getStartPeriod();
         if (!start.getEpoch().equals(TsPeriod.DEFAULT_EPOCH)) {
             throw new UnsupportedOperationException();

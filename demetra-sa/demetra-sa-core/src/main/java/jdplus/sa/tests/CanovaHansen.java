@@ -198,18 +198,18 @@ public class CanovaHansen {
         return tr / (n * n);
     }
 
-    private Matrix robustCovarianceOfCoefficients() {
-        Matrix Lo = omega.deepClone();
-        SymmetricMatrix.lcholesky(Lo);
-
-        Matrix Lx = SymmetricMatrix.XtX(x);
-        SymmetricMatrix.lcholesky(Lx);
-        LowerTriangularMatrix.solveLX(Lx, Lo);
-        LowerTriangularMatrix.solveLtX(Lx, Lo);
-
-        Matrix XXt = SymmetricMatrix.XXt(Lo);
-        XXt.mul(xe.getRowsCount());
-        return XXt;
-    }
+//    private Matrix robustCovarianceOfCoefficients() {
+//        Matrix Lo = omega.deepClone();
+//        SymmetricMatrix.lcholesky(Lo);
+//
+//        Matrix Lx = SymmetricMatrix.XtX(x);
+//        SymmetricMatrix.lcholesky(Lx);
+//        LowerTriangularMatrix.solveLX(Lx, Lo);
+//        LowerTriangularMatrix.solveLtX(Lx, Lo);
+//
+//        Matrix XXt = SymmetricMatrix.XXt(Lo);
+//        XXt.mul(xe.getRowsCount());
+//        return XXt;
+//    }
 
 }

@@ -8,9 +8,7 @@ package jdplus.tramo;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.modelling.TransformationType;
-import demetra.sa.EstimationPolicy;
 import demetra.sa.EstimationPolicyType;
-import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.timeseries.regression.Variable;
@@ -160,8 +158,9 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         Arrays.stream(vars)
                 .filter(v -> ModellingUtility.isOutlier(v))
                 .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
-                .forEach(v -> builder.outlier(v.replaceAttribute(ModellingUtility.AMI, ModellingUtility.AMI_PREVIOUS, "tramo")));
-    }
+                .forEach(v -> builder.outlier(v.removeAttribute(ModellingUtility.AMI)));
+//                .forEach(v -> builder.outlier(v.replaceAttribute(ModellingUtility.AMI, ModellingUtility.AMI_PREVIOUS, "tramo")));
+   }
 
     private void update(CalendarSpec cspec, Variable[] variables, RegressionSpec.Builder builder) {
         CalendarSpec.Builder cbuilder = CalendarSpec.builder();
@@ -328,25 +327,25 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         List<Variable<InterventionVariable>> iv = reg.getInterventionVariables();
         List<Variable<InterventionVariable>> niv = new ArrayList<>();
         iv.forEach(v -> {
-            niv.add(v.withCoefficient(freeCoefficients(v, dreg.getInterventionVariables())));
+            niv.add(v.withCoefficients(freeCoefficients(v, dreg.getInterventionVariables())));
         });
 
         List<Variable<IOutlier>> o = reg.getOutliers();
         List<Variable<IOutlier>> no = new ArrayList<>();
         o.forEach(v -> {
-            no.add(v.withCoefficient(freeCoefficients(v, dreg.getOutliers())));
+            no.add(v.withCoefficients(freeCoefficients(v, dreg.getOutliers())));
         });
 
         List<Variable<Ramp>> r = reg.getRamps();
         List<Variable<Ramp>> nr = new ArrayList<>();
         r.forEach(v -> {
-            nr.add(v.withCoefficient(freeCoefficients(v, dreg.getRamps())));
+            nr.add(v.withCoefficients(freeCoefficients(v, dreg.getRamps())));
         });
 
         List<Variable<TsContextVariable>> u = reg.getUserDefinedVariables();
         List<Variable<TsContextVariable>> nu = new ArrayList<>();
         u.forEach(v -> {
-            nu.add(v.withCoefficient(freeCoefficients(v, dreg.getUserDefinedVariables())));
+            nu.add(v.withCoefficients(freeCoefficients(v, dreg.getUserDefinedVariables())));
         });
 
         EasterSpec easter = reg.getCalendar().getEaster();
@@ -411,25 +410,25 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         List<Variable<InterventionVariable>> iv = reg.getInterventionVariables();
         List<Variable<InterventionVariable>> niv = new ArrayList<>();
         iv.forEach(v -> {
-            niv.add(v.withCoefficient(Parameter.fixParameters(v.getCoefficients())));
+            niv.add(v.withCoefficients(Parameter.fixParameters(v.getCoefficients())));
         });
 
         List<Variable<IOutlier>> o = reg.getOutliers();
         List<Variable<IOutlier>> no = new ArrayList<>();
         o.forEach(v -> {
-            no.add(v.withCoefficient(Parameter.fixParameters(v.getCoefficients())));
+            no.add(v.withCoefficients(Parameter.fixParameters(v.getCoefficients())));
         });
 
         List<Variable<Ramp>> r = reg.getRamps();
         List<Variable<Ramp>> nr = new ArrayList<>();
         r.forEach(v -> {
-            nr.add(v.withCoefficient(Parameter.fixParameters(v.getCoefficients())));
+            nr.add(v.withCoefficients(Parameter.fixParameters(v.getCoefficients())));
         });
 
         List<Variable<TsContextVariable>> u = reg.getUserDefinedVariables();
         List<Variable<TsContextVariable>> nu = new ArrayList<>();
         u.forEach(v -> {
-            nu.add(v.withCoefficient(Parameter.fixParameters(v.getCoefficients())));
+            nu.add(v.withCoefficients(Parameter.fixParameters(v.getCoefficients())));
         });
 
         EasterSpec easter = reg.getCalendar().getEaster();

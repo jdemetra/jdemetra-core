@@ -17,16 +17,23 @@
 package demetra.x13.io.information;
 
 import demetra.data.Parameter;
+import demetra.information.Information;
 import demetra.information.InformationSet;
 import demetra.modelling.io.information.InterventionVariableMapping;
 import demetra.modelling.io.information.OutlierDefinition;
-import demetra.timeseries.regression.AdditiveOutlier;
-import demetra.timeseries.regression.IOutlier;
-import demetra.timeseries.regression.LevelShift;
-import demetra.timeseries.regression.PeriodicOutlier;
-import demetra.timeseries.regression.TransitoryChange;
-import demetra.timeseries.regression.Variable;
+import demetra.modelling.io.information.OutlierMapping;
+import demetra.modelling.io.information.RampMapping;
+import demetra.modelling.io.information.TsContextVariableMapping;
+import demetra.modelling.io.information.VariableMapping;
 import demetra.regarima.RegressionSpec;
+import demetra.sa.SaVariable;
+import demetra.timeseries.regression.IOutlier;
+import demetra.timeseries.regression.InterventionVariable;
+import demetra.timeseries.regression.Ramp;
+import demetra.timeseries.regression.TsContextVariable;
+import demetra.timeseries.regression.Variable;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,8 +47,8 @@ class RegressionSpecMapping {
             MU = "mu",
             TD = "tradingdays", EASTER = "easter",
             MH = "mh", MHS = "mh*",
-            OUTLIER = "outlier", OUTLIERS = "outliers",
-            RAMP = "ramp", RAMPS = "ramps",
+            OUTLIER = "outlier", OUTLIERS_LEGACY = "outliers", OUTLIERS = "outlier*",
+            RAMP = "ramp", RAMPS_LEGACY = "ramps", RAMPS = "ramp*",
             USER = "user", USERS = "user*",
             INTERVENTION = "intervention", INTERVENTIONS = "intervention*",
             COEFF = "coefficients", FCOEFF = "fixedcoefficients";
@@ -128,14 +135,39 @@ class RegressionSpecMapping {
         builder.tradingDays(TradingDaysSpecMapping.readLegacy(regInfo))
                 .easter(EasterSpecMapping.readLegacy(regInfo));
         // LEGACY
-        String[] outliers = regInfo.get(OUTLIERS, String[].class);
+        String[] outliers = regInfo.get(OUTLIERS_LEGACY, String[].class);
         if (outliers != null) {
             for (int i = 0; i < outliers.length; ++i) {
                 OutlierDefinition o = OutlierDefinition.fromString(outliers[i]);
                 if (o != null) {
                     Parameter c = RegressionSpecMapping.coefficientOf(regInfo, outliers[i]);
-                    builder.outlier(Variable.variable(outliers[i], outlier(o)).withCoefficient(c));
+                    IOutlier io = OutlierMapping.from(o);
+                    builder.outlier(Variable.variable(OutlierMapping.name(io), io, attributes(io)).withCoefficient(c));
                 }
+            }
+        }
+        String[] ramps = regInfo.get(RAMPS_LEGACY, String[].class);
+        if (ramps != null) {
+            for (int i = 0; i < ramps.length; ++i) {
+                Ramp r = RampMapping.parse(ramps[i]);
+                if (r != null) {
+                    Parameter c = RegressionSpecMapping.coefficientOf(regInfo, ramps[i]);
+                    builder.ramp(Variable.variable(ramps[i], r).withCoefficient(c));
+                }
+            }
+        }
+        List<Information<InformationSet>> sel = regInfo.select(INTERVENTIONS, InformationSet.class);
+        if (!sel.isEmpty()) {
+            for (Information<InformationSet> sub : sel) {
+                Variable<InterventionVariable> v = InterventionVariableMapping.readLegacy(sub.getValue());
+                builder.interventionVariable(v.withCoefficients(coefficientsOf(regInfo, v.getName())));
+            }
+        }
+        sel = regInfo.select(USERS, InformationSet.class);
+        if (!sel.isEmpty()) {
+            for (Information<InformationSet> sub : sel) {
+                Variable<TsContextVariable> v = TsContextVariableMapping.readLegacy(sub.getValue());
+                builder.userDefinedVariable(v.withCoefficients(coefficientsOf(regInfo, v.getName())));
             }
         }
     }
@@ -145,11 +177,39 @@ class RegressionSpecMapping {
             return RegressionSpec.DEFAULT;
         }
 
-        return RegressionSpec.builder()
+        RegressionSpec.Builder builder = RegressionSpec.builder()
                 .mean(info.get(MU, Parameter.class))
                 .tradingDays(TradingDaysSpecMapping.read(info.getSubSet(TD)))
-                .easter(EasterSpecMapping.read(info.getSubSet(EASTER)))
-                .build();
+                .easter(EasterSpecMapping.read(info.getSubSet(EASTER)));
+        List<Information<InformationSet>> sel = info.select(OUTLIERS, InformationSet.class);
+        if (!sel.isEmpty()) {
+            for (Information<InformationSet> sub : sel) {
+                Variable<IOutlier> v = VariableMapping.readO(sub.getValue());
+                builder.outlier(v);
+            }
+        }
+        sel = info.select(RAMPS, InformationSet.class);
+        if (!sel.isEmpty()) {
+            for (Information<InformationSet> sub : sel) {
+                Variable<Ramp> v = VariableMapping.readR(sub.getValue());
+                builder.ramp(v);
+            }
+        }
+        sel = info.select(INTERVENTIONS, InformationSet.class);
+        if (!sel.isEmpty()) {
+            for (Information<InformationSet> sub : sel) {
+                Variable<InterventionVariable> v = VariableMapping.readIV(sub.getValue());
+                builder.interventionVariable(v);
+            }
+        }
+        sel = info.select(USERS, InformationSet.class);
+        if (!sel.isEmpty()) {
+            for (Information<InformationSet> sub : sel) {
+                Variable<TsContextVariable> v = VariableMapping.readT(sub.getValue());
+                builder.userDefinedVariable(v);
+            }
+        }
+        return builder.build();
     }
 
     InformationSet write(RegressionSpec spec, boolean verbose) {
@@ -169,6 +229,38 @@ class RegressionSpecMapping {
         if (einfo != null) {
             info.set(EASTER, einfo);
         }
+        List<Variable<IOutlier>> voutliers = spec.getOutliers();
+        if (!voutliers.isEmpty()) {
+            int idx = 1;
+            for (Variable<IOutlier> v : voutliers) {
+                InformationSet w = VariableMapping.writeO(v, verbose);
+                info.set(OUTLIER + (idx++), w);
+            }
+        }
+        List<Variable<Ramp>> vramps = spec.getRamps();
+        if (!vramps.isEmpty()) {
+            int idx = 1;
+            for (Variable<Ramp> v : vramps) {
+                InformationSet w = VariableMapping.writeR(v, verbose);
+                info.set(RAMP + (idx++), w);
+            }
+        }
+        List<Variable<TsContextVariable>> vusers = spec.getUserDefinedVariables();
+        if (!vusers.isEmpty()) {
+            int idx = 1;
+            for (Variable<TsContextVariable> v : vusers) {
+                InformationSet w = VariableMapping.writeT(v, verbose);
+                info.set(USER + (idx++), w);
+            }
+        }
+        List<Variable<InterventionVariable>> viv = spec.getInterventionVariables();
+        if (!viv.isEmpty()) {
+            int idx = 1;
+            for (Variable<InterventionVariable> v : viv) {
+                InformationSet w = VariableMapping.writeIV(v, verbose);
+                info.set(USER + (idx++), w);
+            }
+        }
         return info;
     }
 
@@ -179,158 +271,60 @@ class RegressionSpecMapping {
         InformationSet info = new InformationSet();
         TradingDaysSpecMapping.writeLegacy(info, spec.getTradingDays(), verbose);
         EasterSpecMapping.writeLegacy(info, spec.getEaster(), verbose);
+        List<Variable<IOutlier>> voutliers = spec.getOutliers();
+        if (!voutliers.isEmpty()) {
+            String[] outliers = new String[voutliers.size()];
+            for (int i = 0; i < outliers.length; ++i) {
+                Variable<IOutlier> v = voutliers.get(i);
+                outliers[i] = OutlierMapping.format(v.getCore());
+                Parameter p = v.getCoefficient(0);
+                set(info, outliers[i], p);
+            }
+            info.set(OUTLIERS_LEGACY, outliers);
+        }
+        List<Variable<Ramp>> vramps = spec.getRamps();
+        if (!vramps.isEmpty()) {
+            String[] ramps = new String[vramps.size()];
+            for (int i = 0; i < ramps.length; ++i) {
+                Variable<Ramp> v = vramps.get(i);
+                ramps[i] = RampMapping.format(v.getCore());
+                Parameter p = v.getCoefficient(0);
+                set(info, ramps[i], p);
+            }
+            info.set(RAMPS_LEGACY, ramps);
+        }
+        List<Variable<TsContextVariable>> vusers = spec.getUserDefinedVariables();
+        if (!vusers.isEmpty()) {
+            int idx = 1;
+            for (Variable<TsContextVariable> v : vusers) {
+                InformationSet cur = TsContextVariableMapping.writeLegacy(v, verbose);
+                if (cur != null) {
+                    info.set(USER + Integer.toString(idx++), cur);
+                    Parameter p = v.getCoefficient(0);
+                    set(info, v.getName(), p);
+                }
+            }
+        }
+        List<Variable<InterventionVariable>> viv = spec.getInterventionVariables();
+        if (!viv.isEmpty()) {
+            int idx = 1;
+            for (Variable<InterventionVariable> v : viv) {
+                InformationSet cur = InterventionVariableMapping.writeLegacy(v, verbose);
+                if (cur != null) {
+                    info.set(INTERVENTION + Integer.toString(idx++), cur);
+                    Parameter p = v.getCoefficient(0);
+                    set(info, v.getName(), p);
+                }
+            }
+        }
         return info;
     }
 
-    IOutlier outlier(OutlierDefinition def) {
-        switch (def.getCode()) {
-            case "AO":
-            case "ao":
-                return new AdditiveOutlier(def.getPosition().atStartOfDay());
-            case "LS":
-            case "ls":
-                return new LevelShift(def.getPosition().atStartOfDay(), true);
-            case "TC":
-            case "tc":
-                return new TransitoryChange(def.getPosition().atStartOfDay(), .7);
-            case "SO":
-            case "s0":
-                return new PeriodicOutlier(def.getPosition().atStartOfDay(), 0, true);
-            default:
-                return null;
-        }
+    private Map<String, String> attributes(IOutlier o) {
+        HashMap<String, String> attributes = new HashMap<>();
+        attributes.put("ami", "x13");
+        attributes.put(SaVariable.REGEFFECT, SaVariable.defaultComponentTypeOf(o).name());
+        return attributes;
     }
 
-//    public InformationSet writeLegacy(RegressionSpec spec, boolean verbose) {
-//        if (!isUsed()) {
-//            return null;
-//        }
-//        InformationSet specInfo = new InformationSet();
-//        if (verbose || !calendar_.isDefault()) {
-//            InformationSet cinfo = calendar_.writeLegacy(verbose);
-//            if (cinfo != null) {
-//                specInfo.set(CALENDAR, cinfo);
-//            }
-//        }
-//        if (!outliers_.isEmpty()) {
-//            String[] outliers = new String[outliers_.size()];
-//            for (int i = 0; i < outliers.length; ++i) {
-//                outliers[i] = outliers_.get(i).toString();
-//            }
-//            specInfo.set(OUTLIERS, outliers);
-//        }
-//        if (!ramps_.isEmpty()) {
-//            String[] ramps = new String[ramps_.size()];
-//            for (int i = 0; i < ramps.length; ++i) {
-//                ramps[i] = ramps_.get(i).toString();
-//            }
-//            specInfo.set(RAMPS, ramps);
-//        }
-//        int idx = 1;
-//        for (TsVariableDescriptor desc : users_) {
-//            InformationSet cur = desc.writeLegacy(verbose);
-//            if (cur != null) {
-//                specInfo.set(USER + Integer.toString(idx++), cur);
-//            }
-//        }
-//        idx = 1;
-//        for (InterventionVariable ivar : interventions_) {
-//            InformationSet cur = ivar.writeLegacy(verbose);
-//            if (cur != null) {
-//                specInfo.set(INTERVENTION + Integer.toString(idx++), cur);
-//            }
-//        }
-//        if (!fcoeff.isEmpty()) {
-//            InformationSet icoeff = specInfo.subSet(FCOEFF);
-//            fcoeff.forEach((s, c) -> icoeff.set(s, c.length == 1 ? c[0] : c));
-//        }
-//        if (!coeff.isEmpty()) {
-//            InformationSet icoeff = specInfo.subSet(COEFF);
-//            coeff.forEach((s, c) -> icoeff.set(s, c.length == 1 ? c[0] : c));
-//        }
-//        return specInfo;
-//    }
-//
-//    public RegressionSpec readLegacy(InformationSet info) {
-//         InformationSet cinfo = info.getSubSet(CALENDAR);
-//        if (cinfo != null) {
-//            boolean tok = calendar_.readLegacy(cinfo);
-//            if (!tok) {
-//                return false;
-//            }
-//        }
-//        String[] outliers = info.get(OUTLIERS, String[].class);
-//        if (outliers != null) {
-//            for (int i = 0; i < outliers.length; ++i) {
-//                OutlierDefinition o = OutlierDefinition.fromString(outliers[i]);
-//                if (o != null) {
-//                    outliers_.set(o);
-//                } else {
-//                    return false;
-//                }
-//            }
-//        }
-//        String[] ramps = info.get(RAMPS, String[].class);
-//        if (ramps != null) {
-//            for (int i = 0; i < ramps.length; ++i) {
-//                Ramp r = Ramp.fromString(ramps[i]);
-//                if (r != null) {
-//                    ramps_.set(r);
-//                } else {
-//                    return false;
-//                }
-//            }
-//        }
-//        List<Information<InformationSet>> usel = info.select(USERS, InformationSet.class);
-//        usel.forEach((item) -> {
-//            TsVariableDescriptor cur = new TsVariableDescriptor();
-//            if (cur.readLegacy(item.value)) {
-//                users_.set(cur);
-//            }
-//        });
-//        List<Information<InformationSet>> isel = info.select(INTERVENTIONS, InformationSet.class);
-//        isel.forEach((item) -> {
-//            InterventionVariable cur = new InterventionVariable();
-//            if (cur.readLegacy(item.value)) {
-//                interventions_.set(cur);
-//            }
-//        });
-//        InformationSet ifcoeff = info.getSubSet(FCOEFF);
-//        if (ifcoeff != null) {
-//            TradingDaysSpec td = calendar_.getTradingDays();
-//            List<Information<double[]>> all = ifcoeff.select(double[].class);
-//
-//            all.forEach((item) -> {
-//                //Version 2.2.0 fixed regressors for user defined calendar
-//                if (td != null && td.getUserVariables() != null && "td".equals(item.name) && item.value.length == td.getUserVariables().length) {
-//                    for (int j = 0; j < item.value.length; j++) {
-//                        fcoeff.put(ITsVariable.validName("td|" + td.getUserVariables()[j]), new double[]{item.value[j]});
-//                    }
-//                } else {
-//                    fcoeff.put(item.name, item.value);
-//                }
-//
-//            });
-//
-//            List<Information<Double>> sall = ifcoeff.select(Double.class);
-//            sall.forEach((item) -> {
-//                //Version 2.2.0 fixed regressors for user defined calendar
-//                if (td != null && td.getUserVariables() != null && "td".equals(item.name) && 1 == td.getUserVariables().length) {
-//                    fcoeff.put(ITsVariable.validName("td|" + td.getUserVariables()[0]), new double[]{item.value});
-//                } else {
-//                    fcoeff.put(item.name, new double[]{item.value});
-//                }
-//            });
-//
-//        }
-//        InformationSet icoeff = info.getSubSet(COEFF);
-//        if (icoeff != null) {
-//            List<Information<double[]>> all = icoeff.select(double[].class);
-//            all.stream().forEach(reg -> coeff.put(reg.name, reg.value));
-//            List<Information<Double>> sall = icoeff.select(Double.class);
-//            sall.stream().forEach(reg -> coeff.put(reg.name, new double[]{reg.value}));
-//        }
-//        return true;
-//    }
-//
 }

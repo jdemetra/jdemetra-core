@@ -19,6 +19,7 @@ package demetra.toolkit.io.protobuf;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
 import demetra.data.Iterables;
+import demetra.likelihood.DiffuseLikelihoodStatistics;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
@@ -280,7 +281,7 @@ public class ToolkitProtosUtility {
     }
 
     public ToolkitProtos.Matrix convert(MatrixType m) {
-        if (m == null) {
+        if (m == null || m.isEmpty()) {
             return ToolkitProtos.Matrix.getDefaultInstance();
         }
         return ToolkitProtos.Matrix.newBuilder()
@@ -307,6 +308,23 @@ public class ToolkitProtosUtility {
                 .setSsq(ls.getSsqErr())
                 .build();
 
+    }
+
+    public ToolkitProtos.DiffuseLikelihoodStatistics convert(DiffuseLikelihoodStatistics ls) {
+        return ToolkitProtos.DiffuseLikelihoodStatistics.newBuilder()
+                .setNobs(ls.getObservationsCount())
+                .setNdiffuse(ls.getDiffuseCount())
+                .setNparams(ls.getEstimatedParametersCount())
+                .setDegreesOfFreedom(ls.getObservationsCount() - ls.getDiffuseCount() - ls.getEstimatedParametersCount())
+                .setLogLikelihood(ls.getLogLikelihood())
+                .setAdjustedLogLikelihood(ls.getAdjustedLogLikelihood())
+                .setAic(ls.aic())
+                .setAicc(ls.aicc())
+                .setBic(ls.bic())
+                .setSsq(ls.getSsqErr())
+                .setLdet(ls.getLogDeterminant())
+                .setDcorrection(ls.getDiffuseCorrection())
+                .build();
     }
 
     public ModellingProtos.ArimaModel convert(IArimaModel arima, String name) {

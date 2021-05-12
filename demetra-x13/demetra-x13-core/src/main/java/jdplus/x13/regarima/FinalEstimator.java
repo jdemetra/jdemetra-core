@@ -27,6 +27,7 @@ import jdplus.regsarima.regular.IModelEstimator;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
+import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 
 /**
@@ -36,12 +37,45 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Preliminary)
 public class FinalEstimator implements IModelEstimator {
 
-    private final double tsig = 1;
-    private static final int MAXD = 2, MAXBD = 1;
-    private final double eps;
+    public static Builder builder() {
+        return new Builder();
+    }
 
-    public FinalEstimator(double eps) {
+    @BuilderPattern(FinalEstimator.class)
+    public static class Builder {
+
+        private double epsilon = .0001, tsig = 1;
+        private boolean ami = false;
+
+        public Builder precision(double precision) {
+            this.epsilon = precision;
+            return this;
+        }
+
+        public Builder ami(boolean ami) {
+            this.ami = ami;
+            return this;
+        }
+
+        public Builder tsig(double tsig) {
+            this.tsig = tsig;
+            return this;
+        }
+
+        public FinalEstimator build() {
+            return new FinalEstimator(epsilon, tsig, ami);
+        }
+
+    }
+
+    private final double tsig;
+    private final double eps;
+    private final boolean ami;
+
+    private FinalEstimator(double eps, double tsig, boolean ami) {
         this.eps = eps;
+        this.tsig = tsig;
+        this.ami = ami;
     }
 
     @Override
@@ -61,6 +95,9 @@ public class FinalEstimator implements IModelEstimator {
                 context.getDescription().freeArimaParameters();
                 context.estimate(processor);
                 if (ndim == 0) {
+                    return true;
+                }
+                if (!ami) {
                     return true;
                 }
                 int itest = test(context);
@@ -88,16 +125,16 @@ public class FinalEstimator implements IModelEstimator {
         SarimaOrders spec = m.orders();
         DoubleSeq pm = m.parameters();
         int start = 0, len = spec.getP();
-        boolean dpr = len>0 && checkRoots(pm.extract(start, len), 1 / cmod);// (m.RegularAR.Roots,
+        boolean dpr = len > 0 && checkRoots(pm.extract(start, len), 1 / cmod);// (m.RegularAR.Roots,
         start += len;
         len = spec.getBp();
-        boolean dps = len>0 && checkRoots(pm.extract(start, len), 1 / cmod);// SeasonalAR.Roots,
+        boolean dps = len > 0 && checkRoots(pm.extract(start, len), 1 / cmod);// SeasonalAR.Roots,
         start += len;
         len = spec.getQ();
-        boolean dqr = len>0 && checkRoots(pm.extract(start, len), 1 / cmod);// RegularMA.Roots,
+        boolean dqr = len > 0 && checkRoots(pm.extract(start, len), 1 / cmod);// RegularMA.Roots,
         start += len;
         len = spec.getBq();
-        boolean dqs = len>0 && checkRoots(pm.extract(start, len), 1 / cmod);// SeasonalMA.Roots,
+        boolean dqs = len > 0 && checkRoots(pm.extract(start, len), 1 / cmod);// SeasonalMA.Roots,
         if (!dpr && !dps && !dqr && !dqs) {
             return 0; // nothing to do
         }

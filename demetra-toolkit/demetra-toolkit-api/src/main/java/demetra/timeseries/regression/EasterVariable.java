@@ -44,15 +44,9 @@ public class EasterVariable implements IEasterVariable, ISystemVariable{
 
         private int duration = 6, endPosition = 0;
         private Correction meanCorrection = Correction.Simple;
-        private String name;
 
         public Builder duration(int duration) {
             this.duration = duration;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = name;
             return this;
         }
 

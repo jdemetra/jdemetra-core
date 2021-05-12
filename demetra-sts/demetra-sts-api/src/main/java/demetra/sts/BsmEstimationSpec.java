@@ -23,15 +23,29 @@ import demetra.math.functions.Optimizer;
  *
  * @author Jean Palate
  */
-@lombok.Data
+@lombok.Value
+@lombok.Builder(builderClassName="Builder", toBuilder=true)
 public class BsmEstimationSpec {
-    public static final double DEF_TOL = 1e-9;
+    
+    public static final double DEF_TOL = 1e-9, DEF_LR_SMALL=0.01;
     public static final Optimizer DEF_OPT = Optimizer.LevenbergMarquardt;
     public static final boolean DEF_DREGS = false, DEF_SCALINGFACTOR=true;
+    
+    public static Builder builder(){
+        return new Builder()
+                .diffuseRegression(DEF_DREGS)
+                .scalingFactor(DEF_SCALINGFACTOR)
+                .optimizer(DEF_OPT)
+                .precision(DEF_TOL)
+                .likelihoodRatioThreshold(DEF_LR_SMALL);
+    }
+    
+    public static final BsmEstimationSpec DEFAULT=builder().build();
+    
 
-    private boolean diffuseRegression = DEF_DREGS;
-    private boolean scalingFactor = DEF_SCALINGFACTOR;
-    private double precision = DEF_TOL;
-    private Optimizer optimizer = DEF_OPT;
+    private boolean diffuseRegression;
+    private boolean scalingFactor;
+    private double precision, likelihoodRatioThreshold;
+    private Optimizer optimizer;
   
 }

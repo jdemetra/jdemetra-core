@@ -18,8 +18,8 @@ package jdplus.likelihood;
 
 import nbbrd.design.BuilderPattern;
 import demetra.data.DoubleSeq;
+import demetra.likelihood.DiffuseLikelihoodStatistics;
 import nbbrd.design.Development;
-import demetra.likelihood.LikelihoodStatistics;
 import jdplus.math.matrices.Matrix;
 
 /**
@@ -122,12 +122,16 @@ public interface DiffuseConcentratedLikelihood extends ConcentratedLikelihood {
         return dim()-nx()-ndiffuse();
     }
     
-    default LikelihoodStatistics stats(double llcorrection, int nparams) {
-        return LikelihoodStatistics.statistics(logLikelihood(), dim())
-                .llAdjustment(llcorrection)
-                .differencingOrder(ndiffuse())
-                .parametersCount((nparams) + nx() + 1)
-                .ssq(ssq())
+    default DiffuseLikelihoodStatistics stats(double llcorrection, int nparams) {
+        return DiffuseLikelihoodStatistics.builder()
+                .logLikelihood(this.logLikelihood())
+                .logDeterminant(this.logDeterminant())
+                .diffuseCorrection(this.diffuseCorrection())
+                .transformationAdjustment(llcorrection)
+                .observationsCount(this.dim())
+                .ssqErr(ssq())
+                .diffuseCount(ndiffuse())
+                .estimatedParametersCount(nparams + nx() + 1)
                 .build();
     }
 

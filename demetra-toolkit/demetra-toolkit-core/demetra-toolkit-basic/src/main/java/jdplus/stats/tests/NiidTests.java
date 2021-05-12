@@ -74,6 +74,8 @@ public class NiidTests {
 
         public Builder period(final int period) {
             this.period = period;
+            if (period == 1)
+                seasonal=false;
             return this;
         }
 

@@ -8,7 +8,7 @@ package demetra.stl.r;
 import demetra.data.Data;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.data.DoubleSeq;
+import demetra.math.matrices.MatrixType;
 
 /**
  *
@@ -24,4 +24,10 @@ public class StlDecompositionTest {
         assertTrue(null != StlDecomposition.loess(Data.ABS_RETAIL, 13, 1, 1));
     }
     
+    @Test
+    public void testStl() {
+        MatrixType decomp = StlDecomposition.process(Data.ABS_RETAIL, 12, true, 7, 23, true);
+//        System.out.println(decomp);
+        assertTrue(null != decomp);
+    }
 }

@@ -19,7 +19,8 @@ package demetra.tramoseats.r;
 import demetra.arima.SarimaModel;
 import demetra.data.Data;
 import demetra.math.matrices.MatrixType;
-import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsPeriod;
 import demetra.tramo.TramoOutput;
 import demetra.tramo.TramoSpec;
 import static org.junit.Assert.*;
@@ -51,18 +52,18 @@ public class TramoTest {
         TramoOutput rslt = Tramo.fullProcess(Data.TS_PROD, "TR5");
         byte[] bytes = Tramo.toBuffer(rslt);
         assertTrue(bytes != null);
-        
+
         TramoOutput rslt2 = Tramo.fullProcess(Data.TS_PROD, rslt.getResultSpec(), null);
         byte[] bytes2 = Tramo.toBuffer(rslt2);
         assertTrue(bytes2 != null);
-        
+
         byte[] sbytes = Tramo.toBuffer(rslt.getEstimationSpec());
         TramoSpec spec = Tramo.specOf(sbytes);
-        
+
         assertTrue(spec != null);
-     }
-     
-   @Test
+    }
+
+    @Test
     public void testSpec() {
         byte[] bytes = Tramo.toBuffer(TramoSpec.TRfull);
         TramoSpec trf = Tramo.specOf(bytes);
@@ -78,11 +79,13 @@ public class TramoTest {
 
     @Test
     public void testForecast() {
-        MatrixType terror = Tramo.forecast(Data.TS_PROD, TramoSpec.TRfull, null, 12);
+        TsData s = TsData.ofInternal(TsPeriod.monthly(1992, 1), Data.RETAIL_BOOKSTORES).drop(0, 12);
+        MatrixType terror = Tramo.forecast(s, TramoSpec.TRfull, null, 12);
         assertTrue(terror != null);
- //       System.out.println(terror);
+        //       System.out.println(terror);
+
     }
-    
+
     @Test
     public void testRefresh() {
         TramoOutput rslt = Tramo.fullProcess(Data.TS_PROD, "TR5");
@@ -90,10 +93,9 @@ public class TramoTest {
         TramoSpec fspec = Tramo.refreshSpec(rslt.getResultSpec(), TramoSpec.TRfull, null, "Fixed");
         TramoSpec pspec = Tramo.refreshSpec(rslt.getResultSpec(), rslt.getEstimationSpec(), null, "FreeParameters");
         TramoSpec ospec = Tramo.refreshSpec(rslt.getResultSpec(), rslt.getEstimationSpec(), null, "Outliers");
-        
+
         byte[] b = Tramo.toBuffer(fspec);
         TramoSpec fspec2 = Tramo.specOf(b);
     }
 
-    
 }

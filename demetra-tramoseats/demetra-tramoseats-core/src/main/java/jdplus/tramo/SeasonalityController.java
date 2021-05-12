@@ -37,6 +37,9 @@ class SeasonalityController extends ModelController {
 
     @Override
     ProcessingResult process(RegSarimaModelling modelling, TramoContext context) {
+        if (modelling.getDescription().getAnnualFrequency() == 1) {
+            return ProcessingResult.Unprocessed;
+        }
         ProcessingResult result;
         if (getReferenceModel() == null) {
             result = computeReferenceModel(modelling, context);

@@ -16,6 +16,7 @@
  */
 package demetra.sts;
 
+import demetra.data.Parameter;
 import nbbrd.design.Development;
 
 /**
@@ -23,63 +24,200 @@ import nbbrd.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
-@lombok.Data
-public final class BsmSpec implements Cloneable {
+@lombok.Value
+@lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+public final class BsmSpec {
+    
+    public static final BsmSpec DEFAULT = BsmSpec.builder().build();
 
-    @lombok.NonNull
-    private ComponentUse levelUse = ComponentUse.Free,
-            slopeUse = ComponentUse.Free,
-            cycleUse = ComponentUse.Unused,
-            noiseUse = ComponentUse.Free,
-            seasUse = ComponentUse.Free;
-    @lombok.NonNull
-    private SeasonalModel seasonalModel = SeasonalModel.Trigonometric;
+    public static Builder builder() {
+        return new Builder();
+    }
 
-    private double levelVar, slopeVar, cycleVar, noiseVar, seasVar; // only used in case of ComponentUse.fixed
-    private double cycleDumpingFactor, cycleLength;
+    private Parameter levelVar, slopeVar, noiseVar, seasonalVar, cycleVar, cycleDumpingFactor, cycleLength;
+    private SeasonalModel seasonalModel;
 
-    @Override
-    public BsmSpec clone() {
-        try {
-            return (BsmSpec) super.clone();
-        } catch (CloneNotSupportedException ex) {
-            throw new AssertionError();
+    public static class Builder {
+
+        private Parameter levelVar = Parameter.undefined(), slopeVar = Parameter.undefined(),
+                noiseVar = Parameter.undefined(), seasonalVar = Parameter.undefined(), cycleVar, cycleDumpingFactor, cycleLength;
+        private SeasonalModel seasonalModel = SeasonalModel.Trigonometric;
+
+        public Builder level(boolean level, boolean slope) {
+            if (slope && !level) {
+                throw new IllegalArgumentException();
+            }
+            if (level) {
+                levelVar = Parameter.undefined();
+            } else {
+                levelVar = null;
+            }
+            if (slope) {
+                slopeVar = Parameter.undefined();
+            } else {
+                slopeVar = null;
+            }
+            return this;
         }
+
+        public Builder level(Parameter lvar, Parameter svar) {
+            if (lvar == null && lvar != null) {
+                throw new IllegalArgumentException();
+            }
+            levelVar = lvar;
+            slopeVar = svar;
+            return this;
+        }
+
+        public Builder seasonal(SeasonalModel model) {
+            this.seasonalModel = model;
+            if (model != null) {
+                this.seasonalVar = Parameter.undefined();
+            } else {
+                this.seasonalVar = null;
+            }
+            return this;
+        }
+
+        public Builder seasonal(SeasonalModel model, Parameter svar) {
+            if ((model == null && svar != null) || (model != null && svar == null)) {
+                throw new IllegalArgumentException();
+            }
+            this.seasonalModel = model;
+            this.seasonalVar = svar;
+            return this;
+        }
+
+        public Builder noise(boolean n) {
+            if (n) {
+                this.noiseVar = Parameter.undefined();
+            } else {
+                this.noiseVar = null;
+            }
+            return this;
+        }
+
+        public Builder noise(Parameter nvar) {
+            if (nvar != null && nvar.isFixed() && nvar.getValue() == 0) {
+                this.noiseVar = null;
+            } else {
+                this.noiseVar = nvar;
+            }
+            return this;
+        }
+
+        public Builder cycle(boolean cycle) {
+            if (cycle) {
+                this.cycleVar = Parameter.undefined();
+                this.cycleDumpingFactor = Parameter.undefined();
+                this.cycleLength = Parameter.undefined();
+            } else {
+                this.cycleVar = null;
+                this.cycleDumpingFactor = null;
+                this.cycleLength = null;
+            }
+            return this;
+        }
+
+        public Builder cycle(Parameter cvar, Parameter cdumpingfactor, Parameter clength) {
+            if (cvar == null && (cdumpingfactor != null || clength != null)) {
+                throw new IllegalArgumentException();
+            }
+            cycleVar = cvar;
+            if (cdumpingfactor != null && cdumpingfactor.getValue() <= 0) {
+                cycleDumpingFactor = Parameter.undefined();
+            } else {
+                cycleDumpingFactor = cdumpingfactor;
+            }
+            if (clength != null && clength.getValue() <= 0) {
+                this.cycleLength = Parameter.undefined();
+            } else {
+                cycleLength = clength;
+            }
+            return this;
+        }
+
+        public BsmSpec build() {
+            return new BsmSpec(this);
+        }
+    }
+
+    private BsmSpec(Builder builder) {
+        this.levelVar = builder.levelVar;
+        this.slopeVar = builder.slopeVar;
+        this.noiseVar = builder.noiseVar;
+        this.seasonalVar = builder.seasonalVar;
+        this.seasonalModel = builder.seasonalModel;
+        this.cycleVar = builder.cycleVar;
+        this.cycleDumpingFactor = builder.cycleDumpingFactor;
+        this.cycleLength = builder.cycleLength;
+    }
+
+    public Builder toBuilder() {
+        Builder builder = new Builder();
+        builder.levelVar = levelVar;
+        builder.slopeVar = slopeVar;
+        builder.noiseVar = noiseVar;
+        builder.seasonalVar = seasonalVar;
+        builder.seasonalModel = seasonalModel;
+        builder.cycleVar = cycleVar;
+        builder.cycleDumpingFactor = cycleDumpingFactor;
+        builder.cycleLength = cycleLength;
+        return builder;
     }
 
     /**
      *
      * @param var
      * @param cmp
+     * @return
      */
-    public void fixComponent(double var, Component cmp) {
+    public BsmSpec fixComponent(Component cmp, double var) {
         switch (cmp) {
             case Level:
-                levelVar = var;
-                levelUse = ComponentUse.Fixed;
-                return;
+                return new BsmSpec(Parameter.fixed(var), slopeVar, noiseVar, seasonalVar, cycleVar, cycleDumpingFactor, cycleLength, seasonalModel);
             case Slope:
-                slopeVar = var;
-                slopeUse = ComponentUse.Fixed;
-                return;
+                return new BsmSpec(levelVar, Parameter.fixed(var), noiseVar, seasonalVar, cycleVar, cycleDumpingFactor, cycleLength, seasonalModel);
             case Seasonal:
-                seasVar = var;
-                seasUse = ComponentUse.Fixed;
-                if (seasVar == 0) {
-                    seasonalModel = SeasonalModel.Fixed;
-                }
-                return;
-            case Cycle:
-                cycleVar = var;
-                cycleUse = ComponentUse.Fixed;
-                return;
-            case Noise:
-                noiseVar = var;
                 if (var == 0) {
-                    noiseUse = ComponentUse.Unused;
+                    return new BsmSpec(levelVar, slopeVar, noiseVar, Parameter.fixed(0), cycleVar, cycleDumpingFactor, cycleLength, SeasonalModel.Fixed);
                 } else {
-                    noiseUse = ComponentUse.Fixed;
+                    return new BsmSpec(levelVar, slopeVar, noiseVar, Parameter.fixed(var), cycleVar, cycleDumpingFactor, cycleLength, seasonalModel);
                 }
+            case Cycle:
+                return new BsmSpec(levelVar, slopeVar, noiseVar, seasonalVar, Parameter.fixed(var), cycleDumpingFactor, cycleLength, seasonalModel);
+            default: // Noise
+                if (var == 0) {
+                    return new BsmSpec(levelVar, slopeVar, null, seasonalVar, cycleVar, cycleDumpingFactor, cycleLength, seasonalModel);
+                } else {
+                    return new BsmSpec(levelVar, slopeVar, Parameter.fixed(var), seasonalVar, cycleVar, cycleDumpingFactor, cycleLength, seasonalModel);
+                }
+        }
+    }
+    
+    private boolean isScalable(Parameter p){
+        return p == null || p.getValue() == 0 || p.isFree();
+    }
+    
+    public boolean isScalable(){
+        return isScalable(levelVar) && isScalable(slopeVar) && isScalable(seasonalVar) && isScalable(noiseVar) && isScalable(cycleVar);
+    }
+
+    private ComponentUse use(Parameter p) {
+        if (p == null) {
+            return ComponentUse.Unused;
+        } else if (p.isFixed()) {
+            return ComponentUse.Fixed;
+        } else {
+            return ComponentUse.Free;
+        }
+    }
+
+    private boolean isFree(Parameter p) {
+        if (p == null) {
+            return false;
+        } else {
+            return !p.isFixed();
         }
     }
 
@@ -88,7 +226,7 @@ public final class BsmSpec implements Cloneable {
      * @return
      */
     public ComponentUse getSlopeUse() {
-        return slopeUse;
+        return use(slopeVar);
     }
 
     public boolean hasComponent(Component cmp) {
@@ -111,15 +249,15 @@ public final class BsmSpec implements Cloneable {
     public boolean hasFreeComponent(Component cmp) {
         switch (cmp) {
             case Noise:
-                return noiseUse == ComponentUse.Free;
+                return isFree(noiseVar);
             case Level:
-                return levelUse == ComponentUse.Free;
-            case Cycle:
-                return cycleUse == ComponentUse.Free;
+                return isFree(levelVar);
             case Slope:
-                return slopeUse == ComponentUse.Free;
+                return isFree(slopeVar);
             case Seasonal:
-                return seasUse == ComponentUse.Free;
+                return isFree(seasonalVar);
+            case Cycle:
+                return isFree(cycleVar);
             default:
                 return false;
         }
@@ -130,7 +268,7 @@ public final class BsmSpec implements Cloneable {
      * @return
      */
     public boolean hasCycle() {
-        return cycleUse != ComponentUse.Unused;
+        return cycleVar != null;
     }
 
     /**
@@ -138,7 +276,7 @@ public final class BsmSpec implements Cloneable {
      * @return
      */
     public boolean hasLevel() {
-        return levelUse != ComponentUse.Unused;
+        return levelVar != null;
     }
 
     /**
@@ -146,7 +284,7 @@ public final class BsmSpec implements Cloneable {
      * @return
      */
     public boolean hasNoise() {
-        return noiseUse != ComponentUse.Unused;
+        return noiseVar != null;
     }
 
     /**
@@ -154,7 +292,7 @@ public final class BsmSpec implements Cloneable {
      * @return
      */
     public boolean hasSeasonal() {
-        return seasUse != ComponentUse.Unused;
+        return seasonalVar != null;
     }
 
     /**
@@ -162,73 +300,114 @@ public final class BsmSpec implements Cloneable {
      * @return
      */
     public boolean hasSlope() {
-        return slopeUse != ComponentUse.Unused;
+        return slopeVar != null;
     }
 
-    /**
-     * @param value
-     */
-    public void setCycleUse(ComponentUse value) {
-        cycleUse = value;
-        if (cycleUse != ComponentUse.Unused) {
-            cycleDumpingFactor = 0;
-            cycleLength = 0;
-        }
-    }
+//    /**
+//     * @param value
+//     * @return
+//     */
+//    public BsmSpec setCycleUse(ComponentUse value) {
+//        switch (value) {
+//            case Unused:
+//                return new BsmSpec(levelVar, slopeVar, noiseVar, seasonalVar, null, null, null, seasonalModel);
+//            case Fixed:
+//                return new BsmSpec(levelVar, slopeVar, noiseVar, seasonalVar,
+//                        Parameter.fixed(cycleVar.getValue()), Parameter.fixed(cycleDumpingFactor.getValue()), Parameter.fixed(cycleLength.getValue()),
+//                        seasonalModel);
+//            default: // Free
+//                return new BsmSpec(levelVar, slopeVar, noiseVar, seasonalVar, Parameter.undefined(), Parameter.undefined(), Parameter.undefined(), seasonalModel);
+//        }
+//    }
+//
+//    /**
+//     *
+//     * @param value
+//     * @return
+//     */
+//    public BsmSpec setLevelUse(ComponentUse value) {
+//        switch (value) {
+//            case Unused:
+//                return new BsmSpec(null, null, noiseVar, seasonalVar, cycleVar, cycleDumpingFactor, cycleLength, seasonalModel);
+//            case Fixed:
+//                return new BsmSpec(Parameter.fixed(levelVar.getValue()), slopeVar, noiseVar, seasonalVar, cycleVar, cycleDumpingFactor, cycleLength, seasonalModel);
+//            default:
+//                return new BsmSpec(Parameter.undefined(), slopeVar, noiseVar, seasonalVar, cycleVar, cycleDumpingFactor, cycleLength, seasonalModel);
+//        }
+//    }
+//
+//    /**
+//     *
+//     * @param value
+//     * @return
+//     */
+//    public BsmSpec setNoiseUse(ComponentUse value) {
+//        switch (value) {
+//            case Unused:
+//                return new BsmSpec(levelVar, slopeVar, null, seasonalVar, cycleVar, cycleDumpingFactor, cycleLength, seasonalModel);
+//            case Fixed:
+//                double nvar = noiseVar.getValue();
+//                return new BsmSpec(levelVar, slopeVar, nvar == 0 ? null : Parameter.fixed(nvar),
+//                        seasonalVar, cycleVar, cycleDumpingFactor, cycleLength, seasonalModel);
+//            default:
+//                return new BsmSpec(levelVar, slopeVar, Parameter.undefined(), seasonalVar, cycleVar, cycleDumpingFactor, cycleLength, seasonalModel);
+//        }
+//    }
 
-    /**
-     *
-     * @param value
-     */
-    public void setLevelUse(ComponentUse value) {
-        levelUse = value;
-        if (value == ComponentUse.Unused) {
-            slopeUse = ComponentUse.Unused;
-        }
-    }
-
-    /**
-     *
-     * @param value
-     */
-    public void setNoiseUse(ComponentUse value) {
-        noiseUse = value;
-        if (value == ComponentUse.Unused) {
-            noiseVar=0;
-        }
-    }
-
-    public int getParametersCount() {
+    public int getFreeVariancesCount() {
         int n = 0;
-        if (levelUse == ComponentUse.Free) {
+        if (isFree(levelVar)) {
             ++n;
         }
-        if (slopeUse == ComponentUse.Free) {
+        if (isFree(slopeVar)) {
             ++n;
         }
-        if (noiseUse == ComponentUse.Free) {
+        if (isFree(noiseVar)) {
             ++n;
         }
-        if (seasUse == ComponentUse.Free) {
+        if (isFree(seasonalVar)) {
             ++n;
         }
-        n += getCycleParametersCount();
-        return n;
-    }
-
-    public int getCycleParametersCount() {
-        if (cycleUse == ComponentUse.Unused) {
-            return 0;
-        }
-        int n = cycleUse == ComponentUse.Fixed ? 0 : 1;
-
-        if (cycleDumpingFactor != 0) {
-            ++n;
-        }
-        if (cycleLength != 0) {
+        if (isFree(cycleVar)) {
             ++n;
         }
         return n;
     }
+
+    public int getFreeParametersCount() {
+        return getFreeVariancesCount() + getFreeCycleParametersCount();
+    }
+
+    public int getFreeCycleParametersCount() {
+        int n = 0;
+        if (isFree(cycleDumpingFactor)) {
+            ++n;
+        }
+        if (isFree(cycleLength)) {
+            ++n;
+        }
+        return n;
+    }
+
+    public double[] cycle() {
+        if (cycleDumpingFactor == null || cycleLength == null) {
+            return null;
+        }
+        double cro = cycleDumpingFactor.getValue();
+        double cperiod = cycleLength.getValue();
+        double q = Math.PI * 2 / cperiod;
+        return new double[]{cro * Math.cos(q), cro * Math.sin(q)};
+    }
+
+    public static double valueOf(Parameter p, double defValue) {
+        if(p == null)
+            return -1;
+        if (p.isDefined())
+            return p.getValue();
+        else
+            return defValue;
+    }
+    
+    public static final double DEF_VAR=1, DEF_CDUMP=.9, DEF_CLENGTH=6;
 
 }

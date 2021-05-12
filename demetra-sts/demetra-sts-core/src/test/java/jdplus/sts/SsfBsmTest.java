@@ -17,6 +17,7 @@
 package jdplus.sts;
 
 import demetra.data.Data;
+import demetra.data.Parameter;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import demetra.sts.SeasonalModel;
@@ -40,12 +41,11 @@ public class SsfBsmTest {
     static final SsfBsm2 BSM;
     
     static{
-        BsmSpec mspec = new BsmSpec();
-        mspec.setSeasonalModel(SeasonalModel.Crude);
-        BasicStructuralModel model = new BasicStructuralModel(mspec, 12);
-        model.setVariance(Component.Seasonal, 100);
+        BsmSpec mspec = BsmSpec.builder()
+                .seasonal(SeasonalModel.Crude, Parameter.fixed(100))
+                .build();
+        BsmData model = new BsmData(mspec, 12);
         BSM = SsfBsm2.of(model);
-        
     }
 
     public SsfBsmTest() {

@@ -121,7 +121,7 @@ public final class ModelEstimation {
                 for (int j = 0; j < nfree; ++j) {
                     p[j] = Parameter.estimated(cursor.getAndNext());
                 }
-                variables[k++] = var.withCoefficient(p);
+                variables[k++] = var.withCoefficients(p);
             } else if (nfree > 0) {
                 Parameter[] p = var.getCoefficients();
                 for (int j = 0; j < p.length; ++j) {
@@ -129,7 +129,7 @@ public final class ModelEstimation {
                         p[j] = Parameter.estimated(cursor.getAndNext());
                     }
                 }
-                variables[k++] = var.withCoefficient(p);
+                variables[k++] = var.withCoefficients(p);
             } else {
                 variables[k++] = var;
             }

@@ -126,7 +126,7 @@ public class XmlParameters {
         }
     }
 
-    public static boolean marshal(Parameter[] v, XmlParameters xml){
+    public static boolean marshal(Parameter[] v, XmlParameters xml) {
         if (v == null) {
             return true;
         }
@@ -142,17 +142,22 @@ public class XmlParameters {
         }
         return true;
     }
-    
-    public static Parameter[] unmarshal(XmlParameters v){
-           if (v == null) {
-                return null;
-            }
-            Parameter[] p = new Parameter[v.size()];
-            for (int i=0; i<p.length; ++i){
-                p[i]= XmlParameter.unmarshal(v.coefficient.get(i));
+
+    public static Parameter[] unmarshal(XmlParameters v) {
+        if (v == null) {
+            return null;
+        }
+        if (v.coefficient != null) {
+            Parameter[] p = new Parameter[v.coefficient.size()];
+            for (int i = 0; i < p.length; ++i) {
+                p[i] = XmlParameter.unmarshal(v.coefficient.get(i));
             }
             return p;
-        
+        } else if (v.order > 0) {
+            return Parameter.make(v.order);
+        } else {
+            return null;
+        }
     }
 
     public static class Adapter extends XmlAdapter<XmlParameters, Parameter[]> {
@@ -160,7 +165,7 @@ public class XmlParameters {
         @Override
         public Parameter[] unmarshal(XmlParameters v) throws Exception {
             return XmlParameters.unmarshal(v);
-         }
+        }
 
         @Override
         public XmlParameters marshal(Parameter[] v) throws Exception {

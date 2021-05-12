@@ -29,11 +29,11 @@ class CalendarSpecMapping {
     
     final String TD = "td", EASTER = "easter";
     
-    void fillDictionary(String prefix, Map<String, Class> dic) {
-        EasterSpecMapping.fillDictionary(InformationSet.item(prefix, EASTER), dic);
-        TradingDaysSpecMapping.fillDictionary(InformationSet.item(prefix, TD), dic);
-    }
-    
+//    void fillDictionary(String prefix, Map<String, Class> dic) {
+//        EasterSpecMapping.fillDictionary(InformationSet.item(prefix, EASTER), dic);
+//        TradingDaysSpecMapping.fillDictionary(InformationSet.item(prefix, TD), dic);
+//    }
+//    
     void writeLegacy(InformationSet regInfo, CalendarSpec spec, boolean verbose) {
         TradingDaysSpecMapping.writeLegacy(regInfo, spec.getTradingDays(), verbose);
         EasterSpecMapping.writeLegacy(regInfo, spec.getEaster(), verbose);

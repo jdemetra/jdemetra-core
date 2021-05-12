@@ -100,7 +100,7 @@ public class ProfileLikelihood implements Likelihood {
     }
 
     @Override
-    public double sigma() {
+    public double sigma2() {
         return ssqerr / n;
     }
 

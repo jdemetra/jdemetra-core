@@ -16,11 +16,13 @@
  */
 package jdplus.x13.regarima;
 
+import demetra.data.AggregationType;
 import demetra.data.Data;
 import demetra.data.Doubles;
 import demetra.regarima.RegArimaSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.TsUnit;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
 import jdplus.regsarima.regular.RegSarimaModel;
@@ -249,6 +251,33 @@ public class RegArimaKernelTest {
         System.out.println("RG5");
         System.out.println(n);
         assertTrue(n > .9 * all.length);
+    }
+
+    @Test
+    public void testYearly() {
+        TsData[] all = Data.insee();
+
+        RegArimaKernel processor = RegArimaKernel.of(RegArimaSpec.RG0, null);
+        for (int i = 0; i < all.length; ++i) {
+            TsData s = all[i].aggregate(TsUnit.YEAR, AggregationType.Average, true);
+            RegSarimaModel rslt = processor.process(s, null);
+            assertTrue(rslt != null);
+            System.out.println(rslt.getEstimation().getParameters().getValues());
+        }
+        processor = RegArimaKernel.of(RegArimaSpec.RG3, null);
+        for (int i = 0; i < all.length; ++i) {
+            TsData s = all[i].aggregate(TsUnit.YEAR, AggregationType.Average, true);
+            RegSarimaModel rslt = processor.process(s, null);
+            assertTrue(rslt != null);
+            System.out.println(rslt.getEstimation().getParameters().getValues());
+        }
+        processor = RegArimaKernel.of(RegArimaSpec.RG4, null);
+        for (int i = 0; i < all.length; ++i) {
+            TsData s = all[i].aggregate(TsUnit.YEAR, AggregationType.Average, true);
+            RegSarimaModel rslt = processor.process(s, null);
+            assertTrue(rslt != null);
+            System.out.println(rslt.getEstimation().getParameters().getValues());
+        }
     }
 
     public static void stressTestProd() {

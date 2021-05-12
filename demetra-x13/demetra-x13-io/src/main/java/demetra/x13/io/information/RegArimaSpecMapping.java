@@ -17,11 +17,12 @@
 package demetra.x13.io.information;
 
 import demetra.information.InformationSet;
+import demetra.information.InformationSetSerializer;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.processing.AlgorithmDescriptor;
+import demetra.processing.ProcSpecification;
 import demetra.regarima.RegArimaSpec;
 import demetra.regarima.RegressionSpec;
-import demetra.regarima.SarimaValidator;
 import java.util.Map;
 
 /**
@@ -31,6 +32,31 @@ import java.util.Map;
 @lombok.experimental.UtilityClass
 public class RegArimaSpecMapping {
 
+    public static final InformationSetSerializer<RegArimaSpec> SERIALIZER_V3=new InformationSetSerializer<RegArimaSpec>() {
+        @Override
+        public InformationSet write(RegArimaSpec object, boolean verbose) {
+            return RegArimaSpecMapping.write(object, verbose);
+        }
+
+        @Override
+        public RegArimaSpec read(InformationSet info) {
+            return RegArimaSpecMapping.read(info);
+        }
+    };
+
+    public static final InformationSetSerializer<RegArimaSpec> SERIALIZER_LEGACY=new InformationSetSerializer<RegArimaSpec>() {
+        @Override
+        public InformationSet write(RegArimaSpec object, boolean verbose) {
+            return RegArimaSpecMapping.writeLegacy(object, verbose);
+        }
+
+        @Override
+        public RegArimaSpec read(InformationSet info) {
+            return RegArimaSpecMapping.readLegacy(info);
+        }
+    };
+    
+    
     public static final String METHOD = "tramo";
     public static final String FAMILY = "Modelling";
     public static final String VERSION_LEGACY = "0.1.0.0";
@@ -53,7 +79,19 @@ public class RegArimaSpecMapping {
         RegressionSpecMapping.fillDictionary(InformationSet.item(prefix, REGRESSION), dic);
     }
 
-    public RegArimaSpec read(InformationSet info) {
+   public RegArimaSpec read(InformationSet info) {
+        if (info == null) {
+            return RegArimaSpec.DEFAULT_ENABLED;
+        }
+        AlgorithmDescriptor desc = info.get(ProcSpecification.ALGORITHM, AlgorithmDescriptor.class);
+        if (desc != null && desc.equals(RegArimaSpec.DESCRIPTOR_LEGACY)) {
+            return readLegacy(info);
+        } else {
+            return readV3(info);
+        }
+    }
+
+    public RegArimaSpec readV3(InformationSet info) {
         return RegArimaSpec.builder()
                 .basic(BasicSpecMapping.read(info.getSubSet(BASIC)))
                 .transform(TransformSpecMapping.read(info.getSubSet(TRANSFORM)))

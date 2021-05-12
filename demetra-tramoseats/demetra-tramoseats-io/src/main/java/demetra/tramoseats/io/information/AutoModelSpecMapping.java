@@ -37,18 +37,18 @@ class AutoModelSpecMapping {
             FAL = "fal",
             AMICOMPARE = "compare";
 
-    void fillDictionary(String prefix, Map<String, Class> dic) {
-        dic.put(InformationSet.item(prefix, CANCEL), Double.class);
-        dic.put(InformationSet.item(prefix, UB1), Double.class);
-        dic.put(InformationSet.item(prefix, UB2), Double.class);
-        dic.put(InformationSet.item(prefix, TSIG), Double.class);
-        dic.put(InformationSet.item(prefix, PC), Double.class);
-        dic.put(InformationSet.item(prefix, PCR), Double.class);
-        dic.put(InformationSet.item(prefix, ENABLED), Boolean.class);
-        dic.put(InformationSet.item(prefix, FAL), Boolean.class);
-        dic.put(InformationSet.item(prefix, AMICOMPARE), Boolean.class);
-    }
-
+//    void fillDictionary(String prefix, Map<String, Class> dic) {
+//        dic.put(InformationSet.item(prefix, CANCEL), Double.class);
+//        dic.put(InformationSet.item(prefix, UB1), Double.class);
+//        dic.put(InformationSet.item(prefix, UB2), Double.class);
+//        dic.put(InformationSet.item(prefix, TSIG), Double.class);
+//        dic.put(InformationSet.item(prefix, PC), Double.class);
+//        dic.put(InformationSet.item(prefix, PCR), Double.class);
+//        dic.put(InformationSet.item(prefix, ENABLED), Boolean.class);
+//        dic.put(InformationSet.item(prefix, FAL), Boolean.class);
+//        dic.put(InformationSet.item(prefix, AMICOMPARE), Boolean.class);
+//    }
+//
     InformationSet write(AutoModelSpec spec, boolean verbose) {
         if (!spec.isEnabled()) {
             return null;

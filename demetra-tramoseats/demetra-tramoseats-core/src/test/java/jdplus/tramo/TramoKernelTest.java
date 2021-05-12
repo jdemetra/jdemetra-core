@@ -16,6 +16,7 @@
  */
 package jdplus.tramo;
 
+import demetra.data.AggregationType;
 import demetra.data.Data;
 import demetra.timeseries.regression.ModellingContext;
 import jdplus.regsarima.regular.RegSarimaModel;
@@ -33,11 +34,13 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 import demetra.data.Doubles;
 import demetra.processing.DefaultProcessingLog;
+import demetra.timeseries.TsUnit;
 import demetra.tramo.CalendarSpec;
 import demetra.tramo.RegressionSpec;
 import demetra.tramo.TradingDaysSpec;
 import demetra.tramo.TradingDaysSpec.AutoMethod;
 import demetra.tramo.TramoSpec;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -438,6 +441,63 @@ public class TramoKernelTest {
         ec.tstoolkit.modelling.arima.PreprocessingModel rslt = processor.process(s, null);
         System.out.println("Legacy wald");
         System.out.println(rslt.estimation.getStatistics().adjustedLogLikelihood);
+    }
+
+    @Test
+    public void testYearly() {
+        TsData[] all = Data.insee();
+
+        TramoKernel processor = TramoKernel.of(TramoSpec.TR0, null);
+        IPreprocessor oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR0.build();
+        int n = 0;
+        for (int i = 0; i < all.length; ++i) {
+            TsData s = all[i].aggregate(TsUnit.YEAR, AggregationType.Average, true);
+            TsPeriod start = s.getStart();
+            ec.tstoolkit.timeseries.simplets.TsData os = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(s.getAnnualFrequency()), start.year(), start.annualPosition(), s.getValues().toArray(), false);
+            ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(os, null);
+            RegSarimaModel rslt = processor.process(s, null);
+            assertTrue(rslt != null);
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+                    - orslt.estimation.getStatistics().adjustedLogLikelihood;
+            if (Math.abs(del) < 1e-3) {
+                ++n;
+            }
+        }
+        assertTrue(n >= 48);
+        processor = TramoKernel.of(TramoSpec.TR3, null);
+        oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR3.build();
+        n = 0;
+        for (int i = 0; i < all.length; ++i) {
+            TsData s = all[i].aggregate(TsUnit.YEAR, AggregationType.Average, true);
+            TsPeriod start = s.getStart();
+            ec.tstoolkit.timeseries.simplets.TsData os = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(s.getAnnualFrequency()), start.year(), start.annualPosition(), s.getValues().toArray(), false);
+            ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(os, null);
+            RegSarimaModel rslt = processor.process(s, null);
+            assertTrue(rslt != null);
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+                    - orslt.estimation.getStatistics().adjustedLogLikelihood;
+            if (Math.abs(del) < 1e-3) {
+                ++n;
+            }
+        }
+        assertTrue(n >= 48);
+        processor = TramoKernel.of(TramoSpec.TRfull, null);
+        oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
+        n = 0;
+        for (int i = 0; i < all.length; ++i) {
+            TsData s = all[i].aggregate(TsUnit.YEAR, AggregationType.Average, true);
+            TsPeriod start = s.getStart();
+            ec.tstoolkit.timeseries.simplets.TsData os = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(s.getAnnualFrequency()), start.year(), start.annualPosition(), s.getValues().toArray(), false);
+            ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(os, null);
+            RegSarimaModel rslt = processor.process(s, null);
+            assertTrue(rslt != null);
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+                    - orslt.estimation.getStatistics().adjustedLogLikelihood;
+            if (Math.abs(del) < 1e-3) {
+                ++n;
+            }
+        }
+        assertTrue(n >= 48);
     }
 
     public static void stressTestProd() {

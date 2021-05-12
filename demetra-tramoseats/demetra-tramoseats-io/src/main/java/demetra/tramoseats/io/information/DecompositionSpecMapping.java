@@ -25,9 +25,9 @@ import java.util.Map;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class DecompositionSpecMapping {
+class DecompositionSpecMapping {
 
-    public final String ADMISS = "admiss",
+    final String ADMISS = "admiss",
             METHOD = "method",
             EPSPHI = "epsphi",
             RMOD = "rmod",
@@ -36,19 +36,19 @@ public class DecompositionSpecMapping {
             XL = "xl",
             NPRED = "npred", NBACK = "nback";
 
-    public void fillDictionary(String prefix, Map<String, Class> dic) {
-        dic.put(InformationSet.item(prefix, ADMISS), Boolean.class);
-        dic.put(InformationSet.item(prefix, METHOD), String.class);
-        dic.put(InformationSet.item(prefix, EPSPHI), Double.class);
-        dic.put(InformationSet.item(prefix, RMOD), Double.class);
-        dic.put(InformationSet.item(prefix, SMOD), Double.class);
-        dic.put(InformationSet.item(prefix, SMOD1), Double.class);
-        dic.put(InformationSet.item(prefix, XL), Double.class);
-        dic.put(InformationSet.item(prefix, NPRED), Integer.class);
-        dic.put(InformationSet.item(prefix, NBACK), Integer.class);
-    }
-
-    public InformationSet write(DecompositionSpec spec, boolean verbose) {
+//    public void fillDictionary(String prefix, Map<String, Class> dic) {
+//        dic.put(InformationSet.item(prefix, ADMISS), Boolean.class);
+//        dic.put(InformationSet.item(prefix, METHOD), String.class);
+//        dic.put(InformationSet.item(prefix, EPSPHI), Double.class);
+//        dic.put(InformationSet.item(prefix, RMOD), Double.class);
+//        dic.put(InformationSet.item(prefix, SMOD), Double.class);
+//        dic.put(InformationSet.item(prefix, SMOD1), Double.class);
+//        dic.put(InformationSet.item(prefix, XL), Double.class);
+//        dic.put(InformationSet.item(prefix, NPRED), Integer.class);
+//        dic.put(InformationSet.item(prefix, NBACK), Integer.class);
+//    }
+//
+    InformationSet write(DecompositionSpec spec, boolean verbose) {
         if (!verbose && spec.isDefault()) {
             return null;
         }
@@ -83,7 +83,7 @@ public class DecompositionSpecMapping {
         return info;
     }
 
-    public DecompositionSpec read(InformationSet info) {
+    DecompositionSpec read(InformationSet info) {
         if (info == null) {
             return DecompositionSpec.DEFAULT;
         }

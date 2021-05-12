@@ -1,12 +1,12 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2016 National Bank of Belgium
  * 
- * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  * 
- * https://joinup.ec.europa.eu/software/page/eupl
+ * http://ec.europa.eu/idabc/eupl
  * 
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
@@ -14,20 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.regarima.ami;
+@XmlSchema(namespace = "ec/tss.demetra",
+        elementFormDefault = XmlNsForm.QUALIFIED,
+        attributeFormDefault = XmlNsForm.UNQUALIFIED,
+        xmlns = {@XmlNs(prefix = "", namespaceURI = "ec/tss.core")})
+package internal.workspace.file.xml;
 
-import jdplus.arima.IArimaModel;
-import demetra.data.DoubleSeq;
-
-/**
- *
- * @author Jean Palate
- * @param <M>
- */
-
-public interface IGenericDifferencingModule<M extends IArimaModel> {
-    
-    int[] process(DoubleSeq data, int[] periods, int[] differencing);
-    boolean isMeanCorrection();
-    
-}
+import javax.xml.bind.annotation.XmlNs;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlSchema;

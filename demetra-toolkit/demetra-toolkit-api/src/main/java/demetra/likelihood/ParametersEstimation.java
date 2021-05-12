@@ -17,6 +17,7 @@
 package demetra.likelihood;
 
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
 import nbbrd.design.Development;
 import demetra.math.matrices.MatrixType;
 
@@ -25,8 +26,16 @@ import demetra.math.matrices.MatrixType;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Value
+@lombok.AllArgsConstructor
 @Development(status = Development.Status.Release)
 public class ParametersEstimation {
+    
+    public ParametersEstimation(DoubleSeq values, String desc){
+        this.values=values;
+        this.description=desc;
+        this.scores=Doubles.EMPTY;
+        this.covariance=MatrixType.EMPTY;
+    }
     /**
      * Estimated values of the parameters
      */
@@ -36,10 +45,12 @@ public class ParametersEstimation {
      * Covariance of the parameters.
      * Pre-specified parameters should have a variance equal to 0
      */
+    @lombok.NonNull
     private MatrixType covariance;
     /**
      * Score of the parameter (in the context of maximum likelihood
      */
+    @lombok.NonNull
     private DoubleSeq scores;
     /**
      * Any suitable information/description

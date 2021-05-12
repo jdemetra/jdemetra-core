@@ -16,10 +16,21 @@
  */
 package demetra.sts.io.protobuf;
 
+import demetra.data.Iterables;
+import demetra.modelling.io.protobuf.ModellingProtos;
+import demetra.modelling.io.protobuf.ModellingProtosUtility;
+import static demetra.regarima.io.protobuf.RegArimaEstimationProto.type;
+import demetra.sts.BasicStructuralModel;
+import demetra.sts.BsmDescription;
+import demetra.sts.BsmEstimation;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import demetra.sts.SeasonalModel;
-import jdplus.sts.BasicStructuralModel;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.Variable;
+import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
+import jdplus.sts.BsmData;
 
 /**
  *
@@ -43,21 +54,86 @@ public class StsProtosUtility {
         }
     }
 
-    public StsProtos.BasicStructuralModel convert(BasicStructuralModel bsm) {
-        BsmSpec spec = bsm.specification();
-        return StsProtos.BasicStructuralModel.newBuilder()
-                .setPeriod(bsm.getPeriod())
-                .setNvar(spec.hasNoise() ? bsm.getVariance(Component.Noise) : 0)
-                .setLevel(spec.hasLevel())
-                .setNvar(spec.hasLevel() ? bsm.getVariance(Component.Level) : 0)
-                .setSlope(spec.hasSlope())
-                .setSvar(spec.hasSlope() ? bsm.getVariance(Component.Slope) : 0)
-                .setCycle(spec.hasCycle())
-                .setCyclePeriod(spec.hasCycle() ? bsm.getCyclicalPeriod() : 0)
-                .setCycleFactor(spec.hasCycle() ? bsm.getCyclicalDumpingFactor() : 0)
-                .setCvar(spec.hasCycle()? bsm.getVariance(Component.Cycle) : 0)
-                .setSeasonalModel(convert(spec.getSeasonalModel()))
-                .setSeasvar(spec.hasSeasonal() ? bsm.getVariance(Component.Seasonal) : 0)
+    public SeasonalModel convert(StsProtos.SeasonalModel m) {
+        switch (m) {
+            case SEAS_DUMMY:
+                return SeasonalModel.Dummy;
+            case SEAS_TRIGONOMETRIC:
+                return SeasonalModel.Trigonometric;
+            case SEAS_HARRISONSTEVENS:
+                return SeasonalModel.HarrisonStevens;
+            case SEAS_CRUDE:
+                return SeasonalModel.Crude;
+            default:
+                return null;
+        }
+    }
+
+    public BsmSpec convert(StsProtos.BsmSpec spec) {
+        return BsmSpec.builder()
+                .level(ToolkitProtosUtility.convert(spec.getLevel()), ToolkitProtosUtility.convert(spec.getSlope()))
+                .seasonal(convert(spec.getSeasonalModel()), ToolkitProtosUtility.convert(spec.getSeas()))
+                .noise(ToolkitProtosUtility.convert(spec.getNoise()))
+                .cycle(ToolkitProtosUtility.convert(spec.getCycle()), ToolkitProtosUtility.convert(spec.getCycleFactor()), ToolkitProtosUtility.convert(spec.getCyclePeriod()))
                 .build();
     }
+
+    public StsProtos.Bsm.Estimation convert(BsmEstimation e) {
+        return StsProtos.Bsm.Estimation.newBuilder()
+                .addAllY(Iterables.of(e.getY()))
+                .setX(ToolkitProtosUtility.convert(e.getX()))
+                .addAllB(Iterables.of(e.getCoefficients()))
+                .addAllResiduals(Iterables.of(e.getResiduals()))
+                .setBcovariance(ToolkitProtosUtility.convert(e.getCoefficientsCovariance()))
+                .setParameters(ToolkitProtosUtility.convert(e.getParameters()))
+                .setLikelihood(ToolkitProtosUtility.convert(e.getStatistics()))
+                .build();
+    }
+
+    public StsProtos.BsmSpec convert(BsmSpec spec) {
+        return StsProtos.BsmSpec.newBuilder()
+                .setLevel(ToolkitProtosUtility.convert(spec.getLevelVar()))
+                .setSlope(ToolkitProtosUtility.convert(spec.getSlopeVar()))
+                .setSeas(ToolkitProtosUtility.convert(spec.getSeasonalVar()))
+                .setSeasonalModel(convert(spec.getSeasonalModel()))
+                .setCycle(ToolkitProtosUtility.convert(spec.getCycleVar()))
+                .setCycleFactor(ToolkitProtosUtility.convert(spec.getCycleDumpingFactor()))
+                .setCyclePeriod(ToolkitProtosUtility.convert(spec.getCycleLength()))
+                .setNoise(ToolkitProtosUtility.convert(spec.getNoiseVar()))
+                .build();
+    }
+
+    public StsProtos.Bsm.Description convert(BsmDescription desc) {
+        StsProtos.Bsm.Description.Builder builder = StsProtos.Bsm.Description.newBuilder()
+                .setSeries(ToolkitProtosUtility.convert(desc.getSeries()))
+                .setLog(desc.isLogTransformation())
+                .setPreadjustment(ModellingProtosUtility.convert(desc.getLengthOfPeriodTransformation()))
+                .setBsm(convert(desc.getSpecification()));
+        TsDomain domain = desc.getSeries().getDomain();
+        Variable[] vars = desc.getVariables();
+        for (int i = 0; i < vars.length; ++i) {
+            Variable vari = vars[i];
+            int m = vari.dim();
+            ITsVariable core = vari.getCore();
+            ModellingProtos.VariableType type = type(core);
+            ModellingProtos.RegressionVariable.Builder vbuilder = ModellingProtos.RegressionVariable.newBuilder()
+                    .setName(vari.getName())
+                    .setVarType(type)
+                    .putAllMetadata(vars[i].getAttributes());
+            for (int k = 0; k < m; ++k) {
+                String pname = m == 1 ? vari.getName() : vari.getCore().description(k, domain);
+                vbuilder.addCoefficients(ToolkitProtosUtility.convert(vari.getCoefficient(k), pname));
+            }
+            builder.addVariables(vbuilder.build());
+        }
+        return builder.build();
+    }
+
+    public StsProtos.Bsm convert(BasicStructuralModel bsm) {
+        return StsProtos.Bsm.newBuilder()
+                .setDescription(convert(bsm.getDescription()))
+                .setEstimation(convert(bsm.getEstimation()))
+                .build();
+    }
+
 }

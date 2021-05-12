@@ -36,18 +36,18 @@ class TradingDaysSpecMapping {
             HOLIDAYS = "holidays", USER = "user", TEST = "test", TESTTYPE = "testtype", W = "stocktd",
             LPCOEF = "lpcoef", TDCOEF = "tdcoef";
 
-    void fillDictionary(String prefix, Map<String, Class> dic) {
-        dic.put(InformationSet.item(prefix, AUTO), Boolean.class);
-        dic.put(InformationSet.item(prefix, MAUTO), String.class);
-        dic.put(InformationSet.item(prefix, PFTD), Double.class);
-        dic.put(InformationSet.item(prefix, TDOPTION), String.class);
-        dic.put(InformationSet.item(prefix, LPOPTION), String.class);
-        dic.put(InformationSet.item(prefix, USER), String[].class);
-        dic.put(InformationSet.item(prefix, HOLIDAYS), String.class);
-        dic.put(InformationSet.item(prefix, W), Integer.class);
-        dic.put(InformationSet.item(prefix, TESTTYPE), String.class);
-    }
-
+//    void fillDictionary(String prefix, Map<String, Class> dic) {
+//        dic.put(InformationSet.item(prefix, AUTO), Boolean.class);
+//        dic.put(InformationSet.item(prefix, MAUTO), String.class);
+//        dic.put(InformationSet.item(prefix, PFTD), Double.class);
+//        dic.put(InformationSet.item(prefix, TDOPTION), String.class);
+//        dic.put(InformationSet.item(prefix, LPOPTION), String.class);
+//        dic.put(InformationSet.item(prefix, USER), String[].class);
+//        dic.put(InformationSet.item(prefix, HOLIDAYS), String.class);
+//        dic.put(InformationSet.item(prefix, W), Integer.class);
+//        dic.put(InformationSet.item(prefix, TESTTYPE), String.class);
+//    }
+//
     String lpName() {
         return "lp";
     }

@@ -25,6 +25,7 @@ import nbbrd.design.Development;
  */
 @Development(status = Development.Status.Alpha)
 public enum Component {
+    Series,
     /**
      *
      */
