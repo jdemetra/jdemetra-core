@@ -16,6 +16,8 @@ package demetra.sts;
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
+import demetra.data.DoubleSeq;
+import demetra.math.matrices.MatrixType;
 import nbbrd.design.Development;
 import nbbrd.design.Immutable;
 import demetra.modelling.ComponentInformation;
@@ -37,7 +39,7 @@ public final class BsmDecomposition {
 
     public static class Builder {
 
-        private final EnumMap<Component, TsData> cmps = new EnumMap<>(Component.class),
+        private final EnumMap<Component, DoubleSeq> cmps = new EnumMap<>(Component.class),
                 ecmps = new EnumMap<>(Component.class);
 
         private Builder() {
@@ -49,13 +51,13 @@ public final class BsmDecomposition {
          * @param data
          * @return
          */
-        public Builder add(TsData data, Component cmp) {
-                      cmps.put(cmp, data);
-                      return this;
+        public Builder add(DoubleSeq data, Component cmp) {
+            cmps.put(cmp, data);
+            return this;
         }
 
-        public Builder addStde(TsData data, Component cmp) {
-                     ecmps.put(cmp, data);
+        public Builder addStde(DoubleSeq data, Component cmp) {
+            ecmps.put(cmp, data);
             return this;
         }
 
@@ -69,17 +71,16 @@ public final class BsmDecomposition {
         return new Builder();
     }
 
-     private final Map<Component, TsData> cmps, ecmps;
+    private final Map<Component, DoubleSeq> cmps, ecmps;
 
     /**
      *
      * @param mode
      */
     private BsmDecomposition(Builder builder) {
-         this.cmps = Collections.unmodifiableMap(builder.cmps);
+        this.cmps = Collections.unmodifiableMap(builder.cmps);
         this.ecmps = Collections.unmodifiableMap(builder.ecmps);
-     }
-
+    }
 
     /**
      *
@@ -87,9 +88,9 @@ public final class BsmDecomposition {
      * @param stde
      * @return
      */
-    public TsData getSeries(Component cmp, boolean stde) {
-              return stde ?ecmps.get(cmp) : cmps.get(cmp);
-     }
+    public DoubleSeq getSeries(Component cmp, boolean stde) {
+        return stde ? ecmps.get(cmp) : cmps.get(cmp);
+    }
 
     @Override
     public String toString() {
@@ -106,9 +107,9 @@ public final class BsmDecomposition {
         return builder.toString();
     }
 
-    private void write(Map<Component, TsData> cmps, StringBuilder builder) {
-        List<TsData> all = new ArrayList<>();
-        TsData s = cmps.get(Component.Series);
+    private void write(Map<Component, DoubleSeq> cmps, StringBuilder builder) {
+        List<DoubleSeq> all = new ArrayList<>();
+        DoubleSeq s = cmps.get(Component.Series);
         if (s != null) {
             all.add(s);
         }
@@ -132,7 +133,17 @@ public final class BsmDecomposition {
         if (s != null) {
             all.add(s);
         }
-        builder.append(TsDataTable.of(all)).append("\r\n");
+        
+        if (!all.isEmpty()){
+            int n=all.get(0).length();
+            int m=all.size();
+            double[] data=new double[n*m];
+            for (int i=0, j=0; i<m; ++i, j+=n){
+                all.get(i).copyTo(data, j);
+            }
+            builder.append(MatrixType.toString(MatrixType.of(data, n, m), null));
+        }
+        builder.append("\r\n");
     }
 
 }

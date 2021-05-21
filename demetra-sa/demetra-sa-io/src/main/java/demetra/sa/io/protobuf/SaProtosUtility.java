@@ -110,7 +110,7 @@ public class SaProtosUtility {
                 .build();
     }
 
-    public ModellingProtos.Component convert(SeriesDecomposition decomp, ComponentType type) {
+    public ModellingProtos.TsComponent convert(SeriesDecomposition decomp, ComponentType type) {
         TsData s = decomp.getSeries(type, ComponentInformation.Value);
         TsData fs = decomp.getSeries(type, ComponentInformation.Forecast);
         TsData bs = decomp.getSeries(type, ComponentInformation.Backcast);
@@ -121,7 +121,7 @@ public class SaProtosUtility {
         TsData S = TsData.concatenate(bs, s, fs);
         TsData ES = TsData.concatenate(ebs, es, efs);
 
-        ModellingProtos.Component.Builder builder = ModellingProtos.Component.newBuilder()
+        ModellingProtos.TsComponent.Builder builder = ModellingProtos.TsComponent.newBuilder()
                 .setData(ToolkitProtosUtility.convert(S))
                 .setNbcasts(bs == null ? 0 : bs.length())
                 .setNfcasts(fs == null ? 0 : fs.length());

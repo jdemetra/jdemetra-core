@@ -26,6 +26,7 @@ import internal.data.InternalDoubleSeqCursor;
 import internal.data.InternalDoubleVector;
 import internal.data.InternalDoubleVectorCursor;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
@@ -413,18 +414,21 @@ public interface DoubleSeq extends BaseSeq {
     default DoubleSeq range(int beg, int end) {
         return end <= beg ? map(0, i -> -1) : extract(beg, end - beg);
     }
-    
+
     /**
      * Removes missing values at the extremities
-     * @return 
+     *
+     * @return
      */
-    default DoubleSeq cleanExtremities(){
-        int first=indexOf(x->Double.isFinite(x));
-        if (first == -1)
+    default DoubleSeq cleanExtremities() {
+        int first = indexOf(x -> Double.isFinite(x));
+        if (first == -1) {
             return Doubles.EMPTY;
-        int last=1+lastIndexOf(x->Double.isFinite(x));
-        if (first == 0 && last == length())
+        }
+        int last = 1 + lastIndexOf(x -> Double.isFinite(x));
+        if (first == 0 && last == length()) {
             return this;
+        }
         return range(first, last);
     }
 
@@ -564,10 +568,11 @@ public interface DoubleSeq extends BaseSeq {
     }
 
     default DoubleSeq select(IntList selection) {
-        if (selection == null)
+        if (selection == null) {
             return this;
-        final int[] sel=selection.toArray();
-        return Doubles.of(sel.length, i->get(sel[i]));
+        }
+        final int[] sel = selection.toArray();
+        return Doubles.of(sel.length, i -> get(sel[i]));
     }
 
     default DoubleSeq op(DoubleSeq b, DoubleBinaryOperator op) {
@@ -777,6 +782,10 @@ public interface DoubleSeq extends BaseSeq {
         return fn(Math::exp);
     }
 
+    default DoubleSeq sqrt() {
+        return fn(Math::sqrt);
+    }
+
     default boolean hasSameContentAs(DoubleSeq that) {
         return InternalDoubleSeq.hasSameContentAs(this, that);
     }
@@ -807,7 +816,12 @@ public interface DoubleSeq extends BaseSeq {
     }
 
     static String format(DoubleSeq rd, String fmt) {
-        DecimalFormat df = new DecimalFormat(fmt);
+        DecimalFormat df;
+        if (fmt != null) {
+            df = new DecimalFormat(fmt);
+        } else {
+            df = (DecimalFormat) NumberFormat.getNumberInstance();
+        }
         StringBuilder builder = new StringBuilder();
         int n = rd.length();
         if (n > 0) {

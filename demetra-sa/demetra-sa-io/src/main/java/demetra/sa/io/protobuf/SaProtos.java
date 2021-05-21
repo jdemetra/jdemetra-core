@@ -882,79 +882,79 @@ public final class SaProtos {
     demetra.sa.io.protobuf.SaProtos.DecompositionMode getMode();
 
     /**
-     * <code>.modelling.Component series = 2;</code>
+     * <code>.modelling.TsComponent series = 2;</code>
      * @return Whether the series field is set.
      */
     boolean hasSeries();
     /**
-     * <code>.modelling.Component series = 2;</code>
+     * <code>.modelling.TsComponent series = 2;</code>
      * @return The series.
      */
-    demetra.modelling.io.protobuf.ModellingProtos.Component getSeries();
+    demetra.modelling.io.protobuf.ModellingProtos.TsComponent getSeries();
     /**
-     * <code>.modelling.Component series = 2;</code>
+     * <code>.modelling.TsComponent series = 2;</code>
      */
-    demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSeriesOrBuilder();
+    demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder getSeriesOrBuilder();
 
     /**
-     * <code>.modelling.Component seasonally_adjusted = 3;</code>
+     * <code>.modelling.TsComponent seasonally_adjusted = 3;</code>
      * @return Whether the seasonallyAdjusted field is set.
      */
     boolean hasSeasonallyAdjusted();
     /**
-     * <code>.modelling.Component seasonally_adjusted = 3;</code>
+     * <code>.modelling.TsComponent seasonally_adjusted = 3;</code>
      * @return The seasonallyAdjusted.
      */
-    demetra.modelling.io.protobuf.ModellingProtos.Component getSeasonallyAdjusted();
+    demetra.modelling.io.protobuf.ModellingProtos.TsComponent getSeasonallyAdjusted();
     /**
-     * <code>.modelling.Component seasonally_adjusted = 3;</code>
+     * <code>.modelling.TsComponent seasonally_adjusted = 3;</code>
      */
-    demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSeasonallyAdjustedOrBuilder();
+    demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder getSeasonallyAdjustedOrBuilder();
 
     /**
-     * <code>.modelling.Component trend = 4;</code>
+     * <code>.modelling.TsComponent trend = 4;</code>
      * @return Whether the trend field is set.
      */
     boolean hasTrend();
     /**
-     * <code>.modelling.Component trend = 4;</code>
+     * <code>.modelling.TsComponent trend = 4;</code>
      * @return The trend.
      */
-    demetra.modelling.io.protobuf.ModellingProtos.Component getTrend();
+    demetra.modelling.io.protobuf.ModellingProtos.TsComponent getTrend();
     /**
-     * <code>.modelling.Component trend = 4;</code>
+     * <code>.modelling.TsComponent trend = 4;</code>
      */
-    demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getTrendOrBuilder();
+    demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder getTrendOrBuilder();
 
     /**
-     * <code>.modelling.Component seasonal = 5;</code>
+     * <code>.modelling.TsComponent seasonal = 5;</code>
      * @return Whether the seasonal field is set.
      */
     boolean hasSeasonal();
     /**
-     * <code>.modelling.Component seasonal = 5;</code>
+     * <code>.modelling.TsComponent seasonal = 5;</code>
      * @return The seasonal.
      */
-    demetra.modelling.io.protobuf.ModellingProtos.Component getSeasonal();
+    demetra.modelling.io.protobuf.ModellingProtos.TsComponent getSeasonal();
     /**
-     * <code>.modelling.Component seasonal = 5;</code>
+     * <code>.modelling.TsComponent seasonal = 5;</code>
      */
-    demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSeasonalOrBuilder();
+    demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder getSeasonalOrBuilder();
 
     /**
-     * <code>.modelling.Component irregular = 6;</code>
+     * <code>.modelling.TsComponent irregular = 6;</code>
      * @return Whether the irregular field is set.
      */
     boolean hasIrregular();
     /**
-     * <code>.modelling.Component irregular = 6;</code>
+     * <code>.modelling.TsComponent irregular = 6;</code>
      * @return The irregular.
      */
-    demetra.modelling.io.protobuf.ModellingProtos.Component getIrregular();
+    demetra.modelling.io.protobuf.ModellingProtos.TsComponent getIrregular();
     /**
-     * <code>.modelling.Component irregular = 6;</code>
+     * <code>.modelling.TsComponent irregular = 6;</code>
      */
-    demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getIrregularOrBuilder();
+    demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder getIrregularOrBuilder();
   }
   /**
    * Protobuf type {@code sa.SaDecomposition}
@@ -1009,11 +1009,11 @@ public final class SaProtos {
               break;
             }
             case 18: {
-              demetra.modelling.io.protobuf.ModellingProtos.Component.Builder subBuilder = null;
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder subBuilder = null;
               if (series_ != null) {
                 subBuilder = series_.toBuilder();
               }
-              series_ = input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.Component.parser(), extensionRegistry);
+              series_ = input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.TsComponent.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(series_);
                 series_ = subBuilder.buildPartial();
@@ -1022,11 +1022,11 @@ public final class SaProtos {
               break;
             }
             case 26: {
-              demetra.modelling.io.protobuf.ModellingProtos.Component.Builder subBuilder = null;
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder subBuilder = null;
               if (seasonallyAdjusted_ != null) {
                 subBuilder = seasonallyAdjusted_.toBuilder();
               }
-              seasonallyAdjusted_ = input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.Component.parser(), extensionRegistry);
+              seasonallyAdjusted_ = input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.TsComponent.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(seasonallyAdjusted_);
                 seasonallyAdjusted_ = subBuilder.buildPartial();
@@ -1035,11 +1035,11 @@ public final class SaProtos {
               break;
             }
             case 34: {
-              demetra.modelling.io.protobuf.ModellingProtos.Component.Builder subBuilder = null;
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder subBuilder = null;
               if (trend_ != null) {
                 subBuilder = trend_.toBuilder();
               }
-              trend_ = input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.Component.parser(), extensionRegistry);
+              trend_ = input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.TsComponent.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(trend_);
                 trend_ = subBuilder.buildPartial();
@@ -1048,11 +1048,11 @@ public final class SaProtos {
               break;
             }
             case 42: {
-              demetra.modelling.io.protobuf.ModellingProtos.Component.Builder subBuilder = null;
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder subBuilder = null;
               if (seasonal_ != null) {
                 subBuilder = seasonal_.toBuilder();
               }
-              seasonal_ = input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.Component.parser(), extensionRegistry);
+              seasonal_ = input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.TsComponent.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(seasonal_);
                 seasonal_ = subBuilder.buildPartial();
@@ -1061,11 +1061,11 @@ public final class SaProtos {
               break;
             }
             case 50: {
-              demetra.modelling.io.protobuf.ModellingProtos.Component.Builder subBuilder = null;
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder subBuilder = null;
               if (irregular_ != null) {
                 subBuilder = irregular_.toBuilder();
               }
-              irregular_ = input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.Component.parser(), extensionRegistry);
+              irregular_ = input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.TsComponent.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(irregular_);
                 irregular_ = subBuilder.buildPartial();
@@ -1125,9 +1125,9 @@ public final class SaProtos {
     }
 
     public static final int SERIES_FIELD_NUMBER = 2;
-    private demetra.modelling.io.protobuf.ModellingProtos.Component series_;
+    private demetra.modelling.io.protobuf.ModellingProtos.TsComponent series_;
     /**
-     * <code>.modelling.Component series = 2;</code>
+     * <code>.modelling.TsComponent series = 2;</code>
      * @return Whether the series field is set.
      */
     @java.lang.Override
@@ -1135,25 +1135,25 @@ public final class SaProtos {
       return series_ != null;
     }
     /**
-     * <code>.modelling.Component series = 2;</code>
+     * <code>.modelling.TsComponent series = 2;</code>
      * @return The series.
      */
     @java.lang.Override
-    public demetra.modelling.io.protobuf.ModellingProtos.Component getSeries() {
-      return series_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : series_;
+    public demetra.modelling.io.protobuf.ModellingProtos.TsComponent getSeries() {
+      return series_ == null ? demetra.modelling.io.protobuf.ModellingProtos.TsComponent.getDefaultInstance() : series_;
     }
     /**
-     * <code>.modelling.Component series = 2;</code>
+     * <code>.modelling.TsComponent series = 2;</code>
      */
     @java.lang.Override
-    public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSeriesOrBuilder() {
+    public demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder getSeriesOrBuilder() {
       return getSeries();
     }
 
     public static final int SEASONALLY_ADJUSTED_FIELD_NUMBER = 3;
-    private demetra.modelling.io.protobuf.ModellingProtos.Component seasonallyAdjusted_;
+    private demetra.modelling.io.protobuf.ModellingProtos.TsComponent seasonallyAdjusted_;
     /**
-     * <code>.modelling.Component seasonally_adjusted = 3;</code>
+     * <code>.modelling.TsComponent seasonally_adjusted = 3;</code>
      * @return Whether the seasonallyAdjusted field is set.
      */
     @java.lang.Override
@@ -1161,25 +1161,25 @@ public final class SaProtos {
       return seasonallyAdjusted_ != null;
     }
     /**
-     * <code>.modelling.Component seasonally_adjusted = 3;</code>
+     * <code>.modelling.TsComponent seasonally_adjusted = 3;</code>
      * @return The seasonallyAdjusted.
      */
     @java.lang.Override
-    public demetra.modelling.io.protobuf.ModellingProtos.Component getSeasonallyAdjusted() {
-      return seasonallyAdjusted_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : seasonallyAdjusted_;
+    public demetra.modelling.io.protobuf.ModellingProtos.TsComponent getSeasonallyAdjusted() {
+      return seasonallyAdjusted_ == null ? demetra.modelling.io.protobuf.ModellingProtos.TsComponent.getDefaultInstance() : seasonallyAdjusted_;
     }
     /**
-     * <code>.modelling.Component seasonally_adjusted = 3;</code>
+     * <code>.modelling.TsComponent seasonally_adjusted = 3;</code>
      */
     @java.lang.Override
-    public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSeasonallyAdjustedOrBuilder() {
+    public demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder getSeasonallyAdjustedOrBuilder() {
       return getSeasonallyAdjusted();
     }
 
     public static final int TREND_FIELD_NUMBER = 4;
-    private demetra.modelling.io.protobuf.ModellingProtos.Component trend_;
+    private demetra.modelling.io.protobuf.ModellingProtos.TsComponent trend_;
     /**
-     * <code>.modelling.Component trend = 4;</code>
+     * <code>.modelling.TsComponent trend = 4;</code>
      * @return Whether the trend field is set.
      */
     @java.lang.Override
@@ -1187,25 +1187,25 @@ public final class SaProtos {
       return trend_ != null;
     }
     /**
-     * <code>.modelling.Component trend = 4;</code>
+     * <code>.modelling.TsComponent trend = 4;</code>
      * @return The trend.
      */
     @java.lang.Override
-    public demetra.modelling.io.protobuf.ModellingProtos.Component getTrend() {
-      return trend_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : trend_;
+    public demetra.modelling.io.protobuf.ModellingProtos.TsComponent getTrend() {
+      return trend_ == null ? demetra.modelling.io.protobuf.ModellingProtos.TsComponent.getDefaultInstance() : trend_;
     }
     /**
-     * <code>.modelling.Component trend = 4;</code>
+     * <code>.modelling.TsComponent trend = 4;</code>
      */
     @java.lang.Override
-    public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getTrendOrBuilder() {
+    public demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder getTrendOrBuilder() {
       return getTrend();
     }
 
     public static final int SEASONAL_FIELD_NUMBER = 5;
-    private demetra.modelling.io.protobuf.ModellingProtos.Component seasonal_;
+    private demetra.modelling.io.protobuf.ModellingProtos.TsComponent seasonal_;
     /**
-     * <code>.modelling.Component seasonal = 5;</code>
+     * <code>.modelling.TsComponent seasonal = 5;</code>
      * @return Whether the seasonal field is set.
      */
     @java.lang.Override
@@ -1213,25 +1213,25 @@ public final class SaProtos {
       return seasonal_ != null;
     }
     /**
-     * <code>.modelling.Component seasonal = 5;</code>
+     * <code>.modelling.TsComponent seasonal = 5;</code>
      * @return The seasonal.
      */
     @java.lang.Override
-    public demetra.modelling.io.protobuf.ModellingProtos.Component getSeasonal() {
-      return seasonal_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : seasonal_;
+    public demetra.modelling.io.protobuf.ModellingProtos.TsComponent getSeasonal() {
+      return seasonal_ == null ? demetra.modelling.io.protobuf.ModellingProtos.TsComponent.getDefaultInstance() : seasonal_;
     }
     /**
-     * <code>.modelling.Component seasonal = 5;</code>
+     * <code>.modelling.TsComponent seasonal = 5;</code>
      */
     @java.lang.Override
-    public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSeasonalOrBuilder() {
+    public demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder getSeasonalOrBuilder() {
       return getSeasonal();
     }
 
     public static final int IRREGULAR_FIELD_NUMBER = 6;
-    private demetra.modelling.io.protobuf.ModellingProtos.Component irregular_;
+    private demetra.modelling.io.protobuf.ModellingProtos.TsComponent irregular_;
     /**
-     * <code>.modelling.Component irregular = 6;</code>
+     * <code>.modelling.TsComponent irregular = 6;</code>
      * @return Whether the irregular field is set.
      */
     @java.lang.Override
@@ -1239,18 +1239,18 @@ public final class SaProtos {
       return irregular_ != null;
     }
     /**
-     * <code>.modelling.Component irregular = 6;</code>
+     * <code>.modelling.TsComponent irregular = 6;</code>
      * @return The irregular.
      */
     @java.lang.Override
-    public demetra.modelling.io.protobuf.ModellingProtos.Component getIrregular() {
-      return irregular_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : irregular_;
+    public demetra.modelling.io.protobuf.ModellingProtos.TsComponent getIrregular() {
+      return irregular_ == null ? demetra.modelling.io.protobuf.ModellingProtos.TsComponent.getDefaultInstance() : irregular_;
     }
     /**
-     * <code>.modelling.Component irregular = 6;</code>
+     * <code>.modelling.TsComponent irregular = 6;</code>
      */
     @java.lang.Override
-    public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getIrregularOrBuilder() {
+    public demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder getIrregularOrBuilder() {
       return getIrregular();
     }
 
@@ -1759,31 +1759,31 @@ public final class SaProtos {
         return this;
       }
 
-      private demetra.modelling.io.protobuf.ModellingProtos.Component series_;
+      private demetra.modelling.io.protobuf.ModellingProtos.TsComponent series_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> seriesBuilder_;
+          demetra.modelling.io.protobuf.ModellingProtos.TsComponent, demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder, demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder> seriesBuilder_;
       /**
-       * <code>.modelling.Component series = 2;</code>
+       * <code>.modelling.TsComponent series = 2;</code>
        * @return Whether the series field is set.
        */
       public boolean hasSeries() {
         return seriesBuilder_ != null || series_ != null;
       }
       /**
-       * <code>.modelling.Component series = 2;</code>
+       * <code>.modelling.TsComponent series = 2;</code>
        * @return The series.
        */
-      public demetra.modelling.io.protobuf.ModellingProtos.Component getSeries() {
+      public demetra.modelling.io.protobuf.ModellingProtos.TsComponent getSeries() {
         if (seriesBuilder_ == null) {
-          return series_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : series_;
+          return series_ == null ? demetra.modelling.io.protobuf.ModellingProtos.TsComponent.getDefaultInstance() : series_;
         } else {
           return seriesBuilder_.getMessage();
         }
       }
       /**
-       * <code>.modelling.Component series = 2;</code>
+       * <code>.modelling.TsComponent series = 2;</code>
        */
-      public Builder setSeries(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
+      public Builder setSeries(demetra.modelling.io.protobuf.ModellingProtos.TsComponent value) {
         if (seriesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1797,10 +1797,10 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component series = 2;</code>
+       * <code>.modelling.TsComponent series = 2;</code>
        */
       public Builder setSeries(
-          demetra.modelling.io.protobuf.ModellingProtos.Component.Builder builderForValue) {
+          demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder builderForValue) {
         if (seriesBuilder_ == null) {
           series_ = builderForValue.build();
           onChanged();
@@ -1811,13 +1811,13 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component series = 2;</code>
+       * <code>.modelling.TsComponent series = 2;</code>
        */
-      public Builder mergeSeries(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
+      public Builder mergeSeries(demetra.modelling.io.protobuf.ModellingProtos.TsComponent value) {
         if (seriesBuilder_ == null) {
           if (series_ != null) {
             series_ =
-              demetra.modelling.io.protobuf.ModellingProtos.Component.newBuilder(series_).mergeFrom(value).buildPartial();
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent.newBuilder(series_).mergeFrom(value).buildPartial();
           } else {
             series_ = value;
           }
@@ -1829,7 +1829,7 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component series = 2;</code>
+       * <code>.modelling.TsComponent series = 2;</code>
        */
       public Builder clearSeries() {
         if (seriesBuilder_ == null) {
@@ -1843,33 +1843,33 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component series = 2;</code>
+       * <code>.modelling.TsComponent series = 2;</code>
        */
-      public demetra.modelling.io.protobuf.ModellingProtos.Component.Builder getSeriesBuilder() {
+      public demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder getSeriesBuilder() {
         
         onChanged();
         return getSeriesFieldBuilder().getBuilder();
       }
       /**
-       * <code>.modelling.Component series = 2;</code>
+       * <code>.modelling.TsComponent series = 2;</code>
        */
-      public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSeriesOrBuilder() {
+      public demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder getSeriesOrBuilder() {
         if (seriesBuilder_ != null) {
           return seriesBuilder_.getMessageOrBuilder();
         } else {
           return series_ == null ?
-              demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : series_;
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent.getDefaultInstance() : series_;
         }
       }
       /**
-       * <code>.modelling.Component series = 2;</code>
+       * <code>.modelling.TsComponent series = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> 
+          demetra.modelling.io.protobuf.ModellingProtos.TsComponent, demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder, demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder> 
           getSeriesFieldBuilder() {
         if (seriesBuilder_ == null) {
           seriesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder>(
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent, demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder, demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder>(
                   getSeries(),
                   getParentForChildren(),
                   isClean());
@@ -1878,31 +1878,31 @@ public final class SaProtos {
         return seriesBuilder_;
       }
 
-      private demetra.modelling.io.protobuf.ModellingProtos.Component seasonallyAdjusted_;
+      private demetra.modelling.io.protobuf.ModellingProtos.TsComponent seasonallyAdjusted_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> seasonallyAdjustedBuilder_;
+          demetra.modelling.io.protobuf.ModellingProtos.TsComponent, demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder, demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder> seasonallyAdjustedBuilder_;
       /**
-       * <code>.modelling.Component seasonally_adjusted = 3;</code>
+       * <code>.modelling.TsComponent seasonally_adjusted = 3;</code>
        * @return Whether the seasonallyAdjusted field is set.
        */
       public boolean hasSeasonallyAdjusted() {
         return seasonallyAdjustedBuilder_ != null || seasonallyAdjusted_ != null;
       }
       /**
-       * <code>.modelling.Component seasonally_adjusted = 3;</code>
+       * <code>.modelling.TsComponent seasonally_adjusted = 3;</code>
        * @return The seasonallyAdjusted.
        */
-      public demetra.modelling.io.protobuf.ModellingProtos.Component getSeasonallyAdjusted() {
+      public demetra.modelling.io.protobuf.ModellingProtos.TsComponent getSeasonallyAdjusted() {
         if (seasonallyAdjustedBuilder_ == null) {
-          return seasonallyAdjusted_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : seasonallyAdjusted_;
+          return seasonallyAdjusted_ == null ? demetra.modelling.io.protobuf.ModellingProtos.TsComponent.getDefaultInstance() : seasonallyAdjusted_;
         } else {
           return seasonallyAdjustedBuilder_.getMessage();
         }
       }
       /**
-       * <code>.modelling.Component seasonally_adjusted = 3;</code>
+       * <code>.modelling.TsComponent seasonally_adjusted = 3;</code>
        */
-      public Builder setSeasonallyAdjusted(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
+      public Builder setSeasonallyAdjusted(demetra.modelling.io.protobuf.ModellingProtos.TsComponent value) {
         if (seasonallyAdjustedBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1916,10 +1916,10 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component seasonally_adjusted = 3;</code>
+       * <code>.modelling.TsComponent seasonally_adjusted = 3;</code>
        */
       public Builder setSeasonallyAdjusted(
-          demetra.modelling.io.protobuf.ModellingProtos.Component.Builder builderForValue) {
+          demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder builderForValue) {
         if (seasonallyAdjustedBuilder_ == null) {
           seasonallyAdjusted_ = builderForValue.build();
           onChanged();
@@ -1930,13 +1930,13 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component seasonally_adjusted = 3;</code>
+       * <code>.modelling.TsComponent seasonally_adjusted = 3;</code>
        */
-      public Builder mergeSeasonallyAdjusted(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
+      public Builder mergeSeasonallyAdjusted(demetra.modelling.io.protobuf.ModellingProtos.TsComponent value) {
         if (seasonallyAdjustedBuilder_ == null) {
           if (seasonallyAdjusted_ != null) {
             seasonallyAdjusted_ =
-              demetra.modelling.io.protobuf.ModellingProtos.Component.newBuilder(seasonallyAdjusted_).mergeFrom(value).buildPartial();
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent.newBuilder(seasonallyAdjusted_).mergeFrom(value).buildPartial();
           } else {
             seasonallyAdjusted_ = value;
           }
@@ -1948,7 +1948,7 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component seasonally_adjusted = 3;</code>
+       * <code>.modelling.TsComponent seasonally_adjusted = 3;</code>
        */
       public Builder clearSeasonallyAdjusted() {
         if (seasonallyAdjustedBuilder_ == null) {
@@ -1962,33 +1962,33 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component seasonally_adjusted = 3;</code>
+       * <code>.modelling.TsComponent seasonally_adjusted = 3;</code>
        */
-      public demetra.modelling.io.protobuf.ModellingProtos.Component.Builder getSeasonallyAdjustedBuilder() {
+      public demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder getSeasonallyAdjustedBuilder() {
         
         onChanged();
         return getSeasonallyAdjustedFieldBuilder().getBuilder();
       }
       /**
-       * <code>.modelling.Component seasonally_adjusted = 3;</code>
+       * <code>.modelling.TsComponent seasonally_adjusted = 3;</code>
        */
-      public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSeasonallyAdjustedOrBuilder() {
+      public demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder getSeasonallyAdjustedOrBuilder() {
         if (seasonallyAdjustedBuilder_ != null) {
           return seasonallyAdjustedBuilder_.getMessageOrBuilder();
         } else {
           return seasonallyAdjusted_ == null ?
-              demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : seasonallyAdjusted_;
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent.getDefaultInstance() : seasonallyAdjusted_;
         }
       }
       /**
-       * <code>.modelling.Component seasonally_adjusted = 3;</code>
+       * <code>.modelling.TsComponent seasonally_adjusted = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> 
+          demetra.modelling.io.protobuf.ModellingProtos.TsComponent, demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder, demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder> 
           getSeasonallyAdjustedFieldBuilder() {
         if (seasonallyAdjustedBuilder_ == null) {
           seasonallyAdjustedBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder>(
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent, demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder, demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder>(
                   getSeasonallyAdjusted(),
                   getParentForChildren(),
                   isClean());
@@ -1997,31 +1997,31 @@ public final class SaProtos {
         return seasonallyAdjustedBuilder_;
       }
 
-      private demetra.modelling.io.protobuf.ModellingProtos.Component trend_;
+      private demetra.modelling.io.protobuf.ModellingProtos.TsComponent trend_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> trendBuilder_;
+          demetra.modelling.io.protobuf.ModellingProtos.TsComponent, demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder, demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder> trendBuilder_;
       /**
-       * <code>.modelling.Component trend = 4;</code>
+       * <code>.modelling.TsComponent trend = 4;</code>
        * @return Whether the trend field is set.
        */
       public boolean hasTrend() {
         return trendBuilder_ != null || trend_ != null;
       }
       /**
-       * <code>.modelling.Component trend = 4;</code>
+       * <code>.modelling.TsComponent trend = 4;</code>
        * @return The trend.
        */
-      public demetra.modelling.io.protobuf.ModellingProtos.Component getTrend() {
+      public demetra.modelling.io.protobuf.ModellingProtos.TsComponent getTrend() {
         if (trendBuilder_ == null) {
-          return trend_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : trend_;
+          return trend_ == null ? demetra.modelling.io.protobuf.ModellingProtos.TsComponent.getDefaultInstance() : trend_;
         } else {
           return trendBuilder_.getMessage();
         }
       }
       /**
-       * <code>.modelling.Component trend = 4;</code>
+       * <code>.modelling.TsComponent trend = 4;</code>
        */
-      public Builder setTrend(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
+      public Builder setTrend(demetra.modelling.io.protobuf.ModellingProtos.TsComponent value) {
         if (trendBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2035,10 +2035,10 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component trend = 4;</code>
+       * <code>.modelling.TsComponent trend = 4;</code>
        */
       public Builder setTrend(
-          demetra.modelling.io.protobuf.ModellingProtos.Component.Builder builderForValue) {
+          demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder builderForValue) {
         if (trendBuilder_ == null) {
           trend_ = builderForValue.build();
           onChanged();
@@ -2049,13 +2049,13 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component trend = 4;</code>
+       * <code>.modelling.TsComponent trend = 4;</code>
        */
-      public Builder mergeTrend(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
+      public Builder mergeTrend(demetra.modelling.io.protobuf.ModellingProtos.TsComponent value) {
         if (trendBuilder_ == null) {
           if (trend_ != null) {
             trend_ =
-              demetra.modelling.io.protobuf.ModellingProtos.Component.newBuilder(trend_).mergeFrom(value).buildPartial();
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent.newBuilder(trend_).mergeFrom(value).buildPartial();
           } else {
             trend_ = value;
           }
@@ -2067,7 +2067,7 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component trend = 4;</code>
+       * <code>.modelling.TsComponent trend = 4;</code>
        */
       public Builder clearTrend() {
         if (trendBuilder_ == null) {
@@ -2081,33 +2081,33 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component trend = 4;</code>
+       * <code>.modelling.TsComponent trend = 4;</code>
        */
-      public demetra.modelling.io.protobuf.ModellingProtos.Component.Builder getTrendBuilder() {
+      public demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder getTrendBuilder() {
         
         onChanged();
         return getTrendFieldBuilder().getBuilder();
       }
       /**
-       * <code>.modelling.Component trend = 4;</code>
+       * <code>.modelling.TsComponent trend = 4;</code>
        */
-      public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getTrendOrBuilder() {
+      public demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder getTrendOrBuilder() {
         if (trendBuilder_ != null) {
           return trendBuilder_.getMessageOrBuilder();
         } else {
           return trend_ == null ?
-              demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : trend_;
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent.getDefaultInstance() : trend_;
         }
       }
       /**
-       * <code>.modelling.Component trend = 4;</code>
+       * <code>.modelling.TsComponent trend = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> 
+          demetra.modelling.io.protobuf.ModellingProtos.TsComponent, demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder, demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder> 
           getTrendFieldBuilder() {
         if (trendBuilder_ == null) {
           trendBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder>(
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent, demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder, demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder>(
                   getTrend(),
                   getParentForChildren(),
                   isClean());
@@ -2116,31 +2116,31 @@ public final class SaProtos {
         return trendBuilder_;
       }
 
-      private demetra.modelling.io.protobuf.ModellingProtos.Component seasonal_;
+      private demetra.modelling.io.protobuf.ModellingProtos.TsComponent seasonal_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> seasonalBuilder_;
+          demetra.modelling.io.protobuf.ModellingProtos.TsComponent, demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder, demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder> seasonalBuilder_;
       /**
-       * <code>.modelling.Component seasonal = 5;</code>
+       * <code>.modelling.TsComponent seasonal = 5;</code>
        * @return Whether the seasonal field is set.
        */
       public boolean hasSeasonal() {
         return seasonalBuilder_ != null || seasonal_ != null;
       }
       /**
-       * <code>.modelling.Component seasonal = 5;</code>
+       * <code>.modelling.TsComponent seasonal = 5;</code>
        * @return The seasonal.
        */
-      public demetra.modelling.io.protobuf.ModellingProtos.Component getSeasonal() {
+      public demetra.modelling.io.protobuf.ModellingProtos.TsComponent getSeasonal() {
         if (seasonalBuilder_ == null) {
-          return seasonal_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : seasonal_;
+          return seasonal_ == null ? demetra.modelling.io.protobuf.ModellingProtos.TsComponent.getDefaultInstance() : seasonal_;
         } else {
           return seasonalBuilder_.getMessage();
         }
       }
       /**
-       * <code>.modelling.Component seasonal = 5;</code>
+       * <code>.modelling.TsComponent seasonal = 5;</code>
        */
-      public Builder setSeasonal(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
+      public Builder setSeasonal(demetra.modelling.io.protobuf.ModellingProtos.TsComponent value) {
         if (seasonalBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2154,10 +2154,10 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component seasonal = 5;</code>
+       * <code>.modelling.TsComponent seasonal = 5;</code>
        */
       public Builder setSeasonal(
-          demetra.modelling.io.protobuf.ModellingProtos.Component.Builder builderForValue) {
+          demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder builderForValue) {
         if (seasonalBuilder_ == null) {
           seasonal_ = builderForValue.build();
           onChanged();
@@ -2168,13 +2168,13 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component seasonal = 5;</code>
+       * <code>.modelling.TsComponent seasonal = 5;</code>
        */
-      public Builder mergeSeasonal(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
+      public Builder mergeSeasonal(demetra.modelling.io.protobuf.ModellingProtos.TsComponent value) {
         if (seasonalBuilder_ == null) {
           if (seasonal_ != null) {
             seasonal_ =
-              demetra.modelling.io.protobuf.ModellingProtos.Component.newBuilder(seasonal_).mergeFrom(value).buildPartial();
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent.newBuilder(seasonal_).mergeFrom(value).buildPartial();
           } else {
             seasonal_ = value;
           }
@@ -2186,7 +2186,7 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component seasonal = 5;</code>
+       * <code>.modelling.TsComponent seasonal = 5;</code>
        */
       public Builder clearSeasonal() {
         if (seasonalBuilder_ == null) {
@@ -2200,33 +2200,33 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component seasonal = 5;</code>
+       * <code>.modelling.TsComponent seasonal = 5;</code>
        */
-      public demetra.modelling.io.protobuf.ModellingProtos.Component.Builder getSeasonalBuilder() {
+      public demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder getSeasonalBuilder() {
         
         onChanged();
         return getSeasonalFieldBuilder().getBuilder();
       }
       /**
-       * <code>.modelling.Component seasonal = 5;</code>
+       * <code>.modelling.TsComponent seasonal = 5;</code>
        */
-      public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getSeasonalOrBuilder() {
+      public demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder getSeasonalOrBuilder() {
         if (seasonalBuilder_ != null) {
           return seasonalBuilder_.getMessageOrBuilder();
         } else {
           return seasonal_ == null ?
-              demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : seasonal_;
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent.getDefaultInstance() : seasonal_;
         }
       }
       /**
-       * <code>.modelling.Component seasonal = 5;</code>
+       * <code>.modelling.TsComponent seasonal = 5;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> 
+          demetra.modelling.io.protobuf.ModellingProtos.TsComponent, demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder, demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder> 
           getSeasonalFieldBuilder() {
         if (seasonalBuilder_ == null) {
           seasonalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder>(
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent, demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder, demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder>(
                   getSeasonal(),
                   getParentForChildren(),
                   isClean());
@@ -2235,31 +2235,31 @@ public final class SaProtos {
         return seasonalBuilder_;
       }
 
-      private demetra.modelling.io.protobuf.ModellingProtos.Component irregular_;
+      private demetra.modelling.io.protobuf.ModellingProtos.TsComponent irregular_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> irregularBuilder_;
+          demetra.modelling.io.protobuf.ModellingProtos.TsComponent, demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder, demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder> irregularBuilder_;
       /**
-       * <code>.modelling.Component irregular = 6;</code>
+       * <code>.modelling.TsComponent irregular = 6;</code>
        * @return Whether the irregular field is set.
        */
       public boolean hasIrregular() {
         return irregularBuilder_ != null || irregular_ != null;
       }
       /**
-       * <code>.modelling.Component irregular = 6;</code>
+       * <code>.modelling.TsComponent irregular = 6;</code>
        * @return The irregular.
        */
-      public demetra.modelling.io.protobuf.ModellingProtos.Component getIrregular() {
+      public demetra.modelling.io.protobuf.ModellingProtos.TsComponent getIrregular() {
         if (irregularBuilder_ == null) {
-          return irregular_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : irregular_;
+          return irregular_ == null ? demetra.modelling.io.protobuf.ModellingProtos.TsComponent.getDefaultInstance() : irregular_;
         } else {
           return irregularBuilder_.getMessage();
         }
       }
       /**
-       * <code>.modelling.Component irregular = 6;</code>
+       * <code>.modelling.TsComponent irregular = 6;</code>
        */
-      public Builder setIrregular(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
+      public Builder setIrregular(demetra.modelling.io.protobuf.ModellingProtos.TsComponent value) {
         if (irregularBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2273,10 +2273,10 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component irregular = 6;</code>
+       * <code>.modelling.TsComponent irregular = 6;</code>
        */
       public Builder setIrregular(
-          demetra.modelling.io.protobuf.ModellingProtos.Component.Builder builderForValue) {
+          demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder builderForValue) {
         if (irregularBuilder_ == null) {
           irregular_ = builderForValue.build();
           onChanged();
@@ -2287,13 +2287,13 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component irregular = 6;</code>
+       * <code>.modelling.TsComponent irregular = 6;</code>
        */
-      public Builder mergeIrregular(demetra.modelling.io.protobuf.ModellingProtos.Component value) {
+      public Builder mergeIrregular(demetra.modelling.io.protobuf.ModellingProtos.TsComponent value) {
         if (irregularBuilder_ == null) {
           if (irregular_ != null) {
             irregular_ =
-              demetra.modelling.io.protobuf.ModellingProtos.Component.newBuilder(irregular_).mergeFrom(value).buildPartial();
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent.newBuilder(irregular_).mergeFrom(value).buildPartial();
           } else {
             irregular_ = value;
           }
@@ -2305,7 +2305,7 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component irregular = 6;</code>
+       * <code>.modelling.TsComponent irregular = 6;</code>
        */
       public Builder clearIrregular() {
         if (irregularBuilder_ == null) {
@@ -2319,33 +2319,33 @@ public final class SaProtos {
         return this;
       }
       /**
-       * <code>.modelling.Component irregular = 6;</code>
+       * <code>.modelling.TsComponent irregular = 6;</code>
        */
-      public demetra.modelling.io.protobuf.ModellingProtos.Component.Builder getIrregularBuilder() {
+      public demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder getIrregularBuilder() {
         
         onChanged();
         return getIrregularFieldBuilder().getBuilder();
       }
       /**
-       * <code>.modelling.Component irregular = 6;</code>
+       * <code>.modelling.TsComponent irregular = 6;</code>
        */
-      public demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder getIrregularOrBuilder() {
+      public demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder getIrregularOrBuilder() {
         if (irregularBuilder_ != null) {
           return irregularBuilder_.getMessageOrBuilder();
         } else {
           return irregular_ == null ?
-              demetra.modelling.io.protobuf.ModellingProtos.Component.getDefaultInstance() : irregular_;
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent.getDefaultInstance() : irregular_;
         }
       }
       /**
-       * <code>.modelling.Component irregular = 6;</code>
+       * <code>.modelling.TsComponent irregular = 6;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder> 
+          demetra.modelling.io.protobuf.ModellingProtos.TsComponent, demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder, demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder> 
           getIrregularFieldBuilder() {
         if (irregularBuilder_ == null) {
           irregularBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.modelling.io.protobuf.ModellingProtos.Component, demetra.modelling.io.protobuf.ModellingProtos.Component.Builder, demetra.modelling.io.protobuf.ModellingProtos.ComponentOrBuilder>(
+              demetra.modelling.io.protobuf.ModellingProtos.TsComponent, demetra.modelling.io.protobuf.ModellingProtos.TsComponent.Builder, demetra.modelling.io.protobuf.ModellingProtos.TsComponentOrBuilder>(
                   getIrregular(),
                   getParentForChildren(),
                   isClean());
@@ -7182,57 +7182,57 @@ public final class SaProtos {
   static {
     java.lang.String[] descriptorData = {
       "\n\010sa.proto\022\002sa\032\rtoolkit.proto\032\017modelling" +
-      ".proto\"\205\002\n\017SaDecomposition\022#\n\004mode\030\001 \001(\016" +
-      "2\025.sa.DecompositionMode\022$\n\006series\030\002 \001(\0132" +
-      "\024.modelling.Component\0221\n\023seasonally_adju" +
-      "sted\030\003 \001(\0132\024.modelling.Component\022#\n\005tren" +
-      "d\030\004 \001(\0132\024.modelling.Component\022&\n\010seasona" +
-      "l\030\005 \001(\0132\024.modelling.Component\022\'\n\tirregul" +
-      "ar\030\006 \001(\0132\024.modelling.Component\"\236\001\n\020Bench" +
-      "markingSpec\022\017\n\007enabled\030\001 \001(\010\022&\n\006target\030\002" +
-      " \001(\0162\026.sa.BenchmarkingTarget\022\016\n\006lambda\030\003" +
-      " \001(\001\022\013\n\003rho\030\004 \001(\001\022\"\n\004bias\030\005 \001(\0162\024.sa.Ben" +
-      "chmarkingBias\022\020\n\010forecast\030\006 \001(\010\"|\n\025Varia" +
-      "nceDecomposition\022\r\n\005cycle\030\001 \001(\001\022\020\n\010seaso" +
-      "nal\030\002 \001(\001\022\021\n\tirregular\030\003 \001(\001\022\020\n\010calendar" +
-      "\030\004 \001(\001\022\016\n\006others\030\005 \001(\001\022\r\n\005total\030\006 \001(\001\"\211\003" +
-      "\n\013Diagnostics\0229\n\026variance_decomposition\030" +
-      "\001 \001(\0132\031.sa.VarianceDecomposition\0229\n\033seas" +
-      "onal_ftest_on_irregular\030\002 \001(\0132\024.jd3.Stat" +
-      "isticalTest\0222\n\024seasonal_ftest_on_sa\030\003 \001(" +
-      "\0132\024.jd3.StatisticalTest\0229\n\033seasonal_qtes" +
-      "t_on_irregular\030\004 \001(\0132\024.jd3.StatisticalTe" +
-      "st\0222\n\024seasonal_qtest_on_sa\030\005 \001(\0132\024.jd3.S" +
-      "tatisticalTest\0223\n\025td_ftest_on_irregular\030" +
-      "\006 \001(\0132\024.jd3.StatisticalTest\022,\n\016td_ftest_" +
-      "on_sa\030\007 \001(\0132\024.jd3.StatisticalTest\"\330\001\n\027Co" +
-      "mbinedSeasonalityTest\0220\n\013seasonality\030\001 \001" +
-      "(\0162\033.sa.IdentifiableSeasonality\022,\n\016krusk" +
-      "al_wallis\030\002 \001(\0132\024.jd3.StatisticalTest\022,\n" +
-      "\022stable_seasonality\030\003 \001(\0132\020.jd3.OneWayAn" +
-      "ova\022/\n\025evolutive_seasonality\030\004 \001(\0132\020.jd3" +
-      ".OneWayAnova*x\n\rComponentType\022\r\n\tUNDEFIN" +
-      "ED\020\000\022\n\n\006SERIES\020\001\022\t\n\005TREND\020\002\022\014\n\010SEASONAL\020" +
-      "\003\022\026\n\022SEASONALLYADJUSTED\020\004\022\r\n\tIRREGULAR\020\005" +
-      "\022\014\n\010CALENDAR\020\006*V\n\021DecompositionMode\022\013\n\007U" +
-      "NKNOWN\020\000\022\014\n\010ADDITIVE\020\001\022\022\n\016MULTIPLICATIVE" +
-      "\020\002\022\022\n\016PSEUDOADDITIVE\020\003*p\n\022BenchmarkingTa" +
-      "rget\022\034\n\030BENCH_TARGET_UNSPECIFIED\020\000\022\031\n\025BE" +
-      "NCH_TARGET_ORIGINAL\020\001\022!\n\035BENCH_TARGET_CA" +
-      "LENDARADJUSTED\020\002*{\n\020BenchmarkingBias\022\032\n\026" +
-      "BENCH_BIAS_UNSPECIFIED\020\000\022\023\n\017BENCH_BIAS_N" +
-      "ONE\020\001\022\027\n\023BENCH_BIAS_ADDITIVE\020\002\022\035\n\031BENCH_" +
-      "BIAS_MULTIPLICATIVE\020\003*\202\002\n\020EstimationPoli" +
-      "cy\022\017\n\013POLICY_NONE\020\000\022\022\n\016POLICY_CURRENT\020\001\022" +
-      "\020\n\014POLICY_FIXED\020\002\022\033\n\027POLICY_FIXED_PARAME" +
-      "TERS\020\003\022)\n%POLICY_FIXED_AUTOREGRESSIVEPAR" +
-      "AMETERS\020\004\022\032\n\026POLICY_FREE_PARAMETERS\020\005\022\027\n" +
-      "\023POLICY_LASTOUTLIERS\020\006\022\023\n\017POLICY_OUTLIER" +
-      "S\020\007\022\020\n\014POLICY_ARIMA\020\010\022\023\n\017POLICY_COMPLETE" +
-      "\020\t*\\\n\027IdentifiableSeasonality\022\016\n\nSA_UNKN" +
-      "OWN\020\000\022\013\n\007SA_NONE\020\001\022\024\n\020SA_PROBABLY_NONE\020\002" +
-      "\022\016\n\nSA_PRESENT\020\003B\"\n\026demetra.sa.io.protob" +
-      "ufB\010SaProtosP\000P\001b\006proto3"
+      ".proto\"\217\002\n\017SaDecomposition\022#\n\004mode\030\001 \001(\016" +
+      "2\025.sa.DecompositionMode\022&\n\006series\030\002 \001(\0132" +
+      "\026.modelling.TsComponent\0223\n\023seasonally_ad" +
+      "justed\030\003 \001(\0132\026.modelling.TsComponent\022%\n\005" +
+      "trend\030\004 \001(\0132\026.modelling.TsComponent\022(\n\010s" +
+      "easonal\030\005 \001(\0132\026.modelling.TsComponent\022)\n" +
+      "\tirregular\030\006 \001(\0132\026.modelling.TsComponent" +
+      "\"\236\001\n\020BenchmarkingSpec\022\017\n\007enabled\030\001 \001(\010\022&" +
+      "\n\006target\030\002 \001(\0162\026.sa.BenchmarkingTarget\022\016" +
+      "\n\006lambda\030\003 \001(\001\022\013\n\003rho\030\004 \001(\001\022\"\n\004bias\030\005 \001(" +
+      "\0162\024.sa.BenchmarkingBias\022\020\n\010forecast\030\006 \001(" +
+      "\010\"|\n\025VarianceDecomposition\022\r\n\005cycle\030\001 \001(" +
+      "\001\022\020\n\010seasonal\030\002 \001(\001\022\021\n\tirregular\030\003 \001(\001\022\020" +
+      "\n\010calendar\030\004 \001(\001\022\016\n\006others\030\005 \001(\001\022\r\n\005tota" +
+      "l\030\006 \001(\001\"\211\003\n\013Diagnostics\0229\n\026variance_deco" +
+      "mposition\030\001 \001(\0132\031.sa.VarianceDecompositi" +
+      "on\0229\n\033seasonal_ftest_on_irregular\030\002 \001(\0132" +
+      "\024.jd3.StatisticalTest\0222\n\024seasonal_ftest_" +
+      "on_sa\030\003 \001(\0132\024.jd3.StatisticalTest\0229\n\033sea" +
+      "sonal_qtest_on_irregular\030\004 \001(\0132\024.jd3.Sta" +
+      "tisticalTest\0222\n\024seasonal_qtest_on_sa\030\005 \001" +
+      "(\0132\024.jd3.StatisticalTest\0223\n\025td_ftest_on_" +
+      "irregular\030\006 \001(\0132\024.jd3.StatisticalTest\022,\n" +
+      "\016td_ftest_on_sa\030\007 \001(\0132\024.jd3.StatisticalT" +
+      "est\"\330\001\n\027CombinedSeasonalityTest\0220\n\013seaso" +
+      "nality\030\001 \001(\0162\033.sa.IdentifiableSeasonalit" +
+      "y\022,\n\016kruskal_wallis\030\002 \001(\0132\024.jd3.Statisti" +
+      "calTest\022,\n\022stable_seasonality\030\003 \001(\0132\020.jd" +
+      "3.OneWayAnova\022/\n\025evolutive_seasonality\030\004" +
+      " \001(\0132\020.jd3.OneWayAnova*x\n\rComponentType\022" +
+      "\r\n\tUNDEFINED\020\000\022\n\n\006SERIES\020\001\022\t\n\005TREND\020\002\022\014\n" +
+      "\010SEASONAL\020\003\022\026\n\022SEASONALLYADJUSTED\020\004\022\r\n\tI" +
+      "RREGULAR\020\005\022\014\n\010CALENDAR\020\006*V\n\021Decompositio" +
+      "nMode\022\013\n\007UNKNOWN\020\000\022\014\n\010ADDITIVE\020\001\022\022\n\016MULT" +
+      "IPLICATIVE\020\002\022\022\n\016PSEUDOADDITIVE\020\003*p\n\022Benc" +
+      "hmarkingTarget\022\034\n\030BENCH_TARGET_UNSPECIFI" +
+      "ED\020\000\022\031\n\025BENCH_TARGET_ORIGINAL\020\001\022!\n\035BENCH" +
+      "_TARGET_CALENDARADJUSTED\020\002*{\n\020Benchmarki" +
+      "ngBias\022\032\n\026BENCH_BIAS_UNSPECIFIED\020\000\022\023\n\017BE" +
+      "NCH_BIAS_NONE\020\001\022\027\n\023BENCH_BIAS_ADDITIVE\020\002" +
+      "\022\035\n\031BENCH_BIAS_MULTIPLICATIVE\020\003*\202\002\n\020Esti" +
+      "mationPolicy\022\017\n\013POLICY_NONE\020\000\022\022\n\016POLICY_" +
+      "CURRENT\020\001\022\020\n\014POLICY_FIXED\020\002\022\033\n\027POLICY_FI" +
+      "XED_PARAMETERS\020\003\022)\n%POLICY_FIXED_AUTOREG" +
+      "RESSIVEPARAMETERS\020\004\022\032\n\026POLICY_FREE_PARAM" +
+      "ETERS\020\005\022\027\n\023POLICY_LASTOUTLIERS\020\006\022\023\n\017POLI" +
+      "CY_OUTLIERS\020\007\022\020\n\014POLICY_ARIMA\020\010\022\023\n\017POLIC" +
+      "Y_COMPLETE\020\t*\\\n\027IdentifiableSeasonality\022" +
+      "\016\n\nSA_UNKNOWN\020\000\022\013\n\007SA_NONE\020\001\022\024\n\020SA_PROBA" +
+      "BLY_NONE\020\002\022\016\n\nSA_PRESENT\020\003B\"\n\026demetra.sa" +
+      ".io.protobufB\010SaProtosP\000P\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

@@ -10,6 +10,7 @@ import demetra.data.Parameter;
 import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.sts.BasicStructuralModel;
+import demetra.sts.BsmDecomposition;
 import demetra.sts.BsmEstimation;
 import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
@@ -98,9 +99,16 @@ public class Bsm {
                 .variables(vars)
                 .build();
         
+        
+        
+        BsmDecomposition decomposition=BsmDecomposition.builder()
+                
+                .build();
+        
         return LightBasicStructuralModel.builder()
                 .description(description)
                 .estimation(estimation)
+                .bsmDecomposition(decomposition)
                 .build();
     }
     
