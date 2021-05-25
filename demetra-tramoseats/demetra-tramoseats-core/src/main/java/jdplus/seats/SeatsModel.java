@@ -44,7 +44,7 @@ public class SeatsModel {
 
     public static SeatsModel of(SeatsModelSpec spec) {
         SeatsModel model;
-        if (spec.getSarimaSpec().hasFreeParameters()) {
+        if (!spec.getSarimaSpec().isDefined()) {
             model = buildEstimatedModel(spec);
         } else {
             model = buildDefinedModel(spec);

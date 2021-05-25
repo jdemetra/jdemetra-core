@@ -18,7 +18,6 @@ package demetra.sts.r;
 
 import demetra.data.Doubles;
 import demetra.data.Parameter;
-import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import demetra.information.InformationMapping;
 import jdplus.math.functions.IFunctionDerivatives;
 import jdplus.math.functions.IFunctionPoint;

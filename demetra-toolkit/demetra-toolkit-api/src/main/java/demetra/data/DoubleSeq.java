@@ -27,6 +27,7 @@ import internal.data.InternalDoubleVector;
 import internal.data.InternalDoubleVectorCursor;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
@@ -816,18 +817,22 @@ public interface DoubleSeq extends BaseSeq {
     }
 
     static String format(DoubleSeq rd, String fmt) {
-        DecimalFormat df;
-        if (fmt != null) {
-            df = new DecimalFormat(fmt);
-        } else {
-            df = (DecimalFormat) NumberFormat.getNumberInstance();
-        }
         StringBuilder builder = new StringBuilder();
         int n = rd.length();
         if (n > 0) {
-            builder.append(df.format(rd.get(0)));
-            for (int i = 1; i < n; ++i) {
-                builder.append('\t').append(df.format(rd.get(i)));
+            if (fmt != null) {
+                DecimalFormat df;
+                df = new DecimalFormat(fmt);
+                builder.append(df.format(rd.get(0)));
+                for (int i = 1; i < n; ++i) {
+                    builder.append('\t').append(df.format(rd.get(i)));
+
+                }
+            } else {
+                builder.append(rd.get(0));
+                for (int i = 1; i < n; ++i) {
+                    builder.append('\t').append(rd.get(i));
+                }
             }
         }
         return builder.toString();

@@ -281,6 +281,11 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
                 && Parameter.isDefault(bphi) && Parameter.isDefault(btheta);
     }
 
+    public boolean isDefined() {
+        return Parameter.isDefined(phi) && Parameter.isDefined(theta)
+                && Parameter.isDefined(bphi) && Parameter.isDefined(btheta);
+    }
+
     public SarimaSpec withPeriod(int period) {
         if (this.period == period) {
             return this;
