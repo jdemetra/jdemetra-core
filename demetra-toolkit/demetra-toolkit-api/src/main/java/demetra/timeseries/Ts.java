@@ -100,7 +100,7 @@ public class Ts implements TsResource<TsData> {
         return new Ts(moniker, type, newName, meta, data);
     }
 
-    public Ts withData(TsInformationType info) {
+    public Ts withData(TsInformationType info, TsFactory tsFactory) {
         if (type == info) {
             return this;
         }
@@ -110,7 +110,7 @@ public class Ts implements TsResource<TsData> {
         if (type.encompass(info)) {
             return this;
         }
-        return TsFactory.makeTs(moniker, info);
+        return tsFactory.makeTs(moniker, info);
     }
 
     public Ts freeze() {
@@ -125,13 +125,13 @@ public class Ts implements TsResource<TsData> {
                 .build();
     }
 
-    public Ts unfreeze() {
+    public Ts unfreeze(TsFactory tsFactory) {
         if (moniker.isProvided())
             return this;
         TsMoniker pmoniker=getFreezeMeta(meta);
         if (pmoniker == null)
             return this;
-        return TsFactory.makeTs(pmoniker, type);
+        return tsFactory.makeTs(pmoniker, type);
     }
 
     private static void putFreezeMeta(@NonNull Builder builder, @NonNull TsMoniker origin) {

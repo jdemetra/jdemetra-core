@@ -31,9 +31,11 @@ public class TsTest {
 
     @Test
     public void testFreeze() {
-        Ts s = TsFactory.makeTs(TsMoniker.of("test", "0:300"), TsInformationType.BaseInformation);
+        TsFactory tsFactory = TsFactory.ofServiceLoader();
+
+        Ts s = tsFactory.makeTs(TsMoniker.of("test", "0:300"), TsInformationType.BaseInformation);
         Ts t = s.freeze();
-        Ts v = t.unfreeze();
+        Ts v = t.unfreeze(tsFactory);
         assertFalse(t.equals(s));
         assertTrue(v.equals(s));
     }
