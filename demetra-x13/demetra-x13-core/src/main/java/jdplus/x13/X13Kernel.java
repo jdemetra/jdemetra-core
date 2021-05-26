@@ -144,7 +144,7 @@ public class X13Kernel {
             SarimaModel arima = model.arima();
             FastArimaForecasts fcasts = new FastArimaForecasts();
             double mean = 0;
-            if (model.getDescription().isMean()) {
+            if (model.isMeanEstimation()) {
                 mean = model.getEstimation().getCoefficients().get(0);
             }
             fcasts.prepare(arima, mean);

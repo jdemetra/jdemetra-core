@@ -16,11 +16,9 @@
  */
 package demetra.regarima.io.protobuf;
 
-import demetra.arima.SarimaOrders;
 import demetra.data.Iterables;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.MissingValueEstimation;
-import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.modelling.io.protobuf.ModellingProtos;
@@ -72,7 +70,6 @@ public class RegArimaEstimationProto {
         }
         
         return builder.setSeries(ToolkitProtosUtility.convert(description.getSeries()))
-                .setMean(description.isMean())
                 .setLog(description.isLogTransformation())
                 .setArima(RegArimaProtosUtility.convert(description.getStochasticComponent()))
                 .build();

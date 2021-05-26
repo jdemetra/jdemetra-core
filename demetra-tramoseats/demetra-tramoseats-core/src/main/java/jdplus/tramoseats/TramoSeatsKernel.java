@@ -8,6 +8,7 @@ package jdplus.tramoseats;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
+import demetra.likelihood.LikelihoodStatistics;
 import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
 import demetra.sa.SeriesDecomposition;
@@ -97,14 +98,14 @@ public class TramoSeatsKernel {
                 .bphi(Parameter.of(arima.getBphi(), ParameterType.Fixed))
                 .btheta(Parameter.of(arima.getBtheta(), ParameterType.Fixed))
                 .build();
-
+        LikelihoodStatistics ll = model.getEstimation().getStatistics();
         return SeatsModelSpec.builder()
                 .series(series)
                 .log(model.getDescription().isLogTransformation())
-                .meanCorrection(model.getDescription().isMean())
+                .meanCorrection(model.isMeanCorrection())
                 .sarimaSpec(sarima)
+                .innovationVariance(ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount()))
                 .build();
     }
-
 
 }

@@ -77,7 +77,7 @@ public class SeatsDiagnostics implements Diagnostics {
 
         double[][] data = new double[][]{
             t == null ? null : t.getValues().toArray(),
-            s == null ? null : sa.getValues().toArray(),
+            sa == null ? null : sa.getValues().toArray(),
             s == null ? null : s.getValues().toArray(),
             i == null ? null : i.getValues().toArray()
         };

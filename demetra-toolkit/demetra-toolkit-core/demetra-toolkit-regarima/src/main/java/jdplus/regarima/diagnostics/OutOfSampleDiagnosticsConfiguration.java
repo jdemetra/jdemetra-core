@@ -40,7 +40,7 @@ public class OutOfSampleDiagnosticsConfiguration {
                 .badThreshold(BAD)
                 .uncertainThreshold(UNC)
                 .diagnosticOnMean(true)
-                .diagnosticOnVariance(false)
+                .diagnosticOnVariance(true)
                 .outOfSampleLength(LENGTH);
     }
 }
