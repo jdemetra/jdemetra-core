@@ -1,34 +1,33 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
+ * Copyright 2013 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 package demetra.timeseries;
 
-import java.util.Map;
-import nbbrd.design.LombokWorkaround;
-import internal.timeseries.util.TsDataBuilderUtil;
 import internal.timeseries.LombokHelper;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import internal.timeseries.util.TsDataBuilderUtil;
+import nbbrd.design.LombokWorkaround;
+import nbbrd.design.StaticFactoryMethod;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+
 /**
- *
  * @author Jean Palate
  */
 @lombok.Value
@@ -65,7 +64,12 @@ public class Ts implements TsResource<TsData> {
                 .data(TsDataBuilderUtil.NO_DATA);
     }
 
-    public static class Builder implements TsResource {
+    @StaticFactoryMethod
+    public static @NonNull Ts of(@NonNull TsData data) {
+        return builder().data(data).build();
+    }
+
+    public static class Builder implements TsResource<TsData> {
 
         @Override
         public TsMoniker getMoniker() {
@@ -114,12 +118,12 @@ public class Ts implements TsResource<TsData> {
     }
 
     public Ts freeze() {
-        if (! moniker.isProvided()) {
+        if (!moniker.isProvided()) {
             return this;
         }
         Builder builder = this.toBuilder();
         putFreezeMeta(builder, moniker);
-        
+
         return builder.moniker(TsMoniker.of())
                 .type(TsInformationType.UserDefined)
                 .build();
@@ -128,7 +132,7 @@ public class Ts implements TsResource<TsData> {
     public Ts unfreeze(TsFactory tsFactory) {
         if (moniker.isProvided())
             return this;
-        TsMoniker pmoniker=getFreezeMeta(meta);
+        TsMoniker pmoniker = getFreezeMeta(meta);
         if (pmoniker == null)
             return this;
         return tsFactory.makeTs(pmoniker, type);

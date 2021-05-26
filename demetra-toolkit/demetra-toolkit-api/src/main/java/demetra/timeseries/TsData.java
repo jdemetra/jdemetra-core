@@ -1,34 +1,33 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.timeseries;
 
-import demetra.data.AggregationType;
-import demetra.data.DoubleSeqCursor;
-import nbbrd.design.Development;
+import demetra.data.*;
 import internal.timeseries.InternalAggregator;
+import lombok.AccessLevel;
+import nbbrd.design.Development;
+import nbbrd.design.StaticFactoryMethod;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import lombok.AccessLevel;
-import demetra.data.DoubleSeq;
-import demetra.data.Doubles;
 
 /**
  * A TsData is a raw time series, containing only the actual data. TsData can
@@ -42,7 +41,7 @@ import demetra.data.Doubles;
 @Development(status = Development.Status.Alpha)
 @lombok.Value
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
-public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
+public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCause {
 
     /**
      * Creates a random time series
@@ -73,38 +72,38 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
      * @param values
      * @return
      */
-    @NonNull
-    public static TsData of(@NonNull TsPeriod start, @NonNull Doubles values) {
+    @StaticFactoryMethod
+    public static @NonNull TsData of(@NonNull TsPeriod start, @NonNull Doubles values) {
         TsDomain domain = TsDomain.of(start, values.length());
         return domain.isEmpty()
                 ? new TsData(domain, values, NO_DATA_CAUSE)
                 : new TsData(domain, values, null);
     }
 
-    @NonNull
-    public static TsData ofInternal(@NonNull TsPeriod start, @NonNull DoubleSeq values) {
+    @StaticFactoryMethod
+    public static @NonNull TsData ofInternal(@NonNull TsPeriod start, @NonNull DoubleSeq values) {
         TsDomain domain = TsDomain.of(start, values.length());
         return domain.isEmpty()
                 ? new TsData(domain, Doubles.EMPTY, NO_DATA_CAUSE)
                 : new TsData(domain, values, null);
     }
 
-    @NonNull
-    public static TsData ofInternal(@NonNull TsPeriod start, @NonNull double[] values) {
+    @StaticFactoryMethod
+    public static @NonNull TsData ofInternal(@NonNull TsPeriod start, @NonNull double[] values) {
         TsDomain domain = TsDomain.of(start, values.length);
         return domain.isEmpty()
                 ? new TsData(domain, Doubles.EMPTY, NO_DATA_CAUSE)
                 : new TsData(domain, DoubleSeq.of(values), null);
     }
 
-    @NonNull
-    public static TsData empty(@NonNull TsPeriod start, @NonNull String cause) {
+    @StaticFactoryMethod
+    public static @NonNull TsData empty(@NonNull TsPeriod start, @NonNull String cause) {
         return new TsData(TsDomain.of(start, 0), Doubles.EMPTY, Objects.requireNonNull(cause));
     }
 
-    @NonNull
-    public static TsData empty(@NonNull String cause) {
-        return new TsData(TsDomain.of(TsPeriod.of(TsUnit.YEAR, 0), 0), Doubles.EMPTY, Objects.requireNonNull(cause));
+    @StaticFactoryMethod
+    public static @NonNull TsData empty(@NonNull String cause) {
+        return new TsData(TsDomain.DEFAULT_EMPTY, Doubles.EMPTY, Objects.requireNonNull(cause));
     }
 
     private static final String NO_DATA_CAUSE = "No data available";
@@ -115,7 +114,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
     /**
      * Message explaining why the time series data is empty.
      */
-    private final String cause;
+    private final String emptyCause;
 
     @Override
     public TsObs get(int index) throws IndexOutOfBoundsException {
@@ -238,7 +237,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
      * series
      *
      * @param start Index of the start
-     * @param n Number of obs being extracted
+     * @param n     Number of obs being extracted
      * @return
      */
     public TsData extract(@NonNegative int start, @NonNegative int n) {
@@ -269,7 +268,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
      *
      * @param s
      * @param domain The domain of the new series. Must have the same frequency
-     * than the original series.
+     *               than the original series.
      * @return A new (possibly empty) series is returned (or null if the domain
      * hasn't the right frequency.
      */
@@ -303,11 +302,11 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
 
     // some useful shortcuts
     public TsData log() {
-        return fastFn(x -> Math.log(x));
+        return fastFn(Math::log);
     }
 
     public TsData exp() {
-        return fastFn(x -> Math.exp(x));
+        return fastFn(Math::exp);
     }
 
     public TsData inv() {
@@ -319,7 +318,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
     }
 
     public TsData abs() {
-        return fastFn(x -> Math.abs(x));
+        return fastFn(Math::abs);
     }
 
     public static TsData add(TsData l, TsData r) {
@@ -328,7 +327,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
         } else if (r == null) {
             return l;
         } else {
-            return l.fn(r, (a, b) -> a + b);
+            return l.fn(r, Double::sum);
         }
     }
 
@@ -350,7 +349,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
 
     public double distance(TsData r) {
         DoubleSeq diff = subtract(this, r).getValues();
-        int n = diff.count(x -> Double.isFinite(x));
+        int n = diff.count(Double::isFinite);
         if (n == 0) {
             return Double.NaN;
         }
@@ -426,7 +425,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
             prod = a;
         }
         for (int i = start; i < b.length; ++i) {
-            prod = prod.fastFn(b[i], (x, y) -> x + y);
+            prod = prod.fastFn(b[i], Double::sum);
         }
         return prod.commit();
     }
@@ -511,7 +510,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
                 TsPeriod start = null;
                 TsPeriod curPeriod = null;
                 for (int i = 0; i < ns; ++i) {
-                    if (s[i] != null && ! s[i].isEmpty()) {
+                    if (s[i] != null && !s[i].isEmpty()) {
                         TsPeriod cstart = s[i].getStart();
                         if (start == null) {
                             start = cstart;
@@ -567,7 +566,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
     @Override
     public String toString() {
         if (isEmpty()) {
-            return "Empty due to: '" + cause + "'";
+            return "Empty due to: '" + emptyCause + "'";
         }
         StringBuilder builder = new StringBuilder();
         DoubleSeqCursor reader = values.cursor();
@@ -581,7 +580,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
     @Override
     public int hashCode() {
         int result = 1;
-        result = 31 * result + (cause == null ? 0 : cause.hashCode());
+        result = 31 * result + (emptyCause == null ? 0 : emptyCause.hashCode());
         result = 31 * result + domain.hashCode();
         result = 31 * result + DoubleSeq.getHashCode(values);
         return result;
@@ -593,7 +592,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
     }
 
     private boolean equals(TsData that) {
-        return Objects.equals(this.cause, that.cause)
+        return Objects.equals(this.emptyCause, that.emptyCause)
                 && this.domain.equals(that.domain)
                 && this.values.hasSameContentAs(that.values);
     }
@@ -601,11 +600,11 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs> {
     /**
      * Makes a frequency change of this series.
      *
-     * @param newUnit The new frequency. Must be la divisor of the present
-     * frequency.
+     * @param newUnit    The new frequency. Must be la divisor of the present
+     *                   frequency.
      * @param conversion Aggregation mode.
-     * @param complete If true, the observation for a given period in the new
-     * series is set to Missing if some data in the original series are Missing.
+     * @param complete   If true, the observation for a given period in the new
+     *                   series is set to Missing if some data in the original series are Missing.
      * @return A new time series is returned.
      */
     public TsData aggregate(@NonNull TsUnit newUnit, @NonNull AggregationType conversion, boolean complete) {

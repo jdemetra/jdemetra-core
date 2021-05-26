@@ -18,18 +18,19 @@ package demetra.timeseries;
 
 import internal.timeseries.LombokHelper;
 import nbbrd.design.LombokWorkaround;
+import nbbrd.design.StaticFactoryMethod;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * @author Jean Palate
  */
 @lombok.Value
 @lombok.Builder(toBuilder = true)
-public class TsCollection implements TsResource<List<Ts>> {
+public class TsCollection implements TsResource<TsSeq> {
 
     @lombok.NonNull
     private TsMoniker moniker;
@@ -43,25 +44,26 @@ public class TsCollection implements TsResource<List<Ts>> {
     @lombok.Singular("meta")
     private Map<String, String> meta;
 
-    @lombok.Singular("data")
-    private List<Ts> data;
+    @lombok.NonNull
+    private TsSeq data;
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
                 .moniker(TsMoniker.NULL)
                 .type(TsInformationType.UserDefined)
+                .data(TsSeq.EMPTY)
                 .name("");
     }
 
     public static final TsCollection EMPTY = TsCollection.builder().build();
 
-    @NonNull
-    public static TsCollection of(@NonNull Ts ts) {
-        return builder().data(ts).build();
+    @StaticFactoryMethod
+    public static @NonNull TsCollection of(@NonNull TsSeq data) {
+        return builder().data(data).build();
     }
 
-    public static class Builder implements TsResource {
+    public static class Builder implements TsResource<TsSeq> {
 
         @Override
         public TsMoniker getMoniker() {
@@ -84,17 +86,12 @@ public class TsCollection implements TsResource<List<Ts>> {
         }
 
         @Override
-        public List<Ts> getData() {
-            return LombokHelper.getList(data);
+        public TsSeq getData() {
+            return data;
         }
     }
 
-    @NonNull
-    public static Collector<Ts, ?, TsCollection> toTsCollection() {
-        return Collector.of(
-                TsCollection::builder,
-                TsCollection.Builder::data,
-                (l, r) -> l.data(r.getData()),
-                TsCollection.Builder::build);
+    public static @NonNull Collector<Ts, ?, TsCollection> toTsCollection() {
+        return Collectors.collectingAndThen(TsSeq.toTsSeq(), TsCollection::of);
     }
 }

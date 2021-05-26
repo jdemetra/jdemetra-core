@@ -96,7 +96,7 @@ class DemoUtil {
     }
 
     void printData(TsData data) {
-        String value = !data.isEmpty() ? toString(data) : data.getCause();
+        String value = !data.isEmpty() ? toString(data) : data.getEmptyCause();
         System.out.printf("%9s %s\n", "Data:", value);
     }
 

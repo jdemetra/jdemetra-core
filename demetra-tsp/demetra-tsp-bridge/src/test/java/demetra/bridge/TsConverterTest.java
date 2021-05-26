@@ -96,7 +96,7 @@ public class TsConverterTest {
             for (Map meta : metaArray) {
                 for (TsMoniker moniker : monikers) {
                     for (TsData data : dataArray) {
-                        // types are restricted by contructors !
+                        // types are restricted by constructors !
                         Ts x = Ts
                                 .builder()
                                 .name(name)
@@ -153,17 +153,29 @@ public class TsConverterTest {
         for (String name : names) {
             for (Map meta : metaArray) {
                 for (TsMoniker moniker : monikers) {
-                    for (List<Ts> items : tsArray) {
-                        // types are restricted by contructors !
-                        TsCollection x = TsCollection
+                    // types are restricted by constructors !
+                    for (TsInformationType type : new TsInformationType[]{TsInformationType.UserDefined}) {
+                        for (List<Ts> items : tsArray) {
+                            TsCollection x = TsCollection
+                                    .builder()
+                                    .name(name)
+                                    .moniker(moniker)
+                                    .meta(meta)
+                                    .data(TsSeq.of(items))
+                                    .type(type)
+                                    .build();
+                            assertThat(toTsCollection(fromTsCollection(x))).isEqualTo(x);
+                        }
+
+                        TsCollection empty = TsCollection
                                 .builder()
                                 .name(name)
                                 .moniker(moniker)
                                 .meta(meta)
-                                .data(items)
-                                .type(TsInformationType.UserDefined)
+                                .data(TsSeq.empty("some specific cause"))
+                                .type(type)
                                 .build();
-                        assertThat(toTsCollection(fromTsCollection(x))).isEqualTo(x);
+                        assertThat(toTsCollection(fromTsCollection(empty))).isEqualTo(empty);
                     }
                 }
             }
@@ -175,19 +187,30 @@ public class TsConverterTest {
         for (String name : names) {
             for (Map meta : metaArray) {
                 for (TsMoniker moniker : monikers) {
-                    for (List<Ts> items : tsArray) {
-                        for (TsInformationType type : TsInformationType.values()) {
+                    for (TsInformationType type : TsInformationType.values()) {
+                        for (List<Ts> items : tsArray) {
                             TsCollection.Builder x = TsCollection
                                     .builder()
                                     .name(name)
                                     .moniker(moniker)
                                     .meta(meta)
-                                    .data(items)
+                                    .data(TsSeq.of(items))
                                     .type(type);
                             assertThat(toTsCollectionBuilder(fromTsCollectionBuilder(x)))
                                     .usingRecursiveComparison()
                                     .isEqualTo(x);
                         }
+
+                        TsCollection.Builder empty = TsCollection
+                                .builder()
+                                .name(name)
+                                .moniker(moniker)
+                                .meta(meta)
+                                .data(TsSeq.empty("some specific cause"))
+                                .type(type);
+                        assertThat(toTsCollectionBuilder(fromTsCollectionBuilder(empty)))
+                                .usingRecursiveComparison()
+                                .isEqualTo(empty);
                     }
                 }
             }

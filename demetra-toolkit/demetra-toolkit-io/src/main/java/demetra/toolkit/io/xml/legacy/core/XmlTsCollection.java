@@ -19,6 +19,8 @@ package demetra.toolkit.io.xml.legacy.core;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsCollection;
 import demetra.timeseries.TsMoniker;
+import demetra.timeseries.TsSeq;
+
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -262,11 +264,13 @@ public class XmlTsCollection {
             builder.meta(xml.metaData);
         }
         if (xml.data != null) {
-            for (XmlTs xs : xml.data.getTs()) {
-                builder.data(XmlTs.unmarshal(xs));
-            }
+            builder.data(unmarshal(xml.data));
         }
         return builder.build();
+    }
+
+    private static TsSeq unmarshal(Data data) {
+        return data.getTs().stream().map(XmlTs::unmarshal).collect(TsSeq.toTsSeq());
     }
 
     public static final boolean marshal(TsCollection v, XmlTsCollection xml) {
@@ -276,7 +280,7 @@ public class XmlTsCollection {
         if (!v.getMeta().isEmpty()) {
             xml.metaData = v.getMeta();
         }
-        List<Ts> ldata = v.getData();
+        TsSeq ldata = v.getData();
         if (!ldata.isEmpty()) {
             xml.data = new Data();
             for (Ts s : ldata) {

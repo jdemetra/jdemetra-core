@@ -90,7 +90,7 @@ public class TsDataTest {
         x = TsData.empty(start, cause);
         assertThat(x.getStart()).isEqualTo(start);
         assertThat(x.getValues().toArray()).isEmpty();
-        assertThat(x.getCause()).isEqualTo(cause);
+        assertThat(x.getEmptyCause()).isEqualTo(cause);
 
         assertThatNullPointerException().isThrownBy(() -> TsData.empty(null, cause));
         assertThatNullPointerException().isThrownBy(() -> TsData.empty(start, null));
@@ -98,7 +98,7 @@ public class TsDataTest {
         x = TsData.of(start, Doubles.of(values));
         assertThat(x.getStart()).isEqualTo(start);
         assertThat(x.getValues().toArray()).containsExactly(values);
-        assertThat(x.getCause()).isNull();
+        assertThat(x.getEmptyCause()).isNull();
 
         assertThatNullPointerException().isThrownBy(() -> TsData.of(null, Doubles.of(values)));
         assertThatNullPointerException().isThrownBy(() -> TsData.of(start, null));
@@ -106,7 +106,7 @@ public class TsDataTest {
         x = TsData.ofInternal(start, Doubles.of(values));
         assertThat(x.getStart()).isEqualTo(start);
         assertThat(x.getValues().toArray()).containsExactly(values);
-        assertThat(x.getCause()).isNull();
+        assertThat(x.getEmptyCause()).isNull();
 
         assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(null, Doubles.of(values)));
         assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(start, (DoubleSeq) null));
@@ -114,7 +114,7 @@ public class TsDataTest {
         x = TsData.ofInternal(start, values);
         assertThat(x.getStart()).isEqualTo(start);
         assertThat(x.getValues().toArray()).containsExactly(values);
-        assertThat(x.getCause()).isNull();
+        assertThat(x.getEmptyCause()).isNull();
 
         assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(null, values));
         assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(start, (double[]) null));

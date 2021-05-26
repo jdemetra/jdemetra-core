@@ -19,6 +19,7 @@ package demetra.timeseries;
 import nbbrd.design.ThreadSafe;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
+import nbbrd.service.ServiceFilter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.IOException;
@@ -75,5 +76,6 @@ public interface TsProvider extends AutoCloseable {
      * @return True if the provider is available, false otherwise (missing
      * modules, missing or unavailable resources...)
      */
+    @ServiceFilter
     boolean isAvailable();
 }

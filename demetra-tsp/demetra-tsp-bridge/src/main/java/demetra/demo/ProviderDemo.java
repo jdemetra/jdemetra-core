@@ -121,7 +121,7 @@ public class ProviderDemo {
             int validValues = (int) data.getValues().reduce(0, (c, o) -> !Double.isNaN(o) ? c + 1 : c);
             System.out.printf("%9s %s, from %s to %s, %d/%d obs\n", "Data:", d.getTsUnit(), d.start(), d.end(), validValues, d.length());
         } else {
-            System.out.printf("%9s %s\n", "Data:", data.getCause());
+            System.out.printf("%9s %s\n", "Data:", data.getEmptyCause());
         }
     }
 

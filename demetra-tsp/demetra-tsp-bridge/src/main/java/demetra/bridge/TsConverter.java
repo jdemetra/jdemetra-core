@@ -20,6 +20,7 @@ import demetra.timeseries.*;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.util.ObsFormat;
+import ec.tss.TsBypass;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -27,7 +28,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -128,7 +128,7 @@ public class TsConverter {
     public ec.tss.tsproviders.utils.@NonNull OptionalTsData fromTsData(@NonNull TsData o) throws ConverterException {
         return !o.isEmpty()
                 ? ec.tss.tsproviders.utils.OptionalTsData.present(new ec.tstoolkit.timeseries.simplets.TsData(fromTsPeriod(o.getStart()), o.getValues().toArray(), false))
-                : ec.tss.tsproviders.utils.OptionalTsData.absent(o.getCause());
+                : ec.tss.tsproviders.utils.OptionalTsData.absent(o.getEmptyCause());
     }
     //</editor-fold>
 
@@ -319,15 +319,22 @@ public class TsConverter {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="TsCollection + Builder/Info">
-    public void fillTsCollectionInformation(@NonNull TsResource<List<Ts>> from, ec.tss.@NonNull TsCollectionInformation to) {
+    public void fillTsCollectionInformation(@NonNull TsResource<TsSeq> from, ec.tss.@NonNull TsCollectionInformation to) {
         to.moniker = fromTsMoniker(from.getMoniker());
         to.type = fromType(from.getType());
         to.name = from.getName();
         to.metaData = fromMeta(from.getMeta());
-        from.getData().forEach(x -> to.items.add(fromTsBuilder(x)));
+        TsSeq data = from.getData();
+        if (data.isEmpty()) {
+            to.items.clear();
+            to.invalidDataCause = data.getEmptyCause();
+        } else {
+            to.items.addAll(data.stream().map(TsConverter::fromTsBuilder).collect(Collectors.toList()));
+            to.invalidDataCause = null;
+        }
     }
 
-    public ec.tss.@NonNull TsCollectionInformation fromTsCollectionBuilder(@NonNull TsResource<List<Ts>> o) {
+    public ec.tss.@NonNull TsCollectionInformation fromTsCollectionBuilder(@NonNull TsResource<TsSeq> o) {
         ec.tss.TsCollectionInformation result = new ec.tss.TsCollectionInformation();
         fillTsCollectionInformation(o, result);
         return result;
@@ -339,11 +346,23 @@ public class TsConverter {
                 .moniker(toTsMoniker(o.moniker))
                 .type(toType(o.type))
                 .meta(toMeta(o.metaData))
-                .data(o.items.stream().map(TsConverter::toTsBuilder).map(Ts.Builder::build).collect(Collectors.toList()));
+                .data(o.invalidDataCause != null
+                        ? TsSeq.empty(o.invalidDataCause)
+                        : o.items.stream().map(TsConverter::toTsBuilder).map(Ts.Builder::build).collect(TsSeq.toTsSeq())
+                );
     }
 
-    public ec.tss.@NonNull TsCollection fromTsCollection(@NonNull TsResource<List<Ts>> o) {
-        return ec.tss.TsBypass.col(o.getName(), fromTsMoniker(o.getMoniker()), fromMeta(o.getMeta()), o.getData().stream().map(TsConverter::fromTs).collect(Collectors.toList()));
+    public ec.tss.@NonNull TsCollection fromTsCollection(@NonNull TsResource<TsSeq> o) {
+        ec.tss.TsCollection col = TsBypass.col(
+                o.getName(),
+                fromTsMoniker(o.getMoniker()),
+                fromMeta(o.getMeta()),
+                o.getData().stream().map(TsConverter::fromTs).collect(Collectors.toList())
+        );
+        if (o.getData().isEmpty()) {
+            col.setInvalidDataCause(o.getData().getEmptyCause());
+        }
+        return col;
     }
 
     public @NonNull TsCollection toTsCollection(ec.tss.@NonNull TsCollection o) {
@@ -352,7 +371,9 @@ public class TsConverter {
                 .moniker(toTsMoniker(o.getMoniker()))
                 .type(toType(o.getInformationType()))
                 .meta(toMeta(o.getMetaData()))
-                .data(o.stream().map(TsConverter::toTs).collect(Collectors.toList()))
+                .data(o.getInvalidDataCause() != null
+                        ? TsSeq.empty(o.getInvalidDataCause())
+                        : o.stream().map(TsConverter::toTs).collect(TsSeq.toTsSeq()))
                 .build();
     }
     //</editor-fold>
