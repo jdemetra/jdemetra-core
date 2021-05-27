@@ -1,37 +1,38 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.timeseries;
 
-import static demetra.timeseries.TsDataTable.DistributionType.*;
 import demetra.timeseries.TsDataTable.ValueStatus;
-import static demetra.timeseries.TsDataTable.ValueStatus.*;
-import static demetra.timeseries.TsDataTable.computeDomain;
-import static java.lang.Double.NaN;
+import org.junit.Test;
+
 import java.util.Arrays;
-import static java.util.Arrays.asList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.function.IntFunction;
 import java.util.stream.Stream;
-import org.junit.Test;
+
+import static demetra.timeseries.TsDataTable.DistributionType.*;
+import static demetra.timeseries.TsDataTable.ValueStatus.*;
+import static demetra.timeseries.TsDataTable.computeDomain;
+import static java.lang.Double.NaN;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.*;
 
 /**
- *
  * @author Philippe Charles
  */
 public class TsDataTableTest {
@@ -115,32 +116,32 @@ public class TsDataTableTest {
 
         assertDeepEqualTo(Cell.toArray(table.cursor(FIRST)),
                 new Cell[][]{
-                    {Cell.of(-3, -1, -1, BEFORE, NaN), Cell.of(0, 3, 0, PRESENT, 2.1), Cell.EMPTY},
-                    {Cell.of(-2, -1, -1, BEFORE, NaN), Cell.of(0, 3, 1, UNUSED, NaN), Cell.EMPTY},
-                    {Cell.of(-1, -1, -1, BEFORE, NaN), Cell.of(0, 3, 2, UNUSED, NaN), Cell.EMPTY},
-                    {Cell.of(0, 1, 0, PRESENT, 1.1), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
-                    {Cell.of(1, 1, 0, PRESENT, NaN), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
-                    {Cell.of(2, 1, 0, PRESENT, 1.3), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY}
+                        {Cell.of(-3, -1, -1, BEFORE, NaN), Cell.of(0, 3, 0, PRESENT, 2.1), Cell.EMPTY},
+                        {Cell.of(-2, -1, -1, BEFORE, NaN), Cell.of(0, 3, 1, UNUSED, NaN), Cell.EMPTY},
+                        {Cell.of(-1, -1, -1, BEFORE, NaN), Cell.of(0, 3, 2, UNUSED, NaN), Cell.EMPTY},
+                        {Cell.of(0, 1, 0, PRESENT, 1.1), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
+                        {Cell.of(1, 1, 0, PRESENT, NaN), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
+                        {Cell.of(2, 1, 0, PRESENT, 1.3), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY}
                 });
 
         assertDeepEqualTo(Cell.toArray(table.cursor(MIDDLE)),
                 new Cell[][]{
-                    {Cell.of(-3, -1, -1, BEFORE, NaN), Cell.of(0, 3, 0, UNUSED, NaN), Cell.EMPTY},
-                    {Cell.of(-2, -1, -1, BEFORE, NaN), Cell.of(0, 3, 1, PRESENT, 2.1), Cell.EMPTY},
-                    {Cell.of(-1, -1, -1, BEFORE, NaN), Cell.of(0, 3, 2, UNUSED, NaN), Cell.EMPTY},
-                    {Cell.of(0, 1, 0, PRESENT, 1.1), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
-                    {Cell.of(1, 1, 0, PRESENT, NaN), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
-                    {Cell.of(2, 1, 0, PRESENT, 1.3), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY}
+                        {Cell.of(-3, -1, -1, BEFORE, NaN), Cell.of(0, 3, 0, UNUSED, NaN), Cell.EMPTY},
+                        {Cell.of(-2, -1, -1, BEFORE, NaN), Cell.of(0, 3, 1, PRESENT, 2.1), Cell.EMPTY},
+                        {Cell.of(-1, -1, -1, BEFORE, NaN), Cell.of(0, 3, 2, UNUSED, NaN), Cell.EMPTY},
+                        {Cell.of(0, 1, 0, PRESENT, 1.1), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
+                        {Cell.of(1, 1, 0, PRESENT, NaN), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
+                        {Cell.of(2, 1, 0, PRESENT, 1.3), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY}
                 });
 
         assertDeepEqualTo(Cell.toArray(table.cursor(LAST)),
                 new Cell[][]{
-                    {Cell.of(-3, -1, -1, BEFORE, NaN), Cell.of(0, 3, 0, UNUSED, NaN), Cell.EMPTY},
-                    {Cell.of(-2, -1, -1, BEFORE, NaN), Cell.of(0, 3, 1, UNUSED, NaN), Cell.EMPTY},
-                    {Cell.of(-1, -1, -1, BEFORE, NaN), Cell.of(0, 3, 2, PRESENT, 2.1), Cell.EMPTY},
-                    {Cell.of(0, 1, 0, PRESENT, 1.1), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
-                    {Cell.of(1, 1, 0, PRESENT, NaN), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
-                    {Cell.of(2, 1, 0, PRESENT, 1.3), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY}
+                        {Cell.of(-3, -1, -1, BEFORE, NaN), Cell.of(0, 3, 0, UNUSED, NaN), Cell.EMPTY},
+                        {Cell.of(-2, -1, -1, BEFORE, NaN), Cell.of(0, 3, 1, UNUSED, NaN), Cell.EMPTY},
+                        {Cell.of(-1, -1, -1, BEFORE, NaN), Cell.of(0, 3, 2, PRESENT, 2.1), Cell.EMPTY},
+                        {Cell.of(0, 1, 0, PRESENT, 1.1), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
+                        {Cell.of(1, 1, 0, PRESENT, NaN), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY},
+                        {Cell.of(2, 1, 0, PRESENT, 1.3), Cell.of(1, -1, -1, AFTER, NaN), Cell.EMPTY}
                 });
     }
 

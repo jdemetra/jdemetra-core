@@ -185,12 +185,13 @@ public final class TsStreamAsProvider implements TsProvider {
         if (builder.getType().encompass(TsInformationType.MetaData)) {
             // is there relevant meta ?
         }
-        Ts.Builder item = Ts.builder();
-        cursor.forEach(tsInfo -> {
-            item.moniker(hdm.toMoniker(tsInfo.getId())).type(builder.getType());
-            fill(item, tsInfo);
-            builder.data(item.build());
-        });
+        builder.data(cursor.map(tsInfo -> {
+                    Ts.Builder item = Ts.builder();
+                    item.moniker(hdm.toMoniker(tsInfo.getId())).type(builder.getType());
+                    fill(item, tsInfo);
+                    return item.build();
+                }).collect(TsSeq.toTsSeq())
+        );
     }
 
     private void fill(Ts.Builder builder, DataSetTs tsInfo) {

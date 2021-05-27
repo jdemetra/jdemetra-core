@@ -16,6 +16,7 @@
  */
 package demetra.tsprovider.grid;
 
+import demetra.data.Seq;
 import nbbrd.design.LombokWorkaround;
 import nbbrd.design.MightBePromoted;
 import demetra.timeseries.TsDataTable;
@@ -189,7 +190,7 @@ public final class GridWriter {
         return Double.isNaN(value) ? null : value;
     }
 
-    private IntFunction<String> getNames(List<Ts> col) {
+    private IntFunction<String> getNames(Seq<Ts> col) {
         return seriesIndex -> col.get(seriesIndex).getName();
     }
 
@@ -197,7 +198,7 @@ public final class GridWriter {
         return seriesIndex -> domain.get(seriesIndex).start();
     }
 
-    private IntFunction<TsDataTable.DistributionType> getDistribution(List<Ts> col) {
+    private IntFunction<TsDataTable.DistributionType> getDistribution(Seq<Ts> col) {
         return seriesIndex -> seriesX.apply(col.get(seriesIndex));
     }
 

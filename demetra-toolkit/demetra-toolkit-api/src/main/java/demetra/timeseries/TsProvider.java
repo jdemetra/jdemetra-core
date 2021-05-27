@@ -19,6 +19,7 @@ package demetra.timeseries;
 import nbbrd.design.ThreadSafe;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
+import nbbrd.service.ServiceFilter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.IOException;
@@ -41,8 +42,22 @@ public interface TsProvider extends AutoCloseable {
     @Override
     void close();
 
+    /**
+     * @param moniker a non-null moniker that identifies a time series collection
+     * @param type
+     * @return a non-null time series
+     * @throws IOException              if an internal exception prevented data retrieval.
+     * @throws IllegalArgumentException if the moniker doesn't belong to this provider.
+     */
     @NonNull TsCollection getTsCollection(@NonNull TsMoniker moniker, @NonNull TsInformationType type) throws IOException, IllegalArgumentException;
 
+    /**
+     * @param moniker a non-null moniker that identifies a time series
+     * @param type
+     * @return a non-null time series collection
+     * @throws IOException              if an internal exception prevented data retrieval.
+     * @throws IllegalArgumentException if the moniker doesn't belong to this provider.
+     */
     @NonNull Ts getTs(@NonNull TsMoniker moniker, @NonNull TsInformationType type) throws IOException, IllegalArgumentException;
 
     /**
@@ -61,5 +76,6 @@ public interface TsProvider extends AutoCloseable {
      * @return True if the provider is available, false otherwise (missing
      * modules, missing or unavailable resources...)
      */
+    @ServiceFilter
     boolean isAvailable();
 }

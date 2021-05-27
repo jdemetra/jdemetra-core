@@ -1,23 +1,28 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.timeseries;
 
+import demetra.util.Collections2;
 import demetra.util.List2;
 import demetra.util.function.BiIntPredicate;
+import lombok.AccessLevel;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
@@ -26,12 +31,8 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import lombok.AccessLevel;
 
 /**
- *
  * @author Philippe Charles
  */
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -42,17 +43,17 @@ public final class TsDataTable {
     }
 
     public enum ValueStatus {
-        PRESENT, UNUSED, BEFORE, AFTER, EMPTY;
+        PRESENT, UNUSED, BEFORE, AFTER, EMPTY
     }
 
     @NonNull
-    public static <X> TsDataTable of(@NonNull List<X> col, @NonNull Function<? super X, TsData> toData) {
-        TsDomain domain = computeDomain(col.stream().map(toData).map(TsData::getDomain).filter(o -> !o.isEmpty()).iterator());
-        return new TsDataTable(domain, col.stream().map(toData).collect(List2.toUnmodifiableList()));
+    public static <X> TsDataTable of(@NonNull Iterable<X> col, @NonNull Function<? super X, TsData> toData) {
+        TsDomain domain = computeDomain(Collections2.streamOf(col).map(toData).map(TsData::getDomain).filter(o -> !o.isEmpty()).iterator());
+        return new TsDataTable(domain, Collections2.streamOf(col).map(toData).collect(List2.toUnmodifiableList()));
     }
 
     @NonNull
-    public static TsDataTable of(@NonNull List<TsData> col) {
+    public static TsDataTable of(@NonNull Iterable<TsData> col) {
         return of(col, Function.identity());
     }
 

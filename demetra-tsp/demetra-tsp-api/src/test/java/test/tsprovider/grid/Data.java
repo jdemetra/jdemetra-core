@@ -16,12 +16,7 @@
  */
 package test.tsprovider.grid;
 
-import demetra.timeseries.TsPeriod;
-import demetra.timeseries.TsUnit;
-import demetra.timeseries.TsData;
-import demetra.timeseries.Ts;
-import demetra.timeseries.TsCollection;
-import demetra.timeseries.TsInformationType;
+import demetra.timeseries.*;
 import demetra.tsprovider.grid.GridLayout;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -154,7 +149,7 @@ public class Data {
                 .type(TsInformationType.Data)
                 .name("")
                 .meta(GridLayout.PROPERTY, layout.name())
-                .data(ts)
+                .data(TsSeq.of(ts))
                 .build();
 
     }
