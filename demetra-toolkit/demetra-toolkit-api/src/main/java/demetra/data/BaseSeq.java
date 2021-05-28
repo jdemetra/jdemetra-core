@@ -20,6 +20,8 @@ import nbbrd.design.Development;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.Collection;
+
 /**
  * Describes an abstract sequence of elements. A sequence is an ordered
  * collection where duplicates are permitted and elements can be accessed by
@@ -33,10 +35,20 @@ public interface BaseSeq {
     /**
      * Returns the length of this sequence.
      *
-     * @return the number of <code>values</code>s in this sequence
+     * @return the number of <code>elements</code>s in this sequence
      */
-    @NonNegative
-    int length();
+    @NonNegative int length();
+
+    /**
+     * Returns the number of elements in this sequence.
+     * Same as {@link #length()} but following naming convention of collection API.
+     *
+     * @return the number of <code>elements</code>s in this sequence
+     * @see Collection#size()
+     */
+    default @NonNegative int size() {
+        return length();
+    }
 
     /**
      * Checks if this sequence is empty
@@ -46,12 +58,11 @@ public interface BaseSeq {
     default boolean isEmpty() {
         return length() == 0;
     }
-    
+
     /**
-     * Creates a new cursor at the beginning of this object.
+     * Creates a new cursor at the beginning of this sequence.
      *
-     * @return
+     * @return a non-null cursor
      */
-    @NonNull
-    BaseSeqCursor cursor();
+    @NonNull BaseSeqCursor cursor();
 }
