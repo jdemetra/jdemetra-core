@@ -26,6 +26,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.time.ZoneOffset;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -42,7 +43,7 @@ public final class DemoTsBuilder {
         return TsCollection
                 .builder()
                 .moniker(TsMoniker.of())
-                .data(IntStream.range(0, nSeries).mapToObj(i -> builder.name("S" + i).build()).collect(TsSeq.toTsSeq()))
+                .items(IntStream.range(0, nSeries).mapToObj(i -> builder.name("S" + i).build()).collect(Collectors.toList()))
                 .build();
     }
 

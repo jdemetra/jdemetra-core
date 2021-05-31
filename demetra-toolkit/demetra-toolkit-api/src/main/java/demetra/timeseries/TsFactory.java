@@ -83,11 +83,11 @@ public class TsFactory {
                 return provider.get().getTsCollection(moniker, info);
             } catch (IOException ex) {
                 onIOException.accept("", ex);
-                return fallbackTsCollection(moniker, TsSeq.empty(ex.getMessage()));
+                return fallbackTsCollection(moniker, ex.getMessage());
             }
         }
         Objects.requireNonNull(info);
-        return fallbackTsCollection(moniker, TS_SEQ_NOT_FOUND);
+        return fallbackTsCollection(moniker, PROVIDER_NOT_FOUND);
     }
 
     private Optional<TsProvider> getProvider(TsMoniker moniker) {
@@ -101,13 +101,12 @@ public class TsFactory {
         return Ts.builder().moniker(moniker).type(TsInformationType.None).data(data).build();
     }
 
-    private TsCollection fallbackTsCollection(TsMoniker moniker, TsSeq data) {
-        return TsCollection.builder().moniker(moniker).type(TsInformationType.None).data(data).build();
+    private TsCollection fallbackTsCollection(TsMoniker moniker, String emptyMessage) {
+        return TsCollection.builder().moniker(moniker).type(TsInformationType.None).emptyCause(emptyMessage).build();
     }
 
     private static final String PROVIDER_NOT_FOUND = "Provider not found";
     private static final TsData TS_DATA_NOT_FOUND = TsData.empty(PROVIDER_NOT_FOUND);
-    private static final TsSeq TS_SEQ_NOT_FOUND = TsSeq.empty(PROVIDER_NOT_FOUND);
 
     private static void logError(String msg, IOException ex) {
         Logger.getLogger(TsFactory.class.getName()).log(Level.SEVERE, msg, ex);

@@ -111,7 +111,7 @@ public class SpreadSheetProviderTest {
             assertThat(p.getDisplayNodeName(node)).isEqualTo("Top 5 Browsers - Monthly");
             assertThat(p.children(node)).hasSize(6);
 
-            assertThat(p.getTsCollection(p.toMoniker(node), TsInformationType.All).getData()).hasSize(6);
+            assertThat(p.getTsCollection(p.toMoniker(node), TsInformationType.All)).hasSize(6);
 
             DataSet leaf = p.children(node).get(2);
             assertThat(p.getDisplayName(leaf)).isEqualTo("Top 5 Browsers - Monthly\nChrome");

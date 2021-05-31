@@ -16,11 +16,16 @@
  */
 package demetra.timeseries;
 
-import internal.timeseries.LombokHelper;
+import demetra.data.HasEmptyCause;
+import demetra.data.Seq;
 import nbbrd.design.LombokWorkaround;
 import nbbrd.design.StaticFactoryMethod;
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -30,7 +35,7 @@ import java.util.stream.Collectors;
  */
 @lombok.Value
 @lombok.Builder(toBuilder = true)
-public class TsCollection implements TsResource<TsSeq> {
+public class TsCollection implements Seq<Ts>, HasEmptyCause {
 
     @lombok.NonNull
     private TsMoniker moniker;
@@ -44,54 +49,48 @@ public class TsCollection implements TsResource<TsSeq> {
     @lombok.Singular("meta")
     private Map<String, String> meta;
 
-    @lombok.NonNull
-    private TsSeq data;
+    @lombok.Singular
+    private List<Ts> items;
+
+    @Nullable
+    private String emptyCause;
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
                 .moniker(TsMoniker.NULL)
                 .type(TsInformationType.UserDefined)
-                .data(TsSeq.EMPTY)
                 .name("");
     }
 
     public static final TsCollection EMPTY = TsCollection.builder().build();
 
     @StaticFactoryMethod
-    public static @NonNull TsCollection of(@NonNull TsSeq data) {
-        return builder().data(data).build();
+    public static @NonNull TsCollection of(@NonNull List<Ts> data) {
+        return builder().items(data).build();
     }
 
-    public static class Builder implements TsResource<TsSeq> {
-
-        @Override
-        public TsMoniker getMoniker() {
-            return moniker;
-        }
-
-        @Override
-        public TsInformationType getType() {
-            return type;
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public Map<String, String> getMeta() {
-            return LombokHelper.getMap(meta$key, meta$value);
-        }
-
-        @Override
-        public TsSeq getData() {
-            return data;
-        }
+    @StaticFactoryMethod
+    public static @NonNull TsCollection of(@NonNull Ts... data) {
+        return builder().items(Arrays.asList(data)).build();
     }
 
     public static @NonNull Collector<Ts, ?, TsCollection> toTsCollection() {
-        return Collectors.collectingAndThen(TsSeq.toTsSeq(), TsCollection::of);
+        return Collectors.collectingAndThen(Collectors.toList(), TsCollection::of);
+    }
+
+    @Override
+    public @NonNegative int length() {
+        return items.size();
+    }
+
+    @Override
+    public Ts get(@NonNegative int index) throws IndexOutOfBoundsException {
+        return items.get(index);
+    }
+
+    @Override
+    public @Nullable String getEmptyCause() {
+        return emptyCause;
     }
 }

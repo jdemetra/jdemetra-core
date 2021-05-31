@@ -268,7 +268,7 @@ public class TsConverter {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Ts + Builder/Info">
-    public void fillTsInformation(@NonNull TsResource<TsData> from, ec.tss.@NonNull TsInformation to) {
+    public void fillTsInformation(@NonNull Ts from, ec.tss.@NonNull TsInformation to) {
         to.moniker = fromTsMoniker(from.getMoniker());
         to.type = fromType(from.getType());
         to.name = from.getName();
@@ -283,7 +283,7 @@ public class TsConverter {
         }
     }
 
-    public ec.tss.@NonNull TsInformation fromTsBuilder(@NonNull TsResource<TsData> o) {
+    public ec.tss.@NonNull TsInformation fromTsBuilder(@NonNull Ts o) {
         ec.tss.TsInformation result = new ec.tss.TsInformation();
         fillTsInformation(o, result);
         return result;
@@ -298,7 +298,7 @@ public class TsConverter {
                 .data(toTsData(o.invalidDataCause != null ? ec.tss.tsproviders.utils.OptionalTsData.absent(o.invalidDataCause) : ec.tss.tsproviders.utils.OptionalTsData.present(o.data)));
     }
 
-    public ec.tss.@NonNull Ts fromTs(@NonNull TsResource<TsData> o) {
+    public ec.tss.@NonNull Ts fromTs(@NonNull Ts o) {
         ec.tss.tsproviders.utils.OptionalTsData data = fromTsData(o.getData());
         ec.tss.Ts result = ec.tss.TsBypass.series(o.getName(), fromTsMoniker(o.getMoniker()), fromMeta(o.getMeta()), data.orNull());
         if (!data.isPresent()) {
@@ -319,62 +319,65 @@ public class TsConverter {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="TsCollection + Builder/Info">
-    public void fillTsCollectionInformation(@NonNull TsResource<TsSeq> from, ec.tss.@NonNull TsCollectionInformation to) {
+    public void fillTsCollectionInformation(@NonNull TsCollection from, ec.tss.@NonNull TsCollectionInformation to) {
         to.moniker = fromTsMoniker(from.getMoniker());
         to.type = fromType(from.getType());
         to.name = from.getName();
         to.metaData = fromMeta(from.getMeta());
-        TsSeq data = from.getData();
-        if (data.isEmpty()) {
+        if (from.isEmpty()) {
             to.items.clear();
-            to.invalidDataCause = data.getEmptyCause();
+            to.invalidDataCause = from.getEmptyCause();
         } else {
-            to.items.addAll(data.stream().map(TsConverter::fromTsBuilder).collect(Collectors.toList()));
+            to.items.addAll(from.stream().map(TsConverter::fromTsBuilder).collect(Collectors.toList()));
             to.invalidDataCause = null;
         }
     }
 
-    public ec.tss.@NonNull TsCollectionInformation fromTsCollectionBuilder(@NonNull TsResource<TsSeq> o) {
+    public ec.tss.@NonNull TsCollectionInformation fromTsCollectionBuilder(@NonNull TsCollection o) {
         ec.tss.TsCollectionInformation result = new ec.tss.TsCollectionInformation();
         fillTsCollectionInformation(o, result);
         return result;
     }
 
     public TsCollection.@NonNull Builder toTsCollectionBuilder(ec.tss.@NonNull TsCollectionInformation o) {
-        return TsCollection.builder()
+        TsCollection.Builder result = TsCollection.builder()
                 .name(o.name)
                 .moniker(toTsMoniker(o.moniker))
                 .type(toType(o.type))
-                .meta(toMeta(o.metaData))
-                .data(o.invalidDataCause != null
-                        ? TsSeq.empty(o.invalidDataCause)
-                        : o.items.stream().map(TsConverter::toTsBuilder).map(Ts.Builder::build).collect(TsSeq.toTsSeq())
-                );
+                .meta(toMeta(o.metaData));
+        if (o.invalidDataCause != null) {
+            result.emptyCause(o.invalidDataCause);
+        } else {
+            o.items.stream().map(TsConverter::toTsBuilder).map(Ts.Builder::build).forEach(result::item);
+        }
+        return result;
     }
 
-    public ec.tss.@NonNull TsCollection fromTsCollection(@NonNull TsResource<TsSeq> o) {
+    public ec.tss.@NonNull TsCollection fromTsCollection(@NonNull TsCollection o) {
         ec.tss.TsCollection col = TsBypass.col(
                 o.getName(),
                 fromTsMoniker(o.getMoniker()),
                 fromMeta(o.getMeta()),
-                o.getData().stream().map(TsConverter::fromTs).collect(Collectors.toList())
+                o.stream().map(TsConverter::fromTs).collect(Collectors.toList())
         );
-        if (o.getData().isEmpty()) {
-            col.setInvalidDataCause(o.getData().getEmptyCause());
+        if (o.isEmpty()) {
+            col.setInvalidDataCause(o.getEmptyCause());
         }
         return col;
     }
 
     public @NonNull TsCollection toTsCollection(ec.tss.@NonNull TsCollection o) {
-        return TsCollection.builder()
+        TsCollection.Builder result = TsCollection.builder()
                 .name(o.getName())
                 .moniker(toTsMoniker(o.getMoniker()))
                 .type(toType(o.getInformationType()))
-                .meta(toMeta(o.getMetaData()))
-                .data(o.getInvalidDataCause() != null
-                        ? TsSeq.empty(o.getInvalidDataCause())
-                        : o.stream().map(TsConverter::toTs).collect(TsSeq.toTsSeq()))
-                .build();
+                .meta(toMeta(o.getMetaData()));
+        if (o.getInvalidDataCause() != null) {
+            result.emptyCause(o.getInvalidDataCause());
+        } else {
+            o.stream().map(TsConverter::toTs).forEach(result::item);
+        }
+        return result.build();
     }
     //</editor-fold>
 

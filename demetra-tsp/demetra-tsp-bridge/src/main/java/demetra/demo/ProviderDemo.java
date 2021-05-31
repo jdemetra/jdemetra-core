@@ -2,34 +2,27 @@ package demetra.demo;
 
 /*
  * Copyright 2015 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-import demetra.timeseries.TsData;
-import demetra.timeseries.TsDataTable;
-import demetra.tsprovider.DataSet;
-import demetra.tsprovider.DataSource;
-import demetra.tsprovider.DataSourceProvider;
-import demetra.timeseries.TsCollection;
-import demetra.timeseries.Ts;
-import demetra.timeseries.TsInformationType;
-import demetra.tsprovider.TsProviders;
+
+import demetra.timeseries.*;
+import demetra.tsprovider.*;
 import demetra.tsprovider.util.MultiLineNameUtil;
-import demetra.timeseries.TsDomain;
-import demetra.tsprovider.DataSourceLoader;
-import demetra.timeseries.TsMoniker;
 import demetra.util.TreeTraverser;
+import nbbrd.io.function.IOFunction;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -44,10 +37,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import nbbrd.io.function.IOFunction;
 
 /**
- *
  * @author Philippe Charles
  */
 @lombok.experimental.UtilityClass
@@ -134,15 +125,15 @@ public class ProviderDemo {
             @Override
             Optional<Ts> getFirst(DataSourceProvider provider, DataSource dataSource) throws IOException {
                 TsCollection info = provider.getTsCollection(provider.toMoniker(dataSource), TsInformationType.All);
-                return info.getData().stream().findFirst();
+                return info.stream().findFirst();
             }
         },
         DEFINITION {
             @Override
             Optional<Ts> getFirst(DataSourceProvider provider, DataSource dataSource) throws IOException {
                 TsCollection info = provider.getTsCollection(provider.toMoniker(dataSource), TsInformationType.Definition);
-                if (!info.getData().isEmpty()) {
-                    Ts ts = info.getData().get(0);
+                if (!info.isEmpty()) {
+                    Ts ts = info.get(0);
                     return Optional.of(provider.getTs(ts.getMoniker(), TsInformationType.All));
                 }
                 return Optional.empty();
@@ -177,9 +168,9 @@ public class ProviderDemo {
         TsCollection col = provider.getTsCollection(provider.toMoniker(dataSource), TsInformationType.Data);
 
         Function<Ts, String> toDisplayNodeName = o -> provider.getDisplayNodeName(provider.toDataSet(o.getMoniker()).orElseThrow(RuntimeException::new));
-        System.out.println("\t" + col.getData().stream().map(toDisplayNodeName).collect(Collectors.joining("\t")));
+        System.out.println("\t" + col.stream().map(toDisplayNodeName).collect(Collectors.joining("\t")));
 
-        TsDataTable table = TsDataTable.of(col.getData(), Ts::getData);
+        TsDataTable table = TsDataTable.of(col, Ts::getData);
         DataTypesDemo.printDataTable(table, distribution);
     }
 
