@@ -16,7 +16,10 @@
  */
 package demetra.tsprovider.grid;
 
-import demetra.timeseries.*;
+import demetra.timeseries.Ts;
+import demetra.timeseries.TsCollection;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsInformationType;
 import demetra.timeseries.util.ObsGathering;
 import demetra.timeseries.util.TsDataBuilder;
 import demetra.tsprovider.util.MultiLineNameUtil;
@@ -106,7 +109,6 @@ public final class GridReader {
         TypedInputStreamFunc<String> names = head.getNameFunc(namePattern, nameSeparator);
 
         TsDataBuilder<LocalDateTime> data = TsDataBuilder.byDateTime(gathering);
-        List<Ts> tsSeq = new ArrayList<>();
 
         head.skip(input);
         while (input.readRow()) {
@@ -117,11 +119,9 @@ public final class GridReader {
             for (int col = 0; col < head.columns && input.readCell(); col++) {
                 data.add(head.getPeriod(col), input.getNumber());
             }
-            tsSeq.add(getTs(series, data.build()));
+            output.item(getTs(series, data.build()));
             data.clear();
         }
-
-        output.data(TsSeq.of(tsSeq));
     }
 
     @lombok.RequiredArgsConstructor
@@ -200,7 +200,6 @@ public final class GridReader {
         PeriodByRowHead head = PeriodByRowHead.peek(input);
 
         TsDataBuilders<LocalDateTime> data = TsDataBuilders.byDateTime(head.columns, gathering);
-        List<Ts> tsSeq = new ArrayList<>();
 
         head.skip(input);
         while (input.readRow()) {
@@ -216,10 +215,8 @@ public final class GridReader {
 
         List<String> names = head.getNames(namePattern, nameSeparator);
         for (int column = 0; column < head.columns; column++) {
-            tsSeq.add(getTs(names.get(column), data.build(column)));
+            output.item(getTs(names.get(column), data.build(column)));
         }
-
-        output.data(TsSeq.of(tsSeq));
     }
 
     @lombok.RequiredArgsConstructor

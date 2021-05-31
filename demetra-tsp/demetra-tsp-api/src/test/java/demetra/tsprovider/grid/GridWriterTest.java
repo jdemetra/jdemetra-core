@@ -18,7 +18,6 @@ package demetra.tsprovider.grid;
 
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsCollection;
-import demetra.timeseries.TsSeq;
 import demetra.tsprovider.util.ObsFormat;
 import org.junit.Test;
 import test.tsprovider.grid.ArrayGridOutput;
@@ -264,21 +263,17 @@ public class GridWriterTest {
 
     private final TsCollection sample = TsCollection
             .builder()
-            .data(TsSeq.of(
-                    s("G1\nS1", MONTH, 2010, 0, 1.01d, NaN, 1.03d),
-                    s("G1\nS2", QUARTER, 2010, 0, 2.01d),
-                    s("G2\nS1", MONTH, 2010, 0, 3.01d, 3.02d),
-                    s("S1", MONTH, 2010, 1, 4.02d, 4.03d))
-            )
+            .item(s("G1\nS1", MONTH, 2010, 0, 1.01d, NaN, 1.03d))
+            .item(s("G1\nS2", QUARTER, 2010, 0, 2.01d))
+            .item(s("G2\nS1", MONTH, 2010, 0, 3.01d, 3.02d))
+            .item(s("S1", MONTH, 2010, 1, 4.02d, 4.03d))
             .build();
 
     private final TsCollection empty = TsCollection.EMPTY;
 
     private final TsCollection seriesWithoutData = TsCollection
             .builder()
-            .data(TsSeq.of(
-                    Ts.builder().name("S1").build(),
-                    Ts.builder().name("S2").build())
-            )
+            .item(Ts.builder().name("S1").build())
+            .item(Ts.builder().name("S2").build())
             .build();
 }

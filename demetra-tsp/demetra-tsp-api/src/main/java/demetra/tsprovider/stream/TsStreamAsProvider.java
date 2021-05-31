@@ -75,17 +75,37 @@ public final class TsStreamAsProvider implements TsProvider {
     @Override
     public TsCollection getTsCollection(TsMoniker moniker, TsInformationType type) throws IOException, IllegalArgumentException {
         DataSourcePreconditions.checkProvider(getSource(), moniker);
+
         TsCollection.Builder result = TsCollection.builder().moniker(moniker).type(type).name("");
-        fillCollection(result);
-        return result.build();
+
+        Optional<DataSource> dataSource = hdm.toDataSource(moniker);
+        if (dataSource.isPresent()) {
+            fill(result, dataSource.get(), type);
+            return result.build();
+        }
+
+        Optional<DataSet> dataSet = hdm.toDataSet(moniker);
+        if (dataSet.filter(TsStreamAsProvider::isCollection).isPresent()) {
+            fill(result, dataSet.get(), type);
+            return result.build();
+        }
+
+        throw new IllegalArgumentException("Invalid moniker");
     }
 
     @Override
     public Ts getTs(TsMoniker moniker, TsInformationType type) throws IOException, IllegalArgumentException {
         DataSourcePreconditions.checkProvider(getSource(), moniker);
+
         Ts.Builder result = Ts.builder().moniker(moniker).type(type);
-        fillSeries(result);
-        return result.build();
+
+        Optional<DataSet> dataSet = hdm.toDataSet(moniker);
+        if (dataSet.filter(TsStreamAsProvider::isSeries).isPresent()) {
+            fill(result, dataSet.get(), type);
+            return result.build();
+        }
+
+        throw new IllegalArgumentException("Invalid moniker");
     }
 
     @Override
@@ -98,44 +118,6 @@ public final class TsStreamAsProvider implements TsProvider {
         return true;
     }
 
-    /**
-     * Fills a collection info according to its request.
-     *
-     * @param info the collection info to fill
-     * @throws java.io.IOException
-     */
-    private void fillCollection(TsCollection.Builder info) throws IOException {
-        Optional<DataSource> dataSource = toDataSource(info);
-        if (dataSource.isPresent()) {
-            fill(info, dataSource.get());
-            return;
-        }
-
-        Optional<DataSet> dataSet = toDataSet(info);
-        if (dataSet.filter(TsStreamAsProvider::isCollection).isPresent()) {
-            fill(info, dataSet.get());
-            return;
-        }
-
-        throw new IllegalArgumentException("Invalid moniker");
-    }
-
-    /**
-     * Fills a time series info according to its request.
-     *
-     * @param info the time series info to fill
-     * @throws java.io.IOException
-     */
-    private void fillSeries(Ts.Builder info) throws IOException {
-        Optional<DataSet> dataSet = toDataSet(info);
-        if (dataSet.filter(TsStreamAsProvider::isSeries).isPresent()) {
-            fill(info, dataSet.get());
-            return;
-        }
-
-        throw new IllegalArgumentException("Invalid moniker");
-    }
-
     private static boolean isCollection(DataSet dataSet) {
         return DataSet.Kind.COLLECTION.equals(dataSet.getKind());
     }
@@ -144,63 +126,50 @@ public final class TsStreamAsProvider implements TsProvider {
         return DataSet.Kind.SERIES.equals(dataSet.getKind());
     }
 
-    private Optional<DataSource> toDataSource(TsCollection.Builder info) {
-        return hdm.toDataSource(info.getMoniker());
-    }
-
-    private Optional<DataSet> toDataSet(TsCollection.Builder info) {
-        return hdm.toDataSet(info.getMoniker());
-    }
-
-    private Optional<DataSet> toDataSet(Ts.Builder info) {
-        return hdm.toDataSet(info.getMoniker());
-    }
-
-    private void fill(TsCollection.Builder info, DataSource dataSource) throws IOException {
-        try (Stream<DataSetTs> stream = htc.getData(dataSource, info.getType())) {
-            fill(info, stream);
+    private void fill(TsCollection.Builder info, DataSource dataSource, TsInformationType type) throws IOException {
+        try (Stream<DataSetTs> stream = htc.getData(dataSource, type)) {
+            fill(info, stream, type);
         } catch (UncheckedIOException ex) {
             throw ex.getCause();
         }
     }
 
-    private void fill(TsCollection.Builder info, DataSet dataSet) throws IOException {
-        try (Stream<DataSetTs> stream = htc.getData(dataSet, info.getType())) {
-            fill(info, stream);
+    private void fill(TsCollection.Builder info, DataSet dataSet, TsInformationType type) throws IOException {
+        try (Stream<DataSetTs> stream = htc.getData(dataSet, type)) {
+            fill(info, stream, type);
         } catch (UncheckedIOException ex) {
             throw ex.getCause();
         }
     }
 
-    private void fill(Ts.Builder builder, DataSet dataSet) throws IOException {
-        try (Stream<DataSetTs> stream = htc.getData(dataSet, builder.getType())) {
+    private void fill(Ts.Builder builder, DataSet dataSet, TsInformationType type) throws IOException {
+        try (Stream<DataSetTs> stream = htc.getData(dataSet, type)) {
             DataSetTs single = stream.findFirst().orElseThrow(() -> new IOException("Missing time series"));
-            fill(builder, single);
+            fill(builder, single, type);
         } catch (UncheckedIOException ex) {
             throw ex.getCause();
         }
     }
 
-    private void fill(TsCollection.Builder builder, Stream<DataSetTs> cursor) {
-        if (builder.getType().encompass(TsInformationType.MetaData)) {
+    private void fill(TsCollection.Builder builder, Stream<DataSetTs> cursor, TsInformationType type) {
+        if (type.encompass(TsInformationType.MetaData)) {
             // is there relevant meta ?
         }
-        builder.data(cursor.map(tsInfo -> {
-                    Ts.Builder item = Ts.builder();
-                    item.moniker(hdm.toMoniker(tsInfo.getId())).type(builder.getType());
-                    fill(item, tsInfo);
-                    return item.build();
-                }).collect(TsSeq.toTsSeq())
-        );
+        cursor.map(tsInfo -> {
+            Ts.Builder item = Ts.builder();
+            item.moniker(hdm.toMoniker(tsInfo.getId())).type(type);
+            fill(item, tsInfo, type);
+            return item.build();
+        }).forEach(builder::item);
     }
 
-    private void fill(Ts.Builder builder, DataSetTs tsInfo) {
+    private void fill(Ts.Builder builder, DataSetTs tsInfo, TsInformationType type) {
         builder.clearMeta();
         builder.name(tsInfo.getLabel());
-        if (builder.getType().encompass(TsInformationType.MetaData)) {
+        if (type.encompass(TsInformationType.MetaData)) {
             builder.meta(tsInfo.getMeta());
         }
-        if (builder.getType().encompass(TsInformationType.Data)) {
+        if (type.encompass(TsInformationType.Data)) {
             builder.data(tsInfo.getData());
         }
     }

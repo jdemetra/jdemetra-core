@@ -70,8 +70,8 @@ public class TsFactoryTest {
         assertThat(errors).isEmpty();
 
         assertThat(x.makeTsCollection(TsMoniker.NULL, All))
-                .extracting(TsCollection::getData)
-                .isEqualTo(TsSeq.empty("Provider not found"));
+                .satisfies(o -> assertThat(((TsCollection) o).getEmptyCause()).isEqualTo("Provider not found"))
+                .isEmpty();
         assertThat(errors).isEmpty();
 
         assertThat(x.makeTs(TsMoniker.of(FailingTsProvider.NAME, ""), All))

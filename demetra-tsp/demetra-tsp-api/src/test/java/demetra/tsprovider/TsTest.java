@@ -50,20 +50,6 @@ public class TsTest {
 
     @Test
     public void testBuilder() {
-        for (Ts o : new Ts[]{empty, sample}) {
-            assertThat(o.toBuilder())
-                    .isNotSameAs(o)
-                    .isNotEqualTo(o)
-                    .hasFieldOrPropertyWithValue("data", o.getData())
-                    .hasFieldOrPropertyWithValue("meta", o.getMeta())
-                    .hasFieldOrPropertyWithValue("moniker", o.getMoniker())
-                    .hasFieldOrPropertyWithValue("name", o.getName())
-                    .hasFieldOrPropertyWithValue("type", o.getType());
-
-            assertThatExceptionOfType(UnsupportedOperationException.class)
-                    .isThrownBy(() -> o.toBuilder().getMeta().put("x", "y"));
-        }
-
         assertThatNullPointerException().isThrownBy(() -> Ts.builder().data(null).build());
         assertThatNullPointerException().isThrownBy(() -> Ts.builder().meta(null));
         assertThatNullPointerException().isThrownBy(() -> Ts.builder().moniker(null).build());

@@ -1,5 +1,6 @@
 package demetra.util;
 
+import demetra.data.Seq;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Collection;
@@ -10,8 +11,8 @@ import java.util.stream.StreamSupport;
 public class Collections2 {
 
     public static <T> @NonNull Stream<T> streamOf(@NonNull Iterable<T> iterable) {
-        return iterable instanceof Collection
-                ? ((Collection) iterable).stream()
-                : StreamSupport.stream(iterable.spliterator(), false);
+        if (iterable instanceof Collection) return ((Collection) iterable).stream();
+        if (iterable instanceof Seq) return ((Seq) iterable).stream();
+        return StreamSupport.stream(iterable.spliterator(), false);
     }
 }

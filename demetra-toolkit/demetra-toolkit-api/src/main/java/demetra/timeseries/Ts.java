@@ -16,7 +16,6 @@
  */
 package demetra.timeseries;
 
-import internal.timeseries.LombokHelper;
 import internal.timeseries.util.TsDataBuilderUtil;
 import nbbrd.design.LombokWorkaround;
 import nbbrd.design.StaticFactoryMethod;
@@ -32,7 +31,7 @@ import java.util.Map;
  */
 @lombok.Value
 @lombok.Builder(toBuilder = true)
-public class Ts implements TsResource<TsData> {
+public class Ts {
 
     public static final String SOURCE_OLD = "tsmoniker.source", ID_OLD = "tsmoniker.id",
             DYNAMIC = "dynamic";
@@ -67,34 +66,6 @@ public class Ts implements TsResource<TsData> {
     @StaticFactoryMethod
     public static @NonNull Ts of(@NonNull TsData data) {
         return builder().data(data).build();
-    }
-
-    public static class Builder implements TsResource<TsData> {
-
-        @Override
-        public TsMoniker getMoniker() {
-            return moniker;
-        }
-
-        @Override
-        public TsInformationType getType() {
-            return type;
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public Map<String, String> getMeta() {
-            return LombokHelper.getMap(meta$key, meta$value);
-        }
-
-        @Override
-        public TsData getData() {
-            return data;
-        }
     }
 
     public Ts withName(String newName) {

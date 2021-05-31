@@ -1,36 +1,37 @@
 /*
  * Copyright 2016 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package internal.spreadsheet;
 
-import nbbrd.design.ThreadSafe;
-import demetra.timeseries.TsData;
-import demetra.tsprovider.DataSet;
-import static demetra.tsprovider.DataSet.Kind.COLLECTION;
-import static demetra.tsprovider.DataSet.Kind.SERIES;
-import demetra.tsprovider.DataSource;
-import demetra.tsprovider.HasDataHierarchy;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsCollection;
+import demetra.timeseries.TsData;
 import demetra.timeseries.TsInformationType;
-import demetra.tsprovider.stream.DataSetTs;
+import demetra.tsprovider.DataSet;
+import demetra.tsprovider.DataSource;
+import demetra.tsprovider.HasDataHierarchy;
 import demetra.tsprovider.grid.GridLayout;
+import demetra.tsprovider.stream.DataSetTs;
+import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.MultiLineNameUtil;
+import nbbrd.design.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -39,11 +40,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import demetra.tsprovider.stream.HasTsStream;
 
 /**
- *
  * @author Philippe Charles
  */
 @ThreadSafe
@@ -94,7 +92,6 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
         return accessor
                 .getSheetByName(sheetParam.get(parent))
                 .orElseThrow(() -> sheetNotFound(parent))
-                .getData()
                 .stream()
                 .map(childrenMapper(parent, seriesParam))
                 .collect(Collectors.toList());
@@ -172,7 +169,7 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
     private static final class SheetTs {
 
         static Stream<SheetTs> allOf(TsCollection sheet) {
-            return sheet.getData().stream().map(series -> SheetTs.of(sheet, series));
+            return sheet.stream().map(series -> SheetTs.of(sheet, series));
         }
 
         static SheetTs of(TsCollection sheet, Ts series) {
