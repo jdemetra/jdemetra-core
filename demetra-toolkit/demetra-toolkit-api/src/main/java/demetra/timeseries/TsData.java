@@ -65,10 +65,6 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
         return of(TsPeriod.of(freq, beg), DoubleSeq.of(data));
     }
 
-<<<<<<< HEAD
-    @NonNull
-    public static TsData of(@NonNull TsPeriod start, @NonNull DoubleSeq values) {
-=======
     /**
      * Creates a new time series from a copy of this sequence of doubles
      *
@@ -77,21 +73,15 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
      * @return
      */
     @StaticFactoryMethod
-    public static @NonNull TsData of(@NonNull TsPeriod start, @NonNull Doubles values) {
->>>>>>> 05170ca88cb7707f2726dd3927d927af9102adb5
+    public static TsData of(@NonNull TsPeriod start, @NonNull DoubleSeq values) {
         TsDomain domain = TsDomain.of(start, values.length());
         return domain.isEmpty()
                 ? new TsData(domain, Doubles.EMPTY, NO_DATA_CAUSE)
                 : new TsData(domain, values, null);
     }
 
-<<<<<<< HEAD
-    @NonNull
-    public static TsData copyOf(@NonNull TsPeriod start, DoubleSeq.Mutable values) {
-=======
     @StaticFactoryMethod
-    public static @NonNull TsData ofInternal(@NonNull TsPeriod start, @NonNull DoubleSeq values) {
->>>>>>> 05170ca88cb7707f2726dd3927d927af9102adb5
+    public static TsData copyOf(@NonNull TsPeriod start, DoubleSeq.Mutable values) {
         TsDomain domain = TsDomain.of(start, values.length());
         return domain.isEmpty()
                 ? new TsData(domain, Doubles.EMPTY, NO_DATA_CAUSE)
