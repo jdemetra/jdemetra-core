@@ -16,26 +16,20 @@
  */
 package demetra.timeseries;
 
+import internal.timeseries.DefaultTsFactory;
 import nbbrd.design.StaticFactoryMethod;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author PALATEJ
  */
-@lombok.Builder
-public class TsFactory {
+public interface TsFactory {
 
-    public static final String
+    String
             DESCRIPTION = "@description", OWNER = "@owner",
             SOURCE = "@source", ID = "@id", DATE = "@timestamp",
             DOCUMENT = "@document", SUMMARY = "@summary",
@@ -43,72 +37,53 @@ public class TsFactory {
             ALGORITHM = "@algorithm",
             QUALITY = "@quality";
 
-    @lombok.NonNull
-    private final Supplier<List<TsProvider>> providers;
-
-    @lombok.NonNull
-    private final BiConsumer<? super String, ? super IOException> onIOException;
+    @StaticFactoryMethod
+    static @NonNull TsFactory ofServiceLoader() {
+        return of(TsProviderLoader.load());
+    }
 
     @StaticFactoryMethod
-    public static @NonNull TsFactory ofServiceLoader() {
-        return builder()
-                .providers(new TsProviderLoader()::get)
-                .build();
+    static @NonNull TsFactory of(@NonNull Iterable<? extends TsProvider> providers) {
+        DefaultTsFactory.Builder result = DefaultTsFactory.builder();
+        providers.forEach(result::provider);
+        return result.build();
     }
 
-    public static @NonNull Builder builder() {
-        return new Builder()
-                .providers(Collections::emptyList)
-                .onIOException(TsFactory::logError);
-    }
+    @NonNull Optional<TsProvider> getProvider(@NonNull String name);
 
-    public @NonNull Ts makeTs(@NonNull TsMoniker moniker, @NonNull TsInformationType info) {
-        Optional<TsProvider> provider = getProvider(moniker);
+    default @NonNull Ts makeTs(@NonNull TsMoniker moniker, @NonNull TsInformationType info) {
+        Optional<TsProvider> provider = getProvider(moniker.getSource());
         if (provider.isPresent()) {
             try {
                 return provider.get().getTs(moniker, info);
             } catch (IOException ex) {
-                onIOException.accept("", ex);
-                return fallbackTs(moniker, TsData.empty(ex.getMessage()));
+                return makeTs(moniker, ex);
             }
         }
         Objects.requireNonNull(info);
-        return fallbackTs(moniker, TS_DATA_NOT_FOUND);
+        return DefaultTsFactory.fallbackTs(moniker, TsData.empty(PROVIDER_NOT_FOUND));
     }
 
-    public @NonNull TsCollection makeTsCollection(@NonNull TsMoniker moniker, @NonNull TsInformationType info) {
-        Optional<TsProvider> provider = getProvider(moniker);
+    default @NonNull Ts makeTs(@NonNull TsMoniker moniker, @NonNull IOException ex) {
+        return DefaultTsFactory.fallbackTs(moniker, TsData.empty(ex.getMessage()));
+    }
+
+    default @NonNull TsCollection makeTsCollection(@NonNull TsMoniker moniker, @NonNull TsInformationType info) {
+        Optional<TsProvider> provider = getProvider(moniker.getSource());
         if (provider.isPresent()) {
             try {
                 return provider.get().getTsCollection(moniker, info);
             } catch (IOException ex) {
-                onIOException.accept("", ex);
-                return fallbackTsCollection(moniker, ex.getMessage());
+                return makeTsCollection(moniker, ex);
             }
         }
         Objects.requireNonNull(info);
-        return fallbackTsCollection(moniker, PROVIDER_NOT_FOUND);
+        return DefaultTsFactory.fallbackTsCollection(moniker, PROVIDER_NOT_FOUND);
     }
 
-    private Optional<TsProvider> getProvider(TsMoniker moniker) {
-        return providers.get()
-                .stream()
-                .filter(provider -> provider.getSource().equals(moniker.getSource()))
-                .findFirst();
+    default @NonNull TsCollection makeTsCollection(@NonNull TsMoniker moniker, @NonNull IOException ex) {
+        return DefaultTsFactory.fallbackTsCollection(moniker, ex.getMessage());
     }
 
-    private Ts fallbackTs(TsMoniker moniker, TsData data) {
-        return Ts.builder().moniker(moniker).type(TsInformationType.None).data(data).build();
-    }
-
-    private TsCollection fallbackTsCollection(TsMoniker moniker, String emptyMessage) {
-        return TsCollection.builder().moniker(moniker).type(TsInformationType.None).emptyCause(emptyMessage).build();
-    }
-
-    private static final String PROVIDER_NOT_FOUND = "Provider not found";
-    private static final TsData TS_DATA_NOT_FOUND = TsData.empty(PROVIDER_NOT_FOUND);
-
-    private static void logError(String msg, IOException ex) {
-        Logger.getLogger(TsFactory.class.getName()).log(Level.SEVERE, msg, ex);
-    }
+    String PROVIDER_NOT_FOUND = "Provider not found";
 }

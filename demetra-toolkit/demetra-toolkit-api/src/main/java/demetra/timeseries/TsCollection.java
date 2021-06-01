@@ -24,9 +24,9 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -66,13 +66,16 @@ public class TsCollection implements Seq<Ts>, HasEmptyCause {
     public static final TsCollection EMPTY = TsCollection.builder().build();
 
     @StaticFactoryMethod
-    public static @NonNull TsCollection of(@NonNull List<Ts> data) {
-        return builder().items(data).build();
+    public static @NonNull TsCollection of(@NonNull Iterable<Ts> items) {
+        Builder result = builder();
+        items.forEach(result::item);
+        return result.build();
     }
 
     @StaticFactoryMethod
-    public static @NonNull TsCollection of(@NonNull Ts... data) {
-        return builder().items(Arrays.asList(data)).build();
+    public static @NonNull TsCollection of(@NonNull Ts item) {
+        Objects.requireNonNull(item);
+        return builder().item(item).build();
     }
 
     public static @NonNull Collector<Ts, ?, TsCollection> toTsCollection() {
@@ -92,5 +95,18 @@ public class TsCollection implements Seq<Ts>, HasEmptyCause {
     @Override
     public @Nullable String getEmptyCause() {
         return emptyCause;
+    }
+
+    public @NonNull TsCollection load(@NonNull TsInformationType info, @NonNull TsFactory factory) {
+        Objects.requireNonNull(info);
+        Objects.requireNonNull(factory);
+
+        if (type.encompass(info)) {
+            return this;
+        }
+        if (!moniker.isProvided()) {
+            return stream().map(ts -> ts.load(info, factory)).collect(toTsCollection());
+        }
+        return factory.makeTsCollection(moniker, info);
     }
 }

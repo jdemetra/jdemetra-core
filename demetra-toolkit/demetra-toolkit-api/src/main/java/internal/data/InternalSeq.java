@@ -18,7 +18,9 @@ package internal.data;
 
 import demetra.data.Seq;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
@@ -63,6 +65,14 @@ public class InternalSeq {
         E[] result = generator.apply(seq.length());
         for (int i = 0; i < result.length; i++) {
             result[i] = seq.get(i);
+        }
+        return result;
+    }
+
+    public <E> List<E> toList(Seq<E> seq) {
+        List<E> result = new ArrayList<>(seq.length());
+        for (int i = 0; i < seq.length(); i++) {
+            result.add(seq.get(i));
         }
         return result;
     }
