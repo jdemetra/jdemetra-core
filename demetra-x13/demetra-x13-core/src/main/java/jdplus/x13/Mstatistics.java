@@ -560,7 +560,7 @@ public final class Mstatistics {
         } else {
             stde = Math.sqrt(Sc.getValues().ssq() / Sc.length());
         }
-        Snorm = TsData.ofInternal(Sc.getStart(), Sc.getValues().times(1 / stde));
+        Snorm = TsData.of(Sc.getStart(), Sc.getValues().times(1 / stde));
     }
 
     private double variance(TsData s, boolean log, boolean zero) {
@@ -618,8 +618,8 @@ public final class Mstatistics {
             stc = DoublesMath.subtract(lm.getY(), lt);
             sto = DoublesMath.subtract(Ome.getValues(), lt);
         }
-        stC = TsData.ofInternal(Cc.getStart(), stc);
-        stO = TsData.ofInternal(Ome.getStart(), sto);
+        stC = TsData.of(Cc.getStart(), stc);
+        stO = TsData.of(Ome.getStart(), sto);
 
         double varO = variance(stO, false, false);
         varC = variance(stC, false, false);

@@ -52,8 +52,8 @@ public class CholetteTest {
 
         TsPeriod q = TsPeriod.quarterly(1978, 4);
         TsPeriod a = TsPeriod.yearly(1980);
-        TsData t = TsData.of(a, Doubles.of(y));
-        TsData s = TsData.of(q, Doubles.of(x));
+        TsData t = TsData.of(a, y);
+        TsData s = TsData.of(q, x);
         TsData b = Cholette.benchmark(s, t, spec);
         TsData bc = b.aggregate(TsUnit.YEAR, AggregationType.Sum, true);
 //        System.out.println(b);
@@ -73,8 +73,8 @@ public class CholetteTest {
                 .build();
         TsPeriod q = TsPeriod.quarterly(1978, 3);
         TsPeriod a = TsPeriod.yearly(1980);
-        TsData t = TsData.of(a, Doubles.of(y));
-        TsData s = TsData.of(q, Doubles.of(x));
+        TsData t = TsData.of(a, y);
+        TsData s = TsData.of(q, x);
         TsData b = Cholette.benchmark(s, t, spec);
         TsData bc = b.aggregate(TsUnit.YEAR, AggregationType.Sum, true);
 //        System.out.println(b);
@@ -94,8 +94,8 @@ public class CholetteTest {
                 .build();
         TsPeriod q = TsPeriod.quarterly(1978, 3);
         TsPeriod a = TsPeriod.yearly(1980);
-        TsData t = TsData.of(a, Doubles.of(y));
-        TsData s = TsData.of(q, Doubles.of(x));
+        TsData t = TsData.of(a, y);
+        TsData s = TsData.of(q, x);
         TsData b = Cholette.benchmark(s, t, spec);
         TsData bc = b.aggregate(TsUnit.YEAR, AggregationType.Sum, true);
 //        System.out.println(b);
@@ -115,8 +115,8 @@ public class CholetteTest {
                 .build();
         TsPeriod q = TsPeriod.quarterly(1978, 3);
         TsPeriod a = TsPeriod.yearly(1980);
-        TsData t = TsData.of(a, Doubles.of(y));
-        TsData s = TsData.of(q, Doubles.of(x));
+        TsData t = TsData.of(a, y);
+        TsData s = TsData.of(q, x);
         TsData b = Cholette.benchmark(s, t, spec);
         TsData bc = b.aggregate(TsUnit.YEAR, AggregationType.Sum, true);
 //        System.out.println(b);
@@ -136,8 +136,8 @@ public class CholetteTest {
                 .build();
         TsPeriod q = TsPeriod.quarterly(1978, 3);
         TsPeriod a = TsPeriod.yearly(1980);
-        TsData t = TsData.of(a, Doubles.of(y));
-        TsData s = TsData.of(q, Doubles.of(x));
+        TsData t = TsData.of(a, y);
+        TsData s = TsData.of(q, x);
         TsData b = Cholette.benchmark(s, t, spec);
         TsData bc = b.aggregate(TsUnit.YEAR, AggregationType.Sum, true);
 //        System.out.println(b);
@@ -176,7 +176,7 @@ public class CholetteTest {
                 .build();
 
         TsPeriod a = TsPeriod.yearly(1980);
-        TsData t = TsData.of(a, Doubles.of(y));
+        TsData t = TsData.of(a, y);
         TsData b = Denton.benchmark(TsUnit.of(3, ChronoUnit.MONTHS), t, spec);
         TsData bc = b.aggregate(TsUnit.YEAR, AggregationType.Sum, true);
         assertTrue(TsDataToolkit.subtract(t, bc).getValues().allMatch(x -> Math.abs(x) < 1e-9));

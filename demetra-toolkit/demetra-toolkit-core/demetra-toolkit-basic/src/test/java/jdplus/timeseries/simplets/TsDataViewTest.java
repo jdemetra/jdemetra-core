@@ -16,6 +16,7 @@
  */
 package jdplus.timeseries.simplets;
 
+import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
 import jdplus.data.DataBlock;
 import demetra.timeseries.TsUnit;
@@ -43,19 +44,19 @@ public class TsDataViewTest {
                 DataBlock d = DataBlock.make(i + j + 36);
                 final int beg = p.start().getMonthValue() - 1 - i;
                 d.set(k -> beg + k);
-                TsData s = TsData.of(p.plus(-i), Doubles.of(d));
+                TsData s = TsData.of(p.plus(-i), d);
                 TsDataView fy = TsDataView.fullYears(s);
                 Assert.assertTrue(fy.getData().length() % 12 == 0);
 //                Assert.assertTrue(((int) fy.getData().get(0)) % 12 == 0);
             }
         }
 
-        TsData d1 = TsData.of(TsPeriod.monthly(2010, 1), Doubles.of(2 * 12, i -> 1 + i));
+        TsData d1 = TsData.of(TsPeriod.monthly(2010, 1), DoubleSeq.onMapping(2 * 12, i -> 1 + i));
         assertThat(TsDataView.fullYears(d1))
                 .extracting(o -> o.getStart(), o -> o.getData().toArray())
                 .containsExactly(d1.getStart(), d1.getValues().toArray());
 
-        TsData d2 = TsData.of(TsPeriod.monthly(2010, 2), Doubles.of(2 * 12, i -> 1 + i));
+        TsData d2 = TsData.of(TsPeriod.monthly(2010, 2), DoubleSeq.onMapping(2 * 12, i -> 1 + i));
         assertThat(TsDataView.fullYears(d2))
                 .extracting(o -> o.getStart(), o -> o.getData().toArray())
                 .containsExactly(d2.getStart().plus(11), d2.getValues().drop(11, 1).toArray());

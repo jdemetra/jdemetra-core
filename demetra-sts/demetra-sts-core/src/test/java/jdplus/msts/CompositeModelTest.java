@@ -59,7 +59,7 @@ public class CompositeModelTest {
         M.column(0).copyFrom(Prod_B_C, 0);
         CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
         // CompositeModelEstimation rslt = model.estimate(M, 1e-15, false, true, null);
-//        System.out.println(DataBlock.ofInternal(rslt.getFullParameters()));
+//        System.out.println(DataBlock.of(rslt.getFullParameters()));
 //        System.out.println(rslt.getSmoothedStates().getComponent(0));
 //        System.out.println(rslt.getSmoothedStates().getComponentVariance(0));
 //        System.out.println(rslt.getLikelihood().logLikelihood());

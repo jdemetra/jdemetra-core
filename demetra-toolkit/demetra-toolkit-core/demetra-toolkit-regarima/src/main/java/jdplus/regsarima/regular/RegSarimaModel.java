@@ -401,7 +401,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
                 rslt.addAY(-c.getAndNext(), xcols.next());
             }
         }
-        return TsData.ofInternal(interp.getStart(), rslt);
+        return TsData.of(interp.getStart(), rslt);
     }
 
     /**
@@ -444,7 +444,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
     public TsData fullResiduals() {
         DoubleSeq res = estimation.getResiduals();
         TsPeriod start = details.transformedSeries.getEnd().plus(-res.length());
-        return TsData.ofInternal(start, res);
+        return TsData.of(start, res);
     }
 
     public int freeArimaParametersCount() {

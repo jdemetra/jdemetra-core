@@ -26,7 +26,7 @@ public class TsVariableFactoryTest {
     @Test
     public void testLarger() {
         DoubleSeq x = DoubleSeq.onMapping(24, i->i+1);
-        TsData s=TsData.of(TsPeriod.monthly(2000, 1), Doubles.of(x));
+        TsData s=TsData.of(TsPeriod.monthly(2000, 1), x);
         UserVariable var=new UserVariable("test", s);
         Matrix M=Matrix.make(12, 1);
         TsVariableFactory.FACTORY.fill(var, TsPeriod.monthly(2000, 3), M);
@@ -37,7 +37,7 @@ public class TsVariableFactoryTest {
     @Test
     public void testInside() {
         DoubleSeq x = DoubleSeq.onMapping(24, i->i+1);
-        TsData s=TsData.of(TsPeriod.monthly(2000, 1), Doubles.of(x));
+        TsData s=TsData.of(TsPeriod.monthly(2000, 1), x);
         UserVariable var=new UserVariable("test", s);
         Matrix M=Matrix.make(36, 1);
         TsVariableFactory.FACTORY.fill(var, TsPeriod.monthly(1999, 3), M);
@@ -50,7 +50,7 @@ public class TsVariableFactoryTest {
     @Test
     public void testBefore() {
         DoubleSeq x = DoubleSeq.onMapping(24, i->i+1);
-        TsData s=TsData.of(TsPeriod.monthly(2000, 1), Doubles.of(x));
+        TsData s=TsData.of(TsPeriod.monthly(2000, 1), x);
         UserVariable var=new UserVariable("test", s);
         Matrix M=Matrix.make(36, 1);
         TsVariableFactory.FACTORY.fill(var, TsPeriod.monthly(2005, 3), M);
@@ -60,7 +60,7 @@ public class TsVariableFactoryTest {
     @Test
     public void testAfter() {
         DoubleSeq x = DoubleSeq.onMapping(24, i->i+1);
-        TsData s=TsData.of(TsPeriod.monthly(2000, 1), Doubles.of(x));
+        TsData s=TsData.of(TsPeriod.monthly(2000, 1), x);
         UserVariable var=new UserVariable("test", s);
         Matrix M=Matrix.make(36, 1);
         TsVariableFactory.FACTORY.fill(var, TsPeriod.monthly(1995, 3), M);
@@ -70,7 +70,7 @@ public class TsVariableFactoryTest {
     @Test
     public void testAcross1() {
         DoubleSeq x = DoubleSeq.onMapping(24, i->i+1);
-        TsData s=TsData.of(TsPeriod.monthly(2000, 1), Doubles.of(x));
+        TsData s=TsData.of(TsPeriod.monthly(2000, 1), x);
         UserVariable var=new UserVariable("test", s);
         Matrix M=Matrix.make(36, 1);
         TsVariableFactory.FACTORY.fill(var, TsPeriod.monthly(2000, 7), M);
@@ -81,7 +81,7 @@ public class TsVariableFactoryTest {
     @Test
     public void testAcross2() {
         DoubleSeq x = DoubleSeq.onMapping(24, i->i+1);
-        TsData s=TsData.of(TsPeriod.monthly(2000, 1), Doubles.of(x));
+        TsData s=TsData.of(TsPeriod.monthly(2000, 1), x);
         UserVariable var=new UserVariable("test", s);
         Matrix M=Matrix.make(36, 1);
         TsVariableFactory.FACTORY.fill(var, TsPeriod.monthly(1998, 1), M);

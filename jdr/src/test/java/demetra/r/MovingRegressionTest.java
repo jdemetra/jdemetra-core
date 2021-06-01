@@ -23,7 +23,7 @@ public class MovingRegressionTest {
 
     @Test
     public void testSomeMethod() {
-        TsData s=TsData.of(TsPeriod.monthly(1982, 4), Doubles.of(Data.ABS_RETAIL));
+        TsData s=TsData.ofInternal(TsPeriod.monthly(1982, 4), Data.ABS_RETAIL);
 //        long t0=System.currentTimeMillis();
         MovingRegression.Results regarima = MovingRegression.regarima(log(s), "TD7", 10);
 //        System.out.println(regarima.getData("tdeffect", TsData.class));

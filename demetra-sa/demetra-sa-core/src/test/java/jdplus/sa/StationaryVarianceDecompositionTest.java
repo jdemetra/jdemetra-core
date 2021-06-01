@@ -24,12 +24,12 @@ public class StationaryVarianceDecompositionTest {
     @Test
     public void testLongTerm() {
         TsData t1 = StationaryVarianceComputer.LINEARTREND
-                .calcLongTermTrend(TsData.of(TsPeriod.yearly(1900),
-                        Doubles.of(Data.NILE)));
+                .calcLongTermTrend(TsData.ofInternal(TsPeriod.yearly(1900),
+                        Data.NILE));
 //        System.out.println(t1);
         TsData t2 = new StationaryVarianceComputer.HPTrendComputer(20)
-                .calcLongTermTrend(TsData.of(TsPeriod.yearly(1900),
-                        Doubles.of(Data.NILE)));
+                .calcLongTermTrend(TsData.ofInternal(TsPeriod.yearly(1900),
+                        Data.NILE));
 //        System.out.println(t2);
 
         assertTrue(t1 != null);

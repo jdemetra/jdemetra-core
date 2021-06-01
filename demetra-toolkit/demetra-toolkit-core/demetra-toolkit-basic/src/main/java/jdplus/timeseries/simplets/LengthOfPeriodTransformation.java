@@ -16,6 +16,7 @@
  */
 package jdplus.timeseries.simplets;
 
+import demetra.data.DoubleSeq;
 import jdplus.data.transformation.LogJacobian;
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
@@ -82,7 +83,7 @@ class LengthOfPeriodTransformation implements TsDataTransformation {
     @Override
     public double transform(TsPeriod p, double value) {
         // TODO: optimize        
-        TsData s = TsData.of(p, Doubles.of(value));
+        TsData s = TsData.of(p, DoubleSeq.of(value));
         TsData t = transform(s, null);
         return t.getValue(0);
     }
@@ -162,7 +163,7 @@ class LengthOfPeriodTransformation implements TsDataTransformation {
                 }
             }
         }
-        return TsData.of(tsdata.getStart(), Doubles.ofInternal(data));
+        return TsData.ofInternal(tsdata.getStart(), data);
     }
 
     private TsData lp(TsData tsdata, int freq, LogJacobian lj) {
@@ -243,6 +244,6 @@ class LengthOfPeriodTransformation implements TsDataTransformation {
                 idx += freq;
             }
         }
-        return TsData.of(start, Doubles.ofInternal(data));
+        return TsData.ofInternal(start, data);
     }
 }

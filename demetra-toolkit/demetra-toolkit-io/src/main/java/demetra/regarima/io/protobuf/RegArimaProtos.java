@@ -2335,47 +2335,41 @@ public final class RegArimaProtos {
       demetra.modelling.io.protobuf.ModellingProtos.LengthOfPeriod getPreadjustment();
 
       /**
-       * <code>bool mean = 4;</code>
-       * @return The mean.
-       */
-      boolean getMean();
-
-      /**
-       * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+       * <code>repeated .modelling.RegressionVariable variables = 4;</code>
        */
       java.util.List<demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable> 
           getVariablesList();
       /**
-       * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+       * <code>repeated .modelling.RegressionVariable variables = 4;</code>
        */
       demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable getVariables(int index);
       /**
-       * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+       * <code>repeated .modelling.RegressionVariable variables = 4;</code>
        */
       int getVariablesCount();
       /**
-       * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+       * <code>repeated .modelling.RegressionVariable variables = 4;</code>
        */
       java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.RegressionVariableOrBuilder> 
           getVariablesOrBuilderList();
       /**
-       * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+       * <code>repeated .modelling.RegressionVariable variables = 4;</code>
        */
       demetra.modelling.io.protobuf.ModellingProtos.RegressionVariableOrBuilder getVariablesOrBuilder(
           int index);
 
       /**
-       * <code>.regarima.SarimaSpec arima = 6;</code>
+       * <code>.regarima.SarimaSpec arima = 5;</code>
        * @return Whether the arima field is set.
        */
       boolean hasArima();
       /**
-       * <code>.regarima.SarimaSpec arima = 6;</code>
+       * <code>.regarima.SarimaSpec arima = 5;</code>
        * @return The arima.
        */
       demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec getArima();
       /**
-       * <code>.regarima.SarimaSpec arima = 6;</code>
+       * <code>.regarima.SarimaSpec arima = 5;</code>
        */
       demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpecOrBuilder getArimaOrBuilder();
     }
@@ -2451,12 +2445,7 @@ public final class RegArimaProtos {
                 preadjustment_ = rawValue;
                 break;
               }
-              case 32: {
-
-                mean_ = input.readBool();
-                break;
-              }
-              case 42: {
+              case 34: {
                 if (!((mutable_bitField0_ & 0x00000001) != 0)) {
                   variables_ = new java.util.ArrayList<demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable>();
                   mutable_bitField0_ |= 0x00000001;
@@ -2465,7 +2454,7 @@ public final class RegArimaProtos {
                     input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable.parser(), extensionRegistry));
                 break;
               }
-              case 50: {
+              case 42: {
                 demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec.Builder subBuilder = null;
                 if (arima_ != null) {
                   subBuilder = arima_.toBuilder();
@@ -2569,28 +2558,17 @@ public final class RegArimaProtos {
         return result == null ? demetra.modelling.io.protobuf.ModellingProtos.LengthOfPeriod.UNRECOGNIZED : result;
       }
 
-      public static final int MEAN_FIELD_NUMBER = 4;
-      private boolean mean_;
-      /**
-       * <code>bool mean = 4;</code>
-       * @return The mean.
-       */
-      @java.lang.Override
-      public boolean getMean() {
-        return mean_;
-      }
-
-      public static final int VARIABLES_FIELD_NUMBER = 5;
+      public static final int VARIABLES_FIELD_NUMBER = 4;
       private java.util.List<demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable> variables_;
       /**
-       * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+       * <code>repeated .modelling.RegressionVariable variables = 4;</code>
        */
       @java.lang.Override
       public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable> getVariablesList() {
         return variables_;
       }
       /**
-       * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+       * <code>repeated .modelling.RegressionVariable variables = 4;</code>
        */
       @java.lang.Override
       public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.RegressionVariableOrBuilder> 
@@ -2598,21 +2576,21 @@ public final class RegArimaProtos {
         return variables_;
       }
       /**
-       * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+       * <code>repeated .modelling.RegressionVariable variables = 4;</code>
        */
       @java.lang.Override
       public int getVariablesCount() {
         return variables_.size();
       }
       /**
-       * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+       * <code>repeated .modelling.RegressionVariable variables = 4;</code>
        */
       @java.lang.Override
       public demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable getVariables(int index) {
         return variables_.get(index);
       }
       /**
-       * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+       * <code>repeated .modelling.RegressionVariable variables = 4;</code>
        */
       @java.lang.Override
       public demetra.modelling.io.protobuf.ModellingProtos.RegressionVariableOrBuilder getVariablesOrBuilder(
@@ -2620,10 +2598,10 @@ public final class RegArimaProtos {
         return variables_.get(index);
       }
 
-      public static final int ARIMA_FIELD_NUMBER = 6;
+      public static final int ARIMA_FIELD_NUMBER = 5;
       private demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec arima_;
       /**
-       * <code>.regarima.SarimaSpec arima = 6;</code>
+       * <code>.regarima.SarimaSpec arima = 5;</code>
        * @return Whether the arima field is set.
        */
       @java.lang.Override
@@ -2631,7 +2609,7 @@ public final class RegArimaProtos {
         return arima_ != null;
       }
       /**
-       * <code>.regarima.SarimaSpec arima = 6;</code>
+       * <code>.regarima.SarimaSpec arima = 5;</code>
        * @return The arima.
        */
       @java.lang.Override
@@ -2639,7 +2617,7 @@ public final class RegArimaProtos {
         return arima_ == null ? demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec.getDefaultInstance() : arima_;
       }
       /**
-       * <code>.regarima.SarimaSpec arima = 6;</code>
+       * <code>.regarima.SarimaSpec arima = 5;</code>
        */
       @java.lang.Override
       public demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpecOrBuilder getArimaOrBuilder() {
@@ -2669,14 +2647,11 @@ public final class RegArimaProtos {
         if (preadjustment_ != demetra.modelling.io.protobuf.ModellingProtos.LengthOfPeriod.LP_NONE.getNumber()) {
           output.writeEnum(3, preadjustment_);
         }
-        if (mean_ != false) {
-          output.writeBool(4, mean_);
-        }
         for (int i = 0; i < variables_.size(); i++) {
-          output.writeMessage(5, variables_.get(i));
+          output.writeMessage(4, variables_.get(i));
         }
         if (arima_ != null) {
-          output.writeMessage(6, getArima());
+          output.writeMessage(5, getArima());
         }
         unknownFields.writeTo(output);
       }
@@ -2699,17 +2674,13 @@ public final class RegArimaProtos {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(3, preadjustment_);
         }
-        if (mean_ != false) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(4, mean_);
-        }
         for (int i = 0; i < variables_.size(); i++) {
           size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(5, variables_.get(i));
+            .computeMessageSize(4, variables_.get(i));
         }
         if (arima_ != null) {
           size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(6, getArima());
+            .computeMessageSize(5, getArima());
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -2734,8 +2705,6 @@ public final class RegArimaProtos {
         if (getLog()
             != other.getLog()) return false;
         if (preadjustment_ != other.preadjustment_) return false;
-        if (getMean()
-            != other.getMean()) return false;
         if (!getVariablesList()
             .equals(other.getVariablesList())) return false;
         if (hasArima() != other.hasArima()) return false;
@@ -2763,9 +2732,6 @@ public final class RegArimaProtos {
             getLog());
         hash = (37 * hash) + PREADJUSTMENT_FIELD_NUMBER;
         hash = (53 * hash) + preadjustment_;
-        hash = (37 * hash) + MEAN_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getMean());
         if (getVariablesCount() > 0) {
           hash = (37 * hash) + VARIABLES_FIELD_NUMBER;
           hash = (53 * hash) + getVariablesList().hashCode();
@@ -2918,8 +2884,6 @@ public final class RegArimaProtos {
 
           preadjustment_ = 0;
 
-          mean_ = false;
-
           if (variablesBuilder_ == null) {
             variables_ = java.util.Collections.emptyList();
             bitField0_ = (bitField0_ & ~0x00000001);
@@ -2966,7 +2930,6 @@ public final class RegArimaProtos {
           }
           result.log_ = log_;
           result.preadjustment_ = preadjustment_;
-          result.mean_ = mean_;
           if (variablesBuilder_ == null) {
             if (((bitField0_ & 0x00000001) != 0)) {
               variables_ = java.util.Collections.unmodifiableList(variables_);
@@ -3037,9 +3000,6 @@ public final class RegArimaProtos {
           }
           if (other.preadjustment_ != 0) {
             setPreadjustmentValue(other.getPreadjustmentValue());
-          }
-          if (other.getMean() != false) {
-            setMean(other.getMean());
           }
           if (variablesBuilder_ == null) {
             if (!other.variables_.isEmpty()) {
@@ -3304,37 +3264,6 @@ public final class RegArimaProtos {
           return this;
         }
 
-        private boolean mean_ ;
-        /**
-         * <code>bool mean = 4;</code>
-         * @return The mean.
-         */
-        @java.lang.Override
-        public boolean getMean() {
-          return mean_;
-        }
-        /**
-         * <code>bool mean = 4;</code>
-         * @param value The mean to set.
-         * @return This builder for chaining.
-         */
-        public Builder setMean(boolean value) {
-          
-          mean_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>bool mean = 4;</code>
-         * @return This builder for chaining.
-         */
-        public Builder clearMean() {
-          
-          mean_ = false;
-          onChanged();
-          return this;
-        }
-
         private java.util.List<demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable> variables_ =
           java.util.Collections.emptyList();
         private void ensureVariablesIsMutable() {
@@ -3348,7 +3277,7 @@ public final class RegArimaProtos {
             demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable, demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable.Builder, demetra.modelling.io.protobuf.ModellingProtos.RegressionVariableOrBuilder> variablesBuilder_;
 
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable> getVariablesList() {
           if (variablesBuilder_ == null) {
@@ -3358,7 +3287,7 @@ public final class RegArimaProtos {
           }
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public int getVariablesCount() {
           if (variablesBuilder_ == null) {
@@ -3368,7 +3297,7 @@ public final class RegArimaProtos {
           }
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable getVariables(int index) {
           if (variablesBuilder_ == null) {
@@ -3378,7 +3307,7 @@ public final class RegArimaProtos {
           }
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public Builder setVariables(
             int index, demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable value) {
@@ -3395,7 +3324,7 @@ public final class RegArimaProtos {
           return this;
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public Builder setVariables(
             int index, demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable.Builder builderForValue) {
@@ -3409,7 +3338,7 @@ public final class RegArimaProtos {
           return this;
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public Builder addVariables(demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable value) {
           if (variablesBuilder_ == null) {
@@ -3425,7 +3354,7 @@ public final class RegArimaProtos {
           return this;
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public Builder addVariables(
             int index, demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable value) {
@@ -3442,7 +3371,7 @@ public final class RegArimaProtos {
           return this;
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public Builder addVariables(
             demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable.Builder builderForValue) {
@@ -3456,7 +3385,7 @@ public final class RegArimaProtos {
           return this;
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public Builder addVariables(
             int index, demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable.Builder builderForValue) {
@@ -3470,7 +3399,7 @@ public final class RegArimaProtos {
           return this;
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public Builder addAllVariables(
             java.lang.Iterable<? extends demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable> values) {
@@ -3485,7 +3414,7 @@ public final class RegArimaProtos {
           return this;
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public Builder clearVariables() {
           if (variablesBuilder_ == null) {
@@ -3498,7 +3427,7 @@ public final class RegArimaProtos {
           return this;
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public Builder removeVariables(int index) {
           if (variablesBuilder_ == null) {
@@ -3511,14 +3440,14 @@ public final class RegArimaProtos {
           return this;
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable.Builder getVariablesBuilder(
             int index) {
           return getVariablesFieldBuilder().getBuilder(index);
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public demetra.modelling.io.protobuf.ModellingProtos.RegressionVariableOrBuilder getVariablesOrBuilder(
             int index) {
@@ -3528,7 +3457,7 @@ public final class RegArimaProtos {
           }
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.RegressionVariableOrBuilder> 
              getVariablesOrBuilderList() {
@@ -3539,14 +3468,14 @@ public final class RegArimaProtos {
           }
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable.Builder addVariablesBuilder() {
           return getVariablesFieldBuilder().addBuilder(
               demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable.getDefaultInstance());
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable.Builder addVariablesBuilder(
             int index) {
@@ -3554,7 +3483,7 @@ public final class RegArimaProtos {
               index, demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable.getDefaultInstance());
         }
         /**
-         * <code>repeated .modelling.RegressionVariable variables = 5;</code>
+         * <code>repeated .modelling.RegressionVariable variables = 4;</code>
          */
         public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable.Builder> 
              getVariablesBuilderList() {
@@ -3579,14 +3508,14 @@ public final class RegArimaProtos {
         private com.google.protobuf.SingleFieldBuilderV3<
             demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec, demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec.Builder, demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpecOrBuilder> arimaBuilder_;
         /**
-         * <code>.regarima.SarimaSpec arima = 6;</code>
+         * <code>.regarima.SarimaSpec arima = 5;</code>
          * @return Whether the arima field is set.
          */
         public boolean hasArima() {
           return arimaBuilder_ != null || arima_ != null;
         }
         /**
-         * <code>.regarima.SarimaSpec arima = 6;</code>
+         * <code>.regarima.SarimaSpec arima = 5;</code>
          * @return The arima.
          */
         public demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec getArima() {
@@ -3597,7 +3526,7 @@ public final class RegArimaProtos {
           }
         }
         /**
-         * <code>.regarima.SarimaSpec arima = 6;</code>
+         * <code>.regarima.SarimaSpec arima = 5;</code>
          */
         public Builder setArima(demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec value) {
           if (arimaBuilder_ == null) {
@@ -3613,7 +3542,7 @@ public final class RegArimaProtos {
           return this;
         }
         /**
-         * <code>.regarima.SarimaSpec arima = 6;</code>
+         * <code>.regarima.SarimaSpec arima = 5;</code>
          */
         public Builder setArima(
             demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec.Builder builderForValue) {
@@ -3627,7 +3556,7 @@ public final class RegArimaProtos {
           return this;
         }
         /**
-         * <code>.regarima.SarimaSpec arima = 6;</code>
+         * <code>.regarima.SarimaSpec arima = 5;</code>
          */
         public Builder mergeArima(demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec value) {
           if (arimaBuilder_ == null) {
@@ -3645,7 +3574,7 @@ public final class RegArimaProtos {
           return this;
         }
         /**
-         * <code>.regarima.SarimaSpec arima = 6;</code>
+         * <code>.regarima.SarimaSpec arima = 5;</code>
          */
         public Builder clearArima() {
           if (arimaBuilder_ == null) {
@@ -3659,7 +3588,7 @@ public final class RegArimaProtos {
           return this;
         }
         /**
-         * <code>.regarima.SarimaSpec arima = 6;</code>
+         * <code>.regarima.SarimaSpec arima = 5;</code>
          */
         public demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec.Builder getArimaBuilder() {
           
@@ -3667,7 +3596,7 @@ public final class RegArimaProtos {
           return getArimaFieldBuilder().getBuilder();
         }
         /**
-         * <code>.regarima.SarimaSpec arima = 6;</code>
+         * <code>.regarima.SarimaSpec arima = 5;</code>
          */
         public demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpecOrBuilder getArimaOrBuilder() {
           if (arimaBuilder_ != null) {
@@ -3678,7 +3607,7 @@ public final class RegArimaProtos {
           }
         }
         /**
-         * <code>.regarima.SarimaSpec arima = 6;</code>
+         * <code>.regarima.SarimaSpec arima = 5;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
             demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec, demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec.Builder, demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpecOrBuilder> 
@@ -6870,25 +6799,25 @@ public final class RegArimaProtos {
       "iod\030\001 \001(\005\022\033\n\003phi\030\002 \003(\0132\016.jd3.Parameter\022\t" +
       "\n\001d\030\003 \001(\005\022\035\n\005theta\030\004 \003(\0132\016.jd3.Parameter" +
       "\022\034\n\004bphi\030\005 \003(\0132\016.jd3.Parameter\022\n\n\002bd\030\006 \001" +
-      "(\005\022\036\n\006btheta\030\007 \003(\0132\016.jd3.Parameter\"\377\004\n\rR" +
+      "(\005\022\036\n\006btheta\030\007 \003(\0132\016.jd3.Parameter\"\361\004\n\rR" +
       "egArimaModel\0228\n\013description\030\001 \001(\0132#.rega" +
       "rima.RegArimaModel.Description\0226\n\nestima" +
       "tion\030\002 \001(\0132\".regarima.RegArimaModel.Esti" +
       "mation\022+\n\013diagnostics\030\005 \001(\0132\026.modelling." +
-      "Diagnostics\032\316\001\n\013Description\022\033\n\006series\030\001 " +
+      "Diagnostics\032\300\001\n\013Description\022\033\n\006series\030\001 " +
       "\001(\0132\013.jd3.TsData\022\013\n\003log\030\002 \001(\010\0220\n\rpreadju" +
       "stment\030\003 \001(\0162\031.modelling.LengthOfPeriod\022" +
-      "\014\n\004mean\030\004 \001(\010\0220\n\tvariables\030\005 \003(\0132\035.model" +
-      "ling.RegressionVariable\022#\n\005arima\030\006 \001(\0132\024" +
-      ".regarima.SarimaSpec\032\375\001\n\nEstimation\022\t\n\001y" +
-      "\030\001 \003(\001\022\026\n\001x\030\002 \001(\0132\013.jd3.Matrix\022\t\n\001b\030\003 \003(" +
-      "\001\022 \n\013bcovariance\030\004 \001(\0132\013.jd3.Matrix\022-\n\np" +
-      "arameters\030\005 \001(\0132\031.jd3.ParametersEstimati" +
-      "on\022-\n\nlikelihood\030\006 \001(\0132\031.jd3.LikelihoodS" +
-      "tatistics\022\021\n\tresiduals\030\007 \003(\001\022.\n\010missings" +
-      "\030\010 \003(\0132\034.modelling.MissingEstimationB.\n\034" +
-      "demetra.regarima.io.protobufB\016RegArimaPr" +
-      "otosP\000P\001b\006proto3"
+      "0\n\tvariables\030\004 \003(\0132\035.modelling.Regressio" +
+      "nVariable\022#\n\005arima\030\005 \001(\0132\024.regarima.Sari" +
+      "maSpec\032\375\001\n\nEstimation\022\t\n\001y\030\001 \003(\001\022\026\n\001x\030\002 " +
+      "\001(\0132\013.jd3.Matrix\022\t\n\001b\030\003 \003(\001\022 \n\013bcovarian" +
+      "ce\030\004 \001(\0132\013.jd3.Matrix\022-\n\nparameters\030\005 \001(" +
+      "\0132\031.jd3.ParametersEstimation\022-\n\nlikeliho" +
+      "od\030\006 \001(\0132\031.jd3.LikelihoodStatistics\022\021\n\tr" +
+      "esiduals\030\007 \003(\001\022.\n\010missings\030\010 \003(\0132\034.model" +
+      "ling.MissingEstimationB.\n\034demetra.regari" +
+      "ma.io.protobufB\016RegArimaProtosP\000P\001b\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -6913,7 +6842,7 @@ public final class RegArimaProtos {
     internal_static_regarima_RegArimaModel_Description_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_regarima_RegArimaModel_Description_descriptor,
-        new java.lang.String[] { "Series", "Log", "Preadjustment", "Mean", "Variables", "Arima", });
+        new java.lang.String[] { "Series", "Log", "Preadjustment", "Variables", "Arima", });
     internal_static_regarima_RegArimaModel_Estimation_descriptor =
       internal_static_regarima_RegArimaModel_descriptor.getNestedTypes().get(1);
     internal_static_regarima_RegArimaModel_Estimation_fieldAccessorTable = new

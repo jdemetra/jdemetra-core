@@ -158,8 +158,8 @@ public class AlgorithmsTest {
 //        ModelEquation eqs = new ModelEquation("eqs", 0, true);
 //        eqs.add("td", 1, true, Loading.sum());
 //        model.add(eqs);
-//        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
-//        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
+//        System.out.println(DataBlock.of(model.defaultParameters()));
+//        System.out.println(DataBlock.of(model.fullDefaultParameters()));
 
         CompositeModelEstimation rslt = model.estimate(M, false, false, SsfInitialization.Diffuse, Optimizer.BFGS, 1e-9, null);
 
@@ -206,8 +206,8 @@ public class AlgorithmsTest {
         //        ModelEquation eqs = new ModelEquation("eqs", 0, true);
 //        eqs.add("td", 1, true, Loading.sum());
 //        model.add(eqs);
-//        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
-//        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
+//        System.out.println(DataBlock.of(model.defaultParameters()));
+//        System.out.println(DataBlock.of(model.fullDefaultParameters()));
 
         CompositeModelEstimation rslt = model.estimate(M, true, false, SsfInitialization.Augmented, Optimizer.BFGS, 1e-15, null);
 
@@ -236,8 +236,8 @@ model.add(td);
         eq.add("air", SsfArima.defaultLoading());
         eq.add("td", td.defaultLoading(0));
         model.add(eq);
-//        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
-//        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
+//        System.out.println(DataBlock.of(model.defaultParameters()));
+//        System.out.println(DataBlock.of(model.fullDefaultParameters()));
 
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);
@@ -283,8 +283,8 @@ model.add(td);
         eq.add("s", SeasonalComponent.defaultLoading());
         eq.add("n", Noise.defaultLoading());
         model.add(eq);
-//        System.out.println(DataBlock.ofInternal(model.defaultParameters()));
-//        System.out.println(DataBlock.ofInternal(model.fullDefaultParameters()));
+//        System.out.println(DataBlock.of(model.defaultParameters()));
+//        System.out.println(DataBlock.of(model.fullDefaultParameters()));
 
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);

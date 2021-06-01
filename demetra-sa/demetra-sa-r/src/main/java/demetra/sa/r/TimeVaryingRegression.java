@@ -92,7 +92,7 @@ public class TimeVaryingRegression {
                     prod.set(r.getCoefficients().column(i), r.getVariables().column(i), (a, b) -> a * b);
                     tmp.add(prod);
                 }
-                return TsData.ofInternal(r.getDomain().getStartPeriod(), tmp);
+                return TsData.of(r.getDomain().getStartPeriod(), tmp);
             });
         }
 

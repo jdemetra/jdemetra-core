@@ -62,8 +62,8 @@ public class TsHodrickPrescott {
         HodrickPrescottFilter hp = new HodrickPrescottFilter(lb);
         DoubleSeq[] tc  = hp.process(s.getValues());
         
-            trend = TsData.ofInternal(s.getStart(), tc[0]);
-            cycle = TsData.ofInternal(s.getStart(), tc[1]);
+            trend = TsData.of(s.getStart(), tc[0]);
+            cycle = TsData.of(s.getStart(), tc[1]);
             return true;
         
     }

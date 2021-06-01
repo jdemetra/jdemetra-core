@@ -149,7 +149,7 @@ public class CompositeModelTest {
         double[] dp = mapping.getDefaultParameters().toArray();
         CompositeModelEstimation rslt = model.estimate(x, false, true, SsfInitialization.Diffuse, Optimizer.BFGS, 1e-15, null);
 //        System.out.println(rslt.getLikelihood().logLikelihood());
-//        System.out.println(DataBlock.ofInternal(rslt.getFullParameters()));
+//        System.out.println(DataBlock.of(rslt.getFullParameters()));
 ////        System.out.println(rslt.getLikelihood().sigma2());
 ////        System.out.println(rslt.getFilteringStates().getComponent(0));
 ////        System.out.println(rslt.getFilteredStates().getComponent(0));

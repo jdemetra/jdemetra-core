@@ -87,7 +87,7 @@ public class Bsm {
         Variable[] vars= X == null ? new Variable[0] : new Variable[X.getColumnsCount()];
         TsPeriod start = y.getStart();
         for (int i=0; i<vars.length; ++i){
-            UserVariable uvar=new UserVariable("var-"+(i+1), TsData.ofInternal(start, X.column(i)));
+            UserVariable uvar=new UserVariable("var-"+(i+1), TsData.of(start, X.column(i)));
             vars[i]=Variable.variable("var-"+(i+1), uvar).withCoefficient(Parameter.estimated(coef.get(i)));
         }
         

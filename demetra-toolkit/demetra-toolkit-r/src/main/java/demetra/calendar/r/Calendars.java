@@ -162,22 +162,22 @@ public class Calendars {
         }
     }
 
-    public MatrixType holidays(Calendar calendar, String date, int length, String type) {
+    public MatrixType holidays(Calendar calendar, String date, int length, int[] nonworking, String type) {
         LocalDate start = LocalDate.parse(date);
         Holiday[] elements = calendar.getHolidays();
         Matrix m = Matrix.make(length, elements.length);
         switch (type) {
-            case "SkipSundays":
-                HolidaysUtility.fillDays(elements, m, start, true);
+            case "Skip":
+                HolidaysUtility.fillDays(elements, m, start, nonworking, true);
                 break;
             case "NextWorkingDay":
-                HolidaysUtility.fillNextWorkingDays(elements, m, start, 0);
+                HolidaysUtility.fillNextWorkingDays(elements, m, start, nonworking);
                 break;
             case "PreviousWorkingDay":
-                HolidaysUtility.fillPreviousWorkingDays(elements, m, start, 0);
+                HolidaysUtility.fillPreviousWorkingDays(elements, m, start, nonworking);
                 break;
             default:
-                HolidaysUtility.fillDays(elements, m, start, false);
+                HolidaysUtility.fillDays(elements, m, start, nonworking, false);
         }
         return m.unmodifiable();
     }

@@ -237,7 +237,7 @@ public class CalendarizationProcessor implements Calendarization.Processor {
 //                j0 = j1;
 //            }
 //
-//            return TsData.of(S, DoubleSequence.ofInternal(sum));
+//            return TsData.of(S, DoubleSequence.of(sum));
 //        }
     }
 }

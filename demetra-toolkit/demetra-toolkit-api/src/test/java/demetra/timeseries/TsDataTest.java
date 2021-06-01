@@ -36,7 +36,7 @@ public class TsDataTest {
 
     @Demo
     public static void main(String[] args) {
-        TsData ts = TsData.of(TsPeriod.yearly(2001), Doubles.of(new double[]{3.14, 7}));
+        TsData ts = TsData.ofInternal(TsPeriod.yearly(2001), new double[]{3.14, 7});
 
         System.out.println("\n[Tests ...]");
         System.out.println(ts.toString());
@@ -95,21 +95,21 @@ public class TsDataTest {
         assertThatNullPointerException().isThrownBy(() -> TsData.empty(null, cause));
         assertThatNullPointerException().isThrownBy(() -> TsData.empty(start, null));
 
-        x = TsData.of(start, Doubles.of(values));
+        x = TsData.ofInternal(start, values);
         assertThat(x.getStart()).isEqualTo(start);
         assertThat(x.getValues().toArray()).containsExactly(values);
         assertThat(x.getCause()).isNull();
 
-        assertThatNullPointerException().isThrownBy(() -> TsData.of(null, Doubles.of(values)));
-        assertThatNullPointerException().isThrownBy(() -> TsData.of(start, null));
+        assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(null, values));
+        assertThatNullPointerException().isThrownBy(() -> TsData.of(start, (DoubleSeq)null));
 
-        x = TsData.ofInternal(start, Doubles.of(values));
+        x = TsData.ofInternal(start, values);
         assertThat(x.getStart()).isEqualTo(start);
         assertThat(x.getValues().toArray()).containsExactly(values);
         assertThat(x.getCause()).isNull();
 
-        assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(null, Doubles.of(values)));
-        assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(start, (DoubleSeq) null));
+        assertThatNullPointerException().isThrownBy(() -> TsData.ofInternal(null, values));
+        assertThatNullPointerException().isThrownBy(() -> TsData.of(start, (DoubleSeq) null));
 
         x = TsData.ofInternal(start, values);
         assertThat(x.getStart()).isEqualTo(start);
@@ -126,8 +126,8 @@ public class TsDataTest {
                 .isEqualTo(TsData.empty(TsPeriod.yearly(2001), "abc"))
                 .isNotEqualTo(TsData.empty(TsPeriod.yearly(2001), "xyz"));
 
-        assertThat(TsData.of(TsPeriod.yearly(2001), Doubles.of(new double[]{1, 2, 3})))
-                .isEqualTo(TsData.of(TsPeriod.yearly(2001), Doubles.of(new double[]{1, 2, 3})));
+        assertThat(TsData.ofInternal(TsPeriod.yearly(2001), new double[]{1, 2, 3}))
+                .isEqualTo(TsData.ofInternal(TsPeriod.yearly(2001), new double[]{1, 2, 3}));
     }
 
     @Test
@@ -222,11 +222,11 @@ public class TsDataTest {
         assertThat(ts.aggregateByPosition(YEAR, 1)).hasSize(6);
     }
     private static TsData monthlyTs(LocalDateTime start, int count) {
-        return TsData.of(TsPeriod.of(TsUnit.MONTH, start), Doubles.of(count, i -> i + start.getMonthValue()));
+        return TsData.of(TsPeriod.of(TsUnit.MONTH, start), DoubleSeq.onMapping(count, i -> i + start.getMonthValue()));
     }
 
     private static TsData monthlyTs(LocalDate start, int count) {
-        return TsData.of(TsPeriod.of(TsUnit.MONTH, start), Doubles.of(count, i -> i + start.getMonthValue()));
+        return TsData.of(TsPeriod.of(TsUnit.MONTH, start), DoubleSeq.onMapping(count, i -> i + start.getMonthValue()));
     }
 
     private static TsObs y(int year, double val) {

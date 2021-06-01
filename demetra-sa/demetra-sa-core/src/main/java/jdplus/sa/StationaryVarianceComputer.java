@@ -73,7 +73,7 @@ public class StationaryVarianceComputer {
             DoubleSeq b = ls.getCoefficients();
             x.mul(b.get(1));
             x.add(b.get(0));
-            return TsData.ofInternal(s.getStart(), x);
+            return TsData.of(s.getStart(), x);
         }
 
         @Override
@@ -112,7 +112,7 @@ public class StationaryVarianceComputer {
                     .build();
             CompositeSsf ssf = SsfUcarima.of(ucm);
             DataBlockStorage ss = DkToolkit.fastSmooth(ssf, new SsfData(s.getValues()));
-            return TsData.of(s.getStart(), Doubles.of(ss.item(0)));
+            return TsData.ofInternal(s.getStart(), ss.item(0).toArray());
         }
 
         @Override

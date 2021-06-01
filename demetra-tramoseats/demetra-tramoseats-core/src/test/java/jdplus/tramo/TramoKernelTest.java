@@ -95,7 +95,7 @@ public class TramoKernelTest {
     public void testProdMissing() {
         TramoKernel processor = TramoKernel.of(TramoSpec.TR5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        TsData s = TsData.of(start, Doubles.of(datamissing));
+        TsData s = TsData.ofInternal(start, datamissing);
         jdplus.regsarima.regular.RegSarimaModel rslt = processor.process(s, null);
         System.out.println("JD3 with missing");
         System.out.println(rslt.getEstimation().getStatistics().getLogLikelihood());
@@ -115,7 +115,7 @@ public class TramoKernelTest {
         DefaultProcessingLog log = new DefaultProcessingLog();
         TramoKernel processor = TramoKernel.of(TramoSpec.TRfull, null);
         TsPeriod start = TsPeriod.monthly(1992, 1);
-        TsData s = TsData.of(start, Doubles.of(Data.RETAIL_BOOKSTORES));
+        TsData s = TsData.ofInternal(start, Data.RETAIL_BOOKSTORES);
         RegSarimaModel rslt = processor.process(s, log);
         System.out.println("JD3");
         System.out.println(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
@@ -426,7 +426,7 @@ public class TramoKernelTest {
 
         TramoKernel processor = TramoKernel.of(nspec, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        TsData s = TsData.of(start, Doubles.of(data));
+        TsData s = TsData.ofInternal(start, data);
         RegSarimaModel rslt = processor.process(s, null);
         System.out.println("JD3 wald");
         System.out.println(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
@@ -514,7 +514,7 @@ public class TramoKernelTest {
         for (int i = 0; i < 1000; ++i) {
             TramoKernel processor = TramoKernel.of(TramoSpec.TRfull, null);
             TsPeriod start = TsPeriod.monthly(1967, 1);
-            TsData s = TsData.of(start, Doubles.of(data));
+            TsData s = TsData.ofInternal(start, data);
             RegSarimaModel rslt = processor.process(s, null);
         }
         t1 = System.currentTimeMillis();

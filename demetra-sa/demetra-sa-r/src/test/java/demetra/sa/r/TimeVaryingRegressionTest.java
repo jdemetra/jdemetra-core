@@ -39,8 +39,8 @@ public class TimeVaryingRegressionTest {
 
     @Test
     public void testTD() {
-        TsData s=TsData.of(TsPeriod.monthly(1992, 1), Doubles.of(FURNITURE));
-//        TsData s=TsData.of(TsPeriod.monthly(1982, 4), DoubleSequence.ofInternal(Data.ABS_RETAIL));
+        TsData s=TsData.ofInternal(TsPeriod.monthly(1992, 1), FURNITURE);
+//        TsData s=TsData.of(TsPeriod.monthly(1982, 4), DoubleSequence.of(Data.ABS_RETAIL));
 //        long t0=System.currentTimeMillis();
         TimeVaryingRegression.Results regarima = TimeVaryingRegression.regarima(s, "TD7", "Default", 0);
 //        System.out.println(regarima.getData("tdeffect", TsData.class));

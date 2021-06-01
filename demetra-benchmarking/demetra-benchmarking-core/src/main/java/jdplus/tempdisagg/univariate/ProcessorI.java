@@ -157,7 +157,7 @@ public class ProcessorI {
                 .a(a)
                 .b(b)
                 .maximum(new ObjectiveFunctionPoint(pt.getValue(), finalParameters.toArray(), grad.toArray(), bfgs.curvatureAtMinimum().unmodifiable()))
-                .disaggregatedSeries(TsData.of(indicator.getStart(), Doubles.ofInternal(yq)))
+                .disaggregatedSeries(TsData.ofInternal(indicator.getStart(), yq))
                 .likelihood(ll.stats(0, np))
                 .build();
     }

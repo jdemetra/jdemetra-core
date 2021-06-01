@@ -702,14 +702,14 @@ public class Data {
     public static final TsData SP_IPI, SP_IPI_10, SP_IPI_72, SP_IPI_CN;
 
     static {
-        TS_PROD = TsData.of(TsPeriod.monthly(1967, 1), Doubles.of(PROD));
-        TS_ABS_RETAIL = TsData.of(TsPeriod.monthly(1982, 4), Doubles.of(ABS_RETAIL));
-        TS_ABS_RETAIL2 = TsData.of(TsPeriod.monthly(1982, 4), Doubles.of(ABS_RETAIL2));
-        DAILY_CONTINUOUS = TsData.of(TsPeriod.daily(2004, 1, 1), Doubles.of(US_UNEMPL));
-        SP_IPI = TsData.of(TsPeriod.monthly(1992, 1), Doubles.of(IPI_SP));
-        SP_IPI_10 = TsData.of(TsPeriod.monthly(1992, 1), Doubles.of(IPI_SP_10));
-        SP_IPI_72 = TsData.of(TsPeriod.monthly(1992, 1), Doubles.of(IPI_SP_72));
-        SP_IPI_CN = TsData.of(TsPeriod.monthly(1992, 1), Doubles.of(IPI_SP_CN));
+        TS_PROD = TsData.ofInternal(TsPeriod.monthly(1967, 1), PROD);
+        TS_ABS_RETAIL = TsData.ofInternal(TsPeriod.monthly(1982, 4), ABS_RETAIL);
+        TS_ABS_RETAIL2 = TsData.ofInternal(TsPeriod.monthly(1982, 4), ABS_RETAIL2);
+        DAILY_CONTINUOUS = TsData.ofInternal(TsPeriod.daily(2004, 1, 1), US_UNEMPL);
+        SP_IPI = TsData.ofInternal(TsPeriod.monthly(1992, 1), IPI_SP);
+        SP_IPI_10 = TsData.ofInternal(TsPeriod.monthly(1992, 1), IPI_SP_10);
+        SP_IPI_72 = TsData.ofInternal(TsPeriod.monthly(1992, 1), IPI_SP_72);
+        SP_IPI_CN = TsData.ofInternal(TsPeriod.monthly(1992, 1), IPI_SP_CN);
     }
 
     public static File copyToTempFile(URL url) throws IOException {
@@ -729,7 +729,7 @@ public class Data {
             TsData[] all = new TsData[insee.getColumnsCount()];
             TsPeriod start = TsPeriod.monthly(1990, 1);
             for (int i = 0; i < all.length; ++i) {
-                all[i] = TsData.of(start, Doubles.of(insee.column(i)));
+                all[i] = TsData.ofInternal(start, insee.column(i).toArray());
             }
             return all;
         } catch (IOException ex) {
@@ -745,7 +745,7 @@ public class Data {
             TsData[] all = new TsData[bs.getColumnsCount()];
             TsPeriod start = TsPeriod.monthly(1990, 1);
             for (int i = 0; i < all.length; ++i) {
-                all[i] = TsData.of(start, Doubles.of(bs.column(i)));
+                all[i] = TsData.ofInternal(start, bs.column(i).toArray());
             }
             return all;
         } catch (IOException ex) {
@@ -761,7 +761,7 @@ public class Data {
             TsData[] all = new TsData[insee.getColumnsCount()];
             TsPeriod start = TsPeriod.monthly(1991, 1);
             for (int i = 0; i < all.length; ++i) {
-                all[i] = TsData.of(start, Doubles.of(insee.column(i)));
+                all[i] = TsData.ofInternal(start, insee.column(i).toArray());
             }
             return all;
         } catch (IOException ex) {
@@ -776,7 +776,7 @@ public class Data {
             TsData[] all = new TsData[insee.getColumnsCount()];
             TsPeriod start = TsPeriod.monthly(1990, 1);
             for (int i = 0; i < all.length; ++i) {
-                all[i] = TsData.of(start, Doubles.of(insee.column(i)));
+                all[i] = TsData.ofInternal(start, insee.column(i).toArray());
             }
             return all;
         } catch (IOException ex) {
@@ -791,7 +791,7 @@ public class Data {
             TsData[] all = new TsData[retail.getColumnsCount()];
             TsPeriod start = TsPeriod.monthly(1992, 1);
             for (int i = 0; i < all.length; ++i) {
-                all[i] = TsData.of(start, Doubles.of(retail.column(i))).cleanExtremities();
+                all[i] = TsData.ofInternal(start, retail.column(i).toArray()).cleanExtremities();
             }
             return all;
         } catch (IOException ex) {

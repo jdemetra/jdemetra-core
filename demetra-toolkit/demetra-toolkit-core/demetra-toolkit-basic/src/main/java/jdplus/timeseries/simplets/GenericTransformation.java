@@ -30,7 +30,7 @@ public class GenericTransformation implements TsDataTransformation {
 
     @Override
     public TsData transform(TsData data, LogJacobian logjacobian) {
-        return TsData.of(data.getStart(), Doubles.of(dataTransformation.transform(data.getValues(), logjacobian)));
+        return TsData.ofInternal(data.getStart(), dataTransformation.transform(data.getValues(), logjacobian).toArray());
     }
 
     @Override

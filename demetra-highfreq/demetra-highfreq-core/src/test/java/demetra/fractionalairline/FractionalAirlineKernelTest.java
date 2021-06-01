@@ -41,7 +41,7 @@ public class FractionalAirlineKernelTest {
         MatrixType edf = MatrixSerializer.read(stream);
         Holiday[] france = france();
         Matrix hol = Matrix.make(edf.getRowsCount(), france.length);
-        HolidaysUtility.fillDays(france, hol, LocalDate.of(1996, 1, 1), false);
+        HolidaysUtility.fillDays(france, hol, LocalDate.of(1996, 1, 1), new int[]{7}, false);
         FractionalAirlineSpec spec = FractionalAirlineSpec.builder()
                 .y(edf.column(0).fn(z -> Math.log(z)).toArray())
                 .X(hol)
