@@ -17,12 +17,15 @@
 package jdplus.sts.internal;
 
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.Parameter;
 import demetra.math.matrices.MatrixType;
+import demetra.sts.BsmDecomposition;
 import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 import jdplus.data.normalizer.AbsMeanNormalizer;
 import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.math.functions.FunctionMinimizer;
@@ -35,10 +38,13 @@ import jdplus.math.functions.minpack.MinPackMinimizer;
 import jdplus.math.functions.riso.LbfgsMinimizer;
 import jdplus.math.functions.ssq.ProxyMinimizer;
 import jdplus.math.matrices.Matrix;
+import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;
+import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.sts.BsmData;
+import jdplus.sts.SsfBsm;
 import jdplus.sts.SsfBsm2;
 import nbbrd.design.Development;
 
@@ -51,10 +57,11 @@ public class BsmKernel {
 
     private final BsmEstimationSpec estimationSpec;
 
+    private DoubleSeq z;
     private double[] y;
     private int period;
-    private Matrix X;
-    private double factor;
+    private MatrixType X;
+    private double factor = 1;
 
     // mapper definition
     private BsmSpec modelSpec;
@@ -68,6 +75,10 @@ public class BsmKernel {
     private double m_factor;
 
     private void clear() {
+        z = null;
+        y = null;
+        X = null;
+        period = 0;
         modelSpec = null;
         bsm = null;
         converged = false;
@@ -395,6 +406,7 @@ public class BsmKernel {
      */
     public boolean process(DoubleSeq y, MatrixType x, int period, BsmSpec model) {
         clear();
+        this.z = y;
         this.y = y.toArray();
         AbsMeanNormalizer normalizer = new AbsMeanNormalizer();
         factor = normalizer.normalize(DataBlock.of(this.y));
@@ -431,6 +443,49 @@ public class BsmKernel {
                     return Bfgs.builder();
             }
         }
+    }
+
+    public BsmDecomposition decompose() {
+        if (bsm == null) {
+            return null;
+        }
+        // linearized series
+        DataBlock lin = DataBlock.of(z);
+        if (X != null) {
+            DoubleSeqCursor b = likelihood.coefficients().cursor();
+            for (int i=0; i<X.getColumnsCount(); ++i){
+                lin.addAY(-b.getAndNext(), X.column(i));
+            }
+        }
+        SsfBsm ssf = SsfBsm.of(bsm);
+        DefaultSmoothingResults sr = DkToolkit.sqrtSmooth(ssf, new SsfData(lin), true, true);
+        BsmDecomposition.Builder builder = BsmDecomposition.builder();
+        int pos = SsfBsm.searchPosition(bsm, Component.Level);
+        if (pos >= 0) {
+            builder.add(sr.getComponent(pos), Component.Level);
+            builder.addStde(sr.getComponentVariance(pos).sqrt(), Component.Level);
+        }
+        pos = SsfBsm.searchPosition(bsm, Component.Slope);
+        if (pos >= 0) {
+            builder.add(sr.getComponent(pos), Component.Slope);
+            builder.addStde(sr.getComponentVariance(pos).sqrt(), Component.Slope);
+        }
+        pos = SsfBsm.searchPosition(bsm, Component.Cycle);
+        if (pos >= 0) {
+            builder.add(sr.getComponent(pos), Component.Cycle);
+            builder.addStde(sr.getComponentVariance(pos).sqrt(), Component.Cycle);
+        }
+        pos = SsfBsm.searchPosition(bsm, Component.Seasonal);
+        if (pos >= 0) {
+            builder.add(sr.getComponent(pos), Component.Seasonal);
+            builder.addStde(sr.getComponentVariance(pos).sqrt(), Component.Seasonal);
+        }
+        pos = SsfBsm.searchPosition(bsm, Component.Noise);
+        if (pos >= 0) {
+            builder.add(sr.getComponent(pos), Component.Noise);
+            builder.addStde(sr.getComponentVariance(pos).sqrt(), Component.Noise);
+        }
+        return builder.build();
     }
 
     public IFunction likelihoodFunction() {

@@ -40,16 +40,25 @@ import jdplus.math.matrices.Matrix;
 @lombok.experimental.UtilityClass
 public class HolidaysUtility {
 
-    public void fillDays(Holiday[] holidays, final Matrix D, final LocalDate start, final boolean skipSundays) {
+    private static boolean match(int[] nonworking, DayOfWeek dow) {
+        for (int i = 0; i < nonworking.length; ++i) {
+            if (dow.getValue() == nonworking[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void fillDays(Holiday[] holidays, final Matrix D, final LocalDate start, int[] nonworking, final boolean skip) {
         LocalDate end = start.plusDays(D.getRowsCount());
         int col = 0;
         for (Holiday item : holidays) {
             Iterator<HolidayInfo> iter = HolidayInfo.iterable(item, start, end).iterator();
             while (iter.hasNext()) {
                 LocalDate date = iter.next().getDay();
-                if (!skipSundays || date.getDayOfWeek() != DayOfWeek.SUNDAY) {
+                if (!skip || !match(nonworking, date.getDayOfWeek())) {
                     long pos = start.until(date, DAYS);
-                    D.set((int) pos, col, 1);
+                    D.set((int) pos, col, item.getWeight());
                 }
             }
             if (D.getColumnsCount() > 1) {
@@ -58,19 +67,17 @@ public class HolidaysUtility {
         }
     }
 
-    public void fillPreviousWorkingDays(Holiday[] holidays, final Matrix D, final LocalDate start, final int del) {
+    public void fillPreviousWorkingDays(Holiday[] holidays, final Matrix D, final LocalDate start, int[] nonworking) {
         int n = D.getRowsCount();
-        LocalDate nstart = start.plusDays(del);
         LocalDate end = start.plusDays(n);
         int col = 0;
         for (Holiday item : holidays) {
-            Iterator<HolidayInfo> iter = HolidayInfo.iterable(item, nstart, end).iterator();
+            Iterator<HolidayInfo> iter = HolidayInfo.iterable(item, start, end).iterator();
             while (iter.hasNext()) {
-                LocalDate date = iter.next().getDay().minusDays(del);
-                date = HolidayInfo.getPreviousWorkingDate(date);
+                LocalDate date = HolidayInfo.getPreviousWorkingDate(iter.next().getDay(), nonworking);
                 long pos = start.until(date, DAYS);
                 if (pos >= 0 && pos < n) {
-                    D.set((int) pos, col, 1);
+                    D.set((int) pos, col, item.getWeight());
                 }
             }
             if (D.getColumnsCount() > 1) {
@@ -79,20 +86,18 @@ public class HolidaysUtility {
         }
     }
 
-    public void fillNextWorkingDays(Holiday[] holidays, final Matrix D, final LocalDate start, final int del) {
+    public void fillNextWorkingDays(Holiday[] holidays, final Matrix D, final LocalDate start, int[] nonworking) {
         int n = D.getRowsCount();
-        LocalDate nstart = start.minusDays(del);
-        LocalDate end = nstart.plusDays(n);
+        LocalDate end = start.plusDays(n);
         int col = 0;
         for (Holiday item : holidays) {
 
-            Iterator<HolidayInfo> iter = HolidayInfo.iterable(item, nstart, end).iterator();
+            Iterator<HolidayInfo> iter = HolidayInfo.iterable(item, start, end).iterator();
             while (iter.hasNext()) {
-                LocalDate date = iter.next().getDay().plusDays(del);
-                date = HolidayInfo.getNextWorkingDate(date);
+                LocalDate date = HolidayInfo.getNextWorkingDate(iter.next().getDay(), nonworking);
                 long pos = start.until(date, DAYS);
                 if (pos >= 0 && pos < n) {
-                    D.set((int) pos, col, 1);
+                    D.set((int) pos, col, item.getWeight());
                 }
             }
             if (D.getColumnsCount() > 1) {

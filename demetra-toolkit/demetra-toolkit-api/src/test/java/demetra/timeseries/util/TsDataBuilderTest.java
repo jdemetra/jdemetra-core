@@ -380,7 +380,7 @@ public class TsDataBuilderTest {
     }
 
     private static TsData data(TsUnit unit, LocalDateTime reference, LocalDateTime date, double... values) {
-        return TsData.of(TsPeriod.builder().unit(unit).epoch(reference).date(date).build(), Doubles.of(values));
+        return TsData.ofInternal(TsPeriod.builder().unit(unit).epoch(reference).date(date).build(), values);
     }
 
     private static TsData data(TsUnit unit, LocalDateTime reference, int year, double... values) {

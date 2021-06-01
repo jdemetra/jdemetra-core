@@ -416,7 +416,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
         }
         DataBlock regs = DataBlock.make(model.getHX().getRowsCount());
         regs.product(model.getHX().rowsIterator(), DataBlock.of(coeff));
-        return TsData.ofInternal(model.getHDom().getStartPeriod(), regs);
+        return TsData.of(model.getHDom().getStartPeriod(), regs);
     }
 
     private TsData hresiduals(DisaggregationModel model, DoubleSeq coeff) {
@@ -438,7 +438,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
         DoubleSeq e = ll.e();
         TsPeriod pstart = TsPeriod.of(unit, res.getStart().start());
         pstart = pstart.plus(ll.ndiffuse());
-        TsData fres = TsData.ofInternal(pstart, e);
+        TsData fres = TsData.of(pstart, e);
         NiidTests tests = NiidTests.builder()
                 .data(e)
                 .period(unit.getAnnualFrequency())

@@ -62,7 +62,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
             cur = cur + rnd.nextDouble() - .5;
             data[i] = cur;
         }
-        return ofInternal(TsPeriod.of(freq, beg), DoubleSeq.of(data));
+        return of(TsPeriod.of(freq, beg), DoubleSeq.of(data));
     }
 
     /**
@@ -73,19 +73,19 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
      * @return
      */
     @StaticFactoryMethod
-    public static @NonNull TsData of(@NonNull TsPeriod start, @NonNull Doubles values) {
-        TsDomain domain = TsDomain.of(start, values.length());
-        return domain.isEmpty()
-                ? new TsData(domain, values, NO_DATA_CAUSE)
-                : new TsData(domain, values, null);
-    }
-
-    @StaticFactoryMethod
-    public static @NonNull TsData ofInternal(@NonNull TsPeriod start, @NonNull DoubleSeq values) {
+    public static TsData of(@NonNull TsPeriod start, @NonNull DoubleSeq values) {
         TsDomain domain = TsDomain.of(start, values.length());
         return domain.isEmpty()
                 ? new TsData(domain, Doubles.EMPTY, NO_DATA_CAUSE)
                 : new TsData(domain, values, null);
+    }
+
+    @StaticFactoryMethod
+    public static TsData copyOf(@NonNull TsPeriod start, DoubleSeq.Mutable values) {
+        TsDomain domain = TsDomain.of(start, values.length());
+        return domain.isEmpty()
+                ? new TsData(domain, Doubles.EMPTY, NO_DATA_CAUSE)
+                : new TsData(domain, DoubleSeq.of(values.toArray()), null);
     }
 
     @StaticFactoryMethod
@@ -167,11 +167,11 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
     }
 
     public TsData fn(DoubleUnaryOperator fn) {
-        return TsData.of(getStart(), Doubles.of(values.fn(fn)));
+        return TsData.ofInternal(getStart(), values.fn(fn).toArray());
     }
 
     public TsData fastFn(DoubleUnaryOperator fn) {
-        return TsData.ofInternal(getStart(), DoubleSeq.onMapping(values.length(), i -> fn.applyAsDouble(values.get(i))));
+        return TsData.of(getStart(), DoubleSeq.onMapping(values.length(), i -> fn.applyAsDouble(values.get(i))));
     }
 
     public TsData commit() {
@@ -186,7 +186,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
         }
         TsPeriod istart = iDomain.getStartPeriod();
         int li = domain.indexOf(istart), ri = rDomain.indexOf(istart);
-        return TsData.ofInternal(istart, DoubleSeq.onMapping(iDomain.length(),
+        return TsData.of(istart, DoubleSeq.onMapping(iDomain.length(),
                 i -> fn.applyAsDouble(values.get(li + i), right.getValue(ri + i))));
     }
 
@@ -210,7 +210,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
     }
 
     public TsData fn(int lag, DoubleBinaryOperator fn) {
-        return TsData.of(getStart().plus(lag), Doubles.of(values.fn(lag, fn)));
+        return TsData.ofInternal(getStart().plus(lag), values.fn(lag, fn).toArray());
     }
 
     /**
@@ -227,7 +227,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
         if (beg >= len) {
             return TsData.of(start, Doubles.EMPTY);
         } else {
-            return TsData.ofInternal(start, values.range(beg, Math.min(end, len)));
+            return TsData.of(start, values.range(beg, Math.min(end, len)));
         }
     }
 
@@ -242,24 +242,24 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
      */
     public TsData extract(@NonNegative int start, @NonNegative int n) {
         TsPeriod pstart = getStart().plus(start);
-        return TsData.ofInternal(pstart, Doubles.of(values.extract(start, n)));
+        return TsData.of(pstart, Doubles.of(values.extract(start, n)));
     }
 
     public TsData drop(@NonNegative int nbeg, @NonNegative int nend) {
         int len = length() - nbeg - nend;
         TsPeriod start = getStart().plus(nbeg);
-        return TsData.ofInternal(start, values.extract(nbeg, Math.max(0, len)));
+        return TsData.of(start, values.extract(nbeg, Math.max(0, len)));
     }
 
     public TsData extend(@NonNegative int nbeg, @NonNegative int nend) {
         TsPeriod start = getStart().plus(-nbeg);
-        return TsData.ofInternal(start, values.extend(nbeg, nend));
+        return TsData.of(start, values.extend(nbeg, nend));
     }
 
     public TsData select(TimeSelector selector) {
         TsDomain ndomain = domain.select(selector);
         final int beg = getStart().until(ndomain.getStartPeriod());
-        return TsData.of(ndomain.getStartPeriod(), Doubles.of(values.extract(beg, ndomain.length())));
+        return TsData.ofInternal(ndomain.getStartPeriod(), values.extract(beg, ndomain.length()).toArray());
     }
 
     /**
@@ -491,11 +491,11 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
     }
 
     public TsData lead(@NonNegative int lead) {
-        return lead == 0 ? this : TsData.ofInternal(getStart().plus(-lead), values);
+        return lead == 0 ? this : TsData.of(getStart().plus(-lead), values);
     }
 
     public TsData lag(@NonNegative int lag) {
-        return lag == 0 ? this : TsData.ofInternal(getStart().plus(lag), values);
+        return lag == 0 ? this : TsData.of(getStart().plus(lag), values);
     }
 
     public static TsData concatenate(TsData... s) {
@@ -617,7 +617,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
                 return this;
         }
         if (this.isEmpty()) {
-            return TsData.of(this.getStart().withUnit(newUnit), Doubles.of(this.getValues()));
+            return TsData.of(this.getStart().withUnit(newUnit), this.getValues());
         }
         return changeUsingRatio(this, newUnit, InternalAggregator.of(conversion), ratio, complete);
     }
@@ -646,7 +646,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
             nstart = nstart.next();
         }
         int nlength = 1 + (oldLength - head - 1) / ratio;
-        return TsData.of(nstart, Doubles.of(values.extract(head, nlength, ratio)));
+        return TsData.ofInternal(nstart, values.extract(head, nlength, ratio).toArray());
     }
 
     private static TsData changeUsingRatio(TsData s, TsUnit newUnit, InternalAggregator aggregator, int ratio, boolean complete) {
@@ -659,11 +659,11 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
         if (complete && head > 0) {
             nstart = nstart.next();
         }
-        Doubles newValues = aggregate(s.getValues(), aggregator, complete, ratio, head, body, tail);
+        DoubleSeq newValues = aggregate(s.getValues(), aggregator, complete, ratio, head, body, tail);
         return TsData.of(nstart, newValues);
     }
 
-    private static Doubles aggregate(DoubleSeq values, InternalAggregator aggregator, boolean complete, int ratio, int head, int body, int tail) {
+    private static DoubleSeq aggregate(DoubleSeq values, InternalAggregator aggregator, boolean complete, int ratio, int head, int body, int tail) {
         boolean appendHead = !complete && head > 0;
         boolean appendTail = !complete && tail > 0;
 
@@ -686,6 +686,6 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
             safeArray[i++] = aggregator.aggregate(values, tailIndex, tailIndex + tail);
         }
 
-        return Doubles.ofInternal(safeArray);
+        return DoubleSeq.of(safeArray);
     }
 }

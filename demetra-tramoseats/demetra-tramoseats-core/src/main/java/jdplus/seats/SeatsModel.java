@@ -28,10 +28,12 @@ import demetra.sa.SeriesDecomposition;
 import demetra.seats.SeatsModelSpec;
 import demetra.timeseries.TsData;
 import jdplus.arima.ArimaModel;
+import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.linearfilters.BackFilter;
 import static jdplus.math.linearfilters.BackFilter.D1;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaToolkit;
+import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.regsarima.regular.SeasonalityDetector;
 import jdplus.tramo.TramoSeasonalityDetector;
 
@@ -44,7 +46,7 @@ public class SeatsModel {
 
     public static SeatsModel of(SeatsModelSpec spec) {
         SeatsModel model;
-        if (spec.getSarimaSpec().hasFreeParameters()) {
+        if (!spec.getSarimaSpec().isDefined()) {
             model = buildEstimatedModel(spec);
         } else {
             model = buildDefinedModel(spec);
@@ -52,13 +54,12 @@ public class SeatsModel {
 
 //        model.setBackcastsCount(spec.getComponentsSpec().getBackCastCount());
 //        model.setForecastsCount(spec.getComponentsSpec().getForecastCount());
-
         return model;
     }
 
     private static SeatsModel buildDefinedModel(SeatsModelSpec spec) {
-        TsData series=spec.getSeries();
-        int period=series.getAnnualFrequency();
+        TsData series = spec.getSeries();
+        int period = series.getAnnualFrequency();
         boolean log = spec.isLog();
         TsData nseries = log ? series.log() : series;
         boolean mean = spec.isMeanCorrection();
@@ -74,12 +75,23 @@ public class SeatsModel {
         SeasonalityDetector.Seasonality seas = detector.hasSeasonality(nseries.getValues(), period);
         SeatsModel seatsModel = new SeatsModel(series, nseries, log, sarima, seas.getAsInt() > 1);
         seatsModel.meanCorrection = mean;
+        double var = spec.getInnovationVariance();
+        if (var == 0) {
+            RegArimaModel regarima = RegArimaModel.<SarimaModel>builder()
+                    .y(nseries.getValues())
+                    .arima(sarima)
+                    .meanCorrection(mean)
+                    .build();
+            ConcentratedLikelihoodWithMissing ll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
+            var = ll.ssq() / (ll.dim()-orders.getParametersCount());
+        }
+        seatsModel.innovationVariance = var;
         return seatsModel;
     }
 
     private static SeatsModel buildEstimatedModel(SeatsModelSpec spec) {
-        TsData series=spec.getSeries();
-        int period=series.getAnnualFrequency();
+        TsData series = spec.getSeries();
+        int period = series.getAnnualFrequency();
         boolean log = spec.isLog();
         TsData nseries = log ? series.log() : series;
         boolean mean = spec.isMeanCorrection();
@@ -100,10 +112,9 @@ public class SeatsModel {
                 .meanCorrection(mean)
                 .build();
         RegArimaEstimation<SarimaModel> estimation = RegArimaToolkit.robustEstimation(regarima, null);
-
         SarimaModel arima = estimation.getModel().arima();
         LikelihoodStatistics stat = estimation.statistics();
-        double var = stat.getSsqErr() / (stat.getEffectiveObservationsCount() - stat.getEstimatedParametersCount()+1);
+        double var = stat.getSsqErr() / (stat.getEffectiveObservationsCount() - stat.getEstimatedParametersCount());
         SeasonalityDetector detector = new TramoSeasonalityDetector();
         SeasonalityDetector.Seasonality seas = detector.hasSeasonality(nseries.getValues(), period);
 
@@ -148,7 +159,7 @@ public class SeatsModel {
                 .build();
         RegArimaEstimation<SarimaModel> estimation = RegArimaToolkit.concentratedLikelihood(regarima);
         LikelihoodStatistics stat = estimation.statistics();
-        double var = stat.getSsqErr() / (stat.getEffectiveObservationsCount() - stat.getEstimatedParametersCount()+1);
+        double var = stat.getSsqErr() / (stat.getEffectiveObservationsCount() - stat.getEstimatedParametersCount() + 1);
         if (set) {
             this.innovationVariance = var;
         }

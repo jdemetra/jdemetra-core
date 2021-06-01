@@ -21,10 +21,6 @@ import jdplus.ssf.likelihood.DiffuseLikelihood;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.DataBlockStorage;
-import jdplus.math.functions.IParametricMapping;
-import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.math.matrices.UpperTriangularMatrix;
-import jdplus.math.matrices.decomposition.Householder;
 import jdplus.ssf.dk.sqrt.DiffuseSquareRootInitializer;
 import jdplus.ssf.ResultsRange;
 import jdplus.ssf.ckms.CkmsDiffuseInitializer;
@@ -37,7 +33,6 @@ import jdplus.ssf.univariate.IConcentratedLikelihoodComputer;
 import jdplus.ssf.univariate.ILikelihoodComputer;
 import jdplus.ssf.univariate.ISmoothingResults;
 import jdplus.ssf.univariate.ISsf;
-import jdplus.ssf.univariate.ISsfBuilder;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.OrdinaryFilter;
 import jdplus.ssf.univariate.SsfRegressionModel;
@@ -51,6 +46,7 @@ import jdplus.ssf.multivariate.IMultivariateSsfData;
 import jdplus.ssf.multivariate.M2uAdapter;
 import jdplus.ssf.univariate.IFilteringResults;
 import demetra.data.DoubleSeq;
+import demetra.math.matrices.MatrixType;
 import jdplus.leastsquares.QRSolution;
 import jdplus.leastsquares.QRSolver;
 import jdplus.math.matrices.Matrix;
@@ -509,15 +505,15 @@ public class DkToolkit {
         }
 
         private Matrix xl(SsfRegressionModel model, DkFilter lp, int nl) {
-            Matrix x = model.getX();
+            MatrixType x = model.getX();
             if (x == null) {
                 return null;
             }
             Matrix xl = Matrix.make(nl, x.getColumnsCount());
             DataBlockIterator lcols = xl.columnsIterator();
-            DataBlockIterator cols = x.columnsIterator();
-            while (cols.hasNext() && lcols.hasNext()) {
-                lp.apply(cols.next(), lcols.next());
+            int i=0;
+            while (lcols.hasNext()) {
+                lp.apply(x.column(i++), lcols.next());
             }
             return xl;
         }

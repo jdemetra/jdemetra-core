@@ -24,7 +24,7 @@ public class StsOutliersDetectionTest {
 
     @Test
     public void testSomeMethod() {
-//        TsData y = TsData.ofInternal(TsPeriod.monthly(1974, 1), sugar);
+//        TsData y = TsData.of(TsPeriod.monthly(1974, 1), sugar);
         double[] z = Data.RETAIL_JEWELRYSTORES;
         for (int i = 0; i < 12; ++i) {
             z[i] = Double.NaN;

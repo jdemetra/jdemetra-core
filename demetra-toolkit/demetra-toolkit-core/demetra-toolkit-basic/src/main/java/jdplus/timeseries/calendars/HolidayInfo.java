@@ -47,64 +47,120 @@ public interface HolidayInfo {
     }
 
     /**
-     * Returns the date equal or before the given date
+     * Returns the working date equal or before the given date
      *
      * @param date
+     * @param nonworking List of non working days (ordered values of DayOfWeek)
      * @return
      */
-    static LocalDate getPreviousWorkingDate(LocalDate date) {
-        DayOfWeek dw = date.getDayOfWeek();
-        if (dw == DayOfWeek.SUNDAY) {
-            return date.minusDays(1);
-        } else {
-            return date;
+    static LocalDate getPreviousWorkingDate(LocalDate date, int[] nonworking) {
+        int dw = date.getDayOfWeek().getValue();
+        for (int i = 0; i < nonworking.length; ++i) {
+            if (dw == nonworking[i]) {
+                int del = 1;
+                while (del < nonworking.length) {
+                    int pdw = dw - del;
+                    if (pdw <= 0) {
+                        pdw += 7;
+                    }
+                    boolean wd = true;
+                    for (int j = i - 1; j >= 0; --j) {
+                        if (nonworking[j] == pdw) {
+                            wd = false;
+                            break;
+                        }
+                    }
+                    if (wd) {
+                        for (int j = nonworking.length - 1; j > i; --j) {
+                            if (nonworking[j] == pdw) {
+                                wd = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (wd) {
+                        break;
+                    }
+                    ++del;
+                }
+                return date.minusDays(del);
+            }
         }
+        return date;
     }
 
     /**
      * Returns the date equal or after the given date
      *
      * @param date
+     * @param nonworking List of non working days (ordered values of DayOfWeek)
      * @return
      */
-    static LocalDate getNextWorkingDate(LocalDate date) {
-        DayOfWeek dw = date.getDayOfWeek();
-        if (dw == DayOfWeek.SUNDAY) {
-            return date.plusDays(1);
-        } else {
-            return date;
+    static LocalDate getNextWorkingDate(LocalDate date, int[] nonworking) {
+        int dw = date.getDayOfWeek().getValue();
+        for (int i = 0; i < nonworking.length; ++i) {
+            if (dw == nonworking[i]) {
+                int del = 1;
+                while (del < nonworking.length) {
+                    int pdw = dw + del;
+                    if (pdw > 7) {
+                        pdw -= 7;
+                    }
+                    boolean wd = true;
+                    for (int j = i + 1; j < nonworking.length; ++j) {
+                        if (nonworking[j] == pdw) {
+                            wd = false;
+                            break;
+                        }
+                    }
+                    if (wd) {
+                        for (int j = 0; j < i; ++j) {
+                            if (nonworking[j] == pdw) {
+                                wd = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (wd) {
+                        break;
+                    }
+                    ++del;
+
+                }
+                return date.plusDays(del);
+            }
         }
+        return date;
     }
-    
-    static FixedDayInfo of(FixedDay fday, int year){
+
+    static FixedDayInfo of(FixedDay fday, int year) {
         return new FixedDayInfo(year, fday);
     }
-    
-    static EasterDayInfo of(EasterRelatedDay fday, int year){
+
+    static EasterDayInfo of(EasterRelatedDay fday, int year) {
         return new EasterDayInfo(year, fday.getOffset(), fday.isJulian());
     }
-    
-    static HolidayInfo of(Holiday holiday, int year){
-        if (holiday instanceof FixedDay)
-            return new FixedDayInfo(year, (FixedDay) holiday); 
-        else if (holiday instanceof EasterRelatedDay)
-            return of((EasterRelatedDay)holiday, year); 
-        else if (holiday instanceof PrespecifiedHoliday){
-            PrespecifiedHoliday ph=(PrespecifiedHoliday) holiday;
+
+    static HolidayInfo of(Holiday holiday, int year) {
+        if (holiday instanceof FixedDay) {
+            return new FixedDayInfo(year, (FixedDay) holiday);
+        } else if (holiday instanceof EasterRelatedDay) {
+            return of((EasterRelatedDay) holiday, year);
+        } else if (holiday instanceof PrespecifiedHoliday) {
+            PrespecifiedHoliday ph = (PrespecifiedHoliday) holiday;
             return of(ph.rawHoliday(), year);
         }
         throw new IllegalArgumentException();
     }
-    
-    
-    static Iterable<HolidayInfo> iterable(Holiday holiday, LocalDate fstart, LocalDate fend){
-        if (holiday instanceof FixedDay)
-            return new FixedDayInfo.FixedDayIterable((FixedDay) holiday, fstart, fend); 
-        else if (holiday instanceof EasterRelatedDay){
-            EasterRelatedDay eday=(EasterRelatedDay) holiday;
+
+    static Iterable<HolidayInfo> iterable(Holiday holiday, LocalDate fstart, LocalDate fend) {
+        if (holiday instanceof FixedDay) {
+            return new FixedDayInfo.FixedDayIterable((FixedDay) holiday, fstart, fend);
+        } else if (holiday instanceof EasterRelatedDay) {
+            EasterRelatedDay eday = (EasterRelatedDay) holiday;
             return new EasterDayInfo.EasterDayList(eday.getOffset(), eday.isJulian(), fstart, fend);
-        }else if (holiday instanceof PrespecifiedHoliday){
-            PrespecifiedHoliday ph=(PrespecifiedHoliday) holiday;
+        } else if (holiday instanceof PrespecifiedHoliday) {
+            PrespecifiedHoliday ph = (PrespecifiedHoliday) holiday;
             return iterable(ph.rawHoliday(), fstart, fend);
         }
         throw new IllegalArgumentException();

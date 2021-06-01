@@ -33,6 +33,7 @@ public final class SeatsModelSpec implements Validatable<SeatsModelSpec> {
 
     private TsData series;
     private boolean log, meanCorrection;
+    private double innovationVariance;
     private SarimaSpec sarimaSpec;
 
     private static final SarimaSpec AIRLINE = SarimaSpec.airline();

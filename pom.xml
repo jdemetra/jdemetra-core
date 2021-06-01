@@ -58,6 +58,7 @@
         <module>demetra-revisions</module>
         <module>demetra-calendars</module>
         <module>demetra-workspace</module>
+        <module>demetra-examples</module>
     </modules>
 
     <dependencyManagement>
@@ -197,7 +198,7 @@
                     <dependency>
                         <groupId>com.google.protobuf</groupId>
                         <artifactId>protobuf-java</artifactId>
-                        <version>3.17.1</version>
+                        <version>3.17.0</version>
                     </dependency>
                 </dependencies>
             </dependencyManagement>

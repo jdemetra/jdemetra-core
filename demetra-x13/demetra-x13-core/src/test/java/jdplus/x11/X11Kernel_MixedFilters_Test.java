@@ -292,7 +292,7 @@ public class X11Kernel_MixedFilters_Test {
 
         jdplus.x11.X11Kernel instanceKernel = new X11Kernel();
         demetra.x11.X11Results x11Results = instanceKernel.process(
-                demetra.timeseries.TsData.ofInternal(TsPeriod.of(TsUnit.ofAnnualFrequency(frequency), LocalDate.of(1900, Month.of(start), 1)),
+                demetra.timeseries.TsData.of(TsPeriod.of(TsUnit.ofAnnualFrequency(frequency), LocalDate.of(1900, Month.of(start), 1)),
                         DoubleSeq.of(values)), spec);
 
         ec.satoolkit.x11.X11Kernel old = new ec.satoolkit.x11.X11Kernel();

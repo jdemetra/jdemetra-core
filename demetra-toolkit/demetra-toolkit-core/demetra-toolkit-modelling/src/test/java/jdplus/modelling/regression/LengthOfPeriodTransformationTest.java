@@ -31,7 +31,7 @@ public class LengthOfPeriodTransformationTest {
         TsPeriod start=TsPeriod.monthly(1980, 3);
         TsDataTransformation lp=Transformations.lengthOfPeriod(LengthOfPeriodType.LengthOfPeriod);
         LogJacobian lj=new LogJacobian(0, data.length(), null);
-        TsData s=TsData.of(start, Doubles.of(data));
+        TsData s=TsData.of(start, data);
         TsData s1=lp.transform(s, lj);
         TsData s2=lp.converse().transform(s1, lj);
         assertTrue(s2.getValues().allMatch(x->Math.abs(x-1)<1e-12));
@@ -44,7 +44,7 @@ public class LengthOfPeriodTransformationTest {
         TsPeriod start=TsPeriod.quarterly(1980, 2);
         TsDataTransformation lp=Transformations.lengthOfPeriod(LengthOfPeriodType.LengthOfPeriod);
         LogJacobian lj=new LogJacobian(0, data.length(), null);
-        TsData s=TsData.of(start, Doubles.of(data));
+        TsData s=TsData.of(start, data);
         TsData s1=lp.transform(s, lj);
         TsData s2=lp.converse().transform(s1, lj);
         assertTrue(s2.getValues().allMatch(x->Math.abs(x-1)<1e-12));
@@ -57,7 +57,7 @@ public class LengthOfPeriodTransformationTest {
         TsPeriod start=TsPeriod.quarterly(1980, 3);
         TsDataTransformation lp=Transformations.lengthOfPeriod(LengthOfPeriodType.LengthOfPeriod);
         LogJacobian lj=new LogJacobian(0, data.length(), null);
-        TsData s=TsData.of(start, Doubles.of(data));
+        TsData s=TsData.of(start, data);
         TsData s1=lp.transform(s, lj);
         TsData s2=lp.converse().transform(s1, lj);
         assertTrue(s2.getValues().allMatch(x->Math.abs(x-1)<1e-12));

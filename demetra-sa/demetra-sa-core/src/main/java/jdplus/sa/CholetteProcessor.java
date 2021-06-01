@@ -148,7 +148,7 @@ public class CholetteProcessor  {
 //            } else {
 //                rslts.getComponent(1).copyTo(b, 0);
 //            }
-//            return TsData.add(highFreqSeries, TsData.ofInternal(start, b));
+//            return TsData.add(highFreqSeries, TsData.of(start, b));
 //        } else {
 //            ISsfLoading loading;
 //            StateComponent cmp;
@@ -169,7 +169,7 @@ public class CholetteProcessor  {
 //            for (int i = 0; i < b.length; ++i) {
 //                b[i] = loading.ZX(i, rslts.a(i));
 //            }
-//            return TsData.add(highFreqSeries, TsData.ofInternal(start, b));
+//            return TsData.add(highFreqSeries, TsData.of(start, b));
 return null; 
     }
 

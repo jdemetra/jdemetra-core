@@ -50,7 +50,7 @@ public class RegArimaDecomposer {
      * @return
      */
     public TsData deterministicEffect(RegSarimaModel model, TsDomain domain, ComponentType type, boolean transformed) {
-        TsData f = model.deterministicEffect(domain, v -> v.isAttribute(SaVariable.REGEFFECT, type.name()));
+        TsData f = model.deterministicEffect(domain, v ->  v.isAttribute(SaVariable.REGEFFECT, type.name()));
         if (!transformed) {
             f = model.backTransform(f, type == ComponentType.CalendarEffect);
         }

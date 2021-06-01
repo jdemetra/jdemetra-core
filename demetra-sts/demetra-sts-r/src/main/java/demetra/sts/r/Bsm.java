@@ -10,6 +10,7 @@ import demetra.data.Parameter;
 import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.sts.BasicStructuralModel;
+import demetra.sts.BsmDecomposition;
 import demetra.sts.BsmEstimation;
 import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
@@ -86,7 +87,7 @@ public class Bsm {
         Variable[] vars= X == null ? new Variable[0] : new Variable[X.getColumnsCount()];
         TsPeriod start = y.getStart();
         for (int i=0; i<vars.length; ++i){
-            UserVariable uvar=new UserVariable("var-"+(i+1), TsData.ofInternal(start, X.column(i)));
+            UserVariable uvar=new UserVariable("var-"+(i+1), TsData.of(start, X.column(i)));
             vars[i]=Variable.variable("var-"+(i+1), uvar).withCoefficient(Parameter.estimated(coef.get(i)));
         }
         
@@ -98,9 +99,16 @@ public class Bsm {
                 .variables(vars)
                 .build();
         
+        
+        
+        BsmDecomposition decomposition=BsmDecomposition.builder()
+                
+                .build();
+        
         return LightBasicStructuralModel.builder()
                 .description(description)
                 .estimation(estimation)
+                .bsmDecomposition(decomposition)
                 .build();
     }
     

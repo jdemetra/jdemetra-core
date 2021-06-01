@@ -222,7 +222,7 @@ public final class StsProtos {
      * <code>.sts.SeasonalModel seasonal_model = 5;</code>
      * @return The seasonalModel.
      */
-    demetra.sts.io.protobuf.StsProtos.SeasonalModel getSeasonalModel();
+        demetra.sts.io.protobuf.StsProtos.SeasonalModel getSeasonalModel();
 
     /**
      * <code>.jd3.Parameter cycle = 6;</code>
@@ -440,8 +440,7 @@ public final class StsProtos {
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return demetra.sts.io.protobuf.StsProtos.internal_static_sts_BsmSpec_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              demetra.sts.io.protobuf.StsProtos.BsmSpec.class, demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder.class);
+          .ensureFieldAccessorsInitialized(demetra.sts.io.protobuf.StsProtos.BsmSpec.class, demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder.class);
     }
 
     public static final int NOISE_FIELD_NUMBER = 1;
@@ -563,7 +562,7 @@ public final class StsProtos {
      */
     @java.lang.Override public demetra.sts.io.protobuf.StsProtos.SeasonalModel getSeasonalModel() {
       @SuppressWarnings("deprecation")
-      demetra.sts.io.protobuf.StsProtos.SeasonalModel result = demetra.sts.io.protobuf.StsProtos.SeasonalModel.valueOf(seasonalModel_);
+            demetra.sts.io.protobuf.StsProtos.SeasonalModel result = demetra.sts.io.protobuf.StsProtos.SeasonalModel.valueOf(seasonalModel_);
       return result == null ? demetra.sts.io.protobuf.StsProtos.SeasonalModel.UNRECOGNIZED : result;
     }
 
@@ -737,7 +736,7 @@ public final class StsProtos {
       if (!(obj instanceof demetra.sts.io.protobuf.StsProtos.BsmSpec)) {
         return super.equals(obj);
       }
-      demetra.sts.io.protobuf.StsProtos.BsmSpec other = (demetra.sts.io.protobuf.StsProtos.BsmSpec) obj;
+            demetra.sts.io.protobuf.StsProtos.BsmSpec other = (demetra.sts.io.protobuf.StsProtos.BsmSpec) obj;
 
       if (hasNoise() != other.hasNoise()) return false;
       if (hasNoise()) {
@@ -920,15 +919,14 @@ public final class StsProtos {
         demetra.sts.io.protobuf.StsProtos.BsmSpecOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_BsmSpec_descriptor;
+        return  demetra.sts.io.protobuf.StsProtos.internal_static_sts_BsmSpec_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_BsmSpec_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                demetra.sts.io.protobuf.StsProtos.BsmSpec.class, demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder.class);
+        return  demetra.sts.io.protobuf.StsProtos.internal_static_sts_BsmSpec_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(demetra.sts.io.protobuf.StsProtos.BsmSpec.class, demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder.class);
       }
 
       // Construct using demetra.sts.io.protobuf.StsProtos.BsmSpec.newBuilder()
@@ -999,17 +997,17 @@ public final class StsProtos {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_BsmSpec_descriptor;
+        return  demetra.sts.io.protobuf.StsProtos.internal_static_sts_BsmSpec_descriptor;
       }
 
       @java.lang.Override
       public demetra.sts.io.protobuf.StsProtos.BsmSpec getDefaultInstanceForType() {
-        return demetra.sts.io.protobuf.StsProtos.BsmSpec.getDefaultInstance();
+        return  demetra.sts.io.protobuf.StsProtos.BsmSpec.getDefaultInstance();
       }
 
       @java.lang.Override
       public demetra.sts.io.protobuf.StsProtos.BsmSpec build() {
-        demetra.sts.io.protobuf.StsProtos.BsmSpec result = buildPartial();
+                demetra.sts.io.protobuf.StsProtos.BsmSpec result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -1018,7 +1016,7 @@ public final class StsProtos {
 
       @java.lang.Override
       public demetra.sts.io.protobuf.StsProtos.BsmSpec buildPartial() {
-        demetra.sts.io.protobuf.StsProtos.BsmSpec result = new demetra.sts.io.protobuf.StsProtos.BsmSpec(this);
+                demetra.sts.io.protobuf.StsProtos.BsmSpec result = new demetra.sts.io.protobuf.StsProtos.BsmSpec(this);
         if (noiseBuilder_ == null) {
           result.noise_ = noise_;
         } else {
@@ -1142,7 +1140,7 @@ public final class StsProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        demetra.sts.io.protobuf.StsProtos.BsmSpec parsedMessage = null;
+                demetra.sts.io.protobuf.StsProtos.BsmSpec parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -1658,7 +1656,7 @@ public final class StsProtos {
       @java.lang.Override
       public demetra.sts.io.protobuf.StsProtos.SeasonalModel getSeasonalModel() {
         @SuppressWarnings("deprecation")
-        demetra.sts.io.protobuf.StsProtos.SeasonalModel result = demetra.sts.io.protobuf.StsProtos.SeasonalModel.valueOf(seasonalModel_);
+                demetra.sts.io.protobuf.StsProtos.SeasonalModel result = demetra.sts.io.protobuf.StsProtos.SeasonalModel.valueOf(seasonalModel_);
         return result == null ? demetra.sts.io.protobuf.StsProtos.SeasonalModel.UNRECOGNIZED : result;
       }
       /**
@@ -2108,11 +2106,11 @@ public final class StsProtos {
      * <code>.sts.Bsm.Description description = 1;</code>
      * @return The description.
      */
-    demetra.sts.io.protobuf.StsProtos.Bsm.Description getDescription();
+        demetra.sts.io.protobuf.StsProtos.Bsm.Description getDescription();
     /**
      * <code>.sts.Bsm.Description description = 1;</code>
      */
-    demetra.sts.io.protobuf.StsProtos.Bsm.DescriptionOrBuilder getDescriptionOrBuilder();
+        demetra.sts.io.protobuf.StsProtos.Bsm.DescriptionOrBuilder getDescriptionOrBuilder();
 
     /**
      * <code>.sts.Bsm.Estimation estimation = 2;</code>
@@ -2123,11 +2121,11 @@ public final class StsProtos {
      * <code>.sts.Bsm.Estimation estimation = 2;</code>
      * @return The estimation.
      */
-    demetra.sts.io.protobuf.StsProtos.Bsm.Estimation getEstimation();
+        demetra.sts.io.protobuf.StsProtos.Bsm.Estimation getEstimation();
     /**
      * <code>.sts.Bsm.Estimation estimation = 2;</code>
      */
-    demetra.sts.io.protobuf.StsProtos.Bsm.EstimationOrBuilder getEstimationOrBuilder();
+        demetra.sts.io.protobuf.StsProtos.Bsm.EstimationOrBuilder getEstimationOrBuilder();
 
     /**
      * <code>.sts.Bsm.Components components = 3;</code>
@@ -2138,11 +2136,11 @@ public final class StsProtos {
      * <code>.sts.Bsm.Components components = 3;</code>
      * @return The components.
      */
-    demetra.sts.io.protobuf.StsProtos.Bsm.Components getComponents();
+        demetra.sts.io.protobuf.StsProtos.Bsm.Components getComponents();
     /**
      * <code>.sts.Bsm.Components components = 3;</code>
      */
-    demetra.sts.io.protobuf.StsProtos.Bsm.ComponentsOrBuilder getComponentsOrBuilder();
+        demetra.sts.io.protobuf.StsProtos.Bsm.ComponentsOrBuilder getComponentsOrBuilder();
 
     /**
      * <code>.sa.SaDecomposition final = 4;</code>
@@ -2220,7 +2218,7 @@ public final class StsProtos {
               done = true;
               break;
             case 10: {
-              demetra.sts.io.protobuf.StsProtos.Bsm.Description.Builder subBuilder = null;
+                            demetra.sts.io.protobuf.StsProtos.Bsm.Description.Builder subBuilder = null;
               if (description_ != null) {
                 subBuilder = description_.toBuilder();
               }
@@ -2233,7 +2231,7 @@ public final class StsProtos {
               break;
             }
             case 18: {
-              demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.Builder subBuilder = null;
+                            demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.Builder subBuilder = null;
               if (estimation_ != null) {
                 subBuilder = estimation_.toBuilder();
               }
@@ -2246,7 +2244,7 @@ public final class StsProtos {
               break;
             }
             case 26: {
-              demetra.sts.io.protobuf.StsProtos.Bsm.Components.Builder subBuilder = null;
+                            demetra.sts.io.protobuf.StsProtos.Bsm.Components.Builder subBuilder = null;
               if (components_ != null) {
                 subBuilder = components_.toBuilder();
               }
@@ -2312,8 +2310,7 @@ public final class StsProtos {
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              demetra.sts.io.protobuf.StsProtos.Bsm.class, demetra.sts.io.protobuf.StsProtos.Bsm.Builder.class);
+          .ensureFieldAccessorsInitialized(demetra.sts.io.protobuf.StsProtos.Bsm.class, demetra.sts.io.protobuf.StsProtos.Bsm.Builder.class);
     }
 
     public interface DescriptionOrBuilder extends
@@ -2385,11 +2382,11 @@ public final class StsProtos {
        * <code>.sts.BsmSpec bsm = 5;</code>
        * @return The bsm.
        */
-      demetra.sts.io.protobuf.StsProtos.BsmSpec getBsm();
+            demetra.sts.io.protobuf.StsProtos.BsmSpec getBsm();
       /**
        * <code>.sts.BsmSpec bsm = 5;</code>
        */
-      demetra.sts.io.protobuf.StsProtos.BsmSpecOrBuilder getBsmOrBuilder();
+            demetra.sts.io.protobuf.StsProtos.BsmSpecOrBuilder getBsmOrBuilder();
     }
     /**
      * Protobuf type {@code sts.Bsm.Description}
@@ -2473,7 +2470,7 @@ public final class StsProtos {
                 break;
               }
               case 42: {
-                demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder subBuilder = null;
+                                demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder subBuilder = null;
                 if (bsm_ != null) {
                   subBuilder = bsm_.toBuilder();
                 }
@@ -2509,15 +2506,14 @@ public final class StsProtos {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Description_descriptor;
+        return  demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Description_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Description_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                demetra.sts.io.protobuf.StsProtos.Bsm.Description.class, demetra.sts.io.protobuf.StsProtos.Bsm.Description.Builder.class);
+        return  demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Description_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(demetra.sts.io.protobuf.StsProtos.Bsm.Description.class, demetra.sts.io.protobuf.StsProtos.Bsm.Description.Builder.class);
       }
 
       public static final int SERIES_FIELD_NUMBER = 1;
@@ -2713,7 +2709,7 @@ public final class StsProtos {
         if (!(obj instanceof demetra.sts.io.protobuf.StsProtos.Bsm.Description)) {
           return super.equals(obj);
         }
-        demetra.sts.io.protobuf.StsProtos.Bsm.Description other = (demetra.sts.io.protobuf.StsProtos.Bsm.Description) obj;
+                demetra.sts.io.protobuf.StsProtos.Bsm.Description other = (demetra.sts.io.protobuf.StsProtos.Bsm.Description) obj;
 
         if (hasSeries() != other.hasSeries()) return false;
         if (hasSeries()) {
@@ -2859,18 +2855,17 @@ public final class StsProtos {
       public static final class Builder extends
           com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
           // @@protoc_insertion_point(builder_implements:sts.Bsm.Description)
-          demetra.sts.io.protobuf.StsProtos.Bsm.DescriptionOrBuilder {
+            demetra.sts.io.protobuf.StsProtos.Bsm.DescriptionOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Description_descriptor;
+          return    demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Description_descriptor;
         }
 
         @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Description_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                  demetra.sts.io.protobuf.StsProtos.Bsm.Description.class, demetra.sts.io.protobuf.StsProtos.Bsm.Description.Builder.class);
+          return    demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Description_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(demetra.sts.io.protobuf.StsProtos.Bsm.Description.class, demetra.sts.io.protobuf.StsProtos.Bsm.Description.Builder.class);
         }
 
         // Construct using demetra.sts.io.protobuf.StsProtos.Bsm.Description.newBuilder()
@@ -2920,17 +2915,17 @@ public final class StsProtos {
         @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Description_descriptor;
+          return    demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Description_descriptor;
         }
 
         @java.lang.Override
-        public demetra.sts.io.protobuf.StsProtos.Bsm.Description getDefaultInstanceForType() {
-          return demetra.sts.io.protobuf.StsProtos.Bsm.Description.getDefaultInstance();
+        public  demetra.sts.io.protobuf.StsProtos.Bsm.Description getDefaultInstanceForType() {
+          return    demetra.sts.io.protobuf.StsProtos.Bsm.Description.getDefaultInstance();
         }
 
         @java.lang.Override
-        public demetra.sts.io.protobuf.StsProtos.Bsm.Description build() {
-          demetra.sts.io.protobuf.StsProtos.Bsm.Description result = buildPartial();
+        public  demetra.sts.io.protobuf.StsProtos.Bsm.Description build() {
+                    demetra.sts.io.protobuf.StsProtos.Bsm.Description result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
@@ -2938,8 +2933,8 @@ public final class StsProtos {
         }
 
         @java.lang.Override
-        public demetra.sts.io.protobuf.StsProtos.Bsm.Description buildPartial() {
-          demetra.sts.io.protobuf.StsProtos.Bsm.Description result = new demetra.sts.io.protobuf.StsProtos.Bsm.Description(this);
+        public  demetra.sts.io.protobuf.StsProtos.Bsm.Description buildPartial() {
+                    demetra.sts.io.protobuf.StsProtos.Bsm.Description result = new demetra.sts.io.protobuf.StsProtos.Bsm.Description(this);
           int from_bitField0_ = bitField0_;
           if (seriesBuilder_ == null) {
             result.series_ = series_;
@@ -3063,7 +3058,7 @@ public final class StsProtos {
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-          demetra.sts.io.protobuf.StsProtos.Bsm.Description parsedMessage = null;
+                    demetra.sts.io.protobuf.StsProtos.Bsm.Description parsedMessage = null;
           try {
             parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -3524,7 +3519,7 @@ public final class StsProtos {
 
         private demetra.sts.io.protobuf.StsProtos.BsmSpec bsm_;
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.sts.io.protobuf.StsProtos.BsmSpec, demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder, demetra.sts.io.protobuf.StsProtos.BsmSpecOrBuilder> bsmBuilder_;
+                demetra.sts.io.protobuf.StsProtos.BsmSpec, demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder, demetra.sts.io.protobuf.StsProtos.BsmSpecOrBuilder> bsmBuilder_;
         /**
          * <code>.sts.BsmSpec bsm = 5;</code>
          * @return Whether the bsm field is set.
@@ -3536,7 +3531,7 @@ public final class StsProtos {
          * <code>.sts.BsmSpec bsm = 5;</code>
          * @return The bsm.
          */
-        public demetra.sts.io.protobuf.StsProtos.BsmSpec getBsm() {
+        public  demetra.sts.io.protobuf.StsProtos.BsmSpec getBsm() {
           if (bsmBuilder_ == null) {
             return bsm_ == null ? demetra.sts.io.protobuf.StsProtos.BsmSpec.getDefaultInstance() : bsm_;
           } else {
@@ -3563,7 +3558,7 @@ public final class StsProtos {
          * <code>.sts.BsmSpec bsm = 5;</code>
          */
         public Builder setBsm(
-            demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder builderForValue) {
+                demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder builderForValue) {
           if (bsmBuilder_ == null) {
             bsm_ = builderForValue.build();
             onChanged();
@@ -3580,7 +3575,7 @@ public final class StsProtos {
           if (bsmBuilder_ == null) {
             if (bsm_ != null) {
               bsm_ =
-                demetra.sts.io.protobuf.StsProtos.BsmSpec.newBuilder(bsm_).mergeFrom(value).buildPartial();
+                            demetra.sts.io.protobuf.StsProtos.BsmSpec.newBuilder(bsm_).mergeFrom(value).buildPartial();
             } else {
               bsm_ = value;
             }
@@ -3608,7 +3603,7 @@ public final class StsProtos {
         /**
          * <code>.sts.BsmSpec bsm = 5;</code>
          */
-        public demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder getBsmBuilder() {
+        public  demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder getBsmBuilder() {
           
           onChanged();
           return getBsmFieldBuilder().getBuilder();
@@ -3616,23 +3611,23 @@ public final class StsProtos {
         /**
          * <code>.sts.BsmSpec bsm = 5;</code>
          */
-        public demetra.sts.io.protobuf.StsProtos.BsmSpecOrBuilder getBsmOrBuilder() {
+        public  demetra.sts.io.protobuf.StsProtos.BsmSpecOrBuilder getBsmOrBuilder() {
           if (bsmBuilder_ != null) {
             return bsmBuilder_.getMessageOrBuilder();
           } else {
             return bsm_ == null ?
-                demetra.sts.io.protobuf.StsProtos.BsmSpec.getDefaultInstance() : bsm_;
+                        demetra.sts.io.protobuf.StsProtos.BsmSpec.getDefaultInstance() : bsm_;
           }
         }
         /**
          * <code>.sts.BsmSpec bsm = 5;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.sts.io.protobuf.StsProtos.BsmSpec, demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder, demetra.sts.io.protobuf.StsProtos.BsmSpecOrBuilder> 
+                demetra.sts.io.protobuf.StsProtos.BsmSpec, demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder, demetra.sts.io.protobuf.StsProtos.BsmSpecOrBuilder> 
             getBsmFieldBuilder() {
           if (bsmBuilder_ == null) {
             bsmBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.sts.io.protobuf.StsProtos.BsmSpec, demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder, demetra.sts.io.protobuf.StsProtos.BsmSpecOrBuilder>(
+                        demetra.sts.io.protobuf.StsProtos.BsmSpec, demetra.sts.io.protobuf.StsProtos.BsmSpec.Builder, demetra.sts.io.protobuf.StsProtos.BsmSpecOrBuilder>(
                     getBsm(),
                     getParentForChildren(),
                     isClean());
@@ -4051,15 +4046,14 @@ public final class StsProtos {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Estimation_descriptor;
+        return  demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Estimation_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Estimation_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.class, demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.Builder.class);
+        return  demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Estimation_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.class, demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.Builder.class);
       }
 
       public static final int Y_FIELD_NUMBER = 1;
@@ -4428,7 +4422,7 @@ public final class StsProtos {
         if (!(obj instanceof demetra.sts.io.protobuf.StsProtos.Bsm.Estimation)) {
           return super.equals(obj);
         }
-        demetra.sts.io.protobuf.StsProtos.Bsm.Estimation other = (demetra.sts.io.protobuf.StsProtos.Bsm.Estimation) obj;
+                demetra.sts.io.protobuf.StsProtos.Bsm.Estimation other = (demetra.sts.io.protobuf.StsProtos.Bsm.Estimation) obj;
 
         if (!getYList()
             .equals(other.getYList())) return false;
@@ -4602,18 +4596,17 @@ public final class StsProtos {
       public static final class Builder extends
           com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
           // @@protoc_insertion_point(builder_implements:sts.Bsm.Estimation)
-          demetra.sts.io.protobuf.StsProtos.Bsm.EstimationOrBuilder {
+            demetra.sts.io.protobuf.StsProtos.Bsm.EstimationOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Estimation_descriptor;
+          return    demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Estimation_descriptor;
         }
 
         @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Estimation_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                  demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.class, demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.Builder.class);
+          return    demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Estimation_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.class, demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.Builder.class);
         }
 
         // Construct using demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.newBuilder()
@@ -4677,17 +4670,17 @@ public final class StsProtos {
         @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Estimation_descriptor;
+          return    demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Estimation_descriptor;
         }
 
         @java.lang.Override
-        public demetra.sts.io.protobuf.StsProtos.Bsm.Estimation getDefaultInstanceForType() {
-          return demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.getDefaultInstance();
+        public  demetra.sts.io.protobuf.StsProtos.Bsm.Estimation getDefaultInstanceForType() {
+          return    demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.getDefaultInstance();
         }
 
         @java.lang.Override
-        public demetra.sts.io.protobuf.StsProtos.Bsm.Estimation build() {
-          demetra.sts.io.protobuf.StsProtos.Bsm.Estimation result = buildPartial();
+        public  demetra.sts.io.protobuf.StsProtos.Bsm.Estimation build() {
+                    demetra.sts.io.protobuf.StsProtos.Bsm.Estimation result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
@@ -4695,8 +4688,8 @@ public final class StsProtos {
         }
 
         @java.lang.Override
-        public demetra.sts.io.protobuf.StsProtos.Bsm.Estimation buildPartial() {
-          demetra.sts.io.protobuf.StsProtos.Bsm.Estimation result = new demetra.sts.io.protobuf.StsProtos.Bsm.Estimation(this);
+        public  demetra.sts.io.protobuf.StsProtos.Bsm.Estimation buildPartial() {
+                    demetra.sts.io.protobuf.StsProtos.Bsm.Estimation result = new demetra.sts.io.protobuf.StsProtos.Bsm.Estimation(this);
           int from_bitField0_ = bitField0_;
           if (((bitField0_ & 0x00000001) != 0)) {
             y_.makeImmutable();
@@ -4873,7 +4866,7 @@ public final class StsProtos {
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-          demetra.sts.io.protobuf.StsProtos.Bsm.Estimation parsedMessage = null;
+                    demetra.sts.io.protobuf.StsProtos.Bsm.Estimation parsedMessage = null;
           try {
             parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -6163,15 +6156,14 @@ public final class StsProtos {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Components_descriptor;
+        return  demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Components_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Components_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                demetra.sts.io.protobuf.StsProtos.Bsm.Components.class, demetra.sts.io.protobuf.StsProtos.Bsm.Components.Builder.class);
+        return  demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Components_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(demetra.sts.io.protobuf.StsProtos.Bsm.Components.class, demetra.sts.io.protobuf.StsProtos.Bsm.Components.Builder.class);
       }
 
       public static final int SERIES_FIELD_NUMBER = 10;
@@ -6408,7 +6400,7 @@ public final class StsProtos {
         if (!(obj instanceof demetra.sts.io.protobuf.StsProtos.Bsm.Components)) {
           return super.equals(obj);
         }
-        demetra.sts.io.protobuf.StsProtos.Bsm.Components other = (demetra.sts.io.protobuf.StsProtos.Bsm.Components) obj;
+                demetra.sts.io.protobuf.StsProtos.Bsm.Components other = (demetra.sts.io.protobuf.StsProtos.Bsm.Components) obj;
 
         if (hasSeries() != other.hasSeries()) return false;
         if (hasSeries()) {
@@ -6580,18 +6572,17 @@ public final class StsProtos {
       public static final class Builder extends
           com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
           // @@protoc_insertion_point(builder_implements:sts.Bsm.Components)
-          demetra.sts.io.protobuf.StsProtos.Bsm.ComponentsOrBuilder {
+            demetra.sts.io.protobuf.StsProtos.Bsm.ComponentsOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Components_descriptor;
+          return    demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Components_descriptor;
         }
 
         @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Components_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                  demetra.sts.io.protobuf.StsProtos.Bsm.Components.class, demetra.sts.io.protobuf.StsProtos.Bsm.Components.Builder.class);
+          return    demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Components_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(demetra.sts.io.protobuf.StsProtos.Bsm.Components.class, demetra.sts.io.protobuf.StsProtos.Bsm.Components.Builder.class);
         }
 
         // Construct using demetra.sts.io.protobuf.StsProtos.Bsm.Components.newBuilder()
@@ -6654,17 +6645,17 @@ public final class StsProtos {
         @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Components_descriptor;
+          return    demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_Components_descriptor;
         }
 
         @java.lang.Override
-        public demetra.sts.io.protobuf.StsProtos.Bsm.Components getDefaultInstanceForType() {
-          return demetra.sts.io.protobuf.StsProtos.Bsm.Components.getDefaultInstance();
+        public  demetra.sts.io.protobuf.StsProtos.Bsm.Components getDefaultInstanceForType() {
+          return    demetra.sts.io.protobuf.StsProtos.Bsm.Components.getDefaultInstance();
         }
 
         @java.lang.Override
-        public demetra.sts.io.protobuf.StsProtos.Bsm.Components build() {
-          demetra.sts.io.protobuf.StsProtos.Bsm.Components result = buildPartial();
+        public  demetra.sts.io.protobuf.StsProtos.Bsm.Components build() {
+                    demetra.sts.io.protobuf.StsProtos.Bsm.Components result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
@@ -6672,8 +6663,8 @@ public final class StsProtos {
         }
 
         @java.lang.Override
-        public demetra.sts.io.protobuf.StsProtos.Bsm.Components buildPartial() {
-          demetra.sts.io.protobuf.StsProtos.Bsm.Components result = new demetra.sts.io.protobuf.StsProtos.Bsm.Components(this);
+        public  demetra.sts.io.protobuf.StsProtos.Bsm.Components buildPartial() {
+                    demetra.sts.io.protobuf.StsProtos.Bsm.Components result = new demetra.sts.io.protobuf.StsProtos.Bsm.Components(this);
           if (seriesBuilder_ == null) {
             result.series_ = series_;
           } else {
@@ -6785,7 +6776,7 @@ public final class StsProtos {
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-          demetra.sts.io.protobuf.StsProtos.Bsm.Components parsedMessage = null;
+                    demetra.sts.io.protobuf.StsProtos.Bsm.Components parsedMessage = null;
           try {
             parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -7766,7 +7757,7 @@ public final class StsProtos {
       if (!(obj instanceof demetra.sts.io.protobuf.StsProtos.Bsm)) {
         return super.equals(obj);
       }
-      demetra.sts.io.protobuf.StsProtos.Bsm other = (demetra.sts.io.protobuf.StsProtos.Bsm) obj;
+            demetra.sts.io.protobuf.StsProtos.Bsm other = (demetra.sts.io.protobuf.StsProtos.Bsm) obj;
 
       if (hasDescription() != other.hasDescription()) return false;
       if (hasDescription()) {
@@ -7928,15 +7919,14 @@ public final class StsProtos {
         demetra.sts.io.protobuf.StsProtos.BsmOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_descriptor;
+        return  demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                demetra.sts.io.protobuf.StsProtos.Bsm.class, demetra.sts.io.protobuf.StsProtos.Bsm.Builder.class);
+        return  demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(demetra.sts.io.protobuf.StsProtos.Bsm.class, demetra.sts.io.protobuf.StsProtos.Bsm.Builder.class);
       }
 
       // Construct using demetra.sts.io.protobuf.StsProtos.Bsm.newBuilder()
@@ -7993,17 +7983,17 @@ public final class StsProtos {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_descriptor;
+        return  demetra.sts.io.protobuf.StsProtos.internal_static_sts_Bsm_descriptor;
       }
 
       @java.lang.Override
       public demetra.sts.io.protobuf.StsProtos.Bsm getDefaultInstanceForType() {
-        return demetra.sts.io.protobuf.StsProtos.Bsm.getDefaultInstance();
+        return  demetra.sts.io.protobuf.StsProtos.Bsm.getDefaultInstance();
       }
 
       @java.lang.Override
       public demetra.sts.io.protobuf.StsProtos.Bsm build() {
-        demetra.sts.io.protobuf.StsProtos.Bsm result = buildPartial();
+                demetra.sts.io.protobuf.StsProtos.Bsm result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -8012,7 +8002,7 @@ public final class StsProtos {
 
       @java.lang.Override
       public demetra.sts.io.protobuf.StsProtos.Bsm buildPartial() {
-        demetra.sts.io.protobuf.StsProtos.Bsm result = new demetra.sts.io.protobuf.StsProtos.Bsm(this);
+                demetra.sts.io.protobuf.StsProtos.Bsm result = new demetra.sts.io.protobuf.StsProtos.Bsm(this);
         if (descriptionBuilder_ == null) {
           result.description_ = description_;
         } else {
@@ -8116,7 +8106,7 @@ public final class StsProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        demetra.sts.io.protobuf.StsProtos.Bsm parsedMessage = null;
+                demetra.sts.io.protobuf.StsProtos.Bsm parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -8132,7 +8122,7 @@ public final class StsProtos {
 
       private demetra.sts.io.protobuf.StsProtos.Bsm.Description description_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sts.io.protobuf.StsProtos.Bsm.Description, demetra.sts.io.protobuf.StsProtos.Bsm.Description.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.DescriptionOrBuilder> descriptionBuilder_;
+            demetra.sts.io.protobuf.StsProtos.Bsm.Description, demetra.sts.io.protobuf.StsProtos.Bsm.Description.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.DescriptionOrBuilder> descriptionBuilder_;
       /**
        * <code>.sts.Bsm.Description description = 1;</code>
        * @return Whether the description field is set.
@@ -8171,7 +8161,7 @@ public final class StsProtos {
        * <code>.sts.Bsm.Description description = 1;</code>
        */
       public Builder setDescription(
-          demetra.sts.io.protobuf.StsProtos.Bsm.Description.Builder builderForValue) {
+            demetra.sts.io.protobuf.StsProtos.Bsm.Description.Builder builderForValue) {
         if (descriptionBuilder_ == null) {
           description_ = builderForValue.build();
           onChanged();
@@ -8188,7 +8178,7 @@ public final class StsProtos {
         if (descriptionBuilder_ == null) {
           if (description_ != null) {
             description_ =
-              demetra.sts.io.protobuf.StsProtos.Bsm.Description.newBuilder(description_).mergeFrom(value).buildPartial();
+                        demetra.sts.io.protobuf.StsProtos.Bsm.Description.newBuilder(description_).mergeFrom(value).buildPartial();
           } else {
             description_ = value;
           }
@@ -8229,18 +8219,18 @@ public final class StsProtos {
           return descriptionBuilder_.getMessageOrBuilder();
         } else {
           return description_ == null ?
-              demetra.sts.io.protobuf.StsProtos.Bsm.Description.getDefaultInstance() : description_;
+                    demetra.sts.io.protobuf.StsProtos.Bsm.Description.getDefaultInstance() : description_;
         }
       }
       /**
        * <code>.sts.Bsm.Description description = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sts.io.protobuf.StsProtos.Bsm.Description, demetra.sts.io.protobuf.StsProtos.Bsm.Description.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.DescriptionOrBuilder> 
+            demetra.sts.io.protobuf.StsProtos.Bsm.Description, demetra.sts.io.protobuf.StsProtos.Bsm.Description.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.DescriptionOrBuilder> 
           getDescriptionFieldBuilder() {
         if (descriptionBuilder_ == null) {
           descriptionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.sts.io.protobuf.StsProtos.Bsm.Description, demetra.sts.io.protobuf.StsProtos.Bsm.Description.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.DescriptionOrBuilder>(
+                    demetra.sts.io.protobuf.StsProtos.Bsm.Description, demetra.sts.io.protobuf.StsProtos.Bsm.Description.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.DescriptionOrBuilder>(
                   getDescription(),
                   getParentForChildren(),
                   isClean());
@@ -8251,7 +8241,7 @@ public final class StsProtos {
 
       private demetra.sts.io.protobuf.StsProtos.Bsm.Estimation estimation_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sts.io.protobuf.StsProtos.Bsm.Estimation, demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.EstimationOrBuilder> estimationBuilder_;
+            demetra.sts.io.protobuf.StsProtos.Bsm.Estimation, demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.EstimationOrBuilder> estimationBuilder_;
       /**
        * <code>.sts.Bsm.Estimation estimation = 2;</code>
        * @return Whether the estimation field is set.
@@ -8290,7 +8280,7 @@ public final class StsProtos {
        * <code>.sts.Bsm.Estimation estimation = 2;</code>
        */
       public Builder setEstimation(
-          demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.Builder builderForValue) {
+            demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.Builder builderForValue) {
         if (estimationBuilder_ == null) {
           estimation_ = builderForValue.build();
           onChanged();
@@ -8307,7 +8297,7 @@ public final class StsProtos {
         if (estimationBuilder_ == null) {
           if (estimation_ != null) {
             estimation_ =
-              demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.newBuilder(estimation_).mergeFrom(value).buildPartial();
+                        demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.newBuilder(estimation_).mergeFrom(value).buildPartial();
           } else {
             estimation_ = value;
           }
@@ -8348,18 +8338,18 @@ public final class StsProtos {
           return estimationBuilder_.getMessageOrBuilder();
         } else {
           return estimation_ == null ?
-              demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.getDefaultInstance() : estimation_;
+                    demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.getDefaultInstance() : estimation_;
         }
       }
       /**
        * <code>.sts.Bsm.Estimation estimation = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sts.io.protobuf.StsProtos.Bsm.Estimation, demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.EstimationOrBuilder> 
+            demetra.sts.io.protobuf.StsProtos.Bsm.Estimation, demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.EstimationOrBuilder> 
           getEstimationFieldBuilder() {
         if (estimationBuilder_ == null) {
           estimationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.sts.io.protobuf.StsProtos.Bsm.Estimation, demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.EstimationOrBuilder>(
+                    demetra.sts.io.protobuf.StsProtos.Bsm.Estimation, demetra.sts.io.protobuf.StsProtos.Bsm.Estimation.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.EstimationOrBuilder>(
                   getEstimation(),
                   getParentForChildren(),
                   isClean());
@@ -8370,7 +8360,7 @@ public final class StsProtos {
 
       private demetra.sts.io.protobuf.StsProtos.Bsm.Components components_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sts.io.protobuf.StsProtos.Bsm.Components, demetra.sts.io.protobuf.StsProtos.Bsm.Components.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.ComponentsOrBuilder> componentsBuilder_;
+            demetra.sts.io.protobuf.StsProtos.Bsm.Components, demetra.sts.io.protobuf.StsProtos.Bsm.Components.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.ComponentsOrBuilder> componentsBuilder_;
       /**
        * <code>.sts.Bsm.Components components = 3;</code>
        * @return Whether the components field is set.
@@ -8409,7 +8399,7 @@ public final class StsProtos {
        * <code>.sts.Bsm.Components components = 3;</code>
        */
       public Builder setComponents(
-          demetra.sts.io.protobuf.StsProtos.Bsm.Components.Builder builderForValue) {
+            demetra.sts.io.protobuf.StsProtos.Bsm.Components.Builder builderForValue) {
         if (componentsBuilder_ == null) {
           components_ = builderForValue.build();
           onChanged();
@@ -8426,7 +8416,7 @@ public final class StsProtos {
         if (componentsBuilder_ == null) {
           if (components_ != null) {
             components_ =
-              demetra.sts.io.protobuf.StsProtos.Bsm.Components.newBuilder(components_).mergeFrom(value).buildPartial();
+                        demetra.sts.io.protobuf.StsProtos.Bsm.Components.newBuilder(components_).mergeFrom(value).buildPartial();
           } else {
             components_ = value;
           }
@@ -8467,18 +8457,18 @@ public final class StsProtos {
           return componentsBuilder_.getMessageOrBuilder();
         } else {
           return components_ == null ?
-              demetra.sts.io.protobuf.StsProtos.Bsm.Components.getDefaultInstance() : components_;
+                    demetra.sts.io.protobuf.StsProtos.Bsm.Components.getDefaultInstance() : components_;
         }
       }
       /**
        * <code>.sts.Bsm.Components components = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          demetra.sts.io.protobuf.StsProtos.Bsm.Components, demetra.sts.io.protobuf.StsProtos.Bsm.Components.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.ComponentsOrBuilder> 
+            demetra.sts.io.protobuf.StsProtos.Bsm.Components, demetra.sts.io.protobuf.StsProtos.Bsm.Components.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.ComponentsOrBuilder> 
           getComponentsFieldBuilder() {
         if (componentsBuilder_ == null) {
           componentsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              demetra.sts.io.protobuf.StsProtos.Bsm.Components, demetra.sts.io.protobuf.StsProtos.Bsm.Components.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.ComponentsOrBuilder>(
+                    demetra.sts.io.protobuf.StsProtos.Bsm.Components, demetra.sts.io.protobuf.StsProtos.Bsm.Components.Builder, demetra.sts.io.protobuf.StsProtos.Bsm.ComponentsOrBuilder>(
                   getComponents(),
                   getParentForChildren(),
                   isClean());

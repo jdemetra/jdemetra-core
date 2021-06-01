@@ -45,7 +45,7 @@ public class MatrixTypeTest {
         for (int i = 0, j = 1; i < M.getRowsCount(); ++i, ++j) {
             M.row(i).set(j);
         }
-//        System.out.println(M);
+//        System.out.println(MatrixType.format(M, null));
 
         for (int i = 0, j = 1; i < M.getRowsCount(); ++i, ++j) {
             final int q = j;

@@ -38,15 +38,15 @@ import demetra.data.Doubles;
 public class TsDataToolkit {
 
     public TsData fn(TsData s, DoubleUnaryOperator fn) {
-        return TsData.of(s.getStart(), Doubles.of(s.getValues().fn(fn)));
+        return TsData.ofInternal(s.getStart(), s.getValues().fn(fn).toArray());
     }
 
     public TsData fastFn(TsData s, DoubleUnaryOperator fn) {
-        return TsData.ofInternal(s.getStart(), DoubleSeq.onMapping(s.length(), i -> fn.applyAsDouble(s.getValue(i))));
+        return TsData.of(s.getStart(), DoubleSeq.onMapping(s.length(), i -> fn.applyAsDouble(s.getValue(i))));
     }
 
     public TsData commit(TsData s) {
-        return TsData.of(s.getStart(), Doubles.of(s.getValues()));
+        return TsData.ofInternal(s.getStart(), s.getValues().toArray());
     }
 
     public TsData fastFn(TsData left, TsData right, DoubleBinaryOperator fn) {
@@ -58,7 +58,7 @@ public class TsDataToolkit {
         }
         TsPeriod istart = iDomain.getStartPeriod();
         int li = lDomain.indexOf(istart), ri = rDomain.indexOf(istart);
-        return TsData.ofInternal(istart, DoubleSeq.onMapping(iDomain.length(),
+        return TsData.of(istart, DoubleSeq.onMapping(iDomain.length(),
                 i -> fn.applyAsDouble(left.getValue(li + i), right.getValue(ri + i))));
     }
 
@@ -83,24 +83,24 @@ public class TsDataToolkit {
     }
 
     public TsData fn(TsData s, int lag, DoubleBinaryOperator fn) {
-        return TsData.of(s.getStart().plus(lag), Doubles.of(s.getValues().fn(lag, fn)));
+        return TsData.ofInternal(s.getStart().plus(lag), s.getValues().fn(lag, fn).toArray());
     }
 
     public TsData drop(TsData s, @NonNegative int nbeg, @NonNegative int nend) {
         int len=s.length()-nbeg-nend;
         TsPeriod start = s.getStart().plus(nbeg);
-        return TsData.of(start, Doubles.of(s.getValues().extract(nbeg, Math.max(0, len))));
+        return TsData.ofInternal(start, s.getValues().extract(nbeg, Math.max(0, len)).toArray());
     }
 
     public TsData extend(TsData s, @NonNegative int nbeg, @NonNegative int nend) {
         TsPeriod start = s.getStart().plus(-nbeg);
-        return TsData.ofInternal(start, s.getValues().extend(nbeg, nend));
+        return TsData.of(start, s.getValues().extend(nbeg, nend));
     }
 
     public TsData select(TsData s, TimeSelector selector) {
         TsDomain ndomain = s.getDomain().select(selector);
         final int beg = s.getStart().until(ndomain.getStartPeriod());
-        return TsData.of(ndomain.getStartPeriod(), Doubles.of(s.getValues().extract(beg, ndomain.length())));
+        return TsData.ofInternal(ndomain.getStartPeriod(), s.getValues().extract(beg, ndomain.length()).toArray());
     }
 
     /**
@@ -284,11 +284,11 @@ public class TsDataToolkit {
     }
 
     public TsData lead(TsData s, @NonNegative int lead) {
-        return lead == 0 ? s : TsData.ofInternal(s.getStart().plus(-lead), s.getValues());
+        return lead == 0 ? s : TsData.of(s.getStart().plus(-lead), s.getValues());
     }
 
     public TsData lag(TsData s, @NonNegative int lag) {
-        return lag == 0 ? s : TsData.ofInternal(s.getStart().plus(lag), s.getValues());
+        return lag == 0 ? s : TsData.of(s.getStart().plus(lag), s.getValues());
     }
 
     public TsData apply(IFiniteFilter filter, TsData s) {

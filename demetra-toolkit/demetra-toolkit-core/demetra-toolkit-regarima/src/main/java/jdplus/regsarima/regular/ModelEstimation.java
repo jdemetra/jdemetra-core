@@ -350,7 +350,7 @@ public final class ModelEstimation {
                 rslt.addAY(-c.getAndNext(), xcols.next());
             }
         }
-        return TsData.ofInternal(interp.getStart(), rslt);
+        return TsData.of(interp.getStart(), rslt);
     }
 
     /**
@@ -393,7 +393,7 @@ public final class ModelEstimation {
     public TsData fullResiduals() {
         DoubleSeq res = RegArimaUtility.fullResiduals(model, concentratedLikelihood);
         TsPeriod start = transformedSeries.getEnd().plus(-res.length());
-        return TsData.ofInternal(start, res);
+        return TsData.of(start, res);
     }
 
     public NiidTests residualsTests() {

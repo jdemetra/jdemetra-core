@@ -219,14 +219,17 @@ public final class BartlettApproximation {
     }
 
     public static double standardDeviationOfVariance(final ILinearProcess model, final int samplesize) throws ArimaException {
-        double v = 2;
         AutoCovarianceFunction acf = model.getAutoCovarianceFunction();
         int m = calcTruncationPoint(acf);
-        for (int i = 1; i < m; ++i) {
+        acf.prepare(m+1);
+        double var=acf.get(0);
+        double v = 2*var*var;
+        for (int i = 1; i <= m; ++i) {
             double c = acf.get(i);
             v += 4 * c * c;
         }
-        return v /= samplesize;
+        v /= samplesize;
+         return Math.sqrt(v);
     }
 
     private static int calcTruncationPoint(final AutoCovarianceFunction acgf) {

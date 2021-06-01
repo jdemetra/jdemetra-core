@@ -61,12 +61,6 @@ public class LightLinearModel<M> implements GeneralLinearModel<M> {
         boolean logTransformation;
 
         /**
-         * The model contains a constant (trend) variable
-         * This property is added for convenience (could be retrieved from variables
-         */
-        boolean mean;
-        
-        /**
          * Transformation for leap year or length of period
          */
         LengthOfPeriodType lengthOfPeriodTransformation;
@@ -75,12 +69,11 @@ public class LightLinearModel<M> implements GeneralLinearModel<M> {
          * Regression variables (including mean correction)
          */
         Variable[] variables;
-
-        /**
+        
+         /**
          * For instance SarimaSpec
          */
         M stochasticComponent;
-        
     }
 
     @lombok.Value

@@ -23,7 +23,7 @@ import static org.junit.Assert.*;
  * @author palatej
  */
 public class ProcessorITest {
-    
+
     public ProcessorITest() {
     }
 
@@ -35,9 +35,9 @@ public class ProcessorITest {
                 .truncatedRho(-1)
                 .constant(true)
                 .build();
-        TsData y = TsData.of(TsPeriod.yearly(1978), Doubles.of(Data.PCRA));
-        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
-        
+        TsData y = TsData.ofInternal(TsPeriod.yearly(1978), Data.PCRA);
+        TsData q = TsData.ofInternal(TsPeriod.quarterly(1977, 1), Data.IND_PCR);
+
         TemporalDisaggregationIResults rslti = new ProcessorI().process(y, q, speci);
 //        System.out.println(rslti.getDisaggregatedSeries());
         TemporalDisaggregationSpec spec = TemporalDisaggregationSpec.builder()
@@ -45,11 +45,11 @@ public class ProcessorITest {
                 .residualsModel(TemporalDisaggregationSpec.Model.Ar1)
                 .constant(true)
                 .build();
-        
+
         TemporalDisaggregationResults rslt = new TemporalDisaggregationProcessor().process(y, new TsData[]{q}, spec);
 //        System.out.println(rslt.getDisaggregatedSeries());
     }
-    
+
     @Test
     public void testQ2() {
         TemporalDisaggregationISpec speci = TemporalDisaggregationISpec.builder()
@@ -59,13 +59,13 @@ public class ProcessorITest {
                 .truncatedRho(.5)
                 .parameter(Parameter.initial(.6))
                 .build();
-        TsData y = TsData.of(TsPeriod.yearly(1978), Doubles.of(Data.PCRA));
-        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
-        
+        TsData y = TsData.ofInternal(TsPeriod.yearly(1978), Data.PCRA);
+        TsData q = TsData.ofInternal(TsPeriod.quarterly(1977, 1), Data.IND_PCR);
+
         TemporalDisaggregationIResults rslti = new ProcessorI().process(y, q, speci);
 //        System.out.println(rslti.getDisaggregatedSeries());
     }
-    
+
     @Test
     public void testQ3() {
         TemporalDisaggregationISpec speci = TemporalDisaggregationISpec.builder()
@@ -74,9 +74,9 @@ public class ProcessorITest {
                 .constant(true)
                 .parameter(Parameter.fixed(.6))
                 .build();
-        TsData y = TsData.of(TsPeriod.yearly(1978), Doubles.of(Data.PCRA));
-        TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
-        
+        TsData y = TsData.ofInternal(TsPeriod.yearly(1978), Data.PCRA);
+        TsData q = TsData.ofInternal(TsPeriod.quarterly(1977, 1), Data.IND_PCR);
+
         TemporalDisaggregationIResults rslti = new ProcessorI().process(y, q, speci);
 //        System.out.println(rslti.getDisaggregatedSeries());
     }

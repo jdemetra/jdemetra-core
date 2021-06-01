@@ -144,14 +144,14 @@ public class X13Kernel {
             SarimaModel arima = model.arima();
             FastArimaForecasts fcasts = new FastArimaForecasts();
             double mean = 0;
-            if (model.getDescription().isMean()) {
+            if (model.isMeanEstimation()) {
                 mean = model.getEstimation().getCoefficients().get(0);
             }
             fcasts.prepare(arima, mean);
 
             if (nb > 0) {
                 DoubleSeq tmp = fcasts.backcasts(lin, nb);
-                nbcasts = TsData.ofInternal(bstart, tmp);
+                nbcasts = TsData.of(bstart, tmp);
                 if (mul) {
                     nbcasts = TsData.multiply(nbcasts.fastFn(z -> Math.exp(z)), detall);
                 } else {
@@ -160,7 +160,7 @@ public class X13Kernel {
             }
             if (nf > 0) {
                 DoubleSeq tmp = fcasts.forecasts(lin, nf);
-                nfcasts = TsData.ofInternal(fstart, tmp);
+                nfcasts = TsData.of(fstart, tmp);
                 if (mul) {
                     nfcasts = TsData.multiply(nfcasts.fastFn(z -> Math.exp(z)), detall);
                 } else {
@@ -235,12 +235,12 @@ public class X13Kernel {
 
     private TsData correct(TsData s, TsData weights, TsData rs) {
         DoubleSeq sc = X11Utility.correctSeries(s.getValues(), weights.getValues(), rs.getValues());
-        return TsData.ofInternal(s.getStart(), sc.commit());
+        return TsData.of(s.getStart(), sc.commit());
     }
 
     private TsData correct(TsData s, TsData weights, double mean) {
         DoubleSeq sc = X11Utility.correctSeries(s.getValues(), weights.getValues(), mean);
-        return TsData.ofInternal(s.getStart(), sc.commit());
+        return TsData.of(s.getStart(), sc.commit());
     }
 
 //    private final TsData pseudoOp(TsData y, TsData t, TsData s) {

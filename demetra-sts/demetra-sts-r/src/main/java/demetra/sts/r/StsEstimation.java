@@ -18,7 +18,6 @@ package demetra.sts.r;
 
 import demetra.data.Doubles;
 import demetra.data.Parameter;
-import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import demetra.information.InformationMapping;
 import jdplus.math.functions.IFunctionDerivatives;
 import jdplus.math.functions.IFunctionPoint;
@@ -133,23 +132,23 @@ public class StsEstimation {
         mspec=monitor.finalSpecification();
         if (mspec.hasLevel()) {
             int pos = SsfBsm.searchPosition(bsm, Component.Level);
-            t = TsData.of(start, Doubles.of(sr.getComponent(pos)));
+            t = TsData.ofInternal(start, sr.getComponent(pos).toArray());
         }
         if (mspec.hasSlope()) {
             int pos = SsfBsm.searchPosition(bsm, Component.Slope);
-            s = TsData.of(start, Doubles.of(sr.getComponent(pos)));
+            s = TsData.ofInternal(start, sr.getComponent(pos).toArray());
         }
         if (mspec.hasCycle()) {
             int pos = SsfBsm.searchPosition(bsm, Component.Cycle);
-            c = TsData.of(start, Doubles.of(sr.getComponent(pos)));
+            c = TsData.ofInternal(start, sr.getComponent(pos).toArray());
         }
         if (mspec.hasSeasonal()) {
             int pos = SsfBsm.searchPosition(bsm, Component.Seasonal);
-            seas = TsData.of(start, Doubles.of(sr.getComponent(pos)));
+            seas = TsData.ofInternal(start, sr.getComponent(pos).toArray());
         }
         if (mspec.hasNoise()) {
             int pos = SsfBsm.searchPosition(bsm, Component.Noise);
-            n = TsData.of(start, Doubles.of(sr.getComponent(pos)));
+            n = TsData.ofInternal(start, sr.getComponent(pos).toArray());
         }
 
         IFunctionPoint ml = monitor.maxLikelihoodFunction();

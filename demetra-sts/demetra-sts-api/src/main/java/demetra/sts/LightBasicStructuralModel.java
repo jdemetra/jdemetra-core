@@ -84,11 +84,6 @@ public class LightBasicStructuralModel<M> implements BasicStructuralModel {
     @lombok.Builder
     public static class Estimation implements BsmEstimation {
 
-        /**
-         * The linear model is composed of the transformed series (corrected for
-         * fixed regression variables)
-         * and of the free regression variable (including mean correction)
-         */
 //        @lombok.NonNull
         private DoubleSeq y;
 //        @lombok.NonNull

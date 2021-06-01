@@ -24,6 +24,7 @@ import jdplus.ssf.univariate.ISsfBuilder;
 import jdplus.ssf.univariate.ISsfData;
 import nbbrd.design.BuilderPattern;
 import demetra.data.DoubleSeq;
+import demetra.math.matrices.MatrixType;
 import jdplus.math.matrices.Matrix;
 import jdplus.likelihood.LikelihoodFunction;
 
@@ -41,7 +42,7 @@ public class SsfFunction<S, F extends ISsf> implements LikelihoodFunction<Diffus
         private final IParametricMapping<S> mapping;
         private final ISsfBuilder<S, F> builder;
         private final ISsfData data;
-        private Matrix X;
+        private MatrixType X;
         private int[] diffuseX;
         private boolean ml = true, log = false, fast = false, sqr = true, mt = false, sym = false, scalingFactor=true;
 
@@ -51,7 +52,7 @@ public class SsfFunction<S, F extends ISsf> implements LikelihoodFunction<Diffus
             this.mapping = mapping;
         }
 
-        public Builder regression(final Matrix X, final int[] diffuseX) {
+        public Builder regression(final MatrixType X, final int[] diffuseX) {
             this.X = X;
             this.diffuseX = diffuseX;
             return this;
@@ -107,11 +108,11 @@ public class SsfFunction<S, F extends ISsf> implements LikelihoodFunction<Diffus
     private final ISsfBuilder<S, F> builder; // mapping from an object S to a given ssf
     private final ISsfData data;
     private final boolean missing;
-    private final Matrix X;
+    private final MatrixType X;
     private final int[] diffuseX;
     private final boolean ml, log, fast, sqr, mt, sym, scaling;
 
-    private SsfFunction(ISsfData data, Matrix X, int[] diffuseX, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
+    private SsfFunction(ISsfData data, MatrixType X, int[] diffuseX, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
             final boolean ml, final boolean log, final boolean fast, final boolean sqr, final boolean mt, final boolean sym, final boolean scaling) {
         this.data = data;
         this.mapping = mapper;
@@ -195,7 +196,7 @@ public class SsfFunction<S, F extends ISsf> implements LikelihoodFunction<Diffus
     /**
      * @return the X
      */
-    public Matrix getX() {
+    public MatrixType getX() {
         return X;
     }
 

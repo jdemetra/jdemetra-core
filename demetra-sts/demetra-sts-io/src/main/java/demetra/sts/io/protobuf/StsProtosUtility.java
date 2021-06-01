@@ -16,11 +16,13 @@
  */
 package demetra.sts.io.protobuf;
 
+import demetra.data.DoubleSeq;
 import demetra.data.Iterables;
 import demetra.modelling.io.protobuf.ModellingProtos;
 import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import static demetra.regarima.io.protobuf.RegArimaEstimationProto.type;
 import demetra.sts.BasicStructuralModel;
+import demetra.sts.BsmDecomposition;
 import demetra.sts.BsmDescription;
 import demetra.sts.BsmEstimation;
 import demetra.sts.BsmSpec;
@@ -129,10 +131,52 @@ public class StsProtosUtility {
         return builder.build();
     }
 
+    public ModellingProtos.Component componentOf(BsmDecomposition decomposition, Component cmp) {
+        DoubleSeq s = decomposition.getSeries(cmp, false);
+        if (s == null) {
+            return null;
+        } else {
+            return ModellingProtos.Component.newBuilder()
+                    .addAllData(Iterables.of(s))
+                    .addAllStde(Iterables.of(decomposition.getSeries(cmp, true)))
+                    .build();
+        }
+    }
+
+    public StsProtos.Bsm.Components convert(BsmDecomposition decomposition) {
+        StsProtos.Bsm.Components.Builder builder = StsProtos.Bsm.Components.newBuilder();
+        ModellingProtos.Component cmp = componentOf(decomposition, Component.Series);
+        if (cmp != null) {
+            builder.setSeries(cmp);
+        }
+        cmp = componentOf(decomposition, Component.Level);
+        if (cmp != null) {
+            builder.setLevel(cmp);
+        }
+        cmp = componentOf(decomposition, Component.Slope);
+        if (cmp != null) {
+            builder.setSlope(cmp);
+        }
+        cmp = componentOf(decomposition, Component.Seasonal);
+        if (cmp != null) {
+            builder.setSeasonal(cmp);
+        }
+        cmp = componentOf(decomposition, Component.Cycle);
+        if (cmp != null) {
+            builder.setCycle(cmp);
+        }
+        cmp = componentOf(decomposition, Component.Noise);
+        if (cmp != null) {
+            builder.setNoise(cmp);
+        }
+        return builder.build();
+    }
+
     public StsProtos.Bsm convert(BasicStructuralModel bsm) {
         return StsProtos.Bsm.newBuilder()
                 .setDescription(convert(bsm.getDescription()))
                 .setEstimation(convert(bsm.getEstimation()))
+                .setComponents(convert(bsm.getBsmDecomposition()))
                 .build();
     }
 

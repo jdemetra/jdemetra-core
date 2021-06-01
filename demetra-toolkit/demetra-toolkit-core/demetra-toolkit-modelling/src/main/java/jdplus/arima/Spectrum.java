@@ -65,9 +65,9 @@ public final class Spectrum {
      */
     public double get(final double freq) {
         double val = value(this, freq);
-        if (val < 0) {
-            return 0;
-        }
+//        if (val < 0) {
+//            return 0;
+//        }
         if (Double.isNaN(val)) {
             return Double.POSITIVE_INFINITY;
         }

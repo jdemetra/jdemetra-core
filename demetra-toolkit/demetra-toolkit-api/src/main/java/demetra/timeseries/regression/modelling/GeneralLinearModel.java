@@ -67,8 +67,6 @@ public interface GeneralLinearModel<M> {
          */
         LengthOfPeriodType getLengthOfPeriodTransformation();
 
-        boolean isMean();
-
         /**
          * Regression variables (including mean correction)
          *

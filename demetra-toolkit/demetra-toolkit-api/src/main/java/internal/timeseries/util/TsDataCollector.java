@@ -19,6 +19,7 @@ package internal.timeseries.util;
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import demetra.data.AggregationType;
+import demetra.data.DoubleSeq;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
@@ -152,7 +153,7 @@ class TsDataCollector {
         // check if the series is continuous and complete.
         int l = lastId - firstId + 1;
         if (l == ncur + 1) {
-            return TsData.of(start, Doubles.of(ncur + 1 == n ? vals : Arrays.copyOf(vals, ncur + 1)));
+            return TsData.ofInternal(start, ncur + 1 == n ? vals : Arrays.copyOf(vals, ncur + 1));
         } else {
             return TsData.of(start, expand(ncur + 1, l, ids, o -> vals[o]));
         }
@@ -247,13 +248,13 @@ class TsDataCollector {
         }
     }
 
-    private Doubles expand(int currentSize, int expectedSize, int[] ids, IntToDoubleFunction valueFunc) {
+    private DoubleSeq expand(int currentSize, int expectedSize, int[] ids, IntToDoubleFunction valueFunc) {
         double[] safeArray = new double[expectedSize];
         Arrays.fill(safeArray, Double.NaN);
         safeArray[0] = valueFunc.applyAsDouble(0);
         for (int j = 1; j < currentSize; ++j) {
             safeArray[ids[j] - ids[0]] = valueFunc.applyAsDouble(j);
         }
-        return Doubles.ofInternal(safeArray);
+        return DoubleSeq.of(safeArray);
     }
 }

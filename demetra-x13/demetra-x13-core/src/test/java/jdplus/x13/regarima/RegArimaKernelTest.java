@@ -54,7 +54,7 @@ public class RegArimaKernelTest {
     public void testProdMissing() {
         RegArimaKernel processor = RegArimaKernel.of(RegArimaSpec.RG5, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        TsData s = TsData.of(start, Doubles.of(datamissing));
+        TsData s = TsData.ofInternal(start, datamissing);
         RegSarimaModel rslt = processor.process(s, null);
         System.out.println("New");
         System.out.println(rslt.getEstimation().getStatistics().getLogLikelihood());
@@ -81,7 +81,7 @@ public class RegArimaKernelTest {
 //                .build();
         RegArimaKernel processor = RegArimaKernel.of(spec, null);
         TsPeriod start = TsPeriod.monthly(1967, 1);
-        TsData s = TsData.of(start, Doubles.of(data));
+        TsData s = TsData.ofInternal(start, data);
         RegSarimaModel rslt = processor.process(s, null);
         RegArimaSpecification ospec = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.clone();
 //        ospec.getOutliers().setDefaultCriticalValue(3);
@@ -295,7 +295,7 @@ public class RegArimaKernelTest {
             RegArimaSpec spec = RegArimaSpec.RG5;
             RegArimaKernel processor = RegArimaKernel.of(spec, null);
             TsPeriod start = TsPeriod.monthly(1967, 1);
-            TsData s = TsData.of(start, Doubles.of(data));
+            TsData s = TsData.ofInternal(start, data);
             RegSarimaModel rslt = processor.process(s, null);
         }
         t1 = System.currentTimeMillis();

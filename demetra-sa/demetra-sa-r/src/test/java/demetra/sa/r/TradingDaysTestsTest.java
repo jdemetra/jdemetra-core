@@ -46,7 +46,7 @@ public class TradingDaysTestsTest {
 
     @Test
     public void testTD() {
-        TsData s = log(TsData.of(TsPeriod.monthly(1992, 1), Doubles.of(Data.ABS_RETAIL)));
+        TsData s = log(TsData.ofInternal(TsPeriod.monthly(1992, 1), Data.ABS_RETAIL));
         TimeVaryingRegression.Results regarima = TimeVaryingRegression.regarima(s, "TD7", "Default", 1e-7);
         TsData rtd = regarima.getData("tdeffect", TsData.class);
 
@@ -56,11 +56,11 @@ public class TradingDaysTestsTest {
         SsfData data = new SsfData(s.getValues());
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
         int[] pos = ssf.componentsPosition();
-        TsData i1 = TsData.of(s.getStart(), Doubles.of(ds.item(pos[2])));
+        TsData i1 = TsData.ofInternal(s.getStart(), ds.item(pos[2]).toArray());
         
         data = new SsfData(TsDataToolkit.subtract(s, rtd).getValues());
         ds = DkToolkit.fastSmooth(ssf, data);
-        TsData i2 = TsData.of(s.getStart(), Doubles.of(ds.item(pos[2])));
+        TsData i2 = TsData.ofInternal(s.getStart(), ds.item(pos[2]).toArray());
        
 //        System.out.println(TradingDaysTests.ftest(i1, true, 0));
 //        System.out.println(TradingDaysTests.ftest(i1, false, 0));

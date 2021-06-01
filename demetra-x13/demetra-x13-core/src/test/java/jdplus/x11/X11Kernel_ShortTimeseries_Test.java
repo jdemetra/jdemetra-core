@@ -559,7 +559,7 @@ public class X11Kernel_ShortTimeseries_Test {
                 .buildWithoutValidation();//this has to be removed
 
         demetra.x11.X11Results x11Results = instanceKernel.process(
-                demetra.timeseries.TsData.ofInternal(TsPeriod.of(TsUnit.ofAnnualFrequency(frequency), LocalDate.of(1900, Month.JANUARY, 1)),
+                demetra.timeseries.TsData.of(TsPeriod.of(TsUnit.ofAnnualFrequency(frequency), LocalDate.of(1900, Month.JANUARY, 1)),
                         DoubleSeq.of(values)), spec);
 
         X11Specification oldSpec = new X11Specification();

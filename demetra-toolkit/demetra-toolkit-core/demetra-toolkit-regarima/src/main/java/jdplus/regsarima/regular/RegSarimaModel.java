@@ -62,8 +62,8 @@ import jdplus.timeseries.simplets.Transformations;
 public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
 
     private static final MissingValueEstimation[] NOMISSING = new MissingValueEstimation[0];
-    
-    public static RegSarimaModel of(ModelDescription model, jdplus.regsarima.RegSarimaComputer processor){
+
+    public static RegSarimaModel of(ModelDescription model, jdplus.regsarima.RegSarimaComputer processor) {
         return RegSarimaModel.of(model, processor.process(model.regarima(), model.mapping()), ProcessingLog.dummy());
     }
 
@@ -110,7 +110,6 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
                 .series(description.getSeries())
                 .lengthOfPeriodTransformation(description.getPreadjustment())
                 .logTransformation(description.isLogTransformation())
-                .mean(description.isMean())
                 .variables(variables)
                 .stochasticComponent(arima)
                 .build();
@@ -163,8 +162,8 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
                 .missing(missing)
                 .logs(log.all())
                 .build();
-        
-        int period=desc.getSeries().getAnnualFrequency();
+
+        int period = desc.getSeries().getAnnualFrequency();
         NiidTests niid = NiidTests.builder()
                 .data(fullRes)
                 .period(period)
@@ -192,11 +191,11 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
                 .diagnostic("UpAndDownRunsNumber", niid.upAndDownRunsNumbber())
                 .diagnostic("UpAndDownRunsLength", niid.upAndDownRunsLength())
                 .build();
-     }
+    }
 
     @lombok.Singular
     private Map<String, StatisticalTest> diagnostics;
-    
+
     @lombok.Singular
     private Map<String, Object> additionalResults;
 
@@ -220,24 +219,26 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
     public SarimaOrders specification() {
         return description.getStochasticComponent().orders();
     }
-    
-    public SarimaModel arima(){
+
+    public SarimaModel arima() {
         return SarimaModel.builder(description.getStochasticComponent())
                 .build();
     }
 
-    public RegArimaModel<SarimaModel> regarima(){
-        
-        MatrixType X=estimation.getX();
+    public RegArimaModel<SarimaModel> regarima() {
+
+        MatrixType X = estimation.getX();
+        boolean mean=isMeanEstimation();
         
         RegArimaModel.Builder builder = RegArimaModel.<SarimaModel>builder()
                 .y(estimation.getY())
                 .arima(arima())
-                .meanCorrection(description.isMean());
-        
-        int start=description.isMean()? 1 : 0;
-        for (int i=start; i<X.getColumnsCount(); ++i)
+                .meanCorrection(mean);
+
+        int start = mean ? 1 : 0;
+        for (int i = start; i < X.getColumnsCount(); ++i) {
             builder.addX(X.column(i));
+        }
         return builder.build();
     }
 
@@ -280,9 +281,6 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
         Variable[] variables = description.getVariables();
         if (variables.length > 0) {
             DoubleSeqCursor cursor = estimation.getCoefficients().cursor();
-            if (description.isMean()) {
-                cursor.skip(1);
-            }
             for (int i = 0; i < variables.length; ++i) {
                 Variable cur = variables[i];
                 int nfree = cur.freeCoefficientsCount();
@@ -362,6 +360,26 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
         return TsData.ofInternal(domain.getStartPeriod(), all.getStorage());
     }
 
+    public boolean isMeanCorrection() {
+        Variable[] variables = description.getVariables();
+        for (int i = 0; i < variables.length; ++i) {
+            if (variables[i].getCore() instanceof TrendConstant) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isMeanEstimation() {
+        Variable[] variables = description.getVariables();
+        for (int i = 0; i < variables.length; ++i) {
+            if (variables[i].getCore() instanceof TrendConstant) {
+                return variables[i].isFree();
+            }
+        }
+        return false;
+    }
+
     public TsData linearizedSeries() {
         TsData interp = interpolatedSeries(true);
         Variable[] variables = description.getVariables();
@@ -371,7 +389,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
         DataBlock rslt = DataBlock.of(interp.getValues());
         DoubleSeqCursor c = estimation.getCoefficients().cursor();
         int j = 0;
-        if (description.isMean()) {
+        if (isMeanEstimation()) {
             c.skip(1);
             ++j;
         }
@@ -383,7 +401,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
                 rslt.addAY(-c.getAndNext(), xcols.next());
             }
         }
-        return TsData.ofInternal(interp.getStart(), rslt);
+        return TsData.of(interp.getStart(), rslt);
     }
 
     /**
@@ -426,13 +444,12 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
     public TsData fullResiduals() {
         DoubleSeq res = estimation.getResiduals();
         TsPeriod start = details.transformedSeries.getEnd().plus(-res.length());
-        return TsData.ofInternal(start, res);
+        return TsData.of(start, res);
     }
 
     public int freeArimaParametersCount() {
         return description.getStochasticComponent().freeParametersCount();
     }
-
 
     /**
      * tde
@@ -513,7 +530,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
     }
 
     /**
-     * Gets all the deterministic effects
+     * Gets all the deterministic effects, except mean correction
      *
      * @param domain
      * @return
@@ -522,5 +539,5 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
         TsData s = deterministicEffect(domain, v -> !(v.getCore() instanceof TrendConstant));
         return backTransform(s, true);
     }
-    
- }
+
+}

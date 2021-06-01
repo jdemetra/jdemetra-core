@@ -45,13 +45,14 @@ public class BsmKernelTest {
         BsmSpec mspec = BsmSpec.builder()
                 .level(Parameter.undefined(), Parameter.undefined())
                 .seasonal(SeasonalModel.Crude)
-                .cycle(true)
+//                .cycle(true)
                 .build();
-        monitor.process(DoubleSeq.of(Data.RETAIL_MOTORDEALERS), 12, mspec);
+        monitor.process(DoubleSeq.of(Data.RETAIL_BOOKSTORES), 12, mspec);
         long t1=System.currentTimeMillis();
-        System.out.println("New");
-        System.out.println(t1-t0);
-        System.out.println(monitor.getLikelihood().logLikelihood());
+//        System.out.println("New");
+//        System.out.println(t1-t0);
+//        System.out.println(monitor.getLikelihood().logLikelihood());
+//        System.out.println(monitor.decompose());
 //        System.out.println(monitor.getLikelihood().ser());
     }
 
