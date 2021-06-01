@@ -20,6 +20,7 @@ import demetra.timeseries.*;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.util.ObsFormat;
+import ec.tss.TsBypass;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -27,7 +28,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -128,7 +128,7 @@ public class TsConverter {
     public ec.tss.tsproviders.utils.@NonNull OptionalTsData fromTsData(@NonNull TsData o) throws ConverterException {
         return !o.isEmpty()
                 ? ec.tss.tsproviders.utils.OptionalTsData.present(new ec.tstoolkit.timeseries.simplets.TsData(fromTsPeriod(o.getStart()), o.getValues().toArray(), false))
-                : ec.tss.tsproviders.utils.OptionalTsData.absent(o.getCause());
+                : ec.tss.tsproviders.utils.OptionalTsData.absent(o.getEmptyCause());
     }
     //</editor-fold>
 
@@ -268,7 +268,7 @@ public class TsConverter {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Ts + Builder/Info">
-    public void fillTsInformation(@NonNull TsResource<TsData> from, ec.tss.@NonNull TsInformation to) {
+    public void fillTsInformation(@NonNull Ts from, ec.tss.@NonNull TsInformation to) {
         to.moniker = fromTsMoniker(from.getMoniker());
         to.type = fromType(from.getType());
         to.name = from.getName();
@@ -283,7 +283,7 @@ public class TsConverter {
         }
     }
 
-    public ec.tss.@NonNull TsInformation fromTsBuilder(@NonNull TsResource<TsData> o) {
+    public ec.tss.@NonNull TsInformation fromTsBuilder(@NonNull Ts o) {
         ec.tss.TsInformation result = new ec.tss.TsInformation();
         fillTsInformation(o, result);
         return result;
@@ -298,7 +298,7 @@ public class TsConverter {
                 .data(toTsData(o.invalidDataCause != null ? ec.tss.tsproviders.utils.OptionalTsData.absent(o.invalidDataCause) : ec.tss.tsproviders.utils.OptionalTsData.present(o.data)));
     }
 
-    public ec.tss.@NonNull Ts fromTs(@NonNull TsResource<TsData> o) {
+    public ec.tss.@NonNull Ts fromTs(@NonNull Ts o) {
         ec.tss.tsproviders.utils.OptionalTsData data = fromTsData(o.getData());
         ec.tss.Ts result = ec.tss.TsBypass.series(o.getName(), fromTsMoniker(o.getMoniker()), fromMeta(o.getMeta()), data.orNull());
         if (!data.isPresent()) {
@@ -319,41 +319,65 @@ public class TsConverter {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="TsCollection + Builder/Info">
-    public void fillTsCollectionInformation(@NonNull TsResource<List<Ts>> from, ec.tss.@NonNull TsCollectionInformation to) {
+    public void fillTsCollectionInformation(@NonNull TsCollection from, ec.tss.@NonNull TsCollectionInformation to) {
         to.moniker = fromTsMoniker(from.getMoniker());
         to.type = fromType(from.getType());
         to.name = from.getName();
         to.metaData = fromMeta(from.getMeta());
-        from.getData().forEach(x -> to.items.add(fromTsBuilder(x)));
+        if (from.isEmpty()) {
+            to.items.clear();
+            to.invalidDataCause = from.getEmptyCause();
+        } else {
+            to.items.addAll(from.stream().map(TsConverter::fromTsBuilder).collect(Collectors.toList()));
+            to.invalidDataCause = null;
+        }
     }
 
-    public ec.tss.@NonNull TsCollectionInformation fromTsCollectionBuilder(@NonNull TsResource<List<Ts>> o) {
+    public ec.tss.@NonNull TsCollectionInformation fromTsCollectionBuilder(@NonNull TsCollection o) {
         ec.tss.TsCollectionInformation result = new ec.tss.TsCollectionInformation();
         fillTsCollectionInformation(o, result);
         return result;
     }
 
     public TsCollection.@NonNull Builder toTsCollectionBuilder(ec.tss.@NonNull TsCollectionInformation o) {
-        return TsCollection.builder()
+        TsCollection.Builder result = TsCollection.builder()
                 .name(o.name)
                 .moniker(toTsMoniker(o.moniker))
                 .type(toType(o.type))
-                .meta(toMeta(o.metaData))
-                .data(o.items.stream().map(TsConverter::toTsBuilder).map(Ts.Builder::build).collect(Collectors.toList()));
+                .meta(toMeta(o.metaData));
+        if (o.invalidDataCause != null) {
+            result.emptyCause(o.invalidDataCause);
+        } else {
+            o.items.stream().map(TsConverter::toTsBuilder).map(Ts.Builder::build).forEach(result::item);
+        }
+        return result;
     }
 
-    public ec.tss.@NonNull TsCollection fromTsCollection(@NonNull TsResource<List<Ts>> o) {
-        return ec.tss.TsBypass.col(o.getName(), fromTsMoniker(o.getMoniker()), fromMeta(o.getMeta()), o.getData().stream().map(TsConverter::fromTs).collect(Collectors.toList()));
+    public ec.tss.@NonNull TsCollection fromTsCollection(@NonNull TsCollection o) {
+        ec.tss.TsCollection col = TsBypass.col(
+                o.getName(),
+                fromTsMoniker(o.getMoniker()),
+                fromMeta(o.getMeta()),
+                o.stream().map(TsConverter::fromTs).collect(Collectors.toList())
+        );
+        if (o.isEmpty()) {
+            col.setInvalidDataCause(o.getEmptyCause());
+        }
+        return col;
     }
 
     public @NonNull TsCollection toTsCollection(ec.tss.@NonNull TsCollection o) {
-        return TsCollection.builder()
+        TsCollection.Builder result = TsCollection.builder()
                 .name(o.getName())
                 .moniker(toTsMoniker(o.getMoniker()))
                 .type(toType(o.getInformationType()))
-                .meta(toMeta(o.getMetaData()))
-                .data(o.stream().map(TsConverter::toTs).collect(Collectors.toList()))
-                .build();
+                .meta(toMeta(o.getMetaData()));
+        if (o.getInvalidDataCause() != null) {
+            result.emptyCause(o.getInvalidDataCause());
+        } else {
+            o.stream().map(TsConverter::toTs).forEach(result::item);
+        }
+        return result.build();
     }
     //</editor-fold>
 

@@ -129,23 +129,21 @@ public class TsStreamAsProviderTest {
 
         assertThat(p.getTsCollection(goodSource, None)).isEqualTo(TsCollection.builder()
                 .moniker(goodSource).type(None).name("")
-                .data(s1.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
-                .data(s2.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
-                .data(s3.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
+                .item(s1.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
+                .item(s2.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
+                .item(s3.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
                 .build());
 
         assertThat(p.getTsCollection(goodSource, MetaData)).isEqualTo(TsCollection.builder()
                 .moniker(goodSource).type(MetaData).name("")
-                .data(s1.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
-                .data(s2.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
-                .data(s3.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
+                .item(s1.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
+                .item(s2.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
+                .item(s3.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
                 .build());
 
         assertThat(p.getTsCollection(goodSource, All)).isEqualTo(TsCollection.builder()
                 .moniker(goodSource).type(All).name("")
-                .data(s1)
-                .data(s2)
-                .data(s3)
+                .item(s1).item(s2).item(s3)
                 .build());
     }
 
@@ -155,20 +153,19 @@ public class TsStreamAsProviderTest {
 
         assertThat(p.getTsCollection(goodCollection, None)).isEqualTo(TsCollection.builder()
                 .moniker(goodCollection).type(None).name("")
-                .data(s1.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
-                .data(s2.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
+                .item(s1.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
+                .item(s2.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
                 .build());
 
         assertThat(p.getTsCollection(goodCollection, MetaData)).isEqualTo(TsCollection.builder()
                 .moniker(goodCollection).type(MetaData).name("")
-                .data(s1.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
-                .data(s2.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
+                .item(s1.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
+                .item(s2.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
                 .build());
 
         assertThat(p.getTsCollection(goodCollection, All)).isEqualTo(TsCollection.builder()
                 .moniker(goodCollection).type(All).name("")
-                .data(s1)
-                .data(s2)
+                .item(s1).item(s2)
                 .build());
     }
 

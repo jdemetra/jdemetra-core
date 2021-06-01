@@ -19,9 +19,9 @@ public class TsCollectionTest {
         List<Ts> list = IntStream.range(0, 100).mapToObj(i -> Ts.builder().name("ts" + i).build()).collect(Collectors.toList());
 
         assertThat(list.stream().collect(TsCollection.toTsCollection()))
-                .isEqualTo(TsCollection.builder().data(list).build());
+                .isEqualTo(TsCollection.of(list));
 
         assertThat(list.parallelStream().collect(TsCollection.toTsCollection()))
-                .isEqualTo(TsCollection.builder().data(list).build());
+                .isEqualTo(TsCollection.of(list));
     }
 }

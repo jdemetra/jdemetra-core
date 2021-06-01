@@ -1,38 +1,35 @@
 /*
  * Copyright 2016 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.demo;
 
-import nbbrd.design.BuilderPattern;
-import demetra.timeseries.TsData;
-import demetra.timeseries.TsPeriod;
-import demetra.timeseries.Ts;
-import demetra.timeseries.TsCollection;
+import demetra.timeseries.*;
 import demetra.tsprovider.TsMeta;
-import demetra.timeseries.TsMoniker;
 import ec.tstoolkit.random.IRandomNumberGenerator;
 import ec.tstoolkit.random.XorshiftRNG;
+import nbbrd.design.BuilderPattern;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.time.ZoneOffset;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- *
  * @author Philippe Charles
  * @since 2.2.0
  */
@@ -43,11 +40,11 @@ public final class DemoTsBuilder {
     public static TsCollection randomTsCollection(int nSeries) {
         XorshiftRNG rng = new XorshiftRNG(0);
         DemoTsBuilder builder = new DemoTsBuilder().obsCount(24).rng(rng);
-        TsCollection.Builder result = TsCollection.builder().moniker(TsMoniker.of());
-        IntStream.range(0, nSeries)
-                .mapToObj(o -> builder.name("S" + o).build())
-                .forEach(result::data);
-        return result.build();
+        return TsCollection
+                .builder()
+                .moniker(TsMoniker.of())
+                .items(IntStream.range(0, nSeries).mapToObj(i -> builder.name("S" + i).build()).collect(Collectors.toList()))
+                .build();
     }
 
     private String name;

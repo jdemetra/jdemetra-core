@@ -1,59 +1,56 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.tsprovider.grid;
 
-import nbbrd.design.LombokWorkaround;
-import demetra.timeseries.TsData;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsCollection;
+import demetra.timeseries.TsData;
 import demetra.timeseries.TsInformationType;
-import static demetra.tsprovider.grid.GridLayout.HORIZONTAL;
-import static demetra.tsprovider.grid.GridLayout.VERTICAL;
-import demetra.tsprovider.util.MultiLineNameUtil;
-import demetra.tsprovider.util.ObsFormat;
 import demetra.timeseries.util.ObsGathering;
 import demetra.timeseries.util.TsDataBuilder;
+import demetra.tsprovider.util.MultiLineNameUtil;
+import demetra.tsprovider.util.ObsFormat;
 import demetra.util.Substitutor;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import lombok.AccessLevel;
 import internal.tsprovider.grid.InternalValueReader;
 import internal.tsprovider.grid.MarkableStream;
 import internal.tsprovider.grid.TsDataBuilders;
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
+import lombok.AccessLevel;
+import nbbrd.design.LombokWorkaround;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import static demetra.tsprovider.grid.GridLayout.HORIZONTAL;
+import static demetra.tsprovider.grid.GridLayout.VERTICAL;
+
 /**
- *
  * @author Philippe Charles
  */
 @lombok.Value
-@lombok.Builder( toBuilder = true)
+@lombok.Builder(toBuilder = true)
 public final class GridReader {
 
     public static final GridReader DEFAULT = builder().build();
@@ -122,7 +119,7 @@ public final class GridReader {
             for (int col = 0; col < head.columns && input.readCell(); col++) {
                 data.add(head.getPeriod(col), input.getNumber());
             }
-            output.data(getTs(series, data.build()));
+            output.item(getTs(series, data.build()));
             data.clear();
         }
     }
@@ -218,7 +215,7 @@ public final class GridReader {
 
         List<String> names = head.getNames(namePattern, nameSeparator);
         for (int column = 0; column < head.columns; column++) {
-            output.data(getTs(names.get(column), data.build(column)));
+            output.item(getTs(names.get(column), data.build(column)));
         }
     }
 

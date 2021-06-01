@@ -96,7 +96,7 @@ class DemoUtil {
     }
 
     void printData(TsData data) {
-        String value = !data.isEmpty() ? toString(data) : data.getCause();
+        String value = !data.isEmpty() ? toString(data) : data.getEmptyCause();
         System.out.printf("%9s %s\n", "Data:", value);
     }
 
@@ -114,15 +114,15 @@ class DemoUtil {
             @Override
             Optional<Ts> getFirst(DataSourceProvider provider, DataSource dataSource) throws IOException {
                 TsCollection info = provider.getTsCollection(provider.toMoniker(dataSource), TsInformationType.All);
-                return info.getData().stream().findFirst();
+                return info.stream().findFirst();
             }
         },
         DEFINITION {
             @Override
             Optional<Ts> getFirst(DataSourceProvider provider, DataSource dataSource) throws IOException {
                 TsCollection info = provider.getTsCollection(provider.toMoniker(dataSource), TsInformationType.Definition);
-                if (!info.getData().isEmpty()) {
-                    Ts ts = info.getData().get(0);
+                if (!info.isEmpty()) {
+                    Ts ts = info.get(0);
                     return Optional.of(provider.getTs(ts.getMoniker(), TsInformationType.All));
                 }
                 return Optional.empty();

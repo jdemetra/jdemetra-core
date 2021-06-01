@@ -1,47 +1,47 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.tsprovider.grid;
 
-import nbbrd.design.LombokWorkaround;
-import nbbrd.design.MightBePromoted;
-import demetra.timeseries.TsDataTable;
-import demetra.timeseries.TsDomain;
+import demetra.data.Seq;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsCollection;
+import demetra.timeseries.TsDataTable;
+import demetra.timeseries.TsDomain;
 import demetra.tsprovider.util.ObsFormat;
 import internal.tsprovider.grid.InternalValueWriter;
+import lombok.AccessLevel;
+import nbbrd.design.LombokWorkaround;
+import nbbrd.design.MightBePromoted;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.PrimitiveIterator;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.stream.IntStream;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import lombok.AccessLevel;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- *
  * @author Philippe Charles
  */
 @lombok.Value
-@lombok.Builder( toBuilder = true)
+@lombok.Builder(toBuilder = true)
 public final class GridWriter {
 
     public static final GridWriter DEFAULT = builder().build();
@@ -79,17 +79,17 @@ public final class GridWriter {
     }
 
     public void write(@NonNull TsCollection input, @NonNull GridOutput output) throws IOException {
-        TsDataTable table = TsDataTable.of(input.getData(), Ts::getData);
+        TsDataTable table = TsDataTable.of(input, Ts::getData);
 
         boolean seriesByRow = isSeriesByRow(input);
 
         int rows = getLength(table, seriesByRow);
         int columns = getLength(table, !seriesByRow);
 
-        IntFunction<String> names = getNames(input.getData());
+        IntFunction<String> names = getNames(input);
         IntFunction<LocalDateTime> dates = getDates(table.getDomain());
 
-        TsDataTable.Cursor cursor = table.cursor(getDistribution(input.getData()));
+        TsDataTable.Cursor cursor = table.cursor(getDistribution(input));
 
         try (TypedOutputStream stream = TypedOutputStream.of(output.getDataTypes(), format, output.open(input.getName(), rows, columns))) {
             if (seriesByRow) {
@@ -134,7 +134,7 @@ public final class GridWriter {
     }
 
     private void writePeriodByRowBody(TsDataTable.Cursor input, TypedOutputStream output, IntFunction<LocalDateTime> dates) throws IOException {
-        for (PrimitiveIterator.OfInt periods = getPeriodIterator(input); periods.hasNext();) {
+        for (PrimitiveIterator.OfInt periods = getPeriodIterator(input); periods.hasNext(); ) {
             int period = periods.nextInt();
             if (!ignoreDates) {
                 output.writeDateTime(dates.apply(period));
@@ -156,7 +156,7 @@ public final class GridWriter {
             if (!ignoreNames) {
                 output.writeString(cornerLabel);
             }
-            for (PrimitiveIterator.OfInt periods = getPeriodIterator(input); periods.hasNext();) {
+            for (PrimitiveIterator.OfInt periods = getPeriodIterator(input); periods.hasNext(); ) {
                 int period = periods.nextInt();
                 output.writeDateTime(dates.apply(period));
             }
@@ -169,7 +169,7 @@ public final class GridWriter {
             if (!ignoreNames) {
                 output.writeString(names.apply(series));
             }
-            for (PrimitiveIterator.OfInt periods = getPeriodIterator(input); periods.hasNext();) {
+            for (PrimitiveIterator.OfInt periods = getPeriodIterator(input); periods.hasNext(); ) {
                 writeValue(input, output, periods.nextInt(), series);
             }
             output.writeEndOfRow();
@@ -189,7 +189,7 @@ public final class GridWriter {
         return Double.isNaN(value) ? null : value;
     }
 
-    private IntFunction<String> getNames(List<Ts> col) {
+    private IntFunction<String> getNames(Seq<Ts> col) {
         return seriesIndex -> col.get(seriesIndex).getName();
     }
 
@@ -197,7 +197,7 @@ public final class GridWriter {
         return seriesIndex -> domain.get(seriesIndex).start();
     }
 
-    private IntFunction<TsDataTable.DistributionType> getDistribution(List<Ts> col) {
+    private IntFunction<TsDataTable.DistributionType> getDistribution(Seq<Ts> col) {
         return seriesIndex -> seriesX.apply(col.get(seriesIndex));
     }
 

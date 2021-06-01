@@ -59,7 +59,7 @@ public class TsDocument<I extends ProcSpecification, R> {
         return new TsDocument(meta, specification, input, null, Processor.Status.Unprocessed, nprocessor);
     }
 
-    public TsDocument<I, R> process() {
+    public TsDocument<I, R> process(TsFactory tsFactory) {
         if (status != Processor.Status.Unprocessed) {
             return this;
         }
@@ -71,7 +71,7 @@ public class TsDocument<I extends ProcSpecification, R> {
         }
         Ts s = input;
         if (input.getData().isEmpty()) {
-            s = TsFactory.makeTs(input.getMoniker(), TsInformationType.BaseInformation);
+            s = tsFactory.makeTs(input.getMoniker(), TsInformationType.BaseInformation);
         }
         try {
             R rslt = processor.generateProcessor(specification).process(s.getData());

@@ -1,33 +1,34 @@
 /*
  * Copyright 2013 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.tsprovider.grid;
 
-import static demetra.tsprovider.grid.GridLayout.HORIZONTAL;
-import static demetra.tsprovider.grid.GridLayout.VERTICAL;
-import org.junit.Test;
-import static demetra.timeseries.TsUnit.MONTH;
 import demetra.timeseries.TsCollection;
 import demetra.timeseries.TsInformationType;
+import org.junit.Test;
+
 import java.io.IOException;
+
+import static demetra.timeseries.TsUnit.MONTH;
+import static demetra.tsprovider.grid.GridLayout.HORIZONTAL;
+import static demetra.tsprovider.grid.GridLayout.VERTICAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static test.tsprovider.grid.Data.*;
 
 /**
- *
  * @author Philippe Charles
  */
 public class GridReaderTest {
@@ -65,10 +66,10 @@ public class GridReaderTest {
                         .meta(GridLayout.PROPERTY, HORIZONTAL.name())
                         .type(TsInformationType.Data)
                         .name("")
-                        .data(s("G1\nS1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
-                        .data(s("G1\nS2", MONTH, 2010, 0, 3, 4, 5))
-                        .data(s("G2\nS1", MONTH, 2010, 0, 7, 8, 9))
-                        .data(s("S1", MONTH, 2010, 0, 0, 1, 2))
+                        .item(s("G1\nS1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
+                        .item(s("G1\nS2", MONTH, 2010, 0, 3, 4, 5))
+                        .item(s("G2\nS1", MONTH, 2010, 0, 7, 8, 9))
+                        .item(s("S1", MONTH, 2010, 0, 0, 1, 2))
                         .build());
     }
 
@@ -92,10 +93,10 @@ public class GridReaderTest {
                         .meta(GridLayout.PROPERTY, VERTICAL.name())
                         .type(TsInformationType.Data)
                         .name("")
-                        .data(s("G1\nS1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
-                        .data(s("G1\nS2", MONTH, 2010, 0, 3, 4, 5))
-                        .data(s("G2\nS1", MONTH, 2010, 0, 7, 8, 9))
-                        .data(s("S1", MONTH, 2010, 0, 0, 1, 2))
+                        .item(s("G1\nS1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
+                        .item(s("G1\nS2", MONTH, 2010, 0, 3, 4, 5))
+                        .item(s("G2\nS1", MONTH, 2010, 0, 7, 8, 9))
+                        .item(s("S1", MONTH, 2010, 0, 0, 1, 2))
                         .build());
     }
 
@@ -109,10 +110,10 @@ public class GridReaderTest {
                         .meta(GridLayout.PROPERTY, VERTICAL.name())
                         .type(TsInformationType.Data)
                         .name("")
-                        .data(s("G1-S1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
-                        .data(s("G1-S2", MONTH, 2010, 0, 3, 4, 5))
-                        .data(s("G2-S1", MONTH, 2010, 0, 7, 8, 9))
-                        .data(s("S1", MONTH, 2010, 0, 0, 1, 2))
+                        .item(s("G1-S1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
+                        .item(s("G1-S2", MONTH, 2010, 0, 3, 4, 5))
+                        .item(s("G2-S1", MONTH, 2010, 0, 7, 8, 9))
+                        .item(s("S1", MONTH, 2010, 0, 0, 1, 2))
                         .build());
     }
 
@@ -124,10 +125,10 @@ public class GridReaderTest {
                         .meta(GridLayout.PROPERTY, HORIZONTAL.name())
                         .type(TsInformationType.Data)
                         .name("")
-                        .data(s("G1\nS1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
-                        .data(s("G1\nS2", MONTH, 2010, 0, 3, 4, 5))
-                        .data(s("G2\nS1", MONTH, 2010, 0, 7, 8, 9))
-                        .data(s("S1", MONTH, 2010, 0, 0, 1, 2))
+                        .item(s("G1\nS1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
+                        .item(s("G1\nS2", MONTH, 2010, 0, 3, 4, 5))
+                        .item(s("G2\nS1", MONTH, 2010, 0, 7, 8, 9))
+                        .item(s("S1", MONTH, 2010, 0, 0, 1, 2))
                         .build());
 
         assertThat(GridReader.builder().layout(VERTICAL).build().read(VGRID_MULTI_NAME))
@@ -136,10 +137,10 @@ public class GridReaderTest {
                         .meta(GridLayout.PROPERTY, VERTICAL.name())
                         .type(TsInformationType.Data)
                         .name("")
-                        .data(s("G1\nS1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
-                        .data(s("G1\nS2", MONTH, 2010, 0, 3, 4, 5))
-                        .data(s("G2\nS1", MONTH, 2010, 0, 7, 8, 9))
-                        .data(s("S1", MONTH, 2010, 0, 0, 1, 2))
+                        .item(s("G1\nS1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
+                        .item(s("G1\nS2", MONTH, 2010, 0, 3, 4, 5))
+                        .item(s("G2\nS1", MONTH, 2010, 0, 7, 8, 9))
+                        .item(s("S1", MONTH, 2010, 0, 0, 1, 2))
                         .build());
     }
 }
