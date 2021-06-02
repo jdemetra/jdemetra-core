@@ -198,7 +198,7 @@
                     <dependency>
                         <groupId>com.google.protobuf</groupId>
                         <artifactId>protobuf-java</artifactId>
-                        <version>3.17.0</version>
+                        <version>3.17.1</version>
                     </dependency>
                 </dependencies>
             </dependencyManagement>
@@ -383,7 +383,7 @@
         </profile>
     </profiles>
 
-    <repositories>
+    <!--repositories>
         <repository>
             <id>jfrog-maven-mirror</id>
             <url>https://raw.githubusercontent.com/nbbrd/jfrog-maven-mirror/main</url>
@@ -391,5 +391,5 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-    </repositories>
+    </repositories-->
 </project>
