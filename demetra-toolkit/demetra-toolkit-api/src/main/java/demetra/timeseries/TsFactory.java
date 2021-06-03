@@ -23,6 +23,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * @author PALATEJ
@@ -50,6 +51,8 @@ public interface TsFactory {
     }
 
     @NonNull Optional<TsProvider> getProvider(@NonNull String name);
+
+    @NonNull Stream<TsProvider> getProviders();
 
     default @NonNull Ts makeTs(@NonNull TsMoniker moniker, @NonNull TsInformationType info) {
         Optional<TsProvider> provider = getProvider(moniker.getSource());

@@ -30,15 +30,19 @@ import java.util.Objects;
 @lombok.extern.slf4j.Slf4j
 public class FromTsProvider extends ec.tss.tsproviders.utils.AbstractTsProvider implements ec.tss.ITsProvider {
 
-    private final TsProvider delegate;
-
-    public FromTsProvider(@NonNull TsProvider delegate) {
-        super(log, delegate.getSource(), ec.tss.TsAsyncMode.Once);
-        this.delegate = delegate;
+    public static ec.tss.@NonNull ITsProvider fromTsProvider(@NonNull TsProvider delegate) {
+        return delegate instanceof ToTsProvider
+                ? ((ToTsProvider) delegate).getDelegate()
+                : new FromTsProvider(delegate);
     }
 
-    public @NonNull TsProvider getDelegate() {
-        return delegate;
+    @lombok.Getter
+    @lombok.NonNull
+    private final TsProvider delegate;
+
+    protected FromTsProvider(TsProvider delegate) {
+        super(log, delegate.getSource(), ec.tss.TsAsyncMode.Once);
+        this.delegate = delegate;
     }
 
     @Override

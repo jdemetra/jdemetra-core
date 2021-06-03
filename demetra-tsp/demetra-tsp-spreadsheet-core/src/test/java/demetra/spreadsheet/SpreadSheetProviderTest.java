@@ -25,6 +25,7 @@ import demetra.timeseries.TsMoniker;
 import demetra.timeseries.TsPeriod;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
+import ec.tss.tsproviders.IFileLoader;
 import ec.tss.tsproviders.IFileLoaderAssert;
 import internal.spreadsheet.SpreadSheetSupport;
 import org.junit.Test;
@@ -42,15 +43,15 @@ public class SpreadSheetProviderTest {
     public void testEquivalence() throws IOException {
         try (SpreadSheetProvider p = SpreadSheetSamples.TOP5.getProvider3()) {
             IFileLoaderAssert
-                    .assertThat(new FromFileLoader(p))
+                    .assertThat(FromFileLoader.fromFileLoader(p))
                     .isEquivalentTo(SpreadSheetSamples.TOP5.getProvider2(), o -> o.encodeBean(SpreadSheetSamples.TOP5.getBean2(o)));
         }
     }
 
     @Test
     public void testTspCompliance() {
-        IFileLoaderAssert.Sampler<FromFileLoader> sampler = o -> new FromFileBean(SpreadSheetSamples.TOP5.getBean3((SpreadSheetProvider) o.getDelegate()));
-        IFileLoaderAssert.assertCompliance(() -> new FromFileLoader(SpreadSheetSamples.TOP5.getProvider3()), sampler);
+        IFileLoaderAssert.Sampler<IFileLoader> sampler = o -> FromFileBean.fromFileBean(SpreadSheetSamples.TOP5.getBean3((SpreadSheetProvider) ((FromFileLoader) o).getDelegate()));
+        IFileLoaderAssert.assertCompliance(() -> FromFileLoader.fromFileLoader(SpreadSheetSamples.TOP5.getProvider3()), sampler);
     }
 
     @Test

@@ -5,6 +5,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @lombok.Builder
 public class DefaultTsFactory implements TsFactory {
@@ -18,6 +19,11 @@ public class DefaultTsFactory implements TsFactory {
                 .stream()
                 .filter(provider -> provider.getSource().equals(name))
                 .findFirst();
+    }
+
+    @Override
+    public Stream<TsProvider> getProviders() {
+        return providers.stream();
     }
 
     public static Ts fallbackTs(TsMoniker moniker, TsData data) {
