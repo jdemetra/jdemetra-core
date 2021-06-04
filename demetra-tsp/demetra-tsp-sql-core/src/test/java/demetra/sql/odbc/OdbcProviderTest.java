@@ -22,6 +22,7 @@ import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.DataSourceProvider;
 import demetra.timeseries.TsMoniker;
+import ec.tss.tsproviders.IDataSourceLoader;
 import ec.tss.tsproviders.IDataSourceLoaderAssert;
 import java.io.IOException;
 import static org.assertj.core.api.Assertions.*;
@@ -36,14 +37,14 @@ public class OdbcProviderTest {
     @Test
     public void testEquivalence() throws IOException {
         IDataSourceLoaderAssert
-                .assertThat(new FromDataSourceLoader(OdbcSamples.TABLE2.getProvider3()))
+                .assertThat(FromDataSourceLoader.fromDataSourceLoader(OdbcSamples.TABLE2.getProvider3()))
                 .isEquivalentTo(OdbcSamples.TABLE2.getProvider2(), o -> o.encodeBean(OdbcSamples.TABLE2.getBean2(o)));
     }
 
     @Test
     public void testTspCompliance() {
-        IDataSourceLoaderAssert.Sampler<FromDataSourceLoader> sampler = o -> OdbcSamples.TABLE2.getBean3((OdbcProvider) o.getDelegate());
-        IDataSourceLoaderAssert.assertCompliance(() -> new FromDataSourceLoader(OdbcSamples.TABLE2.getProvider3()), sampler);
+        IDataSourceLoaderAssert.Sampler<IDataSourceLoader> sampler = o -> OdbcSamples.TABLE2.getBean3((OdbcProvider) ((FromDataSourceLoader)o).getDelegate());
+        IDataSourceLoaderAssert.assertCompliance(() -> FromDataSourceLoader.fromDataSourceLoader(OdbcSamples.TABLE2.getProvider3()), sampler);
     }
 
     @Test

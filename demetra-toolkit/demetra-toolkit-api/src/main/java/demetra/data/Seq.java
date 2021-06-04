@@ -22,10 +22,7 @@ import nbbrd.design.Development;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
@@ -93,6 +90,16 @@ public interface Seq<E> extends BaseSeq, Iterable<E> {
      */
     default @NonNull E[] toArray(@NonNull IntFunction<E[]> generator) {
         return InternalSeq.toArray(this, generator);
+    }
+
+    /**
+     * Returns a modifiable list containing all the elements of this sequence.
+     * This method is equivalent to <code>seq.stream().collect(Collectors.toList())</code>
+     *
+     * @return a non-null list containing all the elements of this sequence
+     */
+    default @NonNull List<E> toList() {
+        return InternalSeq.toList(this);
     }
 
     default int indexOf(@NonNull Predicate<? super E> predicate) {

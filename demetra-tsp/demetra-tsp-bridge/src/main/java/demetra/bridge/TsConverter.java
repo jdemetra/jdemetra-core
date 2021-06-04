@@ -17,8 +17,7 @@
 package demetra.bridge;
 
 import demetra.timeseries.*;
-import demetra.tsprovider.DataSet;
-import demetra.tsprovider.DataSource;
+import demetra.tsprovider.*;
 import demetra.tsprovider.util.ObsFormat;
 import ec.tss.TsBypass;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -448,4 +447,32 @@ public class TsConverter {
         }
     }
     //</editor-fold>
+
+    public ec.tss.@NonNull ITsProvider fromTsProvider(@NonNull TsProvider o) {
+        if (o instanceof ToTsProvider) {
+            return ((ToTsProvider) o).getDelegate();
+        }
+        // order matters !
+        if (o instanceof FileLoader)
+            return FromFileLoader.fromFileLoader((FileLoader) o);
+        if (o instanceof DataSourceLoader)
+            return FromDataSourceLoader.fromDataSourceLoader((DataSourceLoader) o);
+        if (o instanceof DataSourceProvider)
+            return FromDataSourceProvider.fromDataSourceProvider((DataSourceProvider) o);
+        return FromTsProvider.fromTsProvider(o);
+    }
+
+    public @NonNull TsProvider toTsProvider(ec.tss.@NonNull ITsProvider o) {
+        if (o instanceof FromTsProvider) {
+            return ((FromTsProvider) o).getDelegate();
+        }
+        // order matters !
+        if (o instanceof ec.tss.tsproviders.IFileLoader)
+            return ToFileLoader.toFileLoader((ec.tss.tsproviders.IFileLoader) o);
+        if (o instanceof ec.tss.tsproviders.IDataSourceLoader)
+            return ToDataSourceLoader.toDataSourceLoader((ec.tss.tsproviders.IDataSourceLoader) o);
+        if (o instanceof ec.tss.tsproviders.IDataSourceProvider)
+            return ToDataSourceProvider.toDataSourceProvider((ec.tss.tsproviders.IDataSourceProvider) o);
+        return ToTsProvider.toTsProvider(o);
+    }
 }

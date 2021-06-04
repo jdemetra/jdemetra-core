@@ -16,6 +16,7 @@
  */
 package demetra.bridge;
 
+import demetra.tsprovider.FileBean;
 import demetra.tsprovider.FileLoader;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -28,13 +29,19 @@ import java.util.Objects;
  */
 public class FromFileLoader extends FromDataSourceLoader implements ec.tss.tsproviders.IFileLoader {
 
-    public FromFileLoader(@NonNull FileLoader<?> delegate) {
+    public static ec.tss.tsproviders.@NonNull IFileLoader fromFileLoader(@NonNull FileLoader<? extends FileBean> delegate) {
+        return delegate instanceof ToFileLoader
+                ? ((ToFileLoader) delegate).getDelegate()
+                : new FromFileLoader(delegate);
+    }
+
+    protected FromFileLoader(@NonNull FileLoader<? extends FileBean> delegate) {
         super(delegate);
     }
 
     @Override
-    public @NonNull FileLoader<?> getDelegate() {
-        return (FileLoader<?>) super.getDelegate();
+    public @NonNull FileLoader<? extends FileBean> getDelegate() {
+        return (FileLoader<? extends FileBean>) super.getDelegate();
     }
 
     @Override
@@ -59,13 +66,13 @@ public class FromFileLoader extends FromDataSourceLoader implements ec.tss.tspro
 
     @Override
     public ec.tss.tsproviders.@NonNull IFileBean newBean() {
-        return new FromFileBean(getDelegate().newBean());
+        return FromFileBean.fromFileBean(getDelegate().newBean());
     }
 
     @Override
     public ec.tss.tsproviders.@NonNull IFileBean decodeBean(ec.tss.tsproviders.@NonNull DataSource dataSource) throws IllegalArgumentException {
         Objects.requireNonNull(dataSource);
-        return new FromFileBean(getDelegate().decodeBean(TsConverter.toDataSource(dataSource)));
+        return FromFileBean.fromFileBean(getDelegate().decodeBean(TsConverter.toDataSource(dataSource)));
     }
 
     @Override

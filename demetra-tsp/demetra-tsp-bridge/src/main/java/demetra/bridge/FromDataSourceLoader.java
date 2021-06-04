@@ -26,7 +26,13 @@ import java.util.Objects;
  */
 public class FromDataSourceLoader extends FromDataSourceProvider implements ec.tss.tsproviders.IDataSourceLoader {
 
-    public FromDataSourceLoader(@NonNull DataSourceLoader<?> delegate) {
+    public static ec.tss.tsproviders.@NonNull IDataSourceLoader fromDataSourceLoader(@NonNull DataSourceLoader<?> delegate) {
+        return delegate instanceof ToDataSourceLoader
+                ? ((ToDataSourceLoader) delegate).getDelegate()
+                : new FromDataSourceLoader(delegate);
+    }
+
+    protected FromDataSourceLoader(DataSourceLoader<?> delegate) {
         super(delegate);
     }
 
