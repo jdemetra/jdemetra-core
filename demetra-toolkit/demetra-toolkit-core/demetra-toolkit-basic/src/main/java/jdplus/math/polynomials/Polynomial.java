@@ -59,7 +59,7 @@ public final class Polynomial {
     //<editor-fold defaultstate="collapsed" desc="Static factories">
     /**
      * Create a new Polynomial by using the specified coefficients. The
-     * polynomial will be ofFunction getDegree
+     * polynomial will be of degree
      * <code>coefficients.length-1</code>
      * <br> Note that the array of doubles is used directly. If you need
      * defensive copy, use {@link Polynomial#of(double[])} instead.

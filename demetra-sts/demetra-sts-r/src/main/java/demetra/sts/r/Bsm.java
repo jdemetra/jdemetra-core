@@ -14,6 +14,7 @@ import demetra.sts.BsmDecomposition;
 import demetra.sts.BsmEstimation;
 import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
+import demetra.sts.Component;
 import demetra.sts.LightBasicStructuralModel;
 import demetra.sts.SeasonalModel;
 import demetra.sts.io.protobuf.StsProtosUtility;
@@ -50,7 +51,7 @@ import jdplus.sts.internal.BsmMapping;
 @lombok.experimental.UtilityClass
 public class Bsm {
 
-    public BasicStructuralModel process(TsData y, MatrixType X, int level, int slope, int cycle, int noise, String seasmodel, double tol) {
+    public BasicStructuralModel process(TsData y, MatrixType X, int level, int slope, int cycle, int noise, String seasmodel, boolean diffuse, double tol) {
         SeasonalModel sm = seasmodel == null || seasmodel.equalsIgnoreCase("none") ? null : SeasonalModel.valueOf(seasmodel);
         BsmSpec mspec = BsmSpec.builder()
                 .level(of(level), of(slope))
@@ -60,11 +61,11 @@ public class Bsm {
                 .build();
 
         BsmEstimationSpec espec = BsmEstimationSpec.builder()
-                .diffuseRegression(true)
+                .diffuseRegression(diffuse)
                 .precision(tol)
                 .build();
         BsmKernel kernel = new BsmKernel(espec);
-        if (!kernel.process(y.getValues(), y.getAnnualFrequency(), mspec)) {
+        if (!kernel.process(y.getValues(), X, y.getAnnualFrequency(), mspec)) {
             return null;
         }
         
@@ -90,7 +91,6 @@ public class Bsm {
             UserVariable uvar=new UserVariable("var-"+(i+1), TsData.of(start, X.column(i)));
             vars[i]=Variable.variable("var-"+(i+1), uvar).withCoefficient(Parameter.estimated(coef.get(i)));
         }
-        
         LightBasicStructuralModel.Description description = LightBasicStructuralModel.Description.builder()
                 .series(y)
                 .logTransformation(false)
@@ -99,16 +99,10 @@ public class Bsm {
                 .variables(vars)
                 .build();
         
-        
-        
-        BsmDecomposition decomposition=BsmDecomposition.builder()
-                
-                .build();
-        
         return LightBasicStructuralModel.builder()
                 .description(description)
                 .estimation(estimation)
-                .bsmDecomposition(decomposition)
+                .bsmDecomposition(kernel.decompose())
                 .build();
     }
     
