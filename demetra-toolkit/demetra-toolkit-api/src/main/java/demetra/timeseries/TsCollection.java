@@ -18,6 +18,7 @@ package demetra.timeseries;
 
 import demetra.data.HasEmptyCause;
 import demetra.data.Seq;
+import demetra.util.Collections2;
 import nbbrd.design.LombokWorkaround;
 import nbbrd.design.StaticFactoryMethod;
 import org.checkerframework.checker.index.qual.NonNegative;
@@ -27,6 +28,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -108,5 +110,24 @@ public class TsCollection implements Seq<Ts>, HasEmptyCause {
             return stream().map(ts -> ts.load(info, factory)).collect(toTsCollection());
         }
         return factory.makeTsCollection(moniker, info);
+    }
+
+    public @NonNull TsCollection replaceAll(@NonNull Iterable<Ts> col) {
+        Map<TsMoniker, Ts> tsByMoniker = Collections2.streamOf(col).collect(Collectors.toMap(Ts::getMoniker, Function.identity()));
+
+        TsCollection.Builder result = builder().moniker(getMoniker());
+
+        boolean modified = false;
+        for (Ts original : this) {
+            Ts replaced = tsByMoniker.get(original.getMoniker());
+            if (replaced != null) {
+                modified = true;
+                result.item(replaced);
+            } else {
+                result.item(original);
+            }
+        }
+
+        return modified ? result.build() : this;
     }
 }

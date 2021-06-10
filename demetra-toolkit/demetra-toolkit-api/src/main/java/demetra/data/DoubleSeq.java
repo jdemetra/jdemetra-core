@@ -511,7 +511,7 @@ public interface DoubleSeq extends BaseSeq {
     default DoubleSeq fn(int lag, DoubleBinaryOperator fn) {
         int n = length() - lag;
         if (n <= 0) {
-            return null;
+            return DoubleSeq.empty();
         }
         double[] safeArray = new double[n];
         if (lag == 1) {
