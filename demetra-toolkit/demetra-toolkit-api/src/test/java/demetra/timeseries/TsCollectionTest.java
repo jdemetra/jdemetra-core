@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import static demetra.timeseries.TsInformationType.BaseInformation;
 import static demetra.timeseries.TsInformationType.Data;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
@@ -92,6 +93,31 @@ public class TsCollectionTest {
 
         assertThat(col.toList()).containsExactlyElementsOf(col.getItems());
     }
+
+    @Test
+    public void testReplaceAll() {
+        assertThat(TsCollection.of(asList()).replaceAll(TsCollection.of(ts1b)))
+                .isEmpty();
+
+        assertThat(TsCollection.of(asList(ts1a)).replaceAll(TsCollection.of(ts1b)))
+                .containsExactly(ts1b);
+
+        assertThat(TsCollection.of(asList(ts1b)).replaceAll(TsCollection.of(ts1b)))
+                .containsExactly(ts1b);
+
+        assertThat(TsCollection.of(asList(ts2)).replaceAll(TsCollection.of(ts1b)))
+                .containsExactly(ts2);
+
+        assertThat(TsCollection.of(asList(ts1a, ts2)).replaceAll(TsCollection.of(ts1b)))
+                .containsExactly(ts1b, ts2);
+
+        assertThat(TsCollection.of(asList(ts2, ts1a)).replaceAll(TsCollection.of(ts1b)))
+                .containsExactly(ts2, ts1b);
+    }
+
+    private final Ts ts1a = Ts.builder().name("ts1a").moniker(TsMoniker.of(MockedTsProvider.NAME, "0:1")).build();
+    private final Ts ts1b = ts1a.toBuilder().name("ts1b").build();
+    private final Ts ts2 = Ts.builder().name("ts2").moniker(TsMoniker.of(MockedTsProvider.NAME, "0:2")).build();
 
     private final TsMoniker colMoniker = TsMoniker.of(MockedTsProvider.NAME, "0");
 
