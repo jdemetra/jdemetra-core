@@ -67,10 +67,12 @@ public class TramoSeatsFactoryTest {
                 .ts(ts)
                 .build();
         
-        SaItem item=new SaItem("prod", sadef);
-        item.process(true);
-        SaEstimation estimation = item.getEstimation();
-        assertTrue(estimation.getQuality() == ProcQuality.Good);
+        SaItem item=SaItem.builder()
+                .name("prod")
+                .definition(sadef)
+                .build();
+        item.process(false);
+        assertTrue(item.getQuality() == ProcQuality.Good);
     }
 
     @Test

@@ -20,8 +20,11 @@ import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
+import demetra.sa.SaSpecification;
 import demetra.sa.io.information.SaBenchmarkingSpecMapping;
+import demetra.sa.io.information.SaSpecificationMapping;
 import demetra.tramoseats.TramoSeatsSpec;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
@@ -127,6 +130,24 @@ public class TramoSeatsSpecMapping {
                 .seats(DecompositionSpecMapping.read(info.getSubSet(SEATS)))
                 .benchmarking(SaBenchmarkingSpecMapping.read(info.getSubSet(BENCH)))
                 .build();
+    }
+    
+    @ServiceProvider(SaSpecificationMapping.class)
+    public static class Serializer implements SaSpecificationMapping{
+
+        @Override
+        public SaSpecification read(InformationSet info) {
+            return TramoSeatsSpecMapping.read(info);
+        }
+
+        @Override
+        public InformationSet write(SaSpecification spec, boolean verbose) {
+            if (spec instanceof TramoSeatsSpec)
+                return TramoSeatsSpecMapping.write((TramoSeatsSpec) spec, verbose);
+            else
+                return null;
+        }
+        
     }
 
 }

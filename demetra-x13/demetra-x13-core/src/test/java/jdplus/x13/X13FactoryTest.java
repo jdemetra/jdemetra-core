@@ -69,8 +69,11 @@ public class X13FactoryTest {
                 .ts(ts)
                 .build();
         
-        SaItem item=new SaItem("prod", sadef);
-        SaEstimation estimation = item.getEstimation();
-        assertTrue(estimation.getQuality() == ProcQuality.Good);
+        SaItem item=SaItem.builder()
+                .name("prod")
+                .definition(sadef)
+                .build();
+        item.process(false);
+        assertTrue(item.getQuality() == ProcQuality.Good);
     }
 }

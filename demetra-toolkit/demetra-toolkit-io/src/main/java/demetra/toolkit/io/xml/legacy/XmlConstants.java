@@ -27,6 +27,7 @@ public class XmlConstants {
             BENCHMARKING=AUTHORITY+"/jdemetra/benchmarking",
             SA=AUTHORITY+"/jdemetra/sa", 
             TRAMOSEATS=SA+"/tramoseats",
-            X13=SA+"/x13";
+            X13=SA+"/x13",
+            INFORMATION="ec/tss.core";
             
 }

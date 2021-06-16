@@ -23,31 +23,47 @@ import demetra.timeseries.Ts;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder( toBuilder=true)
+@lombok.Builder(builderClassName="Builder", toBuilder = true)
 public class SaDefinition {
     
+
     /**
-     * Initial specification. Reference for any relaxing of some elements of the specification
+     * Initial specification. Reference for any relaxing of some elements of the
+     * specification
      */
     @lombok.NonNull
     SaSpecification domainSpec;
-    
+
     /**
      * Specification used for the current estimation
      */
     SaSpecification estimationSpec;
-    
+
+    /**
+     * Specification corresponding to the result
+     */
+    @lombok.experimental.NonFinal
+    @lombok.EqualsAndHashCode.Exclude
+    volatile SaSpecification pointSpec;
+
     /**
      * Way the current estimation specification has been achieved
      */
-    EstimationPolicyType policy;
-    
+    @lombok.Builder.Default
+    EstimationPolicyType policy=EstimationPolicyType.None;
+
     /**
-     * Time series 
+     * Time series
      */
     Ts ts;
-    
-    public SaSpecification activeSpecification(){
-        return estimationSpec == null ? domainSpec: estimationSpec;
+
+    public SaSpecification activeSpecification() {
+        return estimationSpec == null ? domainSpec : estimationSpec;
+    }
+
+    public void setPointSpecification(SaSpecification pspec) {
+        synchronized (this) {
+            this.pointSpec = pspec;
+        }
     }
 }

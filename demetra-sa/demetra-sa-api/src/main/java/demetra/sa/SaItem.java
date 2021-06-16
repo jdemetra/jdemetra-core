@@ -16,7 +16,10 @@
  */
 package demetra.sa;
 
+import demetra.processing.ProcDiagnostic;
+import demetra.processing.ProcQuality;
 import demetra.timeseries.regression.ModellingContext;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,46 +27,54 @@ import java.util.Map;
  *
  * @author PALATEJ
  */
+@lombok.Value
+@lombok.Builder(builderClassName = "Builder", toBuilder = true)
 public final class SaItem {
 
+    @lombok.NonNull
     String name;
+    
+    @lombok.NonNull
+    SaDefinition definition;    
 
-    private Map<String, String> meta = new HashMap<>();
+
+    @lombok.Singular("meta")
+    @lombok.EqualsAndHashCode.Exclude
+    Map<String, String> meta;
 
     /**
      * Operational. Importance of this estimation
      */
-    private final int priority;
-
-    private final SaDefinition definition;
+    @lombok.EqualsAndHashCode.Exclude
+    int priority;
 
     /**
      * All information available after processing.
      * SA processors must be able to generate full estimations starting from
      * definitions
      */
+    @lombok.experimental.NonFinal
+    @lombok.EqualsAndHashCode.Exclude
     private volatile SaEstimation estimation;
 
-    public SaItem(String name, SaDefinition definition) {
-        this.name = name;
-        this.definition = definition;
-        this.priority = 0;
-    }
-
-    public SaItem(String name, SaDefinition definition, int priority) {
-        this.name = name;
-        this.definition = definition;
-        this.priority = priority;
-    }
+    @lombok.experimental.NonFinal
+    @lombok.EqualsAndHashCode.Exclude
+    private volatile ProcQuality quality;
 
     public SaItem withPriority(int priority) {
-        SaItem nitem = new SaItem(name, definition, priority);
-        nitem.estimation = this.estimation;
-        return nitem;
+        return new SaItem(name, definition, meta, priority, estimation, quality);
     }
 
-    public SaDefinition getDefinition() {
-        return this.definition;
+    public SaItem withName(String name) {
+        return new SaItem(name, definition, meta, priority, estimation, quality);
+    }
+
+    public SaItem withInformations(Map<String, String> info) {
+        return new SaItem(name, definition, Collections.unmodifiableMap(info), priority, estimation, quality);
+    }
+
+    public void setQuality(ProcQuality quality) {
+        this.quality = quality;
     }
 
     public boolean isProcessed() {
@@ -71,20 +82,26 @@ public final class SaItem {
     }
 
     /**
-     * Process this item. The Processing is always executed, even if the item has already been
-     * estimated. To avoid re-estimation, use getEstimation (which is not verbose by default)
+     * Process this item. The Processing is always executed, even if the item
+     * has already been
+     * estimated. To avoid re-estimation, use getEstimation (which is not
+     * verbose by default)
+     *
      * @param verbose
-     * @return 
+     * @return
      */
     public boolean process(boolean verbose) {
         synchronized (this) {
             estimation = SaManager.process(definition, ModellingContext.getActiveContext(), verbose);
+            // update quality
+            quality = estimation == null ? ProcQuality.Undefined : ProcDiagnostic.summary(estimation.getDiagnostics());
         }
         return estimation != null;
     }
 
     /**
      * Gets the current estimation (executes it silently if not processed yet).
+     *
      * @return The current estimation
      */
     public SaEstimation getEstimation() {
@@ -94,6 +111,8 @@ public final class SaItem {
                 e = estimation;
                 if (e == null) {
                     e = SaManager.process(definition, ModellingContext.getActiveContext(), false);
+                    // update quality
+                    quality = e == null ? ProcQuality.Undefined : ProcDiagnostic.summary(e.getDiagnostics());
                     estimation = e;
                 }
             }
@@ -101,7 +120,4 @@ public final class SaItem {
         return e;
     }
 
-    public int getPriority() {
-        return this.priority;
-    }
 }

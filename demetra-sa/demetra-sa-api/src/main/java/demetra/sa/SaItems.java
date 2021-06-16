@@ -27,12 +27,16 @@ import java.util.Map;
 @lombok.Builder( toBuilder=true)
 public class SaItems {
     
-    String name;
+    @lombok.NonNull
+    @lombok.Builder.Default
+    String name="";
     
     @lombok.Singular("meta")
+    @lombok.NonNull
     private Map<String, String> meta;
     
     @lombok.Singular("item")
+    @lombok.NonNull
     private List<SaItem> items;
     
 }
