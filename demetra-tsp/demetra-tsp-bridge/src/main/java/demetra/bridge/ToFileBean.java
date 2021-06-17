@@ -24,16 +24,16 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Philippe Charles
  */
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class FromFileBean implements ec.tss.tsproviders.IFileBean {
+public class ToFileBean implements FileBean {
 
-    public static ec.tss.tsproviders.@NonNull IFileBean fromFileBean(@NonNull FileBean delegate) {
-        return delegate instanceof ToFileBean
-                ? ((ToFileBean) delegate).getDelegate()
-                : new FromFileBean(delegate);
+    public static @NonNull FileBean toFileBean(ec.tss.tsproviders.@NonNull IFileBean delegate) {
+        return delegate instanceof FromFileBean
+                ? ((FromFileBean) delegate).getDelegate()
+                : new ToFileBean(delegate);
     }
 
     @lombok.Getter
     @lombok.NonNull
     @lombok.experimental.Delegate
-    private final FileBean delegate;
+    private final ec.tss.tsproviders.IFileBean delegate;
 }

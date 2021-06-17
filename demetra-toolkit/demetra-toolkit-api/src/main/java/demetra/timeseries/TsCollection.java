@@ -18,15 +18,17 @@ package demetra.timeseries;
 
 import demetra.data.HasEmptyCause;
 import demetra.data.Seq;
+import demetra.util.Collections2;
 import nbbrd.design.LombokWorkaround;
 import nbbrd.design.StaticFactoryMethod;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -66,13 +68,16 @@ public class TsCollection implements Seq<Ts>, HasEmptyCause {
     public static final TsCollection EMPTY = TsCollection.builder().build();
 
     @StaticFactoryMethod
-    public static @NonNull TsCollection of(@NonNull List<Ts> data) {
-        return builder().items(data).build();
+    public static @NonNull TsCollection of(@NonNull Iterable<Ts> items) {
+        Builder result = builder();
+        items.forEach(result::item);
+        return result.build();
     }
 
     @StaticFactoryMethod
-    public static @NonNull TsCollection of(@NonNull Ts... data) {
-        return builder().items(Arrays.asList(data)).build();
+    public static @NonNull TsCollection of(@NonNull Ts item) {
+        Objects.requireNonNull(item);
+        return builder().item(item).build();
     }
 
     public static @NonNull Collector<Ts, ?, TsCollection> toTsCollection() {
@@ -92,5 +97,37 @@ public class TsCollection implements Seq<Ts>, HasEmptyCause {
     @Override
     public @Nullable String getEmptyCause() {
         return emptyCause;
+    }
+
+    public @NonNull TsCollection load(@NonNull TsInformationType info, @NonNull TsFactory factory) {
+        Objects.requireNonNull(info);
+        Objects.requireNonNull(factory);
+
+        if (type.encompass(info)) {
+            return this;
+        }
+        if (!moniker.isProvided()) {
+            return stream().map(ts -> ts.load(info, factory)).collect(toTsCollection());
+        }
+        return factory.makeTsCollection(moniker, info);
+    }
+
+    public @NonNull TsCollection replaceAll(@NonNull Iterable<Ts> col) {
+        Map<TsMoniker, Ts> tsByMoniker = Collections2.streamOf(col).collect(Collectors.toMap(Ts::getMoniker, Function.identity()));
+
+        TsCollection.Builder result = builder().moniker(getMoniker());
+
+        boolean modified = false;
+        for (Ts original : this) {
+            Ts replaced = tsByMoniker.get(original.getMoniker());
+            if (replaced != null) {
+                modified = true;
+                result.item(replaced);
+            } else {
+                result.item(original);
+            }
+        }
+
+        return modified ? result.build() : this;
     }
 }

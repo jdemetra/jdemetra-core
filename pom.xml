@@ -38,7 +38,7 @@
     <properties>
         <!-- dependencies -->
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
-        <jd2.version>2.2.3</jd2.version>
+        <jd2.version>2.2.4-SNAPSHOT</jd2.version>
         <java-io-util.version>0.0.12</java-io-util.version>
     </properties>
 
@@ -67,7 +67,7 @@
             <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>3.13.0</version>
+                <version>3.14.0</version>
             </dependency>
 
             <!-- test libraries -->
@@ -79,7 +79,7 @@
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>3.19.0</version>
+                <version>3.20.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -198,7 +198,7 @@
                     <dependency>
                         <groupId>com.google.protobuf</groupId>
                         <artifactId>protobuf-java</artifactId>
-                        <version>3.17.1</version>
+                        <version>3.17.3</version>
                     </dependency>
                 </dependencies>
             </dependencyManagement>
@@ -389,6 +389,14 @@
             <url>https://raw.githubusercontent.com/nbbrd/jfrog-maven-mirror/main</url>
             <snapshots>
                 <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <!-- Temp fix for binary incompatibility -->
+        <repository>
+            <id>ossrh-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
             </snapshots>
         </repository>
     </repositories>

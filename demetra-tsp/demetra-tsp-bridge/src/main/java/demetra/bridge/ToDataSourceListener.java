@@ -18,6 +18,7 @@ package demetra.bridge;
 
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.DataSourceListener;
+import lombok.AccessLevel;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Objects;
@@ -25,9 +26,16 @@ import java.util.Objects;
 /**
  * @author Philippe Charles
  */
-@lombok.AllArgsConstructor
+@lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ToDataSourceListener implements DataSourceListener {
 
+    public static @NonNull DataSourceListener toDataSourceListener(ec.tss.tsproviders.@NonNull IDataSourceListener delegate) {
+        return delegate instanceof FromDataSourceListener
+                ? ((FromDataSourceListener) delegate).getDelegate()
+                : new ToDataSourceListener(delegate);
+    }
+
+    @lombok.Getter
     @lombok.NonNull
     private final ec.tss.tsproviders.IDataSourceListener delegate;
 

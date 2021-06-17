@@ -25,6 +25,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Jean Palate
@@ -44,10 +45,10 @@ public class Ts {
     @lombok.NonNull
     private TsInformationType type;
 
+    @lombok.With
     @lombok.NonNull
     private String name;
 
-    @lombok.NonNull
     @lombok.Singular("meta")
     private Map<String, String> meta;
 
@@ -68,27 +69,20 @@ public class Ts {
         return builder().data(data).build();
     }
 
-    public Ts withName(String newName) {
-        if (newName.equals(name)) {
-            return this;
-        }
-        return new Ts(moniker, type, newName, meta, data);
-    }
+    public @NonNull Ts load(@NonNull TsInformationType info, @NonNull TsFactory factory) {
+        Objects.requireNonNull(info);
+        Objects.requireNonNull(factory);
 
-    public Ts withData(TsInformationType info, TsFactory tsFactory) {
-        if (type == info) {
-            return this;
-        }
-        if (type == TsInformationType.UserDefined || info == TsInformationType.UserDefined) {
-            throw new IllegalArgumentException();
-        }
         if (type.encompass(info)) {
             return this;
         }
-        return tsFactory.makeTs(moniker, info);
+        if (!moniker.isProvided()) {
+            return this;
+        }
+        return factory.makeTs(moniker, info);
     }
 
-    public Ts freeze() {
+    public @NonNull Ts freeze() {
         if (!moniker.isProvided()) {
             return this;
         }
@@ -100,13 +94,13 @@ public class Ts {
                 .build();
     }
 
-    public Ts unfreeze(TsFactory tsFactory) {
+    public @NonNull Ts unfreeze(@NonNull TsFactory factory) {
         if (moniker.isProvided())
             return this;
         TsMoniker pmoniker = getFreezeMeta(meta);
         if (pmoniker == null)
             return this;
-        return tsFactory.makeTs(pmoniker, type);
+        return factory.makeTs(pmoniker, type);
     }
 
     private static void putFreezeMeta(@NonNull Builder builder, @NonNull TsMoniker origin) {

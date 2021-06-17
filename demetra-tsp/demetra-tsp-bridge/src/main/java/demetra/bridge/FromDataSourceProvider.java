@@ -36,9 +36,15 @@ import java.util.stream.Collectors;
 @lombok.extern.java.Log
 public class FromDataSourceProvider extends FromTsProvider implements ec.tss.tsproviders.IDataSourceProvider {
 
+    public static ec.tss.tsproviders.@NonNull IDataSourceProvider fromDataSourceProvider(@NonNull DataSourceProvider delegate) {
+        return delegate instanceof ToDataSourceProvider
+                ? ((ToDataSourceProvider) delegate).getDelegate()
+                : new FromDataSourceProvider(delegate);
+    }
+
     private final DataSourceListener changeListener;
 
-    public FromDataSourceProvider(DataSourceProvider delegate) {
+    protected FromDataSourceProvider(DataSourceProvider delegate) {
         super(delegate);
         this.changeListener = new ChangeListener(delegate);
         delegate.addDataSourceListener(changeListener);
@@ -72,13 +78,13 @@ public class FromDataSourceProvider extends FromTsProvider implements ec.tss.tsp
     @Override
     public void addDataSourceListener(ec.tss.tsproviders.@NonNull IDataSourceListener listener) {
         Objects.requireNonNull(listener);
-        getDelegate().addDataSourceListener(new ToDataSourceListener(listener));
+        getDelegate().addDataSourceListener(ToDataSourceListener.toDataSourceListener(listener));
     }
 
     @Override
     public void removeDataSourceListener(ec.tss.tsproviders.@NonNull IDataSourceListener listener) {
         Objects.requireNonNull(listener);
-        getDelegate().removeDataSourceListener(new ToDataSourceListener(listener));
+        getDelegate().removeDataSourceListener(ToDataSourceListener.toDataSourceListener(listener));
     }
 
     @Override

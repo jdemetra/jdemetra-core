@@ -1,9 +1,8 @@
 package demetra.bridge;
 
+import _util.MockedDataSourceListener;
 import demetra.tsprovider.DataSource;
-import demetra.tsprovider.DataSourceListener;
 import ec.tss.tsproviders.IDataSourceListener;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -18,11 +17,11 @@ public class FromDataSourceListenerTest {
     @Test
     public void test() {
         assertThatNullPointerException()
-                .isThrownBy(() -> new FromDataSourceListener(null));
+                .isThrownBy(() -> FromDataSourceListener.fromDataSourceListener(null));
 
         List<Object> callStack = new ArrayList<>();
 
-        IDataSourceListener x = new FromDataSourceListener(new MockedListener(callStack));
+        IDataSourceListener x = FromDataSourceListener.fromDataSourceListener(new MockedDataSourceListener(callStack));
 
         assertThatNullPointerException()
                 .isThrownBy(() -> x.opened(null))
@@ -51,32 +50,5 @@ public class FromDataSourceListenerTest {
 
         x.allClosed("abc");
         assertThat(callStack).hasSize(4).last().isEqualTo("abc");
-    }
-
-    @lombok.AllArgsConstructor
-    private static final class MockedListener implements DataSourceListener {
-
-        @lombok.NonNull
-        private final List<Object> stack;
-
-        @Override
-        public void opened(@NonNull DataSource dataSource) {
-            stack.add(dataSource);
-        }
-
-        @Override
-        public void closed(@NonNull DataSource dataSource) {
-            stack.add(dataSource);
-        }
-
-        @Override
-        public void changed(@NonNull DataSource dataSource) {
-            stack.add(dataSource);
-        }
-
-        @Override
-        public void allClosed(@NonNull String providerName) {
-            stack.add(providerName);
-        }
     }
 }

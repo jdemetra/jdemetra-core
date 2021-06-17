@@ -68,7 +68,7 @@ public class PocProviderTest {
                 });
             }
         };
-        IDataSourceProviderAssert.assertCompliance(() -> new FromDataSourceProvider(new PocProvider()), sampler);
+        IDataSourceProviderAssert.assertCompliance(() -> FromDataSourceProvider.fromDataSourceProvider(new PocProvider()), sampler);
     }
 
     @Test
