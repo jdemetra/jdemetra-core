@@ -20,8 +20,11 @@ import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
+import demetra.sa.SaSpecification;
 import demetra.sa.io.information.SaBenchmarkingSpecMapping;
+import demetra.sa.io.information.SaSpecificationMapping;
 import demetra.x13.X13Spec;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
@@ -126,4 +129,20 @@ public class X13SpecMapping {
                 .build();
     }
 
+    @ServiceProvider(SaSpecificationMapping.class)
+    public static class Serializer implements SaSpecificationMapping{
+
+        @Override
+        public SaSpecification read(InformationSet info) {
+            return X13SpecMapping.read(info);
+        }
+
+        @Override
+        public InformationSet write(SaSpecification spec, boolean verbose) {
+            if (spec instanceof X13Spec)
+                return X13SpecMapping.write((X13Spec) spec, verbose);
+            else
+                return null;
+        }
+    }
 }

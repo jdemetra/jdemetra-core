@@ -45,11 +45,7 @@ public class SaEstimation {
     @lombok.Singular
     List<ProcDiagnostic>  diagnostics;
     
-    /**
-     * Quality of the current results
-     */
-    ProcQuality quality;
-   
+  
     /**
      * Specification corresponding to the results of the current estimation (fully identified model)
      */

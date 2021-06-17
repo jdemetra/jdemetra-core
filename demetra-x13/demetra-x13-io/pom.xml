@@ -22,6 +22,7 @@
             <artifactId>demetra-x13-api</artifactId>
         </dependency>
         <dependency>
+            <!-- TO SUPPRESS IN THE FUTURE -->
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-x13-core</artifactId>
         </dependency>

@@ -54,8 +54,9 @@ class AutoModelSpecMapping {
             return null;
         }
         InformationSet info = new InformationSet();
-        if (spec.isDefault())
+        if (spec.isDefault()) {
             return info;
+        }
         // ALWAYS ENABLED
 //        info.set(ENABLED, true);
 //        if (spec.isDefault()) {
@@ -103,6 +104,11 @@ class AutoModelSpecMapping {
         if (info.items().isEmpty()) {
             return AutoModelSpec.DEFAULT_ENABLED;
         }
+        Boolean enabled = info.get(ENABLED, Boolean.class);
+        if (enabled != null && !enabled) {
+            return AutoModelSpec.DEFAULT_DISABLED;
+        }
+
         AutoModelSpec.Builder builder = AutoModelSpec.builder().enabled(true);
         Double pcr = info.get(PCR, Double.class);
         if (pcr != null) {

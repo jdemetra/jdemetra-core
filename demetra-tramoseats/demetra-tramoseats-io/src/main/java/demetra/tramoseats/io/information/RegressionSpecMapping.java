@@ -315,7 +315,6 @@ class RegressionSpecMapping {
 
     private Map<String, String> attributes(IOutlier o) {
         HashMap<String, String> attributes = new HashMap<>();
-        attributes.put("ami", "tramo");
         attributes.put(SaVariable.REGEFFECT, SaVariable.defaultComponentTypeOf(o).name());
         return attributes;
     }

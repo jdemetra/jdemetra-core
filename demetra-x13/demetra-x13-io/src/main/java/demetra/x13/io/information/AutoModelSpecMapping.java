@@ -136,6 +136,10 @@ class AutoModelSpecMapping {
         if (info.items().isEmpty()) {
             return AutoModelSpec.DEFAULT_ENABLED;
         }
+        Boolean enabled = info.get(ENABLED, Boolean.class);
+        if (enabled != null && !enabled) {
+            return AutoModelSpec.DEFAULT_DISABLED;
+        }
 
         Boolean fal = info.get(ACCEPTDEFAULT, Boolean.class);
         Boolean mixed = info.get(MIXED, Boolean.class);

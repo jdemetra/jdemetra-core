@@ -32,42 +32,42 @@ import java.util.List;
  */
 @lombok.experimental.UtilityClass
 public class SaManager {
-  
-    public ProcResults process(TsData series, SaSpecification spec, ModellingContext context, ProcessingLog log){
+
+    public ProcResults process(TsData series, SaSpecification spec, ModellingContext context, ProcessingLog log) {
         List<SaProcessingFactory> all = SaProcessingFactoryLoader.get();
-        for (SaProcessingFactory fac : all){
-            SaSpecification dspec=fac.decode(spec);
-            if (dspec != null){
+        for (SaProcessingFactory fac : all) {
+            SaSpecification dspec = fac.decode(spec);
+            if (dspec != null) {
                 return fac.processor(dspec).process(series, context, log);
             }
         }
         return null;
     }
-    
-    public SaEstimation process(SaDefinition def, ModellingContext context, boolean verbose){
+
+    public SaEstimation process(SaDefinition def, ModellingContext context, boolean verbose) {
         List<SaProcessingFactory> all = SaProcessingFactoryLoader.get();
-        SaSpecification spec=def.activeSpecification();
-        for (SaProcessingFactory fac : all){
-            SaSpecification dspec=fac.decode(spec);
-            if (dspec != null){
-                ProcessingLog log= new DefaultProcessingLog();
+        SaSpecification spec = def.activeSpecification();
+        for (SaProcessingFactory fac : all) {
+            SaSpecification dspec = fac.decode(spec);
+            if (dspec != null) {
+                ProcessingLog log = new DefaultProcessingLog();
                 SaProcessor processor = fac.processor(dspec);
                 ProcResults rslt = processor.process(def.getTs().getData(), context, log);
-                List<ProcDiagnostic> tests=new ArrayList<>();
+                List<ProcDiagnostic> tests = new ArrayList<>();
                 fac.fillDiagnostics(tests, rslt);
                 return SaEstimation.builder()
                         .results(rslt)
                         .log(verbose ? log : ProcessingLog.dummy())
                         .diagnostics(tests)
-                        .quality(ProcDiagnostic.summary(tests))
                         .build();
             }
         }
         return null;
     }
-    
-    public <I extends SaSpecification> SaProcessingFactory factoryFor(SaSpecification spec){
+
+    public <I extends SaSpecification> SaProcessingFactory factoryFor(SaSpecification spec) {
         List<SaProcessingFactory> all = SaProcessingFactoryLoader.get();
-        return all.stream().filter(p->p.canHandle(spec)).findFirst().get();
-     }
+        return all.stream().filter(p -> p.canHandle(spec)).findFirst().get();
+    }
+    
 }
