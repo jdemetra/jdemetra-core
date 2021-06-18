@@ -60,6 +60,9 @@ public class GridReaderTest {
         assertThat(x.read(HGRID_NO_NAME))
                 .isEqualTo(c(HORIZONTAL, s("Series 0", MONTH, 2010, 0, 3.14, 4.56, 7.89)));
 
+        assertThat(x.toBuilder().namePattern("X${number}").build().read(HGRID_NO_NAME))
+                .isEqualTo(c(HORIZONTAL, s("X1", MONTH, 2010, 0, 3.14, 4.56, 7.89)));
+
         assertThat(x.read(HGRID_MULTI_NAME))
                 .isEqualTo(TsCollection
                         .builder()
@@ -86,6 +89,9 @@ public class GridReaderTest {
 
         assertThat(x.read(VGRID_NO_NAME))
                 .isEqualTo(c(VERTICAL, s("Series 0", MONTH, 2010, 0, 3.14, 4.56, 7.89)));
+
+        assertThat(x.toBuilder().namePattern("X${number}").build().read(VGRID_NO_NAME))
+                .isEqualTo(c(VERTICAL, s("X1", MONTH, 2010, 0, 3.14, 4.56, 7.89)));
 
         assertThat(x.read(VGRID_MULTI_NAME))
                 .isEqualTo(TsCollection

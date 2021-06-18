@@ -86,7 +86,7 @@ public class TsDataBuilderUtil {
                 return NO_DATA;
             default:
                 TsData result = TsDataCollector.makeFromUnknownUnit(obs);
-                if (result != null && result.getTsUnit().contains(unit)) {
+                if (result != null && unit.contains(result.getTsUnit())) {
                     // should succeed
                     result = result.aggregate(unit, convMode, complete);
                 } else {

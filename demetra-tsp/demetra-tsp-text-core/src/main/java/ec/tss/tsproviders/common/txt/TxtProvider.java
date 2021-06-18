@@ -36,6 +36,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import internal.demetra.tsp.text.TxtFileFilter;
 import nbbrd.service.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,7 +188,7 @@ public class TxtProvider extends AbstractFileLoader<TxtSource, TxtBean> {
 
     @Override
     public String getFileDescription() {
-        return fileFilter.getDescription();
+        return fileFilter.getFileDescription();
     }
 
     @Override
