@@ -148,10 +148,10 @@ public class TramoSeatsSpecMappingTest {
     }
 
     public static void main(String[] arg) throws JAXBException, IOException {
-//        testXmlSerialization();
-//        testXmlDeserialization();
-//        testXmlSerialization2();
-//        testXmlDeserialization2();
+        testXmlSerialization();
+        testXmlDeserialization();
+        testXmlSerialization2();
+        testXmlDeserialization2();
         testXmlDeserializationLegacy();
     }
 

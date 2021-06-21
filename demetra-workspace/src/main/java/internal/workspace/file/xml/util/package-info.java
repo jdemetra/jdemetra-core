@@ -15,10 +15,9 @@
  * limitations under the Licence.
  */
 
-@XmlSchema(namespace = XmlConstants.CORE, elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
+@XmlSchema(namespace = XmlConstants.INFORMATION, elementFormDefault = XmlNsForm.QUALIFIED, attributeFormDefault = XmlNsForm.UNQUALIFIED, 
         xmlns = { 
-            @XmlNs(prefix = "tss", namespaceURI = XmlConstants.CORE), 
-            @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema") 
+            @XmlNs(prefix = "", namespaceURI = XmlConstants.INFORMATION) 
         })
 package internal.workspace.file.xml.util;
 

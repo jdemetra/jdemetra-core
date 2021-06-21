@@ -25,16 +25,20 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
- * 
- *                 Univoque identifier of an information.
- *                 It is composed of a "source" and of an "id".
- *                 An optional name may be added. The name is not part of the actual identification key.
- *             
- * 
- * <p>Java class for TsMonikerType complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
+ * Univoque identifier of an information.
+ * It is composed of a "source" and of an "id".
+ * An optional name may be added. The name is not part of the actual
+ * identification key.
+ *
+ *
+ * <p>
+ * Java class for TsMonikerType complex type.
+ *
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ *
  * <pre>
  * &lt;complexType name="TsMonikerType"&gt;
  *   &lt;complexContent&gt;
@@ -47,8 +51,8 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TsMonikerType", propOrder = {
@@ -64,11 +68,11 @@ public class XmlTsMoniker {
 
     /**
      * Gets the value of the source property.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * possible object is
+     * {@link String }
+     *
      */
     public String getSource() {
         return source;
@@ -76,11 +80,11 @@ public class XmlTsMoniker {
 
     /**
      * Sets the value of the source property.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * allowed object is
+     * {@link String }
+     *
      */
     public void setSource(String value) {
         this.source = value;
@@ -88,11 +92,11 @@ public class XmlTsMoniker {
 
     /**
      * Gets the value of the id property.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * possible object is
+     * {@link String }
+     *
      */
     public String getId() {
         return id;
@@ -100,11 +104,11 @@ public class XmlTsMoniker {
 
     /**
      * Sets the value of the id property.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * allowed object is
+     * {@link String }
+     *
      */
     public void setId(String value) {
         this.id = value;
@@ -114,14 +118,16 @@ public class XmlTsMoniker {
 
         @Override
         public TsMoniker unmarshal(XmlTsMoniker v) {
-            return TsMoniker.of(v.source, v.id);
+            return (v.source == null && v.id == null) ? TsMoniker.of() : TsMoniker.of(v.source, v.id);
         }
 
         @Override
         public XmlTsMoniker marshal(TsMoniker v) {
             XmlTsMoniker x = new XmlTsMoniker();
-            x.source = v.getSource();
-            x.id = v.getId();
+            if (v.getSource().length() > 0) {
+                x.source = v.getSource();
+                x.id = v.getId();
+            }
             return x;
         }
     }

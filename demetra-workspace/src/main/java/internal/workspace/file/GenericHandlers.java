@@ -35,6 +35,7 @@ import demetra.processing.TsDataProcessor;
 import demetra.processing.TsDataProcessorFactory;
 import demetra.regarima.RegArima;
 import demetra.regarima.RegArimaSpec;
+import demetra.sa.io.information.SaItemsMapping;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.toolkit.io.xml.legacy.IXmlConverter;
@@ -47,6 +48,7 @@ import demetra.tramoseats.io.information.TramoSeatsSpecMapping;
 import demetra.tramoseats.io.information.TramoSpecMapping;
 import static demetra.workspace.WorkspaceFamily.SA_DOC_X13;
 import static demetra.workspace.WorkspaceFamily.SA_DOC_TRAMOSEATS;
+import static demetra.workspace.WorkspaceFamily.SA_MULTI;
 import static demetra.workspace.WorkspaceFamily.UTIL_CAL;
 import static demetra.workspace.WorkspaceFamily.UTIL_VAR;
 import demetra.workspace.file.util.XmlConverterSupport;
@@ -79,13 +81,13 @@ public final class GenericHandlers {
         return XmlConverterSupport.of(factory, repository).asHandler(family, FileFormat.GENERIC);
     }
 
-//    @ServiceProvider(FamilyHandler.class)
-//    public static final class SaMulti implements FamilyHandler {
-//
-//        @lombok.experimental.Delegate
-//        private final FamilyHandler delegate = informationSet(SA_MULTI, SaProcessing::new, "SAProcessing");
-//    }
-//
+    @ServiceProvider(FamilyHandler.class)
+    public static final class SaMulti implements FamilyHandler {
+
+        @lombok.experimental.Delegate
+        private final FamilyHandler delegate = informationSet(SA_MULTI, SaItemsMapping.SERIALIZER, "SAProcessing");
+    }
+
     @ServiceProvider(FamilyHandler.class)
     public static final class SaDocX13 implements FamilyHandler {
 

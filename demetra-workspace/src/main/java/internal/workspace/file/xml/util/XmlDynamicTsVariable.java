@@ -45,7 +45,7 @@ public class XmlDynamicTsVariable extends XmlNamedObject implements IXmlConverte
     @Override
     public DynamicTsDataSupplier create() {
         TsMoniker m = XmlTsMoniker.getAdapter().unmarshal(moniker);
-        DynamicTsDataSupplier result = tsdata != null
+        DynamicTsDataSupplier result = (tsdata != null && tsdata.getValues() != null)
                 ? new DynamicTsDataSupplier(m, XmlTsData.unmarshal(tsdata))
                 : new DynamicTsDataSupplier(m, null);
         return result;
