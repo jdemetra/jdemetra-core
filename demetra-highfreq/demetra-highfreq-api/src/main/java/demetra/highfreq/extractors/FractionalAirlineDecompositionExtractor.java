@@ -5,58 +5,47 @@
  */
 package demetra.highfreq.extractors;
 
+import demetra.arima.UcarimaModel;
 import demetra.highfreq.FractionalAirlineDecomposition;
+import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
+import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import demetra.toolkit.extractors.UcarimaExtractor;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author palatej
  */
-@lombok.experimental.UtilityClass
-public class FractionalAirlineDecompositionExtractor {
-
-    public boolean contains(String id) {
-        return MAPPING.contains(id);
-    }
-
-    public Map<String, Class> getDictionary() {
-        Map<String, Class> dic = new LinkedHashMap<>();
-        MAPPING.fillDictionary(null, dic, true);
-        return dic;
-    }
-
-    public <T> T getData(FractionalAirlineDecomposition decomposition, String id, Class<T> tclass) {
-        return MAPPING.getData(decomposition, id, tclass);
-    }
+@ServiceProvider(InformationExtractor.class)
+public class FractionalAirlineDecompositionExtractor extends InformationMapping<FractionalAirlineDecomposition>{
 
     static final String Y = "y", T = "t", S = "s", I = "i", SA = "sa", T_E = "t_stde", S_E = "s_stde", I_E = "i_stde",
             UCARIMA = "ucarima", ARIMA = "arima",
             PARAMETERS = "parameters", LL = "likelihood", PCOV = "pcov", SCORE = "score";
 
-    public static final InformationMapping<FractionalAirlineDecomposition> getMapping() {
-        return MAPPING;
+   public FractionalAirlineDecompositionExtractor() {
+        delegate(LL, LikelihoodStatistics.class, r -> r.getLikelihood());
+        set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
+        set(PARAMETERS, double[].class, source -> source.getParameters().toArray());
+        set(SCORE, double[].class, source -> source.getScore().toArray());
+        set(Y, double[].class, source -> source.getY());
+        set(T, double[].class, source -> source.getT());
+        set(S, double[].class, source -> source.getS());
+        set(I, double[].class, source -> source.getI());
+        set(SA, double[].class, source -> source.getN() != null ? source.getN() : source.getSa());
+        set(T_E, double[].class, source -> source.getStdeT());
+        set(S_E, double[].class, source -> source.getStdeS());
+        set(I_E, double[].class, source -> source.getStdeI());
+        delegate(UCARIMA, UcarimaModel.class, source -> source.getUcarima());
     }
 
-    private static final InformationMapping<FractionalAirlineDecomposition> MAPPING = new InformationMapping<>(FractionalAirlineDecomposition.class);
-
-    static {
-        MAPPING.delegate(LL, LikelihoodStatisticsExtractor.getMapping(), r -> r.getLikelihood());
-        MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
-        MAPPING.set(PARAMETERS, double[].class, source -> source.getParameters().toArray());
-        MAPPING.set(SCORE, double[].class, source -> source.getScore().toArray());
-        MAPPING.set(Y, double[].class, source -> source.getY());
-        MAPPING.set(T, double[].class, source -> source.getT());
-        MAPPING.set(S, double[].class, source -> source.getS());
-        MAPPING.set(I, double[].class, source -> source.getI());
-        MAPPING.set(SA, double[].class, source -> source.getN() != null ? source.getN() : source.getSa());
-        MAPPING.set(T_E, double[].class, source -> source.getStdeT());
-        MAPPING.set(S_E, double[].class, source -> source.getStdeS());
-        MAPPING.set(I_E, double[].class, source -> source.getStdeI());
-        MAPPING.delegate(UCARIMA, UcarimaExtractor.getMapping(), source -> source.getUcarima());
+    @Override
+    public Class getSourceClass() {
+        return FractionalAirlineDecomposition.class;
     }
 }

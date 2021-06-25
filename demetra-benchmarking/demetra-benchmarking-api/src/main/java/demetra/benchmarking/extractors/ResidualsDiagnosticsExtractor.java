@@ -16,44 +16,43 @@
  */
 package demetra.benchmarking.extractors;
 
+import demetra.information.InformationExtractor;
 import nbbrd.design.Development;
 import demetra.information.InformationMapping;
 import demetra.stats.StatisticalTest;
 import demetra.tempdisagg.univariate.ResidualsDiagnostics;
 import demetra.timeseries.TsData;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Release)
-@lombok.experimental.UtilityClass
-public class ResidualsDiagnosticsExtractor {
-    
-    public final String FRES="fullresiduals", MEAN="mean", SKEWNESS="skewness", 
-            KURTOSIS="kurtosis", DH="doornikhansen", LJUNGBOX="ljungbox",
-            DW="durbinwatson",  UDRUNS_NUMBER = "nudruns", UDRUNS_LENGTH = "ludruns",
+@ServiceProvider(InformationExtractor.class)
+public class ResidualsDiagnosticsExtractor extends InformationMapping<ResidualsDiagnostics> {
+
+    public final String FRES = "fullresiduals", MEAN = "mean", SKEWNESS = "skewness",
+            KURTOSIS = "kurtosis", DH = "doornikhansen", LJUNGBOX = "ljungbox",
+            DW = "durbinwatson", UDRUNS_NUMBER = "nudruns", UDRUNS_LENGTH = "ludruns",
             RUNS_NUMBER = "nruns", RUNS_LENGTH = "lruns";
 
-    
-    private final InformationMapping<ResidualsDiagnostics> MAPPING = new InformationMapping<>(ResidualsDiagnostics.class);
-
-    static {
-        MAPPING.set(FRES, TsData.class, source->source.getFullResiduals());
-        MAPPING.set(MEAN, StatisticalTest.class, source->source.getMean());
-        MAPPING.set(SKEWNESS, StatisticalTest.class, source->source.getSkewness());
-        MAPPING.set(KURTOSIS, StatisticalTest.class, source->source.getKurtosis());
-        MAPPING.set(DH, StatisticalTest.class, source->source.getDoornikHansen());
-        MAPPING.set(LJUNGBOX, StatisticalTest.class, source->source.getLjungBox());
-        MAPPING.set(RUNS_NUMBER, StatisticalTest.class, source->source.getRunsNumber());
-        MAPPING.set(RUNS_LENGTH, StatisticalTest.class, source->source.getRunsLength());
-        MAPPING.set(UDRUNS_NUMBER, StatisticalTest.class, source->source.getUdRunsNumber());
-        MAPPING.set(UDRUNS_LENGTH, StatisticalTest.class, source->source.getUdRunsLength());
-        MAPPING.set(DW, Double.class, source->source.getDurbinWatson());
+    public ResidualsDiagnosticsExtractor() {
+        set(FRES, TsData.class, source -> source.getFullResiduals());
+        set(MEAN, StatisticalTest.class, source -> source.getMean());
+        set(SKEWNESS, StatisticalTest.class, source -> source.getSkewness());
+        set(KURTOSIS, StatisticalTest.class, source -> source.getKurtosis());
+        set(DH, StatisticalTest.class, source -> source.getDoornikHansen());
+        set(LJUNGBOX, StatisticalTest.class, source -> source.getLjungBox());
+        set(RUNS_NUMBER, StatisticalTest.class, source -> source.getRunsNumber());
+        set(RUNS_LENGTH, StatisticalTest.class, source -> source.getRunsLength());
+        set(UDRUNS_NUMBER, StatisticalTest.class, source -> source.getUdRunsNumber());
+        set(UDRUNS_LENGTH, StatisticalTest.class, source -> source.getUdRunsLength());
+        set(DW, Double.class, source -> source.getDurbinWatson());
     }
 
-    public InformationMapping<ResidualsDiagnostics> getMapping() {
-        return MAPPING;
+    @Override
+    public Class getSourceClass() {
+        return ResidualsDiagnostics.class;
     }
-    
+
 }

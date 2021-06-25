@@ -7,14 +7,14 @@ package demetra.highfreq;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.highfreq.extractors.FractionalAirlineModelExtractor;
+import demetra.highfreq.extractors.FractionalAirlineEstimationExtractor;
 import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
-import demetra.processing.ProcResults;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import demetra.information.Explorable;
 
 /**
  * Low-level results. Should be refined
@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @lombok.Value
 @lombok.Builder
-public class FractionalAirlineEstimation implements ProcResults{
+public class FractionalAirlineEstimation implements Explorable{
 
     double[] y;
     MatrixType x;
@@ -66,27 +66,6 @@ public class FractionalAirlineEstimation implements ProcResults{
             t[i] /= Math.sqrt(v.getAndNext());
         }
         return t;
-    }
-
-    @Override
-    public boolean contains(String id) {
-        return FractionalAirlineModelExtractor.getMapping().contains(id);
-    }
-
-    @Override
-    public Map<String, Class> getDictionary() {
-        Map<String, Class> dic = new LinkedHashMap<>();
-        FractionalAirlineModelExtractor.getMapping().fillDictionary(null, dic, true);
-        return dic;
-    }
-
-    @Override
-    public <T> T getData(String id, Class<T> tclass) {
-        return FractionalAirlineModelExtractor.getMapping().getData(this, id, tclass);
-    }
-    
-    public static InformationMapping<FractionalAirlineEstimation> getMapping(){
-        return FractionalAirlineModelExtractor.getMapping();
     }
 
     public int getNx() {

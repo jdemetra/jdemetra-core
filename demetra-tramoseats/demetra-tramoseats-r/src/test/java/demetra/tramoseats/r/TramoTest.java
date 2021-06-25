@@ -23,6 +23,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.tramo.TramoOutput;
 import demetra.tramo.TramoSpec;
+import jdplus.regsarima.regular.RegSarimaModel;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -37,7 +38,7 @@ public class TramoTest {
 
     @Test
     public void test() {
-        Tramo.Results rslt = Tramo.process(Data.TS_PROD, "TR5");
+        RegSarimaModel rslt = Tramo.process(Data.TS_PROD, "TR5");
         assertTrue(rslt.getData("span.n", Integer.class) == Data.TS_PROD.length());
 //        System.out.println(DoubleSeq.of(rslt.getData("sarima.parameters", double[].class)));
 

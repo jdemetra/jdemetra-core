@@ -20,7 +20,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.StationaryTransformation;
-import demetra.processing.ProcResults;
 import demetra.regarima.RegArimaOutput;
 import demetra.regarima.RegArimaSpec;
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
@@ -31,10 +30,7 @@ import demetra.timeseries.regression.ModellingContext;
 import demetra.util.r.Dictionary;
 import demetra.x13.io.protobuf.RegArimaProto;
 import demetra.x13.io.protobuf.X13Protos;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import jdplus.math.matrices.Matrix;
-import jdplus.regarima.extractors.RegSarimaModelExtractor;
 import jdplus.regsarima.regular.Forecast;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.x13.regarima.DifferencingModule;
@@ -48,46 +44,22 @@ import jdplus.x13.regarima.RegArimaKernel;
 @lombok.experimental.UtilityClass
 public class RegArima {
 
-    @lombok.Value
-    public static class Results implements ProcResults {
-
-        private RegSarimaModel core;
-
-        public byte[] buffer() {
+        public byte[] toBuffer(RegSarimaModel core) {
             return RegArimaEstimationProto.convert(core).toByteArray();
         }
-
-        @Override
-        public boolean contains(String id) {
-            return RegSarimaModelExtractor.getMapping().contains(id);
-        }
-
-        @Override
-        public Map<String, Class> getDictionary() {
-            Map<String, Class> dic = new LinkedHashMap<>();
-            RegSarimaModelExtractor.getMapping().fillDictionary(null, dic, true);
-            return dic;
-        }
-
-        @Override
-        public <T> T getData(String id, Class<T> tclass) {
-            return RegSarimaModelExtractor.getMapping().getData(core, id, tclass);
-        }
-    }
-
-    public Results process(TsData series, String defSpec) {
+        
+ 
+    public RegSarimaModel process(TsData series, String defSpec) {
         RegArimaSpec spec = RegArimaSpec.fromString(defSpec);
-        RegArimaKernel tramo = RegArimaKernel.of(spec, null);
-        RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
-        return new Results(estimation);
-    }
+        RegArimaKernel regarima = RegArimaKernel.of(spec, null);
+        return regarima.process(series.cleanExtremities(), null);
+     }
 
-    public Results process(TsData series, RegArimaSpec spec, Dictionary dic) {
+    public RegSarimaModel process(TsData series, RegArimaSpec spec, Dictionary dic) {
         ModellingContext context = dic == null ? null : dic.toContext();
-        RegArimaKernel tramo = RegArimaKernel.of(spec, context);
-        RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
-        return new Results(estimation);
-    }
+        RegArimaKernel regarima = RegArimaKernel.of(spec, context);
+       return regarima.process(series.cleanExtremities(), null);
+     }
 
     public RegArimaSpec refreshSpec(RegArimaSpec currentSpec, RegArimaSpec domainSpec, TsDomain domain, String policy) {
         return RegArimaFactory.INSTANCE.refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);

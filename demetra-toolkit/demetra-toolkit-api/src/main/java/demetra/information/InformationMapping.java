@@ -24,10 +24,7 @@ import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import demetra.util.WildCards;
-import java.lang.reflect.Method;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.ServiceLoader;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -38,85 +35,31 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 @ThreadSafe
 @Development(status = Development.Status.Release)
-public class InformationMapping<S> implements InformationExtractor<S> {
+public abstract class InformationMapping<S> implements InformationExtractor<S> {
 
-    private final LinkedHashMap<String, InformationExtractor<S>> map = new LinkedHashMap<>();
-    private final Class<S> sourceClass;
-
-    public InformationMapping(Class<S> sourceClass) {
-        this.sourceClass = sourceClass;
-    }
-
-    public static void updateAll(ClassLoader loader) {
-        if (loader == null) {
-            loader = ClassLoader.getSystemClassLoader();
-        }
-        ServiceLoader<InformationMappingExtension> services = ServiceLoader.load(InformationMappingExtension.class, loader);
-        HashSet<Class> set = new HashSet<>();
-        for (InformationMappingExtension extension : services) {
-            set.add(extension.getSourceClass());
-        }
-        for (Class sclass : set) {
-            update(sclass, loader);
-        }
-    }
-
-    public static boolean update(Class sourceClass, ClassLoader loader) {
-        try {
-            Method method = sourceClass.getMethod("getMapping");
-            if (method == null) {
-                return false;
-            }
-            InformationMapping rslt = (InformationMapping) method.invoke(null);
-            if (!rslt.sourceClass.equals(sourceClass)) {
-                return false;
-            }
-            rslt.update(loader);
-            return true;
-
-        } catch (Exception ex) {
-            return false;
-        }
-    }
-
-    public void update() {
-        update(null);
-    }
-
-    public void update(ClassLoader loader) {
-        if (loader == null) {
-            loader = ClassLoader.getSystemClassLoader();
-        }
-        ServiceLoader<InformationMappingExtension> services = ServiceLoader.load(InformationMappingExtension.class, loader);
-        for (InformationMappingExtension extension : services) {
-            if (extension.getSourceClass().equals(sourceClass)) {
-                extension.updateExtractors(this);
-            }
-        }
-    }
-
+    private final LinkedHashMap<String, BasicInformationExtractor<S>> map = new LinkedHashMap<>();
     public <Q> void set(@NonNull final String name, final Class<Q> targetClass,
             final Function<S, Q> fn) {
-        map.put(name, InformationExtractor.extractor(name, targetClass, fn));
+        map.put(name, BasicInformationExtractor.extractor(name, targetClass, fn));
     }
 
-    public <Q> void delegate(final String name, final InformationMapping<Q> mapping, final Function<S, Q> fn) {
-        map.put(name, InformationExtractor.delegate(name, mapping, fn));
+    public <Q> void delegate(final String name, final Class<Q> target, final Function<S, Q> fn) {
+        map.put(name, BasicInformationExtractor.delegate(name, target, fn));
     }
 
     public <Q> void delegateArray(final String name, final int start, final int end, 
-            final InformationMapping<Q> mapping, final BiFunction<S, Integer, Q> fn) {
-        map.put(name, InformationExtractor.delegateArray(name, start, end, mapping, fn));
+            final Class<Q> target, final BiFunction<S, Integer, Q> fn) {
+        map.put(name, BasicInformationExtractor.delegateArray(name, start, end, target, fn));
     }
 
     public <Q> void setArray(@NonNull final String name, final int start, final int end,
             final Class<Q> targetClass, final BiFunction<S, Integer, Q> fn) {
-        map.put(name, InformationExtractor.array(name, start, end, targetClass, fn));
+        map.put(name, BasicInformationExtractor.array(name, start, end, targetClass, fn));
     }
 
     public <Q> void setArray(@NonNull final String name, final int defparam,
             final Class<Q> targetClass, final BiFunction<S, Integer, Q> fn) {
-        map.put(name, InformationExtractor.array(name, defparam, targetClass, fn));
+        map.put(name, BasicInformationExtractor.array(name, defparam, targetClass, fn));
     }
 
     @Override
@@ -126,15 +69,15 @@ public class InformationMapping<S> implements InformationExtractor<S> {
         }
     }
 
-    private InformationExtractor<S> search(String id) {
+    private BasicInformationExtractor<S> search(String id) {
         // fast search
         synchronized (this) {
-            InformationExtractor<S> extractor = map.get(id);
+            BasicInformationExtractor<S> extractor = map.get(id);
             if (extractor != null) {
                 return extractor;
             } else {
                 // slow search
-                Optional<Entry<String, InformationExtractor<S>>> findFirst = map.entrySet().stream().filter(entry -> entry.getValue().contains(id)).findFirst();
+                Optional<Entry<String, BasicInformationExtractor<S>>> findFirst = map.entrySet().stream().filter(entry -> entry.getValue().contains(id)).findFirst();
                 if (findFirst.isPresent()) {
                     return findFirst.get().getValue();
                 } else {
@@ -146,13 +89,13 @@ public class InformationMapping<S> implements InformationExtractor<S> {
 
     @Override
     public boolean contains(String id) {
-        InformationExtractor<S> extractor = search(id);
+        BasicInformationExtractor<S> extractor = search(id);
         return extractor == null ? false : extractor.contains(id);
     }
 
     @Override
     public <T> T getData(S source, String id, Class<T> tclass) {
-        InformationExtractor<S> extractor = search(id);
+        BasicInformationExtractor<S> extractor = search(id);
         return extractor == null ? null : extractor.getData(source, id, tclass);
     }
 

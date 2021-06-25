@@ -20,9 +20,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.StationaryTransformation;
-import demetra.processing.ProcResults;
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
-import demetra.regarima.io.protobuf.RegArimaProtosUtility;
 import demetra.sa.EstimationPolicyType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
@@ -32,10 +30,7 @@ import demetra.tramo.TramoOutput;
 import demetra.tramoseats.io.protobuf.TramoProto;
 import demetra.tramoseats.io.protobuf.TramoSeatsProtos;
 import demetra.util.r.Dictionary;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import jdplus.math.matrices.Matrix;
-import jdplus.regarima.extractors.RegSarimaModelExtractor;
 import jdplus.regsarima.regular.Forecast;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.tramo.TramoFactory;
@@ -49,45 +44,20 @@ import jdplus.tramo.internal.DifferencingModule;
 @lombok.experimental.UtilityClass
 public class Tramo {
 
-    @lombok.Value
-    public static class Results implements ProcResults {
-
-        private RegSarimaModel core;
-
-        public byte[] buffer() {
+        public byte[] toBuffer(RegSarimaModel core) {
             return RegArimaEstimationProto.convert(core).toByteArray();
         }
-
-        @Override
-        public boolean contains(String id) {
-            return RegSarimaModelExtractor.getMapping().contains(id);
-        }
-
-        @Override
-        public Map<String, Class> getDictionary() {
-            Map<String, Class> dic = new LinkedHashMap<>();
-            RegSarimaModelExtractor.getMapping().fillDictionary(null, dic, true);
-            return dic;
-        }
-
-        @Override
-        public <T> T getData(String id, Class<T> tclass) {
-            return RegSarimaModelExtractor.getMapping().getData(core, id, tclass);
-        }
-    }
-
-    public Results process(TsData series, String defSpec) {
+ 
+    public RegSarimaModel process(TsData series, String defSpec) {
         TramoSpec spec = TramoSpec.fromString(defSpec);
         TramoKernel tramo = TramoKernel.of(spec, null);
-        RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
-        return new Results(estimation);
+        return tramo.process(series.cleanExtremities(), null);
     }
 
-    public Results process(TsData series, TramoSpec spec, Dictionary dic) {
+    public RegSarimaModel process(TsData series, TramoSpec spec, Dictionary dic) {
         ModellingContext context = dic == null ? null : dic.toContext();
         TramoKernel tramo = TramoKernel.of(spec, context);
-        RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
-        return new Results(estimation);
+        return tramo.process(series.cleanExtremities(), null);
     }
 
     public TramoSpec refreshSpec(TramoSpec currentSpec, TramoSpec domainSpec, TsDomain domain, String policy) {

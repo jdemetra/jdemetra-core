@@ -17,19 +17,14 @@
 package demetra.tramoseats.r;
 
 import demetra.modelling.implementations.SarimaSpec;
-import demetra.information.InformationMapping;
 import demetra.processing.DefaultProcessingLog;
-import demetra.processing.ProcResults;
 import demetra.processing.ProcessingLog;
 import demetra.seats.DecompositionSpec;
 import demetra.seats.SeatsModelSpec;
 import demetra.timeseries.TsData;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import jdplus.seats.SeatsKernel;
 import jdplus.seats.SeatsResults;
 import jdplus.seats.SeatsToolkit;
-import jdplus.tramoseats.extractors.SeatsExtractor;
 
 /**
  *
@@ -38,34 +33,7 @@ import jdplus.tramoseats.extractors.SeatsExtractor;
 @lombok.experimental.UtilityClass
 public class Seats {
 
-    @lombok.Value
-    public static class Results implements ProcResults {
-
-        private SeatsResults core;
-
-        @Override
-        public boolean contains(String id) {
-            return SeatsExtractor.getMapping().contains(id);
-        }
-
-        @Override
-        public Map<String, Class> getDictionary() {
-            Map<String, Class> dic = new LinkedHashMap<>();
-            SeatsExtractor.getMapping().fillDictionary(null, dic, true);
-            return dic;
-        }
-
-        @Override
-        public <T> T getData(String id, Class<T> tclass) {
-            return SeatsExtractor.getMapping().getData(core, id, tclass);
-        }
-
-        public static InformationMapping getMapping() {
-            return SeatsExtractor.getMapping();
-        }
-    }
-
-    public Results process(TsData data, boolean log, int[] order, int[] seasonal, boolean mean, int nb, int nf) {
+    public SeatsResults process(TsData data, boolean log, int[] order, int[] seasonal, boolean mean, int nb, int nf) {
 
         SarimaSpec arima = SarimaSpec.builder()
                 .p(order[0])
@@ -91,7 +59,7 @@ public class Seats {
         SeatsToolkit toolkit = SeatsToolkit.of(dspec);
         SeatsKernel kernel = new SeatsKernel(toolkit);
         ProcessingLog plog = new DefaultProcessingLog();
-        return new Results(kernel.process(model, plog));
+        return kernel.process(model, plog);
     }
 
 }

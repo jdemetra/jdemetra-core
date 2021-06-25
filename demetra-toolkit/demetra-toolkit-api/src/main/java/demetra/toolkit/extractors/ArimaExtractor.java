@@ -17,16 +17,16 @@
 package demetra.toolkit.extractors;
 
 import demetra.arima.ArimaModel;
-import nbbrd.design.Development;
+import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Release)
-@lombok.experimental.UtilityClass
-public class ArimaExtractor {
+@ServiceProvider(InformationExtractor.class)
+public class ArimaExtractor extends InformationMapping<ArimaModel>{
 
     public final static String AR="ar", // Stationary auto-regressive polynomial
             DELTA="delta",  // Differencing polynomial
@@ -36,19 +36,16 @@ public class ArimaExtractor {
             ; // Innovation variance
     
 
-    private final InformationMapping<ArimaModel> MAPPING = new InformationMapping<>(ArimaModel.class);
-
-    static {
-        MAPPING.set(AR, double[].class, source->source.getAr());
-        MAPPING.set(DELTA, double[].class, source->source.getDelta());
-        MAPPING.set(MA, double[].class, source->source.getMa());
-        MAPPING.set(VAR, Double.class, source->source.getInnovationVariance());
-        MAPPING.set(NAME, String.class, source->source.getName());
+    public ArimaExtractor() {
+        set(AR, double[].class, source->source.getAr());
+        set(DELTA, double[].class, source->source.getDelta());
+        set(MA, double[].class, source->source.getMa());
+        set(VAR, Double.class, source->source.getInnovationVariance());
+        set(NAME, String.class, source->source.getName());
     }
 
-    public InformationMapping<ArimaModel> getMapping() {
-        return MAPPING;
+    @Override
+    public Class getSourceClass() {
+        return ArimaModel.class;
     }
-
-
 }

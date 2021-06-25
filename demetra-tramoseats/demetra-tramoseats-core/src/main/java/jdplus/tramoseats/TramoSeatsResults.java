@@ -16,13 +16,13 @@
  */
 package jdplus.tramoseats;
 
-import demetra.processing.ProcResults;
 import jdplus.seats.SeatsResults;
 import demetra.sa.SeriesDecomposition;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.tramoseats.extractors.TramoSeatsExtractor;
+import demetra.information.Explorable;
 
 /**
  *
@@ -30,27 +30,10 @@ import jdplus.tramoseats.extractors.TramoSeatsExtractor;
  */
 @lombok.Value
 @lombok.Builder
-public class TramoSeatsResults implements ProcResults {
+public class TramoSeatsResults implements Explorable {
 
     private RegSarimaModel preprocessing;
     private SeatsResults decomposition;
     private SeriesDecomposition finals;
-
-    @Override
-    public boolean contains(String id) {
-        return TramoSeatsExtractor.getMapping().contains(id);
-    }
-
-    @Override
-    public Map<String, Class> getDictionary() {
-        Map<String, Class> dic = new LinkedHashMap<>();
-        TramoSeatsExtractor.getMapping().fillDictionary(null, dic, true);
-        return dic;
-    }
-
-    @Override
-    public <T> T getData(String id, Class<T> tclass) {
-        return TramoSeatsExtractor.getMapping().getData(this, id, tclass);
-    }
 
 }

@@ -20,7 +20,6 @@ import jdplus.x11plus.X11Kernel;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.analysis.DiscreteKernel;
@@ -34,6 +33,7 @@ import jdplus.math.linearfilters.AsymmetricFilters;
 import jdplus.rkhs.RKHSFilterFactory;
 import jdplus.rkhs.RKHSFilterSpec;
 import jdplus.x11plus.X11SeasonalFiltersFactory;
+import demetra.information.Explorable;
 
 /**
  *
@@ -67,7 +67,7 @@ public class X11Decomposition {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements ProcResults {
+    public static class Results implements Explorable {
 
         boolean multiplicative;
         DoubleSeq y;
@@ -96,7 +96,12 @@ public class X11Decomposition {
             return MAPPING;
         }
 
-        private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
+        private static final InformationMapping<Results> MAPPING = new InformationMapping<Results>() {
+            @Override
+            public Class getSourceClass() {
+                return Results.class;
+            }
+        };
 
         static {
             MAPPING.set(Y, double[].class, source -> source.getY().toArray());

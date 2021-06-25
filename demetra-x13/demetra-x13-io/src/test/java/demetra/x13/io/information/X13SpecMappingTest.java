@@ -18,7 +18,6 @@ package demetra.x13.io.information;
 
 import demetra.data.Data;
 import demetra.information.InformationSet;
-import demetra.processing.ProcResults;
 import demetra.sa.SaDefinition;
 import demetra.sa.SaEstimation;
 import demetra.sa.SaItem;
@@ -46,6 +45,7 @@ import jdplus.x13.X13Results;
 import org.assertj.core.util.Files;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.information.Explorable;
 
 /**
  *

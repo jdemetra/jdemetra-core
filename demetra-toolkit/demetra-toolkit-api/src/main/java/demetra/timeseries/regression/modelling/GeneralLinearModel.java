@@ -28,13 +28,14 @@ import demetra.timeseries.regression.Variable;
 import demetra.stats.StatisticalTest;
 import java.util.List;
 import java.util.Map;
+import demetra.information.Explorable;
 
 /**
  *
  * @author PALATEJ
  * @param <M>
  */
-public interface GeneralLinearModel<M> {
+public interface GeneralLinearModel<M> extends Explorable{
 
     Description<M> getDescription();
 

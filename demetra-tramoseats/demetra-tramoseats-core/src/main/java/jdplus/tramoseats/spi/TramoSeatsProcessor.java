@@ -42,7 +42,7 @@ public class TramoSeatsProcessor implements TramoSeats.Processor {
         // Handling of additional items
         TramoSeatsResults.Builder builder = TramoSeatsResults.builder();
         for (String key : additionalItems) {
-            Object data = TramoSeatsExtractor.getMapping().getData(rslt, key, Object.class);
+            Object data = rslt.getData(key, Object.class);
             if (data != null) {
                 builder.addtionalResult(key, data);
             }

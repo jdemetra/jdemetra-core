@@ -11,6 +11,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.tramoseats.TramoSeatsSpec;
 import ec.satoolkit.tramoseats.TramoSeatsSpecification;
+import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -34,8 +35,8 @@ public class TramoSeatsKernelTest {
         assertTrue(diags != null);
 //        System.out.println(rslt.getDecomposition().getInitialComponents());
 //        System.out.println(rslt.getFinals());
-//        Map<String, Class> dictionary = rslt.getDictionary();
-//        dictionary.forEach((s, c)->{System.out.print(s);System.out.print('\t');System.out.println(c.getCanonicalName());});
+        Map<String, Class> dictionary = rslt.getDictionary();
+        dictionary.forEach((k, c)->{System.out.print(k);System.out.print('\t');System.out.println(c.getCanonicalName());});
     }
 
     @Test

@@ -14,14 +14,12 @@ import demetra.likelihood.DiffuseLikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
 import demetra.outliers.io.protobuf.OutliersProtos;
-import demetra.processing.ProcResults;
 import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import demetra.sts.SeasonalModel;
 import demetra.sts.outliers.io.protobuf.StsOutliersProtos;
 import demetra.timeseries.TsData;
-import demetra.toolkit.extractors.DiffuseLikelihoodStatisticsExtractor;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -38,9 +36,9 @@ import jdplus.ssf.univariate.SsfData;
 import jdplus.sts.BsmData;
 import jdplus.sts.OutliersDetection;
 import jdplus.sts.SsfBsm;
-import jdplus.sts.extractors.BasicStructuralModelExtractor;
 import jdplus.sts.internal.BsmMapping;
 import jdplus.sts.internal.BsmKernel;
+import demetra.information.Explorable;
 
 /**
  *
@@ -51,7 +49,7 @@ public class StsOutliersDetection {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements ProcResults {
+    public static class Results implements Explorable {
 
         public byte[] buffer() {
             int nx = x == null ? 0 : x.getColumnsCount();
@@ -141,13 +139,18 @@ public class StsOutliersDetection {
             return MAPPING;
         }
 
-        private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
+        private static final InformationMapping<Results> MAPPING = new InformationMapping<Results>() {
+            @Override
+            public Class getSourceClass() {
+                return Results.class;
+            }
+        };
 
         static {
-            MAPPING.delegate(BSM0, BasicStructuralModelExtractor.getMapping(), r -> r.getInitialBsm());
-            MAPPING.delegate(BSM1, BasicStructuralModelExtractor.getMapping(), r -> r.getFinalBsm());
-            MAPPING.delegate(LL0, DiffuseLikelihoodStatisticsExtractor.getMapping(), r -> r.getInitialLikelihood());
-            MAPPING.delegate(LL1, DiffuseLikelihoodStatisticsExtractor.getMapping(), r -> r.getFinalLikelihood());
+            MAPPING.delegate(BSM0, BsmData.class, r -> r.getInitialBsm());
+            MAPPING.delegate(BSM1, BsmData.class, r -> r.getFinalBsm());
+            MAPPING.delegate(LL0, DiffuseLikelihoodStatistics.class, r -> r.getInitialLikelihood());
+            MAPPING.delegate(LL1, DiffuseLikelihoodStatistics.class, r -> r.getFinalLikelihood());
             MAPPING.set(B, double[].class, source -> source.getCoefficients());
             MAPPING.set(T, double[].class, source -> source.tstats());
             MAPPING.set(BVAR, MatrixType.class, source -> source.getCoefficientsCovariance());

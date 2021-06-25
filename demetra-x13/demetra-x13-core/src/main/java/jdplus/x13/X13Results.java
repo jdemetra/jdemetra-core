@@ -16,7 +16,6 @@
  */
 package jdplus.x13;
 
-import demetra.processing.ProcResults;
 import demetra.x11.X11Results;
 import demetra.x13.X13Finals;
 import demetra.x13.X13Preadjustment;
@@ -24,34 +23,18 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.x13.extractors.X13Extractor;
+import demetra.information.Explorable;
 
 /**
  *
  * @author palatej
  */
 @lombok.Value
-public class X13Results implements ProcResults {
+public class X13Results implements Explorable {
 
     private RegSarimaModel preprocessing;
     private X13Preadjustment preadjustment;
     private X11Results decomposition;
     private X13Finals finals;
-
-    @Override
-    public boolean contains(String id) {
-        return X13Extractor.getMapping().contains(id);
-    }
-
-    @Override
-    public Map<String, Class> getDictionary() {
-        Map<String, Class> dic = new LinkedHashMap<>();
-        X13Extractor.getMapping().fillDictionary(null, dic, true);
-        return dic;
-    }
-
-    @Override
-    public <T> T getData(String id, Class<T> tclass) {
-        return X13Extractor.getMapping().getData(this, id, tclass);
-    }
 
 }

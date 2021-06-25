@@ -18,19 +18,19 @@ package jdplus.sa.diagnostics;
 
 import demetra.processing.Diagnostics;
 import demetra.processing.DiagnosticsFactory;
-import demetra.processing.ProcResults;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import nbbrd.service.ServiceProvider;
+import demetra.information.Explorable;
 
 /**
  *
  * @author Kristof Bayens
  */
 @ServiceProvider(DiagnosticsFactory.class)
-public class ResidualSeasonalityDiagnosticsFactory implements DiagnosticsFactory<ProcResults> {
+public class ResidualSeasonalityDiagnosticsFactory implements DiagnosticsFactory<Explorable> {
 
     public static final String NAME = "combined seasonality test",
             SA = NAME + " on sa", SA_LAST = NAME + " on sa (last 3 years)", IRR = NAME + " on irregular";
@@ -72,7 +72,7 @@ public class ResidualSeasonalityDiagnosticsFactory implements DiagnosticsFactory
     }
 
     @Override
-    public Diagnostics of(ProcResults rslts) {
+    public Diagnostics of(Explorable rslts) {
         return ResidualSeasonalityDiagnostics.create(rslts, config);
     }
 }

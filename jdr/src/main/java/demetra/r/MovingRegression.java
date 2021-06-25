@@ -10,13 +10,11 @@ import jdplus.regarima.RegArimaModel;
 import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import jdplus.regsarima.RegSarimaComputer;
-import jdplus.modelling.extractors.SarimaExtractor;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsUnit;
@@ -30,10 +28,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import demetra.processing.ProcResults;
-import demetra.math.matrices.MatrixType;
 import jdplus.math.matrices.Matrix;
-import jdplus.modelling.ApiUtility;
+import demetra.information.Explorable;
 
 /**
  *
@@ -52,7 +48,7 @@ public class MovingRegression {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements ProcResults {
+    public static class Results implements Explorable {
 
         TsDomain domain;
         Matrix variables;
@@ -60,7 +56,12 @@ public class MovingRegression {
         SarimaModel arima;
 
         private static final String ARIMA = "arima", LL = "likelihood", COEFF = "coefficients", TD = "td", TDEFFECT = "tdeffect";
-        private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
+        private static final InformationMapping<Results> MAPPING = new InformationMapping<Results>() {
+            @Override
+            public Class getSourceClass() {
+                return Results.class;
+            }
+        };
 
         static {
 //            MAPPING.delegate(ARIMA, SarimaExtractor.getMapping(), r -> ApiUtility.toApi(r.getArima(), null));
@@ -163,7 +164,7 @@ public class MovingRegression {
             }
         }
 
-        double[] last=coef.get(coef.size()-1);
+        double[] last = coef.get(coef.size() - 1);
         for (; j < cl.getRowsCount(); ++j) {
             cl.row(j).copyFrom(last, 0);
         }

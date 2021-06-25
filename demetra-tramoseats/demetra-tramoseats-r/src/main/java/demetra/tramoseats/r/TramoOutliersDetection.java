@@ -25,16 +25,13 @@ import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
 import demetra.outliers.io.protobuf.OutliersProtos;
-import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
-import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import jdplus.math.matrices.Matrix;
-import jdplus.modelling.extractors.SarimaExtractor;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.IOutlierFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
@@ -50,6 +47,7 @@ import jdplus.regsarima.ami.FastOutliersDetector;
 import jdplus.sarima.SarimaModel;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.tramo.internal.TramoUtility;
+import demetra.information.Explorable;
 
 /**
  *
@@ -60,7 +58,7 @@ public class TramoOutliersDetection {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements ProcResults {
+    public static class Results implements Explorable {
 
         public byte[] buffer() {
             SarimaOrders orders = initialArima.orders();
@@ -138,17 +136,18 @@ public class TramoOutliersDetection {
                 LL0 = "initiallikelihood", LL1 = "finallikelihood", B = "b", T = "t", BVAR = "bvar", OUTLIERS = "outliers", REGRESSORS = "regressors", BNAMES = "variables",
                 CMPS = "cmps", LIN = "linearized";
 
-        public static final InformationMapping<Results> getMapping() {
-            return MAPPING;
-        }
-
-        private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
+        private static final InformationMapping<Results> MAPPING = new InformationMapping<Results>() {
+            @Override
+            public Class<Results> getSourceClass() {
+                return Results.class;
+            }
+        };
 
         static {
-            MAPPING.delegate(ARIMA0, SarimaExtractor.getMapping(), r -> r.getInitialArima());
-            MAPPING.delegate(ARIMA1, SarimaExtractor.getMapping(), r -> r.getFinalArima());
-            MAPPING.delegate(LL0, LikelihoodStatisticsExtractor.getMapping(), r -> r.getInitialLikelihood());
-            MAPPING.delegate(LL1, LikelihoodStatisticsExtractor.getMapping(), r -> r.getFinalLikelihood());
+            MAPPING.delegate(ARIMA0, SarimaModel.class, r -> r.getInitialArima());
+            MAPPING.delegate(ARIMA1, SarimaModel.class, r -> r.getFinalArima());
+            MAPPING.delegate(LL0, LikelihoodStatistics.class, r -> r.getInitialLikelihood());
+            MAPPING.delegate(LL1, LikelihoodStatistics.class, r -> r.getFinalLikelihood());
             MAPPING.set(B, double[].class, source -> source.getCoefficients());
             MAPPING.set(T, double[].class, source -> source.tstats());
             MAPPING.set(BVAR, MatrixType.class, source -> source.getCoefficientsCovariance());
@@ -186,9 +185,9 @@ public class TramoOutliersDetection {
     public Results process(TsData ts, int[] order, int[] seasonal, boolean mean, MatrixType x,
             boolean bao, boolean bls, boolean btc, boolean bso, double cv, boolean ml) {
         TsData y = ts.cleanExtremities();
-        if (x != null && ts.length() != y.length()){
-            int start=ts.getStart().until(y.getStart());
-            x=x.extract(start, y.length(), 0, x.getColumnsCount());
+        if (x != null && ts.length() != y.length()) {
+            int start = ts.getStart().until(y.getStart());
+            x = x.extract(start, y.length(), 0, x.getColumnsCount());
         }
         SarimaOrders spec = new SarimaOrders(y.getAnnualFrequency());
         spec.setP(order[0]);

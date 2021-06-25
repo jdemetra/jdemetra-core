@@ -44,6 +44,7 @@ import static internal.test.TestResources.GENERIC_UTIL_CAL;
 import static internal.test.TestResources.GENERIC_UTIL_VAR;
 import java.io.IOException;
 import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Level;
@@ -162,5 +163,16 @@ public class FileWorkspaceTest {
     @AfterClass
     public static void afterClass() throws IOException {
         JIM_FS.close();
+    }
+
+    public static void main(String[] arg) throws IOException {
+        Path path=FileSystems.getDefault().getPath("c:\\sarepository", "test.xml");
+        FileWorkspace ws = FileWorkspace.open(path);
+        for (WorkspaceItem item : ws.getItems()) {
+            assertThat(ws.getFile(item)).exists();
+            Object rslt = ws.load(item);
+            assertThat(rslt != null);
+            System.out.println(item.getLabel());
+        }
     }
 }

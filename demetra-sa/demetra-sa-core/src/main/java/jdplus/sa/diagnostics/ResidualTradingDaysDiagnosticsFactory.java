@@ -17,15 +17,12 @@
 package jdplus.sa.diagnostics;
 
 import demetra.processing.Diagnostics;
-import demetra.processing.DiagnosticsFactory;
-import demetra.processing.ProcResults;
 import demetra.sa.SaDiagnosticsFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import nbbrd.service.ServiceProvider;
 
 /**
  *

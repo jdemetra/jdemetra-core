@@ -5,7 +5,6 @@
  */
 package jdplus.regarima.extractors;
 
-import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.ModellingDictionary;
@@ -26,13 +25,17 @@ import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TransitoryChange;
 import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.Variable;
-import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import java.util.Arrays;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.modelling.extractors.SarimaExtractor;
 import jdplus.regsarima.regular.RegSarimaModel;
+import demetra.information.BasicInformationExtractor;
+import demetra.information.InformationExtractor;
+import demetra.likelihood.LikelihoodStatistics;
+import jdplus.sarima.SarimaModel;
+import nbbrd.design.Development;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
@@ -41,8 +44,9 @@ import jdplus.regsarima.regular.RegSarimaModel;
  *
  * @author palatej
  */
-@lombok.experimental.UtilityClass
-public class RegSarimaModelExtractor {
+@Development(status = Development.Status.Release)
+@ServiceProvider(InformationExtractor.class)
+public class RegSarimaModelExtractor extends InformationMapping<RegSarimaModel> {
 
     public static final int IMEAN = 0, ITD = 10, ILP = 11, IEASTER = 12,
             AO = 20, LS = 21, TC = 22, SO = 23, IOUTLIER = 29,
@@ -68,23 +72,21 @@ public class RegSarimaModelExtractor {
             COEFF = "coefficients", COVAR = "covar", COEFFDESC = "description", REGTYPE = "type",
             PCOVAR = "pcovar", PCORR = "pcorr", SCORE = "pscore";
 
-    static final InformationMapping<RegSarimaModel> MAPPING = new InformationMapping<>(RegSarimaModel.class);
-
-    static {
-        MAPPING.set(PERIOD, Integer.class, source -> source.getDescription().getSeries().getAnnualFrequency());
-        MAPPING.set(InformationExtractor.concatenate(SPAN, START), TsPeriod.class, source -> source.getDescription().getSeries().getStart());
-        MAPPING.set(InformationExtractor.concatenate(SPAN, END), TsPeriod.class, source -> source.getDescription().getSeries().getDomain().getLastPeriod());
-        MAPPING.set(InformationExtractor.concatenate(SPAN, N), Integer.class, source -> source.getDescription().getSeries().length());
-        MAPPING.set(InformationExtractor.concatenate(ESPAN, START), TsPeriod.class, source -> source.getDetails().getEstimationDomain().getStartPeriod());
-        MAPPING.set(InformationExtractor.concatenate(ESPAN, END), TsPeriod.class, source -> source.getDetails().getEstimationDomain().getLastPeriod());
-        MAPPING.set(InformationExtractor.concatenate(ESPAN, N), Integer.class, source -> source.getDetails().getEstimationDomain().getLength());
-        MAPPING.set(LOG, Boolean.class, source -> source.getDescription().isLogTransformation());
-        MAPPING.set(ADJUST, Boolean.class, source -> source.getDescription().getLengthOfPeriodTransformation() != LengthOfPeriodType.None);
-        MAPPING.set(InformationExtractor.concatenate(NM), Integer.class, source -> source.getEstimation().getMissing().length);
-        MAPPING.set(ModellingDictionary.Y, TsData.class, source -> source.getDescription().getSeries());
-        MAPPING.set(InformationExtractor.concatenate(REGRESSION, COVAR), MatrixType.class, source -> source.getEstimation().getCoefficientsCovariance());
-        MAPPING.set(InformationExtractor.concatenate(REGRESSION, COEFF), double[].class, source -> source.getEstimation().getCoefficients().toArray());
-        MAPPING.set(InformationExtractor.concatenate(REGRESSION, REGTYPE), int[].class, source -> {
+    public RegSarimaModelExtractor() {
+        set(PERIOD, Integer.class, source -> source.getDescription().getSeries().getAnnualFrequency());
+        set(BasicInformationExtractor.concatenate(SPAN, START), TsPeriod.class, source -> source.getDescription().getSeries().getStart());
+        set(BasicInformationExtractor.concatenate(SPAN, END), TsPeriod.class, source -> source.getDescription().getSeries().getDomain().getLastPeriod());
+        set(BasicInformationExtractor.concatenate(SPAN, N), Integer.class, source -> source.getDescription().getSeries().length());
+        set(BasicInformationExtractor.concatenate(ESPAN, START), TsPeriod.class, source -> source.getDetails().getEstimationDomain().getStartPeriod());
+        set(BasicInformationExtractor.concatenate(ESPAN, END), TsPeriod.class, source -> source.getDetails().getEstimationDomain().getLastPeriod());
+        set(BasicInformationExtractor.concatenate(ESPAN, N), Integer.class, source -> source.getDetails().getEstimationDomain().getLength());
+        set(LOG, Boolean.class, source -> source.getDescription().isLogTransformation());
+        set(ADJUST, Boolean.class, source -> source.getDescription().getLengthOfPeriodTransformation() != LengthOfPeriodType.None);
+        set(BasicInformationExtractor.concatenate(NM), Integer.class, source -> source.getEstimation().getMissing().length);
+        set(ModellingDictionary.Y, TsData.class, source -> source.getDescription().getSeries());
+        set(BasicInformationExtractor.concatenate(REGRESSION, COVAR), MatrixType.class, source -> source.getEstimation().getCoefficientsCovariance());
+        set(BasicInformationExtractor.concatenate(REGRESSION, COEFF), double[].class, source -> source.getEstimation().getCoefficients().toArray());
+        set(BasicInformationExtractor.concatenate(REGRESSION, REGTYPE), int[].class, source -> {
             Variable[] vars = source.getDescription().getVariables();
             if (vars.length == 0) {
                 return null;
@@ -100,7 +102,7 @@ public class RegSarimaModelExtractor {
             }
             return tvars;
         });
-        MAPPING.set(InformationExtractor.concatenate(REGRESSION, COEFFDESC), String[].class, source -> {
+        set(BasicInformationExtractor.concatenate(REGRESSION, COEFFDESC), String[].class, source -> {
             TsDomain domain = source.getDescription().getSeries().getDomain();
             Variable[] vars = source.getDescription().getVariables();
             if (vars.length == 0) {
@@ -121,10 +123,10 @@ public class RegSarimaModelExtractor {
             return nvars;
         });
 
-        MAPPING.delegate(SARIMA, SarimaExtractor.getMapping(), source -> source.arima());
-        MAPPING.delegate(LIKELIHOOD, LikelihoodStatisticsExtractor.getMapping(), source -> source.getEstimation().getStatistics());
-        MAPPING.set(InformationExtractor.concatenate(MAX, PCOVAR), MatrixType.class, source -> source.getEstimation().getParameters().getCovariance());
-        MAPPING.set(InformationExtractor.concatenate(MAX, PCORR), MatrixType.class, source -> {
+        delegate(SARIMA, SarimaModel.class, source -> source.arima());
+        delegate(LIKELIHOOD, LikelihoodStatistics.class, source -> source.getEstimation().getStatistics());
+        set(BasicInformationExtractor.concatenate(MAX, PCOVAR), MatrixType.class, source -> source.getEstimation().getParameters().getCovariance());
+        set(BasicInformationExtractor.concatenate(MAX, PCORR), MatrixType.class, source -> {
             Matrix cov = Matrix.of(source.getEstimation().getParameters().getCovariance());
             DataBlock diag = cov.diagonal();
             for (int i = 0; i < cov.getRowsCount(); ++i) {
@@ -140,11 +142,7 @@ public class RegSarimaModelExtractor {
             diag.set(1);
             return cov;
         });
-        MAPPING.set(InformationExtractor.concatenate(MAX, SCORE), double[].class, source -> source.getEstimation().getParameters().getScores().toArray());
-    }
-
-    public InformationMapping<RegSarimaModel> getMapping() {
-        return MAPPING;
+        set(BasicInformationExtractor.concatenate(MAX, SCORE), double[].class, source -> source.getEstimation().getParameters().getScores().toArray());
     }
 
     private int type(ITsVariable var) {
@@ -182,6 +180,11 @@ public class RegSarimaModelExtractor {
             return IRAMP;
         }
         return IOTHER;
+    }
+
+    @Override
+    public Class<RegSarimaModel> getSourceClass() {
+        return RegSarimaModel.class;
     }
 
 }

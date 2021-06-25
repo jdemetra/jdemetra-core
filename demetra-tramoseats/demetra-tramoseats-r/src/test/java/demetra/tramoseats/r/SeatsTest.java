@@ -18,6 +18,7 @@ package demetra.tramoseats.r;
 
 import demetra.data.Data;
 import demetra.timeseries.TsData;
+import jdplus.seats.SeatsResults;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -32,7 +33,7 @@ public class SeatsTest {
 
     @Test
     public void testProd() {
-        Seats.Results rslts = Seats.process(Data.TS_PROD, true, new int[]{3,1,1}, new int[]{0,1,1}, false, -1, -2);
+        SeatsResults rslts = Seats.process(Data.TS_PROD, true, new int[]{3,1,1}, new int[]{0,1,1}, false, -1, -2);
 //        System.out.println(rslts.getCore().getInitialComponents());
 //        Map<String, Class> dictionary = rslts.getDictionary();
 //        dictionary.keySet().forEach(s->System.out.println(s));

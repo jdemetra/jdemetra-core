@@ -10,9 +10,9 @@ import demetra.highfreq.extractors.FractionalAirlineDecompositionExtractor;
 import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
-import demetra.processing.ProcResults;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import demetra.information.Explorable;
 
 /**
  * Low-level results. Should be refined
@@ -20,7 +20,7 @@ import java.util.Map;
  */
 @lombok.Value
 @lombok.Builder
-public class FractionalAirlineDecomposition implements ProcResults {
+public class FractionalAirlineDecomposition implements Explorable {
 
     FractionalAirline model;
 
@@ -40,26 +40,5 @@ public class FractionalAirlineDecomposition implements ProcResults {
         }
         return sa;
     }
-    
-    @Override
-    public boolean contains(String id) {
-        return FractionalAirlineDecompositionExtractor.getMapping().contains(id);
-    }
-
-    @Override
-    public Map<String, Class> getDictionary() {
-        Map<String, Class> dic = new LinkedHashMap<>();
-        FractionalAirlineDecompositionExtractor.getMapping().fillDictionary(null, dic, true);
-        return dic;
-    }
-
-    @Override
-    public <T> T getData(String id, Class<T> tclass) {
-        return FractionalAirlineDecompositionExtractor.getMapping().getData(this, id, tclass);
-    }
-    
-    public static InformationMapping<FractionalAirlineDecomposition> getMapping(){
-        return FractionalAirlineDecompositionExtractor.getMapping();
-    }
-    
+   
 }

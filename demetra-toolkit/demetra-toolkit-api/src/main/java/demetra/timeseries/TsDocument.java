@@ -16,7 +16,6 @@
  */
 package demetra.timeseries;
 
-import demetra.processing.ProcResults;
 import demetra.processing.ProcSpecification;
 import demetra.processing.Processor;
 import demetra.processing.TsDataProcessorFactory;
@@ -24,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.information.Explorable;
 
 /**
  *

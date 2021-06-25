@@ -16,41 +16,44 @@
  */
 package jdplus.modelling.extractors;
 
+import demetra.information.InformationExtractor;
 import nbbrd.design.Development;
 import demetra.information.InformationMapping;
+import jdplus.arima.ArimaModel;
+import jdplus.arima.IArimaModel;
 import jdplus.modelling.ApiUtility;
 import jdplus.ucarima.UcarimaModel;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-@lombok.experimental.UtilityClass
-public class UcarimaExtractor {
+@ServiceProvider(InformationExtractor.class)
+public class UcarimaExtractor extends InformationMapping<UcarimaModel>{
 
     public final static String COMPONENT="component", COMPLEMENT="complement", MODEL="model", MODELC="modelc", REDUCEDMODEL="reducedmodel", // Component
             SUM="sum",  // Reduced model
             SIZE="size";  // Number of components
 
-    private final InformationMapping<UcarimaModel> MAPPING = new InformationMapping<>(UcarimaModel.class);
-
-    static {
-        MAPPING.set(SIZE, Integer.class, source->source.getComponentsCount());
-        MAPPING.set(REDUCEDMODEL, demetra.arima.ArimaModel.class, source->ApiUtility.toApi(source.getModel(), "reducedmodel"));
-        MAPPING.delegate(SUM, ArimaExtractor.getMapping(), source->source.getModel());
-        MAPPING.delegateArray(COMPONENT, 1, 10, ArimaExtractor.getMapping(), (source, i)
+    public UcarimaExtractor(){
+        set(SIZE, Integer.class, source->source.getComponentsCount());
+        set(REDUCEDMODEL, demetra.arima.ArimaModel.class, source->ApiUtility.toApi(source.getModel(), "reducedmodel"));
+        delegate(SUM, IArimaModel.class, source->source.getModel());
+        delegateArray(COMPONENT, 1, 10, IArimaModel.class, (source, i)
                 -> i>source.getComponentsCount()? null : source.getComponent(i-1));
-        MAPPING.setArray(MODEL, 1, 10, demetra.arima.ArimaModel.class, (source, i)
+        setArray(MODEL, 1, 10, demetra.arima.ArimaModel.class, (source, i)
                 -> i>source.getComponentsCount() ? null : ApiUtility.toApi(source.getComponent(i-1),"cmp"+(i+1)));
-        MAPPING.delegateArray(COMPLEMENT, 1, 10, ArimaExtractor.getMapping(), (source, i)
+        delegateArray(COMPLEMENT, 1, 10, IArimaModel.class, (source, i)
                 -> i>source.getComponentsCount()? null : source.getComplement(i-1));
-        MAPPING.setArray(MODELC, 1, 10, demetra.arima.ArimaModel.class, (source, i)
+        setArray(MODELC, 1, 10, demetra.arima.ArimaModel.class, (source, i)
                 -> i>source.getComponentsCount() ? null : ApiUtility.toApi(source.getComplement(i-1),"cmpc"+(i+1)));
     }
 
-    public InformationMapping<UcarimaModel> getMapping() {
-        return MAPPING;
+    @Override
+    public Class<UcarimaModel> getSourceClass() {
+        return UcarimaModel.class;
     }
     
 }

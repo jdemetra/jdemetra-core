@@ -17,12 +17,12 @@
 package demetra.sa;
 
 import demetra.processing.ProcDiagnostic;
-import demetra.processing.ProcResults;
 import demetra.timeseries.TsDomain;
 import java.util.List;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
+import demetra.information.Explorable;
 
 /**
  *
@@ -31,7 +31,7 @@ import nbbrd.service.ServiceDefinition;
  * @param <R>
  */
 @ServiceDefinition(quantifier = Quantifier.MULTIPLE, mutability = Mutability.NONE, singleton = true)
-public interface SaProcessingFactory<I extends SaSpecification, R extends ProcResults> {
+public interface SaProcessingFactory<I extends SaSpecification, R extends Explorable> {
 
     /**
      * If a processor can handle a given specification, it should be able to

@@ -17,14 +17,16 @@
 package demetra.toolkit.extractors;
 
 import demetra.arima.SarimaModel;
+import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@lombok.experimental.UtilityClass
-public class SarimaExtractor {
+@ServiceProvider(InformationExtractor.class)
+public class SarimaExtractor extends InformationMapping<SarimaModel> {
 
     public final static String P = "p", D = "d", Q = "q",
             BP = "bp", BD = "bd", BQ = "bq",
@@ -32,28 +34,26 @@ public class SarimaExtractor {
             PHI = "phi", THETA = "theta", BPHI = "bphi", BTHETA = "btheta",
             PERIOD = "period", NAME = "name";
 
-    private final InformationMapping<SarimaModel> MAPPING = new InformationMapping<>(SarimaModel.class);
-
-    static {
-        MAPPING.set(P, Integer.class, source -> source.getP());
-        MAPPING.set(D, Integer.class, source -> source.getD());
-        MAPPING.set(Q, Integer.class, source -> source.getQ());
-        MAPPING.set(PERIOD, Integer.class, source -> source.getPeriod());
-        MAPPING.set(BP, Integer.class, source -> source.getBp());
-        MAPPING.set(BD, Integer.class, source -> source.getBd());
-        MAPPING.set(BQ, Integer.class, source -> source.getBq());
-        MAPPING.set(PARAMETERS, double[].class, source -> source.parameters(true));
-        MAPPING.set(PARAMETERS2, double[].class, source -> source.parameters(false));
-        MAPPING.set(PHI, double[].class, source -> source.getPhi());
-        MAPPING.set(BPHI, double[].class, source -> source.getBphi());
-        MAPPING.set(THETA, double[].class, source -> source.getTheta());
-        MAPPING.set(BTHETA, double[].class, source -> source.getBtheta());
-        MAPPING.set(NAME, String.class, source->source.getName());
+    public SarimaExtractor() {
+        set(P, Integer.class, source -> source.getP());
+        set(D, Integer.class, source -> source.getD());
+        set(Q, Integer.class, source -> source.getQ());
+        set(PERIOD, Integer.class, source -> source.getPeriod());
+        set(BP, Integer.class, source -> source.getBp());
+        set(BD, Integer.class, source -> source.getBd());
+        set(BQ, Integer.class, source -> source.getBq());
+        set(PARAMETERS, double[].class, source -> source.parameters(true));
+        set(PARAMETERS2, double[].class, source -> source.parameters(false));
+        set(PHI, double[].class, source -> source.getPhi());
+        set(BPHI, double[].class, source -> source.getBphi());
+        set(THETA, double[].class, source -> source.getTheta());
+        set(BTHETA, double[].class, source -> source.getBtheta());
+        set(NAME, String.class, source -> source.getName());
     }
 
-    public InformationMapping<SarimaModel> getMapping() {
-        return MAPPING;
+    @Override
+    public Class getSourceClass() {
+        return SarimaModel.class;
     }
-
 
 }

@@ -16,42 +16,42 @@
  */
 package demetra.toolkit.extractors;
 
+import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import demetra.likelihood.DiffuseLikelihoodStatistics;
-import demetra.likelihood.LikelihoodStatistics;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@lombok.experimental.UtilityClass
-public class DiffuseLikelihoodStatisticsExtractor {
+@ServiceProvider(InformationExtractor.class)
+public class DiffuseLikelihoodStatisticsExtractor extends InformationMapping<DiffuseLikelihoodStatistics> {
 
     private final String LL = "ll", LLC = "adjustedll", SSQ = "ssqerr", AIC = "aic", BIC = "bic", AICC = "aicc", BICC = "bicc", BIC2 = "bic2", HQ = "hannanquinn",
-            NPARAMS = "nparams", NOBS = "nobs", DF="df", NDIFFUSE="ndiffuse";
+            NPARAMS = "nparams", NOBS = "nobs", DF = "df", NDIFFUSE = "ndiffuse";
 
-    private final InformationMapping<DiffuseLikelihoodStatistics> MAPPING = new InformationMapping<>(DiffuseLikelihoodStatistics.class);
-
-    static {
+    public DiffuseLikelihoodStatisticsExtractor() {
 //        MAPPING.set(AIC, Double.class, source -> source.getAIC());
 //        MAPPING.set(AICC, Double.class, source -> source.getAICC());
 //        MAPPING.set(BIC, Double.class, source -> source.getBIC());
 //        MAPPING.set(BICC, Double.class, source -> source.getBICC());
 //        MAPPING.set(BIC2, Double.class, source -> source.getBIC2());
 //        MAPPING.set(HQ, Double.class, source -> source.getHannanQuinn());
-        MAPPING.set(LL, Double.class, source -> source.getLogLikelihood());
-        MAPPING.set(LLC, Double.class, source -> source.getAdjustedLogLikelihood());
-        MAPPING.set(SSQ, Double.class, source -> source.getSsqErr());
+        set(LL, Double.class, source -> source.getLogLikelihood());
+        set(LLC, Double.class, source -> source.getAdjustedLogLikelihood());
+        set(SSQ, Double.class, source -> source.getSsqErr());
 
-        MAPPING.set(NPARAMS, Integer.class, source -> source.getEstimatedParametersCount());
-        MAPPING.set(NOBS, Integer.class, source -> source.getObservationsCount());
-        MAPPING.set(NDIFFUSE, Integer.class, source -> source.getDiffuseCount());
+        set(NPARAMS, Integer.class, source -> source.getEstimatedParametersCount());
+        set(NOBS, Integer.class, source -> source.getObservationsCount());
+        set(NDIFFUSE, Integer.class, source -> source.getDiffuseCount());
 //        MAPPING.set(NEFFECTIVEOBS, Integer.class, source -> source.getEffectiveObservationsCount());
-        MAPPING.set(DF, Integer.class, source -> source.getObservationsCount()-source.getEstimatedParametersCount()-source.getDiffuseCount());
-
+        set(DF, Integer.class, source -> source.getObservationsCount() - source.getEstimatedParametersCount() - source.getDiffuseCount());
     }
 
-    public InformationMapping<DiffuseLikelihoodStatistics> getMapping() {
-        return MAPPING;
+    @Override
+    public Class getSourceClass() {
+        return DiffuseLikelihoodStatistics.class;
     }
+
 }

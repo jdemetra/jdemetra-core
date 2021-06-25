@@ -5,7 +5,6 @@
  */
 package demetra.toolkit.extractors;
 
-import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.ModellingDictionary;
@@ -13,6 +12,9 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
+import demetra.information.BasicInformationExtractor;
+import demetra.information.InformationExtractor;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
@@ -21,8 +23,8 @@ import demetra.timeseries.regression.modelling.GeneralLinearModel;
  *
  * @author palatej
  */
-@lombok.experimental.UtilityClass
-public class LinearModelEstimationExtractor {
+@ServiceProvider(InformationExtractor.class)
+public class LinearModelEstimationExtractor extends InformationMapping<GeneralLinearModel> {
 
     public final String LOG = "log",
             ADJUST = "adjust",
@@ -42,26 +44,26 @@ public class LinearModelEstimationExtractor {
             OUT27 = "out(27)", OUT28 = "out(28)", OUT29 = "out(29)", OUT30 = "out(30)",
             COEFF = "coefficients", COVAR = "covar", COEFFDESC = "description", PCOVAR = "pcovar";
 
-    static final InformationMapping<GeneralLinearModel> MAPPING = new InformationMapping<>(GeneralLinearModel.class);
-
-    static {
-        MAPPING.set(PERIOD, Integer.class, source -> source.getDescription().getSeries().getAnnualFrequency());
-        MAPPING.set(InformationExtractor.concatenate(SPAN, START), TsPeriod.class, source -> source.getDescription().getSeries().getStart());
-        MAPPING.set(InformationExtractor.concatenate(SPAN, END), TsPeriod.class, source -> source.getDescription().getSeries().getDomain().getLastPeriod());
-        MAPPING.set(InformationExtractor.concatenate(SPAN, N), Integer.class, source -> source.getDescription().getSeries().length());
-        MAPPING.set(InformationExtractor.concatenate(SPAN, NM), Integer.class, source -> source.getEstimation().getMissing().length);
-//        MAPPING.set(InformationExtractor.concatenate(ESPAN, START), TsPeriod.class, source -> source.getEstimationDomain().getStartPeriod());
-//        MAPPING.set(InformationExtractor.concatenate(ESPAN, END), TsPeriod.class, source -> source.getEstimationDomain().getLastPeriod());
-//        MAPPING.set(InformationExtractor.concatenate(ESPAN, N), Integer.class, source -> source.getEstimationDomain().getLength());
-        MAPPING.set(LOG, Boolean.class, source -> source.getDescription().isLogTransformation());
-        MAPPING.set(ADJUST, Boolean.class, source -> source.getDescription().getLengthOfPeriodTransformation() != LengthOfPeriodType.None);
-        MAPPING.set(ModellingDictionary.Y, TsData.class, source -> source.getDescription().getSeries());
-        MAPPING.set(InformationExtractor.concatenate(REGRESSION, COVAR), MatrixType.class, source -> source.getEstimation().getCoefficientsCovariance());
-        MAPPING.set(InformationExtractor.concatenate(REGRESSION, PCOVAR), MatrixType.class, source -> source.getEstimation().getParameters().getCovariance());
+    public LinearModelEstimationExtractor() {
+        set(PERIOD, Integer.class, source -> source.getDescription().getSeries().getAnnualFrequency());
+        set(BasicInformationExtractor.concatenate(SPAN, START), TsPeriod.class, source -> source.getDescription().getSeries().getStart());
+        set(BasicInformationExtractor.concatenate(SPAN, END), TsPeriod.class, source -> source.getDescription().getSeries().getDomain().getLastPeriod());
+        set(BasicInformationExtractor.concatenate(SPAN, N), Integer.class, source -> source.getDescription().getSeries().length());
+        set(BasicInformationExtractor.concatenate(SPAN, NM), Integer.class, source -> source.getEstimation().getMissing().length);
+//        MAPPING.set(BasicInformationExtractor.concatenate(ESPAN, START), TsPeriod.class, source -> source.getEstimationDomain().getStartPeriod());
+//        MAPPING.set(BasicInformationExtractor.concatenate(ESPAN, END), TsPeriod.class, source -> source.getEstimationDomain().getLastPeriod());
+//        MAPPING.set(BasicInformationExtractor.concatenate(ESPAN, N), Integer.class, source -> source.getEstimationDomain().getLength());
+        set(LOG, Boolean.class, source -> source.getDescription().isLogTransformation());
+        set(ADJUST, Boolean.class, source -> source.getDescription().getLengthOfPeriodTransformation() != LengthOfPeriodType.None);
+        set(ModellingDictionary.Y, TsData.class, source -> source.getDescription().getSeries());
+        set(BasicInformationExtractor.concatenate(REGRESSION, COVAR), MatrixType.class, source -> source.getEstimation().getCoefficientsCovariance());
+        set(BasicInformationExtractor.concatenate(REGRESSION, PCOVAR), MatrixType.class, source -> source.getEstimation().getParameters().getCovariance());
     }
 
-    public InformationMapping<GeneralLinearModel> getMapping() {
-        return MAPPING;
+
+    @Override
+    public Class getSourceClass() {
+        return GeneralLinearModel.class;
     }
 
 }

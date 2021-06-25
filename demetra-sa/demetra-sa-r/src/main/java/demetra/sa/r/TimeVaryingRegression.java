@@ -30,15 +30,14 @@ import jdplus.modelling.regression.Regression;
 import demetra.timeseries.TsData;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import demetra.processing.ProcResults;
 import jdplus.sarima.estimation.SarimaMapping;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.likelihood.DiffuseLikelihoodStatistics;
-import demetra.toolkit.extractors.DiffuseLikelihoodStatisticsExtractor;
 import jdplus.math.matrices.Matrix;
 import jdplus.ssf.univariate.Ssf;
+import demetra.information.Explorable;
 
 /**
  *
@@ -57,7 +56,7 @@ public class TimeVaryingRegression {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements ProcResults {
+    public static class Results implements Explorable {
 
         TsDomain domain;
         Matrix variables;
@@ -71,13 +70,18 @@ public class TimeVaryingRegression {
         private static final String ARIMA0 = "arima0", LL0 = "likelihood0",
                 ARIMA = "arima", LL = "likelihood",
                 STDCOEFF = "coefficients.stde", COEFF = "coefficients.value", TD = "td", TDEFFECT = "tdeffect";
-        private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
+        private static final InformationMapping<Results> MAPPING = new InformationMapping<Results>() {
+            @Override
+            public Class getSourceClass() {
+                return Results.class;
+            }
+        };
 
         static {
 //            MAPPING.delegate(ARIMA0,SarimaExtractor.getMapping(), r ->  ApiUtility.toApi(r.getArima0(), null));
-            MAPPING.delegate(LL0, DiffuseLikelihoodStatisticsExtractor.getMapping(), r -> r.getLl0());
+            MAPPING.delegate(LL0, DiffuseLikelihoodStatistics.class, r -> r.getLl0());
 //            MAPPING.delegate(ARIMA, SarimaExtractor.getMapping(), r -> ApiUtility.toApi(r.getArima(), null));
-            MAPPING.delegate(LL, DiffuseLikelihoodStatisticsExtractor.getMapping(), r -> r.getLl());
+            MAPPING.delegate(LL, DiffuseLikelihoodStatistics.class, r -> r.getLl());
             MAPPING.set("aic0", Double.class, r -> r.getLl0().aic());
             MAPPING.set("aic", Double.class, r -> r.getLl().aic());
             MAPPING.set("tdvar", Double.class, r -> r.getNvar());
@@ -120,7 +124,7 @@ public class TimeVaryingRegression {
 
     public Results regarima(TsData s, String td, String svar, double aicdiff) {
         int freq = s.getTsUnit().ratioOf(TsUnit.YEAR);
-        SarimaOrders spec =  SarimaOrders.airline(freq);
+        SarimaOrders spec = SarimaOrders.airline(freq);
         DayClustering dc = days(td);
         Matrix mtd = generate(s.getDomain(), dc);
         Matrix nvar = generateVar(dc, svar);

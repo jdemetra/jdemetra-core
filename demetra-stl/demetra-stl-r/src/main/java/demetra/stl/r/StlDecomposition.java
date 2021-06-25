@@ -14,10 +14,10 @@ import jdplus.stl.StlPlus;
 import jdplus.stl.StlPlusSpecification;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.math.matrices.MatrixType;
+import demetra.information.Explorable;
 
 /**
  *

@@ -17,6 +17,7 @@
 package demetra.tempdisagg.univariate;
 
 import demetra.data.DoubleSeq;
+import demetra.information.Explorable;
 import nbbrd.design.Development;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.functions.ObjectiveFunctionPoint;
@@ -33,7 +34,7 @@ import java.util.Map;
 @lombok.Value
 @lombok.Builder
 @Development(status = Development.Status.Alpha)
-public class TemporalDisaggregationResults {
+public class TemporalDisaggregationResults implements Explorable{
 
     @lombok.NonNull
     TsData originalSeries;
