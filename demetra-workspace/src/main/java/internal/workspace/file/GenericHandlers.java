@@ -16,7 +16,6 @@
  */
 package internal.workspace.file;
 
-import demetra.arima.SarimaModel;
 import demetra.workspace.WorkspaceFamily;
 import static demetra.workspace.WorkspaceFamily.MOD_DOC_REGARIMA;
 import static demetra.workspace.WorkspaceFamily.MOD_DOC_TRAMO;
@@ -148,14 +147,14 @@ public final class GenericHandlers {
         @lombok.experimental.Delegate
         private final FamilyHandler delegate = informationSet(MOD_DOC_REGARIMA,
                 TsDocumentMapping.serializer(RegArimaSpecMapping.SERIALIZER_V3,
-                        new TsDataProcessorFactory<RegArimaSpec, GeneralLinearModel<SarimaModel> >() {
+                        new TsDataProcessorFactory<RegArimaSpec, GeneralLinearModel<SarimaSpec> >() {
                     @Override
                     public boolean canHandle(ProcSpecification spec) {
                         return spec instanceof TramoSeatsSpec;
                     }
 
                     @Override
-                    public TsDataProcessor<GeneralLinearModel<SarimaModel>> generateProcessor(RegArimaSpec specification) {
+                    public TsDataProcessor<GeneralLinearModel<SarimaSpec>> generateProcessor(RegArimaSpec specification) {
 
                         return series -> RegArima.process(series, specification, ModellingContext.getActiveContext(), Collections.emptyList());
                     }
