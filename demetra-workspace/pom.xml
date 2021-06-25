@@ -22,7 +22,7 @@
         <jd3-sa.version>1.0.0-SNAPSHOT</jd3-sa.version>
         <jd3-tramoseats.version>1.0.0-SNAPSHOT</jd3-tramoseats.version>
         <jd3-x13.version>1.0.0-SNAPSHOT</jd3-x13.version>
-        <slf4j.version>1.7.30</slf4j.version>
+        <slf4j.version>1.7.31</slf4j.version>
     </properties>
    
     <dependencies>
