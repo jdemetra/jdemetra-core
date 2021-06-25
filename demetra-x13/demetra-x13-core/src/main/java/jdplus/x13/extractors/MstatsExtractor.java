@@ -19,7 +19,6 @@ package jdplus.x13.extractors;
 import demetra.information.InformationExtractor;
 import nbbrd.design.Development;
 import demetra.information.InformationMapping;
-import java.util.function.Function;
 import jdplus.x13.Mstatistics;
 import nbbrd.service.ServiceProvider;
 
@@ -29,7 +28,7 @@ import nbbrd.service.ServiceProvider;
  */
 @Development(status = Development.Status.Release)
 @ServiceProvider(InformationExtractor.class)
-public class MstatisticsExtractor extends InformationMapping<Mstatistics> {
+public class MstatsExtractor extends InformationMapping<Mstatistics> {
 
     public final String M1 = "m1", M2 = "m2", M3 = "m3", M4 = "m4";
     public final String M5 = "m5", M6 = "m6", M7 = "m7", M8 = "m8";
@@ -37,7 +36,7 @@ public class MstatisticsExtractor extends InformationMapping<Mstatistics> {
     public final String Q = "q", Q2 = "q-m2";
 
     // MAPPING
-    public MstatisticsExtractor() {
+    public MstatsExtractor() {
         set(M1, Double.class,
                 source -> source.getM(1));
         set(M2, Double.class,

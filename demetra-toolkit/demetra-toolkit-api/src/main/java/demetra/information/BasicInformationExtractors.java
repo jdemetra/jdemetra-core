@@ -229,7 +229,7 @@ class BasicInformationExtractors {
             if (t == null) {
                 return null;
             } else {
-                return InformationExtractors.getData(t, subitem, qclass);
+                return InformationExtractors.getData(target, t, subitem, qclass);
             }
         }
 
@@ -294,7 +294,7 @@ class BasicInformationExtractors {
                 return null;
             }
             String detail = detail(id);
-            return InformationExtractors.getData(t, detail, qclass);
+            return InformationExtractors.getData(target, t, detail, qclass);
         }
 
         static int listItem(String prefix, String key) {

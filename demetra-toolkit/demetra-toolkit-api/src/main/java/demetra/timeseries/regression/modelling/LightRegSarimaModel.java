@@ -14,35 +14,26 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.toolkit.extractors;
+package demetra.timeseries.regression.modelling;
 
-import demetra.arima.ArimaModel;
-import demetra.arima.IArimaModel;
-import demetra.arima.ISarimaModel;
-import demetra.arima.SarimaModel;
-import demetra.information.InformationDelegate;
-import demetra.information.InformationExtractor;
-import nbbrd.service.ServiceProvider;
+import demetra.modelling.implementations.SarimaSpec;
+import demetra.stats.StatisticalTest;
+import java.util.Map;
 
 /**
  *
  * @author PALATEJ
  */
-@ServiceProvider(InformationExtractor.class)
-public class ArimaExtractor extends InformationDelegate<ArimaModel, IArimaModel>{
-    
-    public ArimaExtractor(){
-        super(v->v);
-    }
+@lombok.Value
+@lombok.Builder(builderClassName="Builder")
+public class LightRegSarimaModel implements GeneralLinearModel<SarimaSpec> {
 
-    @Override
-    public Class<IArimaModel> getDelegateClass() {
-        return IArimaModel.class;
-    }
+    LightLinearModel.Description<SarimaSpec> description;
+    LightLinearModel.Estimation estimation;
 
-    @Override
-    public Class<ArimaModel> getSourceClass() {
-        return ArimaModel.class;
-    }
-    
+    @lombok.Singular
+    private Map<String, StatisticalTest> diagnostics;
+
+    @lombok.Singular
+    private Map<String, Object> additionalResults;
 }

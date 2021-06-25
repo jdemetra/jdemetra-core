@@ -19,7 +19,6 @@ package jdplus.modelling.extractors;
 import demetra.information.InformationExtractor;
 import nbbrd.design.Development;
 import demetra.information.InformationMapping;
-import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
 import nbbrd.service.ServiceProvider;
 
@@ -37,7 +36,7 @@ public class GenericArimaExtractor extends InformationMapping<IArimaModel> {
             VAR = "var"; // Innovation variance
 
     public GenericArimaExtractor() {
-        set(AR, double[].class, source -> source.getNonStationaryAr().asPolynomial().coefficients().drop(1, 0).toArray());
+        set(AR, double[].class, source -> source.getStationaryAr().asPolynomial().coefficients().drop(1, 0).toArray());
         set(DELTA, double[].class, source -> source.getNonStationaryAr().asPolynomial().coefficients().drop(1, 0).toArray());
         set(MA, double[].class, source -> source.getMa().asPolynomial().coefficients().drop(1, 0).toArray());
         set(VAR, Double.class, source -> source.getInnovationVariance());

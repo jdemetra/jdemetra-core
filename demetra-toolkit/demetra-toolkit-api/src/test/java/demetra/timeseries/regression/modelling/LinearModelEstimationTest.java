@@ -35,11 +35,11 @@ public class LinearModelEstimationTest {
         String[] keys=new String[]{"test1","test10","test0","test5","test3","test11",
             "test41","test61","test51","test91","test81","test14","test17",
             "test35","test36","test31","test19","test18"};
-        LightLinearModel.Builder<SarimaModel> builder = LightLinearModel.<SarimaModel>builder();
+        LightRegSarimaModel.Builder builder = LightRegSarimaModel.builder();
         for (int i=0; i<keys.length; ++i)
             builder.additionalResult(keys[i], null);
                 
-        GeneralLinearModel<SarimaModel> lme = builder.build();
+        LightRegSarimaModel lme = builder.build();
 
         String[] keys2 = lme.getAdditionalResults().keySet().stream().toArray(n->new String[n]);
         assertTrue(Arrays.equals(keys, keys2));

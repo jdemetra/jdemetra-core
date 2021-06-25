@@ -67,7 +67,7 @@ public interface Explorable {
      * @return null if this information is not available
      */
     default <T> T getData(String id, Class<T> tclass) {
-        return InformationExtractors.getData(this, id, tclass);
+        return InformationExtractors.getData(this.getClass(), this, id, tclass);
     }
 
     default Object getData(String id) {

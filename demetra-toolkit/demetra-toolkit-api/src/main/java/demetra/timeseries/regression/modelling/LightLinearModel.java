@@ -34,18 +34,8 @@ import java.util.Map;
  * @author PALATEJ
  * @param <M>
  */
-@lombok.Value
-@lombok.Builder
-public class LightLinearModel<M> implements GeneralLinearModel<M> {
-
-    Description<M> description;
-    Estimation estimation;
-
-    @lombok.Singular
-    private Map<String, StatisticalTest> diagnostics;
-
-    @lombok.Singular
-    private Map<String, Object> additionalResults;
+@lombok.experimental.UtilityClass
+public class LightLinearModel{
 
     @lombok.Value
     @lombok.Builder

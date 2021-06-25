@@ -13,6 +13,7 @@ import demetra.modelling.implementations.SarimaSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.timeseries.regression.modelling.LightLinearModel;
+import demetra.timeseries.regression.modelling.LightRegSarimaModel;
 import demetra.tramo.TramoSpec;
 import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
@@ -84,7 +85,7 @@ public class LegacyUtility {
         return DoubleSeq.of(p);
     }
 
-    public GeneralLinearModel<SarimaSpec> toApi(PreprocessingModel model, List<String> additional) {
+    public LightRegSarimaModel toApi(PreprocessingModel model, List<String> additional) {
         LikelihoodStatistics stat = model.estimation.getStatistics();
         demetra.likelihood.LikelihoodStatistics nstat = demetra.likelihood.LikelihoodStatistics.statistics(stat.logLikelihood, stat.observationsCount)
                 .differencingOrder(stat.observationsCount - stat.effectiveObservationsCount)
@@ -99,7 +100,7 @@ public class LegacyUtility {
                 .parameters(new ParametersEstimation(fromLegacy(model.estimation.getArima().getParameters()), fromLegacy(model.estimation.getParametersCovariance()), DoubleSeq.empty(), null))
                 .statistics(nstat);
         
-        return LightLinearModel.<SarimaSpec>builder()
+        return LightRegSarimaModel.builder()
                 .description(dbuilder.build())
                 .estimation(ebuilder.build())
                 .build();

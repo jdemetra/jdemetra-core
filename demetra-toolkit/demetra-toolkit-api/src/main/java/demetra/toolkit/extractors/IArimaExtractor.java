@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -18,7 +18,6 @@ package demetra.toolkit.extractors;
 
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
-import demetra.arima.UcarimaModel;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import nbbrd.service.ServiceProvider;
@@ -28,22 +27,26 @@ import nbbrd.service.ServiceProvider;
  * @author Jean Palate
  */
 @ServiceProvider(InformationExtractor.class)
-public class UcarimaExtractor extends InformationMapping<UcarimaModel> {
+public class IArimaExtractor extends InformationMapping<IArimaModel>{
 
-    public final static String COMPONENT = "component", MODEL = "model", REDUCEDMODEL = "reducedmodel", // Component
-            SUM = "sum", // Reduced model
-            SIZE = "size";  // Number of components
+    public final static String AR="ar", // Stationary auto-regressive polynomial
+            DELTA="delta",  // Differencing polynomial
+            MA="ma",  // Moving average polynomial
+            VAR = "var",
+            NAME = "name"
+            ; // Innovation variance
+    
 
-    public UcarimaExtractor() {
-        set(SIZE, Integer.class, source -> source.size());
-        delegate(MODEL, IArimaModel.class, source -> source.getSum());
-        delegateArray(COMPONENT, 1, 10, IArimaModel.class, (source, i)
-                -> i > source.size() ? null : source.getComponent(i - 1));
+    public IArimaExtractor() {
+        set(AR, double[].class, source->source.getAr());
+        set(DELTA, double[].class, source->source.getDelta());
+        set(MA, double[].class, source->source.getMa());
+        set(VAR, Double.class, source->source.getInnovationVariance());
+        set(NAME, String.class, source->source.getName());
     }
 
     @Override
-    public Class getSourceClass() {
-        return UcarimaModel.class;
+    public Class<IArimaModel> getSourceClass() {
+        return IArimaModel.class;
     }
-
 }

@@ -94,10 +94,10 @@ public class InformationExtractors {
         return false;
     }
 
-    public <S, T> T getData(S source, String id, Class<T> tclass) {
-        List<InformationExtractor> all = extractors(source.getClass());
+    public <S, Q> Q getData(Class T, S source, String id, Class<Q> tclass) {
+        List<InformationExtractor> all = extractors(T);
         for (BasicInformationExtractor<S> x : all) {
-            T obj = x.getData(source, id, tclass);
+            Q obj = x.getData(source, id, tclass);
             if (obj != null) {
                 return obj;
             }

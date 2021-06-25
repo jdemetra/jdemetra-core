@@ -24,24 +24,24 @@ import java.util.function.Function;
  *
  * @author PALATEJ
  */
-public abstract class InformationDelegate<S, T> implements InformationExtractor<S> {
+public abstract class InformationDelegate2<S, T> implements InformationExtractor<S> {
 
     private final Function<S, T> fn;
-
-    public abstract Class<T> getDelegateClass();
-
-    public InformationDelegate(final Function<S, T> fn) {
+    private final InformationExtractor<T> extractor;
+    
+    public InformationDelegate2(InformationExtractor<T> extractor, final Function<S, T> fn) {
+        this.extractor=extractor;
         this.fn = fn;
     }
 
     @Override
     public void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
-        InformationExtractors.fillDictionary(getDelegateClass(), BasicInformationExtractor.concatenate(prefix, null), dic, compact);
+        extractor.fillDictionary(BasicInformationExtractor.concatenate(prefix, null), dic, compact);
     }
 
     @Override
     public boolean contains(String id) {
-        return InformationExtractors.contains(getDelegateClass(), id);
+        return extractor.contains(id);
     }
 
     @Override
@@ -53,7 +53,7 @@ public abstract class InformationDelegate<S, T> implements InformationExtractor<
         if (t == null) {
             return null;
         } else {
-            return InformationExtractors.getData(getDelegateClass(), t, id, qclass);
+            return extractor.getData(t, id, qclass);
         }
     }
 
