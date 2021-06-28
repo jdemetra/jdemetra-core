@@ -36,7 +36,7 @@ public final class TxtProvider implements FileLoader<TxtBean> {
     @lombok.experimental.Delegate
     private final HasDataDisplayName displayNameSupport;
 
-    @lombok.experimental.Delegate(excludes = HasTsStream.class)
+    @lombok.experimental.Delegate(excludes = HasTsStream.class, types = HasDataHierarchy.class)
     private final TxtSupport txtSupport;
 
     @lombok.experimental.Delegate
