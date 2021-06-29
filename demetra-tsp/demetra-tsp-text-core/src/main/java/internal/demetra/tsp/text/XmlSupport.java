@@ -10,7 +10,7 @@ import demetra.tsprovider.HasDataHierarchy;
 import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.util.DataSourcePreconditions;
-import demetra.tsprovider.util.IParam;
+import demetra.tsprovider.util.Param;
 import nbbrd.design.ThreadSafe;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -33,10 +33,10 @@ public class XmlSupport implements HasDataHierarchy, HasTsStream {
         List<TsCollection> getData(@NonNull DataSource dataSource) throws IOException;
 
         @NonNull
-        IParam<DataSet, Integer> getCollectionParam(@NonNull DataSource dataSource);
+        Param<DataSet, Integer> getCollectionParam(@NonNull DataSource dataSource);
 
         @NonNull
-        IParam<DataSet, Integer> getSeriesParam(@NonNull DataSource dataSource);
+        Param<DataSet, Integer> getSeriesParam(@NonNull DataSource dataSource);
     }
 
     @lombok.NonNull
@@ -49,7 +49,7 @@ public class XmlSupport implements HasDataHierarchy, HasTsStream {
     public @NonNull List<DataSet> children(@NonNull DataSource dataSource) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
-        IParam<DataSet, Integer> collectionParam = resource.getCollectionParam(dataSource);
+        Param<DataSet, Integer> collectionParam = resource.getCollectionParam(dataSource);
 
         List<TsCollection> data = resource.getData(dataSource);
 
@@ -64,8 +64,8 @@ public class XmlSupport implements HasDataHierarchy, HasTsStream {
     public @NonNull List<DataSet> children(@NonNull DataSet parent) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, parent);
 
-        IParam<DataSet, Integer> collectionParam = resource.getCollectionParam(parent.getDataSource());
-        IParam<DataSet, Integer> seriesParam = resource.getSeriesParam(parent.getDataSource());
+        Param<DataSet, Integer> collectionParam = resource.getCollectionParam(parent.getDataSource());
+        Param<DataSet, Integer> seriesParam = resource.getSeriesParam(parent.getDataSource());
 
         int collection = collectionParam.get(parent);
         TsCollection data = resource.getData(parent.getDataSource()).get(collection);
@@ -81,8 +81,8 @@ public class XmlSupport implements HasDataHierarchy, HasTsStream {
     public @NonNull Stream<DataSetTs> getData(@NonNull DataSource dataSource, @NonNull TsInformationType type) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
-        IParam<DataSet, Integer> collectionParam = resource.getCollectionParam(dataSource);
-        IParam<DataSet, Integer> seriesParam = resource.getSeriesParam(dataSource);
+        Param<DataSet, Integer> collectionParam = resource.getCollectionParam(dataSource);
+        Param<DataSet, Integer> seriesParam = resource.getSeriesParam(dataSource);
 
         List<TsCollection> data = resource.getData(dataSource);
 
@@ -97,8 +97,8 @@ public class XmlSupport implements HasDataHierarchy, HasTsStream {
     public @NonNull Stream<DataSetTs> getData(@NonNull DataSet dataSet, @NonNull TsInformationType type) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSet.getDataSource());
 
-        IParam<DataSet, Integer> collectionParam = resource.getCollectionParam(dataSet.getDataSource());
-        IParam<DataSet, Integer> seriesParam = resource.getSeriesParam(dataSet.getDataSource());
+        Param<DataSet, Integer> collectionParam = resource.getCollectionParam(dataSet.getDataSource());
+        Param<DataSet, Integer> seriesParam = resource.getSeriesParam(dataSet.getDataSource());
 
         int collection = collectionParam.get(dataSet);
         List<TsCollection> data = resource.getData(dataSet.getDataSource());
@@ -110,7 +110,7 @@ public class XmlSupport implements HasDataHierarchy, HasTsStream {
         return result.map(getMapper(dataSet.getDataSource(), collectionParam, seriesParam));
     }
 
-    private IntPredicate getFilter(DataSet dataSet, IParam<DataSet, Integer> seriesParam) {
+    private IntPredicate getFilter(DataSet dataSet, Param<DataSet, Integer> seriesParam) {
         switch (dataSet.getKind()) {
             case COLLECTION:
                 return index -> true;
@@ -122,7 +122,7 @@ public class XmlSupport implements HasDataHierarchy, HasTsStream {
         }
     }
 
-    private Function<XmlSeries, DataSetTs> getMapper(DataSource dataSource, IParam<DataSet, Integer> collectionParam, IParam<DataSet, Integer> seriesParam) {
+    private Function<XmlSeries, DataSetTs> getMapper(DataSource dataSource, Param<DataSet, Integer> collectionParam, Param<DataSet, Integer> seriesParam) {
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
         return xmlSeries -> new DataSetTs(
                 builder.put(collectionParam, xmlSeries.getCollection()).put(seriesParam, xmlSeries.getSeries()).build(),

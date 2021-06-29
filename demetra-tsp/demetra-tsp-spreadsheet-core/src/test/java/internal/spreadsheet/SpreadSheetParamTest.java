@@ -1,17 +1,17 @@
 /*
  * Copyright 2016 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package internal.spreadsheet;
@@ -19,16 +19,18 @@ package internal.spreadsheet;
 import demetra.data.AggregationType;
 import demetra.spreadsheet.SpreadSheetBean;
 import demetra.timeseries.TsUnit;
+import demetra.timeseries.util.ObsGathering;
 import demetra.tsprovider.HasDataSourceBean;
 import demetra.tsprovider.util.ObsFormat;
-import java.io.File;
-import java.util.function.Supplier;
 import nbbrd.io.text.Parser;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
+import java.io.File;
+import java.util.function.Supplier;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
- *
  * @author Philippe Charles
  */
 public class SpreadSheetParamTest {
@@ -57,7 +59,7 @@ public class SpreadSheetParamTest {
         SpreadSheetBean result = new SpreadSheetBean();
         result.setFile(new File("1234"));
         result.setObsFormat(ObsFormat.of(Parser.onLocale().parse("fr_BE"), "yyyy", "#"));
-        result.setObsGathering(demetra.timeseries.util.ObsGathering.builder().unit(TsUnit.YEAR).aggregationType(AggregationType.Average).skipMissingValues(false).build());
+        result.setObsGathering(ObsGathering.builder().unit(TsUnit.YEAR).aggregationType(AggregationType.Average).includeMissingValues(true).build());
         return result;
     }
 

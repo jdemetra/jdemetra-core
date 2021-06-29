@@ -8,7 +8,7 @@ import demetra.tsprovider.HasDataHierarchy;
 import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.util.DataSourcePreconditions;
-import demetra.tsprovider.util.IParam;
+import demetra.tsprovider.util.Param;
 import nbbrd.design.ThreadSafe;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -29,7 +29,7 @@ public class TxtSupport implements HasDataHierarchy, HasTsStream {
         TsCollection getData(@NonNull DataSource dataSource) throws IOException;
 
         @NonNull
-        IParam<DataSet, Integer> getSeriesParam(@NonNull DataSource dataSource);
+        Param<DataSet, Integer> getSeriesParam(@NonNull DataSource dataSource);
     }
 
     @lombok.NonNull
@@ -43,7 +43,7 @@ public class TxtSupport implements HasDataHierarchy, HasTsStream {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
         TsCollection data = resource.getData(dataSource);
-        IParam<DataSet, Integer> seriesParam = resource.getSeriesParam(dataSource);
+        Param<DataSet, Integer> seriesParam = resource.getSeriesParam(dataSource);
 
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
 
@@ -63,7 +63,7 @@ public class TxtSupport implements HasDataHierarchy, HasTsStream {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
         TsCollection data = resource.getData(dataSource);
-        IParam<DataSet, Integer> seriesParam = resource.getSeriesParam(dataSource);
+        Param<DataSet, Integer> seriesParam = resource.getSeriesParam(dataSource);
 
         return IntStream.range(0, data.length())
                 .mapToObj(getMapper(dataSource, data, seriesParam));
@@ -74,14 +74,14 @@ public class TxtSupport implements HasDataHierarchy, HasTsStream {
         DataSourcePreconditions.checkProvider(providerName, dataSet.getDataSource());
 
         TsCollection data = resource.getData(dataSet.getDataSource());
-        IParam<DataSet, Integer> seriesParam = resource.getSeriesParam(dataSet.getDataSource());
+        Param<DataSet, Integer> seriesParam = resource.getSeriesParam(dataSet.getDataSource());
 
         return IntStream.range(0, data.length())
                 .filter(seriesParam.get(dataSet)::equals)
                 .mapToObj(getMapper(dataSet.getDataSource(), data, seriesParam));
     }
 
-    private IntFunction<DataSetTs> getMapper(DataSource dataSource, TsCollection data, IParam<DataSet, Integer> seriesParam) {
+    private IntFunction<DataSetTs> getMapper(DataSource dataSource, TsCollection data, Param<DataSet, Integer> seriesParam) {
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
         return index -> new DataSetTs(builder.put(seriesParam, index).build(), data.get(index).getName(), data.get(index).getMeta(), data.get(index).getData());
     }

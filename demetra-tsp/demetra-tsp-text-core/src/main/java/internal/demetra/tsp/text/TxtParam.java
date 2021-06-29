@@ -5,9 +5,8 @@ import demetra.tsp.text.TxtBean;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.util.IConfig;
-import demetra.tsprovider.util.IParam;
 import demetra.tsprovider.util.ObsFormat;
-import demetra.tsprovider.util.Params;
+import demetra.tsprovider.util.Param;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -16,27 +15,25 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
-import static demetra.tsprovider.util.Params.onObsGathering;
-
-public interface TxtParam extends IParam<DataSource, TxtBean> {
+public interface TxtParam extends Param<DataSource, TxtBean> {
 
     @NonNull
     String getVersion();
 
     @NonNull
-    IParam<DataSet, Integer> getSeriesParam(@NonNull DataSource dataSource);
+    Param<DataSet, Integer> getSeriesParam(@NonNull DataSource dataSource);
 
     class V1 implements TxtParam {
 
-        private final IParam<DataSource, File> file = Params.onFile(new File(""), "file");
-        private final IParam<DataSource, ObsFormat> obsFormat = Params.onObsFormat(ObsFormat.of(Locale.ENGLISH, "yyyy-MM-dd", null), "locale", "datePattern", "numberPattern");
-        private final IParam<DataSource, Charset> charset = Params.onCharset(StandardCharsets.UTF_8, "charset");
-        private final IParam<DataSource, TxtBean.Delimiter> delimiter = Params.onEnum(TxtBean.Delimiter.TAB, "delimiter");
-        private final IParam<DataSource, Boolean> headers = Params.onBoolean(true, "headers");
-        private final IParam<DataSource, Integer> skipLines = Params.onInteger(0, "skipLines");
-        private final IParam<DataSource, TxtBean.TextQualifier> textQualifier = Params.onEnum(TxtBean.TextQualifier.NONE, "textQualifier");
-        private final IParam<DataSource, ObsGathering> obsGathering = onObsGathering(ObsGathering.DEFAULT, "frequency", "aggregationType", "cleanMissing");
-        private final IParam<DataSet, Integer> series = Params.onInteger(-1, "seriesIndex");
+        private final Param<DataSource, File> file = Param.onFile(new File(""), "file");
+        private final Param<DataSource, ObsFormat> obsFormat = Param.onObsFormat(ObsFormat.of(Locale.ENGLISH, "yyyy-MM-dd", null), "locale", "datePattern", "numberPattern");
+        private final Param<DataSource, Charset> charset = Param.onCharset(StandardCharsets.UTF_8, "charset");
+        private final Param<DataSource, TxtBean.Delimiter> delimiter = Param.onEnum(TxtBean.Delimiter.TAB, "delimiter");
+        private final Param<DataSource, Boolean> headers = Param.onBoolean(true, "headers");
+        private final Param<DataSource, Integer> skipLines = Param.onInteger(0, "skipLines");
+        private final Param<DataSource, TxtBean.TextQualifier> textQualifier = Param.onEnum(TxtBean.TextQualifier.NONE, "textQualifier");
+        private final Param<DataSource, ObsGathering> obsGathering = Param.onObsGathering(ObsGathering.DEFAULT, "frequency", "aggregationType", "cleanMissing");
+        private final Param<DataSet, Integer> series = Param.onInteger(-1, "seriesIndex");
 
         @Override
         public @NonNull String getVersion() {
@@ -84,7 +81,7 @@ public interface TxtParam extends IParam<DataSource, TxtBean> {
         }
 
         @Override
-        public @NonNull IParam<DataSet, Integer> getSeriesParam(@NonNull DataSource dataSource) {
+        public @NonNull Param<DataSet, Integer> getSeriesParam(@NonNull DataSource dataSource) {
             return series;
         }
     }

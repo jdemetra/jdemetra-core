@@ -27,7 +27,7 @@ import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY;
 import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY_BE;
 import static demetra.tsprovider.cube.CubeIdTest.SECTOR_REGION;
 import demetra.tsprovider.stream.DataSetTs;
-import demetra.tsprovider.util.IParam;
+import demetra.tsprovider.util.Param;
 import java.io.IOException;
 import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -44,7 +44,7 @@ public class CubeSupportTest {
     private final DataSource dataSource = DataSource.of(providerName, "");
     private final DataSet col = DataSet.builder(dataSource, DataSet.Kind.COLLECTION).put("sector", "industry").build();
     private final DataSet series = DataSet.builder(dataSource, DataSet.Kind.SERIES).put("sector", "industry").put("region", "be").build();
-    private final IParam<DataSet, CubeId> cubeIdParam = CubeSupport.idByName(SECTOR_REGION);
+    private final Param<DataSet, CubeId> cubeIdParam = CubeSupport.idByName(SECTOR_REGION);
 
     @Test
     @SuppressWarnings("null")
