@@ -13,10 +13,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
-import demetra.processing.ProcResults;
 import jdplus.dfa.MSEDecomposition;
 import jdplus.filters.FSTFilter;
 import jdplus.math.linearfilters.FiniteFilter;
+import demetra.information.Explorable;
 
 /**
  *
@@ -27,12 +27,17 @@ public class FiltersToolkit {
 
     @lombok.Value
     @lombok.Builder
-    public static class FiniteFilters implements ProcResults {
+    public static class FiniteFilters implements Explorable {
 
         private SymmetricFilter filter;
         private IFiniteFilter[] afilters;
 
-        private static final InformationMapping<FiniteFilters> MAPPING = new InformationMapping<>(FiniteFilters.class);
+        private static final InformationMapping<FiniteFilters> MAPPING = new InformationMapping<FiniteFilters>() {
+            @Override
+            public Class getSourceClass() {
+                return FiniteFilters.class;
+             }
+        };
 
         public static final InformationMapping<FiniteFilters> getMapping() {
             return MAPPING;

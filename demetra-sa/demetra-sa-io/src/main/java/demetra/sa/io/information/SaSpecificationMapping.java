@@ -6,12 +6,12 @@
 package demetra.sa.io.information;
 
 import demetra.information.InformationSet;
-import demetra.processing.ProcResults;
 import demetra.sa.SaSpecification;
 import java.util.List;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
+import demetra.information.Explorable;
 
 /**
  *

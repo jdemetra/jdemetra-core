@@ -21,7 +21,7 @@ import demetra.processing.DefaultProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
-import demetra.timeseries.regression.modelling.LightLinearModel;
+import demetra.timeseries.regression.modelling.LightweightLinearModel;
 import demetra.tramo.Tramo;
 import demetra.tramo.TramoSpec;
 import java.util.List;

@@ -19,10 +19,14 @@ package demetra.tramoseats.r;
 import demetra.arima.SarimaModel;
 import demetra.data.Data;
 import demetra.math.matrices.MatrixType;
+import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.tramo.TramoOutput;
 import demetra.tramo.TramoSpec;
+import java.util.Arrays;
+import java.util.Map;
+import jdplus.regsarima.regular.RegSarimaModel;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -37,15 +41,19 @@ public class TramoTest {
 
     @Test
     public void test() {
-        Tramo.Results rslt = Tramo.process(Data.TS_PROD, "TR5");
+        RegSarimaModel rslt = Tramo.process(Data.TS_PROD, "TR5");
+        Map<String, Class> dictionary = rslt.getDictionary();
+        dictionary.forEach((k, v)->System.out.println(k));
         assertTrue(rslt.getData("span.n", Integer.class) == Data.TS_PROD.length());
 //        System.out.println(DoubleSeq.of(rslt.getData("sarima.parameters", double[].class)));
 
         SarimaModel model = rslt.getData("model", SarimaModel.class);
         String[] desc = rslt.getData("regression.description", String[].class);
-//        System.out.println(model);
+        Arrays.stream(desc).forEach(v->System.out.println(v));
         assertTrue(desc != null);
-    }
+        StatisticalTest data = rslt.getData("residuals.doornikhansen", StatisticalTest.class);
+        System.out.println(data.getPvalue());
+   }
 
     @Test
     public void testFull() {
@@ -74,7 +82,7 @@ public class TramoTest {
     public void testForecast0() {
         MatrixType terror = Tramo.forecast(Data.TS_PROD, TramoSpec.TR0, null, 12);
         assertTrue(terror != null);
-        System.out.println(terror);
+//        System.out.println(terror);
     }
 
     @Test

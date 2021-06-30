@@ -16,7 +16,6 @@
  */
 package demetra.sts.r;
 
-import demetra.data.Doubles;
 import demetra.data.Parameter;
 import demetra.information.InformationMapping;
 import jdplus.math.functions.IFunctionDerivatives;
@@ -36,12 +35,12 @@ import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import demetra.processing.ProcResults;
 import demetra.sts.SeasonalModel;
-import demetra.toolkit.extractors.DiffuseLikelihoodStatisticsExtractor;
 import jdplus.math.matrices.Matrix;
 import static jdplus.timeseries.simplets.TsDataToolkit.add;
 import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
+import demetra.information.Explorable;
+import demetra.likelihood.DiffuseLikelihoodStatistics;
 
 /**
  *
@@ -52,7 +51,7 @@ public class StsEstimation {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements ProcResults {
+    public static class Results implements Explorable {
 
         TsData y, t, s, i;
         BsmData bsm;
@@ -88,7 +87,12 @@ public class StsEstimation {
             return MAPPING;
         }
 
-        private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
+        private static final InformationMapping<Results> MAPPING = new InformationMapping<Results>() {
+            @Override
+            public Class getSourceClass() {
+                return Results.class;
+            }
+        };
 
         static {
             MAPPING.set(LVAR, Double.class, source -> source.getBsm().getLevelVar());
@@ -103,7 +107,7 @@ public class StsEstimation {
             MAPPING.set(S, TsData.class, source -> source.getS());
             MAPPING.set(I, TsData.class, source -> source.getI());
             MAPPING.set(SA, TsData.class, source -> subtract(source.getY(), source.getS()));
-            MAPPING.delegate(LL, DiffuseLikelihoodStatisticsExtractor.getMapping(), r -> r.getLikelihood().stats(0, r.getNparams()));
+            MAPPING.delegate(LL, DiffuseLikelihoodStatistics.class, r -> r.getLikelihood().stats(0, r.getNparams()));
             MAPPING.set(PCOV, Matrix.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
         }
@@ -129,7 +133,7 @@ public class StsEstimation {
 
         TsData t = null, c = null, s = null, seas = null, n = null;
         TsPeriod start = y.getStart();
-        mspec=monitor.finalSpecification();
+        mspec = monitor.finalSpecification();
         if (mspec.hasLevel()) {
             int pos = SsfBsm.searchPosition(bsm, Component.Level);
             t = TsData.ofInternal(start, sr.getComponent(pos).toArray());

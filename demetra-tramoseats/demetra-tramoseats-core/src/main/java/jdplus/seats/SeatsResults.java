@@ -16,13 +16,10 @@
  */
 package jdplus.seats;
 
-import demetra.processing.ProcResults;
 import demetra.sa.SeriesDecomposition;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import jdplus.sarima.SarimaModel;
-import jdplus.tramoseats.extractors.SeatsExtractor;
 import jdplus.ucarima.UcarimaModel;
+import demetra.information.Explorable;
 
 /**
  *
@@ -30,7 +27,7 @@ import jdplus.ucarima.UcarimaModel;
  */
 @lombok.Value
 @lombok.Builder
-public class SeatsResults implements ProcResults {
+public class SeatsResults implements Explorable {
 
     private SarimaModel originalModel;
     private SarimaModel finalModel;
@@ -39,22 +36,4 @@ public class SeatsResults implements ProcResults {
     private boolean parametersCutOff, modelChanged;
     private UcarimaModel ucarimaModel, compactUcarimaModel;
     private SeriesDecomposition initialComponents, finalComponents;
-
-    @Override
-    public boolean contains(String id) {
-        return SeatsExtractor.getMapping().contains(id);
-    }
-
-    @Override
-    public Map<String, Class> getDictionary() {
-        Map<String, Class> dic = new LinkedHashMap<>();
-        SeatsExtractor.getMapping().fillDictionary(null, dic, true);
-        return dic;
-    }
-
-    @Override
-    public <T> T getData(String id, Class<T> tclass) {
-        return SeatsExtractor.getMapping().getData(this, id, tclass);
-    }
-
 }

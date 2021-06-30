@@ -5,22 +5,22 @@
  */
 package jdplus.sa.extractors;
 
+import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import demetra.sa.SeriesDecomposition;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author PALATEJ
  */
-@lombok.experimental.UtilityClass
-public class TsDataDecompositionExtractor {
-    private final InformationMapping<SeriesDecomposition> MAPPING = new InformationMapping<>(SeriesDecomposition.class);
-    
-    static{
-        
+@ServiceProvider(InformationExtractor.class)
+public class SeriesDecompositionExtractor extends InformationMapping<SeriesDecomposition>{
+
+    @Override
+    public Class getSourceClass() {
+        return SeriesDecomposition.class;
     }
+
     
-    public InformationMapping<SeriesDecomposition> getMapping() {
-        return MAPPING;
-    }
 }

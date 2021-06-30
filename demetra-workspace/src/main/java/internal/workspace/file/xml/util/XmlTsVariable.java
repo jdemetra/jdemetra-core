@@ -17,8 +17,8 @@
 package internal.workspace.file.xml.util;
 
 import demetra.timeseries.StaticTsDataSupplier;
+import demetra.toolkit.io.xml.information.XmlTsData;
 import demetra.toolkit.io.xml.legacy.IXmlConverter;
-import demetra.toolkit.io.xml.legacy.core.XmlTsData;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
@@ -39,12 +39,12 @@ public class XmlTsVariable extends XmlNamedObject implements IXmlConverter<Stati
         if (tsdata == null) {
             return null;
         }
-        return new StaticTsDataSupplier(XmlTsData.unmarshal(tsdata));
+        return new StaticTsDataSupplier(tsdata.create());
      }
 
     @Override
     public void copy(StaticTsDataSupplier t) {
         tsdata = new XmlTsData();
-        XmlTsData.marshal(t.getData(), tsdata);
+        tsdata.copy(t.getData());
     }
 }

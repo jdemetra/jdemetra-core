@@ -19,9 +19,9 @@ package internal.workspace.file.xml.util;
 import demetra.timeseries.DynamicTsDataSupplier;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsMoniker;
+import demetra.toolkit.io.xml.information.XmlTsData;
+import demetra.toolkit.io.xml.information.XmlTsMoniker;
 import demetra.toolkit.io.xml.legacy.IXmlConverter;
-import demetra.toolkit.io.xml.legacy.core.XmlTsData;
-import demetra.toolkit.io.xml.legacy.core.XmlTsMoniker;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -44,20 +44,21 @@ public class XmlDynamicTsVariable extends XmlNamedObject implements IXmlConverte
 
     @Override
     public DynamicTsDataSupplier create() {
-        TsMoniker m = XmlTsMoniker.getAdapter().unmarshal(moniker);
-        DynamicTsDataSupplier result = tsdata != null
-                ? new DynamicTsDataSupplier(m, XmlTsData.unmarshal(tsdata))
+        TsMoniker m = moniker.create();
+        DynamicTsDataSupplier result = (tsdata != null && tsdata.data != null)
+                ? new DynamicTsDataSupplier(m, tsdata.create())
                 : new DynamicTsDataSupplier(m, null);
         return result;
     }
 
     @Override
     public void copy(DynamicTsDataSupplier t) {
-        moniker = XmlTsMoniker.getAdapter().marshal(t.getMoniker());
+        moniker = new XmlTsMoniker();
+        moniker.copy(t.getMoniker());
         TsData d = t.get();
         if (d != null) {
             tsdata=new XmlTsData();
-            XmlTsData.marshal(d, tsdata);
+            tsdata.copy(d);
         }
     }
 }

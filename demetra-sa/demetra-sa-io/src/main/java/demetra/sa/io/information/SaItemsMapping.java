@@ -7,6 +7,7 @@ package demetra.sa.io.information;
 
 import demetra.information.Information;
 import demetra.information.InformationSet;
+import demetra.information.InformationSetSerializer;
 import demetra.sa.SaItem;
 import demetra.sa.SaItems;
 import demetra.sa.SaSpecification;
@@ -23,11 +24,10 @@ import java.util.Map;
 public class SaItemsMapping {
 
     public final String METADATA = "metadata", DOMAIN_SPECS = "domainspecs", TIMESTAMP = "TimeStamp", OWNER = "Owner";
-    
-    public NameManager<SaSpecification> defaultNameManager(){
+
+    public NameManager<SaSpecification> defaultNameManager() {
         return new NameManager(SaSpecification.class, "spec", null);
     }
-
 
     public InformationSet write(SaItems mp, boolean verbose) {
         InformationSet info = new InformationSet();
@@ -87,4 +87,18 @@ public class SaItemsMapping {
         }
         return builder.build();
     }
+
+    public static final InformationSetSerializer<SaItems> SERIALIZER = new InformationSetSerializer<SaItems>() {
+        @Override
+        public InformationSet write(SaItems object, boolean verbose) {
+            return SaItemsMapping.write(object, verbose);
+        }
+
+        @Override
+        public SaItems read(InformationSet info) {
+            return SaItemsMapping.read(info);
+        }
+
+    };
+
 }

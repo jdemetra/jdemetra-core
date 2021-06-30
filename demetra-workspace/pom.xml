@@ -11,7 +11,7 @@
     <artifactId>demetra-workspace</artifactId>
     <packaging>jar</packaging>
 
-    <name>Demetra - Workspace</name>
+    <name>JD3 - Workspace</name>
     <description>Seasonal Adjustment Toolkit - Workspace</description>
 
     <properties>

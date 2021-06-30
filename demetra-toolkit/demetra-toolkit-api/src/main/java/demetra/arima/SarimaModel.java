@@ -34,7 +34,7 @@ import nbbrd.design.Development;
 @lombok.Value
 @lombok.Builder(toBuilder = true, builderClassName = "Builder")
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-public class SarimaModel implements ISarimaModel{
+public class SarimaModel implements ISarimaModel {
 
     /**
      * Period of the seasonal model
@@ -95,6 +95,7 @@ public class SarimaModel implements ISarimaModel{
 
     /**
      * Gets the underlying specification
+     *
      * @return
      */
     @Override
@@ -109,36 +110,16 @@ public class SarimaModel implements ISarimaModel{
         return spec;
     }
 
-    /**
-     * Gets all the parameters in the following order
-     * phi, bphi, theta, btheta
-     * 
-     * @param truesign If truesign, the sign of the coefficients corresponds to the
-     * sign in the backshift polynomials. Otherwise, the signs of phi, bphi are changed; 
-     * They correspond to the equation:
-     * y(t) = phi(k)y(t-k) + e(t) + theta(k)e(t-k)
-     * if true, it is similar to the "Tramo" convention; otherwise, it is similar to 
-     * the X13 or R convention (for instance).
-     * @return 
-     */
-    public double[] parameters(boolean truesign) {
+    @Override
+    public DoubleSeq parameters() {
         int n = phi.length + bphi.length + theta.length + btheta.length;
         int pos = 0;
         double[] all = new double[n];
-        if (truesign) {
-            for (int i = 0; i < phi.length; ++i) {
-                all[pos++] = phi[i];
-            }
-            for (int i = 0; i < bphi.length; ++i) {
-                all[pos++] = bphi[i];
-            }
-        } else {
-            for (int i = 0; i < phi.length; ++i) {
-                all[pos++] = -phi[i];
-            }
-            for (int i = 0; i < bphi.length; ++i) {
-                all[pos++] = -bphi[i];
-            }
+        for (int i = 0; i < phi.length; ++i) {
+            all[pos++] = phi[i];
+        }
+        for (int i = 0; i < bphi.length; ++i) {
+            all[pos++] = bphi[i];
         }
         for (int i = 0; i < theta.length; ++i) {
             all[pos++] = theta[i];
@@ -146,18 +127,13 @@ public class SarimaModel implements ISarimaModel{
         for (int i = 0; i < btheta.length; ++i) {
             all[pos++] = btheta[i];
         }
-        return all;
-    }
-    
-    @Override
-    public DoubleSeq parameters(){
-        return DoubleSeq.of(parameters(true));
+        return DoubleSeq.of(all);
     }
 
     public static Builder builder() {
 
         Builder builder = new Builder();
-        double[] E=DoubleSeq.EMPTYARRAY;
+        double[] E = DoubleSeq.EMPTYARRAY;
         builder.period = 1;
         builder.phi = E;
         builder.theta = E;

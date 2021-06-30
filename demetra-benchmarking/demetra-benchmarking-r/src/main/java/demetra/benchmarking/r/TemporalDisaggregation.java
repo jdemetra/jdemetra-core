@@ -16,11 +16,8 @@
  */
 package demetra.benchmarking.r;
 
-import demetra.benchmarking.extractors.TemporalDisaggregationExtractor;
 import demetra.data.AggregationType;
 import demetra.data.Parameter;
-import demetra.information.InformationMapping;
-import demetra.processing.ProcResults;
 import demetra.ssf.SsfInitialization;
 import demetra.tempdisagg.univariate.TemporalDisaggregationIResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationISpec;
@@ -31,8 +28,6 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import jdplus.tempdisagg.univariate.ProcessorI;
 
 /**
@@ -42,35 +37,6 @@ import jdplus.tempdisagg.univariate.ProcessorI;
 @lombok.experimental.UtilityClass
 public class TemporalDisaggregation {
 
-    public static class Results implements ProcResults {
-
-        private final TemporalDisaggregationResults core;
-
-        private Results(TemporalDisaggregationResults results) {
-            this.core = results;
-        }
-
-        public static InformationMapping<TemporalDisaggregationResults> getMapping() {
-            return TemporalDisaggregationExtractor.getMapping();
-        }
-
-        @Override
-        public boolean contains(String id) {
-            return TemporalDisaggregationExtractor.getMapping().contains(id);
-        }
-
-        @Override
-        public Map<String, Class> getDictionary() {
-            Map<String, Class> dic = new LinkedHashMap<>();
-            TemporalDisaggregationExtractor.getMapping().fillDictionary(null, dic, true);
-            return dic;
-        }
-
-        @Override
-        public <T> T getData(String id, Class<T> tclass) {
-            return TemporalDisaggregationExtractor.getMapping().getData(core, id, tclass);
-        }
-    }
 
     public TsData processI(TsData y, TsData indicator, String model, String aggregation, int obspos,
             double rho, boolean fixedrho, double truncatedRho) {
@@ -86,7 +52,7 @@ public class TemporalDisaggregation {
         return rslt.getDisaggregatedSeries();
     }
 
-    public Results process(TsData y, boolean constant, boolean trend, TsData[] indicators,
+    public TemporalDisaggregationResults process(TsData y, boolean constant, boolean trend, TsData[] indicators,
             String model, int freq, String aggregation, int obspos,
             double rho, boolean fixedrho, double truncatedRho, boolean zeroinit,
             String algorithm, boolean diffuseregs) {
@@ -109,12 +75,12 @@ public class TemporalDisaggregation {
             TsPeriod start = TsPeriod.of(unit, y.getStart().start());
             TsPeriod end = TsPeriod.of(unit, y.getDomain().end());
             TsDomain all = TsDomain.of(start, start.until(end) + 2 * freq);
-            return new Results(demetra.tempdisagg.univariate.TemporalDisaggregation.process(y, all, builder.build()));
+            return demetra.tempdisagg.univariate.TemporalDisaggregation.process(y, all, builder.build());
         } else {
             for (int i = 0; i < indicators.length; ++i) {
                 indicators[i] = indicators[i].cleanExtremities();
             }
-            return new Results(demetra.tempdisagg.univariate.TemporalDisaggregation.process(y, indicators, builder.build()));
+            return demetra.tempdisagg.univariate.TemporalDisaggregation.process(y, indicators, builder.build());
         }
     }
 

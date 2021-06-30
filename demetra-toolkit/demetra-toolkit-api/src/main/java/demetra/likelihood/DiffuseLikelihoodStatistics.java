@@ -46,4 +46,9 @@ public class DiffuseLikelihoodStatistics {
         return -2 * getAdjustedLogLikelihood() + nhp * Math.log(neff);
     }
 
+     public double hannanQuinn() {
+        double neff=getEffectiveObservationsCount();
+        double nhp=estimatedParametersCount;
+        return -2 * (getAdjustedLogLikelihood() - nhp * Math.log(Math.log(neff)));
+   }
 }

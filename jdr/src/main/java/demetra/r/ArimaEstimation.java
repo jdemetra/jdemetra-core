@@ -22,7 +22,6 @@ import jdplus.regarima.RegArimaModel;
 import demetra.information.InformationMapping;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import demetra.arima.SarimaOrders;
 import jdplus.regsarima.RegSarimaComputer;
 import demetra.util.IntList;
@@ -30,12 +29,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import demetra.processing.ProcResults;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
 import jdplus.math.matrices.Matrix;
-import jdplus.modelling.extractors.SarimaExtractor;
 import jdplus.sarima.SarimaModel;
+import demetra.information.Explorable;
 
 /**
  *
@@ -98,7 +96,7 @@ public class ArimaEstimation {
     }
 
     @lombok.Value
-    public static class Results implements ProcResults {
+    public static class Results implements Explorable {
 
         RegArimaModel<SarimaModel> regarima;
         ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
@@ -112,11 +110,16 @@ public class ArimaEstimation {
 
         private static final String ARIMA = "sarima", LL = "likelihood", PCOV = "pcov", SCORE = "score",
                 B = "b", UNSCALEDBVAR = "unscaledbvar", MEAN = "mean";
-        private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
+        private static final InformationMapping<Results> MAPPING = new InformationMapping<Results>() {
+            @Override
+            public Class getSourceClass() {
+                return Results.class;
+            }
+        };
 
         static {
-            MAPPING.delegate(ARIMA, SarimaExtractor.getMapping(), r -> r.getArima());
-            MAPPING.delegate(LL, LikelihoodStatisticsExtractor.getMapping(), r -> r.statistics);
+            MAPPING.delegate(ARIMA, SarimaModel.class, r -> r.getArima());
+            MAPPING.delegate(LL, LikelihoodStatistics.class, r -> r.statistics);
             MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore().toArray());
             MAPPING.set(B, double[].class, source

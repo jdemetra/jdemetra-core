@@ -32,8 +32,12 @@ import nbbrd.design.Development;
 @lombok.Builder
 @lombok.Value
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-public class ArimaModel {
-
+public class ArimaModel implements IArimaModel{
+    
+    /**
+     * Name of the model (optional); null by default
+     */
+    private String name;
     /**
      * Innovation variance. 1 by default
      */
@@ -58,10 +62,6 @@ public class ArimaModel {
      */
     @lombok.NonNull
     private double[] ma;
-    /**
-     * Name of the model (optional); null by default
-     */
-    private String name;
 
     /**
      * Rename the model. 
@@ -69,7 +69,7 @@ public class ArimaModel {
      * @return 
      */
     public ArimaModel rename(String nname) {
-        return new ArimaModel(innovationVariance, ar, delta, ma, nname);
+        return new ArimaModel(nname, innovationVariance, ar, delta, ma);
     }
 
     public static Builder builder() {

@@ -5,25 +5,28 @@
  */
 package jdplus.x13.extractors;
 
-import demetra.information.InformationExtractor;
 import nbbrd.design.Development;
 import demetra.information.InformationMapping;
 import demetra.sa.SaDictionary;
 import demetra.timeseries.TsData;
-import jdplus.regarima.extractors.RegSarimaModelExtractor;
 import jdplus.x13.X13Results;
+import demetra.information.BasicInformationExtractor;
+import demetra.information.InformationExtractor;
+import demetra.x11.X11Results;
+import jdplus.regsarima.regular.RegSarimaModel;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author PALATEJ
  */
 @Development(status = Development.Status.Release)
-@lombok.experimental.UtilityClass
-public class X13Extractor {
-    private final InformationMapping<X13Results> MAPPING = new InformationMapping<>(X13Results.class);
-    private final String DECOMP = "decomposition" + InformationExtractor.SEP, FINAL = "";
+@ServiceProvider(InformationExtractor.class)
+public class X13Extractor extends InformationMapping<X13Results> {
 
-    static {
+    private final String DECOMP = "decomposition" + BasicInformationExtractor.SEP, FINAL = "";
+
+    public X13Extractor() {
 //         MAPPING.set(FINAL + ModellingDictionary.Y, TsData.class, source
 //                -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Value));
 //        MAPPING.set(FINAL + ModellingDictionary.Y + SeriesInfo.F_SUFFIX, TsData.class, source
@@ -46,21 +49,21 @@ public class X13Extractor {
 //        MAPPING.set(FINAL + SaDictionary.T + SeriesInfo.EB_SUFFIX, TsData.class, source
 //                -> source.getFinals().getSeries(ComponentType.Trend, ComponentInformation.StdevBackcast));
 //
-        MAPPING.set(FINAL + SaDictionary.S, TsData.class, source
+        set(FINAL + SaDictionary.S, TsData.class, source
                 -> source.getFinals().getD10final());
-        MAPPING.set(FINAL + SaDictionary.SA, TsData.class, source
+        set(FINAL + SaDictionary.SA, TsData.class, source
                 -> source.getFinals().getD11final());
-        MAPPING.set(FINAL + SaDictionary.T, TsData.class, source
+        set(FINAL + SaDictionary.T, TsData.class, source
                 -> source.getFinals().getD12final());
-        MAPPING.set(FINAL + SaDictionary.I, TsData.class, source
+        set(FINAL + SaDictionary.I, TsData.class, source
                 -> source.getFinals().getD13final());
-        MAPPING.set("d10final", TsData.class, source
+        set("d10final", TsData.class, source
                 -> source.getFinals().getD10final());
-        MAPPING.set("d11final", TsData.class, source
+        set("d11final", TsData.class, source
                 -> source.getFinals().getD11final());
-        MAPPING.set("d12final", TsData.class, source
+        set("d12final", TsData.class, source
                 -> source.getFinals().getD12final());
-        MAPPING.set("d13final", TsData.class, source
+        set("d13final", TsData.class, source
                 -> source.getFinals().getD13final());
 //        MAPPING.set(FINAL + SaDictionary.SA + SeriesInfo.F_SUFFIX, TsData.class, source
 //                -> source.getFinals().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast));
@@ -92,11 +95,12 @@ public class X13Extractor {
 //                -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.Backcast));
 //        MAPPING.set(FINAL + SaDictionary.I + SeriesInfo.EB_SUFFIX, TsData.class, source
 //                -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast));
-        MAPPING.delegate("preprocessing", RegSarimaModelExtractor.getMapping(), source -> source.getPreprocessing());
-        MAPPING.delegate("x11", X11Extractor.getMapping(), source -> source.getDecomposition());
-   }
+        delegate("preprocessing", RegSarimaModel.class, source -> source.getPreprocessing());
+        delegate("x11", X11Results.class, source -> source.getDecomposition());
+    }
 
-    public InformationMapping<X13Results> getMapping() {
-        return MAPPING;
+    @Override
+    public Class getSourceClass() {
+        return X13Results.class;
     }
 }

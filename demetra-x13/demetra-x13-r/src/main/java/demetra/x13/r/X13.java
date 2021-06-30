@@ -17,7 +17,6 @@
 package demetra.x13.r;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import demetra.processing.ProcResults;
 import demetra.sa.EstimationPolicyType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
@@ -28,12 +27,9 @@ import demetra.x13.io.protobuf.SpecProto;
 import demetra.x13.io.protobuf.X13Output;
 import demetra.x13.io.protobuf.X13Protos;
 import demetra.x13.io.protobuf.X13ResultsProto;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import jdplus.x13.X13Factory;
 import jdplus.x13.X13Kernel;
 import jdplus.x13.X13Results;
-import jdplus.x13.extractors.X13Extractor;
 
 /**
  *
@@ -42,53 +38,20 @@ import jdplus.x13.extractors.X13Extractor;
 @lombok.experimental.UtilityClass
 public class X13 {
 
-    @lombok.Value
-    public static class Results implements ProcResults {
-
-        private X13Results core;
-
-        public byte[] buffer() {
-            return X13ResultsProto.convert(core).toByteArray();
-        }
-
-        public RegArima.Results preprocessing() {
-            return new RegArima.Results(core.getPreprocessing());
-        }
-
-        public X11.Results decomposition() {
-            return new X11.Results(core.getDecomposition());
-        }
-
-        @Override
-        public boolean contains(String id) {
-            return X13Extractor.getMapping().contains(id);
-        }
-
-        @Override
-        public Map<String, Class> getDictionary() {
-            Map<String, Class> dic = new LinkedHashMap<>();
-            X13Extractor.getMapping().fillDictionary(null, dic, true);
-            return dic;
-        }
-
-        @Override
-        public <T> T getData(String id, Class<T> tclass) {
-            return X13Extractor.getMapping().getData(core, id, tclass);
-        }
+    public byte[] toBuffer(X13Results core) {
+        return X13ResultsProto.convert(core).toByteArray();
     }
 
-    public Results process(TsData series, String defSpec) {
+    public X13Results process(TsData series, String defSpec) {
         X13Spec spec = X13Spec.fromString(defSpec);
         X13Kernel kernel = X13Kernel.of(spec, null);
-        X13Results estimation = kernel.process(series.cleanExtremities(), null);
-        return new Results(estimation);
+        return kernel.process(series.cleanExtremities(), null);
     }
 
-    public Results process(TsData series, X13Spec spec, Dictionary dic) {
+    public X13Results process(TsData series, X13Spec spec, Dictionary dic) {
         ModellingContext context = dic == null ? null : dic.toContext();
         X13Kernel kernel = X13Kernel.of(spec, context);
-        X13Results estimation = kernel.process(series.cleanExtremities(), null);
-        return new Results(estimation);
+        return kernel.process(series.cleanExtremities(), null);
     }
 
     public X13Spec refreshSpec(X13Spec currentSpec, X13Spec domainSpec, TsDomain domain, String policy) {

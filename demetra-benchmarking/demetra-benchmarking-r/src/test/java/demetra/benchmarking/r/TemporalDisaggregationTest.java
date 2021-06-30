@@ -36,7 +36,7 @@ public class TemporalDisaggregationTest {
     public void testChowLin() {
         TsData y = TsData.of(TsPeriod.yearly(1977), Doubles.of(Data.PCRA));
         TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
-        TemporalDisaggregation.Results rslt = TemporalDisaggregation.process(y, true, false, new TsData[]{q}, "Ar1", 0, "Sum", 0, 0, false, 0, false, "Diffuse", false);
+        TemporalDisaggregationResults rslt = TemporalDisaggregation.process(y, true, false, new TsData[]{q}, "Ar1", 0, "Sum", 0, 0, false, 0, false, "Diffuse", false);
         System.out.println(rslt.getData("disagg", TsData.class));
     }
     
@@ -44,13 +44,13 @@ public class TemporalDisaggregationTest {
     public void testLitterman() {
         TsData y = TsData.of(TsPeriod.yearly(1977), Doubles.of(Data.PCRA));
         TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
-        TemporalDisaggregation.Results rslt = TemporalDisaggregation.process(y, false, false, new TsData[]{q}, "RwAr1", 0, "Sum", 0, 0, false, 0, false, "Augmented", false);
+        TemporalDisaggregationResults rslt = TemporalDisaggregation.process(y, false, false, new TsData[]{q}, "RwAr1", 0, "Sum", 0, 0, false, 0, false, "Augmented", false);
     }
 
     @Test
     public void testFernandez() {
         TsData y = TsData.of(TsPeriod.yearly(1977), Doubles.of(Data.PCRA));
         TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
-        TemporalDisaggregation.Results rslt = TemporalDisaggregation.process(y, false, false, new TsData[]{q}, "Rw", 0, "Sum", 0, 0, false, 0, false, "Augmented", false);
+        TemporalDisaggregationResults rslt = TemporalDisaggregation.process(y, false, false, new TsData[]{q}, "Rw", 0, "Sum", 0, 0, false, 0, false, "Augmented", false);
     }
 }

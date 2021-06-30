@@ -42,7 +42,7 @@ public class X13Computer implements X13.Processor {
         // Handling of additional items
         X13Results.Builder builder = X13Results.builder();
         for (String key : additionalItems) {
-            Object data = X13Extractor.getMapping().getData(rslt, key, Object.class);
+            Object data = rslt.getData(key, Object.class);
             if (data != null) {
                 builder.addtionalResult(key, data);
             }

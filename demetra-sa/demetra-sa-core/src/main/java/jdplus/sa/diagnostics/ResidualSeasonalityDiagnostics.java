@@ -18,7 +18,6 @@ package jdplus.sa.diagnostics;
 
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
-import demetra.processing.ProcResults;
 import demetra.sa.SaDictionary;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TimeSelector;
@@ -27,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import jdplus.sa.tests.StableSeasonality;
 import jdplus.stats.tests.TestsUtility;
+import demetra.information.Explorable;
 
 /**
  *
@@ -41,7 +41,7 @@ public class ResidualSeasonalityDiagnostics implements Diagnostics {
     private final double[] lastSaThresholds = new double[]{0.1, 0.05, 0.01};
     private final double[] irregularThresholds = new double[]{0.1, 0.05, 0.01};
 
-    protected static ResidualSeasonalityDiagnostics create(ProcResults rslts, ResidualSeasonalityDiagnosticsConfiguration config) {
+    protected static ResidualSeasonalityDiagnostics create(Explorable rslts, ResidualSeasonalityDiagnosticsConfiguration config) {
         try {
             ResidualSeasonalityDiagnostics diag = new ResidualSeasonalityDiagnostics(config);
             if (!diag.test(rslts)) {
@@ -60,7 +60,7 @@ public class ResidualSeasonalityDiagnostics implements Diagnostics {
         setLastSaBounds(config.getBadThresholdForLastSa(), config.getBadThresholdForLastSa(), config.getUncertainThresholdForLastSa());
     }
 
-    public boolean test(ProcResults rslts) {
+    public boolean test(Explorable rslts) {
         if (rslts == null) {
             return false;
         }

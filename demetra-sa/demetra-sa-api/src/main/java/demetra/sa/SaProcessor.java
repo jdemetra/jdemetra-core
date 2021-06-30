@@ -17,10 +17,10 @@
 package demetra.sa;
 
 import demetra.design.Algorithm;
-import demetra.processing.ProcResults;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
+import demetra.information.Explorable;
 
 /**
  * Generic seasonal adjustment processor
@@ -30,6 +30,6 @@ import demetra.timeseries.regression.ModellingContext;
  */
 @Algorithm
 @FunctionalInterface
-public interface SaProcessor<R extends ProcResults> {
-    ProcResults process(TsData series, ModellingContext context, ProcessingLog log);
+public interface SaProcessor<R extends Explorable> {
+    Explorable process(TsData series, ModellingContext context, ProcessingLog log);
 }

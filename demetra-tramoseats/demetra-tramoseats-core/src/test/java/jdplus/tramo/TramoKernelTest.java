@@ -40,6 +40,7 @@ import demetra.tramo.RegressionSpec;
 import demetra.tramo.TradingDaysSpec;
 import demetra.tramo.TradingDaysSpec.AutoMethod;
 import demetra.tramo.TramoSpec;
+import java.util.Map;
 import static org.junit.Assert.assertTrue;
 
 /**

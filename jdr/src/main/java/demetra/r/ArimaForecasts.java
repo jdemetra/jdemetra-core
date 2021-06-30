@@ -21,12 +21,12 @@ import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.SsfData;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import demetra.processing.ProcResults;
 import jdplus.arima.ssf.ExactArimaForecasts;
 import demetra.data.DoubleSeq;
 import jdplus.x13.regarima.FastArimaForecasts;
 import jdplus.ssf.StateComponent;
 import jdplus.ssf.univariate.Ssf;
+import demetra.information.Explorable;
 
 /**
  *
@@ -37,7 +37,7 @@ public class ArimaForecasts {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements ProcResults {
+    public static class Results implements Explorable {
 
         RegArimaModel<SarimaModel> regarima;
         DoubleSeq forecasts;
@@ -47,7 +47,12 @@ public class ArimaForecasts {
 
         private static final String FCASTS = "forecasts", EFCASTS = "forecasts.se",
                 BCASTS = "backcasts", EBCASTS = "backcasts.se";
-        private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
+        private static final InformationMapping<Results> MAPPING = new InformationMapping<Results>() {
+            @Override
+            public Class getSourceClass() {
+                return Results.class;
+             }
+        };
 
         static {
             MAPPING.set(FCASTS, double[].class, source -> source.forecasts != null ? source.forecasts.toArray() : null);

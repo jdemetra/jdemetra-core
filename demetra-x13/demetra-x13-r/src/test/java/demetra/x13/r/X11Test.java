@@ -18,6 +18,7 @@ package demetra.x13.r;
 
 import demetra.data.Data;
 import demetra.math.matrices.MatrixType;
+import demetra.x11.X11Results;
 import demetra.x11.X11Spec;
 import org.junit.Test;
 
@@ -32,7 +33,7 @@ public class X11Test {
 
     @Test
     public void testSomeMethod() {
-        X11.Results rslt = X11.process(Data.TS_PROD, X11Spec.DEFAULT);
+        X11Results rslt = X11.process(Data.TS_PROD, X11Spec.DEFAULT);
         MatrixType data = rslt.getData("all", MatrixType.class);
 //        System.out.println(data);
     }
@@ -43,9 +44,9 @@ public class X11Test {
                 .backcastHorizon(10)
                 .forecastHorizon(19)
                 .build();
-        X11.Results rslt = X11.process(Data.TS_PROD, spec);
+        X11Results rslt = X11.process(Data.TS_PROD, spec);
         MatrixType data = rslt.getData("all", MatrixType.class);
-        byte[] buffer = rslt.buffer();
+        byte[] buffer = X11.toBuffer(rslt);
         System.out.println(buffer.length);
 //        System.out.println(data);
     }

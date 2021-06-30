@@ -40,8 +40,8 @@ public interface GeneralLinearModel<M> {
 
     Estimation getEstimation();
     
-    Map<String, StatisticalTest> getDiagnostics();
-
+    Residuals getResiduals();
+    
     Map<String, Object> getAdditionalResults();
 
     interface Description<M> {
@@ -131,7 +131,7 @@ public interface GeneralLinearModel<M> {
         DoubleSeq getCoefficients();
 
         /**
-         *
+         * Covariance of the regression coefficients. The scaling factor (sigma2) is the ML estimate (ssqerr/n)
          * @return
          */
         MatrixType getCoefficientsCovariance();
@@ -155,8 +155,6 @@ public interface GeneralLinearModel<M> {
          * @return
          */
         LikelihoodStatistics getStatistics();
-
-        DoubleSeq getResiduals();
 
         List<ProcessingLog.Information> getLogs();
 

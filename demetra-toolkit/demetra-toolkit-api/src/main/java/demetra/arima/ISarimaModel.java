@@ -12,6 +12,13 @@ import demetra.data.DoubleSeq;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public interface ISarimaModel {
+    
+    static final String NAME="sarima";
+    
+    default String getName(){
+        return NAME;
+    }
+    
     int getPeriod();
     /**
      * Regular differencing order

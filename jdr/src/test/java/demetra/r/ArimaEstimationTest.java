@@ -17,6 +17,7 @@
 package demetra.r;
 
 import demetra.data.Data;
+import demetra.data.DoubleSeq;
 import java.util.LinkedHashMap;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -29,24 +30,30 @@ public class ArimaEstimationTest {
     
     public ArimaEstimationTest() {
     }
-
+    
     @Test
     public void testProd() {
-        ArimaEstimation arima=new ArimaEstimation();
-        arima.setOrder(new int[]{3,1,1});
+        ArimaEstimation arima = new ArimaEstimation();
+        arima.setOrder(new int[]{3, 1, 1});
         arima.setPeriod(12);
-        arima.setSeasonalOrder(new int[]{1,1,1});
+        arima.setSeasonalOrder(new int[]{0, 1, 1});
         arima.setY(Data.RETAIL_BOOKSTORES);
         ArimaEstimation.Results rslt = arima.process();
 //        System.out.println(rslt.getArima());
-        
-        LinkedHashMap<String, Class> dic=new LinkedHashMap<>();
+
+        LinkedHashMap<String, Class> dic = new LinkedHashMap<>();
         ArimaEstimation.Results.getMapping().fillDictionary(null, dic, true);
-//        dic.keySet().forEach(n->System.out.println(n));
-        assertTrue(null != rslt.getData("sarima.parameters", double[].class));
-//        System.out.println(DoubleSequence.of(rslt.getData("arima.parameters", double[].class)));
-//        
-//        System.out.println(rslt.getParametersCovariance().diagonal());
+        assertTrue(dic.size()>0);
+//        dic.keySet().forEach(n -> System.out.println(n));
+//        assertTrue(null != rslt.getData("sarima.parameters", double[].class));
+//        long t0 = System.currentTimeMillis();
+//        for (int i = 0; i < 1000000; ++i) {
+//            rslt.getData("sarima.parameters", double[].class);
+//        }
+//        long t1 = System.currentTimeMillis();
+//        System.out.println(t1 - t0);
+        double[] sp = rslt.getData("sarima.spectrum", double[].class);
+        assertTrue(sp != null);
     }
     
 }

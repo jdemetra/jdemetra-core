@@ -19,10 +19,10 @@ package demetra.sa;
 import demetra.information.InformationSet;
 import demetra.processing.ProcDiagnostic;
 import demetra.processing.ProcQuality;
-import demetra.processing.ProcResults;
 import demetra.processing.ProcessingLog;
 import java.util.ArrayList;
 import java.util.List;
+import demetra.information.Explorable;
 
 /**
  *
@@ -35,7 +35,7 @@ public class SaEstimation {
     /**
      * Results of the estimation
      */
-    ProcResults results;
+    Explorable results;
     
     /**
      * ProcessingLog. Could be null

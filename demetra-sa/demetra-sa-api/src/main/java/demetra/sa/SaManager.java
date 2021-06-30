@@ -16,15 +16,14 @@
  */
 package demetra.sa;
 
-import demetra.information.InformationSet;
 import demetra.processing.DefaultProcessingLog;
 import demetra.processing.ProcDiagnostic;
-import demetra.processing.ProcResults;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import java.util.ArrayList;
 import java.util.List;
+import demetra.information.Explorable;
 
 /**
  *
@@ -33,7 +32,7 @@ import java.util.List;
 @lombok.experimental.UtilityClass
 public class SaManager {
 
-    public ProcResults process(TsData series, SaSpecification spec, ModellingContext context, ProcessingLog log) {
+    public Explorable process(TsData series, SaSpecification spec, ModellingContext context, ProcessingLog log) {
         List<SaProcessingFactory> all = SaProcessingFactoryLoader.get();
         for (SaProcessingFactory fac : all) {
             SaSpecification dspec = fac.decode(spec);
@@ -52,7 +51,7 @@ public class SaManager {
             if (dspec != null) {
                 ProcessingLog log = new DefaultProcessingLog();
                 SaProcessor processor = fac.processor(dspec);
-                ProcResults rslt = processor.process(def.getTs().getData(), context, log);
+                Explorable rslt = processor.process(def.getTs().getData(), context, log);
                 List<ProcDiagnostic> tests = new ArrayList<>();
                 fac.fillDiagnostics(tests, rslt);
                 return SaEstimation.builder()

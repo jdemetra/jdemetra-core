@@ -16,6 +16,7 @@
  */
 package demetra.toolkit.io.xml.information;
 
+import demetra.data.Doubles;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
@@ -76,7 +77,9 @@ public class XmlTsData implements IXmlConverter<TsData> {
         } else {
             firstPeriod = null;
         }
-        data = t.getValues().toArray();
+        if (!t.getValues().isEmpty()) {
+            data = t.getValues().toArray();
+        }
     }
 
     /**
@@ -97,7 +100,7 @@ public class XmlTsData implements IXmlConverter<TsData> {
             default:
                 int c = 12 / freq;
                 TsPeriod pstart = TsPeriod.of(TsUnit.ofAnnualFrequency(freq), LocalDate.of(year, (period - 1) * c + 1, 1));
-                return TsData.ofInternal(pstart, data);
+                return TsData.ofInternal(pstart, data == null ? Doubles.EMPTYARRAY : data);
         }
 
     }

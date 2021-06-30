@@ -19,13 +19,13 @@ package demetra.modelling.io.information;
 import demetra.information.Information;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
-import demetra.processing.ProcResults;
 import demetra.processing.ProcSpecification;
 import demetra.processing.TsDataProcessorFactory;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsDocument;
 import java.util.List;
 import java.util.Map;
+import demetra.information.Explorable;
 
 /**
  *

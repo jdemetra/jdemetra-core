@@ -1,349 +1,115 @@
 /*
- * Copyright 2021 National Bank of Belgium.
+ * Copyright 2020 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
- *      https://joinup.ec.europa.eu/software/page/eupl
+ * https://joinup.ec.europa.eu/software/page/eupl
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package demetra.information;
 
-import nbbrd.design.Development;
 import demetra.util.WildCards;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.Set;
 
 /**
  *
- * @author Jean Palate
+ * @author PALATEJ
  */
-@Development(status = Development.Status.Release)
-class InformationExtractors {
+@lombok.experimental.UtilityClass
+public class InformationExtractors {
 
-    static final String LSTART = "(", LEND = ")";
+    volatile Map<Class, List<InformationExtractor>> extractors;
 
-    static String listKey(String prefix, int item) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(prefix).append(LSTART).append(item).append(LEND);
-        return builder.toString();
-    }
-
-    static String wcKey(String prefix, char wc) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(prefix).append(LSTART);
-        builder.append(wc).append(LEND);
-        return builder.toString();
-    }
-
-    static class AtomicExtractor<S> implements InformationExtractor<S> {
-
-        final String name;
-        final Class<?> targetClass;
-        final Function<S, ?> fn;
-
-        <T> AtomicExtractor(String name, final Class<T> targetClass, final Function<S, T> fn) {
-            this.name = name;
-            this.targetClass = targetClass;
-            this.fn = fn;
-        }
-
-        @Override
-        public void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
-            dic.put(InformationExtractor.concatenate(prefix, name), targetClass);
-        }
-
-        @Override
-        public boolean contains(String id) {
-            return id.equals(name);
-        }
-
-        @Override
-        public <T> T getData(S source, String id, Class<T> tclass) {
-            if (source == null) {
-                return null;
-            }
-            if (tclass.isAssignableFrom(targetClass) && id.equals(name)) {
-                return (T) fn.apply(source);
+    public void reloadExtractors() {
+        List<InformationExtractor> load = InformationExtractorLoader.load();
+        HashMap<Class, List<InformationExtractor>> x = new HashMap<>();
+        load.forEach(cur -> {
+            List<InformationExtractor> all = x.get(cur.getSourceClass());
+            if (all == null) {
+                List<InformationExtractor> list = new ArrayList<>(4);
+                list.add(cur);
+                x.put(cur.getSourceClass(), list);
             } else {
-                return null;
+                all.add(cur);
+            }
+        });
+        // read only collections
+        Set<Class> keys = x.keySet();
+        for (Class cl : keys) {
+            List<InformationExtractor> cur = x.get(cl);
+            cur.sort(new Comparator() {
+                @Override
+                public int compare(Object o1, Object o2) {
+                    int p1 = ((InformationExtractor) o1).getPriority();
+                    int p2 = ((InformationExtractor) o2).getPriority();
+                    return Integer.compare(p2, p1);
+                }
+            });
+            // last one
+            InformationExtractor last = cur.get(cur.size() - 1);
+            if (last.getPriority() == -1) {
+                x.put(cl, Collections.singletonList(last));
+            } else {
+                x.put(cl, Collections.unmodifiableList(x.get(cl)));
             }
         }
+        extractors = Collections.unmodifiableMap(x);
+    }
 
-        @Override
-        public <T> void searchAll(S source, WildCards wc, Class<T> tclass, Map<String, T> map) {
-            if (wc.match(name)) {
-                if (tclass.isAssignableFrom(targetClass)) {
-                    map.put(name, (T) fn.apply(source));
-                }
-            }
+    public List<InformationExtractor> extractors(Class D) {
+        if (extractors == null) {
+            reloadExtractors();
+        }
+        return extractors.get(D);
+    }
+
+    public void fillDictionary(Class D, String prefix, Map dic, boolean compact) {
+        List<InformationExtractor> all = extractors(D);
+        for (InformationExtractor x : all) {
+            x.fillDictionary(prefix, dic, compact);
         }
     }
 
-    static class ArrayExtractor<S> implements InformationExtractor<S> {
-
-        final String name;
-        final Class<?> targetClass;
-        final BiFunction<S, Integer, ?> fn;
-        final int start, end;
-
-        <T> ArrayExtractor(String name, int start, int end, final Class<T> targetClass, final BiFunction<S, Integer, T> fn) {
-            this.name = name;
-            this.targetClass = targetClass;
-            this.fn = fn;
-            this.start = start;
-            this.end = end;
-        }
-
-        @Override
-        public void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
-            String item = wcKey(name, start == end ? '?' : '*');
-            dic.put(InformationExtractor.concatenate(prefix, item), targetClass);
-        }
-
-        @Override
-        public boolean contains(String id) {
-            if (start == end) {
-                return isIParamItem(name, id);
-            } else {
-                int idx = listItem(name, id);
-                return idx >= start && idx < end;
-            }
-        }
-
-        @Override
-        public <T> T getData(S source, String id, Class<T> tclass) {
-            if (source == null) {
-                return null;
-            }
-            if (tclass.isAssignableFrom(targetClass)) {
-                int idx = listItem(name, id);
-                if (idx == Integer.MIN_VALUE) {
-                    return null;
-                }
-                if (start == end) {
-                    return (T) fn.apply(source, idx);
-                } else if (idx >= start && idx < end) {
-                    return (T) fn.apply(source, idx);
-                }
-            }
-            return null;
-        }
-
-        static int listItem(String prefix, String key) {
-            if (!key.startsWith(prefix)) {
-                return Integer.MIN_VALUE;
-            }
-            int start = prefix.length() + LSTART.length();
-            int end = key.length() - LEND.length();
-            if (end <= start) {
-                return Integer.MIN_VALUE;
-            }
-            String s = key.substring(start, end);
-            try {
-                return Integer.parseInt(s);
-            } catch (NumberFormatException ex) {
-                return Integer.MIN_VALUE;
-            }
-        }
-
-        static boolean isIParamItem(String prefix, String key) {
-            if (!key.startsWith(prefix)) {
-                return false;
-            }
-            int start = prefix.length() + LSTART.length();
-            int end = key.length() - LEND.length();
-            if (end <= start) {
-                return false;
-            }
-            String s = key.substring(start, end);
-            try {
-                Integer.parseInt(s);
+    public boolean contains(Class D, String id) {
+        List<InformationExtractor> all = extractors(D);
+        for (BasicInformationExtractor x : all) {
+            if (x.contains(id)) {
                 return true;
-            } catch (NumberFormatException ex) {
-                return false;
             }
         }
+        return false;
+    }
 
-        @Override
-        public <T> void searchAll(S source, WildCards wc, Class<T> tclass, Map<String, T> map) {
-            if (tclass.isAssignableFrom(targetClass)) {
-                // far to be optimal... TO IMPROVE
-                for (int i = start; i <= end; ++i) {
-                    String key = listKey(name, i);
-                    if (wc.match(key)) {
-                        map.put(key, (T) fn.apply(source, i));
-                    }
-                }
+    public <S, Q> Q getData(Class D, S source, String id, Class<Q> qclass) {
+        List<InformationExtractor> all = extractors(D);
+        for (BasicInformationExtractor<S> x : all) {
+            Q obj = x.getData(source, id, qclass);
+            if (obj != null) {
+                return obj;
             }
+        }
+        return null;
+    }
+
+    public <S, Q> void searchAll(Class D, S source, WildCards wc, Class<Q> qclass, Map<String, Q> map) {
+        List<InformationExtractor> all = extractors(D);
+        for (BasicInformationExtractor<S> x : all) {
+            x.searchAll(source, wc, qclass, map);
         }
     }
 
-    static class ExtractorDelegate<S, T> implements InformationExtractor<S> {
-
-        final String name;
-        final Function<S, T> fn;
-        final InformationExtractor<T> extractor;
-
-        ExtractorDelegate(String name, final InformationExtractor<T> extractor, final Function<S, T> fn) {
-            this.name = (name == null || name.length() == 0) ? null : name;
-            this.fn = fn;
-            this.extractor = extractor;
-        }
-
-        @Override
-        public void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
-            extractor.fillDictionary(InformationExtractor.concatenate(prefix, name), dic, compact);
-        }
-
-        @Override
-        public boolean contains(String id) {
-            if (name == null) {
-                return extractor.contains(id);
-            }
-            if (id.length() <= name.length()) {
-                return false;
-            }
-            if (id.startsWith(name) && id.charAt(name.length()) == InformationExtractor.SEP) {
-                return extractor.contains(id.substring(name.length() + 1));
-            } else {
-                return false;
-            }
-        }
-
-        @Override
-        public <Q> Q getData(S source, String id, Class<Q> qclass) {
-            if (source == null) {
-                return null;
-            }
-            String subitem = (name == null) ? id : id.substring(name.length() + 1);
-            T t = fn.apply(source);
-            if (t == null) {
-                return null;
-            } else {
-                return extractor.getData(t, subitem, qclass);
-            }
-        }
-
-        @Override
-        public <T> void searchAll(S source, WildCards wc, Class<T> tclass, Map<String, T> map) {
-            extractor.searchAll(fn.apply(source), wc, tclass, map);
-        }
-
-    }
-
-    static class ArrayExtractorDelegate<S, T> implements InformationExtractor<S> {
-
-        final String name;
-        final BiFunction<S, Integer, T> fn;
-        final InformationExtractor<T> extractor;
-        final int start, end;
-
-        ArrayExtractorDelegate(String name, int start, int end, final InformationExtractor<T> extractor, final BiFunction<S, Integer, T> fn) {
-            this.name = name;
-            this.fn = fn;
-            this.extractor = extractor;
-            this.start = start;
-            this.end = end;
-        }
-
-        @Override
-        public void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
-            String item = wcKey(name, start == end ? '?' : '*');
-            extractor.fillDictionary(InformationExtractor.concatenate(prefix, item), dic, compact);
-        }
-
-        @Override
-        public boolean contains(String id) {
-            if (start == end) {
-                return isIParamItem(name, id) && extractor.contains(detail(id));
-            } else {
-                int idx = listItem(name, id);
-                if (idx >= start && idx < end) {
-                    return extractor.contains(detail(id));
-                } else {
-                    return false;
-                }
-            }
-        }
-
-        @Override
-        public <Q> Q getData(S source, String id, Class<Q> qclass) {
-            if (source == null) {
-                return null;
-            }
-            int idx = listItem(name, id);
-            if (idx == Integer.MIN_VALUE) {
-                return null;
-            }
-            T t = null;
-            if (start == end) {
-                t = (T) fn.apply(source, idx);
-            } else if (idx >= start && idx < end) {
-                t = (T) fn.apply(source, idx);
-            }
-            if (t == null) {
-                return null;
-            }
-            String detail = detail(id);
-            return extractor.getData(t, detail, qclass);
-        }
-
-        static int listItem(String prefix, String key) {
-            if (!key.startsWith(prefix)) {
-                return Integer.MIN_VALUE;
-            }
-            int start = prefix.length() + LSTART.length();
-            int end = key.indexOf(LEND);
-            if (end <= start) {
-                return Integer.MIN_VALUE;
-            }
-            String s = key.substring(start, end);
-            try {
-                return Integer.parseInt(s);
-            } catch (NumberFormatException ex) {
-                return Integer.MIN_VALUE;
-            }
-        }
-
-        static String detail(String key) {
-            int pos = key.indexOf(LEND);
-            if (pos <= 0) {
-                return null;
-            } else {
-                return key.substring(pos + 2);
-            }
-        }
-
-        static boolean isIParamItem(String prefix, String key) {
-            if (!key.startsWith(prefix)) {
-                return false;
-            }
-            int start = prefix.length() + LSTART.length();
-            int end = key.indexOf(LEND);
-            if (end <= start) {
-                return false;
-            }
-            String s = key.substring(start, end);
-            try {
-                Integer.parseInt(s);
-                return true;
-            } catch (NumberFormatException ex) {
-                return false;
-            }
-        }
-
-        @Override
-        public <T> void searchAll(S source, WildCards wc, Class<T> tclass, Map<String, T> map) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
 }

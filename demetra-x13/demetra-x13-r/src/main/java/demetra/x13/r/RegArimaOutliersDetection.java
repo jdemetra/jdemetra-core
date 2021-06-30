@@ -25,7 +25,6 @@ import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
 import demetra.outliers.io.protobuf.OutliersProtos;
-import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
@@ -52,6 +51,7 @@ import jdplus.sarima.SarimaModel;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.stats.RobustStandardDeviationComputer;
 import jdplus.x13.regarima.X13Utility;
+import demetra.information.Explorable;
 
 /**
  *
@@ -62,7 +62,7 @@ public class RegArimaOutliersDetection {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements ProcResults {
+    public static class Results implements Explorable {
 
         public byte[] buffer() {
             int nx = x == null ? 0 : x.getColumnsCount();
@@ -143,13 +143,18 @@ public class RegArimaOutliersDetection {
             return MAPPING;
         }
 
-        private static final InformationMapping<Results> MAPPING = new InformationMapping<>(Results.class);
+        private static final InformationMapping<Results> MAPPING = new InformationMapping<Results>() {
+            @Override
+            public Class<Results> getSourceClass() {
+                return Results.class;
+            }
+        };
 
         static {
-            MAPPING.delegate(ARIMA0, SarimaExtractor.getMapping(), r -> r.getInitialArima());
-            MAPPING.delegate(ARIMA1, SarimaExtractor.getMapping(), r -> r.getFinalArima());
-            MAPPING.delegate(LL0, LikelihoodStatisticsExtractor.getMapping(), r -> r.getInitialLikelihood());
-            MAPPING.delegate(LL1, LikelihoodStatisticsExtractor.getMapping(), r -> r.getFinalLikelihood());
+            MAPPING.delegate(ARIMA0, SarimaModel.class, r -> r.getInitialArima());
+            MAPPING.delegate(ARIMA1, SarimaModel.class, r -> r.getFinalArima());
+            MAPPING.delegate(LL0, LikelihoodStatistics.class, r -> r.getInitialLikelihood());
+            MAPPING.delegate(LL1, LikelihoodStatistics.class, r -> r.getFinalLikelihood());
             MAPPING.set(B, double[].class, source -> source.getCoefficients());
             MAPPING.set(T, double[].class, source -> source.tstats());
             MAPPING.set(BVAR, MatrixType.class, source -> source.getCoefficientsCovariance());

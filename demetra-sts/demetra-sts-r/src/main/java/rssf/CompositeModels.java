@@ -24,10 +24,10 @@ import jdplus.msts.CompositeModelEstimation;
 import jdplus.ssf.StateStorage;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import demetra.processing.ProcResults;
 import demetra.math.matrices.MatrixType;
 import demetra.ssf.SsfInitialization;
 import jdplus.ssf.multivariate.MultivariateSsf;
+import demetra.information.Explorable;
 
 /**
  *
@@ -36,7 +36,7 @@ import jdplus.ssf.multivariate.MultivariateSsf;
 @lombok.experimental.UtilityClass
 public class CompositeModels {
 
-    public static class Results implements ProcResults {
+    public static class Results implements Explorable {
 
         private final CompositeModelEstimation estimation;
 
@@ -44,7 +44,12 @@ public class CompositeModels {
             this.estimation = estimation;
         }
 
-        private static final InformationMapping<CompositeModelEstimation> MAPPING = new InformationMapping<>(CompositeModelEstimation.class);
+        private static final InformationMapping<CompositeModelEstimation> MAPPING = new InformationMapping<CompositeModelEstimation>() {
+            @Override
+            public Class getSourceClass() {
+                return CompositeModelEstimation.class;
+            }
+        };
 
         static {
             MAPPING.set("likelihood.ll", Double.class, source -> source.getLikelihood().logLikelihood());
@@ -271,16 +276,16 @@ public class CompositeModels {
         public MultivariateSsf ssf() {
             return estimation.getSsf();
         }
-        
-        public StateStorage smoothedStates(){
+
+        public StateStorage smoothedStates() {
             return estimation.getSmoothedStates();
         }
-        
-        public StateStorage filteredStates(){
+
+        public StateStorage filteredStates() {
             return estimation.getFilteredStates();
         }
-        
-        public StateStorage filteringStates(){
+
+        public StateStorage filteringStates() {
             return estimation.getFilteringStates();
         }
     }

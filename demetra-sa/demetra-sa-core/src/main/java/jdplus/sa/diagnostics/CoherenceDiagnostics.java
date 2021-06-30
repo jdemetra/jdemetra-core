@@ -21,7 +21,6 @@ import nbbrd.design.Development;
 import demetra.modelling.ModellingDictionary;
 import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
-import demetra.processing.ProcResults;
 import demetra.sa.DecompositionMode;
 import demetra.sa.SaDictionary;
 import demetra.timeseries.TsData;
@@ -29,6 +28,7 @@ import demetra.timeseries.TsUnit;
 import java.util.Collections;
 import java.util.List;
 import jdplus.stats.DescriptiveStatistics;
+import demetra.information.Explorable;
 
 /**
  *
@@ -47,7 +47,7 @@ public final class CoherenceDiagnostics implements Diagnostics {
         /**
          * Results that can be consulted through a dictionary
          */
-        ProcResults result;
+        Explorable result;
     }
 
     private final CoherenceDiagnosticsConfiguration config;
@@ -69,13 +69,13 @@ public final class CoherenceDiagnostics implements Diagnostics {
         }
     }
 
-    private CoherenceDiagnostics(CoherenceDiagnosticsConfiguration config, ProcResults rslts, DecompositionMode mode) {
+    private CoherenceDiagnostics(CoherenceDiagnosticsConfiguration config, Explorable rslts, DecompositionMode mode) {
         // set the boundaries...
         this.config = config;
         test(rslts, mode);
     }
 
-    private void test(ProcResults rslts, DecompositionMode mode) {
+    private void test(Explorable rslts, DecompositionMode mode) {
         TsData yl = rslts.getData(ModellingDictionary.Y_LIN, TsData.class);
         if (yl != null && yl.length() < config.getShortSeriesLimit() * yl.getAnnualFrequency()) {
             shortSeries = true;

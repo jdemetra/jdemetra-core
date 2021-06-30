@@ -22,30 +22,18 @@ import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.processing.ProcessingLog;
-import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.Variable;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
  * @author PALATEJ
  * @param <M>
  */
-@lombok.Value
-@lombok.Builder
-public class LightLinearModel<M> implements GeneralLinearModel<M> {
-
-    Description<M> description;
-    Estimation estimation;
-
-    @lombok.Singular
-    private Map<String, StatisticalTest> diagnostics;
-
-    @lombok.Singular
-    private Map<String, Object> additionalResults;
+@lombok.experimental.UtilityClass
+public class LightweightLinearModel{
 
     @lombok.Value
     @lombok.Builder
@@ -111,9 +99,6 @@ public class LightLinearModel<M> implements GeneralLinearModel<M> {
 
 //        @lombok.NonNull
         private LikelihoodStatistics statistics;
-
-//        @lombok.NonNull
-        private DoubleSeq residuals;
 
         @lombok.Singular
         private List<ProcessingLog.Information> logs;

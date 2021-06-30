@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.processing;
+package demetra.information;
 
 import nbbrd.design.Development;
 import demetra.util.WildCards;
@@ -31,7 +31,7 @@ import java.util.Map;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public interface ProcResults {
+public interface Explorable {
 
     /**
      * Indicates that the provider can provide information on the mentioned item
@@ -39,14 +39,22 @@ public interface ProcResults {
      * @param id Information item
      * @return
      */
-    default boolean contains(String id){return false;}
+    default boolean contains(String id) {
+        Class<? extends Explorable> cl = this.getClass();
+        return InformationExtractors.contains(cl, id);
+    }
 
     /**
      * Gets the dictionary of all the possible results
      *
      * @return
      */
-    default Map<String, Class> getDictionary(){return Collections.emptyMap();}
+    default Map<String, Class> getDictionary() {
+        Class<? extends Explorable> cl = this.getClass();
+        LinkedHashMap<String, Class> dic=new LinkedHashMap();
+        InformationExtractors.fillDictionary(cl, null, dic, true);
+        return dic;
+    }
 
     /**
      * Gets information related to the specified id
@@ -58,11 +66,11 @@ public interface ProcResults {
      * @param tclass Class of the information
      * @return null if this information is not available
      */
-    default <T> T getData(String id, Class<T> tclass){
-        return null;
+    default <T> T getData(String id, Class<T> tclass) {
+        return InformationExtractors.getData(this.getClass(), this, id, tclass);
     }
-    
-    default Object getData(String id){
+
+    default Object getData(String id) {
         return getData(id, Object.class);
     }
 
@@ -91,12 +99,11 @@ public interface ProcResults {
 
     public static final char SEP = '.';
 
-
     /**
      * Concatenates arrays of strings without separator
-     * 
+     *
      * @param s
-     * @return 
+     * @return
      */
     public static String paste(String... s) {
         switch (s.length) {
@@ -112,7 +119,7 @@ public interface ProcResults {
                 return builder.toString();
         }
     }
-    
+
     /**
      * Concatenates arrays of strings with the default separator ('.')
      *
@@ -140,6 +147,51 @@ public interface ProcResults {
                 }
                 return builder.toString();
         }
+    }
+
+    public static <X> Explorable of(X source, String prefix, BasicInformationExtractor<X> extractor) {
+        return new Explorable() {
+            /**
+             * Indicates that the provider can provide information on the
+             * mentioned item
+             *
+             * @param id Information item
+             * @return
+             */
+            @Override
+            public boolean contains(String id) {
+                return extractor.contains(id);
+            }
+
+            /**
+             * Gets the dictionary of all the possible results
+             *
+             * @return
+             */
+            @Override
+            public Map<String, Class> getDictionary() {
+                LinkedHashMap<String, Class> map = new LinkedHashMap<>();
+                extractor.fillDictionary(prefix, map, true);
+                return map;
+            }
+
+            /**
+             * Gets information related to the specified id
+             * The identifier and the type should come from the dictionary
+             * provided by
+             * this object
+             *
+             * @param <T>
+             * @param id Name of information
+             * @param tclass Class of the information
+             * @return null if this information is not available
+             */
+            @Override
+            public <T> T getData(String id, Class<T> tclass) {
+                return extractor.getData(source, id, tclass);
+            }
+
+        };
     }
 
 }

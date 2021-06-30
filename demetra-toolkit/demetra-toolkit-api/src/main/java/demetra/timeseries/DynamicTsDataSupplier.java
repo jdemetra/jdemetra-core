@@ -53,9 +53,12 @@ public final class DynamicTsDataSupplier extends TsDataSupplier{
     
     public TsData load(){
         // from the moniker.
-        // TODO
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        Ts ts = TsFactory.ofServiceLoader().makeTs(moniker, TsInformationType.Data);
+        if (ts != null){
+            return ts.getData();
+        }else
+            return null;
+     }
     
     public void refresh(){
         cache.set(load());

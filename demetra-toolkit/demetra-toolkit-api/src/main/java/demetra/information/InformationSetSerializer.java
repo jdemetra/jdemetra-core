@@ -17,8 +17,6 @@
 
 package demetra.information;
 
-import demetra.information.InformationSet;
-
 /**
  *
  * @author Jean Palate

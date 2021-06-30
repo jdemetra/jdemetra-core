@@ -16,7 +16,6 @@
  */
 package internal.workspace.file;
 
-import demetra.arima.SarimaModel;
 import demetra.workspace.WorkspaceFamily;
 import static demetra.workspace.WorkspaceFamily.MOD_DOC_REGARIMA;
 import static demetra.workspace.WorkspaceFamily.MOD_DOC_TRAMO;
@@ -35,6 +34,7 @@ import demetra.processing.TsDataProcessor;
 import demetra.processing.TsDataProcessorFactory;
 import demetra.regarima.RegArima;
 import demetra.regarima.RegArimaSpec;
+import demetra.sa.io.information.SaItemsMapping;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.toolkit.io.xml.legacy.IXmlConverter;
@@ -47,6 +47,7 @@ import demetra.tramoseats.io.information.TramoSeatsSpecMapping;
 import demetra.tramoseats.io.information.TramoSpecMapping;
 import static demetra.workspace.WorkspaceFamily.SA_DOC_X13;
 import static demetra.workspace.WorkspaceFamily.SA_DOC_TRAMOSEATS;
+import static demetra.workspace.WorkspaceFamily.SA_MULTI;
 import static demetra.workspace.WorkspaceFamily.UTIL_CAL;
 import static demetra.workspace.WorkspaceFamily.UTIL_VAR;
 import demetra.workspace.file.util.XmlConverterSupport;
@@ -79,13 +80,13 @@ public final class GenericHandlers {
         return XmlConverterSupport.of(factory, repository).asHandler(family, FileFormat.GENERIC);
     }
 
-//    @ServiceProvider(FamilyHandler.class)
-//    public static final class SaMulti implements FamilyHandler {
-//
-//        @lombok.experimental.Delegate
-//        private final FamilyHandler delegate = informationSet(SA_MULTI, SaProcessing::new, "SAProcessing");
-//    }
-//
+    @ServiceProvider(FamilyHandler.class)
+    public static final class SaMulti implements FamilyHandler {
+
+        @lombok.experimental.Delegate
+        private final FamilyHandler delegate = informationSet(SA_MULTI, SaItemsMapping.SERIALIZER, "SAProcessing");
+    }
+
     @ServiceProvider(FamilyHandler.class)
     public static final class SaDocX13 implements FamilyHandler {
 
@@ -146,14 +147,14 @@ public final class GenericHandlers {
         @lombok.experimental.Delegate
         private final FamilyHandler delegate = informationSet(MOD_DOC_REGARIMA,
                 TsDocumentMapping.serializer(RegArimaSpecMapping.SERIALIZER_V3,
-                        new TsDataProcessorFactory<RegArimaSpec, GeneralLinearModel<SarimaModel> >() {
+                        new TsDataProcessorFactory<RegArimaSpec, GeneralLinearModel<SarimaSpec> >() {
                     @Override
                     public boolean canHandle(ProcSpecification spec) {
                         return spec instanceof TramoSeatsSpec;
                     }
 
                     @Override
-                    public TsDataProcessor<GeneralLinearModel<SarimaModel>> generateProcessor(RegArimaSpec specification) {
+                    public TsDataProcessor<GeneralLinearModel<SarimaSpec>> generateProcessor(RegArimaSpec specification) {
 
                         return series -> RegArima.process(series, specification, ModellingContext.getActiveContext(), Collections.emptyList());
                     }

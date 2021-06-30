@@ -16,70 +16,31 @@
  */
 package jdplus.modelling.extractors;
 
-import demetra.information.InformationMapping;
+import demetra.arima.ISarimaModel;
+import demetra.information.InformationDelegate;
+import demetra.information.InformationExtractor;
 import jdplus.sarima.SarimaModel;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author Jean Palate
  */
-@lombok.experimental.UtilityClass
-public class SarimaExtractor {
-
-    public final static String P = "p", D = "d", Q = "q",
-            BP = "bp", BD = "bd", BQ = "bq",
-            PARAMETERS = "parameters", PARAMETERS2 = "parameters2",
-            PHI = "phi", THETA = "theta", BPHI = "bphi", BTHETA = "btheta",
-            PERIOD = "period";
-
-    private final InformationMapping<SarimaModel> MAPPING = new InformationMapping<>(SarimaModel.class);
-
-    static {
-        MAPPING.set(P, Integer.class, source -> source.getP());
-        MAPPING.set(D, Integer.class, source -> source.getD());
-        MAPPING.set(Q, Integer.class, source -> source.getQ());
-        MAPPING.set(BP, Integer.class, source -> source.getBp());
-        MAPPING.set(BQ, Integer.class, source -> source.getBq());
-        MAPPING.set(BD, Integer.class, source -> source.getBd());
-        MAPPING.set(PARAMETERS, double[].class, source -> parameters(source, true));
-        MAPPING.set(PARAMETERS2, double[].class, source -> parameters(source, false));
-        MAPPING.set(PHI, double[].class, source -> source.getPhi());
-        MAPPING.set(BPHI, double[].class, source -> source.getBphi());
-        MAPPING.set(THETA, double[].class, source -> source.getTheta());
-        MAPPING.set(BTHETA, double[].class, source -> source.getBtheta());
+@ServiceProvider(InformationExtractor.class)
+public class SarimaExtractor extends InformationDelegate<SarimaModel, ISarimaModel>{
+    
+    public SarimaExtractor(){
+        super(v->v);
     }
 
-    public InformationMapping<SarimaModel> getMapping() {
-        return MAPPING;
+    @Override
+    public Class<ISarimaModel> getDelegateClass() {
+        return ISarimaModel.class;
     }
 
-    private double[] parameters(SarimaModel source, boolean trueSigns) {
-        double[] phi = source.getPhi(), bphi = source.getBphi(), th = source.getTheta(), bth = source.getBtheta();
-        int n = phi.length + bphi.length + th.length + bth.length;
-        int pos = 0;
-        double[] all = new double[n];
-        for (int i = 0; i < phi.length; ++i) {
-            if (trueSigns) {
-                all[pos++] = phi[i];
-            } else {
-                all[pos++] = -phi[i];
-            }
-        }
-        for (int i = 0; i < bphi.length; ++i) {
-            if (trueSigns) {
-                all[pos++] = bphi[i];
-            } else {
-                all[pos++] = -bphi[i];
-            }
-        }
-        for (int i = 0; i < th.length; ++i) {
-            all[pos++] = th[i];
-        }
-        for (int i = 0; i < bth.length; ++i) {
-            all[pos++] = bth[i];
-        }
-        return all;
-
+    @Override
+    public Class<SarimaModel> getSourceClass() {
+        return SarimaModel.class;
     }
-
+    
 }

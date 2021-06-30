@@ -13,6 +13,7 @@ import demetra.sa.ComponentType;
 import demetra.tramo.TramoSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import demetra.tramoseats.io.protobuf.TramoSeatsOutput;
+import jdplus.tramoseats.TramoSeatsResults;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -27,9 +28,9 @@ public class TramoSeatsTest {
 
     @Test
     public void testProd() {
-        TramoSeats.Results rslt = TramoSeats.process(Data.TS_PROD, "rsafull");
+        TramoSeatsResults rslt = TramoSeats.process(Data.TS_PROD, "rsafull");
         assertTrue(rslt != null);
-        assertTrue(rslt.buffer() != null);
+        assertTrue(TramoSeats.toBuffer(rslt) != null);
     }
 
     @Test
