@@ -1,33 +1,33 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package internal.timeseries.util;
 
 import demetra.data.AggregationType;
+import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import demetra.timeseries.TsData;
 import demetra.timeseries.util.ObsCharacteristics;
 import demetra.timeseries.util.ObsGathering;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.function.Function;
 
 /**
- *
  * @author Philippe Charles
  */
 @lombok.experimental.UtilityClass
@@ -53,7 +53,7 @@ public class TsDataBuilderUtil {
             return o -> makeFromUnknownFrequency(o);
         }
         if (gathering.getAggregationType() != AggregationType.None) {
-            return o -> makeWithAggregation(o, gathering.getUnit(), TsPeriod.DEFAULT_EPOCH, gathering.getAggregationType(), gathering.isComplete());
+            return o -> makeWithAggregation(o, gathering.getUnit(), TsPeriod.DEFAULT_EPOCH, gathering.getAggregationType(), gathering.isAllowPartialAggregation());
         }
         return o -> makeWithoutAggregation(o, gathering.getUnit(), TsPeriod.DEFAULT_EPOCH);
     }
@@ -80,17 +80,17 @@ public class TsDataBuilderUtil {
         }
     }
 
-    private TsData makeWithAggregation(ObsList obs, TsUnit unit, LocalDateTime reference, AggregationType convMode, boolean complete) {
+    private TsData makeWithAggregation(ObsList obs, TsUnit unit, LocalDateTime reference, AggregationType aggregationType, boolean allowPartialAggregation) {
         switch (obs.size()) {
             case 0:
                 return NO_DATA;
             default:
                 TsData result = TsDataCollector.makeFromUnknownUnit(obs);
-                if (result != null && result.getTsUnit().contains(unit)) {
+                if (result != null && unit.contains(result.getTsUnit())) {
                     // should succeed
-                    result = result.aggregate(unit, convMode, complete);
+                    result = result.aggregate(unit, aggregationType, !allowPartialAggregation);
                 } else {
-                    result = TsDataCollector.makeWithAggregation(obs, unit, reference, convMode);
+                    result = TsDataCollector.makeWithAggregation(obs, unit, reference, aggregationType);
                 }
                 return result != null ? result : UNKNOWN;
         }

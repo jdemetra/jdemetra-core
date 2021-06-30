@@ -1,33 +1,34 @@
 /*
  * Copyright 2018 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.tsprovider.util;
 
 import demetra.tsprovider.DataSource;
+import nbbrd.io.function.IOFunction;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import nbbrd.io.function.IOFunction;
 
 /**
- *
- * @author Philippe Charles
  * @param <T>
+ * @author Philippe Charles
  */
 @lombok.extern.java.Log
 public final class ResourceMap<T> {
@@ -56,6 +57,10 @@ public final class ResourceMap<T> {
         } catch (UncheckedIOException ex) {
             throw ex.getCause();
         }
+    }
+
+    public synchronized @Nullable T peek(DataSource source) {
+        return map.get(source);
     }
 
     private void closeSilently(T o) {

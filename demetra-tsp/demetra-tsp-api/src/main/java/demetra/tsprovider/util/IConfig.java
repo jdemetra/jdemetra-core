@@ -17,7 +17,7 @@
 package demetra.tsprovider.util;
 
 import nbbrd.design.BuilderPattern;
-import nbbrd.design.Immutable;
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -129,7 +129,7 @@ public interface IConfig {
         }
 
         @NonNull
-        default <V> THIS put(@NonNull IParam<T, V> param, V value) {
+        default <V> THIS put(@NonNull Param<T, V> param, V value) {
             param.set(this, value);
             return (THIS) this;
         }

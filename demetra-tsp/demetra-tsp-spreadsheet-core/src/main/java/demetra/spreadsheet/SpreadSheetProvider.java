@@ -29,7 +29,7 @@ import demetra.tsprovider.HasFilePaths;
 import demetra.tsprovider.stream.TsStreamAsProvider;
 import demetra.tsprovider.grid.GridReader;
 import demetra.tsprovider.util.FallbackDataMoniker;
-import demetra.tsprovider.util.IParam;
+import demetra.tsprovider.util.Param;
 import demetra.tsprovider.util.ResourceMap;
 import ec.util.spreadsheet.Book;
 import internal.spreadsheet.BookSupplier;
@@ -124,12 +124,12 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
         }
 
         @Override
-        public IParam<DataSet, String> getSheetParam(DataSource dataSource) {
+        public Param<DataSet, String> getSheetParam(DataSource dataSource) {
             return param.getSheetParam(dataSource);
         }
 
         @Override
-        public IParam<DataSet, String> getSeriesParam(DataSource dataSource) {
+        public Param<DataSet, String> getSeriesParam(DataSource dataSource) {
             return param.getSeriesParam(dataSource);
         }
 

@@ -18,7 +18,7 @@ package demetra.tsprovider;
 
 import nbbrd.design.ThreadSafe;
 import internal.tsprovider.InternalTsProvider;
-import demetra.tsprovider.util.IParam;
+import demetra.tsprovider.util.Param;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -74,7 +74,7 @@ public interface HasDataSourceBean<T> {
      * @return a non-null instance
      */
     @NonNull
-    static <T> HasDataSourceBean<T> of(@NonNull String providerName, @NonNull IParam<DataSource, T> param, @NonNull String version) {
+    static <T> HasDataSourceBean<T> of(@NonNull String providerName, @NonNull Param<DataSource, T> param, @NonNull String version) {
         return new InternalTsProvider.DataSourceBeanSupport(providerName, param, version);
     }
 }
