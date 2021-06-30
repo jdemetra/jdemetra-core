@@ -19,7 +19,7 @@ package internal.tsprovider;
 import demetra.timeseries.TsMoniker;
 import demetra.tsprovider.*;
 import demetra.tsprovider.util.DataSourcePreconditions;
-import demetra.tsprovider.util.IParam;
+import demetra.tsprovider.util.Param;
 import demetra.util.List2;
 import internal.util.Strings;
 import nbbrd.io.text.Formatter;
@@ -158,10 +158,10 @@ public class InternalTsProvider {
 
     public static final class DataSourceBeanSupport<T> extends ProviderPart implements HasDataSourceBean<T> {
 
-        private final IParam<DataSource, T> param;
+        private final Param<DataSource, T> param;
         private final String version;
 
-        public DataSourceBeanSupport(String providerName, IParam<DataSource, T> param, String version) {
+        public DataSourceBeanSupport(String providerName, Param<DataSource, T> param, String version) {
             super(providerName);
             this.param = Objects.requireNonNull(param);
             this.version = Objects.requireNonNull(version);

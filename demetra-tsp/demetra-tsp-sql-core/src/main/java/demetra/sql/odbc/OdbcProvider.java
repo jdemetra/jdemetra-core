@@ -36,7 +36,7 @@ import demetra.tsprovider.cube.TableAsCubeAccessor;
 import demetra.tsprovider.cube.TableDataParams;
 import demetra.tsprovider.stream.TsStreamAsProvider;
 import demetra.tsprovider.util.FallbackDataMoniker;
-import demetra.tsprovider.util.IParam;
+import demetra.tsprovider.util.Param;
 import demetra.tsprovider.util.ResourceMap;
 import internal.sql.odbc.legacy.LegacyOdbcMoniker;
 import java.io.IOException;
@@ -109,7 +109,7 @@ public final class OdbcProvider implements DataSourceLoader<OdbcBean>, HasSqlPro
         }
 
         @Override
-        public IParam<DataSet, CubeId> getIdParam(CubeId root) {
+        public Param<DataSet, CubeId> getIdParam(CubeId root) {
             return param.getIdParam(root);
         }
 

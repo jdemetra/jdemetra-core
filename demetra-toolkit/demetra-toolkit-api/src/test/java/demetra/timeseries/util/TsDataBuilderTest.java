@@ -1,40 +1,28 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.timeseries.util;
 
 import demetra.data.AggregationType;
-import static demetra.data.AggregationType.Average;
-import static demetra.data.AggregationType.First;
-import static demetra.data.AggregationType.Last;
-import static demetra.data.AggregationType.Max;
-import static demetra.data.AggregationType.Min;
-import static demetra.data.AggregationType.None;
-import static demetra.data.AggregationType.Sum;
+import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import static demetra.timeseries.TsUnit.*;
-import demetra.timeseries.TsData;
 import internal.timeseries.util.GuessingUnit;
-import static internal.timeseries.util.TsDataBuilderUtil.DUPLICATION_WITHOUT_AGGREGATION;
-import static internal.timeseries.util.TsDataBuilderUtil.GUESS_DUPLICATION;
-import static internal.timeseries.util.TsDataBuilderUtil.GUESS_SINGLE;
-import static internal.timeseries.util.TsDataBuilderUtil.INVALID_AGGREGATION;
-import static internal.timeseries.util.TsDataBuilderUtil.NO_DATA;
-import static java.lang.Double.NaN;
+import org.junit.Test;
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,7 +30,6 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Date;
-import static java.util.EnumSet.complementOf;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -50,15 +37,18 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static demetra.data.AggregationType.*;
+import static demetra.timeseries.TsPeriod.DEFAULT_EPOCH;
+import static demetra.timeseries.TsUnit.*;
+import static internal.timeseries.util.TsDataBuilderUtil.*;
+import static java.lang.Double.NaN;
+import static java.util.EnumSet.complementOf;
+import static java.util.EnumSet.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.junit.Test;
-import static demetra.timeseries.TsPeriod.DEFAULT_EPOCH;
-import demetra.data.Doubles;
-import static java.util.EnumSet.of;
 
 /**
- *
  * @author Philippe Charles
  */
 public class TsDataBuilderTest {
@@ -141,7 +131,7 @@ public class TsDataBuilderTest {
         Function<Object[], T> dateFunc = o -> (T) o[0];
         Function<Object[], Number> valueFunc = o -> (Number) o[1];
 
-        TsDataBuilder<T> b = x.builder(ObsGathering.DEFAULT.withUnit(MONTH).withSkipMissingValues(false));
+        TsDataBuilder<T> b = x.builder(ObsGathering.DEFAULT.toBuilder().unit(MONTH).includeMissingValues(true).build());
 
         assertThat(b.clear().add(null, null).build()).isEqualTo(NO_DATA);
         assertThat(b.clear().add(null, v1).build()).isEqualTo(NO_DATA);
@@ -206,7 +196,7 @@ public class TsDataBuilderTest {
 
     private static <T> void testDefinedWithSingleValue(CustomFactory<T> x, TsUnit unit, LocalDateTime reference) {
         double single = .1;
-        ObsGathering g = ObsGathering.DEFAULT.withUnit(unit);
+        ObsGathering g = ObsGathering.DEFAULT.toBuilder().unit(unit).build();
 
         forEachDates(unit, reference, start -> {
             TsDataBuilder<T> b = x.builder(g)
@@ -218,7 +208,7 @@ public class TsDataBuilderTest {
 
     private static <T> void testDefinedWithMissingValues(CustomFactory<T> x, TsUnit unit, LocalDateTime reference) {
         double first = .1, second = .2;
-        ObsGathering g = ObsGathering.DEFAULT.withUnit(unit);
+        ObsGathering g = ObsGathering.DEFAULT.toBuilder().unit(unit).build();
 
         forEachDates(unit, reference, start -> {
             TsDataBuilder<T> b = x.builder(g)
@@ -312,7 +302,7 @@ public class TsDataBuilderTest {
     private static <T> void testNoData(CustomFactory<T> o) {
         ALL_UNITS.forEach(unit -> {
 
-            ObsGathering g = ObsGathering.DEFAULT.withUnit(unit);
+            ObsGathering g = ObsGathering.DEFAULT.toBuilder().unit(unit).build();
 
             TsDataBuilder<T> b = o.builder(g);
 
@@ -323,7 +313,7 @@ public class TsDataBuilderTest {
     private static <T> void testInvalidAggregation(CustomFactory<T> o) {
         complementOf(of(None)).forEach(aggregationType -> {
 
-            ObsGathering g = ObsGathering.DEFAULT.withAggregationType(aggregationType);
+            ObsGathering g = ObsGathering.DEFAULT.toBuilder().aggregationType(aggregationType).build();
 
             TsDataBuilder<T> b = o.builder(g)
                     .add(o.date(START), 10);
@@ -354,7 +344,7 @@ public class TsDataBuilderTest {
     private static <T> void testDuplicationWithoutAggregation(CustomFactory<T> o) {
         DEFINED_UNITS.forEach(unit -> {
 
-            ObsGathering g = ObsGathering.DEFAULT.withUnit(unit);
+            ObsGathering g = ObsGathering.DEFAULT.toBuilder().unit(unit).build();
 
             TsDataBuilder<T> b = o.builder(g)
                     .add(o.date(START), 10)

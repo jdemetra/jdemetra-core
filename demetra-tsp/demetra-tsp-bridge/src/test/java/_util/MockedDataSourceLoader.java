@@ -4,7 +4,7 @@ import demetra.timeseries.TsProvider;
 import demetra.tsprovider.*;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.stream.TsStreamAsProvider;
-import demetra.tsprovider.util.Params;
+import demetra.tsprovider.util.Param;
 import nbbrd.io.function.IORunnable;
 
 public final class MockedDataSourceLoader implements DataSourceLoader<String> {
@@ -24,7 +24,7 @@ public final class MockedDataSourceLoader implements DataSourceLoader<String> {
     private final HasDataMoniker dataMoniker = HasDataMoniker.usingUri(NAME);
 
     @lombok.experimental.Delegate
-    private final HasDataSourceBean<String> dataSourceBean = HasDataSourceBean.of(NAME, Params.onString("value", "key"), "");
+    private final HasDataSourceBean<String> dataSourceBean = HasDataSourceBean.of(NAME, Param.onString("value", "key"), "");
 
     @lombok.experimental.Delegate
     private final TsProvider provider = TsStreamAsProvider.of(NAME, HasTsStream.noOp(NAME), dataMoniker, IORunnable.noOp().asUnchecked());

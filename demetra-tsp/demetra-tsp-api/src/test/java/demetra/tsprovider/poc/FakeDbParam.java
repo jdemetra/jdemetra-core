@@ -21,27 +21,26 @@ import demetra.tsprovider.DataSource;
 import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.CubeSupport;
 import demetra.tsprovider.util.IConfig;
-import demetra.tsprovider.util.IParam;
-import demetra.tsprovider.util.Params;
+import demetra.tsprovider.util.Param;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author Philippe Charles
  */
-interface FakeDbParam extends IParam<DataSource, FakeDbBean> {
+interface FakeDbParam extends Param<DataSource, FakeDbBean> {
 
     String getVersion();
 
     @NonNull
-    IParam<DataSet, CubeId> getCubeIdParam(@NonNull CubeId root);
+    Param<DataSet, CubeId> getCubeIdParam(@NonNull CubeId root);
 
     static final class V1 implements FakeDbParam {
 
-        private final IParam<DataSource, String> dbName = Params.onString("", "db");
-        private final IParam<DataSource, String> tableName = Params.onString("", "table");
+        private final Param<DataSource, String> dbName = Param.onString("", "db");
+        private final Param<DataSource, String> tableName = Param.onString("", "table");
 
-        private final IParam<DataSet, CubeId> dimValues = CubeSupport.idBySeparator(CubeId.root("REGION", "SECTOR"), ",", "q");
+        private final Param<DataSet, CubeId> dimValues = CubeSupport.idBySeparator(CubeId.root("REGION", "SECTOR"), ",", "q");
 
         @Override
         public String getVersion() {
@@ -71,7 +70,7 @@ interface FakeDbParam extends IParam<DataSource, FakeDbBean> {
         }
 
         @Override
-        public IParam<DataSet, CubeId> getCubeIdParam(CubeId root) {
+        public Param<DataSet, CubeId> getCubeIdParam(CubeId root) {
             return dimValues;
         }
     }

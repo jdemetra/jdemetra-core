@@ -23,7 +23,7 @@ import demetra.tsprovider.DataSource;
 import demetra.tsprovider.HasDataDisplayName;
 import demetra.tsprovider.HasDataHierarchy;
 import demetra.tsprovider.util.IConfig;
-import demetra.tsprovider.util.IParam;
+import demetra.tsprovider.util.Param;
 import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import internal.util.Strings;
@@ -57,7 +57,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
         CubeAccessor getAccessor(@NonNull DataSource dataSource) throws IOException;
 
         @NonNull
-        IParam<DataSet, CubeId> getIdParam(@NonNull CubeId root) throws IOException;
+        Param<DataSet, CubeId> getIdParam(@NonNull CubeId root) throws IOException;
     }
 
     @lombok.NonNull
@@ -101,7 +101,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
         }
 
         CubeAccessor acc = resource.getAccessor(parent.getDataSource());
-        IParam<DataSet, CubeId> idParam = resource.getIdParam(acc.getRoot());
+        Param<DataSet, CubeId> idParam = resource.getIdParam(acc.getRoot());
 
         CubeId parentId = idParam.get(parent);
 
@@ -134,7 +134,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
         DataSourcePreconditions.checkProvider(providerName, dataSet);
 
         CubeAccessor acc = resource.getAccessor(dataSet.getDataSource());
-        IParam<DataSet, CubeId> idParam = resource.getIdParam(acc.getRoot());
+        Param<DataSet, CubeId> idParam = resource.getIdParam(acc.getRoot());
 
         CubeId id = idParam.get(dataSet);
 
@@ -187,12 +187,12 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
     //</editor-fold>
 
     @NonNull
-    public static IParam<DataSet, CubeId> idByName(@NonNull CubeId root) {
+    public static Param<DataSet, CubeId> idByName(@NonNull CubeId root) {
         return new ByNameParam(Objects.requireNonNull(root));
     }
 
     @NonNull
-    public static IParam<DataSet, CubeId> idBySeparator(@NonNull CubeId root, @NonNull String separator, @NonNull String name) {
+    public static Param<DataSet, CubeId> idBySeparator(@NonNull CubeId root, @NonNull String separator, @NonNull String name) {
         return new BySeparatorParam(Objects.requireNonNull(separator), Objects.requireNonNull(root), Objects.requireNonNull(name));
     }
 
@@ -201,7 +201,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
         return e == null ? Stream.empty() : Stream.of(e);
     }
 
-    private static Function<CubeId, DataSet> toDataSetFunc(DataSet.Builder builder, IParam<DataSet, CubeId> dimValuesParam) {
+    private static Function<CubeId, DataSet> toDataSetFunc(DataSet.Builder builder, Param<DataSet, CubeId> dimValuesParam) {
         return o -> builder.put(dimValuesParam, o).build();
     }
 
@@ -225,7 +225,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
     }
 
     @AllArgsConstructor
-    private static final class ByNameParam implements IParam<DataSet, CubeId> {
+    private static final class ByNameParam implements Param<DataSet, CubeId> {
 
         private final CubeId root;
 
@@ -257,7 +257,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
     }
 
     @lombok.AllArgsConstructor
-    private static final class BySeparatorParam implements IParam<DataSet, CubeId> {
+    private static final class BySeparatorParam implements Param<DataSet, CubeId> {
 
         private final String separator;
         private final CubeId root;

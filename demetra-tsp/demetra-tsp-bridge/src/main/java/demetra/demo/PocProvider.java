@@ -32,8 +32,8 @@ import demetra.timeseries.TsProvider;
 import demetra.tsprovider.stream.TsStreamAsProvider;
 import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.util.DataSourcePreconditions;
-import demetra.tsprovider.util.IParam;
-import demetra.tsprovider.util.Params;
+import demetra.tsprovider.util.Param;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Collections;
@@ -63,8 +63,8 @@ public final class PocProvider implements DataSourceProvider {
 
     public static final String NAME = "poc";
 
-    private static final IParam<DataSource, DataType> TYPE_PARAM = Params.onEnum(DataType.NORMAL, "t");
-    private static final IParam<DataSet, Integer> INDEX_PARAM = Params.onInteger(-1, "i");
+    private static final Param<DataSource, DataType> TYPE_PARAM = Param.onEnum(DataType.NORMAL, "t");
+    private static final Param<DataSet, Integer> INDEX_PARAM = Param.onInteger(-1, "i");
 
     @lombok.experimental.Delegate(types = HasDataHierarchy.class)
     private final PocDataSupport dataSupport;

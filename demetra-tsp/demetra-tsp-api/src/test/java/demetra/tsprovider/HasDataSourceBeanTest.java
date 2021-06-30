@@ -17,8 +17,8 @@
 package demetra.tsprovider;
 
 import demetra.tsprovider.util.IConfig;
-import demetra.tsprovider.util.IParam;
-import demetra.tsprovider.util.Params;
+import demetra.tsprovider.util.Param;
+
 import java.io.File;
 import java.util.Objects;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -59,10 +59,10 @@ public class HasDataSourceBeanTest {
         }
     }
 
-    private final IParam<DataSource, CustomBean> param = new IParam<DataSource, CustomBean>() {
+    private final Param<DataSource, CustomBean> param = new Param<DataSource, CustomBean>() {
 
-        private final IParam<DataSource, File> fileParam = Params.onFile(new File("defaultFile"), "f");
-        private final IParam<DataSource, String> detailsParam = Params.onString("defaultValue", "d");
+        private final Param<DataSource, File> fileParam = Param.onFile(new File("defaultFile"), "f");
+        private final Param<DataSource, String> detailsParam = Param.onString("defaultValue", "d");
 
         @Override
         public CustomBean defaultValue() {

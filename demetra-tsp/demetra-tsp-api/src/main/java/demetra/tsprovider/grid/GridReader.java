@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -170,8 +171,8 @@ public final class GridReader {
         TypedInputStreamFunc<String> getNameFunc(String namePattern, String nameSeparator) {
             switch (firstObsIndex) {
                 case 0:
-                    Substitutor substitutor = getIndexSubstitutor();
-                    return (stream) -> substitutor.replace(namePattern);
+                    Supplier<String> nameGenerator = getNameGenerator(namePattern);
+                    return (stream) -> nameGenerator.get();
                 case 1:
                     return (stream) -> stream.readCell() ? stream.getString() : null;
                 default:
@@ -284,9 +285,8 @@ public final class GridReader {
         List<String> getNames(String namePattern, String nameSeparator) {
             switch (rows) {
                 case 0: {
-                    Substitutor substitutor = getIndexSubstitutor();
                     return Stream
-                            .generate(() -> substitutor.replace(namePattern))
+                            .generate(getNameGenerator(namePattern))
                             .limit(columns)
                             .collect(Collectors.toList());
                 }
@@ -427,8 +427,25 @@ public final class GridReader {
         return result;
     }
 
-    private static Substitutor getIndexSubstitutor() {
-        AtomicInteger counter = new AtomicInteger(0);
-        return Substitutor.of(key -> "index".equals(key) ? counter.getAndIncrement() : null);
+    private static Supplier<String> getNameGenerator(String namePattern) {
+        AtomicInteger index = new AtomicInteger(-1);
+        Substitutor substitutor = getIndexSubstitutor(index);
+        return () -> {
+            index.incrementAndGet();
+            return substitutor.replace(namePattern);
+        };
+    }
+
+    private static Substitutor getIndexSubstitutor(AtomicInteger counter) {
+        return Substitutor.of(key -> {
+            switch (key) {
+                case "index":
+                    return counter.get();
+                case "number":
+                    return counter.get() + 1;
+                default:
+                    return null;
+            }
+        });
     }
 }
