@@ -15,10 +15,8 @@ import demetra.timeseries.regression.modelling.LightweightRegSarimaModel;
 import demetra.timeseries.regression.modelling.Residuals;
 import demetra.tramo.TramoSpec;
 import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
-import ec.tstoolkit.arima.estimation.RegArimaModel;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
-import ec.tstoolkit.sarima.SarimaModel;
 import java.util.List;
 
 

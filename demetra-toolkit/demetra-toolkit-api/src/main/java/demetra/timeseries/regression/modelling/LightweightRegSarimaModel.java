@@ -29,13 +29,13 @@ import java.util.Map;
 @lombok.Builder(builderClassName="Builder")
 public class LightweightRegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorable {
 
-    @lombok.NonNull
+//    @lombok.NonNull
     private LightweightLinearModel.Description<SarimaSpec> description;
 
-    @lombok.NonNull
+//    @lombok.NonNull
     private LightweightLinearModel.Estimation estimation;
 
-    @lombok.NonNull
+//    @lombok.NonNull
     private Residuals residuals;
 
     @lombok.Singular
