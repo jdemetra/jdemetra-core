@@ -16,7 +16,6 @@
  */
 package demetra.toolkit.extractors;
 
-import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
@@ -38,11 +37,11 @@ public class IArimaExtractor extends InformationMapping<IArimaModel>{
     
 
     public IArimaExtractor() {
+        set(NAME, String.class, source->source.getName());
         set(AR, double[].class, source->source.getAr());
         set(DELTA, double[].class, source->source.getDelta());
         set(MA, double[].class, source->source.getMa());
         set(VAR, Double.class, source->source.getInnovationVariance());
-        set(NAME, String.class, source->source.getName());
     }
 
     @Override

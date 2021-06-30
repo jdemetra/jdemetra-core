@@ -16,7 +16,6 @@
  */
 package demetra.toolkit.extractors;
 
-import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
 import demetra.arima.UcarimaModel;
 import demetra.information.InformationExtractor;

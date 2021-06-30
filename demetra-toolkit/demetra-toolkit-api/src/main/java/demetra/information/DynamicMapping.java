@@ -23,25 +23,25 @@ import java.util.function.Function;
 /**
  *
  * @author PALATEJ
+ * @param <S>
  */
-public abstract class InformationDelegate2<S, T> implements InformationExtractor<S> {
+public abstract class DynamicMapping<S, M> implements InformationExtractor<S> {
 
-    private final Function<S, T> fn;
-    private final InformationExtractor<T> extractor;
-    
-    public InformationDelegate2(InformationExtractor<T> extractor, final Function<S, T> fn) {
-        this.extractor=extractor;
+    private final String prefix;
+    private final Function<S, Map<String, M>> fn;
+
+    public DynamicMapping(final String prefix, final Function<S, Map<String, M>> fn) {
+        this.prefix = prefix;
         this.fn = fn;
     }
 
     @Override
     public void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
-        extractor.fillDictionary(prefix, dic, compact);
     }
 
     @Override
     public boolean contains(String id) {
-        return extractor.contains(id);
+        return false;
     }
 
     @Override
@@ -49,17 +49,39 @@ public abstract class InformationDelegate2<S, T> implements InformationExtractor
         if (source == null) {
             return null;
         }
-        T t = fn.apply(source);
-        if (t == null) {
-            return null;
+        Map<String, M> map = fn.apply(source);
+        String subitem = id;
+        if (prefix != null) {
+            if (id.length() <= prefix.length()) {
+                return null;
+            }
+            if (!id.startsWith(prefix) || id.charAt(prefix.length()) != BasicInformationExtractor.SEP) {
+                return null;
+            }
+            subitem = id.substring(prefix.length() + 1);
+        }
+        M rslt = map.get(subitem);
+        if (rslt != null && qclass.isInstance(rslt)) {
+            return (Q) rslt;
         } else {
-            return extractor.getData(t, id, qclass);
+            return null;
         }
     }
 
     @Override
     public <Q> void searchAll(S source, WildCards wc, Class<Q> tclass, Map<String, Q> map) {
-        extractor.searchAll(fn.apply(source), wc, tclass, map);
+        if (source == null) {
+            return;
+        }
+        Map<String, M> cmap = fn.apply(source);
+        cmap.forEach((key, value) -> {
+            if (wc.match(key)) {
+                if (tclass.isInstance(value)) {
+                    map.put(BasicInformationExtractor.concatenate(prefix, key), (Q) value);
+                }
+            }
+        }
+        );
     }
 
 }

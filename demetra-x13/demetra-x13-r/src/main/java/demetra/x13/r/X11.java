@@ -23,9 +23,7 @@ import demetra.x11.X11Spec;
 import demetra.x13.io.protobuf.X11Proto;
 import demetra.x13.io.protobuf.X11ResultsProto;
 import demetra.x13.io.protobuf.X13Protos;
-import demetra.x13.io.protobuf.X13ResultsProto;
 import jdplus.x11.X11Kernel;
-import jdplus.x13.X13Results;
 
 /**
  *

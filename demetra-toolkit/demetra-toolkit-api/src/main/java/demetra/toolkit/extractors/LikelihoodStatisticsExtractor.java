@@ -26,26 +26,25 @@ import nbbrd.service.ServiceProvider;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @ServiceProvider(InformationExtractor.class)
-public class LikelihoodStatisticsExtractor extends InformationMapping<LikelihoodStatistics>{
+public class LikelihoodStatisticsExtractor extends InformationMapping<LikelihoodStatistics> {
 
     private final String LL = "ll", LLC = "adjustedll", SSQ = "ssqerr", AIC = "aic", BIC = "bic", AICC = "aicc", BICC = "bicc", BIC2 = "bic2", HQ = "hannanquinn",
-            NPARAMS = "nparams", NOBS = "nobs", NEFFECTIVEOBS = "neffective", DF="df";
+            NPARAMS = "nparams", NOBS = "nobs", NEFFECTIVEOBS = "neffectiveobs", DF = "df";
 
-    public LikelihoodStatisticsExtractor(){
+    public LikelihoodStatisticsExtractor() {
+        set(LL, Double.class, source -> source.getLogLikelihood());
+        set(LLC, Double.class, source -> source.getAdjustedLogLikelihood());
+        set(SSQ, Double.class, source -> source.getSsqErr());
+        set(NPARAMS, Integer.class, source -> source.getEstimatedParametersCount());
+        set(NOBS, Integer.class, source -> source.getObservationsCount());
+        set(NEFFECTIVEOBS, Integer.class, source -> source.getEffectiveObservationsCount());
+        set(DF, Integer.class, source -> source.getEffectiveObservationsCount() - source.getEstimatedParametersCount());
         set(AIC, Double.class, source -> source.getAIC());
         set(AICC, Double.class, source -> source.getAICC());
         set(BIC, Double.class, source -> source.getBIC());
         set(BICC, Double.class, source -> source.getBICC());
         set(BIC2, Double.class, source -> source.getBIC2());
         set(HQ, Double.class, source -> source.getHannanQuinn());
-        set(LL, Double.class, source -> source.getLogLikelihood());
-        set(LLC, Double.class, source -> source.getAdjustedLogLikelihood());
-        set(SSQ, Double.class, source -> source.getSsqErr());
-
-        set(NPARAMS, Integer.class, source -> source.getEstimatedParametersCount());
-        set(NOBS, Integer.class, source -> source.getObservationsCount());
-        set(NEFFECTIVEOBS, Integer.class, source -> source.getEffectiveObservationsCount());
-        set(DF, Integer.class, source -> source.getEffectiveObservationsCount()-source.getEstimatedParametersCount());
 
     }
 

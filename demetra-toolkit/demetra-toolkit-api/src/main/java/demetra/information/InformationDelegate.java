@@ -59,7 +59,7 @@ public abstract class InformationDelegate<S, T> implements InformationExtractor<
 
     @Override
     public <Q> void searchAll(S source, WildCards wc, Class<Q> tclass, Map<String, Q> map) {
-        InformationExtractors.searchAll(fn.apply(source), wc, tclass, map);
+        InformationExtractors.searchAll(getDelegateClass(), fn.apply(source), wc, tclass, map);
     }
 
 }

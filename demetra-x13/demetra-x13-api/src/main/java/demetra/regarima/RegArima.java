@@ -21,7 +21,7 @@ import demetra.design.Algorithm;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
-import demetra.timeseries.regression.modelling.LightRegSarimaModel;
+import demetra.timeseries.regression.modelling.LightweightRegSarimaModel;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.design.Development;
@@ -48,7 +48,7 @@ public class RegArima {
         return ENGINE.get();
     }
 
-    public LightRegSarimaModel process(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public LightweightRegSarimaModel process(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems) {
         return ENGINE.get().process(series, spec, context, addtionalItems);
     }
 
@@ -60,7 +60,7 @@ public class RegArima {
         return LEGACYENGINE.get();
     }
 
-    public LightRegSarimaModel  processLegacy(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public LightweightRegSarimaModel  processLegacy(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems) {
         Processor cp = LEGACYENGINE.get();
         if (cp == null)
             throw new RegArimaException("No legacy engine");
@@ -72,7 +72,7 @@ public class RegArima {
     @FunctionalInterface
     public static interface Processor {
 
-        public LightRegSarimaModel process(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems);
+        public LightweightRegSarimaModel process(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems);
 
     }
 }

@@ -68,7 +68,8 @@ public class ResidualsDiagnostics implements Diagnostics {
 
     private boolean testRegarima(RegSarimaModel regarima) {
         try {
-            DoubleSeq res = regarima.getEstimation().getResiduals();
+            
+            DoubleSeq res = regarima.fullResiduals().getValues();
             period = regarima.getAnnualFrequency();
             stats = NiidTests.builder()
                     .data(res)

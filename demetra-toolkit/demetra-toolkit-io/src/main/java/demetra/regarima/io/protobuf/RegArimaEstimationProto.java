@@ -22,6 +22,7 @@ import demetra.likelihood.MissingValueEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.modelling.io.protobuf.ModellingProtos;
+import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.IEasterVariable;
@@ -45,12 +46,11 @@ import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
  */
 @lombok.experimental.UtilityClass
 public class RegArimaEstimationProto {
-    
-    
+
     public RegArimaProtos.RegArimaModel.Description convert(GeneralLinearModel.Description<SarimaSpec> description) {
-        
+
         RegArimaProtos.RegArimaModel.Description.Builder builder = RegArimaProtos.RegArimaModel.Description.newBuilder();
-        
+
         TsDomain domain = description.getSeries().getDomain();
         Variable[] vars = description.getVariables();
         for (int i = 0; i < vars.length; ++i) {
@@ -68,24 +68,23 @@ public class RegArimaEstimationProto {
             }
             builder.addVariables(vbuilder.build());
         }
-        
+
         return builder.setSeries(ToolkitProtosUtility.convert(description.getSeries()))
                 .setLog(description.isLogTransformation())
                 .setArima(RegArimaProtosUtility.convert(description.getStochasticComponent()))
                 .build();
     }
-    
+
     public RegArimaProtos.RegArimaModel.Estimation convert(GeneralLinearModel.Estimation estimation) {
         RegArimaProtos.RegArimaModel.Estimation.Builder builder = RegArimaProtos.RegArimaModel.Estimation.newBuilder();
-        
+
         MatrixType cov = estimation.getCoefficientsCovariance();
         LikelihoodStatistics statistics = estimation.getStatistics();
-        
+
         builder.addAllY(Iterables.of(estimation.getY()))
                 .setX(ToolkitProtosUtility.convert(estimation.getX()))
                 .setParameters(ToolkitProtosUtility.convert(estimation.getParameters()))
                 .setLikelihood(ToolkitProtosUtility.convert(statistics))
-                .addAllResiduals(Iterables.of(estimation.getResiduals()))
                 .addAllB(Iterables.of(estimation.getCoefficients()))
                 .setBcovariance(ToolkitProtosUtility.convert(cov));
 
@@ -98,16 +97,16 @@ public class RegArimaEstimationProto {
         }
         return builder.build();
     }
-    
+
     public RegArimaProtos.RegArimaModel convert(GeneralLinearModel<SarimaSpec> model) {
         return RegArimaProtos.RegArimaModel.newBuilder()
                 .setDescription(convert(model.getDescription()))
                 .setEstimation(convert(model.getEstimation()))
                 .setDiagnostics(diagnosticsOf(model))
                 .build();
-        
+
     }
-    
+
     public ModellingProtos.MissingEstimation convert(MissingValueEstimation missing) {
         return ModellingProtos.MissingEstimation.newBuilder()
                 .setPosition(missing.getPosition())
@@ -115,14 +114,19 @@ public class RegArimaEstimationProto {
                 .setStde(missing.getStandardError())
                 .build();
     }
-    
-    public ModellingProtos.Diagnostics diagnosticsOf(GeneralLinearModel<SarimaSpec> model){
-        
+
+    public ModellingProtos.Diagnostics diagnosticsOf(GeneralLinearModel<SarimaSpec> model) {
+
         ModellingProtos.Diagnostics.Builder builder = ModellingProtos.Diagnostics.newBuilder();
-        model.getDiagnostics().forEach((k, v)->builder.putResidualsTests(k, ToolkitProtosUtility.convert(v)));
+        model.getAdditionalResults().forEach((k, v)
+                -> {
+            if (v instanceof StatisticalTest) {
+                builder.putResidualsTests(k, ToolkitProtosUtility.convert((StatisticalTest) v));
+            }
+        });
         return builder.build();
     }
-    
+
     public ModellingProtos.VariableType type(ITsVariable var) {
         if (var instanceof TrendConstant) {
             return ModellingProtos.VariableType.VAR_MEAN;
@@ -159,5 +163,5 @@ public class RegArimaEstimationProto {
         }
         return ModellingProtos.VariableType.VAR_UNSPECIFIED;
     }
-    
+
 }

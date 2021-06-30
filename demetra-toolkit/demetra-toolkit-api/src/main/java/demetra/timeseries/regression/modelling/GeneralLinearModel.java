@@ -28,21 +28,20 @@ import demetra.timeseries.regression.Variable;
 import demetra.stats.StatisticalTest;
 import java.util.List;
 import java.util.Map;
-import demetra.information.Explorable;
 
 /**
  *
  * @author PALATEJ
  * @param <M>
  */
-public interface GeneralLinearModel<M> extends Explorable{
+public interface GeneralLinearModel<M> {
 
     Description<M> getDescription();
 
     Estimation getEstimation();
     
-    Map<String, StatisticalTest> getDiagnostics();
-
+    Residuals getResiduals();
+    
     Map<String, Object> getAdditionalResults();
 
     interface Description<M> {
@@ -132,7 +131,7 @@ public interface GeneralLinearModel<M> extends Explorable{
         DoubleSeq getCoefficients();
 
         /**
-         *
+         * Covariance of the regression coefficients. The scaling factor (sigma2) is the ML estimate (ssqerr/n)
          * @return
          */
         MatrixType getCoefficientsCovariance();
@@ -156,8 +155,6 @@ public interface GeneralLinearModel<M> extends Explorable{
          * @return
          */
         LikelihoodStatistics getStatistics();
-
-        DoubleSeq getResiduals();
 
         List<ProcessingLog.Information> getLogs();
 

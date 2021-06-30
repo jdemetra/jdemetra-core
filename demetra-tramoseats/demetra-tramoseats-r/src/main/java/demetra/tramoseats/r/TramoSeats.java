@@ -27,13 +27,9 @@ import demetra.tramoseats.io.protobuf.TramoSeatsOutput;
 import demetra.tramoseats.io.protobuf.TramoSeatsProtos;
 import demetra.tramoseats.io.protobuf.TramoSeatsResultsProto;
 import demetra.util.r.Dictionary;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import jdplus.tramoseats.TramoSeatsFactory;
 import jdplus.tramoseats.TramoSeatsKernel;
 import jdplus.tramoseats.TramoSeatsResults;
-import jdplus.tramoseats.extractors.TramoSeatsExtractor;
-import demetra.information.Explorable;
 
 /**
  *
@@ -42,11 +38,11 @@ import demetra.information.Explorable;
 @lombok.experimental.UtilityClass
 public class TramoSeats {
 
-        public byte[] toBuffer(TramoSeatsResults rslts) {
-            return TramoSeatsResultsProto.convert(rslts).toByteArray();
-        }
-        
-     public TramoSeatsResults process(TsData series, String defSpec) {
+    public byte[] toBuffer(TramoSeatsResults rslts) {
+        return TramoSeatsResultsProto.convert(rslts).toByteArray();
+    }
+
+    public TramoSeatsResults process(TsData series, String defSpec) {
         TramoSeatsSpec spec = TramoSeatsSpec.fromString(defSpec);
         TramoSeatsKernel kernel = TramoSeatsKernel.of(spec, null);
         return kernel.process(series.cleanExtremities(), null);

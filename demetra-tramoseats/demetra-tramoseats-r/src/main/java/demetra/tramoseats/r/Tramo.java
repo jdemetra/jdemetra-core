@@ -44,10 +44,10 @@ import jdplus.tramo.internal.DifferencingModule;
 @lombok.experimental.UtilityClass
 public class Tramo {
 
-        public byte[] toBuffer(RegSarimaModel core) {
-            return RegArimaEstimationProto.convert(core).toByteArray();
-        }
- 
+    public byte[] toBuffer(RegSarimaModel core) {
+        return RegArimaEstimationProto.convert(core).toByteArray();
+    }
+
     public RegSarimaModel process(TsData series, String defSpec) {
         TramoSpec spec = TramoSpec.fromString(defSpec);
         TramoKernel tramo = TramoKernel.of(spec, null);
@@ -84,7 +84,6 @@ public class Tramo {
         return R;
     }
 
-
     public TramoOutput fullProcess(TsData series, TramoSpec spec, Dictionary dic) {
         ModellingContext context = dic == null ? null : dic.toContext();
         TramoKernel tramo = TramoKernel.of(spec, context);
@@ -96,12 +95,11 @@ public class Tramo {
                 .resultSpec(estimation == null ? null : TramoFactory.INSTANCE.generateSpec(spec, estimation.getDescription()))
                 .build();
     }
-    
+
     public TramoOutput fullProcess(TsData series, String defSpec) {
         TramoSpec spec = TramoSpec.fromString(defSpec);
         return fullProcess(series, spec, null);
-     }
-    
+    }
 
     public byte[] toBuffer(TramoSpec spec) {
         return TramoProto.convert(spec).toByteArray();
@@ -115,23 +113,23 @@ public class Tramo {
             return null;
         }
     }
-    
+
     public byte[] toBuffer(TramoOutput output) {
         return TramoProto.convert(output).toByteArray();
     }
-    
-    public StationaryTransformation doStationary(double[] data, int period){
+
+    public StationaryTransformation doStationary(double[] data, int period) {
         DifferencingModule diff = DifferencingModule.builder()
                 .build();
-        
-        DoubleSeq s=DoubleSeq.of(data);
+
+        DoubleSeq s = DoubleSeq.of(data);
         diff.process(s, period, 0, 0, true);
-        
+
         return StationaryTransformation.builder()
                 .meanCorrection(diff.isMeanCorrection())
                 .difference(new StationaryTransformation.Differencing(1, diff.getD()))
                 .difference(new StationaryTransformation.Differencing(period, diff.getBd()))
                 .build();
     }
-    
+
 }

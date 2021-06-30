@@ -32,6 +32,10 @@ public interface BasicInformationExtractor<S> {
 
     public static final char SEP = '.';
     public static final String STRSEP = new String(new char[]{SEP});
+    
+    public static boolean isDummy(String s){
+        return s == null || s.length() == 0;
+    }
 
     public static String concatenate(String... s) {
         switch (s.length) {
@@ -43,7 +47,7 @@ public interface BasicInformationExtractor<S> {
                 boolean first = true;
                 StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < s.length; ++i) {
-                    if (s[i] != null) {
+                    if (! isDummy(s[i])) {
                         if (!first) {
                             builder.append(SEP);
                         } else {

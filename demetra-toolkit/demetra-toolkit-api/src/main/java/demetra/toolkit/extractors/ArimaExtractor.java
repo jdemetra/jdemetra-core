@@ -18,8 +18,6 @@ package demetra.toolkit.extractors;
 
 import demetra.arima.ArimaModel;
 import demetra.arima.IArimaModel;
-import demetra.arima.ISarimaModel;
-import demetra.arima.SarimaModel;
 import demetra.information.InformationDelegate;
 import demetra.information.InformationExtractor;
 import nbbrd.service.ServiceProvider;

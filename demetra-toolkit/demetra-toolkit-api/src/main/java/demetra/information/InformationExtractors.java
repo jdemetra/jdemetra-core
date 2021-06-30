@@ -70,22 +70,22 @@ public class InformationExtractors {
         extractors = Collections.unmodifiableMap(x);
     }
 
-    public List<InformationExtractor> extractors(Class T) {
+    public List<InformationExtractor> extractors(Class D) {
         if (extractors == null) {
             reloadExtractors();
         }
-        return extractors.get(T);
+        return extractors.get(D);
     }
 
-    public void fillDictionary(Class T, String prefix, Map dic, boolean compact) {
-        List<InformationExtractor> all = extractors(T);
+    public void fillDictionary(Class D, String prefix, Map dic, boolean compact) {
+        List<InformationExtractor> all = extractors(D);
         for (InformationExtractor x : all) {
             x.fillDictionary(prefix, dic, compact);
         }
     }
 
-    public boolean contains(Class T, String id) {
-        List<InformationExtractor> all = extractors(T);
+    public boolean contains(Class D, String id) {
+        List<InformationExtractor> all = extractors(D);
         for (BasicInformationExtractor x : all) {
             if (x.contains(id)) {
                 return true;
@@ -94,10 +94,10 @@ public class InformationExtractors {
         return false;
     }
 
-    public <S, Q> Q getData(Class T, S source, String id, Class<Q> tclass) {
-        List<InformationExtractor> all = extractors(T);
+    public <S, Q> Q getData(Class D, S source, String id, Class<Q> qclass) {
+        List<InformationExtractor> all = extractors(D);
         for (BasicInformationExtractor<S> x : all) {
-            Q obj = x.getData(source, id, tclass);
+            Q obj = x.getData(source, id, qclass);
             if (obj != null) {
                 return obj;
             }
@@ -105,10 +105,10 @@ public class InformationExtractors {
         return null;
     }
 
-    public <S, T> void searchAll(S source, WildCards wc, Class<T> tclass, Map<String, T> map) {
-        List<InformationExtractor> all = extractors(source.getClass());
+    public <S, Q> void searchAll(Class D, S source, WildCards wc, Class<Q> qclass, Map<String, Q> map) {
+        List<InformationExtractor> all = extractors(D);
         for (BasicInformationExtractor<S> x : all) {
-            x.searchAll(source, wc, tclass, map);
+            x.searchAll(source, wc, qclass, map);
         }
     }
 

@@ -21,12 +21,12 @@ import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
+import demetra.information.Explorable;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.processing.ProcessingLog;
-import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
@@ -34,7 +34,8 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.Variable;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
-import demetra.timeseries.regression.modelling.LightLinearModel;
+import demetra.timeseries.regression.modelling.LightweightLinearModel;
+import demetra.timeseries.regression.modelling.Residuals;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -59,7 +60,7 @@ import jdplus.timeseries.simplets.Transformations;
  */
 @lombok.Value
 @lombok.Builder
-public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
+public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorable {
 
     private static final MissingValueEstimation[] NOMISSING = new MissingValueEstimation[0];
 
@@ -106,7 +107,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
             }
         }
 
-        LightLinearModel.Description desc = LightLinearModel.Description.<SarimaSpec>builder()
+        LightweightLinearModel.Description desc = LightweightLinearModel.Description.<SarimaSpec>builder()
                 .series(description.getSeries())
                 .lengthOfPeriodTransformation(description.getPreadjustment())
                 .logTransformation(description.isLogTransformation())
@@ -151,13 +152,12 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
             transformed = TsData.ofInternal(transformed.getStart(), datac);
         }
         DoubleSeq fullRes = RegArimaUtility.fullResiduals(model, ll);
-        LightLinearModel.Estimation est = LightLinearModel.Estimation.builder()
+        LightweightLinearModel.Estimation est = LightweightLinearModel.Estimation.builder()
                 .y(model.getY())
                 .X(model.allVariables())
                 .coefficients(ll.coefficients())
                 .coefficientsCovariance(ll.covariance(free, true))
                 .parameters(pestim)
-                .residuals(fullRes)
                 .statistics(estimation.statistics())
                 .missing(missing)
                 .logs(log.all())
@@ -169,32 +169,36 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
                 .period(period)
                 .hyperParametersCount(free)
                 .build();
+        
+        Residuals residuals=Residuals.builder()
+                .type(Residuals.Type.FullResiduals)
+                .res(fullRes)
+                .start(description.getEstimationDomain().getEndPeriod().plus(-fullRes.length()))
+                .test(Residuals.MEAN, niid.meanTest())
+                .test(Residuals.SKEW, niid.skewness())
+                .test(Residuals.KURT, niid.kurtosis())
+                .test(Residuals.DH, niid.normalityTest())
+                .test(Residuals.LB, niid.ljungBox())
+                .test(Residuals.SEASLB, niid.seasonalLjungBox())
+                .test(Residuals.LB2, niid.ljungBoxOnSquare())
+                .test(Residuals.NRUNS, niid.runsNumber())
+                .test(Residuals.LRUNS, niid.runsLength())
+                .test(Residuals.NUDRUNS, niid.upAndDownRunsNumbber())
+                .test(Residuals.LUDRUNS, niid.upAndDownRunsLength())
+                .build();
 
         return RegSarimaModel.builder()
                 .description(desc)
                 .estimation(est)
+                .residuals(residuals)
                 .details(Details.builder()
                         .estimationDomain(description.getEstimationDomain())
                         .interpolatedSeries(interpolated)
                         .transformedSeries(transformed)
                         .independentResiduals(ll.e())
                         .build())
-                .diagnostic("Mean", niid.meanTest())
-                .diagnostic("Skewness", niid.skewness())
-                .diagnostic("Kurtosis", niid.kurtosis())
-                .diagnostic("Normality", niid.normalityTest())
-                .diagnostic("LjungBox", niid.ljungBox())
-                .diagnostic("SeasonalLjungBox", niid.seasonalLjungBox())
-                .diagnostic("LjungBoxOnSquares", niid.ljungBoxOnSquare())
-                .diagnostic("RunsNumber", niid.runsNumber())
-                .diagnostic("RunsLength", niid.runsLength())
-                .diagnostic("UpAndDownRunsNumber", niid.upAndDownRunsNumbber())
-                .diagnostic("UpAndDownRunsLength", niid.upAndDownRunsLength())
                 .build();
     }
-
-    @lombok.Singular
-    private Map<String, StatisticalTest> diagnostics;
 
     @lombok.Singular
     private Map<String, Object> additionalResults;
@@ -210,6 +214,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
 
     Description<SarimaSpec> description;
     Estimation estimation;
+    Residuals residuals;
     Details details;
 
     public int getAnnualFrequency() {
@@ -440,10 +445,10 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec> {
         }
         return s;
     }
-
+    
     public TsData fullResiduals() {
-        DoubleSeq res = estimation.getResiduals();
-        TsPeriod start = details.transformedSeries.getEnd().plus(-res.length());
+        DoubleSeq res = residuals.getRes();
+        TsPeriod start = residuals.getStart();
         return TsData.of(start, res);
     }
 

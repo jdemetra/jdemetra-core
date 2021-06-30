@@ -44,22 +44,21 @@ import jdplus.x13.regarima.RegArimaKernel;
 @lombok.experimental.UtilityClass
 public class RegArima {
 
-        public byte[] toBuffer(RegSarimaModel core) {
-            return RegArimaEstimationProto.convert(core).toByteArray();
-        }
-        
- 
+    public byte[] toBuffer(RegSarimaModel core) {
+        return RegArimaEstimationProto.convert(core).toByteArray();
+    }
+
     public RegSarimaModel process(TsData series, String defSpec) {
         RegArimaSpec spec = RegArimaSpec.fromString(defSpec);
         RegArimaKernel regarima = RegArimaKernel.of(spec, null);
         return regarima.process(series.cleanExtremities(), null);
-     }
+    }
 
     public RegSarimaModel process(TsData series, RegArimaSpec spec, Dictionary dic) {
         ModellingContext context = dic == null ? null : dic.toContext();
         RegArimaKernel regarima = RegArimaKernel.of(spec, context);
-       return regarima.process(series.cleanExtremities(), null);
-     }
+        return regarima.process(series.cleanExtremities(), null);
+    }
 
     public RegArimaSpec refreshSpec(RegArimaSpec currentSpec, RegArimaSpec domainSpec, TsDomain domain, String policy) {
         return RegArimaFactory.INSTANCE.refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);

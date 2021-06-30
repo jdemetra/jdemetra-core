@@ -28,26 +28,23 @@ import nbbrd.service.ServiceProvider;
 @ServiceProvider(InformationExtractor.class)
 public class DiffuseLikelihoodStatisticsExtractor extends InformationMapping<DiffuseLikelihoodStatistics> {
 
-    private final String LL = "ll", LLC = "adjustedll", SSQ = "ssqerr", AIC = "aic", BIC = "bic", AICC = "aicc", BICC = "bicc", BIC2 = "bic2", HQ = "hannanquinn",
+    private final String LL = "ll", LLC = "adjustedll", SSQ = "ssqerr", AIC = "aic", BIC = "bic", AICC = "aicc", HQ = "hannanquinn",
             NPARAMS = "nparams", NOBS = "nobs", DF = "df", NDIFFUSE = "ndiffuse";
 
     public DiffuseLikelihoodStatisticsExtractor() {
-//        MAPPING.set(AIC, Double.class, source -> source.getAIC());
-//        MAPPING.set(AICC, Double.class, source -> source.getAICC());
-//        MAPPING.set(BIC, Double.class, source -> source.getBIC());
-//        MAPPING.set(BICC, Double.class, source -> source.getBICC());
-//        MAPPING.set(BIC2, Double.class, source -> source.getBIC2());
-//        MAPPING.set(HQ, Double.class, source -> source.getHannanQuinn());
         set(LL, Double.class, source -> source.getLogLikelihood());
         set(LLC, Double.class, source -> source.getAdjustedLogLikelihood());
         set(SSQ, Double.class, source -> source.getSsqErr());
-
         set(NPARAMS, Integer.class, source -> source.getEstimatedParametersCount());
         set(NOBS, Integer.class, source -> source.getObservationsCount());
         set(NDIFFUSE, Integer.class, source -> source.getDiffuseCount());
-//        MAPPING.set(NEFFECTIVEOBS, Integer.class, source -> source.getEffectiveObservationsCount());
         set(DF, Integer.class, source -> source.getObservationsCount() - source.getEstimatedParametersCount() - source.getDiffuseCount());
-    }
+        set(AIC, Double.class, source -> source.aic());
+        set(AICC, Double.class, source -> source.aicc());
+        set(BIC, Double.class, source -> source.bic());
+        set(HQ, Double.class, source -> source.hannanQuinn());
+
+     }
 
     @Override
     public Class getSourceClass() {

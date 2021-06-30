@@ -17,8 +17,10 @@
 package demetra.toolkit.extractors;
 
 import demetra.arima.ISarimaModel;
+import demetra.data.Parameter;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
+import demetra.modelling.implementations.SarimaSpec;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -26,16 +28,14 @@ import nbbrd.service.ServiceProvider;
  * @author Jean Palate
  */
 @ServiceProvider(InformationExtractor.class)
-public class ISarimaExtractor extends InformationMapping<ISarimaModel> {
+public class SarimaSpecExtractor extends InformationMapping<SarimaSpec> {
 
     public final static String P = "p", D = "d", Q = "q",
             BP = "bp", BD = "bd", BQ = "bq",
-            PARAMETERS = "parameters", PARAMETERS2 = "parameters2",
             PHI = "phi", THETA = "theta", BPHI = "bphi", BTHETA = "btheta",
-            PERIOD = "period", NAME = "name";
+            PERIOD = "period";
 
-    public ISarimaExtractor() {
-        set(NAME, String.class, source -> source.getName());
+    public SarimaSpecExtractor() {
         set(P, Integer.class, source -> source.getP());
         set(D, Integer.class, source -> source.getD());
         set(Q, Integer.class, source -> source.getQ());
@@ -43,25 +43,15 @@ public class ISarimaExtractor extends InformationMapping<ISarimaModel> {
         set(BP, Integer.class, source -> source.getBp());
         set(BD, Integer.class, source -> source.getBd());
         set(BQ, Integer.class, source -> source.getBq());
-        set(PARAMETERS, double[].class, source -> source.parameters().toArray());
-        set(PARAMETERS2, double[].class, source -> {
-            double[] z = source.parameters().toArray();
-            int p = source.getP() + source.getBp();
-            for (int i = 0; i < p; ++i) {
-                z[i] -= z[i];
-            }
-            return z;
-        }
-        );
-        set(PHI, double[].class, source -> source.getPhi());
-        set(BPHI, double[].class, source -> source.getBphi());
-        set(THETA, double[].class, source -> source.getTheta());
-        set(BTHETA, double[].class, source -> source.getBtheta());
+        set(PHI, double[].class, source -> Parameter.values(source.getPhi()));
+        set(BPHI, double[].class, source -> Parameter.values(source.getBphi()));
+        set(THETA, double[].class, source -> Parameter.values(source.getTheta()));
+        set(BTHETA, double[].class, source -> Parameter.values(source.getBtheta()));
     }
 
     @Override
-    public Class getSourceClass() {
-        return ISarimaModel.class;
+    public Class<SarimaSpec> getSourceClass() {
+        return SarimaSpec.class;
     }
 
 }

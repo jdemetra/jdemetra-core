@@ -14,34 +14,35 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.tramo.spi;
+package jdplus.regarima.extractors;
 
-import demetra.arima.SarimaModel;
-import demetra.processing.DefaultProcessingLog;
-import demetra.timeseries.TsData;
-import demetra.timeseries.regression.ModellingContext;
+import demetra.information.InformationDelegate;
+import demetra.information.InformationExtractor;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
-import demetra.timeseries.regression.modelling.LightweightLinearModel;
-import demetra.tramo.Tramo;
-import demetra.tramo.TramoSpec;
-import java.util.List;
 import jdplus.regsarima.regular.RegSarimaModel;
+import nbbrd.design.Development;
 import nbbrd.service.ServiceProvider;
 
 /**
  *
- * @author palatej
+ * @author PALATEJ
  */
-@ServiceProvider(Tramo.Processor.class)
-public class TramoComputer implements Tramo.Processor{
+@Development(status = Development.Status.Release)
+@ServiceProvider(InformationExtractor.class)
+public class GenericExtractor extends InformationDelegate<RegSarimaModel, GeneralLinearModel>{
+    
+    public GenericExtractor(){
+        super(v->v);
+    }
 
     @Override
-    public RegSarimaModel process(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems) {
-        jdplus.tramo.TramoKernel processor = jdplus.tramo.TramoKernel.of(spec, context);
-        DefaultProcessingLog log=new DefaultProcessingLog();
-        RegSarimaModel rslt = processor.process(series, log);
-        // TODO: fill details
-        return rslt;
+    public Class<GeneralLinearModel> getDelegateClass() {
+        return GeneralLinearModel.class;
+    }
+
+    @Override
+    public Class<RegSarimaModel> getSourceClass() {
+        return RegSarimaModel.class;
     }
     
 }

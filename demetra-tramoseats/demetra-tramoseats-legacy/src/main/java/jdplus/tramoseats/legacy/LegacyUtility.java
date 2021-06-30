@@ -6,14 +6,13 @@
 package jdplus.tramoseats.legacy;
 
 import demetra.data.DoubleSeq;
-import demetra.data.Doubles;
 import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
-import demetra.timeseries.regression.modelling.LightLinearModel;
-import demetra.timeseries.regression.modelling.LightRegSarimaModel;
+import demetra.timeseries.regression.modelling.LightweightLinearModel;
+import demetra.timeseries.regression.modelling.LightweightRegSarimaModel;
+import demetra.timeseries.regression.modelling.Residuals;
 import demetra.tramo.TramoSpec;
 import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
 import ec.tstoolkit.arima.estimation.RegArimaModel;
@@ -85,7 +84,7 @@ public class LegacyUtility {
         return DoubleSeq.of(p);
     }
 
-    public LightRegSarimaModel toApi(PreprocessingModel model, List<String> additional) {
+    public LightweightRegSarimaModel toApi(PreprocessingModel model, List<String> additional) {
         LikelihoodStatistics stat = model.estimation.getStatistics();
         demetra.likelihood.LikelihoodStatistics nstat = demetra.likelihood.LikelihoodStatistics.statistics(stat.logLikelihood, stat.observationsCount)
                 .differencingOrder(stat.observationsCount - stat.effectiveObservationsCount)
@@ -93,16 +92,21 @@ public class LegacyUtility {
                 .ssq(stat.SsqErr)
                 .parametersCount(stat.estimatedParametersCount)
                 .build();
-        LightLinearModel.Description.Builder<SarimaSpec> dbuilder = LightLinearModel.Description.<SarimaSpec>builder();
-        RegArimaModel<SarimaModel> regArima = model.estimation.getRegArima();
-        LightLinearModel.Estimation.Builder ebuilder = LightLinearModel.Estimation.builder()
-                .residuals(DoubleSeq.of(model.getFullResiduals().internalStorage()))
-                .parameters(new ParametersEstimation(fromLegacy(model.estimation.getArima().getParameters()), fromLegacy(model.estimation.getParametersCovariance()), DoubleSeq.empty(), null))
+        LightweightLinearModel.Description.Builder<SarimaSpec> dbuilder = LightweightLinearModel.Description.<SarimaSpec>builder();
+        LightweightLinearModel.Estimation.Builder ebuilder = LightweightLinearModel.Estimation.builder()
+                .parameters(new ParametersEstimation(fromLegacy(model.estimation.getArima().getParameters()), 
+                        fromLegacy(model.estimation.getParametersCovariance()), DoubleSeq.empty(), null))
                 .statistics(nstat);
         
-        return LightRegSarimaModel.builder()
+        Residuals res = Residuals.builder()
+                .type(Residuals.Type.FullResiduals)
+                .res(DoubleSeq.of(model.getFullResiduals().internalStorage()))
+                .build();
+        
+        return LightweightRegSarimaModel.builder()
                 .description(dbuilder.build())
                 .estimation(ebuilder.build())
+                .residuals(res)
                 .build();
 
     }

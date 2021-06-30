@@ -23,8 +23,8 @@ import demetra.regarima.RegArimaSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
-import demetra.timeseries.regression.modelling.LightLinearModel;
-import demetra.timeseries.regression.modelling.LightRegSarimaModel;
+import demetra.timeseries.regression.modelling.LightweightLinearModel;
+import demetra.timeseries.regression.modelling.LightweightRegSarimaModel;
 import java.util.List;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.x13.regarima.RegArimaKernel;
@@ -38,12 +38,12 @@ import nbbrd.service.ServiceProvider;
 public class RegArimaComputer implements RegArima.Processor{
 
     @Override
-    public LightRegSarimaModel process(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public LightweightRegSarimaModel process(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems) {
         RegArimaKernel processor = RegArimaKernel.of(spec, context);
         DefaultProcessingLog log=new DefaultProcessingLog();
         RegSarimaModel rslt = processor.process(series, log);
         // TODO: fill details
-        return LightRegSarimaModel.builder()
+        return LightweightRegSarimaModel.builder()
 //                .regarima(ApiUtility.toApi(rslt))
 //                .logs(log.all())
 //                .addtionalResults()

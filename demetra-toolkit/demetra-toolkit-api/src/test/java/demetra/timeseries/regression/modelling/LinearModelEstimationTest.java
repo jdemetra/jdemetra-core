@@ -16,7 +16,6 @@
  */
 package demetra.timeseries.regression.modelling;
 
-import demetra.arima.SarimaModel;
 import java.util.Arrays;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -35,11 +34,11 @@ public class LinearModelEstimationTest {
         String[] keys=new String[]{"test1","test10","test0","test5","test3","test11",
             "test41","test61","test51","test91","test81","test14","test17",
             "test35","test36","test31","test19","test18"};
-        LightRegSarimaModel.Builder builder = LightRegSarimaModel.builder();
+        LightweightRegSarimaModel.Builder builder = LightweightRegSarimaModel.builder();
         for (int i=0; i<keys.length; ++i)
             builder.additionalResult(keys[i], null);
                 
-        LightRegSarimaModel lme = builder.build();
+        LightweightRegSarimaModel lme = builder.build();
 
         String[] keys2 = lme.getAdditionalResults().keySet().stream().toArray(n->new String[n]);
         assertTrue(Arrays.equals(keys, keys2));

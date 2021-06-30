@@ -224,18 +224,28 @@ class BasicInformationExtractors {
             if (source == null) {
                 return null;
             }
-            String subitem = (name == null) ? id : id.substring(name.length() + 1);
             T t = fn.apply(source);
             if (t == null) {
                 return null;
-            } else {
-                return InformationExtractors.getData(target, t, subitem, qclass);
             }
+            String subitem = id;
+            if (name != null) {
+                if (id.length() <= name.length()) {
+                    return null;
+                }
+                if (!id.startsWith(name) || id.charAt(name.length()) != BasicInformationExtractor.SEP) {
+                    return null;
+                }
+                subitem = id.substring(name.length() + 1);
+            }
+            return InformationExtractors.getData(target, t, subitem, qclass);
         }
 
         @Override
-        public <Q> void searchAll(S source, WildCards wc, Class<Q> tclass, Map<String, Q> map) {
-            InformationExtractors.searchAll(fn.apply(source), wc, tclass, map);
+        public <Q> void searchAll(S source, WildCards wc,
+                 Class<Q> tclass, Map<String, Q> map
+        ) {
+            InformationExtractors.searchAll(target, fn.apply(source), wc, tclass, map);
         }
 
     }
