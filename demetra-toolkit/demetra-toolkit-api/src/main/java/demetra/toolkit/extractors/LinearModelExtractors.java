@@ -5,18 +5,17 @@
  */
 package demetra.toolkit.extractors;
 
-import demetra.information.InformationMapping;
-import demetra.math.matrices.MatrixType;
-import demetra.modelling.ModellingDictionary;
-import demetra.timeseries.TsData;
-import demetra.timeseries.TsPeriod;
-import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.information.BasicInformationExtractor;
 import demetra.information.DynamicMapping;
 import demetra.information.InformationExtractor;
+import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
+import demetra.math.matrices.MatrixType;
+import demetra.modelling.ModellingDictionary;
+import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
+import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
@@ -30,8 +29,9 @@ import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TransitoryChange;
 import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.Variable;
+import demetra.timeseries.regression.modelling.GeneralLinearModel;
+import demetra.timeseries.regression.modelling.Residuals;
 import java.util.Arrays;
-import nbbrd.design.Development;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -54,7 +54,7 @@ public class LinearModelExtractors {
         public final String LOG = "log",
                 ADJUST = "adjust",
                 SPAN = "span", ESPAN = "espan", START = "start", END = "end", N = "n", NM = "missing", PERIOD = "period",
-                REGRESSION = "regression", LIKELIHOOD = "likelihood", MAX = "max",
+                REGRESSION = "regression", LIKELIHOOD = "likelihood", MAX = "max", RESIDUALS="residuals",
                 OUTLIERS = "outlier(*)",
                 CALENDAR = "calendar(*)",
                 EASTER = "easter",
@@ -125,6 +125,7 @@ public class LinearModelExtractors {
                     -> mul(source.getEstimation().getParameters().getCovariance(), mlcorrection(source.getEstimation().getStatistics())));
             set(BasicInformationExtractor.concatenate(MAX, SCORE), double[].class, source -> source.getEstimation().getParameters().getScores().toArray());
             delegate(LIKELIHOOD, LikelihoodStatistics.class, source -> source.getEstimation().getStatistics());
+            delegate(RESIDUALS, Residuals.class, source -> source.getResiduals());
         }
 
         private double mlcorrection(LikelihoodStatistics ll) {

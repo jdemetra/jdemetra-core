@@ -51,7 +51,7 @@ public class TramoTest {
         String[] desc = rslt.getData("regression.description", String[].class);
         Arrays.stream(desc).forEach(v->System.out.println(v));
         assertTrue(desc != null);
-        StatisticalTest data = rslt.getData("diagnostics.Normality", StatisticalTest.class);
+        StatisticalTest data = rslt.getData("residuals.doornikhansen", StatisticalTest.class);
         System.out.println(data.getPvalue());
    }
 
