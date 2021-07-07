@@ -39,7 +39,7 @@
         <!-- dependencies -->
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
         <jd2.version>2.2.4-SNAPSHOT</jd2.version>
-        <java-io-util.version>0.0.12</java-io-util.version>
+        <java-io-util.version>0.0.13</java-io-util.version>
     </properties>
 
     <modules>
