@@ -16,14 +16,16 @@
  */
 package demetra.tsprovider;
 
-import demetra.tsprovider.util.IConfig;
-import demetra.tsprovider.util.Param;
+import nbbrd.io.text.Formatter;
+import nbbrd.io.text.Parser;
+import nbbrd.io.text.Property;
+import org.junit.Test;
 
 import java.io.File;
 import java.util.Objects;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.junit.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  *
@@ -59,31 +61,31 @@ public class HasDataSourceBeanTest {
         }
     }
 
-    private final Param<DataSource, CustomBean> param = new Param<DataSource, CustomBean>() {
+    private final DataSource.Converter<CustomBean> param = new DataSource.Converter<CustomBean>() {
 
-        private final Param<DataSource, File> fileParam = Param.onFile(new File("defaultFile"), "f");
-        private final Param<DataSource, String> detailsParam = Param.onString("defaultValue", "d");
+        private final Property<File> fileParam = Property.of("f", new File("defaultFile"), Parser.onFile(), Formatter.onFile());
+        private final Property<String> detailsParam = Property.of("d", "defaultValue", Parser.onString(), Formatter.onString());
 
         @Override
-        public CustomBean defaultValue() {
+        public CustomBean getDefaultValue() {
             CustomBean result = new CustomBean();
-            result.file = fileParam.defaultValue();
-            result.details = detailsParam.defaultValue();
+            result.file = fileParam.getDefaultValue();
+            result.details = detailsParam.getDefaultValue();
             return result;
         }
 
         @Override
         public CustomBean get(DataSource config) {
             CustomBean result = new CustomBean();
-            result.file = fileParam.get(config);
-            result.details = detailsParam.get(config);
+            result.file = fileParam.get(config::getParameter);
+            result.details = detailsParam.get(config::getParameter);
             return result;
         }
 
         @Override
-        public void set(IConfig.Builder<?, DataSource> builder, CustomBean value) {
-            fileParam.set(builder, value.file);
-            detailsParam.set(builder, value.details);
+        public void set(DataSource.Builder builder, CustomBean value) {
+            fileParam.set(builder::parameter, value.file);
+            detailsParam.set(builder::parameter, value.details);
         }
     };
 
@@ -113,9 +115,9 @@ public class HasDataSourceBeanTest {
         HasDataSourceBean support = HasDataSourceBean.of(providerName, param, version);
         DataSource.Builder b = DataSource.builder(providerName, version);
         assertThat(support.encodeBean(support.newBean()))
-                .isEqualTo(b.clear().build());
+                .isEqualTo(b.clearParameters().build());
         assertThat(support.encodeBean(CustomBean.of(new File("hello"), "world")))
-                .isEqualTo(b.clear().put("f", "hello").put("d", "world").build());
+                .isEqualTo(b.clearParameters().parameter("f", "hello").parameter("d", "world").build());
         assertThatThrownBy(() -> support.encodeBean(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> support.encodeBean("string")).isInstanceOf(IllegalArgumentException.class);
     }
@@ -125,9 +127,9 @@ public class HasDataSourceBeanTest {
     public void testDecodeBean() {
         HasDataSourceBean support = HasDataSourceBean.of(providerName, param, version);
         DataSource.Builder b = DataSource.builder(providerName, version);
-        assertThat(support.decodeBean(b.clear().build()))
+        assertThat(support.decodeBean(b.clearParameters().build()))
                 .isEqualTo(support.newBean());
-        assertThat(support.decodeBean(b.clear().put("f", "hello").put("d", "world").build()))
+        assertThat(support.decodeBean(b.clearParameters().parameter("f", "hello").parameter("d", "world").build()))
                 .isEqualTo(CustomBean.of(new File("hello"), "world"));
         assertThatThrownBy(() -> support.decodeBean(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> support.decodeBean(DataSource.builder("xxx", version).build())).isInstanceOf(IllegalArgumentException.class);

@@ -43,9 +43,9 @@ public class SpreadSheetParamTest {
 
         assertThat(v1.encodeBean(getBeanSample()))
                 .satisfies(o -> {
-                    assertThat(o.getParams().keySet())
+                    assertThat(o.getParameters().keySet())
                             .containsExactly("aggregationType", "cleanMissing", "datePattern", "file", "frequency", "locale", "numberPattern");
-                    assertThat(o.getParams().values())
+                    assertThat(o.getParameters().values())
                             .containsExactly("Average", "false", "yyyy", "1234", "Yearly", "fr_BE", "#");
                 });
 
@@ -75,13 +75,13 @@ public class SpreadSheetParamTest {
                 .isNotSameAs(v1.encodeBean(v1.newBean()))
                 .isEqualTo(v1.encodeBean(v1.newBean()))
                 .satisfies(o -> {
-                    assertThat(o.getParams().isEmpty()).isTrue();
+                    assertThat(o.getParameters().isEmpty()).isTrue();
                 });
 
         assertThat(v1.encodeBean(sample))
                 .isEqualTo(v1.encodeBean(sample))
                 .satisfies(o -> {
-                    assertThat(o.getParams().isEmpty()).isFalse();
+                    assertThat(o.getParameters().isEmpty()).isFalse();
                 });
 
         assertThat(v1.decodeBean(v1.encodeBean(v1.newBean())))

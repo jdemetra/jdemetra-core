@@ -61,8 +61,8 @@ public class SpreadSheetProviderTest {
         DataSource source = DataSource.of("XCLPRVDR", "20111201", "file", "Insee.xlsx");
 
         DataSet expected = DataSet.builder(source, DataSet.Kind.SERIES)
-                .put("seriesName", "Industries alimentaires 001563038")
-                .put("sheetName", "FRANCE Alim. et tabac")
+                .parameter("seriesName", "Industries alimentaires 001563038")
+                .parameter("sheetName", "FRANCE Alim. et tabac")
                 .build();
 
         try (SpreadSheetProvider p = new SpreadSheetProvider()) {
@@ -75,18 +75,18 @@ public class SpreadSheetProviderTest {
         String uri = "demetra://tsprovider/XCLPRVDR/20111201/SERIES?aggregationType=Last&cleanMissing=false&datePattern=dd%2FMM%2Fyyyy&file=Insee.xlsx&frequency=Monthly&locale=fr&numberPattern=%23.%23#seriesName=Textiles+001563047&sheetName=FRANCE+Textile";
 
         DataSource source = DataSource.builder("XCLPRVDR", "20111201")
-                .put("aggregationType", "Last")
-                .put("cleanMissing", "false")
-                .put("datePattern", "dd/MM/yyyy")
-                .put("locale", "fr")
-                .put("numberPattern", "#.#")
-                .put("file", "Insee.xlsx")
-                .put("frequency", "Monthly")
+                .parameter("aggregationType", "Last")
+                .parameter("cleanMissing", "false")
+                .parameter("datePattern", "dd/MM/yyyy")
+                .parameter("locale", "fr")
+                .parameter("numberPattern", "#.#")
+                .parameter("file", "Insee.xlsx")
+                .parameter("frequency", "Monthly")
                 .build();
 
         DataSet expected = DataSet.builder(source, DataSet.Kind.SERIES)
-                .put("seriesName", "Textiles 001563047")
-                .put("sheetName", "FRANCE Textile")
+                .parameter("seriesName", "Textiles 001563047")
+                .parameter("sheetName", "FRANCE Textile")
                 .build();
 
         try (SpreadSheetProvider p = new SpreadSheetProvider()) {

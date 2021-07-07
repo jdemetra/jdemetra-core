@@ -27,7 +27,7 @@ import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY;
 import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY_BE;
 import static demetra.tsprovider.cube.CubeIdTest.SECTOR_REGION;
 import demetra.tsprovider.stream.DataSetTs;
-import demetra.tsprovider.util.Param;
+
 import java.io.IOException;
 import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -42,9 +42,9 @@ public class CubeSupportTest {
 
     private final String providerName = "provider";
     private final DataSource dataSource = DataSource.of(providerName, "");
-    private final DataSet col = DataSet.builder(dataSource, DataSet.Kind.COLLECTION).put("sector", "industry").build();
-    private final DataSet series = DataSet.builder(dataSource, DataSet.Kind.SERIES).put("sector", "industry").put("region", "be").build();
-    private final Param<DataSet, CubeId> cubeIdParam = CubeSupport.idByName(SECTOR_REGION);
+    private final DataSet col = DataSet.builder(dataSource, DataSet.Kind.COLLECTION).parameter("sector", "industry").build();
+    private final DataSet series = DataSet.builder(dataSource, DataSet.Kind.SERIES).parameter("sector", "industry").parameter("region", "be").build();
+    private final DataSet.Converter<CubeId> cubeIdParam = CubeSupport.idByName(SECTOR_REGION);
 
     @Test
     @SuppressWarnings("null")
@@ -73,7 +73,7 @@ public class CubeSupportTest {
     @Test
     public void testIdByName() {
         assertThat(CubeSupport.idByName(SECTOR_REGION)).satisfies(o -> {
-            assertThat(o.defaultValue()).isEqualTo(SECTOR_REGION);
+            assertThat(o.getDefaultValue()).isEqualTo(SECTOR_REGION);
             assertThat(o.get(col)).isEqualTo(INDUSTRY);
             assertThat(o.get(series)).isEqualTo(INDUSTRY_BE);
         });
@@ -82,9 +82,9 @@ public class CubeSupportTest {
     @Test
     public void testidBySeparator() {
         assertThat(CubeSupport.idBySeparator(SECTOR_REGION, ".", "id")).satisfies(o -> {
-            assertThat(o.defaultValue()).isEqualTo(SECTOR_REGION);
-            assertThat(o.get(DataSet.builder(dataSource, DataSet.Kind.COLLECTION).put("id", "industry").build())).isEqualTo(INDUSTRY);
-            assertThat(o.get(DataSet.builder(dataSource, DataSet.Kind.SERIES).put("id", "industry.be").build())).isEqualTo(INDUSTRY_BE);
+            assertThat(o.getDefaultValue()).isEqualTo(SECTOR_REGION);
+            assertThat(o.get(DataSet.builder(dataSource, DataSet.Kind.COLLECTION).parameter("id", "industry").build())).isEqualTo(INDUSTRY);
+            assertThat(o.get(DataSet.builder(dataSource, DataSet.Kind.SERIES).parameter("id", "industry.be").build())).isEqualTo(INDUSTRY_BE);
         });
     }
 

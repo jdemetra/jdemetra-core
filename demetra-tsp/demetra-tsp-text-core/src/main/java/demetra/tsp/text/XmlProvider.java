@@ -6,7 +6,6 @@ import demetra.tsprovider.*;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.stream.TsStreamAsProvider;
 import demetra.tsprovider.util.FallbackDataMoniker;
-import demetra.tsprovider.util.Param;
 import demetra.tsprovider.util.ResourceMap;
 import internal.demetra.tsp.text.*;
 import nbbrd.design.DirectImpl;
@@ -84,12 +83,12 @@ public final class XmlProvider implements FileLoader<XmlBean> {
         }
 
         @Override
-        public @NonNull Param<DataSet, Integer> getCollectionParam(@NonNull DataSource dataSource) {
+        public DataSet.@NonNull Converter<Integer> getCollectionParam(@NonNull DataSource dataSource) {
             return param.getCollectionParam(dataSource);
         }
 
         @Override
-        public @NonNull Param<DataSet, Integer> getSeriesParam(@NonNull DataSource dataSource) {
+        public DataSet.@NonNull Converter<Integer> getSeriesParam(@NonNull DataSource dataSource) {
             return param.getSeriesParam(dataSource);
         }
 

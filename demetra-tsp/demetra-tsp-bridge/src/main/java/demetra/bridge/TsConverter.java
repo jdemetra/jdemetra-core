@@ -133,21 +133,21 @@ public class TsConverter {
 
     //<editor-fold defaultstate="collapsed" desc="DataSource">
     public @NonNull DataSource toDataSource(ec.tss.tsproviders.@NonNull DataSource o) {
-        return DataSource.builder(o.getProviderName(), o.getVersion()).putAll(o.getParams()).build();
+        return DataSource.builder(o.getProviderName(), o.getVersion()).parameters(o.getParams()).build();
     }
 
     public ec.tss.tsproviders.@NonNull DataSource fromDataSource(@NonNull DataSource o) {
-        return ec.tss.tsproviders.DataSource.builder(o.getProviderName(), o.getVersion()).putAll(o.getParams()).build();
+        return ec.tss.tsproviders.DataSource.builder(o.getProviderName(), o.getVersion()).putAll(o.getParameters()).build();
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="DataSet">
     public @NonNull DataSet toDataSet(ec.tss.tsproviders.@NonNull DataSet o) {
-        return DataSet.builder(toDataSource(o.getDataSource()), toKind(o.getKind())).putAll(o.getParams()).build();
+        return DataSet.builder(toDataSource(o.getDataSource()), toKind(o.getKind())).parameters(o.getParams()).build();
     }
 
     public ec.tss.tsproviders.@NonNull DataSet fromDataSet(@NonNull DataSet o) {
-        return ec.tss.tsproviders.DataSet.builder(fromDataSource(o.getDataSource()), fromKind(o.getKind())).putAll(o.getParams()).build();
+        return ec.tss.tsproviders.DataSet.builder(fromDataSource(o.getDataSource()), fromKind(o.getKind())).putAll(o.getParameters()).build();
     }
 
     public DataSet.@NonNull Kind toKind(ec.tss.tsproviders.DataSet.@NonNull Kind o) {

@@ -27,7 +27,6 @@ import demetra.tsprovider.cube.CubeAccessor;
 import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.CubeSupport;
 import demetra.tsprovider.stream.TsStreamAsProvider;
-import demetra.tsprovider.util.Param;
 import demetra.tsprovider.util.ResourceMap;
 import java.io.IOException;
 import demetra.tsprovider.stream.HasTsStream;
@@ -74,7 +73,7 @@ public final class FakeDbProvider implements DataSourceLoader {
         }
 
         @Override
-        public Param<DataSet, CubeId> getIdParam(CubeId root) {
+        public DataSet.Converter<CubeId> getIdParam(CubeId root) {
             return fakeDbParam.getCubeIdParam(root);
         }
     }

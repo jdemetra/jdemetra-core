@@ -20,9 +20,11 @@ import demetra.spreadsheet.SpreadSheetBean;
 import demetra.timeseries.util.ObsGathering;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
-import demetra.tsprovider.util.IConfig;
 import demetra.tsprovider.util.ObsFormat;
-import demetra.tsprovider.util.Param;
+import demetra.tsprovider.util.TsProviders;
+import nbbrd.io.text.Formatter;
+import nbbrd.io.text.Parser;
+import nbbrd.io.text.Property;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.File;
@@ -30,24 +32,21 @@ import java.io.File;
 /**
  * @author Philippe Charles
  */
-public interface SpreadSheetParam extends Param<DataSource, SpreadSheetBean> {
+public interface SpreadSheetParam extends DataSource.Converter<SpreadSheetBean> {
 
-    @NonNull
-    String getVersion();
+    @NonNull String getVersion();
 
-    @NonNull
-    Param<DataSet, String> getSheetParam(DataSource dataSource);
+    DataSet.@NonNull Converter<String> getSheetParam(DataSource dataSource);
 
-    @NonNull
-    Param<DataSet, String> getSeriesParam(DataSource dataSource);
+    DataSet.@NonNull Converter<String> getSeriesParam(DataSource dataSource);
 
     final class V1 implements SpreadSheetParam {
 
-        private final Param<DataSource, File> file = Param.onFile(new File(""), "file");
-        private final Param<DataSource, ObsFormat> obsFormat = Param.onObsFormat(ObsFormat.DEFAULT, "locale", "datePattern", "numberPattern");
-        private final Param<DataSource, ObsGathering> obsGathering = Param.onObsGathering(ObsGathering.DEFAULT, "frequency", "aggregationType", "cleanMissing");
-        private final Param<DataSet, String> sheet = Param.onString("", "sheetName");
-        private final Param<DataSet, String> series = Param.onString("", "seriesName");
+        private final Property<File> file = Property.of("file", new File(""), Parser.onFile(), Formatter.onFile());
+        private final DataSource.Converter<ObsFormat> obsFormat = TsProviders.onObsFormat(ObsFormat.DEFAULT, "locale", "datePattern", "numberPattern");
+        private final DataSource.Converter<ObsGathering> obsGathering = TsProviders.onObsGathering(ObsGathering.DEFAULT, "frequency", "aggregationType", "cleanMissing");
+        private final Property<String> sheet = Property.of("sheetName", "", Parser.onString(), Formatter.onString());
+        private final Property<String> series = Property.of("seriesName", "", Parser.onString(), Formatter.onString());
 
         @Override
         public String getVersion() {
@@ -55,26 +54,26 @@ public interface SpreadSheetParam extends Param<DataSource, SpreadSheetBean> {
         }
 
         @Override
-        public SpreadSheetBean defaultValue() {
+        public SpreadSheetBean getDefaultValue() {
             SpreadSheetBean result = new SpreadSheetBean();
-            result.setFile(file.defaultValue());
-            result.setObsFormat(obsFormat.defaultValue());
-            result.setObsGathering(obsGathering.defaultValue());
+            result.setFile(file.getDefaultValue());
+            result.setObsFormat(obsFormat.getDefaultValue());
+            result.setObsGathering(obsGathering.getDefaultValue());
             return result;
         }
 
         @Override
         public SpreadSheetBean get(DataSource dataSource) {
             SpreadSheetBean result = new SpreadSheetBean();
-            result.setFile(file.get(dataSource));
+            result.setFile(file.get(dataSource::getParameter));
             result.setObsFormat(obsFormat.get(dataSource));
             result.setObsGathering(obsGathering.get(dataSource));
             return result;
         }
 
         @Override
-        public void set(IConfig.Builder<?, DataSource> builder, SpreadSheetBean value) {
-            file.set(builder, value.getFile());
+        public void set(DataSource.Builder builder, SpreadSheetBean value) {
+            file.set(builder::parameter, value.getFile());
             // FIXME: NPE bug in jtss
             if (value.getObsFormat() != null) {
                 obsFormat.set(builder, value.getObsFormat());
@@ -85,13 +84,13 @@ public interface SpreadSheetParam extends Param<DataSource, SpreadSheetBean> {
         }
 
         @Override
-        public Param<DataSet, String> getSheetParam(DataSource dataSource) {
-            return sheet;
+        public DataSet.Converter<String> getSheetParam(DataSource dataSource) {
+            return TsProviders.dataSetConverterOf(sheet);
         }
 
         @Override
-        public Param<DataSet, String> getSeriesParam(DataSource dataSource) {
-            return series;
+        public DataSet.Converter<String> getSeriesParam(DataSource dataSource) {
+            return TsProviders.dataSetConverterOf(series);
         }
     }
 }

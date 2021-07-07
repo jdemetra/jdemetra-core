@@ -1,32 +1,35 @@
 /*
  * Copyright 2015 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.tsprovider.cube;
 
-import nbbrd.design.ThreadSafe;
 import demetra.timeseries.TsInformationType;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.HasDataDisplayName;
 import demetra.tsprovider.HasDataHierarchy;
-import demetra.tsprovider.util.IConfig;
-import demetra.tsprovider.util.Param;
 import demetra.tsprovider.stream.DataSetTs;
+import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import internal.util.Strings;
+import lombok.AllArgsConstructor;
+import nbbrd.design.ThreadSafe;
+import nbbrd.io.function.IOFunction;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Collections;
@@ -36,13 +39,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import lombok.AllArgsConstructor;
-import demetra.tsprovider.stream.HasTsStream;
-import nbbrd.io.function.IOFunction;
 
 /**
- *
  * @author Philippe Charles
  * @since 2.2.0
  */
@@ -53,11 +51,10 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
     @ThreadSafe
     public interface Resource {
 
-        @NonNull
-        CubeAccessor getAccessor(@NonNull DataSource dataSource) throws IOException;
+        @NonNull CubeAccessor getAccessor(@NonNull DataSource dataSource) throws IOException;
 
-        @NonNull
-        Param<DataSet, CubeId> getIdParam(@NonNull CubeId root) throws IOException;
+
+        DataSet.@NonNull Converter<CubeId> getIdParam(@NonNull CubeId root) throws IOException;
     }
 
     @lombok.NonNull
@@ -101,7 +98,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
         }
 
         CubeAccessor acc = resource.getAccessor(parent.getDataSource());
-        Param<DataSet, CubeId> idParam = resource.getIdParam(acc.getRoot());
+        DataSet.Converter<CubeId> idParam = resource.getIdParam(acc.getRoot());
 
         CubeId parentId = idParam.get(parent);
 
@@ -134,7 +131,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
         DataSourcePreconditions.checkProvider(providerName, dataSet);
 
         CubeAccessor acc = resource.getAccessor(dataSet.getDataSource());
-        Param<DataSet, CubeId> idParam = resource.getIdParam(acc.getRoot());
+        DataSet.Converter<CubeId> idParam = resource.getIdParam(acc.getRoot());
 
         CubeId id = idParam.get(dataSet);
 
@@ -186,13 +183,11 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
     }
     //</editor-fold>
 
-    @NonNull
-    public static Param<DataSet, CubeId> idByName(@NonNull CubeId root) {
+    public static DataSet.@NonNull Converter<CubeId> idByName(@NonNull CubeId root) {
         return new ByNameParam(Objects.requireNonNull(root));
     }
 
-    @NonNull
-    public static Param<DataSet, CubeId> idBySeparator(@NonNull CubeId root, @NonNull String separator, @NonNull String name) {
+    public static DataSet.@NonNull Converter<CubeId> idBySeparator(@NonNull CubeId root, @NonNull String separator, @NonNull String name) {
         return new BySeparatorParam(Objects.requireNonNull(separator), Objects.requireNonNull(root), Objects.requireNonNull(name));
     }
 
@@ -201,8 +196,11 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
         return e == null ? Stream.empty() : Stream.of(e);
     }
 
-    private static Function<CubeId, DataSet> toDataSetFunc(DataSet.Builder builder, Param<DataSet, CubeId> dimValuesParam) {
-        return o -> builder.put(dimValuesParam, o).build();
+    private static Function<CubeId, DataSet> toDataSetFunc(DataSet.Builder builder, DataSet.Converter<CubeId> dimValuesParam) {
+        return o -> {
+            dimValuesParam.set(builder, o);
+            return builder.build();
+        };
     }
 
     private static String getNonNullLabel(String label, CubeId id, IOFunction<CubeId, String> toLabel) {
@@ -225,12 +223,12 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
     }
 
     @AllArgsConstructor
-    private static final class ByNameParam implements Param<DataSet, CubeId> {
+    private static final class ByNameParam implements DataSet.Converter<CubeId> {
 
         private final CubeId root;
 
         @Override
-        public CubeId defaultValue() {
+        public CubeId getDefaultValue() {
             return root;
         }
 
@@ -240,7 +238,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
             int i = 0;
             while (i < dimValues.length) {
                 String id = root.getDimensionId(i);
-                if ((dimValues[i] = config.get(id)) == null) {
+                if ((dimValues[i] = config.getParameter(id)) == null) {
                     break;
                 }
                 i++;
@@ -249,30 +247,30 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
         }
 
         @Override
-        public void set(IConfig.Builder<?, DataSet> builder, CubeId value) {
+        public void set(DataSet.Builder builder, CubeId value) {
             for (int i = 0; i < value.getLevel(); i++) {
-                builder.put(value.getDimensionId(i), value.getDimensionValue(i));
+                builder.parameter(value.getDimensionId(i), value.getDimensionValue(i));
             }
         }
     }
 
     @lombok.AllArgsConstructor
-    private static final class BySeparatorParam implements Param<DataSet, CubeId> {
+    private static final class BySeparatorParam implements DataSet.Converter<CubeId> {
 
         private final String separator;
         private final CubeId root;
         private final String name;
 
         @Override
-        public CubeId defaultValue() {
+        public CubeId getDefaultValue() {
             return root;
         }
 
         @Override
         public CubeId get(DataSet config) {
-            String value = config.get(name);
+            String value = config.getParameter(name);
             if (value == null || value.isEmpty()) {
-                return defaultValue();
+                return getDefaultValue();
             }
 
             String[] dimValues = new String[root.getMaxLevel()];
@@ -286,14 +284,14 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
         }
 
         @Override
-        public void set(IConfig.Builder<?, DataSet> builder, CubeId value) {
+        public void set(DataSet.Builder builder, CubeId value) {
             if (value.getLevel() > 0) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(value.getDimensionValue(0));
                 for (int i = 1; i < value.getLevel(); i++) {
                     sb.append(separator).append(value.getDimensionValue(i));
                 }
-                builder.put(name, sb.toString());
+                builder.parameter(name, sb.toString());
             }
         }
     }
