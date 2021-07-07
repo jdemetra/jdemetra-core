@@ -26,7 +26,7 @@ import demetra.dstats.RandomNumberGenerator;
  *
  * @author PALATEJ
  */
-public class LaplaceDistribution implements ContinuousDistribution {
+public class Cauchy implements ContinuousDistribution {
 
     @Override
     public double getDensity(double x) throws DStatException {

@@ -34,9 +34,8 @@ public class StsOutliersDetectionTest {
         Random rnd = new Random();
         X.set((i, j) -> rnd.nextDouble());
         StsOutliersDetection.Results rslt = StsOutliersDetection.process(y, 1, 1, 1, "Trigonometric", X, true, true, false, 0, 0, "Score", "Point");
-        rslt.buffer();
-
-        System.out.println(rslt.getComponents());
+        byte[] buffer = rslt.buffer();
+//        System.out.println(rslt.getComponents());
 //        System.out.println("");
 //        System.out.println(rslt.getInitialTau());
 //        System.out.println("");
@@ -60,8 +59,8 @@ public class StsOutliersDetectionTest {
     @Test
     public void testSeasonalBreaks() {
         TsData y = TsData.ofInternal(TsPeriod.monthly(1974, 1), sugar);
-        double[] rslt = StsOutliersDetection.seasonalBreaks(y, 1, 1, 1, "HarrisonStevens", null);
-               System.out.println(DoubleSeq.of(rslt));
+        double[] rslt = StsOutliersDetection.seasonalBreaks(y.multiply(.100), 1, 1, 1, "HarrisonStevens", null);
+//        System.out.println(DoubleSeq.of(rslt));
     }
 
 }

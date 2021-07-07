@@ -23,7 +23,7 @@ import jdplus.math.matrices.GeneralMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 
 /**
- * Growth rate preservation Algorithm base on the paper: A Newton's method for
+ * Growth rate preservation Algorithm based on the paper: A Newton's method for
  * benchmarking time series according to a Growth Rates Preservation Principle
  * by T. Di Fonzo and M. Marini (IMF WP/11/179)
  *

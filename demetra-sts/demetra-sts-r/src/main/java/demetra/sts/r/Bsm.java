@@ -10,11 +10,9 @@ import demetra.data.Parameter;
 import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.sts.BasicStructuralModel;
-import demetra.sts.BsmDecomposition;
 import demetra.sts.BsmEstimation;
 import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
-import demetra.sts.Component;
 import demetra.sts.LightBasicStructuralModel;
 import demetra.sts.SeasonalModel;
 import demetra.sts.io.protobuf.StsProtosUtility;
@@ -68,10 +66,10 @@ public class Bsm {
         if (!kernel.process(y.getValues(), X, y.getAnnualFrequency(), mspec)) {
             return null;
         }
-        
-        int nhp = kernel.finalSpecification().getFreeParametersCount();
-        BsmMapping mapping=new BsmMapping(kernel.finalSpecification(), y.getAnnualFrequency(), null);
-        DoubleSeq params = mapping.map(kernel.getResult());
+        BsmSpec fspec = kernel.finalSpecification(true);
+        int nhp = fspec.getFreeParametersCount();
+        BsmMapping mapping=new BsmMapping(fspec, y.getAnnualFrequency(), null);
+        DoubleSeq params = mapping.map(kernel.result(true));
         ParametersEstimation parameters=new ParametersEstimation(params, "bsm");
 
         DoubleSeq coef = kernel.getLikelihood().coefficients();
@@ -95,7 +93,7 @@ public class Bsm {
                 .series(y)
                 .logTransformation(false)
                 .lengthOfPeriodTransformation(LengthOfPeriodType.None)
-                .specification(kernel.finalSpecification())
+                .specification(kernel.finalSpecification(false))
                 .variables(vars)
                 .build();
         
@@ -135,7 +133,7 @@ public class Bsm {
 
         BsmKernel kernel = new BsmKernel(espec);
         boolean ok = kernel.process(series.getValues(), X == null ? null : X.extract(0, series.length(), 0, X.getColumnsCount()), series.getAnnualFrequency(), BsmSpec.DEFAULT);
-        BsmData result = kernel.getResult();
+        BsmData result = kernel.result(true);
         // create the final ssf
         SsfBsm bsm = SsfBsm.of(result);
         Ssf ssf;

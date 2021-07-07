@@ -25,7 +25,6 @@ import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import jdplus.data.DataBlock;
-import jdplus.data.DataBlockIterator;
 import jdplus.data.normalizer.AbsMeanNormalizer;
 import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.math.functions.FunctionMinimizer;
@@ -102,7 +101,7 @@ public class BsmKernel {
 
         if (bsm == null) {
             bsm = initialize();
-            updateSpec();
+            modelSpec = specOf(bsm);
         }
 
         fn_ = null;
@@ -121,7 +120,7 @@ public class BsmKernel {
 
                 BsmData.ComponentVariance max = bsm.maxVariance();
                 bsm = bsm.scaleVariances(1 / max.getVariance());
-                updateSpec();
+                modelSpec = specOf(bsm);
                 if (fixedVar != max.getComponent()) {
                     fixedVar = max.getComponent();
                 } else {
@@ -146,7 +145,7 @@ public class BsmKernel {
                     fixedVar = max.getComponent();
                 }
             }
-            updateSpec();
+            modelSpec = specOf(bsm);
         }
 
         boolean ok = converged;
@@ -158,7 +157,7 @@ public class BsmKernel {
             fnmax_ = (SsfFunctionPoint<BsmData, SsfBsm2>) fn_.evaluate(parameters);
             likelihood = fnmax_.getLikelihood();
             bsm = fnmax_.getCore();
-            updateSpec();
+            modelSpec = specOf(bsm);
             ok = false;
         }
         return ok;
@@ -249,21 +248,32 @@ public class BsmKernel {
 
     /**
      *
+     * @param raw
      * @return
      */
-    public BsmData getResult() {
-        if (bsm == null && y != null) {
-            estimate();
+    public BsmData result(boolean raw) {
+        if (bsm == null) {
+            return null;
         }
-        return bsm;
+        if (raw || fixedVar == null || fixedVar == Component.Undefined) {
+            return bsm;
+        } else {
+            return bsm.scaleVariances(likelihood.sigma2());
+        }
+
     }
 
     /**
      *
+     * @param raw
      * @return
      */
-    public BsmSpec finalSpecification() {
-        return modelSpec;
+    public BsmSpec finalSpecification(boolean raw) {
+        if (raw) {
+            return modelSpec;
+        } else {
+            return specOf(result(false));
+        }
     }
 
     /**
@@ -291,7 +301,7 @@ public class BsmKernel {
         // Set default values
         BsmMapping mapping = new BsmMapping(modelSpec, period, null);
         bsm = mapping.map(mapping.getDefaultParameters());
-        updateSpec();
+        modelSpec = specOf(bsm);
         BsmData bsm0 = bsm;
         //
         double llmax = 0;
@@ -416,10 +426,6 @@ public class BsmKernel {
         boolean rslt = estimate();
         if (rslt) {
             likelihood = likelihood.rescale(factor, null);
-            if (fixedVar != null && fixedVar != Component.Undefined) {
-                bsm = bsm.scaleVariances(likelihood.sigma2());
-            }
-            updateSpec();
         }
         return rslt;
     }
@@ -453,7 +459,7 @@ public class BsmKernel {
         DataBlock lin = DataBlock.of(z);
         if (X != null) {
             DoubleSeqCursor b = likelihood.coefficients().cursor();
-            for (int i=0; i<X.getColumnsCount(); ++i){
+            for (int i = 0; i < X.getColumnsCount(); ++i) {
                 lin.addAY(-b.getAndNext(), X.column(i));
             }
         }
@@ -502,14 +508,14 @@ public class BsmKernel {
         return ll.evaluate(mapper.map(bsm));
     }
 
-    private void updateSpec() {
-        modelSpec = modelSpec.toBuilder()
-                .level(nparam(modelSpec.getLevelVar(), bsm.getLevelVar()), nparam(modelSpec.getSlopeVar(), bsm.getSlopeVar()))
-                .seasonal(modelSpec.getSeasonalModel(), nparam(modelSpec.getSeasonalVar(), bsm.getSeasonalVar()))
-                .noise(nparam(modelSpec.getNoiseVar(), bsm.getNoiseVar()))
-                .cycle(nparam(modelSpec.getCycleVar(), bsm.getCycleVar()),
-                        nparam(modelSpec.getCycleDumpingFactor(), bsm.getCycleDumpingFactor()),
-                        nparam(modelSpec.getCycleLength(), bsm.getCycleLength()))
+    private BsmSpec specOf(BsmData bsmData) {
+        return modelSpec.toBuilder()
+                .level(nparam(modelSpec.getLevelVar(), bsmData.getLevelVar()), nparam(modelSpec.getSlopeVar(), bsmData.getSlopeVar()))
+                .seasonal(modelSpec.getSeasonalModel(), nparam(modelSpec.getSeasonalVar(), bsmData.getSeasonalVar()))
+                .noise(nparam(modelSpec.getNoiseVar(), bsmData.getNoiseVar()))
+                .cycle(nparam(modelSpec.getCycleVar(), bsmData.getCycleVar()),
+                        nparam(modelSpec.getCycleDumpingFactor(), bsmData.getCycleDumpingFactor()),
+                        nparam(modelSpec.getCycleLength(), bsmData.getCycleLength()))
                 .build();
 
     }

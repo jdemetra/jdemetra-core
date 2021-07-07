@@ -127,13 +127,13 @@ public class StsEstimation {
             return null;
         }
 
-        BsmData bsm = monitor.getResult();
+        BsmData bsm = monitor.result(true);
         SsfBsm ssf = SsfBsm.of(bsm);
         DefaultSmoothingResults sr = DkToolkit.sqrtSmooth(ssf, new SsfData(y.getValues()), true, true);
 
         TsData t = null, c = null, s = null, seas = null, n = null;
         TsPeriod start = y.getStart();
-        mspec = monitor.finalSpecification();
+        mspec = monitor.finalSpecification(true);
         if (mspec.hasLevel()) {
             int pos = SsfBsm.searchPosition(bsm, Component.Level);
             t = TsData.ofInternal(start, sr.getComponent(pos).toArray());

@@ -20,12 +20,10 @@ import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.MatrixFactory;
 import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.ssf.akf.AugmentedSmoother;
 import jdplus.ssf.akf.SmoothationsComputer;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;
 import jdplus.ssf.implementations.RegSsf;
-import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.stats.RobustStandardDeviationComputer;
@@ -334,8 +332,8 @@ public class OutliersDetection {
         BsmKernel monitor = new BsmKernel(espec);
         monitor.process(y, W, period, spec);
         curp = monitor.maxLikelihoodFunction().getParameters();
-        model = monitor.getResult();
-        curSpec = monitor.finalSpecification();
+        model = monitor.result(true);
+        curSpec = monitor.finalSpecification(true);
         likelihood = monitor.getLikelihood();
         return model != null;
     }
@@ -386,16 +384,6 @@ public class OutliersDetection {
         }
     }
 
-//    private static double robustSigma(DoubleSeq y, Matrix W, BsmData model) {
-//        SsfBsm2 ssf = SsfBsm2.of(model);
-//        Ssf wssf = W == null ? ssf : RegSsf.ssf(ssf, W);
-//        DiffusePredictionErrorDecomposition e = new DiffusePredictionErrorDecomposition(true);
-//        e.prepare(ssf, y.length());
-//        DkToolkit.sqrtFilter(wssf, new SsfData(y), e, true);
-//        DoubleSeq errors = e.errors(true, true);
-//        return RobustStandardDeviationComputer.mad().compute(errors);
-//    }
-//
     private double robustSigma() {
         DoubleSeq errors = getLikelihood().e();
         return RobustStandardDeviationComputer.mad().compute(errors);

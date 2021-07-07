@@ -16,13 +16,9 @@
  */
 package demetra.sa;
 
-import demetra.information.Information;
-import demetra.information.InformationSet;
 import demetra.processing.Diagnostics;
 import demetra.processing.DiagnosticsFactory;
 import demetra.processing.ProcDiagnostic;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import nbbrd.service.Mutability;

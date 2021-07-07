@@ -31,6 +31,14 @@ import demetra.information.Explorable;
  */
 @lombok.experimental.UtilityClass
 public class SaManager {
+    
+    public List<SaProcessingFactory> processors(){
+        return SaProcessingFactoryLoader.get();
+    }
+    
+    public List<SaOutputFactory> outputFactories(){
+        return SaOutputFactoryLoader.get();
+    }
 
     public Explorable process(TsData series, SaSpecification spec, ModellingContext context, ProcessingLog log) {
         List<SaProcessingFactory> all = SaProcessingFactoryLoader.get();

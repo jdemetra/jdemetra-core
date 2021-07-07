@@ -20,7 +20,6 @@ import demetra.processing.ProcDiagnostic;
 import demetra.processing.ProcQuality;
 import demetra.timeseries.regression.ModellingContext;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -33,10 +32,9 @@ public final class SaItem {
 
     @lombok.NonNull
     String name;
-    
-    @lombok.NonNull
-    SaDefinition definition;    
 
+    @lombok.NonNull
+    SaDefinition definition;
 
     @lombok.Singular("meta")
     @lombok.EqualsAndHashCode.Exclude
@@ -73,12 +71,15 @@ public final class SaItem {
         return new SaItem(name, definition, Collections.unmodifiableMap(info), priority, estimation, quality);
     }
 
-    public void setQuality(ProcQuality quality) {
-        this.quality = quality;
+    public void accept() {
+        if (quality == null) {
+            return;
+        }
+        this.quality = ProcQuality.Accepted;
     }
 
     public boolean isProcessed() {
-        return estimation != null;
+        return quality != null;
     }
 
     /**
@@ -107,6 +108,10 @@ public final class SaItem {
     public SaEstimation getEstimation() {
         SaEstimation e = estimation;
         if (e == null) {
+            ProcQuality q = quality;
+            if (q != null) {
+                return null;
+            }
             synchronized (this) {
                 e = estimation;
                 if (e == null) {
@@ -118,6 +123,17 @@ public final class SaItem {
             }
         }
         return e;
+    }
+
+    public SaDocument asDocument() {
+        SaEstimation e = getEstimation();
+        if (e == null) {
+            return new SaDocument(name, definition.getTs(), definition.activeSpecification(),
+                    null, null, quality);
+        } else {
+            return new SaDocument(name, definition.getTs(), definition.activeSpecification(),
+                    e.getResults(), e.getDiagnostics(), quality);
+        }
     }
 
 }
