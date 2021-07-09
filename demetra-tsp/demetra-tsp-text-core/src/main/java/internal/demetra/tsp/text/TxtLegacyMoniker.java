@@ -71,16 +71,16 @@ public final class TxtLegacyMoniker implements HasDataMoniker {
         if (!id.isSeries()) {
             return DataSet.of(source, DataSet.Kind.COLLECTION);
         }
-        return DataSet.builder(source, DataSet.Kind.COLLECTION)
-                .put(param.getSeriesParam(source), id.getSeriesIndex())
-                .build();
+        DataSet.Builder result = DataSet.builder(source, DataSet.Kind.COLLECTION);
+        param.getSeriesParam(source).set(result, id.getSeriesIndex());
+        return result.build();
     }
 
     private DataSource toDataSource(File file) {
         TxtBean bean = new TxtBean();
         bean.setFile(file);
-        return DataSource.builder(providerName, param.getVersion())
-                .put(param, bean)
-                .build();
+        DataSource.Builder result = DataSource.builder(providerName, param.getVersion());
+        param.set(result, bean);
+        return result.build();
     }
 }

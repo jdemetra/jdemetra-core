@@ -8,7 +8,6 @@ import demetra.tsprovider.HasDataHierarchy;
 import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.util.DataSourcePreconditions;
-import demetra.tsprovider.util.Param;
 import nbbrd.design.ThreadSafe;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -25,11 +24,9 @@ public class TxtSupport implements HasDataHierarchy, HasTsStream {
     @ThreadSafe
     public interface Resource {
 
-        @NonNull
-        TsCollection getData(@NonNull DataSource dataSource) throws IOException;
+        @NonNull TsCollection getData(@NonNull DataSource dataSource) throws IOException;
 
-        @NonNull
-        Param<DataSet, Integer> getSeriesParam(@NonNull DataSource dataSource);
+        DataSet.@NonNull Converter<Integer> getSeriesParam(@NonNull DataSource dataSource);
     }
 
     @lombok.NonNull
@@ -43,12 +40,15 @@ public class TxtSupport implements HasDataHierarchy, HasTsStream {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
         TsCollection data = resource.getData(dataSource);
-        Param<DataSet, Integer> seriesParam = resource.getSeriesParam(dataSource);
+        DataSet.Converter<Integer> seriesParam = resource.getSeriesParam(dataSource);
 
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
 
         return IntStream.range(0, data.length())
-                .mapToObj(index -> builder.put(seriesParam, index).build())
+                .mapToObj(index -> {
+                    seriesParam.set(builder, index);
+                    return builder.build();
+                })
                 .collect(Collectors.toList());
     }
 
@@ -63,7 +63,7 @@ public class TxtSupport implements HasDataHierarchy, HasTsStream {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
         TsCollection data = resource.getData(dataSource);
-        Param<DataSet, Integer> seriesParam = resource.getSeriesParam(dataSource);
+        DataSet.Converter<Integer> seriesParam = resource.getSeriesParam(dataSource);
 
         return IntStream.range(0, data.length())
                 .mapToObj(getMapper(dataSource, data, seriesParam));
@@ -74,15 +74,18 @@ public class TxtSupport implements HasDataHierarchy, HasTsStream {
         DataSourcePreconditions.checkProvider(providerName, dataSet.getDataSource());
 
         TsCollection data = resource.getData(dataSet.getDataSource());
-        Param<DataSet, Integer> seriesParam = resource.getSeriesParam(dataSet.getDataSource());
+        DataSet.Converter<Integer> seriesParam = resource.getSeriesParam(dataSet.getDataSource());
 
         return IntStream.range(0, data.length())
                 .filter(seriesParam.get(dataSet)::equals)
                 .mapToObj(getMapper(dataSet.getDataSource(), data, seriesParam));
     }
 
-    private IntFunction<DataSetTs> getMapper(DataSource dataSource, TsCollection data, Param<DataSet, Integer> seriesParam) {
+    private IntFunction<DataSetTs> getMapper(DataSource dataSource, TsCollection data, DataSet.Converter<Integer> seriesParam) {
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
-        return index -> new DataSetTs(builder.put(seriesParam, index).build(), data.get(index).getName(), data.get(index).getMeta(), data.get(index).getData());
+        return index -> {
+            seriesParam.set(builder, index);
+            return new DataSetTs(builder.build(), data.get(index).getName(), data.get(index).getMeta(), data.get(index).getData());
+        };
     }
 }

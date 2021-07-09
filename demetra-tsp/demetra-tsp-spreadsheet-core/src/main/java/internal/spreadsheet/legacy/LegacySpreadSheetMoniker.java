@@ -70,26 +70,26 @@ public final class LegacySpreadSheetMoniker implements HasDataMoniker {
     private DataSet toDataSet(LegacySpreadSheetId id) {
         DataSource source = toDataSource(new File(id.getFile()));
         if (id.isCollection()) {
-            return DataSet.builder(source, DataSet.Kind.COLLECTION)
-                    .put(param.getSheetParam(source), cleanSheetName(id.getSheetName()))
-                    .build();
+            DataSet.Builder result = DataSet.builder(source, DataSet.Kind.COLLECTION);
+            param.getSheetParam(source).set(result, cleanSheetName(id.getSheetName()));
+            return result.build();
         }
         if (id.isSeriesByIndex()) {
             // not supported
             return null;
         }
-        return DataSet.builder(source, DataSet.Kind.SERIES)
-                .put(param.getSheetParam(source), cleanSheetName(id.getSheetName()))
-                .put(param.getSeriesParam(source), id.getSeriesName())
-                .build();
+        DataSet.Builder result = DataSet.builder(source, DataSet.Kind.SERIES);
+        param.getSheetParam(source).set(result, cleanSheetName(id.getSheetName()));
+        param.getSeriesParam(source).set(result, id.getSeriesName());
+        return result.build();
     }
 
     private DataSource toDataSource(File file) {
         SpreadSheetBean bean = new SpreadSheetBean();
         bean.setFile(file);
-        return DataSource.builder(providerName, param.getVersion())
-                .put(param, bean)
-                .build();
+        DataSource.Builder result = DataSource.builder(providerName, param.getVersion());
+        param.set(result, bean);
+        return result.build();
     }
 
     private static String cleanSheetName(String name) {

@@ -79,7 +79,7 @@ public class TsStreamAsProviderTest {
                 if (dataSource.equals(ds)) {
                     DataSet.Builder b = DataSet.builder(dataSource, SERIES);
                     Function<Ts, DataSet> toDataSet = o -> {
-                        b.put("id", o.getName());
+                        b.parameter("id", o.getName());
                         return b.build();
                     };
                     return Stream.of(s1, s2, s3)
@@ -96,7 +96,7 @@ public class TsStreamAsProviderTest {
             @Override
             public Stream<DataSetTs> getData(DataSet dataSet, TsInformationType type) throws IllegalArgumentException, IOException {
                 return getData(dataSet.getDataSource(), type)
-                        .filter(o -> o.getId().get("id").startsWith(dataSet.get("id")));
+                        .filter(o -> o.getId().getParameter("id").startsWith(dataSet.getParameter("id")));
             }
         };
     }

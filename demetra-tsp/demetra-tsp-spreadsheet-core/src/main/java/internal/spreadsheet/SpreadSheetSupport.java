@@ -27,7 +27,6 @@ import demetra.tsprovider.grid.GridLayout;
 import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.util.DataSourcePreconditions;
-import demetra.tsprovider.util.Param;
 import demetra.tsprovider.util.MultiLineNameUtil;
 import nbbrd.design.ThreadSafe;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -51,14 +50,11 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
     @ThreadSafe
     public interface Resource {
 
-        @NonNull
-        SpreadSheetAccessor getAccessor(@NonNull DataSource dataSource) throws IOException;
+        @NonNull SpreadSheetAccessor getAccessor(@NonNull DataSource dataSource) throws IOException;
 
-        @NonNull
-        Param<DataSet, String> getSheetParam(@NonNull DataSource dataSource);
+        DataSet.@NonNull Converter<String> getSheetParam(@NonNull DataSource dataSource);
 
-        @NonNull
-        Param<DataSet, String> getSeriesParam(@NonNull DataSource dataSource);
+        DataSet.@NonNull Converter<String> getSeriesParam(@NonNull DataSource dataSource);
     }
 
     @lombok.NonNull
@@ -72,7 +68,7 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
         SpreadSheetAccessor accessor = resource.getAccessor(dataSource);
-        Param<DataSet, String> sheetParam = resource.getSheetParam(dataSource);
+        DataSet.Converter<String> sheetParam = resource.getSheetParam(dataSource);
 
         return accessor
                 .getSheetNames()
@@ -86,8 +82,8 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
         DataSourcePreconditions.checkProvider(providerName, parent);
 
         SpreadSheetAccessor accessor = resource.getAccessor(parent.getDataSource());
-        Param<DataSet, String> sheetParam = resource.getSheetParam(parent.getDataSource());
-        Param<DataSet, String> seriesParam = resource.getSeriesParam(parent.getDataSource());
+        DataSet.Converter<String> sheetParam = resource.getSheetParam(parent.getDataSource());
+        DataSet.Converter<String> seriesParam = resource.getSeriesParam(parent.getDataSource());
 
         return accessor
                 .getSheetByName(sheetParam.get(parent))
@@ -102,8 +98,8 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
         SpreadSheetAccessor accessor = resource.getAccessor(dataSource);
-        Param<DataSet, String> sheetParam = resource.getSheetParam(dataSource);
-        Param<DataSet, String> seriesParam = resource.getSeriesParam(dataSource);
+        DataSet.Converter<String> sheetParam = resource.getSheetParam(dataSource);
+        DataSet.Converter<String> seriesParam = resource.getSeriesParam(dataSource);
 
         Stream<SheetTs> data = accessor
                 .getSheets()
@@ -118,8 +114,8 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
         DataSourcePreconditions.checkProvider(providerName, dataSet);
 
         SpreadSheetAccessor accessor = resource.getAccessor(dataSet.getDataSource());
-        Param<DataSet, String> sheetParam = resource.getSheetParam(dataSet.getDataSource());
-        Param<DataSet, String> seriesParam = resource.getSeriesParam(dataSet.getDataSource());
+        DataSet.Converter<String> sheetParam = resource.getSheetParam(dataSet.getDataSource());
+        DataSet.Converter<String> seriesParam = resource.getSeriesParam(dataSet.getDataSource());
 
         Stream<SheetTs> data = accessor
                 .getSheetByName(sheetParam.get(dataSet))
@@ -134,22 +130,32 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
         return new IOException("Sheet not found: " + dataSet.toString());
     }
 
-    private static Function<String, DataSet> childrenMapper(DataSource dataSource, Param<DataSet, String> sheetParam) {
+    private static Function<String, DataSet> childrenMapper(DataSource dataSource, DataSet.Converter<String> sheetParam) {
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
-        return o -> builder.put(sheetParam, o).build();
+        return o -> {
+            sheetParam.set(builder, o);
+            return builder.build();
+        };
     }
 
-    private static Function<Ts, DataSet> childrenMapper(DataSet parent, Param<DataSet, String> seriesParam) {
+    private static Function<Ts, DataSet> childrenMapper(DataSet parent, DataSet.Converter<String> seriesParam) {
         DataSet.Builder builder = parent.toBuilder(DataSet.Kind.SERIES);
-        return o -> builder.put(seriesParam, o.getName()).build();
+        return o -> {
+            seriesParam.set(builder, o.getName());
+            return builder.build();
+        };
     }
 
-    private static Function<SheetTs, DataSet> dataMapper(DataSource dataSource, Param<DataSet, String> sheetParam, Param<DataSet, String> seriesParam) {
+    private static Function<SheetTs, DataSet> dataMapper(DataSource dataSource, DataSet.Converter<String> sheetParam, DataSet.Converter<String> seriesParam) {
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.SERIES);
-        return o -> builder.put(sheetParam, o.sheetName).put(seriesParam, o.seriesName).build();
+        return o -> {
+            sheetParam.set(builder, o.sheetName);
+            seriesParam.set(builder, o.seriesName);
+            return builder.build();
+        };
     }
 
-    private Predicate<SheetTs> getSeriesFilter(DataSet dataSet, Param<DataSet, String> seriesParam) {
+    private Predicate<SheetTs> getSeriesFilter(DataSet dataSet, DataSet.Converter<String> seriesParam) {
         switch (dataSet.getKind()) {
             case COLLECTION:
                 return o -> true;
@@ -160,7 +166,7 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
         }
     }
 
-    private static Stream<DataSetTs> streamOf(Stream<SheetTs> data, DataSource dataSource, Param<DataSet, String> sheetParam, Param<DataSet, String> seriesParam) {
+    private static Stream<DataSetTs> streamOf(Stream<SheetTs> data, DataSource dataSource, DataSet.Converter<String> sheetParam, DataSet.Converter<String> seriesParam) {
         Function<SheetTs, DataSet> mapper = dataMapper(dataSource, sheetParam, seriesParam);
         return data.map(sheetTs -> new DataSetTs(mapper.apply(sheetTs), sheetTs.getLabel(), sheetTs.getMeta(), sheetTs.getData()));
     }

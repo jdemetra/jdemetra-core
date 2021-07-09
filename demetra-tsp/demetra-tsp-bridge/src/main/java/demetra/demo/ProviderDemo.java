@@ -18,8 +18,12 @@ package demetra.demo;
  */
 
 import demetra.timeseries.*;
-import demetra.tsprovider.*;
+import demetra.tsprovider.DataSet;
+import demetra.tsprovider.DataSource;
+import demetra.tsprovider.DataSourceLoader;
+import demetra.tsprovider.DataSourceProvider;
 import demetra.tsprovider.util.MultiLineNameUtil;
+import demetra.tsprovider.util.TsProviders;
 import demetra.util.TreeTraverser;
 import nbbrd.io.function.IOFunction;
 
@@ -84,7 +88,7 @@ public class ProviderDemo {
     }
 
     public void printId(DataSourceProvider provider, DataSet id) {
-        System.out.printf("%9s %s\n", "Uri:", DataSet.uriFormatter().format(id));
+        System.out.printf("%9s %s\n", "Uri:", id.toString());
         System.out.printf("%9s %s\n", "Display:", MultiLineNameUtil.join(provider.getDisplayName(id), " \n          "));
     }
 

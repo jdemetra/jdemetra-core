@@ -25,8 +25,8 @@
             <version>${jd2.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>be.nbb.rd</groupId>
-                    <artifactId>java-io-xml</artifactId>
+                    <groupId>com.github.nbbrd.java-io-util</groupId>
+                    <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

@@ -23,10 +23,13 @@ import demetra.tsprovider.DataSource;
 import demetra.tsprovider.cube.BulkCubeConfig;
 import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.CubeSupport;
-import demetra.tsprovider.util.IConfig;
 import demetra.tsprovider.util.ObsFormat;
-import demetra.tsprovider.util.Param;
+import demetra.tsprovider.util.TsProviders;
+import demetra.util.List2;
 import internal.util.Strings;
+import nbbrd.io.text.Formatter;
+import nbbrd.io.text.Parser;
+import nbbrd.io.text.Property;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.time.Duration;
@@ -40,12 +43,11 @@ import java.util.stream.Stream;
 /**
  * @author Philippe Charles
  */
-public interface JdbcParam extends Param<DataSource, JdbcBean> {
+public interface JdbcParam extends DataSource.Converter<JdbcBean> {
 
     String getVersion();
 
-    @NonNull
-    Param<DataSet, CubeId> getCubeIdParam(@NonNull CubeId root);
+    DataSet.@NonNull Converter<CubeId> getCubeIdParam(@NonNull CubeId root);
 
     final class V1 implements JdbcParam {
 
@@ -54,16 +56,16 @@ public interface JdbcParam extends Param<DataSource, JdbcBean> {
         private final Function<CharSequence, Stream<String>> dimensionSplitter = o -> Strings.splitToStream(',', o).map(String::trim).filter(Strings::isNotEmpty);
         private final Function<Stream<CharSequence>, String> dimensionJoiner = o -> o.collect(COMMA_JOINER);
 
-        private final Param<DataSource, String> dbName = Param.onString("", "dbName");
-        private final Param<DataSource, String> tableName = Param.onString("", "tableName");
-        private final Param<DataSource, List<String>> dimColumns = Param.onStringList(Collections.emptyList(), "dimColumns", dimensionSplitter, dimensionJoiner);
-        private final Param<DataSource, String> periodColumn = Param.onString("", "periodColumn");
-        private final Param<DataSource, String> valueColumn = Param.onString("", "valueColumn");
-        private final Param<DataSource, ObsFormat> dataFormat = Param.onObsFormat(ObsFormat.DEFAULT, "locale", "datePattern", "numberPattern");
-        private final Param<DataSource, String> versionColumn = Param.onString("", "versionColumn");
-        private final Param<DataSource, String> labelColumn = Param.onString("", "labelColumn");
-        private final Param<DataSource, ObsGathering> obsGathering = Param.onObsGathering(ObsGathering.DEFAULT, "frequency", "aggregationType", "cleanMissing");
-        private final Param<DataSource, BulkCubeConfig> cacheConfig = Param.onBulkCubeConfig(BulkCubeConfig.of(Duration.ofMinutes(5), 1), "cacheTtl", "cacheDepth");
+        private final Property<String> dbName = Property.of("dbName", "", Parser.onString(), Formatter.onString());
+        private final Property<String> tableName = Property.of("tableName", "", Parser.onString(), Formatter.onString());
+        private final Property<List<String>> dimColumns = Property.of("dimColumns", List2.copyOf(Collections.emptyList()), Parser.onStringList(dimensionSplitter), Formatter.onStringList(dimensionJoiner));
+        private final Property<String> periodColumn = Property.of("periodColumn", "", Parser.onString(), Formatter.onString());
+        private final Property<String> valueColumn = Property.of("valueColumn", "", Parser.onString(), Formatter.onString());
+        private final DataSource.Converter<ObsFormat> dataFormat = TsProviders.onObsFormat(ObsFormat.DEFAULT, "locale", "datePattern", "numberPattern");
+        private final Property<String> versionColumn = Property.of("versionColumn", "", Parser.onString(), Formatter.onString());
+        private final Property<String> labelColumn = Property.of("labelColumn", "", Parser.onString(), Formatter.onString());
+        private final DataSource.Converter<ObsGathering> obsGathering = TsProviders.onObsGathering(ObsGathering.DEFAULT, "frequency", "aggregationType", "cleanMissing");
+        private final DataSource.Converter<BulkCubeConfig> cacheConfig = TsProviders.onBulkCubeConfig(BulkCubeConfig.of(Duration.ofMinutes(5), 1), "cacheTtl", "cacheDepth");
 
         @Override
         public String getVersion() {
@@ -71,53 +73,53 @@ public interface JdbcParam extends Param<DataSource, JdbcBean> {
         }
 
         @Override
-        public JdbcBean defaultValue() {
+        public JdbcBean getDefaultValue() {
             JdbcBean result = new JdbcBean();
-            result.setDatabase(dbName.defaultValue());
-            result.setTable(tableName.defaultValue());
-            result.setDimColumns(dimColumns.defaultValue());
-            result.setPeriodColumn(periodColumn.defaultValue());
-            result.setValueColumn(valueColumn.defaultValue());
-            result.setObsFormat(dataFormat.defaultValue());
-            result.setVersionColumn(versionColumn.defaultValue());
-            result.setLabelColumn(labelColumn.defaultValue());
-            result.setObsGathering(obsGathering.defaultValue());
-            result.setCacheConfig(cacheConfig.defaultValue());
+            result.setDatabase(dbName.getDefaultValue());
+            result.setTable(tableName.getDefaultValue());
+            result.setDimColumns(dimColumns.getDefaultValue());
+            result.setPeriodColumn(periodColumn.getDefaultValue());
+            result.setValueColumn(valueColumn.getDefaultValue());
+            result.setObsFormat(dataFormat.getDefaultValue());
+            result.setVersionColumn(versionColumn.getDefaultValue());
+            result.setLabelColumn(labelColumn.getDefaultValue());
+            result.setObsGathering(obsGathering.getDefaultValue());
+            result.setCacheConfig(cacheConfig.getDefaultValue());
             return result;
         }
 
         @Override
         public JdbcBean get(DataSource dataSource) {
             JdbcBean result = new JdbcBean();
-            result.setDatabase(dbName.get(dataSource));
-            result.setTable(tableName.get(dataSource));
-            result.setDimColumns(dimColumns.get(dataSource));
-            result.setPeriodColumn(periodColumn.get(dataSource));
-            result.setValueColumn(valueColumn.get(dataSource));
+            result.setDatabase(dbName.get(dataSource::getParameter));
+            result.setTable(tableName.get(dataSource::getParameter));
+            result.setDimColumns(dimColumns.get(dataSource::getParameter));
+            result.setPeriodColumn(periodColumn.get(dataSource::getParameter));
+            result.setValueColumn(valueColumn.get(dataSource::getParameter));
             result.setObsFormat(dataFormat.get(dataSource));
-            result.setVersionColumn(versionColumn.get(dataSource));
-            result.setLabelColumn(labelColumn.get(dataSource));
+            result.setVersionColumn(versionColumn.get(dataSource::getParameter));
+            result.setLabelColumn(labelColumn.get(dataSource::getParameter));
             result.setObsGathering(obsGathering.get(dataSource));
             result.setCacheConfig(cacheConfig.get(dataSource));
             return result;
         }
 
         @Override
-        public void set(IConfig.Builder<?, DataSource> builder, JdbcBean value) {
-            dbName.set(builder, value.getDatabase());
-            tableName.set(builder, value.getTable());
-            dimColumns.set(builder, value.getDimColumns());
-            periodColumn.set(builder, value.getPeriodColumn());
-            valueColumn.set(builder, value.getValueColumn());
+        public void set(DataSource.Builder builder, JdbcBean value) {
+            dbName.set(builder::parameter, value.getDatabase());
+            tableName.set(builder::parameter, value.getTable());
+            dimColumns.set(builder::parameter, value.getDimColumns());
+            periodColumn.set(builder::parameter, value.getPeriodColumn());
+            valueColumn.set(builder::parameter, value.getValueColumn());
             dataFormat.set(builder, value.getObsFormat());
-            versionColumn.set(builder, value.getVersionColumn());
-            labelColumn.set(builder, value.getLabelColumn());
+            versionColumn.set(builder::parameter, value.getVersionColumn());
+            labelColumn.set(builder::parameter, value.getLabelColumn());
             obsGathering.set(builder, value.getObsGathering());
             cacheConfig.set(builder, value.getCacheConfig());
         }
 
         @Override
-        public Param<DataSet, CubeId> getCubeIdParam(CubeId root) {
+        public DataSet.Converter<CubeId> getCubeIdParam(CubeId root) {
             return CubeSupport.idByName(root);
         }
     }

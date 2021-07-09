@@ -21,7 +21,6 @@ import demetra.tsprovider.DataSource;
 import demetra.tsprovider.cube.CubeAccessor;
 import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.CubeSupport;
-import demetra.tsprovider.util.Param;
 
 /**
  *
@@ -34,7 +33,7 @@ public final class XCubeSupportResource implements CubeSupport.Resource {
     private final CubeAccessor accessor;
 
     @lombok.NonNull
-    private final Param<DataSet, CubeId> param;
+    private final DataSet.Converter<CubeId> param;
 
     @Override
     public CubeAccessor getAccessor(DataSource dataSource) {
@@ -42,7 +41,7 @@ public final class XCubeSupportResource implements CubeSupport.Resource {
     }
 
     @Override
-    public Param<DataSet, CubeId> getIdParam(CubeId root) {
+    public DataSet.Converter<CubeId> getIdParam(CubeId root) {
         return param;
     }
 }

@@ -1,8 +1,7 @@
 package internal.tsprovider.util;
 
-import demetra.tsprovider.util.IConfig;
+import demetra.tsprovider.DataSource;
 import demetra.tsprovider.util.ObsFormat;
-import demetra.tsprovider.util.Param;
 import internal.util.Strings;
 import nbbrd.io.text.Parser;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -12,7 +11,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 @lombok.AllArgsConstructor
-public final class ObsFormatParam<S extends IConfig> implements Param<S, ObsFormat> {
+public final class ObsFormatParam implements DataSource.Converter<ObsFormat> {
 
     @lombok.NonNull
     private final ObsFormat defaultValue;
@@ -38,27 +37,27 @@ public final class ObsFormatParam<S extends IConfig> implements Param<S, ObsForm
     }
 
     @Override
-    public ObsFormat defaultValue() {
+    public ObsFormat getDefaultValue() {
         return defaultValue;
     }
 
     @Override
-    public ObsFormat get(IConfig config) {
-        String locale = config.get(localeKey);
-        String datePattern = config.get(datePatternKey);
-        String numberPattern = config.get(numberPatternKey);
+    public ObsFormat get(DataSource config) {
+        String locale = config.getParameter(localeKey);
+        String datePattern = config.getParameter(datePatternKey);
+        String numberPattern = config.getParameter(numberPatternKey);
         return isValid(locale, datePattern)
                 ? ObsFormat.of(parseLocale(locale), datePattern, numberPattern)
                 : defaultValue;
     }
 
     @Override
-    public void set(IConfig.Builder<?, S> builder, ObsFormat value) {
+    public void set(DataSource.Builder builder, ObsFormat value) {
         Objects.requireNonNull(builder);
         if (!defaultValue.equals(value)) {
-            builder.put(localeKey, getLocaleValue(value.getLocale()));
-            builder.put(datePatternKey, getDateTimePatternValue(value.getDateTimePattern()));
-            builder.put(numberPatternKey, getNumberPatternValue(value.getNumberPattern()));
+            builder.parameter(localeKey, getLocaleValue(value.getLocale()));
+            builder.parameter(datePatternKey, getDateTimePatternValue(value.getDateTimePattern()));
+            builder.parameter(numberPatternKey, getNumberPatternValue(value.getNumberPattern()));
         }
     }
 

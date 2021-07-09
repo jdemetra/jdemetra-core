@@ -44,7 +44,7 @@ public class TxtLoaderTest {
 
     @Test
     public void testDefaultBean() throws IOException {
-        TxtBean bean = new TxtParam.V1().defaultValue();
+        TxtBean bean = new TxtParam.V1().getDefaultValue();
         bean.setFile(getFile("/Insee1.txt"));
 
         TsCollection source = loader.load(bean);
@@ -72,7 +72,7 @@ public class TxtLoaderTest {
 
     @Test
     public void testGermanCsvWithComments() throws IOException {
-        TxtBean bean = new TxtParam.V1().defaultValue();
+        TxtBean bean = new TxtParam.V1().getDefaultValue();
         bean.setFile(getFile("/bbk_SU0503.csv"));
         bean.setCharset(StandardCharsets.UTF_8);
         bean.setObsFormat(ObsFormat.of(Locale.GERMAN, "yyyy-MM", null));
@@ -96,7 +96,7 @@ public class TxtLoaderTest {
 
     @Test
     public void testAggregation() throws IOException {
-        TxtBean bean = new TxtParam.V1().defaultValue();
+        TxtBean bean = new TxtParam.V1().getDefaultValue();
         bean.setFile(getFile("/Insee1.txt"));
         bean.setObsGathering(ObsGathering.builder().unit(TsUnit.YEAR).aggregationType(AggregationType.First).build());
 

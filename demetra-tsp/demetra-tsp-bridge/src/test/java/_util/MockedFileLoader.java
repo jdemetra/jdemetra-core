@@ -4,8 +4,6 @@ import demetra.timeseries.TsProvider;
 import demetra.tsprovider.*;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.stream.TsStreamAsProvider;
-import demetra.tsprovider.util.IConfig;
-import demetra.tsprovider.util.Param;
 import nbbrd.io.function.IORunnable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -47,10 +45,10 @@ public final class MockedFileLoader implements FileLoader<MockedFileBean> {
         return true;
     }
 
-    private static final class Stuff implements Param<DataSource, MockedFileBean> {
+    private static final class Stuff implements DataSource.Converter<MockedFileBean> {
 
         @Override
-        public @NonNull MockedFileBean defaultValue() {
+        public @NonNull MockedFileBean getDefaultValue() {
             return null;
         }
 
@@ -60,7 +58,7 @@ public final class MockedFileLoader implements FileLoader<MockedFileBean> {
         }
 
         @Override
-        public void set(@lombok.NonNull IConfig.Builder<?, DataSource> builder, @Nullable MockedFileBean value) {
+        public void set(DataSource.@NonNull Builder builder, @Nullable MockedFileBean value) {
 
         }
     }

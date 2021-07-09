@@ -19,6 +19,8 @@ package demetra.tsprovider;
 import nbbrd.design.ThreadSafe;
 import internal.tsprovider.InternalTsProvider;
 import java.io.IOException;
+
+import nbbrd.io.text.Formatter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -92,6 +94,6 @@ public interface HasDataDisplayName {
      */
     @NonNull
     static HasDataDisplayName usingUri(@NonNull String providerName) {
-        return new InternalTsProvider.DataDisplayNameSupport(providerName, DataSource.uriFormatter(), DataSet.uriFormatter());
+        return new InternalTsProvider.DataDisplayNameSupport(providerName, Formatter.of(DataSource::toString), Formatter.of(DataSet::toString));
     }
 }

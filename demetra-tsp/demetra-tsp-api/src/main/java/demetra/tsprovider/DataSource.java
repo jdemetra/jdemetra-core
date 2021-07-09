@@ -1,36 +1,34 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.tsprovider;
 
-import nbbrd.design.Immutable;
-import nbbrd.design.VisibleForTesting;
-import demetra.tsprovider.util.IConfig;
 import demetra.util.UriBuilder;
+import internal.util.SortedMaps;
+import nbbrd.design.StaticFactoryMethod;
+import nbbrd.design.StringValue;
+import nbbrd.design.ThreadSafe;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.net.URI;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.SortedMap;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import internal.util.SortedMaps;
-import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.HashMap;
-import nbbrd.io.text.Formatter;
-import nbbrd.io.text.Parser;
 
 /**
  * Simple structure that defines a source of data such as a file, a database or
@@ -40,164 +38,107 @@ import nbbrd.io.text.Parser;
  * builder.
  *
  * @author Philippe Charles
- * @since 1.0.0
  */
-@Immutable
-@lombok.ToString
-@lombok.EqualsAndHashCode
-public final class DataSource implements IConfig {
+@StringValue
+@lombok.Value
+@lombok.Builder(toBuilder = true)
+public class DataSource {
 
-    private final String providerName;
-    private final String version;
-    private final SortedMap<String, String> params;
+    @lombok.NonNull
+    String providerName;
 
-    @VisibleForTesting
-    DataSource(@NonNull String providerName, @NonNull String version, @NonNull SortedMap<String, String> params) {
-        this.providerName = providerName;
-        this.version = version;
-        this.params = params;
-    }
+    @lombok.NonNull
+    String version;
 
-    @NonNull
-    public String getProviderName() {
-        return providerName;
-    }
+    @lombok.NonNull
+    @lombok.Singular
+    SortedMap<String, String> parameters;
 
-    @NonNull
-    public String getVersion() {
-        return version;
+    public @Nullable String getParameter(@NonNull String key) {
+        return getParameters().get(key);
     }
 
     @Override
-    public SortedMap<String, String> getParams() {
-        return params;
+    public String toString() {
+        return formatAsUri(this);
     }
 
-    /**
-     * Creates a new builder with the content of this datasource.
-     *
-     * @return a non-null builder
-     * @since 2.2.0
-     */
-    @NonNull
-    public Builder toBuilder() {
-        return new Builder(providerName, version).putAll(params);
+    @StaticFactoryMethod
+    public static @NonNull DataSource parse(@NonNull CharSequence input) throws IllegalArgumentException {
+        return parseAsUri(input);
     }
 
-    @NonNull
-    public static DataSource of(@NonNull String providerName, @NonNull String version) {
+    @StaticFactoryMethod
+    public static @NonNull DataSource of(@NonNull String providerName, @NonNull String version) {
         Objects.requireNonNull(providerName, "providerName");
         Objects.requireNonNull(version, "version");
         return new DataSource(providerName, version, Collections.emptySortedMap());
     }
 
-    @NonNull
-    public static DataSource of(@NonNull String providerName, @NonNull String version, @NonNull String key, @NonNull String value) {
+    @StaticFactoryMethod
+    public static @NonNull DataSource of(@NonNull String providerName, @NonNull String version, @NonNull String key, @NonNull String value) {
         Objects.requireNonNull(providerName, "providerName");
         Objects.requireNonNull(version, "version");
         return new DataSource(providerName, version, SortedMaps.immutableOf(key, value));
     }
 
-    @NonNull
-    public static DataSource deepCopyOf(@NonNull String providerName, @NonNull String version, @NonNull Map<String, String> params) {
+    @StaticFactoryMethod
+    public static @NonNull DataSource deepCopyOf(@NonNull String providerName, @NonNull String version, @NonNull Map<String, String> params) {
         Objects.requireNonNull(providerName, "providerName");
         Objects.requireNonNull(version, "version");
         return new DataSource(providerName, version, SortedMaps.immutableCopyOf(params));
     }
 
-    @NonNull
-    public static Builder builder(@NonNull String providerName, @NonNull String version) {
+    public static @NonNull Builder builder(@NonNull String providerName, @NonNull String version) {
         Objects.requireNonNull(providerName, "providerName");
         Objects.requireNonNull(version, "version");
-        return new Builder(providerName, version);
+        return new Builder().providerName(providerName).version(version);
     }
 
-    /**
-     * Returns a convenient DataSource formatter that produces uri output.<p>
-     * This formatter is thread-safe.
-     *
-     * @return a DataSource formatter
-     */
-    @NonNull
-    public static Formatter<DataSource> uriFormatter() {
-        return DataSource::formatAsUri;
-    }
-
-    /**
-     * Returns a convenient DataSource parser that consumes uri input.<p>
-     * This parser is thread-safe.
-     *
-     * @return a DataSource parser
-     */
-    @NonNull
-    public static Parser<DataSource> uriParser() {
-        return DataSource::parseAsUri;
-    }
-
-    public static class Builder implements IConfig.Builder<Builder, DataSource> {
-
-        final String providerName;
-        final String version;
-        final Map<String, String> params;
-
-        @VisibleForTesting
-        Builder(String providerName, String version) {
-            this.providerName = providerName;
-            this.version = version;
-            this.params = new HashMap<>();
-        }
-
-        @Override
-        public Builder put(String key, String value) {
-            Objects.requireNonNull(key, "key");
-            Objects.requireNonNull(value, "value");
-            params.put(key, value);
-            return this;
-        }
-
-        public Builder clear() {
-            params.clear();
-            return this;
-        }
-
-        @Override
-        public DataSource build() {
-            return new DataSource(providerName, version, SortedMaps.immutableCopyOf(params));
-        }
-    }
-
-    //<editor-fold defaultstate="collapsed" desc="Implementation details">
     private static final String SCHEME = "demetra";
     private static final String HOST = "tsprovider";
 
-    private static DataSource parseAsUri(CharSequence input) {
-        try {
-            return parseAsUri(new URI(input.toString()));
-        } catch (URISyntaxException ex) {
-            return null;
+    private static DataSource parseAsUri(CharSequence input) throws IllegalArgumentException {
+        URI uri = URI.create(input.toString());
+        if (!SCHEME.equals(uri.getScheme())) {
+            throw new IllegalArgumentException("Invalid scheme: " + uri.getScheme());
         }
-    }
-
-    private static DataSource parseAsUri(URI uri) {
-        if (!SCHEME.equals(uri.getScheme()) || !HOST.equals(uri.getHost())) {
-            return null;
+        if (!HOST.equals(uri.getHost())) {
+            throw new IllegalArgumentException("Invalid host: " + uri.getHost());
         }
         String[] path = UriBuilder.getPathArray(uri, 2);
         if (path == null) {
-            return null;
+            throw new IllegalArgumentException("Invalid path: " + uri.getRawPath());
         }
         Map<String, String> query = UriBuilder.getQueryMap(uri);
         if (query == null) {
-            return null;
+            throw new IllegalArgumentException("Invalid query: " + uri.getRawQuery());
         }
         return new DataSource(path[0], path[1], SortedMaps.immutableCopyOf(query));
     }
 
-    private static CharSequence formatAsUri(DataSource value) {
+    private static String formatAsUri(DataSource value) {
         return new UriBuilder(SCHEME, HOST)
                 .path(value.getProviderName(), value.getVersion())
-                .query(value.getParams())
+                .query(value.getParameters())
                 .buildString();
     }
-    //</editor-fold>
+
+    /**
+     * Tool that loads/stores values from/to a key-value structure. It provides a
+     * best-effort retrieval behavior where a failure returns a default value
+     * instead of an error. All implementations must be thread-safe.
+     *
+     * @param <P>
+     * @author Philippe Charles
+     */
+    @ThreadSafe
+    public interface Converter<P> {
+
+        @NonNull P getDefaultValue();
+
+        @NonNull P get(@NonNull DataSource config);
+
+        void set(@NonNull Builder builder, @Nullable P value);
+    }
 }

@@ -1,17 +1,17 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.tsprovider;
@@ -19,12 +19,12 @@ package demetra.tsprovider;
 import com.google.common.collect.ImmutableSortedMap;
 import nbbrd.io.text.Formatter;
 import nbbrd.io.text.Parser;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- *
  * @author Philippe Charles
  */
 public class DataSourceTest {
@@ -50,7 +50,7 @@ public class DataSourceTest {
         assertThat(newSample()).satisfies(o -> {
             assertThat(o.getProviderName()).isEqualTo(PNAME);
             assertThat(o.getVersion()).isEqualTo(VERSION);
-            assertThat(o.getParams()).containsAllEntriesOf(P3).hasSize(3);
+            assertThat(o.getParameters()).containsAllEntriesOf(P3).hasSize(3);
         });
     }
 
@@ -109,11 +109,11 @@ public class DataSourceTest {
     @Test
     public void testGet() {
         assertThat(newSample()).satisfies(o -> {
-            assertThat(o.getParams()).hasSize(3);
-            assertThat(o.get(K1)).isEqualTo(V1);
-            assertThat(o.get(K2)).isEqualTo(V2);
-            assertThat(o.get(K3)).isEqualTo(V3);
-            assertThat(o.get("hello")).isNull();
+            assertThat(o.getParameters()).hasSize(3);
+            assertThat(o.getParameter(K1)).isEqualTo(V1);
+            assertThat(o.getParameter(K2)).isEqualTo(V2);
+            assertThat(o.getParameter(K3)).isEqualTo(V3);
+            assertThat(o.getParameter("hello")).isNull();
         });
     }
 
@@ -128,15 +128,13 @@ public class DataSourceTest {
                 .isNotSameAs(newSample())
                 .isEqualTo(builder.build())
                 .isNotSameAs(builder.build());
-        assertThat(builder.put(K1, "hello").build().get(K1)).isEqualTo("hello");
-        assertThat(builder.put(K1, true).build().get(K1)).isEqualTo("true");
-        assertThat(builder.put(K1, 123).build().get(K1)).isEqualTo("123");
-        assertThat(builder.clear().build().getParams()).isEmpty();
+        assertThat(builder.parameter(K1, "hello").build().getParameter(K1)).isEqualTo("hello");
+        assertThat(builder.clearParameters().build().getParameters()).isEmpty();
     }
 
     @Test
     public void testUriFormatter() {
-        Formatter<DataSource> formatter = DataSource.uriFormatter();
+        Formatter<DataSource> formatter = Formatter.of(DataSource::toString);
 
         assertThat(formatter.format(newSample()))
                 .isNotEmpty()
@@ -148,8 +146,8 @@ public class DataSourceTest {
 
     @Test
     public void testUriParser() {
-        Formatter<DataSource> formatter = DataSource.uriFormatter();
-        Parser<DataSource> parser = DataSource.uriParser();
+        Formatter<DataSource> formatter = Formatter.of(DataSource::toString);
+        Parser<DataSource> parser = Parser.of(DataSource::parse);
 
         assertThat(parser.parse(formatter.formatValue(newSample()).get())).isEqualTo(newSample());
     }

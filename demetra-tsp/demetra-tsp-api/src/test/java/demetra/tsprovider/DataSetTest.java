@@ -1,29 +1,30 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.tsprovider;
 
 import com.google.common.collect.ImmutableSortedMap;
 import nbbrd.io.text.Formatter;
+import nbbrd.io.text.Parser;
 import org.junit.Assert;
 import org.junit.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- *
  * @author Philippe Charles
  */
 public class DataSetTest {
@@ -42,8 +43,8 @@ public class DataSetTest {
         assertThat(newSample()).satisfies(o -> {
             assertThat(o.getDataSource()).isEqualTo(id);
             assertThat(o.getKind()).isEqualTo(DataSet.Kind.DUMMY);
-            assertThat(o.getParams()).containsAllEntriesOf(content);
-            content.forEach((k, v) -> assertThat(o.get(k)).isEqualTo(v));
+            assertThat(o.getParameters()).containsAllEntriesOf(content);
+            content.forEach((k, v) -> assertThat(o.getParameter(k)).isEqualTo(v));
         });
     }
 
@@ -65,20 +66,20 @@ public class DataSetTest {
     @Test
     public void testGet() {
         assertThat(newSample()).satisfies(o -> {
-            assertThat(o.get(k1)).isEqualTo(v1);
-            assertThat(o.get("hello")).isNull();
+            assertThat(o.getParameter(k1)).isEqualTo(v1);
+            assertThat(o.getParameter("hello")).isNull();
         });
     }
 
     @Test
     public void testGetParams() {
-        assertThat(newSample().getParams()).containsAllEntriesOf(content);
+        assertThat(newSample().getParameters()).containsAllEntriesOf(content);
     }
 
     @Test
     public void testUriFormatter() {
         DataSet dataSet = newSample();
-        Formatter<DataSet> formatter = DataSet.uriFormatter();
+        Formatter<DataSet> formatter = Formatter.of(DataSet::toString);
         Assert.assertNotNull(formatter.format(dataSet));
 
         DataSet d1 = new DataSet(id, DataSet.Kind.COLLECTION, content);
@@ -91,10 +92,13 @@ public class DataSetTest {
 
     @Test
     public void testUriParser() {
+        Formatter<DataSet> dataSetFormatter = Formatter.of(DataSet::toString);
+        Parser<DataSet> dataSetParser = Parser.of(DataSet::parse);
+
         DataSet dataSet = newSample();
-        Assert.assertEquals(dataSet, DataSet.uriParser().parse(DataSet.uriFormatter().formatValue(dataSet).get()));
+        Assert.assertEquals(dataSet, dataSetParser.parse(dataSetFormatter.formatValue(dataSet).get()));
 
         DataSet empty = new DataSet(id, DataSet.Kind.COLLECTION, emptyContent);
-        Assert.assertEquals(empty, DataSet.uriParser().parse(DataSet.uriFormatter().formatValue(empty).get()));
+        Assert.assertEquals(empty, dataSetParser.parse(dataSetFormatter.formatValue(empty).get()));
     }
 }

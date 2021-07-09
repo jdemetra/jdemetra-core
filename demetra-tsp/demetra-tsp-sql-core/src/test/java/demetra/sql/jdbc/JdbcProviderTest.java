@@ -57,26 +57,26 @@ public class JdbcProviderTest {
         String uri = "demetra://tsprovider/JNDI-JDBC/20111201/SERIES?aggregationType=Last&cacheDepth=2&cacheTtl=1000&cleanMissing=false&datePattern=dd%2FMM%2Fyyyy&dbName=mydb&dimColumns=Sector%2C+Region&frequency=Monthly&labelColumn=Title&locale=fr&numberPattern=%23.%23&periodColumn=Table2.Period&tableName=Table2&valueColumn=Rate&versionColumn=Version#Region=Belgium&Sector=Industry";
 
         DataSource source = DataSource.builder("JNDI-JDBC", "20111201")
-                .put("dbName", "mydb")
-                .put("tableName", "Table2")
-                .put("dimColumns", "Sector, Region")
-                .put("periodColumn", "Table2.Period")
-                .put("valueColumn", "Rate")
-                .put("locale", "fr")
-                .put("datePattern", "dd/MM/yyyy")
-                .put("numberPattern", "#.#")
-                .put("versionColumn", "Version")
-                .put("labelColumn", "Title")
-                .put("frequency", "Monthly")
-                .put("aggregationType", "Last")
-                .put("cleanMissing", "false")
-                .put("cacheTtl", "1000")
-                .put("cacheDepth", "2")
+                .parameter("dbName", "mydb")
+                .parameter("tableName", "Table2")
+                .parameter("dimColumns", "Sector, Region")
+                .parameter("periodColumn", "Table2.Period")
+                .parameter("valueColumn", "Rate")
+                .parameter("locale", "fr")
+                .parameter("datePattern", "dd/MM/yyyy")
+                .parameter("numberPattern", "#.#")
+                .parameter("versionColumn", "Version")
+                .parameter("labelColumn", "Title")
+                .parameter("frequency", "Monthly")
+                .parameter("aggregationType", "Last")
+                .parameter("cleanMissing", "false")
+                .parameter("cacheTtl", "1000")
+                .parameter("cacheDepth", "2")
                 .build();
 
         DataSet expected = DataSet.builder(source, DataSet.Kind.SERIES)
-                .put("Sector", "Industry")
-                .put("Region", "Belgium")
+                .parameter("Sector", "Industry")
+                .parameter("Region", "Belgium")
                 .build();
 
         try (DataSourceProvider p = new JdbcProvider()) {
