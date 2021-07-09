@@ -26,12 +26,13 @@ import java.util.List;
  *
  * @author PALATEJ
  */
-@lombok.Value
+@lombok.Getter
+@lombok.AllArgsConstructor
 public class SaDocument {
-    private String name;
-    private Ts series;
-    private SaSpecification specification;
-    private Explorable results;
-    private List<ProcDiagnostic>  diagnostics;
-    private ProcQuality quality;
+    private final String name;
+    private final Ts series;
+    private final SaSpecification specification;
+    private final Explorable results;
+    private final List<ProcDiagnostic>  diagnostics;
+    private final ProcQuality quality;
 }

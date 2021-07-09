@@ -53,10 +53,10 @@ public class ISarimaExtractor extends InformationMapping<ISarimaModel> {
             return z;
         }
         );
-        set(PHI, double[].class, source -> source.getPhi());
-        set(BPHI, double[].class, source -> source.getBphi());
-        set(THETA, double[].class, source -> source.getTheta());
-        set(BTHETA, double[].class, source -> source.getBtheta());
+        set(PHI, double[].class, source -> source.getPhi().toArray());
+        set(BPHI, double[].class, source -> source.getBphi().toArray());
+        set(THETA, double[].class, source -> source.getTheta().toArray());
+        set(BTHETA, double[].class, source -> source.getBtheta().toArray());
     }
 
     @Override

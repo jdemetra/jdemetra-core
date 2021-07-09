@@ -16,6 +16,7 @@
  */
 package jdplus.seats;
 
+import demetra.data.DoubleSeq;
 import demetra.math.Complex;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.sarima.SarimaModel;
@@ -164,7 +165,7 @@ public class DefaultModelValidator implements IModelValidator {
     private boolean fixMaUnitRoots() {
         boolean changed = false;
         double ur = 1 - eps;
-        double[] q = newModel.getTheta(), bq = newModel.getBtheta();
+        double[] q = newModel.getTheta().toArray(), bq = newModel.getBtheta().toArray();
         if (bq.length > 0) {
             double sur = Math.pow(ur, newModel.getPeriod());
             double bth = bq[0];
@@ -223,7 +224,7 @@ public class DefaultModelValidator implements IModelValidator {
     private boolean changeMA() {
         if (xl < 1) {
             boolean rslt = false;
-            double[] q = newModel.getTheta(), bq = newModel.getBtheta();
+            double[] q = newModel.getTheta().toArray(), bq = newModel.getBtheta().toArray();
             if (stabilizeMA(xl, q)) {
                 rslt = true;
             }
@@ -260,7 +261,7 @@ public class DefaultModelValidator implements IModelValidator {
         }
     }
 
-    private boolean canSimplify(double[] p) {
-        return p.length > 0 && Math.abs(p[p.length - 1]) < SarimaModel.SMALL;
+    private boolean canSimplify(DoubleSeq p) {
+        return p.length() > 0 && Math.abs(p.get(p.length() - 1)) < SarimaModel.SMALL;
     }
 }

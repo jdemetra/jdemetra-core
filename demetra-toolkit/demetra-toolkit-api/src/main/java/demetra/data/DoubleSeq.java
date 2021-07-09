@@ -47,6 +47,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 @Development(status = Development.Status.Release)
 public interface DoubleSeq extends BaseSeq {
 
+    static final DoubleSeq ZERO = of(0.0);
+    static final DoubleSeq ONE = of(1.0);
+
     interface Mutable extends DoubleSeq {
 
         static final Mutable EMPTY = of(Doubles.EMPTYARRAY);
@@ -902,7 +905,17 @@ public interface DoubleSeq extends BaseSeq {
 
     @NonNull
     static DoubleSeq empty() {
-        return Doubles.EMPTY;
+        return Mutable.EMPTY;
+    }
+
+    @NonNull
+    static DoubleSeq zero() {
+        return ZERO;
+    }
+
+    @NonNull
+    static DoubleSeq one() {
+        return ONE;
     }
 
     @Deprecated

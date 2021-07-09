@@ -39,35 +39,36 @@ public class SarimaModel implements ISarimaModel {
     /**
      * Period of the seasonal model
      */
-    private int period;
+    int period;
     /**
      * Regular differencing order
      */
-    private int d;
+    int d;
     /**
      * Seasonal differencing order
      */
-    private int bd;
-    @lombok.NonNull
+    int bd;
     /**
      * Regular auto-regressive parameters (true signs, 1 excluded)
      */
-    private double[] phi;
     @lombok.NonNull
+    DoubleSeq phi;
     /**
      * Regular moving average parameters (true signs, 1 excluded)
      */
-    private double[] theta;
     @lombok.NonNull
+    DoubleSeq theta;
     /**
      * Seasonal auto-regressive parameters (true signs, 1 excluded)
      */
-    private double[] bphi;
     @lombok.NonNull
+    private DoubleSeq bphi;
     /**
      * Seasonal moving average parameters (true signs, 1 excluded)
      */
-    private double[] btheta;
+    @lombok.NonNull
+    private DoubleSeq btheta;
+
     /**
      * Name of the model. Optional (null by default)
      */
@@ -75,22 +76,22 @@ public class SarimaModel implements ISarimaModel {
 
     @Override
     public int getP() {
-        return phi.length;
+        return phi.length();
     }
 
     @Override
     public int getBp() {
-        return bphi.length;
+        return bphi.length();
     }
 
     @Override
     public int getQ() {
-        return theta.length;
+        return theta.length();
     }
 
     @Override
     public int getBq() {
-        return btheta.length;
+        return btheta.length();
     }
 
     /**
@@ -103,42 +104,34 @@ public class SarimaModel implements ISarimaModel {
         SarimaOrders spec = new SarimaOrders(period);
         spec.setD(d);
         spec.setBd(bd);
-        spec.setP(phi.length);
-        spec.setBp(bphi.length);
-        spec.setQ(theta.length);
-        spec.setBq(btheta.length);
+        spec.setP(phi.length());
+        spec.setBp(bphi.length());
+        spec.setQ(theta.length());
+        spec.setBq(btheta.length());
         return spec;
     }
 
     @Override
     public DoubleSeq parameters() {
-        int n = phi.length + bphi.length + theta.length + btheta.length;
+        int n = phi.length() + bphi.length() + theta.length() + btheta.length();
         int pos = 0;
         double[] all = new double[n];
-        for (int i = 0; i < phi.length; ++i) {
-            all[pos++] = phi[i];
-        }
-        for (int i = 0; i < bphi.length; ++i) {
-            all[pos++] = bphi[i];
-        }
-        for (int i = 0; i < theta.length; ++i) {
-            all[pos++] = theta[i];
-        }
-        for (int i = 0; i < btheta.length; ++i) {
-            all[pos++] = btheta[i];
-        }
+        phi.copyTo(all, pos);
+        pos += phi.length();
+        bphi.copyTo(all, pos);
+        pos += bphi.length();
+        theta.copyTo(all, pos);
+        pos += theta.length();
+        btheta.copyTo(all, pos);
         return DoubleSeq.of(all);
     }
 
     public static Builder builder() {
-
-        Builder builder = new Builder();
-        double[] E = DoubleSeq.EMPTYARRAY;
-        builder.period = 1;
-        builder.phi = E;
-        builder.theta = E;
-        builder.bphi = E;
-        builder.btheta = E;
-        return builder;
+        return new Builder()
+                .period(1)
+                .phi(DoubleSeq.empty())
+                .bphi(DoubleSeq.empty())
+                .theta(DoubleSeq.empty())
+                .btheta(DoubleSeq.empty());
     }
 }

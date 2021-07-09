@@ -22,32 +22,38 @@ public interface ISarimaModel {
     int getPeriod();
     /**
      * Regular differencing order
+     * @return 
      */
     int getD();
     /**
      * Seasonal differencing order
+     * @return 
      */
     int getBd();
     /**
      * Regular auto-regressive parameters (true signs, 1 excluded)
+     * @return 
      */
     @lombok.NonNull
-    double[] getPhi();
+    DoubleSeq getPhi();
     /**
      * Regular moving average parameters (true signs, 1 excluded)
+     * @return 
      */
     @lombok.NonNull
-    double[] getTheta();
+    DoubleSeq getTheta();
     /**
      * Seasonal auto-regressive parameters (true signs, 1 excluded)
+     * @return 
      */
     @lombok.NonNull
-    double[] getBphi();
+    DoubleSeq getBphi();
     /**
      * Seasonal moving average parameters (true signs, 1 excluded)
+     * @return 
      */
     @lombok.NonNull
-    double[] getBtheta();
+    DoubleSeq getBtheta();
 
     int getP();
 

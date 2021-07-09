@@ -5,6 +5,7 @@
  */
 package demetra.arima;
 
+import demetra.data.DoubleSeq;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -23,8 +24,8 @@ public class SarimaModelTest {
                 .period(12)
                 .d(1)
                 .bd(1)
-                .theta(new double[]{-.8})
-                .btheta(new double[]{-.9})
+                .theta(DoubleSeq.of(-.8))
+                .btheta(DoubleSeq.of(-.9))
                 .build();
         System.out.println(arima);
     }

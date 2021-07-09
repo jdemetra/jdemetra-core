@@ -19,7 +19,7 @@ package demetra.sa;
 import demetra.timeseries.Ts;
 
 /**
- *
+ * 
  * @author PALATEJ
  */
 @lombok.Value
@@ -35,35 +35,31 @@ public class SaDefinition {
     SaSpecification domainSpec;
 
     /**
-     * Specification used for the current estimation
+     * Specification used for the current estimation. The domainSpec is used if the estimationSpec is missing (see activeSpecification)
      */
     SaSpecification estimationSpec;
-
-    /**
-     * Specification corresponding to the result
-     */
-    @lombok.experimental.NonFinal
-    @lombok.EqualsAndHashCode.Exclude
-    volatile SaSpecification pointSpec;
 
     /**
      * Way the current estimation specification has been achieved
      */
     @lombok.Builder.Default
+    @lombok.EqualsAndHashCode.Exclude
     EstimationPolicyType policy=EstimationPolicyType.None;
 
     /**
+     * Specification corresponding to the results of the current estimation (fully identified model)
+     */
+    @lombok.EqualsAndHashCode.Exclude
+    SaSpecification pointSpec;
+    
+    /**
      * Time series
      */
+    @lombok.NonNull
     Ts ts;
 
     public SaSpecification activeSpecification() {
         return estimationSpec == null ? domainSpec : estimationSpec;
     }
 
-    public void setPointSpecification(SaSpecification pspec) {
-        synchronized (this) {
-            this.pointSpec = pspec;
-        }
-    }
 }

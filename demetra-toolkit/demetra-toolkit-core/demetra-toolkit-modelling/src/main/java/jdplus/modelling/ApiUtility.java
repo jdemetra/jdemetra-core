@@ -32,9 +32,9 @@ public class ApiUtility {
     // ARIMA
     public demetra.arima.ArimaModel toApi(IArimaModel model, String name){
         return demetra.arima.ArimaModel.builder()
-                .ar(coefficients(model.getStationaryAr()))
-                .delta(coefficients(model.getNonStationaryAr()))
-                .ma(coefficients(model.getMa()))
+                .ar(model.getStationaryAr().coefficients())
+                .delta(model.getNonStationaryAr().coefficients())
+                .ma(model.getMa().coefficients())
                 .innovationVariance(model.getInnovationVariance())
                 .name(name)
                 .build();
@@ -42,11 +42,12 @@ public class ApiUtility {
 
     public ArimaModel fromApi(demetra.arima.ArimaModel model){
         return new ArimaModel(
-                new BackFilter(Polynomial.valueOf(1, model.getAr())), 
-                new BackFilter(Polynomial.valueOf(1, model.getDelta())),
-                new BackFilter(Polynomial.valueOf(1, model.getMa())),
+                new BackFilter(Polynomial.raw(model.getAr().toArray())), 
+                new BackFilter(Polynomial.raw(model.getDelta().toArray())),
+                new BackFilter(Polynomial.raw(model.getMa().toArray())),
                 model.getInnovationVariance());
     }
+    
     // SARIMA
     public demetra.arima.SarimaModel toApi(SarimaModel model, String name){
         return demetra.arima.SarimaModel.builder()
@@ -63,10 +64,10 @@ public class ApiUtility {
     public SarimaModel fromApi(demetra.arima.SarimaModel model){
         SarimaOrders spec = model.orders();
         return SarimaModel.builder(spec)
-                .phi(model.getPhi())
-                .bphi(model.getBphi())
-                .theta(model.getTheta())
-                .btheta(model.getBtheta())
+                .phi(model.getPhi().toArray())
+                .bphi(model.getBphi().toArray())
+                .theta(model.getTheta().toArray())
+                .btheta(model.getBtheta().toArray())
                 .differencing(model.getD(), model.getBd())
                 .build();
     }

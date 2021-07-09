@@ -23,6 +23,7 @@ import jdplus.math.ComplexUtility;
 import jdplus.math.Arithmetics;
 import jdplus.math.Simplifying;
 import demetra.util.IntList;
+import internal.jdplus.maths.polynomials.Coefficients;
 
 /**
  *
@@ -174,7 +175,7 @@ public class UnitRoots implements Cloneable {
      * @return
      */
     public static Polynomial D(final int n) {
-        double[] p = Polynomial.Coefficients.fromDegree(n);
+        double[] p = Coefficients.fromDegree(n);
         p[n] = -1;
         p[0] = 1;
         return Polynomial.ofInternal(p);
@@ -341,7 +342,7 @@ public class UnitRoots implements Cloneable {
      * @return
      */
     public static Polynomial S(final int freq, final int d) {
-        double[] p = Polynomial.Coefficients.fromDegree((freq - 1) * d);
+        double[] p = Coefficients.fromDegree((freq - 1) * d);
         for (int i = 0, j = 0; i < freq; ++i, j += d) {
             p[j] = 1;
         }

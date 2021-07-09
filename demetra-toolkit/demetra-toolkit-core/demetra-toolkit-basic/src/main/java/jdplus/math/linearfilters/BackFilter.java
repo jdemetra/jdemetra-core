@@ -16,6 +16,7 @@
  */
 package jdplus.math.linearfilters;
 
+import demetra.data.DoubleSeq;
 import nbbrd.design.Development;
 import nbbrd.design.Immutable;
 import demetra.math.Complex;
@@ -97,6 +98,10 @@ public final class BackFilter implements IFiniteFilter {
      */
     public BackFilter(final Polynomial p) {
         polynomial = p;
+    }
+    
+    public DoubleSeq coefficients(){
+        return polynomial.coefficients();
     }
 
     /**
