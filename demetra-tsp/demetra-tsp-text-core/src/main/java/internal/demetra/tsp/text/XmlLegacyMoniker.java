@@ -18,7 +18,6 @@ package internal.demetra.tsp.text;
 
 import demetra.design.DemetraPlusLegacy;
 import demetra.timeseries.TsMoniker;
-import demetra.tsp.text.TxtBean;
 import demetra.tsp.text.XmlBean;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
@@ -70,23 +69,21 @@ public final class XmlLegacyMoniker implements HasDataMoniker {
     private DataSet toDataSet(XmlLegacyId id) {
         DataSource source = toDataSource(new File(id.getFile()));
         if (!id.isSeries()) {
-            return DataSet
-                    .builder(source, DataSet.Kind.COLLECTION)
-                    .put(param.getCollectionParam(source), id.getCollectionIndex())
-                    .build();
+            DataSet.Builder result = DataSet.builder(source, DataSet.Kind.COLLECTION);
+            param.getCollectionParam(source).set(result, id.getCollectionIndex());
+            return result.build();
         }
-        return DataSet
-                .builder(source, DataSet.Kind.COLLECTION)
-                .put(param.getCollectionParam(source), id.getCollectionIndex())
-                .put(param.getSeriesParam(source), id.getSeriesIndex())
-                .build();
+        DataSet.Builder result = DataSet.builder(source, DataSet.Kind.COLLECTION);
+        param.getCollectionParam(source).set(result, id.getCollectionIndex());
+        param.getSeriesParam(source).set(result, id.getSeriesIndex());
+        return result.build();
     }
 
     private DataSource toDataSource(File file) {
         XmlBean bean = new XmlBean();
         bean.setFile(file);
-        return DataSource.builder(providerName, param.getVersion())
-                .put(param, bean)
-                .build();
+        DataSource.Builder result = DataSource.builder(providerName, param.getVersion());
+        param.set(result, bean);
+        return result.build();
     }
 }

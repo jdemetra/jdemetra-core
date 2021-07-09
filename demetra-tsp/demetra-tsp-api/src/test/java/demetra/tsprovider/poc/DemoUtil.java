@@ -21,7 +21,7 @@ import demetra.timeseries.*;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.DataSourceProvider;
-import demetra.tsprovider.TsProviders;
+import demetra.tsprovider.util.TsProviders;
 import demetra.tsprovider.util.MultiLineNameUtil;
 import demetra.util.TreeTraverser;
 import nbbrd.io.function.IOFunction;
@@ -73,7 +73,7 @@ class DemoUtil {
     }
 
     void printId(DataSourceProvider provider, DataSet id) {
-        System.out.printf("%9s %s\n", "Uri:", DataSet.uriFormatter().format(id));
+        System.out.printf("%9s %s\n", "Uri:", id.toString());
         System.out.printf("%9s %s\n", "Display:", MultiLineNameUtil.join(provider.getDisplayName(id), " \n          "));
     }
 

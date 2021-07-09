@@ -34,7 +34,6 @@ import demetra.tsprovider.cube.CubeSupport;
 import demetra.tsprovider.cube.TableAsCubeAccessor;
 import demetra.tsprovider.cube.TableDataParams;
 import demetra.tsprovider.stream.TsStreamAsProvider;
-import demetra.tsprovider.util.Param;
 import demetra.tsprovider.util.ResourceMap;
 import java.io.IOException;
 import nbbrd.service.ServiceProvider;
@@ -100,7 +99,7 @@ public final class JdbcProvider implements DataSourceLoader<JdbcBean>, HasSqlPro
         }
 
         @Override
-        public Param<DataSet, CubeId> getIdParam(CubeId root) {
+        public DataSet.Converter<CubeId> getIdParam(CubeId root) {
             return param.getCubeIdParam(root);
         }
 

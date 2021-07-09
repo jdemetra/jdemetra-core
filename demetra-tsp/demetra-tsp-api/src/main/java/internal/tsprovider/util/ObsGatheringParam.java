@@ -3,20 +3,22 @@ package internal.tsprovider.util;
 import demetra.data.AggregationType;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.util.ObsGathering;
-import demetra.tsprovider.util.IConfig;
-import demetra.tsprovider.util.Param;
+import demetra.tsprovider.DataSource;
+import nbbrd.io.text.Formatter;
+import nbbrd.io.text.Parser;
+import nbbrd.io.text.Property;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-public final class ObsGatheringParam<S extends IConfig> implements Param<S, ObsGathering> {
+public final class ObsGatheringParam implements DataSource.Converter<ObsGathering> {
 
     private final ObsGathering defaultValue;
-    private final Param<S, String> unit;
-    private final Param<S, AggregationType> aggregationType;
-    private final Param<S, Boolean> skipMissingValues;
+    private final Property<String> unit;
+    private final Property<AggregationType> aggregationType;
+    private final Property<Boolean> skipMissingValues;
 
     public ObsGatheringParam(
             @NonNull ObsGathering defaultValue,
@@ -24,35 +26,35 @@ public final class ObsGatheringParam<S extends IConfig> implements Param<S, ObsG
             @NonNull String aggregationKey,
             @NonNull String skipKey) {
         this.defaultValue = defaultValue;
-        this.unit = Param.onString(defaultValue.getUnit().toISO8601(), frequencyKey);
-        this.aggregationType = Param.onEnum(defaultValue.getAggregationType(), aggregationKey);
-        this.skipMissingValues = Param.onBoolean(!defaultValue.isIncludeMissingValues(), skipKey);
+        this.unit = Property.of(frequencyKey, defaultValue.getUnit().toISO8601(), Parser.onString(), Formatter.onString());
+        this.aggregationType = Property.of(aggregationKey, defaultValue.getAggregationType(), Parser.onEnum(AggregationType.class), Formatter.onEnum());
+        this.skipMissingValues = Property.of(skipKey, !defaultValue.isIncludeMissingValues(), Parser.onBoolean(), Formatter.onBoolean());
     }
 
     @Override
-    public ObsGathering defaultValue() {
+    public ObsGathering getDefaultValue() {
         return defaultValue;
     }
 
     @Override
-    public ObsGathering get(S config) {
+    public ObsGathering get(DataSource config) {
         return ObsGathering.builder()
                 .unit(getUnit(config))
-                .aggregationType(aggregationType.get(config))
-                .includeMissingValues(!skipMissingValues.get(config))
+                .aggregationType(aggregationType.get(config::getParameter))
+                .includeMissingValues(!skipMissingValues.get(config::getParameter))
                 .build();
     }
 
     @Override
-    public void set(IConfig.Builder<?, S> builder, ObsGathering value) {
+    public void set(DataSource.Builder builder, ObsGathering value) {
         Objects.requireNonNull(builder);
-        skipMissingValues.set(builder, !value.isIncludeMissingValues());
+        skipMissingValues.set(builder::parameter, !value.isIncludeMissingValues());
         setFreq(builder, value.getUnit());
-        aggregationType.set(builder, value.getAggregationType());
+        aggregationType.set(builder::parameter, value.getAggregationType());
     }
 
-    private TsUnit getUnit(S config) {
-        String text = unit.get(config);
+    private TsUnit getUnit(DataSource config) {
+        String text = unit.get(config::getParameter);
         TsUnit value = freqToUnit(text);
         if (value != null) {
             return value;
@@ -60,13 +62,13 @@ public final class ObsGatheringParam<S extends IConfig> implements Param<S, ObsG
         try {
             return TsUnit.parse(text);
         } catch (DateTimeParseException ex) {
-            return TsUnit.parse(unit.defaultValue());
+            return TsUnit.parse(unit.getDefaultValue());
         }
     }
 
-    private void setFreq(IConfig.Builder<?, S> builder, TsUnit value) {
+    private void setFreq(DataSource.Builder builder, TsUnit value) {
         String freq = unitToFreq(value);
-        unit.set(builder, freq != null ? freq : value.toISO8601());
+        unit.set(builder::parameter, freq != null ? freq : value.toISO8601());
     }
 
     private static TsUnit freqToUnit(String freq) {

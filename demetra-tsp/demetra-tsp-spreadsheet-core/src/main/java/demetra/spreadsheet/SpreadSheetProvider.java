@@ -17,35 +17,23 @@
 package demetra.spreadsheet;
 
 import demetra.timeseries.TsProvider;
-import nbbrd.design.DirectImpl;
-import demetra.tsprovider.DataSet;
-import demetra.tsprovider.DataSource;
-import demetra.tsprovider.FileLoader;
-import demetra.tsprovider.HasDataDisplayName;
-import demetra.tsprovider.HasDataMoniker;
-import demetra.tsprovider.HasDataSourceBean;
-import demetra.tsprovider.HasDataSourceMutableList;
-import demetra.tsprovider.HasFilePaths;
-import demetra.tsprovider.stream.TsStreamAsProvider;
+import demetra.tsprovider.*;
 import demetra.tsprovider.grid.GridReader;
+import demetra.tsprovider.stream.HasTsStream;
+import demetra.tsprovider.stream.TsStreamAsProvider;
 import demetra.tsprovider.util.FallbackDataMoniker;
-import demetra.tsprovider.util.Param;
+import demetra.tsprovider.util.JCacheFactory;
 import demetra.tsprovider.util.ResourceMap;
 import ec.util.spreadsheet.Book;
-import internal.spreadsheet.BookSupplier;
-import internal.spreadsheet.SpreadSheetAccessor;
-import internal.spreadsheet.SpreadSheetDataDisplayName;
-import internal.spreadsheet.SpreadSheetParam;
-import internal.spreadsheet.SpreadSheetSupport;
+import internal.spreadsheet.*;
 import internal.spreadsheet.grid.SheetGrid;
 import internal.spreadsheet.legacy.LegacySpreadSheetMoniker;
+import nbbrd.design.DirectImpl;
+import nbbrd.service.ServiceProvider;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
-import nbbrd.service.ServiceProvider;
-import demetra.tsprovider.util.JCacheFactory;
-import demetra.tsprovider.stream.HasTsStream;
-import internal.spreadsheet.CachedSpreadSheetAccessor;
 
 /**
  *
@@ -124,12 +112,12 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
         }
 
         @Override
-        public Param<DataSet, String> getSheetParam(DataSource dataSource) {
+        public DataSet.Converter<String> getSheetParam(DataSource dataSource) {
             return param.getSheetParam(dataSource);
         }
 
         @Override
-        public Param<DataSet, String> getSeriesParam(DataSource dataSource) {
+        public DataSet.Converter<String> getSeriesParam(DataSource dataSource) {
             return param.getSeriesParam(dataSource);
         }
 

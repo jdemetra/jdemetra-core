@@ -67,10 +67,9 @@ public final class LegacyOdbcMoniker implements HasDataMoniker {
     }
 
     private DataSource toDataSource(LegacyOdbcId id) {
-        return DataSource
-                .builder(providerName, param.getVersion())
-                .put(param, toBean(id))
-                .build();
+        DataSource.Builder result = DataSource.builder(providerName, param.getVersion());
+        param.set(result, toBean(id));
+        return result.build();
     }
 
     private OdbcBean toBean(LegacyOdbcId id) {
@@ -91,13 +90,13 @@ public final class LegacyOdbcMoniker implements HasDataMoniker {
         if (id.isCollection()) {
             return DataSet
                     .builder(source, DataSet.Kind.COLLECTION)
-                    .put(id.getDomainColumn(), id.getDomainName())
+                    .parameter(id.getDomainColumn(), id.getDomainName())
                     .build();
         }
         return DataSet
                 .builder(source, DataSet.Kind.SERIES)
-                .put(id.getDomainColumn(), id.getDomainName())
-                .put(id.getSeriesColumn(), id.getSeriesName())
+                .parameter(id.getDomainColumn(), id.getDomainName())
+                .parameter(id.getSeriesColumn(), id.getSeriesName())
                 .build();
     }
 }

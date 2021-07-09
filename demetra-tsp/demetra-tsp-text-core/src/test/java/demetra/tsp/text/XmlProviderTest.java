@@ -64,8 +64,8 @@ public class XmlProviderTest {
         DataSource source = DataSource.of("xml", "20111201", "file", "Insee.xml");
 
         DataSet expected = DataSet.builder(source, DataSet.Kind.SERIES)
-                .put("collectionIndex", 0)
-                .put("seriesIndex", 0)
+                .parameter("collectionIndex", "0")
+                .parameter("seriesIndex", "0")
                 .build();
 
         try (XmlProvider p = new XmlProvider()) {
@@ -81,12 +81,12 @@ public class XmlProviderTest {
         bean.setFile(new File("Insee.xml"));
 
         DataSource source = DataSource.builder("Xml", "20111201")
-                .put("file", "Insee.xml")
+                .parameter("file", "Insee.xml")
                 .build();
 
         DataSet expected = DataSet.builder(source, DataSet.Kind.SERIES)
-                .put("collectionIndex", 0)
-                .put("seriesIndex", 0)
+                .parameter("collectionIndex", "0")
+                .parameter("seriesIndex", "0")
                 .build();
 
         try (XmlProvider p = new XmlProvider()) {
@@ -111,7 +111,7 @@ public class XmlProviderTest {
                     .allSatisfy(o -> {
                         assertThat(o.getKind()).isEqualTo(DataSet.Kind.COLLECTION);
                         assertThat(o.getDataSource()).isEqualTo(dataSource);
-                        assertThat(o.getParams()).containsOnlyKeys("collectionIndex");
+                        assertThat(o.getParameters()).containsOnlyKeys("collectionIndex");
                     });
 
             DataSet node0 = nodes.get(0);
@@ -132,7 +132,7 @@ public class XmlProviderTest {
                     .allSatisfy(o -> {
                         assertThat(o.getKind()).isEqualTo(DataSet.Kind.SERIES);
                         assertThat(o.getDataSource()).isEqualTo(dataSource);
-                        assertThat(o.getParams()).containsOnlyKeys("collectionIndex", "seriesIndex");
+                        assertThat(o.getParameters()).containsOnlyKeys("collectionIndex", "seriesIndex");
                     });
 
             DataSet leaf1 = leaves.get(1);

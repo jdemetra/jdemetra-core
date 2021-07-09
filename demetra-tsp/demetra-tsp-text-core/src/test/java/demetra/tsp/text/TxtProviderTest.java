@@ -60,7 +60,7 @@ public class TxtProviderTest {
         DataSource source = DataSource.of("Txt", "20111201", "file", "Insee1.txt");
 
         DataSet expected = DataSet.builder(source, DataSet.Kind.SERIES)
-                .put("seriesIndex", "0")
+                .parameter("seriesIndex", "0")
                 .build();
 
         try (TxtProvider p = new TxtProvider()) {
@@ -73,22 +73,22 @@ public class TxtProviderTest {
         String uri = "demetra://tsprovider/Txt/20111201/SERIES?aggregationType=Last&charset=UTF-16&cleanMissing=true&datePattern=dd%2FMM%2Fyyyy&delimiter=SEMICOLON&file=Insee1.txt&frequency=Monthly&headers=false&locale=fr&numberPattern=%23.%23&skipLines=3&textQualifier=QUOTE#seriesIndex=1";
 
         DataSource source = DataSource.builder("Txt", "20111201")
-                .put("aggregationType", "Last")
-                .put("cleanMissing", "true")
-                .put("datePattern", "dd/MM/yyyy")
-                .put("locale", "fr")
-                .put("numberPattern", "#.#")
-                .put("file", "Insee1.txt")
-                .put("frequency", "Monthly")
-                .put("delimiter", "SEMICOLON")
-                .put("textQualifier", "QUOTE")
-                .put("headers", "false")
-                .put("skipLines", "3")
-                .put("charset", "UTF-16")
+                .parameter("aggregationType", "Last")
+                .parameter("cleanMissing", "true")
+                .parameter("datePattern", "dd/MM/yyyy")
+                .parameter("locale", "fr")
+                .parameter("numberPattern", "#.#")
+                .parameter("file", "Insee1.txt")
+                .parameter("frequency", "Monthly")
+                .parameter("delimiter", "SEMICOLON")
+                .parameter("textQualifier", "QUOTE")
+                .parameter("headers", "false")
+                .parameter("skipLines", "3")
+                .parameter("charset", "UTF-16")
                 .build();
 
         DataSet expected = DataSet.builder(source, DataSet.Kind.SERIES)
-                .put("seriesIndex", "1")
+                .parameter("seriesIndex", "1")
                 .build();
 
         try (TxtProvider p = new TxtProvider()) {

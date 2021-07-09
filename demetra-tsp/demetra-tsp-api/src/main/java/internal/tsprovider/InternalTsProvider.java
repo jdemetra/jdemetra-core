@@ -19,7 +19,6 @@ package internal.tsprovider;
 import demetra.timeseries.TsMoniker;
 import demetra.tsprovider.*;
 import demetra.tsprovider.util.DataSourcePreconditions;
-import demetra.tsprovider.util.Param;
 import demetra.util.List2;
 import internal.util.Strings;
 import nbbrd.io.text.Formatter;
@@ -158,10 +157,10 @@ public class InternalTsProvider {
 
     public static final class DataSourceBeanSupport<T> extends ProviderPart implements HasDataSourceBean<T> {
 
-        private final Param<DataSource, T> param;
+        private final DataSource.Converter<T> param;
         private final String version;
 
-        public DataSourceBeanSupport(String providerName, Param<DataSource, T> param, String version) {
+        public DataSourceBeanSupport(String providerName, DataSource.Converter<T> param, String version) {
             super(providerName);
             this.param = Objects.requireNonNull(param);
             this.version = Objects.requireNonNull(version);
@@ -169,16 +168,16 @@ public class InternalTsProvider {
 
         @Override
         public T newBean() {
-            return param.defaultValue();
+            return param.getDefaultValue();
         }
 
         @Override
         public DataSource encodeBean(Object bean) throws IllegalArgumentException {
             Objects.requireNonNull(bean);
             try {
-                return DataSource.builder(providerName, version)
-                        .put(param, (T) bean)
-                        .build();
+                DataSource.Builder result = DataSource.builder(providerName, version);
+                param.set(result, (T) bean);
+                return result.build();
             } catch (ClassCastException ex) {
                 throw new IllegalArgumentException(ex);
             }

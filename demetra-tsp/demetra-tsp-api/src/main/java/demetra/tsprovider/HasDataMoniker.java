@@ -1,26 +1,27 @@
 /*
  * Copyright 2016 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.tsprovider;
 
 import demetra.timeseries.TsMoniker;
-import nbbrd.design.ThreadSafe;
 import internal.tsprovider.InternalTsProvider;
+import nbbrd.design.ThreadSafe;
+import nbbrd.io.text.Formatter;
+import nbbrd.io.text.Parser;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
 
@@ -41,7 +42,7 @@ public interface HasDataMoniker {
      * @param dataSource
      * @return a non-null moniker.
      * @throws IllegalArgumentException if the DataSource doesn't belong to this
-     * provider.
+     *                                  provider.
      */
     @NonNull
     TsMoniker toMoniker(@NonNull DataSource dataSource) throws IllegalArgumentException;
@@ -53,7 +54,7 @@ public interface HasDataMoniker {
      * @param dataSet
      * @return a non-null moniker.
      * @throws IllegalArgumentException if the DataSet doesn't belong to this
-     * provider.
+     *                                  provider.
      */
     @NonNull
     TsMoniker toMoniker(@NonNull DataSet dataSet) throws IllegalArgumentException;
@@ -64,7 +65,7 @@ public interface HasDataMoniker {
      * @param moniker a non-null moniker
      * @return an optional data source
      * @throws IllegalArgumentException if the moniker doesn't belong to this
-     * provider.
+     *                                  provider.
      */
     @NonNull Optional<DataSource> toDataSource(@NonNull TsMoniker moniker) throws IllegalArgumentException;
 
@@ -74,7 +75,7 @@ public interface HasDataMoniker {
      * @param moniker a non-null moniker
      * @return an optional dataset
      * @throws IllegalArgumentException if the moniker doesn't belong to this
-     * provider.
+     *                                  provider.
      */
     @NonNull Optional<DataSet> toDataSet(@NonNull TsMoniker moniker) throws IllegalArgumentException;
 
@@ -86,6 +87,9 @@ public interface HasDataMoniker {
      */
     @NonNull
     static HasDataMoniker usingUri(@NonNull String providerName) {
-        return new InternalTsProvider.DataMonikerSupport(providerName, DataSource.uriFormatter(), DataSet.uriFormatter(), DataSource.uriParser(), DataSet.uriParser());
+        return new InternalTsProvider.DataMonikerSupport(providerName,
+                Formatter.of(DataSource::toString), Formatter.of(DataSet::toString),
+                Parser.of(DataSource::parse), Parser.of(DataSet::parse)
+        );
     }
 }

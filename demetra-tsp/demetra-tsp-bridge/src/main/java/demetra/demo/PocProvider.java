@@ -1,50 +1,34 @@
 /*
  * Copyright 2015 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.demo;
 
-import demetra.timeseries.TsData;
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsPeriod;
-import demetra.timeseries.TsUnit;
-import demetra.tsprovider.DataSet;
-import demetra.tsprovider.DataSource;
-import demetra.tsprovider.DataSourceProvider;
-import demetra.tsprovider.HasDataDisplayName;
-import demetra.tsprovider.HasDataHierarchy;
-import demetra.tsprovider.HasDataMoniker;
-import demetra.tsprovider.HasDataSourceList;
-import demetra.timeseries.TsInformationType;
-import demetra.timeseries.TsProvider;
-import demetra.tsprovider.stream.TsStreamAsProvider;
+import demetra.timeseries.*;
+import demetra.tsprovider.*;
 import demetra.tsprovider.stream.DataSetTs;
+import demetra.tsprovider.stream.HasTsStream;
+import demetra.tsprovider.stream.TsStreamAsProvider;
 import demetra.tsprovider.util.DataSourcePreconditions;
-import demetra.tsprovider.util.Param;
+import nbbrd.io.text.Formatter;
+import nbbrd.io.text.Parser;
+import nbbrd.io.text.Property;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Spliterators;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -52,10 +36,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import demetra.tsprovider.stream.HasTsStream;
 
 /**
- *
  * @author Philippe Charles
  */
 @lombok.extern.java.Log
@@ -63,8 +45,8 @@ public final class PocProvider implements DataSourceProvider {
 
     public static final String NAME = "poc";
 
-    private static final Param<DataSource, DataType> TYPE_PARAM = Param.onEnum(DataType.NORMAL, "t");
-    private static final Param<DataSet, Integer> INDEX_PARAM = Param.onInteger(-1, "i");
+    private static final Property<DataType> TYPE_PARAM = Property.of("t", DataType.NORMAL, Parser.onEnum(DataType.class), Formatter.onEnum());
+    private static final Property<Integer> INDEX_PARAM = Property.of("i", -1, Parser.onInteger(), Formatter.onInteger());
 
     @lombok.experimental.Delegate(types = HasDataHierarchy.class)
     private final PocDataSupport dataSupport;
@@ -118,7 +100,9 @@ public final class PocProvider implements DataSourceProvider {
     }
 
     private static DataSource createDataSource(DataType o) {
-        return DataSource.builder(NAME, "").put(TYPE_PARAM, o).build();
+        DataSource.Builder result = DataSource.builder(NAME, "");
+        TYPE_PARAM.set(result::parameter, o);
+        return result.build();
     }
 
     private static final class PocDataDisplayName implements HasDataDisplayName {
@@ -126,7 +110,7 @@ public final class PocProvider implements DataSourceProvider {
         @Override
         public String getDisplayName(DataSource dataSource) throws IllegalArgumentException {
             DataSourcePreconditions.checkProvider(NAME, dataSource);
-            switch (TYPE_PARAM.get(dataSource)) {
+            switch (TYPE_PARAM.get(dataSource::getParameter)) {
                 case NORMAL:
                     return "Normal async";
                 case FAILING_META:
@@ -153,7 +137,7 @@ public final class PocProvider implements DataSourceProvider {
         @Override
         public String getDisplayNodeName(DataSet dataSet) throws IllegalArgumentException {
             DataSourcePreconditions.checkProvider(NAME, dataSet);
-            TsDomain domain = TYPE_PARAM.get(dataSet.getDataSource()).getDomain(INDEX_PARAM.get(dataSet));
+            TsDomain domain = TYPE_PARAM.get(dataSet.getDataSource()::getParameter).getDomain(INDEX_PARAM.get(dataSet::getParameter));
             return domain.getStartPeriod().getUnit() + "#" + domain.getLength();
         }
     }
@@ -204,7 +188,10 @@ public final class PocProvider implements DataSourceProvider {
 
         private static Function<Integer, DataSet> dataSetFunc(DataSource dataSource) {
             DataSet.Builder b = DataSet.builder(dataSource, DataSet.Kind.SERIES);
-            return index -> b.put(INDEX_PARAM, index).build();
+            return index -> {
+                INDEX_PARAM.set(b::parameter, index);
+                return b.build();
+            };
         }
 
         static Stream<DataSetTs> from(
@@ -222,7 +209,7 @@ public final class PocProvider implements DataSourceProvider {
         }
 
         private Stream<DataSetTs> cursorOf(DataSource source, TsInformationType type) throws IOException {
-            DataType dt = TYPE_PARAM.get(source);
+            DataType dt = TYPE_PARAM.get(source::getParameter);
             Function<Integer, DataSet> dataSetFunc = dataSetFunc(source);
             Iterator<Integer> iter = seriesIndexIterator(dt);
             switch (dt) {
@@ -271,13 +258,13 @@ public final class PocProvider implements DataSourceProvider {
         private static Function<Integer, Map<String, String>> metaFunc(DataType dt, TsInformationType type) {
             return type.encompass(TsInformationType.MetaData)
                     ? o -> {
-                        Map<String, String> result = new HashMap<>();
-                        result.put("Type", dt.name());
-                        result.put("Index", String.valueOf(o));
-                        result.put("Sleep meta", String.valueOf(dt.getSleepDuration(TsInformationType.MetaData)));
-                        result.put("Sleep data", String.valueOf(dt.getSleepDuration(TsInformationType.Data)));
-                        return Collections.unmodifiableMap(result);
-                    }
+                Map<String, String> result = new HashMap<>();
+                result.put("Type", dt.name());
+                result.put("Index", String.valueOf(o));
+                result.put("Sleep meta", String.valueOf(dt.getSleepDuration(TsInformationType.MetaData)));
+                result.put("Sleep data", String.valueOf(dt.getSleepDuration(TsInformationType.Data)));
+                return Collections.unmodifiableMap(result);
+            }
                     : o -> Collections.emptyMap();
         }
 
