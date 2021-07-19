@@ -7,13 +7,9 @@ package demetra.highfreq;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.highfreq.extractors.FractionalAirlineEstimationExtractor;
-import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import demetra.information.Explorable;
 
 /**

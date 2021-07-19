@@ -138,7 +138,7 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
         return 1;
     }
 
-    private final static double UB = .999;
+    private final static double UB = .99;
 
     @Override
     public ParamValidation validate(DataBlock ioparams) {
