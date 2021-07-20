@@ -49,12 +49,16 @@ public final class MockedFileLoader implements FileLoader<MockedFileBean> {
 
         @Override
         public @NonNull MockedFileBean getDefaultValue() {
-            return null;
+            MockedFileBean result = new MockedFileBean();
+            result.setFile(new File("abc"));
+            return result;
         }
 
         @Override
         public @NonNull MockedFileBean get(@NonNull DataSource config) {
-            return null;
+            MockedFileBean result = new MockedFileBean();
+            result.setFile(new File("abc"));
+            return result;
         }
 
         @Override

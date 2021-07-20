@@ -16,7 +16,10 @@
  */
 package demetra.bridge;
 
+import _util.*;
 import demetra.timeseries.*;
+import demetra.tsprovider.FileBean;
+import demetra.tsprovider.FileLoader;
 import demetra.tsprovider.util.ObsFormat;
 import ec.tss.tsproviders.utils.DataFormat;
 import ec.tstoolkit.timeseries.Day;
@@ -36,6 +39,21 @@ import static org.assertj.core.api.Assertions.*;
  * @author Philippe Charles
  */
 public class TsConverterTest {
+
+    @Test
+    public void testTsProvider() {
+        assertThat(toTsProvider(fromTsProvider(new MockedDataSourceProvider()))).isInstanceOf(MockedDataSourceProvider.class);
+        assertThat(toTsProvider(fromTsProvider(new MockedDataSourceLoader()))).isInstanceOf(MockedDataSourceLoader.class);
+        assertThat(toTsProvider(fromTsProvider(new MockedFileLoader()))).isInstanceOf(MockedFileLoader.class);
+
+        assertThat(fromTsProvider(toTsProvider(new MockedDataSourceProviderV2()))).isInstanceOf(MockedDataSourceProviderV2.class);
+        assertThat(fromTsProvider(toTsProvider(new MockedDataSourceLoaderV2()))).isInstanceOf(MockedDataSourceLoaderV2.class);
+        assertThat(fromTsProvider(toTsProvider(new MockedFileLoaderV2()))).isInstanceOf(MockedFileLoaderV2.class);
+
+        FileLoader<?> x = (ToFileLoader) toTsProvider(new MockedFileLoaderV2());
+        FileBean fileBean = x.newBean();
+        assertThat(x.decodeBean(x.encodeBean(fileBean))).isEqualTo(fileBean);
+    }
 
     @Test
     public void testTsUnit() {
