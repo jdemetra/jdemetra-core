@@ -33,6 +33,11 @@ public class ToFileLoader extends ToDataSourceLoader implements FileLoader {
     }
 
     @Override
+    public @NonNull DataSource encodeBean(@NonNull Object bean) throws IllegalArgumentException {
+        return TsConverter.toDataSource(getDelegate().encodeBean(FromFileBean.fromFileBean((FileBean) bean)));
+    }
+
+    @Override
     public @NonNull FileBean decodeBean(@NonNull DataSource dataSource) throws IllegalArgumentException {
         return ToFileBean.toFileBean(getDelegate().decodeBean(TsConverter.fromDataSource(dataSource)));
     }
