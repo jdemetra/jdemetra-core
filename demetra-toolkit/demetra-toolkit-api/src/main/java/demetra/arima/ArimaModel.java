@@ -58,13 +58,13 @@ public class ArimaModel implements IArimaModel {
      * circle (not checked)
      */
     @lombok.NonNull
-    private DoubleSeq delta;
+    DoubleSeq delta;
     /**
      * Moving-average polynomial (1, theta(1)...); True signs.
      * Doesn't contain the constant term (always 1)
      */
     @lombok.NonNull
-    private DoubleSeq ma;
+    DoubleSeq ma;
 
     /**
      * Rename the model.

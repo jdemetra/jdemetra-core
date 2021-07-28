@@ -19,7 +19,6 @@ package demetra.fractionalairline;
 import jdplus.fractionalairline.MultiPeriodicAirlineMapping;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
-import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.data.MatrixSerializer;
 import demetra.math.functions.Optimizer;
@@ -35,32 +34,31 @@ import jdplus.ucarima.ModelDecomposer;
 import jdplus.ucarima.SeasonalSelector;
 import jdplus.ucarima.TrendCycleSelector;
 import jdplus.ucarima.UcarimaModel;
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.function.Consumer;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import demetra.math.matrices.MatrixType;
 import demetra.ssf.SsfInitialization;
+import java.io.InputStream;
 import jdplus.data.DataBlockStorage;
+import jdplus.math.linearfilters.RationalFilter;
 import jdplus.math.matrices.Matrix;
 import jdplus.msts.AtomicModels;
 import jdplus.msts.CompositeModel;
 import jdplus.msts.CompositeModelEstimation;
 import jdplus.msts.ModelEquation;
 import jdplus.msts.StateItem;
-import jdplus.seats.BurmanEstimates;
-import jdplus.ssf.StateStorage;
 import jdplus.ssf.dk.DkToolkit;
+import jdplus.ssf.implementations.CompositeSsf;
 import jdplus.ssf.implementations.MultivariateCompositeSsf;
 import jdplus.ssf.multivariate.M2uAdapter;
-import jdplus.ssf.univariate.DisturbanceSmoother;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.SsfData;
+import jdplus.ucarima.WienerKolmogorovEstimators;
+import jdplus.ucarima.ssf.SsfUcarima;
 
 /**
  *
@@ -71,12 +69,50 @@ public class MultiPeriodicAirlineMappingTest {
     public MultiPeriodicAirlineMappingTest() {
     }
 
-    @Test
-    public void testDaily() throws IOException, URISyntaxException {
-        URI uri = Data.class.getResource("/edf.txt").toURI();
-        MatrixType edf = MatrixSerializer.read(new File(uri));
+//    @Test
+    public static void testDaily1() throws IOException {
+        InputStream stream = MultiPeriodicAirlineMapping.class.getResourceAsStream("/edf.txt");
+        MatrixType edf = MatrixSerializer.read(stream);
         DoubleSeq y = edf.column(0).log();
-        final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(new double[]{7, 365}, false, false);
+        final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(new double[]{7}, false, 2);
+        GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
+                .precision(1e-7)
+                .build();
+        RegArimaModel<ArimaModel> regarima = RegArimaModel.<ArimaModel>builder()
+                .y(y)
+                .arima(mapping.getDefault())
+                .build();
+        RegArimaEstimation<ArimaModel> estimation = processor.process(regarima, mapping);
+        assertTrue(estimation != null);
+        System.out.println(estimation.getMax().getParameters());
+        UcarimaModel ucm = ucm(estimation.getModel().arima(), true);
+        ucm=ucm.simplify();
+        assertTrue(ucm.isValid());
+        System.out.println(ucm);
+        System.out.println(y);
+        CompositeSsf ssf = SsfUcarima.of(ucm);
+        DataBlockStorage ds = DkToolkit.fastSmooth(ssf, new SsfData(y));
+        int[] cmp = ssf.componentsPosition();
+        for (int i = 0; i < cmp.length; ++i) {
+            System.out.println(ds.item(cmp[i]));
+        }
+        WienerKolmogorovEstimators estimators = new WienerKolmogorovEstimators(ucm);
+//        for (int i = 0; i < cmp.length; ++i) {
+//            System.out.println(DoubleSeq.onMapping(1000, estimators.finalEstimator(i, true).getWienerKolmogorovFilter().weights()));
+//        }
+        for (int i = 0; i < cmp.length; ++i) {
+            RationalFilter wk = estimators.finalEstimator(i, true).getWienerKolmogorovFilter();
+            System.out.println(DoubleSeq.onMapping(1000,j->wk.frequencyResponse(j*Math.PI/1000).absSquare()));
+        }
+//        System.out.println(ucm.getComponent(2).getMA().asPolynomial().coefficients());
+    }
+
+//    @Test
+    public static void testDaily2() throws IOException {
+        InputStream stream = MultiPeriodicAirlineMapping.class.getResourceAsStream("/edf.txt");
+        MatrixType edf = MatrixSerializer.read(stream);
+        DoubleSeq y = edf.column(0).log();
+        final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(new double[]{7, 365}, false, -1);
         GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
                 .precision(1e-7)
                 .build();
@@ -89,22 +125,20 @@ public class MultiPeriodicAirlineMappingTest {
         UcarimaModel ucm = ucm(estimation.getModel().arima(), true);
         assertTrue(ucm.isValid());
         System.out.println(ucm);
-        BurmanEstimates burman = BurmanEstimates.builder()
-                .data(y)
-                .ucarimaModel(ucm)
-                .build();
         System.out.println(y);
-        for (int i = 0; i < ucm.getComponentsCount(); ++i) {
-            System.out.println(burman.estimates(i, true));
+        CompositeSsf ssf = SsfUcarima.of(ucm);
+        DataBlockStorage ds = DkToolkit.fastSmooth(ssf, new SsfData(y));
+        int[] cmp = ssf.componentsPosition();
+        for (int i = 0; i < cmp.length; ++i) {
+            System.out.println(ds.item(cmp[i]));
         }
-//        System.out.println(ucm.getComponent(2).getMA().asPolynomial().coefficients());
     }
 
     //@Test
-    public static void testDaily2() throws IOException, URISyntaxException {
-        URI uri = MultiPeriodicAirlineMapping.class.getResource("/edf.txt").toURI();
-        MatrixType edf = MatrixSerializer.read(new File(uri));
-        final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(new double[]{7, 365}, true, false);
+    public static void testDaily3() throws IOException {
+        InputStream stream = MultiPeriodicAirlineMapping.class.getResourceAsStream("/edf.txt");
+        MatrixType edf = MatrixSerializer.read(stream);
+        final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(new double[]{7, 365}, true, 2);
         GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
                 .precision(1e-5)
                 .build();
@@ -116,16 +150,21 @@ public class MultiPeriodicAirlineMappingTest {
         assertTrue(estimation != null);
         UcarimaModel ucm = ucm(estimation.getModel().arima(), true);
         assertTrue(ucm.isValid());
-//        System.out.println(ucm);
-//        System.out.println(ucm.getComponent(2).getMA().asPolynomial().coefficients());
+        System.out.println(edf.column(0));
+        CompositeSsf ssf = SsfUcarima.of(ucm);
+        DataBlockStorage ds = DkToolkit.fastSmooth(ssf, new SsfData(edf.column(0)));
+        int[] cmp = ssf.componentsPosition();
+        for (int i = 0; i < cmp.length; ++i) {
+            System.out.println(ds.item(cmp[i]));
+        }
     }
 
-    @Test
-    public void testDailySts() throws IOException, URISyntaxException {
-        URI uri = MultiPeriodicAirlineMapping.class.getResource("/edf.txt").toURI();
-        MatrixType edf = MatrixSerializer.read(new File(uri));
+//    @Test
+    public static void testDailySts() throws IOException {
+        InputStream stream = MultiPeriodicAirlineMapping.class.getResourceAsStream("/edf.txt");
+        MatrixType edf = MatrixSerializer.read(stream);
         CompositeModel model = new CompositeModel();
-        StateItem l = AtomicModels.localLevel("l", .01, false, Double.NaN);
+        StateItem l = AtomicModels.localLinearTrend("l", .01, 0.01, false, false);
         StateItem sd = AtomicModels.seasonalComponent("sd", "HarrisonStevens", 7, .01, false);
         StateItem sy = AtomicModels.seasonalComponent("sy", "HarrisonStevens", 365, .01, false);
         StateItem n = AtomicModels.noise("n", .01, false);
@@ -154,10 +193,10 @@ public class MultiPeriodicAirlineMappingTest {
 
     @Test
     @Ignore
-    public void testOutliers() throws IOException, URISyntaxException {
-        URI uri = MultiPeriodicAirlineMapping.class.getResource("/births.txt").toURI();
-        MatrixType edf = MatrixSerializer.read(new File(uri));
-        final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(new double[]{7, 365.25}, true, false);
+    public void testOutliers() throws IOException {
+        InputStream stream = MultiPeriodicAirlineMapping.class.getResourceAsStream("/births.txt");
+        MatrixType edf = MatrixSerializer.read(stream);
+        final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(new double[]{7, 365.25}, true, -1);
         GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
                 .precision(1e-5)
                 .build();
@@ -199,8 +238,10 @@ public class MultiPeriodicAirlineMappingTest {
         return ucm;
     }
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
-        //       testDaily();
-        testDaily2();
+    public static void main(String[] args) throws IOException {
+        testDaily1();
+//        testDaily2();
+//        testDaily3();
+//        testDailySts();
     }
 }

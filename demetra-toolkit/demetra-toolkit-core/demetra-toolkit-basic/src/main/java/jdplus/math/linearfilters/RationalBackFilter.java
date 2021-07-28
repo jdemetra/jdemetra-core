@@ -24,14 +24,14 @@ import jdplus.math.polynomials.RationalFunction;
 import java.util.function.IntToDoubleFunction;
 
 /**
- * 
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
 public final class RationalBackFilter implements IRationalFilter {
-    
-    public static final RationalBackFilter ZERO=new RationalBackFilter();
+
+    public static final RationalBackFilter ZERO = new RationalBackFilter();
 
     private final RationalFunction rationalFunction;
     private final int bshift;
@@ -40,167 +40,167 @@ public final class RationalBackFilter implements IRationalFilter {
      *
      */
     public RationalBackFilter() {
-	rationalFunction = RationalFunction.zero();
-        bshift=0;
+        rationalFunction = RationalFunction.zero();
+        bshift = 0;
     }
 
     /**
-     * 
+     *
      * @param num
      * @param denom
      * @param bshift
      */
     public RationalBackFilter(final BackFilter num, final BackFilter denom, final int bshift) {
-	rationalFunction = RationalFunction.of(num.asPolynomial(), denom.asPolynomial());
-        this.bshift=bshift;
+        rationalFunction = RationalFunction.of(num.asPolynomial(), denom.asPolynomial());
+        this.bshift = bshift;
     }
 
     public RationalBackFilter(final RationalFunction rfe, final int bshift) {
-	rationalFunction = rfe;
-        this.bshift=bshift;
+        rationalFunction = rfe;
+        this.bshift = bshift;
     }
 
     /**
-     * 
+     *
      * @param nterms
      * @return
      */
     public RationalBackFilter drop(final int nterms) {
-	RationalFunction rfe = rationalFunction.drop(nterms);
-	return new RationalBackFilter(rfe, bshift+nterms);
+        RationalFunction rfe = rationalFunction.drop(nterms);
+        return new RationalBackFilter(rfe, bshift + nterms);
     }
 
     /**
-     * 
+     *
      * @param freq
      * @return
      */
     @Override
     public Complex frequencyResponse(double freq) {
-        IntToDoubleFunction fn = rationalFunction.getNumerator()::get;
-        Complex n = FilterUtility.frequencyResponse(i->fn.applyAsDouble(i-bshift), bshift, bshift+rationalFunction.getNumerator().degree(), freq);
-        Complex d = FilterUtility.frequencyResponse(rationalFunction.getDenominator()::get, 0, rationalFunction.getDenominator().degree(), freq);
-        return d.div(n);
+        Polynomial pn = rationalFunction.getNumerator(), pd = rationalFunction.getDenominator();
+        Complex n = FilterUtility.frequencyResponse(i -> pn.get(i - bshift), bshift, bshift + pn.degree(), -freq);
+        Complex d = FilterUtility.frequencyResponse(i->pd.get(i), 0, rationalFunction.getDenominator().degree(), -freq);
+        return n.div(d);
     }
 
     @Override
     public BackFilter getDenominator() {
-	Polynomial p = rationalFunction.getDenominator();
-	return new BackFilter(p);
+        Polynomial p = rationalFunction.getDenominator();
+        return new BackFilter(p);
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int getLBound() {
-	if (rationalFunction.isFinite())
-	    return -rationalFunction.getNumerator().degree();
-	else
-	    return Integer.MIN_VALUE;
+        if (rationalFunction.isFinite()) {
+            return -rationalFunction.getNumerator().degree();
+        } else {
+            return Integer.MIN_VALUE;
+        }
     }
 
     /**
-     * 
+     *
      * @return
      */
     @Override
     public BackFilter getNumerator() {
-	Polynomial p = rationalFunction.getNumerator();
-	return new BackFilter(p);
+        Polynomial p = rationalFunction.getNumerator();
+        return new BackFilter(p);
     }
 
     /**
-     * 
+     *
      * @return
      */
-    public RationalFunction getRationalFunction()
-    {
-	return rationalFunction;
+    public RationalFunction getRationalFunction() {
+        return rationalFunction;
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int getUBound() {
-	return -bshift;
+        return -bshift;
     }
 
     /**
-     * 
+     *
      * @param pos
      * @return
      */
     public double weight(int pos) {
-	return rationalFunction.get(-bshift-pos);
+        return rationalFunction.get(-bshift - pos);
     }
 
     public IntToDoubleFunction asFunction() {
-        return pos->weight(pos);
+        return pos -> weight(pos);
     }
 
     /**
-     * 
+     *
      * @param n
      * @return
      */
     public double[] getWeights(final int n) {
-	return rationalFunction.coefficients(n);
+        return rationalFunction.coefficients(n);
     }
 
     @Override
     public boolean hasLowerBound() {
-	return rationalFunction.isFinite();
+        return rationalFunction.isFinite();
     }
 
     /**
-     * 
+     *
      * @return
      */
     @Override
     public boolean hasUpperBound() {
-	return true;
+        return true;
     }
 
     /**
-     * 
+     *
      * @return
      */
     public RationalForeFilter mirror() {
-	return new RationalForeFilter(rationalFunction, bshift);
+        return new RationalForeFilter(rationalFunction, bshift);
     }
 
     /**
-     * 
+     *
      * @param n
      */
     public void prepare(final int n) {
-	rationalFunction.prepare(n);
+        rationalFunction.prepare(n);
     }
 
     /**
-     * 
+     *
      * @param r
      * @return
      */
     public RationalBackFilter times(final RationalBackFilter r) {
-	Polynomial ln = rationalFunction.getNumerator(), rn = r.rationalFunction.getNumerator();
-	Polynomial ld = rationalFunction.getDenominator(), rd = r.rationalFunction.getDenominator();
-	Polynomial.SimplifyingTool psmp = new Polynomial.SimplifyingTool();
-	if (psmp.simplify(ln, rd)) {
-	    ln = psmp.getLeft();
-	    rd = psmp.getRight();
-	}
-	if (psmp.simplify(rn, ld)) {
-	    rn = psmp.getLeft();
-	    ld = psmp.getRight();
-	}
+        Polynomial ln = rationalFunction.getNumerator(), rn = r.rationalFunction.getNumerator();
+        Polynomial ld = rationalFunction.getDenominator(), rd = r.rationalFunction.getDenominator();
+        Polynomial.SimplifyingTool psmp = new Polynomial.SimplifyingTool();
+        if (psmp.simplify(ln, rd)) {
+            ln = psmp.getLeft();
+            rd = psmp.getRight();
+        }
+        if (psmp.simplify(rn, ld)) {
+            rn = psmp.getLeft();
+            ld = psmp.getRight();
+        }
 
-	Polynomial n = ln.times(rn), d = ld.times(rd);
+        Polynomial n = ln.times(rn), d = ld.times(rd);
 
-	RationalFunction rfe = RationalFunction.of(n, d);
-	return new RationalBackFilter(rfe, bshift+r.bshift);
+        RationalFunction rfe = RationalFunction.of(n, d);
+        return new RationalBackFilter(rfe, bshift + r.bshift);
     }
 
     @Override

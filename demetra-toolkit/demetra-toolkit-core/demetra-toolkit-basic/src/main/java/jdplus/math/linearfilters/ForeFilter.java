@@ -149,6 +149,11 @@ public final class ForeFilter implements IFiniteFilter {
         return polynomial.degree();
     }
 
+    @Override
+    public Complex frequencyResponse(final double freq) {
+        return FilterUtility.frequencyResponse(i -> polynomial.get(i), 0, polynomial.degree(), freq);
+    }
+
     /**
      *
      * @return

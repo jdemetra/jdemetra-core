@@ -24,6 +24,7 @@ public class FractionalAirlineSpec {
     
     // Periodic airline model
     private double[] periodicities;
+    private int differencingOrder;
     
     // automatic outliers detection
     private String[] outliers;
@@ -36,6 +37,7 @@ public class FractionalAirlineSpec {
     
     public static Builder builder(){
         return new Builder()
+                .differencingOrder(-1)
                 .criticalValue(8)
                 .log(false)
                 .meanCorrection(false)

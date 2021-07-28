@@ -89,7 +89,7 @@ public final class BackFilter implements IFiniteFilter {
         }
         return new BackFilter(Polynomial.ofInternal(coefficients));
     }
-
+    
     private final Polynomial polynomial;
 
     /**
@@ -100,7 +100,7 @@ public final class BackFilter implements IFiniteFilter {
         polynomial = p;
     }
     
-    public DoubleSeq coefficients(){
+    public DoubleSeq coefficients() {
         return polynomial.coefficients();
     }
 
@@ -115,7 +115,7 @@ public final class BackFilter implements IFiniteFilter {
         // throw new PolynomialException(PolynomialException.Division);
         return new BackFilter(div.getQuotient());
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -157,10 +157,15 @@ public final class BackFilter implements IFiniteFilter {
     public int length() {
         return polynomial.degree() + 1;
     }
-
+    
     @Override
     public int getLowerBound() {
         return -polynomial.degree();
+    }
+    
+    @Override
+    public Complex frequencyResponse(final double freq) {
+        return FilterUtility.frequencyResponse(i -> polynomial.get(i), 0, polynomial.degree(), -freq);
     }
 
     /**
@@ -171,7 +176,7 @@ public final class BackFilter implements IFiniteFilter {
     public int getUpperBound() {
         return 0;
     }
-
+    
     public int getDegree() {
         return polynomial.degree();
     }
@@ -184,7 +189,7 @@ public final class BackFilter implements IFiniteFilter {
     public IntToDoubleFunction weights() {
         return i -> polynomial.get(-i);
     }
-
+    
     @Override
     public int hashCode() {
         return polynomial.hashCode();
@@ -313,7 +318,7 @@ public final class BackFilter implements IFiniteFilter {
         Polynomial p = polynomial.times(d);
         return new BackFilter(p);
     }
-
+    
     @Override
     public String toString() {
         return polynomial.toString('B', true);
@@ -324,7 +329,7 @@ public final class BackFilter implements IFiniteFilter {
      *
      */
     public static class SimplifyingTool extends Simplifying<BackFilter> {
-
+        
         @Override
         public boolean simplify(final BackFilter left, final BackFilter right) {
             clear();
@@ -341,7 +346,7 @@ public final class BackFilter implements IFiniteFilter {
                 rp = rp.times(r0 / rp.get(0));
                 p = psimp.getCommon();
                 p = p.divide(p.get(0));
-
+                
                 common = new BackFilter(p);
                 simplifiedLeft = new BackFilter(lp);
                 simplifiedRight = new BackFilter(rp);

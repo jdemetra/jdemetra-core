@@ -8,14 +8,12 @@ package demetra.highfreq;
 import demetra.data.DoubleSeq;
 
 /**
- * Description of a fractional airline model with multiple periodicities
- * @author palatej
+ *
+ * @author PALATEJ
  */
 @lombok.Value
-public class FractionalAirline {
-
-    private double[] periodicities;
-    private DoubleSeq theta;
-    private int ndifferencing;
-    
+public class SeriesComponent {
+    String name;
+    DoubleSeq data;
+    DoubleSeq stde;
 }

@@ -52,7 +52,7 @@ public class WienerKolmogorovEstimators {
     }
 
     /**
-     * model: P(B)D(B)y(t) = Q(B)e(t), e=N(0, v^2I) 
+     * model: P(B)D(B)y(t) = Q(B)e(t), e=N(0, v^2I)
      * signal: Ps(B)Ds(B)s(t) = Qs(B)es(t), es=N(0, vs^2I)
      *
      * rem: special treatment when specific stationary roots are added
@@ -60,7 +60,7 @@ public class WienerKolmogorovEstimators {
      * P(x)/Ps(x)=P'(x)/Ps'(x) and P'(x), Ps'(x) don't contain any common factor
      * we write Dn(x)=D(x)/Ds(x)
      *
-     * The WK filter is 
+     * The WK filter is
      * WK=(vs/v)^2 Qs(B)P'(B)Dn(B)Qs(F)P'(F)Dn(F)]/[Q(B)Ps'(B)Q(F)Ps'(F)]
      *
      * In most cases, we will have WK=(vs/v)^2
@@ -85,9 +85,10 @@ public class WienerKolmogorovEstimators {
      *
      * Computation:
      *
-     * 1 Compute Dn(x) 2 Simplify P(x), Ps(x), we get P'(x), Ps'(x)
-     *
-     * 3 Compute [Qs(B)/(Ps(B)Ds(B))] 4 Compute [Qs(F)P'(F)Dn(F)]/[Q(F)Ps'(F)]
+     * 1 Compute Dn(x)
+     * 2 Simplify P(x), Ps(x), we get P'(x), Ps'(x)
+     * 3 Compute [Qs(B)/(Ps(B)Ds(B))]
+     * 4 Compute [Qs(F)P'(F)Dn(F)]/[Q(F)Ps'(F)]
      *
      * @param cmp Considered component
      * @param signal True for signal, false for noise (signal + noise = model)
@@ -112,18 +113,30 @@ public class WienerKolmogorovEstimators {
         BackFilter nar = ucm.getModel().getStationaryAr(), dar = s.getStationaryAr();
         BackFilter nur = ucm.getModel().getNonStationaryAr(), dur = s.getNonStationaryAr();
 
-        BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool();
-        // we computes P'(B), Ps'(B) (respectively in nar, dar)
-        if (smp.simplify(nar, dar)) {
-            nar = smp.getLeft();
-            dar = smp.getRight();
-        }
-        nur = nur.divide(dur);
-        // nur is Dn(B)
-        nar = nar.times(nur);
-        // nar is P'(B)Dn(B)
+        BackFilter denom;
+        // do we need special treatment ?
+        if (isSpecial(ucm)) {
+            BackFilter.SimplifyingTool smp = new BackFilter.SimplifyingTool();
+            // we computes P'(B), Ps'(B) (respectively in nar, dar)
+            if (smp.simplify(nar, dar)) {
+                nar = smp.getLeft();
+                dar = smp.getRight();
+            }
 
-        BackFilter denom = ucm.getModel().getMa().times(dar);
+            nur = nur.divide(dur);
+            // nur is Dn(B)
+            nar = nar.times(nur);
+            // nar is P'(B)Dn(B)
+
+            denom = ucm.getModel().getMa().times(dar);
+        } else {
+            nur = nur.divide(dur);
+            nar = nar.divide(dar);
+            // nur is Dn(B)
+            nar = nar.times(nur);
+            // nar is P'(B)Dn(B)
+            denom = ucm.getModel().getMa();
+        }
         // denom is Q(B)Ps'(B)
         BackFilter num = s.getMa().times(nar);
         // num is Qs(B)P'(B)Dn(B)
@@ -139,6 +152,15 @@ public class WienerKolmogorovEstimators {
         LinearProcess m = new LinearProcess(mf, mvar);
 
         finals[cmp][k] = new WienerKolmogorovEstimator(f, m);
+    }
+
+    // true if we have more AR roots in the components than expected
+    private boolean isSpecial(UcarimaModel ucm) {
+        int n = ucm.getModel().getArOrder();
+        for (ArimaModel m : ucm.getComponents()) {
+            n -= m.getArOrder();
+        }
+        return n != 0;
     }
 
     /**
