@@ -16,6 +16,7 @@
  */
 package jdplus.ssf.univariate;
 
+import demetra.math.Constants;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.UpdateInformation;
 import jdplus.data.DataBlock;
@@ -75,7 +76,7 @@ public class OrdinaryFilter {
             if (error != null) {
                 v += error.at(t);
             }
-            if (v < State.ZERO){
+            if (v < Constants.getEpsilon()){
                 v=0;
             }
             updinfo.setVariance(v);

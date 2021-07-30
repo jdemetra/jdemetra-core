@@ -137,13 +137,14 @@ public class MstsMonitor {
     private LikelihoodFunction function(boolean concentrated) {
         SsfMatrix s = new SsfMatrix(data);
         boolean needres = (optimizer == Optimizer.LevenbergMarquardt || optimizer == Optimizer.MinPack) || initialization == SsfInitialization.Augmented || marginal;
-        if (marginal)
-                return MarginalLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
-                        .useParallelProcessing(true)
-                        .useMaximumLikelihood(true)
-                        .useScalingFactor(concentrated)
-                        .residuals(needres)
-                        .build();
+        if (marginal) {
+            return MarginalLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
+                    .useParallelProcessing(true)
+                    .useMaximumLikelihood(true)
+                    .useScalingFactor(concentrated)
+                    .residuals(needres)
+                    .build();
+        }
         switch (initialization) {
             case Augmented:
                 return AugmentedLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
@@ -151,6 +152,15 @@ public class MstsMonitor {
                         .useScalingFactor(concentrated)
                         .useFastAlgorithm(true)
                         .useParallelProcessing(true)
+                        .residuals(needres)
+                        .build();
+            case Augmented_NoCollapsing:
+                return AugmentedLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
+                        .useMaximumLikelihood(true)
+                        .useScalingFactor(concentrated)
+                        .useFastAlgorithm(true)
+                        .useParallelProcessing(true)
+                        .useCollapsing(false)
                         .residuals(needres)
                         .build();
             case Diffuse:
@@ -182,8 +192,8 @@ public class MstsMonitor {
         // No fixed variance
         return model.parameters()
                 .filter(p -> p.isFixed()
-                        && p instanceof VarianceInterpreter
-                        && ((VarianceInterpreter) p).stde() > 0)
+                && p instanceof VarianceInterpreter
+                && ((VarianceInterpreter) p).stde() > 0)
                 .count() == 0;
     }
 
@@ -197,14 +207,21 @@ public class MstsMonitor {
         }
         int fniter = 30;
         if (needFixedVariance()) {
-            DoubleSeq p = model.functionParameters(fullp);
-            LikelihoodFunction fn = function(false);
-            LikelihoodFunctionPoint rslt = min(fn, false, precision3, 30, p);
-            ll = rslt.getLikelihood();
-            p = rslt.getParameters();
-            double[] mp = model.modelParameters(p).toArray();
-            fixedVariance = model.fixMaxVariance(mp, 1);
-            fullp = DoubleSeq.of(mp);
+            try {
+                DoubleSeq p = model.functionParameters(fullp);
+                LikelihoodFunction fn = function(false);
+                LikelihoodFunctionPoint rslt = min(fn, false, precision3, 30, p);
+                ll = rslt.getLikelihood();
+                p = rslt.getParameters();
+                double[] mp = model.modelParameters(p).toArray();
+                fixedVariance = model.fixMaxVariance(mp, 1);
+                fullp = DoubleSeq.of(mp);
+            } catch (Exception err) {
+                double[] mp = model.modelParameters(fullp).toArray();
+                fixedVariance = model.fixMaxVariance(mp, 1);
+                fullp = DoubleSeq.of(mp);
+            }
+
         }
 
         double curll = 0;

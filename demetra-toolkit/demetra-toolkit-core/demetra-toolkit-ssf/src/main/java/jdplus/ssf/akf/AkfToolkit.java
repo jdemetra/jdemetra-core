@@ -40,7 +40,7 @@ import jdplus.ssf.multivariate.M2uAdapter;
 @lombok.experimental.UtilityClass
 public class AkfToolkit {
 
-     public ILikelihoodComputer<MarginalLikelihood> marginalLikelihoodComputer(final boolean scalingfactor) {
+    public ILikelihoodComputer<MarginalLikelihood> marginalLikelihoodComputer(final boolean scalingfactor) {
         return (ssf, data) -> QRFilter.ml(ssf, data, scalingfactor);
     }
 
@@ -49,7 +49,7 @@ public class AkfToolkit {
     }
 
     public ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer(boolean collapsing, boolean scalingfactor, boolean res) {
-        return collapsing ? new LLComputer2(scalingfactor, res) : new LLComputer1(scalingfactor, res);
+        return collapsing ? new LLComputer1(scalingfactor, res) : new LLComputer2(scalingfactor, res);
     }
 
     public ILikelihoodComputer<DiffuseLikelihood> fastLikelihoodComputer(boolean scalingfactor, boolean res) {
@@ -62,35 +62,42 @@ public class AkfToolkit {
         };
     }
 
-    public DefaultAugmentedFilteringResults filter(ISsf ssf, ISsfData data, boolean all) {
+    public DefaultAugmentedFilteringResults filter(ISsf ssf, ISsfData data, boolean all, boolean collapsing) {
         DefaultAugmentedFilteringResults frslts = all
                 ? DefaultAugmentedFilteringResults.full() : DefaultAugmentedFilteringResults.light();
         frslts.prepare(ssf, 0, data.length());
-        AugmentedFilterInitializer initializer = new AugmentedFilterInitializer(frslts);
-        OrdinaryFilter filter = new OrdinaryFilter(initializer);
-        filter.process(ssf, data, frslts);
+        if (collapsing) {
+            AugmentedFilterInitializer initializer = new AugmentedFilterInitializer(frslts);
+            OrdinaryFilter filter = new OrdinaryFilter(initializer);
+            filter.process(ssf, data, frslts);
+        } else {
+            AugmentedFilter filter = new AugmentedFilter();
+            filter.process(ssf, data, frslts);
+         }
         return frslts;
     }
 
-    public DefaultSmoothingResults smooth(ISsf ssf, ISsfData data, boolean all, boolean rescaleVariance) {
+    public DefaultSmoothingResults smooth(ISsf ssf, ISsfData data, boolean all, boolean rescaleVariance, boolean collapsing) {
         AugmentedSmoother smoother = new AugmentedSmoother();
         smoother.setCalcVariances(all);
         DefaultSmoothingResults sresults = all ? DefaultSmoothingResults.full()
                 : DefaultSmoothingResults.light();
-        sresults.prepare(ssf.getStateDim(), 0, data.length());
-        if (smoother.process(ssf, data, sresults)) {
-            if (rescaleVariance)
+       sresults.prepare(ssf.getStateDim(), 0, data.length());
+       DefaultAugmentedFilteringResults fresults = filter(ssf, data, all, collapsing);
+          if (smoother.process(ssf, data.length(), fresults, sresults)) {
+            if (rescaleVariance) {
                 sresults.rescaleVariances(var(data.length(), smoother.getFilteringResults()));
+            }
             return sresults;
         } else {
             return null;
         }
     }
 
-    public StateStorage smooth(IMultivariateSsf ssf, IMultivariateSsfData data, boolean all, boolean rescaleVariance) {
+    public StateStorage smooth(IMultivariateSsf ssf, IMultivariateSsfData data, boolean all, boolean rescaleVariance, boolean collapsing) {
         ISsf ussf = M2uAdapter.of(ssf);
         ISsfData udata = M2uAdapter.of(data);
-        DefaultSmoothingResults sr = smooth(ussf, udata, all, false);
+        DefaultSmoothingResults sr = smooth(ussf, udata, all, false, collapsing);
         StateStorage ss = all ? StateStorage.full(StateInfo.Smoothed) : StateStorage.light(StateInfo.Smoothed);
         int m = data.getVarsCount(), n = data.getObsCount();
         ss.prepare(ussf.getStateDim(), 0, n);

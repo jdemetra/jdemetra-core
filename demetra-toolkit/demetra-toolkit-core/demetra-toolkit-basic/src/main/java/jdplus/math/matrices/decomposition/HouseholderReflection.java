@@ -99,7 +99,6 @@ public class HouseholderReflection implements IVectorTransformation {
                     }
                     for (int j = 0; j < k; ++j) {
                         nrm *= safemin;
-                        v.mul(m, 1 / nrm);
                     }
                     beta = nrm / (nrm + x0);
                     v().div(m, nrm);

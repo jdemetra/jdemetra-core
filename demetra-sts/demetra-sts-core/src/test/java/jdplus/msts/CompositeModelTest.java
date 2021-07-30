@@ -5,15 +5,14 @@
  */
 package jdplus.msts;
 
+import demetra.data.DoubleSeq;
+import demetra.data.DoublesMath;
 import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
 import jdplus.math.matrices.Matrix;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
-import jdplus.ssf.implementations.Loading;
-import jdplus.ssf.implementations.Noise;
-import jdplus.sts.LocalLinearTrend;
-import jdplus.sts.SeasonalComponent;
+import jdplus.ssf.StateStorage;
 import org.junit.Test;
 
 /**
@@ -21,7 +20,7 @@ import org.junit.Test;
  * @author Jean Palate
  */
 public class CompositeModelTest {
-    
+
     public CompositeModelTest() {
     }
 
@@ -40,27 +39,46 @@ public class CompositeModelTest {
     public void test1() {
         CompositeModel model = new CompositeModel();
         StateItem l = AtomicModels.localLinearTrend("l", .01, .01, false, false);
-        StateItem s=AtomicModels.seasonalComponent("s", "Crude", 12, .01, false);
-        StateItem n=AtomicModels.noise("n", .01, false);
+        StateItem s1=AtomicModels.seasonalComponent("s", "Crude", 12, .01, false);
+//        int[] h1 = new int[]{5, 10, 15, 20};
+//        StateItem s1 = AtomicModels.periodicComponent("s1", 60, h1, .01, false);
+        int[] h2 = new int[]{1,2,7};
+        StateItem s2 = AtomicModels.periodicComponent("s2", 365.25, h2, .01, false);
+        StateItem n = AtomicModels.noise("n", .01, false);
         //model.add(AtomicModels.regression("r", x));
-         StateItem r=AtomicModels.timeVaryingRegression("r", x, .01, false);
+        StateItem r = AtomicModels.timeVaryingRegression("r", x, .01, false);
         ModelEquation eq = new ModelEquation("eq1", 0, true);
         eq.add(l);
-        eq.add(s);
+        eq.add(s1);
+        eq.add(s2);
         eq.add(n);
         eq.add(r);
         model.add(l);
-        model.add(s);
+        model.add(s1);
+       model.add(s2);
         model.add(n);
         model.add(r);
         model.add(eq);
         int len = Prod_B_C.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Prod_B_C, 0);
-        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
+        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Augmented_NoCollapsing, Optimizer.LevenbergMarquardt, 1e-15, null);
         // CompositeModelEstimation rslt = model.estimate(M, 1e-15, false, true, null);
 //        System.out.println(DataBlock.of(rslt.getFullParameters()));
-//        System.out.println(rslt.getSmoothedStates().getComponent(0));
+        StateStorage states = rslt.getSmoothedStates();
+        int[] pos = rslt.getCmpPos();
+        DoubleSeq cmp = states.getComponent(pos[1]);
+//        for (int i = 1; i < h1.length; ++i) {
+//            cmp = DoublesMath.add(cmp, states.getComponent(pos[1] + 2 * i));
+//        }
+        System.out.println(cmp);
+        cmp = states.getComponent(pos[2]);
+        for (int i = 1; i < h2.length; ++i) {
+            cmp = DoublesMath.add(cmp, states.getComponent(pos[2] + 2 * i));
+        }
+        System.out.println(cmp);
+//
 //        System.out.println(rslt.getSmoothedStates().getComponentVariance(0));
 //        System.out.println(rslt.getLikelihood().logLikelihood());
-    }}
+    }
+}

@@ -88,7 +88,7 @@ public class CompositeModelEstimation {
     public StateStorage getSmoothedStates() {
         if (smoothedStates == null) {
             try {
-                StateStorage ss = AkfToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false);
+                StateStorage ss = AkfToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false, false);
 //            StateStorage ss = DkToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false);
                 if (likelihood.isScalingFactor()) {
                     ss.rescaleVariances(likelihood.sigma2());
@@ -99,7 +99,7 @@ public class CompositeModelEstimation {
                 ISsfData udata = M2uAdapter.of(new SsfMatrix(data));
                 DataBlockStorage ds = DkToolkit.fastSmooth(ussf, udata);
                 StateStorage ss = StateStorage.light(StateInfo.Smoothed);
-                 int m = data.getColumnsCount(), n = data.getRowsCount();
+                int m = data.getColumnsCount(), n = data.getRowsCount();
                 ss.prepare(ussf.getStateDim(), 0, n);
                 for (int i = 0; i < n; ++i) {
                     ss.save(i, ds.block(i * m), null);
@@ -108,8 +108,17 @@ public class CompositeModelEstimation {
                     ss.rescaleVariances(likelihood.sigma2());
                 }
                 smoothedStates = ss;
-           }
-       }
+
+            } catch (Exception err) {
+                StateStorage ss = AkfToolkit.smooth(getSsf(), new SsfMatrix(getData()), false, false, false);
+//            StateStorage ss = DkToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false);
+                if (likelihood.isScalingFactor()) {
+                    ss.rescaleVariances(likelihood.sigma2());
+                }
+                smoothedStates = ss;
+
+            }
+        }
         return smoothedStates;
     }
 

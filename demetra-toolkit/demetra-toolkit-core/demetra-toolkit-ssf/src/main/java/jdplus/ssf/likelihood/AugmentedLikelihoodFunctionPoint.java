@@ -69,7 +69,7 @@ public class AugmentedLikelihoodFunctionPoint<S, F extends ISsf> implements
             if (fastcomputer) {
                 dl = AkfToolkit.fastLikelihoodComputer(fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
             } else {
-                dl = AkfToolkit.likelihoodComputer(true, fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
+                dl = AkfToolkit.likelihoodComputer(fn.isCollapsing(), fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
             }
             if (fn.isScalingFactor()) {
                 DoubleSeq res = dl.e();

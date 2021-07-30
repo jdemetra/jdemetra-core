@@ -24,6 +24,7 @@ import jdplus.msts.internal.TdRegressionItem;
 import demetra.timeseries.TsDomain;
 import demetra.math.matrices.MatrixType;
 import jdplus.msts.internal.CumulatorItem;
+import jdplus.msts.internal.PeriodicItem;
 import jdplus.msts.internal.WeightedNoiseItem;
 
 /**
@@ -137,5 +138,8 @@ public class AtomicModels {
         return new CycleItem(name, dumpingFactor, cyclicalPeriod, fixedcycle, cvar, fixedvar);
     }
 
+    public StateItem periodicComponent(String name, double period, int[] k, double cvar, boolean fixedvar) {
+        return new PeriodicItem(name, period, k, cvar, fixedvar);
+    }
 
 }

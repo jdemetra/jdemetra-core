@@ -15,5 +15,6 @@ import nbbrd.design.Development;
 public enum SsfInitialization{
     Diffuse,
     SqrtDiffuse,
-    Augmented
+    Augmented,
+    Augmented_NoCollapsing
 }
