@@ -158,7 +158,7 @@ public class MstsMonitor {
                 return AugmentedLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
                         .useMaximumLikelihood(true)
                         .useScalingFactor(concentrated)
-                        .useFastAlgorithm(true)
+                        .useFastAlgorithm(false)
                         .useParallelProcessing(true)
                         .useCollapsing(false)
                         .residuals(needres)

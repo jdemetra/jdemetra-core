@@ -65,7 +65,7 @@ public class CompositeModelTest {
         int len = Data.PROD.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.PROD, 0);
-        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
+        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Augmented_NoCollapsing, Optimizer.LevenbergMarquardt, 1e-15, null);
         System.out.println(DataBlock.of(rslt.getFullParameters()));
         System.out.println(rslt.getSmoothedStates().getComponent(19));
         System.out.println(rslt.getSmoothedStates().getComponentVariance(1));
@@ -86,7 +86,7 @@ public class CompositeModelTest {
         int len = Data.ABS_RETAIL.length;
         Matrix M = Matrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
-        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
+        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Augmented_NoCollapsing, Optimizer.LevenbergMarquardt, 1e-15, null);
         System.out.println(DataBlock.of(rslt.getFullParameters()));
         System.out.println(rslt.getSmoothedStates().getComponent(0));
         System.out.println(rslt.getSmoothedStates().getComponentVariance(0));
