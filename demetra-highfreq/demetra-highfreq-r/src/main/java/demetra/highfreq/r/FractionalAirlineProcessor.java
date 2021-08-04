@@ -22,6 +22,7 @@ import demetra.highfreq.FractionalAirlineEstimation;
 import demetra.highfreq.FractionalAirlineSpec;
 import demetra.math.matrices.MatrixType;
 import jdplus.fractionalairline.FractionalAirlineKernel;
+import jdplus.ssf.extractors.SsfUcarimaEstimation;
 
 /**
  *
@@ -56,6 +57,10 @@ public class FractionalAirlineProcessor{
                 .approximateHessian(approximateHessian)
                 .build();
         return FractionalAirlineKernel.process(spec);
+    }
+    
+    public SsfUcarimaEstimation ssfDetails(FractionalAirlineDecomposition fad){
+        return new SsfUcarimaEstimation(fad.getUcarima(), fad.getY());
     }
 }
 
