@@ -123,6 +123,14 @@ public class Bsm {
     }
 
     public MatrixType forecast(TsData series, String model, int nf) {
+        int period=series.getAnnualFrequency();
+        BsmSpec spec=BsmSpec.DEFAULT;
+        if (period == 1){
+            spec=spec.toBuilder()
+                    .seasonal(null)
+                    .build();
+            model="none";
+        }
         double[] y = extend(series, nf);
         Matrix X = variables(model, series.getDomain().extend(0, nf));
 
@@ -132,7 +140,7 @@ public class Bsm {
                 .build();
 
         BsmKernel kernel = new BsmKernel(espec);
-        boolean ok = kernel.process(series.getValues(), X == null ? null : X.extract(0, series.length(), 0, X.getColumnsCount()), series.getAnnualFrequency(), BsmSpec.DEFAULT);
+        boolean ok = kernel.process(series.getValues(), X == null ? null : X.extract(0, series.length(), 0, X.getColumnsCount()), period, spec);
         BsmData result = kernel.result(true);
         // create the final ssf
         SsfBsm bsm = SsfBsm.of(result);

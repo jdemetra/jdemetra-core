@@ -45,6 +45,15 @@ public class BsmTest {
     }
 
     @Test
+    public void testYearly() {
+        TsData s = TsData.ofInternal(TsPeriod.yearly(1992), Data.RETAIL_BOOKSTORES);
+        MatrixType fcast = Bsm.forecast(s, "full", 24);
+        assertTrue(fcast.getRowsCount() == 24);
+//        System.out.println(fcast.column(0));
+//        System.out.println(fcast.column(1));
+    }
+    
+    @Test
     public void testEstimation() {
         TsData s = TsData.ofInternal(TsPeriod.monthly(1992,1), Data.RETAIL_BOOKSTORES);
         BasicStructuralModel bsm = Bsm.process(s, null, 1, 1, -1, 1, "Trigonometric", true, 1e-12);

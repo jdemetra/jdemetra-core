@@ -46,7 +46,6 @@ public class FractionalAirlineKernelTest {
                 .y(edf.column(0).fn(z -> Math.log(z)).toArray())
                 .X(hol)
                 .periodicities(new double[]{7, 365.25})
-                .outliers(null)
                 .build();
         FractionalAirlineEstimation rslt = FractionalAirlineKernel.process(spec);
         assertTrue(rslt != null);

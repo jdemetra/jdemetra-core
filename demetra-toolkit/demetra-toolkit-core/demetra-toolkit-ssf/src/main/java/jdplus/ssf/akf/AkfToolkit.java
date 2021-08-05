@@ -24,7 +24,6 @@ import jdplus.ssf.univariate.ILikelihoodComputer;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.OrdinaryFilter;
-import jdplus.likelihood.Likelihood;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.StateStorage;
 import jdplus.ssf.ckms.CkmsDiffuseInitializer;
@@ -49,7 +48,7 @@ public class AkfToolkit {
     }
 
     public ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer(boolean collapsing, boolean scalingfactor, boolean res) {
-        return collapsing ? new LLComputer1(scalingfactor, res) : new LLComputer2(scalingfactor, res);
+        return collapsing ? new LLComputer2(scalingfactor, res) : new LLComputer1(scalingfactor, res);
     }
 
     public ILikelihoodComputer<DiffuseLikelihood> fastLikelihoodComputer(boolean scalingfactor, boolean res) {
