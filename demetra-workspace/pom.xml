@@ -107,6 +107,12 @@
             <artifactId>java-io-xml</artifactId>
             <version>0.0.11</version>
             <type>jar</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.netbeans.api</groupId>
+                    <artifactId>org-openide-util-lookup</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>  
 </project>
