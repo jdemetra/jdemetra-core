@@ -25,7 +25,10 @@ import demetra.timeseries.TsDomain;
 import demetra.math.matrices.MatrixType;
 import jdplus.msts.internal.CumulatorItem;
 import jdplus.msts.internal.PeriodicItem;
-import jdplus.msts.internal.WeightedNoiseItem;
+import jdplus.msts.internal.VarLocalLevelItem;
+import jdplus.msts.internal.VarLocalLinearTrendItem;
+import jdplus.msts.internal.VarSeasonalComponentItem;
+import jdplus.msts.internal.VarNoiseItem;
 
 /**
  *
@@ -46,20 +49,32 @@ public class AtomicModels {
         return new LocalLevelItem(name, lvar, fixed, initial);
     }
 
+    public StateItem localLevel(String name, final double[] lstd, final double lscale, final boolean fixed, final double initial) {
+        return new VarLocalLevelItem(name, lstd, lscale, fixed, initial);
+    }
+
     public StateItem localLinearTrend(final String name, double lvar, double svar, boolean lfixed, boolean sfixed) {
         return new LocalLinearTrendItem(name, lvar, svar, lfixed, sfixed);
+    }
+
+    public StateItem localLinearTrend(final String name, double[] lstd, double[] sstd, double lscale, double sscale, boolean lfixed, boolean sfixed) {
+        return new VarLocalLinearTrendItem(name, lstd, sstd, lscale, sscale, lfixed, sfixed);
     }
 
     public StateItem seasonalComponent(String name, String smodel, int period, double seasvar, boolean fixed) {
         return new SeasonalComponentItem(name, smodel, period, seasvar, fixed);
     }
 
+    public StateItem seasonalComponent(String name, String smodel, int period, double[] std, double scale, boolean fixed) {
+        return new VarSeasonalComponentItem(name, smodel, period, std, scale, fixed);
+    }
+
     public StateItem noise(String name, double var, boolean fixed) {
         return new NoiseItem(name, var, fixed);
     }
 
-    public StateItem weightedNoise(String name, double[] w, double var, boolean fixed) {
-        return new WeightedNoiseItem(name, w, var, fixed);
+    public StateItem noise(String name, double[] std, double scale, boolean fixed) {
+        return new VarNoiseItem(name, std, scale, fixed);
     }
 
     public StateItem regression(String name, MatrixType x) {
@@ -86,34 +101,6 @@ public class AtomicModels {
         return new SaeItem(name, ar, fixedar, lag, zeroinit);
     }
 
-//    // ABS-like
-//    public ModelItem waveSpecificSurveyError(String name, int nwaves, double ar1, double[] ar2, boolean fixedar) {
-//        return mapping -> {
-//            final boolean bar1 = Double.isFinite(ar1), bar2 = ar2 != null;
-//            if (bar1) {
-//                mapping.add(new ArParameters(name + "_sae1", new double[]{ar1}, fixedar));
-//            }
-//            if (bar2) {
-//                mapping.add(new ArParameters(name + "_sae2", ar2, fixedar));
-//            }
-//            mapping.add((p, builder) -> {
-//                int np = 0;
-//                double par1 = Double.NaN;
-//                if (bar1) {
-//                    par1 = p.get(0);
-//                    ++np;
-//                }
-//                double[] par2 = null;
-//                if (bar2) {
-//                    par2 = p.extract(np, 2).toArray();
-//                    np += 2;
-//                }
-//                StateComponent cmp = WaveSpecificSurveyErrors.of(par1, par2[0], par2[1], nwaves);
-//                builder.add(name, cmp, null);
-//                return np;
-//            });
-//        };
-//    }
     public StateItem waveSpecificSurveyError(String name, int nwaves, MatrixType ar, boolean fixedar, int lag) {
         return new MsaeItem(name, nwaves, ar, fixedar, lag);
     }

@@ -15,33 +15,33 @@ import demetra.data.DoubleSeq;
  *
  * @author palatej
  */
-public class VarianceInterpreter implements ParameterInterpreter {
+public class ScaleInterpreter implements ParameterInterpreter {
 
     private static final double DEF_STDE = .1;
 
-    private double stde;
+    private double scale;
     private boolean fixed;
     private final String name;
     private final boolean nullable;
 
-    public VarianceInterpreter(final String name, boolean nullable) {
+    public ScaleInterpreter(final String name, boolean nullable) {
         this.name = name;
         this.nullable = nullable;
-        stde = DEF_STDE;
+        scale = DEF_STDE;
         fixed = false;
     }
 
-    public VarianceInterpreter(final String name, double var, boolean fixed, boolean nullable) {
-        stde = Math.sqrt(var);
+    public ScaleInterpreter(final String name, double stde, boolean fixed, boolean nullable) {
+        this.scale = stde;
         this.fixed = fixed;
         this.name = name;
         this.nullable = nullable;
     }
 
     @Override
-    public VarianceInterpreter duplicate() {
-        VarianceInterpreter p = new VarianceInterpreter(name, nullable);
-        p.stde = stde;
+    public ScaleInterpreter duplicate() {
+        ScaleInterpreter p = new ScaleInterpreter(name, nullable);
+        p.scale = scale;
         p.fixed = fixed;
         return p;
     }
@@ -53,16 +53,11 @@ public class VarianceInterpreter implements ParameterInterpreter {
 
     @Override
     public int rescaleVariances(double factor, double[] buffer, int pos) {
-        if (fixed) {
-            stde *= Math.sqrt(factor);
-        } 
-        
-            buffer[pos] *= factor;
         return pos + 1;
     }
 
-    public void variance(double v) {
-        stde=Math.sqrt(v);
+    public void scale(double s) {
+        scale = s;
     }
 
     @Override
@@ -76,7 +71,7 @@ public class VarianceInterpreter implements ParameterInterpreter {
 
     @Override
     public void fixModelParameter(DoubleSeqCursor reader) {
-        stde = Math.sqrt(reader.getAndNext());
+        scale = Math.abs(reader.getAndNext());
         fixed = true;
     }
 
@@ -85,24 +80,20 @@ public class VarianceInterpreter implements ParameterInterpreter {
         fixed = false;
     }
 
-    public double fixStde(double e) {
-        double olde = stde;
-        stde = Math.abs(e);
+    public double fixScale(double e) {
+        double olde = scale;
+        scale = Math.abs(e);
         fixed = true;
         return olde;
     }
 
-    public void freeStde(double e) {
+    public void freeScale(double e) {
         fixed = false;
-        stde = e;
+        scale = e;
     }
 
-    public double stde() {
-        return stde;
-    }
-
-    public double variance() {
-        return stde*stde;
+    public double scale() {
+        return scale;
     }
 
     @Override
@@ -119,9 +110,9 @@ public class VarianceInterpreter implements ParameterInterpreter {
     public int decode(DoubleSeqCursor input, double[] buffer, int pos) {
         if (!fixed) {
             double e = input.getAndNext();
-            buffer[pos] = e * e;
+            buffer[pos] = Math.abs(e);
         } else {
-            buffer[pos] = stde * stde;
+            buffer[pos] = scale;
         }
         return pos + 1;
     }
@@ -130,7 +121,7 @@ public class VarianceInterpreter implements ParameterInterpreter {
     public int encode(DoubleSeqCursor input, double[] buffer, int pos) {
         double v = input.getAndNext();
         if (!fixed) {
-            buffer[pos] = Math.sqrt(v);
+            buffer[pos] = v;
             return pos + 1;
         } else {
             return pos;
@@ -140,7 +131,7 @@ public class VarianceInterpreter implements ParameterInterpreter {
     @Override
     public int fillDefault(double[] buffer, int pos) {
         if (!fixed) {
-            buffer[pos] = stde;
+            buffer[pos] = scale;
             return pos + 1;
         } else {
             return pos;
@@ -160,11 +151,12 @@ public class VarianceInterpreter implements ParameterInterpreter {
 
         @Override
         public double epsilon(DoubleSeq inparams, int idx) {
-            double c=inparams.get(0);
-            if (c >= 0)
+            double c = inparams.get(0);
+            if (c >= 0) {
                 return Math.max(EPS, c * EPS);
-            else
+            } else {
                 return -Math.max(EPS, -c * EPS);
+            }
 
         }
 

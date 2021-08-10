@@ -162,7 +162,7 @@ public final class DataBlock implements DoubleSeq.Mutable {
         }
         return new DataBlock(x, 0, x.length, 1);
     }
-    
+
     public static DataBlock of(int n, @NonNull IntToDoubleFunction fn) {
         double[] x = new double[n];
         for (int i = 0; i < n; ++i) {
@@ -992,6 +992,29 @@ public final class DataBlock implements DoubleSeq.Mutable {
         }
     }
 
+    public void AProduct(double a, DataBlock row, Iterator<DataBlock> cols) {
+        if (a == 0){
+            set(0);
+            return;
+        }
+        int idx = beg;
+        while (cols.hasNext()) {
+            data[idx] = a*cols.next().dot(row);
+            idx += inc;
+        }
+    }
+
+    public void AProduct(double a, Iterator<DataBlock> rows, DataBlock column) {
+        if (a == 0){
+            set(0);
+            return;
+        }
+        int idx = beg;
+        while (rows.hasNext()) {
+            data[idx] = a*column.dot(rows.next());
+            idx += inc;
+        }
+    }
     /**
      * Adds the product of a vector by a matrix to this src block this += row *
      * cols. We must have that 1. the length of this src block = the number of
@@ -1013,6 +1036,22 @@ public final class DataBlock implements DoubleSeq.Mutable {
         int idx = beg;
         while (rows.hasNext()) {
             data[idx] += column.dot(rows.next());
+            idx += inc;
+        }
+    }
+
+    public void addAProduct(double a, DataBlock row, Iterator<DataBlock> cols) {
+        int idx = beg;
+        while (cols.hasNext()) {
+            data[idx] += a * cols.next().dot(row);
+            idx += inc;
+        }
+    }
+
+    public void addAProduct(double a, Iterator<DataBlock> rows, DataBlock column) {
+        int idx = beg;
+        while (rows.hasNext()) {
+            data[idx] += a * column.dot(rows.next());
             idx += inc;
         }
     }

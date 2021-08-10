@@ -8,57 +8,64 @@ package jdplus.msts.internal;
 import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.msts.MstsMapping;
-import jdplus.msts.VarianceInterpreter;
-import jdplus.ssf.implementations.Noise;
+import jdplus.sts.LocalLevel;
 import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
+import jdplus.msts.ScaleInterpreter;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
+import jdplus.sts.VarLocalLevel;
 
 /**
  *
  * @author palatej
  */
-public class NoiseItem extends StateItem {
+public class VarLocalLevelItem extends StateItem {
 
-    private final VarianceInterpreter v;
+    public final ScaleInterpreter scale;
+    private final double[] stde;
+    public final double initial;
 
-    public NoiseItem(String name, double var, boolean fixed) {
+    public VarLocalLevelItem(String name, final double[] stde, final double lscale, final boolean fixed, final double initial) {
         super(name);
-        this.v = new VarianceInterpreter(name + ".var", var, fixed, true);
+        this.initial = initial;
+        this.stde = stde;
+        this.scale = new ScaleInterpreter(name + ".scale", lscale, fixed, true);
     }
-    
-    private NoiseItem(NoiseItem item){
+
+    private VarLocalLevelItem(VarLocalLevelItem item) {
         super(item.name);
-        v=item.v.duplicate();
+        this.scale = item.scale.duplicate();
+        this.initial = item.initial;
+        this.stde = item.stde;
     }
-    
+
     @Override
-    public NoiseItem duplicate(){
-        return new NoiseItem(this);
+    public VarLocalLevelItem duplicate() {
+        return new VarLocalLevelItem(this);
     }
 
     @Override
     public void addTo(MstsMapping mapping) {
-        mapping.add(v);
+        mapping.add(scale);
         mapping.add((p, builder) -> {
             double e = p.get(0);
-            StateComponent cmp = Noise.of(e);
-            builder.add(name, cmp, Noise.defaultLoading());
+            StateComponent cmp = VarLocalLevel.of(stde, e, initial);
+            builder.add(name, cmp, VarLocalLevel.defaultLoading());
             return 1;
         });
     }
 
     @Override
     public List<ParameterInterpreter> parameters() {
-        return Collections.singletonList(v);
+        return Collections.singletonList(scale);
     }
 
     @Override
     public StateComponent build(DoubleSeq p) {
-            double e = p.get(0);
-            return Noise.of(e);
+        double e = p.get(0);
+        return VarLocalLevel.of(stde, e, initial);
     }
 
     @Override
@@ -68,11 +75,7 @@ public class NoiseItem extends StateItem {
 
     @Override
     public ISsfLoading defaultLoading(int m) {
-        if (m > 0) {
-            return null;
-        } else {
-            return Noise.defaultLoading();
-        }
+        return LocalLevel.defaultLoading();
     }
 
     @Override
@@ -81,13 +84,13 @@ public class NoiseItem extends StateItem {
     }
 
     @Override
-    public int stateDim(){
+    public int stateDim() {
         return 1;
     }
 
     @Override
     public boolean isScalable() {
-        return !v.isFixed();
+        return !scale.isFixed();
     }
 
 }

@@ -94,6 +94,34 @@ public class CompositeModelTest {
     }
 
     @Test
+    public void testBsmVar() {
+        int len = Data.ABS_RETAIL.length;
+        Matrix M = Matrix.make(len, 1);
+        M.column(0).copyFrom(Data.ABS_RETAIL, 0);
+        double[] std=new double[len];
+        for (int i=0; i<len; ++i){
+            std[i]=1;
+        }
+        std[len*2/3]=10;
+        
+        CompositeModel model = new CompositeModel();
+//        model.add(AtomicModels.localLevel("l", .1, false, Double.NaN));
+        model.add(AtomicModels.localLinearTrend("l", std, null, 1, 1, false, false));
+        model.add(AtomicModels.seasonalComponent("s", "HarrisonStevens", 12, std, 1, false));
+        model.add(AtomicModels.noise("n", std, 1, true));
+        ModelEquation eq = new ModelEquation("eq1", 0, true);
+        eq.add("l", 1, true, null);
+        eq.add("n", 1, true, null);
+        eq.add("s", 1, true, null);
+        model.add(eq);
+        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.SqrtDiffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
+        System.out.println(DataBlock.of(rslt.getFullParameters()));
+        System.out.println(rslt.getSmoothedStates().getComponent(0));
+        System.out.println(rslt.getSmoothedStates().getComponent(2));
+        System.out.println(rslt.getLikelihood().logLikelihood());
+    }
+
+    @Test
     public void testX() {
         Matrix x = Matrix.make(data.getRowsCount(), 6);
         x.column(0).copy(data.column(0));

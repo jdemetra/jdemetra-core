@@ -102,7 +102,9 @@ public class MstsMapping implements IParametricMapping<MultivariateCompositeSsf>
         if (max > 0 && max != var) {
             rescaleVariances(var / max, pcur);
         }
-        mvar.fixStde(Math.sqrt(var));
+        if (mvar != null) {
+            mvar.fixStde(Math.sqrt(var));
+        }
         return mvar;
     }
 

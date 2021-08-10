@@ -8,64 +8,68 @@ package jdplus.msts.internal;
 import demetra.data.DoubleSeq;
 import jdplus.msts.StateItem;
 import jdplus.msts.MstsMapping;
-import jdplus.msts.VarianceInterpreter;
 import jdplus.sts.SeasonalComponent;
 import demetra.sts.SeasonalModel;
 import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
+import jdplus.msts.ScaleInterpreter;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
+import jdplus.sts.VarSeasonalComponent;
 
 /**
  *
  * @author palatej
  */
-public class SeasonalComponentItem extends StateItem {
+public class VarSeasonalComponentItem extends StateItem {
 
     private final SeasonalModel model;
     private final int period;
-    private final VarianceInterpreter v;
+    private final double[] std;
+    private final ScaleInterpreter scale;
 
-    public SeasonalComponentItem(String name, String smodel, int period, double seasvar, boolean fixed) {
+    public VarSeasonalComponentItem(String name, String smodel, int period, double[] std, double scale, boolean fixed) {
         super(name);
         this.model = SeasonalModel.valueOf(smodel);
         this.period = period;
-        this.v = new VarianceInterpreter(name + ".var", seasvar, fixed, true);
+        this.scale = new ScaleInterpreter(name + ".scale", scale, fixed, true);
+        this.std=std;
     }
 
-    private SeasonalComponentItem(SeasonalComponentItem item) {
+    private VarSeasonalComponentItem(VarSeasonalComponentItem item) {
         super(item.name);
-        this.v = item.v.duplicate();
+        this.scale = item.scale.duplicate();
         this.model=item.model;
         this.period=item.period;
+        this.std=item.std;
     }
 
     @Override
-    public SeasonalComponentItem duplicate() {
-        return new SeasonalComponentItem(this);
+    public VarSeasonalComponentItem duplicate() {
+        return new VarSeasonalComponentItem(this);
     }
 
     @Override
     public void addTo(MstsMapping mapping) {
-        mapping.add(v);
+        mapping.add(scale);
         mapping.add((p, builder) -> {
             double e = p.get(0);
-            StateComponent cmp = SeasonalComponent.of(model, period, e);
-            builder.add(name, cmp, SeasonalComponent.defaultLoading());
+            StateComponent cmp = VarSeasonalComponent.of(model, period, std, e);
+            builder.add(name, cmp, VarSeasonalComponent.defaultLoading());
             return 1;
         });
     }
 
     @Override
     public List<ParameterInterpreter> parameters() {
-        return Collections.singletonList(v);
+        return Collections.singletonList(scale);
     }
 
     @Override
     public StateComponent build(DoubleSeq p) {
         double e = p.get(0);
-        return SeasonalComponent.of(model, period, e);
+        return VarSeasonalComponent.of(model, period, std, e);
     }
 
     @Override
@@ -75,7 +79,7 @@ public class SeasonalComponentItem extends StateItem {
 
     @Override
     public ISsfLoading defaultLoading(int m) {
-        return SeasonalComponent.defaultLoading();
+        return VarSeasonalComponent.defaultLoading();
     }
 
     @Override
@@ -87,10 +91,9 @@ public class SeasonalComponentItem extends StateItem {
     public int stateDim(){
         return period-1;
     }
-
+    
     @Override
     public boolean isScalable() {
-        return !v.isFixed();
+        return !scale.isFixed();
     }
-    
 }

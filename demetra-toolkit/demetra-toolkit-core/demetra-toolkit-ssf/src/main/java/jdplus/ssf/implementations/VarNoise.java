@@ -29,26 +29,22 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
-public class Noise {
+public class VarNoise {
 
-    public StateComponent of(final double var) {
-        return new StateComponent(new Initialization(var), new Dynamics(var));
+    public StateComponent of(final @NonNull double[] std, double scale) {
+        return new StateComponent(new Initialization(scale), new Dynamics(std, scale));
     }
 
     public ISsfLoading defaultLoading() {
         return Loading.fromPosition(0);
     }
 
-    public ISsfLoading periodicLoading(final int period, final int startPos) {
-        return Loading.circular(period, startPos);
-    }
-
     static class Initialization implements ISsfInitialization {
 
-        private final double var;
+        private final double std;
 
-        Initialization(final double var) {
-            this.var = var;
+        Initialization(final double std) {
+            this.std = std;
         }
 
         @Override
@@ -76,18 +72,32 @@ public class Noise {
 
         @Override
         public void Pf0(Matrix pf0) {
-            pf0.set(0, 0, var);
+            pf0.set(0, 0, std * std);
         }
-
     }
 
     static class Dynamics implements ISsfDynamics {
 
-        private final double var, e;
+        private final double scale, scale2;
+        private final double[] std;
 
-        Dynamics(final double var) {
-            this.var = var;
-            this.e = Math.sqrt(var);
+        Dynamics(double[] std, final double scale) {
+            this.scale = scale;
+            this.scale2 = scale * scale;
+            this.std = std;
+        }
+
+        private double v(int pos) {
+            if (pos < std.length) {
+                double q = scale * std[pos];
+                return q * q;
+            } else {
+                return scale2;
+            }
+        }
+
+        private double e(int pos) {
+            return pos < std.length ? std[pos] * scale : scale;
         }
 
         @Override
@@ -97,12 +107,12 @@ public class Noise {
 
         @Override
         public void V(int pos, Matrix qm) {
-            qm.set(0, 0, var);
+            qm.set(0, 0, v(pos));
         }
 
         @Override
         public void S(int pos, Matrix cm) {
-            cm.set(0, 0, e);
+            cm.set(0, 0, e(pos));
         }
 
         @Override
@@ -112,7 +122,7 @@ public class Noise {
 
         @Override
         public boolean areInnovationsTimeInvariant() {
-            return true;
+            return false;
         }
 
         @Override
@@ -131,12 +141,12 @@ public class Noise {
 
         @Override
         public void addSU(int pos, DataBlock x, DataBlock u) {
-            x.add(0, e * u.get(0));
+            x.add(0, e(pos) * u.get(0));
         }
 
         @Override
         public void addV(int pos, Matrix p) {
-            p.add(0, 0, var);
+            p.add(0, 0, v(pos));
         }
 
         @Override
@@ -146,14 +156,13 @@ public class Noise {
 
         @Override
         public void XS(int pos, DataBlock x, DataBlock xs) {
-            xs.set(0, x.get(0) * e);
+            xs.set(0, x.get(0) * e(pos));
         }
 
         @Override
         public boolean isTimeInvariant() {
-            return true;
+            return false;
         }
 
     }
-
 }

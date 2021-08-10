@@ -88,4 +88,10 @@ public class PeriodicItem extends StateItem {
     public int stateDim() {
         return 2*k.length;
     }
+    
+    @Override
+    public boolean isScalable() {
+        return !v.isFixed();
+    }
+    
 }
