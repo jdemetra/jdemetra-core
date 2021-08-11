@@ -27,6 +27,12 @@
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>spreadsheet-api</artifactId>
             <version>${spreadsheet4j.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.netbeans.api</groupId>
+                    <artifactId>org-openide-util-lookup</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- test only -->
