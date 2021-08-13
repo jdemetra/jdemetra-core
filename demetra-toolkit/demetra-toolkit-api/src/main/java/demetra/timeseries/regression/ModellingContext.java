@@ -40,7 +40,7 @@ public class ModellingContext  {
 
     private final HashMap<Class, NameManager> map = new HashMap<>();
     
-    private static AtomicReference<ModellingContext> DEF_CONTEXT=new AtomicReference<>(null);
+    private static final AtomicReference<ModellingContext> DEF_CONTEXT=new AtomicReference<>(new ModellingContext());
 
     public ModellingContext() {
         map.put(TsDataSuppliers.class, new NameManager(TsDataSuppliers.class, "Variables_", new DefaultNameValidator(".")));

@@ -22,46 +22,51 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @author PALATEJ
  */
-public final class DynamicTsDataSupplier extends TsDataSupplier{
-    
+public final class DynamicTsDataSupplier extends TsDataSupplier {
+
     private final TsMoniker moniker;
     private final AtomicReference<TsData> cache;
-    
-    public DynamicTsDataSupplier(TsMoniker moniker){
-        this.moniker=moniker;
-        this.cache=new AtomicReference<>(null);
+
+    public DynamicTsDataSupplier(TsMoniker moniker) {
+        this.moniker = moniker;
+        this.cache = new AtomicReference<>(null);
     }
-    
-    public DynamicTsDataSupplier(TsMoniker moniker, TsData current){
-        this.moniker=moniker;
-        this.cache=new AtomicReference<>(current);
+
+    public DynamicTsDataSupplier(TsMoniker moniker, TsData current) {
+        this.moniker = moniker;
+        this.cache = new AtomicReference<>(current);
     }
-    
-    public TsMoniker getMoniker(){
+
+    public TsMoniker getMoniker() {
         return moniker;
     }
 
     @Override
     public TsData get() {
         TsData cur = cache.get();
-        if (cur != null)
-            return null;
+        if (cur != null) {
+            return cur;
+        }
         TsData load = load();
         this.cache.set(load);
         return load;
     }
-    
-    public TsData load(){
+
+    private TsData load() {
         // from the moniker.
-        Ts ts = TsFactory.ofServiceLoader().makeTs(moniker, TsInformationType.Data);
-        if (ts != null){
+        Ts ts = TsFactory.getDefault().makeTs(moniker, TsInformationType.Data);
+        if (ts != null) {
             return ts.getData();
-        }else
+        } else {
             return null;
-     }
-    
-    public void refresh(){
-        cache.set(load());
+        }
     }
-    
+
+    public void refresh() {
+        TsData ndata = load();
+        if (ndata != null && (!ndata.isEmpty() || cache.get() == null)) {
+            cache.set(load());
+        }
+    }
+
 }

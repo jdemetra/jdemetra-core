@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author Jean Palate & BAYENSK
  */
-public class CsvOutputConfiguration extends BasicConfiguration implements Cloneable {
+public class CsvOutputConfiguration implements Cloneable {
     
     public static final String NAME="series";
 

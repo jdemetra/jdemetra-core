@@ -103,9 +103,9 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-xml</artifactId>
-            <version>0.0.11</version>
+            <version>0.0.14</version>
             <type>jar</type>
             <exclusions>
                 <exclusion>

@@ -16,6 +16,7 @@
  */
 package demetra.tsprovider;
 
+import java.io.File;
 import nbbrd.design.ThreadSafe;
 import java.io.FileFilter;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -38,4 +39,5 @@ public interface FileLoader<B extends FileBean> extends DataSourceLoader<B>, Fil
 
     @NonNull
     String getFileDescription();
+    
 }

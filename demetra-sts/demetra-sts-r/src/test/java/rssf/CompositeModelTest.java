@@ -108,13 +108,15 @@ public class CompositeModelTest {
 //        model.add(AtomicModels.localLevel("l", .1, false, Double.NaN));
         model.add(AtomicModels.localLinearTrend("l", std, null, 1, 1, false, false));
         model.add(AtomicModels.seasonalComponent("s", "HarrisonStevens", 12, std, 1, false));
+//        model.add(AtomicModels.periodicComponent("p", 365.25, new int[]{1,2,3, 4, 5}, 1, false));
         model.add(AtomicModels.noise("n", std, 1, true));
         ModelEquation eq = new ModelEquation("eq1", 0, true);
         eq.add("l", 1, true, null);
         eq.add("n", 1, true, null);
+//        eq.add("p", 1, true, null);
         eq.add("s", 1, true, null);
         model.add(eq);
-        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.SqrtDiffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
+        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Augmented_NoCollapsing, Optimizer.LevenbergMarquardt, 1e-15, null);
         System.out.println(DataBlock.of(rslt.getFullParameters()));
         System.out.println(rslt.getSmoothedStates().getComponent(0));
         System.out.println(rslt.getSmoothedStates().getComponent(2));

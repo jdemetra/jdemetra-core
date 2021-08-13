@@ -150,7 +150,7 @@ public class AugmentedLikelihoodFunction<S, F extends ISsf> implements Likelihoo
     }
 
     public boolean isCollapsing() {
-        return res;
+        return collapsing;
     }
 
     @Override

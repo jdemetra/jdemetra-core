@@ -59,27 +59,27 @@ public final class SaItem {
     @lombok.EqualsAndHashCode.Exclude
     private volatile ProcQuality quality;
 
+    @lombok.experimental.NonFinal
+    @lombok.EqualsAndHashCode.Exclude
+    private volatile boolean processed;
+
     public SaItem withPriority(int priority) {
-        return new SaItem(name, definition, meta, priority, estimation, quality);
+        return new SaItem(name, definition, meta, priority, estimation, quality, processed);
     }
 
     public SaItem withName(String name) {
-        return new SaItem(name, definition, meta, priority, estimation, quality);
+        return new SaItem(name, definition, meta, priority, estimation, quality, processed);
     }
 
     public SaItem withInformations(Map<String, String> info) {
-        return new SaItem(name, definition, Collections.unmodifiableMap(info), priority, estimation, quality);
+        return new SaItem(name, definition, Collections.unmodifiableMap(info), priority, estimation, quality, processed);
     }
 
     public void accept() {
-        if (quality == null) {
+        if (!processed) {
             return;
         }
         this.quality = ProcQuality.Accepted;
-    }
-
-    public boolean isProcessed() {
-        return quality != null;
     }
 
     /**
@@ -94,6 +94,7 @@ public final class SaItem {
     public boolean process(boolean verbose) {
         synchronized (this) {
             estimation = SaManager.process(definition, ModellingContext.getActiveContext(), verbose);
+            processed = true;
             // update quality
             quality = estimation == null ? ProcQuality.Undefined : ProcDiagnostic.summary(estimation.getDiagnostics());
         }
@@ -108,17 +109,17 @@ public final class SaItem {
     public SaEstimation getEstimation() {
         SaEstimation e = estimation;
         if (e == null) {
-            ProcQuality q = quality;
-            if (q != null) {
-                return null;
-            }
             synchronized (this) {
                 e = estimation;
-                if (e == null) {
+                if (processed) {
+                    return e;
+                }
+                else {
                     e = SaManager.process(definition, ModellingContext.getActiveContext(), false);
                     // update quality
                     quality = e == null ? ProcQuality.Undefined : ProcDiagnostic.summary(e.getDiagnostics());
                     estimation = e;
+                    processed=true;
                 }
             }
         }

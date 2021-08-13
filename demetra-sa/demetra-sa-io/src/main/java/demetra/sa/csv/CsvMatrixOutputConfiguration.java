@@ -23,7 +23,7 @@ import java.util.List;
 /**
  *
  */
-public class CsvMatrixOutputConfiguration extends BasicConfiguration implements Cloneable {
+public class CsvMatrixOutputConfiguration implements Cloneable {
 
     public static final String NAME = "demetra_m";
 
