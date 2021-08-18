@@ -22,10 +22,9 @@ import org.checkerframework.checker.index.qual.NonNegative;
 /**
  *
  * @author Philippe Charles
- * @param <E>
  */
 @Development(status = Development.Status.Release)
-public interface BaseTable<E> {
+public interface BaseTable {
 
     /**
      * Returns the number of columns of the matrix.

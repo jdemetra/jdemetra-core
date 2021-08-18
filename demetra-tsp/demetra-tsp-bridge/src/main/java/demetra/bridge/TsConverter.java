@@ -16,10 +16,13 @@
  */
 package demetra.bridge;
 
+import demetra.math.matrices.MatrixType;
 import demetra.timeseries.*;
 import demetra.tsprovider.*;
 import demetra.tsprovider.util.ObsFormat;
+import demetra.util.Table;
 import ec.tss.TsBypass;
+import ec.tstoolkit.maths.matrices.Matrix;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -448,6 +451,7 @@ public class TsConverter {
     }
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="ITsProvider">
     public ec.tss.@NonNull ITsProvider fromTsProvider(@NonNull TsProvider o) {
         if (o instanceof ToTsProvider) {
             return ((ToTsProvider) o).getDelegate();
@@ -475,4 +479,49 @@ public class TsConverter {
             return ToDataSourceProvider.toDataSourceProvider((ec.tss.tsproviders.IDataSourceProvider) o);
         return ToTsProvider.toTsProvider(o);
     }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Matrix">
+    public @NonNull Matrix fromMatrix(@NonNull MatrixType o) {
+        Matrix result = new Matrix(o.getRowsCount(), o.getColumnsCount());
+        for (int row = 0; row < o.getRowsCount(); row++) {
+            for (int column = 0; column < o.getColumnsCount(); column++) {
+                result.set(row, column, o.get(row, column));
+            }
+        }
+        return result;
+    }
+
+    public @NonNull MatrixType toMatrix(@NonNull Matrix o) {
+        MatrixType.Mutable result = MatrixType.Mutable.make(o.getRowsCount(), o.getColumnsCount());
+        for (int row = 0; row < o.getRowsCount(); row++) {
+            for (int column = 0; column < o.getColumnsCount(); column++) {
+                result.set(row, column, o.get(row, column));
+            }
+        }
+        return result.unmodifiable();
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Table">
+    public <T> ec.tstoolkit.data.@NonNull Table<T> fromTable(@NonNull Table<T> o) {
+        ec.tstoolkit.data.Table<T> result = new ec.tstoolkit.data.Table<>(o.getRowsCount(), o.getColumnsCount());
+        for (int row = 0; row < o.getRowsCount(); row++) {
+            for (int column = 0; column < o.getColumnsCount(); column++) {
+                result.set(row, column, o.get(row, column));
+            }
+        }
+        return result;
+    }
+
+    public <T> @NonNull Table<T> toTable(ec.tstoolkit.data.@NonNull Table<T> o) {
+        Table<T> result = new Table<>(o.getRowsCount(), o.getColumnsCount());
+        for (int row = 0; row < o.getRowsCount(); row++) {
+            for (int column = 0; column < o.getColumnsCount(); column++) {
+                result.set(row, column, o.get(row, column));
+            }
+        }
+        return result;
+    }
+    //</editor-fold>
 }

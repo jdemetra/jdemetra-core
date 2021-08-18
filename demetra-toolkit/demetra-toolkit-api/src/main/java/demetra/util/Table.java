@@ -16,6 +16,7 @@
  */
 package demetra.util;
 
+import demetra.data.BaseTable;
 import nbbrd.design.Development;
 import java.util.Arrays;
 
@@ -25,7 +26,8 @@ import java.util.Arrays;
  * @param <T>
  */
 @Development(status = Development.Status.Alpha)
-public class Table<T> {
+@lombok.EqualsAndHashCode
+public class Table<T> implements BaseTable {
     private final T[] m_data;
 
     private final int m_nrows, m_ncols;

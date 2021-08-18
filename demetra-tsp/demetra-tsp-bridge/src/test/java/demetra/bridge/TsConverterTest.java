@@ -17,10 +17,12 @@
 package demetra.bridge;
 
 import _util.*;
+import demetra.math.matrices.MatrixType;
 import demetra.timeseries.*;
 import demetra.tsprovider.FileBean;
 import demetra.tsprovider.FileLoader;
 import demetra.tsprovider.util.ObsFormat;
+import demetra.util.Table;
 import ec.tss.tsproviders.utils.DataFormat;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
@@ -279,16 +281,49 @@ public class TsConverterTest {
         }
     }
 
+    @Test
+    public void testMatrix() {
+        MatrixType[] samples = {
+                MatrixType.of(new double[]{1, 2, 3, 4, 5, 6}, 2, 3),
+                MatrixType.of(new double[]{1, 2, 3, 4, 5, 6}, 3, 2),
+                MatrixType.EMPTY
+        };
+        for (MatrixType x : samples) {
+            assertThat(TsConverter.toMatrix(TsConverter.fromMatrix(x))).isEqualTo(x);
+        }
+    }
+
+    @Test
+    public void testTable() {
+        List<Table<String>> samples = new ArrayList<>();
+        samples.add(tableOf(new String[]{"1", "2", "3", "4", "5", "6"}, 2, 3));
+        samples.add(tableOf(new String[]{"1", "2", "3", "4", "5", "6"}, 3, 2));
+        samples.add(tableOf(new String[0], 0, 0));
+        for (Table<String> x : samples) {
+            assertThat(TsConverter.toTable(TsConverter.fromTable(x))).isEqualTo(x);
+        }
+    }
+
+    private Table<String> tableOf(String[] data, int rows, int columns) {
+        Table<String> result = new Table<>(rows, columns);
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                result.set(row, column, data[row + column * rows]);
+            }
+        }
+        return result;
+    }
+
     private final TsUnit[] supportedUnits = Stream.of(TsFrequency.values()).map(o -> toTsUnit(o)).filter(o -> !o.equals(TsUnit.UNDEFINED)).toArray(TsUnit[]::new);
 
     private final TsData emptyTsData = TsData.empty("boom");
-    private final TsData montlyTsData = TsData.random(TsUnit.MONTH, 0);
+    private final TsData monthlyTsData = TsData.random(TsUnit.MONTH, 0);
     private final Ts emptyTs = Ts.builder().name("x").data(emptyTsData).meta("k", "v").moniker(TsMoniker.of("a", "b")).type(TsInformationType.UserDefined).build();
-    private final Ts montlyTs = Ts.builder().name("x").data(montlyTsData).meta("k", "v").moniker(TsMoniker.of("a", "b")).type(TsInformationType.UserDefined).build();
+    private final Ts monthlyTs = Ts.builder().name("x").data(monthlyTsData).meta("k", "v").moniker(TsMoniker.of("a", "b")).type(TsInformationType.UserDefined).build();
 
     private final String[] names = {"", "not_blank"};
     private final Map<String, String>[] metaArray = new Map[]{Collections.emptyMap(), Collections.singletonMap("hello", "world")};
     private final TsMoniker[] monikers = new TsMoniker[]{TsMoniker.of("p", "id")};
-    private final TsData[] dataArray = new TsData[]{emptyTsData, montlyTsData};
-    private final List<Ts>[] tsArray = new List[]{Collections.emptyList(), Arrays.asList(emptyTs, montlyTs)};
+    private final TsData[] dataArray = new TsData[]{emptyTsData, monthlyTsData};
+    private final List<Ts>[] tsArray = new List[]{Collections.emptyList(), Arrays.asList(emptyTs, monthlyTs)};
 }
