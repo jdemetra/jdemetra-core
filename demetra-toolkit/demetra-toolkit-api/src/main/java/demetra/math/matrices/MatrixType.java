@@ -18,7 +18,6 @@ package demetra.math.matrices;
 
 import demetra.data.BaseTable;
 import nbbrd.design.Development;
-import java.util.stream.DoubleStream;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
@@ -29,7 +28,7 @@ import java.util.function.DoubleUnaryOperator;
  * @author Philippe Charles
  */
 @Development(status = Development.Status.Preliminary)
-public interface MatrixType extends BaseTable<Double> {
+public interface MatrixType extends BaseTable {
 
     interface Mutable extends MatrixType {
 
@@ -96,7 +95,7 @@ public interface MatrixType extends BaseTable<Double> {
         double apply(int nrow, int ncolumn);
     }
 
-    static MatrixType EMPTY = new LightMatrix(null, 0, 0);
+    MatrixType EMPTY = new LightMatrix(new double[0], 0, 0);
 
     /**
      * Makes a new matrix. 
