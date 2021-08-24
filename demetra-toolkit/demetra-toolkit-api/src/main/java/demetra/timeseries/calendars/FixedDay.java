@@ -61,13 +61,13 @@ public class FixedDay implements Holiday {
         if (weight == this.weight) {
             return this;
         }
-        return new FixedDay(day, month, nweight, validityPeriod);
+        return new FixedDay(month, day, nweight, validityPeriod);
     }
 
     @Override
     public FixedDay forPeriod(LocalDate start, LocalDate end) {
         if (validityPeriod.getStart() != start && validityPeriod.getEnd() != end) {
-            return new FixedDay(day, month, weight, ValidityPeriod.between(start, end));
+            return new FixedDay(month, day, weight, ValidityPeriod.between(start, end));
         } else {
             return this;
         }

@@ -39,28 +39,28 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import demetra.information.Explorable;
+import demetra.util.MultiLineNameUtil;
 
 /**
  *
- * @author Kristof Bayens
  */
+@lombok.experimental.UtilityClass
 public class CsvInformationFormatter {
 
-    private static final HashMap<Type, InformationFormatter> DICTIONARY = new HashMap<>();
-    private static final String NEWLINE = System.lineSeparator();
-    private final char comma;
-    private boolean fullName;
+    private final HashMap<Type, InformationFormatter> DICTIONARY = new HashMap<>();
+    private final String NEWLINE = System.lineSeparator();
+    private volatile Character csvSeparator;
 
-    public void setFullName(boolean fullName) {
-        this.fullName = fullName;
-    }
-
-    public CsvInformationFormatter() {
-
-        comma = BasicConfiguration.getCsvSeparator();
+    static {
         DecimalFormat fmt = (DecimalFormat) DecimalFormat.getNumberInstance();
         fmt.setMaximumFractionDigits(BasicConfiguration.getFractionDigits());
         fmt.setGroupingUsed(false);
+        char sep = fmt.getDecimalFormatSymbols().getDecimalSeparator();
+        if (sep == ',') {
+            csvSeparator = ';';
+        } else {
+            csvSeparator = ',';
+        }
 
         DICTIONARY.put(double.class, new DoubleFormatter());
         DICTIONARY.put(int.class, new IntegerFormatter());
@@ -80,6 +80,25 @@ public class CsvInformationFormatter {
         DICTIONARY.put(ProcDiagnostic.class, new DiagnosticFormatter());
     }
 
+    public char getCsvSeparator() {
+        return csvSeparator;
+    }
+
+    public void setCsvSeparator(Character c) {
+        csvSeparator = c;
+    }
+
+    public Set<Type> formattedTypes(){
+        return DICTIONARY.keySet();
+    }
+
+//    private boolean fullName;
+//
+//    public void setFullName(boolean full) {
+//        synchronized (DICTIONARY) {
+//            fullName = full;
+//        }
+//    }
     // preparing the matrix:
     // for each record, for each name, we search for the length of an item, the actual items (in case of
     // wildcards) and the corresponding result
@@ -253,10 +272,10 @@ public class CsvInformationFormatter {
                 items.add(m);
             }
         });
-        format(writer, items, names.size(), null);
+        format(writer, items, names.size(), null, false);
     }
 
-    private void format(Writer writer, List<MatrixItem[]> items, int nnames, List<String> rowheaders) {
+    private void format(Writer writer, List<MatrixItem[]> items, int nnames, List<String> rowheaders, boolean fullName) {
         // STEP 2: for each name, we find the set of items/length
         List<LinkedHashMap<String, Integer>> wnames = new ArrayList<>();
         for (int cur = 0; cur < nnames; ++cur) {
@@ -278,7 +297,7 @@ public class CsvInformationFormatter {
         try {
             // columns headers
             if (rowheaders != null) {
-                writer.write(comma);
+                writer.write(csvSeparator);
             }
             writeColumnsHeaders(writer, wnames, nnames);
             int cur = 0;
@@ -286,9 +305,9 @@ public class CsvInformationFormatter {
                 if (rowheaders != null) {
                     String rh = rowheaders.get(cur++);
                     if (rh != null) {
-                        writeHeader(writer, rh);
+                        writeHeader(writer, rh, fullName);
                     }
-                    writer.write(comma);
+                    writer.write(csvSeparator);
                 }
                 writeLine(writer, item, wnames);
             }
@@ -317,21 +336,21 @@ public class CsvInformationFormatter {
 
                             write(writer, format(obj, j));
                             if (j < n) {
-                                writer.write(comma);
+                                writer.write(csvSeparator);
                             }
                         }
                     }
                 } else {
                     for (int j = 1; j < n; ++j) {
-                        writer.write(comma);
+                        writer.write(csvSeparator);
                     }
                 }
                 if (++i < nmax) {
-                    writer.write(comma);
+                    writer.write(csvSeparator);
                 }
             }
             if (++k < item.length) {
-                writer.write(comma);
+                writer.write(csvSeparator);
             } else {
                 writer.write(NEWLINE);
             }
@@ -349,16 +368,16 @@ public class CsvInformationFormatter {
                 try {
                     write(writer, c);
                     for (int j = 1; j < i; ++j) {
-                        writer.write(comma);
+                        writer.write(csvSeparator);
                     }
                     if (++ncur < nmax) {
-                        writer.write(comma);
+                        writer.write(csvSeparator);
                     }
                 } catch (IOException ex) {
                 }
             }
             if (++cur < n) {
-                writer.write(comma);
+                writer.write(csvSeparator);
             } else {
                 writer.write(NEWLINE);
             }
@@ -366,7 +385,7 @@ public class CsvInformationFormatter {
 
     }
 
-    public void formatResults(Writer writer, List<NamedObject<Explorable>> records, List<String> names, boolean shortname) {
+    public void formatResults(Writer writer, List<NamedObject<Explorable>> records, List<String> names, boolean shortColName, boolean fullRowName) {
         // STEP 1: we retrieve all information for all records/names
         List<MatrixItem[]> items = new ArrayList<>();
         LinkedHashSet<String> dic = new LinkedHashSet<>();
@@ -375,13 +394,13 @@ public class CsvInformationFormatter {
             MatrixItem[] m = new MatrixItem[names.size()];
             for (int i = 0; i < m.length; ++i) {
                 m[i] = new MatrixItem();
-                m[i].fill(names.get(i), record.getObject(), shortname);
+                m[i].fill(names.get(i), record.getObject(), shortColName);
                 m[i].fillDictionary(dic);
             }
             items.add(m);
             rowheaders.add(record.getName());
         });
-        format(writer, items, names.size(), rowheaders);
+        format(writer, items, names.size(), rowheaders, fullRowName);
     }
 
     private String format(Object obj, int item) {
@@ -401,19 +420,19 @@ public class CsvInformationFormatter {
         }
     }
 
-    private void writeHeader(Writer writer, String txt) throws IOException {
+    private void writeHeader(Writer writer, String txt, boolean fullName) throws IOException {
 
         if (txt == null) {
             return;
         }
-//        if (fullName) {
-//            txt = MultiLineNameUtil.join(txt, " * ");
-//        } else {
-//            txt = MultiLineNameUtil.last(txt);
-//        }
+        if (fullName) {
+            txt = MultiLineNameUtil.join(txt, " * ");
+        } else {
+            txt = MultiLineNameUtil.last(txt);
+        }
         txt = StringFormatter.cleanup(txt);
 
-        if (txt.indexOf(comma) >= 0) {
+        if (txt.indexOf(csvSeparator) >= 0) {
             if (txt.indexOf('\"') >= 0) {
                 writer.write("\"\"");
                 writer.write(txt);
@@ -438,7 +457,7 @@ public class CsvInformationFormatter {
             return;
         }
 
-        if (txt.indexOf(comma) >= 0) {
+        if (txt.indexOf(csvSeparator) >= 0) {
             if (txt.indexOf('\"') >= 0) {
                 writer.write("\"\"");
                 writer.write(txt);

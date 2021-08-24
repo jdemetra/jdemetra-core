@@ -113,17 +113,31 @@ public final class SaItem {
                 e = estimation;
                 if (processed) {
                     return e;
-                }
-                else {
+                } else {
                     e = SaManager.process(definition, ModellingContext.getActiveContext(), false);
                     // update quality
                     quality = e == null ? ProcQuality.Undefined : ProcDiagnostic.summary(e.getDiagnostics());
                     estimation = e;
-                    processed=true;
+                    processed = true;
                 }
             }
         }
         return e;
+    }
+
+    
+    /**
+     * Remove the results (useful in case of memory problems), but keep
+     * the quality
+     */
+    public void reset() {
+        SaEstimation e = estimation;
+        if (e != null) {
+            synchronized (this) {
+                estimation = null;
+                processed = false;
+            }
+        }
     }
 
     public SaDocument asDocument() {

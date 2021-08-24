@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tsprovider.util;
+package demetra.util;
 
 import demetra.util.TreeTraverser;
 import java.util.Collections;

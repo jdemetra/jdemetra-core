@@ -22,7 +22,7 @@ import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.DataSourceProvider;
 import demetra.tsprovider.util.TsProviders;
-import demetra.tsprovider.util.MultiLineNameUtil;
+import demetra.util.MultiLineNameUtil;
 import demetra.util.TreeTraverser;
 import nbbrd.io.function.IOFunction;
 

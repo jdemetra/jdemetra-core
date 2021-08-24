@@ -115,7 +115,7 @@ public class RegArimaUtility {
             List<DoubleSeq> x = model.getX();
             DoubleSeqCursor reader = b.cursor();
             reader.moveTo(startPos);
-            int i0 = model.isMean() ? startPos-1 : startPos, i1 = i0 + nvars;
+            int i0 = model.isMean() ? startPos - 1 : startPos, i1 = i0 + nvars;
             for (int i = i0; i < i1; ++i) {
                 double bcur = reader.getAndNext();
                 e.apply(x.get(i), (u, v) -> u + bcur * v);
@@ -159,13 +159,13 @@ public class RegArimaUtility {
 
         if (st.getUnitRoots().getDegree() == 0) {
             dld = DataBlock.of(ld);
-            if (model.isMean()) {
-                dld.sub(concentratedLikelihood.coefficients().get(0));
-            }
         } else {
             dld = DataBlock.make(ld.length() - st.getUnitRoots().getDegree());
+            st.getUnitRoots().apply(ld, dld);
         }
-        st.getUnitRoots().apply(ld, dld);
+        if (model.isMean()) {
+            dld.sub(concentratedLikelihood.coefficients().get(0));
+        }
 
         FastKalmanFilter kf = new FastKalmanFilter((IArimaModel) st.getStationaryModel());
         Likelihood ll = kf.process(dld);
@@ -229,17 +229,17 @@ public class RegArimaUtility {
         meanRegressionVariable(differencing, n, m, 0);
         return m;
     }
-    
+
     public void meanRegressionVariable(final BackFilter differencing, final int n, double[] m, int start) {
         double[] D = differencing.asPolynomial().toArray();
         int d = D.length - 1;
-        m[start+d] = 1;
+        m[start + d] = 1;
         for (int i = d + 1; i < n; ++i) {
             double s = 1;
             for (int j = 1; j <= d; ++j) {
                 s -= m[i - j] * D[j];
             }
-            m[start+i] = s;
+            m[start + i] = s;
         }
     }
 

@@ -15,7 +15,7 @@
 * limitations under the Licence.
 */
 
-package demetra.workspace.util;
+package demetra.util;
 
 /**
  *

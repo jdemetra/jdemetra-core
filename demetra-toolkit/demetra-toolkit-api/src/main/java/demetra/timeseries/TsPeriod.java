@@ -84,6 +84,10 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
         TsPeriod p = withUnit(TsUnit.YEAR);
         return TsDomain.splitOf(p, unit, true).indexOf(this);
     }
+    
+    public int annualFrequency(){
+        return unit.getAnnualFrequency();
+    }
 
     public boolean isAfter(TsPeriod period) {
         checkCompatibility(period);

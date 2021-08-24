@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package demetra.workspace.util;
+package demetra.util;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 

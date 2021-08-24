@@ -16,8 +16,7 @@
  */
 package demetra.workspace;
 
-import demetra.workspace.WorkspaceFamily;
-import demetra.workspace.util.LinearId;
+import demetra.util.LinearId;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;

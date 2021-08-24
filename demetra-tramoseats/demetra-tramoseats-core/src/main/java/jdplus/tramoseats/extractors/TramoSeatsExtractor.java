@@ -206,7 +206,7 @@ public class TramoSeatsExtractor extends InformationMapping<TramoSeatsResults> {
         delegate(DECOMP + "smodel", IArimaModel.class, source
                 -> source.getDecomposition().getUcarimaModel().getComponent(1));
         delegate(DECOMP + "samodel", IArimaModel.class, source
-                -> source.getDecomposition().getUcarimaModel().getComponent(1));
+                -> source.getDecomposition().getUcarimaModel().getComplement(1));
         delegate(DECOMP + "transitorymodel", IArimaModel.class, source
                 -> source.getDecomposition().getUcarimaModel().getComponent(2));
         delegate(DECOMP + "imodel", IArimaModel.class, source

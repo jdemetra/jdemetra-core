@@ -29,19 +29,19 @@ public class CsvOutputFactory implements SaOutputFactory {
     //public static final CsvOutputFactory Default = new CsvOutputFactory();
 
     public static final String NAME = "Csv";
-    private CsvOutputConfiguration config_;
+    private CsvOutputConfiguration config;
     private boolean enabled_ = true;
 
     public CsvOutputFactory() {
-        config_ = new CsvOutputConfiguration();
+        config = new CsvOutputConfiguration();
     }
 
     public CsvOutputFactory(CsvOutputConfiguration config) {
-        config_ = config;
+        this.config = config;
     }
 
     public CsvOutputConfiguration getConfiguration() {
-        return config_;
+        return config;
     }
 
     @Override
@@ -71,7 +71,7 @@ public class CsvOutputFactory implements SaOutputFactory {
 //    @Override
 //    public Object getProperties() {
 //        try {
-//            return config_.clone();
+//            return config.clone();
 //        }
 //        catch (Exception ex) {
 //            return null;
@@ -83,16 +83,16 @@ public class CsvOutputFactory implements SaOutputFactory {
 //        CsvOutputConfiguration config = (CsvOutputConfiguration) obj;
 //        if (config != null) {
 //            try {
-//                config_ = (CsvOutputConfiguration) config.clone();
+//                config = (CsvOutputConfiguration) config.clone();
 //            }
 //            catch (Exception ex) {
-//                config_ = null;
+//                config = null;
 //            }
 //        }
 //    }
 
     @Override
     public CsvOutput create() {
-        return new CsvOutput(config_);
+        return new CsvOutput(config);
     }
 }

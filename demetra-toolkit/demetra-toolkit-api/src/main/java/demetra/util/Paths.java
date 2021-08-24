@@ -13,9 +13,8 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-package demetra.workspace.util;
+ */
+package demetra.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,11 +23,11 @@ import java.io.IOException;
  *
  * @author Palate Jean
  */
+@lombok.experimental.UtilityClass
 public final class Paths {
 
-    private Paths() {
-        // static class
-    }
+    public final String DEMETRA = "Demetra+", DEF_FILE = "demetra";
+    public final String DEF_FOLDER = new File(getDefaultHome(), DEMETRA).getPath();
 
     /**
      *
@@ -36,7 +35,7 @@ public final class Paths {
      * @param next
      * @return
      */
-    public static String changeExtension(String file, String next) {
+    public String changeExtension(String file, String next) {
         int ipos = file.length() - 1;
         while (ipos >= 0 && file.charAt(ipos) != '.'
                 && file.charAt(ipos) != java.io.File.separatorChar
@@ -59,7 +58,7 @@ public final class Paths {
         return builder.toString();
     }
 
-    public static String addExtension(String file, String ext) {
+    public String addExtension(String file, String ext) {
         StringBuilder builder = new StringBuilder();
         builder.append(file);
         builder.append('.');
@@ -72,7 +71,7 @@ public final class Paths {
      * @param file
      * @return
      */
-    public static String[] splitFile(String file) {
+    public String[] splitFile(String file) {
         String[] rslt = new String[3];
         int ipos = file.length() - 1;
         while (ipos >= 0 && file.charAt(ipos) != '.'
@@ -104,12 +103,12 @@ public final class Paths {
         return rslt;
     }
 
-    public static String getBaseName(String file) {
+    public String getBaseName(String file) {
         String[] s = splitFile(file);
         return s[1];
     }
 
-    public static String getFullPath(String file) {
+    public String getFullPath(String file) {
         try {
             File tmp = new File(file);
             return splitFile(tmp.getCanonicalPath())[0];
@@ -118,7 +117,7 @@ public final class Paths {
         }
     }
 
-    public static String concatenate(String root, String folder) {
+    public String concatenate(String root, String folder) {
         StringBuilder builder = new StringBuilder();
         if (root != null) {
             builder.append(root);
@@ -133,7 +132,7 @@ public final class Paths {
         return builder.toString();
     }
 
-    public static String getDefaultHome() {
+    public String getDefaultHome() {
         String parent = System.getenv("HOMESHARE");
         if (parent != null) {
             return parent;
@@ -145,4 +144,82 @@ public final class Paths {
             return ".";
         }
     }
+
+    private String fileFromId(Id id) {
+        int n = id.getCount();
+        switch (n) {
+            case 0:
+                return DEF_FILE;
+            case 1:
+                return id.get(0);
+            default:
+                String result = concatenate(id.get(0), id.get(1));
+                for (int i = 2; i < n; ++i) {
+                    result = concatenate(result, id.get(i));
+                }
+                return result;
+        }
+    }
+
+    private String fileFromId(String folder, Id id) {
+        return concatenate(folder, fileFromId(id));
+    }
+
+    public String fileFromContext(String folder, Object context) {
+        if (context == null) {
+            return folder(folder);
+        }
+        if (context instanceof Id) {
+            Id id = (Id) context;
+            return fileFromId(folder(folder), (Id) context);
+        } else {
+            return concatenate(folder(folder), context.toString());
+        }
+    }
+
+    public String folderFromContext(String folder, Object context) {
+        String nfolder = folder(folder);
+        if (context != null && context instanceof Id) {
+            Id parent = (Id) context;
+            for (int i = 0; i < parent.getCount(); ++i) {
+                nfolder = concatenate(nfolder, parent.get(i));
+            }
+        }
+        File Folder = new File(nfolder);
+        if (!Folder.exists()) {
+            Folder.mkdirs();
+        }
+        return nfolder;
+    }
+
+    public File folderFromContext(File folder, Object context) {
+        File nfolder = folder(folder);
+        if (context != null && context instanceof Id) {
+            Id parent = (Id) context;
+            for (int i = 0; i < parent.getCount(); ++i) {
+                nfolder = new File(nfolder, parent.get(i));
+            }
+        }
+        if (!nfolder.exists()) {
+            nfolder.mkdirs();
+        }
+        return nfolder;
+    }
+
+    public String folder(String folder) {
+        if (folder == null || folder.length() == 0) {
+            return DEF_FOLDER;
+        } else {
+            return folder;
+        }
+    }
+
+    public File folder(File folder) {
+        if (folder == null || !folder.isDirectory()) {
+            return new File(DEF_FOLDER);
+        } else {
+            return folder;
+        }
+    }
+
 }

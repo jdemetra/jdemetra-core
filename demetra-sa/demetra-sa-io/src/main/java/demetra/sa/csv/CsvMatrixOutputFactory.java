@@ -33,19 +33,19 @@ public class CsvMatrixOutputFactory implements SaOutputFactory {
     
     public static final String NAME="Csv matrix";
 
-    private CsvMatrixOutputConfiguration config_;
-    private boolean enabled_ = true;
+    private volatile CsvMatrixOutputConfiguration config;
+    private volatile boolean enabled = true;
 
     public CsvMatrixOutputFactory() {
-        config_ = new CsvMatrixOutputConfiguration();
+        config = new CsvMatrixOutputConfiguration();
     }
 
     public CsvMatrixOutputFactory(CsvMatrixOutputConfiguration config) {
-        config_ = config;
+        this.config = config;
     }
 
     public CsvMatrixOutputConfiguration getConfiguration() {
-        return config_;
+        return config;
     }
 
 //    @Override
@@ -69,18 +69,18 @@ public class CsvMatrixOutputFactory implements SaOutputFactory {
 
     @Override
     public boolean isEnabled() {
-        return enabled_;
+        return enabled;
     }
 
     @Override
     public void setEnabled(boolean enabled) {
-        enabled_ = enabled;
+        this.enabled = enabled;
     }
 
 //    @Override
 //    public Object getProperties() {
 //        try {
-//            return config_.clone();
+//            return config.clone();
 //        }
 //        catch(Exception ex) {
 //            return null;
@@ -92,16 +92,16 @@ public class CsvMatrixOutputFactory implements SaOutputFactory {
 //        CsvMatrixOutputConfiguration config = (CsvMatrixOutputConfiguration) obj;
 //        if (config != null) {
 //            try {
-//                config_ = (CsvMatrixOutputConfiguration) config.clone();
+//                config = (CsvMatrixOutputConfiguration) config.clone();
 //            }
 //            catch (Exception ex) {
-//                config_ = null;
+//                config = null;
 //            }
 //        }
 //    }
 
     @Override
     public Output<SaDocument> create() {
-        return new CsvMatrixOutput(config_);
+        return new CsvMatrixOutput(config);
     }
 }

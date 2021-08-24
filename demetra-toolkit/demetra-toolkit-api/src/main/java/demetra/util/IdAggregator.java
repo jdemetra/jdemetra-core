@@ -16,7 +16,7 @@
 */
 
 
-package demetra.workspace.util;
+package demetra.util;
 
 
 /**

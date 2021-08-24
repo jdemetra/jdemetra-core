@@ -27,7 +27,7 @@ import demetra.tsprovider.grid.GridLayout;
 import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.util.DataSourcePreconditions;
-import demetra.tsprovider.util.MultiLineNameUtil;
+import demetra.util.MultiLineNameUtil;
 import nbbrd.design.ThreadSafe;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

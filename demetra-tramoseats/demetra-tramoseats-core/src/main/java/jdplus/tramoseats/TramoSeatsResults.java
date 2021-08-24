@@ -18,10 +18,7 @@ package jdplus.tramoseats;
 
 import jdplus.seats.SeatsResults;
 import demetra.sa.SeriesDecomposition;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import jdplus.regsarima.regular.RegSarimaModel;
-import jdplus.tramoseats.extractors.TramoSeatsExtractor;
 import demetra.information.Explorable;
 
 /**

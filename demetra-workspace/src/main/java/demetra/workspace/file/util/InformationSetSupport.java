@@ -19,7 +19,7 @@ package demetra.workspace.file.util;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
 import demetra.toolkit.io.xml.information.XmlInformationSet;
-import demetra.workspace.util.Paths;
+import demetra.util.Paths;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

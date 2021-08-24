@@ -21,6 +21,7 @@ import demetra.information.formatters.CsvInformationFormatter;
 import demetra.processing.Output;
 import demetra.sa.SaDocument;
 import demetra.util.NamedObject;
+import demetra.util.Paths;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -57,18 +58,16 @@ public class CsvMatrixOutput implements Output<SaDocument> {
     @Override
     public void start(Object context) {
         infos_ = new ArrayList<>();
- //       folder_ = BasicConfiguration.folderFromContext(config_.getFolder(), context);
+        folder_ = Paths.folderFromContext(config_.getFolder(), context);
     }
 
     @Override
     public void end(Object context) throws Exception {
-        CsvInformationFormatter fmt = new CsvInformationFormatter();
-        fmt.setFullName(fullName);
-//        String file = Paths.concatenate(folder_.getAbsolutePath(), config_.getFileName());
-//        file = Paths.changeExtension(file, "csv");
-//        FileOutputStream matrix = new FileOutputStream(file);
-//        OutputStreamWriter writer = new OutputStreamWriter(matrix, StandardCharsets.ISO_8859_1);
-//        fmt.formatResults(writer, infos_, config_.getItems(), true);
+        String file = Paths.concatenate(folder_.getAbsolutePath(), config_.getFileName());
+        file = Paths.changeExtension(file, "csv");
+        FileOutputStream matrix = new FileOutputStream(file);
+        OutputStreamWriter writer = new OutputStreamWriter(matrix, StandardCharsets.ISO_8859_1);
+        CsvInformationFormatter.formatResults(writer, infos_, config_.getItems(), true, fullName);
         infos_ = null;
     }
 

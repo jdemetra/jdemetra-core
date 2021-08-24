@@ -16,9 +16,11 @@
  */
 package demetra.sa.csv;
 
+import demetra.information.formatters.StringFormatter;
 import demetra.processing.Output;
 import demetra.sa.SaDocument;
 import demetra.timeseries.TsData;
+import demetra.util.Paths;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -41,22 +43,23 @@ public class CsvOutput implements Output<SaDocument> {
 
     @Override
     public void process(SaDocument document) {
-//        summary_.add(Jdk6.Collections.toArray(config_.getSeries(), String.class), document);
+        List<String> series = config_.getSeries();
+        summary_.add(series.toArray(new String[series.size()]), document);
     }
 
     @Override
     public void start(Object context) {
         summary_ = new DefaultCollectionSummary();
-//        folder_ = BasicConfiguration.folderFromContext(config_.getFolder(), context);
+        folder_ = Paths.folderFromContext(config_.getFolder(), context);
     }
 
     @Override
     public void end(Object context) throws Exception {
         for (String item : summary_.getItems()) {
             String nfile = config_.getFilePrefix();
-//            nfile += "_" + StringFormatter.cleanup(item.replace('.', '_'));
-//            nfile = Paths.changeExtension(nfile, "csv");
-//            write(new File(BasicConfiguration.folder(folder_), nfile), summary_.getNames(), summary_.getSeries(item));
+            nfile += "_" + StringFormatter.cleanup(item.replace('.', '_'));
+            nfile = Paths.changeExtension(nfile, "csv");
+            write(new File(Paths.folder(folder_), nfile), summary_.getNames(), summary_.getSeries(item));
         }
         summary_ = null;
     }
@@ -71,14 +74,14 @@ public class CsvOutput implements Output<SaDocument> {
         return true;
     }
 
-//    private void write(File file, List<String> names, List<TsData> s) throws Exception {
-//        try (FileOutputStream matrix = new FileOutputStream(file)) {
-//            try (OutputStreamWriter writer = new OutputStreamWriter(matrix, StandardCharsets.ISO_8859_1)) {
-//                TsCollectionCsvFormatter fmt = new TsCollectionCsvFormatter();
-//                fmt.setFullName(config_.isFullName());
-//                fmt.setPresentation(config_.getPresentation());
-//                fmt.write(s, names, writer);
-//            }
-//        }
-//    }
+    private void write(File file, List<String> names, List<TsData> s) throws Exception {
+        try (FileOutputStream matrix = new FileOutputStream(file)) {
+            try (OutputStreamWriter writer = new OutputStreamWriter(matrix, StandardCharsets.ISO_8859_1)) {
+                TsCollectionCsvFormatter fmt = new TsCollectionCsvFormatter();
+                fmt.setFullName(config_.isFullName());
+                fmt.setPresentation(config_.getPresentation());
+                fmt.write(s, names, writer);
+            }
+        }
+    }
 }

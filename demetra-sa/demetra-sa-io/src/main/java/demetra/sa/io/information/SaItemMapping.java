@@ -94,7 +94,7 @@ public class SaItemMapping {
         if (name != null) {
             builder.name(name);
         } else {
-            builder.name(NONAME);
+            builder.name(ts.getName());
         }
         return builder.build();
     }
