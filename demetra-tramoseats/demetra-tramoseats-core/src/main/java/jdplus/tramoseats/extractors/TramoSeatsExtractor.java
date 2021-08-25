@@ -217,7 +217,7 @@ public class TramoSeatsExtractor extends InformationMapping<TramoSeatsResults> {
         delegate(DECOMP + "finalmodel", SarimaModel.class, source
                 -> source.getDecomposition().getFinalModel());
 
-        delegate("preprocessing", RegSarimaModel.class, source -> source.getPreprocessing());
+        delegate(null, RegSarimaModel.class, source -> source.getPreprocessing());
     }
 
     @Override

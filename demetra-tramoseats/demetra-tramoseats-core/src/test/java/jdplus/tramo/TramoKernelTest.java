@@ -221,13 +221,13 @@ public class TramoKernelTest {
             if (Math.abs(del) < 1e-3) {
                 ++n;
             }
-            System.out.print(i);
-            System.out.print('\t');
-            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
-            System.out.print('\t');
-            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
-        System.out.println("TRfull");
+        System.out.println(" XM:TRfull");
         System.out.println(n);
         assertTrue(n >= .9 * all.length);
     }

@@ -95,7 +95,7 @@ public class X13Extractor extends InformationMapping<X13Results> {
 //                -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.Backcast));
 //        MAPPING.set(FINAL + SaDictionary.I + SeriesInfo.EB_SUFFIX, TsData.class, source
 //                -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast));
-        delegate("preprocessing", RegSarimaModel.class, source -> source.getPreprocessing());
+        delegate(null, RegSarimaModel.class, source -> source.getPreprocessing());
         delegate("x11", X11Results.class, source -> source.getDecomposition());
     }
 
