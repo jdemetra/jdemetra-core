@@ -16,6 +16,7 @@
  */
 package jdplus.tramo;
 
+import jdplus.sa.tests.SeasonalityTests;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.regsarima.regular.ProcessingResult;

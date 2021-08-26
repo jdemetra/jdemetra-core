@@ -14,14 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.tramo;
+package jdplus.sa.tests;
 
 import jdplus.modelling.DifferencingResults;
 import jdplus.data.analysis.DiscreteWindowFunction;
 import jdplus.data.analysis.SmoothedPeriodogram;
-import jdplus.sa.tests.Friedman;
-import jdplus.sa.tests.PeriodogramTest;
-import jdplus.sa.tests.Qs;
 import demetra.timeseries.TsException;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
@@ -114,7 +111,7 @@ public class SeasonalityTests {
      * @param mean Mean correction (after differencing)
      * @return
      */
-    void test(DoubleSeq input, int period, int ndiff, boolean mean) {
+    public void test(DoubleSeq input, int period, int ndiff, boolean mean) {
         delta = DifferencingResults.of(input, period, ndiff, mean);
         this.period = period;
         clear();

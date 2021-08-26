@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdplus.sa.extractors;
+package demetra.sa.extractors;
 
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;

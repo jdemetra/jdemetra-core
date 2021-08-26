@@ -5,7 +5,6 @@
  */
 package jdplus.regarima.extractors;
 
-import demetra.data.DoubleSeq;
 import demetra.information.InformationMapping;
 import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsPeriod;
@@ -24,13 +23,9 @@ import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITradingDaysVariable;
-import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.Ramp;
-import demetra.timeseries.regression.Variable;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.timeseries.regression.modelling.RegressionItem;
-import java.util.function.Predicate;
-import jdplus.sarima.SarimaModel;
 import nbbrd.design.Development;
 import nbbrd.service.ServiceProvider;
 

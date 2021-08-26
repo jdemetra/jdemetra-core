@@ -21,6 +21,8 @@ import demetra.data.DoubleSeq;
 import demetra.sa.diagnostics.CombinedSeasonalityTest;
 import demetra.stats.OneWayAnova;
 import demetra.stats.StatisticalTest;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsPeriod;
 import jdplus.stats.tests.TestsUtility;
 
 /**
@@ -33,6 +35,11 @@ public class CombinedSeasonality {
     private double thfs = 0.001, thfm = 0.05, thkw = 0.001;
     private final OneWayAnova stable, evolutive;
     private final KruskalWallis kruskallwallis;
+    
+    public static CombinedSeasonality of(TsData s, boolean mul){
+        TsPeriod start = s.getStart();
+        return new CombinedSeasonality(s.getValues(), start.annualFrequency(), start.annualPosition(), mul);
+    }
 
     /**
      * 

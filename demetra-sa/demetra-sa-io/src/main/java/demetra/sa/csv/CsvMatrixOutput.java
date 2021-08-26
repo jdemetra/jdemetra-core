@@ -36,8 +36,8 @@ import java.util.List;
 public class CsvMatrixOutput implements Output<SaDocument> {
 
     CsvMatrixOutputConfiguration config_;
-    List<NamedObject<Explorable>> infos_;
-    private File folder_;
+    List<NamedObject<Explorable>> infos;
+    private File folder;
     private boolean fullName;
 
     public CsvMatrixOutput(CsvMatrixOutputConfiguration config) {
@@ -57,22 +57,22 @@ public class CsvMatrixOutput implements Output<SaDocument> {
 
     @Override
     public void start(Object context) {
-        infos_ = new ArrayList<>();
-        folder_ = Paths.folderFromContext(config_.getFolder(), context);
+        infos = new ArrayList<>();
+        folder = Paths.folderFromContext(config_.getFolder(), context);
     }
 
     @Override
     public void end(Object context) throws Exception {
-        String file = Paths.concatenate(folder_.getAbsolutePath(), config_.getFileName());
+        String file = Paths.concatenate(folder.getAbsolutePath(), config_.getFileName());
         file = Paths.changeExtension(file, "csv");
         FileOutputStream matrix = new FileOutputStream(file);
         OutputStreamWriter writer = new OutputStreamWriter(matrix, StandardCharsets.ISO_8859_1);
-        CsvInformationFormatter.formatResults(writer, infos_, config_.getItems(), true, fullName);
-        infos_ = null;
+        CsvInformationFormatter.formatResults(writer, infos, config_.getItems(), true, fullName);
+        infos = null;
     }
 
     @Override
     public void process(SaDocument document) {
-        infos_.add(new NamedObject<>(document.getName(), document.getResults()));
+        infos.add(new NamedObject<>(document.getName(), document.getResults()));
     }
 }

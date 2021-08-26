@@ -15,7 +15,7 @@
 * limitations under the Licence.
 */
 
-package jdplus.tramo;
+package jdplus.sa.tests;
 
 /**
  *
@@ -142,12 +142,13 @@ public class SpectralPeaks {
         if (peaks == null) {
             return false;
         }
-        if (peaks.length == 6) {
-            return hasMonthlyPeaks(peaks);
-        } else if (peaks.length == 2) {
-            return hasQuarterlyPeaks(peaks);
-        } else {
-            return false;
+        switch (peaks.length) {
+            case 6:
+                return hasMonthlyPeaks(peaks);
+            case 2:
+                return hasQuarterlyPeaks(peaks);
+            default:
+                return false;
         }
     }
 
@@ -158,12 +159,13 @@ public class SpectralPeaks {
      * @return
      */
     public static boolean hasHighSeasonalPeaks(SpectralPeaks[] peaks) {
-        if (peaks.length == 6) {
-            return hasHighMonthlyPeaks(peaks);
-        } else if (peaks.length == 2) {
-            return hasHighQuarterlyPeaks(peaks);
-        } else {
-            return false;
+        switch (peaks.length) {
+            case 6:
+                return hasHighMonthlyPeaks(peaks);
+            case 2:
+                return hasHighQuarterlyPeaks(peaks);
+            default:
+                return false;
         }
     }
     

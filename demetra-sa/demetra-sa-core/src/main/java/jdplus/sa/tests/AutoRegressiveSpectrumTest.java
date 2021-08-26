@@ -15,7 +15,7 @@
 * limitations under the Licence.
 */
 
-package jdplus.tramo;
+package jdplus.sa.tests;
 
 import jdplus.data.analysis.AutoRegressiveSpectrum;
 import jdplus.data.analysis.Periodogram;

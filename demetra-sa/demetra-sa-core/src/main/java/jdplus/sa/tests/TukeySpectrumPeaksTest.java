@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.tramo;
+package jdplus.sa.tests;
 
 import jdplus.data.analysis.DiscreteWindowFunction;
 import jdplus.data.analysis.SmoothedPeriodogram;
