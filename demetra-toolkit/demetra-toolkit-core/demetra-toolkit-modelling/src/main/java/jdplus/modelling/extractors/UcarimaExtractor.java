@@ -30,29 +30,29 @@ import nbbrd.service.ServiceProvider;
  */
 @Development(status = Development.Status.Release)
 @ServiceProvider(InformationExtractor.class)
-public class UcarimaExtractor extends InformationMapping<UcarimaModel>{
+public class UcarimaExtractor extends InformationMapping<UcarimaModel> {
 
-    public final static String COMPONENT="component", COMPLEMENT="complement", MODEL="model", MODELC="modelc", REDUCEDMODEL="reducedmodel", // Component
-            SUM="sum",  // Reduced model
-            SIZE="size";  // Number of components
+    public final static String COMPONENT = "component", COMPLEMENT = "complement", MODEL = "model", MODELC = "modelc", REDUCEDMODEL = "reducedmodel", // Component
+            SUM = "sum", // Reduced model
+            SIZE = "size";  // Number of components
 
-    public UcarimaExtractor(){
-        set(SIZE, Integer.class, source->source.getComponentsCount());
-        set(REDUCEDMODEL, demetra.arima.ArimaModel.class, source->ApiUtility.toApi(source.getModel(), "reducedmodel"));
-        delegate(SUM, IArimaModel.class, source->source.getModel());
-        delegateArray(COMPONENT, 1, 10, IArimaModel.class, (source, i)
-                -> i>source.getComponentsCount()? null : source.getComponent(i-1));
-        setArray(MODEL, 1, 10, demetra.arima.ArimaModel.class, (source, i)
-                -> i>source.getComponentsCount() ? null : ApiUtility.toApi(source.getComponent(i-1),"cmp"+(i+1)));
-        delegateArray(COMPLEMENT, 1, 10, IArimaModel.class, (source, i)
-                -> i>source.getComponentsCount()? null : source.getComplement(i-1));
-        setArray(MODELC, 1, 10, demetra.arima.ArimaModel.class, (source, i)
-                -> i>source.getComponentsCount() ? null : ApiUtility.toApi(source.getComplement(i-1),"cmpc"+(i+1)));
+    public UcarimaExtractor() {
+        set(SIZE, Integer.class, source -> source.getComponentsCount());
+        set(REDUCEDMODEL, demetra.arima.ArimaModel.class, source -> ApiUtility.toApi(source.getModel(), "reducedmodel"));
+        delegate(SUM, IArimaModel.class, source -> source.getModel());
+        delegateArray(COMPONENT, 1, 6, IArimaModel.class, (source, i)
+                -> (i <= 0 || i > source.getComponentsCount()) ? null : source.getComponent(i - 1));
+        setArray(MODEL, 1, 6, demetra.arima.ArimaModel.class, (source, i)
+                -> (i <= 0 || i > source.getComponentsCount()) ? null : ApiUtility.toApi(source.getComponent(i - 1), "cmp" + (i + 1)));
+        delegateArray(COMPLEMENT, 1, 6, IArimaModel.class, (source, i)
+                -> (i <= 0 || i > source.getComponentsCount()) ? null : source.getComplement(i - 1));
+        setArray(MODELC, 1, 6, demetra.arima.ArimaModel.class, (source, i)
+                -> (i <= 0 || i > source.getComponentsCount()) ? null : ApiUtility.toApi(source.getComplement(i - 1), "cmpc" + (i + 1)));
     }
 
     @Override
     public Class<UcarimaModel> getSourceClass() {
         return UcarimaModel.class;
     }
-    
+
 }

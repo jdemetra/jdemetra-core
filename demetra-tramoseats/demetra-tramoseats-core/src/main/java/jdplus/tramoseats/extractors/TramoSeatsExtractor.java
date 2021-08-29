@@ -20,6 +20,7 @@ import demetra.information.InformationExtractor;
 import jdplus.arima.IArimaModel;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sarima.SarimaModel;
+import jdplus.tramoseats.TramoSeatsDiagnostics;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -218,6 +219,8 @@ public class TramoSeatsExtractor extends InformationMapping<TramoSeatsResults> {
                 -> source.getDecomposition().getFinalModel());
 
         delegate(null, RegSarimaModel.class, source -> source.getPreprocessing());
+
+        delegate(null, TramoSeatsDiagnostics.class, source -> source.getDiagnostics());
     }
 
     @Override

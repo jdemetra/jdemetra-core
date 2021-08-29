@@ -74,11 +74,17 @@ public class InformationExtractors {
         if (extractors == null) {
             reloadExtractors();
         }
-        return extractors.get(D);
+        List<InformationExtractor> all = extractors.get(D);
+        if (all == null) {
+            return Collections.emptyList();
+        } else {
+            return all;
+        }
     }
 
     public void fillDictionary(Class D, String prefix, Map dic, boolean compact) {
         List<InformationExtractor> all = extractors(D);
+
         for (InformationExtractor x : all) {
             x.fillDictionary(prefix, dic, compact);
         }

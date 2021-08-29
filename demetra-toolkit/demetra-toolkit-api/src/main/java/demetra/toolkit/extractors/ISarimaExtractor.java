@@ -17,6 +17,7 @@
 package demetra.toolkit.extractors;
 
 import demetra.arima.ISarimaModel;
+import demetra.data.DoubleSeq;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import nbbrd.service.ServiceProvider;
@@ -57,6 +58,38 @@ public class ISarimaExtractor extends InformationMapping<ISarimaModel> {
         set(BPHI, double[].class, source -> source.getBphi().toArray());
         set(THETA, double[].class, source -> source.getTheta().toArray());
         set(BTHETA, double[].class, source -> source.getBtheta().toArray());
+        setArray(PHI, 1, 4, Double.class, (source, i) -> {
+            DoubleSeq p = source.getPhi();
+            if (i > p.length()) {
+                return null;
+            } else {
+                return p.get(i - 1);
+            }
+        });
+        setArray(BPHI, 1, 2, Double.class, (source, i) -> {
+            DoubleSeq p = source.getBphi();
+            if (i > p.length()) {
+                return null;
+            } else {
+                return p.get(i - 1);
+            }
+        });
+        setArray(THETA, 1, 4, Double.class, (source, i) -> {
+            DoubleSeq p = source.getTheta();
+            if (i > p.length()) {
+                return null;
+            } else {
+                return p.get(i - 1);
+            }
+        });
+        setArray(BTHETA, 1, 2, Double.class, (source, i) -> {
+            DoubleSeq p = source.getBtheta();
+            if (i > p.length()) {
+                return null;
+            } else {
+                return p.get(i - 1);
+            }
+        });
     }
 
     @Override

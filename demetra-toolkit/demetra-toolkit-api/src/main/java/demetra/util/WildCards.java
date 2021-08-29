@@ -37,6 +37,15 @@ public class WildCards {
         wa = w.toCharArray();
         prepare();
     }
+    
+    /**
+     * Gets the original wild cards
+     * @return 
+     */
+    @Override
+    public String toString(){
+        return w;
+    }
 
     public boolean match(String str) {
         c = str;

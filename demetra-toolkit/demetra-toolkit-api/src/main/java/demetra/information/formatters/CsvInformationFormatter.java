@@ -92,13 +92,6 @@ public class CsvInformationFormatter {
         return DICTIONARY.keySet();
     }
 
-//    private boolean fullName;
-//
-//    public void setFullName(boolean full) {
-//        synchronized (DICTIONARY) {
-//            fullName = full;
-//        }
-//    }
     // preparing the matrix:
     // for each record, for each name, we search for the length of an item, the actual items (in case of
     // wildcards) and the corresponding result
@@ -328,12 +321,10 @@ public class CsvInformationFormatter {
                 int n = ccur.getValue();
                 Object obj = citem.search(c);
                 if (obj != null) {
-
                     if (n == 1) {
                         write(writer, format(obj, 0));
                     } else {
                         for (int j = 1; j <= n; ++j) {
-
                             write(writer, format(obj, j));
                             if (j < n) {
                                 writer.write(csvSeparator);

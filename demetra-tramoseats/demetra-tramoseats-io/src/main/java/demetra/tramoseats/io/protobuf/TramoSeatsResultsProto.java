@@ -31,11 +31,10 @@ public class TramoSeatsResultsProto {
 
     public TramoSeatsProtos.TramoSeatsResults convert(TramoSeatsResults rslts) {
         TramoSeatsProtos.TramoSeatsResults.Builder builder = TramoSeatsProtos.TramoSeatsResults.newBuilder();
-        TramoSeatsDiagnostics diags = TramoSeatsDiagnostics.of(rslts);
         builder.setPreprocessing(RegArimaEstimationProto.convert(rslts.getPreprocessing()))
                 .setDecomposition(SeatsResultsProto.convert(rslts.getDecomposition()))
                 .setFinal(SaProtosUtility.convert(rslts.getFinals()))
-                .setDiagnosticsSa(SaProtosUtility.of(diags.getSaDiagnostics()));
+                .setDiagnosticsSa(SaProtosUtility.of(rslts.getDiagnostics().getSaDiagnostics()));
         return builder.build();
     }
 

@@ -24,6 +24,8 @@ import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import demetra.util.WildCards;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -38,16 +40,24 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public abstract class InformationMapping<S> implements InformationExtractor<S> {
 
     private final LinkedHashMap<String, BasicInformationExtractor<S>> map = new LinkedHashMap<>();
+
+    // for unnamed extractors
+    private final List<BasicInformationExtractor<S>> list = new ArrayList<>();
+
     public <Q> void set(@NonNull final String name, final Class<Q> targetClass,
             final Function<S, Q> fn) {
         map.put(name, BasicInformationExtractor.extractor(name, targetClass, fn));
     }
 
     public <Q> void delegate(final String name, final Class<Q> target, final Function<S, Q> fn) {
-        map.put(name, BasicInformationExtractor.delegate(name, target, fn));
+        if (name == null || name.isEmpty()) {
+            list.add(BasicInformationExtractor.delegate("", target, fn));
+        } else {
+            map.put(name, BasicInformationExtractor.delegate(name, target, fn));
+        }
     }
 
-    public <Q> void delegateArray(final String name, final int start, final int end, 
+    public <Q> void delegateArray(@NonNull final String name, final int start, final int end,
             final Class<Q> target, final BiFunction<S, Integer, Q> fn) {
         map.put(name, BasicInformationExtractor.delegateArray(name, start, end, target, fn));
     }
@@ -66,6 +76,7 @@ public abstract class InformationMapping<S> implements InformationExtractor<S> {
     public void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
         synchronized (this) {
             map.forEach((key, extractor) -> extractor.fillDictionary(prefix, dic, compact));
+            list.forEach(extractor -> extractor.fillDictionary(prefix, dic, compact));
         }
     }
 
@@ -80,27 +91,59 @@ public abstract class InformationMapping<S> implements InformationExtractor<S> {
                 Optional<Entry<String, BasicInformationExtractor<S>>> findFirst = map.entrySet().stream().filter(entry -> entry.getValue().contains(id)).findFirst();
                 if (findFirst.isPresent()) {
                     return findFirst.get().getValue();
-                } else {
-                    return null;
                 }
+                for (BasicInformationExtractor<S> l : list) {
+                    if (l.contains(id)) {
+                        return l;
+                    }
+                }
+                return null;
             }
         }
     }
 
     @Override
     public boolean contains(String id) {
-        BasicInformationExtractor<S> extractor = search(id);
-        return extractor == null ? false : extractor.contains(id);
+        synchronized (this) {
+             // Atomic extractors...
+           BasicInformationExtractor<S> extractor = map.get(id);
+            if (extractor != null) {
+                return true;
+            } else {
+                // Complex extractors...
+                boolean any = map.entrySet().stream().anyMatch(entry -> entry.getValue().contains(id));
+                if (any) {
+                    return true;
+                }
+                return list.stream().anyMatch(l -> l.contains(id));
+            }
+        }
     }
 
     @Override
     public <T> T getData(S source, String id, Class<T> tclass) {
-        BasicInformationExtractor<S> extractor = search(id);
-        return extractor == null ? null : extractor.getData(source, id, tclass);
+        synchronized (this) {
+            // Atomic extractors...
+            BasicInformationExtractor<S> extractor = map.get(id);
+            if (extractor != null) {
+                return extractor.getData(source, id, tclass);
+            } else {
+                // Complex extractors...
+                for (Map.Entry<String, BasicInformationExtractor<S>> entry : map.entrySet()) {
+                    T data = entry.getValue().getData(source, id, tclass);
+                    if (data != null) {
+                        return data;
+                    }
+                }
+                for (BasicInformationExtractor<S> entry : list) {
+                    T data = entry.getData(source, id, tclass);
+                    if (data != null) {
+                        return data;
+                    }
+                }
+            }
+            return null;
+        }
     }
 
-    @Override
-    public <T> void searchAll(S source, WildCards wc, Class<T> tclass, Map<String, T> all) {
-        map.forEach((name, extractor) -> extractor.searchAll(source, wc, tclass, all));
-    }
 }

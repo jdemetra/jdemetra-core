@@ -35,14 +35,14 @@ import java.util.List;
  */
 public class CsvMatrixOutput implements Output<SaDocument> {
 
-    CsvMatrixOutputConfiguration config_;
+    CsvMatrixOutputConfiguration config;
     List<NamedObject<Explorable>> infos;
     private File folder;
     private boolean fullName;
 
     public CsvMatrixOutput(CsvMatrixOutputConfiguration config) {
-        config_ = (CsvMatrixOutputConfiguration) config.clone();
-        this.fullName = config_.isFullName();
+        this.config = (CsvMatrixOutputConfiguration) config.clone();
+        this.fullName = this.config.isFullName();
     }
 
     @Override
@@ -58,16 +58,16 @@ public class CsvMatrixOutput implements Output<SaDocument> {
     @Override
     public void start(Object context) {
         infos = new ArrayList<>();
-        folder = Paths.folderFromContext(config_.getFolder(), context);
+        folder = Paths.folderFromContext(config.getFolder(), context);
     }
 
     @Override
     public void end(Object context) throws Exception {
-        String file = Paths.concatenate(folder.getAbsolutePath(), config_.getFileName());
+        String file = Paths.concatenate(folder.getAbsolutePath(), config.getFileName());
         file = Paths.changeExtension(file, "csv");
         FileOutputStream matrix = new FileOutputStream(file);
         OutputStreamWriter writer = new OutputStreamWriter(matrix, StandardCharsets.ISO_8859_1);
-        CsvInformationFormatter.formatResults(writer, infos, config_.getItems(), true, fullName);
+        CsvInformationFormatter.formatResults(writer, infos, config.getItems(), true, fullName);
         infos = null;
     }
 

@@ -59,7 +59,6 @@ public class LinearModelExtractors {
                 REGRESSION = "regression", LIKELIHOOD = "likelihood", MAX = "max", RESIDUALS = "residuals",
                 NTD = "ntd", NMH = "nmh", NEASTER = "neaster",
                 NOUT = "nout", NOUTAO = "noutao", NOUTLS = "noutls", NOUTTC = "nouttc", NOUTSO = "noutso",
-                LP = "lp", EASTER="easter",
                 COEFF = "coefficients", COVAR = "covar", COVAR_ML = "covar-ml", COEFFDESC = "description", REGTYPE = "type",
                 P = "parameters", PCOVAR = "pcovar", PCOVAR_ML = "pcovar-ml", PCORR = "pcorr", SCORE = "pscore";
 
@@ -72,7 +71,7 @@ public class LinearModelExtractors {
             set(BasicInformationExtractor.concatenate(SPAN, NM), Integer.class, source -> source.getEstimation().getMissing().length);
 
             set(LOG, Boolean.class, source -> source.getDescription().isLogTransformation());
-            set(ADJUST, Boolean.class, source -> source.getDescription().getLengthOfPeriodTransformation() != LengthOfPeriodType.None);
+            set(ADJUST, String.class, source -> source.getDescription().getLengthOfPeriodTransformation().name());
             set(BasicInformationExtractor.concatenate(REGRESSION, MEAN), Boolean.class,
                     source -> count(source, v -> v instanceof TrendConstant) == 1);
             set(BasicInformationExtractor.concatenate(REGRESSION, NTD), Integer.class,
@@ -124,10 +123,6 @@ public class LinearModelExtractors {
                 return tvars;
             });
  
-            set(BasicInformationExtractor.concatenate(REGRESSION, LP), double[].class, source -> source.getEstimation().getCoefficients().toArray());
-
-            
-            
             set(BasicInformationExtractor.concatenate(REGRESSION, COEFF), double[].class, source -> source.getEstimation().getCoefficients().toArray());
             set(BasicInformationExtractor.concatenate(REGRESSION, COVAR), MatrixType.class, source -> source.getEstimation().getCoefficientsCovariance());
             set(BasicInformationExtractor.concatenate(REGRESSION, COVAR_ML), MatrixType.class, source

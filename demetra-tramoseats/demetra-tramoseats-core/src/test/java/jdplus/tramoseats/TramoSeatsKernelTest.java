@@ -31,7 +31,7 @@ public class TramoSeatsKernelTest {
         TsData s = TsData.ofInternal(TsPeriod.monthly(2001, 1), Data.RETAIL_ALLHOME);
         TramoSeatsResults rslt = ts.process(s, log);
         assertTrue(rslt.getFinals() != null);
-        TramoSeatsDiagnostics diags = TramoSeatsDiagnostics.of(rslt);
+        TramoSeatsDiagnostics diags = rslt.getDiagnostics();
         assertTrue(diags != null);
 //        System.out.println(rslt.getDecomposition().getInitialComponents());
 //        System.out.println(rslt.getFinals());

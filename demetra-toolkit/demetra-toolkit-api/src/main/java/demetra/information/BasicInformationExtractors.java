@@ -37,6 +37,23 @@ class BasicInformationExtractors {
         return builder.toString();
     }
 
+    static int listItem(String prefix, String key) {
+        if (!key.startsWith(prefix)) {
+            return Integer.MIN_VALUE;
+        }
+        int start = prefix.length() + LSTART.length();
+        int end = key.length() - LEND.length();
+        if (end <= start) {
+            return Integer.MIN_VALUE;
+        }
+        String s = key.substring(start, end);
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException ex) {
+            return Integer.MIN_VALUE;
+        }
+    }
+
     static String wcKey(String prefix, char wc) {
         StringBuilder builder = new StringBuilder();
         builder.append(prefix).append(LSTART);
@@ -80,8 +97,8 @@ class BasicInformationExtractors {
 
         @Override
         public <T> void searchAll(S source, WildCards wc, Class<T> tclass, Map<String, T> map) {
-            if (wc.match(name)) {
-                if (tclass.isAssignableFrom(targetClass)) {
+            if (tclass.isAssignableFrom(targetClass)) {
+                if (wc.match(name)) {
                     map.put(name, (T) fn.apply(source));
                 }
             }
@@ -105,18 +122,24 @@ class BasicInformationExtractors {
 
         @Override
         public void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
-            String item = wcKey(name, start == end ? '?' : '*');
-            dic.put(BasicInformationExtractor.concatenate(prefix, item), targetClass);
+            if (compact) {
+                String item = wcKey(name, start == end ? '?' : '*');
+                dic.put(BasicInformationExtractor.concatenate(prefix, item), targetClass);
+            } else {
+                if (start == end) {
+                    dic.put(BasicInformationExtractor.concatenate(prefix, listKey(name, start)), targetClass);
+                } else {
+                    for (int i = start; i < end; ++i) {
+                        dic.put(BasicInformationExtractor.concatenate(prefix, listKey(name, i)), targetClass);
+                    }
+                }
+            }
         }
 
         @Override
         public boolean contains(String id) {
-            if (start == end) {
-                return isIParamItem(name, id);
-            } else {
-                int idx = listItem(name, id);
-                return idx >= start && idx < end;
-            }
+            int idx = listItem(name, id);
+            return idx != Integer.MIN_VALUE;
         }
 
         @Override
@@ -129,58 +152,27 @@ class BasicInformationExtractors {
                 if (idx == Integer.MIN_VALUE) {
                     return null;
                 }
-                if (start == end) {
-                    return (T) fn.apply(source, idx);
-                } else if (idx >= start && idx < end) {
-                    return (T) fn.apply(source, idx);
-                }
+                return (T) fn.apply(source, idx);
             }
             return null;
-        }
-
-        static int listItem(String prefix, String key) {
-            if (!key.startsWith(prefix)) {
-                return Integer.MIN_VALUE;
-            }
-            int start = prefix.length() + LSTART.length();
-            int end = key.length() - LEND.length();
-            if (end <= start) {
-                return Integer.MIN_VALUE;
-            }
-            String s = key.substring(start, end);
-            try {
-                return Integer.parseInt(s);
-            } catch (NumberFormatException ex) {
-                return Integer.MIN_VALUE;
-            }
-        }
-
-        static boolean isIParamItem(String prefix, String key) {
-            if (!key.startsWith(prefix)) {
-                return false;
-            }
-            int start = prefix.length() + LSTART.length();
-            int end = key.length() - LEND.length();
-            if (end <= start) {
-                return false;
-            }
-            String s = key.substring(start, end);
-            try {
-                Integer.parseInt(s);
-                return true;
-            } catch (NumberFormatException ex) {
-                return false;
-            }
         }
 
         @Override
         public <T> void searchAll(S source, WildCards wc, Class<T> tclass, Map<String, T> map) {
             if (tclass.isAssignableFrom(targetClass)) {
-                // far to be optimal... TO IMPROVE
-                for (int i = start; i <= end; ++i) {
+                int endc = end;
+                if (start == end) {
+                    ++endc;
+                }
+                for (int i = start; i < end; ++i) {
                     String key = listKey(name, i);
                     if (wc.match(key)) {
-                        map.put(key, (T) fn.apply(source, i));
+                        Object obj = fn.apply(source, i);
+                        // We stop when the requested object is unavailable
+                        if (obj == null) {
+                            return;
+                        }
+                        map.put(key, (T) obj);
                     }
                 }
             }
@@ -242,9 +234,15 @@ class BasicInformationExtractors {
         }
 
         @Override
-        public <Q> void searchAll(S source, WildCards wc,
-                 Class<Q> tclass, Map<String, Q> map
-        ) {
+        public <Q> void searchAll(S source, WildCards wc, Class<Q> tclass, Map<String, Q> map) {
+            String wcs = wc.toString();
+            if (name != null) {
+                if (wcs.startsWith(name) && wcs.charAt(name.length()) == BasicInformationExtractor.SEP) {
+                    String subwcs = wcs.substring(name.length() + 1);
+                    InformationExtractors.searchAll(target, fn.apply(source), new WildCards(subwcs), tclass, map);
+                    return;
+                }
+            }
             InformationExtractors.searchAll(target, fn.apply(source), wc, tclass, map);
         }
 
@@ -267,22 +265,26 @@ class BasicInformationExtractors {
 
         @Override
         public void fillDictionary(String prefix, Map<String, Class> dic, boolean compact) {
-            String item = wcKey(name, start == end ? '?' : '*');
-            InformationExtractors.fillDictionary(target, BasicInformationExtractor.concatenate(prefix, item), dic, compact);
+            if (compact) {
+                String item = wcKey(name, start == end ? '?' : '*');
+                InformationExtractors.fillDictionary(target, BasicInformationExtractor.concatenate(prefix, item), dic, compact);
+            } else {
+                if (start == end) {
+                    String item = listKey(name, start);
+                    InformationExtractors.fillDictionary(target, BasicInformationExtractor.concatenate(prefix, item), dic, compact);
+                } else {
+                    for (int i = start; i < end; ++i) {
+                        String item = listKey(name, i);
+                        InformationExtractors.fillDictionary(target, BasicInformationExtractor.concatenate(prefix, item), dic, compact);
+                    }
+                }
+            }
         }
 
         @Override
         public boolean contains(String id) {
-            if (start == end) {
-                return isIParamItem(name, id) && InformationExtractors.contains(target, detail(id));
-            } else {
-                int idx = listItem(name, id);
-                if (idx >= start && idx < end) {
-                    return InformationExtractors.contains(target, detail(id));
-                } else {
-                    return false;
-                }
-            }
+            int idx = listItem(name, id);
+            return InformationExtractors.contains(target, detail(id));
         }
 
         @Override
@@ -294,34 +296,12 @@ class BasicInformationExtractors {
             if (idx == Integer.MIN_VALUE) {
                 return null;
             }
-            T t = null;
-            if (start == end) {
-                t = (T) fn.apply(source, idx);
-            } else if (idx >= start && idx < end) {
-                t = (T) fn.apply(source, idx);
-            }
+            T t = (T) fn.apply(source, idx);
             if (t == null) {
                 return null;
             }
             String detail = detail(id);
             return InformationExtractors.getData(target, t, detail, qclass);
-        }
-
-        static int listItem(String prefix, String key) {
-            if (!key.startsWith(prefix)) {
-                return Integer.MIN_VALUE;
-            }
-            int start = prefix.length() + LSTART.length();
-            int end = key.indexOf(LEND);
-            if (end <= start) {
-                return Integer.MIN_VALUE;
-            }
-            String s = key.substring(start, end);
-            try {
-                return Integer.parseInt(s);
-            } catch (NumberFormatException ex) {
-                return Integer.MIN_VALUE;
-            }
         }
 
         static String detail(String key) {
@@ -331,29 +311,6 @@ class BasicInformationExtractors {
             } else {
                 return key.substring(pos + 2);
             }
-        }
-
-        static boolean isIParamItem(String prefix, String key) {
-            if (!key.startsWith(prefix)) {
-                return false;
-            }
-            int start = prefix.length() + LSTART.length();
-            int end = key.indexOf(LEND);
-            if (end <= start) {
-                return false;
-            }
-            String s = key.substring(start, end);
-            try {
-                Integer.parseInt(s);
-                return true;
-            } catch (NumberFormatException ex) {
-                return false;
-            }
-        }
-
-        @Override
-        public <T> void searchAll(S source, WildCards wc, Class<T> tclass, Map<String, T> map) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
 }

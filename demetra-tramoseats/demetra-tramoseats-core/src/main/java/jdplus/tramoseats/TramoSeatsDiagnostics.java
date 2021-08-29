@@ -8,6 +8,7 @@ package jdplus.tramoseats;
 import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
 import demetra.sa.DefaultSaDiagnostics;
+import demetra.sa.SeriesDecomposition;
 import demetra.sa.StationaryVarianceDecomposition;
 import demetra.timeseries.TsData;
 import jdplus.regsarima.regular.RegSarimaModel;
@@ -28,9 +29,7 @@ public class TramoSeatsDiagnostics {
 
     private DefaultSaDiagnostics saDiagnostics;
 
-    public static TramoSeatsDiagnostics of(TramoSeatsResults rslts) {
-        RegSarimaModel preprocessing = rslts.getPreprocessing();
-        SeatsResults srslts = rslts.getDecomposition();
+    public static TramoSeatsDiagnostics of(RegSarimaModel preprocessing, SeatsResults srslts, SeriesDecomposition finals){
         DefaultSaDiagnostics.Builder sadiags = DefaultSaDiagnostics.builder()
                 .varianceDecomposition(varDecomposition(preprocessing, srslts));
         boolean mul = preprocessing.getDescription().isLogTransformation();

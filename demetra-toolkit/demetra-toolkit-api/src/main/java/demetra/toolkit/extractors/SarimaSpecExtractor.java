@@ -16,7 +16,6 @@
  */
 package demetra.toolkit.extractors;
 
-import demetra.arima.ISarimaModel;
 import demetra.data.Parameter;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
@@ -47,6 +46,38 @@ public class SarimaSpecExtractor extends InformationMapping<SarimaSpec> {
         set(BPHI, double[].class, source -> Parameter.values(source.getBphi()));
         set(THETA, double[].class, source -> Parameter.values(source.getTheta()));
         set(BTHETA, double[].class, source -> Parameter.values(source.getBtheta()));
+        setArray(PHI, 1, 4, Double.class, (source, i) -> {
+            Parameter[] p = source.getPhi();
+            if (i > p.length) {
+                return null;
+            } else {
+                return p[i-1].getValue();
+            }
+        });
+        setArray(BPHI, 1, 2, Double.class, (source, i) -> {
+            Parameter[] p = source.getBphi();
+            if (i > p.length) {
+                return null;
+            } else {
+                return p[i-1].getValue();
+            }
+        });
+        setArray(THETA, 1, 4, Double.class, (source, i) -> {
+            Parameter[] p = source.getTheta();
+            if (i > p.length) {
+                return null;
+            } else {
+                return p[i-1].getValue();
+            }
+        });
+        setArray(BTHETA, 1, 2, Double.class, (source, i) -> {
+            Parameter[] p = source.getBtheta();
+            if (i > p.length) {
+                return null;
+            } else {
+                return p[i-1].getValue();
+            }
+        });
     }
 
     @Override

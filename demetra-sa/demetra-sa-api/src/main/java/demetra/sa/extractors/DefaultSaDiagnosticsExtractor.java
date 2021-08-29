@@ -14,24 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.tramoseats;
-
-import jdplus.seats.SeatsResults;
-import demetra.sa.SeriesDecomposition;
-import jdplus.regsarima.regular.RegSarimaModel;
-import demetra.information.Explorable;
+package demetra.sa.extractors;
 
 /**
  *
- * @author palatej
+ * @author PALATEJ
  */
-@lombok.Value
-@lombok.Builder
-public class TramoSeatsResults implements Explorable {
-
-    private RegSarimaModel preprocessing;
-    private SeatsResults decomposition;
-    private SeriesDecomposition finals;
-    private TramoSeatsDiagnostics diagnostics;
-
+public class DefaultSaDiagnosticsExtractor {
+    
 }

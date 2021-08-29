@@ -139,9 +139,9 @@ public class RegSarimaModelExtractors {
                     source -> source.regressionItem(v -> v instanceof IEasterVariable, 0));
             setArray(BasicInformationExtractor.concatenate(REGRESSION, OUT), 1, 31, RegressionItem.class,
                     (source, i) -> source.regressionItem(v -> v instanceof IOutlier, i - 1));
-            setArray(BasicInformationExtractor.concatenate(REGRESSION, TD), 1, 15, RegressionItem.class,
+            setArray(BasicInformationExtractor.concatenate(REGRESSION, TD), 1, 7, RegressionItem.class,
                     (source, i) -> source.regressionItem(v -> v instanceof ITradingDaysVariable, i - 1));
-            setArray(BasicInformationExtractor.concatenate(REGRESSION, RAMP), 1, 31, RegressionItem.class,
+            setArray(BasicInformationExtractor.concatenate(REGRESSION, RAMP), 1, RegressionItem.class,
                     (source, i) -> source.regressionItem(v -> v instanceof Ramp, i - 1));
 
 //        MAPPING.set(ModellingDictionary.OUT_I, source -> source.getOutlier(ComponentType.Irregular, false));
