@@ -49,7 +49,7 @@ public class XmlLoader {
     static TsCollection parseCollection(XMLStreamReader reader) throws XMLStreamException {
         return TsCollection
                 .builder()
-                .name(reader.getAttributeValue(null, "name"))
+                .name(Strings.nullToEmpty(reader.getAttributeValue(null, "name")))
                 .items(parseTss(reader))
                 .build();
     }

@@ -147,7 +147,6 @@ public class Data {
     public static TsCollection c(GridLayout layout, Ts ts) {
         return TsCollection.builder()
                 .type(TsInformationType.Data)
-                .name("")
                 .meta(GridLayout.PROPERTY, layout.name())
                 .item(ts)
                 .build();

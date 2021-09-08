@@ -76,7 +76,7 @@ public final class TsStreamAsProvider implements TsProvider {
     public TsCollection getTsCollection(TsMoniker moniker, TsInformationType type) throws IOException, IllegalArgumentException {
         DataSourcePreconditions.checkProvider(getSource(), moniker);
 
-        TsCollection.Builder result = TsCollection.builder().moniker(moniker).type(type).name("");
+        TsCollection.Builder result = TsCollection.builder().moniker(moniker).type(type);
 
         Optional<DataSource> dataSource = hdm.toDataSource(moniker);
         if (dataSource.isPresent()) {
