@@ -16,6 +16,7 @@
  */
 package demetra.timeseries;
 
+import demetra.data.Range;
 import nbbrd.design.Development;
 import java.time.LocalDateTime;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -118,6 +119,10 @@ public class TimeSelector implements Cloneable {
      */
     public static TimeSelector between(@NonNull LocalDateTime start, @NonNull LocalDateTime end) {
         return new TimeSelector(SelectionType.Between, start, end, 0, 0);
+    }
+
+    public static TimeSelector between(@NonNull Range<LocalDateTime> range) {
+        return new TimeSelector(SelectionType.Between, range.start(), range.end(), 0, 0);
     }
 
     /**
