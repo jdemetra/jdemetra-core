@@ -23,6 +23,7 @@ import demetra.tsprovider.util.ObsFormat;
 import demetra.util.Table;
 import ec.tss.TsBypass;
 import ec.tstoolkit.maths.matrices.Matrix;
+import internal.util.Strings;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -343,7 +344,7 @@ public class TsConverter {
 
     public TsCollection.@NonNull Builder toTsCollectionBuilder(ec.tss.@NonNull TsCollectionInformation o) {
         TsCollection.Builder result = TsCollection.builder()
-                .name(o.name)
+                .name(o.name != null ? o.name : "")
                 .moniker(toTsMoniker(o.moniker))
                 .type(toType(o.type))
                 .meta(toMeta(o.metaData));

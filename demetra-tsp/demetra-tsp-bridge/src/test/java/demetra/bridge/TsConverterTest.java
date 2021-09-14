@@ -23,6 +23,8 @@ import demetra.tsprovider.FileBean;
 import demetra.tsprovider.FileLoader;
 import demetra.tsprovider.util.ObsFormat;
 import demetra.util.Table;
+import ec.tss.TsBypass;
+import ec.tss.TsCollectionInformation;
 import ec.tss.tsproviders.utils.DataFormat;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
@@ -197,6 +199,10 @@ public class TsConverterTest {
                 }
             }
         }
+
+        assertThat(toTsCollection(TsBypass.col(null)).toBuilder().moniker(TsMoniker.NULL).build())
+                .describedAs("Empty TsCollection with nulls should not fail")
+                .isEqualTo(TsCollection.EMPTY);
     }
 
     @Test
@@ -230,6 +236,10 @@ public class TsConverterTest {
                 }
             }
         }
+
+        assertThat(toTsCollectionBuilder(new TsCollectionInformation()).moniker(TsMoniker.NULL).build())
+                .describedAs("Empty TsCollectionInformation with nulls should not fail")
+                .isEqualTo(TsCollection.EMPTY);
     }
 
     @Test

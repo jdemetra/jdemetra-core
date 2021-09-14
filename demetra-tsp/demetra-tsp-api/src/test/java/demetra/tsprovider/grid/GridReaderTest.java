@@ -42,7 +42,6 @@ public class GridReaderTest {
                         .builder()
                         .meta(GridLayout.PROPERTY, VERTICAL.name())
                         .type(TsInformationType.Data)
-                        .name("")
                         .build());
     }
 
@@ -68,7 +67,6 @@ public class GridReaderTest {
                         .builder()
                         .meta(GridLayout.PROPERTY, HORIZONTAL.name())
                         .type(TsInformationType.Data)
-                        .name("")
                         .item(s("G1\nS1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
                         .item(s("G1\nS2", MONTH, 2010, 0, 3, 4, 5))
                         .item(s("G2\nS1", MONTH, 2010, 0, 7, 8, 9))
@@ -98,7 +96,6 @@ public class GridReaderTest {
                         .builder()
                         .meta(GridLayout.PROPERTY, VERTICAL.name())
                         .type(TsInformationType.Data)
-                        .name("")
                         .item(s("G1\nS1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
                         .item(s("G1\nS2", MONTH, 2010, 0, 3, 4, 5))
                         .item(s("G2\nS1", MONTH, 2010, 0, 7, 8, 9))
@@ -115,7 +112,6 @@ public class GridReaderTest {
                         .builder()
                         .meta(GridLayout.PROPERTY, VERTICAL.name())
                         .type(TsInformationType.Data)
-                        .name("")
                         .item(s("G1-S1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
                         .item(s("G1-S2", MONTH, 2010, 0, 3, 4, 5))
                         .item(s("G2-S1", MONTH, 2010, 0, 7, 8, 9))
@@ -130,7 +126,6 @@ public class GridReaderTest {
                         .builder()
                         .meta(GridLayout.PROPERTY, HORIZONTAL.name())
                         .type(TsInformationType.Data)
-                        .name("")
                         .item(s("G1\nS1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
                         .item(s("G1\nS2", MONTH, 2010, 0, 3, 4, 5))
                         .item(s("G2\nS1", MONTH, 2010, 0, 7, 8, 9))
@@ -142,7 +137,6 @@ public class GridReaderTest {
                         .builder()
                         .meta(GridLayout.PROPERTY, VERTICAL.name())
                         .type(TsInformationType.Data)
-                        .name("")
                         .item(s("G1\nS1", MONTH, 2010, 0, 3.14, 4.56, 7.89))
                         .item(s("G1\nS2", MONTH, 2010, 0, 3, 4, 5))
                         .item(s("G2\nS1", MONTH, 2010, 0, 7, 8, 9))

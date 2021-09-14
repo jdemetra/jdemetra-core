@@ -128,21 +128,21 @@ public class TsStreamAsProviderTest {
         TsProvider p = TsStreamAsProvider.of(provider, goodCursor, monikers, doNothing);
 
         assertThat(p.getTsCollection(goodSource, None)).isEqualTo(TsCollection.builder()
-                .moniker(goodSource).type(None).name("")
+                .moniker(goodSource).type(None)
                 .item(s1.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
                 .item(s2.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
                 .item(s3.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
                 .build());
 
         assertThat(p.getTsCollection(goodSource, MetaData)).isEqualTo(TsCollection.builder()
-                .moniker(goodSource).type(MetaData).name("")
+                .moniker(goodSource).type(MetaData)
                 .item(s1.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
                 .item(s2.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
                 .item(s3.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
                 .build());
 
         assertThat(p.getTsCollection(goodSource, All)).isEqualTo(TsCollection.builder()
-                .moniker(goodSource).type(All).name("")
+                .moniker(goodSource).type(All)
                 .item(s1).item(s2).item(s3)
                 .build());
     }
@@ -152,19 +152,19 @@ public class TsStreamAsProviderTest {
         TsProvider p = TsStreamAsProvider.of(provider, goodCursor, monikers, doNothing);
 
         assertThat(p.getTsCollection(goodCollection, None)).isEqualTo(TsCollection.builder()
-                .moniker(goodCollection).type(None).name("")
+                .moniker(goodCollection).type(None)
                 .item(s1.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
                 .item(s2.toBuilder().type(None).data(TsDataBuilderUtil.NO_DATA).clearMeta().build())
                 .build());
 
         assertThat(p.getTsCollection(goodCollection, MetaData)).isEqualTo(TsCollection.builder()
-                .moniker(goodCollection).type(MetaData).name("")
+                .moniker(goodCollection).type(MetaData)
                 .item(s1.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
                 .item(s2.toBuilder().type(MetaData).data(TsDataBuilderUtil.NO_DATA).build())
                 .build());
 
         assertThat(p.getTsCollection(goodCollection, All)).isEqualTo(TsCollection.builder()
-                .moniker(goodCollection).type(All).name("")
+                .moniker(goodCollection).type(All)
                 .item(s1).item(s2)
                 .build());
     }
