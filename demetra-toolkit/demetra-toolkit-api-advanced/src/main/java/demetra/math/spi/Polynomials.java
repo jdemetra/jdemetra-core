@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.maths.spi;
+package demetra.math.spi;
 
 import demetra.data.DoubleSeq;
 import demetra.math.Complex;
 import demetra.math.algebra.Ring;
+import demetra.maths.spi.PolynomialsLoader;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;

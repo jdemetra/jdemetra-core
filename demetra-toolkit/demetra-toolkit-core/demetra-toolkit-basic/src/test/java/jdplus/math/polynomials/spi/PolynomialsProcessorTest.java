@@ -18,7 +18,7 @@ package jdplus.math.polynomials.spi;
 
 import demetra.data.DoubleSeq;
 import demetra.math.Complex;
-import demetra.maths.spi.Polynomials;
+import demetra.math.spi.Polynomials;
 import jdplus.math.polynomials.Polynomial;
 import org.junit.Test;
 import static org.junit.Assert.*;

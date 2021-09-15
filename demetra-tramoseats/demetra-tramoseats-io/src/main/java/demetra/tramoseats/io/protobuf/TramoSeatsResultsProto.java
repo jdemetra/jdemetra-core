@@ -18,7 +18,6 @@ package demetra.tramoseats.io.protobuf;
 
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
 import demetra.sa.io.protobuf.SaProtosUtility;
-import jdplus.tramoseats.TramoSeatsDiagnostics;
 import jdplus.tramoseats.TramoSeatsResults;
 
 /**

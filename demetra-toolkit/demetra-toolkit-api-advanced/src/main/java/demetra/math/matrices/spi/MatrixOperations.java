@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.maths.matrices.spi;
+package demetra.math.matrices.spi;
 
 import demetra.math.matrices.MatrixType;
 import demetra.design.Algorithm;
 import demetra.math.algebra.Ring;
+import demetra.maths.matrices.spi.MatrixOperationsLoader;
 import nbbrd.service.ServiceDefinition;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;

@@ -21,7 +21,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
-import demetra.maths.matrices.spi.MatrixOperations;
+import demetra.math.matrices.spi.MatrixOperations;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.GeneralMatrix;
 import jdplus.math.matrices.Matrix;
