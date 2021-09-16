@@ -8,7 +8,7 @@ package demetra.math.spi;
 import demetra.data.DoubleSeq;
 import demetra.math.Complex;
 import demetra.math.algebra.Ring;
-import demetra.maths.spi.PolynomialsLoader;
+import demetra.math.spi.PolynomialsLoader;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;

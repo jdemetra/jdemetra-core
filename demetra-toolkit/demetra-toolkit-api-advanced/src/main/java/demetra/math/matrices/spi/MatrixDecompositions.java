@@ -18,7 +18,7 @@ package demetra.math.matrices.spi;
 
 import demetra.math.matrices.MatrixType;
 import demetra.design.Algorithm;
-import demetra.maths.matrices.spi.MatrixDecompositionsLoader;
+import demetra.math.matrices.spi.MatrixDecompositionsLoader;
 import nbbrd.service.ServiceDefinition;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
