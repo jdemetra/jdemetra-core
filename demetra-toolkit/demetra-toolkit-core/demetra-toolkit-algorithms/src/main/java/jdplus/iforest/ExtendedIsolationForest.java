@@ -7,7 +7,6 @@
  */
 package jdplus.iforest;
 
-import demetra.data.DoubleList;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
 import demetra.util.IntList;
@@ -206,29 +205,43 @@ public class ExtendedIsolationForest {
                 double r = rnd.nextDouble();
                 // No check for rounding issues
                 p[i] = xmin[i] + r * (xmax[i] - xmin[i]);
-                n[i] = rnd.nextGaussian();
             }
-            int k = dim - extensionLevel - 1;
-            if (k > 0) {
-                int[] zeroidx = sampleWithoutReplacement(k, dim, false, rnd);
-                for (int i = 0; i < zeroidx.length; ++i) {
-                    n[zeroidx[i]] = 0;
-                }
-            }
-            // Implement splitting criterion 
             IntList XL = new IntList(size), XR = new IntList(size);
-
             DataBlock N = DataBlock.of(n), P = DataBlock.of(p);
-            double pdotn = P.dot(N);
-            items.forEach(i -> {
-                double innerprod = N.dot(X.column(i));
-                if (innerprod < pdotn) {
-                    XL.add(i);
-                } else {
-                    XR.add(i);
+            double pdotn = 0;
+            int o = 0;
+            int omax=3*dim;
+            do {
+                XL.clear();
+                XR.clear();
+                for (int i = 0; i < dim; i++) {
+                    n[i] = rnd.nextGaussian();
                 }
-            });
+                int k = dim - extensionLevel - 1;
+                if (k > 0) {
+                    int[] zeroidx = sampleWithoutReplacement(k, dim, false, rnd);
+                    for (int i = 0; i < zeroidx.length; ++i) {
+                        n[zeroidx[i]] = 0;
+                    }
+                }
+                // Implement splitting criterion 
 
+                pdotn = P.dot(N);
+                double q = pdotn;
+                items.forEach(i -> {
+                    double innerprod = N.dot(X.column(i));
+                    if (innerprod < q) {
+                        XL.add(i);
+                    } else {
+                        XR.add(i);
+                    }
+                });
+            } while (o++ < omax && (XL.isEmpty() || XR.isEmpty()));
+
+            // Nodes with empty branches should be avoided, because they will bias
+            // the length of the path. Impact on outliers detection is negligible
+            // and will be ignored
+            
             Node left = addNode(XL, level + 1);
             Node right = addNode(XR, level + 1);
             return new Node(-1, items, level, n, p, pdotn, left, right);
@@ -241,10 +254,13 @@ public class ExtendedIsolationForest {
         static double findPath(Node node, DoubleSeq x) {
             if (node.isFinal()) {
                 int size = node.size();
-                if (size <= 1) {
-                    return 0;
-                } else {
-                    return ExtendedIsolationForest.cFactor(size);
+                switch (size) {
+                    case 0:
+                        return 0; // unused node
+                    case 1:
+                        return 1; // true final level
+                    default:
+                        return 1 + ExtendedIsolationForest.cFactor(size);
                 }
             } else {
                 double xdotn = DataBlock.of(node.getNormalVector()).dot(x);
@@ -303,8 +319,8 @@ public class ExtendedIsolationForest {
             for (int i = 0; i < size; i++) {
                 DoubleSeq cur = z.column(i);
                 double htemp = 0.0;
-                for (int j = 0; j < trees.length; j++) {
-                    htemp += Path.findPath(trees[j].getRoot(), cur);
+                for (iTree tree : trees) {
+                    htemp += Path.findPath(tree.getRoot(), cur);
                 }
                 double havg = htemp / trees.length;
                 S[i] = Math.pow(2.0, -havg / c);

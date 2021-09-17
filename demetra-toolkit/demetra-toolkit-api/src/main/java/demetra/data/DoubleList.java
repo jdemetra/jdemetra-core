@@ -449,6 +449,7 @@ public final class DoubleList implements DoubleSeq {
      *
      * @return the number of elements in this DoubleList
      */
+    @Override
     public int size() {
         return length;
     }

@@ -19,6 +19,8 @@ package jdplus.x13.extractors;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import demetra.math.matrices.MatrixType;
+import demetra.modelling.SeriesInfo;
+import demetra.sa.SaDictionary;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.x11.X11Results;
@@ -35,6 +37,13 @@ import nbbrd.service.ServiceProvider;
 public class X11Extractor extends InformationMapping<X11Results> {
 
     public X11Extractor() {
+        
+        set(SaDictionary.T_CMP, TsData.class, source->source.getD12());
+        set(SaDictionary.SA_CMP, TsData.class, source->source.getD11());
+        set(SaDictionary.S_CMP, TsData.class, source->source.getD10());
+//        set(SaDictionary.S_CMP+ SeriesInfo.F_SUFFIX, TsData.class, source->source.getD10a());
+        set(SaDictionary.I_CMP, TsData.class, source->source.getD13());
+
         set("b1", TsData.class, source -> source.getB1());
         set("b2", TsData.class, source -> source.getB2());
         set("b3", TsData.class, source -> source.getB3());

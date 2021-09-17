@@ -597,6 +597,22 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
         return backTransform(s, true);
     }
 
+    public TsData getDeterministicEffect(TsDomain domain, Predicate<Variable> test) {
+        if (domain == null) {
+            domain = description.getSeries().getDomain();
+        }
+        TsData s = deterministicEffect(domain, v -> test.test(v));
+        return backTransform(s, true);
+    }
+
+    public TsData getPreadjustmentEffect(TsDomain domain, Predicate<Variable> test) {
+        if (domain == null) {
+            domain = description.getSeries().getDomain();
+        }
+        TsData s = preadjustmentEffect(domain, v -> test.test(v));
+        return backTransform(s, true);
+    }
+
     /**
      * The forecast domain is relative to the series domain, not to the
      * estimation domain
@@ -660,12 +676,13 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
     public RegressionItem regressionItem(Predicate<ITsVariable> pred, int item) {
         List<RegressionDesc> items = details.getRegressionItems();
         int curitem = 0;
-        for (RegressionDesc desc:items){
-            if (pred.test(desc.getCore())){
-                if (item == curitem)
+        for (RegressionDesc desc : items) {
+            if (pred.test(desc.getCore())) {
+                if (item == curitem) {
                     return new RegressionItem(desc.core.description(desc.item, details.estimationDomain), desc.coef, desc.tstat, desc.pvalue);
-                else
+                } else {
                     ++curitem;
+                }
             }
         }
         return null;

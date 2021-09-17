@@ -30,8 +30,7 @@ public class ExtendedIsolationForestTest {
         }
     }
 
-    @Test
-    public void testGaussianTree() {
+    public static void gaussianTree() {
 
         Random rnd = new Random();
         int n = 500, m = 3, k = 2000;
@@ -47,11 +46,33 @@ public class ExtendedIsolationForestTest {
         }
         MatrixType M = MatrixType.of(data, m, n);
         long t0 = System.currentTimeMillis();
-        ExtendedIsolationForest.iForest forest = ExtendedIsolationForest.iForest.of(M, 0, 0, null);
+        ExtendedIsolationForest.iForest forest = ExtendedIsolationForest.iForest.of(M, -1, 0, null);
         forest.fit(k, 256);
         double[] S = forest.predict(null);
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
+        System.out.println(DoubleSeq.of(S));
+    }
+
+    public static void gaussianTree2(int k, int s) {
+
+        Random rnd = new Random(0);
+        int n = 1000, m = 20;
+        double[] data = new double[n * m];
+        for (int i = 0; i < data.length; ++i) {
+            data[i] = rnd.nextGaussian();
+        }
+
+        for (int i = 0; i < 100; ++i) {
+            data[rnd.nextInt(data.length)] += 20;
+        }
+
+        MatrixType M = MatrixType.of(data, m, n);
+        long t0 = System.currentTimeMillis();
+        ExtendedIsolationForest.iForest forest = ExtendedIsolationForest.iForest.of(M, -1, 0, null);
+        forest.fit(k, s);
+        double[] S = forest.predict(null);
+        long t1 = System.currentTimeMillis();
         System.out.println(DoubleSeq.of(S));
     }
 
@@ -70,5 +91,10 @@ public class ExtendedIsolationForestTest {
         }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
+
+        gaussianTree();
+        for (int k = 5; k <= 100; k += 5) {
+            gaussianTree2(k * 10, 512);
+        }
     }
 }

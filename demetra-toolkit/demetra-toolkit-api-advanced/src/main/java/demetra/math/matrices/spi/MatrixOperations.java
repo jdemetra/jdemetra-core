@@ -19,7 +19,6 @@ package demetra.math.matrices.spi;
 import demetra.math.matrices.MatrixType;
 import demetra.design.Algorithm;
 import demetra.math.algebra.Ring;
-import demetra.math.matrices.spi.MatrixOperationsLoader;
 import nbbrd.service.ServiceDefinition;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;

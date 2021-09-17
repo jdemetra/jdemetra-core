@@ -144,6 +144,12 @@ public class RegSarimaModelExtractors {
             setArray(BasicInformationExtractor.concatenate(REGRESSION, RAMP), 1, RegressionItem.class,
                     (source, i) -> source.regressionItem(v -> v instanceof Ramp, i - 1));
 
+            set(ModellingDictionary.EE, TsData.class, source -> source.getEasterEffect(null));
+            setArray(ModellingDictionary.EE + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+                    (source, i) -> source.getEasterEffect(source.forecastDomain(i)));
+            setArray(ModellingDictionary.EE + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+                    (source, i) -> source.getEasterEffect(source.backcastDomain(i)));
+            
 //        MAPPING.set(ModellingDictionary.OUT_I, source -> source.getOutlier(ComponentType.Irregular, false));
 //        MAPPING.set(ModellingDictionary.OUT_I + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Irregular, true));
 //        MAPPING.set(ModellingDictionary.OUT_T, source -> source.getOutlier(ComponentType.Trend, false));
