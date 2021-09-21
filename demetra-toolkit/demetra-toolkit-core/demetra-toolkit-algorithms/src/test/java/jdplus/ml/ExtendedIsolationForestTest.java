@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdplus.iforest;
+package jdplus.ml;
 
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
@@ -33,25 +33,30 @@ public class ExtendedIsolationForestTest {
     public static void gaussianTree() {
 
         Random rnd = new Random();
-        int n = 500, m = 3, k = 2000;
+        int n = 5000, m = 5, k = 2000;
         double[] data = new double[n * m];
-        for (int i = 3; i < data.length; ++i) {
+        for (int i = m; i < data.length; ++i) {
             data[i] = rnd.nextGaussian();
             if (i % 3 == 1) {
                 data[i] *= Math.sqrt(.1);
             }
         }
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < m; ++i) {
             data[i] = 3.3;
         }
         MatrixType M = MatrixType.of(data, m, n);
         long t0 = System.currentTimeMillis();
-        ExtendedIsolationForest.iForest forest = ExtendedIsolationForest.iForest.of(M, -1, 0, null);
+        ExtendedIsolationForest.iForest forest = ExtendedIsolationForest.iForest.builder()
+                .X(M)
+//                .extensionLevel(0)
+                .build();
         forest.fit(k, 256);
         double[] S = forest.predict(null);
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
         System.out.println(DoubleSeq.of(S));
+        
+        
     }
 
     public static void gaussianTree2(int k, int s) {
@@ -69,7 +74,10 @@ public class ExtendedIsolationForestTest {
 
         MatrixType M = MatrixType.of(data, m, n);
         long t0 = System.currentTimeMillis();
-        ExtendedIsolationForest.iForest forest = ExtendedIsolationForest.iForest.of(M, -1, 0, null);
+        ExtendedIsolationForest.iForest forest = ExtendedIsolationForest.iForest.builder()
+                .X(M)
+//                .extensionLevel(0)
+                .build();
         forest.fit(k, s);
         double[] S = forest.predict(null);
         long t1 = System.currentTimeMillis();
@@ -77,7 +85,7 @@ public class ExtendedIsolationForestTest {
     }
 
     public static void main(String[] args) {
-        Random rnd = new Random();
+        Random rnd = new Random(0);
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 10000; ++i) {
             ExtendedIsolationForest.sampleWithoutReplacementLegacy(90, 100, false, rnd);

@@ -5,7 +5,7 @@
  * Developed by: 	  Matias Carrasco Kind & Sahand Hariri
  *                 NCSA/UIUC
  */
-package jdplus.iforest;
+package jdplus.ml;
 
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.MatrixType;
@@ -21,6 +21,11 @@ import jdplus.data.DataBlock;
  */
 public class ExtendedIsolationForest {
 
+    public static enum Method {
+        Default,
+        Original
+    }
+
     static double innerProduct(double[] X1, double[] X2) {
         double result = 0.0;
         for (int i = 0; i < X1.length; i++) {
@@ -30,9 +35,9 @@ public class ExtendedIsolationForest {
     }
 
     static double cFactor(int N) {
-        double Nd = (double) N;
+        double Nd = (double) N, Ndc = Nd - 1;
         double result;
-        result = 2.0 * ((Math.log(Nd - 1.0) + EULER_CONSTANT) - (Nd - 1.0) / Nd);
+        result = 2.0 * ((Math.log(Ndc) + EULER_CONSTANT) - Ndc / Nd);
         return result;
 
     }
@@ -42,6 +47,7 @@ public class ExtendedIsolationForest {
      * k should be <= N
      * Source: https://www.gormanalysis.com/blog/random-numbers-in-cpp/
      */
+    @Deprecated
     static int[] sampleWithoutReplacementLegacy(int k, int N, boolean shuffle, Random rnd) {
 
         // Create an unordered set to store the samples
@@ -153,6 +159,7 @@ public class ExtendedIsolationForest {
         final int extensionLevel;
         final double limit;
         final Random rnd;
+        final Method method;
         int exnodes;
         Node root;
 
@@ -162,14 +169,14 @@ public class ExtendedIsolationForest {
             for (int i = 0; i < size; ++i) {
                 all.add(i);
             }
-            return build(X, all, extensionLevel, limit, rnd);
+            return build(X, all, extensionLevel, limit, rnd, Method.Default);
         }
 
-        static iTree build(MatrixType X, IntList selection, int extensionLevel, double limit, Random rnd) {
+        static iTree build(MatrixType X, IntList selection, int extensionLevel, double limit, Random rnd, Method method) {
             if (rnd == null) {
                 rnd = new Random();
             }
-            iTree tree = new iTree(X, extensionLevel, limit, rnd, 0, null);
+            iTree tree = new iTree(X, extensionLevel, limit, rnd, method, 0, null);
             tree.root = tree.addNode(selection, 0);
             return tree;
         }
@@ -182,6 +189,18 @@ public class ExtendedIsolationForest {
                 return Node.finalNode(size);
             }
 
+            switch (method) {
+                case Original:
+                    return addNode1(items, level);
+                default:
+                    return addNode0(items, level);
+            }
+
+        }
+
+        private Node addNode0(IntList items, int level) {
+            // final node
+            int size = items.size();
             int dim = X.getRowsCount();
             // point, normal
             double[] p = new double[dim], n = new double[dim];
@@ -210,7 +229,7 @@ public class ExtendedIsolationForest {
             DataBlock N = DataBlock.of(n), P = DataBlock.of(p);
             double pdotn = 0;
             int o = 0;
-            int omax=3*dim;
+            int omax = 3 * dim;
             do {
                 XL.clear();
                 XR.clear();
@@ -241,11 +260,69 @@ public class ExtendedIsolationForest {
             // Nodes with empty branches should be avoided, because they will bias
             // the length of the path. Impact on outliers detection is negligible
             // and will be ignored
-            
             Node left = addNode(XL, level + 1);
             Node right = addNode(XR, level + 1);
             return new Node(-1, items, level, n, p, pdotn, left, right);
         }
+
+        private Node addNode1(IntList items, int level) {
+            // final node
+            int size = items.size();
+            int dim = X.getRowsCount();
+            // point, normal
+            double[] p = new double[dim], n = new double[dim];
+            double[] xmin = new double[dim], xmax = new double[dim];
+            for (int i = 0; i < dim; ++i) {
+                double cmin = X.get(i, items.get(0)), cmax = cmin;
+                for (int j = 1; j < size; ++j) {
+                    double cur = X.get(i, items.get(j));
+                    if (cur < cmin) {
+                        cmin = cur;
+                    } else if (cur > cmax) {
+                        cmax = cur;
+                    }
+                }
+                xmin[i] = cmin;
+                xmax[i] = cmax;
+            }
+            // Pick a random point on splitting hyperplane 
+            // Pick a random normal vector according to specified extension level 
+            for (int i = 0; i < dim; i++) {
+                double r = rnd.nextDouble();
+                // No check for rounding issues
+                p[i] = xmin[i] + r * (xmax[i] - xmin[i]);
+            }
+            IntList XL = new IntList(size), XR = new IntList(size);
+            DataBlock N = DataBlock.of(n), P = DataBlock.of(p);
+            double pdotn = 0;
+            for (int i = 0; i < dim; i++) {
+                n[i] = rnd.nextGaussian();
+            }
+            int k = dim - extensionLevel - 1;
+            if (k > 0) {
+                int[] zeroidx = sampleWithoutReplacement(k, dim, false, rnd);
+                for (int i = 0; i < zeroidx.length; ++i) {
+                    n[zeroidx[i]] = 0;
+                }
+            }
+            // Implement splitting criterion 
+
+            pdotn = P.dot(N);
+            double q = pdotn;
+            items.forEach(i -> {
+                double innerprod = N.dot(X.column(i));
+                if (innerprod < q) {
+                    XL.add(i);
+                } else {
+                    XR.add(i);
+                }
+            });
+
+            Node left = addNode(XL, level + 1);
+            Node right = addNode(XR, level + 1);
+            return new Node(-1, items, level, n, p, pdotn, left, right);
+        }
+
     }
 
     @lombok.experimental.UtilityClass
@@ -275,23 +352,36 @@ public class ExtendedIsolationForest {
 
     @lombok.Data
     @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+    @lombok.Builder(builderClassName="Builder")
     public static class iForest {
 
+        @lombok.NonNull 
         final MatrixType X;
+        
         int extensionLevel;
         int limit;
         iTree[] trees;
         double c;
         final Random rnd;
+        final Method method;
 
-        public static iForest of(MatrixType X, int extensionLevel, int limit, Random rnd) {
-            if (extensionLevel == -1) {
-                extensionLevel = X.getRowsCount() - 1;
-            }
-            iForest forest = new iForest(X, extensionLevel, limit, null, 0, rnd == null ? new Random() : rnd);
-            return forest;
+        public static Builder builder(){
+            Builder builder=new Builder();
+            builder.extensionLevel=-1;
+            builder.method=Method.Default;
+            return builder;
         }
-
+        
+        public static class Builder{
+            public iForest build(){
+                if (X == null)
+                    throw new IllegalArgumentException();
+                Random brnd=rnd == null ? new Random() : rnd;
+                int ex=extensionLevel == -1 ? X.getRowsCount() - 1 : extensionLevel;
+                return new iForest(X, ex, limit, null, 0, brnd, method);
+            }
+        }
+        
         public void fit(int ntrees, int sampleSize) {
             int climit = limit <= 0 ? (int) Math.ceil(Math.log(sampleSize) / Math.log(2)) : limit;
             c = cFactor(sampleSize);
@@ -303,7 +393,7 @@ public class ExtendedIsolationForest {
                     for (int j = 0; j < sample.length; ++j) {
                         selection.add(sample[j]);
                     }
-                    trees[i] = iTree.build(X, selection, extensionLevel, climit, rnd);
+                    trees[i] = iTree.build(X, selection, extensionLevel, climit, rnd, method);
                 }
             } else {
                 for (int i = 0; i < ntrees; ++i) {
