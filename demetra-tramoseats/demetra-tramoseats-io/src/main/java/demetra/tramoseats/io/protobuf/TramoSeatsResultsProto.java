@@ -32,8 +32,8 @@ public class TramoSeatsResultsProto {
         TramoSeatsProtos.TramoSeatsResults.Builder builder = TramoSeatsProtos.TramoSeatsResults.newBuilder();
         builder.setPreprocessing(RegArimaEstimationProto.convert(rslts.getPreprocessing()))
                 .setDecomposition(SeatsResultsProto.convert(rslts.getDecomposition()))
-                .setFinal(SaProtosUtility.convert(rslts.getFinals()))
-                .setDiagnosticsSa(SaProtosUtility.of(rslts.getDiagnostics().getSaDiagnostics()));
+                .setFinal(SaProtosUtility.convert(rslts.getFinals()));
+//                .setDiagnosticsSa(SaProtosUtility.of(rslts.getDiagnostics().getSaDiagnostics()));
         return builder.build();
     }
 

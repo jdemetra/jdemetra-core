@@ -22,16 +22,18 @@ import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.diagnostics.OutOfSampleDiagnosticsConfiguration;
 import jdplus.regarima.diagnostics.OutOfSampleDiagnosticsFactory;
 import jdplus.sarima.SarimaModel;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author PALATEJ
  * @param <R>
  */
-public class SaOutOfSampleDiagnosticsFactory<R> extends OutOfSampleDiagnosticsFactory<R> implements SaDiagnosticsFactory<R>{
+public class SaOutOfSampleDiagnosticsFactory<R> extends OutOfSampleDiagnosticsFactory<R> implements SaDiagnosticsFactory<OutOfSampleDiagnosticsConfiguration, R>{
     
-    public SaOutOfSampleDiagnosticsFactory(OutOfSampleDiagnosticsConfiguration config, Function<R, RegArimaModel<SarimaModel> > extractor) {
-        super(config, extractor);
+    public SaOutOfSampleDiagnosticsFactory(boolean active, 
+            @NonNull OutOfSampleDiagnosticsConfiguration config, @NonNull Function<R, RegArimaModel<SarimaModel> > extractor) {
+        super(active, config, extractor);
     }
     
     @Override
@@ -44,4 +46,8 @@ public class SaOutOfSampleDiagnosticsFactory<R> extends OutOfSampleDiagnosticsFa
         return 300;
     }
    
+    @Override
+    public SaOutOfSampleDiagnosticsFactory<R> with(boolean active, OutOfSampleDiagnosticsConfiguration config){
+        return new SaOutOfSampleDiagnosticsFactory(active, config, extractor);
+    }
 }

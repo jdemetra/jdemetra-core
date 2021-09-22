@@ -9,6 +9,7 @@ import demetra.data.Data;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
+import demetra.tramo.RegressionSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import ec.satoolkit.tramoseats.TramoSeatsSpecification;
 import java.util.Map;
@@ -35,8 +36,26 @@ public class TramoSeatsKernelTest {
         assertTrue(diags != null);
 //        System.out.println(rslt.getDecomposition().getInitialComponents());
 //        System.out.println(rslt.getFinals());
-        Map<String, Class> dictionary = rslt.getDictionary();
-        dictionary.forEach((k, c)->{System.out.print(k);System.out.print('\t');System.out.println(c.getCanonicalName());});
+//        Map<String, Class> dictionary = rslt.getDictionary();
+//        dictionary.forEach((k, c)->{System.out.print(k);System.out.print('\t');System.out.println(c.getCanonicalName());});
+    }
+
+    @Test
+    public void testProd0() {
+        RegressionSpec.Builder rspec = TramoSeatsSpec.RSA0.getTramo().getRegression().toBuilder();
+        rspec.mean(null);
+        
+        TramoSeatsSpec nspec = TramoSeatsSpec.RSA0.toBuilder()
+                .tramo(TramoSeatsSpec.RSA0.getTramo().toBuilder()
+                        .regression(rspec.build()).build()).build();
+                
+        TramoSeatsKernel ts = TramoSeatsKernel.of(nspec, null);
+        ProcessingLog log = ProcessingLog.dummy();
+        TsData s = TsData.ofInternal(TsPeriod.monthly(2001, 1), Data.RETAIL_ALLHOME);
+        TramoSeatsResults rslt = ts.process(s, log);
+        assertTrue(rslt.getFinals() != null);
+        TramoSeatsDiagnostics diags = rslt.getDiagnostics();
+        assertTrue(diags != null);
     }
 
     @Test

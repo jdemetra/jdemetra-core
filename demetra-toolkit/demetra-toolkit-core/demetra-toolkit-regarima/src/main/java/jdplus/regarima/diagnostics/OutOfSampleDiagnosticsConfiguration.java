@@ -16,6 +16,7 @@
  */
 package jdplus.regarima.diagnostics;
 
+import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.design.LombokWorkaround;
 
 /**
@@ -26,8 +27,18 @@ import nbbrd.design.LombokWorkaround;
 @lombok.Builder
 public class OutOfSampleDiagnosticsConfiguration {
 
+    private static AtomicReference<OutOfSampleDiagnosticsConfiguration> DEFAULT
+            =new AtomicReference<OutOfSampleDiagnosticsConfiguration>(builder().build());
+    
+    public static void setDefault(OutOfSampleDiagnosticsConfiguration config){
+        DEFAULT.set(config);
+    }
+    
+    public static OutOfSampleDiagnosticsConfiguration getDefault(){
+        return DEFAULT.get();
+    }
+
     public static final double BAD = .01, UNC = .1, LENGTH = 1.5;
-    public static OutOfSampleDiagnosticsConfiguration DEFAULT = builder().build();
 
     private double badThreshold;
     private double uncertainThreshold;

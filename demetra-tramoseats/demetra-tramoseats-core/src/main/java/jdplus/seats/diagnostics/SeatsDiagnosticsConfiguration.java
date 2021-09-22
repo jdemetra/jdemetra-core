@@ -16,6 +16,7 @@
  */
 package jdplus.seats.diagnostics;
 
+import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.design.Development;
 
 /**
@@ -27,7 +28,16 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Release)
 public class SeatsDiagnosticsConfiguration {
 
-    public static SeatsDiagnosticsConfiguration DEFAULT = builder().build();
+   private static AtomicReference<SeatsDiagnosticsConfiguration> DEFAULT
+            =new AtomicReference<SeatsDiagnosticsConfiguration>(builder().build());
+    
+    public static void setDefault(SeatsDiagnosticsConfiguration config){
+        DEFAULT.set(config);
+    }
+    
+    public static SeatsDiagnosticsConfiguration getDefault(){
+        return DEFAULT.get();
+    }
 
     public static final double BAD = .005, UNC = .05;
 

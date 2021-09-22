@@ -16,6 +16,7 @@
  */
 package jdplus.sa.diagnostics;
 
+import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.design.Development;
 
 /**
@@ -27,7 +28,16 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Release)
 public class CoherenceDiagnosticsConfiguration {
 
-    public static CoherenceDiagnosticsConfiguration DEFAULT = builder().build();
+    private static AtomicReference<CoherenceDiagnosticsConfiguration> DEFAULT
+            =new AtomicReference<CoherenceDiagnosticsConfiguration>(builder().build());
+    
+    public static void setDefault(CoherenceDiagnosticsConfiguration config){
+        DEFAULT.set(config);
+    }
+    
+    public static CoherenceDiagnosticsConfiguration getDefault(){
+        return DEFAULT.get();
+    }
 
     public static final double TOL = 1e-3, ERR = .5, SEV = .1, BAD = .05, UNC = .01;
     public static final int SHORT = 7;

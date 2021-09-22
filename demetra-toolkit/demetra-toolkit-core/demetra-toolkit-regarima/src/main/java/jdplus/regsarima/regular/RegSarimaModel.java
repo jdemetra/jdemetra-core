@@ -76,7 +76,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
     public static RegSarimaModel of(ModelDescription description, RegArimaEstimation<SarimaModel> estimation, ProcessingLog log) {
 
         SarimaSpec arima = description.getArimaSpec();
-        int free = arima.freeParametersCount(), all = arima.parametersCount();
+        int free = arima.freeParametersCount();
         RegArimaModel<SarimaModel> model = estimation.getModel();
         ConcentratedLikelihoodWithMissing ll = estimation.getConcentratedLikelihood();
 
@@ -197,8 +197,11 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
                 .test(Residuals.KURT, niid.kurtosis())
                 .test(Residuals.DH, niid.normalityTest())
                 .test(Residuals.LB, niid.ljungBox())
+                .test(Residuals.BP, niid.boxPierce())
                 .test(Residuals.SEASLB, niid.seasonalLjungBox())
+                .test(Residuals.SEASBP, niid.seasonalBoxPierce())
                 .test(Residuals.LB2, niid.ljungBoxOnSquare())
+                .test(Residuals.BP2, niid.boxPierceOnSquare())
                 .test(Residuals.NRUNS, niid.runsNumber())
                 .test(Residuals.LRUNS, niid.runsLength())
                 .test(Residuals.NUDRUNS, niid.upAndDownRunsNumbber())
@@ -311,9 +314,16 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
         return data;
     }
 
+    /**
+     * Gets the effect of all the estimated regression variables
+     *
+     * @param domain
+     * @param test
+     * @return
+     */
     public TsData regressionEffect(TsDomain domain, Predicate<Variable> test) {
-        DataBlock all = DataBlock.make(domain.getLength());
         Variable[] variables = description.getVariables();
+        DataBlock all = DataBlock.make(domain.getLength());
         if (variables.length > 0) {
             DoubleSeqCursor cursor = estimation.getCoefficients().cursor();
             for (int i = 0; i < variables.length; ++i) {
@@ -340,9 +350,16 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
         return TsData.ofInternal(domain.getStartPeriod(), all.getStorage());
     }
 
+    /**
+     * Gets the effect of all pre-specified variables (including coefficient)
+     *
+     * @param domain
+     * @param test
+     * @return
+     */
     public TsData preadjustmentEffect(TsDomain domain, Predicate<Variable> test) {
-        DataBlock all = DataBlock.make(domain.getLength());
         Variable[] variables = description.getVariables();
+        DataBlock all = DataBlock.make(domain.getLength());
         if (variables.length > 0) {
             for (int i = 0; i < variables.length; ++i) {
                 Variable cur = variables[i];
@@ -361,11 +378,19 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
                         }
                     }
                 }
+
             }
         }
         return TsData.ofInternal(domain.getStartPeriod(), all.getStorage());
     }
 
+    /**
+     * Gets the effect of all the variables (pre-specified or estimated)
+     *
+     * @param domain
+     * @param test
+     * @return
+     */
     public TsData deterministicEffect(TsDomain domain, Predicate<Variable> test) {
         DataBlock all = DataBlock.make(domain.getLength());
         Variable[] variables = description.getVariables();
@@ -421,22 +446,8 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
         if (variables.length == 0) {
             return interp;
         }
-        DataBlock rslt = DataBlock.of(interp.getValues());
-        DoubleSeqCursor c = estimation.getCoefficients().cursor();
-        int j = 0;
-        if (isMeanEstimation()) {
-            c.skip(1);
-            ++j;
-        }
-        TsDomain all = interp.getDomain();
-        for (int i = j; i < variables.length; ++i) {
-            Matrix xcur = Regression.matrix(all, variables[i].getCore());
-            DataBlockIterator xcols = xcur.columnsIterator();
-            while (xcols.hasNext()) {
-                rslt.addAY(-c.getAndNext(), xcols.next());
-            }
-        }
-        return TsData.of(interp.getStart(), rslt);
+        TsData det = deterministicEffect(interp.getDomain(), v -> !(v.getCore() instanceof TrendConstant));
+        return TsData.subtract(interp, det);
     }
 
     /**

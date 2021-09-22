@@ -16,6 +16,7 @@
  */
 package jdplus.regarima.diagnostics;
 
+import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.design.LombokWorkaround;
 
 /**
@@ -26,11 +27,20 @@ import nbbrd.design.LombokWorkaround;
 @lombok.Value
 public class ResidualsDiagnosticsConfiguration {
 
+    private static AtomicReference<ResidualsDiagnosticsConfiguration> DEFAULT
+            =new AtomicReference<ResidualsDiagnosticsConfiguration>(builder().build());
+    
+    public static void setDefault(ResidualsDiagnosticsConfiguration config){
+        DEFAULT.set(config);
+    }
+    
+    public static ResidualsDiagnosticsConfiguration getDefault(){
+        return DEFAULT.get();
+    }
+
     public static final double NBAD = .01, NUNC = .1,
             TDSEV = .001, TDBAD = .01, TDUNC = .1,
             SSEV = .001, SBAD = .01, SUNC = .1;
-
-    public static final ResidualsDiagnosticsConfiguration DEFAULT = builder().build();
 
     private double badThresholdForNormality, uncertainThresholdForNormality;
     private double severeThresholdForTradingDaysPeak, badThresholdForTradingDaysPeak,

@@ -27,10 +27,10 @@ import jdplus.regsarima.regular.RegSarimaModel;
  * @author PALATEJ
  * @param <R>
  */
-public class SaResidualsDiagnosticsFactory<R> extends ResidualsDiagnosticsFactory<R> implements SaDiagnosticsFactory<R> {
+public class SaResidualsDiagnosticsFactory<R> extends ResidualsDiagnosticsFactory<R> implements SaDiagnosticsFactory<ResidualsDiagnosticsConfiguration, R> {
 
-    public SaResidualsDiagnosticsFactory(ResidualsDiagnosticsConfiguration config, Function<R, RegSarimaModel> extractor) {
-        super(config, extractor);
+    public SaResidualsDiagnosticsFactory(boolean active, ResidualsDiagnosticsConfiguration config, Function<R, RegSarimaModel> extractor) {
+        super(active, config, extractor);
     }
 
     @Override
@@ -43,4 +43,9 @@ public class SaResidualsDiagnosticsFactory<R> extends ResidualsDiagnosticsFactor
         return 0;
     }
 
+
+    @Override
+    public SaResidualsDiagnosticsFactory<R> with(boolean active, ResidualsDiagnosticsConfiguration config){
+        return new SaResidualsDiagnosticsFactory(active, config, extractor);
+    }
 }

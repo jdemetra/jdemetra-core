@@ -23,30 +23,37 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import jdplus.regsarima.regular.RegSarimaModel;
-import jdplus.regsarima.regular.RegSarimaModel;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author Kristof Bayens
  */
-public class OutliersDiagnosticsFactory<R> implements DiagnosticsFactory<R> {
+public class OutliersDiagnosticsFactory<R> implements DiagnosticsFactory<OutliersDiagnosticsConfiguration, R> {
     
     public static final String NUMBER = "number of outliers";
     public static final String NAME = "Outliers";
     public static final List<String> ALL = Collections.singletonList(NUMBER);
     private final OutliersDiagnosticsConfiguration config;
-    private final Function<R, RegSarimaModel> extractor;
-    private boolean enabled = true;
+    protected final Function<R, RegSarimaModel> extractor;
+    private final boolean active;
     
-    public OutliersDiagnosticsFactory(OutliersDiagnosticsConfiguration config, Function<R, RegSarimaModel> extractor) {
+    public OutliersDiagnosticsFactory(boolean active, @NonNull OutliersDiagnosticsConfiguration config, @NonNull Function<R, RegSarimaModel> extractor) {
         this.config = config;
         this.extractor = extractor;
+        this.active=active;
     }
     
+    @Override
     public OutliersDiagnosticsConfiguration getConfiguration() {
         return config;
     }
     
+    @Override
+    public OutliersDiagnosticsFactory<R> with(boolean active, OutliersDiagnosticsConfiguration config){
+        return new OutliersDiagnosticsFactory(active, config, extractor);
+    }
+
     @Override
     public String getName() {
         return NAME;        
@@ -58,13 +65,8 @@ public class OutliersDiagnosticsFactory<R> implements DiagnosticsFactory<R> {
     }
     
     @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-    
-    @Override
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public boolean isActive() {
+        return active;
     }
     
     @Override

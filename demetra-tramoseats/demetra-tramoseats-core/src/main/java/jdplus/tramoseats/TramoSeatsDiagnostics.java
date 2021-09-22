@@ -15,6 +15,7 @@ import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sa.StationaryVarianceComputer;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnostics;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
+import jdplus.sa.diagnostics.GenericSaDiagnostics;
 import jdplus.sa.diagnostics.ResidualTradingDaysDiagnostics;
 import jdplus.sa.diagnostics.ResidualTradingDaysDiagnosticsConfiguration;
 import jdplus.seats.SeatsResults;
@@ -27,7 +28,7 @@ import jdplus.seats.SeatsResults;
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class TramoSeatsDiagnostics {
 
-    private DefaultSaDiagnostics saDiagnostics;
+    private GenericSaDiagnostics genericDiagnostics;
 
     public static TramoSeatsDiagnostics of(RegSarimaModel preprocessing, SeatsResults srslts, SeriesDecomposition finals){
         DefaultSaDiagnostics.Builder sadiags = DefaultSaDiagnostics.builder()
@@ -35,21 +36,40 @@ public class TramoSeatsDiagnostics {
         boolean mul = preprocessing.getDescription().isLogTransformation();
         TsData sa = srslts.getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
         TsData i = srslts.getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.Value);
-        AdvancedResidualSeasonalityDiagnostics.Input input = new AdvancedResidualSeasonalityDiagnostics.Input(mul, sa, i);
-        AdvancedResidualSeasonalityDiagnostics rseas = AdvancedResidualSeasonalityDiagnostics.of(AdvancedResidualSeasonalityDiagnosticsConfiguration.DEFAULT, input);
-        if (rseas != null) {
-            sadiags.seasonalFTestOnI(rseas.FTestOnI())
-                    .seasonalFTestOnSa(rseas.FTestOnSa())
-                    .seasonalQsTestOnI(rseas.QsTestOnI())
-                    .seasonalQsTestOnSa(rseas.QsTestOnSa());
-        }
-        ResidualTradingDaysDiagnostics.Input tdinput = new ResidualTradingDaysDiagnostics.Input(mul, sa, i);
-        ResidualTradingDaysDiagnostics rtd = ResidualTradingDaysDiagnostics.of(ResidualTradingDaysDiagnosticsConfiguration.DEFAULT, tdinput);
-        if (rtd != null) {
-            sadiags.tdFTestOnI(rtd.FTestOnI())
-                    .tdFTestOnSa(rtd.FTestOnSa());
-        }
-        return new TramoSeatsDiagnostics(sadiags.build());
+        TsData t = srslts.getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.Value);
+        TsData s = srslts.getFinalComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Value);
+        TsData si = mul ? TsData.multiply(s, i) : TsData.add(s, i);
+//        AdvancedResidualSeasonalityDiagnostics.Input input = new AdvancedResidualSeasonalityDiagnostics.Input(mul, sa, i);
+//        AdvancedResidualSeasonalityDiagnostics rseas = AdvancedResidualSeasonalityDiagnostics.of(AdvancedResidualSeasonalityDiagnosticsConfiguration.DEFAULT, input);
+//        if (rseas != null) {
+//            sadiags.seasonalFTestOnI(rseas.FTestOnI())
+//                    .seasonalFTestOnSa(rseas.FTestOnSa())
+//                    .seasonalQsTestOnI(rseas.QsTestOnI())
+//                    .seasonalQsTestOnSa(rseas.QsTestOnSa());
+//        }
+//        
+//        ResidualTradingDaysDiagnostics.Input tdinput = new ResidualTradingDaysDiagnostics.Input(mul, sa, i);
+//        ResidualTradingDaysDiagnostics rtd = ResidualTradingDaysDiagnostics.of(ResidualTradingDaysDiagnosticsConfiguration.DEFAULT, tdinput);
+//        if (rtd != null) {
+//            sadiags.tdFTestOnI(rtd.FTestOnI())
+//                    .tdFTestOnSa(rtd.FTestOnSa());
+//        }
+        
+        GenericSaDiagnostics gsadiags = GenericSaDiagnostics.builder()
+                .mul(mul)
+                .regarima(preprocessing)
+                .lin(preprocessing.linearizedSeries())
+                .sa(sa)
+                .t(t)
+                .s(s)
+                .irr(i)
+                .si(si)
+                .res(preprocessing.fullResiduals())
+                .finals(finals)
+                .build();
+                
+        return new TramoSeatsDiagnostics(gsadiags);
+        
     }
 
     private static StationaryVarianceDecomposition varDecomposition(RegSarimaModel preprocessing, SeatsResults srslts) {

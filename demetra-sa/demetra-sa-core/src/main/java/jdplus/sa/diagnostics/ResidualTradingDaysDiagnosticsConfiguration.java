@@ -17,6 +17,7 @@
 package jdplus.sa.diagnostics;
 
 import demetra.DemetraException;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *
@@ -26,7 +27,16 @@ import demetra.DemetraException;
 @lombok.Builder
 public class ResidualTradingDaysDiagnosticsConfiguration {
 
-    public static final ResidualTradingDaysDiagnosticsConfiguration DEFAULT = builder().build();
+    private static AtomicReference<ResidualTradingDaysDiagnosticsConfiguration> DEFAULT
+            =new AtomicReference<ResidualTradingDaysDiagnosticsConfiguration>(builder().build());
+    
+    public static void setDefault(ResidualTradingDaysDiagnosticsConfiguration config){
+        DEFAULT.set(config);
+    }
+    
+    public static ResidualTradingDaysDiagnosticsConfiguration getDefault(){
+        return DEFAULT.get();
+    }
 
     public static final double SEV = .001, BAD = .01, UNC = .05;
     public static final int DEF_NYEARS = 8;

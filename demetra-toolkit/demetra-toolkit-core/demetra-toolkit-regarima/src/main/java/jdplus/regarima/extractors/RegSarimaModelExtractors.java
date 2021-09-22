@@ -24,6 +24,7 @@ import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.Ramp;
+import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.timeseries.regression.modelling.RegressionItem;
 import nbbrd.design.Development;
@@ -132,7 +133,7 @@ public class RegSarimaModelExtractors {
                     (source, i) -> source.getOutliersEffect(source.backcastDomain(i)));
 
             set(BasicInformationExtractor.concatenate(REGRESSION, MU), RegressionItem.class,
-                    source -> source.regressionItem(v -> v instanceof ILengthOfPeriodVariable, 0));
+                    source -> source.regressionItem(v -> v instanceof TrendConstant, 0));
             set(BasicInformationExtractor.concatenate(REGRESSION, LP), RegressionItem.class,
                     source -> source.regressionItem(v -> v instanceof ILengthOfPeriodVariable, 0));
             set(BasicInformationExtractor.concatenate(REGRESSION, EASTER), RegressionItem.class,
@@ -141,7 +142,7 @@ public class RegSarimaModelExtractors {
                     (source, i) -> source.regressionItem(v -> v instanceof IOutlier, i - 1));
             setArray(BasicInformationExtractor.concatenate(REGRESSION, TD), 1, 7, RegressionItem.class,
                     (source, i) -> source.regressionItem(v -> v instanceof ITradingDaysVariable, i - 1));
-            setArray(BasicInformationExtractor.concatenate(REGRESSION, RAMP), 1, RegressionItem.class,
+            setArray(BasicInformationExtractor.concatenate(REGRESSION, RAMP), 1, 31, RegressionItem.class,
                     (source, i) -> source.regressionItem(v -> v instanceof Ramp, i - 1));
 
             set(ModellingDictionary.EE, TsData.class, source -> source.getEasterEffect(null));

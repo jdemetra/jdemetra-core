@@ -16,6 +16,8 @@
  */
 package jdplus.sa.diagnostics;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  *
  * @author PALATEJ
@@ -24,7 +26,16 @@ package jdplus.sa.diagnostics;
 @lombok.Builder
 public class ResidualSeasonalityDiagnosticsConfiguration {
     
-    public static final ResidualSeasonalityDiagnosticsConfiguration DEFAULT=builder().build();
+    private static AtomicReference<ResidualSeasonalityDiagnosticsConfiguration> DEFAULT
+            =new AtomicReference<ResidualSeasonalityDiagnosticsConfiguration>(builder().build());
+    
+    public static void setDefault(ResidualSeasonalityDiagnosticsConfiguration config){
+        DEFAULT.set(config);
+    }
+    
+    public static ResidualSeasonalityDiagnosticsConfiguration getDefault(){
+        return DEFAULT.get();
+    }
 
     public static final double SASEV = 0.01, SABAD = 0.05, SAUNC = 0.1, ISEV = 0.01, IBAD = 0.05, IUNC = 0.1, SA3SEV = 0.01, SA3BAD = 0.05, SA3UNC = 0.1;
 

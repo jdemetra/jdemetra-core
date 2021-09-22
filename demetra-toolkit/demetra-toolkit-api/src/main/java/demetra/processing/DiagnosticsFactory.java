@@ -22,16 +22,17 @@ import java.util.List;
 /**
  *
  * @author Jean Palate
+ * @param <C> Configuration
  * @param <R> Original result
  */
-public interface DiagnosticsFactory <R>{
-
+public interface DiagnosticsFactory <C, R>{
+    
     String getName();
 
-    boolean isEnabled();
-
-    void setEnabled(boolean enabled);
+    boolean isActive();
     
+    C getConfiguration();
+
     /**
      * Get the list of the tests
      * @return A non empty list of tests.
@@ -39,4 +40,7 @@ public interface DiagnosticsFactory <R>{
     List<String> getTestDictionary();
     
     Diagnostics of(R results);
+    
+    DiagnosticsFactory<C, R> with(boolean active, C newConfig);
+    
 }

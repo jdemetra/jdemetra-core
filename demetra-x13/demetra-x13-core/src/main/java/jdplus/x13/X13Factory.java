@@ -8,7 +8,6 @@ package jdplus.x13;
 import demetra.modelling.TransformationType;
 import demetra.regarima.RegArimaSpec;
 import demetra.sa.DecompositionMode;
-import demetra.sa.EstimationPolicy;
 import demetra.sa.EstimationPolicyType;
 import demetra.sa.SaDiagnosticsFactory;
 import demetra.sa.SaProcessor;
@@ -20,6 +19,7 @@ import nbbrd.service.ServiceProvider;
 import demetra.sa.SaProcessingFactory;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -51,27 +51,28 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
 
     public static final X13Factory INSTANCE = new X13Factory();
 
-    private final List<SaDiagnosticsFactory<X13Results>> diagnostics = new CopyOnWriteArrayList<>();
-
-    public X13Factory() {
+    private final List<SaDiagnosticsFactory<?, X13Results>> diagnostics = new CopyOnWriteArrayList<>();
+    
+    public static List<SaDiagnosticsFactory<?, X13Results>> defaultDiagnostics(){
         CoherenceDiagnosticsFactory<X13Results> coherence
-                = new CoherenceDiagnosticsFactory<>(CoherenceDiagnosticsConfiguration.DEFAULT,
+                = new CoherenceDiagnosticsFactory<>(true, CoherenceDiagnosticsConfiguration.getDefault(),
                         (X13Results r) -> {
                             return new CoherenceDiagnostics.Input(r.getDecomposition().getMode(), r);
                         }
                 );
+        
         SaOutOfSampleDiagnosticsFactory<X13Results> outofsample
-                = new SaOutOfSampleDiagnosticsFactory<>(OutOfSampleDiagnosticsConfiguration.DEFAULT,
+                = new SaOutOfSampleDiagnosticsFactory<>(true, OutOfSampleDiagnosticsConfiguration.getDefault(),
                         r -> r.getPreprocessing().regarima());
         SaResidualsDiagnosticsFactory<X13Results> residuals
-                = new SaResidualsDiagnosticsFactory<>(ResidualsDiagnosticsConfiguration.DEFAULT,
+                = new SaResidualsDiagnosticsFactory<>(true, ResidualsDiagnosticsConfiguration.getDefault(),
                         r -> r.getPreprocessing());
         SaOutliersDiagnosticsFactory<X13Results> outliers
-                = new SaOutliersDiagnosticsFactory<>(OutliersDiagnosticsConfiguration.DEFAULT,
+                = new SaOutliersDiagnosticsFactory<>(true, OutliersDiagnosticsConfiguration.getDefault(),
                         r -> r.getPreprocessing());
-        MDiagnosticsFactory mstats = new MDiagnosticsFactory(MDiagnosticsConfiguration.DEFAULT);
+        MDiagnosticsFactory mstats = new MDiagnosticsFactory(true, MDiagnosticsConfiguration.getDefault());
         AdvancedResidualSeasonalityDiagnosticsFactory<X13Results> advancedResidualSeasonality
-                = new AdvancedResidualSeasonalityDiagnosticsFactory<>(AdvancedResidualSeasonalityDiagnosticsConfiguration.DEFAULT,
+                = new AdvancedResidualSeasonalityDiagnosticsFactory<>(true, AdvancedResidualSeasonalityDiagnosticsConfiguration.getDefault(),
                         (X13Results r) -> {
                             boolean mul = r.getPreprocessing().getDescription().isLogTransformation();
                             TsData sa = r.getDecomposition().getD11();
@@ -80,7 +81,7 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
                         }
                 );
         ResidualTradingDaysDiagnosticsFactory<X13Results> residualTradingDays
-                = new ResidualTradingDaysDiagnosticsFactory<>(ResidualTradingDaysDiagnosticsConfiguration.DEFAULT,
+                = new ResidualTradingDaysDiagnosticsFactory<>(true, ResidualTradingDaysDiagnosticsConfiguration.getDefault(),
                         (X13Results r) -> {
                             boolean mul = r.getPreprocessing().getDescription().isLogTransformation();
                             TsData sa = r.getDecomposition().getD11();
@@ -89,14 +90,19 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
                         }
                 );
 
-        diagnostics.add(coherence);
-        diagnostics.add(residuals);
-        diagnostics.add(outofsample);
-        diagnostics.add(outliers);
-        diagnostics.add(mstats);
-        diagnostics.add(advancedResidualSeasonality);
-        diagnostics.add(residualTradingDays);
+        List<SaDiagnosticsFactory<?, X13Results>> all = new ArrayList<>();
+        all.add(coherence);
+        all.add(residuals);
+        all.add(outofsample);
+        all.add(outliers);
+        all.add(mstats);
+        all.add(advancedResidualSeasonality);
+        all.add(residualTradingDays);
+        return all;
+    }
 
+    public X13Factory() {
+         diagnostics.addAll(defaultDiagnostics());
     }
 
     @Override
@@ -151,15 +157,15 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
     }
 
     @Override
-    public List<SaDiagnosticsFactory<X13Results>> diagnostics() {
+    public List<SaDiagnosticsFactory<?, X13Results>> diagnosticFactories() {
         return Collections.unmodifiableList(diagnostics);
     }
 
-    public void addDiagnostics(SaDiagnosticsFactory<X13Results> diag) {
+    public void addDiagnostics(SaDiagnosticsFactory<?, X13Results> diag) {
         diagnostics.add(diag);
     }
 
-    public void replaceDiagnostics(SaDiagnosticsFactory<X13Results> olddiag, SaDiagnosticsFactory<X13Results> newdiag) {
+    public void replaceDiagnostics(SaDiagnosticsFactory<?, X13Results> olddiag, SaDiagnosticsFactory<?, X13Results> newdiag) {
         int idx = diagnostics.indexOf(olddiag);
         if (idx < 0) {
             diagnostics.add(newdiag);
@@ -168,4 +174,9 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
         }
     }
 
+    @Override
+    public void resetDiagnosticFactories(List<SaDiagnosticsFactory<?, X13Results>> factories) {
+        diagnostics.clear();
+        diagnostics.addAll(factories);
+    }
 }

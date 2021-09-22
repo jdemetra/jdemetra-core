@@ -28,10 +28,11 @@ import nbbrd.service.ServiceDefinition;
 /**
  *
  * @author PALATEJ
- * @param <R> Output
+ * @param <C> Configuration
+ * @param <R> Result
  */
 @ServiceDefinition(quantifier = Quantifier.MULTIPLE, mutability = Mutability.NONE, singleton = true)
-public interface SaDiagnosticsFactory<R> extends DiagnosticsFactory<R> {
+public interface SaDiagnosticsFactory<C, R> extends DiagnosticsFactory<C, R> {
 
     public static enum Scope {
 
@@ -78,6 +79,17 @@ public interface SaDiagnosticsFactory<R> extends DiagnosticsFactory<R> {
             }
         }
     }
+    
+    @Override
+    SaDiagnosticsFactory<C, R> with(boolean active, C newConfig);
+    
+    default SaDiagnosticsFactory<C, R> activate(boolean active){
+        if (isActive() == active)
+            return this;
+        else
+            return with(active, getConfiguration());
+    }
+
 
     default void fill(List<ProcDiagnostic> tests, R sa, String category) {
         if (sa == null) {

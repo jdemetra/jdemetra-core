@@ -18,6 +18,8 @@
 
 package jdplus.regarima.diagnostics;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 
 /**
  *
@@ -26,10 +28,20 @@ package jdplus.regarima.diagnostics;
 @lombok.Value
 @lombok.Builder
 public class OutliersDiagnosticsConfiguration{
+
+    private static AtomicReference<OutliersDiagnosticsConfiguration> DEFAULT
+            =new AtomicReference<OutliersDiagnosticsConfiguration>(builder().build());
+    
+    public static void setDefault(OutliersDiagnosticsConfiguration config){
+        DEFAULT.set(config);
+    }
+    
+    public static OutliersDiagnosticsConfiguration getDefault(){
+        return DEFAULT.get();
+    }
+
     public static final double SEV = .10, BAD = .05, UNC = .03;
     
-    public static final OutliersDiagnosticsConfiguration DEFAULT=builder().build();
-
     private double severeThreshold;
     private double badThreshold;
     private double uncertainThreshold;

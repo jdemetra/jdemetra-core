@@ -27,8 +27,8 @@ import demetra.information.Explorable;
 /**
  *
  * @author PALATEJ
- * @param <I>
- * @param <R>
+ * @param <I> Specification
+ * @param <R> Output
  */
 @ServiceDefinition(quantifier = Quantifier.MULTIPLE, mutability = Mutability.NONE, singleton = true)
 public interface SaProcessingFactory<I extends SaSpecification, R extends Explorable> {
@@ -76,11 +76,13 @@ public interface SaProcessingFactory<I extends SaSpecification, R extends Explor
 
     SaSpecification refreshSpec(I currentSpec, I domainSpec, EstimationPolicyType policy, TsDomain frozen);
 
-    List<SaDiagnosticsFactory<R>> diagnostics();
+    List<SaDiagnosticsFactory<?, R> > diagnosticFactories();
+
+    void resetDiagnosticFactories(List<SaDiagnosticsFactory<?, R>> factories);
 
     default void fillDiagnostics(List<ProcDiagnostic> tests, R sa) {
-        for (SaDiagnosticsFactory<R> diag : diagnostics()) {
-            if (diag.isEnabled()) {
+        for (SaDiagnosticsFactory diag : diagnosticFactories()) {
+            if (diag.isActive()) {
                 diag.fill(tests, sa, diag.getName());
             }
         }
