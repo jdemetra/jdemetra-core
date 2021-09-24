@@ -17,14 +17,13 @@
 package demetra.tsp.text;
 
 import _test.XmlSamples;
-import demetra.bridge.FromFileBean;
 import demetra.bridge.FromFileLoader;
 import demetra.timeseries.TsCollection;
 import demetra.timeseries.TsMoniker;
 import demetra.timeseries.TsPeriod;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
-import ec.tss.tsproviders.IFileLoader;
+import demetra.tsprovider.tck.FileLoaderAssert;
 import ec.tss.tsproviders.IFileLoaderAssert;
 import org.junit.Test;
 
@@ -50,8 +49,7 @@ public class XmlProviderTest {
 
     @Test
     public void testTspCompliance() {
-        IFileLoaderAssert.Sampler<IFileLoader> sampler = o -> FromFileBean.fromFileBean(XmlSamples.INSEE1.getBean3((XmlProvider) ((FromFileLoader) o).getDelegate()));
-        IFileLoaderAssert.assertCompliance(() -> FromFileLoader.fromFileLoader(XmlSamples.INSEE1.getProvider3()), sampler);
+        FileLoaderAssert.assertCompliance(XmlSamples.INSEE1::getProvider3, XmlSamples.INSEE1::getBean3);
     }
 
     //    @Test

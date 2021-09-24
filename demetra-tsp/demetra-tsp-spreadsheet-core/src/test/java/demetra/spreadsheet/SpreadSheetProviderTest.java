@@ -17,7 +17,6 @@
 package demetra.spreadsheet;
 
 import _test.SpreadSheetSamples;
-import demetra.bridge.FromFileBean;
 import demetra.bridge.FromFileLoader;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsInformationType;
@@ -25,7 +24,7 @@ import demetra.timeseries.TsMoniker;
 import demetra.timeseries.TsPeriod;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
-import ec.tss.tsproviders.IFileLoader;
+import demetra.tsprovider.tck.FileLoaderAssert;
 import ec.tss.tsproviders.IFileLoaderAssert;
 import internal.spreadsheet.SpreadSheetSupport;
 import org.junit.Test;
@@ -50,8 +49,7 @@ public class SpreadSheetProviderTest {
 
     @Test
     public void testTspCompliance() {
-        IFileLoaderAssert.Sampler<IFileLoader> sampler = o -> FromFileBean.fromFileBean(SpreadSheetSamples.TOP5.getBean3((SpreadSheetProvider) ((FromFileLoader) o).getDelegate()));
-        IFileLoaderAssert.assertCompliance(() -> FromFileLoader.fromFileLoader(SpreadSheetSamples.TOP5.getProvider3()), sampler);
+        FileLoaderAssert.assertCompliance(SpreadSheetSamples.TOP5::getProvider3, SpreadSheetSamples.TOP5::getBean3);
     }
 
     @Test

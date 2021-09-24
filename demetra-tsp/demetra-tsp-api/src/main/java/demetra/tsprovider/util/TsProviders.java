@@ -46,6 +46,15 @@ import java.util.function.Function;
 @lombok.experimental.UtilityClass
 public class TsProviders {
 
+    public @NonNull TreeTraverser<?> getTreeTraverser(@NonNull DataSourceProvider provider, @NonNull DataSource dataSource) {
+        IOFunction<Object, Iterable<?>> children = o ->
+                o instanceof DataSource
+                        ? provider.children((DataSource) o)
+                        : ((DataSet) o).getKind() == DataSet.Kind.COLLECTION ? provider.children((DataSet) o) : Collections.emptyList();
+        
+        return TreeTraverser.of(dataSource, children.asUnchecked());
+    }
+
     public void prettyPrintTree(
             @NonNull DataSourceProvider provider,
             @NonNull DataSource dataSource,
@@ -57,13 +66,8 @@ public class TsProviders {
                 ? o -> o instanceof DataSource ? provider.getDisplayName((DataSource) o) : " " + provider.getDisplayNodeName((DataSet) o)
                 : o -> o instanceof DataSource ? provider.toMoniker((DataSource) o).getId() : " " + provider.toMoniker((DataSet) o).getId();
 
-        IOFunction<Object, Iterable<?>> children = o ->
-                o instanceof DataSource
-                        ? provider.children((DataSource) o)
-                        : ((DataSet) o).getKind() == DataSet.Kind.COLLECTION ? provider.children((DataSet) o) : Collections.emptyList();
-
         try {
-            TreeTraverser.of(dataSource, children.asUnchecked()).prettyPrintTo(printStream, maxLevel, formatter);
+            getTreeTraverser(provider, dataSource).prettyPrintTo(printStream, maxLevel, formatter);
         } catch (UncheckedIOException ex) {
             throw ex.getCause();
         }

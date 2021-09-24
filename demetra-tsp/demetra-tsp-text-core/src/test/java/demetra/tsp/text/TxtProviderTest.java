@@ -17,7 +17,6 @@
 package demetra.tsp.text;
 
 import _test.TxtSamples;
-import demetra.bridge.FromFileBean;
 import demetra.bridge.FromFileLoader;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsInformationType;
@@ -25,7 +24,7 @@ import demetra.timeseries.TsMoniker;
 import demetra.timeseries.TsPeriod;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
-import ec.tss.tsproviders.IFileLoader;
+import demetra.tsprovider.tck.FileLoaderAssert;
 import ec.tss.tsproviders.IFileLoaderAssert;
 import org.junit.Test;
 
@@ -49,11 +48,10 @@ public class TxtProviderTest {
 
     @Test
     public void testTspCompliance() {
-        IFileLoaderAssert.Sampler<IFileLoader> sampler = o -> FromFileBean.fromFileBean(TxtSamples.INSEE1.getBean3((TxtProvider) ((FromFileLoader) o).getDelegate()));
-        IFileLoaderAssert.assertCompliance(() -> FromFileLoader.fromFileLoader(TxtSamples.INSEE1.getProvider3()), sampler);
+        FileLoaderAssert.assertCompliance(TxtSamples.INSEE1::getProvider3, TxtSamples.INSEE1::getBean3);
     }
 
-//    @Test
+    //    @Test
     public void testMonikerLegacy() {
         String legacy = "Insee1.txt@S854655";
 

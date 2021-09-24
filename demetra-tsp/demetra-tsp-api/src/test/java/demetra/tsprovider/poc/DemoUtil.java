@@ -21,16 +21,13 @@ import demetra.timeseries.*;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.DataSourceProvider;
-import demetra.tsprovider.util.TsProviders;
 import demetra.tsprovider.util.MultiLineNameUtil;
-import demetra.util.TreeTraverser;
-import nbbrd.io.function.IOFunction;
+import demetra.tsprovider.util.TsProviders;
 
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -131,14 +128,8 @@ class DemoUtil {
         CHILDREN {
             @Override
             Optional<Ts> getFirst(DataSourceProvider provider, DataSource dataSource) throws IOException {
-                IOFunction<Object, Iterable<? extends Object>> children = o -> {
-                    return o instanceof DataSource
-                            ? provider.children((DataSource) o)
-                            : ((DataSet) o).getKind() == DataSet.Kind.COLLECTION ? provider.children((DataSet) o) : Collections.emptyList();
-                };
-
-                Optional<DataSet> result = TreeTraverser
-                        .of(dataSource, children.asUnchecked())
+                Optional<DataSet> result = TsProviders
+                        .getTreeTraverser(provider, dataSource)
                         .depthFirstStream()
                         .filter(DataSet.class::isInstance)
                         .map(DataSet.class::cast)

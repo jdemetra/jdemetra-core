@@ -22,7 +22,7 @@ import demetra.timeseries.TsMoniker;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.DataSourceProvider;
-import ec.tss.tsproviders.IDataSourceLoader;
+import demetra.tsprovider.tck.DataSourceLoaderAssert;
 import ec.tss.tsproviders.IDataSourceLoaderAssert;
 import org.junit.Test;
 
@@ -44,8 +44,7 @@ public class JdbcProviderTest {
 
     @Test
     public void testTspCompliance() {
-        IDataSourceLoaderAssert.Sampler<IDataSourceLoader> sampler = o -> JdbcSamples.TABLE2.getBean3((JdbcProvider) ((FromDataSourceLoader)o).getDelegate());
-        IDataSourceLoaderAssert.assertCompliance(() -> FromDataSourceLoader.fromDataSourceLoader(JdbcSamples.TABLE2.getProvider3()), sampler);
+        DataSourceLoaderAssert.assertCompliance(JdbcSamples.TABLE2::getProvider3, JdbcSamples.TABLE2::getBean3);
     }
 
     @Test
