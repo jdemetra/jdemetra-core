@@ -17,7 +17,7 @@
 package demetra.tsp.text;
 
 import _test.TxtSamples;
-import demetra.bridge.FromFileLoader;
+import demetra.bridge.ToFileLoader;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsInformationType;
 import demetra.timeseries.TsMoniker;
@@ -25,7 +25,6 @@ import demetra.timeseries.TsPeriod;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.tck.FileLoaderAssert;
-import ec.tss.tsproviders.IFileLoaderAssert;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -40,9 +39,9 @@ public class TxtProviderTest {
     @Test
     public void testEquivalence() throws IOException {
         try (TxtProvider p = TxtSamples.INSEE1.getProvider3()) {
-            IFileLoaderAssert
-                    .assertThat(FromFileLoader.fromFileLoader(p))
-                    .isEquivalentTo(TxtSamples.INSEE1.getProvider2(), o -> o.encodeBean(TxtSamples.INSEE1.getBean2(o)));
+            FileLoaderAssert
+                    .assertThat(ToFileLoader.toFileLoader(TxtSamples.INSEE1.getProvider2()))
+                    .isEquivalentTo(p, o -> o.encodeBean(TxtSamples.INSEE1.getBean3(o)));
         }
     }
 

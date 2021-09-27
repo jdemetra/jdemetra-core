@@ -38,11 +38,5 @@
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tck</artifactId>
-            <version>${jd2.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>  
+    </dependencies>
 </project>

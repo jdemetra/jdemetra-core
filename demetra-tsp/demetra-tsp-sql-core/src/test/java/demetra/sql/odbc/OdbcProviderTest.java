@@ -17,13 +17,12 @@
 package demetra.sql.odbc;
 
 import _test.OdbcSamples;
-import demetra.bridge.FromDataSourceLoader;
+import demetra.bridge.ToDataSourceLoader;
 import demetra.timeseries.TsMoniker;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.DataSourceProvider;
 import demetra.tsprovider.tck.DataSourceLoaderAssert;
-import ec.tss.tsproviders.IDataSourceLoaderAssert;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -37,9 +36,11 @@ public class OdbcProviderTest {
 
     @Test
     public void testEquivalence() throws IOException {
-        IDataSourceLoaderAssert
-                .assertThat(FromDataSourceLoader.fromDataSourceLoader(OdbcSamples.TABLE2.getProvider3()))
-                .isEquivalentTo(OdbcSamples.TABLE2.getProvider2(), o -> o.encodeBean(OdbcSamples.TABLE2.getBean2(o)));
+        try (OdbcProvider p = OdbcSamples.TABLE2.getProvider3()) {
+            DataSourceLoaderAssert
+                    .assertThat(ToDataSourceLoader.toDataSourceLoader(OdbcSamples.TABLE2.getProvider2()))
+                    .isEquivalentTo(p, o -> o.encodeBean(OdbcSamples.TABLE2.getBean3(o)));
+        }
     }
 
     @Test

@@ -73,6 +73,18 @@
             <artifactId>demetra-x13-io</artifactId>
             <version>${jd3-x13.version}</version>            
         </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+
+        <!-- runtime only -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- test only -->
         <dependency>
             <groupId>junit</groupId>
@@ -103,16 +115,9 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-xml</artifactId>
-            <version>0.0.11</version>
-            <type>jar</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.netbeans.api</groupId>
-                    <artifactId>org-openide-util-lookup</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>${java-io-util.version}</version>
         </dependency>
     </dependencies>  
 </project>

@@ -19,8 +19,8 @@ package _test;
 import demetra.demo.ProviderResources;
 import demetra.tsp.text.XmlBean;
 import demetra.tsp.text.XmlProvider;
+import demetra.tsprovider.tck.FileLoaderAssert;
 import ec.tss.tsproviders.IFileBean;
-import ec.tss.tsproviders.IFileLoaderAssert;
 
 import java.io.File;
 
@@ -31,7 +31,7 @@ public enum XmlSamples implements ProviderResources.FileLoader2<ec.tss.tsprovide
 
     INSEE1;
 
-    private final File file = IFileLoaderAssert.urlAsFile(XmlSamples.class.getResource("/Insee.xml"));
+    private final File file = FileLoaderAssert.urlAsFile(XmlSamples.class.getResource("/Insee.xml"));
 
     @Override
     public IFileBean getBean2(ec.tss.tsproviders.common.xml.XmlProvider provider) {

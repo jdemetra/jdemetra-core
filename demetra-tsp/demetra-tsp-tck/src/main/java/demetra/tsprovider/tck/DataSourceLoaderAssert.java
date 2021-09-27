@@ -374,7 +374,8 @@ public class DataSourceLoaderAssert extends AbstractAssert<DataSourceLoaderAsser
         try (T p = factory.get()) {
             s.assertThat(p.newBean())
                     .isNotNull()
-                    .isEqualToComparingFieldByField(p.newBean());
+                    .usingRecursiveComparison()
+                    .isEqualTo(p.newBean());
             s.assertThat(p.encodeBean(p.newBean())).isNotNull();
         }
     }
