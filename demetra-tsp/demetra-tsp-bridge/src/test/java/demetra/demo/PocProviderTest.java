@@ -16,12 +16,13 @@
  */
 package demetra.demo;
 
-import demetra.bridge.FromDataSourceProvider;
 import demetra.timeseries.TsCollection;
 import demetra.timeseries.TsInformationType;
 import demetra.timeseries.TsMoniker;
+import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
-import ec.tss.tsproviders.IDataSourceProviderAssert;
+import demetra.tsprovider.DataSourceProvider;
+import demetra.tsprovider.tck.DataSourceProviderAssert;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -38,14 +39,14 @@ public class PocProviderTest {
 
     @Test
     public void testTspCompliance() {
-        IDataSourceProviderAssert.Sampler<FromDataSourceProvider> sampler = new IDataSourceProviderAssert.Sampler<FromDataSourceProvider>() {
+        DataSourceProviderAssert.Sampler<DataSourceProvider> sampler = new DataSourceProviderAssert.Sampler<DataSourceProvider>() {
             @Override
-            public Optional<ec.tss.tsproviders.DataSource> dataSource(FromDataSourceProvider p) {
+            public Optional<DataSource> dataSource(DataSourceProvider p) {
                 return p.getDataSources().stream().findFirst();
             }
 
             @Override
-            public Optional<ec.tss.tsproviders.DataSet> tsDataSet(FromDataSourceProvider p) {
+            public Optional<DataSet> tsDataSet(DataSourceProvider p) {
                 return dataSource(p).map(o -> {
                     try {
                         return p.children(o).get(0);
@@ -57,7 +58,7 @@ public class PocProviderTest {
             }
 
             @Override
-            public Optional<ec.tss.tsproviders.DataSet> tsCollectionDataSet(FromDataSourceProvider p) {
+            public Optional<DataSet> tsCollectionDataSet(DataSourceProvider p) {
                 return dataSource(p).map(o -> {
                     try {
                         return p.children(o).get(0);
@@ -68,7 +69,7 @@ public class PocProviderTest {
                 });
             }
         };
-        IDataSourceProviderAssert.assertCompliance(() -> FromDataSourceProvider.fromDataSourceProvider(new PocProvider()), sampler);
+        DataSourceProviderAssert.assertCompliance(() -> new PocProvider(), sampler);
     }
 
     @Test

@@ -1,17 +1,17 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.tss.tsproviders.sdmx;
@@ -22,12 +22,13 @@ import ec.tss.tsproviders.IFileBean;
 import ec.tss.tsproviders.sdmx.engine.CunningPlanFactory;
 import ec.tss.tsproviders.utils.IParam;
 import ec.tss.tsproviders.utils.Params;
+
 import java.io.File;
 
 /**
- *
  * @author Philippe Charles
  */
+@lombok.Data
 public class SdmxBean implements IFileBean, IDataSourceBean {
 
     static final IParam<DataSource, File> X_FILE = Params.onFile(new File(""), "url");
@@ -49,34 +50,6 @@ public class SdmxBean implements IFileBean, IDataSourceBean {
         this.factory = X_FACTORY.get(dataSource);
         this.titleAttribute = X_TITLE_ATTRIBUTE.get(dataSource);
     }
-
-    //<editor-fold defaultstate="collapsed" desc="Getters/Setters">
-    @Override
-    public File getFile() {
-        return file;
-    }
-
-    @Override
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public String getFactory() {
-        return factory;
-    }
-
-    public void setFactory(String factory) {
-        this.factory = factory;
-    }
-
-    public String getTitleAttribute() {
-        return titleAttribute;
-    }
-
-    public void setTitleAttribute(String titleAttribute) {
-        this.titleAttribute = titleAttribute;
-    }
-    //</editor-fold>
 
     @Override
     public DataSource toDataSource(String providerName, String version) {

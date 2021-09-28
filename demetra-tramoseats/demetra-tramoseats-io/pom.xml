@@ -37,6 +37,18 @@
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-sa-io</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+
+        <!-- runtime only -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- test only -->
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>

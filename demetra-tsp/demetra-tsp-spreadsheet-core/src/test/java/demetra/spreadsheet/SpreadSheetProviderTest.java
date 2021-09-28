@@ -17,16 +17,14 @@
 package demetra.spreadsheet;
 
 import _test.SpreadSheetSamples;
-import demetra.bridge.FromFileBean;
-import demetra.bridge.FromFileLoader;
+import demetra.bridge.ToFileLoader;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsInformationType;
 import demetra.timeseries.TsMoniker;
 import demetra.timeseries.TsPeriod;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
-import ec.tss.tsproviders.IFileLoader;
-import ec.tss.tsproviders.IFileLoaderAssert;
+import demetra.tsprovider.tck.FileLoaderAssert;
 import internal.spreadsheet.SpreadSheetSupport;
 import org.junit.Test;
 
@@ -42,16 +40,15 @@ public class SpreadSheetProviderTest {
     @Test
     public void testEquivalence() throws IOException {
         try (SpreadSheetProvider p = SpreadSheetSamples.TOP5.getProvider3()) {
-            IFileLoaderAssert
-                    .assertThat(FromFileLoader.fromFileLoader(p))
-                    .isEquivalentTo(SpreadSheetSamples.TOP5.getProvider2(), o -> o.encodeBean(SpreadSheetSamples.TOP5.getBean2(o)));
+            FileLoaderAssert
+                    .assertThat(ToFileLoader.toFileLoader(SpreadSheetSamples.TOP5.getProvider2()))
+                    .isEquivalentTo(p, o -> o.encodeBean(SpreadSheetSamples.TOP5.getBean3(o)));
         }
     }
 
     @Test
     public void testTspCompliance() {
-        IFileLoaderAssert.Sampler<IFileLoader> sampler = o -> FromFileBean.fromFileBean(SpreadSheetSamples.TOP5.getBean3((SpreadSheetProvider) ((FromFileLoader) o).getDelegate()));
-        IFileLoaderAssert.assertCompliance(() -> FromFileLoader.fromFileLoader(SpreadSheetSamples.TOP5.getProvider3()), sampler);
+        FileLoaderAssert.assertCompliance(SpreadSheetSamples.TOP5::getProvider3, SpreadSheetSamples.TOP5::getBean3);
     }
 
     @Test

@@ -29,6 +29,18 @@
             <artifactId>demetra-toolkit-regarima</artifactId>
         </dependency>
         <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+
+        <!-- runtime only -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-data-tests</artifactId>
             <scope>test</scope>

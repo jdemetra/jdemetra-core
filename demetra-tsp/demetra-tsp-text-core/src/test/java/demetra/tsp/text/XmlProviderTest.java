@@ -17,15 +17,13 @@
 package demetra.tsp.text;
 
 import _test.XmlSamples;
-import demetra.bridge.FromFileBean;
-import demetra.bridge.FromFileLoader;
+import demetra.bridge.ToFileLoader;
 import demetra.timeseries.TsCollection;
 import demetra.timeseries.TsMoniker;
 import demetra.timeseries.TsPeriod;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
-import ec.tss.tsproviders.IFileLoader;
-import ec.tss.tsproviders.IFileLoaderAssert;
+import demetra.tsprovider.tck.FileLoaderAssert;
 import org.junit.Test;
 
 import java.io.File;
@@ -42,16 +40,15 @@ public class XmlProviderTest {
     @Test
     public void testEquivalence() throws IOException {
         try (XmlProvider p = XmlSamples.INSEE1.getProvider3()) {
-            IFileLoaderAssert
-                    .assertThat(FromFileLoader.fromFileLoader(p))
-                    .isEquivalentTo(XmlSamples.INSEE1.getProvider2(), o -> o.encodeBean(XmlSamples.INSEE1.getBean2(o)));
+            FileLoaderAssert
+                    .assertThat(ToFileLoader.toFileLoader(XmlSamples.INSEE1.getProvider2()))
+                    .isEquivalentTo(p, o -> o.encodeBean(XmlSamples.INSEE1.getBean3(o)));
         }
     }
 
     @Test
     public void testTspCompliance() {
-        IFileLoaderAssert.Sampler<IFileLoader> sampler = o -> FromFileBean.fromFileBean(XmlSamples.INSEE1.getBean3((XmlProvider) ((FromFileLoader) o).getDelegate()));
-        IFileLoaderAssert.assertCompliance(() -> FromFileLoader.fromFileLoader(XmlSamples.INSEE1.getProvider3()), sampler);
+        FileLoaderAssert.assertCompliance(XmlSamples.INSEE1::getProvider3, XmlSamples.INSEE1::getBean3);
     }
 
     //    @Test

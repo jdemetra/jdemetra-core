@@ -44,11 +44,28 @@
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-tsp-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.nbbrd.java-io-util</groupId>
+            <artifactId>java-io-xml</artifactId>
+            <version>${java-io-util.version}</version>
+        </dependency>
+
+        <!-- runtime only -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- test only -->
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tck</artifactId>
-            <version>${jd2.version}</version>
+            <artifactId>demetra-tsp-tck</artifactId>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

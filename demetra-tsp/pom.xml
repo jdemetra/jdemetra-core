@@ -15,6 +15,7 @@
     
     <modules>
         <module>demetra-tsp-api</module>
+        <module>demetra-tsp-tck</module>
         <module>demetra-tsp-bridge</module>
         <module>demetra-tsp-legacy-core</module>
         <module>demetra-tsp-spreadsheet-core</module>

@@ -19,12 +19,10 @@ package _test;
 import demetra.demo.ProviderResources;
 import demetra.tsp.text.TxtBean;
 import demetra.tsp.text.TxtProvider;
-import demetra.tsprovider.util.ObsFormat;
+import demetra.tsprovider.tck.FileLoaderAssert;
 import ec.tss.tsproviders.IFileBean;
-import ec.tss.tsproviders.IFileLoaderAssert;
 
 import java.io.File;
-import java.util.Locale;
 
 /**
  * @author Philippe Charles
@@ -33,7 +31,7 @@ public enum TxtSamples implements ProviderResources.FileLoader2<ec.tss.tsprovide
 
     INSEE1;
 
-    private final File file = IFileLoaderAssert.urlAsFile(TxtSamples.class.getResource("/Insee1.txt"));
+    private final File file = FileLoaderAssert.urlAsFile(TxtSamples.class.getResource("/Insee1.txt"));
 
     @Override
     public IFileBean getBean2(ec.tss.tsproviders.common.txt.TxtProvider provider) {
