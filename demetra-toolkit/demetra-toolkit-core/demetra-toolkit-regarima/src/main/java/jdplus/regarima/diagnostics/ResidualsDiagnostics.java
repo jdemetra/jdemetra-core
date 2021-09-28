@@ -17,7 +17,6 @@
 package jdplus.regarima.diagnostics;
 
 import jdplus.data.analysis.Periodogram;
-import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.regsarima.regular.RegSarimaModel;
@@ -27,6 +26,7 @@ import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
 import java.util.Collections;
+import demetra.processing.Diagnostics;
 
 /**
  *
@@ -71,14 +71,7 @@ public class ResidualsDiagnostics implements Diagnostics {
             
             DoubleSeq res = regarima.fullResiduals().getValues();
             period = regarima.getAnnualFrequency();
-            stats = NiidTests.builder()
-                    .data(res)
-                    .period(period)
-                    .k(RegArimaUtility.defaultLjungBoxLength(period))
-                    .ks(2)
-                    .seasonal(period > 1)
-                    .hyperParametersCount(regarima.freeArimaParametersCount())
-                    .build();
+            stats = RegArimaDiagnostics.residualTests(res, period, regarima.freeArimaParametersCount());
             periodogram = Periodogram.of(res);
             return true;
         } catch (Exception ex) {

@@ -27,6 +27,12 @@ import demetra.data.Doubles;
 @Development(status = Development.Status.Release)
 @lombok.EqualsAndHashCode
 class LightMatrix implements MatrixType {
+    
+    private static final LightMatrix EMPTY = new LightMatrix(new double[0], 0, 0);
+    
+    public static LightMatrix empty(){
+        return EMPTY;
+    }
 
     private final double[] storage;
     private final int nrows, ncolumns;

@@ -17,14 +17,14 @@
 package jdplus.regarima.diagnostics;
 
 import jdplus.regsarima.regular.RegSarimaModel;
-import demetra.processing.DiagnosticsFactory;
-import demetra.processing.Diagnostics;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.processing.DiagnosticsFactory;
+import demetra.processing.Diagnostics;
 
 /**
  *

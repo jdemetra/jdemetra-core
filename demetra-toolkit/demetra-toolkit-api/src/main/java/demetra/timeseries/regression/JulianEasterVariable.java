@@ -25,7 +25,7 @@ import nbbrd.design.Development;
  */
 @lombok.Value
 @Development(status=Development.Status.Release)
-public class JulianEasterVariable implements IEasterVariable{
+public class JulianEasterVariable implements IEasterVariable, ISystemVariable{
     private int duration;
     private boolean gregorianDates;
     

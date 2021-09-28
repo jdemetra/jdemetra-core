@@ -16,14 +16,14 @@
  */
 package demetra.sa;
 
-import demetra.processing.Diagnostics;
-import demetra.processing.DiagnosticsFactory;
 import demetra.processing.ProcDiagnostic;
 import java.util.Comparator;
 import java.util.List;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
+import demetra.processing.DiagnosticsFactory;
+import demetra.processing.Diagnostics;
 
 /**
  *

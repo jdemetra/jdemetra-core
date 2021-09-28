@@ -28,11 +28,12 @@ import jdplus.seats.SeatsResults;
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class TramoSeatsDiagnostics {
 
+    private StationaryVarianceDecomposition varianceDecomposition;
     private GenericSaDiagnostics genericDiagnostics;
 
     public static TramoSeatsDiagnostics of(RegSarimaModel preprocessing, SeatsResults srslts, SeriesDecomposition finals){
-        DefaultSaDiagnostics.Builder sadiags = DefaultSaDiagnostics.builder()
-                .varianceDecomposition(varDecomposition(preprocessing, srslts));
+//        DefaultSaDiagnostics.Builder sadiags = DefaultSaDiagnostics.builder()
+//                .varianceDecomposition(varDecomposition(preprocessing, srslts));
         boolean mul = preprocessing.getDescription().isLogTransformation();
         TsData sa = srslts.getFinalComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
         TsData i = srslts.getFinalComponents().getSeries(ComponentType.Irregular, ComponentInformation.Value);
@@ -65,10 +66,9 @@ public class TramoSeatsDiagnostics {
                 .irr(i)
                 .si(si)
                 .res(preprocessing.fullResiduals())
-                .finals(finals)
                 .build();
                 
-        return new TramoSeatsDiagnostics(gsadiags);
+        return new TramoSeatsDiagnostics(varDecomposition(preprocessing, srslts), gsadiags);
         
     }
 

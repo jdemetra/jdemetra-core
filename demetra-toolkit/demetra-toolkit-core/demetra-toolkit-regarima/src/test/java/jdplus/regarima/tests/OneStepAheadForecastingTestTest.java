@@ -26,8 +26,7 @@ public class OneStepAheadForecastingTestTest {
     public void testProd() {
         RegArimaModel<SarimaModel> model = RegSarimaComputerTest.prodAirline();
         RegSarimaComputer processor = RegSarimaComputer.builder().build();
-        OneStepAheadForecastingTest<SarimaModel> os = new OneStepAheadForecastingTest<>(processor, 18);
-        os.test(model);
+        OneStepAheadForecastingTest os = OneStepAheadForecastingTest.of(model, processor, 18);
 //        System.out.println(os.inSampleMeanTest());
 //        System.out.println(os.outOfSampleMeanTest());
 //        System.out.println(os.sameVarianceTest());

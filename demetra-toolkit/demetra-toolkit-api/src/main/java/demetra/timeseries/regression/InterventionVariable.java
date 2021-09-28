@@ -33,7 +33,7 @@ import java.util.List;
 @lombok.Value
 @lombok.AllArgsConstructor(access=lombok.AccessLevel.PRIVATE)
 @lombok.Builder
-public class InterventionVariable implements ISystemVariable{
+public class InterventionVariable implements IUserVariable, ISystemVariable{
 
     @BuilderPattern(InterventionVariable.class)
     public static class Builder {

@@ -17,7 +17,6 @@
 package jdplus.sa.diagnostics;
 
 import demetra.data.DoubleSeq;
-import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
@@ -26,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import jdplus.modelling.regular.tests.TradingDaysTest;
 import jdplus.stats.DescriptiveStatistics;
+import demetra.processing.Diagnostics;
 
 /**
  *

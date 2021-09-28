@@ -17,13 +17,13 @@
 package jdplus.regarima.diagnostics;
 
 import jdplus.regarima.tests.OneStepAheadForecastingTest;
-import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import java.util.Collections;
 import jdplus.regsarima.RegSarimaComputer;
 import jdplus.sarima.SarimaModel;
 import java.util.List;
 import jdplus.regarima.RegArimaModel;
+import demetra.processing.Diagnostics;
 
 /**
  *
@@ -56,23 +56,16 @@ public class OutOfSampleDiagnostics implements Diagnostics {
     }
 
     private void test(RegArimaModel<SarimaModel> regarima, double len, boolean m, boolean v) {
-        int ifreq = regarima.arima().getPeriod();
-        int nback = (int) (len * ifreq);
-        if (nback < 5) {
-            nback = 5;
-        }
-        RegSarimaComputer processor = RegSarimaComputer.builder().build();
-        OneStepAheadForecastingTest<SarimaModel> xtest = new OneStepAheadForecastingTest<>(processor, nback);
-        xtest.test(regarima);
-        if (m) {
-            mpval = xtest.outOfSampleMeanTest().getPvalue();
-        } else {
-            mpval = Double.NaN;
-        }
-        if (v) {
-            vpval = xtest.sameVarianceTest().getPvalue();
-        } else {
-            vpval = Double.NaN;
+        OneStepAheadForecastingTest xtest = RegArimaDiagnostics.oneStepAheadForecastingTest(regarima, len);
+        mpval = Double.NaN;
+        vpval = Double.NaN;
+        if (xtest != null) {
+            if (m) {
+                mpval = xtest.outOfSampleMeanTest().getPvalue();
+            }
+            if (v) {
+                vpval = xtest.sameVarianceTest().getPvalue();
+            }
         }
     }
 

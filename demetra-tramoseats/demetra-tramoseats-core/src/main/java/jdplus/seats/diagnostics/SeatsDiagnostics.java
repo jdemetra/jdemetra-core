@@ -17,7 +17,6 @@
 package jdplus.seats.diagnostics;
 
 import demetra.modelling.ComponentInformation;
-import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import demetra.sa.ComponentType;
 import demetra.sa.SeriesDecomposition;
@@ -27,6 +26,7 @@ import java.util.List;
 import jdplus.seats.SeatsResults;
 import jdplus.ucarima.UcarimaModel;
 import jdplus.ucarima.WienerKolmogorovDiagnostics;
+import demetra.processing.Diagnostics;
 
 /**
  *

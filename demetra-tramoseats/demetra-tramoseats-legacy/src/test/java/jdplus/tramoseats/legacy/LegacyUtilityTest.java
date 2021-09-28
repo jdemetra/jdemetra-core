@@ -12,7 +12,6 @@ import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.tramo.Tramo;
 import demetra.tramo.TramoSpec;
-import jdplus.regsarima.regular.RegSarimaModel;
 import org.junit.Test;
 
 /**

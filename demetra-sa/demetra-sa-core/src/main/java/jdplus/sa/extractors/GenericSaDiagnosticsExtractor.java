@@ -116,7 +116,7 @@ public class GenericSaDiagnosticsExtractor extends InformationMapping<GenericSaD
 
         //////////  Y
         set(SEAS_LIN_F, Double.class, source -> {
-            TsData lin = source.getLin();
+            TsData lin = source.getLinearized();
             StatisticalTest test = new FTest(lin.getValues(), lin.getAnnualFrequency())
                     .model(FTest.Model.AR)
                     .build();
@@ -205,7 +205,7 @@ public class GenericSaDiagnosticsExtractor extends InformationMapping<GenericSaD
 
         //////////  Residuals 
         set(SEAS_RES_F, Double.class, source -> {
-            TsData res = source.getRes();
+            TsData res = source.getResiduals();
             if (res == null) {
                 return null;
             }

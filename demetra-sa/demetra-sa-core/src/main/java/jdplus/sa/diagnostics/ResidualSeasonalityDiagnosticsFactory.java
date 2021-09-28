@@ -16,13 +16,13 @@
  */
 package jdplus.sa.diagnostics;
 
-import demetra.processing.Diagnostics;
-import demetra.processing.DiagnosticsFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import demetra.information.Explorable;
+import demetra.processing.DiagnosticsFactory;
+import demetra.processing.Diagnostics;
 
 /**
  *

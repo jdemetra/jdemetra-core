@@ -14,12 +14,17 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sa.extractors;
+package jdplus.sa.diagnostics;
+
+import nbbrd.design.Development;
 
 /**
  *
  * @author PALATEJ
  */
-public class DefaultSaDiagnosticsExtractor {
+@lombok.Value
+@lombok.Builder
+@Development(status = Development.Status.Release)
+public class CombinedSeasonalityDiagnosticsConfiguration {
     
 }

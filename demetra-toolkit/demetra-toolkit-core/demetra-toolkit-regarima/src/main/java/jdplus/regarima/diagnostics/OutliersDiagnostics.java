@@ -16,14 +16,15 @@
  */
 package jdplus.regarima.diagnostics;
 
-import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import demetra.timeseries.TsData;
+import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.RegSarimaModel;
+import demetra.processing.Diagnostics;
 
 /**
  *
@@ -53,11 +54,11 @@ public final class OutliersDiagnostics implements Diagnostics {
     }
 
     private void test(RegSarimaModel rslts) {
-        TsData y = rslts.getDescription().getSeries();
-        if (y == null) {
+        GeneralLinearModel.Estimation estimation = rslts.getEstimation();
+        if (estimation == null) {
             return;
         }
-        n = y.length();
+        n = estimation.getY().length() - estimation.getMissing().length;
 
         prespecifiedOutliers = (int) Arrays.stream(rslts.getDescription().getVariables())
                 .filter(var -> ModellingUtility.isOutlier(var))
@@ -98,17 +99,14 @@ public final class OutliersDiagnostics implements Diagnostics {
 
     @Override
     public double getValue(String test) {
-        double val = Double.NaN;
         if (!test.equals(OutliersDiagnosticsFactory.NUMBER)) {
-            return val;
+            return Double.NaN;
         }
-        if (Double.isNaN(n)) {
-            return val;
+        if (n == 0) {
+            return Double.NaN;
         }
-        double r = prespecifiedOutliers + detectedOutliers;
-        r /= n;
-        val = r;
-        return val;
+        double dn=n;
+        return (prespecifiedOutliers + detectedOutliers)/dn;
     }
 
     @Override

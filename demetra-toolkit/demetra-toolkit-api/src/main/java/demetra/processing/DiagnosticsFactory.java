@@ -34,13 +34,19 @@ public interface DiagnosticsFactory <C, R>{
     C getConfiguration();
 
     /**
-     * Get the list of the tests
+     * Gets the list of the tests
      * @return A non empty list of tests.
      */
     List<String> getTestDictionary();
     
     Diagnostics of(R results);
     
+    /**
+     * 
+     * @param active
+     * @param newConfig If null, the current config is used
+     * @return 
+     */
     DiagnosticsFactory<C, R> with(boolean active, C newConfig);
     
 }

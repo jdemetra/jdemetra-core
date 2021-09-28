@@ -16,28 +16,13 @@
  */
 package demetra.timeseries.regression;
 
-import demetra.timeseries.TimeSeriesDomain;
 import nbbrd.design.Development;
-import java.time.LocalDateTime;
 
 /**
  *
  * @author Jean Palate
  */
-@lombok.Value
-@Development(status=Development.Status.Release)
-public class Ramp implements ISystemVariable, IUserVariable{
-    
-    @Override
-    public int dim()
-    {return 1;}
-
-    @lombok.NonNull
-    private LocalDateTime start, end;
-    
-    @Override
-    public <D extends TimeSeriesDomain<?>> String description(D context) {
-        return "ramp";
-    }
+@Development(status = Development.Status.Alpha)
+public interface IPeriodicVariable extends IUserVariable{
     
 }

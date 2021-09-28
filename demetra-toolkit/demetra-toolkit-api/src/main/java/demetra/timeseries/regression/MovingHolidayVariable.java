@@ -13,7 +13,7 @@ import demetra.timeseries.calendars.HolidayPattern;
  * @author palatej
  */
 @lombok.Value
-public class MovingHolidayVariable implements IMovingHolidayVariable{
+public class MovingHolidayVariable implements IMovingHolidayVariable, ISystemVariable{
 
     @lombok.NonNull
     String event;

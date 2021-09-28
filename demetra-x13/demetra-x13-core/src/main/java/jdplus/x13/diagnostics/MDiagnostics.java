@@ -17,11 +17,11 @@
 package jdplus.x13.diagnostics;
 
 import jdplus.x13.Mstatistics;
-import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import java.util.Collections;
 import java.util.List;
 import jdplus.x13.X13Results;
+import demetra.processing.Diagnostics;
 
 /**
  *

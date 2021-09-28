@@ -18,7 +18,6 @@ package jdplus.sa.diagnostics;
 
 import demetra.data.DoubleSeq;
 import nbbrd.design.Development;
-import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
@@ -29,6 +28,7 @@ import jdplus.modelling.DifferencingResults;
 import jdplus.stats.DescriptiveStatistics;
 import jdplus.sa.tests.FTest;
 import jdplus.sa.tests.Qs;
+import demetra.processing.Diagnostics;
 
 /**
  *

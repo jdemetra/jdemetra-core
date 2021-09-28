@@ -17,8 +17,6 @@
 package jdplus.sa.diagnostics;
 
 import nbbrd.design.Development;
-import demetra.processing.Diagnostics;
-import demetra.processing.DiagnosticsFactory;
 import demetra.sa.SaDiagnosticsFactory;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,6 +24,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.processing.DiagnosticsFactory;
+import demetra.processing.Diagnostics;
 
 /**
  *

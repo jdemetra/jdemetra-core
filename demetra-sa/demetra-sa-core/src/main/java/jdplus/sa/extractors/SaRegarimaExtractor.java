@@ -26,6 +26,7 @@ import demetra.sa.SaVariable;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.IOutlier;
+import jdplus.regarima.ami.ModellingUtility;
 import static jdplus.regarima.extractors.RegSarimaModelExtractors.NBCAST;
 import static jdplus.regarima.extractors.RegSarimaModelExtractors.NFCAST;
 import jdplus.regsarima.regular.RegSarimaModel;
@@ -44,11 +45,15 @@ public class SaRegarimaExtractor extends InformationMapping<RegSarimaModel> {
     }
 
     private static TsData outlier(RegSarimaModel source, ComponentType type, TsDomain domain) {
-        return source.getDeterministicEffect(domain, v -> v.getCore() instanceof IOutlier && v.isAttribute(SaVariable.REGEFFECT, type.name()));
+        return source.getDeterministicEffect(domain, v -> ModellingUtility.isOutlier(v) && v.isAttribute(SaVariable.REGEFFECT, type.name()));
     }
 
     private static TsData det(RegSarimaModel source, ComponentType type, TsDomain domain) {
         return source.getDeterministicEffect(domain, v -> v.isAttribute(SaVariable.REGEFFECT, type.name()));
+    }
+
+    private static TsData reg(RegSarimaModel source, ComponentType type, TsDomain domain) {
+        return source.deterministicEffect(domain, v -> ModellingUtility.isUser(v) && v.isAttribute(SaVariable.REGEFFECT, type.name()));
     }
 
     public SaRegarimaExtractor() {
@@ -57,5 +62,77 @@ public class SaRegarimaExtractor extends InformationMapping<RegSarimaModel> {
                 (source, i) -> outlier(source, ComponentType.Irregular, source.forecastDomain(i)));
         setArray(SaDictionary.OUT_I + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                 (source, i) -> outlier(source, ComponentType.Irregular, source.backcastDomain(i)));
+        set(SaDictionary.OUT_T, TsData.class, source -> outlier(source, ComponentType.Trend, null));
+        setArray(SaDictionary.OUT_T + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+                (source, i) -> outlier(source, ComponentType.Trend, source.forecastDomain(i)));
+        setArray(SaDictionary.OUT_T + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+                (source, i) -> outlier(source, ComponentType.Trend, source.backcastDomain(i)));
+        set(SaDictionary.OUT_S, TsData.class, source -> outlier(source, ComponentType.Seasonal, null));
+        setArray(SaDictionary.OUT_S + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+                (source, i) -> outlier(source, ComponentType.Seasonal, source.forecastDomain(i)));
+        setArray(SaDictionary.OUT_S + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+                (source, i) -> outlier(source, ComponentType.Seasonal, source.backcastDomain(i)));
+ 
+        set(SaDictionary.REG_I, TsData.class, source -> reg(source, ComponentType.Irregular, null));
+        setArray(SaDictionary.REG_I + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+                (source, i) -> reg(source, ComponentType.Irregular, source.forecastDomain(i)));
+        setArray(SaDictionary.REG_I + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+                (source, i) -> reg(source, ComponentType.Irregular, source.backcastDomain(i)));
+        set(SaDictionary.REG_T, TsData.class, source -> reg(source, ComponentType.Trend, null));
+        setArray(SaDictionary.REG_T + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+                (source, i) -> reg(source, ComponentType.Trend, source.forecastDomain(i)));
+        setArray(SaDictionary.REG_T + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+                (source, i) -> reg(source, ComponentType.Trend, source.backcastDomain(i)));
+        set(SaDictionary.REG_S, TsData.class, source -> reg(source, ComponentType.Seasonal, null));
+        setArray(SaDictionary.REG_S + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+                (source, i) -> reg(source, ComponentType.Seasonal, source.forecastDomain(i)));
+        setArray(SaDictionary.REG_S + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+                (source, i) -> reg(source, ComponentType.Seasonal, source.backcastDomain(i)));
+        set(SaDictionary.REG_SA, TsData.class, source -> reg(source, ComponentType.SeasonallyAdjusted, null));
+        setArray(SaDictionary.REG_SA + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+                (source, i) -> reg(source, ComponentType.SeasonallyAdjusted, source.forecastDomain(i)));
+        setArray(SaDictionary.REG_SA + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+                (source, i) -> reg(source, ComponentType.SeasonallyAdjusted, source.backcastDomain(i)));
+        set(SaDictionary.REG_Y, TsData.class, source -> reg(source, ComponentType.Series, null));
+        setArray(SaDictionary.REG_Y + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+                (source, i) -> reg(source, ComponentType.Series, source.forecastDomain(i)));
+        setArray(SaDictionary.REG_Y + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+                (source, i) -> reg(source, ComponentType.Series, source.backcastDomain(i)));
+        set(SaDictionary.REG_U, TsData.class, source -> reg(source, ComponentType.Undefined, null));
+        setArray(SaDictionary.REG_U + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+                (source, i) -> reg(source, ComponentType.Undefined, source.forecastDomain(i)));
+        setArray(SaDictionary.REG_U + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+                (source, i) -> reg(source, ComponentType.Undefined, source.backcastDomain(i)));
+
+        set(SaDictionary.DET_I, TsData.class, source -> det(source, ComponentType.Irregular, null));
+        setArray(SaDictionary.DET_I + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+                (source, i) -> det(source, ComponentType.Irregular, source.forecastDomain(i)));
+        setArray(SaDictionary.DET_I + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+                (source, i) -> det(source, ComponentType.Irregular, source.backcastDomain(i)));
+        set(SaDictionary.DET_T, TsData.class, source -> det(source, ComponentType.Trend, null));
+        setArray(SaDictionary.DET_T + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+                (source, i) -> det(source, ComponentType.Trend, source.forecastDomain(i)));
+        setArray(SaDictionary.DET_T + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+                (source, i) -> det(source, ComponentType.Trend, source.backcastDomain(i)));
+        set(SaDictionary.DET_S, TsData.class, source -> det(source, ComponentType.Seasonal, null));
+        setArray(SaDictionary.DET_S + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+                (source, i) -> det(source, ComponentType.Seasonal, source.forecastDomain(i)));
+        setArray(SaDictionary.DET_S + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+                (source, i) -> det(source, ComponentType.Seasonal, source.backcastDomain(i)));
+        set(SaDictionary.DET_SA, TsData.class, source -> det(source, ComponentType.SeasonallyAdjusted, null));
+        setArray(SaDictionary.DET_SA + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+                (source, i) -> det(source, ComponentType.SeasonallyAdjusted, source.forecastDomain(i)));
+        setArray(SaDictionary.DET_SA + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+                (source, i) -> det(source, ComponentType.SeasonallyAdjusted, source.backcastDomain(i)));
+        set(SaDictionary.DET_Y, TsData.class, source -> det(source, ComponentType.Series, null));
+        setArray(SaDictionary.DET_Y + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+                (source, i) -> det(source, ComponentType.Series, source.forecastDomain(i)));
+        setArray(SaDictionary.DET_Y + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+                (source, i) -> det(source, ComponentType.Series, source.backcastDomain(i)));
+        set(SaDictionary.DET_U, TsData.class, source -> det(source, ComponentType.Undefined, null));
+        setArray(SaDictionary.DET_U + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+                (source, i) -> det(source, ComponentType.Undefined, source.forecastDomain(i)));
+        setArray(SaDictionary.DET_U + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+                (source, i) -> det(source, ComponentType.Undefined, source.backcastDomain(i)));
     }
 }

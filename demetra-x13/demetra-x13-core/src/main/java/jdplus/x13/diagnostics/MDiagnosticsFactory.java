@@ -17,7 +17,6 @@
 package jdplus.x13.diagnostics;
 
 import nbbrd.design.Development;
-import demetra.processing.Diagnostics;
 import demetra.sa.SaDiagnosticsFactory;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import jdplus.x13.X13Results;
 import nbbrd.service.ServiceProvider;
+import demetra.processing.Diagnostics;
 
 /**
  *

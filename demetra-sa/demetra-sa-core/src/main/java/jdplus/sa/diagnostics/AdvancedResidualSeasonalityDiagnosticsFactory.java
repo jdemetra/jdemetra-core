@@ -17,7 +17,6 @@
 package jdplus.sa.diagnostics;
 
 import nbbrd.design.Development;
-import demetra.processing.Diagnostics;
 import demetra.sa.SaDiagnosticsFactory;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,6 +24,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.processing.Diagnostics;
 
 /**
  *
@@ -42,11 +42,6 @@ public class AdvancedResidualSeasonalityDiagnosticsFactory<R> implements SaDiagn
     private final Function<R, AdvancedResidualSeasonalityDiagnostics.Input> extractor;
     private final boolean active;
 
-    /**
-     * 
-     * @param config If null, the default configuration will be used
-     * @param extractor 
-     */
     public AdvancedResidualSeasonalityDiagnosticsFactory(boolean active, @NonNull AdvancedResidualSeasonalityDiagnosticsConfiguration config,
             @NonNull Function<R, AdvancedResidualSeasonalityDiagnostics.Input> extractor) {
         this.config = config;

@@ -26,7 +26,7 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
  */
 @lombok.Value
 @Development(status=Development.Status.Release)
-public class LengthOfPeriod implements ILengthOfPeriodVariable {
+public class LengthOfPeriod implements ILengthOfPeriodVariable, ISystemVariable {
     private LengthOfPeriodType type;
     
     @Override

@@ -151,26 +151,6 @@ public class RegSarimaModelExtractors {
             setArray(ModellingDictionary.EE + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                     (source, i) -> source.getEasterEffect(source.backcastDomain(i)));
             
-//        MAPPING.set(ModellingDictionary.OUT_I, source -> source.getOutlier(ComponentType.Irregular, false));
-//        MAPPING.set(ModellingDictionary.OUT_I + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Irregular, true));
-//        MAPPING.set(ModellingDictionary.OUT_T, source -> source.getOutlier(ComponentType.Trend, false));
-//        MAPPING.set(ModellingDictionary.OUT_T + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Trend, true));
-//        MAPPING.set(ModellingDictionary.OUT_S, source -> source.getOutlier(ComponentType.Seasonal, false));
-//        MAPPING.set(ModellingDictionary.OUT_S + SeriesInfo.F_SUFFIX, source -> source.getOutlier(ComponentType.Seasonal, true));
-//        MAPPING.set(ModellingDictionary.REG, source -> source.getReg(false));
-//        MAPPING.set(ModellingDictionary.REG + SeriesInfo.F_SUFFIX, source -> source.getReg(true));
-//        MAPPING.set(ModellingDictionary.REG_T, source -> source.getReg(ComponentType.Trend, false));
-//        MAPPING.set(ModellingDictionary.REG_T + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Trend, true));
-//        MAPPING.set(ModellingDictionary.REG_S, source -> source.getReg(ComponentType.Seasonal, false));
-//        MAPPING.set(ModellingDictionary.REG_S + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Seasonal, true));
-//        MAPPING.set(ModellingDictionary.REG_I, source -> source.getReg(ComponentType.Irregular, false));
-//        MAPPING.set(ModellingDictionary.REG_I + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Irregular, true));
-//        MAPPING.set(ModellingDictionary.REG_SA, source -> source.getReg(ComponentType.SeasonallyAdjusted, false));
-//        MAPPING.set(ModellingDictionary.REG_SA + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.SeasonallyAdjusted, true));
-//        MAPPING.set(ModellingDictionary.REG_Y, source -> source.getReg(ComponentType.Series, false));
-//        MAPPING.set(ModellingDictionary.REG_Y + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Series, true));
-//        MAPPING.set(ModellingDictionary.REG_U, source -> source.getReg(ComponentType.Undefined, false));
-//        MAPPING.set(ModellingDictionary.REG_U + SeriesInfo.F_SUFFIX, source -> source.getReg(ComponentType.Undefined, true));
 //        MAPPING.set(FULLRES, source -> source.getFullResiduals());
 //        MAPPING.setList(InformationSet.item(REGRESSION, TD), 1, 15, RegressionItem.class, (source, i) -> source.getRegressionItem(ITradingDaysVariable.class, i - 1));
 //        MAPPING.set(InformationSet.item(REGRESSION, TD_DERIVED), RegressionItem.class, source -> {

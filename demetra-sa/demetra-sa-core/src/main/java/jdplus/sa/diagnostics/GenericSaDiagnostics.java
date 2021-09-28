@@ -17,11 +17,10 @@
 package jdplus.sa.diagnostics;
 
 import demetra.information.Explorable;
-import demetra.sa.SeriesDecomposition;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
+import jdplus.regarima.diagnostics.RegArimaDiagnostics;
 import jdplus.regarima.tests.OneStepAheadForecastingTest;
-import jdplus.regsarima.RegSarimaComputer;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sa.tests.CombinedSeasonality;
 import jdplus.sa.tests.SeasonalityTests;
@@ -31,23 +30,21 @@ import jdplus.sa.tests.SeasonalityTests;
  * @author palatej
  */
 @lombok.Getter
-@lombok.AllArgsConstructor
 public class GenericSaDiagnostics implements Explorable{
 
     private final RegSarimaModel regarima;
-    private final SeriesDecomposition finals;
     private final boolean mul;
 
-    private final TsData lin, res, sa, irr, si, s, t;
+    private final TsData linearized, residuals;
+    private final TsData sa, irr, si, s, t;
 
     @lombok.Builder(builderClassName = "Builder")
-    private GenericSaDiagnostics(RegSarimaModel regarima, SeriesDecomposition finals, boolean mul,
+    private GenericSaDiagnostics(RegSarimaModel regarima, boolean mul,
             TsData lin, TsData res, TsData sa, TsData irr, TsData si, TsData s, TsData t) {
         this.regarima = regarima;
-        this.finals = finals;
         this.mul = mul;
-        this.lin = lin;
-        this.res = res;
+        this.linearized = lin;
+        this.residuals = res;
         this.sa = sa;
         this.irr = irr;
         this.si = si;
@@ -60,11 +57,11 @@ public class GenericSaDiagnostics implements Explorable{
     private volatile CombinedSeasonality seasSI, seasSa, seasI, seasRes, seasSa3, seasI3, seasRes3;
     
     public int annualFrequency(){
-        return lin.getAnnualFrequency();
+        return linearized.getAnnualFrequency();
     }
 
     public SeasonalityTests resTests() {
-        if (res == null) {
+        if (residuals == null) {
             return null;
         }
         SeasonalityTests tests = rtests;
@@ -72,7 +69,7 @@ public class GenericSaDiagnostics implements Explorable{
             synchronized (this) {
                 tests = rtests;
                 if (tests == null) {
-                    tests = SeasonalityTests.seasonalityTest(res.getValues(), res.getAnnualFrequency(), 0, false, true);
+                    tests = SeasonalityTests.seasonalityTest(residuals.getValues(), residuals.getAnnualFrequency(), 0, false, true);
                     rtests = tests;
                 }
             }
@@ -86,7 +83,7 @@ public class GenericSaDiagnostics implements Explorable{
             synchronized (this) {
                 tests = ytests;
                 if (tests == null) {
-                    tests = SeasonalityTests.seasonalityTest(lin.getValues(), lin.getAnnualFrequency(), 1, true, true);
+                    tests = SeasonalityTests.seasonalityTest(linearized.getValues(), linearized.getAnnualFrequency(), 1, true, true);
                     ytests = tests;
                 }
             }
@@ -170,11 +167,11 @@ public class GenericSaDiagnostics implements Explorable{
     }
 
     public CombinedSeasonality cresTest(boolean last) {
-        if (res == null) {
+        if (residuals == null) {
             return null;
         }
-        int freq = res.getAnnualFrequency();
-        if (res.length() < 3 * freq) {
+        int freq = residuals.getAnnualFrequency();
+        if (residuals.length() < 3 * freq) {
             return null;
         }
         if (last) {
@@ -184,7 +181,7 @@ public class GenericSaDiagnostics implements Explorable{
                     cs = seasRes3;
                     if (cs == null) {
                         TimeSelector sel = TimeSelector.last(freq * 3);
-                        cs = CombinedSeasonality.of(res.select(sel), mul);
+                        cs = CombinedSeasonality.of(residuals.select(sel), mul);
                         seasRes3 = cs;
                     }
                 }
@@ -196,7 +193,7 @@ public class GenericSaDiagnostics implements Explorable{
                 synchronized (this) {
                     cs = seasRes;
                     if (cs == null) {
-                        cs = CombinedSeasonality.of(res, mul);
+                        cs = CombinedSeasonality.of(residuals, mul);
                         seasRes = cs;
                     }
                 }
@@ -235,8 +232,6 @@ public class GenericSaDiagnostics implements Explorable{
         }
     }
 
-    private static final double FLEN = 1.5;
-
     public OneStepAheadForecastingTest forecastingTest() {
         if (regarima == null) {
             return null;
@@ -247,15 +242,7 @@ public class GenericSaDiagnostics implements Explorable{
                 os = outOfSampleTest;
                 if (os == null) {
                     try {
-                        int ifreq = lin.getAnnualFrequency();
-                        int nback = (int) (FLEN * ifreq);
-                        if (nback < 5) {
-                            nback = 5;
-                        }
-                        os = new OneStepAheadForecastingTest(RegSarimaComputer.PROCESSOR, nback);
-                        if (!os.test(regarima.regarima())) {
-                            return null;
-                        }
+                        os = RegArimaDiagnostics.oneStepAheadForecastingTest(regarima.regarima(), 0);
                         outOfSampleTest = os;
                     } catch (Exception err) {
 

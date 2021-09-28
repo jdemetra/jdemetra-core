@@ -34,62 +34,54 @@ import jdplus.stats.tests.TestsUtility;
 /**
  *
  * @author Jean Palate
- * @param <M>
  */
-public class OneStepAheadForecastingTest<M extends IArimaModel> {
+@lombok.Getter
+@lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+public class OneStepAheadForecastingTest {
 
-    private final IRegArimaComputer<M> processor;
-    private final int nback;
     // results
-    private DoubleSeq residuals;
-    private double meanIn, meanOut, mseIn, mseOut;
-    private int inSampleSize;
-    private boolean mean;
+    private final DoubleSeq residuals;
+    private final double meanIn, meanOut, mseIn, mseOut;
+    private final int outSampleSize, inSampleSize;
+    private final boolean mean;
 
-    public OneStepAheadForecastingTest(final IRegArimaComputer<M> processor, final int nback) {
-        this.processor = processor;
-        this.nback = nback;
-    }
+    public static <M extends IArimaModel> OneStepAheadForecastingTest of(final RegArimaModel<M> regarima, final IRegArimaComputer<M> processor, final int nback) {
+        try {
+            RegArimaModel<M> model = linearize(regarima);
+            DoubleSeq residuals = computeResiduals(model, processor, nback);
+            if (residuals == null) {
+                return null;
+            }
 
-    public IRegArimaComputer<M> getProcessor() {
-        return processor;
+            int n = residuals.length();
+            if (n <= nback + 2) {
+                return null;
+            }
+            DoubleSeq in = residuals.drop(0, nback);
+            DoubleSeq out = residuals.range(in.length(), n);
+            boolean mean = regarima.isMean();
+            int inSampleSize = mean ? in.length() - 1 : in.length();
+            double meanIn = in.sum() / in.length();
+            double mseIn = in.ssq() / inSampleSize;
+            double meanOut = out.sum() / nback;
+            double mseOut = out.ssq() / nback;
+
+            return new OneStepAheadForecastingTest(residuals, meanIn, meanOut, mseIn, mseOut, nback, inSampleSize, mean);
+        } catch (Exception err) {
+            return null;
+        }
     }
 
     public int getOutOfSampleLength() {
-        return nback;
+        return outSampleSize;
     }
 
     public int getInSampleLength() {
-        return residuals.length() - nback;
-    }
-
-    public boolean test(RegArimaModel<M> regarima) {
-        try {
-            RegArimaModel<M> model = linearize(regarima);
-            residuals = computeResiduals(model);
-            if (residuals == null) {
-                return false;
-            }
-        } catch (Exception err) {
-            return false;
-        }
-
-        int n = residuals.length();
-        if (n <= nback + 2) {
-            return false;
-        }
-        DoubleSeq in = residuals.drop(0, nback);
-        DoubleSeq out = residuals.range(in.length(), n);
-        inSampleSize = mean ? in.length() - 1 : in.length();
-        meanIn = in.sum() / in.length();
-        mseIn = in.ssq() / inSampleSize;
-        meanOut = out.sum() / nback;
-        mseOut = out.ssq() / nback;
-        return true;
+        return residuals.length() - outSampleSize;
     }
 
     public StatisticalTest outOfSampleMeanTest() {
-        return new SampleMean(meanOut, nback)
+        return new SampleMean(meanOut, outSampleSize)
                 .populationMean(0)
                 .estimatedPopulationVariance(mseIn, inSampleSize)
                 .normalDistribution(true)
@@ -97,7 +89,7 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
     }
 
     public DoubleSeq getInSampleResiduals() {
-        return residuals.drop(0, nback);
+        return residuals.drop(0, outSampleSize);
     }
 
     public double getInSampleMean() {
@@ -118,17 +110,17 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
 
     public DoubleSeq getOutOfSampleResiduals() {
         int n = residuals.length();
-        return residuals.range(n - nback, n);
+        return residuals.range(n - outSampleSize, n);
     }
 
     public StatisticalTest sameVarianceTest() {
-        F f = new F(nback, inSampleSize);
+        F f = new F(outSampleSize, inSampleSize);
         return TestsUtility.testOf(mseOut / mseIn, f, TestType.Upper);
     }
 
     public StatisticalTest inSampleMeanTest() {
         int n = residuals.length();
-        int nsample = n - nback;
+        int nsample = n - outSampleSize;
         return new SampleMean(meanIn, nsample)
                 .populationMean(0)
                 .estimatedPopulationVariance(mseIn, inSampleSize)
@@ -136,7 +128,7 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
                 .build();
     }
 
-    private RegArimaModel<M> linearize(RegArimaModel<M> regarima) {
+    private static <M extends IArimaModel> RegArimaModel<M> linearize(RegArimaModel<M> regarima) {
         if (regarima.getVariablesCount() == 0) {
             return regarima;
         }
@@ -144,15 +136,14 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
         ConcentratedLikelihoodWithMissing concentratedLikelihood = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
         DoubleSeq linearizedData = RegArimaUtility.linearizedData(regarima, concentratedLikelihood);
 
-        mean = regarima.isMean();
         return RegArimaModel.<M>builder()
                 .y(linearizedData)
                 .arima(regarima.arima())
-                .meanCorrection(mean)
+                .meanCorrection(regarima.isMean())
                 .build();
     }
 
-    protected RegArimaEstimation<M> inSampleEstimate(RegArimaModel<M> regarima) {
+    private static <M extends IArimaModel> RegArimaEstimation inSampleEstimate(RegArimaModel<M> regarima, final IRegArimaComputer<M> processor, int nback) {
         // shorten the model
         if (regarima.getObservationsCount() <= nback) {
             return null;
@@ -161,14 +152,14 @@ public class OneStepAheadForecastingTest<M extends IArimaModel> {
         RegArimaModel model = RegArimaModel.<M>builder()
                 .y(regarima.getY().drop(0, nback))
                 .arima(arima)
-                .meanCorrection(mean)
+                .meanCorrection(regarima.isMean())
                 .build();
         return processor.optimize(model, null);
     }
 
-    protected DoubleSeq computeResiduals(RegArimaModel<M> regarima) {
+    private static <M extends IArimaModel> DoubleSeq computeResiduals(RegArimaModel<M> regarima, final IRegArimaComputer<M> processor, int nback) {
         try {
-            RegArimaEstimation<M> est = inSampleEstimate(regarima);
+            RegArimaEstimation<M> est = inSampleEstimate(regarima, processor, nback);
             if (est == null) {
                 return null;
             }
