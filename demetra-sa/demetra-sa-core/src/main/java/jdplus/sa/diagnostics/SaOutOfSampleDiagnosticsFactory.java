@@ -18,10 +18,9 @@ package jdplus.sa.diagnostics;
 
 import demetra.sa.SaDiagnosticsFactory;
 import java.util.function.Function;
-import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.diagnostics.OutOfSampleDiagnosticsConfiguration;
 import jdplus.regarima.diagnostics.OutOfSampleDiagnosticsFactory;
-import jdplus.sarima.SarimaModel;
+import jdplus.regarima.tests.OneStepAheadForecastingTest;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -32,7 +31,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public class SaOutOfSampleDiagnosticsFactory<R> extends OutOfSampleDiagnosticsFactory<R> implements SaDiagnosticsFactory<OutOfSampleDiagnosticsConfiguration, R>{
     
     public SaOutOfSampleDiagnosticsFactory(boolean active, 
-            @NonNull OutOfSampleDiagnosticsConfiguration config, @NonNull Function<R, RegArimaModel<SarimaModel> > extractor) {
+            @NonNull OutOfSampleDiagnosticsConfiguration config, @NonNull Function<R, OneStepAheadForecastingTest > extractor) {
         super(active, config, extractor);
     }
     

@@ -12,7 +12,7 @@ import jdplus.math.functions.IFunction;
 import jdplus.math.functions.IFunctionPoint;
 import jdplus.math.functions.IParametersDomain;
 import jdplus.math.functions.ParametersRange;
-import jdplus.math.linearfilters.AsymmetricFilters;
+import jdplus.math.linearfilters.AsymmetricFiltersFactory;
 import jdplus.math.linearfilters.FiniteFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.stats.Kernels;
@@ -52,7 +52,7 @@ public class CutAndNormalizeFilters {
 
         private int m;
         private SymmetricFilter target;
-        private AsymmetricFilters.Distance distance;
+        private AsymmetricFiltersFactory.Distance distance;
         private AsymmetricFilterProvider provider;
 
         @Override
@@ -92,7 +92,7 @@ public class CutAndNormalizeFilters {
         }
     }
 
-    public double optimalBandWidth(int m, int q, AsymmetricFilters.Distance distance) {
+    public double optimalBandWidth(int m, int q, AsymmetricFiltersFactory.Distance distance) {
         SymmetricFilter H = KernelsUtility.symmetricFilter(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), m + 1, m);
         
          D fn = new D(m, H, distance, bandWidth->of(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), bandWidth, m, q));

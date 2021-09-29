@@ -35,10 +35,10 @@ public class ResidualTradingDaysDiagnosticsFactory<R> implements SaDiagnosticsFa
     static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(FTEST_SA, FTEST_I));
 
     private final ResidualTradingDaysDiagnosticsConfiguration config;
-    private final Function<R, ResidualTradingDaysDiagnostics.Input> extractor;
+    private final Function<R, ResidualTradingDaysTests> extractor;
     private final boolean active;
 
-    public ResidualTradingDaysDiagnosticsFactory(boolean active, ResidualTradingDaysDiagnosticsConfiguration config, Function<R, ResidualTradingDaysDiagnostics.Input> extractor) {
+    public ResidualTradingDaysDiagnosticsFactory(boolean active, ResidualTradingDaysDiagnosticsConfiguration config, Function<R, ResidualTradingDaysTests> extractor) {
         this.config = config;
         this.extractor=extractor;
         this.active=active;

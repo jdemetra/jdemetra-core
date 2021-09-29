@@ -17,6 +17,7 @@
 package jdplus.sa.diagnostics;
 
 import java.util.concurrent.atomic.AtomicReference;
+import jdplus.sa.tests.FTest;
 import nbbrd.design.Development;
 
 /**
@@ -26,38 +27,28 @@ import nbbrd.design.Development;
 @lombok.Value
 @lombok.Builder
 @Development(status = Development.Status.Release)
-public class AdvancedResidualSeasonalityDiagnosticsConfiguration {
+public class ResidualTradingDaysTestsOptions {
     
-    private static AtomicReference<AdvancedResidualSeasonalityDiagnosticsConfiguration> DEFAULT
-            =new AtomicReference<AdvancedResidualSeasonalityDiagnosticsConfiguration>(builder().build());
+    private static AtomicReference<ResidualTradingDaysTestsOptions> DEFAULT
+            =new AtomicReference<ResidualTradingDaysTestsOptions>(builder().build());
     
-    public static void setDefault(AdvancedResidualSeasonalityDiagnosticsConfiguration config){
+    public static void setDefault(ResidualTradingDaysTestsOptions config){
         DEFAULT.set(config);
     }
     
-    public static AdvancedResidualSeasonalityDiagnosticsConfiguration getDefault(){
+    public static ResidualTradingDaysTestsOptions getDefault(){
         return DEFAULT.get();
     }
 
-    public static final double SEV = .001, BAD = .01, UNC = .05;
+    public static final int DEF_FTEST_LAST = 8;
 
-    private double severeThreshold;
-    private double badThreshold;
-    private double uncertainThreshold;
-    private boolean qs;
-    private boolean ftest;
+    private int flast;
+    private boolean arModel;
 
     public static Builder builder(){
         return new Builder()
-                .severeThreshold(SEV)
-                .badThreshold(BAD)
-                .uncertainThreshold(UNC)
-                .qs(true)
-                .ftest(true);        
+                .flast(DEF_FTEST_LAST)
+                .arModel(true);        
    }
 
-    public void check() {
-        if (severeThreshold < badThreshold || badThreshold < uncertainThreshold || uncertainThreshold < 0)
-                throw new IllegalArgumentException();
-    }
 }

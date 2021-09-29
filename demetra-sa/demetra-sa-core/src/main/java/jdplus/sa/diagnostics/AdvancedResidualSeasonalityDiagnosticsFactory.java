@@ -39,11 +39,11 @@ public class AdvancedResidualSeasonalityDiagnosticsFactory<R> implements SaDiagn
     static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(QS_SA, QS_I, FTEST_SA, FTEST_I));
 
     private final AdvancedResidualSeasonalityDiagnosticsConfiguration config;
-    private final Function<R, AdvancedResidualSeasonalityDiagnostics.Input> extractor;
+    private final Function<R, GenericSaTests> extractor;
     private final boolean active;
 
     public AdvancedResidualSeasonalityDiagnosticsFactory(boolean active, @NonNull AdvancedResidualSeasonalityDiagnosticsConfiguration config,
-            @NonNull Function<R, AdvancedResidualSeasonalityDiagnostics.Input> extractor) {
+            @NonNull Function<R, GenericSaTests> extractor) {
         this.config = config;
         this.extractor = extractor;
         this.active=active;

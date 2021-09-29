@@ -63,14 +63,14 @@ public class X13ResultsProto {
     
     public X13Protos.X13Results convert(X13Results rslts) {
         X13Protos.X13Results.Builder builder = X13Protos.X13Results.newBuilder();
-        X13Diagnostics diags=X13Diagnostics.of(rslts);
-        builder.setPreprocessing(RegArimaEstimationProto.convert(rslts.getPreprocessing()))
-                .setDecomposition(X11ResultsProto.convert(rslts.getDecomposition()))
-                .setFinal(convert(rslts.getPreadjustment(), rslts.getFinals()))
-                .setDiagnosticsX13(X13Protos.Diagnostics.newBuilder()
-                        .setMstatistics(convert(diags.getMstatistics()))
-                        .build())
-                .setDiagnosticsSa(SaProtosUtility.of(diags.getSaDiagnostics()));
+//        X13Diagnostics diags=X13Diagnostics.of(rslts);
+//        builder.setPreprocessing(RegArimaEstimationProto.convert(rslts.getPreprocessing()))
+//                .setDecomposition(X11ResultsProto.convert(rslts.getDecomposition()))
+//                .setFinal(convert(rslts.getPreadjustment(), rslts.getFinals()))
+//                .setDiagnosticsX13(X13Protos.Diagnostics.newBuilder()
+//                        .setMstatistics(convert(diags.getMstatistics()))
+//                        .build())
+//                .setDiagnosticsSa(SaProtosUtility.of(diags.getSaDiagnostics()));
         return builder.build();
     }
     

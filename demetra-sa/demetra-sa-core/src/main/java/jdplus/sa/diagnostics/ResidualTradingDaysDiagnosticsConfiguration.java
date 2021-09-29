@@ -39,29 +39,21 @@ public class ResidualTradingDaysDiagnosticsConfiguration {
     }
 
     public static final double SEV = .001, BAD = .01, UNC = .05;
-    public static final int DEF_NYEARS = 8;
 
     private double severeThreshold;
     private double badThreshold;
     private double uncertainThreshold;
-    private boolean arModel;
-    private int spanInYears;
 
     public static Builder builder() {
         return new Builder()
                 .severeThreshold(SEV)
                 .badThreshold(BAD)
-                .uncertainThreshold(UNC)
-                .arModel(true)
-                .spanInYears(DEF_NYEARS);
+                .uncertainThreshold(UNC);
     }
 
     public void check() {
         if (severeThreshold > badThreshold || badThreshold > uncertainThreshold || uncertainThreshold > 1 || severeThreshold <= 0) {
             throw new DemetraException("Invalid settings in thresholds");
-        }
-        if (spanInYears < 0) {
-            throw new DemetraException("Invalid settings in span");
         }
     }
 

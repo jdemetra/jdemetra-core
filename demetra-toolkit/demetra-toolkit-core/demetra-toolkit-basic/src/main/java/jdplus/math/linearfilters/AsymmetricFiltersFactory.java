@@ -21,7 +21,7 @@ import jdplus.math.matrices.SymmetricMatrix;
  * @author Jean Palate
  */
 @lombok.experimental.UtilityClass
-public class AsymmetricFilters {
+public class AsymmetricFiltersFactory {
 
     public static enum Option {
         Direct,

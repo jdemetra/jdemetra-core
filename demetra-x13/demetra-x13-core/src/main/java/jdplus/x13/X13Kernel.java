@@ -93,7 +93,7 @@ public class X13Kernel {
         X11Spec nspec = updateSpec(spec, preprocessing);
         X11Results xr = x11.process(alin, nspec);
         X13Finals finals = finals(nspec.getMode(), preadjustment, xr);
-        return new X13Results(preprocessing, preadjustment, xr, finals);
+        return new X13Results(preprocessing, preadjustment, xr, finals, X13Diagnostics.of(preprocessing, preadjustment, xr, finals));
     }
 
     private TsData initialStep(RegSarimaModel model, int nb, int nf, X13Preadjustment.Builder astep) {

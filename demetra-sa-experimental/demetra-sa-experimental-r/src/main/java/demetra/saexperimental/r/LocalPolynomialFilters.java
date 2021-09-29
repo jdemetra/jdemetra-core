@@ -21,7 +21,7 @@ import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.data.analysis.DiscreteKernel;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
-import jdplus.math.linearfilters.AsymmetricFilters;
+import jdplus.math.linearfilters.AsymmetricFiltersFactory;
 import jdplus.math.linearfilters.IFiniteFilter;
 
 /**
@@ -44,7 +44,7 @@ public class LocalPolynomialFilters {
         } else if (endpoints.equals("CN")) {
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[i] = AsymmetricFilters.cutAndNormalizeFilter(filter, horizon-i-1);
+                afilters[i] = AsymmetricFiltersFactory.cutAndNormalizeFilter(filter, horizon-i-1);
             }
         } else {
             int u = 0;
@@ -64,7 +64,7 @@ public class LocalPolynomialFilters {
             }
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[i] = AsymmetricFilters.mmsreFilter(filter, horizon-i-1, u, c, null, passband, tw );
+                afilters[i] = AsymmetricFiltersFactory.mmsreFilter(filter, horizon-i-1, u, c, null, passband, tw );
             }
         }
         DoubleSeq rslt = jdplus.math.linearfilters.FilterUtility.filter(DoubleSeq.of(data), filter, afilters);
@@ -107,7 +107,7 @@ public class LocalPolynomialFilters {
         } else if (endpoints.equals("CN")) {
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[i] = AsymmetricFilters.cutAndNormalizeFilter(filter, i);
+                afilters[i] = AsymmetricFiltersFactory.cutAndNormalizeFilter(filter, i);
             }
         } else {
             int u = 0;
@@ -127,7 +127,7 @@ public class LocalPolynomialFilters {
             }
             afilters = new FiniteFilter[horizon];
             for (int i = 0; i < afilters.length; ++i) {
-                afilters[i] = AsymmetricFilters.mmsreFilter(filter, i, u, c, null, passband, tw);
+                afilters[i] = AsymmetricFiltersFactory.mmsreFilter(filter, i, u, c, null, passband, tw);
             }
         }
         return new FiltersToolkit.FiniteFilters(filter, afilters);

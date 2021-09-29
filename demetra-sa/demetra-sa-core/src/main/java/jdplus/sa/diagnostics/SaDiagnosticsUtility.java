@@ -18,6 +18,9 @@ package jdplus.sa.diagnostics;
 
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
+import demetra.timeseries.TimeSelector;
+import demetra.timeseries.TsData;
+import jdplus.sa.tests.CombinedSeasonality;
 import jdplus.stats.DescriptiveStatistics;
 
 /**
@@ -25,7 +28,7 @@ import jdplus.stats.DescriptiveStatistics;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class SaDiagnostics {
+public class SaDiagnosticsUtility {
 
     private final double E_LIMIT = .005;
 
@@ -56,7 +59,29 @@ public class SaDiagnostics {
     public boolean isSignificant(DoubleSeq s) {
         return isSignificant(s, E_LIMIT);
     }
-    
-    
+
+    /**
+     * X11 Combined seasonality test
+     * @param s The tested series. Should contain at least 3 years (after de-trending)
+     * @param nyears Number of years taken at the end of the series. &le 0 for the whole series
+     * @param xbar (Theoretical) average of the series. Unused if detrend is true (xbar = 0)
+     * @param detrend Removal of the trend (using delta(max(1, freq/4))
+     * @return 
+     */
+    public CombinedSeasonality combinedSeasonalityTest(TsData s, int nyears, double xbar, boolean detrend) {
+        int freq = s.getAnnualFrequency();
+        if (detrend) {
+            s = s.delta(Math.max(1, freq / 4));
+        }
+        int len = s.length();
+        if (len < 3 * freq) // at least 3 full years (after detrending)
+        {
+            return null;
+        }
+        if (nyears > 0 && len > nyears * freq) {
+            s = s.drop(len - nyears * freq, 0);
+        }
+        return CombinedSeasonality.of(s, xbar);
+    }
 
 }

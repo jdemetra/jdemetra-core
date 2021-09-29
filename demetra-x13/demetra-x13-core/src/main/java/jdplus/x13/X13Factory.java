@@ -63,7 +63,7 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
         
         SaOutOfSampleDiagnosticsFactory<X13Results> outofsample
                 = new SaOutOfSampleDiagnosticsFactory<>(true, OutOfSampleDiagnosticsConfiguration.getDefault(),
-                        r -> r.getPreprocessing().regarima());
+                        r -> r.getDiagnostics().getGenericDiagnostics().forecastingTest());
         SaResidualsDiagnosticsFactory<X13Results> residuals
                 = new SaResidualsDiagnosticsFactory<>(true, ResidualsDiagnosticsConfiguration.getDefault(),
                         r -> r.getPreprocessing());
@@ -73,21 +73,11 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
         MDiagnosticsFactory mstats = new MDiagnosticsFactory(true, MDiagnosticsConfiguration.getDefault());
         AdvancedResidualSeasonalityDiagnosticsFactory<X13Results> advancedResidualSeasonality
                 = new AdvancedResidualSeasonalityDiagnosticsFactory<>(true, AdvancedResidualSeasonalityDiagnosticsConfiguration.getDefault(),
-                        (X13Results r) -> {
-                            boolean mul = r.getPreprocessing().getDescription().isLogTransformation();
-                            TsData sa = r.getDecomposition().getD11();
-                            TsData irr = r.getDecomposition().getD13();
-                            return new AdvancedResidualSeasonalityDiagnostics.Input(mul, sa, irr);
-                        }
+                        (X13Results r) -> r.getDiagnostics().getGenericDiagnostics()
                 );
         ResidualTradingDaysDiagnosticsFactory<X13Results> residualTradingDays
                 = new ResidualTradingDaysDiagnosticsFactory<>(true, ResidualTradingDaysDiagnosticsConfiguration.getDefault(),
-                        (X13Results r) -> {
-                            boolean mul = r.getPreprocessing().getDescription().isLogTransformation();
-                            TsData sa = r.getDecomposition().getD11();
-                            TsData irr = r.getDecomposition().getD13();
-                            return new ResidualTradingDaysDiagnostics.Input(mul, sa, irr);
-                        }
+                        (X13Results r) -> r.getDiagnostics().getGenericDiagnostics().residualTradingDaysTests()
                 );
 
         List<SaDiagnosticsFactory<?, X13Results>> all = new ArrayList<>();

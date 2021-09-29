@@ -36,9 +36,9 @@ public class CombinedSeasonality {
     private final OneWayAnova stable, evolutive;
     private final KruskalWallis kruskallwallis;
     
-    public static CombinedSeasonality of(TsData s, boolean mul){
+    public static CombinedSeasonality of(TsData s, double xbar){
         TsPeriod start = s.getStart();
-        return new CombinedSeasonality(s.getValues(), start.annualFrequency(), start.annualPosition(), mul);
+        return new CombinedSeasonality(s.getValues(), start.annualFrequency(), start.annualPosition(), xbar);
     }
 
     /**
@@ -46,13 +46,13 @@ public class CombinedSeasonality {
      * @param series Data
      * @param period Tested periodicity
      * @param startPeriod
-     * @param multiplicative True for multiplicative model
+     * @param xbar Average of the series (usually 0 or 1)
      */
-    public CombinedSeasonality(DoubleSeq series, int period, int startPeriod, boolean multiplicative)
+    public CombinedSeasonality(DoubleSeq series, int period, int startPeriod, double xbar)
     {
 	kruskallwallis = new KruskalWallis(series, period);
 	stable = StableSeasonality.of(series, period);
-	evolutive = EvolutiveSeasonality.of(series, period, startPeriod, multiplicative);
+	evolutive = EvolutiveSeasonality.of(series, period, startPeriod, xbar);
 
     }
 

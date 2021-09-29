@@ -7,17 +7,12 @@ package jdplus.tramoseats;
 
 import demetra.modelling.ComponentInformation;
 import demetra.sa.ComponentType;
-import demetra.sa.DefaultSaDiagnostics;
 import demetra.sa.SeriesDecomposition;
 import demetra.sa.StationaryVarianceDecomposition;
 import demetra.timeseries.TsData;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sa.StationaryVarianceComputer;
-import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnostics;
-import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
-import jdplus.sa.diagnostics.GenericSaDiagnostics;
-import jdplus.sa.diagnostics.ResidualTradingDaysDiagnostics;
-import jdplus.sa.diagnostics.ResidualTradingDaysDiagnosticsConfiguration;
+import jdplus.sa.diagnostics.GenericSaTests;
 import jdplus.seats.SeatsResults;
 
 /**
@@ -29,7 +24,7 @@ import jdplus.seats.SeatsResults;
 public class TramoSeatsDiagnostics {
 
     private StationaryVarianceDecomposition varianceDecomposition;
-    private GenericSaDiagnostics genericDiagnostics;
+    private GenericSaTests genericDiagnostics;
 
     public static TramoSeatsDiagnostics of(RegSarimaModel preprocessing, SeatsResults srslts, SeriesDecomposition finals){
 //        DefaultSaDiagnostics.Builder sadiags = DefaultSaDiagnostics.builder()
@@ -40,36 +35,25 @@ public class TramoSeatsDiagnostics {
         TsData t = srslts.getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.Value);
         TsData s = srslts.getFinalComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Value);
         TsData si = mul ? TsData.multiply(s, i) : TsData.add(s, i);
-//        AdvancedResidualSeasonalityDiagnostics.Input input = new AdvancedResidualSeasonalityDiagnostics.Input(mul, sa, i);
-//        AdvancedResidualSeasonalityDiagnostics rseas = AdvancedResidualSeasonalityDiagnostics.of(AdvancedResidualSeasonalityDiagnosticsConfiguration.DEFAULT, input);
-//        if (rseas != null) {
-//            sadiags.seasonalFTestOnI(rseas.FTestOnI())
-//                    .seasonalFTestOnSa(rseas.FTestOnSa())
-//                    .seasonalQsTestOnI(rseas.QsTestOnI())
-//                    .seasonalQsTestOnSa(rseas.QsTestOnSa());
-//        }
-//        
-//        ResidualTradingDaysDiagnostics.Input tdinput = new ResidualTradingDaysDiagnostics.Input(mul, sa, i);
-//        ResidualTradingDaysDiagnostics rtd = ResidualTradingDaysDiagnostics.of(ResidualTradingDaysDiagnosticsConfiguration.DEFAULT, tdinput);
-//        if (rtd != null) {
-//            sadiags.tdFTestOnI(rtd.FTestOnI())
-//                    .tdFTestOnSa(rtd.FTestOnSa());
-//        }
+        TsData lsa = srslts.getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
+        TsData li = srslts.getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.Value);
+        TsData lin=preprocessing.linearizedSeries();
+        TsData y=preprocessing.backTransform(lin, false);
         
-        GenericSaDiagnostics gsadiags = GenericSaDiagnostics.builder()
+        GenericSaTests gsadiags = GenericSaTests.builder()
                 .mul(mul)
                 .regarima(preprocessing)
-                .lin(preprocessing.linearizedSeries())
+                .lin(lin)
+                .res(preprocessing.fullResiduals())
+                .y(y)
                 .sa(sa)
-                .t(t)
-                .s(s)
                 .irr(i)
                 .si(si)
-                .res(preprocessing.fullResiduals())
+                .lsa(lsa)
+                .lirr(li)
                 .build();
                 
         return new TramoSeatsDiagnostics(varDecomposition(preprocessing, srslts), gsadiags);
-        
     }
 
     private static StationaryVarianceDecomposition varDecomposition(RegSarimaModel preprocessing, SeatsResults srslts) {

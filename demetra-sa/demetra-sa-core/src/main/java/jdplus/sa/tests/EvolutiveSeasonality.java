@@ -34,11 +34,10 @@ public class EvolutiveSeasonality {
      * @param series Sequence of data
      * @param period Tested periodicity
      * @param startPos Position in a cycle of the first obs.
-     * @param multiplicative Multiplicative series (average = 1) or Additive series
-     * (average = 0)
-     * @return
+     * @param xbar Average of the series (0 or 1)
+      * @return
      */
-    public OneWayAnova of(final DoubleSeq series, int period, int startPos, boolean multiplicative) {
+    public OneWayAnova of(final DoubleSeq series, int period, int startPos, double xbar) {
         // determine "full cycles"
 
         int n = series.length();
@@ -50,7 +49,6 @@ public class EvolutiveSeasonality {
         if (ny == 0) {
             return null;
         }
-        double xbar = multiplicative ? 1 : 0;
 
         // determine dimensions of marginal means vectors
         double[] mc = new double[period];

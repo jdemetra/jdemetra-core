@@ -516,13 +516,13 @@ public final class Mstatistics {
         int startPeriod=O.getStart().annualPosition();
         switch (mode) {
             case LogAdditive:
-                test = new CombinedSeasonality(SI.getValues().log(), period, startPeriod, false);
+                test = new CombinedSeasonality(SI.getValues().log(), period, startPeriod, 0);
                 break;
             case Additive:
-                test = new CombinedSeasonality(SI.getValues(), period, startPeriod, false);
+                test = new CombinedSeasonality(SI.getValues(), period, startPeriod, 0);
                 break;
             default:
-                test = new CombinedSeasonality(SI.getValues(), period, startPeriod, true);
+                test = new CombinedSeasonality(SI.getValues(), period, startPeriod, 1);
         }
         m[6] = test.mvalue();
     }

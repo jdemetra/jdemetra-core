@@ -115,7 +115,7 @@ public class SeasonalityTests {
 
     public CombinedSeasonality combinedTest(double[] s, int period, int startperiod, boolean mul) {
         DoubleSeq y = DoubleSeq.of(s).cleanExtremities();
-        return new CombinedSeasonality(y, period, startperiod, mul);
+        return new CombinedSeasonality(y, period, startperiod, mul ? 1 : 0);
     }
 
     public byte[] toBuffer(CombinedSeasonality cs) {

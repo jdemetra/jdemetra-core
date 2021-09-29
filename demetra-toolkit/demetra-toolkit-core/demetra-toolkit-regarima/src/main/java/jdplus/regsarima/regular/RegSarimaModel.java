@@ -447,6 +447,8 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
             return interp;
         }
         TsData det = deterministicEffect(interp.getDomain(), v -> !(v.getCore() instanceof TrendConstant));
+        
+        
         return TsData.subtract(interp, det);
     }
 

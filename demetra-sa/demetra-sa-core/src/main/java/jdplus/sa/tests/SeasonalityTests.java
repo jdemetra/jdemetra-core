@@ -66,7 +66,7 @@ public class SeasonalityTests {
      * @param period The tested periodicity
      * @param diff The differencing order (-1 if it is automatically detected)
      * @param mean Mean correction of the differenced series
-     * @param all Executed all the tests or stop when one of them is significant
+     * @param all Executes all the tests or stop when one of them is significant
      * @return
      */
     public static SeasonalityTests seasonalityTest(DoubleSeq s, int period, int diff, boolean mean, boolean all) {
@@ -107,9 +107,9 @@ public class SeasonalityTests {
     /**
      *
      * @param input Original series
+     * @param period
      * @param ndiff Differencing order
      * @param mean Mean correction (after differencing)
-     * @return
      */
     public void test(DoubleSeq input, int period, int ndiff, boolean mean) {
         delta = DifferencingResults.of(input, period, ndiff, mean);
@@ -211,7 +211,6 @@ public class SeasonalityTests {
             }
         }
         return peaks;
-
     }
 
     public StatisticalTest getQs() {

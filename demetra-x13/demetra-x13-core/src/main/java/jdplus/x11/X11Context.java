@@ -22,7 +22,7 @@ import jdplus.x11.extremevaluecorrector.PeriodSpecificExtremeValuesCorrector;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
 import jdplus.data.analysis.DiscreteKernel;
-import jdplus.math.linearfilters.AsymmetricFilters;
+import jdplus.math.linearfilters.AsymmetricFiltersFactory;
 import jdplus.math.linearfilters.IFiniteFilter;
 import jdplus.math.linearfilters.LocalPolynomialFilters;
 import jdplus.math.linearfilters.SymmetricFilter;
@@ -169,7 +169,7 @@ public class X11Context {
         double[] c = new double[]{d};
         IFiniteFilter[] afilters = new IFiniteFilter[horizon];
         for (int i = 0; i < afilters.length; ++i) {
-            afilters[horizon - i - 1] = AsymmetricFilters.mmsreFilter2(sfilter, i, u, c, null);
+            afilters[horizon - i - 1] = AsymmetricFiltersFactory.mmsreFilter2(sfilter, i, u, c, null);
         }
         return afilters;
     }

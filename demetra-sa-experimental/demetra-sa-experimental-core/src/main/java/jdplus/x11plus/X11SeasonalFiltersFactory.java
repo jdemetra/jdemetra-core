@@ -13,7 +13,7 @@ import jdplus.math.linearfilters.SymmetricFilter;
 import demetra.data.DoubleSeq;
 import java.util.function.IntToDoubleFunction;
 import jdplus.filters.ISymmetricFiltering;
-import jdplus.math.linearfilters.AsymmetricFilters;
+import jdplus.math.linearfilters.AsymmetricFiltersFactory;
 import jdplus.math.linearfilters.LocalPolynomialFilters;
 
 /**
@@ -25,7 +25,7 @@ public class X11SeasonalFiltersFactory {
     
     public ISymmetricFiltering filter(int period, int length, IntToDoubleFunction kernel){
         SymmetricFilter sf = LocalPolynomialFilters.of(length, 0, kernel);
-        IFiniteFilter[] af = AsymmetricFilters.mmsreFilters(sf, 0, new double[0], null);
+        IFiniteFilter[] af = AsymmetricFiltersFactory.mmsreFilters(sf, 0, new double[0], null);
         return new DefaultFilter(period, sf, new AsymmetricEndPoints(af, 0));
     }
 

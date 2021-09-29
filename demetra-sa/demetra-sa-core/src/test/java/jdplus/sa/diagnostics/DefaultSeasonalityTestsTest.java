@@ -16,15 +16,21 @@
  */
 package jdplus.sa.diagnostics;
 
-import nbbrd.design.Development;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author PALATEJ
  */
-@lombok.Value
-@lombok.Builder
-@Development(status = Development.Status.Release)
-public class CombinedSeasonalityDiagnosticsConfiguration {
+public class DefaultSeasonalityTestsTest {
+    
+    public DefaultSeasonalityTestsTest() {
+    }
+
+    @Test
+    public void testSomeMethod() {
+        ResidualSeasonalityTests tests;
+     }
     
 }
