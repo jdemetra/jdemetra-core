@@ -18,6 +18,7 @@ package demetra.information;
 
 import nbbrd.design.Development;
 import demetra.util.WildCards;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -239,7 +240,11 @@ class BasicInformationExtractors {
             if (name != null) {
                 if (wcs.startsWith(name) && wcs.charAt(name.length()) == BasicInformationExtractor.SEP) {
                     String subwcs = wcs.substring(name.length() + 1);
-                    InformationExtractors.searchAll(target, fn.apply(source), new WildCards(subwcs), tclass, map);
+                    Map<String, Q> tmap=new LinkedHashMap<>();
+                    InformationExtractors.searchAll(target, fn.apply(source), new WildCards(subwcs), tclass, tmap);
+                    if (! tmap.isEmpty()){
+                        tmap.forEach((key, value)->map.put(BasicInformationExtractor.concatenate(name, key), value));
+                    }
                     return;
                 }
             }

@@ -19,6 +19,7 @@ package demetra.information;
 import nbbrd.design.Development;
 import demetra.util.WildCards;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -68,7 +69,7 @@ public interface BasicInformationExtractor<S> {
     <T> T getData(S source, String id, Class<T> tclass);
 
     default <T> void searchAll(S source, WildCards wc, Class<T> tclass, Map<String, T> map){
-        Map<String, Class> dic=new HashMap<>();
+        Map<String, Class> dic=new LinkedHashMap<>();
         fillDictionary(null, dic, false);
         dic.forEach((key, cl)->{
             if (tclass.isAssignableFrom(cl) && wc.match(key)){

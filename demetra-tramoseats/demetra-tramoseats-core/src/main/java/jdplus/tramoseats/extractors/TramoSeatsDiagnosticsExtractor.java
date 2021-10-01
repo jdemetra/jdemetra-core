@@ -7,6 +7,8 @@ package jdplus.tramoseats.extractors;
 
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
+import demetra.sa.SaDictionary;
+import demetra.sa.StationaryVarianceDecomposition;
 import jdplus.sa.diagnostics.GenericSaTests;
 import jdplus.tramoseats.TramoSeatsDiagnostics;
 import nbbrd.design.Development;
@@ -20,9 +22,10 @@ import nbbrd.service.ServiceProvider;
 @ServiceProvider(InformationExtractor.class)
 public class TramoSeatsDiagnosticsExtractor extends InformationMapping<TramoSeatsDiagnostics> {
     
-    public TramoSeatsDiagnosticsExtractor(){
+ 
+ public TramoSeatsDiagnosticsExtractor(){
         delegate("diagnostics", GenericSaTests.class, source -> source.getGenericDiagnostics());
-        
+        delegate(SaDictionary.VARIANCE, StationaryVarianceDecomposition.class, source -> source.getVarianceDecomposition());
     }
 
     @Override

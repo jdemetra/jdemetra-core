@@ -49,13 +49,13 @@ public class LeastSquaresResultsTest {
         LeastSquaresResults lsr = Ols.compute(lm);
         
         // SST = SSE + SSR
-        assertEquals(lsr.getRegressionSumOfSquares()+lsr.getResidualSumOfSquares(), lsr.getTotalSumOfSquares(), 1e-9);
+        assertEquals(lsr.getModelSumOfSquares()+lsr.getErrorSumOfSquares(), lsr.getTotalSumOfSquares(), 1e-9);
         // R2 = SSR/SST
-        assertEquals(lsr.getR2(), lsr.getRegressionSumOfSquares()/lsr.getTotalSumOfSquares(),1e-9);
+        assertEquals(lsr.getR2(), lsr.getModelSumOfSquares()/lsr.getTotalSumOfSquares(),1e-9);
         // F = MSR/MSE
-        assertEquals(lsr.Ftest().getValue(), lsr.getRegressionMeanSquare()/lsr.getResidualMeanSquare(),1e-9);
+        assertEquals(lsr.Ftest().getValue(), lsr.getModelMeanSquares()/lsr.getErrorMeanSquares(),1e-9);
         // K2 = SSR/MSE
-        double khi2=lsr.getRegressionSumOfSquares()/lsr.getResidualMeanSquare();
+        double khi2=lsr.getModelSumOfSquares()/lsr.getErrorMeanSquares();
         // khi2(5), mean=5
         assertTrue(khi2>2 && khi2<15);
         assertEquals(lsr.Ftest().getPvalue(), lsr.Khi2Test().getPvalue(), 0.2);

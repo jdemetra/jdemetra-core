@@ -181,9 +181,9 @@ public class CsvInformationFormatter {
             // request with wild cards
             if (InformationSet.hasWildCards(sid)) {
                 Map<String, Object> sel = record.searchAll(sid, Object.class);
-                List<String> ids = new ArrayList<>();
-                List<Object> objs = new ArrayList<>();
                 if (!sel.isEmpty()) {
+                    List<String> ids = new ArrayList<>();
+                    List<Object> objs = new ArrayList<>();
                     sel.forEach((s, o) -> {
                         if (o != null) {
                             ids.add(shortId(s, shortname));
@@ -265,6 +265,7 @@ public class CsvInformationFormatter {
                 items.add(m);
             }
         });
+        String[] nnames = dic.toArray(new String[dic.size()]);
         format(writer, items, names.size(), null, false);
     }
 
@@ -391,6 +392,7 @@ public class CsvInformationFormatter {
             items.add(m);
             rowheaders.add(record.getName());
         });
+        String[] nnames = dic.toArray(new String[dic.size()]);
         format(writer, items, names.size(), rowheaders, fullRowName);
     }
 

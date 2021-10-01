@@ -25,7 +25,6 @@ import nbbrd.design.Development;
 @lombok.experimental.UtilityClass
 public final class SaDictionary  {
     
-    
     /**
      * Subdivision of a SA processing
      * Pre-processing of the series (usually reg-arima), decomposition of the linearized series, final decomposition,
@@ -34,7 +33,7 @@ public final class SaDictionary  {
      */
     public final String PREPROCESSING = "preprocessing", DECOMPOSITION = "decomposition", FINAL = "final",
              BENCHMARKING = "benchmarking", DIAGNOSTICS = "diagnostics";
-    
+    public final String VARIANCE = "variancedecomposition";
     /**
      * Default components: series, trend, seasonal, seasonally adjusted, irregular, si-ratio, undefined 
      */

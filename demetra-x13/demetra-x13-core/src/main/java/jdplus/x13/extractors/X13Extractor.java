@@ -13,8 +13,10 @@ import jdplus.x13.X13Results;
 import demetra.information.BasicInformationExtractor;
 import demetra.information.InformationExtractor;
 import demetra.modelling.SeriesInfo;
+import demetra.sa.StationaryVarianceDecomposition;
 import demetra.x11.X11Results;
 import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.x13.X13Diagnostics;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -100,6 +102,7 @@ public class X13Extractor extends InformationMapping<X13Results> {
 //                -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast));
         delegate(null, RegSarimaModel.class, source -> source.getPreprocessing());
         delegate(SaDictionary.DECOMPOSITION, X11Results.class, source -> source.getDecomposition());
+        delegate(null, X13Diagnostics.class, source -> source.getDiagnostics());
     }
 
     @Override

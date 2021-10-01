@@ -15,12 +15,8 @@ import demetra.sa.DecompositionMode;
 import demetra.sa.SaDictionary;
 import demetra.timeseries.TsData;
 import jdplus.tramoseats.TramoSeatsResults;
-import demetra.information.BasicInformationExtractor;
-import static demetra.information.BasicInformationExtractor.concatenate;
 import demetra.information.InformationExtractor;
-import jdplus.arima.IArimaModel;
 import jdplus.regsarima.regular.RegSarimaModel;
-import jdplus.sarima.SarimaModel;
 import jdplus.seats.SeatsResults;
 import jdplus.tramoseats.TramoSeatsDiagnostics;
 import nbbrd.service.ServiceProvider;
@@ -33,7 +29,7 @@ import nbbrd.service.ServiceProvider;
 @ServiceProvider(InformationExtractor.class)
 public class TramoSeatsExtractor extends InformationMapping<TramoSeatsResults> {
 
-    private final String FINAL = "";
+    public static final String FINAL = "";
 
     public TramoSeatsExtractor() {
         set(SaDictionary.MODE, DecompositionMode.class, source -> source.getFinals().getMode());

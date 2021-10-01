@@ -33,7 +33,7 @@ public class Qs {
     public Qs(DoubleSeq sample, int seasLag){
         lb=new LjungBox(sample)
                 .lag(seasLag)
-                .autoCorrelationsCount(3)
+                .autoCorrelationsCount(2)
                 .usePositiveAutoCorrelations();
      }
 

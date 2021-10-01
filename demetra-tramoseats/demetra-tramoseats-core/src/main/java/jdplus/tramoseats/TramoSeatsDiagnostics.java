@@ -57,7 +57,7 @@ public class TramoSeatsDiagnostics {
     }
 
     private static StationaryVarianceDecomposition varDecomposition(RegSarimaModel preprocessing, SeatsResults srslts) {
-        StationaryVarianceComputer var = new StationaryVarianceComputer();
+        StationaryVarianceComputer var = new StationaryVarianceComputer(StationaryVarianceComputer.HP);
         boolean mul = preprocessing.getDescription().isLogTransformation();
         TsData y = preprocessing.interpolatedSeries(false),
                 t = srslts.getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.Value),

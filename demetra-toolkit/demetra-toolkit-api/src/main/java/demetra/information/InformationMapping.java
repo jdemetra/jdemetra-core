@@ -105,8 +105,8 @@ public abstract class InformationMapping<S> implements InformationExtractor<S> {
     @Override
     public boolean contains(String id) {
         synchronized (this) {
-             // Atomic extractors...
-           BasicInformationExtractor<S> extractor = map.get(id);
+            // Atomic extractors...
+            BasicInformationExtractor<S> extractor = map.get(id);
             if (extractor != null) {
                 return true;
             } else {
@@ -143,6 +143,26 @@ public abstract class InformationMapping<S> implements InformationExtractor<S> {
                 }
             }
             return null;
+        }
+    }
+
+    @Override
+    public <T> void searchAll(S source, WildCards wc, Class<T> tclass, Map<String, T> smap) {
+        for (BasicInformationExtractor<S> entry : list) {
+            entry.searchAll(source, wc, tclass, smap);
+        }
+        for (Map.Entry<String, BasicInformationExtractor<S>> entry : map.entrySet()) {
+            String key = entry.getKey();
+            String swc = wc.toString();
+            if (swc.startsWith(key)) {
+                LinkedHashMap<String, T> tmap = new LinkedHashMap<>();
+                entry.getValue().searchAll(source, wc, tclass, tmap);
+                if (! tmap.isEmpty()){
+                    for (Map.Entry<String,T> tentry: tmap.entrySet()){
+                        smap.put(tentry.getKey(), tentry.getValue());
+                    }
+                }
+            }
         }
     }
 

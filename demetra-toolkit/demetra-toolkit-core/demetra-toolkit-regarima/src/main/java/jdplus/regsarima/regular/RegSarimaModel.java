@@ -101,7 +101,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
         if (description.isMean()) {
             ITsVariable cur = new TrendConstant(arima.getD(), arima.getBd());
             double c = cursor.getAndNext(), e = Math.sqrt(diag.getAndNext() * vscale);
-            regressionDesc.add(new RegressionDesc(cur, 0, pos++, c, c / e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
+            regressionDesc.add(new RegressionDesc(cur, 0, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
             variables[k++] = Variable.variable("const", cur)
                     .withCoefficient(Parameter.estimated(c));
         }
@@ -113,7 +113,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
                 for (int j = 0; j < nfree; ++j) {
                     double c = cursor.getAndNext(), e = Math.sqrt(diag.getAndNext() * vscale);
                     p[j] = Parameter.estimated(c);
-                    regressionDesc.add(new RegressionDesc(var.getCore(), j, pos++, c, c / e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
+                    regressionDesc.add(new RegressionDesc(var.getCore(), j, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
                 }
                 variables[k++] = var.withCoefficients(p);
             } else if (nfree > 0) {
@@ -122,7 +122,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
                     if (p[j].isFree()) {
                         double c = cursor.getAndNext(), e = Math.sqrt(diag.getAndNext() * vscale);
                         p[j] = Parameter.estimated(c);
-                        regressionDesc.add(new RegressionDesc(var.getCore(), j, pos++, c, c / e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
+                        regressionDesc.add(new RegressionDesc(var.getCore(), j, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
                     }
                 }
                 variables[k++] = var.withCoefficients(p);
@@ -232,7 +232,11 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
         int item;
         int position;
 
-        double coef, tstat, pvalue;
+        double coef, stderr, pvalue;
+        
+        public double getTStat(){
+            return coef/stderr;
+        }
     }
 
     @lombok.Value
@@ -692,7 +696,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
         for (RegressionDesc desc : items) {
             if (pred.test(desc.getCore())) {
                 if (item == curitem) {
-                    return new RegressionItem(desc.core.description(desc.item, details.estimationDomain), desc.coef, desc.tstat, desc.pvalue);
+                    return new RegressionItem(desc.core.description(desc.item, details.estimationDomain), desc.coef, desc.stderr, desc.pvalue);
                 } else {
                     ++curitem;
                 }
