@@ -10,6 +10,7 @@ import demetra.information.InformationMapping;
 import demetra.sa.SaDictionary;
 import demetra.sa.StationaryVarianceDecomposition;
 import jdplus.sa.diagnostics.GenericSaTests;
+import jdplus.seats.SeatsTests;
 import jdplus.tramoseats.TramoSeatsDiagnostics;
 import nbbrd.design.Development;
 import nbbrd.service.ServiceProvider;
@@ -26,6 +27,7 @@ public class TramoSeatsDiagnosticsExtractor extends InformationMapping<TramoSeat
  public TramoSeatsDiagnosticsExtractor(){
         delegate("diagnostics", GenericSaTests.class, source -> source.getGenericDiagnostics());
         delegate(SaDictionary.VARIANCE, StationaryVarianceDecomposition.class, source -> source.getVarianceDecomposition());
+        delegate("seats", SeatsTests.class, source -> source.getSpecificDiagnostics());
     }
 
     @Override

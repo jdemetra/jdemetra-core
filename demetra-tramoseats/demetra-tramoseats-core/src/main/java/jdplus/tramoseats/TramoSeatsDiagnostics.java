@@ -14,6 +14,7 @@ import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sa.StationaryVarianceComputer;
 import jdplus.sa.diagnostics.GenericSaTests;
 import jdplus.seats.SeatsResults;
+import jdplus.seats.SeatsTests;
 
 /**
  *
@@ -25,6 +26,7 @@ public class TramoSeatsDiagnostics {
 
     private StationaryVarianceDecomposition varianceDecomposition;
     private GenericSaTests genericDiagnostics;
+    private SeatsTests specificDiagnostics;
 
     public static TramoSeatsDiagnostics of(RegSarimaModel preprocessing, SeatsResults srslts, SeriesDecomposition finals){
 //        DefaultSaDiagnostics.Builder sadiags = DefaultSaDiagnostics.builder()
@@ -52,8 +54,10 @@ public class TramoSeatsDiagnostics {
                 .lsa(lsa)
                 .lirr(li)
                 .build();
+        
+        SeatsTests st=new SeatsTests(srslts);
                 
-        return new TramoSeatsDiagnostics(varDecomposition(preprocessing, srslts), gsadiags);
+        return new TramoSeatsDiagnostics(varDecomposition(preprocessing, srslts), gsadiags, st);
     }
 
     private static StationaryVarianceDecomposition varDecomposition(RegSarimaModel preprocessing, SeatsResults srslts) {

@@ -50,11 +50,12 @@ public abstract class InformationMapping<S> implements InformationExtractor<S> {
     }
 
     public <Q> void delegate(final String name, final Class<Q> target, final Function<S, Q> fn) {
-        if (name == null || name.isEmpty()) {
-            list.add(BasicInformationExtractor.delegate("", target, fn));
-        } else {
-            map.put(name, BasicInformationExtractor.delegate(name, target, fn));
-        }
+//        if (name == null || name.isEmpty()) {
+//            list.add(BasicInformationExtractor.delegate("", target, fn));
+//        } else {
+//            map.put(name, BasicInformationExtractor.delegate(name, target, fn));
+//        }
+            list.add(BasicInformationExtractor.delegate(name, target, fn));
     }
 
     public <Q> void delegateArray(@NonNull final String name, final int start, final int end,

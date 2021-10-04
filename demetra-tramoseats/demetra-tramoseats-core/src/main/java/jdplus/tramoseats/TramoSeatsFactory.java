@@ -71,7 +71,7 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
                         r -> r.getPreprocessing());
         SeatsDiagnosticsFactory<TramoSeatsResults> seats
                 = new SeatsDiagnosticsFactory<>(true, SeatsDiagnosticsConfiguration.getDefault(),
-                        r -> r.getDecomposition());
+                        r -> r.getDiagnostics().getSpecificDiagnostics());
         
         AdvancedResidualSeasonalityDiagnosticsFactory<TramoSeatsResults> advancedResidualSeasonality
                 = new AdvancedResidualSeasonalityDiagnosticsFactory<>(true, AdvancedResidualSeasonalityDiagnosticsConfiguration.getDefault(),

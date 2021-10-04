@@ -18,6 +18,7 @@ import demetra.sa.benchmarking.SaBenchmarkingSpec;
 import demetra.sa.diagnostics.CombinedSeasonalityTest;
 import demetra.timeseries.TsData;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
+import jdplus.sa.diagnostics.GenericSaTests;
 import jdplus.sa.tests.CombinedSeasonality;
 
 /**
@@ -160,15 +161,15 @@ public class SaProtosUtility {
                 .build();
     }
 
-    public SaProtos.Diagnostics of(DefaultSaDiagnostics saDiags) {
+    public SaProtos.Diagnostics of(GenericSaTests tests, StationaryVarianceDecomposition var) {
         return SaProtos.Diagnostics.newBuilder()
-                .setSeasonalFtestOnIrregular(ToolkitProtosUtility.convert(saDiags.getSeasonalFTestOnI()))
-                .setSeasonalFtestOnSa(ToolkitProtosUtility.convert(saDiags.getSeasonalFTestOnSa()))
-                .setSeasonalQtestOnIrregular(ToolkitProtosUtility.convert(saDiags.getSeasonalQsTestOnI()))
-                .setSeasonalQtestOnSa(ToolkitProtosUtility.convert(saDiags.getSeasonalQsTestOnSa()))
-                .setTdFtestOnIrregular(ToolkitProtosUtility.convert(saDiags.getTdFTestOnI()))
-                .setTdFtestOnSa(ToolkitProtosUtility.convert(saDiags.getTdFTestOnSa()))
-                .setVarianceDecomposition(SaProtosUtility.convert(saDiags.getVarianceDecomposition()))
+                .setSeasonalFtestOnIrregular(ToolkitProtosUtility.convert(tests.residualSeasonalityTestsOnIrregular().fTest()))
+                .setSeasonalFtestOnSa(ToolkitProtosUtility.convert(tests.residualSeasonalityTestsOnSa().fTest()))
+                .setSeasonalQtestOnIrregular(ToolkitProtosUtility.convert(tests.residualSeasonalityTestsOnIrregular().qsTest()))
+                .setSeasonalQtestOnSa(ToolkitProtosUtility.convert(tests.residualSeasonalityTestsOnSa().qsTest()))
+                .setTdFtestOnIrregular(ToolkitProtosUtility.convert(tests.residualTradingDaysTests().irrTest(false)))
+                .setTdFtestOnSa(ToolkitProtosUtility.convert(tests.residualTradingDaysTests().saTest(false)))
+                .setVarianceDecomposition(SaProtosUtility.convert(var))
                 .build();
 
     }

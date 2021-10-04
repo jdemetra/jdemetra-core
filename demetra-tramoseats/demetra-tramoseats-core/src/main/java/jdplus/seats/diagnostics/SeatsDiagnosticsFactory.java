@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import jdplus.seats.SeatsResults;
 import demetra.processing.Diagnostics;
+import jdplus.seats.SeatsTests;
 
 /**
  *
@@ -40,10 +40,10 @@ public class SeatsDiagnosticsFactory<R> implements SaDiagnosticsFactory<SeatsDia
     public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(SEAS_VAR, IRR_VAR, SEAS_I_CORR));
 
     private final SeatsDiagnosticsConfiguration config;
-    private final Function<R, SeatsResults> extractor;
+    private final Function<R, SeatsTests> extractor;
     private final boolean active;
 
-    public SeatsDiagnosticsFactory(boolean active, SeatsDiagnosticsConfiguration config, Function<R, SeatsResults> extractor) {
+    public SeatsDiagnosticsFactory(boolean active, SeatsDiagnosticsConfiguration config, Function<R, SeatsTests> extractor) {
         this.config = config;
         this.extractor = extractor;
         this.active = active;
