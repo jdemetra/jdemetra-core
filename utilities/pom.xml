@@ -62,6 +62,11 @@
                 <artifactId>java-io-xml</artifactId>
                 <version>${java-io-util.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.github.nbbrd.java-io-util</groupId>
+                <artifactId>java-io-xml-bind</artifactId>
+                <version>${java-io-util.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -85,6 +90,10 @@
         <dependency>
             <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-xml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.nbbrd.java-io-util</groupId>
+            <artifactId>java-io-xml-bind</artifactId>
         </dependency>
 
         <!-- test only -->

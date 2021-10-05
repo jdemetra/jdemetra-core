@@ -99,12 +99,8 @@ public final class InformationSetSupport implements FileSupport {
     private static final Xml.Formatter<XmlInformationSet> FORMATTER;
 
     static {
-        try {
-            PARSER = Jaxb.Parser.of(XmlInformationSet.class);
-            FORMATTER = Jaxb.Formatter.of(XmlInformationSet.class).withFormatted(true);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
+        PARSER = Jaxb.Parser.of(XmlInformationSet.class);
+        FORMATTER = Jaxb.Formatter.of(XmlInformationSet.class).withFormatted(true);
     }
 
     private static XmlInformationSet unmarshalItem(Path file) throws IOException {
