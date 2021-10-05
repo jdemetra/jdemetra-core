@@ -19,7 +19,7 @@
     <properties>
         <slf4j.version>1.7.32</slf4j.version>
         <guava.version>30.1.1-jre</guava.version>
-        <java-io-util.version>0.0.14</java-io-util.version>
+        <java-io-util.version>0.0.15</java-io-util.version>
     </properties>
 
     <dependencyManagement>
@@ -62,6 +62,11 @@
                 <artifactId>java-io-xml</artifactId>
                 <version>${java-io-util.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.github.nbbrd.java-io-util</groupId>
+                <artifactId>java-io-xml-bind</artifactId>
+                <version>${java-io-util.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -85,6 +90,10 @@
         <dependency>
             <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-xml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.nbbrd.java-io-util</groupId>
+            <artifactId>java-io-xml-bind</artifactId>
         </dependency>
 
         <!-- test only -->

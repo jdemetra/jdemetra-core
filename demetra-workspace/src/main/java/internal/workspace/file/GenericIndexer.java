@@ -117,12 +117,8 @@ final class GenericIndexer implements Indexer {
     private static final Xml.Formatter<XmlGenericWorkspace> FORMATTER;
 
     static {
-        try {
-            PARSER = Jaxb.Parser.of(XmlGenericWorkspace.class);
-            FORMATTER = Jaxb.Formatter.of(XmlGenericWorkspace.class).withFormatted(true);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
+        PARSER = Jaxb.Parser.of(XmlGenericWorkspace.class);
+        FORMATTER = Jaxb.Formatter.of(XmlGenericWorkspace.class).withFormatted(true);
     }
 
     private static XmlGenericWorkspace unmarshalIndex(Path file) throws IOException {
