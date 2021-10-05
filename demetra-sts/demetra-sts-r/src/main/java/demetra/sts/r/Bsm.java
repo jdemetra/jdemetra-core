@@ -28,7 +28,6 @@ import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.LengthOfPeriod;
 import demetra.timeseries.regression.UserVariable;
 import demetra.timeseries.regression.Variable;
-import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.ssf.ISsfLoading;
@@ -141,7 +140,7 @@ public class Bsm {
 
         BsmKernel kernel = new BsmKernel(espec);
         boolean ok = kernel.process(series.getValues(), X == null ? null : X.extract(0, series.length(), 0, X.getColumnsCount()), period, spec);
-        BsmData result = kernel.result(true);
+        BsmData result = kernel.result(false);
         // create the final ssf
         SsfBsm bsm = SsfBsm.of(result);
         Ssf ssf;
@@ -152,7 +151,6 @@ public class Bsm {
         }
         DefaultDiffuseSquareRootFilteringResults frslts = DkToolkit.sqrtFilter(ssf, new SsfData(y), true);
         double[] fcasts = new double[nf * 2];
-        DiffuseConcentratedLikelihood ll = kernel.getLikelihood();
         ISsfLoading loading = ssf.measurement().loading();
         for (int i = 0, j = series.length(); i < nf; ++i, ++j) {
             fcasts[i] = loading.ZX(j, frslts.a(j));
