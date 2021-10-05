@@ -118,7 +118,7 @@ public class RegArimaEstimationProto {
     public ModellingProtos.Diagnostics diagnosticsOf(GeneralLinearModel<SarimaSpec> model) {
 
         ModellingProtos.Diagnostics.Builder builder = ModellingProtos.Diagnostics.newBuilder();
-        model.getAdditionalResults().forEach((k, v)
+        model.getResiduals().getTests().forEach((k, v)
                 -> {
             if (v instanceof StatisticalTest) {
                 builder.putResidualsTests(k, ToolkitProtosUtility.convert((StatisticalTest) v));
