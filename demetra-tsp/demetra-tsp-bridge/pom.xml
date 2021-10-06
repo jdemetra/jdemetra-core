@@ -45,20 +45,14 @@
             <artifactId>demetra-tsp-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-xml</artifactId>
             <version>${java-io-util.version}</version>
         </dependency>
-
-        <!-- runtime only -->
         <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <scope>runtime</scope>
+            <groupId>com.github.nbbrd.java-io-util</groupId>
+            <artifactId>java-io-xml-bind</artifactId>
+            <version>${java-io-util.version}</version>
         </dependency>
 
         <!-- test only -->
