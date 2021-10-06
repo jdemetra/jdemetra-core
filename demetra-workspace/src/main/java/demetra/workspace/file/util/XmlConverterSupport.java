@@ -38,13 +38,9 @@ public final class XmlConverterSupport implements FileSupport {
     @NonNull
     public static <VALUE, XML extends IXmlConverter<VALUE>> FileSupport of(@NonNull Supplier<XML> factory, @NonNull String repository) {
         ValueAdapter<VALUE, XML> adapter = new ValueAdapter<>(factory);
-        try {
-            Xml.Parser<VALUE> parser = Jaxb.Parser.of(adapter.getXmlType()).andThen(adapter::toValue);
-            Xml.Formatter<VALUE> formatter = Jaxb.Formatter.of(adapter.getXmlType()).withFormatted(true).compose(adapter::fromValue);
-            return new XmlConverterSupport(repository, parser, formatter);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
+        Xml.Parser<VALUE> parser = Jaxb.Parser.of(adapter.getXmlType()).andThen(adapter::toValue);
+        Xml.Formatter<VALUE> formatter = Jaxb.Formatter.of(adapter.getXmlType()).withFormatted(true).compose(adapter::fromValue);
+        return new XmlConverterSupport(repository, parser, formatter);
     }
 
     @lombok.NonNull
