@@ -20,14 +20,14 @@ import jdplus.ucarima.UcarimaModel;
 @lombok.experimental.UtilityClass
 public class ApiUtility {
     
-    private double[] coefficients(BackFilter filter){
-        int n=filter.getDegree();
-        double[] w=new double[n];
-        for (int i=0; i<n; ++i){
-            w[i]=filter.get(i+1);
-        }
-        return w;
-    }
+//    private double[] coefficients(BackFilter filter){
+//        int n=filter.getDegree();
+//        double[] w=new double[n];
+//        for (int i=0; i<n; ++i){
+//            w[i]=filter.get(i+1);
+//        }
+//        return w;
+//    }
     
     // ARIMA
     public demetra.arima.ArimaModel toApi(IArimaModel model, String name){
@@ -62,6 +62,8 @@ public class ApiUtility {
     }
 
     public SarimaModel fromApi(demetra.arima.SarimaModel model){
+        if (model == null)
+            return null;
         SarimaOrders spec = model.orders();
         return SarimaModel.builder(spec)
                 .phi(model.getPhi().toArray())
@@ -74,14 +76,15 @@ public class ApiUtility {
     
     //UCARIMA
     public demetra.arima.UcarimaModel toApi(UcarimaModel ucm, String[] names){
-        
+        if (ucm == null)
+            return null;
         IArimaModel model = ucm.getModel();
         int n=ucm.getComponentsCount();
         demetra.arima.ArimaModel[] cmps=new demetra.arima.ArimaModel[n];
         for (int i=0; i<n; ++i){
             ArimaModel cmp = ucm.getComponent(i);
             if (cmp != null)
-                cmps[i]=toApi(cmp, names == null ? null : names[i]);
+                cmps[i]=toApi(cmp, names == null ? "cmp-"+(i+1) : names[i]);
         }
         return new demetra.arima.UcarimaModel(model == null ? null : toApi(model, "model"),cmps);
     }

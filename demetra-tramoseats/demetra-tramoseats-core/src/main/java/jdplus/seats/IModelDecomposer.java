@@ -29,5 +29,5 @@ import jdplus.ucarima.UcarimaModel;
 @Development(status = Development.Status.Alpha)
 public interface IModelDecomposer {
     
-    UcarimaModel decompose(SarimaModel model, int period);
+    UcarimaModel decompose(SarimaModel model);
 }

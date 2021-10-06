@@ -16,12 +16,16 @@
  */
 package demetra.tramoseats.r;
 
+import demetra.arima.SarimaModel;
+import demetra.arima.UcarimaModel;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.processing.DefaultProcessingLog;
 import demetra.processing.ProcessingLog;
 import demetra.seats.DecompositionSpec;
 import demetra.seats.SeatsModelSpec;
 import demetra.timeseries.TsData;
+import jdplus.modelling.ApiUtility;
+import jdplus.seats.DefaultModelDecomposer;
 import jdplus.seats.SeatsKernel;
 import jdplus.seats.SeatsResults;
 import jdplus.seats.SeatsToolkit;
@@ -32,6 +36,21 @@ import jdplus.seats.SeatsToolkit;
  */
 @lombok.experimental.UtilityClass
 public class Seats {
+    
+    private final String[] CMPS={"trend", "seasonal", "transitory", "irregular"};
+    
+    public UcarimaModel decompose(SarimaModel arima, double eps, double rmod, double smod, double smodpi, String approximation){
+        jdplus.sarima.SarimaModel sarima = ApiUtility.fromApi(arima);
+        DecompositionSpec spec=DecompositionSpec.builder()
+                .approximationMode(DecompositionSpec.ModelApproximationMode.valueOf(approximation))
+                .seasTolerance(eps)
+                .trendBoundary(rmod)
+                .seasBoundary(smod)
+                .seasBoundaryAtPi(smodpi)
+                .build();
+        jdplus.ucarima.UcarimaModel ucm = new DefaultModelDecomposer(spec).decompose(sarima);
+        return ApiUtility.toApi(ucm, CMPS);
+    }
 
     public SeatsResults process(TsData data, boolean log, int[] order, int[] seasonal, boolean mean, int nb, int nf) {
 
