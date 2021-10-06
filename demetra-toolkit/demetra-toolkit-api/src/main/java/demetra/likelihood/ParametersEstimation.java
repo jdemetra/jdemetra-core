@@ -30,11 +30,17 @@ import demetra.math.matrices.MatrixType;
 @Development(status = Development.Status.Release)
 public class ParametersEstimation {
     
+    private static final ParametersEstimation EMPTY=new ParametersEstimation(DoubleSeq.empty(), "none");
+    
+    public static ParametersEstimation empty(){
+        return EMPTY;
+    }
+    
     public ParametersEstimation(DoubleSeq values, String desc){
         this.values=values;
         this.description=desc;
-        this.scores=Doubles.EMPTY;
-        this.covariance=MatrixType.EMPTY;
+        this.scores=DoubleSeq.empty();
+        this.covariance=MatrixType.empty();
     }
     /**
      * Estimated values of the parameters

@@ -16,39 +16,30 @@
  */
 package jdplus.sa.diagnostics;
 
-import demetra.processing.Diagnostics;
-import demetra.processing.DiagnosticsFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import nbbrd.service.ServiceProvider;
 import demetra.information.Explorable;
+import demetra.processing.DiagnosticsFactory;
+import demetra.processing.Diagnostics;
 
 /**
  *
  * @author Kristof Bayens
  */
-@ServiceProvider(DiagnosticsFactory.class)
-public class ResidualSeasonalityDiagnosticsFactory implements DiagnosticsFactory<Explorable> {
+public class ResidualSeasonalityDiagnosticsFactory implements DiagnosticsFactory<ResidualSeasonalityDiagnosticsConfiguration, Explorable> {
 
     public static final String NAME = "combined seasonality test",
             SA = NAME + " on sa", SA_LAST = NAME + " on sa (last 3 years)", IRR = NAME + " on irregular";
     public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(SA, SA_LAST, IRR));
 
     private final ResidualSeasonalityDiagnosticsConfiguration config;
-    private boolean enabled;
+    private final boolean active;
 
-    public ResidualSeasonalityDiagnosticsFactory() {
-        config = ResidualSeasonalityDiagnosticsConfiguration.DEFAULT;
-    }
-
-    public ResidualSeasonalityDiagnosticsFactory(ResidualSeasonalityDiagnosticsConfiguration config) {
+    public ResidualSeasonalityDiagnosticsFactory(boolean active, ResidualSeasonalityDiagnosticsConfiguration config) {
         this.config = config;
-    }
-
-    public ResidualSeasonalityDiagnosticsConfiguration getConfiguration() {
-        return config;
+        this.active=active;
     }
 
     @Override
@@ -62,17 +53,21 @@ public class ResidualSeasonalityDiagnosticsFactory implements DiagnosticsFactory
     }
 
     @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public boolean isActive() {
+        return active;
     }
 
     @Override
     public Diagnostics of(Explorable rslts) {
         return ResidualSeasonalityDiagnostics.create(rslts, config);
     }
+
+    @Override
+    public ResidualSeasonalityDiagnosticsConfiguration getConfiguration() {
+ return config;   }
+
+    @Override
+    public ResidualSeasonalityDiagnosticsFactory with(boolean active, ResidualSeasonalityDiagnosticsConfiguration newConfig) {
+        return new ResidualSeasonalityDiagnosticsFactory(active, newConfig);
+     }
 }

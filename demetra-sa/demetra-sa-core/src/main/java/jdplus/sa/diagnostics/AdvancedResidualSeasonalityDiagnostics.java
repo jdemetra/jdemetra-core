@@ -16,19 +16,14 @@
  */
 package jdplus.sa.diagnostics;
 
-import demetra.data.DoubleSeq;
 import nbbrd.design.Development;
-import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import jdplus.modelling.DifferencingResults;
-import jdplus.stats.DescriptiveStatistics;
-import jdplus.sa.tests.FTest;
-import jdplus.sa.tests.Qs;
+import demetra.processing.Diagnostics;
 
 /**
  *
@@ -37,114 +32,32 @@ import jdplus.sa.tests.Qs;
 @Development(status = Development.Status.Release)
 public class AdvancedResidualSeasonalityDiagnostics implements Diagnostics {
     
-    @lombok.Value
-    public static class Input{
-        
-        /**
-         * Multiplicative decomposition
-         */
-        boolean multiplicative;
-        
-        /**
-         * Seasonally adjusted series, linearized, level
-         */
-        TsData sa;
-        
-        /**
-         * Irregular component, linearized, level (around 0 or 1)
-         */
-        TsData irregular;
-    }
-
-    private static final double E_LIMIT = .005;
     private StatisticalTest qs_sa, qs_i, f_sa, f_i;
     private double sev, bad, unc;
 
-    private static boolean isSignificant(DoubleSeq s, DoubleSeq ref, double limit) {
-        DescriptiveStatistics sdesc = DescriptiveStatistics.of(s);
-        DescriptiveStatistics refdesc = DescriptiveStatistics.of(ref);
-        double se = sdesc.getStdev();
-        double refe = refdesc.getRmse();
-        return refe == 0 || se / refe > limit;
-    }
-
-    private static boolean isSignificant(DoubleSeq i) {
-        if (i == null) {
-            return false;
-        }
-        DescriptiveStatistics idesc = DescriptiveStatistics.of(i);
-        double se = idesc.getStdev();
-        return se > E_LIMIT;
-    }
-
-    public static AdvancedResidualSeasonalityDiagnostics of(AdvancedResidualSeasonalityDiagnosticsConfiguration config, Input data) {
+    public static AdvancedResidualSeasonalityDiagnostics of(AdvancedResidualSeasonalityDiagnosticsConfiguration config, GenericSaTests data) {
         try {
             AdvancedResidualSeasonalityDiagnostics test = new AdvancedResidualSeasonalityDiagnostics();
-            TsData sa = data.getSa();
-            TsData i = data.getIrregular();
-            boolean mul=data.isMultiplicative();
+            ResidualSeasonalityTests rsa = data.residualSeasonalityTestsOnSa();
+            ResidualSeasonalityTests ri = data.residualSeasonalityTestsOnIrregular();
+            if (rsa == null || ri == null)
+                return null;
+            TsData sa = rsa.getSeries();
+            TsData i = ri.getSeries();
             if (sa == null && i == null) {
                 return null;
             }
-            boolean isignif = mul ? isSignificant(i.getValues()) : (sa != null && i != null) ? isSignificant(i.getValues(), sa.getValues(), E_LIMIT) : true;
+            boolean isignif = SaDiagnosticsUtility.isSignificant(i.getValues(), sa.getValues());
             if (config.isQs()) {
-                int ny = config.getQslast();
-                if (sa != null) {
-                    TsData sac = sa;
-                    if (mul) {
-                        sac = sac.log();
-                    }
-                    int ifreq = sac.getAnnualFrequency();
-                    TsData salast = sac;
-                    if (ny != 0) {
-                        salast = sac.drop(Math.max(0, sac.length() - ifreq * ny - 1), 0);
-                    }
-                    DifferencingResults dsa = DifferencingResults.of(salast.getValues(), salast.getAnnualFrequency(), -1, true);
-                    if (mul ? isSignificant(dsa.getDifferenced()) : isSignificant(dsa.getDifferenced(), salast.getValues(), E_LIMIT)) {
-                        test.qs_sa = new Qs(dsa.getDifferenced(), ifreq)
-                                .autoCorrelationsCount(2)
-                                .build();
-                    }
-                }
-                if (i != null && isignif) {
-                    TsData ic = i;
-                    if (mul) {
-                        ic = ic.log();
-                    }
-                    int ifreq = ic.getAnnualFrequency();
-                    TsData ilast = ic;
-                    if (ny != 0) {
-                        ilast = ic.drop(Math.max(0, ic.length() - ifreq * ny), 0);
-                    }
-                    DifferencingResults di = DifferencingResults.of(ilast.getValues(), ilast.getAnnualFrequency(), -1, true);
-                    test.qs_i = new Qs(di.getDifferenced(), ifreq)
-                            .autoCorrelationsCount(2)
-                            .build();
+                test.qs_sa = rsa.qsTest();
+                if (isignif) {
+                    test.qs_i = ri.qsTest();
                 }
             }
             if (config.isFtest()) {
-                int ny = config.getFlast();
-                if (sa != null) {
-                    TsData sac = sa;
-                    if (mul) {
-                        sac = sac.log();
-                    }
-                    int ifreq = sac.getAnnualFrequency();
-                    test.f_sa=new FTest(sac.getValues(), ifreq)
-                            .model(FTest.Model.AR)
-                            .ncycles(ny)
-                            .build();
-                }
-                if (i != null && isignif) {
-                    TsData ic = i;
-                    if (mul) {
-                        ic = ic.log();
-                    }
-                    int ifreq = ic.getAnnualFrequency();
-                    test.f_i=new FTest(ic.getValues(), ifreq)
-                            .model(FTest.Model.AR)
-                            .ncycles(ny)
-                            .build();
+                test.f_sa = rsa.fTest();
+                if (isignif) {
+                    test.f_i = ri.fTest();
                 }
             }
             test.sev = config.getSevereThreshold();

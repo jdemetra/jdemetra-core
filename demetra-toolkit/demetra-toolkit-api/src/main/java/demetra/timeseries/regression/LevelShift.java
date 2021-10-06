@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
  * @author palatej
  */
 @lombok.Value
-public class LevelShift implements IOutlier {
+public class LevelShift implements IOutlier, ISystemVariable {
 
     public static final String CODE = "LS";
 

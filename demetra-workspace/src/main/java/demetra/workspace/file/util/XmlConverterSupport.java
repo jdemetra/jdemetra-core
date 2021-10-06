@@ -17,7 +17,7 @@
 package demetra.workspace.file.util;
 
 import demetra.toolkit.io.xml.legacy.IXmlConverter;
-import demetra.workspace.util.Paths;
+import demetra.util.Paths;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

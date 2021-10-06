@@ -16,7 +16,7 @@
  */
 package demetra.workspace;
 
-import demetra.workspace.util.Id;
+import demetra.util.Id;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import nbbrd.design.Immutable;

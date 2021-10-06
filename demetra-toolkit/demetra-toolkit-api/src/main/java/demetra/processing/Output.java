@@ -48,19 +48,20 @@ public interface Output<D> {
      *
      * @param document The considered document
      */
-    void process(D document);
+    void process(D document)throws Exception;
 
     /**
      * Starts the processing of the item identified by the given id;
      *
      * @param context
      */
-    void start(Object context);
+    void start(Object context)throws Exception;
 
     /**
      * Finishes the processing of the item identified by the given id;
      *
      * @param context
+     * @throws java.lang.Exception
      */
-    void end(Object context);
+    void end(Object context)throws Exception;
 }

@@ -24,8 +24,8 @@ public class AsymmetricFiltersTest {
         int h = 6;
         SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 2, DiscreteKernel.henderson(h));
         double[] c = new double[]{2 / Math.sqrt(Math.PI) / 3.5};
-        IFiniteFilter f1 = AsymmetricFilters.mmsreFilter(lp, 0, 0, c, null);
-        IFiniteFilter f2 = AsymmetricFilters.musgraveFilter(lp, 0, 3.5);
+        IFiniteFilter f1 = AsymmetricFiltersFactory.mmsreFilter(lp, 0, 0, c, null);
+        IFiniteFilter f2 = AsymmetricFiltersFactory.musgraveFilter(lp, 0, 3.5);
         assertTrue(DoubleSeq.of(f1.weightsToArray()).distance(DoubleSeq.of(f2.weightsToArray())) < 1e-9);
     }
 
@@ -36,10 +36,10 @@ public class AsymmetricFiltersTest {
 
     public static void displayMusgrave(int h) {
         SymmetricFilter lp = LocalPolynomialFilters.ofDefault(h, 2, DiscreteKernel.henderson(h));
-//        IFiniteFilter[] f1 = AsymmetricFilters.musgraveFilters(lp, 1);
-//        IFiniteFilter[] f2 = AsymmetricFilters.musgraveFilters(lp, 3.5);
-//        IFiniteFilter[] f3 = AsymmetricFilters.musgraveFilters(lp, 4.5);
-//        IFiniteFilter[] f4 = AsymmetricFilters.musgraveFilters(lp, 100);
+//        IFiniteFilter[] f1 = AsymmetricFiltersFactory.musgraveFilters(lp, 1);
+//        IFiniteFilter[] f2 = AsymmetricFiltersFactory.musgraveFilters(lp, 3.5);
+//        IFiniteFilter[] f3 = AsymmetricFiltersFactory.musgraveFilters(lp, 4.5);
+//        IFiniteFilter[] f4 = AsymmetricFiltersFactory.musgraveFilters(lp, 100);
 //        for (int i = 0; i < 3; ++i) {
 //            displayFilters(f1, i);
 //            displayFilters(f2, i);
@@ -48,9 +48,9 @@ public class AsymmetricFiltersTest {
 //        }
 //        
         double[] c=new double[0];
-        IFiniteFilter[] m1 = AsymmetricFilters.mmsreFilters(lp, 0, c, null, Math.PI/18, 1 );
-        IFiniteFilter[] m2 = AsymmetricFilters.mmsreFilters(lp, 0, c, null, Math.PI/18, 10);
-        IFiniteFilter[] m3 = AsymmetricFilters.mmsreFilters(lp, 0, c, null, Math.PI/18, 100);
+        IFiniteFilter[] m1 = AsymmetricFiltersFactory.mmsreFilters(lp, 0, c, null, Math.PI/18, 1 );
+        IFiniteFilter[] m2 = AsymmetricFiltersFactory.mmsreFilters(lp, 0, c, null, Math.PI/18, 10);
+        IFiniteFilter[] m3 = AsymmetricFiltersFactory.mmsreFilters(lp, 0, c, null, Math.PI/18, 100);
         for (int i = 0; i < 3; ++i) {
             displayFilters(m1, i);
             displayFilters(m2, i);

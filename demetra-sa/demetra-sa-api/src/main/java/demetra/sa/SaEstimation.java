@@ -16,9 +16,7 @@
  */
 package demetra.sa;
 
-import demetra.information.InformationSet;
 import demetra.processing.ProcDiagnostic;
-import demetra.processing.ProcQuality;
 import demetra.processing.ProcessingLog;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +26,9 @@ import demetra.information.Explorable;
  *
  * @author PALATEJ
  */
-@lombok.Value
+@lombok.Getter
+@lombok.experimental.FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
+@lombok.AllArgsConstructor
 @lombok.Builder( toBuilder=true)
 public class SaEstimation {
     
@@ -44,12 +44,6 @@ public class SaEstimation {
    
     @lombok.Singular
     List<ProcDiagnostic>  diagnostics;
-    
-  
-    /**
-     * Specification corresponding to the results of the current estimation (fully identified model)
-     */
-    SaSpecification pointSpec;
     
     /**
      * Warnings on the current estimation

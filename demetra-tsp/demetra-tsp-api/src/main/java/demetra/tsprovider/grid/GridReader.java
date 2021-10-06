@@ -22,7 +22,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsInformationType;
 import demetra.timeseries.util.ObsGathering;
 import demetra.timeseries.util.TsDataBuilder;
-import demetra.tsprovider.util.MultiLineNameUtil;
+import demetra.util.MultiLineNameUtil;
 import demetra.tsprovider.util.ObsFormat;
 import demetra.util.Substitutor;
 import internal.tsprovider.grid.InternalValueReader;

@@ -6,13 +6,10 @@
 package demetra.highfreq;
 
 import demetra.data.DoubleSeq;
-import demetra.highfreq.extractors.FractionalAirlineDecompositionExtractor;
-import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.MatrixType;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import demetra.information.Explorable;
+import java.util.List;
 
 /**
  * Low-level results. Should be refined
@@ -22,23 +19,24 @@ import demetra.information.Explorable;
 @lombok.Builder
 public class FractionalAirlineDecomposition implements Explorable {
 
+    DoubleSeq y;
     FractionalAirline model;
 
     private DoubleSeq parameters, score;
     private MatrixType parametersCovariance;
-
+    
     LikelihoodStatistics likelihood;
-    double[] y, t, s, i, n, stdeT, stdeS, stdeI, stdeN;
+    @lombok.Singular
+    List<SeriesComponent> components;
+    
     demetra.arima.UcarimaModel ucarima;
-
-    public double[] getSa() {
-        double[] sa = y.clone();
-        if (s != null) {
-            for (int j = 0; j < sa.length; ++j) {
-                sa[j] -= s[j];
-            }
+    
+    public SeriesComponent component(String name){
+        for (SeriesComponent cmp : components){
+            if (cmp.getName().equalsIgnoreCase(name))
+                return cmp;
         }
-        return sa;
+        return null;
     }
-   
+
 }

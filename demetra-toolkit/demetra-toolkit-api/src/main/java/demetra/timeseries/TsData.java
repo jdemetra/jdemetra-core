@@ -358,7 +358,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
 
     public static TsData subtract(double d, TsData l) {
         if (d == 0) {
-            return l.chs();
+            return l == null ? null : l.chs();
         } else {
             return l.fastFn(x -> d - x);
         }
@@ -366,7 +366,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
 
     public static TsData subtract(TsData l, TsData r) {
         if (l == null) {
-            return r;
+            return r == null ? null : r.chs();
         } else if (r == null) {
             return l;
         } else {

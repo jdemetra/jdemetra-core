@@ -98,4 +98,9 @@ public class CycleItem extends StateItem {
     public int stateDim() {
         return 2;
     }
+    
+    @Override
+    public boolean isScalable() {
+        return !v.isFixed();
+    }
 }

@@ -16,17 +16,12 @@
  */
 package jdplus.seats.diagnostics;
 
-import demetra.modelling.ComponentInformation;
-import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
-import demetra.sa.ComponentType;
-import demetra.sa.SeriesDecomposition;
-import demetra.timeseries.TsData;
 import java.util.Collections;
 import java.util.List;
-import jdplus.seats.SeatsResults;
-import jdplus.ucarima.UcarimaModel;
 import jdplus.ucarima.WienerKolmogorovDiagnostics;
+import demetra.processing.Diagnostics;
+import jdplus.seats.SeatsTests;
 
 /**
  *
@@ -40,7 +35,7 @@ public class SeatsDiagnostics implements Diagnostics {
     private double bad = SeatsDiagnosticsConfiguration.BAD, uncertain = SeatsDiagnosticsConfiguration.UNC;
     private boolean same, cutoff;
 
-    public static SeatsDiagnostics of(SeatsDiagnosticsConfiguration config, SeatsResults srslts) {
+    public static SeatsDiagnostics of(SeatsDiagnosticsConfiguration config, SeatsTests srslts) {
         try {
             if (srslts == null) {
                 return null;
@@ -56,33 +51,16 @@ public class SeatsDiagnostics implements Diagnostics {
         }
     }
 
-    public SeatsDiagnostics(SeatsDiagnosticsConfiguration config, SeatsResults rslts) {
+    public SeatsDiagnostics(SeatsDiagnosticsConfiguration config, SeatsTests rslts) {
         bad = config.getBadThreshold();
         uncertain = config.getUncertainThreshold();
         test(rslts);
     }
 
-    private void test(SeatsResults srslts) {
+    private void test(SeatsTests srslts) {
         same = !srslts.isModelChanged();
         cutoff=srslts.isParametersCutOff();
-        SeriesDecomposition decomposition = srslts.getInitialComponents();
-        UcarimaModel ucm = srslts.getCompactUcarimaModel();
-
-        int[] cmps = new int[]{1, -2, 2, 3};
-        double err = Math.sqrt(srslts.getInnovationVariance());
-        TsData t = decomposition.getSeries(ComponentType.Trend, ComponentInformation.Value);
-        TsData s = decomposition.getSeries(ComponentType.Seasonal, ComponentInformation.Value);
-        TsData i = decomposition.getSeries(ComponentType.Irregular, ComponentInformation.Value);
-        TsData sa = decomposition.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value);
-
-        double[][] data = new double[][]{
-            t == null ? null : t.getValues().toArray(),
-            sa == null ? null : sa.getValues().toArray(),
-            s == null ? null : s.getValues().toArray(),
-            i == null ? null : i.getValues().toArray()
-        };
-
-        diags = WienerKolmogorovDiagnostics.make(ucm, err, data, cmps);
+        diags = srslts.wkDiagnostics();
     }
 
     public WienerKolmogorovDiagnostics getDiagnostics() {

@@ -28,36 +28,34 @@ public class FractionalAirlineMapping implements IArimaMapping<ArimaModel> {
 
     private final double f0, f1;
     private final int p0;
-    private final boolean adjust;
     private final boolean stationary;
 
-    private FractionalAirlineMapping(double f0, double f1, int p0, boolean adjust, boolean stationary) {
+    private FractionalAirlineMapping(double f0, double f1, int p0, boolean stationary) {
         this.f0 = f0;
         this.f1 = f1;
         this.p0 = p0;
-        this.adjust = adjust;
         this.stationary = stationary;
     }
 
     public FractionalAirlineMapping(double period) {
-        this(period, true, false);
+        this(period, false);
     }
 
-    public FractionalAirlineMapping(double period, boolean adjust, boolean stationary) {
-        this.adjust = adjust;
+    public FractionalAirlineMapping(double period, boolean stationary) {
         this.stationary = stationary;
-        if (adjust) {
-            p0 = (int) period;
+        p0 = (int) period;
+        if (Math.abs(period - p0) < 1e-9) {
+            f1 = 0;
+            f0 = 1;
+        } else {
             f1 = period - p0;
             f0 = 1 - f1;
-        } else {
-            p0 = (int) (period + .5);
-            f1 = f0 = 0;
         }
     }
 
     @Override
     public ArimaModel map(DoubleSeq p) {
+        boolean adjust = f1 > 0;
         double th = p.get(0), bth = p.get(1);
         double[] ma = new double[]{1, -th};
         double[] dma = new double[adjust ? p0 + 2 : p0 + 1];
@@ -100,11 +98,7 @@ public class FractionalAirlineMapping implements IArimaMapping<ArimaModel> {
         BackFilter ma = t.getMa();
         double[] p = new double[2];
         p[0] = -ma.get(1);
-        if (adjust) {
-            p[1] = -ma.get(p0) / f0;
-        } else {
-            p[1] = -ma.get(p0);
-        }
+        p[1] = -ma.get(p0) / f0;
         return Doubles.of(p);
     }
 
@@ -180,6 +174,6 @@ public class FractionalAirlineMapping implements IArimaMapping<ArimaModel> {
 
     @Override
     public IArimaMapping<ArimaModel> stationaryMapping() {
-        return stationary ? this : new FractionalAirlineMapping(f0, f1, p0, adjust, true);
+        return stationary ? this : new FractionalAirlineMapping(f0, f1, p0, true);
     }
 }

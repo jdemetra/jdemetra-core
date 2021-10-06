@@ -88,5 +88,9 @@ public class SeasonalComponentItem extends StateItem {
         return period-1;
     }
 
+    @Override
+    public boolean isScalable() {
+        return !v.isFixed();
+    }
     
 }

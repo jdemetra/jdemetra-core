@@ -29,6 +29,8 @@ import jdplus.math.Simplifying;
 import demetra.util.Arrays2;
 import lombok.NonNull;
 import demetra.data.DoubleSeq;
+import internal.jdplus.maths.polynomials.Coefficients;
+import internal.jdplus.maths.polynomials.Polynomials;
 import nbbrd.design.Unsafe;
 import jdplus.math.ComplexUtility;
 
@@ -40,12 +42,11 @@ import jdplus.math.ComplexUtility;
 @Immutable
 public final class Polynomial {
 
-    public static final Polynomial ZERO = new Polynomial(Polynomial.Coefficients.zero());
-    public static final Polynomial ONE = new Polynomial(Polynomial.Coefficients.one());
+    public static final Polynomial ZERO = new Polynomial(Coefficients.zero());
+    public static final Polynomial ONE = new Polynomial(Coefficients.one());
 
     private final double[] coeff;
     private final AtomicReference<Complex[]> defRoots = new AtomicReference<>(); // caching the roots
-    private static final double EPSILON = 1e-9;
 
     /**
      * cut-off value for zero. 1e-9.
@@ -53,7 +54,7 @@ public final class Polynomial {
      * @return
      */
     public static double getEpsilon() {
-        return EPSILON;
+        return Coefficients.EPSILON;
     }
 
     //<editor-fold defaultstate="collapsed" desc="Static factories">
@@ -141,7 +142,7 @@ public final class Polynomial {
 
     /**
      * Constructor: the polynomial is initialized with an array of complex
-     * roots. The constant term = 1.0 (which also means that all roots 
+     * roots. The constant term = 1.0 (which also means that all roots
      * should be different from 0)
      *
      * @param roots
@@ -175,14 +176,15 @@ public final class Polynomial {
             }
             p[0] = p[0].times(roots[i].negate());
         }
-        double p0=p[0].getRe();
-        if (p0 == 0)
+        double p0 = p[0].getRe();
+        if (p0 == 0) {
             throw new IllegalArgumentException("Roots should all be different from 0");
-        double fac=c/p0;
-        for (int i = 1; i < p.length; ++i) {
-            pcoeff[i] = p[i].getRe()*fac;
         }
-        pcoeff[0]=c;
+        double fac = c / p0;
+        for (int i = 1; i < p.length; ++i) {
+            pcoeff[i] = p[i].getRe() * fac;
+        }
+        pcoeff[0] = c;
 
         Polynomial pol = new Polynomial(pcoeff);
         pol.defRoots.set(roots.clone());
@@ -230,16 +232,16 @@ public final class Polynomial {
     private static Complex smooth(final Complex c) {
         double re = c.getRe();
         double im = c.getIm();
-        if (Math.abs(im) <= EPSILON) {
+        if (Math.abs(im) <= Coefficients.EPSILON) {
             im = 0;
         }
-        if (Math.abs(re) <= EPSILON) {
+        if (Math.abs(re) <= Coefficients.EPSILON) {
             re = 0;
         }
-        if (Math.abs(re - 1) <= EPSILON) {
+        if (Math.abs(re - 1) <= Coefficients.EPSILON) {
             re = 1;
         }
-        if (Math.abs(re + 1) <= EPSILON) {
+        if (Math.abs(re + 1) <= Coefficients.EPSILON) {
             re = -1;
         }
         return Complex.cart(re, im);
@@ -347,7 +349,7 @@ public final class Polynomial {
         // if (l == null)
         // throw new ArgumentNullException("l");
         //return divide(this, r).getQuotient();
-        return Polynomial.ofInternal(divide(coeff, r.coeff));
+        return Polynomial.ofInternal(Polynomials.divide(coeff, r.coeff));
     }
 
     /**
@@ -359,7 +361,7 @@ public final class Polynomial {
      */
     @Override
     public boolean equals(final Object obj) {
-        return obj instanceof Polynomial ? equals((Polynomial) obj, EPSILON) : false;
+        return obj instanceof Polynomial ? equals((Polynomial) obj, Coefficients.EPSILON) : false;
     }
 
     public boolean equals(Polynomial other, double epsilon) {
@@ -432,44 +434,6 @@ public final class Polynomial {
     }
 
     /**
-     * Evaluates a polynomial defined by given coefficients at a given point.
-     * The coefficients are stored in normal order (the first coefficient
-     * corresponds to the constant and the last one to the highest power)
-     *
-     * @param c The coefficients. Should contain at least one element (not
-     * checked)
-     * @param x The evaluation point;
-     * @return the value ofFunction p(x)
-     */
-    public static double evaluate(final double[] c, final double x) {
-        int p = c.length - 1;
-        double y = c[p--];
-        for (; p >= 0; --p) {
-            y = c[p] + (y * x);
-        }
-        return y;
-    }
-
-    /**
-     * Evaluates a polynomial with coefficients defined by a give function at a
-     * given point.
-     *
-     * @param degree The getDegree ofFunction the polynomial
-     * @param fn The function defining the coefficients. fn(i) is the
-     * coefficient corresponding to the power i
-     * @param x The evaluation point;
-     * @return the value ofFunction p(x)
-     */
-    public static double evaluate(final int degree, IntToDoubleFunction fn, final double x) {
-        int p = degree;
-        double y = fn.applyAsDouble(p--);
-        for (; p >= 0; --p) {
-            y = fn.applyAsDouble(p) + (y * x);
-        }
-        return y;
-    }
-
-    /**
      * The method evaluates the polynomial for the complex number (cos x, sin x)
      * value x.
      *
@@ -534,7 +498,8 @@ public final class Polynomial {
      * @return The difference ofFunction l and r
      */
     public Polynomial minus(final Polynomial r) {
-        return plus(r.negate());
+        double[] result = Polynomials.minus(coeff, r.coeff);
+        return new Polynomial(Coefficients.ofInternal(result));
     }
 
     /**
@@ -611,14 +576,7 @@ public final class Polynomial {
         if (r.isZero()) {
             return this;
         }
-        // swap l and r if l.Degree < r.Degree
-        if (coeff.length < r.coeff.length) {
-            return r.plus(this);
-        }
-        double[] result = coeff.clone();
-        for (int i = 0; i < r.coeff.length; ++i) {
-            result[i] += r.get(i);
-        }
+        double[] result = Polynomials.plus(coeff, r.coeff);
         return new Polynomial(Coefficients.ofInternal(result));
     }
 
@@ -683,7 +641,7 @@ public final class Polynomial {
         double[] result = coefficients().toArray();
         for (int i = 0; i < result.length; ++i) {
             double c = Math.round(result[i]);
-            if (DoubleSeq.equals(c, result[i], EPSILON)) {
+            if (DoubleSeq.equals(c, result[i], Coefficients.EPSILON)) {
                 result[i] = c;
             }
         }
@@ -716,8 +674,8 @@ public final class Polynomial {
 
     /**
      * The operator multiplies two polynomials creating a new polynomial as a
-     * result. The roots ofFunction the resulting polynomial are only calculated
-     * when the roots ofFunction l and r have been calculated before.
+     * result. The roots of the resulting polynomial are only calculated
+     * when the roots of l and r have been calculated before.
      *
      * @param r A polynomial ofFunction getDegree d'
      * @return The product ofFunction l and r
@@ -736,17 +694,7 @@ public final class Polynomial {
         if (this.isIdentity()) {
             return r;
         }
-        int d = degree() + r.degree();
-        double[] result = new double[d + 1];
-        for (int u = 0; u < coeff.length; ++u) {
-            if (coeff[u] != 0) {
-                for (int v = 0; v < r.coeff.length; ++v) {
-                    if (r.coeff[v] != 0) {
-                        result[u + v] += coeff[u] * r.coeff[v];
-                    }
-                }
-            }
-        }
+        double[] result = Polynomials.times(coeff, r.coeff);
         Polynomial prod = new Polynomial(result);
         {
             Complex[] lRoots = defRoots.get();
@@ -832,103 +780,6 @@ public final class Polynomial {
         return sb.toString();
     }
 
-    static final class Coefficients {
-
-        private static final double[] C_ZERO = {0}, C_ONE = {1},
-                C_POSINF = {Double.POSITIVE_INFINITY},
-                C_NEGINF = {Double.NEGATIVE_INFINITY},
-                C_NAN = {Double.NaN};
-
-        private Coefficients() {
-            // static class
-        }
-
-        /**
-         * Return the coefficients of a polynomial of getDegree n as an array of
-         * doubles. All coefficients are set to zero, except the highest which
-         * is set to 1.
-         *
-         * @param degree
-         * @return
-         */
-        static double[] fromDegree(int degree) {
-            // all coefficuents are set to 0, except the highest.
-            double[] c = new double[degree + 1];
-            c[degree] = 1;
-            return c;
-        }
-
-        static double[] ofInternal(double[] c) {
-            int nd = getUsedCoefficients(c, EPSILON);
-            if (nd == c.length) {
-                return c;
-            } else if (nd == 0) {
-                return C_ZERO;
-            } else {
-                return Arrays.copyOf(c, nd);
-            }
-        }
-
-        static double[] of(double[] c) {
-            int nd = getUsedCoefficients(c, EPSILON);
-            if (nd == c.length) {
-                return c.clone();
-            } else if (nd == 0) {
-                return C_ZERO;
-            } else {
-                return Arrays.copyOf(c, nd);
-            }
-        }
-
-        static double[] of(double c0, @NonNull double[] c) {
-            int nd = getUsedCoefficients(c, EPSILON);
-            if (nd == 0) {
-                if (Math.abs(c0) <= EPSILON) {
-                    return C_ZERO;
-                } else if (c0 == 1) {
-                    return C_ONE;
-                } else {
-                    return new double[]{c0};
-                }
-            } else {
-                double[] nc = new double[nd + 1];
-                nc[0] = c0;
-                for (int i = 0; i < nd; ++i) {
-                    nc[i + 1] = c[i];
-                }
-                return nc;
-            }
-        }
-
-        static double[] zero() {
-            return C_ZERO;
-        }
-
-        static double[] one() {
-            return C_ONE;
-        }
-
-        static double[] positiveInfinity() {
-            return C_POSINF;
-        }
-
-        static double[] negativeInfinity() {
-            return C_NEGINF;
-        }
-
-        static double[] nan() {
-            return C_NAN;
-        }
-
-        static int getUsedCoefficients(double[] coefficients, double eps) {
-            int n = coefficients.length;
-            while ((n > 0) && (Math.abs(coefficients[n - 1]) <= eps)) {
-                --n;
-            }
-            return n;
-        }
-    }
-
     /**
      *
      */
@@ -1007,36 +858,16 @@ public final class Polynomial {
                     double a = element.getRe(), b = element.getIm();
                     if (b == 0) // real root
                     {
-                        /*
-                         * rtmp.pcoeff[0] = -a; Division division = new Division();
-                         * division.divide(simplifiedLeft, rtmp); Polynomial div =
-                         * division.getQuotient(); rem =
-                         * division.getRemainder(); rem.smooth(); if
-                         * (rem.isNull()) { simplifiedLeft = div; common =
-                         * common.times(rtmp); }
-                         */
-                        // if element is a root, remove it
                         rtmp[0] = -a;
-                        // FIXME: find a way to avoid creating xxx
-                        Polynomial xxx = Polynomial.ofInternal(rtmp);
-                        left = left.divide(xxx);
-                        common = common.times(xxx);
+                        double[] xxx = Polynomials.divide(left.coeff, rtmp);
+                        common = new Polynomial(Polynomials.times(common.coeff, xxx));
                     } else if (b > 0) {
                         // (x-(a+bi))*(x-(a-bi) = x^2-2ax+a^2+b^2
                         ctmp[0] = a * a + b * b;
                         ctmp[1] = -2 * a;
-                        /*
-                         * Division division = new Division();
-                         * division.divide(simplifiedLeft, ctmp); Polynomial div =
-                         * division.getQuotient(); rem =
-                         * division.getRemainder(); rem.smooth(); if
-                         * (rem.isNull()) { simplifiedLeft = div;
-                         */
-                        // FIXME: find a way to avoid creating xxx
-                        Polynomial xxx = Polynomial.ofInternal(ctmp);
-                        left = left.divide(xxx);
-                        common = common.times(xxx);
                     }
+                    double[] xxx = Polynomials.divide(left.coeff, ctmp);
+                    common = new Polynomial(Polynomials.times(common.coeff, xxx));
                 }
             }
             if (common.degree() > 0) {
@@ -1113,50 +944,6 @@ public final class Polynomial {
         return new Division(m_r, m_q);
     }
 
-    static double[] divide(final double[] num, final double[] denom) {
-        int n = num.length - 1, nv = denom.length - 1;
-        while (n >= 0) {
-            if (Math.abs(num[n]) > EPSILON) {
-                break;
-            } else {
-                --n;
-            }
-        }
-        if (n < 0) {
-            return Coefficients.zero();
-        }
-        while (nv >= 0) {
-            if (Math.abs(denom[nv]) > EPSILON) {
-                break;
-            } else {
-                --nv;
-            }
-        }
-        if (nv < 0) {
-            if (num[n] > 0) {
-                return Coefficients.positiveInfinity();
-            } else if (num[n] < 0) {
-                return Coefficients.negativeInfinity();
-            } else {
-                return Coefficients.nan();
-            }
-        }
-
-        if (nv > n) {
-            return Polynomial.Coefficients.zero();
-        }
-        double[] r = num.clone();
-        double[] q = new double[n + 1];
-
-        for (int k = n - nv; k >= 0; --k) {
-            q[k] = r[nv + k] / denom[nv];
-            for (int j = nv + k - 1; j >= k; j--) {
-                r[j] -= q[k] * denom[j - k];
-            }
-        }
-        return Arrays.copyOf(q, n - nv + 1);
-    }
-
     /**
      * The method checks an array of complex roots to see whether conjugates are
      * present
@@ -1189,7 +976,7 @@ public final class Polynomial {
                     int k = 0;
                     for (; k < nroots; ++k) {
                         if (!used[k] && (roots[k].getIm() < 0)) {
-                            if (roots[k].equals(conj, EPSILON)) {
+                            if (roots[k].equals(conj, Coefficients.EPSILON)) {
                                 used[k] = true;
                                 c = Complex.cart(
                                         (c.getRe() + roots[k].getRe()) / 2,

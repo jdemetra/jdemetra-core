@@ -5,6 +5,8 @@
  */
 package jdplus.tramo;
 
+import jdplus.sa.tests.SeasonalityTests;
+import jdplus.sa.tests.SpectralPeaks;
 import nbbrd.design.Development;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ProcessingResult;
@@ -13,8 +15,8 @@ import jdplus.regsarima.regular.SeasonalFTest;
 import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
-import static jdplus.tramo.SeasonalityTests.MSHORT;
-import static jdplus.tramo.SeasonalityTests.SHORT;
+import static jdplus.sa.tests.SeasonalityTests.MSHORT;
+import static jdplus.sa.tests.SeasonalityTests.SHORT;
 
 /**
  *

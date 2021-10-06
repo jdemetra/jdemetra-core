@@ -17,13 +17,14 @@
 package jdplus.sa.diagnostics;
 
 import nbbrd.design.Development;
-import demetra.processing.Diagnostics;
 import demetra.sa.SaDiagnosticsFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.processing.Diagnostics;
 
 /**
  *
@@ -31,26 +32,33 @@ import java.util.stream.Collectors;
  * @param <R>
  */
 @Development(status = Development.Status.Release)
-public class AdvancedResidualSeasonalityDiagnosticsFactory<R> implements SaDiagnosticsFactory<R> {
+public class AdvancedResidualSeasonalityDiagnosticsFactory<R> implements SaDiagnosticsFactory<AdvancedResidualSeasonalityDiagnosticsConfiguration, R> {
 
     static final String NAME = "Residual seasonality tests", DESC = "Residual seasonality tests";
     static final String QS_SA = "Qs test on SA", QS_I = "Qs test on I", FTEST_SA = "F-Test on SA (seasonal dummies)", FTEST_I = "F-Test on I (seasonal dummies)";
     static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(QS_SA, QS_I, FTEST_SA, FTEST_I));
 
     private final AdvancedResidualSeasonalityDiagnosticsConfiguration config;
-    private final Function<R, AdvancedResidualSeasonalityDiagnostics.Input> extractor;
-    private boolean enabled = true;
+    private final Function<R, GenericSaTests> extractor;
+    private final boolean active;
 
-    public AdvancedResidualSeasonalityDiagnosticsFactory(AdvancedResidualSeasonalityDiagnosticsConfiguration config,
-            Function<R, AdvancedResidualSeasonalityDiagnostics.Input> extractor) {
+    public AdvancedResidualSeasonalityDiagnosticsFactory(boolean active, @NonNull AdvancedResidualSeasonalityDiagnosticsConfiguration config,
+            @NonNull Function<R, GenericSaTests> extractor) {
         this.config = config;
         this.extractor = extractor;
+        this.active=active;
     }
 
+    @Override
     public AdvancedResidualSeasonalityDiagnosticsConfiguration getConfiguration() {
         return config;
     }
-
+    
+    @Override
+    public AdvancedResidualSeasonalityDiagnosticsFactory<R> with(boolean active, @NonNull AdvancedResidualSeasonalityDiagnosticsConfiguration config){
+        return new AdvancedResidualSeasonalityDiagnosticsFactory(active, config, extractor);
+    }
+    
     @Override
     public String getName() {
         return NAME;
@@ -62,13 +70,8 @@ public class AdvancedResidualSeasonalityDiagnosticsFactory<R> implements SaDiagn
     }
 
     @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public boolean isActive() {
+        return active;
     }
 
     @Override

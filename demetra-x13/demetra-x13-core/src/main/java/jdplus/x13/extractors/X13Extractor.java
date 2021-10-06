@@ -12,8 +12,11 @@ import demetra.timeseries.TsData;
 import jdplus.x13.X13Results;
 import demetra.information.BasicInformationExtractor;
 import demetra.information.InformationExtractor;
+import demetra.modelling.SeriesInfo;
+import demetra.sa.StationaryVarianceDecomposition;
 import demetra.x11.X11Results;
 import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.x13.X13Diagnostics;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -24,7 +27,7 @@ import nbbrd.service.ServiceProvider;
 @ServiceProvider(InformationExtractor.class)
 public class X13Extractor extends InformationMapping<X13Results> {
 
-    private final String DECOMP = "decomposition" + BasicInformationExtractor.SEP, FINAL = "";
+    private final String FINAL = "";
 
     public X13Extractor() {
 //         MAPPING.set(FINAL + ModellingDictionary.Y, TsData.class, source
@@ -49,13 +52,15 @@ public class X13Extractor extends InformationMapping<X13Results> {
 //        MAPPING.set(FINAL + SaDictionary.T + SeriesInfo.EB_SUFFIX, TsData.class, source
 //                -> source.getFinals().getSeries(ComponentType.Trend, ComponentInformation.StdevBackcast));
 //
-        set(FINAL + SaDictionary.S, TsData.class, source
-                -> source.getFinals().getD10final());
-        set(FINAL + SaDictionary.SA, TsData.class, source
+        set(SaDictionary.S, TsData.class, source
+                -> source.getFinals().getD16());
+        set(SaDictionary.S + SeriesInfo.F_SUFFIX, TsData.class, source
+                -> source.getFinals().getD16a());
+        set(SaDictionary.SA, TsData.class, source
                 -> source.getFinals().getD11final());
-        set(FINAL + SaDictionary.T, TsData.class, source
+        set(SaDictionary.T, TsData.class, source
                 -> source.getFinals().getD12final());
-        set(FINAL + SaDictionary.I, TsData.class, source
+        set(SaDictionary.I, TsData.class, source
                 -> source.getFinals().getD13final());
         set("d10final", TsData.class, source
                 -> source.getFinals().getD10final());
@@ -95,8 +100,9 @@ public class X13Extractor extends InformationMapping<X13Results> {
 //                -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.Backcast));
 //        MAPPING.set(FINAL + SaDictionary.I + SeriesInfo.EB_SUFFIX, TsData.class, source
 //                -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast));
-        delegate("preprocessing", RegSarimaModel.class, source -> source.getPreprocessing());
-        delegate("x11", X11Results.class, source -> source.getDecomposition());
+        delegate(null, RegSarimaModel.class, source -> source.getPreprocessing());
+        delegate(SaDictionary.DECOMPOSITION, X11Results.class, source -> source.getDecomposition());
+        delegate(null, X13Diagnostics.class, source -> source.getDiagnostics());
     }
 
     @Override

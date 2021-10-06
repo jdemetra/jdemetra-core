@@ -313,11 +313,12 @@ public final class SarimaModel extends AbstractArimaModel implements ISarimaMode
         return phi[lag - 1];
     }
 
-    private double[] clone(double[] x) {
-        return x == Doubles.EMPTYARRAY ? Doubles.EMPTYARRAY : x.clone();
+    private DoubleSeq clone(double[] x) {
+        return x.length == 0 ? DoubleSeq.empty() : DoubleSeq.of(x.clone());
     }
 
-    public double[] getPhi() {
+    @Override
+    public DoubleSeq getPhi() {
         return clone(phi);
     }
 
@@ -331,7 +332,7 @@ public final class SarimaModel extends AbstractArimaModel implements ISarimaMode
     }
 
     @Override
-    public double[] getBphi() {
+    public DoubleSeq getBphi() {
         return clone(bphi);
     }
 
@@ -345,7 +346,7 @@ public final class SarimaModel extends AbstractArimaModel implements ISarimaMode
     }
 
     @Override
-    public double[] getTheta() {
+    public DoubleSeq getTheta() {
         return clone(th);
     }
 
@@ -359,7 +360,7 @@ public final class SarimaModel extends AbstractArimaModel implements ISarimaMode
     }
 
     @Override
-    public double[] getBtheta() {
+    public DoubleSeq getBtheta() {
         return clone(bth);
     }
 

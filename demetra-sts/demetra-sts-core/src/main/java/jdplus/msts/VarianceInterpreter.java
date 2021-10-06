@@ -156,7 +156,7 @@ public class VarianceInterpreter implements ParameterInterpreter {
             return true;
         }
 
-        private static final double EPS = 1e-4;
+        private static final double EPS = 1e-6;
 
         @Override
         public double epsilon(DoubleSeq inparams, int idx) {

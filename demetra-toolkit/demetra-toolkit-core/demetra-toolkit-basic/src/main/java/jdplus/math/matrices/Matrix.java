@@ -150,7 +150,6 @@ public final class Matrix implements MatrixType.Mutable {
         return new Matrix(x.getStorage(), n, start, n, 1);
     }
 
-
     /**
      * Creates a new instance of SubMatrix
      *
@@ -364,7 +363,6 @@ public final class Matrix implements MatrixType.Mutable {
         return -1;
     }
 
-
     //</editor-fold>
     @Override
     public void copyTo(double[] buffer, int pos) {
@@ -544,6 +542,24 @@ public final class Matrix implements MatrixType.Mutable {
             for (int i0 = start, i1 = start + nrows, j0 = B.start; i0 < end; i0 += lda, i1 += lda, j0 += B.lda) {
                 for (int k = i0, l = j0; k < i1; ++k, ++l) {
                     storage[k] = B.storage[l];
+                }
+            }
+        }
+    }
+
+    public void setAY(double a, Matrix Y) {
+        if (nrows != Y.nrows || ncols != Y.ncols) {
+            throw new MatrixException(MatrixException.DIM);
+        }
+        if (a == 0) {
+            set(0);
+        } else if (a == 1) {
+            copy(Y);
+        } else {
+            int end = start + ncols * lda;
+            for (int i0 = start, i1 = start + nrows, j0 = Y.start; i0 < end; i0 += lda, i1 += lda, j0 += Y.lda) {
+                for (int k = i0, l = j0; k < i1; ++k, ++l) {
+                    storage[k] = a * Y.storage[l];
                 }
             }
         }
@@ -1042,24 +1058,26 @@ public final class Matrix implements MatrixType.Mutable {
         int beg = start + c0 * lda + r0, end = beg + n;
         return DataBlock.of(storage, beg, end, 1);
     }
-    
-    public DataBlock rowSums(){
-        if (isEmpty())
+
+    public DataBlock rowSums() {
+        if (isEmpty()) {
             return DataBlock.EMPTY;
+        }
         DataBlockIterator cols = columnsIterator();
-        DataBlock x=cols.next().deepClone();
-        while (cols.hasNext()){
+        DataBlock x = cols.next().deepClone();
+        while (cols.hasNext()) {
             x.add(cols.next());
         }
         return x;
     }
 
-    public DataBlock columnSums(){
-        if (isEmpty())
+    public DataBlock columnSums() {
+        if (isEmpty()) {
             return DataBlock.EMPTY;
+        }
         DataBlockIterator rows = rowsIterator();
-        DataBlock x=rows.next().deepClone();
-        while (rows.hasNext()){
+        DataBlock x = rows.next().deepClone();
+        while (rows.hasNext()) {
             x.add(rows.next());
         }
         return x;

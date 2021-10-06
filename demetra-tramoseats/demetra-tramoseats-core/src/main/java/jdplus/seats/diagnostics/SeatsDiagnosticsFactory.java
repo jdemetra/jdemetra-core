@@ -16,42 +16,48 @@
  */
 package jdplus.seats.diagnostics;
 
-import demetra.processing.Diagnostics;
 import demetra.sa.SaDiagnosticsFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import jdplus.seats.SeatsResults;
+import demetra.processing.Diagnostics;
+import jdplus.seats.SeatsTests;
 
 /**
  *
  * @author Kristof Bayens
  */
-public class SeatsDiagnosticsFactory<R> implements SaDiagnosticsFactory<R> {
+public class SeatsDiagnosticsFactory<R> implements SaDiagnosticsFactory<SeatsDiagnosticsConfiguration, R> {
 
     public static final String SEAS_VAR = "seas variance", IRR_VAR = "irregular variance";
     public static final String SEAS_I_CORR = "seas/irr cross-correlation";
     public static final String NOTSAME = "Non decomposable model. Changed by Seats";
     public static final String CUTOFF = "Parameters cut off by Seats";
     public static final String NAME = "Seats";
-    
-    public static final List<String> ALL=Collections.unmodifiableList(Arrays.asList(SEAS_VAR, IRR_VAR, SEAS_I_CORR));
+
+    public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(SEAS_VAR, IRR_VAR, SEAS_I_CORR));
 
     private final SeatsDiagnosticsConfiguration config;
-    private final Function<R, SeatsResults> extractor;
-    private boolean enabled = true;
+    private final Function<R, SeatsTests> extractor;
+    private final boolean active;
 
-    public SeatsDiagnosticsFactory(SeatsDiagnosticsConfiguration config, Function<R, SeatsResults> extractor) {
+    public SeatsDiagnosticsFactory(boolean active, SeatsDiagnosticsConfiguration config, Function<R, SeatsTests> extractor) {
         this.config = config;
         this.extractor = extractor;
+        this.active = active;
     }
 
+    @Override
     public SeatsDiagnosticsConfiguration getConfiguration() {
         return config;
     }
 
+    @Override
+    public SeatsDiagnosticsFactory<R> with(boolean active, SeatsDiagnosticsConfiguration config) {
+        return new SeatsDiagnosticsFactory(active, config, extractor);
+    }
 
     @Override
     public String getName() {
@@ -59,20 +65,14 @@ public class SeatsDiagnosticsFactory<R> implements SaDiagnosticsFactory<R> {
     }
 
     @Override
-    public List<String> getTestDictionary(){
-        return ALL.stream().map(s->s+":2").collect(Collectors.toList());
+    public List<String> getTestDictionary() {
+        return ALL.stream().map(s -> s + ":2").collect(Collectors.toList());
     }
 
     @Override
-    public boolean isEnabled() {
-        return enabled;
+    public boolean isActive() {
+        return active;
     }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        this.enabled=enabled;
-    }
-
 
     @Override
     public Diagnostics of(R rslts) {

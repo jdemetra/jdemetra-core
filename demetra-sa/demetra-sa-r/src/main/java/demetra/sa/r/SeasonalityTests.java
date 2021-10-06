@@ -28,6 +28,7 @@ import jdplus.sa.tests.FTest;
 import jdplus.sa.tests.Friedman;
 import jdplus.sa.tests.KruskalWallis;
 import jdplus.sa.tests.PeriodogramTest;
+import jdplus.sa.tests.Qs;
 
 /**
  *
@@ -41,11 +42,7 @@ public class SeasonalityTests {
         if (ny != 0) {
             y = y.drop(Math.max(0, y.length() - period * ny), 0);
         }
-        return new LjungBox(y)
-                .lag(period)
-                .autoCorrelationsCount(2)
-                .usePositiveAutoCorrelations()
-                .build();
+        return new Qs(y, period).autoCorrelationsCount(2).build();
     }
 
     public StatisticalTest kruskalWallisTest(double[] s, int period, int ny) {
@@ -115,7 +112,7 @@ public class SeasonalityTests {
 
     public CombinedSeasonality combinedTest(double[] s, int period, int startperiod, boolean mul) {
         DoubleSeq y = DoubleSeq.of(s).cleanExtremities();
-        return new CombinedSeasonality(y, period, startperiod, mul);
+        return new CombinedSeasonality(y, period, startperiod, mul ? 1 : 0);
     }
 
     public byte[] toBuffer(CombinedSeasonality cs) {

@@ -38,9 +38,9 @@ public class IArimaExtractor extends InformationMapping<IArimaModel>{
 
     public IArimaExtractor() {
         set(NAME, String.class, source->source.getName());
-        set(AR, double[].class, source->source.getAr());
-        set(DELTA, double[].class, source->source.getDelta());
-        set(MA, double[].class, source->source.getMa());
+        set(AR, double[].class, source->source.getAr().toArray());
+        set(DELTA, double[].class, source->source.getDelta().toArray());
+        set(MA, double[].class, source->source.getMa().toArray());
         set(VAR, Double.class, source->source.getInnovationVariance());
     }
 

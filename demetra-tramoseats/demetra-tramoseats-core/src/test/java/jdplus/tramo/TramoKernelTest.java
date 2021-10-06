@@ -50,8 +50,8 @@ import static org.junit.Assert.assertTrue;
 public class TramoKernelTest {
 
     private static final double[] data, datamissing;
-    public static final Calendar france;
-    public static final ec.tstoolkit.timeseries.calendars.NationalCalendar ofrance;
+    public static final Calendar france, belgium;
+    public static final ec.tstoolkit.timeseries.calendars.NationalCalendar ofrance, obelgium;
 
     static {
         data = Data.PROD.clone();
@@ -87,6 +87,32 @@ public class TramoKernelTest {
         ofrance.add(ec.tstoolkit.timeseries.calendars.EasterRelatedDay.Ascension);
         ofrance.add(ec.tstoolkit.timeseries.calendars.EasterRelatedDay.EasterMonday);
         ofrance.add(ec.tstoolkit.timeseries.calendars.EasterRelatedDay.PentecostMonday);
+
+        holidays = new ArrayList<>();
+        holidays.add(new FixedDay(7, 21));
+        holidays.add(new FixedDay(1, 11));
+        holidays.add(FixedDay.ALLSAINTSDAY);
+        holidays.add(FixedDay.ASSUMPTION);
+        holidays.add(FixedDay.CHRISTMAS);
+        holidays.add(FixedDay.MAYDAY);
+        holidays.add(FixedDay.NEWYEAR);
+        holidays.add(EasterRelatedDay.ASCENSION);
+        holidays.add(EasterRelatedDay.EASTERMONDAY);
+        holidays.add(EasterRelatedDay.WHITMONDAY);
+
+        belgium = new Calendar(holidays.toArray(new Holiday[holidays.size()]));
+
+        obelgium = new ec.tstoolkit.timeseries.calendars.NationalCalendar();
+        obelgium.add(new ec.tstoolkit.timeseries.calendars.FixedDay(20, Month.July));
+        obelgium.add(new ec.tstoolkit.timeseries.calendars.FixedDay(10, Month.January));
+        obelgium.add(ec.tstoolkit.timeseries.calendars.FixedDay.AllSaintsDay);
+        obelgium.add(ec.tstoolkit.timeseries.calendars.FixedDay.Assumption);
+        obelgium.add(ec.tstoolkit.timeseries.calendars.FixedDay.Christmas);
+        obelgium.add(ec.tstoolkit.timeseries.calendars.FixedDay.MayDay);
+        obelgium.add(ec.tstoolkit.timeseries.calendars.FixedDay.NewYear);
+        obelgium.add(ec.tstoolkit.timeseries.calendars.EasterRelatedDay.Ascension);
+        obelgium.add(ec.tstoolkit.timeseries.calendars.EasterRelatedDay.EasterMonday);
+        obelgium.add(ec.tstoolkit.timeseries.calendars.EasterRelatedDay.PentecostMonday);
     }
 
     public TramoKernelTest() {
@@ -155,6 +181,53 @@ public class TramoKernelTest {
 //            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
         System.out.println("TRfull");
+        System.out.println(n);
+        assertTrue(n >= .9 * all.length);
+    }
+
+    @Test
+    public void testXmFull() {
+        TsData[] all = Data.xm();
+        TramoSpec spec = TramoSpec.TRfull;
+        ModellingContext context = new ModellingContext();
+        context.getCalendars().set("belgium", belgium);
+
+        RegressionSpec regSpec = spec.getRegression();
+        CalendarSpec calSpec = regSpec.getCalendar();
+        TradingDaysSpec tdSpec = TradingDaysSpec.automaticHolidays("belgium", AutoMethod.FTest, TradingDaysSpec.DEF_PFTD);
+        spec = spec.toBuilder()
+                .regression(regSpec.toBuilder()
+                        .calendar(calSpec.toBuilder()
+                                .tradingDays(tdSpec)
+                                .build())
+                        .build())
+                .build();
+
+        TramoKernel processor = TramoKernel.of(spec, context);
+
+        ec.tstoolkit.algorithm.ProcessingContext ocontext = new ec.tstoolkit.algorithm.ProcessingContext();
+        ocontext.getGregorianCalendars().set("belgium", new ec.tstoolkit.timeseries.calendars.NationalCalendarProvider(obelgium));
+        ec.tstoolkit.modelling.arima.tramo.TramoSpecification ospec = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.clone();
+        ospec.getRegression().getCalendar().getTradingDays().setHolidays("belgium");
+        IPreprocessor oprocessor = ospec.build(ocontext);
+        int n = 0;
+        for (int i = 0; i < all.length; ++i) {
+            RegSarimaModel rslt = processor.process(all[i], null);
+            TsPeriod start = all[i].getStart();
+            ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
+            ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+                    - orslt.estimation.getStatistics().adjustedLogLikelihood;
+            if (Math.abs(del) < 1e-3) {
+                ++n;
+            }
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+        }
+        System.out.println(" XM:TRfull");
         System.out.println(n);
         assertTrue(n >= .9 * all.length);
     }

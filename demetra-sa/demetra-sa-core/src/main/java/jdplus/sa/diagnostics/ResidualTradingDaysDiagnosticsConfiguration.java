@@ -17,6 +17,7 @@
 package jdplus.sa.diagnostics;
 
 import demetra.DemetraException;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *
@@ -26,32 +27,33 @@ import demetra.DemetraException;
 @lombok.Builder
 public class ResidualTradingDaysDiagnosticsConfiguration {
 
-    public static final ResidualTradingDaysDiagnosticsConfiguration DEFAULT = builder().build();
+    private static AtomicReference<ResidualTradingDaysDiagnosticsConfiguration> DEFAULT
+            =new AtomicReference<ResidualTradingDaysDiagnosticsConfiguration>(builder().build());
+    
+    public static void setDefault(ResidualTradingDaysDiagnosticsConfiguration config){
+        DEFAULT.set(config);
+    }
+    
+    public static ResidualTradingDaysDiagnosticsConfiguration getDefault(){
+        return DEFAULT.get();
+    }
 
     public static final double SEV = .001, BAD = .01, UNC = .05;
-    public static final int DEF_NYEARS = 8;
 
     private double severeThreshold;
     private double badThreshold;
     private double uncertainThreshold;
-    private boolean arModel;
-    private int spanInYears;
 
     public static Builder builder() {
         return new Builder()
                 .severeThreshold(SEV)
                 .badThreshold(BAD)
-                .uncertainThreshold(UNC)
-                .arModel(true)
-                .spanInYears(DEF_NYEARS);
+                .uncertainThreshold(UNC);
     }
 
     public void check() {
         if (severeThreshold > badThreshold || badThreshold > uncertainThreshold || uncertainThreshold > 1 || severeThreshold <= 0) {
             throw new DemetraException("Invalid settings in thresholds");
-        }
-        if (spanInYears < 0) {
-            throw new DemetraException("Invalid settings in span");
         }
     }
 

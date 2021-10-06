@@ -19,6 +19,7 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
+import demetra.timeseries.regression.IMovingHolidayVariable;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.ITsVariable;
@@ -32,6 +33,7 @@ import demetra.timeseries.regression.Variable;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.timeseries.regression.modelling.Residuals;
 import java.util.Arrays;
+import java.util.function.Predicate;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -52,32 +54,37 @@ public class LinearModelExtractors {
                 IIV = 30, IRAMP = 40, IOTHER = 50;
 
         public final String LOG = "log",
-                ADJUST = "adjust",
-                SPAN = "span", ESPAN = "espan", START = "start", END = "end", N = "n", NM = "missing", PERIOD = "period",
-                REGRESSION = "regression", LIKELIHOOD = "likelihood", MAX = "max", RESIDUALS="residuals",
-                OUTLIERS = "outlier(*)",
-                CALENDAR = "calendar(*)",
-                EASTER = "easter",
-                NTD = "ntd", NMH = "nmh",
-                TD = "td", TD1 = "td(1)", TD2 = "td(2)", TD3 = "td(3)", TD4 = "td(4)", TD5 = "td(5)", TD6 = "td(6)", TD7 = "td(7)",
-                TD8 = "td(8)", TD9 = "td(9)", TD10 = "td(10)", TD11 = "td(11)", TD12 = "td(12)", TD13 = "td(13)", TD14 = "td(14)",
-                LP = "lp", OUT = "out", OUT1 = "out(1)", OUT2 = "out(2)", OUT3 = "out(3)", OUT4 = "out(4)", OUT5 = "out(5)", OUT6 = "out(6)", OUT7 = "out(7)",
+                ADJUST = "adjust", MEAN = "mean",
+                SPAN = "span", START = "start", END = "end", N = "n", NM = "missing", PERIOD = "period",
+                REGRESSION = "regression", LIKELIHOOD = "likelihood", MAX = "max", RESIDUALS = "residuals",
+                NTD = "ntd", NMH = "nmh", NEASTER = "neaster",
                 NOUT = "nout", NOUTAO = "noutao", NOUTLS = "noutls", NOUTTC = "nouttc", NOUTSO = "noutso",
-                OUT8 = "out(8)", OUT9 = "out(9)", OUT10 = "out(10)", OUT11 = "out(11)", OUT12 = "out(12)", OUT13 = "out(13)", OUT14 = "out(14)",
-                OUT15 = "out(15)", OUT16 = "out(16)", OUT17 = "out(17)", OUT18 = "out(18)", OUT19 = "out(19)", OUT20 = "out(20)",
-                OUT21 = "out(21)", OUT22 = "out(22)", OUT23 = "out(23)", OUT24 = "out(24)", OUT25 = "out(25)", OUT26 = "out(26)",
-                OUT27 = "out(27)", OUT28 = "out(28)", OUT29 = "out(29)", OUT30 = "out(30)",
                 COEFF = "coefficients", COVAR = "covar", COVAR_ML = "covar-ml", COEFFDESC = "description", REGTYPE = "type",
                 P = "parameters", PCOVAR = "pcovar", PCOVAR_ML = "pcovar-ml", PCORR = "pcorr", SCORE = "pscore";
 
         public Specific() {
+            set(ModellingDictionary.Y, TsData.class, source -> source.getDescription().getSeries());
             set(PERIOD, Integer.class, source -> source.getDescription().getSeries().getAnnualFrequency());
             set(BasicInformationExtractor.concatenate(SPAN, START), TsPeriod.class, source -> source.getDescription().getSeries().getStart());
             set(BasicInformationExtractor.concatenate(SPAN, END), TsPeriod.class, source -> source.getDescription().getSeries().getDomain().getLastPeriod());
             set(BasicInformationExtractor.concatenate(SPAN, N), Integer.class, source -> source.getDescription().getSeries().length());
             set(BasicInformationExtractor.concatenate(SPAN, NM), Integer.class, source -> source.getEstimation().getMissing().length);
+
             set(LOG, Boolean.class, source -> source.getDescription().isLogTransformation());
-            set(ADJUST, Boolean.class, source -> source.getDescription().getLengthOfPeriodTransformation() != LengthOfPeriodType.None);
+            set(ADJUST, String.class, source -> source.getDescription().getLengthOfPeriodTransformation().name());
+            set(BasicInformationExtractor.concatenate(REGRESSION, MEAN), Boolean.class,
+                    source -> count(source, v -> v instanceof TrendConstant) == 1);
+            set(BasicInformationExtractor.concatenate(REGRESSION, NTD), Integer.class,
+                    source -> count(source, v -> v instanceof ITradingDaysVariable));
+            set(BasicInformationExtractor.concatenate(REGRESSION, NEASTER), Integer.class,
+                    source -> count(source, v -> v instanceof IEasterVariable));
+            set(BasicInformationExtractor.concatenate(REGRESSION, NMH), Integer.class, source -> count(source, v -> v instanceof IMovingHolidayVariable));
+            set(BasicInformationExtractor.concatenate(REGRESSION, NOUT), Integer.class, source -> count(source, v -> v instanceof IOutlier));
+            set(BasicInformationExtractor.concatenate(REGRESSION, NOUTAO), Integer.class, source -> count(source, v -> v instanceof AdditiveOutlier));
+            set(BasicInformationExtractor.concatenate(REGRESSION, NOUTLS), Integer.class, source -> count(source, v -> v instanceof LevelShift));
+            set(BasicInformationExtractor.concatenate(REGRESSION, NOUTTC), Integer.class, source -> count(source, v -> v instanceof TransitoryChange));
+            set(BasicInformationExtractor.concatenate(REGRESSION, NOUTSO), Integer.class, source -> count(source, v -> v instanceof PeriodicOutlier));
+
             set(ModellingDictionary.Y, TsData.class, source -> source.getDescription().getSeries());
             set(BasicInformationExtractor.concatenate(REGRESSION, COEFFDESC), String[].class, source -> {
                 TsDomain domain = source.getDescription().getSeries().getDomain();
@@ -115,6 +122,7 @@ public class LinearModelExtractors {
                 }
                 return tvars;
             });
+ 
             set(BasicInformationExtractor.concatenate(REGRESSION, COEFF), double[].class, source -> source.getEstimation().getCoefficients().toArray());
             set(BasicInformationExtractor.concatenate(REGRESSION, COVAR), MatrixType.class, source -> source.getEstimation().getCoefficientsCovariance());
             set(BasicInformationExtractor.concatenate(REGRESSION, COVAR_ML), MatrixType.class, source
@@ -187,6 +195,31 @@ public class LinearModelExtractors {
         public int getPriority() {
             return 1;
         }
+
+        private int countVar(GeneralLinearModel source, Predicate<Variable> pred) {
+            Variable[] variables = source.getDescription().getVariables();
+            int n = 0;
+            for (int i = 0; i < variables.length; ++i) {
+                if (pred.test(variables[i])) {
+                    n += variables[i].dim();
+                }
+            }
+            return n;
+
+        }
+
+        private int count(GeneralLinearModel source, Predicate<ITsVariable> pred) {
+            Variable[] variables = source.getDescription().getVariables();
+            int n = 0;
+            for (int i = 0; i < variables.length; ++i) {
+                ITsVariable core = variables[i].getCore();
+                if (pred.test(core)) {
+                    n += core.dim();
+                }
+            }
+            return n;
+        }
+
     }
 
     @ServiceProvider(InformationExtractor.class)

@@ -25,7 +25,6 @@ import nbbrd.design.Development;
 @lombok.experimental.UtilityClass
 public final class SaDictionary  {
     
-    
     /**
      * Subdivision of a SA processing
      * Pre-processing of the series (usually reg-arima), decomposition of the linearized series, final decomposition,
@@ -34,7 +33,7 @@ public final class SaDictionary  {
      */
     public final String PREPROCESSING = "preprocessing", DECOMPOSITION = "decomposition", FINAL = "final",
              BENCHMARKING = "benchmarking", DIAGNOSTICS = "diagnostics";
-    
+    public final String VARIANCE = "variancedecomposition";
     /**
      * Default components: series, trend, seasonal, seasonally adjusted, irregular, si-ratio, undefined 
      */
@@ -62,12 +61,12 @@ public final class SaDictionary  {
      */
     public static final String MODE = "mode";
    
-    public static final String T_LIN = "t_lin", S_LIN = "s_lin", SA_LIN = "sa_lin", I_LIN = "i_lin", SI_LIN = "si_lin";
-    public static final String T_CMP = "t_cmp", S_CMP = "s_cmp", SA_CMP = "sa_cmp", I_CMP = "i_cmp", SI_CMP = "si_cmp";
+    public static final String Y_LIN = "y_lin", T_LIN = "t_lin", S_LIN = "s_lin", SA_LIN = "sa_lin", I_LIN = "i_lin", SI_LIN = "si_lin";
+    public static final String Y_CMP="y_cmp", T_CMP = "t_cmp", S_CMP = "s_cmp", SA_CMP = "sa_cmp", I_CMP = "i_cmp", SI_CMP = "si_cmp";
     public static final String OUT_I = "out_i", OUT_S = "out_s", OUT_T = "out_t";
     public static final String REG_I = "reg_i", REG_S = "reg_s", REG_T = "reg_t", REG_SA = "reg_sa",
             REG_Y = "reg_y", REG_U="reg_u";
     public static final String DET_I = "det_i", DET_S = "det_s", DET_T = "det_t", DET_SA = "det_sa",
-            DET_Y = "det_y";
+            DET_Y = "det_y", DET_U="det_u";
     
 }

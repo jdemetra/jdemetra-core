@@ -29,7 +29,7 @@ import jdplus.filters.KernelOption;
 import jdplus.filters.LocalPolynomialFilterFactory;
 import jdplus.filters.LocalPolynomialFilterSpec;
 import jdplus.filters.SpectralDensity;
-import jdplus.math.linearfilters.AsymmetricFilters;
+import jdplus.math.linearfilters.AsymmetricFiltersFactory;
 import jdplus.rkhs.RKHSFilterFactory;
 import jdplus.rkhs.RKHSFilterSpec;
 import jdplus.x11plus.X11SeasonalFiltersFactory;
@@ -165,7 +165,7 @@ public class X11Decomposition {
         tspec.setFilterLength(trendHorizon);
         tspec.setPolynomialDegree(pdegree);
         tspec.setKernel(KernelOption.valueOf(pkernel));
-        tspec.setAsymmetricFilters(AsymmetricFilters.Option.valueOf(asymmetric));
+        tspec.setAsymmetricFilters(AsymmetricFiltersFactory.Option.valueOf(asymmetric));
         
         X11Context context = X11Context.builder()
                 .mode(mul ? DecompositionMode.Multiplicative : DecompositionMode.Additive)
@@ -195,7 +195,7 @@ public class X11Decomposition {
         tspec.setFilterLength(thorizon);
         tspec.setPolynomialDegree(pdegree);
         tspec.setKernel(KernelOption.valueOf(pkernel));
-        tspec.setAsymmetricFilters(AsymmetricFilters.Option.MMSRE);
+        tspec.setAsymmetricFilters(AsymmetricFiltersFactory.Option.MMSRE);
         tspec.setAsymmetricPolynomialDegree(adegree);
         tspec.setLinearModelCoefficients(aparams);
         tspec.setTimelinessWeight(tweight);
@@ -230,7 +230,7 @@ public class X11Decomposition {
         tspec.setFilterLength(thorizon);
         tspec.setPolynomialDegree(pdegree);
         tspec.setKernel(KernelOption.valueOf(pkernel));
-        tspec.setAsymmetricFilters(AsymmetricFilters.Option.Direct);
+        tspec.setAsymmetricFilters(AsymmetricFiltersFactory.Option.Direct);
         
         ISymmetricFiltering sfilter = X11SeasonalFiltersFactory.filter(period, shorizon, kernel(seasKernel, shorizon));
         
@@ -261,7 +261,7 @@ public class X11Decomposition {
         tspec.setFilterLength(thorizon);
         tspec.setPolynomialDegree(pdegree);
         tspec.setKernel(KernelOption.valueOf(pkernel));
-        tspec.setAsymmetricFilters(AsymmetricFilters.Option.CutAndNormalize);
+        tspec.setAsymmetricFilters(AsymmetricFiltersFactory.Option.CutAndNormalize);
         
         ISymmetricFiltering sfilter = X11SeasonalFiltersFactory.filter(period, shorizon, kernel(seasKernel, shorizon));
         

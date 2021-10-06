@@ -23,7 +23,7 @@ import demetra.data.DoubleSeq;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.analysis.DiscreteKernel;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.math.linearfilters.AsymmetricFilters;
+import jdplus.math.linearfilters.AsymmetricFiltersFactory;
 import jdplus.math.linearfilters.FiniteFilter;
 import jdplus.math.linearfilters.IFiniteFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
@@ -57,10 +57,10 @@ public class LocalPolynomialFilterFactory {
             symmetricFilter = ofDefault(len, spec.getPolynomialDegree(), kernel(spec));
             switch (spec.getAsymmetricFilters()) {
                 case CutAndNormalize:
-                    asymmetricFilters = AsymmetricFilters.cutAndNormalizeFilters(symmetricFilter);
+                    asymmetricFilters = AsymmetricFiltersFactory.cutAndNormalizeFilters(symmetricFilter);
                     break;
                 case MMSRE:
-                    asymmetricFilters = AsymmetricFilters.mmsreFilters(symmetricFilter
+                    asymmetricFilters = AsymmetricFiltersFactory.mmsreFilters(symmetricFilter
                             , spec.getAsymmetricPolynomialDegree(), spec.getLinearModelCoefficients(), null,
                             spec.getPassBand(), spec.getTimelinessWeight());
                     break;

@@ -101,15 +101,20 @@ public final class LeastSquaresResults {
         this.X = X;
         this.mean = mean;
         this.coefficients = coefficients;
-        this.ssq = ssq;
         this.ldet = ldet;
         this.n = y.length();
         this.ucov = unscaledCov;
+        // nx contains the intercept !!
         this.nx = ucov == null ? 0 : ucov.diagonal().count(x -> x != 0);
         // compute auxiliaries
-        y2 = y.ssq();
-        ym = y.average();
-        bxy = y2 - ssq;
+        if (mean) {
+            double ybar = y.average();
+            sst = y.ssqc(ybar);
+        } else {
+            sst = y.ssq();
+        }
+        this.sse=Math.min(ssq, sst); // be carefull with dummy models
+        ssm = sst - sse; 
     }
 
     private final DoubleSeq y;
@@ -117,13 +122,13 @@ public final class LeastSquaresResults {
     private final boolean mean;
     private final int n, nx;
     private final DoubleSeq coefficients;
-    private final double ssq, ldet;
+    private final double sse, ldet;
     /**
      * (X'X)^-1
      */
     private final Matrix ucov;
     // auxiliary results
-    private final double y2, ym, bxy;
+    private final double sst, ssm;
 
     public DoubleSeq getY() {
         return y;
@@ -184,7 +189,7 @@ public final class LeastSquaresResults {
     public DoubleSeq studentizedResiduals() {
         DoubleSeq e = residuals();
         double[] v = new double[e.length()];
-        double sig = getResidualStandardDeviation();
+        double sig = getErrorStandardDeviation();
         DataBlockIterator rows = X.rowsIterator();
         DoubleSeqCursor cursor = e.cursor();
         for (int i = 0; i < v.length; ++i) {
@@ -201,99 +206,94 @@ public final class LeastSquaresResults {
     }
 
     /**
-     * SSE
-     *
-     * @return
-     */
-    public double getResidualSumOfSquares() {
-        return ssq;
-    }
-
-    /**
      * MSe = SSe/(n-p)
      *
      * @return
      */
-    public double getResidualMeanSquare() {
-        return ssq / (n - nx);
+    public double getErrorMeanSquares() {
+        return sse / degreesOfFreedomForError();
     }
 
+    public double getErrorStandardDeviation() {
+        return Math.sqrt(getErrorMeanSquares());
+    }
     /**
-     * s
-     *
-     * @return the ser
+     * ssm/degrees of freedom for model
+     * @return 
      */
-    public double getResidualStandardDeviation() {
-        return Math.sqrt(ssq / (n - nx));
+    public double getModelMeanSquares() {
+        return ssm / degreesOfFreedomForModel();
     }
 
+   /**
+     * sst/degrees of freedom for total
+     * @return 
+     */
+    public double getTotalMeanSquares() {
+        return sst / degreesOfFreedomForTotal();
+    }
+    
     /**
      * sum(y-ybar)^2 (or SST = SSR + SSE)
      *
      * @return
      */
     public double getTotalSumOfSquares() {
-        if (mean) {
-            return y2 - n * ym * ym;
-        } else {
-            return y2;
-        }
+        return sst;
     }
 
+    /**
+     * SSE
+     *
+     * @return
+     */
+    public double getErrorSumOfSquares() {
+        return sse;
+    }
+
+   /**
+     * SSM
+     *
+     * @return
+     */
+    public double getModelSumOfSquares() {
+        return ssm;
+    }
     /**
      *
      * @return the r2
      */
     public double getR2() {
-        double r2;
-        if (mean) {
-            r2 = 1 - getResidualSumOfSquares() / (y2 - n * ym * ym);
-        } else {
-            r2 = 1 - getResidualSumOfSquares() / y2;
-        }
-        return r2 < 0 ? 0 : (r2 > 1 ? 1 : r2);
+        return 1 - sse / sst;
     }
 
     /**
      * @return the adjustedR2
      */
     public double getAdjustedR2() {
-        return 1 - (n - 1) * (1 - getR2()) / (n - nx);
+        return 1 - degreesOfFreedomForTotal() * (1 - getR2()) / degreesOfFreedomForError();
     }
 
-    /**
-     * SSR
-     *
-     * @return
-     */
-    public double getRegressionSumOfSquares() {
-        if (mean) {
-            return bxy - n * ym * ym;
-        } else {
-            return bxy;
-        }
-    }
-
-    public double getRegressionMeanSquare() {
-        if (mean) {
-            return (bxy - n * ym * ym) / (nx - 1);
-        } else {
-            return bxy / nx;
-        }
-    }
-
-    private int degreesOfFreedom() {
+ 
+    private int degreesOfFreedomForModel() {
         return mean ? nx - 1 : nx;
     }
 
+    private int degreesOfFreedomForError() {
+        return n - nx;
+    }
+
+    private int degreesOfFreedomForTotal() {
+        return mean ? n - 1 : n;
+    }
+
     public StatisticalTest Ftest() {
-        F f = new F(degreesOfFreedom(), n - nx);
-        double num = getRegressionMeanSquare();
-        return TestsUtility.testOf(num == 0 ? 0 : num / getResidualMeanSquare(), f, TestType.Upper);
+        F f = new F(degreesOfFreedomForModel(), degreesOfFreedomForError());
+        return TestsUtility.testOf(getModelMeanSquares()/ getErrorMeanSquares(), f, TestType.Upper);
     }
 
     public StatisticalTest Khi2Test() {
-        Chi2 chi = new Chi2(mean ? nx - 1 : nx);
+        Chi2 chi = new Chi2(degreesOfFreedomForModel());
         return TestsUtility.testOf(n * getR2(), chi, TestType.Upper);
     }
 
@@ -309,8 +309,8 @@ public final class LeastSquaresResults {
         SymmetricMatrix.lcholesky(bvar);
         DataBlock b = DataBlock.of(coefficients.extract(v0, nvars));
         LowerTriangularMatrix.solveLx(bvar, b);
-        double fval = b.ssq() / nvars / (ssq / (n - nx));
-        F f = new F(nvars, n - nx);
+        double fval = b.ssq() / nvars / getErrorMeanSquares();
+        F f = new F(nvars, degreesOfFreedomForError());
         return TestsUtility.testOf(fval, f, TestType.Upper);
 
     }
@@ -319,12 +319,12 @@ public final class LeastSquaresResults {
      * @return the covariance matrix of the coefficients
      */
     public Matrix covariance() {
-        return ucov.times(ssq / (n - nx));
+        return ucov.times(sse / (n - nx));
     }
 
     public double standardDeviation(int idx) {
         double v = ucov.get(idx, idx);
-        return Math.sqrt(ssq / (n - nx) * v);
+        return Math.sqrt(getErrorMeanSquares() * v);
     }
 
     public double T(int idx) {
@@ -336,7 +336,7 @@ public final class LeastSquaresResults {
         if (b == 0) {
             return 0;
         }
-        return b / Math.sqrt(e * ssq / (n - nx));
+        return b / Math.sqrt(e * getErrorMeanSquares());
     }
 
     public StatisticalTest Ttest(int idx) {
@@ -344,7 +344,7 @@ public final class LeastSquaresResults {
         if (!Double.isFinite(t)) {
             return null;
         } else {
-            return TestsUtility.testOf(t, new T(n - nx), TestType.TwoSided);
+            return TestsUtility.testOf(t, new T(degreesOfFreedomForError()), TestType.TwoSided);
         }
     }
 
@@ -356,7 +356,7 @@ public final class LeastSquaresResults {
                 .ndata(n)
                 .coefficients(coefficients)
                 .unscaledCovariance(ucov)
-                .ssqErr(ssq)
+                .ssqErr(sse)
                 .logDeterminant(ldet)
                 .build();
     }
@@ -368,7 +368,7 @@ public final class LeastSquaresResults {
         builder.append(System.lineSeparator());
         builder.append("Adjusted R2=").append(getAdjustedR2());
         builder.append(System.lineSeparator());
-        builder.append("Residual standard deviation=").append(getResidualStandardDeviation());
+        builder.append("Residual standard deviation=").append(getErrorStandardDeviation());
         builder.append(System.lineSeparator());
         builder.append("F=").append(Ftest().getValue());
         builder.append(System.lineSeparator());

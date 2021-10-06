@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.filters.ISymmetricFiltering;
-import jdplus.math.linearfilters.AsymmetricFilters;
+import jdplus.math.linearfilters.AsymmetricFiltersFactory;
 import jdplus.math.linearfilters.FiniteFilter;
 import jdplus.math.linearfilters.IFiniteFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
@@ -53,19 +53,19 @@ public class RKHSFilterFactory {
                 switch (spec.getAsymmetricBandWith()) {
                     case FrequencyResponse:
                         bandWidth = CutAndNormalizeFilters.optimalBandWidth(len, j,
-                                AsymmetricFilters.frequencyResponseDistance(density));
+                                AsymmetricFiltersFactory.frequencyResponseDistance(density));
                         break;
                     case Accuracy:
                         bandWidth = CutAndNormalizeFilters.optimalBandWidth(len, j,
-                                AsymmetricFilters.accuracyDistance(density, passBand));
+                                AsymmetricFiltersFactory.accuracyDistance(density, passBand));
                         break;
                     case Smoothness:
                         bandWidth = CutAndNormalizeFilters.optimalBandWidth(len, j,
-                                AsymmetricFilters.smoothnessDistance(density, passBand));
+                                AsymmetricFiltersFactory.smoothnessDistance(density, passBand));
                         break;
                     case Timeliness:
                         bandWidth = CutAndNormalizeFilters.optimalBandWidth(len, j,
-                                AsymmetricFilters.timelinessDistance(density, passBand));
+                                AsymmetricFiltersFactory.timelinessDistance(density, passBand));
                         break;
                     default:
                         bandWidth = len + 1;

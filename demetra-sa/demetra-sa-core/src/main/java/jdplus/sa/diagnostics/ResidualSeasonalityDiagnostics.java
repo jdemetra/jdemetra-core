@@ -16,7 +16,6 @@
  */
 package jdplus.sa.diagnostics;
 
-import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import demetra.sa.SaDictionary;
 import demetra.stats.StatisticalTest;
@@ -27,6 +26,7 @@ import java.util.List;
 import jdplus.sa.tests.StableSeasonality;
 import jdplus.stats.tests.TestsUtility;
 import demetra.information.Explorable;
+import demetra.processing.Diagnostics;
 
 /**
  *

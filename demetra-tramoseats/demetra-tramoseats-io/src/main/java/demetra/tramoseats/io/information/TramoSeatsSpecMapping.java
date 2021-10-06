@@ -99,13 +99,17 @@ public class TramoSeatsSpecMapping {
     
     public TramoSeatsSpec read(InformationSet info) {
         if (info == null) {
-            return TramoSeatsSpec.DEFAULT;
+            return null;
         }
         AlgorithmDescriptor desc=info.get(ProcSpecification.ALGORITHM, AlgorithmDescriptor.class);
-        if (desc != null && desc.equals(TramoSeatsSpec.DESCRIPTOR_LEGACY))
+        if (desc == null)
+            return null;
+        if (desc.equals(TramoSeatsSpec.DESCRIPTOR_LEGACY))
             return readLegacy(info);
-        else
+        else if (desc.equals(TramoSeatsSpec.DESCRIPTOR_V3))
             return readV3(info);
+        else
+            return null;
     }
 
     

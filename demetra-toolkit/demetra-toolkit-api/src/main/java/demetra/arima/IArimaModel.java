@@ -16,37 +16,51 @@
  */
 package demetra.arima;
 
+import demetra.data.DoubleSeq;
+
 /**
  *
  * @author PALATEJ
  */
 public interface IArimaModel {
 
-    static final String NAME="arima";
+    static final String NAME = "arima";
+
     /**
      * Name of the model (optional); null by default
+     *
+     * @return
      */
-    default String getName(){
+    default String getName() {
         return NAME;
     }
-    
+
     double getInnovationVariance();
+
     /**
-     * Stationary auto-regressive polynomial (1+ar[0]B...); True signs. 
-     * Doesn't contain the constant term (always 1)
-     * All the roots of the stationary polynomial should be outside the unit circle (not checked)
+     * Stationary auto-regressive polynomial (1+ar[0]B...); True signs.
+     * All the roots of the stationary polynomial should be outside the unit
+     * circle (not checked)
+     *
+     * @return
      */
-    double[] getAr();
+    DoubleSeq getAr();
+
     /**
-     * Non-stationary auto-regressive polynomial (1, delta(1)...); True signs. 
-     * Doesn't contain the constant term (always 1)
-     * All the roots of the non-stationary polynomial should be on the unit circle (not checked)
+     * Non-stationary auto-regressive polynomial (1, delta(1)...); True
+     * signs. 
+     * All the roots of the non-stationary polynomial should be on the unit
+     * circle (not checked)
+     *
+     * @return
      */
-    double[] getDelta();
+    DoubleSeq getDelta();
+
     /**
      * Moving-average polynomial (1, theta(1)...); True signs.
-     * Doesn't contain the constant term (always 1)
+     *      *
+     * @return
      */
-    double[] getMa();
-   
+    DoubleSeq getMa();
+
 }

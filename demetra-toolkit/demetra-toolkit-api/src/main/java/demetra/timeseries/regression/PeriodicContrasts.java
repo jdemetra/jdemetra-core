@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 @lombok.Value
 @lombok.AllArgsConstructor
 @Development(status = Development.Status.Release)
-public class PeriodicContrasts implements ISystemVariable {
+public class PeriodicContrasts implements IPeriodicVariable, ISystemVariable {
 
     private int period;
     private LocalDateTime reference;

@@ -24,7 +24,7 @@ import static demetra.tsprovider.DataSet.Kind.SERIES;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.HasDataDisplayName;
 import demetra.tsprovider.util.DataSourcePreconditions;
-import demetra.tsprovider.util.MultiLineNameUtil;
+import demetra.util.MultiLineNameUtil;
 import demetra.timeseries.util.ObsGathering;
 
 /**

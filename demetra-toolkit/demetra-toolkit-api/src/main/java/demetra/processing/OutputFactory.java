@@ -39,7 +39,9 @@ public interface OutputFactory<D>{
      * Controls the availability of the factory
      * @return 
      */
-    boolean isAvailable();
+    default boolean isAvailable(){return true;}
+    
+    default void dispose(){}
 
     /**
      * Checks that the factory is enabled

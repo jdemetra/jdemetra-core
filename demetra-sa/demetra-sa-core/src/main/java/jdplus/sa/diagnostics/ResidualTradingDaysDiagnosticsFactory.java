@@ -16,35 +16,42 @@
  */
 package jdplus.sa.diagnostics;
 
-import demetra.processing.Diagnostics;
 import demetra.sa.SaDiagnosticsFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import demetra.processing.Diagnostics;
 
 /**
  *
  * @author Jean Palate
  */
-public class ResidualTradingDaysDiagnosticsFactory<R> implements SaDiagnosticsFactory<R> {
+public class ResidualTradingDaysDiagnosticsFactory<R> implements SaDiagnosticsFactory<ResidualTradingDaysDiagnosticsConfiguration, R> {
     
     static final String NAME="Residual trading days tests", DESC="Residual trading days tests";
     static final String FTEST_SA = "F-Test on SA (td)", FTEST_I = "F-Test on I (td)";
     static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(FTEST_SA, FTEST_I));
 
     private final ResidualTradingDaysDiagnosticsConfiguration config;
-    private final Function<R, ResidualTradingDaysDiagnostics.Input> extractor;
-    private boolean enabled;
+    private final Function<R, ResidualTradingDaysTests> extractor;
+    private final boolean active;
 
-    public ResidualTradingDaysDiagnosticsFactory(ResidualTradingDaysDiagnosticsConfiguration config, Function<R, ResidualTradingDaysDiagnostics.Input> extractor) {
+    public ResidualTradingDaysDiagnosticsFactory(boolean active, ResidualTradingDaysDiagnosticsConfiguration config, Function<R, ResidualTradingDaysTests> extractor) {
         this.config = config;
         this.extractor=extractor;
+        this.active=active;
     }
 
+    @Override
     public ResidualTradingDaysDiagnosticsConfiguration getConfiguration() {
         return config;
+    }
+
+    @Override
+    public ResidualTradingDaysDiagnosticsFactory<R> with(boolean active, ResidualTradingDaysDiagnosticsConfiguration config){
+        return new ResidualTradingDaysDiagnosticsFactory(active, config, extractor);
     }
 
     @Override
@@ -58,13 +65,8 @@ public class ResidualTradingDaysDiagnosticsFactory<R> implements SaDiagnosticsFa
     }
 
     @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public boolean isActive() {
+        return active;
     }
 
     @Override

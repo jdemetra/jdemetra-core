@@ -16,16 +16,13 @@
  */
 package jdplus.sa.diagnostics;
 
-import demetra.data.DoubleSeq;
-import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import jdplus.modelling.regular.tests.TradingDaysTest;
-import jdplus.stats.DescriptiveStatistics;
+import demetra.processing.Diagnostics;
 
 /**
  *
@@ -33,96 +30,22 @@ import jdplus.stats.DescriptiveStatistics;
  */
 public class ResidualTradingDaysDiagnostics implements Diagnostics {
 
-    @lombok.Value
-    public static class Input{
-        
-        /**
-         * Multiplicative decomposition
-         */
-        boolean multiplicative;
-        
-        /**
-         * Seasonally adjusted series, linearized, level
-         */
-        TsData sa;
-        
-        /**
-         * Irregular component, linearized, level (around 0 or 1)
-         */
-        TsData irregular;
-    }
-
     private StatisticalTest f_sa, f_i;
     private double sev, bad, unc;
 
-    private static final double E_LIMIT = .005;
-
-    private static boolean isSignificant(DoubleSeq s, DoubleSeq ref) {
-        DescriptiveStatistics sdesc = DescriptiveStatistics.of(s);
-        DescriptiveStatistics refdesc = DescriptiveStatistics.of(ref);
-        double se = sdesc.getStdev();
-        double refe = refdesc.getRmse();
-        return refe == 0 || se / refe > E_LIMIT;
-    }
-
-    private static boolean isSignificant(DoubleSeq i) {
-        if (i == null) {
-            return false;
-        }
-        DescriptiveStatistics idesc = DescriptiveStatistics.of(i);
-        double se = idesc.getStdev();
-        return se > E_LIMIT;
-    }
-
-    public static ResidualTradingDaysDiagnostics of(ResidualTradingDaysDiagnosticsConfiguration config, Input data) {
+    public static ResidualTradingDaysDiagnostics of(ResidualTradingDaysDiagnosticsConfiguration config, ResidualTradingDaysTests tests) {
         try {
             ResidualTradingDaysDiagnostics test = new ResidualTradingDaysDiagnostics();
-            TsData sa = data.sa;
-            TsData i = data.irregular;
-            if (sa == null && i == null) {
+            TsData sa = tests.getSa();
+            TsData i = tests.getIrr();
+            if (sa == null || i == null) {
                 return null;
             }
-            int ny = config.getSpanInYears();
-            boolean ar = config.isArModel();
-            boolean mul = data.multiplicative;
-            boolean isignif = mul ? isSignificant(i.getValues()) : (sa != null && i != null) ? isSignificant(i.getValues(), sa.getValues()) : true;
-            if (sa != null) {
-                if (mul) {
-                    sa = sa.log();
-                }
-                int ifreq = sa.getAnnualFrequency();
-                if (ar) {
-                    TsData salast = sa;
-                    if (ny != 0) {
-                        salast = sa.drop(Math.max(0, sa.length() - ifreq * ny - 1), 0);
-                    }
-                    test.f_sa = TradingDaysTest.olsTest2(salast);
-                } else {
-                    TsData salast = sa.delta(1);
-                    if (ny != 0) {
-                        salast = sa.drop(Math.max(0, sa.length() - ifreq * ny), 0);
-                    }
-                    test.f_sa = TradingDaysTest.olsTest(salast);
-                }
-            }
-            if (i != null && isignif) {
-                if (mul) {
-                    i = i.log();
-                }
-                int ifreq = i.getAnnualFrequency();
-                TsData ilast = i;
-                if (ar) {
-                    if (ny != 0) {
-                        ilast = i.drop(Math.max(0, i.length() - ifreq * ny - 1), 0);
-                    }
-                    test.f_i = TradingDaysTest.olsTest2(ilast);
 
-                } else {
-                    if (ny != 0) {
-                        ilast = i.drop(Math.max(0, i.length() - ifreq * ny), 0);
-                    }
-                    test.f_i = TradingDaysTest.olsTest(ilast);
-                }
+            test.f_sa=tests.saTest(true);
+            boolean isignif = SaDiagnosticsUtility.isSignificant(i.getValues(), sa.getValues());
+            if (isignif) {
+                test.f_i=tests.irrTest(true);
             }
             test.sev = config.getSevereThreshold();
             test.bad = config.getBadThreshold();

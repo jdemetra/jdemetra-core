@@ -253,6 +253,18 @@ public class Parameter {
         return p;
     }
 
+    public static Parameter[] of(DoubleSeq values, ParameterType type) {
+        if (type == ParameterType.Undefined) {
+            return make(values.length());
+        }
+        Parameter[] p = new Parameter[values.length()];
+        DoubleSeqCursor cur = values.cursor();
+        for (int i = 0; i < p.length; ++i) {
+            p[i] = new Parameter(cur.getAndNext(), type);
+        }
+        return p;
+    }
+
     public static Parameter[] make(int n) {
         Parameter[] all = new Parameter[n];
         for (int i = 0; i < n; ++i) {

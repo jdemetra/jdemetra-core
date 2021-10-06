@@ -296,7 +296,7 @@ public class TsConverterTest {
         MatrixType[] samples = {
                 MatrixType.of(new double[]{1, 2, 3, 4, 5, 6}, 2, 3),
                 MatrixType.of(new double[]{1, 2, 3, 4, 5, 6}, 3, 2),
-                MatrixType.EMPTY
+                MatrixType.empty()
         };
         for (MatrixType x : samples) {
             assertThat(TsConverter.toMatrix(TsConverter.fromMatrix(x))).isEqualTo(x);

@@ -166,7 +166,7 @@ public class FileWorkspaceTest {
     }
 
     public static void main(String[] arg) throws IOException {
-        Path path=FileSystems.getDefault().getPath("c:\\sarepository", "test.xml");
+        Path path=FileSystems.getDefault().getPath("c:\\sarepository", "testv3.xml");
         FileWorkspace ws = FileWorkspace.open(path);
         for (WorkspaceItem item : ws.getItems()) {
             assertThat(ws.getFile(item)).exists();

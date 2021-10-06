@@ -16,5 +16,6 @@ public class FractionalAirline {
 
     private double[] periodicities;
     private DoubleSeq theta;
-    private boolean adjustToInt;
+    private int ndifferencing;
+    
 }

@@ -83,4 +83,9 @@ public class LocalLevelItem extends StateItem {
     public int stateDim() {
         return 1;
     }
+    
+    @Override
+    public boolean isScalable() {
+        return !v.isFixed();
+    }
 }

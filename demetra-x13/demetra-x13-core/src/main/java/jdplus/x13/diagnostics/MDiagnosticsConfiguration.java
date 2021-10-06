@@ -16,6 +16,7 @@
  */
 package jdplus.x13.diagnostics;
 
+import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.design.Development;
 
 /**
@@ -27,9 +28,18 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Release)
 public class MDiagnosticsConfiguration {
 
-    protected static final double SEVERE = 2, BAD = 1;
-   
-    public static MDiagnosticsConfiguration DEFAULT=builder().build();
+    private static AtomicReference<MDiagnosticsConfiguration> DEFAULT
+            = new AtomicReference<MDiagnosticsConfiguration>(builder().build());
+
+    public static void setDefault(MDiagnosticsConfiguration config) {
+        DEFAULT.set(config);
+    }
+
+    public static MDiagnosticsConfiguration getDefault() {
+        return DEFAULT.get();
+    }
+
+    public static final double SEVERE = 2, BAD = 1;
 
     private double badThreshold;
     private double severeThreshold;

@@ -111,7 +111,7 @@ public class M2uAdapter {
 
         @Override
         public boolean isTimeInvariant() {
-            return false;
+            return measurements.getCount()==1 && measurements.loading(0).isTimeInvariant();
         }
 
         @Override
@@ -161,7 +161,7 @@ public class M2uAdapter {
 
         @Override
         public boolean isTimeInvariant() {
-            return false;
+            return errors.isTimeInvariant();
         }
 
         @Override
@@ -191,7 +191,7 @@ public class M2uAdapter {
 
         @Override
         public boolean isTimeInvariant() {
-            return false;
+            return nstep == 1 && mdynamics.isTimeInvariant();
         }
 
         @Override

@@ -23,6 +23,7 @@ import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
 import java.util.Arrays;
 import jdplus.data.DataBlockIterator;
+import jdplus.data.DataBlockStorage;
 import jdplus.math.matrices.Matrix;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.ssf.ISsfLoading;
@@ -86,62 +87,134 @@ public class CompositeModelEstimation {
 
     public StateStorage getSmoothedStates() {
         if (smoothedStates == null) {
-            StateStorage ss = AkfToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false);
+            try {
+                StateStorage ss = AkfToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false, false);
 //            StateStorage ss = DkToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false);
-            if (likelihood.isScalingFactor()) {
-                ss.rescaleVariances(likelihood.sigma2());
+                if (likelihood.isScalingFactor()) {
+                    ss.rescaleVariances(likelihood.sigma2());
+                }
+                smoothedStates = ss;
+            } catch (OutOfMemoryError err) {
+                ISsf ussf = M2uAdapter.of(ssf);
+                ISsfData udata = M2uAdapter.of(new SsfMatrix(data));
+                DataBlockStorage ds = DkToolkit.fastSmooth(ussf, udata);
+                StateStorage ss = StateStorage.light(StateInfo.Smoothed);
+                int m = data.getColumnsCount(), n = data.getRowsCount();
+                ss.prepare(ussf.getStateDim(), 0, n);
+                for (int i = 0; i < n; ++i) {
+                    ss.save(i, ds.block(i * m), null);
+                }
+                if (likelihood.isScalingFactor()) {
+                    ss.rescaleVariances(likelihood.sigma2());
+                }
+                smoothedStates = ss;
+
+            } catch (Exception err) {
+                StateStorage ss = AkfToolkit.smooth(getSsf(), new SsfMatrix(getData()), false, false, false);
+//            StateStorage ss = DkToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false);
+                if (likelihood.isScalingFactor()) {
+                    ss.rescaleVariances(likelihood.sigma2());
+                }
+                smoothedStates = ss;
+
             }
-            smoothedStates = ss;
         }
         return smoothedStates;
     }
 
     public StateStorage getFilteredStates() {
         if (filteredStates == null) {
-
-            ISsf ussf = M2uAdapter.of(ssf);
-            ISsfData udata = M2uAdapter.of(new SsfMatrix(data));
-            StateFilteringResults fr = new StateFilteringResults(StateInfo.Concurrent, true);
-            int m = data.getColumnsCount(), n = data.getRowsCount();
-            fr.prepare(ussf.getStateDim(), 0, udata.length());
-            DkToolkit.sqrtFilter(ussf, udata, fr, true);
-            StateStorage ss = StateStorage.full(StateInfo.Forecast);
-            ss.prepare(ussf.getStateDim(), 0, n);
-            for (int i = 1; i <= n; ++i) {
-                ss.save(i - 1, fr.a(i * m - 1), fr.P(i * m - 1));
+            try {
+                ISsf ussf = M2uAdapter.of(ssf);
+                ISsfData udata = M2uAdapter.of(new SsfMatrix(data));
+                StateFilteringResults fr = new StateFilteringResults(StateInfo.Concurrent, true);
+                int m = data.getColumnsCount(), n = data.getRowsCount();
+                fr.prepare(ussf.getStateDim(), 0, udata.length());
+                DkToolkit.sqrtFilter(ussf, udata, fr, true);
+                StateStorage ss = StateStorage.full(StateInfo.Concurrent);
+                ss.prepare(ussf.getStateDim(), 0, n);
+                for (int i = 1; i <= n; ++i) {
+                    ss.save(i - 1, fr.a(i * m - 1), fr.P(i * m - 1));
+                }
+                if (likelihood.isScalingFactor()) {
+                    ss.rescaleVariances(likelihood.sigma2());
+                }
+                filteredStates = ss;
+            } catch (java.lang.OutOfMemoryError err) {
+                ISsf ussf = M2uAdapter.of(ssf);
+                ISsfData udata = M2uAdapter.of(new SsfMatrix(data));
+                StateFilteringResults fr = new StateFilteringResults(StateInfo.Concurrent, false);
+                int m = data.getColumnsCount(), n = data.getRowsCount();
+                fr.prepare(ussf.getStateDim(), 0, udata.length());
+                DkToolkit.sqrtFilter(ussf, udata, fr, false);
+                StateStorage ss = StateStorage.light(StateInfo.Forecast);
+                ss.prepare(ussf.getStateDim(), 0, n);
+                int nd = fr.getEndDiffusePosition() / m;
+                if (fr.getEndDiffusePosition() % m != 0) {
+                    ++nd;
+                }
+                for (int i = 0; i < n; ++i) {
+                    ss.save(i, fr.a(i * m), null);
+                }
+                for (int i = 0; i < nd; ++i) {
+                    ss.a(i).set(Double.NaN);
+                }
+                if (likelihood.isScalingFactor()) {
+                    ss.rescaleVariances(likelihood.sigma2());
+                }
+                filteredStates = ss;
             }
-            if (likelihood.isScalingFactor()) {
-                ss.rescaleVariances(likelihood.sigma2());
-            }
-            filteredStates = ss;
         }
         return filteredStates;
     }
 
     public StateStorage getFilteringStates() {
         if (filteringStates == null) {
-
-            ISsf ussf = M2uAdapter.of(ssf);
-            ISsfData udata = M2uAdapter.of(new SsfMatrix(data));
-            DefaultDiffuseSquareRootFilteringResults fr = DkToolkit.sqrtFilter(ussf, udata, true);
-            StateStorage ss = StateStorage.full(StateInfo.Forecast);
-            int m = data.getColumnsCount(), n = data.getRowsCount();
-            ss.prepare(ussf.getStateDim(), 0, n);
-            int nd = fr.getEndDiffusePosition() / m;
-            if (fr.getEndDiffusePosition() % m != 0) {
-                ++nd;
+            try {
+                ISsf ussf = M2uAdapter.of(ssf);
+                ISsfData udata = M2uAdapter.of(new SsfMatrix(data));
+                DefaultDiffuseSquareRootFilteringResults fr = DkToolkit.sqrtFilter(ussf, udata, true);
+                StateStorage ss = StateStorage.full(StateInfo.Forecast);
+                int m = data.getColumnsCount(), n = data.getRowsCount();
+                ss.prepare(ussf.getStateDim(), 0, n);
+                int nd = fr.getEndDiffusePosition() / m;
+                if (fr.getEndDiffusePosition() % m != 0) {
+                    ++nd;
+                }
+                for (int i = 0; i < n; ++i) {
+                    ss.save(i, fr.a(i * m), fr.P(i * m));
+                }
+                for (int i = 0; i < nd; ++i) {
+                    ss.a(i).set(Double.NaN);
+                    ss.P(i).set(Double.NaN);
+                }
+                if (likelihood.isScalingFactor()) {
+                    ss.rescaleVariances(likelihood.sigma2());
+                }
+                filteringStates = ss;
+            } catch (java.lang.OutOfMemoryError err) {
+                // Just computes the states
+                ISsf ussf = M2uAdapter.of(ssf);
+                ISsfData udata = M2uAdapter.of(new SsfMatrix(data));
+                DefaultDiffuseSquareRootFilteringResults fr = DkToolkit.sqrtFilter(ussf, udata, false);
+                StateStorage ss = StateStorage.light(StateInfo.Forecast);
+                int m = data.getColumnsCount(), n = data.getRowsCount();
+                ss.prepare(ussf.getStateDim(), 0, n);
+                int nd = fr.getEndDiffusePosition() / m;
+                if (fr.getEndDiffusePosition() % m != 0) {
+                    ++nd;
+                }
+                for (int i = 0; i < n; ++i) {
+                    ss.save(i, fr.a(i * m), null);
+                }
+                for (int i = 0; i < nd; ++i) {
+                    ss.a(i).set(Double.NaN);
+                }
+                if (likelihood.isScalingFactor()) {
+                    ss.rescaleVariances(likelihood.sigma2());
+                }
+                filteringStates = ss;
             }
-            for (int i = 0; i < n; ++i) {
-                ss.save(i, fr.a(i * m), fr.P(i * m));
-            }
-            for (int i = 0; i < nd; ++i) {
-                ss.a(i).set(Double.NaN);
-                ss.P(i).set(Double.NaN);
-            }
-            if (likelihood.isScalingFactor()) {
-                ss.rescaleVariances(likelihood.sigma2());
-            }
-            filteringStates = ss;
         }
         return filteringStates;
     }

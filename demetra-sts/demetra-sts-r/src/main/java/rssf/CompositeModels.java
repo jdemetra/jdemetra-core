@@ -62,7 +62,7 @@ public class CompositeModels {
             MAPPING.set("parameters", double[].class, source -> source.getFullParameters());
             MAPPING.set("parametersnames", String[].class, source -> source.getParametersName());
             MAPPING.set("fn.parameters", double[].class, source -> source.getParameters());
-            MAPPING.setArray("ssf.T", 0, 10000, MatrixType.class, (source, t) -> {
+            MAPPING.setArray("ssf.T", 0, Integer.MAX_VALUE, MatrixType.class, (source, t) -> {
                 int dim = source.getSsf().getStateDim();
                 Matrix T = Matrix.square(dim);
                 source.getSsf().dynamics().T(t, T);
@@ -102,27 +102,27 @@ public class CompositeModels {
                 source.getSsf().initialization().diffuseConstraints(V);
                 return V;
             });
-            MAPPING.setArray("ssf.smoothing.array", 0, Integer.MAX_VALUE, double[].class, (source, p) -> {
+            MAPPING.setArray("ssf.smoothing.array", 0, double[].class, (source, p) -> {
                 StateStorage smoothedStates = source.getSmoothedStates();
                 return smoothedStates.getComponent(p).toArray();
             });
-            MAPPING.setArray("ssf.smoothing.varray", 0, Integer.MAX_VALUE, double[].class, (source, p) -> {
+            MAPPING.setArray("ssf.smoothing.varray", 0, double[].class, (source, p) -> {
                 StateStorage smoothedStates = source.getSmoothedStates();
                 return smoothedStates.getComponentVariance(p).toArray();
             });
-            MAPPING.setArray("ssf.smoothing.cmp", 0, Integer.MAX_VALUE, double[].class, (source, p) -> {
+            MAPPING.setArray("ssf.smoothing.cmp", 0, double[].class, (source, p) -> {
                 StateStorage smoothedStates = source.getSmoothedStates();
                 return smoothedStates.getComponent(source.getCmpPos()[p]).toArray();
             });
-            MAPPING.setArray("ssf.smoothing.vcmp", 0, Integer.MAX_VALUE, double[].class, (source, p) -> {
+            MAPPING.setArray("ssf.smoothing.vcmp", 0, double[].class, (source, p) -> {
                 StateStorage smoothedStates = source.getSmoothedStates();
                 return smoothedStates.getComponentVariance(source.getCmpPos()[p]).toArray();
             });
-            MAPPING.setArray("ssf.smoothing.state", 0, Integer.MAX_VALUE, double[].class, (source, p) -> {
+            MAPPING.setArray("ssf.smoothing.state", 0, double[].class, (source, p) -> {
                 StateStorage smoothedStates = source.getSmoothedStates();
                 return smoothedStates.a(p).toArray();
             });
-            MAPPING.setArray("ssf.smoothing.vstate", 0, Integer.MAX_VALUE, MatrixType.class, (source, p) -> {
+            MAPPING.setArray("ssf.smoothing.vstate", 0, MatrixType.class, (source, p) -> {
                 StateStorage smoothedStates = source.getSmoothedStates();
                 return smoothedStates.P(p).unmodifiable();
             });
@@ -144,23 +144,23 @@ public class CompositeModels {
                 }
                 return MatrixType.of(z, n, m);
             });
-            MAPPING.setArray("ssf.filtering.array", 0, Integer.MAX_VALUE, double[].class, (source, p) -> {
+            MAPPING.setArray("ssf.filtering.array", 0, double[].class, (source, p) -> {
                 StateStorage fStates = source.getFilteringStates();
                 return fStates.getComponent(p).toArray();
             });
-            MAPPING.setArray("ssf.filtering.varray", 0, Integer.MAX_VALUE, double[].class, (source, p) -> {
+            MAPPING.setArray("ssf.filtering.varray", 0, double[].class, (source, p) -> {
                 StateStorage fStates = source.getFilteringStates();
                 return fStates.getComponentVariance(p).toArray();
             });
-            MAPPING.setArray("ssf.filtering.cmp", 0, Integer.MAX_VALUE, double[].class, (source, p) -> {
+            MAPPING.setArray("ssf.filtering.cmp", 0, double[].class, (source, p) -> {
                 StateStorage fStates = source.getFilteringStates();
                 return fStates.getComponent(source.getCmpPos()[p]).toArray();
             });
-            MAPPING.setArray("ssf.filtering.vcmp", 0, Integer.MAX_VALUE, double[].class, (source, p) -> {
+            MAPPING.setArray("ssf.filtering.vcmp", 0, double[].class, (source, p) -> {
                 StateStorage fStates = source.getFilteringStates();
                 return fStates.getComponentVariance(source.getCmpPos()[p]).toArray();
             });
-            MAPPING.setArray("ssf.filtering.state", 0, Integer.MAX_VALUE, double[].class, (source, p) -> {
+            MAPPING.setArray("ssf.filtering.state", 0, double[].class, (source, p) -> {
                 StateStorage fStates = source.getFilteringStates();
                 return fStates.a(p).toArray();
             });
@@ -182,32 +182,32 @@ public class CompositeModels {
                 }
                 return MatrixType.of(z, n, m);
             });
-            MAPPING.setArray("ssf.filtering.vstate", 0, Integer.MAX_VALUE, MatrixType.class, (source, p) -> {
+            MAPPING.setArray("ssf.filtering.vstate", 0, MatrixType.class, (source, p) -> {
                 StateStorage fStates = source.getFilteringStates();
                 return fStates.P(p).unmodifiable();
             });
 
-            MAPPING.setArray("ssf.filtered.array", 0, Integer.MAX_VALUE, double[].class, (source, p) -> {
+            MAPPING.setArray("ssf.filtered.array", 0, double[].class, (source, p) -> {
                 StateStorage fStates = source.getFilteredStates();
                 return fStates.getComponent(p).toArray();
             });
-            MAPPING.setArray("ssf.filtered.varray", 0, Integer.MAX_VALUE, double[].class, (source, p) -> {
+            MAPPING.setArray("ssf.filtered.varray", 0, double[].class, (source, p) -> {
                 StateStorage fStates = source.getFilteredStates();
                 return fStates.getComponentVariance(p).toArray();
             });
-            MAPPING.setArray("ssf.filtered.cmp", 0, Integer.MAX_VALUE, double[].class, (source, p) -> {
+            MAPPING.setArray("ssf.filtered.cmp", 0, double[].class, (source, p) -> {
                 StateStorage fStates = source.getFilteredStates();
                 return fStates.getComponent(source.getCmpPos()[p]).toArray();
             });
-            MAPPING.setArray("ssf.filtered.vcmp", 0, Integer.MAX_VALUE, double[].class, (source, p) -> {
+            MAPPING.setArray("ssf.filtered.vcmp", 0, double[].class, (source, p) -> {
                 StateStorage fStates = source.getFilteredStates();
                 return fStates.getComponentVariance(source.getCmpPos()[p]).toArray();
             });
-            MAPPING.setArray("ssf.filtered.state", 0, Integer.MAX_VALUE, double[].class, (source, p) -> {
+            MAPPING.setArray("ssf.filtered.state", 0, double[].class, (source, p) -> {
                 StateStorage fStates = source.getFilteredStates();
                 return fStates.a(p).toArray();
             });
-            MAPPING.setArray("ssf.filtered.vstate", 0, Integer.MAX_VALUE, MatrixType.class, (source, p) -> {
+            MAPPING.setArray("ssf.filtered.vstate", 0, MatrixType.class, (source, p) -> {
                 StateStorage fStates = source.getFilteredStates();
                 return fStates.P(p).unmodifiable();
             });

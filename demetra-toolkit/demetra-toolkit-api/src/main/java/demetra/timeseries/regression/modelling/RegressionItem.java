@@ -13,7 +13,6 @@ import nbbrd.design.Development;
  */
 @lombok.Value
 @Development(status = Development.Status.Exploratory)
-@Deprecated
 public class RegressionItem {
  
     String description;

@@ -65,7 +65,7 @@ public class LightweightLinearModel{
     }
 
     @lombok.Value
-    @lombok.Builder
+    @lombok.Builder(builderClassName="Builder")
     public static class Estimation implements GeneralLinearModel.Estimation {
 
         /**
@@ -73,9 +73,9 @@ public class LightweightLinearModel{
          * fixed regression variables)
          * and of the free regression variable (including mean correction)
          */
-//        @lombok.NonNull
+        @lombok.NonNull
         private DoubleSeq y;
-//        @lombok.NonNull
+        @lombok.NonNull
         private MatrixType X;
 
         /**
@@ -83,18 +83,18 @@ public class LightweightLinearModel{
          * variables
          * Fixed coefficients are not included
          */
-//        @lombok.NonNull
+        @lombok.NonNull
         private DoubleSeq coefficients;
-//        @lombok.NonNull
+        @lombok.NonNull
         private MatrixType coefficientsCovariance;
 
-//        @lombok.NonNull
+        @lombok.NonNull
         private MissingValueEstimation[] missing;
         /**
          * Parameters of the stochastic component. Fixed parameters are not
          * included
          */
-//        @lombok.NonNull
+        @lombok.NonNull
         private ParametersEstimation parameters;
 
 //        @lombok.NonNull
@@ -102,6 +102,19 @@ public class LightweightLinearModel{
 
         @lombok.Singular
         private List<ProcessingLog.Information> logs;
+        
+        public static Builder builder(){
+            Builder builder=new Builder();
+            builder.y=DoubleSeq.empty();
+            builder.X=MatrixType.empty();
+            builder.coefficients=DoubleSeq.empty();
+            builder.coefficientsCovariance=MatrixType.empty();
+            builder.missing=NOMISSING;
+            builder.parameters=ParametersEstimation.empty();
+            return builder;
+        }
+        
+        private static final MissingValueEstimation[] NOMISSING=new MissingValueEstimation[0];
 
     }
 

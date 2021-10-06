@@ -17,7 +17,6 @@
 package jdplus.math.linearfilters;
 
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.decomposition.Householder;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlockIterator;
 import jdplus.linearsystem.LinearSystemSolver;

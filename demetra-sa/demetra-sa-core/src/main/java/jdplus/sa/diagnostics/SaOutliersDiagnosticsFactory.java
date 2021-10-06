@@ -27,10 +27,10 @@ import jdplus.regsarima.regular.RegSarimaModel;
  * @author PALATEJ
  * @param <R>
  */
-public class SaOutliersDiagnosticsFactory<R> extends OutliersDiagnosticsFactory<R> implements SaDiagnosticsFactory<R> {
+public class SaOutliersDiagnosticsFactory<R> extends OutliersDiagnosticsFactory<R> implements SaDiagnosticsFactory<OutliersDiagnosticsConfiguration, R> {
 
-    public SaOutliersDiagnosticsFactory(OutliersDiagnosticsConfiguration config, Function<R, RegSarimaModel> extractor) {
-        super(config, extractor);
+    public SaOutliersDiagnosticsFactory(boolean active, OutliersDiagnosticsConfiguration config, Function<R, RegSarimaModel> extractor) {
+        super(active, config, extractor);
     }
 
     @Override
@@ -43,4 +43,8 @@ public class SaOutliersDiagnosticsFactory<R> extends OutliersDiagnosticsFactory<
         return 200;
     }
 
+    @Override
+    public SaOutliersDiagnosticsFactory<R> with(boolean active, OutliersDiagnosticsConfiguration config){
+        return new SaOutliersDiagnosticsFactory(active, config, extractor);
+    }
 }

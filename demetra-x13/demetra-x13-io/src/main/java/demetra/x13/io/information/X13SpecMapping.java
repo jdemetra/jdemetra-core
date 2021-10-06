@@ -97,14 +97,17 @@ public class X13SpecMapping {
 
     public X13Spec read(InformationSet info) {
         if (info == null) {
-            return X13Spec.RSA0;
+            return null;
         }
-        AlgorithmDescriptor desc = info.get(ProcSpecification.ALGORITHM, AlgorithmDescriptor.class);
-        if (desc != null && desc.equals(X13Spec.DESCRIPTOR_LEGACY)) {
+        AlgorithmDescriptor desc=info.get(ProcSpecification.ALGORITHM, AlgorithmDescriptor.class);
+        if (desc == null)
+            return null;
+        if (desc.equals(X13Spec.DESCRIPTOR_LEGACY))
             return readLegacy(info);
-        } else {
+        else if (desc.equals(X13Spec.DESCRIPTOR_V3))
             return readV3(info);
-        }
+        else
+            return null;
     }
 
     public X13Spec readV3(InformationSet info) {

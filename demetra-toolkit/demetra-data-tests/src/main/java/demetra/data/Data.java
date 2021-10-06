@@ -754,6 +754,22 @@ public class Data {
 
     }
 
+    public static final TsData[] xm() {
+        try {
+            File file = copyToTempFile(Data.class.getResource("/xm.txt"));
+            MatrixType xm = MatrixSerializer.read(file);
+            TsData[] all = new TsData[xm.getColumnsCount()];
+            TsPeriod start = TsPeriod.monthly(1995, 1);
+            for (int i = 0; i < all.length; ++i) {
+                all[i] = TsData.ofInternal(start, xm.column(i).toArray());
+            }
+            return all;
+        } catch (IOException ex) {
+            return null;
+        }
+
+    }
+
     public static final TsData[] indprod_de() {
         try {
             File file = copyToTempFile(Data.class.getResource("/indprod_de.txt"));

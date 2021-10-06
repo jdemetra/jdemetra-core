@@ -16,15 +16,14 @@
  */
 package jdplus.x13;
 
-import demetra.sa.DefaultSaDiagnostics;
 import demetra.sa.StationaryVarianceDecomposition;
 import demetra.timeseries.TsData;
 import demetra.x11.X11Results;
+import demetra.x13.X13Finals;
+import demetra.x13.X13Preadjustment;
 import jdplus.regsarima.regular.RegSarimaModel;
-import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnostics;
-import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
-import jdplus.sa.diagnostics.ResidualTradingDaysDiagnostics;
-import jdplus.sa.diagnostics.ResidualTradingDaysDiagnosticsConfiguration;
+import jdplus.sa.diagnostics.GenericSaTests;
+
 /**
  *
  * @author PALATEJ
@@ -33,27 +32,35 @@ import jdplus.sa.diagnostics.ResidualTradingDaysDiagnosticsConfiguration;
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class X13Diagnostics {
 
+    private StationaryVarianceDecomposition varianceDecomposition;
+    private GenericSaTests genericDiagnostics;
     private Mstatistics mstatistics;
-    private DefaultSaDiagnostics saDiagnostics;
 
-    public static X13Diagnostics of(X13Results rslts) {
-        RegSarimaModel preprocessing = rslts.getPreprocessing();
-        X11Results xrslts = rslts.getDecomposition();
-            Mstatistics mstats = Mstatistics.of(rslts.getPreadjustment(), xrslts, rslts.getFinals());
-        DefaultSaDiagnostics.Builder sadiags = DefaultSaDiagnostics.builder()
-                .varianceDecomposition(varDecomposition(mstats));
+    public static X13Diagnostics of(RegSarimaModel preprocessing, X13Preadjustment preadj, X11Results xrslts, X13Finals finals) {
+        Mstatistics mstats = Mstatistics.of(preadj, xrslts, finals);
         boolean mul = preprocessing.getDescription().isLogTransformation();
         TsData sa = xrslts.getD11();
         TsData i = xrslts.getD13();
-        AdvancedResidualSeasonalityDiagnostics.Input input = new AdvancedResidualSeasonalityDiagnostics.Input(mul, sa, i);
-        AdvancedResidualSeasonalityDiagnostics rseas = AdvancedResidualSeasonalityDiagnostics.of(AdvancedResidualSeasonalityDiagnosticsConfiguration.DEFAULT, input);
-        ResidualTradingDaysDiagnostics.Input tdinput = new ResidualTradingDaysDiagnostics.Input(mul, sa, i);
-        ResidualTradingDaysDiagnostics rtd = ResidualTradingDaysDiagnostics.of(ResidualTradingDaysDiagnosticsConfiguration.DEFAULT, tdinput);
-        if (rtd != null) {
-            sadiags.tdFTestOnI(rtd.FTestOnI())
-                    .tdFTestOnSa(rtd.FTestOnSa());
-        }
-        return new X13Diagnostics(mstats, sadiags.build());
+        TsData t = xrslts.getD12();
+        TsData si = xrslts.getD8();
+        TsData y = xrslts.getB1();
+        TsData lsa = mul ? sa.log() : sa;
+        TsData li = mul ? i.log() : i;
+        TsData lin = preprocessing.linearizedSeries();
+
+        GenericSaTests gsadiags = GenericSaTests.builder()
+                .mul(mul)
+                .regarima(preprocessing)
+                .lin(lin)
+                .res(preprocessing.fullResiduals())
+                .y(y)
+                .sa(sa)
+                .irr(i)
+                .si(si)
+                .lsa(lsa)
+                .lirr(li)
+                .build();
+        return new X13Diagnostics(varDecomposition(mstats), gsadiags, mstats);
     }
 
     private static StationaryVarianceDecomposition varDecomposition(Mstatistics m) {
@@ -65,7 +72,6 @@ public class X13Diagnostics {
                 .P(m.getVarP())
                 .trendType(StationaryVarianceDecomposition.TrendType.Linear)
                 .build();
-        
+
     }
 }
-    

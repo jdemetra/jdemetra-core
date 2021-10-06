@@ -18,7 +18,6 @@ package demetra.tramoseats.io.protobuf;
 
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
 import demetra.sa.io.protobuf.SaProtosUtility;
-import jdplus.tramoseats.TramoSeatsDiagnostics;
 import jdplus.tramoseats.TramoSeatsResults;
 
 /**
@@ -31,11 +30,10 @@ public class TramoSeatsResultsProto {
 
     public TramoSeatsProtos.TramoSeatsResults convert(TramoSeatsResults rslts) {
         TramoSeatsProtos.TramoSeatsResults.Builder builder = TramoSeatsProtos.TramoSeatsResults.newBuilder();
-        TramoSeatsDiagnostics diags = TramoSeatsDiagnostics.of(rslts);
         builder.setPreprocessing(RegArimaEstimationProto.convert(rslts.getPreprocessing()))
                 .setDecomposition(SeatsResultsProto.convert(rslts.getDecomposition()))
                 .setFinal(SaProtosUtility.convert(rslts.getFinals()))
-                .setDiagnosticsSa(SaProtosUtility.of(diags.getSaDiagnostics()));
+                .setDiagnosticsSa(SaProtosUtility.of(rslts.getDiagnostics().getGenericDiagnostics(), rslts.getDiagnostics().getVarianceDecomposition()));
         return builder.build();
     }
 

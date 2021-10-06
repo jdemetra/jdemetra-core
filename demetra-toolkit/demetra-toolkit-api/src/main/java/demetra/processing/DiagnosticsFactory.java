@@ -22,21 +22,31 @@ import java.util.List;
 /**
  *
  * @author Jean Palate
+ * @param <C> Configuration
  * @param <R> Original result
  */
-public interface DiagnosticsFactory <R>{
-
+public interface DiagnosticsFactory <C, R>{
+    
     String getName();
 
-    boolean isEnabled();
-
-    void setEnabled(boolean enabled);
+    boolean isActive();
     
+    C getConfiguration();
+
     /**
-     * Get the list of the tests
+     * Gets the list of the tests
      * @return A non empty list of tests.
      */
     List<String> getTestDictionary();
     
     Diagnostics of(R results);
+    
+    /**
+     * 
+     * @param active
+     * @param newConfig If null, the current config is used
+     * @return 
+     */
+    DiagnosticsFactory<C, R> with(boolean active, C newConfig);
+    
 }

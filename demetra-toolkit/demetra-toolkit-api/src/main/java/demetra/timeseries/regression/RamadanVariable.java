@@ -24,7 +24,7 @@ import nbbrd.design.Development;
  * @author palatej
  */
 @Development(status=Development.Status.Preliminary)
-public class RamadanVariable implements IMovingHolidayVariable{
+public class RamadanVariable implements IMovingHolidayVariable, ISystemVariable{
     
     @Override
     public <D extends TimeSeriesDomain<?>> String description(D context) {

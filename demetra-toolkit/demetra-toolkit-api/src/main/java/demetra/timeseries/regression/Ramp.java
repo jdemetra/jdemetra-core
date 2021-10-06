@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
  */
 @lombok.Value
 @Development(status=Development.Status.Release)
-public class Ramp implements ISystemVariable{
+public class Ramp implements ISystemVariable, IUserVariable{
     
     @Override
     public int dim()

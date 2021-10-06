@@ -78,7 +78,7 @@
             <scope>test</scope>
             <exclusions>
                 <exclusion>
-                    <groupId>be.nbb.rd</groupId>
+                    <groupId>com.github.nbbrd</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>

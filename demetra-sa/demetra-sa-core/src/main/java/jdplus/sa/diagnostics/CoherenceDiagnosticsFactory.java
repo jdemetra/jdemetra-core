@@ -17,13 +17,15 @@
 package jdplus.sa.diagnostics;
 
 import nbbrd.design.Development;
-import demetra.processing.Diagnostics;
 import demetra.sa.SaDiagnosticsFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.processing.DiagnosticsFactory;
+import demetra.processing.Diagnostics;
 
 /**
  *
@@ -31,7 +33,7 @@ import java.util.stream.Collectors;
  * @param <R>
  */
 @Development(status = Development.Status.Release)
-public class CoherenceDiagnosticsFactory<R> implements SaDiagnosticsFactory<R> {
+public class CoherenceDiagnosticsFactory<R> implements SaDiagnosticsFactory<CoherenceDiagnosticsConfiguration, R> {
 
     public static final String DEF = "definition", BIAS = "annual totals";
     public static final String NAME = "Basic checks";
@@ -39,36 +41,28 @@ public class CoherenceDiagnosticsFactory<R> implements SaDiagnosticsFactory<R> {
 //    public static final CoherenceDiagnosticsFactory Default = new CoherenceDiagnosticsFactory();
     private final CoherenceDiagnosticsConfiguration config;
     private final Function<R, CoherenceDiagnostics.Input> extractor;
-    private boolean enabled=true;
+    private final boolean active;
 
-    public CoherenceDiagnosticsFactory(CoherenceDiagnosticsConfiguration config,
-            Function<R, CoherenceDiagnostics.Input> extractor) {
+    public CoherenceDiagnosticsFactory(boolean active, @NonNull CoherenceDiagnosticsConfiguration config,
+            @NonNull Function<R, CoherenceDiagnostics.Input> extractor) {
         this.config = config;
-        this.extractor=extractor;
+        this.extractor = extractor;
+        this.active=active;
     }
 
-    public CoherenceDiagnosticsConfiguration getConfiguration() {
-        return config;
-    }
-
-     @Override
+    @Override
     public List<String> getTestDictionary() {
         return ALL.stream().map(s -> s + ":2").collect(Collectors.toList());
     }
 
     @Override
     public String getName() {
-        return NAME; 
-    }
-    
-    @Override
-    public boolean isEnabled() {
-        return enabled;
+        return NAME;
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
-        this.enabled=enabled;
+    public boolean isActive() {
+        return active;
     }
 
     @Override
@@ -85,5 +79,15 @@ public class CoherenceDiagnosticsFactory<R> implements SaDiagnosticsFactory<R> {
     public int getOrder() {
         return 0;
     }
-    
+
+    @Override
+    public CoherenceDiagnosticsConfiguration getConfiguration() {
+        return config;
+    }
+
+    @Override
+    public CoherenceDiagnosticsFactory<R> with(boolean active, @NonNull CoherenceDiagnosticsConfiguration newConfig) {
+        return new CoherenceDiagnosticsFactory(active, config, extractor);
+    }
+
 }

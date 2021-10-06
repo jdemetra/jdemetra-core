@@ -14,43 +14,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package jdplus.regarima.diagnostics;
 
 import jdplus.regsarima.regular.RegSarimaModel;
-import demetra.processing.DiagnosticsFactory;
-import demetra.processing.Diagnostics;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.processing.DiagnosticsFactory;
+import demetra.processing.Diagnostics;
 
 /**
  *
  * @author Jean Palate
  * @param <R>
  */
-public class ResidualsDiagnosticsFactory<R> implements DiagnosticsFactory<R> {
+public class ResidualsDiagnosticsFactory<R> implements DiagnosticsFactory<ResidualsDiagnosticsConfiguration, R> {
 
     public static final String NORMALITY = "normality", INDEPENDENCE = "independence",
-        TD_PEAK = "spectral td peaks", S_PEAK = "spectral seas peaks";
+            TD_PEAK = "spectral td peaks", S_PEAK = "spectral seas peaks";
 
     public static final String NAME = "Regarima residuals";
 
     public static List<String> ALL = Collections.unmodifiableList(Arrays.asList(NORMALITY, INDEPENDENCE, TD_PEAK, S_PEAK));
 
     private final ResidualsDiagnosticsConfiguration config;
-    private final Function<R, RegSarimaModel > extractor;
-    private boolean enabled=true;
+    protected final Function<R, RegSarimaModel> extractor;
+    private final boolean active;
 
-    public ResidualsDiagnosticsFactory(ResidualsDiagnosticsConfiguration config,Function<R, RegSarimaModel > extractor) {
+    public ResidualsDiagnosticsFactory(boolean active, @NonNull ResidualsDiagnosticsConfiguration config, @NonNull Function<R, RegSarimaModel> extractor) {
         this.config = config;
-        this.extractor=extractor;
+        this.extractor = extractor;
+        this.active=active;
     }
 
+    @Override
     public ResidualsDiagnosticsConfiguration getConfiguration() {
         return config;
+    }
+
+    @Override
+    public ResidualsDiagnosticsFactory<R> with(boolean active, @NonNull ResidualsDiagnosticsConfiguration config) {
+        return new ResidualsDiagnosticsFactory(active, config, extractor);
     }
 
     @Override
@@ -59,18 +66,13 @@ public class ResidualsDiagnosticsFactory<R> implements DiagnosticsFactory<R> {
     }
 
     @Override
-    public List<String> getTestDictionary(){
-        return ALL.stream().map(s->s+":2").collect(Collectors.toList());
+    public List<String> getTestDictionary() {
+        return ALL.stream().map(s -> s + ":2").collect(Collectors.toList());
     }
 
     @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        this.enabled=enabled;
+    public boolean isActive() {
+        return active;
     }
 
     @Override

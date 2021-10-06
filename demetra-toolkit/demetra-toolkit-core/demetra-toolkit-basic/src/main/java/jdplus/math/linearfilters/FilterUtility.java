@@ -23,6 +23,7 @@ import demetra.util.Ref;
 import java.util.function.IntToDoubleFunction;
 import jdplus.math.ComplexComputer;
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
 import jdplus.data.DataBlock;
 
 /**
@@ -263,7 +264,7 @@ public class FilterUtility {
     }
 
     /**
-     * Computes the frequency response
+     * Computes the frequency response (f(w)=sum(w(t)e(iwt))=sum(w(t)(cos(wt)+i*sin(wt)))
      *
      * @param c
      * @param lb Lower bound (included)
@@ -277,7 +278,7 @@ public class FilterUtility {
         double cos = Math.cos(w);
         int idx = lb;
         // sum (w(j)e(-i jw)), j: lb->ub
-        Complex c0 = Complex.cart(Math.cos(w * idx), -Math.sin(w * idx));
+        Complex c0 = lb == 0 ? Complex.ONE : Complex.cart(Math.cos(w * idx), Math.sin(w * idx));
         ComplexComputer rslt = new ComplexComputer(c0)
                 .mul(c.applyAsDouble(idx++));
 
@@ -285,7 +286,7 @@ public class FilterUtility {
         // e(-i(n+1)w)+e(-i(n-1)w)=e(-inw)*2cos w.
         // e(-i(n+1)w)=e(-inw)*2cos w -e(-i(n-1)w)
         if (idx <= ub) {
-            Complex c1 = Complex.cart(Math.cos(w * idx), -Math.sin(w * idx));
+            Complex c1 = Complex.cart(Math.cos(w * idx), Math.sin(w * idx));
             rslt.addAC(c.applyAsDouble(idx++), c1);
             while (idx <= ub) {
                 Complex eiw = new ComplexComputer(c1)

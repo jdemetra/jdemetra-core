@@ -17,9 +17,9 @@
 package jdplus.sa.diagnostics;
 
 import demetra.data.AggregationType;
+import demetra.information.BasicInformationExtractor;
 import nbbrd.design.Development;
 import demetra.modelling.ModellingDictionary;
-import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import demetra.sa.DecompositionMode;
 import demetra.sa.SaDictionary;
@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import jdplus.stats.DescriptiveStatistics;
 import demetra.information.Explorable;
+import demetra.processing.Diagnostics;
 
 /**
  *
@@ -96,19 +97,17 @@ public final class CoherenceDiagnostics implements Diagnostics {
             check(df0);
             check(df1);
         } else {
-
             TsData regy = rslts.getData(SaDictionary.REG_Y, TsData.class);
             TsData regsa = rslts.getData(SaDictionary.REG_SA, TsData.class);
-            TsData cy = rslts.getData(ModellingDictionary.L, TsData.class);
-            TsData ct = rslts.getData(SaDictionary.T_CMP, TsData.class);
-            TsData cs = rslts.getData(SaDictionary.S_CMP, TsData.class);
-            TsData ci = rslts.getData(SaDictionary.I_CMP, TsData.class);
-            TsData csa = rslts.getData(SaDictionary.SA_CMP, TsData.class);
-            TsData ly = rslts.getData(ModellingDictionary.Y_LIN, TsData.class);
-            TsData lt = rslts.getData(SaDictionary.T_LIN, TsData.class);
-            TsData ls = rslts.getData(SaDictionary.S_LIN, TsData.class);
-            TsData li = rslts.getData(SaDictionary.I_LIN, TsData.class);
-            TsData lsa = rslts.getData(SaDictionary.SA_LIN, TsData.class);
+            TsData ct = rslts.getData(BasicInformationExtractor.concatenate(SaDictionary.DECOMPOSITION,SaDictionary.T_CMP), TsData.class);
+            TsData cs = rslts.getData(BasicInformationExtractor.concatenate(SaDictionary.DECOMPOSITION,SaDictionary.S_CMP), TsData.class);
+            TsData ci = rslts.getData(BasicInformationExtractor.concatenate(SaDictionary.DECOMPOSITION,SaDictionary.I_CMP), TsData.class);
+            TsData csa = rslts.getData(BasicInformationExtractor.concatenate(SaDictionary.DECOMPOSITION,SaDictionary.SA_CMP), TsData.class);
+            TsData ly = rslts.getData(ModellingDictionary.L, TsData.class);
+            TsData lt = rslts.getData(BasicInformationExtractor.concatenate(SaDictionary.DECOMPOSITION,SaDictionary.T_LIN), TsData.class);
+            TsData ls = rslts.getData(BasicInformationExtractor.concatenate(SaDictionary.DECOMPOSITION,SaDictionary.S_LIN), TsData.class);
+            TsData li = rslts.getData(BasicInformationExtractor.concatenate(SaDictionary.DECOMPOSITION,SaDictionary.I_LIN), TsData.class);
+            TsData lsa = rslts.getData(BasicInformationExtractor.concatenate(SaDictionary.DECOMPOSITION,SaDictionary.SA_LIN), TsData.class);
             TsData tde = rslts.getData(ModellingDictionary.TDE, TsData.class);
             TsData ee = rslts.getData(ModellingDictionary.EE, TsData.class);
             TsData omhe = rslts.getData(ModellingDictionary.OMHE, TsData.class);
@@ -125,35 +124,35 @@ public final class CoherenceDiagnostics implements Diagnostics {
             // finals
             TsData df0 = sub(yc, op(t, s, i, regsa));
             TsData df1 = sub(sa, op(t, i, regsa));
-            TsData df2 = sub(inv_op(y, regy), op(sa, s));
+            //TsData df2 = sub(inv_op(y, regy), op(sa, s)); REDUNDANT
             TsData df3 = sub(s, op(cs, cal, regs, outs));
             TsData df4 = sub(t, op(ct, regt, outt));
             TsData df5 = sub(i, op(ci, regi, outi));
             TsData dcal = sub(cal, op(tde, ee, omhe));
             // components
-            TsData dc0 = sub(cy, op(ct, cs, ci));
+            TsData dc0 = sub(yl, op(ct, cs, ci));
             TsData dc1 = sub(csa, op(ct, ci));
-            TsData dc2 = sub(cy, op(csa, cs));
+            //TsData dc2 = sub(yl, op(csa, cs)); REDUNDANT
 
             maxDefinitionDifference = Double.NaN;
             check(df0);
             check(df1);
-            check(df2);
+            //check(df2);
             check(df3);
             check(df4);
             check(df5);
             check(dcal);
             check(dc0);
             check(dc1);
-            check(dc2);
+            //check(dc2);
             // lin
             if (lsa != null) {
                 TsData dl0 = sub(ly, add(lt, ls, li));
                 TsData dl1 = sub(lsa, add(lt, li));
-                TsData dl2 = sub(ly, add(lsa, ls));
+                //TsData dl2 = sub(ly, add(lsa, ls)); REDUNDANT
                 check(dl0);
                 check(dl1);
-                check(dl2);
+                //check(dl2);
             }
         }
         // annual totals
@@ -164,7 +163,6 @@ public final class CoherenceDiagnostics implements Diagnostics {
             double dcur = Math.abs(yca.getValue(k) - saa.getValue(k));
             if (dcur > maxAnnualDifference) {
                 maxAnnualDifference = dcur;
-
             }
         }
         maxAnnualDifference /= y.getAnnualFrequency() * scale;

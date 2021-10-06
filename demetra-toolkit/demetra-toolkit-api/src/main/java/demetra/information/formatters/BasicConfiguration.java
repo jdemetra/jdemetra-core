@@ -16,6 +16,7 @@
  */
 package demetra.information.formatters;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,7 +29,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @lombok.experimental.UtilityClass
 public class BasicConfiguration {
 
-    private Character csvSeparator = null;
     private final AtomicInteger ndec = new AtomicInteger(9);
 
     public int getFractionDigits() {
@@ -39,26 +39,5 @@ public class BasicConfiguration {
         ndec.set(n);
     }
 
-    public char getCsvSeparator() {
-        synchronized (ndec) {
-            if (csvSeparator != null) {
-                return csvSeparator;
-            } else {
-                DecimalFormat fmt = (DecimalFormat) NumberFormat.getNumberInstance();
-                char sep = fmt.getDecimalFormatSymbols().getDecimalSeparator();
-                if (sep == ',') {
-                    return ';';
-                } else {
-                    return ',';
-                }
-            }
-        }
-    }
-
-    public void setCsvSeparator(Character c) {
-        synchronized (ndec) {
-            csvSeparator = c;
-        }
-    }
 
 }

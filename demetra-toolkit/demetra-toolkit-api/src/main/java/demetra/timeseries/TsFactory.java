@@ -23,6 +23,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 /**
@@ -30,8 +31,7 @@ import java.util.stream.Stream;
  */
 public interface TsFactory {
 
-    String
-            DESCRIPTION = "@description", OWNER = "@owner",
+    String DESCRIPTION = "@description", OWNER = "@owner",
             SOURCE = "@source", ID = "@id", DATE = "@timestamp",
             DOCUMENT = "@document", SUMMARY = "@summary",
             NOTE = "@note", TODO = "@todo",
@@ -39,22 +39,36 @@ public interface TsFactory {
             QUALITY = "@quality";
 
     @StaticFactoryMethod
-    static @NonNull TsFactory ofServiceLoader() {
+    static @NonNull
+    TsFactory ofServiceLoader() {
         return of(TsProviderLoader.load());
     }
 
     @StaticFactoryMethod
-    static @NonNull TsFactory of(@NonNull Iterable<? extends TsProvider> providers) {
+    static @NonNull
+    TsFactory of(@NonNull Iterable<? extends TsProvider> providers) {
         DefaultTsFactory.Builder result = DefaultTsFactory.builder();
         providers.forEach(result::provider);
         return result.build();
     }
 
-    @NonNull Optional<TsProvider> getProvider(@NonNull String name);
+    static @NonNull
+    TsFactory getDefault() {
+        return MainFactory.DEFAULT.get();
+    }
 
-    @NonNull Stream<TsProvider> getProviders();
+    static void setDefault(@NonNull TsFactory factory) {
+        MainFactory.DEFAULT.set(factory);
+    }
 
-    default @NonNull Ts makeTs(@NonNull TsMoniker moniker, @NonNull TsInformationType info) {
+    @NonNull
+    Optional<TsProvider> getProvider(@NonNull String name);
+
+    @NonNull
+    Stream<TsProvider> getProviders();
+
+    default @NonNull
+    Ts makeTs(@NonNull TsMoniker moniker, @NonNull TsInformationType info) {
         Optional<TsProvider> provider = getProvider(moniker.getSource());
         if (provider.isPresent()) {
             try {
@@ -67,11 +81,13 @@ public interface TsFactory {
         return DefaultTsFactory.fallbackTs(moniker, TsData.empty(PROVIDER_NOT_FOUND));
     }
 
-    default @NonNull Ts makeTs(@NonNull TsMoniker moniker, @NonNull IOException ex) {
+    default @NonNull
+    Ts makeTs(@NonNull TsMoniker moniker, @NonNull IOException ex) {
         return DefaultTsFactory.fallbackTs(moniker, TsData.empty(ex.getMessage()));
     }
 
-    default @NonNull TsCollection makeTsCollection(@NonNull TsMoniker moniker, @NonNull TsInformationType info) {
+    default @NonNull
+    TsCollection makeTsCollection(@NonNull TsMoniker moniker, @NonNull TsInformationType info) {
         Optional<TsProvider> provider = getProvider(moniker.getSource());
         if (provider.isPresent()) {
             try {
@@ -84,9 +100,16 @@ public interface TsFactory {
         return DefaultTsFactory.fallbackTsCollection(moniker, PROVIDER_NOT_FOUND);
     }
 
-    default @NonNull TsCollection makeTsCollection(@NonNull TsMoniker moniker, @NonNull IOException ex) {
+    default @NonNull
+    TsCollection makeTsCollection(@NonNull TsMoniker moniker, @NonNull IOException ex) {
         return DefaultTsFactory.fallbackTsCollection(moniker, ex.getMessage());
     }
 
     String PROVIDER_NOT_FOUND = "Provider not found";
+
+}
+
+class MainFactory {
+
+    static AtomicReference<TsFactory> DEFAULT = new AtomicReference<>(TsFactory.ofServiceLoader());
 }

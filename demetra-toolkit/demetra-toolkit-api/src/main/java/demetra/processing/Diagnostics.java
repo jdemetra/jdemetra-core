@@ -17,6 +17,7 @@
 
 package demetra.processing;
 
+import java.util.Collections;
 import nbbrd.design.Development;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public interface Diagnostics {
 
     /**
      * Gets the value of the diagnostic, if any.
-     * Double.Nan is returned if no value are available
+     * Double.Nan is returned if no value is available
      * @param test
      * @return 
      */
@@ -56,7 +57,9 @@ public interface Diagnostics {
 
     /**
      * Gets all the warnings related to the given tests.
-     * @return The list of warnings or null.
+     * @return The list of warnings.
      */
-    List<String> getWarnings();
+    default List<String> getWarnings(){
+        return Collections.emptyList();
+    }
 }

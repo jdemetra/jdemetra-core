@@ -17,11 +17,11 @@
 package jdplus.x13.diagnostics;
 
 import jdplus.x13.Mstatistics;
-import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import java.util.Collections;
 import java.util.List;
 import jdplus.x13.X13Results;
+import demetra.processing.Diagnostics;
 
 /**
  *
@@ -34,11 +34,7 @@ public class MDiagnostics implements Diagnostics {
 
     public static MDiagnostics of(MDiagnosticsConfiguration config, X13Results rslts) {
         try {
-            Mstatistics stats = Mstatistics.of(rslts.getPreadjustment(), rslts.getDecomposition(), rslts.getFinals());
-            if (stats == null) {
-                return null;
-            }
-
+            Mstatistics stats = rslts.getDiagnostics().getMstatistics();
             return new MDiagnostics(config, stats);
         } catch (Exception ex) {
             return null;

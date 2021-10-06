@@ -39,6 +39,7 @@ import jdplus.sts.SsfBsm;
 import jdplus.sts.internal.BsmMapping;
 import jdplus.sts.internal.BsmKernel;
 import demetra.information.Explorable;
+import jdplus.ssf.akf.AkfToolkit;
 
 /**
  *
@@ -195,6 +196,13 @@ public class StsOutliersDetection {
             int start = ts.getStart().until(y.getStart());
             x = x.extract(start, y.length(), 0, x.getColumnsCount());
         }
+        return process(y.getValues().toArray(), y.getAnnualFrequency(), level, slope, noise, seasmodel, x,
+                bao, bls, bso, cv, tcv, forwardEstimation, backwardEstimation);
+    }
+
+    public Results process(double[] s, int period, int level, int slope, int noise, String seasmodel, MatrixType x,
+            boolean bao, boolean bls, boolean bso, double cv, double tcv, String forwardEstimation, String backwardEstimation) {
+        DoubleSeq y = DoubleSeq.of(s);
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
         BsmSpec spec = BsmSpec.builder()
                 .seasonal(sm)
@@ -213,7 +221,7 @@ public class StsOutliersDetection {
                 .ls(bls)
                 .so(bso)
                 .build();
-        if (!od.process(y.getValues(), Matrix.of(x), y.getAnnualFrequency())) {
+        if (!od.process(y, Matrix.of(x), period)) {
             return null;
         }
 
@@ -233,7 +241,7 @@ public class StsOutliersDetection {
         }
         AugmentedSmoother smoother = new AugmentedSmoother();
         smoother.setCalcVariances(true);
-        SsfData data = new SsfData(y.getValues());
+        SsfData data = new SsfData(y);
 
         DiffuseConcentratedLikelihood ll0 = od.getInitialLikelihood();
         BsmData model0 = od.getInitialModel();
@@ -244,7 +252,7 @@ public class StsOutliersDetection {
         sd0.prepare(xssf.getStateDim(), 0, data.length());
         smoother.process(xssf, data, sd0);
 
-        double sig2 = ll0.sigma2();
+        double sig2=AkfToolkit.var(n, smoother.getFilteringResults());
         Matrix tau0 = tau(n, ssf0.getStateDim(), model0, sd0, sig2);
 
         Matrix W = od.getRegressors();
@@ -260,14 +268,14 @@ public class StsOutliersDetection {
         lin.add(cmps.column(1));
         lin.add(cmps.column(3));
 
-        sig2 = od.getLikelihood().sigma2();
+        sig2=AkfToolkit.var(n, smoother.getFilteringResults());
         Matrix tau1 = tau(n, ssf.getStateDim(), model, sd, sig2);
 
         int np = spec.getFreeParametersCount();
 
         return Results.builder()
                 .spec(spec)
-                .period(y.getAnnualFrequency())
+                .period(period)
                 .initialBsm(od.getInitialModel())
                 .finalBsm(model)
                 .initialLikelihood(od.getInitialLikelihood().stats(0, np))
@@ -277,7 +285,7 @@ public class StsOutliersDetection {
                 .coefficients(od.getLikelihood().coefficients().toArray())
                 .coefficientsCovariance(od.getLikelihood().covariance(np, true))
                 .x(x)
-                .y(y.getValues())
+                .y(y)
                 .components(cmps)
                 .initialTau(tau0)
                 .finalTau(tau1)
@@ -363,6 +371,10 @@ public class StsOutliersDetection {
     }
 
     public double[] seasonalBreaks(TsData y, int level, int slope, int noise, String seasmodel, MatrixType x) {
+        return seasonalBreaks(y.getValues().toArray(), y.getAnnualFrequency(), level, slope, noise, seasmodel, x);
+    }
+
+    public double[] seasonalBreaks(double[] y, int period, int level, int slope, int noise, String seasmodel, MatrixType x) {
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
         BsmSpec mspec = BsmSpec.builder()
                 .seasonal(sm)
@@ -373,12 +385,11 @@ public class StsOutliersDetection {
                 .diffuseRegression(true)
                 .build();
         BsmKernel monitor = new BsmKernel(espec);
-        int freq = y.getAnnualFrequency();
         Matrix X = Matrix.of(x);
-        if (!monitor.process(y.getValues(), X, freq, mspec)) {
+        if (!monitor.process(DoubleSeq.of(y), X, period, mspec)) {
             return null;
         }
-        BsmData bsm = monitor.getResult();
+        BsmData bsm = monitor.result(true);
 
         Ssf ssf = SsfBsm.of(bsm);
         int nx = 0;
@@ -389,12 +400,13 @@ public class StsOutliersDetection {
         }
         AugmentedSmoother smoother = new AugmentedSmoother();
         smoother.setCalcVariances(true);
-        SsfData data = new SsfData(y.getValues());
+        SsfData data = new SsfData(DoubleSeq.of(y));
         DefaultSmoothingResults sd = DefaultSmoothingResults.full();
         int n = data.length();
-        double sig2 = monitor.getLikelihood().sigma2();
+//        double sig2 = monitor.getLikelihood().sigma2();
         sd.prepare(ssf.getStateDim(), 0, data.length());
         smoother.process(ssf, data, sd);
+        double sig2=AkfToolkit.var(n, smoother.getFilteringResults());
 
         int spos = 0;
         if (bsm.getNoiseVar() != 0) {
@@ -411,8 +423,8 @@ public class StsOutliersDetection {
             try {
                 DataBlock R = DataBlock.of(sd.R(i));
                 Matrix Rvar = sd.RVariance(i);
-                Matrix S = Rvar.extract(spos, freq - 1, spos, freq - 1).deepClone();
-                DataBlock ur = R.extract(spos, freq - 1).deepClone();
+                Matrix S = Rvar.extract(spos, period - 1, spos, period - 1).deepClone();
+                DataBlock ur = R.extract(spos, period - 1).deepClone();
                 SymmetricMatrix.lcholesky(S, 1e-9);
                 LowerTriangularMatrix.solveLx(S, ur, 1e-9);
                 s[i] = ur.ssq() / sig2;

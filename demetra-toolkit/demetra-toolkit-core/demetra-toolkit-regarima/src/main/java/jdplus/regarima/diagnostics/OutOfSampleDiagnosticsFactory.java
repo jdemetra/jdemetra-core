@@ -17,8 +17,6 @@
 
 package jdplus.regarima.diagnostics;
 
-import demetra.processing.Diagnostics;
-import demetra.processing.DiagnosticsFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,13 +24,17 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.processing.DiagnosticsFactory;
+import demetra.processing.Diagnostics;
+import jdplus.regarima.tests.OneStepAheadForecastingTest;
 
 /**
  *
  * @author Jean Palate
  * @param <R>
  */
-public class OutOfSampleDiagnosticsFactory<R> implements DiagnosticsFactory<R>  {
+public class OutOfSampleDiagnosticsFactory<R> implements DiagnosticsFactory<OutOfSampleDiagnosticsConfiguration, R>  {
 
     public static final String MEAN = "mean", MSE = "mse";
     public static final String NAME = "Out-of-sample";
@@ -40,16 +42,23 @@ public class OutOfSampleDiagnosticsFactory<R> implements DiagnosticsFactory<R>  
 
     //public static final OutOfSampleDiagnosticsFactory Default = new OutOfSampleDiagnosticsFactory();
     private final OutOfSampleDiagnosticsConfiguration config;
-    private final Function<R, RegArimaModel<SarimaModel> > extractor;
-    private boolean enabled=true;
+    protected final Function<R, OneStepAheadForecastingTest > extractor;
+    private final boolean active;
 
-    public OutOfSampleDiagnosticsFactory(OutOfSampleDiagnosticsConfiguration config, Function<R, RegArimaModel<SarimaModel> > extractor) {
+    public OutOfSampleDiagnosticsFactory(boolean active, @NonNull OutOfSampleDiagnosticsConfiguration config, Function<R, OneStepAheadForecastingTest > extractor) {
         this.config = config;
         this.extractor=extractor;
+        this.active=active;
     }
 
+    @Override
     public OutOfSampleDiagnosticsConfiguration getConfiguration() {
         return config;
+    }
+
+    @Override
+    public OutOfSampleDiagnosticsFactory<R> with(boolean active, OutOfSampleDiagnosticsConfiguration config){
+        return new OutOfSampleDiagnosticsFactory(active, config, extractor);
     }
 
     @Override
@@ -63,17 +72,11 @@ public class OutOfSampleDiagnosticsFactory<R> implements DiagnosticsFactory<R>  
     }
 
     @Override
-    public boolean isEnabled() {
-        return enabled;
+    public boolean isActive() {
+        return active;
     }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        this.enabled=enabled;
-    }
-
-
-    @Override
+    
+   @Override
     public Diagnostics of(R rslts) {
         return OutOfSampleDiagnostics.create(config, extractor.apply(rslts));
     }

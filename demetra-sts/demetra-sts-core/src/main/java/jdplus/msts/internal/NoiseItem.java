@@ -85,4 +85,9 @@ public class NoiseItem extends StateItem {
         return 1;
     }
 
+    @Override
+    public boolean isScalable() {
+        return !v.isFixed();
+    }
+
 }

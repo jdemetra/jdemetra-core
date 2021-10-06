@@ -48,7 +48,7 @@ public class SsfUcarimaTest {
         ucm = ucm.simplify();
         CompositeSsf ssf = SsfUcarima.of(ucm);
         SsfData data = new SsfData(Data.PROD);
-        DefaultSmoothingResults sd = AkfToolkit.smooth(ssf, data, true, true);
+        DefaultSmoothingResults sd = AkfToolkit.smooth(ssf, data, true, true, false);
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
         int[] pos = ssf.componentsPosition();
         for (int i = 0; i < 3; ++i) {

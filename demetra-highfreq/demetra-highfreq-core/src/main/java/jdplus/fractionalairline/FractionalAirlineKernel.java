@@ -14,8 +14,10 @@ import demetra.data.DoublesMath;
 import demetra.highfreq.FractionalAirlineDecomposition;
 import demetra.highfreq.FractionalAirlineEstimation;
 import demetra.highfreq.FractionalAirlineSpec;
+import demetra.highfreq.SeriesComponent;
 import demetra.modelling.OutlierDescriptor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
@@ -38,6 +40,7 @@ import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.ucarima.AllSelector;
 import jdplus.ucarima.ModelDecomposer;
+import jdplus.ucarima.SeasonalSelector;
 import jdplus.ucarima.TrendCycleSelector;
 import jdplus.ucarima.UcarimaModel;
 import jdplus.ucarima.ssf.SsfUcarima;
@@ -50,7 +53,7 @@ import jdplus.ucarima.ssf.SsfUcarima;
 public class FractionalAirlineKernel {
 
     public FractionalAirlineEstimation process(FractionalAirlineSpec spec) {
-        final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(spec.getPeriodicities(), true, false);
+        final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(spec.getPeriodicities(), false, spec.getDifferencingOrder());
         double[] y = spec.getY();
         RegArimaModel.Builder builder = RegArimaModel.<ArimaModel>builder()
                 .y(DoubleSeq.of(y))
@@ -93,7 +96,7 @@ public class FractionalAirlineKernel {
         return FractionalAirlineEstimation.builder()
                 .y(regarima.getY().toArray())
                 .x(regarima.variables())
-                .model(new demetra.highfreq.FractionalAirline(spec.getPeriodicities(), max.getParameters(), spec.isAdjustToInt()))
+                .model(new demetra.highfreq.FractionalAirline(spec.getPeriodicities(), max.getParameters(), spec.getDifferencingOrder()))
                 .coefficients(rslt.getConcentratedLikelihood().coefficients())
                 .coefficientsCovariance(rslt.getConcentratedLikelihood().covariance(2, true))
                 .likelihood(rslt.statistics())
@@ -104,13 +107,8 @@ public class FractionalAirlineKernel {
                 .build();
     }
 
-    public FractionalAirlineDecomposition decompose(DoubleSeq s, double period, boolean adjust, boolean sn, boolean cov, int nb, int nf) {
-        int iperiod = (int) period;
-        if (period - iperiod < 1e-9) {
-            period = iperiod;
-            adjust = false;
-        }
-        FractionalAirlineMapping mapping = new FractionalAirlineMapping(period, adjust, false);
+    public FractionalAirlineDecomposition decompose(DoubleSeq s, double period, boolean sn, boolean cov, int nb, int nf) {
+        FractionalAirlineMapping mapping = new FractionalAirlineMapping(period, false);
 
         GlsArimaProcessor.Builder<ArimaModel> builder = GlsArimaProcessor.builder(ArimaModel.class);
         builder.minimizer(LevenbergMarquardtMinimizer.builder())
@@ -129,8 +127,6 @@ public class FractionalAirlineKernel {
         LogLikelihoodFunction.Point<RegArimaModel<ArimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
         UcarimaModel ucm = ucm(rslt.getModel().arima(), sn);
 
-        ucm = ucm.simplify();
-
         demetra.arima.ArimaModel sum = ApiUtility.toApi(ucm.getModel(), "sum");
         demetra.arima.UcarimaModel ucmt;
         if (sn) {
@@ -145,7 +141,7 @@ public class FractionalAirlineKernel {
             ucmt = new demetra.arima.UcarimaModel(sum, new demetra.arima.ArimaModel[]{mt, ms, mi});
         }
         FractionalAirlineDecomposition.Builder dbuilder = FractionalAirlineDecomposition.builder()
-                .model(new demetra.highfreq.FractionalAirline(new double[]{1, period}, max.getParameters(), adjust))
+                .model(new demetra.highfreq.FractionalAirline(new double[]{period}, max.getParameters(), 2))
                 .likelihood(rslt.statistics())
                 .parameters(max.getParameters())
                 .parametersCovariance(max.asymptoticCovariance())
@@ -154,39 +150,37 @@ public class FractionalAirlineKernel {
         CompositeSsf ssf = SsfUcarima.of(ucm);
         ISsfData data = new ExtendedSsfData(new SsfData(s), nb, nf);
         int[] pos = ssf.componentsPosition();
-        double[] yc = s.toArray();
+        DoubleSeq yc = s;
         if (cov) {
             try {
                 DefaultSmoothingResults sr = DkToolkit.sqrtSmooth(ssf, data, true, true);
                 if (sn) {
                     DoubleSeq sc = sr.getComponent(pos[1]), nc = sr.getComponent(pos[0]);
                     if (nb > 0 || nf > 0) {
-                        double[] z = DoublesMath.add(sc, nc).toArray();
-                        System.arraycopy(yc, 0, z, nb, yc.length);
-                        yc = z;
+                        DataBlock q = DataBlock.of(nc);
+                        q.add(sc);
+                        q.drop(nb, nf).copy(s);
+                        yc = q;
                     }
                     return dbuilder
                             .y(yc)
-                            .s(sc.toArray())
-                            .n(nc.toArray())
-                            .stdeS(sr.getComponentVariance(pos[1]).fastOp(a -> a <= 0 ? 0 : Math.sqrt(a)).toArray())
-                            .stdeN(sr.getComponentVariance(pos[0]).fastOp(a -> a <= 0 ? 0 : Math.sqrt(a)).toArray())
+                            .component(new SeriesComponent("S", sc, sr.getComponentVariance(pos[1]).fn(a -> a <= 0 ? 0 : Math.sqrt(a))))
+                            .component(new SeriesComponent("N", nc, sr.getComponentVariance(pos[1]).fn(a -> a <= 0 ? 0 : Math.sqrt(a))))
                             .build();
                 } else {
                     DoubleSeq sc = sr.getComponent(pos[1]), tc = sr.getComponent(pos[0]), ic = sr.getComponent(pos[2]);
                     if (nb > 0 || nf > 0) {
-                        double[] z = DoublesMath.add(tc, sc, ic).toArray();
-                        System.arraycopy(yc, 0, z, nb, yc.length);
-                        yc = z;
+                        DataBlock q = DataBlock.of(tc);
+                        q.add(sc);
+                        q.add(ic);
+                        q.drop(nb, nf).copy(s);
+                        yc = q;
                     }
                     return dbuilder
                             .y(yc)
-                            .s(sc.toArray())
-                            .t(tc.toArray())
-                            .i(ic.toArray())
-                            .stdeS(sr.getComponentVariance(pos[1]).fastOp(a -> a <= 0 ? 0 : Math.sqrt(a)).toArray())
-                            .stdeT(sr.getComponentVariance(pos[0]).fastOp(a -> a <= 0 ? 0 : Math.sqrt(a)).toArray())
-                            .stdeI(sr.getComponentVariance(pos[2]).fastOp(a -> a <= 0 ? 0 : Math.sqrt(a)).toArray())
+                            .component(new SeriesComponent("T", tc.commit(), sr.getComponentVariance(pos[0]).fn(a -> a <= 0 ? 0 : Math.sqrt(a))))
+                            .component(new SeriesComponent("S", sc.commit(), sr.getComponentVariance(pos[1]).fn(a -> a <= 0 ? 0 : Math.sqrt(a))))
+                            .component(new SeriesComponent("I", ic.commit(), sr.getComponentVariance(pos[2]).fn(a -> a <= 0 ? 0 : Math.sqrt(a))))
                             .build();
                 }
             } catch (Exception err) {
@@ -197,29 +191,127 @@ public class FractionalAirlineKernel {
         if (sn) {
             DoubleSeq sc = ds.item(pos[1]), nc = ds.item(pos[0]);
             if (nb > 0 || nf > 0) {
-                double[] z = DoublesMath.add(sc, nc).toArray();
-                System.arraycopy(yc, 0, z, nb, yc.length);
-                yc = z;
+                DataBlock q = DataBlock.of(nc);
+                q.add(sc);
+                q.drop(nb, nf).copy(s);
+                yc = q;
             }
             return dbuilder
                     .y(yc)
-                    .s(ds.item(pos[1]).toArray())
-                    .n(ds.item(pos[0]).toArray())
+                    .component(new SeriesComponent("S", ds.item(pos[1]).commit(), DoubleSeq.empty()))
+                    .component(new SeriesComponent("N", ds.item(pos[0]).commit(), DoubleSeq.empty()))
                     .build();
         } else {
             DoubleSeq sc = ds.item(pos[1]), tc = ds.item(pos[0]), ic = ds.item(pos[2]);
             if (nb > 0 || nf > 0) {
-                double[] z = DoublesMath.add(tc, sc, ic).toArray();
-                System.arraycopy(yc, 0, z, nb, yc.length);
-                yc = z;
+                DataBlock q = DataBlock.of(tc);
+                q.add(sc);
+                q.add(ic);
+                q.drop(nb, nf).copy(s);
+                yc = q;
             }
             return dbuilder
                     .y(yc)
-                    .s(sc.toArray())
-                    .t(tc.toArray())
-                    .i(ic.toArray())
+                    .component(new SeriesComponent("S", sc.commit(), DoubleSeq.empty()))
+                    .component(new SeriesComponent("T", tc.commit(), DoubleSeq.empty()))
+                    .component(new SeriesComponent("I", ic.commit(), DoubleSeq.empty()))
                     .build();
         }
+    }
+
+    public FractionalAirlineDecomposition decompose(DoubleSeq s, double[] periods, int ndiff, boolean cov, int nb, int nf) {
+
+        if (periods.length == 1) {
+            return decompose(s, periods[0], false, cov, nb, nf);
+        }
+
+        double[] dp = periods.clone();
+        Arrays.sort(dp);
+        int[] ip = new int[dp.length - 1];
+        for (int i = 0; i < ip.length; ++i) {
+            int p = (int) dp[i];
+            if (Math.abs(dp[i] - p) < 1e-9) {
+                dp[i] = p;
+                ip[i] = p;
+            } else {
+                throw new IllegalArgumentException("Period " + dp[i] + " should be integer");
+            }
+        }
+
+        final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(dp, false, ndiff);
+
+        GlsArimaProcessor.Builder<ArimaModel> builder = GlsArimaProcessor.builder(ArimaModel.class);
+        builder.minimizer(LevenbergMarquardtMinimizer.builder())
+                .precision(1e-12)
+                .useMaximumLikelihood(true)
+                .useParallelProcessing(true)
+                .build();
+        ArimaModel arima = mapping.getDefault();
+        RegArimaModel<ArimaModel> regarima
+                = RegArimaModel.<ArimaModel>builder()
+                        .y(s)
+                        .arima(arima)
+                        .build();
+        GlsArimaProcessor<ArimaModel> monitor = builder.build();
+        RegArimaEstimation<ArimaModel> rslt = monitor.process(regarima, mapping);
+        LogLikelihoodFunction.Point<RegArimaModel<ArimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
+        UcarimaModel ucm = ucm(rslt.getModel().arima(), ip);
+
+        demetra.arima.ArimaModel sum = ApiUtility.toApi(ucm.getModel(), "sum");
+        demetra.arima.UcarimaModel ucmt;
+        demetra.arima.ArimaModel[] all = new demetra.arima.ArimaModel[ucm.getComponentsCount()];
+        for (int i = 0; i < all.length; ++i) {
+            demetra.arima.ArimaModel m = ApiUtility.toApi(ucm.getComponent(i), "cmp" + (i + 1));
+            all[i] = m;
+        }
+        ucmt = new demetra.arima.UcarimaModel(sum, all);
+        FractionalAirlineDecomposition.Builder dbuilder = FractionalAirlineDecomposition.builder()
+                .model(new demetra.highfreq.FractionalAirline(dp, max.getParameters(), ndiff))
+                .likelihood(rslt.statistics())
+                .parameters(max.getParameters())
+                .parametersCovariance(max.asymptoticCovariance())
+                .score(max.getScore())
+                .ucarima(ucmt);
+        CompositeSsf ssf = SsfUcarima.of(ucm);
+        ISsfData data = new ExtendedSsfData(new SsfData(s), nb, nf);
+        int[] pos = ssf.componentsPosition();
+        DoubleSeq sc = s;
+        if (cov) {
+            try {
+                DefaultSmoothingResults sr = DkToolkit.sqrtSmooth(ssf, data, true, true);
+                if (nb > 0 || nf > 0) {
+                    DataBlock q = DataBlock.of(sr.getComponent(pos[0]));
+                    for (int i = 1; i < pos.length; ++i) {
+                        q.add(sr.getComponent(pos[i]));
+                    }
+                    sc = q;
+                }
+                for (int i = 0; i < pos.length; ++i) {
+                    dbuilder.component(new SeriesComponent("cmp" + (i + 1),
+                            sr.getComponent(pos[i]).commit(),
+                            sr.getComponentVariance(i).fn(a -> a <= 0 ? 0 : Math.sqrt(a))));
+                }
+                return dbuilder
+                        .y(sc)
+                        .build();
+            } catch (Exception err) {
+            }
+        }
+
+        DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
+        if (nb > 0 || nf > 0) {
+            sc = ds.item(pos[0]);
+            for (int i = 1; i < pos.length; ++i) {
+                sc = DoublesMath.add(sc, ds.item(pos[i]));
+            }
+        }
+        for (int i = 0; i < pos.length; ++i) {
+            dbuilder.component(new SeriesComponent("Cmp" + (i + 1),
+                    ds.item(pos[i]).commit(), DoubleSeq.empty()));
+        }
+        return dbuilder
+                .y(sc)
+                .build();
     }
 
     public UcarimaModel ucm(IArimaModel arima, boolean sn) {
@@ -233,11 +325,30 @@ public class FractionalAirlineKernel {
 
         UcarimaModel ucm = decomposer.decompose(arima);
         if (sn) {
-            ucm = ucm.setVarianceMax(0, false);
+            ucm = ucm.setVarianceMax(0, true);
         } else {
-            ucm = ucm.setVarianceMax(-1, false);
+            ucm = ucm.setVarianceMax(-1, true);
         }
-        return ucm;
+        return ucm.simplify();
+    }
+
+    public UcarimaModel ucm(IArimaModel arima, int[] periods) {
+
+        TrendCycleSelector tsel = new TrendCycleSelector();
+        AllSelector ssel = new AllSelector();
+
+        int[] np = periods.clone();
+        Arrays.sort(np);
+
+        ModelDecomposer decomposer = new ModelDecomposer();
+        decomposer.add(tsel);
+        for (int i = 0; i < np.length; ++i) {
+            decomposer.add(new SeasonalSelector(np[i], 1e-6));
+        }
+        decomposer.add(ssel);
+        UcarimaModel ucm = decomposer.decompose(arima);
+        ucm = ucm.setVarianceMax(-1, true);
+        return ucm.simplify();
     }
 
     private IOutlierFactory[] factories(String[] code) {

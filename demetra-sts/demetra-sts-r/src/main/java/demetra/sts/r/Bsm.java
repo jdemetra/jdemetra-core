@@ -10,11 +10,9 @@ import demetra.data.Parameter;
 import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.MatrixType;
 import demetra.sts.BasicStructuralModel;
-import demetra.sts.BsmDecomposition;
 import demetra.sts.BsmEstimation;
 import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
-import demetra.sts.Component;
 import demetra.sts.LightBasicStructuralModel;
 import demetra.sts.SeasonalModel;
 import demetra.sts.io.protobuf.StsProtosUtility;
@@ -30,7 +28,6 @@ import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.LengthOfPeriod;
 import demetra.timeseries.regression.UserVariable;
 import demetra.timeseries.regression.Variable;
-import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.math.matrices.Matrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.ssf.ISsfLoading;
@@ -68,10 +65,10 @@ public class Bsm {
         if (!kernel.process(y.getValues(), X, y.getAnnualFrequency(), mspec)) {
             return null;
         }
-        
-        int nhp = kernel.finalSpecification().getFreeParametersCount();
-        BsmMapping mapping=new BsmMapping(kernel.finalSpecification(), y.getAnnualFrequency(), null);
-        DoubleSeq params = mapping.map(kernel.getResult());
+        BsmSpec fspec = kernel.finalSpecification(true);
+        int nhp = fspec.getFreeParametersCount();
+        BsmMapping mapping=new BsmMapping(fspec, y.getAnnualFrequency(), null);
+        DoubleSeq params = mapping.map(kernel.result(true));
         ParametersEstimation parameters=new ParametersEstimation(params, "bsm");
 
         DoubleSeq coef = kernel.getLikelihood().coefficients();
@@ -95,7 +92,7 @@ public class Bsm {
                 .series(y)
                 .logTransformation(false)
                 .lengthOfPeriodTransformation(LengthOfPeriodType.None)
-                .specification(kernel.finalSpecification())
+                .specification(kernel.finalSpecification(false))
                 .variables(vars)
                 .build();
         
@@ -125,6 +122,14 @@ public class Bsm {
     }
 
     public MatrixType forecast(TsData series, String model, int nf) {
+        int period=series.getAnnualFrequency();
+        BsmSpec spec=BsmSpec.DEFAULT;
+        if (period == 1){
+            spec=spec.toBuilder()
+                    .seasonal(null)
+                    .build();
+            model="none";
+        }
         double[] y = extend(series, nf);
         Matrix X = variables(model, series.getDomain().extend(0, nf));
 
@@ -134,8 +139,8 @@ public class Bsm {
                 .build();
 
         BsmKernel kernel = new BsmKernel(espec);
-        boolean ok = kernel.process(series.getValues(), X == null ? null : X.extract(0, series.length(), 0, X.getColumnsCount()), series.getAnnualFrequency(), BsmSpec.DEFAULT);
-        BsmData result = kernel.getResult();
+        boolean ok = kernel.process(series.getValues(), X == null ? null : X.extract(0, series.length(), 0, X.getColumnsCount()), period, spec);
+        BsmData result = kernel.result(false);
         // create the final ssf
         SsfBsm bsm = SsfBsm.of(result);
         Ssf ssf;
@@ -146,7 +151,6 @@ public class Bsm {
         }
         DefaultDiffuseSquareRootFilteringResults frslts = DkToolkit.sqrtFilter(ssf, new SsfData(y), true);
         double[] fcasts = new double[nf * 2];
-        DiffuseConcentratedLikelihood ll = kernel.getLikelihood();
         ISsfLoading loading = ssf.measurement().loading();
         for (int i = 0, j = series.length(); i < nf; ++i, ++j) {
             fcasts[i] = loading.ZX(j, frslts.a(j));

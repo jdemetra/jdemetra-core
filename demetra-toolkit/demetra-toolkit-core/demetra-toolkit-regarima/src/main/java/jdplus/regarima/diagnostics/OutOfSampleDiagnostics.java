@@ -17,13 +17,10 @@
 package jdplus.regarima.diagnostics;
 
 import jdplus.regarima.tests.OneStepAheadForecastingTest;
-import demetra.processing.Diagnostics;
 import demetra.processing.ProcQuality;
 import java.util.Collections;
-import jdplus.regsarima.RegSarimaComputer;
-import jdplus.sarima.SarimaModel;
 import java.util.List;
-import jdplus.regarima.RegArimaModel;
+import demetra.processing.Diagnostics;
 
 /**
  *
@@ -35,12 +32,12 @@ public class OutOfSampleDiagnostics implements Diagnostics {
     private final double bb;
     private double mpval, vpval;
 
-    static OutOfSampleDiagnostics create(OutOfSampleDiagnosticsConfiguration config, RegArimaModel<SarimaModel> regarima) {
+    static OutOfSampleDiagnostics create(OutOfSampleDiagnosticsConfiguration config, OneStepAheadForecastingTest test) {
         try {
-            if (regarima == null) {
+            if (test == null) {
                 return null;
             } else {
-                return new OutOfSampleDiagnostics(config, regarima);
+                return new OutOfSampleDiagnostics(config, test);
             }
 
         } catch (Exception ex) {
@@ -48,31 +45,23 @@ public class OutOfSampleDiagnostics implements Diagnostics {
         }
     }
 
-    private OutOfSampleDiagnostics(OutOfSampleDiagnosticsConfiguration config, RegArimaModel<SarimaModel> regarima) {
+    private OutOfSampleDiagnostics(OutOfSampleDiagnosticsConfiguration config, OneStepAheadForecastingTest test) {
         // set the boundaries...
         bb = config.getBadThreshold();
         ub = config.getUncertainThreshold();
-        test(regarima, config.getOutOfSampleLength(), config.isDiagnosticOnMean(), config.isDiagnosticOnVariance());
+        test(test, config.isDiagnosticOnMean(), config.isDiagnosticOnVariance());
     }
 
-    private void test(RegArimaModel<SarimaModel> regarima, double len, boolean m, boolean v) {
-        int ifreq = regarima.arima().getPeriod();
-        int nback = (int) (len * ifreq);
-        if (nback < 5) {
-            nback = 5;
-        }
-        RegSarimaComputer processor = RegSarimaComputer.builder().build();
-        OneStepAheadForecastingTest<SarimaModel> xtest = new OneStepAheadForecastingTest<>(processor, nback);
-        xtest.test(regarima);
-        if (m) {
-            mpval = xtest.outOfSampleMeanTest().getPvalue();
-        } else {
-            mpval = Double.NaN;
-        }
-        if (v) {
-            vpval = xtest.sameVarianceTest().getPvalue();
-        } else {
-            vpval = Double.NaN;
+    private void test(OneStepAheadForecastingTest xtest, boolean m, boolean v) {
+        mpval = Double.NaN;
+        vpval = Double.NaN;
+        if (xtest != null) {
+            if (m) {
+                mpval = xtest.outOfSampleMeanTest().getPvalue();
+            }
+            if (v) {
+                vpval = xtest.sameVarianceTest().getPvalue();
+            }
         }
     }
 

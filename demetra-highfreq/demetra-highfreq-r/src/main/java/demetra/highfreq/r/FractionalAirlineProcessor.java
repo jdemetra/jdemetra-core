@@ -22,6 +22,7 @@ import demetra.highfreq.FractionalAirlineEstimation;
 import demetra.highfreq.FractionalAirlineSpec;
 import demetra.math.matrices.MatrixType;
 import jdplus.fractionalairline.FractionalAirlineKernel;
+import jdplus.ssf.extractors.SsfUcarimaEstimation;
 
 /**
  *
@@ -30,17 +31,19 @@ import jdplus.fractionalairline.FractionalAirlineKernel;
 @lombok.experimental.UtilityClass
 public class FractionalAirlineProcessor{
 
-
-    public FractionalAirlineDecomposition decompose(double[] s, double period, boolean adjust, boolean sn, boolean cov, int nb, int nf) {
+    public FractionalAirlineDecomposition decompose(double[] s, double period, boolean sn, boolean cov, int nb, int nf) {
         int iperiod = (int) period;
-        if (period - iperiod < 1e-9) {
+        if (Math.abs(period - iperiod) < 1e-9) {
             period = iperiod;
-            adjust = false;
         }
-        return FractionalAirlineKernel.decompose(DoubleSeq.of(s), period, adjust, sn, cov, nb, nf);
+        return FractionalAirlineKernel.decompose(DoubleSeq.of(s), period, sn, cov, nb, nf);
+    }
+
+    public FractionalAirlineDecomposition decompose(double[] s, double[] periods, int ndiff, boolean cov, int nb, int nf) {
+        return FractionalAirlineKernel.decompose(DoubleSeq.of(s), periods, ndiff, cov, nb, nf);
     }
     
-    public FractionalAirlineEstimation estimate(double[] y, MatrixType x, boolean mean, double[] periods, String[] outliers, double cv, double precision, boolean approximateHessian){
+    public FractionalAirlineEstimation estimate(double[] y, MatrixType x, boolean mean, double[] periods, int ndiff, String[] outliers, double cv, double precision, boolean approximateHessian){
         FractionalAirlineSpec spec = FractionalAirlineSpec.builder()
                 .y(y)
                 .X(x)
@@ -50,9 +53,14 @@ public class FractionalAirlineProcessor{
                 .criticalValue(cv)
                 .adjustToInt(false)
                 .precision(precision)
+                .differencingOrder(ndiff)
                 .approximateHessian(approximateHessian)
                 .build();
         return FractionalAirlineKernel.process(spec);
+    }
+    
+    public SsfUcarimaEstimation ssfDetails(FractionalAirlineDecomposition fad){
+        return new SsfUcarimaEstimation(fad.getUcarima(), fad.getY());
     }
 }
 

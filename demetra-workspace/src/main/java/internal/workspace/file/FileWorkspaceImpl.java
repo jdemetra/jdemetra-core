@@ -21,7 +21,7 @@ import demetra.workspace.WorkspaceItem;
 import demetra.workspace.file.FileFormat;
 import demetra.workspace.file.FileWorkspace;
 import demetra.workspace.file.spi.FamilyHandler;
-import demetra.workspace.util.Paths;
+import demetra.util.Paths;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

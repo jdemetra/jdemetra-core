@@ -16,6 +16,7 @@
  */
 package jdplus.sa.diagnostics;
 
+import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.design.Development;
 
 /**
@@ -27,18 +28,24 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Release)
 public class AdvancedResidualSeasonalityDiagnosticsConfiguration {
     
-    public static AdvancedResidualSeasonalityDiagnosticsConfiguration DEFAULT=builder().build();
+    private static AtomicReference<AdvancedResidualSeasonalityDiagnosticsConfiguration> DEFAULT
+            =new AtomicReference<AdvancedResidualSeasonalityDiagnosticsConfiguration>(builder().build());
+    
+    public static void setDefault(AdvancedResidualSeasonalityDiagnosticsConfiguration config){
+        DEFAULT.set(config);
+    }
+    
+    public static AdvancedResidualSeasonalityDiagnosticsConfiguration getDefault(){
+        return DEFAULT.get();
+    }
 
     public static final double SEV = .001, BAD = .01, UNC = .05;
-    public static final int DEF_FTEST_LAST = 8;
 
     private double severeThreshold;
     private double badThreshold;
     private double uncertainThreshold;
     private boolean qs;
     private boolean ftest;
-    private int flast;
-    private int qslast;
 
     public static Builder builder(){
         return new Builder()
@@ -46,8 +53,7 @@ public class AdvancedResidualSeasonalityDiagnosticsConfiguration {
                 .badThreshold(BAD)
                 .uncertainThreshold(UNC)
                 .qs(true)
-                .ftest(true)
-                .flast(DEF_FTEST_LAST);        
+                .ftest(true);        
    }
 
     public void check() {

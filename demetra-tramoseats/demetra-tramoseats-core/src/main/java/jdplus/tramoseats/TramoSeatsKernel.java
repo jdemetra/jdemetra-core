@@ -70,12 +70,14 @@ public class TramoSeatsKernel {
         SeatsResults srslts = seats.process(smodel, log);
         // Step 4. Final decomposition
         SeriesDecomposition finals = TwoStepsDecomposition.merge(preprocessing, srslts.getFinalComponents());
-
         // Step 5. Diagnostics
+        TramoSeatsDiagnostics diagnostics=TramoSeatsDiagnostics.of(preprocessing, srslts, finals);
+        
         return TramoSeatsResults.builder()
                 .preprocessing(preprocessing)
                 .decomposition(srslts)
                 .finals(finals)
+                .diagnostics(diagnostics)
                 .build();
     }
 

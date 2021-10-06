@@ -47,11 +47,12 @@ public interface Explorable {
     /**
      * Gets the dictionary of all the possible results
      *
+     * @param compact
      * @return
      */
     default Map<String, Class> getDictionary() {
         Class<? extends Explorable> cl = this.getClass();
-        LinkedHashMap<String, Class> dic=new LinkedHashMap();
+        LinkedHashMap<String, Class> dic = new LinkedHashMap();
         InformationExtractors.fillDictionary(cl, null, dic, true);
         return dic;
     }
@@ -85,15 +86,8 @@ public interface Explorable {
      */
     default <T> Map<String, T> searchAll(String pattern, Class<T> tclass) {
         Map<String, T> rslt = new LinkedHashMap<>();
-        Map<String, Class> dic = getDictionary();
-        WildCards wc = new WildCards(pattern);
-        for (Map.Entry<String, Class> x : dic.entrySet()) {
-            if (wc.match(x.getKey())) {
-                if (tclass.isAssignableFrom(x.getValue())) {
-                    rslt.put(x.getKey(), (T) getData(x.getKey(), tclass));
-                }
-            }
-        }
+        Class<? extends Explorable> cl = this.getClass();
+        InformationExtractors.searchAll(cl, this, new WildCards(pattern), tclass, rslt);
         return rslt;
     }
 

@@ -27,7 +27,7 @@ import nbbrd.design.Development;
 
 @lombok.Value
 @Development(status=Development.Status.Release)
-public class StockTradingDays implements ITradingDaysVariable{
+public class StockTradingDays implements ITradingDaysVariable, ISystemVariable{
     /**
      * W-th day of the month. 0-based! When w is negative, the (-w) day before the end of the month is considered
      * See documentation of X12 Arima, for instance.

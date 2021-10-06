@@ -145,7 +145,7 @@ public class MstsMappingTest {
 //        System.out.println(rslt2.getLikelihood().logLikelihood());
         MultivariateCompositeSsf mssf = mapping.map(rslt.getParameters());
 //        DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(M2uAdapter.of(mssf), udata, true);
-        DefaultSmoothingResults srslts = AkfToolkit.smooth(M2uAdapter.of(mssf), udata, true, false);
+        DefaultSmoothingResults srslts = AkfToolkit.smooth(M2uAdapter.of(mssf), udata, true, false, true);
         int[] pos = mssf.componentsPosition();
         for (int k = 0; k < pos.length; ++k) {
             System.out.println(srslts.getComponent(pos[k]).extract(0, D.getRowsCount(), D.getColumnsCount()));

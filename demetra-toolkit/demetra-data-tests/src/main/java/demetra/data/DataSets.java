@@ -72,6 +72,7 @@ public class DataSets {
         public static final double[] expectedBeta = new double[]{-3482258.63459582, 15.0618722713733, -0.358191792925910E-01, -2.02022980381683, -1.03322686717359, -0.511041056535807E-01, 1829.15146461355};
         public static final double[] expectedErrors = new double[]{890420.383607373, 84.9149257747669, 0.334910077722432E-01, 0.488399681651699, 0.214274163161675, 0.226073200069370, 455.478499142212};
         public static final double[] expectedBetaNoC = new double[]{-52.99357013868291, 0.07107319907358, -0.42346585566399, -0.57256866841929, -0.41420358884978, 48.41786562001326};
+        public static final double FTest = 330.285339234588;
     }
 
     public static final class Wampler1 {

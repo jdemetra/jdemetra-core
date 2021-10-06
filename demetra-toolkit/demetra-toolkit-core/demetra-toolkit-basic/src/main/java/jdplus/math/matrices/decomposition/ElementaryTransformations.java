@@ -48,8 +48,8 @@ public class ElementaryTransformations {
     }
 
     public void rowHouseholder(final DataBlock row, final Matrix X) {
+        HouseholderReflection reflection = HouseholderReflection.of(row, true);
         DataBlockIterator rows = X.rowsIterator();
-        HouseholderReflection reflection = HouseholderReflection.of(row);
         while (rows.hasNext()) {
             reflection.transform(rows.next());
         }

@@ -16,22 +16,9 @@
  */
 package demetra.regarima.io.protobuf;
 
-import demetra.data.DoubleSeq;
-import demetra.data.Iterables;
 import demetra.data.Parameter;
-import demetra.data.Range;
-import demetra.modelling.StationaryTransformation;
 import demetra.modelling.implementations.SarimaSpec;
-import demetra.modelling.TransformationType;
-import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.calendars.TradingDaysType;
-import demetra.timeseries.regression.InterventionVariable;
-import demetra.timeseries.regression.Ramp;
-import demetra.timeseries.regression.TsContextVariable;
-import demetra.timeseries.regression.Variable;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  *

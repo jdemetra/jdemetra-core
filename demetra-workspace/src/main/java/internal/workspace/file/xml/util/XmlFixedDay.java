@@ -40,7 +40,7 @@ public class XmlFixedDay extends AbstractXmlDay implements IXmlConverter<FixedDa
 
     @Override
     public FixedDay create() {
-        return new FixedDay(day, of(month), getWeight(), ValidityPeriod.ALWAYS);
+        return new FixedDay(of(month), day, getWeight(), ValidityPeriod.ALWAYS);
     }
 
     @Override

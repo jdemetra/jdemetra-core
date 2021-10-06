@@ -17,7 +17,6 @@
 package jdplus.x13.diagnostics;
 
 import nbbrd.design.Development;
-import demetra.processing.Diagnostics;
 import demetra.sa.SaDiagnosticsFactory;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,29 +24,35 @@ import java.util.List;
 import java.util.stream.Collectors;
 import jdplus.x13.X13Results;
 import nbbrd.service.ServiceProvider;
+import demetra.processing.Diagnostics;
 
 /**
  *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-public class MDiagnosticsFactory implements SaDiagnosticsFactory<X13Results> {
+public class MDiagnosticsFactory implements SaDiagnosticsFactory<MDiagnosticsConfiguration, X13Results> {
     
     public static final String NAME = "M-Statistics";
     public static final String Q="q", Q2="q2";
     public static final List<String> ALL=Collections.unmodifiableList(Arrays.asList(Q, Q2));
-    //public static final MDiagnosticsFactory Default = new MDiagnosticsFactory();
-    private MDiagnosticsConfiguration config;
-    private boolean enabled = true;
+    private final MDiagnosticsConfiguration config;
+    private final boolean active;
 
-     public MDiagnosticsFactory(MDiagnosticsConfiguration config) {
-        config = config;
+     public MDiagnosticsFactory(boolean active, MDiagnosticsConfiguration config) {
+        this.config = config;
+        this.active=true;
     }
 
+    @Override
     public MDiagnosticsConfiguration getConfiguration() {
         return config;
     }
 
+    @Override
+    public MDiagnosticsFactory with(boolean active, MDiagnosticsConfiguration config){
+        return new MDiagnosticsFactory(active, config);
+    }
     @Override
     public String getName() {
         return NAME;
@@ -59,13 +64,8 @@ public class MDiagnosticsFactory implements SaDiagnosticsFactory<X13Results> {
    }
     
     @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        this.enabled=enabled;
+    public boolean isActive() {
+        return active;
     }
 
     @Override

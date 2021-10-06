@@ -85,4 +85,9 @@ public class LocalLinearTrendItem extends StateItem {
     public int stateDim() {
         return 2;
     }
+    
+    @Override
+    public boolean isScalable() {
+        return !lv.isFixed() && ! sv.isFixed();
+    }
 }

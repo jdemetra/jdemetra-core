@@ -407,7 +407,7 @@ public class NiidTests {
         if (upAndDownRunsLength == null) {
             try {
                 upAndDownRunsLength = new TestOfUpDownRuns(data)
-                        .testNumber();
+                        .testLength();
             } catch (StatException | DStatException ex) {
                 upAndDownRunsLength = null;
                 return null;

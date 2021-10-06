@@ -18,6 +18,8 @@ package demetra.information;
 
 import nbbrd.design.Development;
 import demetra.util.WildCards;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -66,7 +68,18 @@ public interface BasicInformationExtractor<S> {
 
     <T> T getData(S source, String id, Class<T> tclass);
 
-    <T> void searchAll(S source, WildCards wc, Class<T> tclass, Map<String, T> map);
+    default <T> void searchAll(S source, WildCards wc, Class<T> tclass, Map<String, T> map){
+        Map<String, Class> dic=new LinkedHashMap<>();
+        fillDictionary(null, dic, false);
+        dic.forEach((key, cl)->{
+            if (tclass.isAssignableFrom(cl) && wc.match(key)){
+                T obj=getData(source, key, tclass);
+                if (obj != null){
+                    map.put(key, obj);
+                }
+            }
+        });
+    }
 
     static <S, Q> BasicInformationExtractor<S> extractor(final String name, final Class<Q> targetClass,
             final Function<S, Q> fn) {
@@ -77,15 +90,62 @@ public interface BasicInformationExtractor<S> {
         return new BasicInformationExtractors.ExtractorDelegate<>(name, target, fn);
     }
 
+    /**
+     * See array for details
+     * 
+     * @param <S>
+     * @param <Q>
+     * @param name
+     * @param start
+     * @param end
+     * @param target
+     * @param fn
+     * @return 
+     */
     static <S, Q> BasicInformationExtractor<S> delegateArray(final String name, final int start, final int end, final Class<Q> target, final BiFunction<S, Integer, Q> fn) {
         return new BasicInformationExtractors.ArrayExtractorDelegate<>(name, start, end, target, fn);
     }
 
+    /**
+     * Extract indexed items. The starting and ending parameters are used only
+     * for:
+     * - generating full dictionary
+     * - searching with wild cards
+     * 
+     * However, values outside the given bounds can be used at run time to request 
+     * additional information. So, the extraction functions must check themselves 
+     * the given indexes and return null for unexpected values.
+     * 
+     * @param <S>
+     * @param <Q>
+     * @param name
+     * @param start Starting index (included)
+     * @param end Ending index (excluded)
+     * @param targetClass
+     * @param fn
+     * @return 
+     */
     static <S, Q> BasicInformationExtractor<S> array(final String name, final int start, final int end,
             final Class<Q> targetClass, final BiFunction<S, Integer, Q> fn) {
         return new BasicInformationExtractors.ArrayExtractor<>(name, start, end, targetClass, fn);
     }
 
+    /**
+     * Extract a parametric item. The default value is only used for:
+     * - generating full dictionary
+     * - searching with wild cards
+     * 
+     * However, other values can be used at run time to request 
+     * other information. So, the extraction functions must check themselves 
+     * the given indexes and return null for unexpected values.
+     * @param <S>
+     * @param <Q>
+     * @param name
+     * @param defparam
+     * @param targetClass
+     * @param fn
+     * @return 
+     */
     static <S, Q> BasicInformationExtractor<S> array(final String name, final int defparam,
             final Class<Q> targetClass, final BiFunction<S, Integer, Q> fn) {
         return new BasicInformationExtractors.ArrayExtractor<>(name, defparam, defparam, targetClass, fn);

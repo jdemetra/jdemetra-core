@@ -21,6 +21,8 @@ import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.IMovingHolidayVariable;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITradingDaysVariable;
+import demetra.timeseries.regression.IUserVariable;
+import demetra.timeseries.regression.ModifiedTsVariable;
 import demetra.timeseries.regression.Variable;
 
 /**
@@ -30,7 +32,7 @@ import demetra.timeseries.regression.Variable;
 @lombok.experimental.UtilityClass
 public class ModellingUtility {
 
-    public final String AMI = "ami", AMI_PREVIOUS="ami_previous";
+    public final String AMI = "ami", AMI_PREVIOUS = "ami_previous";
 
     public boolean isAutomaticallyIdentified(Variable var) {
         return var.hasAttribute(AMI);
@@ -42,9 +44,10 @@ public class ModellingUtility {
 
     /**
      * Gets automatic or prespecified outliers
+     *
      * @param var
      * @param ami True if you are looking for automatically identified outliers
-     * @return 
+     * @return
      */
     public boolean isOutlier(Variable var, boolean ami) {
         if (var.getCore() instanceof IOutlier) {
@@ -54,21 +57,48 @@ public class ModellingUtility {
         }
     }
 
-
     public boolean isMovingHoliday(Variable var) {
-        return var.getCore() instanceof IMovingHolidayVariable;
+        if (var.getCore() instanceof IMovingHolidayVariable) {
+            return true;
+        }
+        if ((var.getCore() instanceof ModifiedTsVariable)) {
+            ModifiedTsVariable mvar = (ModifiedTsVariable) var.getCore();
+            return mvar.getVariable() instanceof IMovingHolidayVariable;
+        }
+        return false;
     }
 
     public boolean isEaster(Variable var) {
-        return var.getCore() instanceof IEasterVariable;
+        if (var.getCore() instanceof IEasterVariable) {
+            return true;
+        }
+        if ((var.getCore() instanceof ModifiedTsVariable)) {
+            ModifiedTsVariable mvar = (ModifiedTsVariable) var.getCore();
+            return mvar.getVariable() instanceof IEasterVariable;
+        }
+        return false;
     }
 
     public boolean isTradingDays(Variable var) {
-        return var.getCore() instanceof ITradingDaysVariable;
+        if (var.getCore() instanceof ITradingDaysVariable) {
+            return true;
+        }
+        if ((var.getCore() instanceof ModifiedTsVariable)) {
+            ModifiedTsVariable mvar = (ModifiedTsVariable) var.getCore();
+            return mvar.getVariable() instanceof ITradingDaysVariable;
+        }
+        return false;
     }
 
     public boolean isLengthOfPeriod(Variable var) {
-        return var.getCore() instanceof ILengthOfPeriodVariable;
+        if (var.getCore() instanceof ILengthOfPeriodVariable) {
+            return true;
+        }
+        if ((var.getCore() instanceof ModifiedTsVariable)) {
+            ModifiedTsVariable mvar = (ModifiedTsVariable) var.getCore();
+            return mvar.getVariable() instanceof ILengthOfPeriodVariable;
+        }
+        return false;
     }
 
     public boolean isDaysRelated(Variable var) {
@@ -80,7 +110,14 @@ public class ModellingUtility {
     }
 
     public boolean isUser(Variable var) {
-        return !isCalendar(var) && !isOutlier(var);
+        if (var.getCore() instanceof IUserVariable) {
+            return true;
+        }
+        if ((var.getCore() instanceof ModifiedTsVariable)) {
+            ModifiedTsVariable mvar = (ModifiedTsVariable) var.getCore();
+            return mvar.getVariable() instanceof IUserVariable;
+        }
+        return false;
     }
 
 }

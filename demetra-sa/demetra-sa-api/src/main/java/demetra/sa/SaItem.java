@@ -20,7 +20,6 @@ import demetra.processing.ProcDiagnostic;
 import demetra.processing.ProcQuality;
 import demetra.timeseries.regression.ModellingContext;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -33,10 +32,9 @@ public final class SaItem {
 
     @lombok.NonNull
     String name;
-    
-    @lombok.NonNull
-    SaDefinition definition;    
 
+    @lombok.NonNull
+    SaDefinition definition;
 
     @lombok.Singular("meta")
     @lombok.EqualsAndHashCode.Exclude
@@ -61,24 +59,27 @@ public final class SaItem {
     @lombok.EqualsAndHashCode.Exclude
     private volatile ProcQuality quality;
 
+    @lombok.experimental.NonFinal
+    @lombok.EqualsAndHashCode.Exclude
+    private volatile boolean processed;
+
     public SaItem withPriority(int priority) {
-        return new SaItem(name, definition, meta, priority, estimation, quality);
+        return new SaItem(name, definition, meta, priority, estimation, quality, processed);
     }
 
     public SaItem withName(String name) {
-        return new SaItem(name, definition, meta, priority, estimation, quality);
+        return new SaItem(name, definition, meta, priority, estimation, quality, processed);
     }
 
     public SaItem withInformations(Map<String, String> info) {
-        return new SaItem(name, definition, Collections.unmodifiableMap(info), priority, estimation, quality);
+        return new SaItem(name, definition, Collections.unmodifiableMap(info), priority, estimation, quality, processed);
     }
 
-    public void setQuality(ProcQuality quality) {
-        this.quality = quality;
-    }
-
-    public boolean isProcessed() {
-        return estimation != null;
+    public void accept() {
+        if (!processed) {
+            return;
+        }
+        this.quality = ProcQuality.Accepted;
     }
 
     /**
@@ -93,6 +94,7 @@ public final class SaItem {
     public boolean process(boolean verbose) {
         synchronized (this) {
             estimation = SaManager.process(definition, ModellingContext.getActiveContext(), verbose);
+            processed = true;
             // update quality
             quality = estimation == null ? ProcQuality.Undefined : ProcDiagnostic.summary(estimation.getDiagnostics());
         }
@@ -109,15 +111,44 @@ public final class SaItem {
         if (e == null) {
             synchronized (this) {
                 e = estimation;
-                if (e == null) {
+                if (processed) {
+                    return e;
+                } else {
                     e = SaManager.process(definition, ModellingContext.getActiveContext(), false);
                     // update quality
                     quality = e == null ? ProcQuality.Undefined : ProcDiagnostic.summary(e.getDiagnostics());
                     estimation = e;
+                    processed = true;
                 }
             }
         }
         return e;
+    }
+
+    
+    /**
+     * Remove the results (useful in case of memory problems), but keep
+     * the quality
+     */
+    public void reset() {
+        SaEstimation e = estimation;
+        if (e != null) {
+            synchronized (this) {
+                estimation = null;
+                processed = false;
+            }
+        }
+    }
+
+    public SaDocument asDocument() {
+        SaEstimation e = getEstimation();
+        if (e == null) {
+            return new SaDocument(name, definition.getTs(), definition.activeSpecification(),
+                    null, null, quality);
+        } else {
+            return new SaDocument(name, definition.getTs(), definition.activeSpecification(),
+                    e.getResults(), e.getDiagnostics(), quality);
+        }
     }
 
 }

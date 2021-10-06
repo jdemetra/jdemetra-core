@@ -98,7 +98,6 @@ public class SaItemsMapping {
         public SaItems read(InformationSet info) {
             return SaItemsMapping.read(info);
         }
-
     };
 
 }

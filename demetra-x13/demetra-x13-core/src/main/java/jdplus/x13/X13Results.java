@@ -19,10 +19,7 @@ package jdplus.x13;
 import demetra.x11.X11Results;
 import demetra.x13.X13Finals;
 import demetra.x13.X13Preadjustment;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import jdplus.regsarima.regular.RegSarimaModel;
-import jdplus.x13.extractors.X13Extractor;
 import demetra.information.Explorable;
 
 /**
@@ -36,5 +33,5 @@ public class X13Results implements Explorable {
     private X13Preadjustment preadjustment;
     private X11Results decomposition;
     private X13Finals finals;
-
+    private X13Diagnostics diagnostics;
 }

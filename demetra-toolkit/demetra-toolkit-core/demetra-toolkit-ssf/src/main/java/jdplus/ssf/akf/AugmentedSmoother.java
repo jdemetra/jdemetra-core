@@ -55,7 +55,7 @@ public class AugmentedSmoother {
     private boolean missing, hasinfo, calcvar = true;
 
     public boolean process(final ISsf ssf, final ISsfData data, ISmoothingResults sresults) {
-        DefaultAugmentedFilteringResults fresults = AkfToolkit.filter(ssf, data, true);
+        DefaultAugmentedFilteringResults fresults = AkfToolkit.filter(ssf, data, true, true);
         return process(ssf, data.length(), fresults, sresults);
     }
 
@@ -64,8 +64,11 @@ public class AugmentedSmoother {
         srslts = sresults;
         initFilter(ssf);
         initSmoother(ssf, endpos);
-        ordinarySmoothing(ssf, endpos);
         int t = frslts.getCollapsingPosition();
+        if (t == 0) {
+            return processNoCollapsing(endpos);
+        }
+        ordinarySmoothing(ssf, endpos);
         if (t > 0) {
             calcSmoothedDiffuseEffects();
             while (--t >= 0) {
@@ -417,5 +420,33 @@ public class AugmentedSmoother {
         LowerTriangularMatrix.solveLx(S, C);
         // compute B*C'
         return v - 2 * B.dot(C);
+    }
+
+    private boolean processNoCollapsing(int endpos) {
+        QAugmentation q = frslts.getAugmentation();
+        // delta = S(s+B'*R), psi = S - S*B'*N*B*S 
+        // delta = a'^-1*a^-1(-a*b' + B'*R)
+        // delta = - (b * a^-1)' + a'^-1*a^-1*B'*r = a'^-1 * (a^-1*B'*r - b)
+        // Psi = = a'^-1*(I - a^-1*B'*N*B*a'^-1)* a^-1
+        Matrix B = q.B(); // B*a^-1'
+        S = q.a().deepClone();
+        delta = q.b().deepClone();
+        delta.chs();
+        LowerTriangularMatrix.solvexL(S, delta);
+        if (N != null) {
+            Psi = Matrix.identity(S.getColumnsCount());
+            LowerTriangularMatrix.solveXL(S, Psi);
+            LowerTriangularMatrix.solveLtX(S, Psi);
+        }
+        int t = endpos;
+        while (--t >= 0) {
+            iterate(t);
+            if (hasinfo) {
+                srslts.saveSmoothation(t, uc, ucVariance);
+                srslts.saveR(t, Rc, Nc);
+                srslts.save(t, state, StateInfo.Smoothed);
+            }
+        }
+        return true;
     }
 }

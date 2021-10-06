@@ -95,7 +95,9 @@ public interface MatrixType extends BaseTable {
         double apply(int nrow, int ncolumn);
     }
 
-    MatrixType EMPTY = new LightMatrix(new double[0], 0, 0);
+    static MatrixType empty(){
+        return LightMatrix.empty();
+    }
 
     /**
      * Makes a new matrix. 

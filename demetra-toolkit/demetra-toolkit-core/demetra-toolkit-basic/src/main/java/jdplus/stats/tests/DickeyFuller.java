@@ -21,7 +21,6 @@ import demetra.data.DoubleSeqCursor;
 import demetra.data.DoublesMath;
 import nbbrd.design.BuilderPattern;
 import demetra.math.Constants;
-import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.leastsquares.QRSolution;

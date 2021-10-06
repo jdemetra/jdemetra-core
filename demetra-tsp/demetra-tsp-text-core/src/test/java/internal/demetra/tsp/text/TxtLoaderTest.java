@@ -17,6 +17,7 @@
 package internal.demetra.tsp.text;
 
 import demetra.data.AggregationType;
+import demetra.data.Data;
 import demetra.timeseries.*;
 import demetra.timeseries.util.ObsGathering;
 import demetra.tsp.text.TxtBean;
@@ -26,6 +27,8 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
@@ -38,12 +41,13 @@ public class TxtLoaderTest {
 
     private final TxtLoader loader = new TxtLoader(HasFilePaths.of());
 
-    private File getFile(String resource) {
-        return new File(TxtLoaderTest.class.getResource(resource).getFile());
-    }
+    private File getFile(String resource) throws URISyntaxException {
+        URI uri = TxtLoaderTest.class.getResource(resource).toURI();
+        return new File(uri);
+     }
 
     @Test
-    public void testDefaultBean() throws IOException {
+    public void testDefaultBean() throws IOException, URISyntaxException {
         TxtBean bean = new TxtParam.V1().getDefaultValue();
         bean.setFile(getFile("/Insee1.txt"));
 
@@ -71,7 +75,7 @@ public class TxtLoaderTest {
     }
 
     @Test
-    public void testGermanCsvWithComments() throws IOException {
+    public void testGermanCsvWithComments() throws IOException, URISyntaxException {
         TxtBean bean = new TxtParam.V1().getDefaultValue();
         bean.setFile(getFile("/bbk_SU0503.csv"));
         bean.setCharset(StandardCharsets.UTF_8);
@@ -95,7 +99,7 @@ public class TxtLoaderTest {
     }
 
     @Test
-    public void testAggregation() throws IOException {
+    public void testAggregation() throws IOException, URISyntaxException {
         TxtBean bean = new TxtParam.V1().getDefaultValue();
         bean.setFile(getFile("/Insee1.txt"));
         bean.setObsGathering(ObsGathering.builder().unit(TsUnit.YEAR).aggregationType(AggregationType.First).build());

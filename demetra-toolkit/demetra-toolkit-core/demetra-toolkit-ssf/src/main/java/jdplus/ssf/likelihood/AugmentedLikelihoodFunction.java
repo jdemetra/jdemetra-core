@@ -39,7 +39,7 @@ public class AugmentedLikelihoodFunction<S, F extends ISsf> implements Likelihoo
         private final IParametricMapping<S> mapping;
         private final ISsfBuilder<S, F> builder;
         private final ISsfData data;
-        private boolean ml = true, log = false, fast = false, mt = false, sym = false, scalingFactor = true, res = true;
+        private boolean ml = true, log = false, fast = false, mt = false, sym = false, scalingFactor = true, res = true, collapsing=true;
 
         private Builder(final ISsfData data, final IParametricMapping<S> mapping, final ISsfBuilder<S, F> builder) {
             this.data = data;
@@ -82,6 +82,11 @@ public class AugmentedLikelihoodFunction<S, F extends ISsf> implements Likelihoo
             return this;
         }
 
+        public Builder useCollapsing(boolean collapsing) {
+            this.collapsing = collapsing;
+            return this;
+        }
+
         public Builder residuals(boolean res) {
             this.res = res;
             return this;
@@ -89,7 +94,7 @@ public class AugmentedLikelihoodFunction<S, F extends ISsf> implements Likelihoo
 
         public AugmentedLikelihoodFunction<S, F> build() {
             return new AugmentedLikelihoodFunction(data, mapping, builder, ml, log, fast, 
-                    mt, sym, scalingFactor, res);
+                    mt, sym, scalingFactor, res, collapsing);
         }
     }
 
@@ -101,11 +106,11 @@ public class AugmentedLikelihoodFunction<S, F extends ISsf> implements Likelihoo
     private final ISsfBuilder<S, F> builder; // mapping from an object S to a given ssf
     private final ISsfData data;
     private final boolean missing;
-    private final boolean ml, log, fast, mt, sym, scaling, res;
+    private final boolean ml, log, fast, mt, sym, scaling, res, collapsing;
 
     private AugmentedLikelihoodFunction(ISsfData data, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
             final boolean ml, final boolean log, final boolean fast, final boolean mt, 
-            final boolean sym, final boolean scaling, final boolean res) {
+            final boolean sym, final boolean scaling, final boolean res, final boolean collapsing) {
         this.data = data;
         this.mapping = mapper;
         this.builder = builder;
@@ -117,6 +122,7 @@ public class AugmentedLikelihoodFunction<S, F extends ISsf> implements Likelihoo
         this.sym = sym;
         this.scaling = scaling;
         this.res=res;
+        this.collapsing=collapsing;
     }
 
     public IParametricMapping<S> getMapping() {
@@ -141,6 +147,10 @@ public class AugmentedLikelihoodFunction<S, F extends ISsf> implements Likelihoo
 
     public boolean isResiduals() {
         return res;
+    }
+
+    public boolean isCollapsing() {
+        return collapsing;
     }
 
     @Override

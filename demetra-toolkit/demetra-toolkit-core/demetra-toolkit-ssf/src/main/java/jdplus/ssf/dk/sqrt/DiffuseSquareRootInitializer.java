@@ -16,6 +16,7 @@
  */
 package jdplus.ssf.dk.sqrt;
 
+import demetra.math.Constants;
 import jdplus.data.DataBlock;
 import nbbrd.design.Development;
 import jdplus.math.matrices.decomposition.ElementaryTransformations;
@@ -31,7 +32,6 @@ import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.OrdinaryFilter;
-import jdplus.ssf.univariate.ISsfMeasurement;
 import jdplus.math.matrices.Matrix;
 
 /**
@@ -228,7 +228,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
         preArray();
         DataBlock z = zconstraints();
         double fi = z.ssq();
-        if (fi < State.ZERO) {
+        if (fi < Constants.getEpsilon() ) {
             fi = 0;
         }
         pe.setDiffuseVariance(fi);
@@ -265,6 +265,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
             Matrix B = constraints();
             fn.transform(z, B);
             pe.Mi().setAY(z.get(0), B.column(0));
+            pe.Mi().apply(x->Math.abs(x)<1e-12 ? 0 : x);
             // move right
             astate.dropDiffuseConstraint();
         }
