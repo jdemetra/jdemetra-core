@@ -30,21 +30,20 @@ public class TradingDaysTests {
     public StatisticalTest fTest(TsData s, String model, int ny) {
         s = s.cleanExtremities();
         int freq = s.getAnnualFrequency();
-        if (model.equalsIgnoreCase("AR")) {
-            TsData slast = s;
-            if (ny != 0) {
-                slast = s.drop(Math.max(0, s.length() - freq * ny - 1), 0);
-            }
-            return TradingDaysTest.olsTest2(slast);
+        TsData slast = s;
+        if (ny != 0) {
+            slast = s.drop(Math.max(0, s.length() - freq * ny), 0);
+        }
+        if (model.equalsIgnoreCase("D1")) {
+            return TradingDaysTest.olsTest(slast, 1);
+        } else if (model.equalsIgnoreCase("DY")) {
+            return TradingDaysTest.olsTest(slast, freq);
+        } else if (model.equalsIgnoreCase("DYD1")) {
+            return TradingDaysTest.olsTest(slast, freq, 1);
+        } else if (model.equalsIgnoreCase("WN")) {
+            return TradingDaysTest.olsTest(slast, 0);
         } else {
-            if (model.equalsIgnoreCase("D1")) {
-                s = s.delta(1);
-            }
-            TsData slast = s;
-            if (ny != 0) {
-                slast = s.drop(Math.max(0, s.length() - freq * ny), 0);
-            }
-            return TradingDaysTest.olsTest(slast);
+            return null;
         }
     }
 

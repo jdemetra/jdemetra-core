@@ -34,7 +34,6 @@ import jdplus.math.polynomials.Polynomial;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import nbbrd.design.Immutable;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Box-Jenkins seasonal arima model AR(B)* SAR(B)*D(B)*SD(B) y(t) =
@@ -60,6 +59,14 @@ public final class SarimaModel extends AbstractArimaModel implements ISarimaMode
         private boolean adjust = false;
 
         public static final double AR = -.1, MA = -.2;
+
+        private Builder(int period) {
+            this.s = period;
+            phi = Doubles.EMPTYARRAY;
+            bphi = Doubles.EMPTYARRAY;
+            th = Doubles.EMPTYARRAY;
+            bth = Doubles.EMPTYARRAY;
+        }
 
         private Builder(SarimaOrders spec) {
             s = spec.getPeriod();
@@ -172,23 +179,47 @@ public final class SarimaModel extends AbstractArimaModel implements ISarimaMode
             return this;
         }
 
-        public Builder phi(@NonNull double... val) {
-            System.arraycopy(val, 0, phi, 0, phi.length);
+        public Builder phi(double... val) {
+            if (val == null) {
+                phi = Doubles.EMPTYARRAY;
+            } else if (val.length == phi.length) {
+                System.arraycopy(val, 0, phi, 0, phi.length);
+            } else {
+                phi = val.clone();
+            }
             return this;
         }
 
-        public Builder bphi(@NonNull double... val) {
-            System.arraycopy(val, 0, bphi, 0, bphi.length);
+        public Builder bphi(double... val) {
+            if (val == null) {
+                bphi = Doubles.EMPTYARRAY;
+            } else if (val.length == bphi.length) {
+                System.arraycopy(val, 0, bphi, 0, bphi.length);
+            } else {
+                bphi = val.clone();
+            }
             return this;
         }
 
-        public Builder theta(@NonNull double... val) {
-            System.arraycopy(val, 0, th, 0, th.length);
+        public Builder theta(double... val) {
+            if (val == null) {
+                th = Doubles.EMPTYARRAY;
+            } else if (val.length == th.length) {
+                System.arraycopy(val, 0, th, 0, th.length);
+            } else {
+                th = val.clone();
+            }
             return this;
         }
 
-        public Builder btheta(@NonNull double... val) {
-            System.arraycopy(val, 0, bth, 0, bth.length);
+        public Builder btheta(double... val) {
+            if (val == null) {
+                bth = Doubles.EMPTYARRAY;
+            } else if (val.length == bth.length) {
+                System.arraycopy(val, 0, bth, 0, bth.length);
+            } else {
+                bth = val.clone();
+            }
             return this;
         }
 
@@ -257,6 +288,10 @@ public final class SarimaModel extends AbstractArimaModel implements ISarimaMode
         return new Builder(spec);
     }
 
+    public static Builder builder(int period) {
+        return new Builder(period);
+    }
+
     public static final double SMALL = 1e-6;
 
     private final int s;
@@ -283,7 +318,7 @@ public final class SarimaModel extends AbstractArimaModel implements ISarimaMode
      * @return
      */
     @Override
-    public DoubleSeq parameters(){
+    public DoubleSeq parameters() {
         double[] p = new double[phi.length + bphi.length + th.length + bth.length];
         int pos = 0;
         if (phi.length > 0) {

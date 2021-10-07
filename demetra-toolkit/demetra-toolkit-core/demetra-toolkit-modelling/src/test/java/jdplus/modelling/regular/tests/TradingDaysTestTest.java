@@ -33,12 +33,9 @@ public class TradingDaysTestTest {
 
     @Test
     public void testProd() {
-        TsData s = Data.TS_PROD.log().delta(12);
-        StatisticalTest olsTest2 = TradingDaysTest.olsTest2(s);
-        assertTrue(olsTest2.getPvalue() < 1e-3);
+        TsData s = Data.TS_PROD.log();
+        StatisticalTest olsTest = TradingDaysTest.olsTest(s, 1, 12);
+        assertTrue(olsTest.getPvalue() < 1e-3);
 
-        s=s.delta(1);
-        StatisticalTest olsTest = TradingDaysTest.olsTest(s);
-        assertTrue(olsTest2.getPvalue() < 1e-3);
     }
 }

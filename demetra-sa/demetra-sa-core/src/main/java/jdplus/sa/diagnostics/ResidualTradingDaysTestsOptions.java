@@ -43,12 +43,10 @@ public class ResidualTradingDaysTestsOptions {
     public static final int DEF_FTEST_LAST = 8;
 
     private int flast;
-    private boolean arModel;
 
     public static Builder builder(){
         return new Builder()
-                .flast(DEF_FTEST_LAST)
-                .arModel(true);        
+                .flast(DEF_FTEST_LAST);        
    }
 
 }

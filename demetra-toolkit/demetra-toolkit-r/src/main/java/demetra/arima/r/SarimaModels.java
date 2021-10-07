@@ -11,6 +11,8 @@ import demetra.modelling.implementations.SarimaSpec;
 import demetra.modelling.io.protobuf.ModellingProtos;
 import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import demetra.regarima.io.protobuf.RegArimaProtosUtility;
+import jdplus.arima.ArimaSeriesGenerator;
+import jdplus.dstats.Normal;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regsarima.GlsSarimaComputer;
@@ -39,6 +41,20 @@ public class SarimaModels {
                 .bd(bd)
                 .btheta(btheta == null ? DoubleSeq.empty() : DoubleSeq.of(btheta))
                 .build();
+    }
+    
+    public double[] random(int length, int period, double[] phi, int d, double[] theta, double[] bphi, int bd, double[] btheta, double stde) {
+        SarimaModel sarima = SarimaModel.builder(period)
+                .differencing(d, bd)
+                .phi(phi)
+                .theta(theta)
+                .bphi(bphi)
+                .btheta(btheta)
+                .build();
+        ArimaSeriesGenerator generator = ArimaSeriesGenerator.builder()
+                .distribution(new Normal(0, stde))
+                .build();
+        return generator.generate(sarima, length);
     }
     
     public SarimaModel estimate(double[] data, int[] regular, int period, int[] seasonal, double[] parameters){

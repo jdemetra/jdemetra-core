@@ -28,6 +28,7 @@ import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
 import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.MatrixWindow;
 import jdplus.modelling.regression.Regression;
 
 /**
@@ -39,21 +40,39 @@ public class TradingDaysTest {
 
     /**
      * F test on generic trading days regressors (6 contrast variables)
-     * 
+     *
      * The model is
-     * y(t)-ymean ~ td + e
-     * 
-     * @param s Tested time series. Should be stationary
+     *
+     * dy(t)-dybar ~ dtd + e
+     *
+     * dy is the series after differencing and dtd are the trading days after
+     * differencing
+     *
+     * @param y Tested time series.
+     * @param lags
      * @return F test
      */
-    public StatisticalTest olsTest(TsData s) {
+    public StatisticalTest olsTest(TsData y, int... lags) {
         try {
             GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD7);
             GenericTradingDaysVariable td = new GenericTradingDaysVariable(gtd);
-            Matrix matrix = Regression.matrix(s.getDomain(), td);
+            Matrix m = Regression.matrix(y.getDomain(), td);
+            DoubleSeq dy = y.getValues();
+            Matrix dm = m;
+            if (lags != null) {
+                for (int j = 0; j < lags.length; ++j) {
+                    Matrix mj = dm;
+                    int lag = lags[j];
+                    int nr = mj.getRowsCount(), nc = mj.getColumnsCount();
+                    dm = mj.extract(lag, nr - lag, 0, nc).deepClone();
+                    dm.sub(mj.extract(0, nr - lag, 0, nc));
+                    dy = dy.delta(lag);
+                }
+            }
+            dy = dy.plus(-dy.average());
             LinearModel reg = LinearModel.builder()
-                    .y(s.getValues().plus(-s.getValues().average()))
-                    .addX(matrix)
+                    .y(dy)
+                    .addX(dm)
                     .build();
             LeastSquaresResults lsr = Ols.compute(reg);
             return lsr.Ftest();
@@ -61,37 +80,4 @@ public class TradingDaysTest {
             return null;
         }
     }
-    /**
-     * F test on generic trading days regressors (6 contrast variables)
-     * 
-     * The model is
-     * y(t) ~ c + y(t-1) + td + e
-     * 
-     * @param s Tested time series
-     * @return F test
-     */
-    public StatisticalTest olsTest2(TsData s) {
-        try {
-            GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD7);
-            GenericTradingDaysVariable td = new GenericTradingDaysVariable(gtd);
-            TsDomain edomain = s.getDomain().drop(1, 0);
-            DoubleSeq y = s.getValues();
-            Matrix matrix = Regression.matrix(edomain, td);
-            LinearModel reg = LinearModel.builder()
-                    .y(y.drop(1, 0))
-                    .meanCorrection(true)
-                    .addX(y.drop(0, 1))
-                    .addX(matrix)
-                    .build();
-            int nseas = td.dim();
-            LeastSquaresResults lsr = Ols.compute(reg);
-            return new JointTest(lsr.getLikelihood())
-                    .variableSelection(2, nseas)
-                    .blue()
-                    .build();
-        } catch (Exception err) {
-            return null;
-        }
-    }
-
 }

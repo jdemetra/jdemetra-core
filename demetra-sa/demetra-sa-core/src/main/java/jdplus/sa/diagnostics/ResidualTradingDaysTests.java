@@ -54,7 +54,7 @@ public class ResidualTradingDaysTests {
                 synchronized (this) {
                     test = saLastTest;
                     if (test == null) {
-                        test = td(sa, options.getFlast(), options.isArModel() ? FTest.Model.AR: FTest.Model.D1);
+                        test = td(sa, options.getFlast(), 1);
                         saLastTest = test;
                     }
                 }
@@ -66,7 +66,7 @@ public class ResidualTradingDaysTests {
                 synchronized (this) {
                     test = saTest;
                     if (test == null) {
-                        test = td(sa, 0, options.isArModel() ? FTest.Model.AR: FTest.Model.D1);
+                        test = td(sa, 0, 1);
                         saTest = test;
                     }
                 }
@@ -82,7 +82,7 @@ public class ResidualTradingDaysTests {
                 synchronized (this) {
                     test = irrLastTest;
                     if (test == null) {
-                        test = td(irr, options.getFlast(), options.isArModel() ? FTest.Model.AR: FTest.Model.WN);
+                        test = td(irr, options.getFlast(), 1);
                         irrLastTest = test;
                     }
                 }
@@ -94,7 +94,7 @@ public class ResidualTradingDaysTests {
                 synchronized (this) {
                     test = irrTest;
                     if (test == null) {
-                        test = td(irr, 0, options.isArModel() ? FTest.Model.AR: FTest.Model.WN);
+                        test = td(irr, 0, 1);
                         saTest = test;
                     }
                 }
@@ -110,7 +110,7 @@ public class ResidualTradingDaysTests {
                 synchronized (this) {
                     test = residualsLastTest;
                     if (test == null) {
-                        test = td(irr, options.getFlast(), FTest.Model.WN);
+                        test = td(irr, options.getFlast(), 0);
                         residualsLastTest = test;
                     }
                 }
@@ -122,7 +122,7 @@ public class ResidualTradingDaysTests {
                 synchronized (this) {
                     test = residualsTest;
                     if (test == null) {
-                        test = td(irr, 0, FTest.Model.WN);
+                        test = td(irr, 0, 0);
                         residualsTest = test;
                     }
                 }
@@ -131,26 +131,11 @@ public class ResidualTradingDaysTests {
         }
     }
 
-    private StatisticalTest td(TsData s, int ny, FTest.Model model) {
+    private StatisticalTest td(TsData s, int ny, int lag) {
         int ifreq = annualFrequency();
-        switch (model) {
-            case AR:
-                if (ny > 0) {
-                    s = s.drop(Math.max(0, s.length() - ifreq * ny - 1), 0);
-                }
-                return TradingDaysTest.olsTest2(s);
-            case D1:
-                s = s.delta(1);
-                if (ny > 0) {
-                    s = s.drop(Math.max(0, s.length() - ifreq * ny), 0);
-                }
-                return TradingDaysTest.olsTest(s);
-            default:
-                if (ny > 0) {
-                    s = s.drop(Math.max(0, s.length() - ifreq * ny), 0);
-                }
-                return TradingDaysTest.olsTest(s);
+        if (ny > 0) {
+            s = s.drop(Math.max(0, s.length() - ifreq * ny), 0);
         }
+        return TradingDaysTest.olsTest(s, lag);
     }
-
 }
