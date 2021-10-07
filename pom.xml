@@ -210,7 +210,7 @@
                 </property>
             </activation>
             <properties>
-                <lombok.version>1.18.20</lombok.version>
+                <lombok.version>1.18.22</lombok.version>
                 <java-service.version>1.4.0</java-service.version>
             </properties>
             <dependencyManagement>
