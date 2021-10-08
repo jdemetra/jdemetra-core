@@ -41,7 +41,7 @@ public class TradingDaysTests {
         } else if (model.equalsIgnoreCase("DYD1")) {
             return TradingDaysTest.olsTest(slast, freq, 1);
         } else if (model.equalsIgnoreCase("WN")) {
-            return TradingDaysTest.olsTest(slast, 0);
+            return TradingDaysTest.olsTest(slast, null);
         } else {
             return null;
         }

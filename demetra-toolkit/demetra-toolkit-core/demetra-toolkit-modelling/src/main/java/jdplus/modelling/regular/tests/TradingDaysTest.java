@@ -61,12 +61,14 @@ public class TradingDaysTest {
             Matrix dm = m;
             if (lags != null) {
                 for (int j = 0; j < lags.length; ++j) {
-                    Matrix mj = dm;
                     int lag = lags[j];
-                    int nr = mj.getRowsCount(), nc = mj.getColumnsCount();
-                    dm = mj.extract(lag, nr - lag, 0, nc).deepClone();
-                    dm.sub(mj.extract(0, nr - lag, 0, nc));
-                    dy = dy.delta(lag);
+                    if (lag > 0) {
+                        Matrix mj = dm;
+                        int nr = mj.getRowsCount(), nc = mj.getColumnsCount();
+                        dm = mj.extract(lag, nr - lag, 0, nc).deepClone();
+                        dm.sub(mj.extract(0, nr - lag, 0, nc));
+                        dy = dy.delta(lag);
+                    }
                 }
             }
             dy = dy.plus(-dy.average());

@@ -136,6 +136,6 @@ public class ResidualTradingDaysTests {
         if (ny > 0) {
             s = s.drop(Math.max(0, s.length() - ifreq * ny), 0);
         }
-        return TradingDaysTest.olsTest(s, lag);
+        return TradingDaysTest.olsTest(s, lag > 0 ? lag : null);
     }
 }
