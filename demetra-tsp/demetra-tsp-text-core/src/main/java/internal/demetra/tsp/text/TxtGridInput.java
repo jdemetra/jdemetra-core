@@ -2,6 +2,7 @@ package internal.demetra.tsp.text;
 
 import demetra.tsprovider.grid.GridDataType;
 import demetra.tsprovider.grid.GridInput;
+import nbbrd.design.MightBePromoted;
 import nbbrd.io.BlockSizer;
 import nbbrd.io.Resource;
 import nbbrd.picocsv.Csv;
@@ -53,6 +54,17 @@ public class TxtGridInput implements GridInput {
         return new TxtStream(reader);
     }
 
+    @MightBePromoted
+    private static boolean skipComments(Csv.Reader reader) throws IOException {
+        while (reader.readLine()) {
+            if (!reader.isComment()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @MightBePromoted
     private static void skipLines(Csv.Reader reader, int skipLines) throws IOException {
         for (int i = 0; i < skipLines; i++) {
             if (!reader.readLine()) {
@@ -74,7 +86,7 @@ public class TxtGridInput implements GridInput {
 
         @Override
         public boolean readRow() throws IOException {
-            return reader.readLine();
+            return skipComments(reader);
         }
 
         @Override
