@@ -16,7 +16,10 @@
  */
 package demetra.tramoseats.r;
 
+import demetra.arima.SarimaModel;
+import demetra.arima.UcarimaModel;
 import demetra.data.Data;
+import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
 import jdplus.seats.SeatsResults;
 import org.junit.Test;
@@ -27,18 +30,47 @@ import static org.junit.Assert.*;
  * @author PALATEJ
  */
 public class SeatsTest {
-    
+
     public SeatsTest() {
     }
 
     @Test
     public void testProd() {
-        SeatsResults rslts = Seats.process(Data.TS_PROD, true, new int[]{3,1,1}, new int[]{0,1,1}, false, -1, -2);
+        SeatsResults rslts = Seats.process(Data.TS_PROD, true, new int[]{3, 1, 1}, new int[]{0, 1, 1}, false, -1, -2);
 //        System.out.println(rslts.getCore().getInitialComponents());
 //        Map<String, Class> dictionary = rslts.getDictionary();
 //        dictionary.keySet().forEach(s->System.out.println(s));
         TsData data = rslts.getData("t_lin_f", TsData.class);
         assertTrue(data.length() == 24);
     }
-    
+
+    @Test
+    public void testUcm() {
+        UcarimaModel ucm = airline(12, -.8, -.8);
+        assertTrue(ucm != null);
+    }
+
+    public static void main(String[] args) {
+        double bth = -.6;
+        for (double th = .3; th > -1; th -= .01) {
+            UcarimaModel ucm = airline(12, th, bth);
+            System.out.print(ucm.getComponent(0).getInnovationVariance());
+            System.out.print('\t');
+            System.out.print(ucm.getComponent(1).getInnovationVariance());
+            System.out.print('\t');
+            System.out.println(ucm.getComponent(3).getInnovationVariance());
+        }
+    }
+
+    public static UcarimaModel airline(int period, double th, double bth) {
+        SarimaModel sarima = demetra.arima.SarimaModel.builder()
+                .d(1)
+                .bd(1)
+                .period(period)
+                .theta(DoubleSeq.of(th))
+                .btheta(DoubleSeq.of(bth))
+                .build();
+        return Seats.decompose(sarima, 2, 0.5, 0.8, 0.8, "None");
+    }
+
 }

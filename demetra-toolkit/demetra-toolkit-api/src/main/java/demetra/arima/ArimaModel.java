@@ -41,7 +41,6 @@ public class ArimaModel implements IArimaModel {
     /**
      * Innovation variance. 1 by default
      */
-    @lombok.Builder.Default
     double innovationVariance;
     /**
      * Stationary auto-regressive polynomial (1+ar[0]B...); True signs.

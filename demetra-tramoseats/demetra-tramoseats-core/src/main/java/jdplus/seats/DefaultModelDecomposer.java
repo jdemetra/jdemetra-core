@@ -39,12 +39,12 @@ public class DefaultModelDecomposer implements IModelDecomposer {
     /**
      *
      * @param arima
-     * @param period
      * @return
      */
     @Override
-    public UcarimaModel decompose(SarimaModel arima, int period) {
+    public UcarimaModel decompose(SarimaModel arima) {
         try {
+            int period=arima.getPeriod();
             SarimaOrders orders = arima.orders();
             TrendCycleSelector tsel = new TrendCycleSelector(spec.getTrendBoundary());
             tsel.setDefaultLowFreqThreshold(period);

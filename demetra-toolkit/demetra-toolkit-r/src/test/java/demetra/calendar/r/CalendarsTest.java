@@ -34,6 +34,7 @@ public class CalendarsTest {
         assertEquals(x.sum(), 40, 1e-9);
     }
     
+
     public static void main(String[] arg){
         String[] easters = Calendars.easter(1900, 2050, false);
         for (int i=0; i<easters.length; ++i)

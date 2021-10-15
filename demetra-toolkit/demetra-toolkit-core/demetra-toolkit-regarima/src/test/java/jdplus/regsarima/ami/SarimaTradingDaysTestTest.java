@@ -14,11 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.modelling.regular.tests;
+package jdplus.regsarima.ami;
 
+import demetra.arima.SarimaOrders;
 import demetra.data.Data;
 import demetra.stats.StatisticalTest;
-import demetra.timeseries.TsData;
+import jdplus.sarima.SarimaModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -26,16 +27,20 @@ import static org.junit.Assert.*;
  *
  * @author PALATEJ
  */
-public class TradingDaysTestTest {
+public class SarimaTradingDaysTestTest {
     
-    public TradingDaysTestTest() {
+    public SarimaTradingDaysTestTest() {
     }
 
     @Test
     public void testProd() {
-        TsData s = Data.TS_PROD.log();
-        StatisticalTest olsTest = TradingDaysTest.olsTest(s, 1, 12);
-        assertTrue(olsTest.getPvalue() < 1e-3);
-
+        SarimaOrders orders=SarimaOrders.airline(12);
+        SarimaModel arima=SarimaModel.builder(orders)
+                .setDefault().build();
+        StatisticalTest test=SarimaTradingDaysTest.sarimaTest(Data.TS_PROD, arima, false);
+        assertTrue(test.getPvalue()<1e-4);
+        test=SarimaTradingDaysTest.sarimaTest(Data.TS_PROD, arima, true);
+        assertTrue(test.getPvalue()<1e-4);
     }
+    
 }

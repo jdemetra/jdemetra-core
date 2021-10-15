@@ -5,11 +5,10 @@
  */
 package demetra.sts.r;
 
-import demetra.calendar.r.Calendars;
 import demetra.data.Data;
 import demetra.math.matrices.MatrixType;
+import demetra.modelling.r.Variables;
 import demetra.sts.BasicStructuralModel;
-import demetra.sts.BsmEstimation;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import static org.junit.Assert.*;
@@ -64,7 +63,7 @@ public class BsmTest {
     @Test
     public void testEstimationWithRegs() {
          TsData s = TsData.ofInternal(TsPeriod.monthly(1992,1), Data.RETAIL_BOOKSTORES);
-        MatrixType td = Calendars.td(s.getDomain(), new int[]{1,1,1,1,2,3,0}, true);
+        MatrixType td = Variables.td(s.getDomain(), new int[]{1,1,1,1,2,3,0}, true);
         BasicStructuralModel bsm = Bsm.process(s, td, 1, 1, -1, 1, "Trigonometric", false, 1e-12);
         byte[] bytes = Bsm.toBuffer(bsm);
         assertTrue(bytes != null);

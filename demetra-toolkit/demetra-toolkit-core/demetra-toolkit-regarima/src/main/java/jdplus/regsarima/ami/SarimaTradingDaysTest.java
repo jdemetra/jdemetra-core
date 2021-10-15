@@ -14,12 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.modelling.regular.tests;
+package jdplus.regsarima.ami;
 
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
-import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
@@ -28,60 +27,38 @@ import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
 import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.MatrixWindow;
 import jdplus.modelling.regression.Regression;
+import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.RegArimaModel;
+import jdplus.regsarima.RegSarimaComputer;
+import jdplus.sarima.SarimaModel;
 
 /**
  *
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class TradingDaysTest {
-
-    /**
-     * F test on generic trading days regressors (6 contrast variables)
-     *
-     * The model is
-     *
-     * dy(t)-dybar ~ dtd + e
-     *
-     * dy is the series after differencing and dtd are the trading days after
-     * differencing
-     *
-     * @param y Tested time series.
-     * @param lags Differencing lags
-     * @return F test
-     */
-    public StatisticalTest olsTest(TsData y, int... lags) {
+public class SarimaTradingDaysTest {
+    
+    public StatisticalTest sarimaTest(TsData y, SarimaModel arima, boolean mean){
         try {
             GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD7);
             GenericTradingDaysVariable td = new GenericTradingDaysVariable(gtd);
             Matrix m = Regression.matrix(y.getDomain(), td);
-            DoubleSeq dy = y.getValues();
-            Matrix dm = m;
-            if (lags != null) {
-                for (int j = 0; j < lags.length; ++j) {
-                    int lag = lags[j];
-                    if (lag > 0) {
-                        Matrix mj = dm;
-                        int nr = mj.getRowsCount(), nc = mj.getColumnsCount();
-                        dm = mj.extract(lag, nr - lag, 0, nc).deepClone();
-                        dm.sub(mj.extract(0, nr - lag, 0, nc));
-                        dy = dy.delta(lag);
-                    }
-                }
-            }
-            dy = dy.plus(-dy.average());
-            LinearModel reg = LinearModel.builder()
-                    .y(dy)
-                    .addX(dm)
+            RegArimaModel<SarimaModel> regarima=RegArimaModel.<SarimaModel>builder()
+                    .y(y.getValues())
+                    .addX(m)
+                    .arima(arima)
+                    .meanCorrection(mean)
                     .build();
-            LeastSquaresResults lsr = Ols.compute(reg);
-            return lsr.Ftest();
+            RegArimaEstimation<SarimaModel> estimation = RegSarimaComputer.PROCESSOR.process(regarima, null);
+            return new JointTest(estimation.getConcentratedLikelihood())
+                    .hyperParametersCount(arima.getParametersCount())
+                    .blue()
+                    .variableSelection(mean ? 1 : 0, 6)
+                    .build();
         } catch (Exception err) {
             return null;
         }
     }
-   
-   
 }

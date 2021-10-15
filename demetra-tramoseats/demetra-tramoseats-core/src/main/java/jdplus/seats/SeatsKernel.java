@@ -94,7 +94,7 @@ public class SeatsKernel {
         int nround = 0;
         while (++nround <= 10) {
             log.step("Canonical decomposition");
-            ucm = decomposer.decompose(model.getCurrentModel(), model.getOriginalModel().getPeriod());
+            ucm = decomposer.decompose(model.getCurrentModel());
             if (ucm == null && nround == 1) {
                 log.warning(NON_DECOMPOSABLE);
             }

@@ -16,9 +16,12 @@
  */
 package demetra.sa.r;
 
+import demetra.arima.SarimaOrders;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import jdplus.modelling.regular.tests.TradingDaysTest;
+import jdplus.regsarima.ami.SarimaTradingDaysTest;
+import jdplus.sarima.SarimaModel;
 
 /**
  *
@@ -30,21 +33,39 @@ public class TradingDaysTests {
     public StatisticalTest fTest(TsData s, String model, int ny) {
         s = s.cleanExtremities();
         int freq = s.getAnnualFrequency();
-        if (model.equalsIgnoreCase("AR")) {
-            TsData slast = s;
-            if (ny != 0) {
-                slast = s.drop(Math.max(0, s.length() - freq * ny - 1), 0);
-            }
-            return TradingDaysTest.olsTest2(slast);
+        TsData slast = s;
+        if (ny != 0) {
+            slast = s.drop(Math.max(0, s.length() - freq * ny), 0);
+        }
+        if (model.equalsIgnoreCase("D1")) {
+            return TradingDaysTest.olsTest(slast, 1);
+        } else if (model.equalsIgnoreCase("DY")) {
+            return TradingDaysTest.olsTest(slast, freq);
+        } else if (model.equalsIgnoreCase("DYD1")) {
+            return TradingDaysTest.olsTest(slast, freq, 1);
+        } else if (model.equalsIgnoreCase("WN")) {
+            return TradingDaysTest.olsTest(slast, null);
+        } else if (model.equalsIgnoreCase("AIRLINE")) {
+            SarimaOrders orders=SarimaOrders.airline(freq);
+            SarimaModel arima=SarimaModel.builder(orders)
+                    .setDefault()
+                    .build();
+            return SarimaTradingDaysTest.sarimaTest(slast, arima, false);
+        } else if (model.equalsIgnoreCase("R011")) {
+            SarimaOrders orders=SarimaOrders.m011(freq);
+            SarimaModel arima=SarimaModel.builder(orders)
+                    .setDefault()
+                    .build();
+            return SarimaTradingDaysTest.sarimaTest(slast, arima, false);
+        } else if (model.equalsIgnoreCase("R100")) {
+            SarimaOrders orders=new SarimaOrders(freq);
+            orders.setP(1);
+            SarimaModel arima=SarimaModel.builder(orders)
+                    .setDefault()
+                    .build();
+            return SarimaTradingDaysTest.sarimaTest(slast, arima, true);
         } else {
-            if (model.equalsIgnoreCase("D1")) {
-                s = s.delta(1);
-            }
-            TsData slast = s;
-            if (ny != 0) {
-                slast = s.drop(Math.max(0, s.length() - freq * ny), 0);
-            }
-            return TradingDaysTest.olsTest(slast);
+            return null;
         }
     }
 
