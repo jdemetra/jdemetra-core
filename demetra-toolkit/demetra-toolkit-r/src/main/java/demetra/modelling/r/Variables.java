@@ -160,7 +160,7 @@ public class Variables {
         return x.getStorage();
     }
 
-    public double[] so(TsDomain domain, String pos, int period, boolean zeroended) {
+    public double[] so(TsDomain domain, String pos, boolean zeroended) {
         LocalDate dt = LocalDate.parse(pos, DateTimeFormatter.ISO_DATE);
         return so(domain, dt.atStartOfDay(), zeroended);
     }
