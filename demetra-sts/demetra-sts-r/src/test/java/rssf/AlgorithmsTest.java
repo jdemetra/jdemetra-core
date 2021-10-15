@@ -5,7 +5,6 @@
  */
 package rssf;
 
-import static demetra.calendar.r.GenericCalendars.td;
 import jdplus.msts.AtomicModels;
 import jdplus.msts.ModelEquation;
 import demetra.data.Data;
@@ -13,13 +12,11 @@ import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
 import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
-import demetra.ssf.SsfLikelihood;
 import jdplus.arima.ssf.SsfArima;
 import jdplus.math.matrices.Matrix;
 import jdplus.msts.CompositeModel;
 import jdplus.msts.CompositeModelEstimation;
 import jdplus.msts.StateItem;
-import jdplus.ssf.implementations.Loading;
 import jdplus.ssf.implementations.Noise;
 import jdplus.sts.LocalLevel;
 import jdplus.sts.LocalLinearTrend;

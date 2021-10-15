@@ -26,27 +26,34 @@ import java.time.LocalDateTime;
  * @author palatej
  */
 @lombok.Value
-@Development(status=Development.Status.Release)
-public class TrigonometricVariables implements ITsVariable{
+@Development(status = Development.Status.Release)
+public class TrigonometricVariables implements ITsVariable {
 
     public static TrigonometricVariables regular(int periodicity) {
+        return regular(periodicity, TsPeriod.DEFAULT_EPOCH);
+    }
+
+    public static TrigonometricVariables regular(int periodicity, LocalDateTime ref) {
         int n = periodicity / 2;
         double[] freq = new double[n];
         double f = 2.0 / periodicity;
         for (int i = 1; i <= n; ++i) {
             freq[i - 1] = f * i;
         }
-        return new TrigonometricVariables(freq, TsPeriod.DEFAULT_EPOCH
-        );
+        return new TrigonometricVariables(freq, ref);
     }
-
+    
     public static TrigonometricVariables regular(int periodicity, int[] seasfreq) {
+        return regular(periodicity, seasfreq, TsPeriod.DEFAULT_EPOCH);
+    }
+    
+    public static TrigonometricVariables regular(int periodicity, int[] seasfreq, LocalDateTime ref) {
         double[] freq = new double[seasfreq.length];
         double f = 2.0 / periodicity;
         for (int i = 0; i < seasfreq.length; ++i) {
             freq[i] = f * seasfreq[i];
         }
-        return new TrigonometricVariables(freq, TsPeriod.DEFAULT_EPOCH);
+        return new TrigonometricVariables(freq, ref);
     }
 
     /**
@@ -79,9 +86,9 @@ public class TrigonometricVariables implements ITsVariable{
         int n = frequencies.length;
         return frequencies[n - 1] == 1 ? 2 * n - 1 : 2 * n;
     }
-    
+
     @Override
-    public <D extends TimeSeriesDomain<?>> String description(D context){
+    public <D extends TimeSeriesDomain<?>> String description(D context) {
         return "trigonometric variable";
     }
 }

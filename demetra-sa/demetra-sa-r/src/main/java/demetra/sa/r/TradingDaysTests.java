@@ -16,9 +16,12 @@
  */
 package demetra.sa.r;
 
+import demetra.arima.SarimaOrders;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import jdplus.modelling.regular.tests.TradingDaysTest;
+import jdplus.regsarima.ami.SarimaTradingDaysTest;
+import jdplus.sarima.SarimaModel;
 
 /**
  *
@@ -42,6 +45,25 @@ public class TradingDaysTests {
             return TradingDaysTest.olsTest(slast, freq, 1);
         } else if (model.equalsIgnoreCase("WN")) {
             return TradingDaysTest.olsTest(slast, null);
+        } else if (model.equalsIgnoreCase("AIRLINE")) {
+            SarimaOrders orders=SarimaOrders.airline(freq);
+            SarimaModel arima=SarimaModel.builder(orders)
+                    .setDefault()
+                    .build();
+            return SarimaTradingDaysTest.sarimaTest(slast, arima, false);
+        } else if (model.equalsIgnoreCase("R011")) {
+            SarimaOrders orders=SarimaOrders.m011(freq);
+            SarimaModel arima=SarimaModel.builder(orders)
+                    .setDefault()
+                    .build();
+            return SarimaTradingDaysTest.sarimaTest(slast, arima, false);
+        } else if (model.equalsIgnoreCase("R100")) {
+            SarimaOrders orders=new SarimaOrders(freq);
+            orders.setP(1);
+            SarimaModel arima=SarimaModel.builder(orders)
+                    .setDefault()
+                    .build();
+            return SarimaTradingDaysTest.sarimaTest(slast, arima, true);
         } else {
             return null;
         }

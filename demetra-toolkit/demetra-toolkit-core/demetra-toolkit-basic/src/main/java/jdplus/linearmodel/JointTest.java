@@ -69,6 +69,8 @@ public class JointTest {
     }
 
     public JointTest variableSelection(int start, int n) {
+        if (start == 0 && n == b.length())
+            return this;
         this.coef = new int[n];
         for (int i=0; i<n; ++i){
             coef[i]=start+i;

@@ -19,7 +19,6 @@ package jdplus.sa.diagnostics;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import jdplus.modelling.regular.tests.TradingDaysTest;
-import jdplus.sa.tests.FTest;
 
 /**
  *

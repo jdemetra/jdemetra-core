@@ -20,7 +20,7 @@ public class TrendConstant implements ISystemVariable {
     public static final String NAME="const";
     
     private int d, bd;
-//    private LocalDateTime start; TODO
+    private LocalDateTime reference;
 
     @Override
     public int dim() {
@@ -32,4 +32,9 @@ public class TrendConstant implements ISystemVariable {
         return NAME;
     }
    
+    public TrendConstant(int d, int bd){
+        this.d=d;
+        this.bd=bd;
+        this.reference=null;
+    }
 }
