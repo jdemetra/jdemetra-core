@@ -77,6 +77,24 @@ public class Variables {
             return m.unmodifiable();
         }
     }
+    public MatrixType htd(Calendar calendar, TsDomain domain, int[] groups, boolean contrasts, boolean meanCorrection) {
+        DayClustering dc = DayClustering.of(groups);
+        if (contrasts) {
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(calendar, meanCorrection);
+            GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
+            HolidaysCorrectedTradingDays htd = new HolidaysCorrectedTradingDays(gtd, corrector);
+            Matrix m = Matrix.make(domain.getLength(), dc.getGroupsCount() - 1);
+            HolidaysCorrectionFactory.FACTORY.fill(htd, domain.getStartPeriod(), m);
+            return m.unmodifiable();
+        } else {
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(calendar, meanCorrection);
+            GenericTradingDays gtd = GenericTradingDays.raw(dc);
+            HolidaysCorrectedTradingDays htd = new HolidaysCorrectedTradingDays(gtd, corrector);
+            Matrix m = Matrix.make(domain.getLength(), dc.getGroupsCount());
+            HolidaysCorrectionFactory.FACTORY.fill(htd, domain.getStartPeriod(), m);
+            return m.unmodifiable();
+        }
+    }
 
     public MatrixType htd(ModellingContext ctxt, String name, TsDomain domain, int[] groups, boolean contrasts, boolean meanCorrection) {
         DayClustering dc = DayClustering.of(groups);
@@ -217,6 +235,16 @@ public class Variables {
         return Regression.matrix(domain, var);
     }
 
+    public Matrix trigonometricVariables(TsDomain domain, int[] seasonal) {
+        TrigonometricVariables var;
+        if (seasonal == null) {
+            var = TrigonometricVariables.regular(domain.getAnnualFrequency());
+        } else {
+            var = TrigonometricVariables.regular(domain.getAnnualFrequency(), seasonal);
+        }
+        return Regression.matrix(domain, var);
+    }
+    
     public Matrix trigonometricVariables(TsDomain domain, int[] seasonal, String reference) {
         LocalDate ref = LocalDate.parse(reference, DateTimeFormatter.ISO_DATE);
         TrigonometricVariables var;
