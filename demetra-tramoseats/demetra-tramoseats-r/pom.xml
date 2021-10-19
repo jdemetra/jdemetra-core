@@ -11,47 +11,21 @@
     <artifactId>demetra-tramoseats-r</artifactId>
     <name>JD3 - TramoSeats - R</name>
 
+    <properties>
+        <jd3-toolkit.version>1.0.0-SNAPSHOT</jd3-toolkit.version>
+        <jd3-tramoseats-protobuf.version>1.0.0-SNAPSHOT</jd3-tramoseats-protobuf.version>
+    </properties>
+
     <dependencies>
         <!-- compile and runtime -->
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-ssf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-modelling</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-regarima</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-sa-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-sa-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tramoseats-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tramoseats-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-tramoseats-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tramoseats-protobuf</artifactId>
+            <version>${jd3-tramoseats-protobuf.version}</version>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>

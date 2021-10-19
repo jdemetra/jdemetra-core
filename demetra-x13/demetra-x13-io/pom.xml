@@ -1,54 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-x13</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-
     <artifactId>demetra-x13-io</artifactId>
+    <packaging>pom</packaging>
     <name>JD3 - X13 - IO</name>
-
-    <dependencies>
-        <!-- compile and runtime -->
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-x13-api</artifactId>
-        </dependency>
-        <dependency>
-            <!-- TO SUPPRESS IN THE FUTURE -->
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-x13-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-sa-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.nbbrd.java-io-util</groupId>
-            <artifactId>java-io-xml-bind</artifactId>
-            <version>${java-io-util.version}</version>
-        </dependency>
-
-        <!-- test only -->
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-data-tests</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
-        </dependency>    
-    </dependencies>
+    <modules>
+        <module>demetra-x13-xml</module>
+        <module>demetra-x13-protobuf</module>
+        <module>demetra-x13-information</module>
+        <module>demetra-x13-html</module>
+    </modules>
 </project>

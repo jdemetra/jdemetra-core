@@ -11,31 +11,26 @@
     <artifactId>demetra-toolkit-r</artifactId>
     <name>JD3 - Toolkit - R</name>
     
+    <properties>
+        <jd3-toolkit-protobuf.version>1.0.0-SNAPSHOT</jd3-toolkit-protobuf.version>
+    </properties>
+
     <dependencies>
         <!-- compile and runtime -->
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-api</artifactId>
-        </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-toolkit-basic</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-io</artifactId>
+            <artifactId>demetra-toolkit-protobuf</artifactId>
+            <version>${jd3-toolkit-protobuf.version}</version>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-toolkit-modelling</artifactId>
         </dependency>
         <!-- test only -->
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tstoolkit</artifactId>
-            <version>${jd2.version}</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-data-tests</artifactId>

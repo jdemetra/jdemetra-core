@@ -11,32 +11,13 @@
     <artifactId>demetra-x13-r</artifactId>
     <name>JD3 - X13 - R</name>
 
+    <properties>
+        <jd3-toolkit.version>1.0.0-SNAPSHOT</jd3-toolkit.version>
+        <jd3-x13-protobuf.version>1.0.0-SNAPSHOT</jd3-x13-protobuf.version>
+    </properties>
+
     <dependencies>
         <!-- compile and runtime -->
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-ssf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-modelling</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-regarima</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-sa-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-sa-core</artifactId>
-        </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-x13-api</artifactId>
@@ -47,11 +28,12 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-x13-io</artifactId>
+            <artifactId>demetra-toolkit-r</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-r</artifactId>
+            <artifactId>demetra-x13-protobuf</artifactId>
+            <version>${jd3-x13-protobuf.version}</version>
         </dependency>
         <!-- test only -->
         <dependency>

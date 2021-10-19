@@ -45,12 +45,12 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-api</artifactId>
+            <artifactId>demetra-toolkit-information</artifactId>
             <version>${jd3-toolkit.version}</version>            
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-io</artifactId>
+            <artifactId>demetra-toolkit-xml</artifactId>
             <version>${jd3-toolkit.version}</version>            
         </dependency>
         <dependency>
@@ -60,7 +60,7 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tramoseats-io</artifactId>
+            <artifactId>demetra-tramoseats-information</artifactId>
             <version>${jd3-tramoseats.version}</version>            
         </dependency>
         <dependency>
@@ -70,7 +70,7 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-x13-io</artifactId>
+            <artifactId>demetra-x13-information</artifactId>
             <version>${jd3-x13.version}</version>            
         </dependency>
         <dependency>
