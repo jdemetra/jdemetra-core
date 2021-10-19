@@ -49,26 +49,34 @@ public class RKHSFilterFactory {
             double passBand = spec.getPassBand();
             DoubleUnaryOperator density = spec.getDensity().asFunction();
             for (int i = 0, j=len-1; i < len; ++i, --j) {
-                double bandWidth;
-                switch (spec.getAsymmetricBandWith()) {
-                    case FrequencyResponse:
-                        bandWidth = CutAndNormalizeFilters.optimalBandWidth(len, j,
-                                AsymmetricFiltersFactory.frequencyResponseDistance(density));
-                        break;
-                    case Accuracy:
-                        bandWidth = CutAndNormalizeFilters.optimalBandWidth(len, j,
-                                AsymmetricFiltersFactory.accuracyDistance(density, passBand));
-                        break;
-                    case Smoothness:
-                        bandWidth = CutAndNormalizeFilters.optimalBandWidth(len, j,
-                                AsymmetricFiltersFactory.smoothnessDistance(density, passBand));
-                        break;
-                    case Timeliness:
-                        bandWidth = CutAndNormalizeFilters.optimalBandWidth(len, j,
-                                AsymmetricFiltersFactory.timelinessDistance(density, passBand));
-                        break;
-                    default:
-                        bandWidth = len + 1;
+            	double bandWidth;
+                if (spec.isOptimalBandWidth()) {
+                	switch (spec.getAsymmetricBandWith()) {
+	                    case FrequencyResponse:
+	                        bandWidth = CutAndNormalizeFilters.optimalBandWidth(len, j,
+	                        		AsymmetricFiltersFactory.frequencyResponseDistance(density),
+	                                kernel, spec.getMinBandWidth(), spec.getMaxBandWidth());
+	                        break;
+	                    case Accuracy:
+	                        bandWidth = CutAndNormalizeFilters.optimalBandWidth(len, j,
+	                        		AsymmetricFiltersFactory.accuracyDistance(density, passBand),
+	                                kernel, spec.getMinBandWidth(), spec.getMaxBandWidth());
+	                        break;
+	                    case Smoothness:
+	                        bandWidth = CutAndNormalizeFilters.optimalBandWidth(len, j,
+	                        		AsymmetricFiltersFactory.smoothnessDistance(density, passBand),
+	                                kernel, spec.getMinBandWidth(), spec.getMaxBandWidth());
+	                        break;
+	                    case Timeliness:
+	                        bandWidth = CutAndNormalizeFilters.optimalBandWidth(len, j,
+	                        		AsymmetricFiltersFactory.timelinessDistance(density, passBand),
+	                                kernel, spec.getMinBandWidth(), spec.getMaxBandWidth());
+	                        break;
+	                    default:
+	                        bandWidth = len + 1;
+                	}
+                }else {
+                	bandWidth=spec.getBandWidth();
                 }
                 asymmetricFilters[i] = CutAndNormalizeFilters.of(kernel, bandWidth, len, j);
             }

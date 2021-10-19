@@ -42,6 +42,9 @@ public class TrigonometricVariables implements ITsVariable {
         }
         return new TrigonometricVariables(freq, ref);
     }
+    public static TrigonometricVariables regular(int periodicity) {
+        return regular(periodicity, TsPeriod.DEFAULT_EPOCH);
+    }
     
     public static TrigonometricVariables regular(int periodicity, int[] seasfreq) {
         return regular(periodicity, seasfreq, TsPeriod.DEFAULT_EPOCH);
