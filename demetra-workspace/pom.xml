@@ -45,11 +45,6 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-information</artifactId>
-            <version>${jd3-toolkit.version}</version>            
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-toolkit-xml</artifactId>
             <version>${jd3-toolkit.version}</version>            
         </dependency>

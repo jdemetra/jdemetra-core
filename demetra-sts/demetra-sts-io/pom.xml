@@ -10,12 +10,12 @@
     <packaging>jar</packaging>
     <name>JD3 - STS - IO</name>
 
+    <properties>
+        <jd3-sa-protobuf.version>1.0.0-SNAPSHOT</jd3-sa-protobuf.version>
+    </properties>
+
     <dependencies>
         <!-- compile and runtime -->
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-api</artifactId>
-        </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-sts-api</artifactId>
@@ -26,27 +26,8 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-r</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-basic</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-modelling</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-ssf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-sa-io</artifactId>
+            <artifactId>demetra-sa-protobuf</artifactId>
+            <version>${jd3-sa-protobuf.version}</version>
         </dependency>
         <!-- test only -->
         <dependency>
