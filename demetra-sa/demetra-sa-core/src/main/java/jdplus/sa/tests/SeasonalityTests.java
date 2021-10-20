@@ -137,6 +137,10 @@ public class SeasonalityTests {
         return delta;
     }
 
+    public int getPeriod() {
+        return period;
+    }
+
     // Lazy evaulation
     public StatisticalTest getNonParametricTest() {
         if (nptest == null) {
