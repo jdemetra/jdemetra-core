@@ -16,13 +16,16 @@
  */
 package jdplus.x13.spi;
 
+import demetra.information.InformationExtractors;
 import demetra.processing.DefaultProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.x13.X13;
 import demetra.x13.X13Results;
 import demetra.x13.X13Spec;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import jdplus.x13.X13Kernel;
 import jdplus.x13.extractors.X13Extractor;
 import nbbrd.service.ServiceProvider;
@@ -55,4 +58,10 @@ public class X13Computer implements X13.Processor {
                 .build();
     }
     
+    @Override
+    public Map<String, Class> outputDictionary(boolean compact) {
+        Map<String, Class> dic = new LinkedHashMap<>();
+        InformationExtractors.fillDictionary(jdplus.x13.X13Results.class, null, dic, compact);
+        return dic;
+    }
 }

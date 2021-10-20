@@ -16,13 +16,16 @@
  */
 package jdplus.tramoseats.spi;
 
+import demetra.information.InformationExtractors;
 import demetra.processing.DefaultProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramoseats.TramoSeats;
 import demetra.tramoseats.TramoSeatsResults;
 import demetra.tramoseats.TramoSeatsSpec;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import jdplus.tramoseats.TramoSeatsKernel;
 import jdplus.tramoseats.extractors.TramoSeatsExtractor;
 import nbbrd.service.ServiceProvider;
@@ -48,11 +51,18 @@ public class TramoSeatsProcessor implements TramoSeats.Processor {
             }
         }
         return builder
- //               .preprocessing(jdplus.regarima.ApiUtility.toApi(rslt.getPreprocessing()))
+                //               .preprocessing(jdplus.regarima.ApiUtility.toApi(rslt.getPreprocessing()))
                 .decomposition(ApiUtility.toApi(rslt.getDecomposition()))
                 .finals(rslt.getFinals())
                 .logs(log.all())
                 .build();
+    }
+
+    @Override
+    public Map<String, Class> outputDictionary(boolean compact) {
+        Map<String, Class> dic = new LinkedHashMap<>();
+        InformationExtractors.fillDictionary(jdplus.tramoseats.TramoSeatsResults.class, null, dic, compact);
+        return dic;
     }
 
 }

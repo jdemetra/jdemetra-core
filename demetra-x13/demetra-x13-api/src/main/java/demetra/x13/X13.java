@@ -21,6 +21,7 @@ import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
@@ -49,6 +50,10 @@ public class X13 {
         return ENGINE.get().process(series, spec, context, addtionalItems);
     }
 
+    public  Map<String, Class> outputDictionary(boolean compact){
+        return ENGINE.get().outputDictionary(compact);
+    }
+
     public void setLegacyEngine(Processor algorithm) {
         LEGACYENGINE.set(algorithm);
     }
@@ -66,10 +71,10 @@ public class X13 {
 
     @Algorithm
     @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
-    @FunctionalInterface
     public static interface Processor {
 
         public X13Results process(TsData series, X13Spec spec, ModellingContext context, List<String> addtionalItems);
+        public Map<String, Class> outputDictionary(boolean compact);
 
     }
 }
