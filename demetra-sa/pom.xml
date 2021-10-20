@@ -16,8 +16,8 @@
     <modules>
         <module>demetra-sa-api</module>
         <module>demetra-sa-core</module>
-        <module>demetra-sa-io</module>
         <module>demetra-sa-r</module>
+        <module>demetra-sa-io</module>
     </modules>
     
     <properties>
@@ -32,11 +32,6 @@
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-toolkit-api</artifactId>
-                <version>${jd3-toolkit.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-toolkit-io</artifactId>
                 <version>${jd3-toolkit.version}</version>            
             </dependency>
             <dependency>
@@ -66,22 +61,12 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-toolkit-r</artifactId>
-                <version>${jd3-toolkit.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-sa-api</artifactId>
                 <version>${jd3-sa.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-sa-core</artifactId>
-                <version>${jd3-sa.version}</version>            
-            </dependency>
-            <dependency>
-                <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-sa-io</artifactId>
                 <version>${jd3-sa.version}</version>            
             </dependency>
             <!-- < modules 3.0 -->

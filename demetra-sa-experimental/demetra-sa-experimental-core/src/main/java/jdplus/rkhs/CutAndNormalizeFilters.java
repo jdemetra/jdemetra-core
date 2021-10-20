@@ -54,6 +54,8 @@ public class CutAndNormalizeFilters {
         private SymmetricFilter target;
         private AsymmetricFiltersFactory.Distance distance;
         private AsymmetricFilterProvider provider;
+        private double lbound;
+        private double ubound;
 
         @Override
         public IFunctionPoint evaluate(DoubleSeq parameters) {
@@ -62,7 +64,7 @@ public class CutAndNormalizeFilters {
 
         @Override
         public IParametersDomain getDomain() {
-            return new ParametersRange(m, 3 * m, false);
+            return new ParametersRange(lbound, ubound, false);
         }
 
         class Point implements IFunctionPoint {
@@ -95,11 +97,24 @@ public class CutAndNormalizeFilters {
     public double optimalBandWidth(int m, int q, AsymmetricFiltersFactory.Distance distance) {
         SymmetricFilter H = KernelsUtility.symmetricFilter(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), m + 1, m);
         
-         D fn = new D(m, H, distance, bandWidth->of(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), bandWidth, m, q));
+        D fn = new D(m, H, distance, bandWidth->of(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), bandWidth, m, q),
+        		m, 3*m);
         GridSearch grid = GridSearch.builder()
                 .bounds(m, 3 * m)
                 .build();
         grid.minimize(fn.evaluate(DoubleSeq.of(m + 1)));
+        return ((D.Point) grid.getResult()).bandWidth;
+    }
+    public double optimalBandWidth(int m, int q, AsymmetricFiltersFactory.Distance distance,
+    		DoubleUnaryOperator kernel, double lbound, double ubound) {
+        SymmetricFilter H = KernelsUtility.symmetricFilter(HighOrderKernels.kernel(Kernels.BIWEIGHT, 2), m + 1, m);
+        
+        D fn = new D(m, H, distance, bandWidth->of(kernel, bandWidth, m, q),
+        		lbound, ubound);
+        GridSearch grid = GridSearch.builder()
+                .bounds(lbound, ubound)
+                .build();
+        grid.minimize(fn.evaluate(DoubleSeq.of(Double.max(m + 1, lbound))));
         return ((D.Point) grid.getResult()).bandWidth;
     }
 

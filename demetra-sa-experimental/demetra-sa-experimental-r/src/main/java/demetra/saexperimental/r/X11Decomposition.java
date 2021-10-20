@@ -7,6 +7,7 @@ package demetra.saexperimental.r;
 
 import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
+import demetra.math.matrices.MatrixType;
 import jdplus.math.linearfilters.HendersonFilters;
 import jdplus.math.linearfilters.IFiniteFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
@@ -24,6 +25,7 @@ import demetra.data.DoubleSeq;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.analysis.DiscreteKernel;
 import jdplus.filters.AsymmetricCriterion;
+import jdplus.filters.Filtering;
 import jdplus.filters.ISymmetricFiltering;
 import jdplus.filters.KernelOption;
 import jdplus.filters.LocalPolynomialFilterFactory;
@@ -294,9 +296,12 @@ public class X11Decomposition {
         tspec.setPolynomialDegree(pdegree);
         tspec.setKernel(KernelOption.valueOf(pkernel));
         tspec.setOptimalBandWidth(optimalbw);
+
         tspec.setAsymmetricBandWith(AsymmetricCriterion.valueOf(criterion));
         tspec.setDensity(rwdensity ? SpectralDensity.RandomWalk : SpectralDensity.Undefined);
         tspec.setPassBand(passBand);
+        tspec.setMinBandWidth(thorizon);
+        tspec.setMaxBandWidth(3*thorizon);
         
         ISymmetricFiltering sfilter = X11SeasonalFiltersFactory.filter(period, shorizon, kernel(seasKernel, shorizon));
         
@@ -306,6 +311,37 @@ public class X11Decomposition {
                 .trendFiltering(RKHSFilterFactory.of(tspec))
                 .initialSeasonalFiltering(sfilter)
                 .finalSeasonalFiltering(sfilter)
+                .lowerSigma(lsig)
+                .upperSigma(usig)
+                .build();
+        X11Kernel kernel = new X11Kernel();
+        DoubleSeq y = DoubleSeq.of(data);
+        kernel.process(y, context);
+
+        return Results.builder()
+                .y(y)
+                .kernel(kernel)
+                .multiplicative(mul)
+                .build();
+
+    }
+    public Results trendX11(double[] data, double period, boolean mul,
+    		DoubleSeq ctrendf, MatrixType ltrendf, String seas0, String seas1, double lsig, double usig) {
+        int iperiod = (int) period;
+        Number P;
+        if (Math.abs(period - iperiod) < 1e-9) {
+            P = iperiod;
+        } else {
+            P = period;
+        }
+        Filtering trendFilter=Filtering.of(ctrendf, ltrendf);
+        
+        X11Context context = X11Context.builder()
+                .mode(mul ? DecompositionMode.Multiplicative : DecompositionMode.Additive)
+                .period(P)
+                .trendFiltering(trendFilter)
+                .initialSeasonalFiltering(X11SeasonalFiltersFactory.filter(P, SeasonalFilterOption.valueOf(seas0)))
+                .finalSeasonalFiltering(X11SeasonalFiltersFactory.filter(P, SeasonalFilterOption.valueOf(seas1)))
                 .lowerSigma(lsig)
                 .upperSigma(usig)
                 .build();

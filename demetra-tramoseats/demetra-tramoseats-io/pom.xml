@@ -1,53 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-tramoseats</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-
     <artifactId>demetra-tramoseats-io</artifactId>
+    <packaging>pom</packaging>
     <name>JD3 - TramoSeats - IO</name>
-
-    <dependencies>
-        <!-- compile and runtime -->
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tramoseats-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-sa-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tramoseats-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-sa-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.nbbrd.java-io-util</groupId>
-            <artifactId>java-io-xml-bind</artifactId>
-            <version>${java-io-util.version}</version>
-        </dependency>
-
-        <!-- test only -->
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-data-tests</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+    
+    <modules>
+        <module>demetra-tramoseats-information</module>
+        <module>demetra-tramoseats-xml</module>
+        <module>demetra-tramoseats-html</module>
+        <module>demetra-tramoseats-protobuf</module>
+    </modules>
 </project>

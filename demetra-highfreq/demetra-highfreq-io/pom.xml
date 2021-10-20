@@ -18,11 +18,7 @@
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-highfreq-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-toolkit-io</artifactId>
-        </dependency>
-        <!-- test only -->
+         <!-- test only -->
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-data-tests</artifactId>
