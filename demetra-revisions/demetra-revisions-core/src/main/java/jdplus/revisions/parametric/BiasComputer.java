@@ -18,9 +18,9 @@ package jdplus.revisions.parametric;
 
 import demetra.data.DoubleSeq;
 import demetra.revisions.parametric.Bias;
+import demetra.stats.AutoCovariances;
 import demetra.stats.ProbabilityType;
 import jdplus.dstats.T;
-import jdplus.stats.AutoCovariances;
 import jdplus.stats.samples.Population;
 import jdplus.stats.samples.Sample;
 

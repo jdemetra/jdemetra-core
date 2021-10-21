@@ -16,11 +16,11 @@
  */
 package jdplus.sa.tests;
 
-import jdplus.modelling.DifferencingResults;
 import jdplus.data.analysis.DiscreteWindowFunction;
 import jdplus.data.analysis.SmoothedPeriodogram;
 import demetra.timeseries.TsException;
 import demetra.data.DoubleSeq;
+import demetra.modelling.DifferencingResult;
 import demetra.stats.StatisticalTest;
 
 /**
@@ -112,18 +112,18 @@ public class SeasonalityTests {
      * @param mean Mean correction (after differencing)
      */
     public void test(DoubleSeq input, int period, int ndiff, boolean mean) {
-        delta = DifferencingResults.of(input, period, ndiff, mean);
+        delta = DifferencingResult.of(input, period, ndiff, mean);
         this.period = period;
         clear();
     }
 
     private void testResiduals(DoubleSeq res, int period) {
-        delta = DifferencingResults.of(res, period, 0, false);
+        delta = DifferencingResult.of(res, period, 0, false);
         this.period = period;
         clear();
     }
 
-    private DifferencingResults delta;
+    private DifferencingResult delta;
     private SmoothedPeriodogram btSpectrum;
     private TukeySpectrumPeaksTest tpeaks;
     private AutoRegressiveSpectrumTest arpeaks;
@@ -133,7 +133,7 @@ public class SeasonalityTests {
     private int score;
     private int period;
 
-    public DifferencingResults getDifferencing() {
+    public DifferencingResult getDifferencing() {
         return delta;
     }
 

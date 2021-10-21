@@ -20,7 +20,7 @@ import demetra.stats.TestType;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import jdplus.dstats.Chi2;
-import jdplus.stats.AutoCovariances;
+import demetra.stats.AutoCovariances;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;

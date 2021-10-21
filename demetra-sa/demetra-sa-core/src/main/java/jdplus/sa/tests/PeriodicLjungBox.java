@@ -19,7 +19,7 @@ package jdplus.sa.tests;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import jdplus.dstats.Chi2;
-import jdplus.stats.AutoCovariances;
+import demetra.stats.AutoCovariances;
 import demetra.stats.StatException;
 import demetra.stats.TestType;
 import java.util.function.IntToDoubleFunction;

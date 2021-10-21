@@ -16,6 +16,7 @@
  */
 package jdplus.sa.diagnostics;
 
+import demetra.arima.SarimaOrders;
 import java.util.concurrent.atomic.AtomicReference;
 import jdplus.sa.tests.FTest;
 import nbbrd.design.Development;
@@ -31,7 +32,7 @@ public class ResidualSeasonalityTestsOptions {
 
     public static final int DEF_FTEST_LAST = 8, DEF_QSTEST_LAST = 0;
     public static final int DEF_QS_LAGS = 2;
-    public static final FTest.Model DEF_FTEST_MODEL = FTest.Model.AR;
+    public static final SarimaOrders.Prespecified DEF_FTEST_MODEL = SarimaOrders.Prespecified.AR;
     
     private static final AtomicReference<ResidualSeasonalityTestsOptions> DEFAULT
             = new AtomicReference<ResidualSeasonalityTestsOptions>(builder().build());
@@ -47,7 +48,7 @@ public class ResidualSeasonalityTestsOptions {
 
     private int flast;
     @lombok.NonNull
-    private FTest.Model modelForFTest;
+    private SarimaOrders.Prespecified modelForFTest;
     private int qslast, qsLags;
 
     public static Builder builder() {

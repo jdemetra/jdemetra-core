@@ -16,6 +16,7 @@
  */
 package jdplus.sa.tests;
 
+import demetra.arima.SarimaOrders;
 import demetra.data.Data;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
@@ -36,12 +37,12 @@ public class FTestTest {
     public void testWN() {
         TsData s=TsDataToolkit.delta(Data.TS_PROD, 12);
         FTest test=new FTest(s.getValues(),12);
-        StatisticalTest f = test.model(FTest.Model.WN).build();
+        StatisticalTest f = test.model(SarimaOrders.Prespecified.WN).build();
         assertFalse(f.isSignificant(0.01));
         System.out.println(test.build());
         s=TsDataToolkit.delta(Data.TS_PROD, 1);
         test=new FTest(s.getValues(),12);
-        f = test.model(FTest.Model.WN).build();
+        f = test.model(SarimaOrders.Prespecified.WN).build();
         assertTrue(f.isSignificant(0.01));
         System.out.println(test.build());
     }
@@ -50,12 +51,12 @@ public class FTestTest {
     public void testAR() {
         TsData s=TsDataToolkit.delta(Data.TS_PROD, 12);
         FTest test=new FTest(s.getValues(),12);
-        StatisticalTest f = test.model(FTest.Model.AR).build();
+        StatisticalTest f = test.model(SarimaOrders.Prespecified.AR).build();
         assertFalse(f.isSignificant(0.01));
         System.out.println(test.build());
         s=TsDataToolkit.delta(Data.TS_PROD, 1);
         test=new FTest(s.getValues(),12);
-        f = test.model(FTest.Model.AR).build();
+        f = test.model(SarimaOrders.Prespecified.AR).build();
         assertTrue(f.isSignificant(0.01));
         System.out.println(test.build());
     }
@@ -64,12 +65,12 @@ public class FTestTest {
     public void testD1() {
         TsData s=TsDataToolkit.delta(Data.TS_PROD, 12);
         FTest test=new FTest(s.getValues(),12);
-        StatisticalTest f = test.model(FTest.Model.D1).build();
+        StatisticalTest f = test.model(SarimaOrders.Prespecified.D1).build();
         assertFalse(f.isSignificant(0.01));
         System.out.println(test.build());
         s=Data.TS_PROD;
         test=new FTest(s.getValues(),12);
-        f = test.model(FTest.Model.D1).build();
+        f = test.model(SarimaOrders.Prespecified.D1).build();
         assertTrue(f.isSignificant(0.01));
         System.out.println(test.build());
     }

@@ -16,6 +16,7 @@
  */
 package jdplus.sa.tests;
 
+import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
 import nbbrd.design.BuilderPattern;
@@ -34,11 +35,7 @@ import jdplus.modelling.regression.PeriodicContrastsFactory;
 @BuilderPattern(StatisticalTest.class)
 public class FTest {
 
-    public static enum Model {
-        WN, AR, D1
-    }
-
-    private Model model = Model.WN;
+    private SarimaOrders.Prespecified model = SarimaOrders.Prespecified.WN;
     private final DoubleSeq s;
     private final int period;
     private int ncycles;
@@ -48,7 +45,7 @@ public class FTest {
         this.period = period;
     }
 
-    public FTest model(Model model) {
+    public FTest model(SarimaOrders.Prespecified model) {
         this.model = model;
         return this;
     }
@@ -67,8 +64,10 @@ public class FTest {
                 return processAr();
             case D1:
                 return processDiff();
-            default:
-                return process();
+            case WN:
+               return process();
+             default:
+         throw new UnsupportedOperationException("Not supported yet."); 
         }
     }
 

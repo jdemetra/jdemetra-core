@@ -16,6 +16,7 @@
  */
 package demetra.sa.html;
 
+import demetra.arima.SarimaOrders;
 import demetra.html.AbstractHtmlElement;
 import demetra.html.Bootstrap4;
 import demetra.html.HtmlClass;
@@ -31,7 +32,7 @@ import jdplus.sa.tests.FTest;
 import jdplus.sa.tests.KruskalWallis;
 import jdplus.sa.tests.SeasonalityTests;
 import jdplus.sa.tests.SpectralPeaks;
-import jdplus.stats.AutoCovariances;
+import demetra.stats.AutoCovariances;
 
 /**
  *
@@ -54,7 +55,7 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements H
         if (tests != null) {
             int period = tests.getPeriod();
             ftest = new FTest(tests.getDifferencing().getRestrictedOriginal(), period)
-                    .model(FTest.Model.D1).build();
+                    .model(SarimaOrders.Prespecified.D1).build();
             kwTest = new KruskalWallis(tests.getDifferencing().getDifferenced(), period).build();
         } else {
             ftest = null;
@@ -81,11 +82,11 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements H
     }
 
     public void writeTransformation(HtmlStream stream) throws IOException {
-        if (tests.getDifferencing().isMean() && tests.getDifferencing().getDifferencingOrder() == 1) {
+        if (tests.getDifferencing().isMeanCorrection()&& tests.getDifferencing().getDifferencingOrder() == 1) {
             stream.write(HtmlTag.EMPHASIZED_TEXT, "Data have been differenced and corrected for mean").newLines(2);
         } else if (tests.getDifferencing().getDifferencingOrder() > 0) {
             stream.write(HtmlTag.EMPHASIZED_TEXT, "Data have been differenced " + tests.getDifferencing().getDifferencingOrder() + " times").newLine();
-            if (tests.getDifferencing().isMean()) {
+            if (tests.getDifferencing().isMeanCorrection()) {
                 stream.write(HtmlTag.EMPHASIZED_TEXT, "Data have been corrected for mean").newLine();
             }
             stream.newLine();
@@ -110,7 +111,7 @@ public class HtmlSeasonalityDiagnostics extends AbstractHtmlElement implements H
         if (ftest == null)
             return;
         stream.write(HtmlTag.HEADER4, "6. Tests on regression with fixed seasonal dummies ").newLine();
-        stream.write(HtmlTag.EMPHASIZED_TEXT, "Regression model (on original series) with (0 1 1)(0 0 0) noises + mean").newLine();
+        stream.write(HtmlTag.EMPHASIZED_TEXT, "Data have been differenced and corrected for mean").newLine();
         writeSummary(stream, ftest .getPvalue());
         stream.newLines(2);
         stream.write("Distribution: " + ftest.getDescription()).newLine();

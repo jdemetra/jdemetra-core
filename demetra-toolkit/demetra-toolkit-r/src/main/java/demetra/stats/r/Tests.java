@@ -8,7 +8,7 @@ package demetra.stats.r;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
 import java.util.function.IntToDoubleFunction;
-import jdplus.stats.AutoCovariances;
+import demetra.stats.AutoCovariances;
 import jdplus.stats.InverseAutoCorrelations;
 import jdplus.stats.tests.BowmanShenton;
 import jdplus.stats.tests.DoornikHansen;

@@ -24,7 +24,7 @@ import jdplus.data.DataBlock;
 import nbbrd.design.Development;
 import jdplus.dstats.Normal;
 import jdplus.math.matrices.Matrix;
-import jdplus.stats.AutoCovariances;
+import demetra.stats.AutoCovariances;
 import demetra.data.DoubleSeq;
 
 /**

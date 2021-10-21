@@ -17,9 +17,9 @@
 package jdplus.sa.diagnostics;
 
 import demetra.data.DoubleSeq;
+import demetra.modelling.DifferencingResult;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
-import jdplus.modelling.DifferencingResults;
 import jdplus.sa.tests.AutoRegressiveSpectrumTest;
 import jdplus.sa.tests.FTest;
 import jdplus.sa.tests.Friedman;
@@ -37,14 +37,14 @@ import jdplus.sa.tests.TukeySpectrumPeaksTest;
 public class ResidualSeasonalityTests {
 
     private final TsData series;
-    private final DifferencingResults differencing;
+    private final DifferencingResult differencing;
 
     private final ResidualSeasonalityTestsOptions options;
 
     @lombok.Builder(builderClassName = "Builder")
     private ResidualSeasonalityTests(TsData series, int ndiff, boolean mean, ResidualSeasonalityTestsOptions options) {
         this.series = series;
-        this.differencing = DifferencingResults.of(series.getValues(), series.getAnnualFrequency(), ndiff, mean);
+        this.differencing = DifferencingResult.of(series.getValues(), series.getAnnualFrequency(), ndiff, mean);
         this.options = options;
     }
 

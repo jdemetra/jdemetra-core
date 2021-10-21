@@ -29,7 +29,7 @@ import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
 import jdplus.math.matrices.Matrix;
-import jdplus.stats.AutoCovariances;
+import demetra.stats.AutoCovariances;
 
 /**
  * (Augmented) Dickey-Fuller test
