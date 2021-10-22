@@ -8,7 +8,7 @@ package jdplus.math.matrices.lapack;
 import jdplus.math.matrices.DataPointer;
 import jdplus.math.matrices.MatrixNorms;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -24,9 +24,9 @@ public class SYRKTest {
 
     @Test
     public void testXXt() {
-        Matrix S = Matrix.square(10);
+        FastMatrix S = FastMatrix.square(10);
         S.set((i, j) -> i + j + 1);
-        Matrix T = S.deepClone();
+        FastMatrix T = S.deepClone();
         DataBlock X = DataBlock.make(10);
         X.set(i -> i + 1);
         SYRK.laddaXXt(10, DataPointer.of(X), S);
@@ -38,9 +38,9 @@ public class SYRKTest {
 
     @Test
     public void testXXt2() {
-        Matrix S = Matrix.square(10);
+        FastMatrix S = FastMatrix.square(10);
         S.set((i, j) -> i + j + 1);
-        Matrix T = S.deepClone();
+        FastMatrix T = S.deepClone();
         DataBlock X = DataBlock.make(10);
         X.set(i -> i + 1);
         SYRK.laddaXXt(10, DataPointer.of(X.reverse()), S);

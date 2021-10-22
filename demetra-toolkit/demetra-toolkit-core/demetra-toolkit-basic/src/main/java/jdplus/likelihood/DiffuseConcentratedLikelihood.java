@@ -20,7 +20,7 @@ import nbbrd.design.BuilderPattern;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.DiffuseLikelihoodStatistics;
 import nbbrd.design.Development;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -41,7 +41,7 @@ public interface DiffuseConcentratedLikelihood extends ConcentratedLikelihood {
         private double[] res;
         private boolean legacy;
         private double[] b;
-        private Matrix bvar;
+        private FastMatrix bvar;
         private boolean scalingFactor = true;
 
         Builder(int n, int nd) {
@@ -92,7 +92,7 @@ public interface DiffuseConcentratedLikelihood extends ConcentratedLikelihood {
             return this;
         }
 
-        public Builder unscaledCovariance(Matrix var) {
+        public Builder unscaledCovariance(FastMatrix var) {
             bvar = var;
             return this;
         }

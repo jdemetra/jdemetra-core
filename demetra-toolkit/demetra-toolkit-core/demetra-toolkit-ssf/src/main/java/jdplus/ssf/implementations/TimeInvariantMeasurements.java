@@ -21,7 +21,7 @@ import jdplus.ssf.multivariate.ISsfMeasurements;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.multivariate.ISsfErrors;
 import jdplus.ssf.univariate.ISsfError;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -29,7 +29,7 @@ import jdplus.math.matrices.Matrix;
  */
 public class TimeInvariantMeasurements implements ISsfMeasurements {
 
-    private final Matrix Z;
+    private final FastMatrix Z;
     private final ISsfErrors errors;
 
     public static TimeInvariantMeasurements of(int dim, ISsfMeasurements measurements) {
@@ -37,7 +37,7 @@ public class TimeInvariantMeasurements implements ISsfMeasurements {
             return null;
         }
         int m = measurements.getCount();
-        Matrix Z = Matrix.make(m, dim);
+        FastMatrix Z = FastMatrix.make(m, dim);
         for (int i = 0; i < m; ++i) {
             measurements.loading(i).Z(0, Z.row(i));
         }
@@ -45,8 +45,8 @@ public class TimeInvariantMeasurements implements ISsfMeasurements {
         if (errors == null) {
             return new TimeInvariantMeasurements(Z, null, null);
         }
-        Matrix H = Matrix.square(m);
-        Matrix R = Matrix.square(m);
+        FastMatrix H = FastMatrix.square(m);
+        FastMatrix R = FastMatrix.square(m);
         errors.H(0, H);
         errors.R(0, R);
         return new TimeInvariantMeasurements(Z, H, R);
@@ -57,22 +57,22 @@ public class TimeInvariantMeasurements implements ISsfMeasurements {
         if (!measurement.isTimeInvariant()) {
             return null;
         }
-        Matrix Z = Matrix.make(1, dim);
+        FastMatrix Z = FastMatrix.make(1, dim);
         measurement.loading().Z(0, Z.row(0));
         ISsfError error = measurement.error();
         if (error == null) {
             return new TimeInvariantMeasurements(Z, null, null);
         }
         double v = error.at(0);
-        Matrix H = Matrix.square(1);
+        FastMatrix H = FastMatrix.square(1);
         H.set(0, 0, v);
-        Matrix R = Matrix.square(1);
+        FastMatrix R = FastMatrix.square(1);
         R.set(0, 0, Math.sqrt(v));
         return new TimeInvariantMeasurements(Z, H, R);
 
     }
 
-    public TimeInvariantMeasurements(Matrix Z, Matrix H, Matrix R) {
+    public TimeInvariantMeasurements(FastMatrix Z, FastMatrix H, FastMatrix R) {
         this.Z = Z;
         if (H == null && R == null) {
             errors = null;

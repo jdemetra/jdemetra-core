@@ -22,7 +22,7 @@ import demetra.data.DoubleSeq;
 import jdplus.likelihood.Likelihood;
 import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.likelihood.LikelihoodFunction;
 import jdplus.likelihood.LikelihoodFunctionPoint;
 import jdplus.math.functions.FunctionMinimizer;
@@ -111,7 +111,7 @@ public class MstsMonitor {
     private final SsfInitialization initialization;
     private final Optimizer optimizer;
 
-    private Matrix data;
+    private FastMatrix data;
     private MstsMapping model;
     private MultivariateCompositeSsf ssf;
     private DoubleSeq fullp;
@@ -197,7 +197,7 @@ public class MstsMonitor {
                 .count() == 0;
     }
 
-    public void process(Matrix data, MstsMapping model, DoubleSeq fullInitial) {
+    public void process(FastMatrix data, MstsMapping model, DoubleSeq fullInitial) {
         fixedVariance = null;
         this.data = data;
         this.model = model;
@@ -409,7 +409,7 @@ public class MstsMonitor {
     /**
      * @return the data
      */
-    public Matrix getData() {
+    public FastMatrix getData() {
         return data;
     }
 

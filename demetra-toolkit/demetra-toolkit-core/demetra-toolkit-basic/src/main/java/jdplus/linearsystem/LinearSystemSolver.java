@@ -23,7 +23,7 @@ import jdplus.data.DataBlock;
 import demetra.design.Algorithm;
 import nbbrd.design.Development;
 import jdplus.math.matrices.MatrixException;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * Defines algorithms that solve linear system
@@ -60,7 +60,7 @@ public interface LinearSystemSolver {
           On exit, it contains the results of the system (x).
      * @throws MatrixException
      */
-    void solve(Matrix A, DataBlock b) throws MatrixException;
+    void solve(FastMatrix A, DataBlock b) throws MatrixException;
 
     /**
      * Solves AX=B
@@ -70,7 +70,7 @@ public interface LinearSystemSolver {
           On exit, it contains the results of the system (X).
      * @throws MatrixException
      */
-    void solve(Matrix A, Matrix B) throws MatrixException;
+    void solve(FastMatrix A, FastMatrix B) throws MatrixException;
 }
 
 class LS_Factory{

@@ -8,7 +8,7 @@ package demetra.businesscycle.r;
 import demetra.businesscycle.r.HodrickPrescott;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -23,7 +23,7 @@ public class HodrickPrescottTest {
 
     @Test
     public void testHP() {
-        MatrixType tc = HodrickPrescott.filter(Data.NILE, 0, 20);
+        Matrix tc = HodrickPrescott.filter(Data.NILE, 0, 20);
         DoubleSeq sum = tc.column(0).op(tc.column(1), (a,b)->a+b);
         assertTrue(sum.distance(DoubleSeq.of(Data.NILE))<1e-9);
     }

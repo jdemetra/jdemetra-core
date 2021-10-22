@@ -22,7 +22,7 @@ import jdplus.data.DataBlock;
 import demetra.design.AlgorithmImplementation;
 import demetra.math.Constants;
 import jdplus.math.matrices.MatrixException;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * LU factorization with column pivoting
@@ -45,18 +45,18 @@ public final class LUSolver2 implements LinearSystemSolver {
     }
 
     @Override
-    public void solve(Matrix A, DataBlock b) throws MatrixException {
+    public void solve(FastMatrix A, DataBlock b) throws MatrixException {
         int n = A.getRowsCount();
         if (b.length() != n) {
             throw new MatrixException(MatrixException.DIM);
         }
-        Matrix col = Matrix.columnOf(b);
+        FastMatrix col = FastMatrix.columnOf(b);
         solve(A, col);
         b.copy(col.column(0));
     }
 
     @Override
-    public void solve(Matrix A, Matrix B) throws MatrixException {
+    public void solve(FastMatrix A, FastMatrix B) throws MatrixException {
         if (!A.isSquare()) {
             throw new MatrixException(MatrixException.DIM);
         }

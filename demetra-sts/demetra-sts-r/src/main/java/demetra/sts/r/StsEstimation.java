@@ -36,7 +36,7 @@ import demetra.timeseries.TsData;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.sts.SeasonalModel;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import static jdplus.timeseries.simplets.TsDataToolkit.add;
 import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
 import demetra.information.Explorable;
@@ -56,7 +56,7 @@ public class StsEstimation {
         TsData y, t, s, i;
         BsmData bsm;
         DiffuseConcentratedLikelihood likelihood;
-        Matrix parametersCovariance;
+        FastMatrix parametersCovariance;
         double[] score;
         int nparams;
 
@@ -108,7 +108,7 @@ public class StsEstimation {
             MAPPING.set(I, TsData.class, source -> source.getI());
             MAPPING.set(SA, TsData.class, source -> subtract(source.getY(), source.getS()));
             MAPPING.delegate(LL, DiffuseLikelihoodStatistics.class, r -> r.getLikelihood().stats(0, r.getNparams()));
-            MAPPING.set(PCOV, Matrix.class, source -> source.getParametersCovariance());
+            MAPPING.set(PCOV, FastMatrix.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore());
         }
     }
@@ -159,7 +159,7 @@ public class StsEstimation {
         IFunctionDerivatives derivatives = new NumericalDerivatives(ml, false);
         int ndf = y.length();
         double objective = ml.getValue();
-        Matrix hessian = derivatives.hessian();
+        FastMatrix hessian = derivatives.hessian();
         double[] score = derivatives.gradient().toArray();
         hessian.mul((.5 * ndf) / objective);
         for (int i = 0; i < score.length; ++i) {

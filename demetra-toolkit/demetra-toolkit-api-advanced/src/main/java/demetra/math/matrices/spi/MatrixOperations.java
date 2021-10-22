@@ -16,12 +16,12 @@
  */
 package demetra.math.matrices.spi;
 
-import demetra.math.matrices.MatrixType;
 import demetra.design.Algorithm;
 import demetra.math.algebra.Ring;
 import nbbrd.service.ServiceDefinition;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -40,69 +40,69 @@ public class MatrixOperations {
         return PROCESSOR.get();
     }
 
-    public MatrixType plus(MatrixType left, MatrixType right) {
+    public Matrix plus(Matrix left, Matrix right) {
         return PROCESSOR.get().plus(left, right);
     }
 
-    public MatrixType plus(MatrixType M, double d) {
+    public Matrix plus(Matrix M, double d) {
         return PROCESSOR.get().plus(M, d);
     }
 
-    public MatrixType minus(MatrixType left, MatrixType right) {
+    public Matrix minus(Matrix left, Matrix right) {
         return PROCESSOR.get().minus(left, right);
     }
 
-    public MatrixType minus(MatrixType M, double d) {
+    public Matrix minus(Matrix M, double d) {
         return PROCESSOR.get().minus(M, d);
     }
 
-    public MatrixType times(MatrixType left, MatrixType right) {
+    public Matrix times(Matrix left, Matrix right) {
         return PROCESSOR.get().times(left, right);
     }
 
-    public MatrixType times(MatrixType M, double d) {
+    public Matrix times(Matrix M, double d) {
         return PROCESSOR.get().times(M, d);
     }
 
-    public MatrixType opposite(MatrixType M) {
+    public Matrix opposite(Matrix M) {
         return PROCESSOR.get().opposite(M);
     }
 
-    public MatrixType inv(MatrixType M) {
+    public Matrix inv(Matrix M) {
         return PROCESSOR.get().inv(M);
     }
 
-    public MatrixType transpose(MatrixType M) {
+    public Matrix transpose(Matrix M) {
         return PROCESSOR.get().transpose(M);
     }
 
-    public MatrixType XXt(MatrixType X) {
+    public Matrix XXt(Matrix X) {
         return PROCESSOR.get().XXt(X);
     }
 
-    public MatrixType XtX(MatrixType X) {
+    public Matrix XtX(Matrix X) {
         return PROCESSOR.get().XtX(X);
     }
 
     
     @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
-    public static interface Processor extends Ring<MatrixType>{
+    public static interface Processor extends Ring<Matrix>{
         // Use the Ring definition to normalize the names. To get an actual ring, we should consider square matrices 
         // of size n.
 
-        MatrixType plus(MatrixType M, double d);
+        Matrix plus(Matrix M, double d);
 
-        MatrixType minus(MatrixType M, double d);
+        Matrix minus(Matrix M, double d);
 
-        MatrixType times(MatrixType M, double d);
+        Matrix times(Matrix M, double d);
 
-        MatrixType inv(MatrixType M);
+        Matrix inv(Matrix M);
 
-        MatrixType transpose(MatrixType M);
+        Matrix transpose(Matrix M);
 
-        MatrixType XXt(MatrixType X);
+        Matrix XXt(Matrix X);
 
-        MatrixType XtX(MatrixType X);
+        Matrix XtX(Matrix X);
     }
 
 }

@@ -7,9 +7,9 @@ package jdplus.math.matrices.decomposition;
 
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.matrices.LowerTriangularMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * Computes for a given symmetric matrix X a LDL decomposition, which is defined
@@ -21,9 +21,9 @@ import jdplus.math.matrices.Matrix;
  */
 public class LDLDecomposition {
 
-    private Matrix M;
+    private FastMatrix M;
 
-    public void decompose(Matrix S, double zero) {
+    public void decompose(FastMatrix S, double zero) {
         M = S.deepClone();
         double[] data = M.getStorage();
         int n = M.getRowsCount(), cinc = M.getColumnIncrement(), dinc = 1 + cinc;
@@ -74,14 +74,14 @@ public class LDLDecomposition {
         LowerTriangularMatrix.toLower(M);
     }
 
-    public Matrix L() {
-        Matrix L = M.deepClone();
+    public FastMatrix L() {
+        FastMatrix L = M.deepClone();
         L.diagonal().set(1);
         return L;
     }
 
-    public Matrix D() {
-        return Matrix.diagonal(M.diagonal());
+    public FastMatrix D() {
+        return FastMatrix.diagonal(M.diagonal());
     }
 
     public DoubleSeq diagonal() {

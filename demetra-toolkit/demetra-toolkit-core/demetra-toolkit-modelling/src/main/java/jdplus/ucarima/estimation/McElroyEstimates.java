@@ -31,15 +31,13 @@ import jdplus.ucarima.UcarimaModel;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 import jdplus.math.matrices.GeneralMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 
 /**
  * Estimation of the components of an UCARIMA model using the formulae proposed by McElroy.
  * <br><i>See McElroy T.S.(2008), Matrix formulae for non stationary ARIMA Signal Extraction, 
- * <a href="http://www.census.gov/ts/papers/matform3.pdf"> http://www.census.gov/ts/papers/matform3.pdf</a></i>
- *
- * @author Jean Palate
+ <a href="http://www.census.gov/ts/papers/matform3.pdf"> http://www.census.gov/ts/papers/matform3.pdf
  */
 @Development(status = Development.Status.Alpha)
 public class McElroyEstimates {
@@ -48,7 +46,7 @@ public class McElroyEstimates {
     private double[] data_;
     // (LL')=M
     // M^-1 * K'K =F
-    private Matrix[] M_, F_, L_, K_, D_;
+    private FastMatrix[] M_, F_, L_, K_, D_;
     private double[][] cmps_, fcmps_;
     private int nf_;
     private ArmaFilter[] filters_;
@@ -127,7 +125,7 @@ public class McElroyEstimates {
 
     public double[] stdevForecasts(int cmp) {
         fcalc(cmp);
-        Matrix m = D_[cmp];
+        FastMatrix m = D_[cmp];
         DataBlock var = m.diagonal();
         double[] e = new double[var.length()];
         var.copyTo(e, 0);
@@ -138,7 +136,7 @@ public class McElroyEstimates {
     }
 
     public double[] stdevEstimates(final int cmp) {
-        Matrix m = M(cmp);
+        FastMatrix m = M(cmp);
         DataBlock var = m.diagonal();
         double[] e = new double[var.length()];
         var.copyTo(e, 0);
@@ -148,17 +146,17 @@ public class McElroyEstimates {
         return e;
     }
 
-    public Matrix M(final int cmp) {
+    public FastMatrix M(final int cmp) {
         calc(cmp);
         if (M_[cmp] == null) {
-            Matrix L = L_[cmp];
+            FastMatrix L = L_[cmp];
             if (L == null) {
                 return null;
             }
             // M = (L*L')^-1 or LL'M = I 
             // L X = I
             // X = L' M or M L = X'
-            Matrix I = Matrix.identity(L.getColumnsCount());
+            FastMatrix I = FastMatrix.identity(L.getColumnsCount());
             LowerTriangularMatrix.solveXL(L, I);
             LowerTriangularMatrix.solveLX(L, I);
             M_[cmp] = I;
@@ -166,18 +164,18 @@ public class McElroyEstimates {
         return M_[cmp];
     }
 
-    public Matrix F(final int cmp) {
+    public FastMatrix F(final int cmp) {
         calc(cmp);
         if (F_[cmp] == null) {
-            Matrix L = L_[cmp];
-            Matrix K = K_[cmp];
+            FastMatrix L = L_[cmp];
+            FastMatrix K = K_[cmp];
             if (L == null || K == null) {
                 return null;
             }
             // F = (LL')^-1 * K'K = L'^-1*L^-1*K'K
 
             // compute K'K
-            Matrix KK = SymmetricMatrix.XtX(K);
+            FastMatrix KK = SymmetricMatrix.XtX(K);
             // compute X=L^-1*K'K
             // LX = K'K 
             LowerTriangularMatrix.solveLX(L, KK);
@@ -196,10 +194,10 @@ public class McElroyEstimates {
         }
         if (M_ == null) {
             int ncmps = ucm_.getComponentsCount();
-            K_ = new Matrix[ncmps];
-            L_ = new Matrix[ncmps];
-            M_ = new Matrix[ncmps];
-            F_ = new Matrix[ncmps];
+            K_ = new FastMatrix[ncmps];
+            L_ = new FastMatrix[ncmps];
+            M_ = new FastMatrix[ncmps];
+            F_ = new FastMatrix[ncmps];
             cmps_ = new double[ncmps][];
             filters_ = new ArmaFilter[ncmps + 1];
         } else if (cmps_[cmp] != null) {
@@ -220,8 +218,8 @@ public class McElroyEstimates {
         Polynomial ds = stS.getUnitRoots().asPolynomial();
         Polynomial dn = stN.getUnitRoots().asPolynomial();
 
-        Matrix DS = Matrix.make(n - ds.degree(), n);
-        Matrix DN = Matrix.make(n - dn.degree(), n);
+        FastMatrix DS = FastMatrix.make(n - ds.degree(), n);
+        FastMatrix DN = FastMatrix.make(n - dn.degree(), n);
 
         double[] c = ds.toArray();
         for (int j = 0; j < c.length; ++j) {
@@ -240,7 +238,7 @@ public class McElroyEstimates {
         AnsleyFilter N = new AnsleyFilter();
         N.prepare(stN.getStationaryModel(), n - dn.degree());
 
-        Matrix Q = Matrix.make(n, 2 * n - ds.degree() - dn.degree());
+        FastMatrix Q = FastMatrix.make(n, 2 * n - ds.degree() - dn.degree());
         for (int i = 0; i < n; ++i) {
             S.apply(DS.column(i), Q.row(n - i - 1).range(0, n - ds.degree()));
         }
@@ -260,7 +258,7 @@ public class McElroyEstimates {
         }
         // triangularize by means of Givens rotations
         ElementaryTransformations.fastGivensTriangularize(Q);
-        Matrix L = Q.extract(0, n, 0, n).deepClone();
+        FastMatrix L = Q.extract(0, n, 0, n).deepClone();
         LowerTriangularMatrix.solveLx(L, DataBlock.of(z));
         LowerTriangularMatrix.solvexL(L, DataBlock.of(z));
         L_[cmp] = L;
@@ -286,7 +284,7 @@ public class McElroyEstimates {
         }
         if (fcmps_ == null) {
             fcmps_ = new double[ncmps + 1][];
-            D_ = new Matrix[ncmps + 1];
+            D_ = new FastMatrix[ncmps + 1];
         } else if (fcmps_[cmp] != null) {
             return;
         }
@@ -309,7 +307,7 @@ public class McElroyEstimates {
 
         Polynomial ds = stS.getUnitRoots().asPolynomial();
 
-        Matrix DS = Matrix.make(n - ds.degree(), n);
+        FastMatrix DS = FastMatrix.make(n - ds.degree(), n);
 
         double[] c = ds.toArray();
         for (int j = 0; j < c.length; ++j) {
@@ -317,29 +315,29 @@ public class McElroyEstimates {
             d.set(c[c.length - j - 1]);
         }
 
-        Matrix Q = Matrix.make(n - ds.degree(), n);
+        FastMatrix Q = FastMatrix.make(n - ds.degree(), n);
         for (int i = 0; i < n; ++i) {
             filters_[cmp].apply(DS.column(i), Q.column(i));
         }
-        Matrix U = Matrix.make(n - ds.degree(), nf_);
+        FastMatrix U = FastMatrix.make(n - ds.degree(), nf_);
         double[] acf = stS.getStationaryModel().getAutoCovarianceFunction().values(n - ds.degree() + nf_);
         for (int i = 0; i < nf_; ++i) {
             U.column(i).reverse().copyFrom(acf, i + 1);
         }
-        Matrix V = Matrix.make(nf_, n - ds.degree());
+        FastMatrix V = FastMatrix.make(nf_, n - ds.degree());
         for (int i = 0; i < nf_; ++i) {
             if (!U.column(i).allMatch(x->Math.abs(x)<1.e-6)) {
                 filters_[cmp].apply(U.column(i), V.row(i));
             }
         }
-        Matrix W = GeneralMatrix.AB(V, Q);
-        Matrix D;
+        FastMatrix W = GeneralMatrix.AB(V, Q);
+        FastMatrix D;
         if (ds.degree() > 0) {
-            D = Matrix.make(ds.degree() + nf_, n);
+            D = FastMatrix.make(ds.degree() + nf_, n);
 
             D.subDiagonal(n - ds.degree()).set(1);
             D.extract(ds.degree(), D.getRowsCount(), 0, n).copy(W);
-            Matrix S = Matrix.make(ds.degree() + nf_, ds.degree() + nf_);
+            FastMatrix S = FastMatrix.make(ds.degree() + nf_, ds.degree() + nf_);
             S.diagonal().set(1);
             for (int i = 1; i <= ds.degree(); ++i) {
                 S.subDiagonal(-i).drop(ds.degree() - i, 0).set(ds.get(i));
@@ -353,7 +351,7 @@ public class McElroyEstimates {
         double[] data = fs ? data_ : getComponent(cmp);
         f.product(D.rowsIterator(), DataBlock.of(data));
         fcmps_[cmp] = f.getStorage();
-        Matrix G = SymmetricMatrix.XXt(V);
+        FastMatrix G = SymmetricMatrix.XXt(V);
         G.chs();
         G.diagonal().add(acf[0]);
         for (int i = 1; i < nf_; ++i) {
@@ -362,7 +360,7 @@ public class McElroyEstimates {
         }
 
         if (ds.degree() > 0) {
-            Matrix B = Matrix.square(nf_);
+            FastMatrix B = FastMatrix.square(nf_);
             RationalFunction rfe = RationalFunction.of(Polynomial.ONE, ds);
             double[] coeff = rfe.coefficients(nf_);
             for (int i = 0; i < nf_; ++i) {
@@ -371,7 +369,7 @@ public class McElroyEstimates {
             G = SymmetricMatrix.XSXt(G, B);
         }
         if (!fs) {
-            Matrix m = M(cmp);
+            FastMatrix m = M(cmp);
             m = SymmetricMatrix.XSXt(m, D);
             G.add(m);
         }

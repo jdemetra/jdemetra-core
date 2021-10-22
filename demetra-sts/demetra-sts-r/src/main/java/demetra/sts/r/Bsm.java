@@ -8,7 +8,6 @@ package demetra.sts.r;
 import demetra.data.DoubleSeq;
 import demetra.data.Parameter;
 import demetra.likelihood.ParametersEstimation;
-import demetra.math.matrices.MatrixType;
 import demetra.sts.BasicStructuralModel;
 import demetra.sts.BsmEstimation;
 import demetra.sts.BsmEstimationSpec;
@@ -28,7 +27,7 @@ import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.LengthOfPeriod;
 import demetra.timeseries.regression.UserVariable;
 import demetra.timeseries.regression.Variable;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.dk.DkToolkit;
@@ -40,6 +39,7 @@ import jdplus.sts.BsmData;
 import jdplus.sts.SsfBsm;
 import jdplus.sts.internal.BsmKernel;
 import jdplus.sts.internal.BsmMapping;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -48,7 +48,7 @@ import jdplus.sts.internal.BsmMapping;
 @lombok.experimental.UtilityClass
 public class Bsm {
 
-    public BasicStructuralModel process(TsData y, MatrixType X, int level, int slope, int cycle, int noise, String seasmodel, boolean diffuse, double tol) {
+    public BasicStructuralModel process(TsData y, Matrix X, int level, int slope, int cycle, int noise, String seasmodel, boolean diffuse, double tol) {
         SeasonalModel sm = seasmodel == null || seasmodel.equalsIgnoreCase("none") ? null : SeasonalModel.valueOf(seasmodel);
         BsmSpec mspec = BsmSpec.builder()
                 .level(of(level), of(slope))
@@ -121,7 +121,7 @@ public class Bsm {
         }
     }
 
-    public MatrixType forecast(TsData series, String model, int nf) {
+    public Matrix forecast(TsData series, String model, int nf) {
         int period=series.getAnnualFrequency();
         BsmSpec spec=BsmSpec.DEFAULT;
         if (period == 1){
@@ -131,7 +131,7 @@ public class Bsm {
             model="none";
         }
         double[] y = extend(series, nf);
-        Matrix X = variables(model, series.getDomain().extend(0, nf));
+        FastMatrix X = variables(model, series.getDomain().extend(0, nf));
 
         // estimate the model
         BsmEstimationSpec espec = BsmEstimationSpec.builder()
@@ -157,7 +157,7 @@ public class Bsm {
             double v = loading.ZVZ(j, frslts.P(j));
             fcasts[nf + i] = v <= 0 ? 0 : Math.sqrt(v);
         }
-        return MatrixType.of(fcasts, nf, 2);
+        return Matrix.of(fcasts, nf, 2);
     }
 
     private double[] extend(TsData series, int nf) {
@@ -208,7 +208,7 @@ public class Bsm {
         }
     }
 
-    private Matrix variables(String model, TsDomain domain) {
+    private FastMatrix variables(String model, TsDomain domain) {
         ITsVariable[] variables = variables(model);
         if (variables == null) {
             return null;

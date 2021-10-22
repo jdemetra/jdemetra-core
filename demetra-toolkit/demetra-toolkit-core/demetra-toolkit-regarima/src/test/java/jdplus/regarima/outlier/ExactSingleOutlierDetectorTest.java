@@ -23,7 +23,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.DayClustering;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.LowerTriangularMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.GenericTradingDaysFactory;
@@ -54,9 +54,9 @@ public class ExactSingleOutlierDetectorTest {
         A[14] *= 1.3;
         A[55] *= .7;
         DoubleSeq Y = DoubleSeq.of(A);
-        Matrix days = Matrix.make(A.length, 7);
+        FastMatrix days = FastMatrix.make(A.length, 7);
         GenericTradingDaysFactory.fillTdMatrix(TsPeriod.monthly(1967, 1), days);
-        Matrix td = GenericTradingDaysFactory.generateContrasts(DayClustering.TD3, days);
+        FastMatrix td = GenericTradingDaysFactory.generateContrasts(DayClustering.TD3, days);
 
         int[] length = new int[]{40, 60, 120, 180, 240, 300, 336};
         for (int l = 0; l < length.length; ++l) {
@@ -77,7 +77,7 @@ public class ExactSingleOutlierDetectorTest {
         }
     }
     
-    private static boolean forwardstep(SarimaModel model, DoubleSeq y, Matrix W) {
+    private static boolean forwardstep(SarimaModel model, DoubleSeq y, FastMatrix W) {
         
         ExactSingleOutlierDetector sod=new ExactSingleOutlierDetector(null, null, null);
         IOutlierFactory[] factories=new IOutlierFactory[]{AdditiveOutlierFactory.FACTORY,LevelShiftFactory.FACTORY_ZEROENDED, new PeriodicOutlierFactory(12, true)};

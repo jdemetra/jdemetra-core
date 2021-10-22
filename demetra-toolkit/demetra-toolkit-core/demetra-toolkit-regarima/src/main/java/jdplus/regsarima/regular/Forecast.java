@@ -17,7 +17,7 @@ import demetra.timeseries.regression.Variable;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import java.util.Arrays;
 import jdplus.dstats.LogNormal;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaForecasts;
 
@@ -73,7 +73,7 @@ public class Forecast {
             } else {
                 Variable[] variables = model.getDescription().getVariables();
                 TsDomain xdom = edom.extend(0, nf);
-                Matrix matrix = Regression.matrix(xdom, Arrays.stream(variables).map(v -> v.getCore()).toArray(n -> new ITsVariable[n]));
+                FastMatrix matrix = Regression.matrix(xdom, Arrays.stream(variables).map(v -> v.getCore()).toArray(n -> new ITsVariable[n]));
                 fcasts = RegArimaForecasts.calcForecast(model.arima(),
                         model.getEstimation().originalY(), matrix,
                         b, model.getEstimation().getCoefficientsCovariance(), sig2);

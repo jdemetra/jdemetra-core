@@ -26,7 +26,7 @@ import demetra.stats.TestType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixFactory;
 import jdplus.stats.tests.TestsUtility;
 
@@ -38,16 +38,16 @@ import jdplus.stats.tests.TestsUtility;
 public class JointTest {
 
     private final DoubleSeq b;
-    private final Matrix bvar;
+    private final FastMatrix bvar;
     private final double rss;
     private final int n;
     private int hyperParameters;
-    private Matrix R;
+    private FastMatrix R;
     private DoubleSeq alpha;
     private int[] coef;
     private boolean blue = true, deterministicRegressors = true;
 
-    public JointTest(final DoubleSeq coefficients, final Matrix unscaledVariance, final double rss, final int n) {
+    public JointTest(final DoubleSeq coefficients, final FastMatrix unscaledVariance, final double rss, final int n) {
         this.b = coefficients;
         this.bvar = unscaledVariance;
         this.rss = rss;
@@ -56,7 +56,7 @@ public class JointTest {
 
     public JointTest(final ConcentratedLikelihoodWithMissing ll) {
         this.b = ll.coefficients();
-        this.bvar = Matrix.of(ll.unscaledCovariance());
+        this.bvar = FastMatrix.of(ll.unscaledCovariance());
         this.rss = ll.ssq();
         this.n = ll.dim();
     }
@@ -80,7 +80,7 @@ public class JointTest {
         return this;
     }
 
-    public JointTest constraints(@NonNull Matrix R, @NonNull DoubleSeq alpha) {
+    public JointTest constraints(@NonNull FastMatrix R, @NonNull DoubleSeq alpha) {
         if (R.getRowsCount() != alpha.length()) {
             throw new IllegalArgumentException();
         }
@@ -113,7 +113,7 @@ public class JointTest {
     public StatisticalTest build() {
         final double f;
         DataBlock rb = rb();
-        Matrix rwr = rwr();
+        FastMatrix rwr = rwr();
         int nx = rb.length(), df = df();
         SymmetricMatrix.lcholesky(rwr);
         LowerTriangularMatrix.solveLx(rwr, rb);
@@ -122,7 +122,7 @@ public class JointTest {
         return TestsUtility.testOf(f, fdist, TestType.Upper);
     }
 
-    private Matrix rwr() {
+    private FastMatrix rwr() {
         if (coef != null) {
             return MatrixFactory.select(bvar, coef, coef);
         } else if (R != null){

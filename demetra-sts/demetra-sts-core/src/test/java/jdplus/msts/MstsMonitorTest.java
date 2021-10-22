@@ -9,7 +9,7 @@ import demetra.data.Data;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateStorage;
 import jdplus.ssf.dk.DkToolkit;
@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.junit.Test;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -40,9 +40,9 @@ public class MstsMonitorTest {
     public void testSimple() throws URISyntaxException, IOException {
 
         File file = Data.copyToTempFile(MultivariateCompositeSsf.class.getResource("/bematrix.txt"));
-        MatrixType data = MatrixSerializer.read(file, "\t|,");
+        Matrix data = MatrixSerializer.read(file, "\t|,");
 
-        Matrix D = Matrix.make(data.getRowsCount(), 4);
+        FastMatrix D = FastMatrix.make(data.getRowsCount(), 4);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));
@@ -73,9 +73,9 @@ public class MstsMonitorTest {
     public void testSimpleX() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
-        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
+        Matrix data = MatrixSerializer.read(new File(uri), "\t|,");
 
-        Matrix D = Matrix.make(data.getRowsCount(), 6);
+        FastMatrix D = FastMatrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));
@@ -112,9 +112,9 @@ public class MstsMonitorTest {
     public void testSimpleX2() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
-        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
+        Matrix data = MatrixSerializer.read(new File(uri), "\t|,");
 
-        Matrix D = Matrix.make(data.getRowsCount(), 6);
+        FastMatrix D = FastMatrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));
@@ -151,9 +151,9 @@ public class MstsMonitorTest {
     public void testSimpleXbis() throws URISyntaxException, IOException {
 
         URI uri = MultivariateCompositeSsf.class.getResource("/bematrix.txt").toURI();
-        MatrixType data = MatrixSerializer.read(new File(uri), "\t|,");
+        Matrix data = MatrixSerializer.read(new File(uri), "\t|,");
 
-        Matrix D = Matrix.make(data.getRowsCount(), 6);
+        FastMatrix D = FastMatrix.make(data.getRowsCount(), 6);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));

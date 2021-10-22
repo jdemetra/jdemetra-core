@@ -24,7 +24,6 @@ import demetra.data.Parameter;
 import demetra.information.Explorable;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
-import demetra.math.matrices.MatrixType;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.processing.ProcessingLog;
 import demetra.stats.ProbabilityType;
@@ -49,7 +48,7 @@ import jdplus.data.DataBlockIterator;
 import jdplus.dstats.T;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
@@ -58,6 +57,7 @@ import jdplus.regarima.ami.ModellingUtility;
 import jdplus.sarima.SarimaModel;
 import jdplus.stats.tests.NiidTests;
 import jdplus.timeseries.simplets.Transformations;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -142,7 +142,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
         LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = estimation.getMax();
         ParametersEstimation pestim;
         if (max == null) {
-            pestim = new ParametersEstimation(Doubles.EMPTY, Matrix.EMPTY, Doubles.EMPTY, null);
+            pestim = new ParametersEstimation(Doubles.EMPTY, FastMatrix.EMPTY, Doubles.EMPTY, null);
         } else {
             pestim = new ParametersEstimation(max.getParameters(), max.asymptoticCovariance(), max.getScore(), "sarima (true signs)");
         }
@@ -269,7 +269,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
 
     public RegArimaModel<SarimaModel> regarima() {
 
-        MatrixType X = estimation.getX();
+        Matrix X = estimation.getX();
         boolean mean = isMeanEstimation();
 
         RegArimaModel.Builder builder = RegArimaModel.<SarimaModel>builder()
@@ -335,7 +335,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
                 int nfree = cur.freeCoefficientsCount();
                 if (nfree > 0) {
                     if (test.test(cur)) {
-                        Matrix m = Regression.matrix(domain, cur.getCore());
+                        FastMatrix m = Regression.matrix(domain, cur.getCore());
                         int ic = 0;
                         DataBlockIterator cols = m.columnsIterator();
                         while (cols.hasNext()) {
@@ -370,7 +370,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
                 int nfree = cur.freeCoefficientsCount();
                 if (cur.dim() > nfree) {
                     if (test.test(cur)) {
-                        Matrix m = Regression.matrix(domain, cur.getCore());
+                        FastMatrix m = Regression.matrix(domain, cur.getCore());
                         int ic = 0;
                         DataBlockIterator cols = m.columnsIterator();
                         while (cols.hasNext()) {
@@ -403,7 +403,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorabl
             for (int i = 0; i < variables.length; ++i) {
                 Variable cur = variables[i];
                 if (test.test(cur)) {
-                    Matrix m = Regression.matrix(domain, cur.getCore());
+                    FastMatrix m = Regression.matrix(domain, cur.getCore());
                     int ic = 0;
                     DataBlockIterator cols = m.columnsIterator();
                     while (cols.hasNext()) {

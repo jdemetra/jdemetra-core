@@ -13,7 +13,7 @@ import demetra.highfreq.SeriesComponent;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 import java.util.List;
 import nbbrd.service.ServiceProvider;
 
@@ -79,7 +79,7 @@ public class FractionalAirlineDecompositionExtractor extends InformationMapping<
 
     public FractionalAirlineDecompositionExtractor() {
         delegate(LL, LikelihoodStatistics.class, r -> r.getLikelihood());
-        set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
+        set(PCOV, Matrix.class, source -> source.getParametersCovariance());
         set(PARAMETERS, double[].class, source -> source.getParameters().toArray());
         set(SCORE, double[].class, source -> source.getScore().toArray());
         set(Y, double[].class, source -> source.getY().toArray());

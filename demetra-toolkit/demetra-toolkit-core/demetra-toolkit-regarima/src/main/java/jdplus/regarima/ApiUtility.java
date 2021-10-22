@@ -20,7 +20,6 @@ import demetra.data.DoubleSeq;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
 import nbbrd.design.Development;
-import demetra.math.matrices.MatrixType;
 import demetra.modelling.DeprecatedLinearModel;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import java.util.List;
@@ -31,6 +30,7 @@ import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sarima.SarimaModel;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -48,7 +48,7 @@ public class ApiUtility {
 //            y[missing[i]] = Double.NaN;
 //        }
 //
-//        MatrixType X;
+//        Matrix X;
 //        List<DoubleSeq> x = model.getX();
 //        if (x.isEmpty()) {
 //            X = null;
@@ -59,7 +59,7 @@ public class ApiUtility {
 //                xcur.copyTo(all, pos);
 //                pos += y.length;
 //            }
-//            X = MatrixType.of(all, y.length, x.size());
+//            X = Matrix.of(all, y.length, x.size());
 //        }
 //
 //        ConcentratedLikelihoodWithMissing ll = regarima.getConcentratedLikelihood();
@@ -74,7 +74,7 @@ public class ApiUtility {
 //
 //        T t = new T(ll.degreesOfFreedom() - nhp);
 //        DoubleSeq b = ll.coefficients();
-//        MatrixType cov = ll.covariance(nhp, true).unmodifiable();
+//        Matrix cov = ll.covariance(nhp, true).unmodifiable();
 //        ParametersEstimation all = new ParametersEstimation(b, cov, null, null);
 //
 //        MissingValueEstimation[] me = null;

@@ -13,7 +13,7 @@ import jdplus.math.polynomials.UnitRoots;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesInterval;
 
 /**
@@ -103,7 +103,7 @@ class SOFactory implements RegressionVariableFactory<PeriodicOutlier> {
     }
 
     @Override
-    public boolean fill(PeriodicOutlier var, TsPeriod start, Matrix buffer) {
+    public boolean fill(PeriodicOutlier var, TsPeriod start, FastMatrix buffer) {
         int period = var.getPeriod();
         if (period == 0) {
             period = start.getUnit().getAnnualFrequency();
@@ -116,7 +116,7 @@ class SOFactory implements RegressionVariableFactory<PeriodicOutlier> {
     }
 
     @Override
-    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>> boolean fill(PeriodicOutlier var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>> boolean fill(PeriodicOutlier var, D domain, FastMatrix buffer) {
         throw new UnsupportedOperationException("Not supported.");
     }
 

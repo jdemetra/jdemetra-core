@@ -6,13 +6,13 @@
 package demetra.sts.r;
 
 import demetra.data.Data;
-import demetra.math.matrices.MatrixType;
 import demetra.modelling.r.Variables;
 import demetra.sts.BasicStructuralModel;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import static org.junit.Assert.*;
 import org.junit.Test;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -26,7 +26,7 @@ public class BsmTest {
     @Test
     public void testForecasts() {
         TsData s = TsData.ofInternal(TsPeriod.monthly(1992,1), Data.RETAIL_BOOKSTORES);
-        MatrixType fcast = Bsm.forecast(s, "none", 24);
+        Matrix fcast = Bsm.forecast(s, "none", 24);
 //        System.out.println(fcast.column(0));
 //        System.out.println(fcast.column(1));
         fcast = Bsm.forecast(s, "td2", 24);
@@ -46,7 +46,7 @@ public class BsmTest {
     @Test
     public void testYearly() {
         TsData s = TsData.ofInternal(TsPeriod.yearly(1992), Data.RETAIL_BOOKSTORES);
-        MatrixType fcast = Bsm.forecast(s, "full", 24);
+        Matrix fcast = Bsm.forecast(s, "full", 24);
         assertTrue(fcast.getRowsCount() == 24);
 //        System.out.println(fcast.column(0));
 //        System.out.println(fcast.column(1));
@@ -63,7 +63,7 @@ public class BsmTest {
     @Test
     public void testEstimationWithRegs() {
          TsData s = TsData.ofInternal(TsPeriod.monthly(1992,1), Data.RETAIL_BOOKSTORES);
-        MatrixType td = Variables.td(s.getDomain(), new int[]{1,1,1,1,2,3,0}, true);
+        Matrix td = Variables.td(s.getDomain(), new int[]{1,1,1,1,2,3,0}, true);
         BasicStructuralModel bsm = Bsm.process(s, td, 1, 1, -1, 1, "Trigonometric", false, 1e-12);
         byte[] bytes = Bsm.toBuffer(bsm);
         assertTrue(bytes != null);

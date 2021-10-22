@@ -24,7 +24,7 @@ import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
 import jdplus.data.DataBlock;
 import jdplus.dstats.F;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
 import jdplus.math.matrices.decomposition.HouseholderR;
@@ -99,8 +99,8 @@ public class Manova {
         qr.partialLeastSquares(y, b, res);
         double ssqerr = res.ssq();
         // initializing the results...
-        Matrix u = UpperTriangularMatrix.inverse(qr.r());
-        Matrix bvar = SymmetricMatrix.UUt(u);
+        FastMatrix u = UpperTriangularMatrix.inverse(qr.r());
+        FastMatrix bvar = SymmetricMatrix.UUt(u);
         return ConcentratedLikelihood.builder()
                 .ndata(n)
                 .ssqErr(ssqerr)

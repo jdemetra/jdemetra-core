@@ -20,19 +20,19 @@ import demetra.dstats.RandomNumberGenerator;
 @lombok.experimental.UtilityClass
 public class UpperTriangularMatrix {
 
-    public void randomize(Matrix M, RandomNumberGenerator rng) {
+    public void randomize(FastMatrix M, RandomNumberGenerator rng) {
         M.set((r, c) -> (r < c) ? 0 : rng.nextDouble());
     }
 
-    public int rank(Matrix U, double rcond) {
+    public int rank(FastMatrix U, double rcond) {
         return fastRank(U, rcond);
     }
 
-    public int fastRank(Matrix U, double rcond) {
+    public int fastRank(FastMatrix U, double rcond) {
         return U.diagonal().count(x -> Math.abs(x) > rcond);
     }
 
-    public int robustRank(Matrix U, double rcond) {
+    public int robustRank(FastMatrix U, double rcond) {
         DoubleSeqCursor.OnMutable cursor = U.diagonal().cursor();
         double smax = Math.abs(cursor.getAndNext()), smin = smax;
         if (smax == 0) {
@@ -76,11 +76,11 @@ public class UpperTriangularMatrix {
      * @param x
      * @param zero
      */
-    public void solveUx(Matrix U, DataBlock x, double zero) {
+    public void solveUx(FastMatrix U, DataBlock x, double zero) {
         solveUx(U, x.getStorage(), x.getStartPosition(), x.getIncrement(), zero);
     }
 
-    public void solveUx(Matrix U, DataBlock x) {
+    public void solveUx(FastMatrix U, DataBlock x) {
         solveUx(U, x.getStorage(), x.getStartPosition(), x.getIncrement(), 0);
     }
 
@@ -90,7 +90,7 @@ public class UpperTriangularMatrix {
      * @param U
      * @param x
      */
-    public void solvexU(Matrix U, DataBlock x) {
+    public void solvexU(FastMatrix U, DataBlock x) {
         solveUtx(U, x.getStorage(), x.getStartPosition(), x.getIncrement(), 0);
     }
 
@@ -101,7 +101,7 @@ public class UpperTriangularMatrix {
      * @param x
      * @param zero
      */
-    public void solvexU(Matrix U, DataBlock x, double zero) {
+    public void solvexU(FastMatrix U, DataBlock x, double zero) {
         solveUtx(U, x.getStorage(), x.getStartPosition(), x.getIncrement(), zero);
     }
 
@@ -112,7 +112,7 @@ public class UpperTriangularMatrix {
      * @param B
      * @throws MatrixException
      */
-    public void solveXU(final Matrix U, final Matrix B) throws MatrixException {
+    public void solveXU(final FastMatrix U, final FastMatrix B) throws MatrixException {
         solveXU(U, B, 0);
     }
 
@@ -125,7 +125,7 @@ public class UpperTriangularMatrix {
      * @param zero
      * @throws MatrixException
      */
-    public void solveXU(final Matrix U, final Matrix B, double zero) throws MatrixException {
+    public void solveXU(final FastMatrix U, final FastMatrix B, double zero) throws MatrixException {
         int nc = B.getColumnsCount();
         if (nc != U.getRowsCount()) {
             throw new MatrixException(MatrixException.DIM);
@@ -137,11 +137,11 @@ public class UpperTriangularMatrix {
         }
     }
 
-    public void solveUX(final Matrix U, final Matrix M) throws MatrixException {
+    public void solveUX(final FastMatrix U, final FastMatrix M) throws MatrixException {
         solveUX(U, M, 0);
     }
 
-    public void solveUX(final Matrix U, final Matrix M, double zero) throws MatrixException {
+    public void solveUX(final FastMatrix U, final FastMatrix M, double zero) throws MatrixException {
         int nr = M.getRowsCount(), nc = M.getColumnsCount();
         if (nr != U.getRowsCount()) {
             throw new MatrixException(MatrixException.DIM);
@@ -162,7 +162,7 @@ public class UpperTriangularMatrix {
      * @param zero
      * @throws MatrixException
      */
-    public void solveXUt(final Matrix U, final Matrix M, double zero) throws MatrixException {
+    public void solveXUt(final FastMatrix U, final FastMatrix M, double zero) throws MatrixException {
         int nr = M.getColumnsCount();
         if (nr != U.getRowsCount()) {
             throw new MatrixException(MatrixException.DIM);
@@ -180,7 +180,7 @@ public class UpperTriangularMatrix {
      * @param M
      * @throws MatrixException
      */
-    public void solveXUt(final Matrix U, final Matrix M) throws MatrixException {
+    public void solveXUt(final FastMatrix U, final FastMatrix M) throws MatrixException {
         solveXUt(U, M, 0);
     }
 
@@ -192,7 +192,7 @@ public class UpperTriangularMatrix {
      * @param zero
      * @throws MatrixException
      */
-    public void solveUtX(final Matrix U, final Matrix M, double zero) throws MatrixException {
+    public void solveUtX(final FastMatrix U, final FastMatrix M, double zero) throws MatrixException {
         int nr = M.getRowsCount();
         if (nr != U.getRowsCount()) {
             throw new MatrixException(MatrixException.DIM);
@@ -204,7 +204,7 @@ public class UpperTriangularMatrix {
         }
     }
 
-    public void solveUtX(final Matrix U, final Matrix M) throws MatrixException {
+    public void solveUtX(final FastMatrix U, final FastMatrix M) throws MatrixException {
         solveUtX(U, M, 0);
     }
 
@@ -214,7 +214,7 @@ public class UpperTriangularMatrix {
      * @param U
      * @param x
      */
-    public void Ux(Matrix U, DataBlock x) {
+    public void Ux(FastMatrix U, DataBlock x) {
         int incx = x.getIncrement();
         if (incx == 1) {
             Ux(U, x.getStorage(), x.getStartPosition());
@@ -229,7 +229,7 @@ public class UpperTriangularMatrix {
      * @param U
      * @param x
      */
-    public void xU(Matrix U, DataBlock x) {
+    public void xU(FastMatrix U, DataBlock x) {
         int incx = x.getIncrement();
         if (incx == 1) {
             Utx(U, x.getStorage(), x.getStartPosition());
@@ -244,7 +244,7 @@ public class UpperTriangularMatrix {
      * @param U
      * @param M
      */
-    public void UM(Matrix U, Matrix M) {
+    public void UM(FastMatrix U, FastMatrix M) {
         int mstart = M.getStartPosition(), mlda = M.getColumnIncrement(), n = M.getColumnsCount();
         double[] pm = M.getStorage();
         int cmax = mstart + mlda * n;
@@ -259,7 +259,7 @@ public class UpperTriangularMatrix {
      * @param U
      * @param M
      */
-    public void MU(Matrix U, Matrix M) {
+    public void MU(FastMatrix U, FastMatrix M) {
         int mstart = M.getStartPosition(), mlda = M.getColumnIncrement(), m = M.getRowsCount();
         double[] pm = M.getStorage();
         int cmax = mstart + m;
@@ -274,7 +274,7 @@ public class UpperTriangularMatrix {
      * @param U
      * @param M
      */
-    public void UtM(Matrix U, Matrix M) {
+    public void UtM(FastMatrix U, FastMatrix M) {
         DataBlockIterator cols = M.columnsIterator();
         while (cols.hasNext()) {
             DataBlock c = cols.next();
@@ -288,7 +288,7 @@ public class UpperTriangularMatrix {
      * @param U
      * @param M
      */
-    public void MUt(Matrix U, Matrix M) {
+    public void MUt(FastMatrix U, FastMatrix M) {
         DataBlockIterator rows = M.rowsIterator();
         while (rows.hasNext()) {
             DataBlock r = rows.next();
@@ -296,7 +296,7 @@ public class UpperTriangularMatrix {
         }
     }
 
-    private void Ux(Matrix U, double[] px, int startx) {
+    private void Ux(FastMatrix U, double[] px, int startx) {
         int n = U.getColumnsCount(), lda = U.getColumnIncrement(), start = U.getStartPosition();
         double[] pu = U.getStorage();
         int xend = startx + n;
@@ -312,7 +312,7 @@ public class UpperTriangularMatrix {
         }
     }
 
-    private void Ux(Matrix U, double[] px, int startx, int incx) {
+    private void Ux(FastMatrix U, double[] px, int startx, int incx) {
         int n = U.getColumnsCount(), lda = U.getColumnIncrement(), start = U.getStartPosition();
         double[] pu = U.getStorage();
         int xend = startx + n * incx;
@@ -328,7 +328,7 @@ public class UpperTriangularMatrix {
         }
     }
 
-    private void Utx(Matrix U, double[] px, int startx) {
+    private void Utx(FastMatrix U, double[] px, int startx) {
         int n = U.getColumnsCount(), lda = U.getColumnIncrement(), start = U.getStartPosition();
         double[] pu = U.getStorage();
         int xend = startx + n - 1, uend = start + (n - 1) * (lda + 1);
@@ -341,7 +341,7 @@ public class UpperTriangularMatrix {
         }
     }
 
-    private void Utx(Matrix U, double[] px, int startx, int incx) {
+    private void Utx(FastMatrix U, double[] px, int startx, int incx) {
         int n = U.getColumnsCount(), lda = U.getColumnIncrement(), start = U.getStartPosition();
         double[] pu = U.getStorage();
         int xend = startx + n * incx, uend = start + (n - 1) * (lda + 1);
@@ -358,7 +358,7 @@ public class UpperTriangularMatrix {
         }
     }
 
-    public void solveUtx(Matrix U, double[] px, int startx, int incx, double zero) {
+    public void solveUtx(FastMatrix U, double[] px, int startx, int incx, double zero) {
         int n = U.getColumnsCount(), lda = U.getColumnIncrement(), start = U.getStartPosition();
         double[] pu = U.getStorage();
         if (incx == 1) {
@@ -402,7 +402,7 @@ public class UpperTriangularMatrix {
         }
     }
 
-    public void solveUx(Matrix U, double[] px, int startx, int incx, double zero) {
+    public void solveUx(FastMatrix U, double[] px, int startx, int incx, double zero) {
         int n = U.getColumnsCount(), lda = U.getColumnIncrement(), start = U.getStartPosition();
         double[] pu = U.getStorage();
         if (incx == 1) {
@@ -453,7 +453,7 @@ public class UpperTriangularMatrix {
      *
      * @param M
      */
-    public void toUpper(Matrix M) {
+    public void toUpper(FastMatrix M) {
         int m = M.getRowsCount(), n = M.getColumnsCount();
         if (m != n) {
             throw new MatrixException(MatrixException.SQUARE);
@@ -479,7 +479,7 @@ public class UpperTriangularMatrix {
      * @throws MatrixException when the matrix is non invertible (some elements
      * of the diagonal are 0).
      */
-    public Matrix inverse(final Matrix U) throws MatrixException {
+    public FastMatrix inverse(final FastMatrix U) throws MatrixException {
         if (U.diagonal().anyMatch(x -> x == 0)) {
             throw new MatrixException(MatrixException.SINGULAR);
         }
@@ -488,16 +488,16 @@ public class UpperTriangularMatrix {
             throw new MatrixException(MatrixException.SQUARE);
         }
 
-        Matrix IU = Matrix.identity(n);
+        FastMatrix IU = FastMatrix.identity(n);
         solveUX(U, IU);
         return IU;
     }
 
-    public LogSign logDeterminant(Matrix U) {
+    public LogSign logDeterminant(FastMatrix U) {
         return LogSign.of(U.diagonal());
     }
 
-    public double determinant(Matrix U) {
+    public double determinant(FastMatrix U) {
         LogSign ls = logDeterminant(U);
         if (ls == null) {
             return 0;

@@ -9,7 +9,7 @@ import demetra.highfreq.FractionalAirlineEstimation;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 import demetra.modelling.OutlierDescriptor;
 import nbbrd.service.ServiceProvider;
 
@@ -30,12 +30,12 @@ public class FractionalAirlineEstimationExtractor extends InformationMapping<Fra
 
     public FractionalAirlineEstimationExtractor() {
         delegate(LL, LikelihoodStatistics.class, r -> r.getLikelihood());
-        set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
+        set(PCOV, Matrix.class, source -> source.getParametersCovariance());
         set(PARAMETERS, double[].class, source -> source.getParameters().toArray());
         set(SCORE, double[].class, source -> source.getScore().toArray());
         set(B, double[].class, source -> source.getCoefficients().toArray());
         set(T, double[].class, source -> source.tstats());
-        set(BVAR, MatrixType.class, source -> source.getCoefficientsCovariance());
+        set(BVAR, Matrix.class, source -> source.getCoefficientsCovariance());
         set(OUTLIERS, String[].class, source -> {
             OutlierDescriptor[] o = source.getOutliers();
             if (o == null) {
@@ -47,7 +47,7 @@ public class FractionalAirlineEstimationExtractor extends InformationMapping<Fra
             }
             return no;
         });
-        set(REGRESSORS, MatrixType.class, source -> source.getX());
+        set(REGRESSORS, Matrix.class, source -> source.getX());
         set(LIN, double[].class, source -> source.linearized());
         set(Y, double[].class, source -> source.getY());
         set(BNAMES, String[].class, source -> {

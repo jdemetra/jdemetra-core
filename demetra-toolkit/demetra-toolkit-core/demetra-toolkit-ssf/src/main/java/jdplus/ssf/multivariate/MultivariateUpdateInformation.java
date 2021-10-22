@@ -22,7 +22,7 @@ import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.State;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -40,12 +40,12 @@ public class MultivariateUpdateInformation {
      * =(ZPZ'+H)^1/2 Cholesky factor of the variance/covariance matrix of the
      * prediction errors (lower triangular). nvars x nvars
      */
-    private final Matrix R;
+    private final FastMatrix R;
 
     /**
      * K = P Z' L'^-1 dim x nvars
      */
-    private final Matrix K;
+    private final FastMatrix K;
 
     /**
      *
@@ -54,31 +54,31 @@ public class MultivariateUpdateInformation {
      */
     public MultivariateUpdateInformation(final int dim, final int nvars) {
         U = DataBlock.make(nvars);
-        R = Matrix.square(nvars);
-        K = Matrix.make(dim, nvars);
+        R = FastMatrix.square(nvars);
+        K = FastMatrix.make(dim, nvars);
     }
 
     public DataBlock getTransformedPredictionErrors() {
         return U;
     }
 
-    public Matrix getPredictionErrorCovariance() {
+    public FastMatrix getPredictionErrorCovariance() {
         if (R.getRowsCount() == 1) {
             double l = R.get(0, 0);
-            return new Matrix(new double[]{l * l}, 1, 1);
+            return new FastMatrix(new double[]{l * l}, 1, 1);
         } else {
             return SymmetricMatrix.LLt(R);
         }
     }
 
-    public Matrix getCholeskyFactor() {
+    public FastMatrix getCholeskyFactor() {
         return R;
     }
 
     /**
      * @return the K
      */
-    public Matrix getK() {
+    public FastMatrix getK() {
         return K;
     }
 
@@ -121,7 +121,7 @@ public class MultivariateUpdateInformation {
      * @param M
      * @param zm
      */
-    protected void ZM(int t, ISsfMeasurements measurements, int[] equations, Matrix M, Matrix zm) {
+    protected void ZM(int t, ISsfMeasurements measurements, int[] equations, FastMatrix M, FastMatrix zm) {
         DataBlockIterator zrows = zm.rowsIterator();
         if (equations == null) {
             int eq = 0;
@@ -136,7 +136,7 @@ public class MultivariateUpdateInformation {
         }
     }
 
-    protected void MZt(int t, ISsfMeasurements measurements, int[] equations, Matrix M, Matrix zm) {
+    protected void MZt(int t, ISsfMeasurements measurements, int[] equations, FastMatrix M, FastMatrix zm) {
         DataBlockIterator zcols = zm.columnsIterator();
         if (equations == null) {
             int eq = 0;
@@ -160,14 +160,14 @@ public class MultivariateUpdateInformation {
      * to null.
      * @param P The covariance matrix of the prediction errors
      */
-    private void addH(int t, ISsfErrors errors, int[] equations, Matrix P) {
+    private void addH(int t, ISsfErrors errors, int[] equations, FastMatrix P) {
         if (errors == null) {
             return;
         }
         if (equations == null) {
             errors.addH(t, P);
         } else {
-            Matrix H = Matrix.square(P.getColumnsCount());
+            FastMatrix H = FastMatrix.square(P.getColumnsCount());
             errors.H(t, H);
             for (int i = 0; i < equations.length; ++i) {
                 for (int j = 0; j < i; ++j) {

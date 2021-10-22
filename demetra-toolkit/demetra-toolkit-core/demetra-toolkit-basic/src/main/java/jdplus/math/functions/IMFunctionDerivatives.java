@@ -18,7 +18,7 @@
 package jdplus.math.functions;
 
 import nbbrd.design.Development;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 
 /**
@@ -45,5 +45,5 @@ public interface IMFunctionDerivatives {
      * J(i, j)=partialDerivatives(i,j)
      * @param jacobian
      */
-    void getJacobian(Matrix jacobian);
+    void getJacobian(FastMatrix jacobian);
 }

@@ -19,7 +19,7 @@ package jdplus.ssf;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.QuadraticForm;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -65,7 +65,7 @@ public class StateStorage implements IStateResults {
         }
     }
 
-    public void save(final int t, final DataBlock a, final Matrix p) {
+    public void save(final int t, final DataBlock a, final FastMatrix p) {
         if (info != this.info) {
             return;
         }
@@ -103,7 +103,7 @@ public class StateStorage implements IStateResults {
         return A.datablock(pos);
     }
 
-    public Matrix P(int pos) {
+    public FastMatrix P(int pos) {
         return P == null ? null : P.matrix(pos);
     }
 

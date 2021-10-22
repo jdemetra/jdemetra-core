@@ -17,7 +17,7 @@
 package demetra.math.functions;
 
 import nbbrd.design.Development;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 
 /**
  * TODO: rename this class
@@ -42,5 +42,5 @@ public class ObjectiveFunctionPoint {
     /**
      * Hessian of the function at the given point (=d2f(x)/dxi*dxj)
      */
-    private MatrixType hessian;
+    private Matrix hessian;
 }

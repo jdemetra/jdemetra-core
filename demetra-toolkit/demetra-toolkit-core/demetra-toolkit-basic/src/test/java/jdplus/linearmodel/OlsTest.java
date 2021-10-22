@@ -21,7 +21,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
 import jdplus.math.matrices.GeneralMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixNorms;
 
 /**
@@ -54,7 +54,7 @@ public class OlsTest {
         assertEquals(Math.abs(rslts.Ttest(0).getValue()), Math.sqrt(rslts.Ftest(0, 1).getValue()), 1e-9);
         assertEquals(rslts.Ftest().getValue(), rslts.Ftest(1, model.getVariablesCount() - 1).getValue(), 1e-9);
         assertEquals(rslts.Ftest().getValue(), DataSets.Longley.FTest, 1e-9);
-        Matrix P = rslts.projectionMatrix();
+        FastMatrix P = rslts.projectionMatrix();
         assertTrue(MatrixNorms.absNorm(P.minus(GeneralMatrix.AB(P, P))) < 1e-6);
     }
 

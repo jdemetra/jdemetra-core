@@ -21,7 +21,7 @@ import demetra.math.Constants;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import nbbrd.design.Development;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -38,11 +38,11 @@ final class InternalConcentratedLikelihood implements ConcentratedLikelihood {
     private final double ll, ssqerr, ldet;
     private final double[] res;
     private final double[] b;
-    private final Matrix bvar;
+    private final FastMatrix bvar;
     private final boolean scalingFactor;
 
     InternalConcentratedLikelihood(final int n, final double ssqerr, final double ldet, final double[] res,
-            final double[] b, final Matrix bvar, final boolean scalingFactor) {
+            final double[] b, final FastMatrix bvar, final boolean scalingFactor) {
         this.n = n;
         this.ldet = ldet;
         this.ssqerr = ssqerr;
@@ -115,9 +115,9 @@ final class InternalConcentratedLikelihood implements ConcentratedLikelihood {
 
     @Override
     @NonNull
-    public Matrix unscaledCovariance() {
+    public FastMatrix unscaledCovariance() {
         if (bvar == null) {
-            return Matrix.EMPTY;
+            return FastMatrix.EMPTY;
         } else {
             return bvar;
         }

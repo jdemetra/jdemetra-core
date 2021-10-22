@@ -22,7 +22,7 @@ import demetra.data.DoubleSeqCursor;
 import demetra.data.Iterables;
 import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 import demetra.modelling.OutlierDescriptor;
 import demetra.outliers.io.protobuf.OutliersProtos;
 import demetra.timeseries.TsData;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.IOutlierFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
@@ -88,12 +88,12 @@ public class TramoOutliersDetection {
         SarimaModel initialArima, finalArima;
 
         DoubleSeq y;
-        MatrixType x;
+        Matrix x;
         OutlierDescriptor[] outliers;
 
         double[] coefficients;
-        MatrixType coefficientsCovariance;
-        MatrixType regressors;
+        Matrix coefficientsCovariance;
+        Matrix regressors;
         DoubleSeq linearized;
         DoubleSeq residuals;
 
@@ -150,7 +150,7 @@ public class TramoOutliersDetection {
             MAPPING.delegate(LL1, LikelihoodStatistics.class, r -> r.getFinalLikelihood());
             MAPPING.set(B, double[].class, source -> source.getCoefficients());
             MAPPING.set(T, double[].class, source -> source.tstats());
-            MAPPING.set(BVAR, MatrixType.class, source -> source.getCoefficientsCovariance());
+            MAPPING.set(BVAR, Matrix.class, source -> source.getCoefficientsCovariance());
             MAPPING.set(BNAMES, String[].class, source -> {
                 int nx = source.getNx();
                 if (nx == 0) {
@@ -177,12 +177,12 @@ public class TramoOutliersDetection {
                 }
                 return names;
             });
-            MAPPING.set(REGRESSORS, MatrixType.class, source -> source.getRegressors());
+            MAPPING.set(REGRESSORS, Matrix.class, source -> source.getRegressors());
             MAPPING.set(LIN, double[].class, source -> source.getLinearized().toArray());
         }
     }
 
-    public Results process(TsData ts, int[] order, int[] seasonal, boolean mean, MatrixType x,
+    public Results process(TsData ts, int[] order, int[] seasonal, boolean mean, Matrix x,
             boolean bao, boolean bls, boolean btc, boolean bso, double cv, boolean ml) {
         TsData y = ts.cleanExtremities();
         if (x != null && ts.length() != y.length()) {
@@ -207,7 +207,7 @@ public class TramoOutliersDetection {
                 .arima(arima)
                 .meanCorrection(mean)
                 .y(y.getValues())
-                .addX(Matrix.of(x))
+                .addX(FastMatrix.of(x))
                 .build();
         RegArimaEstimation<SarimaModel> estimation0 = RegSarimaComputer.builder()
                 .build()

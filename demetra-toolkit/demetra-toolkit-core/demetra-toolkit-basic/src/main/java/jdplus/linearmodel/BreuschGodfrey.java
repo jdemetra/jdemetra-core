@@ -19,11 +19,11 @@ package jdplus.linearmodel;
 import demetra.data.DoubleSeq;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
-import demetra.math.matrices.MatrixType;
 import demetra.stats.StatisticalTest;
 import jdplus.dstats.Chi2;
 import demetra.stats.TestType;
 import jdplus.stats.tests.TestsUtility;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -55,7 +55,7 @@ public class BreuschGodfrey {
         if (!lsr.isMean()) {
             throw new IllegalArgumentException("lm should contain a mean correction");
         }
-        MatrixType X = lsr.X();
+        Matrix X = lsr.X();
         DoubleSeq u = lsr.residuals();
 
         // Be careful: X contains the mean correction

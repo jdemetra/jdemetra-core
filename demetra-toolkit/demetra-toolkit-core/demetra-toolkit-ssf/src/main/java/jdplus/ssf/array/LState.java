@@ -18,7 +18,7 @@ package jdplus.ssf.array;
 
 import jdplus.data.DataBlock;
 import nbbrd.design.Development;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 
 /**
@@ -41,7 +41,7 @@ public class LState {
     /**
      * L is the Cholesky factor of the covariance of the state vector (P(t|t-1)). 
      */
-    public final Matrix L;
+    public final FastMatrix L;
 
 
     /**
@@ -49,7 +49,7 @@ public class LState {
      *
      * @param dim
      */
-    public LState(final Matrix L) {
+    public LState(final FastMatrix L) {
         a = DataBlock.make(L.getRowsCount());
         this.L = L;
     }

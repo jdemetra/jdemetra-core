@@ -7,7 +7,6 @@ package jdplus.tramoseats.legacy;
 
 import demetra.data.DoubleSeq;
 import demetra.likelihood.ParametersEstimation;
-import demetra.math.matrices.MatrixType;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.LightweightLinearModel;
@@ -18,6 +17,7 @@ import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
 import java.util.List;
+import demetra.math.matrices.Matrix;
 
 
 /**
@@ -72,8 +72,8 @@ public class LegacyUtility {
 
     }
     
-    public MatrixType fromLegacy(ec.tstoolkit.maths.matrices.Matrix M){
-        return MatrixType.of(M.internalStorage(), M.getRowsCount(), M.getColumnsCount());
+    public Matrix fromLegacy(ec.tstoolkit.maths.matrices.Matrix M){
+        return Matrix.of(M.internalStorage(), M.getRowsCount(), M.getColumnsCount());
     }
 
     public DoubleSeq fromLegacy(ec.tstoolkit.data.IReadDataBlock v){

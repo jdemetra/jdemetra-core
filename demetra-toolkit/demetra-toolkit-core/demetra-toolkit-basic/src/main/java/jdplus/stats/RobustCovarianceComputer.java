@@ -23,7 +23,7 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.GeneralMatrix;
 
 /**
@@ -42,17 +42,17 @@ public class RobustCovarianceComputer {
      * @param truncationLag Truncation lag (excluded from the computation)
      * @return
      */
-    public Matrix covariance(Matrix x, WindowFunction winFunction, int truncationLag) {
+    public FastMatrix covariance(FastMatrix x, WindowFunction winFunction, int truncationLag) {
         DoubleUnaryOperator w = winFunction.window();
         int n = x.getRowsCount(), nx = x.getColumnsCount();
-        Matrix s = SymmetricMatrix.XtX(x);
+        FastMatrix s = SymmetricMatrix.XtX(x);
         s.mul(w.applyAsDouble(0));
         double q = 1+truncationLag;
         for (int l = 1; l <= truncationLag; ++l) {
             double wl = w.applyAsDouble(l / q);
-            Matrix m = x.extract(0, n - l, 0, nx);
-            Matrix ml = x.extract(l, n - l, 0, nx);
-            Matrix ol=GeneralMatrix.AtB(m, ml);
+            FastMatrix m = x.extract(0, n - l, 0, nx);
+            FastMatrix ml = x.extract(l, n - l, 0, nx);
+            FastMatrix ol=GeneralMatrix.AtB(m, ml);
             s.addAY(wl, ol);
             s.addAYt(wl, ol);
         }

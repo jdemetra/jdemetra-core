@@ -29,7 +29,7 @@ import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.LengthOfPeriod;
 import demetra.timeseries.regression.Variable;
 import java.util.Arrays;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.regsarima.RegSarimaComputer;
 import jdplus.regsarima.regular.ModelDescription;
@@ -67,7 +67,7 @@ public class RegArimaForecastsTest {
 
         TsDomain xdom = model.getEstimationDomain().extend(0, 24);
         Variable[] variables = rslt.getDescription().getVariables(); // could contain the trend const
-        Matrix matrix = Regression.matrix(xdom, Arrays.stream(variables).map(v -> v.getCore()).toArray(n -> new ITsVariable[n]));
+        FastMatrix matrix = Regression.matrix(xdom, Arrays.stream(variables).map(v -> v.getCore()).toArray(n -> new ITsVariable[n]));
 
         LikelihoodStatistics ll = rslt.getEstimation().getStatistics();
         double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount() + 1);

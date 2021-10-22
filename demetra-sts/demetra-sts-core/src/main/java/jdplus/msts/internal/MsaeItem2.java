@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.implementations.Loading;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -31,7 +31,7 @@ public class MsaeItem2 extends StateItem {
     private final int[] lar;
     private final ArInterpreter[] par;
 
-    public MsaeItem2(String name, double[] v, boolean fixedVar, MatrixType ar, boolean fixedar, int lag) {
+    public MsaeItem2(String name, double[] v, boolean fixedVar, Matrix ar, boolean fixedar, int lag) {
         super(name);
         int nwaves = v.length;
         this.lag = lag;

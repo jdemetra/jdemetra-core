@@ -20,7 +20,7 @@ import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.implementations.Loading;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
 
@@ -101,7 +101,7 @@ public class VarLocalLinearTrend {
         }
         
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
             b.diagonal().set(1);
         }
         
@@ -110,7 +110,7 @@ public class VarLocalLinearTrend {
         }
         
         @Override
-        public void Pf0(Matrix pf0) {
+        public void Pf0(FastMatrix pf0) {
 //            if (data.lv > 0) {
 //                pf0.set(0, 0, data.lv);
 //            }
@@ -120,7 +120,7 @@ public class VarLocalLinearTrend {
         }
         
         @Override
-        public void Pi0(Matrix pi0) {
+        public void Pi0(FastMatrix pi0) {
             pi0.diagonal().set(1);
         }
         
@@ -157,7 +157,7 @@ public class VarLocalLinearTrend {
         }
         
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             if (data.lscale > 0) {
                 qm.set(0, 0, data.lvar(pos));
             }
@@ -172,7 +172,7 @@ public class VarLocalLinearTrend {
         }
         
         @Override
-        public void S(int pos, Matrix s) {
+        public void S(int pos, FastMatrix s) {
             s.set(0, 0, data.lstd(pos));
             s.set(1, 1, data.sstd(pos));
         }
@@ -190,7 +190,7 @@ public class VarLocalLinearTrend {
         }
         
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             tr.set(0, 0, 1);
             tr.set(0, 1, 1);
             tr.set(1, 1, 1);
@@ -202,7 +202,7 @@ public class VarLocalLinearTrend {
         }
         
         @Override
-        public void TVT(int pos, Matrix vm) {
+        public void TVT(int pos, FastMatrix vm) {
             double v01 = vm.get(0, 1), v11 = vm.get(1, 1);
             vm.add(0, 0, 2 * v01 + v11);
             vm.add(0, 1, v11);
@@ -215,7 +215,7 @@ public class VarLocalLinearTrend {
         }
         
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             p.add(0, 0, data.lvar(pos));
             p.add(1, 1, data.svar(pos));
         }

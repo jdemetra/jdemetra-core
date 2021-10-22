@@ -6,10 +6,10 @@
 package jdplus.ml;
 
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -38,7 +38,7 @@ public class DBScanTest {
         for (int i = 100*m; i < 100*m+m; ++i) {
             data[i] = 3.3;
         }
-        MatrixType M = MatrixType.of(data, m, n);
+        Matrix M = Matrix.of(data, m, n);
         DistanceMeasure<DoubleSeq> d = (l, r) -> l.distance(r);
         DBScan scan = new DBScan(eps, npts, d);
         return scan.cluster(i -> M.column(i), M.getColumnsCount());

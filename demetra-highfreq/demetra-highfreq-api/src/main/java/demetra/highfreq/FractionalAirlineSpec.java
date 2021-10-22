@@ -5,7 +5,7 @@
  */
 package demetra.highfreq;
 
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -20,7 +20,7 @@ public class FractionalAirlineSpec {
     
     // regression variables
     private boolean meanCorrection;
-    private MatrixType X;
+    private Matrix X;
     
     // Periodic airline model
     private double[] periodicities;

@@ -24,7 +24,7 @@ import jdplus.math.functions.IFunctionPoint;
 import jdplus.math.functions.IParametersDomain;
 import jdplus.math.functions.ParamValidation;
 import jdplus.math.functions.bfgs.Bfgs;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.StateComponent;
@@ -423,7 +423,7 @@ class IInitialization implements ISsfInitialization {
     }
 
     @Override
-    public void diffuseConstraints(Matrix b) {
+    public void diffuseConstraints(FastMatrix b) {
         if (rho == 1) {
             b.diagonal().set(1);
         } else {
@@ -436,14 +436,14 @@ class IInitialization implements ISsfInitialization {
     }
 
     @Override
-    public void Pf0(Matrix pf0) {
+    public void Pf0(FastMatrix pf0) {
         if (rho != 1) {
             pf0.set(1, 1, 1 / (1 - rho * rho));
         }
     }
 
     @Override
-    public void Pi0(Matrix pi0) {
+    public void Pi0(FastMatrix pi0) {
         if (rho == 1) {
             pi0.diagonal().set(1);
         } else {
@@ -466,12 +466,12 @@ class IDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void V(int pos, Matrix qm) {
+    public void V(int pos, FastMatrix qm) {
         qm.set(1, 1, 1);
     }
 
     @Override
-    public void S(int pos, Matrix cm) {
+    public void S(int pos, FastMatrix cm) {
         cm.set(1, 0, 1);
     }
 
@@ -486,7 +486,7 @@ class IDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void T(int pos, Matrix tr) {
+    public void T(int pos, FastMatrix tr) {
         tr.set(0, 0, 1);
         tr.set(1, 1, rho);
     }
@@ -504,7 +504,7 @@ class IDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void addV(int pos, Matrix p) {
+    public void addV(int pos, FastMatrix p) {
         p.add(1, 1, 1);
     }
 

@@ -5,7 +5,7 @@
  */
 package jdplus.math.matrices.lapack;
 
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixTransformation;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -24,11 +24,11 @@ public class GEMMTest {
     }
 
     public static void main(String[] arg) {
-        Matrix C = Matrix.make(1000, 50);
+        FastMatrix C = FastMatrix.make(1000, 50);
         C.set((i, j) -> i + j);
 
-        Matrix A = Matrix.make(1000, 200);
-        Matrix B = Matrix.make(200, 50);
+        FastMatrix A = FastMatrix.make(1000, 200);
+        FastMatrix B = FastMatrix.make(200, 50);
         A.set((i, j) -> i - j);
         B.set((i, j) -> i / (j + 1.0));
 

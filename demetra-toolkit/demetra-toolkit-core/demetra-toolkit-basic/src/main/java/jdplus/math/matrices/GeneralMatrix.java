@@ -17,8 +17,8 @@ import jdplus.math.matrices.lapack.GER;
 @lombok.experimental.UtilityClass
 public class GeneralMatrix {
     
-    public Matrix transpose(Matrix a){
-        Matrix b=Matrix.make(a.getColumnsCount(), a.getRowsCount());
+    public FastMatrix transpose(FastMatrix a){
+        FastMatrix b=FastMatrix.make(a.getColumnsCount(), a.getRowsCount());
         b.copyTranspose(a);
         return b;
     }
@@ -30,16 +30,16 @@ public class GeneralMatrix {
      * @param y
      * @param A 
      */
-    public void aXYt_p_A(double alpha, DataBlock x, DataBlock y, Matrix A){
+    public void aXYt_p_A(double alpha, DataBlock x, DataBlock y, FastMatrix A){
         GER.apply(alpha, DataPointer.of(x), DataPointer.of(y), A);
     }
     
-    public void addXYt(DataBlock x, DataBlock y, Matrix A){
+    public void addXYt(DataBlock x, DataBlock y, FastMatrix A){
         GER.apply(1, DataPointer.of(x), DataPointer.of(y), A);
     }
     
-    public Matrix XYt(DataBlock x, DataBlock y){
-        Matrix A=Matrix.make(x.length(), y.length());
+    public FastMatrix XYt(DataBlock x, DataBlock y){
+        FastMatrix A=FastMatrix.make(x.length(), y.length());
         GER.apply(1, DataPointer.of(x), DataPointer.of(y), A);
         return A;
     }
@@ -55,69 +55,69 @@ public class GeneralMatrix {
      * @param at
      * @param bt 
      */
-    public void aAB_p_bC(double alpha, Matrix A, Matrix B, double beta, Matrix C, MatrixTransformation at, MatrixTransformation bt){
+    public void aAB_p_bC(double alpha, FastMatrix A, FastMatrix B, double beta, FastMatrix C, MatrixTransformation at, MatrixTransformation bt){
         GEMM.apply(alpha, A, B, beta, C, at, bt);
     }
     
-    public void aAB_p_bC(double alpha, Matrix A, Matrix B, double beta, Matrix C){
+    public void aAB_p_bC(double alpha, FastMatrix A, FastMatrix B, double beta, FastMatrix C){
         GEMM.apply(alpha, A, B, beta, C, MatrixTransformation.None, MatrixTransformation.None);
     }
     
     // Simplified versions
     
-    public void setAB(Matrix A, Matrix B, Matrix AB){
+    public void setAB(FastMatrix A, FastMatrix B, FastMatrix AB){
         aAB_p_bC(1, A, B, 0, AB, MatrixTransformation.None, MatrixTransformation.None);
     }
     
-    public Matrix AB(Matrix A, Matrix B){
-        Matrix R=Matrix.make(A.getRowsCount(), B.getColumnsCount());
+    public FastMatrix AB(FastMatrix A, FastMatrix B){
+        FastMatrix R=FastMatrix.make(A.getRowsCount(), B.getColumnsCount());
         aAB_p_bC(1, A, B, 0, R, MatrixTransformation.None, MatrixTransformation.None);
         return R;
     }
     
-    public void setABt(Matrix A, Matrix B, Matrix ABt){
+    public void setABt(FastMatrix A, FastMatrix B, FastMatrix ABt){
         aAB_p_bC(1, A, B, 0, ABt, MatrixTransformation.None, MatrixTransformation.Transpose);
     }
     
-    public Matrix ABt(Matrix A, Matrix B){
-        Matrix R=Matrix.make(A.getRowsCount(), B.getRowsCount());
+    public FastMatrix ABt(FastMatrix A, FastMatrix B){
+        FastMatrix R=FastMatrix.make(A.getRowsCount(), B.getRowsCount());
         aAB_p_bC(1, A, B, 0, R, MatrixTransformation.None, MatrixTransformation.Transpose);
         return R;
     }
     
-    public void setAtB(Matrix A, Matrix B, Matrix AtB){
+    public void setAtB(FastMatrix A, FastMatrix B, FastMatrix AtB){
         aAB_p_bC(1, A, B, 0, AtB, MatrixTransformation.Transpose, MatrixTransformation.None);
     }
     
-    public Matrix AtB(Matrix A, Matrix B){
-        Matrix R=Matrix.make(A.getColumnsCount(), B.getColumnsCount());
+    public FastMatrix AtB(FastMatrix A, FastMatrix B){
+        FastMatrix R=FastMatrix.make(A.getColumnsCount(), B.getColumnsCount());
         aAB_p_bC(1, A, B, 0, R, MatrixTransformation.Transpose, MatrixTransformation.None);
         return R;
     }
     
-    public void setAtBt(Matrix A, Matrix B, Matrix AtBt){
+    public void setAtBt(FastMatrix A, FastMatrix B, FastMatrix AtBt){
         aAB_p_bC(1, A, B, 0, AtBt, MatrixTransformation.Transpose, MatrixTransformation.Transpose);
     }
 
-    public Matrix AtBt(Matrix A, Matrix B){
-        Matrix R=Matrix.make(A.getColumnsCount(), B.getRowsCount());
+    public FastMatrix AtBt(FastMatrix A, FastMatrix B){
+        FastMatrix R=FastMatrix.make(A.getColumnsCount(), B.getRowsCount());
         aAB_p_bC(1, A, B, 0, R, MatrixTransformation.Transpose, MatrixTransformation.Transpose);
         return R;
     }
 
-    public void addAB(Matrix A, Matrix B, Matrix CpAB){
+    public void addAB(FastMatrix A, FastMatrix B, FastMatrix CpAB){
         aAB_p_bC(1, A, B, 1, CpAB, MatrixTransformation.None, MatrixTransformation.None);
     }
     
-    public void addABt(Matrix A, Matrix B, Matrix CpABt){
+    public void addABt(FastMatrix A, FastMatrix B, FastMatrix CpABt){
         aAB_p_bC(1, A, B, 1, CpABt, MatrixTransformation.None, MatrixTransformation.Transpose);
     }
     
-    public void addAtB(Matrix A, Matrix B, Matrix CpAtB){
+    public void addAtB(FastMatrix A, FastMatrix B, FastMatrix CpAtB){
         aAB_p_bC(1, A, B, 1, CpAtB, MatrixTransformation.Transpose, MatrixTransformation.None);
     }
     
-    public void addAtBt(Matrix A, Matrix B, Matrix CpAtBt){
+    public void addAtBt(FastMatrix A, FastMatrix B, FastMatrix CpAtBt){
         aAB_p_bC(1, A, B, 1, CpAtBt, MatrixTransformation.Transpose, MatrixTransformation.Transpose);
     }
 }

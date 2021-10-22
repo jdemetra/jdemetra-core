@@ -21,7 +21,7 @@ import jdplus.math.matrices.MatrixException;
 import jdplus.data.DataBlockIterator;
 import demetra.math.Constants;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * The singularValueDecomposition decomposes a matrix M in M = U * S * V' with:
@@ -49,11 +49,11 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
      * @throws MatrixException
      */
     @Override
-    public void decompose(Matrix A) throws MatrixException {
+    public void decompose(FastMatrix A) throws MatrixException {
         init(A);
     }
 
-    private void init(Matrix matrix) {
+    private void init(FastMatrix matrix) {
         double[] A = matrix.toArray();
         m_m = matrix.getRowsCount();
         m_n = matrix.getColumnsCount();
@@ -469,13 +469,13 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
     }
 
     @Override
-    public Matrix U() {
-        return new Matrix(m_U, m_m, Math.min(m_m, m_n));
+    public FastMatrix U() {
+        return new FastMatrix(m_U, m_m, Math.min(m_m, m_n));
     }
 
     @Override
-    public Matrix V() {
-        return new Matrix(m_V, m_n, m_n);
+    public FastMatrix V() {
+        return new FastMatrix(m_V, m_n, m_n);
     }
 
     public double[] getSingularValues() {
@@ -562,7 +562,7 @@ public class SingularValueDecomposition implements ISingularValueDecomposition {
     /*
      * Solves A X = B
      */
-    public void solve(Matrix B, Matrix X) {
+    public void solve(FastMatrix B, FastMatrix X) {
         DataBlockIterator b = B.columnsIterator(), x = X.columnsIterator();
         while (b.hasNext()) {
             solve(b.next(), x.next());

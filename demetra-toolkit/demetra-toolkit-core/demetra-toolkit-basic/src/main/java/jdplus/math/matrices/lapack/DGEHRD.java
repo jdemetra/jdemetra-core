@@ -5,7 +5,7 @@
  */
 package jdplus.math.matrices.lapack;
 
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixException;
 
 /**
@@ -32,7 +32,7 @@ public class DGEHRD {
      * previous call to DGEBAL; otherwise they should be set to 0 and n
      * respectively. 0 <= low <= high <= n
      */
-    public void process(Matrix A, int low, int high) {
+    public void process(FastMatrix A, int low, int high) {
         if (! A.isSquare())
             throw new MatrixException(MatrixException.DIM);
         int n=A.getColumnsCount();

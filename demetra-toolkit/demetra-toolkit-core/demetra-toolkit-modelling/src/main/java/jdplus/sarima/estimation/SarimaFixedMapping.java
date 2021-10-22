@@ -21,7 +21,7 @@ import jdplus.data.DataBlock;
 import nbbrd.design.Development;
 import jdplus.math.functions.FunctionException;
 import jdplus.math.functions.ParamValidation;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
@@ -217,7 +217,7 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
         // number of invalid coefficients
     }
 
-    public Matrix expandCovariance(Matrix cov) {
+    public FastMatrix expandCovariance(FastMatrix cov) {
         int dim = getDim();
         if (cov.getColumnsCount() != dim) {
             return null;
@@ -228,7 +228,7 @@ public class SarimaFixedMapping implements IArimaMapping<SarimaModel> {
                 idx[j++] = i;
             }
         }
-        Matrix ecov = Matrix.make(fixedItems.length, fixedItems.length);
+        FastMatrix ecov = FastMatrix.make(fixedItems.length, fixedItems.length);
         for (int i = 0; i < dim; ++i) {
             for (int j = 0; j <= i; ++j) {
                 double s = cov.get(i, j);

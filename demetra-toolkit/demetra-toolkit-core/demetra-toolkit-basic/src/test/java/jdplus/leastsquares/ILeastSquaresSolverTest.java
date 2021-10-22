@@ -6,7 +6,7 @@
 package jdplus.leastsquares;
 
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import java.util.Random;
 import jdplus.math.matrices.decomposition.Householder;
@@ -29,7 +29,7 @@ public class ILeastSquaresSolverTest {
 
     public static void testPerformance() {
         int N = 300, M = 10, K = 500000;
-        Matrix A = Matrix.make(N, M);
+        FastMatrix A = FastMatrix.make(N, M);
         Random rnd = new Random(0);
         A.set((i, j) -> rnd.nextDouble());
         DataBlock y = DataBlock.make(N);

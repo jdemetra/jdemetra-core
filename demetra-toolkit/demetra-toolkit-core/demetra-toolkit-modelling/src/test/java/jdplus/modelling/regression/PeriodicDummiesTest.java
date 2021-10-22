@@ -22,7 +22,7 @@ import demetra.timeseries.TsPeriod;
 import jdplus.data.DataBlockIterator;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -37,7 +37,7 @@ public class PeriodicDummiesTest {
     public void testMonthly() {
         PeriodicDummies vars = new PeriodicDummies(12);
         TsDomain domain = TsDomain.of(TsPeriod.monthly(2017, 8), 180);
-        Matrix M=Regression.matrix(domain, vars);
+        FastMatrix M=Regression.matrix(domain, vars);
         //System.out.println(M);
         DataBlockIterator cols = M.columnsIterator();
         while (cols.hasNext())

@@ -6,7 +6,7 @@
 package jdplus.math.matrices.decomposition;
 
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.matrices.UpperTriangularMatrix;
 
@@ -38,17 +38,17 @@ import jdplus.math.matrices.UpperTriangularMatrix;
  */
 public class QRDecomposition {
 
-    private final Matrix qr;
+    private final FastMatrix qr;
     private final double[] beta;
     private final int[] pivot;
 
     @FunctionalInterface
     public static interface Decomposer {
 
-        QRDecomposition decompose(Matrix A);
+        QRDecomposition decompose(FastMatrix A);
     }
 
-    public QRDecomposition(Matrix qr, double[] beta, int[] pivot) {
+    public QRDecomposition(FastMatrix qr, double[] beta, int[] pivot) {
         this.qr = qr;
         this.beta = beta;
         this.pivot = pivot;
@@ -120,9 +120,9 @@ public class QRDecomposition {
         return qr.getColumnsCount();
     }
 
-    public Matrix rawR() {
+    public FastMatrix rawR() {
         int n = qr.getColumnsCount();
-        Matrix R = qr.extract(0, n, 0, n).deepClone();
+        FastMatrix R = qr.extract(0, n, 0, n).deepClone();
         UpperTriangularMatrix.toUpper(R);
         return R;
     }

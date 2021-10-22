@@ -8,7 +8,7 @@ package jdplus.modelling.regression;
 import demetra.timeseries.regression.Constant;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesInterval;
 import demetra.timeseries.regression.TrendConstant;
 import jdplus.data.DataBlock;
@@ -26,7 +26,7 @@ class TrendConstantFactory implements RegressionVariableFactory<TrendConstant>{
     private TrendConstantFactory(){}
 
     @Override
-    public boolean fill(TrendConstant var, TsPeriod start, Matrix buffer) {
+    public boolean fill(TrendConstant var, TsPeriod start, FastMatrix buffer) {
         double[] D = UnitRoots.D(var.getD()).times(UnitRoots.D(start.getUnit().getAnnualFrequency(), var.getBd())).toArray();
         int d = D.length - 1;
         int n=buffer.getRowsCount();
@@ -43,7 +43,7 @@ class TrendConstantFactory implements RegressionVariableFactory<TrendConstant>{
     }
 
     @Override
-    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(TrendConstant var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(TrendConstant var, D domain, FastMatrix buffer) {
         return false;
     }
   

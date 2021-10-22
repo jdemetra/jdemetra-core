@@ -10,7 +10,7 @@ import jdplus.bayes.BayesRegularizedRegressionModel.Prior;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.dstats.Normal;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.random.MersenneTwister;
 import demetra.dstats.RandomNumberGenerator;
@@ -51,7 +51,7 @@ public class BayesRegularizedRegressionProcessor {
     private int n, p;
     private DataBlock z;
     private double muZ, ztz;
-    private Matrix X;
+    private FastMatrix X;
     private double[] muX;
     private double[] stdX;
 
@@ -68,7 +68,7 @@ public class BayesRegularizedRegressionProcessor {
 
     // Use Rue's MVN sampling algorithm
     private boolean mvnrue;
-    private Matrix XtX;
+    private FastMatrix XtX;
     private DataBlock Xtz;
 
     public BayesRegularizedRegressionProcessor(Spec spec) {
@@ -99,7 +99,7 @@ public class BayesRegularizedRegressionProcessor {
     private void initialize(BayesRegularizedRegressionModel model) {
         this.model = model;
         z = DataBlock.of(model.getY().toArray());
-        X = Matrix.of(model.getX());
+        X = FastMatrix.of(model.getX());
         n = z.length();
         p = X.getColumnsCount();
 

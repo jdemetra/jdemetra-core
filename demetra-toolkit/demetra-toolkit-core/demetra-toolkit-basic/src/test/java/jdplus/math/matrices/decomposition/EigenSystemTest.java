@@ -13,7 +13,7 @@ import jdplus.math.ComplexUtility;
 import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.math.linearfilters.internal.SymmetricFilterAlgorithms;
 import static jdplus.math.matrices.GeneralMatrix.AB;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixNorms;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.polynomials.Polynomial;
@@ -31,16 +31,16 @@ public class EigenSystemTest {
 
     @Test
     public void testVectori() {
-        Matrix X = Matrix.make(20, 15);
+        FastMatrix X = FastMatrix.make(20, 15);
         JdkRNG rng = JdkRNG.newRandom(0);
         X.set((i, j) -> rng.nextDouble());
-        Matrix S = SymmetricMatrix.XtX(X);
+        FastMatrix S = SymmetricMatrix.XtX(X);
         IEigenSystem eigen = EigenSystem.create(S, true);
         eigen.setComputingEigenVectors(true);
         eigen.compute();
         double[] v = eigen.getEigenVector(0);
-        Matrix W = new Matrix(v, X.getColumnsCount(), 1);
-        Matrix AB = AB(S, W);
+        FastMatrix W = new FastMatrix(v, X.getColumnsCount(), 1);
+        FastMatrix AB = AB(S, W);
         Complex v0 = eigen.getEigenValues()[0];
         W.addAY(-1 / v0.getRe(), AB);
         assertTrue(MatrixNorms.infinityNorm(W)<1e-9);
@@ -62,7 +62,7 @@ public class EigenSystemTest {
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         int n = S.length() - 1, m = S.getLowerBound();
-        Matrix M = Matrix.square(n);
+        FastMatrix M = FastMatrix.square(n);
         M.subDiagonal(1).set(1);
         DataBlock row = M.row(n - 1);
         IntToDoubleFunction weights = S.weights();

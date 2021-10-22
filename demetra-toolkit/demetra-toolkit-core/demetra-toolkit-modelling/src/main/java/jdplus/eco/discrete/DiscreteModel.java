@@ -16,7 +16,7 @@
  */
 package jdplus.eco.discrete;
 
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -27,7 +27,7 @@ import jdplus.math.matrices.Matrix;
 public class DiscreteModel {
 
     final int[] y;
-    final Matrix X;
+    final FastMatrix X;
     final ICumulativeDistributionFunction cdf;
 
 

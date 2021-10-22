@@ -5,7 +5,7 @@
  */
 package jdplus.math.matrices.lapack;
 
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -16,7 +16,7 @@ public class GEQP3 {
     private int[] pivot;
     private double[] tau;
     
-    public void apply(Matrix A){
+    public void apply(FastMatrix A){
         
     }
 //*  Definition:

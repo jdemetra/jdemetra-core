@@ -18,7 +18,7 @@ package jdplus.linearmodel;
 
 import java.util.Random;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -37,7 +37,7 @@ public class LeastSquaresResultsTest {
         DataBlock y=DataBlock.make(N);
         Random rnd=new Random(0);
         y.set(rnd::nextDouble);
-        Matrix X=Matrix.make(N, 5);
+        FastMatrix X=FastMatrix.make(N, 5);
         X.set((a,b)->rnd.nextDouble());
         
         LinearModel lm = LinearModel.builder()

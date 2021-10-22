@@ -21,7 +21,7 @@ import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import jdplus.dstats.Chi2;
 import jdplus.dstats.F;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import demetra.stats.TestType;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
@@ -50,7 +50,7 @@ public class Friedman {
 
         DoubleSeq x = all.drop(nall - n * this.period, 0);
         DoubleSeq y = x.extract(0, period);
-        Matrix R = Matrix.make(n, this.period);
+        FastMatrix R = FastMatrix.make(n, this.period);
 
         // computes the ranks on each year:
         int row = 0;

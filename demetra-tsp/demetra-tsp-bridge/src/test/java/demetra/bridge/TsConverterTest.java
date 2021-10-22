@@ -17,7 +17,6 @@
 package demetra.bridge;
 
 import _util.*;
-import demetra.math.matrices.MatrixType;
 import demetra.timeseries.*;
 import demetra.tsprovider.FileBean;
 import demetra.tsprovider.FileLoader;
@@ -293,12 +292,12 @@ public class TsConverterTest {
 
     @Test
     public void testMatrix() {
-        MatrixType[] samples = {
-                MatrixType.of(new double[]{1, 2, 3, 4, 5, 6}, 2, 3),
-                MatrixType.of(new double[]{1, 2, 3, 4, 5, 6}, 3, 2),
-                MatrixType.empty()
+        demetra.math.matrices.Matrix[] samples = {
+                demetra.math.matrices.Matrix.of(new double[]{1, 2, 3, 4, 5, 6}, 2, 3),
+                demetra.math.matrices.Matrix.of(new double[]{1, 2, 3, 4, 5, 6}, 3, 2),
+                demetra.math.matrices.Matrix.empty()
         };
-        for (MatrixType x : samples) {
+        for (demetra.math.matrices.Matrix x : samples) {
             assertThat(TsConverter.toMatrix(TsConverter.fromMatrix(x))).isEqualTo(x);
         }
     }

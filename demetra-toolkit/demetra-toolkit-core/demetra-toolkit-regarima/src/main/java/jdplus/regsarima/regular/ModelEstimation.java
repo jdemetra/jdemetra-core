@@ -38,7 +38,7 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
@@ -78,7 +78,7 @@ public final class ModelEstimation {
     private int freeArimaParametersCount;
     private boolean[] fixedArimaParameters;
     private double[] arimaParameters, arimaScore;
-    private Matrix arimaCovariance;
+    private FastMatrix arimaCovariance;
 
     private LikelihoodStatistics statistics;
 
@@ -144,7 +144,7 @@ public final class ModelEstimation {
         if (max == null) {
             this.arimaParameters = Doubles.EMPTYARRAY;
             this.arimaScore = Doubles.EMPTYARRAY;
-            this.arimaCovariance = Matrix.EMPTY;
+            this.arimaCovariance = FastMatrix.EMPTY;
             this.fixedArimaParameters = EB;
         } else {
             this.fixedArimaParameters = null;
@@ -183,7 +183,7 @@ public final class ModelEstimation {
         }
     }
 
-    public static Matrix expand(Matrix cov, boolean[] fixedItems) {
+    public static FastMatrix expand(FastMatrix cov, boolean[] fixedItems) {
         int dim = fixedItems.length;
         int[] idx = new int[dim];
         for (int i = 0, j = 0; i < fixedItems.length; ++i) {
@@ -191,7 +191,7 @@ public final class ModelEstimation {
                 idx[j++] = i;
             }
         }
-        Matrix m = Matrix.make(fixedItems.length, fixedItems.length);
+        FastMatrix m = FastMatrix.make(fixedItems.length, fixedItems.length);
         for (int i = 0; i < dim; ++i) {
             for (int j = 0; j <= i; ++j) {
                 double s = cov.get(i, j);
@@ -258,7 +258,7 @@ public final class ModelEstimation {
                 int nfree = cur.freeCoefficientsCount();
                 if (nfree > 0) {
                     if (test.test(cur)) {
-                        Matrix m = Regression.matrix(domain, cur.getCore());
+                        FastMatrix m = Regression.matrix(domain, cur.getCore());
                         int ic = 0;
                         DataBlockIterator cols = m.columnsIterator();
                         while (cols.hasNext()) {
@@ -285,7 +285,7 @@ public final class ModelEstimation {
                 int nfree = cur.freeCoefficientsCount();
                 if (cur.dim() > nfree) {
                     if (test.test(cur)) {
-                        Matrix m = Regression.matrix(domain, cur.getCore());
+                        FastMatrix m = Regression.matrix(domain, cur.getCore());
                         int ic = 0;
                         DataBlockIterator cols = m.columnsIterator();
                         while (cols.hasNext()) {
@@ -309,7 +309,7 @@ public final class ModelEstimation {
             for (int i = 0; i < variables.length; ++i) {
                 Variable cur = variables[i];
                 if (test.test(cur)) {
-                    Matrix m = Regression.matrix(domain, cur.getCore());
+                    FastMatrix m = Regression.matrix(domain, cur.getCore());
                     int ic = 0;
                     DataBlockIterator cols = m.columnsIterator();
                     while (cols.hasNext()) {
@@ -344,7 +344,7 @@ public final class ModelEstimation {
         }
         TsDomain all = interp.getDomain();
         for (int i = j; i < variables.length; ++i) {
-            Matrix xcur = Regression.matrix(all, variables[i].getCore());
+            FastMatrix xcur = Regression.matrix(all, variables[i].getCore());
             DataBlockIterator xcols = xcur.columnsIterator();
             while (xcols.hasNext()) {
                 rslt.addAY(-c.getAndNext(), xcols.next());

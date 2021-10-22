@@ -8,7 +8,7 @@ package jdplus.data;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import java.util.Random;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoublePredicate;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -1820,7 +1820,7 @@ public class DataBlockTest {
         assertThat(of(getSample(3), 0, 3, 1)).satisfies(o -> {
             DataBlock row = of(new double[]{1, 2, 3}, 0, 3, 1);
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator cols = m.columnsIterator();
             o.product(row, cols);
             assertThat(o.toArray()).containsExactly(32, 50, 68);
@@ -1830,7 +1830,7 @@ public class DataBlockTest {
         assertThat(of(getSample(3), 0, 3, 1)).satisfies(o -> {
             DataBlock row = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator cols = m.columnsIterator();
             o.product(row, cols);
             assertThat(o.toArray()).containsExactly(49, 76, 103);
@@ -1840,7 +1840,7 @@ public class DataBlockTest {
         assertThat(of(getSample(6), 0, 6, 2)).satisfies(o -> {
             DataBlock row = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator cols = m.columnsIterator();
             o.product(row, cols);
             assertThat(o.toArray()).containsExactly(49, 76, 103);
@@ -1850,7 +1850,7 @@ public class DataBlockTest {
         assertThat(of(getSample(6), 0, 6, 1)).satisfies(o -> {
             DataBlock row = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator cols = m.columnsIterator();
             o.product(row, cols);
             assertThat(o.toArray()).containsExactly(49, 76, 103, 4, 5, 6);
@@ -1860,7 +1860,7 @@ public class DataBlockTest {
         assertThat(of(getSample(6), 5, -1, -2)).satisfies(o -> {
             DataBlock row = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator cols = m.columnsIterator();
             o.product(row, cols);
             assertThat(o.toArray()).containsExactly(49, 76, 103);
@@ -1870,7 +1870,7 @@ public class DataBlockTest {
         assertThat(of(getSample(6), 5, -1, -1)).satisfies(o -> {
             DataBlock row = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator cols = m.columnsIterator();
             o.product(row, cols);
             assertThat(o.toArray()).containsExactly(49, 76, 103, 3, 2, 1);
@@ -1952,7 +1952,7 @@ public class DataBlockTest {
     public void testProductIteratorDataBlock() {
         assertThat(of(getSample(3), 0, 3, 1)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator rows = m.rowsIterator();
             DataBlock col = of(new double[]{1, 2, 3}, 0, 3, 1);
             o.product(rows, col);
@@ -1962,7 +1962,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(3), 0, 3, 1)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator rows = m.rowsIterator();
             DataBlock col = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             o.product(rows, col);
@@ -1972,7 +1972,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(6), 0, 6, 2)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator rows = m.rowsIterator();
             DataBlock col = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             o.product(rows, col);
@@ -1982,7 +1982,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(6), 0, 6, 1)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator rows = m.rowsIterator();
             DataBlock col = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             o.product(rows, col);
@@ -1992,7 +1992,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(6), 5, -1, -2)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator rows = m.rowsIterator();
             DataBlock col = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             o.product(rows, col);
@@ -2002,7 +2002,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(6), 5, -1, -1)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator rows = m.rowsIterator();
             DataBlock col = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             o.product(rows, col);
@@ -2086,7 +2086,7 @@ public class DataBlockTest {
         assertThat(of(getSample(3), 0, 3, 1)).satisfies(o -> {
             DataBlock row = of(new double[]{1, 2, 3}, 0, 3, 1);
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator cols = m.columnsIterator();
             o.addProduct(row, cols);
             assertThat(o.toArray()).containsExactly(33, 52, 71);
@@ -2096,7 +2096,7 @@ public class DataBlockTest {
         assertThat(of(getSample(3), 0, 3, 1)).satisfies(o -> {
             DataBlock row = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator cols = m.columnsIterator();
             o.addProduct(row, cols);
             assertThat(o.toArray()).containsExactly(50, 78, 106);
@@ -2106,7 +2106,7 @@ public class DataBlockTest {
         assertThat(of(getSample(6), 0, 6, 2)).satisfies(o -> {
             DataBlock row = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator cols = m.columnsIterator();
             o.addProduct(row, cols);
             assertThat(o.toArray()).containsExactly(50, 79, 108);
@@ -2116,7 +2116,7 @@ public class DataBlockTest {
         assertThat(of(getSample(6), 0, 6, 1)).satisfies(o -> {
             DataBlock row = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator cols = m.columnsIterator();
             o.addProduct(row, cols);
             assertThat(o.toArray()).containsExactly(50, 78, 106, 4, 5, 6);
@@ -2126,7 +2126,7 @@ public class DataBlockTest {
         assertThat(of(getSample(6), 5, -1, -2)).satisfies(o -> {
             DataBlock row = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator cols = m.columnsIterator();
             o.addProduct(row, cols);
             assertThat(o.toArray()).containsExactly(55, 80, 105);
@@ -2136,7 +2136,7 @@ public class DataBlockTest {
         assertThat(of(getSample(6), 5, -1, -1)).satisfies(o -> {
             DataBlock row = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator cols = m.columnsIterator();
             o.addProduct(row, cols);
             assertThat(o.toArray()).containsExactly(55, 81, 107, 3, 2, 1);
@@ -2148,7 +2148,7 @@ public class DataBlockTest {
     public void testAddProductIteratorDataBlock() {
         assertThat(of(getSample(3), 0, 3, 1)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator rows = m.rowsIterator();
             DataBlock col = of(new double[]{1, 2, 3}, 0, 3, 1);
             o.addProduct(rows, col);
@@ -2158,7 +2158,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(3), 0, 3, 1)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator rows = m.rowsIterator();
             DataBlock col = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             o.addProduct(rows, col);
@@ -2168,7 +2168,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(6), 0, 6, 2)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator rows = m.rowsIterator();
             DataBlock col = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             o.addProduct(rows, col);
@@ -2178,7 +2178,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(6), 0, 6, 1)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator rows = m.rowsIterator();
             DataBlock col = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             o.addProduct(rows, col);
@@ -2188,7 +2188,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(6), 5, -1, -2)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator rows = m.rowsIterator();
             DataBlock col = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             o.addProduct(rows, col);
@@ -2198,7 +2198,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(6), 5, -1, -1)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator rows = m.rowsIterator();
             DataBlock col = of(new double[]{1, 2, 3, 4, 5, 6}, 0, 6, 2);
             o.addProduct(rows, col);
@@ -2450,7 +2450,7 @@ public class DataBlockTest {
     public void testSetIteratorFunction() {
         assertThat(of(getSample(3), 0, 3, 1)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator blocks = m.rowsIterator();
             o.set(blocks, x -> x.sum());
             assertThat(o.toArray()).containsExactly(21, 24, 27);
@@ -2459,7 +2459,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(6), 0, 6, 2)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator blocks = m.rowsIterator();
             o.set(blocks, x -> x.sum());
             assertThat(o.toArray()).containsExactly(21, 24, 27);
@@ -2468,7 +2468,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(6), 0, 6, 1)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator blocks = m.rowsIterator();
             o.set(blocks, x -> x.sum());
             assertThat(o.toArray()).containsExactly(21, 24, 27, 4, 5, 6);
@@ -2477,7 +2477,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(6), 5, -1, -2)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator blocks = m.rowsIterator();
             o.set(blocks, x -> x.sum());
             assertThat(o.toArray()).containsExactly(21, 24, 27);
@@ -2486,7 +2486,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(6), 5, -1, -1)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator blocks = m.rowsIterator();
             o.set(blocks, x -> x.sum());
             assertThat(o.toArray()).containsExactly(21, 24, 27, 3, 2, 1);
@@ -2498,7 +2498,7 @@ public class DataBlockTest {
     public void testApplyIteratorFunction() {
         assertThat(of(getSample(3), 0, 3, 1)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator blocks = m.rowsIterator();
             o.apply(blocks, x -> x.sum(), (y, z) -> y + z);
             assertThat(o.toArray()).containsExactly(22, 26, 30);
@@ -2507,7 +2507,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(6), 0, 6, 2)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator blocks = m.rowsIterator();
             o.apply(blocks, x -> x.sum(), (y, z) -> y + z);
             assertThat(o.toArray()).containsExactly(22, 27, 32);
@@ -2516,7 +2516,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(6), 0, 6, 1)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator blocks = m.rowsIterator();
             o.apply(blocks, x -> x.sum(), (y, z) -> y + z);
             assertThat(o.toArray()).containsExactly(22, 26, 30, 4, 5, 6);
@@ -2525,7 +2525,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(6), 5, -1, -2)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator blocks = m.rowsIterator();
             o.apply(blocks, x -> x.sum(), (y, z) -> y + z);
             assertThat(o.toArray()).containsExactly(27, 28, 29);
@@ -2534,7 +2534,7 @@ public class DataBlockTest {
 
         assertThat(of(getSample(6), 5, -1, -1)).satisfies(o -> {
             double[] data = new double[]{4, 5, 6, 7, 8, 9, 10, 11, 12};
-            Matrix m = Matrix.builder(data).ncolumns(3).nrows(3).build();
+            FastMatrix m = FastMatrix.builder(data).ncolumns(3).nrows(3).build();
             DataBlockIterator blocks = m.rowsIterator();
             o.apply(blocks, x -> x.sum(), (y, z) -> y + z);
             assertThat(o.toArray()).containsExactly(27, 29, 31, 3, 2, 1);

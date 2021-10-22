@@ -19,7 +19,6 @@ package demetra.revisions.r;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.DoublesMath;
-import demetra.math.matrices.MatrixType;
 import demetra.revisions.parametric.AutoCorrelationTests;
 import demetra.revisions.parametric.Bias;
 import demetra.revisions.parametric.Coefficient;
@@ -30,7 +29,7 @@ import demetra.revisions.parametric.SignalNoise;
 import demetra.revisions.parametric.UnitRoot;
 import demetra.stats.StatisticalTest;
 import java.time.LocalDate;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.revisions.parametric.AutoCorrelationTestsComputer;
 import jdplus.revisions.parametric.BiasComputer;
 import jdplus.revisions.parametric.OlsTestsComputer;
@@ -39,6 +38,7 @@ import jdplus.revisions.parametric.UnitRootTestsComputer;
 import jdplus.stats.tests.JohansenCointegration;
 import jdplus.stats.StatUtility;
 import jdplus.stats.tests.DickeyFuller;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -54,7 +54,7 @@ public class Utility {
      * @param gap Delay between the compared vintages (should be &ge 1)
      * @return
      */
-    public double[] theil(MatrixType vintages, int gap) {
+    public double[] theil(Matrix vintages, int gap) {
         if (gap < 1) {
             throw new IllegalArgumentException("gap should be >= 1");
         }
@@ -78,7 +78,7 @@ public class Utility {
      * @param gap Delay between the compared vintages (should be &ge 1)
      * @return
      */
-    public MatrixType slopeAndDrift(MatrixType vintages, int gap) {
+    public Matrix slopeAndDrift(Matrix vintages, int gap) {
         if (gap < 1) {
             throw new IllegalArgumentException("gap should be >= 1");
         }
@@ -86,7 +86,7 @@ public class Utility {
         if (n <= 0) {
             return null;
         }
-        Matrix rslt = Matrix.make(n, OLS + 2 * C);
+        FastMatrix rslt = FastMatrix.make(n, OLS + 2 * C);
 
         for (int i = 0; i < n; ++i) {
             DoubleSeqCursor.OnMutable cursor = rslt.row(i).cursor();
@@ -106,9 +106,9 @@ public class Utility {
      * @param nlb Number of lag in Ljung-Box
      * @return
      */
-    public MatrixType autoCorrelation(MatrixType vintages, int nbg, int nlb) {
+    public Matrix autoCorrelation(Matrix vintages, int nbg, int nlb) {
         int n = vintages.getColumnsCount();
-        Matrix rslt = Matrix.make(n * (n - 1) / 2, AC);
+        FastMatrix rslt = FastMatrix.make(n * (n - 1) / 2, AC);
 
         for (int i = 0, k = 0; i < n; ++i) {
             for (int j = i + 1; j < n; ++j) {
@@ -132,9 +132,9 @@ public class Utility {
      * @param adfk Number of lags in augmented dickey-fuller test
      * @return
      */
-    public MatrixType cointegration(MatrixType vintages, int adfk) {
+    public Matrix cointegration(Matrix vintages, int adfk) {
         int n = vintages.getColumnsCount();
-        Matrix rslt = Matrix.make(n * (n - 1) / 2, EG);
+        FastMatrix rslt = FastMatrix.make(n * (n - 1) / 2, EG);
 
         for (int i = 0, k = 0; i < n; ++i) {
             for (int j = i + 1; j < n; ++j) {
@@ -165,15 +165,15 @@ public class Utility {
      * @param model
      * @return
      */
-    public MatrixType vecm(MatrixType vintages, int lag, String model) {
+    public Matrix vecm(Matrix vintages, int lag, String model) {
         int n = vintages.getColumnsCount();
-        Matrix rslt = Matrix.make(n * (n - 1) / 2, JOHANSEN * lag);
+        FastMatrix rslt = FastMatrix.make(n * (n - 1) / 2, JOHANSEN * lag);
         JohansenCointegration.ECDet ecdet = JohansenCointegration.ECDet.valueOf(model);
         JohansenCointegration computer = JohansenCointegration.builder()
                 .errorCorrectionModel(ecdet)
                 .lag(lag)
                 .build();
-        Matrix M = Matrix.make(vintages.getRowsCount(), 2);
+        FastMatrix M = FastMatrix.make(vintages.getRowsCount(), 2);
         for (int i = 0, k = 0; i < n; ++i) {
             M.column(0).copy(vintages.column(i));
             for (int j = i + 1; j < n; ++j) {
@@ -208,9 +208,9 @@ public class Utility {
      * @param adfk Number of lags in augmented dickey-fuller test
      * @return
      */
-    public MatrixType unitroot(MatrixType vintages, int adfk) {
+    public Matrix unitroot(Matrix vintages, int adfk) {
         int n = vintages.getColumnsCount();
-        Matrix rslt = Matrix.make(n, UR);
+        FastMatrix rslt = FastMatrix.make(n, UR);
 
         for (int i = 0, k = 0; i < n; ++i) {
             try {
@@ -231,7 +231,7 @@ public class Utility {
      * @param gap Delay between the compared vintages (should be &ge 1)
      * @return
      */
-    public MatrixType efficiencyModel1(MatrixType vintages, int gap) {
+    public Matrix efficiencyModel1(Matrix vintages, int gap) {
         if (gap < 1) {
             throw new IllegalArgumentException("gap should be >= 1");
         }
@@ -239,7 +239,7 @@ public class Utility {
         if (n <= 0) {
             return null;
         }
-        Matrix rslt = Matrix.make(n, OLS + 2 * C);
+        FastMatrix rslt = FastMatrix.make(n, OLS + 2 * C);
 
         for (int i = 0; i < n; ++i) {
             DoubleSeq prev = vintages.column(i), cur = vintages.column(i + gap);
@@ -258,9 +258,9 @@ public class Utility {
      * (should be &ge 1)
      * @return
      */
-    public MatrixType efficiencyModel2(MatrixType vintages, int gap) {
+    public Matrix efficiencyModel2(Matrix vintages, int gap) {
         int n = vintages.getColumnsCount() - gap - 1;
-        Matrix rslt = Matrix.make(n, OLS + 2 * C);
+        FastMatrix rslt = FastMatrix.make(n, OLS + 2 * C);
         for (int i = 0; i < n; ++i) {
             DoubleSeqCursor.OnMutable cursor = rslt.row(i).cursor();
             try {
@@ -280,12 +280,12 @@ public class Utility {
      * @param nrevs
      * @return
      */
-    public MatrixType orthogonallyModel1(MatrixType revs, int nrevs) {
+    public Matrix orthogonallyModel1(Matrix revs, int nrevs) {
         int n = revs.getColumnsCount();
         if (nrevs >= n) {
             return null;
         }
-        Matrix rslt = Matrix.make(n - nrevs, OLS + C * (1 + nrevs));
+        FastMatrix rslt = FastMatrix.make(n - nrevs, OLS + C * (1 + nrevs));
         DoubleSeq[] x = new DoubleSeq[nrevs];
         for (int i = nrevs; i < n; ++i) {
             for (int j = 0; j < nrevs; ++j) {
@@ -307,12 +307,12 @@ public class Utility {
      * @param ref
      * @return
      */
-    public MatrixType orthogonallyModel2(MatrixType revs, int ref) {
+    public Matrix orthogonallyModel2(Matrix revs, int ref) {
         int n = revs.getColumnsCount();
         if (ref >= n || ref < 1) {
             return null;
         }
-        Matrix rslt = Matrix.make(n - 1, OLS + C * 2);
+        FastMatrix rslt = FastMatrix.make(n - 1, OLS + C * 2);
         DoubleSeq cref = revs.column(ref - 1);
         for (int i = 0, j = 0; i < n; ++i) {
             if (i != ref - 1) {
@@ -343,9 +343,9 @@ public class Utility {
      * @param revs The revisions
      * @return
      */
-    public MatrixType bias(MatrixType revs) {
+    public Matrix bias(Matrix revs) {
         int n = revs.getColumnsCount();
-        Matrix rslt = Matrix.make(n, BIAS);
+        FastMatrix rslt = FastMatrix.make(n, BIAS);
 
         for (int i = 0; i < n; ++i) {
             DoubleSeq cur = revs.column(i);
@@ -358,7 +358,7 @@ public class Utility {
 
     private final int SN = 6;
 
-    public MatrixType signalNoise(MatrixType vintages, int gap) {
+    public Matrix signalNoise(Matrix vintages, int gap) {
         if (gap < 1) {
             throw new IllegalArgumentException("gap should be >= 1");
         }
@@ -366,7 +366,7 @@ public class Utility {
         if (n <= 0) {
             return null;
         }
-        Matrix rslt = Matrix.make(n, SN);
+        FastMatrix rslt = FastMatrix.make(n, SN);
 
         for (int i = 0; i < n; ++i) {
             DoubleSeqCursor.OnMutable cursor = rslt.row(i).cursor();

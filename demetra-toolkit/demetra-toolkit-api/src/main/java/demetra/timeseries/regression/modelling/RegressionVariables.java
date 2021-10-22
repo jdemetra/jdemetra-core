@@ -27,8 +27,8 @@ import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import demetra.math.matrices.MatrixType;
 import demetra.timeseries.regression.ITsVariable;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -48,11 +48,11 @@ public class RegressionVariables {
         return PROCESSOR.get();
     }
 
-    public <D extends TimeSeriesDomain> MatrixType matrix(@NonNull D domain, @NonNull ITsVariable... vars) {
+    public <D extends TimeSeriesDomain> Matrix matrix(@NonNull D domain, @NonNull ITsVariable... vars) {
         return PROCESSOR.get().matrix(domain, vars);
     }
 
-    public <D extends TimeSeriesDomain> MatrixType matrix(@NonNull D domain, @NonNull List<ITsVariable> vars) {
+    public <D extends TimeSeriesDomain> Matrix matrix(@NonNull D domain, @NonNull List<ITsVariable> vars) {
         return PROCESSOR.get().matrix(domain, vars.toArray(new ITsVariable[vars.size()]));
     }
 
@@ -63,7 +63,7 @@ public class RegressionVariables {
         for (ITsVariable var : vars) {
             int n = var.dim();
             if (predicate.test(var)) {
-                MatrixType M = matrix(domain, var);
+                Matrix M = matrix(domain, var);
                 for (int i = 0; i < n; ++i) {
                     Data.addAY(cursor.getAndNext(), M.column(i));
                 }
@@ -79,7 +79,7 @@ public class RegressionVariables {
     @FunctionalInterface
     public static interface Processor {
 
-        public <D extends TimeSeriesDomain> MatrixType matrix(@NonNull D domain, @NonNull ITsVariable... vars);
+        public <D extends TimeSeriesDomain> Matrix matrix(@NonNull D domain, @NonNull ITsVariable... vars);
 
     }
 

@@ -19,7 +19,7 @@ package jdplus.data.analysis;
 import jdplus.data.DataBlock;
 import nbbrd.design.Development;
 import demetra.math.Constants;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * Computes cos(tw), sin(tw)
@@ -83,11 +83,11 @@ public class TrigonometricSeries {
         this.w = freq;
     }
 
-    public Matrix matrix(int len) {
+    public FastMatrix matrix(int len) {
         return matrix(0, len);
     }
 
-    public Matrix matrix(int len, int start) {
+    public FastMatrix matrix(int len, int start) {
         int nlast = w.length - 1;
         int n = w.length * 2;
         boolean zero = false, pi = false;
@@ -100,7 +100,7 @@ public class TrigonometricSeries {
             zero = true;
             --n;
         }
-        Matrix m = Matrix.make(len, n);
+        FastMatrix m = FastMatrix.make(len, n);
         int icur = 0, ccur = 0;
         if (zero) {
             m.column(ccur++).set(0);

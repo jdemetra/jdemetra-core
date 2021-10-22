@@ -29,7 +29,7 @@ import java.util.function.ToDoubleFunction;
 import demetra.data.DoubleSeq;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.likelihood.Likelihood;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -47,7 +47,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
         private boolean mt = false;
         // model
         private final DoubleSeq dy;
-        private Matrix x;
+        private FastMatrix x;
         private int nmissing;
         // mapping
         private IArimaMapping<S> mapping;
@@ -56,7 +56,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
             this.dy = dy;
         }
 
-        public Builder variables(Matrix x) {
+        public Builder variables(FastMatrix x) {
             this.x = x;
             return this;
         }
@@ -97,7 +97,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
 
     // model
     final DoubleSeq dy;
-    final Matrix x;
+    final FastMatrix x;
     final int nmissing;
     // mapping
     final IParametricMapping<S> mapping;
@@ -107,7 +107,7 @@ class RegArmaFunction<S extends IArimaModel> implements IFunction {
     final boolean mt;
 
     private RegArmaFunction(final DoubleSeq dy,
-            final Matrix x,
+            final FastMatrix x,
             final int nm,
             final IArimaMapping<S> mapping,
             final ConcentratedLikelihoodComputer cll,

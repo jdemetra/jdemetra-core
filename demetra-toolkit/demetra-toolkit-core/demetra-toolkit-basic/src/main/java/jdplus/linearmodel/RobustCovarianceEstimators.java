@@ -21,7 +21,7 @@ import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.stats.RobustCovarianceComputer;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -30,23 +30,23 @@ import jdplus.math.matrices.Matrix;
 @lombok.experimental.UtilityClass
 public class RobustCovarianceEstimators {
 
-    public Matrix hac(final LinearModel model, final DoubleSeq olsCoefficients, final WindowFunction w, final int truncationLag) {
-        Matrix x = model.variables();
+    public FastMatrix hac(final LinearModel model, final DoubleSeq olsCoefficients, final WindowFunction w, final int truncationLag) {
+        FastMatrix x = model.variables();
         DoubleSeq u = model.calcResiduals(olsCoefficients);
-        Matrix xx = SymmetricMatrix.XtX(x);
+        FastMatrix xx = SymmetricMatrix.XtX(x);
         int n = x.getRowsCount();
         xx.div(n);
-        Matrix ixx = SymmetricMatrix.inverse(xx);
+        FastMatrix ixx = SymmetricMatrix.inverse(xx);
         // multiply the columns of x by e
         x.applyByColumns(c -> c.apply(u, (a, b) -> a * b));
-        Matrix phi = RobustCovarianceComputer.covariance(x, w, truncationLag);
+        FastMatrix phi = RobustCovarianceComputer.covariance(x, w, truncationLag);
 
         // sandwich estimator
         return sandwich(phi, ixx, n);
     }
 
-    public Matrix sandwich(Matrix meat, Matrix bread, int n) {
-        Matrix omega = SymmetricMatrix.XtSX(meat, bread);
+    public FastMatrix sandwich(FastMatrix meat, FastMatrix bread, int n) {
+        FastMatrix omega = SymmetricMatrix.XtSX(meat, bread);
         omega.div(n);
         return omega;
     }
@@ -70,15 +70,15 @@ public class RobustCovarianceEstimators {
         return i->c*u.get(i);
     }
 
-    public Matrix hc(final LinearModel model, final DoubleSeq olsCoefficients, final IntToDoubleFunction w) {
+    public FastMatrix hc(final LinearModel model, final DoubleSeq olsCoefficients, final IntToDoubleFunction w) {
 
-        Matrix x = model.variables();
-        Matrix xx = SymmetricMatrix.XtX(x);
+        FastMatrix x = model.variables();
+        FastMatrix xx = SymmetricMatrix.XtX(x);
         int n = x.getRowsCount();
         xx.div(n);
-        Matrix ixx = SymmetricMatrix.inverse(xx);
+        FastMatrix ixx = SymmetricMatrix.inverse(xx);
         // multiply the columns of x by e
-        Matrix phi = Matrix.square(x.getColumnsCount());
+        FastMatrix phi = FastMatrix.square(x.getColumnsCount());
         for (int i = 0; i < n; ++i) {
             double z=w.applyAsDouble(i);
             phi.addXaXt(z*z, x.row(i));

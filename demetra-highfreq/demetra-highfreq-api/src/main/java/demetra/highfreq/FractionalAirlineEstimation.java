@@ -8,7 +8,7 @@ package demetra.highfreq;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 import demetra.modelling.OutlierDescriptor;
 import demetra.information.Explorable;
 
@@ -22,17 +22,17 @@ import demetra.information.Explorable;
 public class FractionalAirlineEstimation implements Explorable{
 
     double[] y;
-    MatrixType x;
+    Matrix x;
 
     FractionalAirline model;
 
     OutlierDescriptor[] outliers;
 
     DoubleSeq coefficients;
-    MatrixType coefficientsCovariance;
+    Matrix coefficientsCovariance;
 
     private DoubleSeq parameters, score;
-    private MatrixType parametersCovariance;
+    private Matrix parametersCovariance;
 
     LikelihoodStatistics likelihood;
 

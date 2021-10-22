@@ -19,7 +19,7 @@
 package jdplus.math.functions.minpack;
 
 import nbbrd.design.Development;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -37,14 +37,14 @@ public interface IEstimator {
      * @param problem
      * @return
      */
-    Matrix covariance(IEstimationProblem problem);
+    FastMatrix covariance(IEstimationProblem problem);
 
     /**
      * 
      * @param problem
      * @return
      */
-    Matrix curvature(IEstimationProblem problem);
+    FastMatrix curvature(IEstimationProblem problem);
 
     // / <summary>
     // / Solve an estimation problem.

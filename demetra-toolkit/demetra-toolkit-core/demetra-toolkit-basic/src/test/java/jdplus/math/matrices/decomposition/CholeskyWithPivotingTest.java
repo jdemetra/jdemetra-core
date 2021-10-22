@@ -18,7 +18,7 @@ package jdplus.math.matrices.decomposition;
 
 import ec.tstoolkit.random.JdkRNG;
 import jdplus.data.LogSign;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixFactory;
 import jdplus.math.matrices.MatrixNorms;
 import jdplus.math.matrices.SymmetricMatrix;
@@ -37,16 +37,16 @@ public class CholeskyWithPivotingTest {
 
     @Test
     public void testlcholesky() {
-        Matrix X = Matrix.make(100, 50);
+        FastMatrix X = FastMatrix.make(100, 50);
         JdkRNG rng = JdkRNG.newRandom(0);
         X.set((i, j) -> rng.nextDouble());
-        Matrix S = SymmetricMatrix.XtX(X);
+        FastMatrix S = SymmetricMatrix.XtX(X);
         CholeskyWithPivoting pchol = new CholeskyWithPivoting();
         pchol.decompose(S, -1);
-        Matrix T = pchol.getL();
+        FastMatrix T = pchol.getL();
 //        System.out.println(T.diagonal());
 
-        Matrix A = S.deepClone();
+        FastMatrix A = S.deepClone();
         SymmetricMatrix.lcholesky(S);
 //        System.out.println(S.diagonal());
 
@@ -56,9 +56,9 @@ public class CholeskyWithPivotingTest {
         assertEquals(lst.getValue(), lss.getValue(), 1e-9);
 
         int[] order = order(pchol.getPivot());
-        Matrix Tc = MatrixFactory.select(T, order, null);
+        FastMatrix Tc = MatrixFactory.select(T, order, null);
 
-        Matrix D = SymmetricMatrix.XXt(Tc).minus(A);
+        FastMatrix D = SymmetricMatrix.XXt(Tc).minus(A);
         double nm = MatrixNorms.infinityNorm(D);
         assertEquals(nm,0,1e-9);
 
@@ -74,14 +74,14 @@ public class CholeskyWithPivotingTest {
 
     public static void main(String[] arg) {
 
-        Matrix X = Matrix.make(150, 12);
+        FastMatrix X = FastMatrix.make(150, 12);
         JdkRNG rng = JdkRNG.newRandom(0);
         X.set((i, j) -> rng.nextDouble());
-        Matrix S = SymmetricMatrix.XtX(X);
+        FastMatrix S = SymmetricMatrix.XtX(X);
         int K = 1000000;
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < K; ++i) {
-            Matrix T = S.deepClone();
+            FastMatrix T = S.deepClone();
             SymmetricMatrix.lcholesky(T);
         }
         long t1 = System.currentTimeMillis();

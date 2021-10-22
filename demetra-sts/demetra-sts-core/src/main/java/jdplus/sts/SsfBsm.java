@@ -28,7 +28,7 @@ import jdplus.ssf.implementations.Loading;
 import jdplus.ssf.univariate.Measurement;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.ISsfMeasurement;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -142,7 +142,7 @@ public class SsfBsm extends Ssf {
 
     static class Bsm {
 
-        final Matrix tsvar, ltsvar;
+        final FastMatrix tsvar, ltsvar;
         final double lVar, sVar, seasVar, cVar, nVar, cDump;
         final double ccos, csin;
         final int period;
@@ -232,7 +232,7 @@ public class SsfBsm extends Ssf {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
             int sdim = getStateDim();
             int istart = data.nVar > 0 ? 1 : 0;
             if (data.cVar >= 0) {
@@ -245,7 +245,7 @@ public class SsfBsm extends Ssf {
         }
 
         @Override
-        public void Pi0(Matrix p) {
+        public void Pi0(FastMatrix p) {
             int sdim = getStateDim();
             int istart = data.nVar > 0 ? 1 : 0;
             if (data.cVar >= 0) {
@@ -262,7 +262,7 @@ public class SsfBsm extends Ssf {
         }
 
         @Override
-        public void Pf0(Matrix p) {
+        public void Pf0(FastMatrix p) {
             int i = 0;
             if (data.nVar > 0) {
                 p.set(0, 0, data.nVar);
@@ -342,7 +342,7 @@ public class SsfBsm extends Ssf {
         }
 
         @Override
-        public void V(int pos, Matrix v) {
+        public void V(int pos, FastMatrix v) {
             int i = 0;
             if (data.nVar > 0) {
                 v.set(i, i, data.nVar);
@@ -382,7 +382,7 @@ public class SsfBsm extends Ssf {
         }
 
         @Override
-        public void S(int pos, Matrix s) {
+        public void S(int pos, FastMatrix s) {
             int i = 0, j = 0;
             if (data.nVar > 0) {
                 s.set(i++, j++, Math.sqrt(data.nVar));
@@ -496,7 +496,7 @@ public class SsfBsm extends Ssf {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             int i = 0;
             if (data.nVar > 0) {
                 ++i;
@@ -518,7 +518,7 @@ public class SsfBsm extends Ssf {
                 ++i;
             }
             if (data.seasVar >= 0) {
-                Matrix seas = tr.extract(i, data.period - 1, i, data.period - 1);
+                FastMatrix seas = tr.extract(i, data.period - 1, i, data.period - 1);
                 seas.row(0).set(-1);
                 seas.subDiagonal(-1).set(1);
             }
@@ -584,7 +584,7 @@ public class SsfBsm extends Ssf {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             int i = 0;
             if (data.nVar > 0) {
                 p.add(i, i, data.nVar);

@@ -21,7 +21,7 @@ import jdplus.ssf.DataBlockResults;
 import jdplus.ssf.DataResults;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.MatrixResults;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -58,7 +58,7 @@ public class DefaultDisturbanceSmoothingResults implements IDisturbanceSmoothing
     }
 
     @Override
-    public void saveSmoothedTransitionDisturbances(int t, DataBlock u, Matrix uvar) {
+    public void saveSmoothedTransitionDisturbances(int t, DataBlock u, FastMatrix uvar) {
         U.save(t, u);
 
         if (UVar != null && uvar != null) {
@@ -99,7 +99,7 @@ public class DefaultDisturbanceSmoothingResults implements IDisturbanceSmoothing
     }
 
     @Override
-    public Matrix uVar(int pos) {
+    public FastMatrix uVar(int pos) {
         return UVar == null ? null : UVar.matrix(pos);
     }
 

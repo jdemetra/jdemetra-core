@@ -9,7 +9,6 @@ import demetra.data.Data;
 import static demetra.data.Data.copyToTempFile;
 import demetra.data.DoubleSeq;
 import demetra.data.MatrixSerializer;
-import demetra.math.matrices.MatrixType;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -17,9 +16,10 @@ import java.util.logging.Logger;
 import java.util.stream.DoubleStream;
 import jdplus.bayes.BayesRegularizedRegressionModel.ModelType;
 import jdplus.bayes.BayesRegularizedRegressionModel.Prior;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.stats.samples.Moments;
 import org.junit.Test;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -37,9 +37,9 @@ public class BayesRegularizedRegressionTest {
     public static void main(String[] args){
         try {
             File file = copyToTempFile(Data.class.getResource("/ml.txt"));
-            MatrixType ml = MatrixSerializer.read(file);
+            Matrix ml = MatrixSerializer.read(file);
             DoubleSeq y=ml.column(0);
-            Matrix X=Matrix.of(ml.extract(0,ml.getRowsCount(), 1, ml.getColumnsCount()-1));
+            FastMatrix X=FastMatrix.of(ml.extract(0,ml.getRowsCount(), 1, ml.getColumnsCount()-1));
             new BayesRegularizedRegression(
                     y, X,
                     ModelType.GAUSSIAN, 0, Prior.HORSESHOE, 1000, 5000);

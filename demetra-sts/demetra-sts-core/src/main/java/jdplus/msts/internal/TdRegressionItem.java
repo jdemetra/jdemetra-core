@@ -7,7 +7,7 @@ package jdplus.msts.internal;
 
 import demetra.data.DoubleSeq;
 import jdplus.msts.StateItem;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.msts.MstsMapping;
@@ -19,12 +19,12 @@ import demetra.timeseries.calendars.GenericTradingDays;
 import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
-import demetra.math.matrices.MatrixType;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
 import jdplus.ssf.implementations.Coefficients;
 import jdplus.ssf.implementations.Loading;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -32,8 +32,8 @@ import jdplus.ssf.implementations.Loading;
  */
 public class TdRegressionItem extends StateItem {
 
-    private final Matrix x;
-    private final Matrix mvar;
+    private final FastMatrix x;
+    private final FastMatrix mvar;
     private final VarianceInterpreter v;
 
     public TdRegressionItem(String name, TsDomain domain, int[] groups, final boolean contrast, final double var, final boolean fixed) {
@@ -70,7 +70,7 @@ public class TdRegressionItem extends StateItem {
             if (mvar == null) {
                 cmp = Coefficients.fixedCoefficients(x.getColumnsCount());
             } else {
-                Matrix xvar = mvar.deepClone();
+                FastMatrix xvar = mvar.deepClone();
                 xvar.mul(pvar);
                 cmp = Coefficients.timeVaryingCoefficients(xvar);
             }
@@ -84,28 +84,28 @@ public class TdRegressionItem extends StateItem {
         return Collections.singletonList(v);
     }
 
-    public static MatrixType tdContrasts(TsDomain domain, int[] groups) {
+    public static Matrix tdContrasts(TsDomain domain, int[] groups) {
         DayClustering dc = DayClustering.of(groups);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        Matrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
+        FastMatrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
         return td.unmodifiable();
     }
 
-    public static MatrixType rawTd(TsDomain domain, int[] groups) {
+    public static Matrix rawTd(TsDomain domain, int[] groups) {
         DayClustering dc = DayClustering.of(groups);
         GenericTradingDays gtd = GenericTradingDays.raw(dc);
-        Matrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
+        FastMatrix td = Regression.matrix(domain, new GenericTradingDaysVariable(gtd));
         return td.unmodifiable();
     }
 
-    public static Matrix generateVar(DayClustering dc, boolean contrasts) {
+    public static FastMatrix generateVar(DayClustering dc, boolean contrasts) {
         int groupsCount = dc.getGroupsCount();
-        Matrix full = Matrix.square(7);
+        FastMatrix full = FastMatrix.square(7);
         if (!contrasts) {
             full.set(-1.0 / 7.0);
         }
         full.diagonal().add(1);
-        Matrix Q = Matrix.make(groupsCount - 1, 7);
+        FastMatrix Q = FastMatrix.make(groupsCount - 1, 7);
         int[] gdef = dc.getGroupsDefinition();
         for (int i = 1; i < groupsCount; ++i) {
             for (int j = 0; j < 7; ++j) {
@@ -123,7 +123,7 @@ public class TdRegressionItem extends StateItem {
         if (mvar == null) {
             return Coefficients.fixedCoefficients(x.getColumnsCount());
         } else {
-            Matrix xvar = mvar.deepClone();
+            FastMatrix xvar = mvar.deepClone();
             xvar.mul(pvar);
             return Coefficients.timeVaryingCoefficients(xvar);
         }

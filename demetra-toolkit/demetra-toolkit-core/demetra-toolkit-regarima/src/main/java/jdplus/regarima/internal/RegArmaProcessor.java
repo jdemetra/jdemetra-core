@@ -19,7 +19,7 @@ package jdplus.regarima.internal;
 import jdplus.regarima.RegArmaModel;
 import jdplus.arima.IArimaModel;
 import jdplus.math.functions.IFunctionDerivatives;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.arima.estimation.IArimaMapping;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
@@ -54,7 +54,7 @@ public class RegArmaProcessor {
         boolean ok = minimizer.minimize(fn.ssqEvaluate(start));
         RegArmaSsqFunction.Evaluation<S> rslt = (RegArmaSsqFunction.Evaluation<S>) minimizer.getResult();
         double objective;
-        Matrix hessian;
+        FastMatrix hessian;
         double[] gradient;
         if (fast) {
             gradient = minimizer.gradientAtMinimum().toArray();
@@ -67,9 +67,9 @@ public class RegArmaProcessor {
             // it is normal: coeff and params are asymptotically independent...
             DataBlock res = model.asLinearModel().calcResiduals(rslt.allCoefficients());
             int nm = model.getMissingCount();
-            Matrix xm = Matrix.EMPTY;
+            FastMatrix xm = FastMatrix.EMPTY;
             if (nm > 0) {
-                Matrix x = model.getX();
+                FastMatrix x = model.getX();
                 xm = x.extract(0, x.getRowsCount(), 0, nm);
             }
             RegArmaFunction fnr = RegArmaFunction.builder(res)

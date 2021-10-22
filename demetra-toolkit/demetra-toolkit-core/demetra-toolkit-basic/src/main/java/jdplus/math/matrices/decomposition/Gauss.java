@@ -18,7 +18,7 @@ package jdplus.math.matrices.decomposition;
 
 import nbbrd.design.Development;
 import demetra.math.Constants;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixException;
 
 /**
@@ -29,11 +29,11 @@ import jdplus.math.matrices.MatrixException;
 @lombok.experimental.UtilityClass
 public class Gauss {
 
-    public LUDecomposition decompose(Matrix M) {
+    public LUDecomposition decompose(FastMatrix M) {
         return decompose(M, Constants.getEpsilon());
     }
 
-    public LUDecomposition decompose(Matrix M, double eps) {
+    public LUDecomposition decompose(FastMatrix M, double eps) {
         int n = M.getColumnsCount();
         if (M.getRowsCount() != n) {
             throw new MatrixException(MatrixException.SQUARE);
@@ -83,6 +83,6 @@ public class Gauss {
                 }
             }
         }
-        return new LUDecomposition(Matrix.builder(lu).nrows(n).ncolumns(n).build(), piv);
+        return new LUDecomposition(FastMatrix.builder(lu).nrows(n).ncolumns(n).build(), piv);
     }
 }

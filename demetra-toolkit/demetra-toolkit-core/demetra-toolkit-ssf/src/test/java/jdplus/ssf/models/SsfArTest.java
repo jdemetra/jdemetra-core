@@ -7,7 +7,7 @@ package jdplus.ssf.models;
 
 import jdplus.arima.ssf.SsfAr;
 import jdplus.arima.AutoCovarianceFunction;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixNorms;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.ssf.StateComponent;
@@ -28,8 +28,8 @@ public class SsfArTest {
     public void testInitialization() {
         StateComponent cmp = SsfAr.of(new double[]{1.2, -.6}, 1, 5);
         int dim = cmp.initialization().getStateDim();
-        Matrix I = StationaryInitialization.of(cmp.dynamics(), dim);
-        Matrix P = Matrix.square(dim);
+        FastMatrix I = StationaryInitialization.of(cmp.dynamics(), dim);
+        FastMatrix P = FastMatrix.square(dim);
         cmp.initialization().Pf0(P);
         assertTrue(MatrixNorms.frobeniusNorm(I.minus(P)) < 1e-9);
     }

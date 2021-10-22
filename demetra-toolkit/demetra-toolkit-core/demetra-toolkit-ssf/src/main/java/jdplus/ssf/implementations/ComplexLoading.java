@@ -19,7 +19,7 @@ package jdplus.ssf.implementations;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.ssf.ISsfLoading;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -73,14 +73,14 @@ class ComplexLoading implements ISsfLoading {
     }
 
     @Override
-    public double ZVZ(int pos, Matrix v) {
+    public double ZVZ(int pos, FastMatrix v) {
         double x = 0;
         for (int i = 0; i < loadings.length; ++i) {
-            Matrix D = v.extract(start[i], dim[i], start[i], dim[i]);
+            FastMatrix D = v.extract(start[i], dim[i], start[i], dim[i]);
             x += loadings[i].ZVZ(pos, D);
             for (int j = i + 1; j < loadings.length; ++j) {
                 DataBlock cur = tmp.range(0, dim[i]);
-                Matrix C = v.extract(start[j], dim[j], start[i], dim[i]);
+                FastMatrix C = v.extract(start[j], dim[j], start[i], dim[i]);
                 loadings[j].ZM(pos, C, cur);
                 x += 2 * loadings[i].ZX(pos, cur);
             }
@@ -89,19 +89,19 @@ class ComplexLoading implements ISsfLoading {
     }
 
     @Override
-    public void VpZdZ(int pos, Matrix V, double d) {
+    public void VpZdZ(int pos, FastMatrix V, double d) {
         if (d == 0) {
             return;
         }
         for (int i = 0; i < loadings.length; ++i) {
-            Matrix D = V.extract(start[i], dim[i], start[i], dim[i]);
+            FastMatrix D = V.extract(start[i], dim[i], start[i], dim[i]);
             loadings[i].VpZdZ(pos, D, d);
             for (int j = i + 1; j < loadings.length; ++j) {
                 if (dim[j] < dim[i]) {
                     DataBlock cur = tmp.range(0, dim[j]);
                     cur.set(0);
                     loadings[j].Z(pos, cur); // Zj
-                    Matrix C = V.extract(start[i], dim[i], start[j], dim[j]);
+                    FastMatrix C = V.extract(start[i], dim[i], start[j], dim[j]);
                     DataBlockIterator cols = C.columnsIterator();
                     int k = 0;
                     while (cols.hasNext()) {
@@ -111,13 +111,13 @@ class ComplexLoading implements ISsfLoading {
                             loadings[i].XpZd(pos, n, d * zj);
                         }
                     }
-                    Matrix CC = V.extract(start[j], dim[j], start[i], dim[i]);
+                    FastMatrix CC = V.extract(start[j], dim[j], start[i], dim[i]);
                     CC.copyTranspose(C);
                 } else {
                     DataBlock cur = tmp.range(0, dim[i]);
                     cur.set(0);
                     loadings[i].Z(pos, cur); // Zj
-                    Matrix C = V.extract(start[j], dim[j], start[i], dim[i]);
+                    FastMatrix C = V.extract(start[j], dim[j], start[i], dim[i]);
                     DataBlockIterator cols = C.columnsIterator();
                     int k = 0;
                     while (cols.hasNext()) {
@@ -127,7 +127,7 @@ class ComplexLoading implements ISsfLoading {
                             loadings[j].XpZd(pos, n, d * zi);
                         }
                     }
-                    Matrix CC = V.extract(start[i], dim[i], start[j], dim[j]);
+                    FastMatrix CC = V.extract(start[i], dim[i], start[j], dim[j]);
                     CC.copyTranspose(C);
                 }
             }

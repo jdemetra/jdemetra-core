@@ -7,7 +7,7 @@ package jdplus.linearsystem;
 
 import java.util.Random;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.matrices.decomposition.CroutDoolittle;
 import jdplus.math.matrices.decomposition.Gauss;
@@ -28,7 +28,7 @@ public class LUSolverTest {
 
         Random rnd = new Random(0);
         int n = 4;
-        Matrix M = Matrix.square(n);
+        FastMatrix M = FastMatrix.square(n);
         M.set((i, j) -> rnd.nextDouble());
         DataBlock x = DataBlock.make(n);
         x.set(rnd::nextDouble);
@@ -45,7 +45,7 @@ public class LUSolverTest {
 
         Random rnd = new Random(0);
         int n = 40;
-        Matrix M = Matrix.square(n);
+        FastMatrix M = FastMatrix.square(n);
         M.set((i, j) -> rnd.nextDouble());
         DataBlock x = DataBlock.make(n);
         M.column(36).set(M.column(3));
@@ -73,7 +73,7 @@ public class LUSolverTest {
     public static void main(String[] args) {
         Random rnd = new Random(0);
         int n = 20;
-        Matrix M = Matrix.square(n);
+        FastMatrix M = FastMatrix.square(n);
         M.set((i, j) -> rnd.nextDouble());
         DataBlock x = DataBlock.make(n);
         x.set(rnd::nextDouble);

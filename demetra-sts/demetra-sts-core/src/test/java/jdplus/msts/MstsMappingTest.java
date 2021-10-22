@@ -11,7 +11,7 @@ import jdplus.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
 import jdplus.math.functions.IParametersDomain;
 import jdplus.math.functions.ParamValidation;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.ssf.akf.AkfToolkit;
@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import org.junit.Test;
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -48,9 +48,9 @@ public class MstsMappingTest {
     public void testSimple() throws URISyntaxException, IOException {
 
         File file = Data.copyToTempFile(MultivariateCompositeSsf.class.getResource("/mssf1"));
-        MatrixType data = MatrixSerializer.read(file, "\t|,");
+        Matrix data = MatrixSerializer.read(file, "\t|,");
 
-        Matrix D = Matrix.make(data.getRowsCount(), 4);
+        FastMatrix D = FastMatrix.make(data.getRowsCount(), 4);
         D.column(0).copy(data.column(0));
         D.column(1).copy(data.column(9));
         D.column(2).copy(data.column(2));

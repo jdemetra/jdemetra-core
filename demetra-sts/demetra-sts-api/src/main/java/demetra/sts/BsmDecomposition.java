@@ -17,7 +17,6 @@ package demetra.sts;
  * limitations under the Licence.
  */
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
 import nbbrd.design.Development;
 import nbbrd.design.Immutable;
 import demetra.modelling.ComponentInformation;
@@ -28,6 +27,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDataTable;
 import java.util.ArrayList;
 import java.util.List;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -141,7 +141,7 @@ public final class BsmDecomposition {
             for (int i=0, j=0; i<m; ++i, j+=n){
                 all.get(i).copyTo(data, j);
             }
-            builder.append(MatrixType.toString(MatrixType.of(data, n, m), null));
+            builder.append(Matrix.toString(Matrix.of(data, n, m), null));
         }
         builder.append("\r\n");
     }

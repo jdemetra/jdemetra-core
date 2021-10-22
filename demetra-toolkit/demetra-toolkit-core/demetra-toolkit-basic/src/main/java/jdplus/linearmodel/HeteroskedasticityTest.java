@@ -17,8 +17,8 @@
 package jdplus.linearmodel;
 
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
 import demetra.stats.StatisticalTest;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -68,7 +68,7 @@ public class HeteroskedasticityTest {
         if (!lsr.isMean()) {
             throw new IllegalArgumentException("lm should contain a mean correction");
         }
-        MatrixType X = lsr.X();
+        Matrix X = lsr.X();
         DoubleSeq e = studentized ? lsr.studentizedResiduals() : lsr.residuals();
         // Be careful: X contains the mean correction
         int n = X.getRowsCount(), m = X.getColumnsCount();

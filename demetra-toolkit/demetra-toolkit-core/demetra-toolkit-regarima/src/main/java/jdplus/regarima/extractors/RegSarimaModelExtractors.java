@@ -6,10 +6,9 @@
 package jdplus.regarima.extractors;
 
 import demetra.information.InformationMapping;
-import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsPeriod;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.regsarima.regular.RegSarimaModel;
 import demetra.information.BasicInformationExtractor;
@@ -29,6 +28,7 @@ import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.timeseries.regression.modelling.RegressionItem;
 import nbbrd.design.Development;
 import nbbrd.service.ServiceProvider;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -201,8 +201,8 @@ public class RegSarimaModelExtractors {
 //        });
 // 
 //        MAPPING.setList(InformationSet.item(REGRESSION, USER), 1, 31, RegressionItem.class, (source, i) -> source.getRegressionItem(IUserTsVariable.class, i - 1));
-            set(BasicInformationExtractor.concatenate(MAX, PCORR), MatrixType.class, source -> {
-                Matrix cov = Matrix.of(source.getEstimation().getParameters().getCovariance());
+            set(BasicInformationExtractor.concatenate(MAX, PCORR), Matrix.class, source -> {
+                FastMatrix cov = FastMatrix.of(source.getEstimation().getParameters().getCovariance());
                 DataBlock diag = cov.diagonal();
                 for (int i = 0; i < cov.getRowsCount(); ++i) {
                     double vi = diag.get(i);

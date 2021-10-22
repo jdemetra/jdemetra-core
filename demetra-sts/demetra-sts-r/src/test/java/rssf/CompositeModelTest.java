@@ -12,7 +12,7 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.MatrixSerializer;
 import demetra.math.functions.Optimizer;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.msts.CompositeModel;
 import jdplus.msts.CompositeModelEstimation;
 import jdplus.ssf.implementations.Loading;
@@ -23,12 +23,12 @@ import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Test;
-import demetra.math.matrices.MatrixType;
 import demetra.ssf.SsfInitialization;
 import demetra.timeseries.TsData;
 import jdplus.msts.MstsMapping;
 import jdplus.sts.LocalLevel;
 import jdplus.sts.LocalLinearTrend;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -36,10 +36,10 @@ import jdplus.sts.LocalLinearTrend;
  */
 public class CompositeModelTest {
 
-    static final MatrixType data;
+    static final Matrix data;
 
     static {
-        MatrixType tmp = null;
+        Matrix tmp = null;
         try {
             URI uri = CompositeModels.class.getResource("/mssf1").toURI();
             tmp = MatrixSerializer.read(new File(uri), "\t|,");
@@ -63,7 +63,7 @@ public class CompositeModelTest {
         eq.add("td", 1, true, null);
         model.add(eq);
         int len = Data.PROD.length;
-        Matrix M = Matrix.make(len, 1);
+        FastMatrix M = FastMatrix.make(len, 1);
         M.column(0).copyFrom(Data.PROD, 0);
         CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Augmented_NoCollapsing, Optimizer.LevenbergMarquardt, 1e-15, null);
         System.out.println(DataBlock.of(rslt.getFullParameters()));
@@ -84,7 +84,7 @@ public class CompositeModelTest {
         eq.add("n", .1, false, null);
         model.add(eq);
         int len = Data.ABS_RETAIL.length;
-        Matrix M = Matrix.make(len, 1);
+        FastMatrix M = FastMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Augmented_NoCollapsing, Optimizer.LevenbergMarquardt, 1e-15, null);
         System.out.println(DataBlock.of(rslt.getFullParameters()));
@@ -96,7 +96,7 @@ public class CompositeModelTest {
     @Test
     public void testBsmVar() {
         int len = Data.ABS_RETAIL.length;
-        Matrix M = Matrix.make(len, 1);
+        FastMatrix M = FastMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         double[] std=new double[len];
         for (int i=0; i<len; ++i){
@@ -125,7 +125,7 @@ public class CompositeModelTest {
 
     @Test
     public void testX() {
-        Matrix x = Matrix.make(data.getRowsCount(), 6);
+        FastMatrix x = FastMatrix.make(data.getRowsCount(), 6);
         x.column(0).copy(data.column(0));
         x.column(1).copy(data.column(9));
         x.column(2).copy(data.column(2));

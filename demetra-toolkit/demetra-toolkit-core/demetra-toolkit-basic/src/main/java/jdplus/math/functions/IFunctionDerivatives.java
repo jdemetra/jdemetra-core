@@ -19,7 +19,7 @@ package jdplus.math.functions;
 
 import nbbrd.design.Development;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 
 /**
@@ -43,11 +43,11 @@ public interface IFunctionDerivatives {
      * 
      * @param hessian
      */
-    void hessian(Matrix hessian);
+    void hessian(FastMatrix hessian);
     
-    default Matrix hessian(){
+    default FastMatrix hessian(){
         int n=getFunction().getDomain().getDim();
-        Matrix H=Matrix.square(n);
+        FastMatrix H=FastMatrix.square(n);
         hessian(H);
         return H;
     }

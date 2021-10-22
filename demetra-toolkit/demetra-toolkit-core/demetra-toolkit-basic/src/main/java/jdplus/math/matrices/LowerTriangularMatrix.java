@@ -17,7 +17,7 @@ import demetra.dstats.RandomNumberGenerator;
 @lombok.experimental.UtilityClass
 public class LowerTriangularMatrix {
 
-    public void randomize(Matrix M, RandomNumberGenerator rng) {
+    public void randomize(FastMatrix M, RandomNumberGenerator rng) {
         M.set((r, c) -> (c > r) ? 0 : rng.nextDouble());
     }
 
@@ -28,7 +28,7 @@ public class LowerTriangularMatrix {
      * @param B
      * @throws MatrixException
      */
-    public void solveXL(final Matrix L, final Matrix B) throws MatrixException {
+    public void solveXL(final FastMatrix L, final FastMatrix B) throws MatrixException {
         solveXL(L, B, 0);
     }
 
@@ -41,7 +41,7 @@ public class LowerTriangularMatrix {
      * @param zero
      * @throws MatrixException
      */
-    public void solveXL(final Matrix L, final Matrix B, double zero) throws MatrixException {
+    public void solveXL(final FastMatrix L, final FastMatrix B, double zero) throws MatrixException {
         int nc = B.getColumnsCount();
         if (nc != L.getRowsCount()) {
             throw new MatrixException(MatrixException.DIM);
@@ -53,7 +53,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    public void solveX1L(final Matrix L, final Matrix B) throws MatrixException {
+    public void solveX1L(final FastMatrix L, final FastMatrix B) throws MatrixException {
         int nc = B.getColumnsCount();
         if (nc != L.getRowsCount()) {
             throw new MatrixException(MatrixException.DIM);
@@ -72,15 +72,15 @@ public class LowerTriangularMatrix {
      * @param x
      * @param zero
      */
-    public void solveLx(Matrix L, DataBlock x, double zero) {
+    public void solveLx(FastMatrix L, DataBlock x, double zero) {
         solveLx(L, x.getStorage(), x.getStartPosition(), x.getIncrement(), zero);
     }
 
-    public void solveLx(Matrix L, DataBlock x) {
+    public void solveLx(FastMatrix L, DataBlock x) {
         solveLx(L, x.getStorage(), x.getStartPosition(), x.getIncrement(), 0);
     }
 
-    public void solveL1x(Matrix L, DataBlock x) {
+    public void solveL1x(FastMatrix L, DataBlock x) {
         solveL1x(L, x.getStorage(), x.getStartPosition(), x.getIncrement());
     }
     
@@ -90,7 +90,7 @@ public class LowerTriangularMatrix {
      * @param L
      * @param x
      */
-    public void solvexL(Matrix L, DataBlock x) {
+    public void solvexL(FastMatrix L, DataBlock x) {
         solveLtx(L, x.getStorage(), x.getStartPosition(), x.getIncrement(), 0);
     }
 
@@ -100,7 +100,7 @@ public class LowerTriangularMatrix {
      * @param L L is a unitary lower triangular matrix (diag(L)=1)
      * @param x
      */
-    public void solvexL1(Matrix L, DataBlock x) {
+    public void solvexL1(FastMatrix L, DataBlock x) {
         solveL1tx(L, x.getStorage(), x.getStartPosition(), x.getIncrement());
     }
     /**
@@ -110,7 +110,7 @@ public class LowerTriangularMatrix {
      * @param x
      * @param zero
      */
-    public void solvexL(Matrix L, DataBlock x, double zero) {
+    public void solvexL(FastMatrix L, DataBlock x, double zero) {
         solveLtx(L, x.getStorage(), x.getStartPosition(), x.getIncrement(), zero);
     }
 
@@ -122,7 +122,7 @@ public class LowerTriangularMatrix {
      * @param zero
      * @throws MatrixException
      */
-    public void solveXLt(final Matrix L, final Matrix M, double zero) throws MatrixException {
+    public void solveXLt(final FastMatrix L, final FastMatrix M, double zero) throws MatrixException {
         int nr = M.getColumnsCount();
         if (nr != L.getRowsCount()) {
             throw new MatrixException(MatrixException.DIM);
@@ -140,7 +140,7 @@ public class LowerTriangularMatrix {
      * @param M
      * @throws MatrixException
      */
-    public void solveXLt(final Matrix L, final Matrix M) throws MatrixException {
+    public void solveXLt(final FastMatrix L, final FastMatrix M) throws MatrixException {
         solveXLt(L, M, 0);
     }
 
@@ -152,7 +152,7 @@ public class LowerTriangularMatrix {
      * @param zero
      * @throws MatrixException
      */
-    public void solveLtX(final Matrix L, final Matrix M, double zero) throws MatrixException {
+    public void solveLtX(final FastMatrix L, final FastMatrix M, double zero) throws MatrixException {
         int nr = M.getRowsCount();
         if (nr != L.getRowsCount()) {
             throw new MatrixException(MatrixException.DIM);
@@ -164,15 +164,15 @@ public class LowerTriangularMatrix {
         }
     }
 
-    public void solveLtX(final Matrix L, final Matrix M) throws MatrixException {
+    public void solveLtX(final FastMatrix L, final FastMatrix M) throws MatrixException {
         solveLtX(L, M, 0);
     }
 
-    public void solveLX(final Matrix L, final Matrix M) throws MatrixException {
+    public void solveLX(final FastMatrix L, final FastMatrix M) throws MatrixException {
         solveLX(L, M, 0);
     }
 
-    public void solveLX(final Matrix L, final Matrix M, double zero) throws MatrixException {
+    public void solveLX(final FastMatrix L, final FastMatrix M, double zero) throws MatrixException {
         int nr = M.getRowsCount(), nc = M.getColumnsCount();
         if (nr != L.getRowsCount()) {
             throw new MatrixException(MatrixException.DIM);
@@ -185,7 +185,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    public void solveL1X(final Matrix L, final Matrix M) throws MatrixException {
+    public void solveL1X(final FastMatrix L, final FastMatrix M) throws MatrixException {
         int nr = M.getRowsCount(), nc = M.getColumnsCount();
         if (nr != L.getRowsCount()) {
             throw new MatrixException(MatrixException.DIM);
@@ -204,7 +204,7 @@ public class LowerTriangularMatrix {
      * @param L
      * @param x
      */
-    public void Lx(Matrix L, DataBlock x) {
+    public void Lx(FastMatrix L, DataBlock x) {
         int incx = x.getIncrement();
         if (incx == 1) {
             Lx(L, x.getStorage(), x.getStartPosition());
@@ -225,7 +225,7 @@ public class LowerTriangularMatrix {
      * @param L
      * @param x
      */
-    public void xL(Matrix L, DataBlock x) {
+    public void xL(FastMatrix L, DataBlock x) {
         int incx = x.getIncrement();
         if (incx == 1) {
             Ltx(L, x.getStorage(), x.getStartPosition());
@@ -240,7 +240,7 @@ public class LowerTriangularMatrix {
      * @param L
      * @param M
      */
-    public void LM(Matrix L, Matrix M) {
+    public void LM(FastMatrix L, FastMatrix M) {
         int mstart = M.getStartPosition(), mlda = M.getColumnIncrement(), n = M.getColumnsCount();
         double[] pm = M.getStorage();
         int cmax = mstart + mlda * n;
@@ -259,7 +259,7 @@ public class LowerTriangularMatrix {
      * @param L
      * @param M
      */
-    public void ML(Matrix L, Matrix M) {
+    public void ML(FastMatrix L, FastMatrix M) {
         int mstart = M.getStartPosition(), mlda = M.getColumnIncrement(), m = M.getRowsCount();
         double[] pm = M.getStorage();
         int cmax = mstart + m;
@@ -274,7 +274,7 @@ public class LowerTriangularMatrix {
      * @param L
      * @param M
      */
-    public void LtM(Matrix L, Matrix M) {
+    public void LtM(FastMatrix L, FastMatrix M) {
         DataBlockIterator cols = M.columnsIterator();
         while (cols.hasNext()) {
             DataBlock c = cols.next();
@@ -288,7 +288,7 @@ public class LowerTriangularMatrix {
      * @param L
      * @param M
      */
-    public void MLt(Matrix L, Matrix M) {
+    public void MLt(FastMatrix L, FastMatrix M) {
         DataBlockIterator rows = M.rowsIterator();
         while (rows.hasNext()) {
             DataBlock c = rows.next();
@@ -296,7 +296,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    public void toLower(Matrix M) {
+    public void toLower(FastMatrix M) {
         int m = M.getRowsCount(), n = M.getColumnsCount();
         if (m != n) {
             throw new MatrixException(MatrixException.SQUARE);
@@ -322,7 +322,7 @@ public class LowerTriangularMatrix {
      * @throws MatrixException when the matrix is non invertible (some elements
      * of the diagonal are 0).
      */
-    public Matrix inverse(final Matrix L) throws MatrixException {
+    public FastMatrix inverse(final FastMatrix L) throws MatrixException {
         if (L.diagonal().anyMatch(x -> x == 0)) {
             throw new MatrixException(MatrixException.SINGULAR);
         }
@@ -331,16 +331,16 @@ public class LowerTriangularMatrix {
             throw new MatrixException(MatrixException.SQUARE);
         }
 
-        Matrix IL = Matrix.identity(n);
+        FastMatrix IL = FastMatrix.identity(n);
         solveLX(L, IL);
         return IL;
     }
 
-    public LogSign logDeterminant(Matrix L) {
+    public LogSign logDeterminant(FastMatrix L) {
         return LogSign.of(L.diagonal());
     }
 
-    public double determinant(Matrix L) {
+    public double determinant(FastMatrix L) {
         LogSign ls = logDeterminant(L);
         if (ls == null) {
             return 0;
@@ -349,7 +349,7 @@ public class LowerTriangularMatrix {
         return ls.isPositive() ? val : -val;
     }
 
-    private void Lx(Matrix L, double[] px, int startx) {
+    private void Lx(FastMatrix L, double[] px, int startx) {
         int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
         double[] pl = L.getStorage();
         int xend = startx + n;
@@ -364,7 +364,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    private void Lx(Matrix L, double[] px, int startx, int incx) {
+    private void Lx(FastMatrix L, double[] px, int startx, int incx) {
         int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
         double[] pl = L.getStorage();
         int xend = startx + incx * n;
@@ -379,7 +379,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    private void Ltx(Matrix L, double[] px, int startx) {
+    private void Ltx(FastMatrix L, double[] px, int startx) {
         int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
         double[] pl = L.getStorage();
         int xend = startx + n;
@@ -392,7 +392,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    private void Ltx(Matrix L, double[] px, int startx, int incx) {
+    private void Ltx(FastMatrix L, double[] px, int startx, int incx) {
         int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
         double[] pl = L.getStorage();
         int xend = startx + n * incx, du = lda + 1;
@@ -405,7 +405,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    private void solveLx(Matrix L, double[] px, int startx, int incx, double zero) {
+    private void solveLx(FastMatrix L, double[] px, int startx, int incx, double zero) {
         int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
         double[] pl = L.getStorage();
         int dl = lda + 1;
@@ -457,7 +457,7 @@ public class LowerTriangularMatrix {
      * @param startx
      * @param incx
      */
-    private void solveL1x(Matrix L, double[] px, int startx, int incx) {
+    private void solveL1x(FastMatrix L, double[] px, int startx, int incx) {
         int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
         double[] pl = L.getStorage();
         int dl = lda + 1;
@@ -480,7 +480,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    private void solveLtx(Matrix L, double[] px, int startx, int incx, double zero) {
+    private void solveLtx(FastMatrix L, double[] px, int startx, int incx, double zero) {
         int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
         double[] pl = L.getStorage();
         if (incx == 1) {
@@ -523,7 +523,7 @@ public class LowerTriangularMatrix {
         }
     }
 
-    private void solveL1tx(Matrix L, double[] px, int startx, int incx) {
+    private void solveL1tx(FastMatrix L, double[] px, int startx, int incx) {
         int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
         double[] pl = L.getStorage();
         if (incx == 1) {

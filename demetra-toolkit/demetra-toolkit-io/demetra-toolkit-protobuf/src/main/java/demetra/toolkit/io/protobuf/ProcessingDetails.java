@@ -18,9 +18,9 @@ package demetra.toolkit.io.protobuf;
 
 import demetra.data.DoubleSeq;
 import demetra.data.Iterables;
-import demetra.math.matrices.MatrixType;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -53,7 +53,7 @@ public class ProcessingDetails {
                 .build();
     }
 
-    ToolkitProtos.ProcessingDetail of(MatrixType matrix) {
+    ToolkitProtos.ProcessingDetail of(Matrix matrix) {
         return ToolkitProtos.ProcessingDetail.newBuilder()
                 .setMatrix(ToolkitProtosUtility.convert(matrix))
                 .build();
@@ -72,8 +72,8 @@ public class ProcessingDetails {
             return null;
         } else if (data instanceof TsData) {
             return of((TsData) data);
-        } else if (data instanceof MatrixType) {
-            return of((MatrixType) data);
+        } else if (data instanceof Matrix) {
+            return of((Matrix) data);
         } else if (data instanceof DoubleSeq) {
             return of((DoubleSeq) data);
         } else if (data instanceof StatisticalTest) {

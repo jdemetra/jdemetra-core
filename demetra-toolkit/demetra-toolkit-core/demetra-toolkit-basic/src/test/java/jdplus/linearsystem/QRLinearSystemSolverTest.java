@@ -7,7 +7,7 @@ package jdplus.linearsystem;
 
 import java.util.Random;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -26,7 +26,7 @@ public class QRLinearSystemSolverTest {
         
         Random rnd=new Random(0);
         int n=10;
-        Matrix M=Matrix.square(n);
+        FastMatrix M=FastMatrix.square(n);
         M.set((i, j)->rnd.nextDouble());
         DataBlock x=DataBlock.make(n);
         x.set(rnd::nextDouble);

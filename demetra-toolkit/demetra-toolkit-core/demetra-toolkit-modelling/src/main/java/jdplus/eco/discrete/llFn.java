@@ -25,7 +25,7 @@ import jdplus.math.functions.IFunction;
 import jdplus.math.functions.IFunctionDerivatives;
 import jdplus.math.functions.IFunctionPoint;
 import jdplus.math.functions.IParametersDomain;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 
 /**
@@ -128,13 +128,13 @@ class llFn implements IFunction {
         return g;
     }
 
-    public void logLikelihoodHessian(DoubleSeq b, Matrix h) {
+    public void logLikelihoodHessian(DoubleSeq b, FastMatrix h) {
         DataBlockIterator rows = model.X.rowsIterator();
         int pos = 0;
         ICumulativeDistributionFunction cdf = model.getCdf();
         while (rows.hasNext()) {
             DataBlock X = rows.next();
-            Matrix XX = SymmetricMatrix.xxt(X);
+            FastMatrix XX = SymmetricMatrix.xxt(X);
             double x = X.dot(b);
             double f = cdf.f(x);
             double cf = 1 - f;
@@ -209,7 +209,7 @@ class llFn implements IFunction {
         }
 
         @Override
-        public void hessian(Matrix hessian) {
+        public void hessian(FastMatrix hessian) {
             logLikelihoodHessian(parameters, hessian);
             hessian.chs();
         }

@@ -8,7 +8,7 @@ package jdplus.data;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -25,7 +25,7 @@ public class DoublesTest {
 
     @Test
     public void testOp() {
-        Matrix m = Matrix.make(200, 20);
+        FastMatrix m = FastMatrix.make(200, 20);
         Random rnd = new Random();
         m.set((i, j) -> rnd.nextDouble());
         DoubleSeq a = m.column(0);
@@ -41,7 +41,7 @@ public class DoublesTest {
 
     public static void stressTestOp() {
         int K = 100000;
-        Matrix m = Matrix.make(200, 20);
+        FastMatrix m = FastMatrix.make(200, 20);
         Random rnd = new Random();
         m.set((i, j) -> rnd.nextDouble());
         long t0 = System.currentTimeMillis();
@@ -67,7 +67,7 @@ public class DoublesTest {
 
     public static void main(String[] arg) {
         int K = 100000;
-        Matrix m = Matrix.make(1000, 30);
+        FastMatrix m = FastMatrix.make(1000, 30);
         Random rnd = new Random();
         m.set((i, j) -> rnd.nextDouble());
         long t0 = System.currentTimeMillis();

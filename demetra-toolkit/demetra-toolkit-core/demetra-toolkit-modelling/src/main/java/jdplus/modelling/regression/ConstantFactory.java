@@ -8,7 +8,7 @@ package jdplus.modelling.regression;
 import demetra.timeseries.regression.Constant;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesInterval;
 
 /**
@@ -22,13 +22,13 @@ class ConstantFactory implements RegressionVariableFactory<Constant>{
     private ConstantFactory(){}
 
     @Override
-    public boolean fill(Constant var, TsPeriod start, Matrix buffer) {
+    public boolean fill(Constant var, TsPeriod start, FastMatrix buffer) {
         buffer.set(1);
         return true;
     }
 
     @Override
-    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(Constant var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(Constant var, D domain, FastMatrix buffer) {
         buffer.set(1);
         return true;
     }

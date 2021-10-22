@@ -20,7 +20,7 @@ import jdplus.data.DataBlock;
 import nbbrd.design.Development;
 import demetra.math.Constants;
 import jdplus.math.matrices.DataPointer;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * A Householder reflection is represented by a matrix of the form H = I -
@@ -109,7 +109,7 @@ public class HouseholderReflection implements IVectorTransformation {
         }
     }
 
-    void lapply(Matrix M) {
+    void lapply(FastMatrix M) {
         if (beta == 0) {
             return;
         }

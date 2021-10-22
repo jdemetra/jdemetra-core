@@ -21,7 +21,7 @@ import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
 import jdplus.math.linearfilters.BackFilter;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.UnitRoots;
 import jdplus.ssf.dk.DkToolkit;

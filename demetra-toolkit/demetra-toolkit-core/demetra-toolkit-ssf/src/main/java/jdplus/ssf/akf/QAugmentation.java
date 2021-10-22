@@ -23,7 +23,7 @@ import jdplus.math.matrices.decomposition.ElementaryTransformations;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.ssf.State;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -43,14 +43,14 @@ public class QAugmentation {
     // s' * S * s = b * a' * S * a * b' = b * b'
     // q - s' * S * s = c * c
     // S * s = - S * a * b' = - a'^-1 * b'
-    private Matrix Q, B;
+    private FastMatrix Q, B;
     private int n, nd;
     private DeterminantalTerm det = new DeterminantalTerm();
 
     public void prepare(final int nd, final int nvars) {
         clear();
         this.nd = nd;
-        Q = Matrix.make(nd + 1, nd + 1 + nvars);
+        Q = FastMatrix.make(nd + 1, nd + 1 + nvars);
     }
 
     public void clear() {
@@ -63,7 +63,7 @@ public class QAugmentation {
         return n-nd;
     }
 
-//    public void update(Matrix E, DataBlock2 U) {
+//    public void update(FastMatrix E, DataBlock2 U) {
 //        Q.subMatrix(0, nd, nd + 1, nd + 1 + nvars).copy(E.subMatrix());
 //        Q.row(nd).range(nd + 1, nd + 1 + nvars).copy(U);
 //        ec.tstoolkit.maths.matrices.ElementaryTransformations.fastGivensTriangularize(Q.subMatrix());
@@ -83,7 +83,7 @@ public class QAugmentation {
         ElementaryTransformations.fastGivensTriangularize(Q);
     }
 
-    public Matrix a() {
+    public FastMatrix a() {
         return Q.extract(0, nd, 0, nd);
     }
 
@@ -100,7 +100,7 @@ public class QAugmentation {
  More exactly, we provide B*a^-1'
      * @return 
      */
-    public Matrix B(){
+    public FastMatrix B(){
         return B;
     }
 
@@ -129,7 +129,7 @@ public class QAugmentation {
         // update the state vector
         B =state.B().deepClone();
         int d = B.getColumnsCount();
-        Matrix S = a();
+        FastMatrix S = a();
         // aC'=B' <-> Ca'=B <-> C=B*a'^-1
         LowerTriangularMatrix.solveXLt(S, B);
         for (int i = 0; i < d; ++i) {

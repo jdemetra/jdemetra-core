@@ -39,19 +39,19 @@ public class MatrixOperations {
         return COMPUTER.get();
     }
 
-    public MatrixType At(MatrixType A) {
+    public Matrix At(Matrix A) {
         return getComputer().At(A);
     }
 
-    public MatrixType AB(MatrixType A, MatrixType B) {
+    public Matrix AB(Matrix A, Matrix B) {
         return getComputer().AB(A, B);
     }
 
-    public MatrixType ABt(MatrixType A, MatrixType B) {
+    public Matrix ABt(Matrix A, Matrix B) {
         return getComputer().ABt(A, B);
     }
 
-    public MatrixType AtB(MatrixType A, MatrixType B) {
+    public Matrix AtB(Matrix A, Matrix B) {
         return getComputer().AtB(A, B);
     }
 
@@ -59,13 +59,13 @@ public class MatrixOperations {
     @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
     public static interface Computer {
 
-        MatrixType At(MatrixType A);
+        Matrix At(Matrix A);
 
-        MatrixType AB(MatrixType A, MatrixType B);
+        Matrix AB(Matrix A, Matrix B);
 
-        MatrixType ABt(MatrixType A, MatrixType B);
+        Matrix ABt(Matrix A, Matrix B);
 
-        MatrixType AtB(MatrixType A, MatrixType B);
+        Matrix AtB(Matrix A, Matrix B);
     }
 
     @lombok.experimental.UtilityClass
@@ -81,39 +81,39 @@ public class MatrixOperations {
             return COMPUTER.get();
         }
 
-        public MatrixType t(MatrixType L) {
+        public Matrix t(Matrix L) {
             return getComputer().t(L);
         }
 
-        public MatrixType XXt(MatrixType X) {
+        public Matrix XXt(Matrix X) {
             return getComputer().XXt(X);
         }
 
-        public MatrixType XtX(MatrixType X) {
+        public Matrix XtX(Matrix X) {
             return getComputer().XtX(X);
         }
 
-        public MatrixType xSx(MatrixType S, DoubleSeq x) {
+        public Matrix xSx(Matrix S, DoubleSeq x) {
             return getComputer().xSx(S, x);
         }
 
-        public MatrixType XSXt(MatrixType S, MatrixType X) {
+        public Matrix XSXt(Matrix S, Matrix X) {
             return getComputer().XSXt(S, X);
         }
 
-        public MatrixType XtSX(MatrixType S, MatrixType X) {
+        public Matrix XtSX(Matrix S, Matrix X) {
             return getComputer().XtSX(S, X);
         }
 
-        public MatrixType lcholesky(MatrixType M) {
+        public Matrix lcholesky(Matrix M) {
             return getComputer().lcholesky(M);
         }
 
-        public MatrixType ucholesky(MatrixType M) {
+        public Matrix ucholesky(Matrix M) {
             return getComputer().ucholesky(M);
         }
 
-        public MatrixType inverse(MatrixType M) {
+        public Matrix inverse(Matrix M) {
             return getComputer().inverse(M);
         }
 
@@ -121,23 +121,23 @@ public class MatrixOperations {
         @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
         public static interface SymmetricComputer {
 
-            MatrixType t(MatrixType M);
+            Matrix t(Matrix M);
 
-            MatrixType xSx(MatrixType S, DoubleSeq x);
+            Matrix xSx(Matrix S, DoubleSeq x);
 
-            MatrixType XXt(MatrixType X);
+            Matrix XXt(Matrix X);
 
-            MatrixType XtX(MatrixType X);
+            Matrix XtX(Matrix X);
 
-            MatrixType XSXt(MatrixType S, MatrixType X);
+            Matrix XSXt(Matrix S, Matrix X);
 
-            MatrixType XtSX(MatrixType S, MatrixType X);
+            Matrix XtSX(Matrix S, Matrix X);
 
-            MatrixType lcholesky(MatrixType M);
+            Matrix lcholesky(Matrix M);
 
-            MatrixType ucholesky(MatrixType M);
+            Matrix ucholesky(Matrix M);
 
-            MatrixType inverse(MatrixType M);
+            Matrix inverse(Matrix M);
 
         }
     }
@@ -155,19 +155,19 @@ public class MatrixOperations {
             return COMPUTER.get();
         }
 
-        public MatrixType t(MatrixType L) {
+        public Matrix t(Matrix L) {
             return getComputer().t(L);
         }
 
-        public MatrixType inverse(MatrixType L) {
+        public Matrix inverse(Matrix L) {
             return getComputer().inverse(L);
         }
 
-        public DoubleSeq solveLx(MatrixType L, DoubleSeq b) {
+        public DoubleSeq solveLx(Matrix L, DoubleSeq b) {
             return getComputer().solveLx(L, b);
         }
 
-        public DoubleSeq solvexL(MatrixType L, DoubleSeq b) {
+        public DoubleSeq solvexL(Matrix L, DoubleSeq b) {
             return getComputer().solvexL(L, b);
         }
 
@@ -175,9 +175,9 @@ public class MatrixOperations {
         @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
         public static interface LowerTriangularComputer {
 
-            MatrixType t(MatrixType L);
+            Matrix t(Matrix L);
 
-            MatrixType inverse(MatrixType M);
+            Matrix inverse(Matrix M);
 
             /**
              * Solve Lx=b (or x=inv(L)*b
@@ -186,7 +186,7 @@ public class MatrixOperations {
              * @param b
              * @return
              */
-            DoubleSeq solveLx(MatrixType L, DoubleSeq b);
+            DoubleSeq solveLx(Matrix L, DoubleSeq b);
 
             /**
              * Solve xL=b (or x=b*inv(L)
@@ -195,7 +195,7 @@ public class MatrixOperations {
              * @param b
              * @return
              */
-            DoubleSeq solvexL(MatrixType L, DoubleSeq b);
+            DoubleSeq solvexL(Matrix L, DoubleSeq b);
         }
     }
 
@@ -212,19 +212,19 @@ public class MatrixOperations {
             return COMPUTER.get();
         }
 
-        public MatrixType t(MatrixType L) {
+        public Matrix t(Matrix L) {
             return getComputer().t(L);
         }
 
-        public MatrixType inverse(MatrixType U) {
+        public Matrix inverse(Matrix U) {
             return getComputer().inverse(U);
         }
 
-        public DoubleSeq solveUx(MatrixType U, DoubleSeq b) {
+        public DoubleSeq solveUx(Matrix U, DoubleSeq b) {
             return getComputer().solveUx(U, b);
         }
 
-        public DoubleSeq solvexU(MatrixType U, DoubleSeq b) {
+        public DoubleSeq solvexU(Matrix U, DoubleSeq b) {
             return getComputer().solvexU(U, b);
         }
 
@@ -232,9 +232,9 @@ public class MatrixOperations {
         @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
         public static interface UpperTriangularComputer {
 
-            MatrixType inverse(MatrixType M);
+            Matrix inverse(Matrix M);
 
-            MatrixType t(MatrixType U);
+            Matrix t(Matrix U);
 
             /**
              * Solve Ux=b (or x=inv(U)*b or )
@@ -243,7 +243,7 @@ public class MatrixOperations {
              * @param b
              * @return
              */
-            DoubleSeq solveUx(MatrixType U, DoubleSeq b);
+            DoubleSeq solveUx(Matrix U, DoubleSeq b);
 
             /**
              * Solve xU=b (or x=b*inv(U)
@@ -252,7 +252,7 @@ public class MatrixOperations {
              * @param b
              * @return
              */
-            DoubleSeq solvexU(MatrixType U, DoubleSeq b);
+            DoubleSeq solvexU(Matrix U, DoubleSeq b);
         }
     }
 }

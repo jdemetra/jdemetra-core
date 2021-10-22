@@ -7,11 +7,11 @@ package jdplus.filters;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.math.matrices.MatrixType;
 import java.util.List;
 import jdplus.math.linearfilters.FiniteFilter;
 import jdplus.math.linearfilters.IFiniteFilter;
 import jdplus.math.polynomials.Polynomial;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -29,7 +29,7 @@ public class Filtering implements IFiltering {
         this.rf = rf.clone();
     }
 
-    public static Filtering of(DoubleSeq cf, MatrixType lf, MatrixType rf) {
+    public static Filtering of(DoubleSeq cf, Matrix lf, Matrix rf) {
         int lb = lf.getColumnsCount(), rb = rf.getColumnsCount();
         if (cf.length() != lb + rb + 1) {
             throw new IllegalArgumentException();
@@ -47,7 +47,7 @@ public class Filtering implements IFiltering {
         return new Filtering(fcf, flf, frf);
     }
 
-    public static Filtering of(DoubleSeq cf, MatrixType lf) {
+    public static Filtering of(DoubleSeq cf, Matrix lf) {
         int l = lf.getColumnsCount();
         if (cf.length() != 2 * l + 1) {
             throw new IllegalArgumentException();

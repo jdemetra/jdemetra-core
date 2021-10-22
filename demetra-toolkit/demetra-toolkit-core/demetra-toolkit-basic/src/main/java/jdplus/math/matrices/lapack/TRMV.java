@@ -5,7 +5,7 @@
  */
 package jdplus.math.matrices.lapack;
 
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * Some parts have been modified to take into account performance issues in case
@@ -16,7 +16,7 @@ import jdplus.math.matrices.Matrix;
 @lombok.experimental.UtilityClass
 public class TRMV {
 
-    public void Ux(Matrix U, double[] px, int startx, int incx) {
+    public void Ux(FastMatrix U, double[] px, int startx, int incx) {
         int n = U.getColumnsCount(), lda = U.getColumnIncrement(), start = U.getStartPosition();
         double[] pu = U.getStorage();
         if (incx == 1) {
@@ -46,7 +46,7 @@ public class TRMV {
         }
     }
 
-    public void Lx(Matrix L, double[] px, int startx, int incx) {
+    public void Lx(FastMatrix L, double[] px, int startx, int incx) {
         int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
         double[] pl = L.getStorage();
         if (incx == 1) {
@@ -74,15 +74,15 @@ public class TRMV {
         }
     }
 
-    public void xU(Matrix U, double[] px, int startx, int incx) {
+    public void xU(FastMatrix U, double[] px, int startx, int incx) {
         Utx(U, px, startx, incx);
     }
 
-    public void xL(Matrix L, double[] px, int startx, int incx) {
+    public void xL(FastMatrix L, double[] px, int startx, int incx) {
         Ltx(L, px, startx, incx);
     }
 
-    public void Utx(Matrix U, double[] px, int startx, int incx) {
+    public void Utx(FastMatrix U, double[] px, int startx, int incx) {
         int n = U.getColumnsCount(), lda = U.getColumnIncrement(), start = U.getStartPosition();
         double[] pu = U.getStorage();
         if (incx == 1) {
@@ -110,7 +110,7 @@ public class TRMV {
         }
     }
 
-    public void Ltx(Matrix L, double[] px, int startx, int incx) {
+    public void Ltx(FastMatrix L, double[] px, int startx, int incx) {
         int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
         double[] pl = L.getStorage();
         if (incx == 1) {

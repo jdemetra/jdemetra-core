@@ -6,7 +6,7 @@
 package jdplus.ssf.models;
 
 import jdplus.arima.ssf.SsfAr;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import java.util.Random;
 import jdplus.math.matrices.MatrixNorms;
@@ -26,11 +26,11 @@ public class ARTest {
     @Test
     public void testTVT() {
         StateComponent cmp = SsfAr.of(new double[]{.3, -.4, .2}, 0.7, 10);
-        Matrix z=Matrix.square(cmp.initialization().getStateDim());
+        FastMatrix z=FastMatrix.square(cmp.initialization().getStateDim());
         Random rnd=new Random();
         z.set((i,j)->rnd.nextDouble());
-        Matrix V=SymmetricMatrix.XXt(z);
-        Matrix W=V.deepClone();
+        FastMatrix V=SymmetricMatrix.XXt(z);
+        FastMatrix W=V.deepClone();
         cmp.dynamics().TVT(0, V);
         cmp.dynamics().TM(0, W);
         cmp.dynamics().MTt(0, W);

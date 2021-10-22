@@ -5,7 +5,7 @@
  */
 package jdplus.math.matrices;
 
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.lapack.ScaledSumOfSquares;
 
 /**
@@ -25,7 +25,7 @@ public class MatrixNorms {
      * @param A
      * @return
      */
-    public double absNorm(Matrix A) {
+    public double absNorm(FastMatrix A) {
         double[] storage = A.getStorage();
         double max = 0;
         int i0 = A.getStartPosition();
@@ -54,7 +54,7 @@ public class MatrixNorms {
      * @param A
      * @return
      */
-    public double norm1(Matrix A) {
+    public double norm1(FastMatrix A) {
         double[] storage = A.getStorage();
         double max = 0;
         int i0 = A.getStartPosition();
@@ -84,7 +84,7 @@ public class MatrixNorms {
      * @param A
      * @return
      */
-    public double infinityNorm(Matrix A) {
+    public double infinityNorm(FastMatrix A) {
         double[] storage = A.getStorage();
         double max = 0;
         int i0 = A.getStartPosition();
@@ -114,7 +114,7 @@ public class MatrixNorms {
      * @param A
      * @return
      */
-    public double frobeniusNorm(Matrix A) {
+    public double frobeniusNorm(FastMatrix A) {
         double[] storage = A.getStorage();
         ScaledSumOfSquares sssq = new ScaledSumOfSquares();
         int i0 = A.getStartPosition();
@@ -127,7 +127,7 @@ public class MatrixNorms {
         return sssq.sqrt();
     }
 
-    public double frobeniusNorm2(Matrix A) {
+    public double frobeniusNorm2(FastMatrix A) {
         ScaledSumOfSquares sssq = new ScaledSumOfSquares();
         int n = A.getRowsCount();
         int m = A.getColumnsCount();

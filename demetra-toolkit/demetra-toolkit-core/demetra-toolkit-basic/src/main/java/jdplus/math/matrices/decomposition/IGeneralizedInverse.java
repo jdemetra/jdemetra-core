@@ -17,7 +17,7 @@
 
 package jdplus.math.matrices.decomposition;
 
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 
 /**
@@ -25,5 +25,5 @@ import jdplus.math.matrices.Matrix;
  * @author Jean Palate
  */
 public interface IGeneralizedInverse {
-    Matrix inverse(Matrix m);
+    FastMatrix inverse(FastMatrix m);
 }

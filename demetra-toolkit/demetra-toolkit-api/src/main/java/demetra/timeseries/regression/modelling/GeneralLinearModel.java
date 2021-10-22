@@ -20,7 +20,6 @@ import demetra.data.DoubleSeq;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
-import demetra.math.matrices.MatrixType;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
@@ -28,6 +27,7 @@ import demetra.timeseries.regression.Variable;
 import demetra.stats.StatisticalTest;
 import java.util.List;
 import java.util.Map;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -119,7 +119,7 @@ public interface GeneralLinearModel<M> {
          *
          * @return
          */
-        MatrixType getX();
+        Matrix getX();
 
         /**
          * Regression estimation.The order correspond to the order of the
@@ -134,7 +134,7 @@ public interface GeneralLinearModel<M> {
          * Covariance of the regression coefficients. The scaling factor (sigma2) is the ML estimate (ssqerr/n)
          * @return
          */
-        MatrixType getCoefficientsCovariance();
+        Matrix getCoefficientsCovariance();
 
         /**
          *

@@ -22,7 +22,6 @@ import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import nbbrd.design.Development;
 import nbbrd.design.Unsafe;
-import demetra.math.matrices.MatrixType;
 import demetra.util.IntList;
 import java.util.Iterator;
 import java.util.function.BiConsumer;
@@ -37,14 +36,15 @@ import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import jdplus.math.matrices.decomposition.LUDecomposition;
 import jdplus.math.matrices.decomposition.QRDecomposition;
 import org.checkerframework.checker.index.qual.Positive;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.math.matrices.Matrix;
+
 
 /**
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @Development(status = Development.Status.Release)
-public final class Matrix implements MatrixType.Mutable {
+public final class FastMatrix implements Matrix.Mutable {
 
     public static Builder builder(final double[] storage) {
         return new Builder(storage);
@@ -80,11 +80,11 @@ public final class Matrix implements MatrixType.Mutable {
             return this;
         }
 
-        public Matrix build() {
+        public FastMatrix build() {
             if (lda != 0 && lda < nrows) {
                 throw new MatrixException(MatrixException.DIM);
             }
-            return new Matrix(storage, lda == 0 ? nrows : lda, start, nrows, ncols);
+            return new FastMatrix(storage, lda == 0 ? nrows : lda, start, nrows, ncols);
         }
     }
 
@@ -93,61 +93,61 @@ public final class Matrix implements MatrixType.Mutable {
     int start, nrows, ncols;
 
     //<editor-fold defaultstate="collapsed" desc="matrix constructors">
-    public static final Matrix EMPTY = new Matrix(Doubles.EMPTYARRAY, 0, 0);
+    public static final FastMatrix EMPTY = new FastMatrix(Doubles.EMPTYARRAY, 0, 0);
 
-    public static Matrix square(int n) {
+    public static FastMatrix square(int n) {
         if (n == 0) {
-            return Matrix.EMPTY;
+            return FastMatrix.EMPTY;
         }
         double[] data = new double[n * n];
-        return new Matrix(data, n, n);
+        return new FastMatrix(data, n, n);
     }
 
-    public static Matrix make(int nrows, int ncols) {
+    public static FastMatrix make(int nrows, int ncols) {
         if (nrows == 0 || ncols == 0) {
-            return Matrix.EMPTY;
+            return FastMatrix.EMPTY;
         }
         double[] data = new double[nrows * ncols];
-        return new Matrix(data, nrows, ncols);
+        return new FastMatrix(data, nrows, ncols);
     }
 
-    public static Matrix of(MatrixType matrix) {
+    public static FastMatrix of(Matrix matrix) {
         if (matrix == null) {
             return null;
         }
-        return new Matrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
+        return new FastMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
     }
 
-    public static Matrix identity(int n) {
-        Matrix i = square(n);
+    public static FastMatrix identity(int n) {
+        FastMatrix i = square(n);
         i.diagonal().set(1);
         return i;
     }
 
-    public static Matrix diagonal(DoubleSeq d) {
-        Matrix i = square(d.length());
+    public static FastMatrix diagonal(DoubleSeq d) {
+        FastMatrix i = square(d.length());
         i.diagonal().copy(d);
         return i;
     }
 
-    public static Matrix rowOf(DataBlock x) {
-        return new Matrix(x.toArray(), 1, x.length());
+    public static FastMatrix rowOf(DataBlock x) {
+        return new FastMatrix(x.toArray(), 1, x.length());
     }
 
-    public static Matrix columnOf(DataBlock x) {
-        return new Matrix(x.toArray(), x.length(), 1);
+    public static FastMatrix columnOf(DataBlock x) {
+        return new FastMatrix(x.toArray(), x.length(), 1);
     }
 
-    public static Matrix internalRowOf(DataBlock x) {
-        return new Matrix(x.getStorage(), x.getIncrement(), x.getStartPosition(), 1, x.length());
+    public static FastMatrix internalRowOf(DataBlock x) {
+        return new FastMatrix(x.getStorage(), x.getIncrement(), x.getStartPosition(), 1, x.length());
     }
 
-    public static Matrix internalColumnOf(DataBlock x) {
+    public static FastMatrix internalColumnOf(DataBlock x) {
         if (x.getIncrement() != 1) {
             throw new MatrixException(MatrixException.DIM);
         }
         int start = x.getStartPosition(), n = x.length();
-        return new Matrix(x.getStorage(), n, start, n, 1);
+        return new FastMatrix(x.getStorage(), n, start, n, 1);
     }
 
     /**
@@ -157,7 +157,7 @@ public final class Matrix implements MatrixType.Mutable {
      * @param nrows
      * @param ncols
      */
-    public Matrix(final double[] data, final int nrows, final int ncols) {
+    public FastMatrix(final double[] data, final int nrows, final int ncols) {
         this.storage = data;
         this.nrows = nrows;
         this.ncols = ncols;
@@ -171,7 +171,7 @@ public final class Matrix implements MatrixType.Mutable {
      * @param nrows
      * @param ncols
      */
-    Matrix(final int nrows, final int ncols) {
+    FastMatrix(final int nrows, final int ncols) {
         this.storage = new double[nrows * ncols];
         this.lda = nrows;
         this.start = 0;
@@ -179,7 +179,7 @@ public final class Matrix implements MatrixType.Mutable {
         this.ncols = ncols;
     }
 
-    Matrix(double[] x, int lda, int start, int nrows, int ncols) {
+    FastMatrix(double[] x, int lda, int start, int nrows, int ncols) {
         this.storage = x;
         this.lda = lda;
         this.start = start;
@@ -188,12 +188,12 @@ public final class Matrix implements MatrixType.Mutable {
     }
 
     //</editor-fold>
-    public Matrix deepClone() {
-        return new Matrix(toArray(), nrows, ncols);
+    public FastMatrix deepClone() {
+        return new FastMatrix(toArray(), nrows, ncols);
     }
 
-//    public Matrix shallowClone() {
-//        return new Matrix(storage, lda, start, nrows, ncols);
+//    public FastMatrix shallowClone() {
+//        return new FastMatrix(storage, lda, start, nrows, ncols);
 //    }
     /**
      * Creates a sub-matrix
@@ -205,16 +205,16 @@ public final class Matrix implements MatrixType.Mutable {
      * @return
      */
     @Override
-    public Matrix extract(int r0, int nr, int c0, int nc) {
-        return new Matrix(storage, lda, start + r0 + c0 * lda, nr, nc);
+    public FastMatrix extract(int r0, int nr, int c0, int nc) {
+        return new FastMatrix(storage, lda, start + r0 + c0 * lda, nr, nc);
     }
 
-    public Matrix dropTopLeft(int nr, int nc) {
-        return new Matrix(storage, lda, start + nr + nc * lda, nrows - nr, ncols - nc);
+    public FastMatrix dropTopLeft(int nr, int nc) {
+        return new FastMatrix(storage, lda, start + nr + nc * lda, nrows - nr, ncols - nc);
     }
 
-    public Matrix dropBottomRight(int nr, int nc) {
-        return new Matrix(storage, lda, start, nrows - nr, ncols - nc);
+    public FastMatrix dropBottomRight(int nr, int nc) {
+        return new FastMatrix(storage, lda, start, nrows - nr, ncols - nc);
     }
 
     //<editor-fold defaultstate="collapsed" desc="diagnostics">
@@ -531,7 +531,7 @@ public final class Matrix implements MatrixType.Mutable {
         storage[start + row + col * lda] *= value;
     }
 
-    public void copy(Matrix B) {
+    public void copy(FastMatrix B) {
         if (nrows != B.nrows || ncols != B.ncols) {
             throw new MatrixException(MatrixException.DIM);
         }
@@ -547,7 +547,7 @@ public final class Matrix implements MatrixType.Mutable {
         }
     }
 
-    public void setAY(double a, Matrix Y) {
+    public void setAY(double a, FastMatrix Y) {
         if (nrows != Y.nrows || ncols != Y.ncols) {
             throw new MatrixException(MatrixException.DIM);
         }
@@ -565,7 +565,7 @@ public final class Matrix implements MatrixType.Mutable {
         }
     }
 
-    public void copyTranspose(Matrix B) {
+    public void copyTranspose(FastMatrix B) {
         if (nrows != B.ncols || ncols != B.nrows) {
             throw new MatrixException(MatrixException.DIM);
         }
@@ -659,7 +659,7 @@ public final class Matrix implements MatrixType.Mutable {
         }
     }
 
-    public void applyByRows(final Matrix M, final BiConsumer<DataBlock, DataBlock> fn) {
+    public void applyByRows(final FastMatrix M, final BiConsumer<DataBlock, DataBlock> fn) {
         DataBlockIterator rows = rowsIterator();
         DataBlockIterator mrows = M.rowsIterator();
         while (rows.hasNext()) {
@@ -667,7 +667,7 @@ public final class Matrix implements MatrixType.Mutable {
         }
     }
 
-    public void applyByColumns(final Matrix M, final BiConsumer<DataBlock, DataBlock> fn) {
+    public void applyByColumns(final FastMatrix M, final BiConsumer<DataBlock, DataBlock> fn) {
         DataBlockIterator cols = columnsIterator();
         DataBlockIterator mcols = M.columnsIterator();
         while (cols.hasNext()) {
@@ -687,7 +687,7 @@ public final class Matrix implements MatrixType.Mutable {
      *
      * @param M
      */
-    public void add(Matrix M) {
+    public void add(FastMatrix M) {
         if (nrows != M.nrows || ncols != M.ncols) {
             throw new MatrixException(MatrixException.DIM);
         }
@@ -705,7 +705,7 @@ public final class Matrix implements MatrixType.Mutable {
         }
     }
 
-    public void addTranspose(Matrix M) {
+    public void addTranspose(FastMatrix M) {
         if (nrows != M.ncols || ncols != M.nrows) {
             throw new MatrixException(MatrixException.DIM);
         }
@@ -749,7 +749,7 @@ public final class Matrix implements MatrixType.Mutable {
         }
     }
 
-    public void sub(Matrix M) {
+    public void sub(FastMatrix M) {
         if (nrows != M.nrows || ncols != M.ncols) {
             throw new MatrixException(MatrixException.DIM);
         }
@@ -767,7 +767,7 @@ public final class Matrix implements MatrixType.Mutable {
         }
     }
 
-    public void subTranspose(Matrix M) {
+    public void subTranspose(FastMatrix M) {
         if (nrows != M.ncols || ncols != M.nrows) {
             throw new MatrixException(MatrixException.DIM);
         }
@@ -858,7 +858,7 @@ public final class Matrix implements MatrixType.Mutable {
         }
     }
 
-    public void addAY(double alpha, Matrix Y) {
+    public void addAY(double alpha, FastMatrix Y) {
         if (alpha == 0) {
             return;
         }
@@ -870,7 +870,7 @@ public final class Matrix implements MatrixType.Mutable {
         }
     }
 
-    public void addAYt(double alpha, Matrix Y) {
+    public void addAYt(double alpha, FastMatrix Y) {
         if (alpha == 0) {
             return;
         }
@@ -918,17 +918,17 @@ public final class Matrix implements MatrixType.Mutable {
         addXaYt(a, x, x);
     }
 
-    public Matrix inv() {
+    public FastMatrix inv() {
         if (!isSquare()) {
             throw new IllegalArgumentException();
         }
-        Matrix I = Matrix.identity(nrows);
+        FastMatrix I = FastMatrix.identity(nrows);
         LUDecomposition lu = Gauss.decompose(this);
         lu.solve(I);
         return I;
     }
 
-    public static LogSign logDeterminant(Matrix X) {
+    public static LogSign logDeterminant(FastMatrix X) {
         if (!X.isSquare()) {
             throw new IllegalArgumentException();
         }
@@ -947,7 +947,7 @@ public final class Matrix implements MatrixType.Mutable {
         return LogSign.of(qr.rawRdiagonal(), (qr.pivotSign() == -1) != (X.nrows % 2 == 1));
     }
 
-    public static double determinant(Matrix X) {
+    public static double determinant(FastMatrix X) {
         try {
             if (X.nrows == 1) {
                 return X.get(0, 0);
@@ -1123,38 +1123,38 @@ public final class Matrix implements MatrixType.Mutable {
 
     //</editor-fold>
     //</editor-fold>
-    public Matrix plus(Matrix B) {
-        Matrix AB = deepClone();
+    public FastMatrix plus(FastMatrix B) {
+        FastMatrix AB = deepClone();
         AB.add(B);
         return AB;
     }
 
-    public Matrix minus(Matrix B) {
-        Matrix AB = deepClone();
+    public FastMatrix minus(FastMatrix B) {
+        FastMatrix AB = deepClone();
         AB.sub(B);
         return AB;
     }
 
-    public Matrix plus(double d) {
-        Matrix AB = deepClone();
+    public FastMatrix plus(double d) {
+        FastMatrix AB = deepClone();
         AB.add(d);
         return AB;
     }
 
-    public Matrix minus(double d) {
-        Matrix AB = deepClone();
+    public FastMatrix minus(double d) {
+        FastMatrix AB = deepClone();
         AB.sub(d);
         return AB;
     }
 
-    public Matrix times(double d) {
-        Matrix AB = deepClone();
+    public FastMatrix times(double d) {
+        FastMatrix AB = deepClone();
         AB.mul(d);
         return AB;
     }
 
-    public Matrix dividedBy(double d) {
-        Matrix AB = deepClone();
+    public FastMatrix dividedBy(double d) {
+        FastMatrix AB = deepClone();
         AB.div(d);
         return AB;
     }
@@ -1291,20 +1291,20 @@ public final class Matrix implements MatrixType.Mutable {
 
     //</editor-fold>  
     public String toString(String fmt) {
-        return MatrixType.format(this, fmt);
+        return Matrix.format(this, fmt);
     }
 
     @Override
     public String toString() {
-        return MatrixType.format(this);
+        return Matrix.format(this);
     }
 
     private static class Rows implements Iterator<DataBlock> {
 
         private int pos;
-        private final Matrix M;
+        private final FastMatrix M;
 
-        Rows(Matrix M) {
+        Rows(FastMatrix M) {
             pos = 0;
             this.M = M;
         }
@@ -1323,9 +1323,9 @@ public final class Matrix implements MatrixType.Mutable {
     private static class Columns implements Iterator<DataBlock> {
 
         private int pos;
-        private final Matrix M;
+        private final FastMatrix M;
 
-        Columns(Matrix M) {
+        Columns(FastMatrix M) {
             pos = 0;
             this.M = M;
         }

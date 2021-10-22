@@ -5,7 +5,6 @@
  */
 package demetra.data;
 
-import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import java.io.File;
@@ -13,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -725,7 +725,7 @@ public class Data {
     public static final TsData[] insee() {
         try {
             File file = copyToTempFile(Data.class.getResource("/insee.txt"));
-            MatrixType insee = MatrixSerializer.read(file);
+            Matrix insee = MatrixSerializer.read(file);
             TsData[] all = new TsData[insee.getColumnsCount()];
             TsPeriod start = TsPeriod.monthly(1990, 1);
             for (int i = 0; i < all.length; ++i) {
@@ -741,7 +741,7 @@ public class Data {
     public static final TsData[] surveys() {
         try {
             File file = copyToTempFile(Data.class.getResource("/surveys.txt"));
-            MatrixType bs = MatrixSerializer.read(file);
+            Matrix bs = MatrixSerializer.read(file);
             TsData[] all = new TsData[bs.getColumnsCount()];
             TsPeriod start = TsPeriod.monthly(1990, 1);
             for (int i = 0; i < all.length; ++i) {
@@ -757,7 +757,7 @@ public class Data {
     public static final TsData[] xm() {
         try {
             File file = copyToTempFile(Data.class.getResource("/xm.txt"));
-            MatrixType xm = MatrixSerializer.read(file);
+            Matrix xm = MatrixSerializer.read(file);
             TsData[] all = new TsData[xm.getColumnsCount()];
             TsPeriod start = TsPeriod.monthly(1995, 1);
             for (int i = 0; i < all.length; ++i) {
@@ -773,7 +773,7 @@ public class Data {
     public static final TsData[] indprod_de() {
         try {
             File file = copyToTempFile(Data.class.getResource("/indprod_de.txt"));
-            MatrixType insee = MatrixSerializer.read(file);
+            Matrix insee = MatrixSerializer.read(file);
             TsData[] all = new TsData[insee.getColumnsCount()];
             TsPeriod start = TsPeriod.monthly(1991, 1);
             for (int i = 0; i < all.length; ++i) {
@@ -788,7 +788,7 @@ public class Data {
     public static final TsData[] indprod_fr() {
         try {
             File file = copyToTempFile(Data.class.getResource("/indprod_fr.txt"));
-            MatrixType insee = MatrixSerializer.read(file);
+            Matrix insee = MatrixSerializer.read(file);
             TsData[] all = new TsData[insee.getColumnsCount()];
             TsPeriod start = TsPeriod.monthly(1990, 1);
             for (int i = 0; i < all.length; ++i) {
@@ -803,7 +803,7 @@ public class Data {
     public static final TsData[] retail_us() {
         try {
             File file = copyToTempFile(Data.class.getResource("/retail.txt"));
-            MatrixType retail = MatrixSerializer.read(file);
+            Matrix retail = MatrixSerializer.read(file);
             TsData[] all = new TsData[retail.getColumnsCount()];
             TsPeriod start = TsPeriod.monthly(1992, 1);
             for (int i = 0; i < all.length; ++i) {

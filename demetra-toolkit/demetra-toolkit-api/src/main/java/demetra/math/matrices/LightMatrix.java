@@ -26,7 +26,7 @@ import demetra.data.Doubles;
  */
 @Development(status = Development.Status.Release)
 @lombok.EqualsAndHashCode
-class LightMatrix implements MatrixType {
+class LightMatrix implements Matrix {
     
     private static final LightMatrix EMPTY = new LightMatrix(new double[0], 0, 0);
     
@@ -113,6 +113,6 @@ class LightMatrix implements MatrixType {
 
     @Override
     public String toString() {
-        return MatrixType.format(this);
+        return Matrix.format(this);
     }
 }

@@ -21,7 +21,7 @@ import jdplus.ssf.StateInfo;
 import jdplus.ssf.StateStorage;
 import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixStorage;
 import jdplus.ssf.DataBlockResults;
 import jdplus.ssf.MatrixResults;
@@ -93,7 +93,7 @@ public class DefaultSmoothingResults extends StateStorage implements ISmoothingR
     }
 
     @Override
-    public void saveR(int pos, DataBlock r, Matrix rvar) {
+    public void saveR(int pos, DataBlock r, FastMatrix rvar) {
         if (N == null){
             return;
         }
@@ -118,7 +118,7 @@ public class DefaultSmoothingResults extends StateStorage implements ISmoothingR
     }
 
     @Override
-    public Matrix RVariance(int pos) {
+    public FastMatrix RVariance(int pos) {
         if (N == null) {
             throw new java.lang.UnsupportedOperationException();
         }

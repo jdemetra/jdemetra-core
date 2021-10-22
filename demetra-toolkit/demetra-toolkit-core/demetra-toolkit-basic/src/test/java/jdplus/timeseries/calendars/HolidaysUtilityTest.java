@@ -16,7 +16,6 @@
  */
 package jdplus.timeseries.calendars;
 
-import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.Calendar;
@@ -29,9 +28,10 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -64,8 +64,8 @@ public class HolidaysUtilityTest {
 
     @Test
     public void testBelgium() {
-        MatrixType holidays = HolidaysUtility.holidays(belgium.getHolidays(), TsDomain.of(TsPeriod.monthly(1980, 1), 360));
-//        System.out.println(MatrixType.format(holidays));
+        Matrix holidays = HolidaysUtility.holidays(belgium.getHolidays(), TsDomain.of(TsPeriod.monthly(1980, 1), 360));
+//        System.out.println(Matrix.format(holidays));
         double[][] z = HolidaysUtility.longTermMean(belgium.getHolidays(), 12);
         assertEquals(sum(z), belgium.getHolidays().length, 1e-9);
         z = HolidaysUtility.longTermMean(belgium.getHolidays(), 6);
@@ -80,21 +80,21 @@ public class HolidaysUtilityTest {
 
     @Test
     public void testDailyBelgium() {
-        Matrix M = Matrix.make(365, belgium.getHolidays().length);
+        FastMatrix M = FastMatrix.make(365, belgium.getHolidays().length);
         HolidaysUtility.fillDays(belgium.getHolidays(), M, LocalDate.of(2021, 1, 1), new int[]{6, 7}, false);
         for (int i = 0; i < M.getColumnsCount(); ++i) {
             assertEquals(M.column(i).sum(), 1, 1e-15);
         }
 //        System.out.println(M);
 //        System.out.println();
-        M = Matrix.make(365, belgium.getHolidays().length);
+        M = FastMatrix.make(365, belgium.getHolidays().length);
         HolidaysUtility.fillNextWorkingDays(belgium.getHolidays(), M, LocalDate.of(2021, 1, 1), new int[]{6, 7});
         for (int i = 0; i < M.getColumnsCount(); ++i) {
             assertEquals(M.column(i).sum(), 1, 1e-15);
         }
 //        System.out.println(M);
 //        System.out.println();
-        M = Matrix.make(365, belgium.getHolidays().length);
+        M = FastMatrix.make(365, belgium.getHolidays().length);
         HolidaysUtility.fillPreviousWorkingDays(belgium.getHolidays(), M, LocalDate.of(2021, 1, 1), new int[]{6, 7});
         for (int i = 0; i < M.getColumnsCount(); ++i) {
             assertEquals(M.column(i).sum(), 1, 1e-15);

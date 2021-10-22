@@ -22,7 +22,7 @@ import jdplus.math.functions.IFunctionDerivatives;
 import jdplus.math.functions.IFunctionPoint;
 import jdplus.math.functions.IParametersDomain;
 import jdplus.math.functions.IParametricMapping;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import java.util.function.Function;
 import demetra.data.DoubleSeq;
@@ -98,7 +98,7 @@ public class LogLikelihoodFunction<T, L extends Likelihood> implements IFunction
 
     public Point point(DoubleSeq parameters) {
         IFunctionDerivatives d = this.evaluate(parameters).derivatives();
-        Matrix H = d.hessian();
+        FastMatrix H = d.hessian();
         H.chs();
         return new Point(this, parameters, d.gradient(), H);
     }
@@ -107,7 +107,7 @@ public class LogLikelihoodFunction<T, L extends Likelihood> implements IFunction
     public static class Point<T, L extends Likelihood> {
 
         public static <T, L extends Likelihood> Point ofNegativeLogLikelihood(LogLikelihoodFunction<T, L> function,
-                DoubleSeq p, DoubleSeq grad, Matrix hessian) {
+                DoubleSeq p, DoubleSeq grad, FastMatrix hessian) {
             return new Point<>(function, p, grad.fn(x->-x), hessian);
         }
 
@@ -124,9 +124,9 @@ public class LogLikelihoodFunction<T, L extends Likelihood> implements IFunction
         /**
          * Observed Information matrix at this point.
          */
-        private Matrix information;
+        private FastMatrix information;
 
-        public Matrix asymptoticCovariance() {
+        public FastMatrix asymptoticCovariance() {
             return SymmetricMatrix.inverse(information);
         }
 

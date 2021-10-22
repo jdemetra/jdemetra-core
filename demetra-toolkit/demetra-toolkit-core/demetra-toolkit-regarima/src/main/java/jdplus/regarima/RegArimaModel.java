@@ -17,18 +17,18 @@
 package jdplus.regarima;
 
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import jdplus.arima.IArimaModel;
 import jdplus.arima.StationaryTransformation;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import nbbrd.design.Immutable;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.math.matrices.Matrix;
 
 /**
  * Description of a generic regarima model
@@ -67,7 +67,7 @@ public final class RegArimaModel<M extends IArimaModel> {
             return this;
         }
 
-        public Builder addX(Matrix X) {
+        public Builder addX(FastMatrix X) {
             if (X != null) {
                 if (y.length() != X.getRowsCount()) {
                     throw new RuntimeException("Incompatible dimensions");
@@ -256,9 +256,9 @@ public final class RegArimaModel<M extends IArimaModel> {
      * Variables without AO corresponding to missing and without mean correction
      * @return 
      */
-    public Matrix variables(){
+    public FastMatrix variables(){
         int n=y.length();
-        Matrix m=Matrix.make(n, x.size());
+        FastMatrix m=FastMatrix.make(n, x.size());
         double[] storage = m.getStorage();
         int pos=0;
         for (DoubleSeq xcur:x){
@@ -272,7 +272,7 @@ public final class RegArimaModel<M extends IArimaModel> {
      * All variables, including mean correction (but not AO for missing)
      * @return 
      */
-    public MatrixType allVariables(){
+    public Matrix allVariables(){
         int n=y.length();
         int m=x.size();
         if (mean)
@@ -287,7 +287,7 @@ public final class RegArimaModel<M extends IArimaModel> {
             xcur.copyTo(storage, pos);
             pos+=n;
         }
-        return MatrixType.of(storage, n, m);
+        return Matrix.of(storage, n, m);
     }
 
     @NonNull

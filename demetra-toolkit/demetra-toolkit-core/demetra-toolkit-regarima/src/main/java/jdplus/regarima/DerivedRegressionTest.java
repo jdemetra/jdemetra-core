@@ -19,7 +19,7 @@ package jdplus.regarima;
 
 import demetra.information.InformationSet;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.regsarima.regular.IRegressionTest;
 
 /**
@@ -49,7 +49,7 @@ public class DerivedRegressionTest implements IRegressionTest {
     public boolean accept(ConcentratedLikelihoodWithMissing ll, int nhp, int ireg, int nregs) {
         vcur=-ll.coefficients().extract(ireg, nregs).sum();
         
-        Matrix V=Matrix.of(ll.unscaledCovariance().extract(ireg, nregs, ireg, nregs));
+        FastMatrix V=FastMatrix.of(ll.unscaledCovariance().extract(ireg, nregs, ireg, nregs));
         int ndf = ml ? ll.dim() : ll.degreesOfFreedom()-nhp;
         double ssq=ll.ssq();
         double v=V.sum()*ssq/ndf;

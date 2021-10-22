@@ -17,7 +17,7 @@
 package jdplus.stl;
 
 import demetra.data.Doubles;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
 import demetra.data.WeeklyData;
 import demetra.data.DoubleSeq;
@@ -39,7 +39,7 @@ public class StlPlusSpecificationTest {
         spec.setMultiplicative(true);
         StlPlus stl = spec.build();
         stl.process(data);
-        Matrix m=Matrix.make(data.length(), 4);
+        FastMatrix m=FastMatrix.make(data.length(), 4);
         m.column(0).copyFrom(stl.getY(), 0);
         m.column(1).copyFrom(stl.getTrend(), 0);
         m.column(2).copyFrom(stl.getSeason(0), 0);
@@ -56,7 +56,7 @@ public class StlPlusSpecificationTest {
         StlPlus stl = spec.build();
         
         stl.process(data);
-        Matrix m=Matrix.make(data.length(), 4);
+        FastMatrix m=FastMatrix.make(data.length(), 4);
         m.column(0).copyFrom(stl.getY(), 0);
         m.column(1).copyFrom(stl.getTrend(), 0);
         m.column(2).copyFrom(stl.getSeason(0), 0);
@@ -78,7 +78,7 @@ public class StlPlusSpecificationTest {
         StlPlus stl = spec.build();
         stl.process(data);
         
-        Matrix m=Matrix.make(data.length(), 4);
+        FastMatrix m=FastMatrix.make(data.length(), 4);
         m.column(0).copyFrom(stl.getY(), 0);
         m.column(1).copyFrom(stl.getTrend(), 0);
         m.column(2).copyFrom(stl.getSeason(0), 0);

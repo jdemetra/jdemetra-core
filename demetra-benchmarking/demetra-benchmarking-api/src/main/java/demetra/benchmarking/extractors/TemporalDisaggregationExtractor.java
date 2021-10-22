@@ -10,12 +10,12 @@ import demetra.data.DoublesMath;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.math.matrices.MatrixType;
 import demetra.tempdisagg.univariate.ResidualsDiagnostics;
 import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.Variable;
 import nbbrd.service.ServiceProvider;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -33,7 +33,7 @@ public class TemporalDisaggregationExtractor extends InformationMapping<Temporal
         set(EDISAGG, TsData.class, source -> source.getStdevDisaggregatedSeries());
         set(REGEFFECT, TsData.class, source -> source.getRegressionEffects());
         set(COEFF, double[].class, source -> source.getCoefficients().toArray());
-        set(COVAR, MatrixType.class, source -> source.getCoefficientsCovariance());
+        set(COVAR, Matrix.class, source -> source.getCoefficientsCovariance());
         set(REGNAMES, String[].class, source -> {
             Variable[] vars = source.getIndicators();
             int n = vars == null ? 0 : vars.length;
@@ -57,7 +57,7 @@ public class TemporalDisaggregationExtractor extends InformationMapping<Temporal
             if (source.getMaximum() == null) {
                 return Double.NaN;
             }
-            MatrixType H = source.getMaximum().getHessian();
+            Matrix H = source.getMaximum().getHessian();
             return (H == null || H.isEmpty()) ? Double.NaN : Math.sqrt(1 / source.getMaximum().getHessian().get(0, 0));
         });
         set(SPART, Double.class, source -> {

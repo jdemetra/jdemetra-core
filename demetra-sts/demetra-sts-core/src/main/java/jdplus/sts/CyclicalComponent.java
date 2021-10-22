@@ -20,7 +20,7 @@ import jdplus.ssf.ISsfDynamics;
 import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.implementations.Loading;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
 
@@ -76,7 +76,7 @@ public class CyclicalComponent {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
         }
 
         @Override
@@ -84,7 +84,7 @@ public class CyclicalComponent {
         }
 
         @Override
-        public void Pf0(Matrix p) {
+        public void Pf0(FastMatrix p) {
             double q = data.var / (1 - data.cdump * data.cdump);
             p.diagonal().set(q);
         }
@@ -110,12 +110,12 @@ public class CyclicalComponent {
         }
 
         @Override
-        public void V(int pos, Matrix v) {
+        public void V(int pos, FastMatrix v) {
             v.diagonal().set(data.var);
         }
 
         @Override
-        public void S(int pos, Matrix s) {
+        public void S(int pos, FastMatrix s) {
             s.diagonal().set(e);
         }
 
@@ -130,7 +130,7 @@ public class CyclicalComponent {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             tr.set(0, 0, ccos);
             tr.set(0, 1, csin);
             tr.set(1, 0, -csin);
@@ -150,7 +150,7 @@ public class CyclicalComponent {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             p.diagonal().add(data.var);
         }
 

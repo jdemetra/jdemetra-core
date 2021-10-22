@@ -7,7 +7,7 @@ package jdplus.math.matrices.lapack;
 
 import jdplus.math.matrices.DataPointer;
 import jdplus.math.matrices.CPointer;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -24,7 +24,7 @@ public class GER {
      * @param y
      * @param A
      */
-    public void apply(double alpha, DataPointer x, DataPointer y, Matrix A) {
+    public void apply(double alpha, DataPointer x, DataPointer y, FastMatrix A) {
         if (alpha == 0) {
             return;
         }

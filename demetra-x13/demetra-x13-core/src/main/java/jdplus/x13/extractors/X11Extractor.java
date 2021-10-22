@@ -18,15 +18,15 @@ package jdplus.x13.extractors;
 
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
-import demetra.math.matrices.MatrixType;
 import demetra.modelling.SeriesInfo;
 import demetra.sa.SaDictionary;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.x11.X11Results;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import nbbrd.design.Development;
 import nbbrd.service.ServiceProvider;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -83,12 +83,12 @@ public class X11Extractor extends InformationMapping<X11Results> {
         set("d12", TsData.class, source -> source.getD12());
         set("d13", TsData.class, source -> source.getD13());
 
-        set("all", MatrixType.class, source -> {
+        set("all", Matrix.class, source -> {
             TsData b1 = source.getB1();
             TsPeriod start = b1.getStart();
             int nr = b1.length(), nc = 38;
 
-            Matrix m = Matrix.make(nr, nc);
+            FastMatrix m = FastMatrix.make(nr, nc);
             m.set(Double.NaN);
             int c = 0;
             m.column(c++).copy(b1.getValues());

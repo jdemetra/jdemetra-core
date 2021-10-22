@@ -17,7 +17,7 @@
 package jdplus.math.functions.ssq;
 
 import nbbrd.design.Development;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import demetra.data.DoubleSeq;
 
 
@@ -40,7 +40,7 @@ public interface SsqFunctionMinimizer {
      *
      * @return
      */
-    Matrix curvatureAtMinimum();
+    FastMatrix curvatureAtMinimum();
 
     /**
      *

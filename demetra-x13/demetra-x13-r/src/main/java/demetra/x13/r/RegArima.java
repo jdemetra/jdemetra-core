@@ -18,7 +18,6 @@ package demetra.x13.r;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
 import demetra.modelling.StationaryTransformation;
 import demetra.regarima.RegArimaOutput;
 import demetra.regarima.RegArimaSpec;
@@ -30,12 +29,13 @@ import demetra.timeseries.regression.ModellingContext;
 import demetra.util.r.Dictionary;
 import demetra.x13.io.protobuf.RegArimaProto;
 import demetra.x13.io.protobuf.X13Protos;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.regsarima.regular.Forecast;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.x13.regarima.DifferencingModule;
 import jdplus.x13.regarima.RegArimaFactory;
 import jdplus.x13.regarima.RegArimaKernel;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -64,19 +64,19 @@ public class RegArima {
         return RegArimaFactory.INSTANCE.refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);
     }
 
-    public MatrixType forecast(TsData series, String defSpec, int nf) {
+    public Matrix forecast(TsData series, String defSpec, int nf) {
         RegArimaSpec spec = RegArimaSpec.fromString(defSpec);
         return forecast(series, spec, null, nf);
     }
 
-    public MatrixType forecast(TsData series, RegArimaSpec spec, Dictionary dic, int nf) {
+    public Matrix forecast(TsData series, RegArimaSpec spec, Dictionary dic, int nf) {
         ModellingContext context = dic == null ? null : dic.toContext();
         RegArimaKernel kernel = RegArimaKernel.of(spec, context);
         Forecast f = new Forecast(kernel, nf);
         if (!f.process(series.cleanExtremities())) {
             return null;
         }
-        Matrix R = Matrix.make(nf, 4);
+        FastMatrix R = FastMatrix.make(nf, 4);
         R.column(0).copy(f.getForecasts());
         R.column(1).copy(f.getForecastsStdev());
         R.column(2).copy(f.getRawForecasts());

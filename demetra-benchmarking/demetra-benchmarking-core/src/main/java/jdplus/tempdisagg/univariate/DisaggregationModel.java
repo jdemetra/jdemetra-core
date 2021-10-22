@@ -22,7 +22,7 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.regression.Variable;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -51,12 +51,12 @@ class DisaggregationModel {
     /**
      * Regression variables. Defined on the high level domain. Could be null
      */
-    Matrix hX;
+    FastMatrix hX;
     /**
      * Regression variables transformed to match the aggregation mode
      * (cumulative variables). Defined on the high level domain.
      */
-    Matrix hEX;
+    FastMatrix hEX;
     /**
      * low-frequency domain. Domain of y
      */

@@ -9,7 +9,7 @@ import demetra.likelihood.DiffuseLikelihoodStatistics;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -19,11 +19,11 @@ public interface BsmEstimation {
 
     DoubleSeq getY();
 
-    MatrixType getX();
+    Matrix getX();
 
     DoubleSeq getCoefficients();
 
-    MatrixType getCoefficientsCovariance();
+    Matrix getCoefficientsCovariance();
 
     MissingValueEstimation[] getMissing();
 

@@ -18,7 +18,7 @@ import jdplus.ssf.multivariate.IMultivariateSsf;
 import jdplus.ssf.multivariate.SsfMatrix;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.SsfData;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.msts.MstsMapping;
 
 /**
@@ -55,7 +55,7 @@ public class Algorithms {
         return DkToolkit.sqrtSmooth(model, s, all, true);
     }
 
-    public double diffuseLikelihood(IMultivariateSsf model, Matrix data) {
+    public double diffuseLikelihood(IMultivariateSsf model, FastMatrix data) {
         try {
             SsfMatrix s = new SsfMatrix(data);
             DiffuseLikelihood dll = DkToolkit.likelihood(model, s, true, false);
@@ -65,19 +65,19 @@ public class Algorithms {
         }
     }
 
-    public StateStorage smooth(IMultivariateSsf model, Matrix data, boolean all) {
+    public StateStorage smooth(IMultivariateSsf model, FastMatrix data, boolean all) {
         SsfMatrix s = new SsfMatrix(data);
         return DkToolkit.smooth(model, s, all, true);
     }
     
-    public double diffuseLikelihood(CompositeModel model, Matrix data, double[] parameters){
+    public double diffuseLikelihood(CompositeModel model, FastMatrix data, double[] parameters){
         MstsMapping mapping = model.mapping();
         MultivariateCompositeSsf mssf = mapping.map(Doubles.of(parameters));
         DiffuseLikelihood likelihood = DkToolkit.likelihood(mssf, new SsfMatrix(data), true, false);
         return likelihood.logLikelihood();
     }
     
-    public double[] estimate(CompositeModel model, Matrix data){
+    public double[] estimate(CompositeModel model, FastMatrix data){
         MstsMapping mapping = model.mapping();
         MstsMonitor monitor=MstsMonitor.builder()
                 .build();

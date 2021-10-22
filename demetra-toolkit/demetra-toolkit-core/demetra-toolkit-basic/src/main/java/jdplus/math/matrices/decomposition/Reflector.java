@@ -6,7 +6,7 @@
 package jdplus.math.matrices.decomposition;
 
 import demetra.math.Constants;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.DataPointer;
 
 /**
@@ -99,7 +99,7 @@ class Reflector {
 //        }
     }
 
-    void lapply(Matrix M) {
+    void lapply(FastMatrix M) {
         int nc = M.getColumnsCount(), lda = M.getColumnIncrement(), m = n - 1, mstart = M.getStartPosition();
         double[] pm = M.getStorage();
         int xmax = xstart + n;

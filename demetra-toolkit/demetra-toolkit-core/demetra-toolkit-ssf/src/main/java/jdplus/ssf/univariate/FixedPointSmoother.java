@@ -29,7 +29,7 @@ import jdplus.ssf.StateInfo;
 import jdplus.ssf.StateStorage;
 import jdplus.ssf.dk.sqrt.DiffuseSquareRootInitializer;
 import jdplus.ssf.implementations.DummyInitialization;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * /**
@@ -47,7 +47,7 @@ public class FixedPointSmoother {
 
     private final ISsf ssf;
     private final int fixpos;
-    private final Matrix M;
+    private final FastMatrix M;
     private StateStorage states;
 
     /**
@@ -86,7 +86,7 @@ public class FixedPointSmoother {
      * @param M The transformation matrix. May be null; in that case, M is
      * considered to be I.
      */
-    public FixedPointSmoother(final ISsf ssf, final int fixpos, final Matrix M) {
+    public FixedPointSmoother(final ISsf ssf, final int fixpos, final FastMatrix M) {
 
         if (M != null && ssf.getStateDim() != M.getColumnsCount()) {
             throw new SsfException("Invalid fixed point argument");
@@ -96,7 +96,7 @@ public class FixedPointSmoother {
         this.M = M;
     }
 
-    public Matrix getTransformationMatrix() {
+    public FastMatrix getTransformationMatrix() {
         return M;
     }
 
@@ -120,10 +120,10 @@ public class FixedPointSmoother {
     static class Initializer implements OrdinaryFilter.Initializer {
 
         private final int fixpos;
-        private final Matrix M;
+        private final FastMatrix M;
         private final ISsf core;
 
-        Initializer(final ISsf core, final int fixpos, final Matrix M) {
+        Initializer(final ISsf core, final int fixpos, final FastMatrix M) {
             this.fixpos = fixpos;
             this.M = M;
             this.core = core;
@@ -140,7 +140,7 @@ public class FixedPointSmoother {
             }
             int r = core.getStateDim();
             DataBlock a = filter.getFinalState().a();
-            Matrix P = filter.getFinalState().P();
+            FastMatrix P = filter.getFinalState().P();
             state.a().range(0, r).copy(a);
             MatrixWindow cur = state.P().topLeft(0, 0);
             cur.next(r, r).copy(P);
@@ -182,7 +182,7 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public double ZVZ(int pos, Matrix V) {
+        public double ZVZ(int pos, FastMatrix V) {
             return core.ZVZ(pos, V.extract(0, cdim, 0, cdim));
         }
 
@@ -192,7 +192,7 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public void VpZdZ(int pos, Matrix V, double d) {
+        public void VpZdZ(int pos, FastMatrix V, double d) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body copyOf generated methods, choose Tools | Templates.
         }
 
@@ -219,12 +219,12 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             core.V(pos, qm.extract(0, cdim, 0, cdim));
         }
 
         @Override
-        public void S(int pos, Matrix cm) {
+        public void S(int pos, FastMatrix cm) {
             core.S(pos, cm.extract(0, cdim, 0, cm.getColumnsCount()));
         }
 
@@ -239,7 +239,7 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             core.T(pos, tr.extract(0, cdim, 0, cdim));
             tr.diagonal().range(tr.getRowsCount()-mdim, tr.getRowsCount()).set(1);
         }
@@ -255,7 +255,7 @@ public class FixedPointSmoother {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             core.addV(pos, p.extract(0, cdim, 0, cdim));
         }
 

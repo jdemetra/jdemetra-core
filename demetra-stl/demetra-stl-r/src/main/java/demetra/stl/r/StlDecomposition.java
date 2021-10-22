@@ -16,8 +16,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
-import demetra.math.matrices.MatrixType;
 import demetra.information.Explorable;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -26,7 +26,7 @@ import demetra.information.Explorable;
 @lombok.experimental.UtilityClass
 public class StlDecomposition {
 
-    public MatrixType process(double[] data, int period, boolean mul, int swindow, int twindow, boolean robust) {
+    public Matrix process(double[] data, int period, boolean mul, int swindow, int twindow, boolean robust) {
         StlPlusSpecification spec = StlPlusSpecification.createDefault(period, swindow, robust);
         if (twindow != 0) {
             spec.setTrendSpec(LoessSpecification.of(twindow, 1));
@@ -51,7 +51,7 @@ public class StlDecomposition {
         s.copyTo(all, 3 * n);
         i.copyTo(all, 4 * n);
 
-        return MatrixType.of(all, n, 5);
+        return Matrix.of(all, n, 5);
     }
 
     public double[] loess(double[] y, int window, int degree, int jump) {

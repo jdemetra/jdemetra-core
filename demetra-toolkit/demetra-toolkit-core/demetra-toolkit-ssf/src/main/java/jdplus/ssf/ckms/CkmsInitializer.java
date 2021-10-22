@@ -18,7 +18,7 @@ package jdplus.ssf.ckms;
 
 import jdplus.data.DataBlock;
 import nbbrd.design.Development;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.univariate.ISsf;
@@ -60,7 +60,7 @@ public class CkmsInitializer implements CkmsFilter.IFastFilterInitializer {
         ISsfLoading loading = ssf.loading();
         ISsfError error = ssf.measurementError();
         ISsfInitialization initialization = ssf.initialization();
-        Matrix P0 = Matrix.square(initialization.getStateDim());
+        FastMatrix P0 = FastMatrix.square(initialization.getStateDim());
         initialization.Pf0(P0);
         DataBlock m = upd.M();
         loading.ZM(0, P0, m);

@@ -21,7 +21,7 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import nbbrd.design.Development;
 import jdplus.math.matrices.MatrixException;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -43,11 +43,11 @@ public class ElementaryTransformations {
      *
      * @param m
      */
-    public void rowHouseholder(Matrix m) {
+    public void rowHouseholder(FastMatrix m) {
         householder(m.rowsIterator());
     }
 
-    public void rowHouseholder(final DataBlock row, final Matrix X) {
+    public void rowHouseholder(final DataBlock row, final FastMatrix X) {
         HouseholderReflection reflection = HouseholderReflection.of(row, true);
         DataBlockIterator rows = X.rowsIterator();
         while (rows.hasNext()) {
@@ -55,10 +55,10 @@ public class ElementaryTransformations {
         }
     }
 
-    public boolean givensTriangularize(final Matrix X) {
+    public boolean givensTriangularize(final FastMatrix X) {
         try {
             int r = X.getRowsCount(), c = X.getColumnsCount();
-            Matrix L = X;
+            FastMatrix L = X;
             do {
                 //ElementaryTransformations.rowHouseholder(L);
                 rowGivens(L);
@@ -70,7 +70,7 @@ public class ElementaryTransformations {
         }
     }
 
-    public boolean fastRowGivens(final DataBlock row, final Matrix X) {
+    public boolean fastRowGivens(final DataBlock row, final FastMatrix X) {
         try {
             int nr = X.getRowsCount(), cinc = X.getColumnIncrement(), beg = X.getStartPosition();
             double[] x = X.getStorage();
@@ -115,7 +115,7 @@ public class ElementaryTransformations {
         }
     }
 
-    public boolean fastGivensTriangularize(final Matrix X) {
+    public boolean fastGivensTriangularize(final FastMatrix X) {
         try {
             int nr = X.getRowsCount(), nc = X.getColumnsCount(),
                     cinc = X.getColumnIncrement(), beg = X.getStartPosition();
@@ -160,10 +160,10 @@ public class ElementaryTransformations {
         }
     }
 
-    public boolean householderTriangularize(final Matrix X) {
+    public boolean householderTriangularize(final FastMatrix X) {
         try {
             int r = X.getRowsCount(), c = X.getColumnsCount();
-            Matrix L = X;
+            FastMatrix L = X;
             do {
                 rowHouseholder(L);
                 L = L.extract(1, --r, 1, --c);
@@ -179,7 +179,7 @@ public class ElementaryTransformations {
      *
      * @param m
      */
-    public void rowGivens(Matrix m) {
+    public void rowGivens(FastMatrix m) {
         givens(m.rowsIterator(), m.getColumnsCount());
     }
 
@@ -189,7 +189,7 @@ public class ElementaryTransformations {
      *
      * @param m
      */
-    public void columnHouseholder(Matrix m) {
+    public void columnHouseholder(FastMatrix m) {
         householder(m.columnsIterator());
     }
 
@@ -199,7 +199,7 @@ public class ElementaryTransformations {
      *
      * @param m
      */
-    public void columnGivens(Matrix m) {
+    public void columnGivens(FastMatrix m) {
         givens(m.columnsIterator(), m.getRowsCount());
     }
 
@@ -219,7 +219,7 @@ public class ElementaryTransformations {
 //     * the final V diagonal
 //     * @return true if the decomposition was successful, false otherwise.
 //     */
-//    public static boolean extendedGivensTriangularize(Matrix X, DataBlock W, Matrix L, DataBlock V) {
+//    public static boolean extendedGivensTriangularize(FastMatrix X, DataBlock W, FastMatrix L, DataBlock V) {
 //
 //        int nc = X.getColumnsCount(), nr = X.getRowsCount(),
 //                rinc=L.getRowIncrement(), cinc=L.getColumnIncrement(), reader=L.getStartPosition();

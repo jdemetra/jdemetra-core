@@ -20,9 +20,9 @@ import demetra.data.DoubleSeq;
 import demetra.highfreq.FractionalAirlineDecomposition;
 import demetra.highfreq.FractionalAirlineEstimation;
 import demetra.highfreq.FractionalAirlineSpec;
-import demetra.math.matrices.MatrixType;
 import jdplus.fractionalairline.FractionalAirlineKernel;
 import jdplus.ssf.extractors.SsfUcarimaEstimation;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -43,7 +43,7 @@ public class FractionalAirlineProcessor{
         return FractionalAirlineKernel.decompose(DoubleSeq.of(s), periods, ndiff, cov, nb, nf);
     }
     
-    public FractionalAirlineEstimation estimate(double[] y, MatrixType x, boolean mean, double[] periods, int ndiff, String[] outliers, double cv, double precision, boolean approximateHessian){
+    public FractionalAirlineEstimation estimate(double[] y, Matrix x, boolean mean, double[] periods, int ndiff, String[] outliers, double cv, double precision, boolean approximateHessian){
         FractionalAirlineSpec spec = FractionalAirlineSpec.builder()
                 .y(y)
                 .X(x)

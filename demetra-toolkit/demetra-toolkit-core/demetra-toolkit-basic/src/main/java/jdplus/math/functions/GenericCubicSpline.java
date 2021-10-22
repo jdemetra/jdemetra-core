@@ -11,7 +11,7 @@ import java.util.function.DoubleUnaryOperator;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.polynomials.Polynomial;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -51,7 +51,7 @@ public class GenericCubicSpline implements DoubleUnaryOperator {
             STABLE = new BoundaryConstraints(Double.NaN, 0, Double.NaN),
             FREE =new BoundaryConstraints(Double.NaN, Double.NaN, Double.NaN);
 
-    static void fillConstraints(double[] xi, double[] fxi, Matrix C, double[] P,
+    static void fillConstraints(double[] xi, double[] fxi, FastMatrix C, double[] P,
             BoundaryConstraints left, BoundaryConstraints right) {
         int r = 0, n = xi.length - 1;
         DataBlockIterator rows = C.rowsIterator();
@@ -119,7 +119,7 @@ public class GenericCubicSpline implements DoubleUnaryOperator {
         }
     }
 
-    private static void fillAggregationConstraints(double[] xi, double[] fi, double fn, Matrix C, double[] P,
+    private static void fillAggregationConstraints(double[] xi, double[] fi, double fn, FastMatrix C, double[] P,
             BoundaryConstraints left, BoundaryConstraints right) {
         int r = 0, n = xi.length - 1;
         DataBlockIterator rows = C.rowsIterator();
@@ -235,7 +235,7 @@ public class GenericCubicSpline implements DoubleUnaryOperator {
         }
         int n = xi.length - 1;
         double[] P = new double[4 * n];
-        Matrix C = Matrix.square(P.length);
+        FastMatrix C = FastMatrix.square(P.length);
         fillConstraints(xi, fxi, C, P, left, right);
         LinearSystemSolver.robustSolver().solve(C, DataBlock.of(P));
         return new GenericCubicSpline(P, xi);
@@ -257,7 +257,7 @@ public class GenericCubicSpline implements DoubleUnaryOperator {
         }
         int n = xi.length - 1;
         double[] P = new double[4 * n];
-        Matrix C = Matrix.square(P.length);
+        FastMatrix C = FastMatrix.square(P.length);
         double fn = fxi[n - 1] / (xi[n] - xi[n - 1]);
         fillAggregationConstraints(xi, fxi, fn, C, P, left, right);
         LinearSystemSolver.robustSolver().solve(C, DataBlock.of(P));

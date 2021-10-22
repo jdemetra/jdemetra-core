@@ -29,7 +29,7 @@ import jdplus.ssf.State;
 import jdplus.ssf.StateInfo;
 import jdplus.likelihood.DeterminantalTerm;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * Will contain the following items at position t: a(t|t-1)
@@ -145,7 +145,7 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
         return M.datablock(pos);
     }
 
-    public Matrix P(int pos) {
+    public FastMatrix P(int pos) {
         return P.matrix(pos);
     }
 

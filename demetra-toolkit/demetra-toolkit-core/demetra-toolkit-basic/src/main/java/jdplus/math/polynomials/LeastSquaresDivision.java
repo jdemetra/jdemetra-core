@@ -19,7 +19,7 @@ package jdplus.math.polynomials;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.math.Constants;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.matrices.decomposition.Householder;
 import demetra.data.DoubleSeq;
@@ -48,7 +48,7 @@ public class LeastSquaresDivision {
                 return false;
             }
             int q = n - d + 1;
-            Matrix m = Matrix.make(n, q);
+            FastMatrix m = FastMatrix.make(n, q);
             DataBlockIterator columns = m.columnsIterator();
             int c = 0;
             while (columns.hasNext()) {

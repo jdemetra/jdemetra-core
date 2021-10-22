@@ -9,7 +9,7 @@ import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -26,7 +26,7 @@ public class LapackUtility {
      * @param x
      * @param y
      */
-    public void dger(Matrix A, double alpha, DataBlock x, DataBlock y) {
+    public void dger(FastMatrix A, double alpha, DataBlock x, DataBlock y) {
         // Quick return if possible
         if (A.isEmpty() || alpha == 0) {
             return;
@@ -176,7 +176,7 @@ public class LapackUtility {
      * @param starty
      * @param incy
      */
-    public void dger(Matrix A, double alpha, double[] px, int startx, int incx, double[] py, int starty, int incy) {
+    public void dger(FastMatrix A, double alpha, double[] px, int startx, int incx, double[] py, int starty, int incy) {
         int m = A.getRowsCount(), n = A.getColumnsCount();
         if (m == 0 || n == 0 || alpha == 0) {
             return;
@@ -218,7 +218,7 @@ public class LapackUtility {
      * @param x
      * @param y
      */
-    public void ger(Matrix A, double alpha, DataBlock x, DataBlock y) {
+    public void ger(FastMatrix A, double alpha, DataBlock x, DataBlock y) {
         if (alpha == 0 || A.isEmpty()) {
             return;
         }

@@ -22,7 +22,7 @@ import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.implementations.Loading;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
 
@@ -76,7 +76,7 @@ public class LocalLevel {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
             if (Double.isNaN(initialValue)) {
                 b.set(0, 0, 1);
             }
@@ -89,14 +89,14 @@ public class LocalLevel {
         }
 
         @Override
-        public void Pf0(Matrix pf0) {
+        public void Pf0(FastMatrix pf0) {
             if (Double.isFinite(initialValue)) {
                 pf0.set(0, 0, var);
             }
         }
 
         @Override
-        public void Pi0(Matrix pi0) {
+        public void Pi0(FastMatrix pi0) {
             if (Double.isNaN(initialValue)) {
                 pi0.set(0, 0, 1);
             }
@@ -129,7 +129,7 @@ public class LocalLevel {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             qm.set(0, 0, var);
         }
 
@@ -139,7 +139,7 @@ public class LocalLevel {
         }
 
         @Override
-        public void S(int pos, Matrix sm) {
+        public void S(int pos, FastMatrix sm) {
             sm.set(0, 0, std);
         }
 
@@ -154,7 +154,7 @@ public class LocalLevel {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             tr.set(0, 0, 1);
         }
 
@@ -163,7 +163,7 @@ public class LocalLevel {
         }
 
         @Override
-        public void TVT(int pos, Matrix v) {
+        public void TVT(int pos, FastMatrix v) {
         }
 
         @Override
@@ -171,7 +171,7 @@ public class LocalLevel {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             p.add(0, 0, var);
         }
 

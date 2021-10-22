@@ -18,7 +18,7 @@ import jdplus.math.functions.IFunctionPoint;
 import jdplus.math.functions.bfgs.Bfgs;
 import jdplus.math.functions.DefaultDomain;
 import jdplus.math.functions.IParametersDomain;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.GeneralMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 
@@ -78,7 +78,7 @@ public class GRP {
                 .functionPrecision(spec.getPrecision())
                 .maxIter(spec.getMaxIter())
                 .build();
-        Matrix K = Matrix.make(conversion, conversion - 1);
+        FastMatrix K = FastMatrix.make(conversion, conversion - 1);
         K(K, flow);
         GRPFunction fn = new GRPFunction(highSeries.range(offset, offset + n).toArray(), lowSeries.toArray(), K, flow);
         IFunctionPoint ps = fn.evaluate(DoubleSeq.of(Ztx(start, K, flow)));
@@ -174,7 +174,7 @@ public class GRP {
         return s;
     }
 
-    static void K(Matrix k, boolean flow) {
+    static void K(FastMatrix k, boolean flow) {
         if (flow) {
             int s = k.getRowsCount();
             DataBlockIterator cols = k.columnsIterator();
@@ -200,7 +200,7 @@ public class GRP {
      * @param K
      * @return
      */
-    static double[] mg(double[] x, double[] p, Matrix K) {
+    static double[] mg(double[] x, double[] p, FastMatrix K) {
         int s = K.getRowsCount();
         int m = x.length / s; // x.length should be a multiple of s
         int n = m * (s - 1);
@@ -259,13 +259,13 @@ public class GRP {
         x[x.length - 1] = b[b.length - 1];
     }
 
-    static double mf(double[] z, double[] p, double[] b, Matrix K, final boolean flow) {
+    static double mf(double[] z, double[] p, double[] b, FastMatrix K, final boolean flow) {
         double[] x = Zz(z, K, flow);
         addXbar(x, b, K.getRowsCount(), flow);
         return f(x, p);
     }
 
-    static double[] Ztx(double[] x, Matrix K, boolean flow) {
+    static double[] Ztx(double[] x, FastMatrix K, boolean flow) {
         int s = K.getRowsCount();
         if (flow) {
             int m = x.length / s; // x.length should be a multiple of s
@@ -307,7 +307,7 @@ public class GRP {
         }
     }
 
-    static double[] Zz(double[] z, Matrix K, boolean flow) {
+    static double[] Zz(double[] z, FastMatrix K, boolean flow) {
         int s = K.getRowsCount();
         if (flow) {
             int m = z.length / (s - 1); // x.length should be a multiple of s-1
@@ -343,10 +343,10 @@ public class GRP {
 class GRPFunction implements IFunction {
 
     private final double[] p, b;
-    private final Matrix K;
+    private final FastMatrix K;
     private final boolean flow;
 
-    GRPFunction(double[] p, double[] b, Matrix K, boolean flow) {
+    GRPFunction(double[] p, double[] b, FastMatrix K, boolean flow) {
         this.p = p;
         this.b = b;
         this.K = K;
@@ -417,8 +417,8 @@ class GRPFunction implements IFunction {
         }
 
         @Override
-        public void hessian(Matrix matrix) {
-            Matrix h = Matrix.square(x.length);
+        public void hessian(FastMatrix matrix) {
+            FastMatrix h = FastMatrix.square(x.length);
             DataBlock hd = h.diagonal();
             for (int i = 0; i < x.length; ++i) {
                 hd.set(i, GRP.h(i, i, x, p));
@@ -429,20 +429,20 @@ class GRPFunction implements IFunction {
             }
             h.subDiagonal(1).copy(hd);
             // H = Zt*h*Z
-            Matrix H = Matrix.square(z.length);
+            FastMatrix H = FastMatrix.square(z.length);
             // diagonal blocks
             int s = K.getRowsCount();
             int m = x.length / s;
             for (int j = 0, k = 0; j < x.length; j += s, k += s - 1) {
-                Matrix dh = h.extract(j, s, j, s);
-                Matrix dH = H.extract(k, s - 1, k, s - 1);
+                FastMatrix dh = h.extract(j, s, j, s);
+                FastMatrix dH = H.extract(k, s - 1, k, s - 1);
                 SymmetricMatrix.XtSX(dh, K, dH);
                 if (j + s < x.length) {
                     dh = h.extract(j + s, s, j, s);
                     dH = H.extract(k + s - 1, s - 1, k, s - 1);
-                    Matrix tmp = GeneralMatrix.AtB(K, dh);
+                    FastMatrix tmp = GeneralMatrix.AtB(K, dh);
                     GeneralMatrix.setABt(tmp, K, dH);
-                    Matrix dH2 = H.extract(k, s - 1, k + s - 1, s - 1);
+                    FastMatrix dH2 = H.extract(k, s - 1, k + s - 1, s - 1);
                     dH2.copyTranspose(dH);
                 }
             }

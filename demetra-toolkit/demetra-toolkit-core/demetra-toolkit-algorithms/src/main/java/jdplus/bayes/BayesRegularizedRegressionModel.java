@@ -5,8 +5,8 @@
  */
 package jdplus.bayes;
 
-import demetra.math.matrices.MatrixType;
 import demetra.data.DoubleSeq;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -38,7 +38,7 @@ public class BayesRegularizedRegressionModel {
     @lombok.NonNull
     DoubleSeq y;
     @lombok.NonNull
-    MatrixType X;
+    Matrix X;
 
     @lombok.NonNull
     ModelType model;

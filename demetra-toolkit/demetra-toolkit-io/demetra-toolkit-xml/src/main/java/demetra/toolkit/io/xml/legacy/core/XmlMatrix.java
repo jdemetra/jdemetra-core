@@ -16,7 +16,6 @@
  */
 package demetra.toolkit.io.xml.legacy.core;
 
-import demetra.math.matrices.MatrixType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -24,6 +23,7 @@ import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -31,26 +31,14 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  *
  *
  * <p>
- * Java class for MatrixType complex type.
- *
- * <p>
+ Java class for Matrix complex type.
+
+ <p>
  * The following schema fragment specifies the expected content contained within
  * this class.
  *
  * <pre>
- * &lt;complexType name="MatrixType"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="Dimensions" type="{ec/eurostat/jdemetra/core}UnsignedInts"/&gt;
- *         &lt;element name="Values" type="{ec/eurostat/jdemetra/core}Doubles"/&gt;
- *       &lt;/sequence&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
- * </pre>
- *
- *
+ * complexType name="Matrix"
  */
 @XmlRootElement(name="Matrix")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -96,15 +84,15 @@ public class XmlMatrix {
         this.values = values;
     }
 
-    public static class Adapter extends XmlAdapter<XmlMatrix, MatrixType> {
+    public static class Adapter extends XmlAdapter<XmlMatrix, Matrix> {
 
         @Override
-        public MatrixType unmarshal(XmlMatrix v) {
-            return MatrixType.of(v.values, v.dimensions[0], v.dimensions[1]);
+        public Matrix unmarshal(XmlMatrix v) {
+            return Matrix.of(v.values, v.dimensions[0], v.dimensions[1]);
         }
 
         @Override
-        public XmlMatrix marshal(MatrixType v) {
+        public XmlMatrix marshal(Matrix v) {
             XmlMatrix x = new XmlMatrix();
             x.dimensions = new int[]{v.getRowsCount(), v.getColumnsCount()};
             x.values = v.toArray();

@@ -19,7 +19,7 @@ package jdplus.ssf.implementations;
 import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfLoading;
 import java.util.function.IntToDoubleFunction;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -61,13 +61,13 @@ public class WeightedLoading implements ISsfLoading {
     }
 
     @Override
-    public double ZVZ(int pos, Matrix V) {
+    public double ZVZ(int pos, FastMatrix V) {
         double w = weights.applyAsDouble(pos);
         return loading.ZVZ(pos, V) * w * w;
     }
 
     @Override
-    public void VpZdZ(int pos, Matrix V, double d) {
+    public void VpZdZ(int pos, FastMatrix V, double d) {
         if (d == 0) {
             return;
         }

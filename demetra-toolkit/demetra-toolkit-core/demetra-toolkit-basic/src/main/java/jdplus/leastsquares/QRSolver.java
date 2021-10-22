@@ -19,7 +19,7 @@ package jdplus.leastsquares;
 import demetra.data.DoubleSeq;
 import demetra.math.Constants;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
 import jdplus.math.matrices.decomposition.Householder2;
 import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
@@ -36,7 +36,7 @@ public class QRSolver {
     @FunctionalInterface
     public interface Processor {
 
-        QRSolution solve(DoubleSeq y, Matrix X);
+        QRSolution solve(DoubleSeq y, FastMatrix X);
     }
 
     /**
@@ -46,13 +46,13 @@ public class QRSolver {
      * @param X
      * @return
      */
-    public QRSolution fastLeastSquares(DoubleSeq y, Matrix X) {
+    public QRSolution fastLeastSquares(DoubleSeq y, FastMatrix X) {
         Householder2 h = new Householder2();
         QRDecomposition qr = h.decompose(X);
         return leastSquares(qr, y, 0);
     }
 
-    public QRSolution robustLeastSquares(DoubleSeq y, Matrix X) {
+    public QRSolution robustLeastSquares(DoubleSeq y, FastMatrix X) {
         HouseholderWithPivoting h = new HouseholderWithPivoting();
         QRDecomposition qr = h.decompose(X, 0);
         return leastSquares(qr, y, 1e-9);

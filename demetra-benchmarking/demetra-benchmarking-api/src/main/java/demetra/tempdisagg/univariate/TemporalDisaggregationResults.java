@@ -21,11 +21,11 @@ import demetra.information.Explorable;
 import nbbrd.design.Development;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.functions.ObjectiveFunctionPoint;
-import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.Variable;
 import java.util.Map;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -53,7 +53,7 @@ public class TemporalDisaggregationResults implements Explorable{
      * 
      */
     private DoubleSeq coefficients;
-    private MatrixType coefficientsCovariance;
+    private Matrix coefficientsCovariance;
     
     ObjectiveFunctionPoint maximum;
     

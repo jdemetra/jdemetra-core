@@ -13,7 +13,7 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.math.functions.NumericalIntegration;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 
 /**
@@ -99,13 +99,13 @@ public class AsymmetricFiltersFactory {
         int nv = h + q + 1;
         DataBlock wp = DataBlock.of(w, 0, nv);
         DataBlock wf = DataBlock.of(w, nv, w.length);
-        Matrix Zp = LocalPolynomialFilters.z(-h, q, u + 1, u + dz.length);
-        Matrix Zf = LocalPolynomialFilters.z(q + 1, h, u + 1, u + dz.length);
-        Matrix Up = LocalPolynomialFilters.z(-h, q, 0, u);
-        Matrix Uf = LocalPolynomialFilters.z(q + 1, h, 0, u);
+        FastMatrix Zp = LocalPolynomialFilters.z(-h, q, u + 1, u + dz.length);
+        FastMatrix Zf = LocalPolynomialFilters.z(q + 1, h, u + 1, u + dz.length);
+        FastMatrix Up = LocalPolynomialFilters.z(-h, q, 0, u);
+        FastMatrix Uf = LocalPolynomialFilters.z(q + 1, h, 0, u);
         DataBlock d = DataBlock.of(dz);
 
-        Matrix H = SymmetricMatrix.XtX(Up);
+        FastMatrix H = SymmetricMatrix.XtX(Up);
 
         DataBlock a1 = DataBlock.make(u + 1);
         a1.product(Uf.columnsIterator(), wf); // U'f x wf
@@ -139,7 +139,7 @@ public class AsymmetricFiltersFactory {
 
         DataBlock a10 = DataBlock.make(dz.length);
         a10.product(Zp.columnsIterator(), a9);
-        Matrix C = Matrix.square(dz.length);
+        FastMatrix C = FastMatrix.square(dz.length);
         for (int i = 0; i < dz.length; ++i) {
             for (int j = 0; j < dz.length; ++j) {
                 double x = a10.get(i) * dz[j];
@@ -207,10 +207,10 @@ public class AsymmetricFiltersFactory {
         int nv = h + q + 1;
         DataBlock wp = DataBlock.of(w, 0, nv);
         DataBlock wf = DataBlock.of(w, nv, w.length);
-        Matrix Up = LocalPolynomialFilters.z(-h, q, 0, u);
-        Matrix Uf = LocalPolynomialFilters.z(q + 1, h, 0, u);
-        Matrix Q = Matrix.square(nv + u + 1);
-        Matrix D = Q.extract(0, nv, 0, nv);
+        FastMatrix Up = LocalPolynomialFilters.z(-h, q, 0, u);
+        FastMatrix Uf = LocalPolynomialFilters.z(q + 1, h, 0, u);
+        FastMatrix Q = FastMatrix.square(nv + u + 1);
+        FastMatrix D = Q.extract(0, nv, 0, nv);
         D.diagonal().set(1);
         Q.extract(nv, u + 1, 0, nv).copyTranspose(Up);
         Q.extract(0, nv, nv, u + 1).copy(Up);
@@ -218,8 +218,8 @@ public class AsymmetricFiltersFactory {
         a.extract(nv, u + 1).product(wf, Uf.columnsIterator());
         if (dz != null && dz.length > 0) {
             DataBlock d = DataBlock.of(dz);
-            Matrix Zp = LocalPolynomialFilters.z(-h, q, u + 1, u + dz.length);
-            Matrix Zf = LocalPolynomialFilters.z(q + 1, h, u + 1, u + dz.length);
+            FastMatrix Zp = LocalPolynomialFilters.z(-h, q, u + 1, u + dz.length);
+            FastMatrix Zf = LocalPolynomialFilters.z(q + 1, h, u + 1, u + dz.length);
             DataBlock Yp = DataBlock.make(nv);
             DataBlockIterator cols = Zp.columnsIterator();
             DoubleSeqCursor.OnMutable cursor = d.cursor();
@@ -236,7 +236,7 @@ public class AsymmetricFiltersFactory {
             a.extract(0, nv).setAY(Yf.dot(wf), Yp);
         }
         if (passBand > 0 && tweight > 0) {
-            Matrix W = buildMatrix(passBand, h, q);
+            FastMatrix W = buildMatrix(passBand, h, q);
             D.addAY(tweight, W);
             // we have to update a
             DataBlock row = DataBlock.of(wp);
@@ -248,10 +248,10 @@ public class AsymmetricFiltersFactory {
         return FiniteFilter.ofInternal(wp.toArray(), -h);
     }
 
-    private Matrix buildMatrix(double w, int nlags, int nleads) {
+    private FastMatrix buildMatrix(double w, int nlags, int nleads) {
         int n = 2 * Math.max(nlags, nleads) + 1;
         int m = nlags + nleads + 1;
-        Matrix T = Matrix.square(m);
+        FastMatrix T = FastMatrix.square(m);
         double[] sin1 = new double[n];
         for (int i = 0; i < n; ++i) {
             sin1[i] = Math.sin(i * w);
@@ -309,7 +309,7 @@ public class AsymmetricFiltersFactory {
             return null;
         }
         double[] f = new double[afilters.length];
-        Matrix L = Matrix.square(h);
+        FastMatrix L = FastMatrix.square(h);
         IntToDoubleFunction sw = sfilter.weights();// from -h to h
         for (int i = 0; i < h; ++i) {
             IntToDoubleFunction aw = afilters[i].weights(); // from -h to h-i-1

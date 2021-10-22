@@ -12,7 +12,7 @@ import demetra.ssf.SsfInitialization;
 import jdplus.arima.ssf.SsfAr;
 import jdplus.benchmarking.ssf.SsfCumulator;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.CompositeLoading;
 import jdplus.ssf.StateStorage;
 import jdplus.ssf.implementations.Loading;
@@ -32,12 +32,12 @@ public class CumulatorTest {
     public void testChowLin() {
         int m = Data.PCRA.length;
         int n = Data.IND_PCR.length;
-        Matrix x = Matrix.make(n, 2);
+        FastMatrix x = FastMatrix.make(n, 2);
         x.column(0).copyFrom(Data.IND_PCR, 0);
         //x.column(0).div(100);
         x.column(1).set(1);
         
-        Matrix y = Matrix.make(n, 1);
+        FastMatrix y = FastMatrix.make(n, 1);
         DataBlock edata = y.column(0);
         edata.set(Double.NaN);
         edata.extract(3, m, 4).copyFrom(Data.PCRA, 0);

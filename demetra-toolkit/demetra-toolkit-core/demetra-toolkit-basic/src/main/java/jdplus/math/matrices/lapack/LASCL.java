@@ -6,7 +6,7 @@
 package jdplus.math.matrices.lapack;
 
 import demetra.math.Constants;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.TypeOfMatrix;
 
 /**
@@ -29,7 +29,7 @@ public class LASCL {
      * @param cfrom
      * @param cto
      */
-    public void apply(Matrix A, TypeOfMatrix type, double cfrom, double cto) {
+    public void apply(FastMatrix A, TypeOfMatrix type, double cfrom, double cto) {
         if (A.isEmpty()) {
             return;
         }
@@ -84,7 +84,7 @@ public class LASCL {
         }
     }
 
-    private void gscal(Matrix A, double mul) {
+    private void gscal(FastMatrix A, double mul) {
         double[] storage = A.getStorage();
              int i0 = A.getStartPosition();
             int cinc = A.getColumnIncrement();
@@ -98,7 +98,7 @@ public class LASCL {
             }
     }
 
-    private void lscal(Matrix A, double mul) {
+    private void lscal(FastMatrix A, double mul) {
         double[] storage = A.getStorage();
         int i0 = A.getStartPosition();
         int nc = A.getColumnsCount(), cinc = A.getColumnIncrement();
@@ -113,7 +113,7 @@ public class LASCL {
         }
     }
 
-    private void uscal(Matrix A, double mul) {
+    private void uscal(FastMatrix A, double mul) {
         double[] storage = A.getStorage();
         int i0 = A.getStartPosition();
         int cinc = A.getColumnIncrement();
@@ -129,7 +129,7 @@ public class LASCL {
 
     }
 
-    private void hscal(Matrix A, double mul) {
+    private void hscal(FastMatrix A, double mul) {
         double[] storage = A.getStorage();
         int i0 = A.getStartPosition();
         int cinc = A.getColumnIncrement();

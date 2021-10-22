@@ -8,7 +8,7 @@ package jdplus.filters;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import jdplus.math.linearfilters.IFiniteFilter;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -32,13 +32,13 @@ public class FilteringTest {
         IFiniteFilter cf = lf.centralFilter();
 
         double[] cw = cf.weightsToArray();
-        Matrix M = Matrix.make(cw.length - 1, cf.getUpperBound());
+        FastMatrix M = FastMatrix.make(cw.length - 1, cf.getUpperBound());
         IFiniteFilter[] af = lf.leftEndPointsFilters();
         for (int i = 0; i < af.length; ++i) {
             M.column(i).drop(0, i).copyFrom(af[i].weightsToArray(), 0);
         }
 //        System.out.println(M);
-        Matrix N = Matrix.make(cw.length - 1, cf.getUpperBound());
+        FastMatrix N = FastMatrix.make(cw.length - 1, cf.getUpperBound());
         IFiniteFilter[] bf = lf.rightEndPointsFilters();
         for (int i = 0; i < bf.length; ++i) {
             N.column(i).drop(i, 0).copyFrom(bf[i].weightsToArray(), 0);

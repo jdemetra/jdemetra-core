@@ -15,7 +15,7 @@ import demetra.dstats.RandomNumberGenerator;
 @lombok.experimental.UtilityClass
 public class MatrixUtility {
 
-    public void randomize(Matrix M, RandomNumberGenerator rng) {
+    public void randomize(FastMatrix M, RandomNumberGenerator rng) {
         if (M.isEmpty()) {
             return;
         }

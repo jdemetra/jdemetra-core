@@ -9,7 +9,7 @@ import jdplus.fractionalairline.FractionalAirlineKernel;
 import demetra.data.Data;
 import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.Holiday;
@@ -23,8 +23,8 @@ import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
 import demetra.highfreq.FractionalAirlineEstimation;
 import demetra.highfreq.FractionalAirlineSpec;
-import demetra.math.matrices.MatrixType;
 import java.io.InputStream;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -38,9 +38,9 @@ public class FractionalAirlineKernelTest {
     @Test
     public void testDaily() throws IOException {
         InputStream stream = Data.class.getResourceAsStream("/edf.txt");
-        MatrixType edf = MatrixSerializer.read(stream);
+        Matrix edf = MatrixSerializer.read(stream);
         Holiday[] france = france();
-        Matrix hol = Matrix.make(edf.getRowsCount(), france.length);
+        FastMatrix hol = FastMatrix.make(edf.getRowsCount(), france.length);
         HolidaysUtility.fillDays(france, hol, LocalDate.of(1996, 1, 1), new int[]{7}, false);
         FractionalAirlineSpec spec = FractionalAirlineSpec.builder()
                 .y(edf.column(0).fn(z -> Math.log(z)).toArray())

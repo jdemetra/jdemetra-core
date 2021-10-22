@@ -5,7 +5,7 @@
  */
 package jdplus.math.matrices.lapack;
 
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.matrices.SymmetricMatrix;
 
@@ -30,12 +30,12 @@ public class Cholesky implements SymmetricMatrix.CholeskyProcessor {
      * @param U in/out matrix
      */
     @Override
-    public void ucholesky(Matrix U) {
+    public void ucholesky(FastMatrix U) {
         ucholesky(U, 0);
     }
 
     @Override
-    public void ucholesky(Matrix U, double zero) {
+    public void ucholesky(FastMatrix U, double zero) {
         int n = U.getRowsCount();
         if (n == 0) {
             return;
@@ -107,7 +107,7 @@ public class Cholesky implements SymmetricMatrix.CholeskyProcessor {
      * matrices will always generate an exception
      */
     @Override
-    public void lcholesky(Matrix L, double zero) {
+    public void lcholesky(FastMatrix L, double zero) {
         int n = L.getRowsCount();
         if (n == 0) {
             return;

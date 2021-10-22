@@ -10,7 +10,7 @@ import demetra.data.Doubles;
 import demetra.timeseries.regression.UserVariable;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -28,7 +28,7 @@ public class TsVariableFactoryTest {
         DoubleSeq x = DoubleSeq.onMapping(24, i->i+1);
         TsData s=TsData.of(TsPeriod.monthly(2000, 1), x);
         UserVariable var=new UserVariable("test", s);
-        Matrix M=Matrix.make(12, 1);
+        FastMatrix M=FastMatrix.make(12, 1);
         TsVariableFactory.FACTORY.fill(var, TsPeriod.monthly(2000, 3), M);
         assertTrue(M.get(0, 0)==3);
         assertTrue(M.get(11, 0)==14);
@@ -39,7 +39,7 @@ public class TsVariableFactoryTest {
         DoubleSeq x = DoubleSeq.onMapping(24, i->i+1);
         TsData s=TsData.of(TsPeriod.monthly(2000, 1), x);
         UserVariable var=new UserVariable("test", s);
-        Matrix M=Matrix.make(36, 1);
+        FastMatrix M=FastMatrix.make(36, 1);
         TsVariableFactory.FACTORY.fill(var, TsPeriod.monthly(1999, 3), M);
         assertTrue(M.get(9, 0)==0);
         assertTrue(M.get(10, 0)==1);
@@ -52,7 +52,7 @@ public class TsVariableFactoryTest {
         DoubleSeq x = DoubleSeq.onMapping(24, i->i+1);
         TsData s=TsData.of(TsPeriod.monthly(2000, 1), x);
         UserVariable var=new UserVariable("test", s);
-        Matrix M=Matrix.make(36, 1);
+        FastMatrix M=FastMatrix.make(36, 1);
         TsVariableFactory.FACTORY.fill(var, TsPeriod.monthly(2005, 3), M);
         assertTrue(M.isZero(0));
     }
@@ -62,7 +62,7 @@ public class TsVariableFactoryTest {
         DoubleSeq x = DoubleSeq.onMapping(24, i->i+1);
         TsData s=TsData.of(TsPeriod.monthly(2000, 1), x);
         UserVariable var=new UserVariable("test", s);
-        Matrix M=Matrix.make(36, 1);
+        FastMatrix M=FastMatrix.make(36, 1);
         TsVariableFactory.FACTORY.fill(var, TsPeriod.monthly(1995, 3), M);
         assertTrue(M.isZero(0));
     }
@@ -72,7 +72,7 @@ public class TsVariableFactoryTest {
         DoubleSeq x = DoubleSeq.onMapping(24, i->i+1);
         TsData s=TsData.of(TsPeriod.monthly(2000, 1), x);
         UserVariable var=new UserVariable("test", s);
-        Matrix M=Matrix.make(36, 1);
+        FastMatrix M=FastMatrix.make(36, 1);
         TsVariableFactory.FACTORY.fill(var, TsPeriod.monthly(2000, 7), M);
         assertTrue(M.get(0, 0)==7);
         assertTrue(M.get(17, 0)==24);
@@ -83,7 +83,7 @@ public class TsVariableFactoryTest {
         DoubleSeq x = DoubleSeq.onMapping(24, i->i+1);
         TsData s=TsData.of(TsPeriod.monthly(2000, 1), x);
         UserVariable var=new UserVariable("test", s);
-        Matrix M=Matrix.make(36, 1);
+        FastMatrix M=FastMatrix.make(36, 1);
         TsVariableFactory.FACTORY.fill(var, TsPeriod.monthly(1998, 1), M);
         assertTrue(M.get(24, 0)==1);
         assertTrue(M.get(35, 0)==12);

@@ -18,7 +18,7 @@ package jdplus.ssf;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataWindow;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixWindow;
 
 /**
@@ -75,7 +75,7 @@ public class CompositeDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void V(int pos, Matrix qm) {
+    public void V(int pos, FastMatrix qm) {
         MatrixWindow cur = qm.topLeft(0, 0);
         for (int i = 0; i < dyn.length; ++i) {
             dyn[i].V(pos, cur.next(dim[i], dim[i]));
@@ -93,12 +93,12 @@ public class CompositeDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void S(int pos, Matrix sm) {
+    public void S(int pos, FastMatrix sm) {
         MatrixWindow cur = sm.topLeft(0, 0);
         for (int i = 0; i < dyn.length; ++i) {
             int rcount = dim[i];
             int rdim = dyn[i].getInnovationsDim();
-            Matrix next = cur.next(rcount, rdim);
+            FastMatrix next = cur.next(rcount, rdim);
             if (rdim > 0) {
                 dyn[i].S(pos, next);
             }
@@ -132,7 +132,7 @@ public class CompositeDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void T(int pos, Matrix tr) {
+    public void T(int pos, FastMatrix tr) {
         MatrixWindow cur = tr.topLeft(0, 0);
         for (int i = 0; i < dyn.length; ++i) {
             dyn[i].T(pos, cur.next(dim[i], dim[i]));
@@ -149,7 +149,7 @@ public class CompositeDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void TM(int pos, Matrix x) {
+    public void TM(int pos, FastMatrix x) {
         MatrixWindow cur = x.top(0);
         for (int i = 0; i < dyn.length; ++i) {
             dyn[i].TM(pos, cur.vnext(dim[i]));
@@ -165,17 +165,17 @@ public class CompositeDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void TVT(int pos, Matrix v) {
+    public void TVT(int pos, FastMatrix v) {
         MatrixWindow D = v.topLeft(0, 0);
         for (int i = 0; i < dyn.length; ++i) {
             int ni = dim[i];
-            Matrix nD = D.next(ni, ni);
+            FastMatrix nD = D.next(ni, ni);
             dyn[i].TVT(pos, nD);
             MatrixWindow C = MatrixWindow.of(nD), R = MatrixWindow.of(nD);
             for (int j = i + 1; j < dyn.length; ++j) {
                 int nj = dim[j];
-                Matrix nC = C.vnext(nj);
-                Matrix nR = R.hnext(nj);
+                FastMatrix nC = C.vnext(nj);
+                FastMatrix nR = R.hnext(nj);
                 dyn[j].TM(pos, nC);
                 dyn[i].MTt(pos, nC);
                 nR.copyTranspose(nC);
@@ -184,7 +184,7 @@ public class CompositeDynamics implements ISsfDynamics {
     }
 
     @Override
-    public void addV(int pos, Matrix p
+    public void addV(int pos, FastMatrix p
     ) {
         MatrixWindow cur = p.topLeft(0, 0);
         for (int i = 0; i < dyn.length; ++i) {

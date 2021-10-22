@@ -25,7 +25,7 @@ import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.UnitRoots;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -72,15 +72,15 @@ public class MatrixDenton {
         }
     }
 
-    private void J(Matrix M) {
+    private void J(FastMatrix M) {
         J(M.rowsIterator());
     }
 
-    private void Jtranspose(Matrix M) {
+    private void Jtranspose(FastMatrix M) {
         J(M.columnsIterator());
     }
 
-    private Matrix D(DataBlock x) {
+    private FastMatrix D(DataBlock x) {
         Polynomial pd = UnitRoots.D(1, differencing);
         int d = pd.degree();
         int n = x.length();
@@ -90,7 +90,7 @@ public class MatrixDenton {
         }
 
         if (modified) {
-            Matrix D = Matrix.make(n - d, n);
+            FastMatrix D = FastMatrix.make(n - d, n);
             for (int i = 0; i <= d; ++i) {
                 if (multiplicative) {
                     D.subDiagonal(i).setAY(pd.get(d - i), x.drop(i, d - i));
@@ -100,7 +100,7 @@ public class MatrixDenton {
             }
             return D;
         } else {
-            Matrix D = Matrix.square(n);
+            FastMatrix D = FastMatrix.square(n);
             for (int i = 0; i <= d; ++i) {
                 if (multiplicative) {
                     D.subDiagonal(-i).setAY(pd.get(i), x.drop(0, i));
@@ -124,13 +124,13 @@ public class MatrixDenton {
         double xm = x.sum() / x.length();
         x.mul(1 / xm);
 
-        Matrix D = D(x);
+        FastMatrix D = D(x);
 
-        Matrix A = Matrix.square(n + ny);
+        FastMatrix A = FastMatrix.square(n + ny);
 
         SymmetricMatrix.XtX(D, A.extract(0, n, 0, n));
         J(A.extract(n, ny, 0, n));
-        Matrix B = A.deepClone();
+        FastMatrix B = A.deepClone();
         Jtranspose(A.extract(0, n, n, ny));
         B.diagonal().drop(n, 0).set(1);
 
@@ -161,12 +161,12 @@ public class MatrixDenton {
         if (multiplicative) {
             x.set(1);
         }
-        Matrix D = D(x);
-        Matrix A = Matrix.square(n + ny);
+        FastMatrix D = D(x);
+        FastMatrix A = FastMatrix.square(n + ny);
 
         SymmetricMatrix.XtX(D, A.extract(0, n, 0, n));
         J(A.extract(n, ny, 0, n));
-        Matrix B = A.deepClone();
+        FastMatrix B = A.deepClone();
         Jtranspose(A.extract(0, n, n, ny));
         B.diagonal().drop(n, 0).set(1);
 

@@ -9,7 +9,7 @@ import java.util.function.DoubleUnaryOperator;
 import jdplus.data.analysis.DiscreteKernel;
 import jdplus.filters.LocalPolynomialFilterFactory;
 import jdplus.math.linearfilters.SymmetricFilter;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.stats.Kernels;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -31,7 +31,7 @@ public class KernelsUtilityTest {
         SymmetricFilter s1 = KernelsUtility.symmetricFilter(kernel, bandwidth, m);
         SymmetricFilter s2 = LocalPolynomialFilterFactory.of(m, 3, DiscreteKernel.biweight(m));
         SymmetricFilter s3 = LocalPolynomialFilterFactory.of(m, 3, DiscreteKernel.henderson(m));
-        Matrix S = Matrix.make(2 * m + 1, 3);
+        FastMatrix S = FastMatrix.make(2 * m + 1, 3);
         S.column(0).copyFrom(s1.weightsToArray(), 0);
         S.column(1).copyFrom(s2.weightsToArray(), 0);
         S.column(2).copyFrom(s3.weightsToArray(), 0);
@@ -55,7 +55,7 @@ public class KernelsUtilityTest {
     }
 
     public static void main(String[] args) {
-        Matrix M = Matrix.make(100, 2);
+        FastMatrix M = FastMatrix.make(100, 2);
         for (int i = 0; i < 100; ++i) {
             double b = KernelsUtility.optimalBandWidth(HighOrderKernels.kernel(Kernels.BIWEIGHT, 3), i + 4, 2);
             double c = KernelsUtility.optimalBandWidth(HighOrderKernels.kernel(Kernels.TRIWEIGHT, 3), i + 4, 2);

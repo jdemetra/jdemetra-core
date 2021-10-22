@@ -10,7 +10,7 @@ import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import java.util.Random;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
 
 /**
@@ -30,7 +30,7 @@ public class StsOutliersDetectionTest {
             z[i] = Double.NaN;
         }
         TsData y = TsData.ofInternal(TsPeriod.monthly(1992, 1), z);
-        Matrix X = Matrix.make(y.length(), 2);
+        FastMatrix X = FastMatrix.make(y.length(), 2);
         Random rnd = new Random();
         X.set((i, j) -> rnd.nextDouble());
         StsOutliersDetection.Results rslt = StsOutliersDetection.process(y, 1, 1, 1, "Trigonometric", X, true, true, false, 0, 0, "Score", "Point");

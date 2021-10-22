@@ -27,7 +27,7 @@ import jdplus.linearmodel.JointTest;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixWindow;
 import jdplus.modelling.regression.Regression;
 
@@ -56,14 +56,14 @@ public class TradingDaysTest {
         try {
             GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD7);
             GenericTradingDaysVariable td = new GenericTradingDaysVariable(gtd);
-            Matrix m = Regression.matrix(y.getDomain(), td);
+            FastMatrix m = Regression.matrix(y.getDomain(), td);
             DoubleSeq dy = y.getValues();
-            Matrix dm = m;
+            FastMatrix dm = m;
             if (lags != null) {
                 for (int j = 0; j < lags.length; ++j) {
                     int lag = lags[j];
                     if (lag > 0) {
-                        Matrix mj = dm;
+                        FastMatrix mj = dm;
                         int nr = mj.getRowsCount(), nc = mj.getColumnsCount();
                         dm = mj.extract(lag, nr - lag, 0, nc).deepClone();
                         dm.sub(mj.extract(0, nr - lag, 0, nc));

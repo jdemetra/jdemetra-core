@@ -22,7 +22,7 @@ import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.linearsystem.QRLinearSystemSolver;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -51,7 +51,7 @@ public class SymmetricFilterAlgorithms {
             int nc = c.degree();
             int r = nq > nc ? nq : nc;
 
-            Matrix a = Matrix.square(r + 1);
+            FastMatrix a = FastMatrix.square(r + 1);
             double[] mc = new double[r + 1];
             for (int i = 0; i <= r; ++i) {
                 mc[r - i] = i <= nc ? c.get(i) : 0;

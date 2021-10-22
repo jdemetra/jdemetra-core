@@ -29,7 +29,7 @@ import jdplus.math.polynomials.RationalFunction;
 import nbbrd.service.ServiceProvider;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * @author Jean Palate
@@ -42,7 +42,7 @@ public class LjungBoxFilter implements ArmaFilter {
     private int m_n, m_p, m_q;
     private Polynomial m_ar, m_ma;
     private double[] m_u;
-    private Matrix m_G, m_X, m_V1, m_L;
+    private FastMatrix m_G, m_X, m_V1, m_L;
     private double m_s, m_t;
 
     private void ar(double[] a) {
@@ -109,7 +109,7 @@ public class LjungBoxFilter implements ArmaFilter {
     private void calcg(int m) {
         RationalFunction rf = RationalFunction.of(Polynomial.ONE, m_ma);
         double[] pi = rf.coefficients(m_n);
-        Matrix gg = Matrix.square(m);
+        FastMatrix gg = FastMatrix.square(m);
 
         // compute first column
         for (int i = 0; i < m; ++i) {
@@ -213,18 +213,18 @@ public class LjungBoxFilter implements ArmaFilter {
         if (m > 0) {
             // compute V1' * G * V1 = X' X and V (covar model)
 
-            m_L = Matrix.square(m_p + m_q);
+            m_L = FastMatrix.square(m_p + m_q);
             m_L.diagonal().set(1);
-            m_V1 = Matrix.make(m, m_p + m_q);
+            m_V1 = FastMatrix.make(m, m_p + m_q);
             if (m_p > 0) {
                 double[] cov = arima.getAutoCovarianceFunction().values(m_p);
-                Matrix W = m_L.extract(0, m_p, 0, m_p);
+                FastMatrix W = m_L.extract(0, m_p, 0, m_p);
                 W.diagonal().set(cov[0]);
 
                 for (int i = 1; i < m_p; ++i) {
                     W.subDiagonal(i).set(cov[i]);
                 }
-                Matrix P = m_V1.extract(0, m_p, 0, m_p);
+                FastMatrix P = m_V1.extract(0, m_p, 0, m_p);
                 P.diagonal().set(-m_ar.get(m_p));
                 for (int i = 1; i < m_p; ++i) {
                     P.subDiagonal(i).set(-m_ar.get(m_p - i));
@@ -232,7 +232,7 @@ public class LjungBoxFilter implements ArmaFilter {
             }
 
             if (m_q > 0) {
-                Matrix Q = m_V1.extract(0, m_q, m_p, m_q);
+                FastMatrix Q = m_V1.extract(0, m_q, m_p, m_q);
                 Q.diagonal().set(m_ma.get(m_q));
 
                 for (int i = 1; i < m_q; ++i) {
@@ -242,7 +242,7 @@ public class LjungBoxFilter implements ArmaFilter {
 
             if (m_q > 0 && m_p > 0) {
                 double[] psi = RationalFunction.of(m_ma, m_ar).coefficients(m_q);
-                Matrix W = m_L.extract(0, m_p, m_p, m_q);
+                FastMatrix W = m_L.extract(0, m_p, m_p, m_q);
                 int imin = m_q - m_p;
                 for (int i = 0; i < m_q; ++i) {
                     W.subDiagonal(imin - i).set(psi[i]);
@@ -258,7 +258,7 @@ public class LjungBoxFilter implements ArmaFilter {
             // compute the inverse of the covariance matrix
             SymmetricMatrix.lcholesky(m_L);
             m_s = 2 * LogSign.of(m_L.diagonal()).getValue();
-            Matrix IL = LowerTriangularMatrix.inverse(m_L);
+            FastMatrix IL = LowerTriangularMatrix.inverse(m_L);
             m_X.add(SymmetricMatrix.LtL(IL));
             SymmetricMatrix.lcholesky(m_X);
             m_t = 2 * LogSign.of(m_X.diagonal()).getValue();

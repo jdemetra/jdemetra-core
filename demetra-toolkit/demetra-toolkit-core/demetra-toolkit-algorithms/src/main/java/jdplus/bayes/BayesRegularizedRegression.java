@@ -7,7 +7,6 @@ package jdplus.bayes;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.math.matrices.MatrixType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,11 +21,12 @@ import jdplus.dstats.InverseGaussian;
 import jdplus.dstats.Normal;
 import jdplus.dstats.internal.SpecialFunctions;
 import jdplus.math.matrices.LowerTriangularMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.random.MersenneTwister;
 import demetra.dstats.RandomNumberGenerator;
 import jdplus.stats.samples.Moments;
+import demetra.math.matrices.Matrix;
 
 /**
  * TODO See R package bayesreg For the time being, I only implemented the linear
@@ -37,7 +37,7 @@ import jdplus.stats.samples.Moments;
 public class BayesRegularizedRegression {
 
     private final DataBlock y;
-    private final Matrix X;
+    private final FastMatrix X;
     private final ModelType model;
     private final Prior prior;
     private final int burnin, nsamples;
@@ -60,7 +60,7 @@ public class BayesRegularizedRegression {
 
     // Use Rue's MVN sampling algorithm
     private boolean mvnrue, precomputedXtX;
-    private Matrix XtX;
+    private FastMatrix XtX;
     private DataBlock Xty;
 
     @lombok.Value
@@ -75,10 +75,10 @@ public class BayesRegularizedRegression {
 
     private RandomNumberGenerator rng = MersenneTwister.fromSystemNanoTime();
 
-    public BayesRegularizedRegression(final DoubleSeq y, final MatrixType X, final ModelType model, final int tdf, final Prior prior,
+    public BayesRegularizedRegression(final DoubleSeq y, final Matrix X, final ModelType model, final int tdf, final Prior prior,
             final int burnin, final int nsamples) {
         this.y = DataBlock.of(y);
-        this.X = Matrix.of(X);
+        this.X = FastMatrix.of(X);
         this.model = model;
         this.tdf = tdf;
         this.prior = prior;
@@ -195,7 +195,7 @@ public class BayesRegularizedRegression {
         if (mvnrue) {
             if (!precomputedXtX) {
                 DoubleSeq omega = omega2.fn(q -> Math.sqrt(q) * sigma);
-                Matrix X0 = X.deepClone();
+                FastMatrix X0 = X.deepClone();
                 DoubleSeqCursor ocur = omega.cursor();
                 DataBlockIterator cols = X0.columnsIterator();
                 while (cols.hasNext()) {
@@ -381,8 +381,8 @@ public class BayesRegularizedRegression {
         return n * (-SpecialFunctions.logGamma((tdf + 1.0) / 2) + SpecialFunctions.logGamma(tdf / 2.0) + Math.log(Math.PI * tdf * sigma2) / 2) + (tdf + 1) / 2 * c;
     }
 
-    private void rue_nongaussian(Matrix X0, DoubleSeq alpha, DoubleSeq Lambda, double sigma2, DoubleSeq omega) {
-        Matrix S = SymmetricMatrix.XtX(X0);
+    private void rue_nongaussian(FastMatrix X0, DoubleSeq alpha, DoubleSeq Lambda, double sigma2, DoubleSeq omega) {
+        FastMatrix S = SymmetricMatrix.XtX(X0);
         S.diagonal().add(Lambda.fastOp(q -> 1 / q));
         DataBlock y = DataBlock.of(alpha.fastOp(omega, (q, r) -> q / r));
         SymmetricMatrix.solve(S, y);
@@ -393,8 +393,8 @@ public class BayesRegularizedRegression {
         b.add(w);
     }
 
-    private void rue_gaussian(Matrix X, DoubleSeq alpha, DoubleSeq Lambda, Matrix XtX, DataBlock Xty, double sigma2) {
-        Matrix S = XtX;
+    private void rue_gaussian(FastMatrix X, DoubleSeq alpha, DoubleSeq Lambda, FastMatrix XtX, DataBlock Xty, double sigma2) {
+        FastMatrix S = XtX;
         if (XtX == null) {
             S = SymmetricMatrix.XtX(X);
         }

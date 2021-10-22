@@ -18,7 +18,7 @@ package jdplus.stats.tests;
 
 import ec.tstoolkit.random.JdkRNG;
 import java.util.Random;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -33,7 +33,7 @@ public class JohansenCointegrationTest {
 
     @Test
     public void testRandom() {
-        Matrix X = Matrix.make(100, 5);
+        FastMatrix X = FastMatrix.make(100, 5);
         Random rnd=new Random(0);
         X.set((i, j) -> rnd.nextGaussian());
         

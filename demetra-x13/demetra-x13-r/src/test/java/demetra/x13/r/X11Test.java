@@ -17,10 +17,10 @@
 package demetra.x13.r;
 
 import demetra.data.Data;
-import demetra.math.matrices.MatrixType;
 import demetra.x11.X11Results;
 import demetra.x11.X11Spec;
 import org.junit.Test;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -34,7 +34,7 @@ public class X11Test {
     @Test
     public void testSomeMethod() {
         X11Results rslt = X11.process(Data.TS_PROD, X11Spec.DEFAULT);
-        MatrixType data = rslt.getData("all", MatrixType.class);
+        Matrix data = rslt.getData("all", Matrix.class);
 //        System.out.println(data);
     }
 
@@ -45,7 +45,7 @@ public class X11Test {
                 .forecastHorizon(19)
                 .build();
         X11Results rslt = X11.process(Data.TS_PROD, spec);
-        MatrixType data = rslt.getData("all", MatrixType.class);
+        Matrix data = rslt.getData("all", Matrix.class);
         byte[] buffer = X11.toBuffer(rslt);
         System.out.println(buffer.length);
 //        System.out.println(data);

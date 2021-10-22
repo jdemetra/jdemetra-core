@@ -28,7 +28,7 @@ import jdplus.leastsquares.QRSolver;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import demetra.stats.AutoCovariances;
 
 /**
@@ -140,7 +140,7 @@ public class DickeyFuller {
                     ncols += 2;
                     break;
             }
-            Matrix x = Matrix.make(ndata, ncols);
+            FastMatrix x = FastMatrix.make(ndata, ncols);
 
             DataBlockIterator columns = x.columnsIterator();
             if (type != DickeyFullerType.NC) {

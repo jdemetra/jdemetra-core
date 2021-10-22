@@ -22,11 +22,11 @@ public class UpperTriangularMatrixTest {
     @Test
     public void testRmul() {
 
-        Matrix B = Matrix.make(10, 5);
+        FastMatrix B = FastMatrix.make(10, 5);
         B.set((i, j) -> i * 2 + j * 3);
         ec.tstoolkit.maths.matrices.Matrix oB
                 = new ec.tstoolkit.maths.matrices.Matrix(B.toArray(), 10, 5);
-        Matrix U = Matrix.square(10);
+        FastMatrix U = FastMatrix.square(10);
         U.set((i, j) -> i > j ? 0 : (i + 10 * j + 1));
         ec.tstoolkit.maths.matrices.Matrix oU
                 = new ec.tstoolkit.maths.matrices.Matrix(U.toArray(), 10, 10);
@@ -37,8 +37,8 @@ public class UpperTriangularMatrixTest {
         DataBlock ob = DataBlock.of(oB.internalStorage());
         assertTrue(b.distance(ob) < 1e-9);
 
-        Matrix M = U.extract(2, 5, 2, 5);
-        Matrix N = B.extract(2, 5, 0, 5);
+        FastMatrix M = U.extract(2, 5, 2, 5);
+        FastMatrix N = B.extract(2, 5, 0, 5);
 
         UpperTriangularMatrix.UM(M, N);
         ec.tstoolkit.maths.matrices.Matrix oN = new ec.tstoolkit.maths.matrices.Matrix(oB.subMatrix(2, 7, 0, 5));
@@ -53,11 +53,11 @@ public class UpperTriangularMatrixTest {
     @Test
     public void testmul() {
 
-        Matrix B = Matrix.make(5, 10);
+        FastMatrix B = FastMatrix.make(5, 10);
         B.set((i, j) -> i * 2 + j * 3);
         ec.tstoolkit.maths.matrices.Matrix oB
                 = new ec.tstoolkit.maths.matrices.Matrix(B.toArray(), 5, 10);
-        Matrix U = Matrix.square(10);
+        FastMatrix U = FastMatrix.square(10);
         U.set((i, j) -> i > j ? 0 : (i + 10 * j + 1));
         ec.tstoolkit.maths.matrices.Matrix oU
                 = new ec.tstoolkit.maths.matrices.Matrix(U.toArray(), 10, 10);
@@ -67,8 +67,8 @@ public class UpperTriangularMatrixTest {
         DataBlock ob = DataBlock.of(oB.internalStorage());
         assertTrue(b.distance(ob) < 1e-9);
 
-        Matrix M = U.extract(2, 5, 2, 5);
-        Matrix N = B.extract(0, 5, 2, 5);
+        FastMatrix M = U.extract(2, 5, 2, 5);
+        FastMatrix N = B.extract(0, 5, 2, 5);
 
         UpperTriangularMatrix.MU(M, N);
         ec.tstoolkit.maths.matrices.Matrix oN = new ec.tstoolkit.maths.matrices.Matrix(oB.subMatrix(0, 5, 2, 7));
@@ -83,11 +83,11 @@ public class UpperTriangularMatrixTest {
     @Test
     public void testRsolve() {
 
-        Matrix B = Matrix.make(10, 5);
+        FastMatrix B = FastMatrix.make(10, 5);
         B.set((i, j) -> i * 2 + j * 3);
         ec.tstoolkit.maths.matrices.Matrix oB
                 = new ec.tstoolkit.maths.matrices.Matrix(B.toArray(), 10, 5);
-        Matrix U = Matrix.square(10);
+        FastMatrix U = FastMatrix.square(10);
         U.set((i, j) -> i > j ? 0 : (i + 10 * j + 1));
         ec.tstoolkit.maths.matrices.Matrix oU
                 = new ec.tstoolkit.maths.matrices.Matrix(U.toArray(), 10, 10);
@@ -98,8 +98,8 @@ public class UpperTriangularMatrixTest {
         DataBlock ob = DataBlock.of(oB.internalStorage());
         assertTrue(b.distance(ob) < 1e-9);
 
-        Matrix M = U.extract(2, 5, 2, 5);
-        Matrix N = B.extract(2, 5, 0, 5);
+        FastMatrix M = U.extract(2, 5, 2, 5);
+        FastMatrix N = B.extract(2, 5, 0, 5);
 
         UpperTriangularMatrix.solveUX(M, N);
         ec.tstoolkit.maths.matrices.Matrix oN = new ec.tstoolkit.maths.matrices.Matrix(oB.subMatrix(2, 7, 0, 5));
@@ -114,11 +114,11 @@ public class UpperTriangularMatrixTest {
     @Test
     public void testUsolve() {
 
-        Matrix B = Matrix.make(5, 10);
+        FastMatrix B = FastMatrix.make(5, 10);
         B.set((i, j) -> i * 2 + j * 3);
         ec.tstoolkit.maths.matrices.Matrix oB
                 = new ec.tstoolkit.maths.matrices.Matrix(B.toArray(), 5, 10);
-        Matrix U = Matrix.square(10);
+        FastMatrix U = FastMatrix.square(10);
         U.set((i, j) -> i > j ? 0 : (i + 10 * j + 1));
         ec.tstoolkit.maths.matrices.Matrix oU
                 = new ec.tstoolkit.maths.matrices.Matrix(U.toArray(), 10, 10);
@@ -128,8 +128,8 @@ public class UpperTriangularMatrixTest {
         DataBlock ob = DataBlock.of(oB.internalStorage());
         assertTrue(b.distance(ob) < 1e-9);
 
-        Matrix M = U.extract(2, 5, 2, 5);
-        Matrix N = B.extract(0, 5, 2, 5);
+        FastMatrix M = U.extract(2, 5, 2, 5);
+        FastMatrix N = B.extract(0, 5, 2, 5);
 
         UpperTriangularMatrix.solveXU(M, N);
         ec.tstoolkit.maths.matrices.Matrix oN = new ec.tstoolkit.maths.matrices.Matrix(oB.subMatrix(0, 5, 2, 7));
@@ -143,11 +143,11 @@ public class UpperTriangularMatrixTest {
 
     @Test
     public void testOperations() {
-        Matrix B = Matrix.make(5, 10);
+        FastMatrix B = FastMatrix.make(5, 10);
         B.set((i, j) -> i * 2 + j * 3);
-        Matrix U = Matrix.square(10);
+        FastMatrix U = FastMatrix.square(10);
         U.set((i, j) -> i > j ? 0 : (i + 10 * j + 1));
-        Matrix C = B.deepClone();
+        FastMatrix C = B.deepClone();
         UpperTriangularMatrix.MU(U, C);
         UpperTriangularMatrix.solveXU(U, C);
         C.sub(B);
@@ -171,22 +171,22 @@ public class UpperTriangularMatrixTest {
 
     @Test
     public void testToUpper() {
-        Matrix U = Matrix.square(10);
+        FastMatrix U = FastMatrix.square(10);
         U.set((i, j) -> i + 10 * j + 1);
         UpperTriangularMatrix.toUpper(U);
 
-        Matrix M = U.extract(5, 4, 0, 4);
+        FastMatrix M = U.extract(5, 4, 0, 4);
         UpperTriangularMatrix.toUpper(M);
     }
 
     public static void testMul() {
         int K = 10000000;
-        Matrix U = Matrix.square(10);
+        FastMatrix U = FastMatrix.square(10);
         U.set((i, j) -> i > j ? 0 : (i + 10 * j + 1));
         ec.tstoolkit.maths.matrices.Matrix oU
                 = new ec.tstoolkit.maths.matrices.Matrix(U.toArray(), 10, 10);
-        Matrix B = Matrix.make(10, 5);
-        Matrix C = Matrix.make(5, 10);
+        FastMatrix B = FastMatrix.make(10, 5);
+        FastMatrix C = FastMatrix.make(5, 10);
 
         B.set((i, j) -> i * 2 + j * 3);
         C.set((i, j) -> i * 2 + j * 3);
@@ -232,12 +232,12 @@ public class UpperTriangularMatrixTest {
 
     public static void testSolve() {
         int K = 10000000;
-        Matrix U = Matrix.square(10);
+        FastMatrix U = FastMatrix.square(10);
         U.set((i, j) -> i > j ? 0 : (i + 10 * j + 1));
         ec.tstoolkit.maths.matrices.Matrix oU
                 = new ec.tstoolkit.maths.matrices.Matrix(U.toArray(), 10, 10);
-        Matrix B = Matrix.make(10, 5);
-        Matrix C = Matrix.make(5, 10);
+        FastMatrix B = FastMatrix.make(10, 5);
+        FastMatrix C = FastMatrix.make(5, 10);
 
         B.set((i, j) -> i * 2 + j * 3);
         C.set((i, j) -> i * 2 + j * 3);

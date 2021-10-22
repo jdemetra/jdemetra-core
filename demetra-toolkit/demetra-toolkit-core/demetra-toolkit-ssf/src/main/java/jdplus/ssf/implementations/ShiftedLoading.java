@@ -19,7 +19,7 @@ package jdplus.ssf.implementations;
 import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.ISsfMeasurement;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * Shifted measurement: Zshift(t) = Z(pos + shift) 
@@ -52,12 +52,12 @@ public class ShiftedLoading implements ISsfLoading {
     }
     
     @Override
-    public double ZVZ(int pos, Matrix V) {
+    public double ZVZ(int pos, FastMatrix V) {
         return loading.ZVZ(pos + shift, V);
     }
     
     @Override
-    public void VpZdZ(int pos, Matrix V, double d) {
+    public void VpZdZ(int pos, FastMatrix V, double d) {
             if (d == 0)
                 return;
         loading.VpZdZ(pos + shift, V, d);

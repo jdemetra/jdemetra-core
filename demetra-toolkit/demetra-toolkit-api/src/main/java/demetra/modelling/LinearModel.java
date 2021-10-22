@@ -17,7 +17,7 @@
 package demetra.modelling;
 
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 
 /**
  * Describe a raw linear model
@@ -35,7 +35,7 @@ public class LinearModel<M> {
     /**
      * Regression variables
      */
-    MatrixType X;
+    Matrix X;
     
     /**
      * 

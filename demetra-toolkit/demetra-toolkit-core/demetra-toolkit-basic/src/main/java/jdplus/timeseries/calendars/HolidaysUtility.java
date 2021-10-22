@@ -17,7 +17,6 @@
 package jdplus.timeseries.calendars;
 
 import nbbrd.design.Development;
-import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.Easter;
 import demetra.timeseries.calendars.EasterRelatedDay;
@@ -30,7 +29,8 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -49,7 +49,7 @@ public class HolidaysUtility {
         return false;
     }
 
-    public void fillDays(Holiday[] holidays, final Matrix D, final LocalDate start, int[] nonworking, final boolean skip) {
+    public void fillDays(Holiday[] holidays, final FastMatrix D, final LocalDate start, int[] nonworking, final boolean skip) {
         LocalDate end = start.plusDays(D.getRowsCount());
         int col = 0;
         for (Holiday item : holidays) {
@@ -67,7 +67,7 @@ public class HolidaysUtility {
         }
     }
 
-    public void fillPreviousWorkingDays(Holiday[] holidays, final Matrix D, final LocalDate start, int[] nonworking) {
+    public void fillPreviousWorkingDays(Holiday[] holidays, final FastMatrix D, final LocalDate start, int[] nonworking) {
         int n = D.getRowsCount();
         LocalDate end = start.plusDays(n);
         int col = 0;
@@ -86,7 +86,7 @@ public class HolidaysUtility {
         }
     }
 
-    public void fillNextWorkingDays(Holiday[] holidays, final Matrix D, final LocalDate start, int[] nonworking) {
+    public void fillNextWorkingDays(Holiday[] holidays, final FastMatrix D, final LocalDate start, int[] nonworking) {
         int n = D.getRowsCount();
         LocalDate end = start.plusDays(n);
         int col = 0;
@@ -212,7 +212,7 @@ public class HolidaysUtility {
      * @return The (weighted) number of holidays for each period of the domain.
      * The different columns of the matrix correspond to Mondays...Sundays
      */
-    public MatrixType holidays(Holiday[] holidays, TsDomain domain) {
+    public Matrix holidays(Holiday[] holidays, TsDomain domain) {
         int n = domain.getLength();
         double[] h = new double[7 * n];
 
@@ -246,7 +246,7 @@ public class HolidaysUtility {
                 }
             }
         }
-        return MatrixType.of(h, n, 7);
+        return Matrix.of(h, n, 7);
     }
 
     public static double[][] longTermMean(Holiday holiday, int freq) {

@@ -8,7 +8,7 @@ package jdplus.linearsystem;
 import java.util.Random;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.decomposition.CroutDoolittle;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.decomposition.Householder2;
 
 /**
@@ -29,7 +29,7 @@ public class LinearSystemSolverTest {
                 .normalize(false).build();
         LUSolver2 sparse = new LUSolver2();
         for (int N = 1; N <= 50; ++N) {
-            Matrix M = Matrix.square(N);
+            FastMatrix M = FastMatrix.square(N);
             Random rnd = new Random();
             DataBlock x = DataBlock.make(N);
             double[] del = new double[5];

@@ -19,7 +19,6 @@ package demetra.regarima.io.protobuf;
 import demetra.data.Iterables;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.MissingValueEstimation;
-import demetra.math.matrices.MatrixType;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.modelling.io.protobuf.ModellingProtos;
 import demetra.stats.StatisticalTest;
@@ -39,6 +38,7 @@ import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.Variable;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -78,7 +78,7 @@ public class RegArimaEstimationProto {
     public RegArimaProtos.RegArimaModel.Estimation convert(GeneralLinearModel.Estimation estimation) {
         RegArimaProtos.RegArimaModel.Estimation.Builder builder = RegArimaProtos.RegArimaModel.Estimation.newBuilder();
 
-        MatrixType cov = estimation.getCoefficientsCovariance();
+        Matrix cov = estimation.getCoefficientsCovariance();
         LikelihoodStatistics statistics = estimation.getStatistics();
 
         builder.addAllY(Iterables.of(estimation.getY()))

@@ -7,7 +7,7 @@ package jdplus.basic;
 
 import demetra.data.DoubleSeq;
 import jdplus.linearmodel.LinearModel;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -23,7 +23,7 @@ public class ApiUtility {
 //        return LinearModel.builder()
 //                .y(DoubleSeq.of(model.getY()))
 //                .meanCorrection(model.isMeanCorrection())
-//                .addX(Matrix.of(model.getX()))
+//                .addX(FastMatrix.of(model.getX()))
 //                .build();
 //    }
 }

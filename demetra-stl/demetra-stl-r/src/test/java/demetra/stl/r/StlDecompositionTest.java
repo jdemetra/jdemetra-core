@@ -8,7 +8,7 @@ package demetra.stl.r;
 import demetra.data.Data;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -26,7 +26,7 @@ public class StlDecompositionTest {
     
     @Test
     public void testStl() {
-        MatrixType decomp = StlDecomposition.process(Data.ABS_RETAIL, 12, true, 7, 23, true);
+        Matrix decomp = StlDecomposition.process(Data.ABS_RETAIL, 12, true, 7, 23, true);
 //        System.out.println(decomp);
         assertTrue(null != decomp);
     }

@@ -6,7 +6,7 @@
 package jdplus.sts;
 
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.ISsfLoading;
@@ -73,7 +73,7 @@ public class PeriodicComponent {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
             b.diagonal().set(1);
         }
 
@@ -82,11 +82,11 @@ public class PeriodicComponent {
         }
 
         @Override
-        public void Pf0(Matrix p) {
+        public void Pf0(FastMatrix p) {
         }
 
         @Override
-        public void Pi0(Matrix p) {
+        public void Pi0(FastMatrix p) {
             p.set(1);
         }
     }
@@ -117,12 +117,12 @@ public class PeriodicComponent {
         }
 
         @Override
-        public void V(int pos, Matrix v) {
+        public void V(int pos, FastMatrix v) {
             v.diagonal().set(data.var);
         }
 
         @Override
-        public void S(int pos, Matrix s) {
+        public void S(int pos, FastMatrix s) {
             s.diagonal().set(e);
         }
 
@@ -137,7 +137,7 @@ public class PeriodicComponent {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             for (int i = 0, p = 0; i < data.k.length; ++i, p += 2) {
                 tr.set(p, p, ccos[i]);
                 tr.set(p, p + 1, csin[i]);
@@ -161,7 +161,7 @@ public class PeriodicComponent {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             p.diagonal().add(data.var);
         }
 

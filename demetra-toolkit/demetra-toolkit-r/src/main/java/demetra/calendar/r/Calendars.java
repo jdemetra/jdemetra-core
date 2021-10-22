@@ -6,7 +6,6 @@
 package demetra.calendar.r;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import demetra.math.matrices.MatrixType;
 import demetra.timeseries.calendars.Calendar;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.Easter;
@@ -16,9 +15,10 @@ import demetra.toolkit.io.protobuf.ToolkitProtos;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.GenericTradingDaysFactory;
 import jdplus.timeseries.calendars.HolidaysUtility;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -54,7 +54,7 @@ public class Calendars {
         return rslt;
     }
 
-    public MatrixType longTermMean(Calendar calendar, int period) {
+    public Matrix longTermMean(Calendar calendar, int period) {
         double[][] ltm;
         if (calendar != null) {
             ltm = HolidaysUtility.longTermMean(calendar.getHolidays(), period);
@@ -62,7 +62,7 @@ public class Calendars {
             ltm = new double[period][];
         }
         double[] means = GenericTradingDaysFactory.meanDays(period);
-        Matrix M = Matrix.make(period, 7);
+        FastMatrix M = FastMatrix.make(period, 7);
         for (int i = 0; i < period; ++i) {
             DataBlock row = M.row(i);
             row.set(means[i]);
@@ -75,10 +75,10 @@ public class Calendars {
         return M.unmodifiable();
     }
 
-    public MatrixType longTermMean(Calendar calendar, int period, int[] groups) {
+    public Matrix longTermMean(Calendar calendar, int period, int[] groups) {
         DayClustering dc = DayClustering.of(groups);
-        Matrix M = Matrix.make(period, dc.getGroupsCount());
-        MatrixType m = longTermMean(calendar, period);
+        FastMatrix M = FastMatrix.make(period, dc.getGroupsCount());
+        Matrix m = longTermMean(calendar, period);
         for (int i = 0; i < M.getColumnsCount(); ++i) {
             DataBlock col = M.column(i);
             for (int j = 0; j < 7; ++j) {
@@ -90,10 +90,10 @@ public class Calendars {
         return M.unmodifiable();
     }
 
-    public MatrixType holidays(Calendar calendar, String date, int length, int[] nonworking, String type) {
+    public Matrix holidays(Calendar calendar, String date, int length, int[] nonworking, String type) {
         LocalDate start = LocalDate.parse(date);
         Holiday[] elements = calendar.getHolidays();
-        Matrix m = Matrix.make(length, elements.length);
+        FastMatrix m = FastMatrix.make(length, elements.length);
         switch (type) {
             case "Skip":
                 HolidaysUtility.fillDays(elements, m, start, nonworking, true);

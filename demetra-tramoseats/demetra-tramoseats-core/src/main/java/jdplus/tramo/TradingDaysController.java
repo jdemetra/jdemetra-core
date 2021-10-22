@@ -16,7 +16,7 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import jdplus.modelling.regression.Regression;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.regarima.ami.ModellingUtility;
 
 /**
@@ -76,7 +76,7 @@ class TradingDaysController extends ModelController {
         // drop the number of data corresponding to the number of regression variables 
         domain = domain.drop(domain.getLength() - res.length(), 0);
         if (td != null){
-            Matrix mtd = Regression.matrix(domain, td);
+            FastMatrix mtd = Regression.matrix(domain, td);
             builder.addX(mtd);
         }
             

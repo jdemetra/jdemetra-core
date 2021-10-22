@@ -27,7 +27,7 @@ import demetra.data.DoubleSeqCursor;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.ISsfLoading;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -170,7 +170,7 @@ public class AugmentedFilter {
     }
 
     // P -= c*r
-    private void update(Matrix P, double v, DataBlock C) {
+    private void update(FastMatrix P, double v, DataBlock C) {
         P.addXaXt(-1 / v, C);
     }
 
