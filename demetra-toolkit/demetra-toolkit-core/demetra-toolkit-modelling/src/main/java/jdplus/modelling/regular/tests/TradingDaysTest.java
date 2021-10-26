@@ -19,16 +19,13 @@ package jdplus.modelling.regular.tests;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
-import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
-import jdplus.linearmodel.JointTest;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
 import jdplus.math.matrices.FastMatrix;
-import jdplus.math.matrices.MatrixWindow;
 import jdplus.modelling.regression.Regression;
 
 /**

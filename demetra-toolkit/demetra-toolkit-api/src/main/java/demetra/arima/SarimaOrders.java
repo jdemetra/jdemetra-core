@@ -42,6 +42,14 @@ public final class SarimaOrders implements Cloneable {
          */
         D1,
         /**
+         * (0,0,0)(0,1,0)
+         */
+        DS,
+        /**
+         * (0,1,0)(0,1,0)
+         */
+        D1DS,
+        /**
          * (1,1,0)(0,0,0)
          */
         R110,
