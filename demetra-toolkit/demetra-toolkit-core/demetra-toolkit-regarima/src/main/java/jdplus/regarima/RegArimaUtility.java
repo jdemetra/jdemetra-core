@@ -19,7 +19,7 @@ package jdplus.regarima;
 import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import internal.jdplus.arima.FastKalmanFilter;
+import jdplus.arima.estimation.FastKalmanFilter;
 import java.util.List;
 import jdplus.arima.IArimaModel;
 import jdplus.arima.StationaryTransformation;

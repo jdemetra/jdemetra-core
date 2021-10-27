@@ -26,6 +26,7 @@ import jdplus.regarima.RegArimaForecasts;
 public class CheckLast {
 
     private final RegSarimaProcessor kernel;
+    private RegSarimaModel model;
     private final int nback;
     private TsData y, fy, oforecasts;
     private double[] f, ef;
@@ -59,7 +60,7 @@ public class CheckLast {
             if (gmodel == null || !(gmodel instanceof RegSarimaModel)) {
                 return false;
             }
-            RegSarimaModel model = (RegSarimaModel) gmodel;
+            model = (RegSarimaModel) gmodel;
 
             RegArimaForecasts.Result fcasts;
             DoubleSeq b = model.getEstimation().getCoefficients();
@@ -226,6 +227,7 @@ public class CheckLast {
     }
 
     private void clear() {
+        model=null;
         f = null;
         ef = null;
         fy = null;

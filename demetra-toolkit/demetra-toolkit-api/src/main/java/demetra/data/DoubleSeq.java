@@ -826,9 +826,10 @@ public interface DoubleSeq extends BaseSeq {
             if (fmt != null) {
                 DecimalFormat df;
                 df = new DecimalFormat(fmt);
-                builder.append(df.format(rd.get(0)));
+                DoubleSeqCursor cursor = rd.cursor();
+                builder.append(df.format(cursor.getAndNext()));
                 for (int i = 1; i < n; ++i) {
-                    builder.append('\t').append(df.format(rd.get(i)));
+                    builder.append('\t').append(df.format(cursor.getAndNext()));
 
                 }
             } else {
@@ -836,6 +837,19 @@ public interface DoubleSeq extends BaseSeq {
                 for (int i = 1; i < n; ++i) {
                     builder.append('\t').append(rd.get(i));
                 }
+            }
+        }
+        return builder.toString();
+    }
+
+    static String format(DoubleSeq rd, DecimalFormat fmt) {
+        StringBuilder builder = new StringBuilder();
+        int n = rd.length();
+        if (n > 0) {
+            DoubleSeqCursor cursor = rd.cursor();
+            builder.append(fmt.format(cursor.getAndNext()));
+            for (int i = 1; i < n; ++i) {
+                builder.append('\t').append(cursor.getAndNext());
             }
         }
         return builder.toString();

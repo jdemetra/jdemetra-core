@@ -100,6 +100,13 @@ public class Variable<V extends ITsVariable> {
         }
     }
 
+   public int fixedCoefficientsCount() {
+        if (coefficients == null) {
+            return 0;
+        } else {
+            return Parameter.fixedParametersCount(coefficients);
+        }
+   }
     // main types
     /**
      *

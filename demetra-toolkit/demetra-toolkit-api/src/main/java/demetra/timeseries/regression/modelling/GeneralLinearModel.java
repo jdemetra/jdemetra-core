@@ -28,6 +28,8 @@ import demetra.stats.StatisticalTest;
 import java.util.List;
 import java.util.Map;
 import demetra.math.matrices.Matrix;
+import java.util.Arrays;
+import java.util.function.Predicate;
 
 /**
  *
@@ -157,6 +159,7 @@ public interface GeneralLinearModel<M> {
         LikelihoodStatistics getStatistics();
 
         List<ProcessingLog.Information> getLogs();
+        
 
     }
 

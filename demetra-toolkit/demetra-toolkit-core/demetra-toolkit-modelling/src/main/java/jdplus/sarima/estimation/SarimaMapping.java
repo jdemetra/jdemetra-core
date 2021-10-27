@@ -340,7 +340,6 @@ public class SarimaMapping implements IArimaMapping<SarimaModel> {
                     return Double.POSITIVE_INFINITY;
                 }
             }
-            idx -= spec.getQ();
         }
         if (spec.getBq() == 1) {
             return MAX;

@@ -14,7 +14,6 @@ import demetra.modelling.ModellingDictionary;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;

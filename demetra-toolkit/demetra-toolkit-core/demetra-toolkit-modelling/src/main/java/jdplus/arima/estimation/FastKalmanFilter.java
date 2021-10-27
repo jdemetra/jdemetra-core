@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package internal.jdplus.arima;
+package jdplus.arima.estimation;
 
 import jdplus.arima.ArimaException;
 import jdplus.arima.IArimaModel;
