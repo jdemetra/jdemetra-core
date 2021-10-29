@@ -8,12 +8,12 @@
 package jdplus.ml;
 
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
 import demetra.util.IntList;
 import java.util.BitSet;
 import java.util.HashSet;
 import java.util.Random;
 import jdplus.data.DataBlock;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -155,7 +155,7 @@ public class ExtendedIsolationForest {
     @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
     static class iTree {
 
-        final MatrixType X;
+        final Matrix X;
         final int extensionLevel;
         final double limit;
         final Random rnd;
@@ -163,7 +163,7 @@ public class ExtendedIsolationForest {
         int exnodes;
         Node root;
 
-        static iTree build(MatrixType X, int extensionLevel, double limit, Random rnd) {
+        static iTree build(Matrix X, int extensionLevel, double limit, Random rnd) {
             IntList all = new IntList();
             int size = X.getColumnsCount();
             for (int i = 0; i < size; ++i) {
@@ -172,7 +172,7 @@ public class ExtendedIsolationForest {
             return build(X, all, extensionLevel, limit, rnd, Method.Default);
         }
 
-        static iTree build(MatrixType X, IntList selection, int extensionLevel, double limit, Random rnd, Method method) {
+        static iTree build(Matrix X, IntList selection, int extensionLevel, double limit, Random rnd, Method method) {
             if (rnd == null) {
                 rnd = new Random();
             }
@@ -356,7 +356,7 @@ public class ExtendedIsolationForest {
     public static class iForest {
 
         @lombok.NonNull 
-        final MatrixType X;
+        final Matrix X;
         
         int extensionLevel;
         int limit;
@@ -402,8 +402,8 @@ public class ExtendedIsolationForest {
             }
         }
 
-        public double[] predict(MatrixType x) {
-            MatrixType z = x == null ? X : x;
+        public double[] predict(Matrix x) {
+            Matrix z = x == null ? X : x;
             int size = z.getColumnsCount();
             double[] S = new double[size];
             for (int i = 0; i < size; i++) {

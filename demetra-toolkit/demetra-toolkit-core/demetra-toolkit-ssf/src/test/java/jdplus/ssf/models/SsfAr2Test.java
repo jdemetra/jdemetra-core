@@ -6,7 +6,7 @@
 package jdplus.ssf.models;
 
 import jdplus.arima.ssf.SsfAr2;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixNorms;
 import jdplus.ssf.StateComponent;
 import jdplus.ssf.StationaryInitialization;
@@ -26,8 +26,8 @@ public class SsfAr2Test {
     public void testInitialization() {
         StateComponent cmp = SsfAr2.of(new double[]{1.2, -.6}, 1, 5, 6);
         int dim = cmp.initialization().getStateDim();
-        Matrix I = StationaryInitialization.of(cmp.dynamics(), dim);
-        Matrix P = Matrix.square(dim);
+        FastMatrix I = StationaryInitialization.of(cmp.dynamics(), dim);
+        FastMatrix P = FastMatrix.square(dim);
         cmp.initialization().Pf0(P);
         assertTrue(MatrixNorms.frobeniusNorm(I.minus(P))<1e-9);
     }

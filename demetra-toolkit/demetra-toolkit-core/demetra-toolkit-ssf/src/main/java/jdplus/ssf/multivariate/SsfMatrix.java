@@ -7,7 +7,7 @@ package jdplus.ssf.multivariate;
 
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 
 /**
@@ -16,9 +16,9 @@ import jdplus.math.matrices.Matrix;
  */
 public class SsfMatrix implements IMultivariateSsfData {
 
-    private final Matrix x_;
+    private final FastMatrix x_;
 
-    public SsfMatrix(Matrix x) {
+    public SsfMatrix(FastMatrix x) {
         x_ = x;
     }
 

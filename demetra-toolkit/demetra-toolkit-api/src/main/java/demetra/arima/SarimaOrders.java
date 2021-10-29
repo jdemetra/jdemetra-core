@@ -28,6 +28,43 @@ import nbbrd.design.Development;
 @lombok.Data
 public final class SarimaOrders implements Cloneable {
 
+    public static enum Prespecified {
+        /**
+         * (0,0,0)(0,0,0)
+         */
+        WN,
+        /**
+         * (1,0,0)(0,0,0)
+         */
+        AR,
+        /**
+         * (0,1,0)(0,0,0)
+         */
+        D1,
+        /**
+         * (0,0,0)(0,1,0)
+         */
+        DS,
+        /**
+         * (0,1,0)(0,1,0)
+         */
+        D1DS,
+        /**
+         * (1,1,0)(0,0,0)
+         */
+        R110,
+        /**
+         * (1,1,0)(0,0,0)
+         */
+        R011,
+        /**
+         * (0,1,1)(0,1,1)
+         */
+        AIRLINE,
+        
+        AUTOMATIC
+    }
+
     private final int period;
     private int p, d, q, bp, bd, bq;
 

@@ -7,7 +7,7 @@ package jdplus.math.functions;
 
 import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -61,7 +61,7 @@ class MyFunction implements IFunction {
                     }
 
                     @Override
-                    public void hessian(Matrix hessian) {
+                    public void hessian(FastMatrix hessian) {
                         double x = parameters.get(0);
                         hessian.set(0, 0, 6 * x + 3);
                     }

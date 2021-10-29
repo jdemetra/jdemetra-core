@@ -23,7 +23,7 @@ import jdplus.dstats.Chi2;
 import demetra.dstats.Distribution;
 import jdplus.dstats.Normal;
 import jdplus.dstats.Uniform;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.random.MersenneTwister;
 import demetra.dstats.RandomNumberGenerator;
 import demetra.stats.StatisticalTest;
@@ -47,7 +47,7 @@ public class HeteroskedasticityTestTest {
         Random rnd = new Random(0);
         int N = 100, NX = 5;
 
-        Matrix X = Matrix.make(N, NX);
+        FastMatrix X = FastMatrix.make(N, NX);
         DataBlock y = DataBlock.make(N);
         y.set(rnd::nextDouble);
 
@@ -109,7 +109,7 @@ public class HeteroskedasticityTestTest {
         Random rnd = new Random(0);
         int N = 100, NX = 5;
 
-        Matrix X = Matrix.make(N, NX);
+        FastMatrix X = FastMatrix.make(N, NX);
         DataBlock y = DataBlock.make(N);
         y.set(i -> (i + 1) * rnd.nextDouble());
 
@@ -185,7 +185,7 @@ public class HeteroskedasticityTestTest {
 
         for (int k = 0; k < K; ++k) {
 
-            Matrix X = Matrix.make(M, 4);
+            FastMatrix X = FastMatrix.make(M, 4);
             DataBlock y = DataBlock.make(M);
             y.set(i->rng.nextDouble());
 

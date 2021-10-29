@@ -30,10 +30,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.sarima.SarimaModel;
 import demetra.information.Explorable;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -101,7 +101,7 @@ public class ArimaEstimation {
         RegArimaModel<SarimaModel> regarima;
         ConcentratedLikelihoodWithMissing concentratedLogLikelihood;
         LikelihoodStatistics statistics;
-        Matrix parametersCovariance;
+        FastMatrix parametersCovariance;
         DoubleSeq score;
 
         public SarimaModel getArima() {
@@ -120,7 +120,7 @@ public class ArimaEstimation {
         static {
             MAPPING.delegate(ARIMA, SarimaModel.class, r -> r.getArima());
             MAPPING.delegate(LL, LikelihoodStatistics.class, r -> r.statistics);
-            MAPPING.set(PCOV, MatrixType.class, source -> source.getParametersCovariance());
+            MAPPING.set(PCOV, Matrix.class, source -> source.getParametersCovariance());
             MAPPING.set(SCORE, double[].class, source -> source.getScore().toArray());
             MAPPING.set(B, double[].class, source
                     -> {
@@ -137,7 +137,7 @@ public class ArimaEstimation {
                     return 0.0;
                 }
             });
-            MAPPING.set(UNSCALEDBVAR, MatrixType.class, source -> source.getConcentratedLogLikelihood().unscaledCovariance());
+            MAPPING.set(UNSCALEDBVAR, Matrix.class, source -> source.getConcentratedLogLikelihood().unscaledCovariance());
         }
 
         @Override

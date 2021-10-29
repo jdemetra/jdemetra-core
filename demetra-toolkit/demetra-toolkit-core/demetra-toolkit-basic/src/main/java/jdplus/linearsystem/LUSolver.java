@@ -24,7 +24,7 @@ import nbbrd.design.Development;
 import demetra.math.Constants;
 import jdplus.data.normalizer.SafeNormalizer;
 import jdplus.math.matrices.decomposition.LUDecomposition;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.decomposition.Gauss;
 
 /**
@@ -80,9 +80,9 @@ public class LUSolver implements LinearSystemSolver {
     }
 
     @Override
-    public void solve(Matrix A, DataBlock b) {
+    public void solve(FastMatrix A, DataBlock b) {
         // we normalize b
-        Matrix An;
+        FastMatrix An;
         if (normalize) {
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
@@ -100,8 +100,8 @@ public class LUSolver implements LinearSystemSolver {
     }
 
     @Override
-    public void solve(Matrix A, Matrix B) {
-        Matrix An;
+    public void solve(FastMatrix A, FastMatrix B) {
+        FastMatrix An;
         double[] factor = null;
         if (normalize) {
             An = A.deepClone();

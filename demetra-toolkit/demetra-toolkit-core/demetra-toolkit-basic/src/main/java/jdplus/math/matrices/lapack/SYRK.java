@@ -8,7 +8,7 @@ package jdplus.math.matrices.lapack;
 import jdplus.math.matrices.DataPointer;
 import jdplus.math.matrices.RPointer;
 import jdplus.math.matrices.CPointer;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * Performs symmetric rank k operations.
@@ -28,7 +28,7 @@ public class SYRK {
      * @param beta
      * @param C
      */
-    public void lapply(boolean AAt, double alpha, Matrix A, double beta, Matrix C) {
+    public void lapply(boolean AAt, double alpha, FastMatrix A, double beta, FastMatrix C) {
         int n = C.getRowsCount();
         int k = A.getRowsCount();
         if (n == 0 || ((alpha == 0 || k == 0) && beta == 1)) {
@@ -54,7 +54,7 @@ public class SYRK {
      * @param x Array
      * @param a
      */
-    public void laddaXXt(final double a, final DataPointer x, final Matrix S) {
+    public void laddaXXt(final double a, final DataPointer x, final FastMatrix S) {
         if (a == 0) {
             return;
         }
@@ -92,7 +92,7 @@ public class SYRK {
      * @param x Array
      * @param a
      */
-    public void uaddaXXt(final double a, final DataPointer x, final Matrix S) {
+    public void uaddaXXt(final double a, final DataPointer x, final FastMatrix S) {
         if (a == 0) {
             return;
         }
@@ -128,7 +128,7 @@ public class SYRK {
      * @param A
      * @param a
      */
-    public void laddaAAt(final double a, final Matrix A, final Matrix S) {
+    public void laddaAAt(final double a, final FastMatrix A, final FastMatrix S) {
         if (a == 0) {
             return;
         }
@@ -146,7 +146,7 @@ public class SYRK {
      * @param A
      * @param a
      */
-    public void uaddaAAt(final double a, final Matrix A, final Matrix S) {
+    public void uaddaAAt(final double a, final FastMatrix A, final FastMatrix S) {
         if (a == 0) {
             return;
         }
@@ -164,7 +164,7 @@ public class SYRK {
      * @param A
      * @param a
      */
-    public void laddaAtA(final double a, final Matrix A, final Matrix S) {
+    public void laddaAtA(final double a, final FastMatrix A, final FastMatrix S) {
         if (a == 0) {
             return;
         }
@@ -183,7 +183,7 @@ public class SYRK {
      * @param A
      * @param a
      */
-    public void uaddaAtA(final double a, final Matrix A, final Matrix S) {
+    public void uaddaAtA(final double a, final FastMatrix A, final FastMatrix S) {
         if (a == 0) {
             return;
         }
@@ -194,7 +194,7 @@ public class SYRK {
         }
     }
 
-    private void lmul(Matrix C, double beta) {
+    private void lmul(FastMatrix C, double beta) {
         if (beta == 1) {
             return;
         }
@@ -217,7 +217,7 @@ public class SYRK {
         }
     }
 
-    private void umul(Matrix C, double beta) {
+    private void umul(FastMatrix C, double beta) {
         if (beta == 1) {
             return;
         }

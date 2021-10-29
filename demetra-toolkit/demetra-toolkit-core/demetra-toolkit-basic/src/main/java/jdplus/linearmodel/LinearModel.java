@@ -24,8 +24,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeqCursor;
 import nbbrd.design.Internal;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
-import demetra.math.matrices.MatrixType;
+import jdplus.math.matrices.FastMatrix;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -58,7 +58,7 @@ public final class LinearModel {
             return this;
         }
 
-        public Builder addX(@NonNull MatrixType X) {
+        public Builder addX(@NonNull Matrix X) {
             for (int i = 0; i < X.getColumnsCount(); ++i) {
                 x.add(X.column(i));
             }
@@ -77,7 +77,7 @@ public final class LinearModel {
                 throw new RuntimeException("Missing y");
             }
 
-            Matrix X = Matrix.make(y.length, x.size());
+            FastMatrix X = FastMatrix.make(y.length, x.size());
             if (!X.isEmpty()) {
                 DataBlockIterator cols = X.columnsIterator();
                 for (DoubleSeq xcur : x) {
@@ -93,7 +93,7 @@ public final class LinearModel {
 
     private final double[] y;
     private final boolean mean;
-    private final Matrix x;
+    private final FastMatrix x;
 
     public static Builder builder() {
         return new Builder();
@@ -106,7 +106,7 @@ public final class LinearModel {
      * @param x X. Should not contain the mean if mean is set to true !!
      */
     @Internal
-    public LinearModel(double[] y, final boolean mean, final Matrix x) {
+    public LinearModel(double[] y, final boolean mean, final FastMatrix x) {
         this.y = y;
         this.mean = mean;
         this.x = x;
@@ -181,7 +181,7 @@ public final class LinearModel {
         return mean;
     }
 
-    public Matrix getX() {
+    public FastMatrix getX() {
         return x;
     }
 
@@ -189,12 +189,12 @@ public final class LinearModel {
      *
      * @return
      */
-    public Matrix variables() {
+    public FastMatrix variables() {
         if (!mean) {
             return x.deepClone();
         } else {
             int m = x.getRowsCount(), n = x.getColumnsCount();
-            Matrix vars = Matrix.make(m, n + 1);
+            FastMatrix vars = FastMatrix.make(m, n + 1);
             vars.column(0).set(1);
             vars.extract(0, m, 1, n).copy(x);
             return vars;

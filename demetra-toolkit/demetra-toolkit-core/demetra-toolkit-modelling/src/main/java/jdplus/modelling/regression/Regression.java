@@ -31,7 +31,7 @@ import demetra.timeseries.regression.UserTradingDays;
 import demetra.timeseries.regression.UserVariable;
 import demetra.timeseries.regression.UserVariables;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixWindow;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
@@ -111,13 +111,13 @@ public class Regression {
         }
     }
 
-    public <D extends TimeSeriesDomain> Matrix matrix(@NonNull D domain, @NonNull ITsVariable... vars) {
+    public <D extends TimeSeriesDomain> FastMatrix matrix(@NonNull D domain, @NonNull ITsVariable... vars) {
         if (domain.isEmpty() || vars.length == 0) {
-            return Matrix.EMPTY;
+            return FastMatrix.EMPTY;
         }
         int nvars = ITsVariable.dim(vars);
         int nobs = domain.length();
-        Matrix M = Matrix.make(nobs, nvars);
+        FastMatrix M = FastMatrix.make(nobs, nvars);
 
         MatrixWindow wnd = M.left(0);
         if (domain instanceof TsDomain) {
@@ -151,7 +151,7 @@ public class Regression {
         if (vars.dim() != 1) {
             throw new IllegalArgumentException();
         }
-        Matrix m = matrix(domain, vars);
+        FastMatrix m = matrix(domain, vars);
         return DataBlock.of(m.getStorage());
     }
 

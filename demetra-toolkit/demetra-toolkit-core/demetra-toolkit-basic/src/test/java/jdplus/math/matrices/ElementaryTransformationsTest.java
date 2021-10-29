@@ -35,9 +35,9 @@ public class ElementaryTransformationsTest {
     @Test
     public void testQRGivens() {
         JdkRNG rng = JdkRNG.newRandom(0);
-        Matrix M = Matrix.make(20, 5);
+        FastMatrix M = FastMatrix.make(20, 5);
         MatrixUtility.randomize(M, rng);
-        Matrix cur = M;
+        FastMatrix cur = M;
         for (int i = 0; i < M.getColumnsCount() - 1; ++i) {
             ElementaryTransformations.columnGivens(cur);
             cur = cur.extract(1, cur.getRowsCount() - 1, 1, cur.getColumnsCount() - 1);
@@ -46,7 +46,7 @@ public class ElementaryTransformationsTest {
         UpperTriangularMatrix.solveUx(M.extract(0, 4, 0, 4), b);
         System.out.println(b);
 
-        M = Matrix.make(20, 5);
+        M = FastMatrix.make(20, 5);
         MatrixUtility.randomize(M, rng);
 
         QRSolution ls = QRSolver.fastLeastSquares(M.column(4), M.extract(0, 20, 0, 4));

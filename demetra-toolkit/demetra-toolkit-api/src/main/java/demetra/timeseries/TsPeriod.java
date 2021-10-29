@@ -23,13 +23,14 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.time.IsoConverter;
+import java.time.Duration;
 
 /**
  *
  * @author Philippe Charles
  */
 @lombok.Value
-@lombok.Builder( toBuilder = true)
+@lombok.Builder(toBuilder = true)
 public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod> {
 
     @lombok.NonNull
@@ -84,8 +85,8 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
         TsPeriod p = withUnit(TsUnit.YEAR);
         return TsDomain.splitOf(p, unit, true).indexOf(this);
     }
-    
-    public int annualFrequency(){
+
+    public int annualFrequency() {
         return unit.getAnnualFrequency();
     }
 
@@ -318,10 +319,23 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
 //    }
 //
     public String display() {
-        if (unit.getChronoUnit().getDuration().compareTo(ChronoUnit.DAYS.getDuration()) >= 0) {
-            return start().toLocalDate().toString();
-        } else {
+        if (unit.getChronoUnit().getDuration().compareTo(ChronoUnit.DAYS.getDuration()) < 0) {
             return start().toString();
+        } else {
+            int freq = annualFrequency();
+            if (freq < 1) {
+                return start().toLocalDate().toString();
+            } else if (freq == 1){
+                return Integer.toString(year());
+            } else {
+                int pos=this.annualPosition()+1;
+                if (freq<12)
+                    pos*=12/freq;
+                int year=this.year();
+                StringBuilder buffer = new StringBuilder(32);
+                buffer.append(pos).append('-').append(year);
+                return buffer.toString();
+            }
         }
     }
 

@@ -19,11 +19,10 @@ package jdplus.ssf.extractors;
 import demetra.arima.UcarimaModel;
 import demetra.data.DoubleSeq;
 import demetra.information.InformationMapping;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.StateStorage;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import demetra.math.matrices.MatrixType;
 import demetra.information.Explorable;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
@@ -36,6 +35,7 @@ import jdplus.ssf.implementations.CompositeSsf;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.ssf.univariate.StateFilteringResults;
 import jdplus.ucarima.ssf.SsfUcarima;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -156,15 +156,15 @@ public class SsfUcarimaEstimation implements Explorable {
         MAPPING.delegate("ucarima", UcarimaModel.class, source -> source.ucarima);
         MAPPING.set("ncmps", Integer.class, source -> source.ssf.componentsPosition().length);
         MAPPING.set("cmppos", int[].class, source -> source.ssf.componentsPosition());
-        MAPPING.set("T", MatrixType.class, source -> {
+        MAPPING.set("T", Matrix.class, source -> {
             int dim = source.ssf.getStateDim();
-            Matrix T = Matrix.square(dim);
+            FastMatrix T = FastMatrix.square(dim);
             source.ssf.dynamics().T(0, T);
             return T;
         });
-        MAPPING.set("V", MatrixType.class, source -> {
+        MAPPING.set("V", Matrix.class, source -> {
             int dim = source.ssf.getStateDim();
-            Matrix V = Matrix.square(dim);
+            FastMatrix V = FastMatrix.square(dim);
             source.ssf.dynamics().V(0, V);
             return V;
         });
@@ -174,16 +174,16 @@ public class SsfUcarimaEstimation implements Explorable {
             source.ssf.loading().Z(0, z);
             return z.getStorage();
         });
-        MAPPING.set("P0", MatrixType.class, source -> {
+        MAPPING.set("P0", Matrix.class, source -> {
             int dim = source.ssf.getStateDim();
-            Matrix V = Matrix.square(dim);
+            FastMatrix V = FastMatrix.square(dim);
             source.ssf.initialization().Pf0(V);
             return V;
         });
-        MAPPING.set("B0", MatrixType.class, source -> {
+        MAPPING.set("B0", Matrix.class, source -> {
             int dim = source.ssf.getStateDim();
             int nd = source.ssf.initialization().getDiffuseDim();
-            Matrix V = Matrix.make(dim, nd);
+            FastMatrix V = FastMatrix.make(dim, nd);
             source.ssf.initialization().diffuseConstraints(V);
             return V;
         });
@@ -207,27 +207,27 @@ public class SsfUcarimaEstimation implements Explorable {
             StateStorage smoothedStates = source.getSmoothedStates();
             return smoothedStates.a(p).toArray();
         });
-        MAPPING.setArray("smoothing.vstate", 0, Integer.MAX_VALUE, MatrixType.class, (source, p) -> {
+        MAPPING.setArray("smoothing.vstate", 0, Integer.MAX_VALUE, Matrix.class, (source, p) -> {
             StateStorage smoothedStates = source.getSmoothedStates();
             return smoothedStates.P(p).unmodifiable();
         });
-        MAPPING.set("smoothing.states", MatrixType.class, source -> {
+        MAPPING.set("smoothing.states", Matrix.class, source -> {
             int n = source.data.length(), m = source.ssf.getStateDim();
             double[] z = new double[n * m];
             StateStorage smoothedStates = source.getSmoothedStates();
             for (int i = 0, j = 0; i < m; ++i, j += n) {
                 smoothedStates.getComponent(i).copyTo(z, j);
             }
-            return MatrixType.of(z, n, m);
+            return Matrix.of(z, n, m);
         });
-        MAPPING.set("smoothing.vstates", MatrixType.class, source -> {
+        MAPPING.set("smoothing.vstates", Matrix.class, source -> {
             int n = source.data.length(), m = source.ssf.getStateDim();
             double[] z = new double[n * m];
             StateStorage smoothedStates = source.getSmoothedStates();
             for (int i = 0, j = 0; i < m; ++i, j += n) {
                 smoothedStates.getComponentVariance(i).copyTo(z, j);
             }
-            return MatrixType.of(z, n, m);
+            return Matrix.of(z, n, m);
         });
         MAPPING.setArray("filtering.array", 0, Integer.MAX_VALUE, double[].class, (source, p) -> {
             StateStorage fStates = source.getFilteringStates();
@@ -249,25 +249,25 @@ public class SsfUcarimaEstimation implements Explorable {
             StateStorage fStates = source.getFilteringStates();
             return fStates.a(p).toArray();
         });
-        MAPPING.set("filtering.states", MatrixType.class, source -> {
+        MAPPING.set("filtering.states", Matrix.class, source -> {
             int n = source.data.length(), m = source.ssf.getStateDim();
             double[] z = new double[n * m];
             StateStorage fStates = source.getFilteringStates();
             for (int i = 0, j = 0; i < m; ++i, j += n) {
                 fStates.getComponent(i).copyTo(z, j);
             }
-            return MatrixType.of(z, n, m);
+            return Matrix.of(z, n, m);
         });
-        MAPPING.set("filtering.vstates", MatrixType.class, source -> {
+        MAPPING.set("filtering.vstates", Matrix.class, source -> {
             int n = source.data.length(), m = source.ssf.getStateDim();
             double[] z = new double[n * m];
             StateStorage fStates = source.getFilteringStates();
             for (int i = 0, j = 0; i < m; ++i, j += n) {
                 fStates.getComponentVariance(i).copyTo(z, j);
             }
-            return MatrixType.of(z, n, m);
+            return Matrix.of(z, n, m);
         });
-        MAPPING.setArray("filtering.vstate", 0, Integer.MAX_VALUE, MatrixType.class, (source, p) -> {
+        MAPPING.setArray("filtering.vstate", 0, Integer.MAX_VALUE, Matrix.class, (source, p) -> {
             StateStorage fStates = source.getFilteringStates();
             return fStates.P(p).unmodifiable();
         });
@@ -292,27 +292,27 @@ public class SsfUcarimaEstimation implements Explorable {
             StateStorage fStates = source.getFilteredStates();
             return fStates.a(p).toArray();
         });
-        MAPPING.setArray("filtered.vstate", 0, Integer.MAX_VALUE, MatrixType.class, (source, p) -> {
+        MAPPING.setArray("filtered.vstate", 0, Integer.MAX_VALUE, Matrix.class, (source, p) -> {
             StateStorage fStates = source.getFilteredStates();
             return fStates.P(p).unmodifiable();
         });
-        MAPPING.set("filtered.states", MatrixType.class, source -> {
+        MAPPING.set("filtered.states", Matrix.class, source -> {
             int n = source.data.length(), m = source.ssf.getStateDim();
             double[] z = new double[n * m];
             StateStorage fStates = source.getFilteredStates();
             for (int i = 0, j = 0; i < m; ++i, j += n) {
                 fStates.getComponent(i).copyTo(z, j);
             }
-            return MatrixType.of(z, n, m);
+            return Matrix.of(z, n, m);
         });
-        MAPPING.set("filtered.vstates", MatrixType.class, source -> {
+        MAPPING.set("filtered.vstates", Matrix.class, source -> {
             int n = source.data.length(), m = source.ssf.getStateDim();
             double[] z = new double[n * m];
             StateStorage fStates = source.getFilteredStates();
             for (int i = 0, j = 0; i < m; ++i, j += n) {
                 fStates.getComponentVariance(i).copyTo(z, j);
             }
-            return MatrixType.of(z, n, m);
+            return Matrix.of(z, n, m);
         });
 
     }

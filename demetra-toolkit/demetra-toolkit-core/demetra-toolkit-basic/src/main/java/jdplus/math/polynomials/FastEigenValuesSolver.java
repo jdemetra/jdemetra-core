@@ -9,7 +9,7 @@ import demetra.math.Complex;
 import demetra.math.Constants;
 import java.util.Random;
 import jdplus.math.matrices.GeneralMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -35,13 +35,13 @@ public class FastEigenValuesSolver implements RootsSolver {
             this.s = 0;
         }
 
-        Matrix asMatrix(int n, int pos) {
-            Matrix M = Matrix.identity(n);
+        FastMatrix asMatrix(int n, int pos) {
+            FastMatrix M = FastMatrix.identity(n);
             fill(M.extract(pos, 2, pos, 2));
             return M;
         }
 
-        void fill(Matrix m) {
+        void fill(FastMatrix m) {
             m.set(0, 0, c);
             m.set(0, 1, -s);
             m.set(1, 0, s);
@@ -200,7 +200,7 @@ public class FastEigenValuesSolver implements RootsSolver {
     private int[] its;
     private double tol = Constants.getEpsilon();
     private Complex[] shifts;
-    private Matrix D = Matrix.square(2);
+    private FastMatrix D = FastMatrix.square(2);
 
     private void qr(Polynomial p) {
         //    polynomial has a degree larger than 2
@@ -330,17 +330,17 @@ public class FastEigenValuesSolver implements RootsSolver {
      * @param k A[k,k+1; k, k+1]
      * @param D
      */
-    private void diagonalBlock(int k, Matrix D) {
+    private void diagonalBlock(int k, FastMatrix D) {
         D.set(0);
         if (k == 0) {
             // unoptimized
-            Matrix R = Matrix.square(2);
+            FastMatrix R = FastMatrix.square(2);
             R.set(0, 0, -B[0].s / C[0].s);
             double r11 = -B[1].s / C[1].s;
             R.set(0, 1, -(B[0].c * B[1].c - r11 * C[0].c * C[1].c) / C[0].s);
             R.set(1, 1, r11 * Q[1].c);
 
-            Matrix A = Matrix.square(2);
+            FastMatrix A = FastMatrix.square(2);
             A.set(0, 0, Q[0].c);
             A.set(1, 0, Q[0].s);
             A.set(0, 1, -Q[0].s);
@@ -348,7 +348,7 @@ public class FastEigenValuesSolver implements RootsSolver {
             GeneralMatrix.aAB_p_bC(1, A, R, 0, D);
 
         } else {
-            Matrix R = Matrix.make(3, 2);
+            FastMatrix R = FastMatrix.make(3, 2);
             double r10 = -B[k].s / C[k].s;
             R.set(1, 0, r10);
             R.set(0, 0, -(B[k - 1].c * B[k].c - r10 * C[k - 1].c * C[k].c) / C[k - 1].s);
@@ -357,20 +357,20 @@ public class FastEigenValuesSolver implements RootsSolver {
             R.set(1, 1, -(B[k].c * B[k + 1].c - r21 * C[k].c * C[k + 1].c) / C[k].s);
             R.set(2, 1, r21 * Q[k + 1].c);
 
-            Matrix A = Matrix.square(2);
+            FastMatrix A = FastMatrix.square(2);
             A.set(0, 0, Q[k].c);
             A.set(1, 0, Q[k].s);
             A.set(0, 1, -Q[k].s);
             A.set(1, 1, Q[k].c);
 
-            Matrix R12 = R.extract(1, 2, 0, 2);
+            FastMatrix R12 = R.extract(1, 2, 0, 2);
             R12.copy(GeneralMatrix.AB(A, R12));
             A.set(0, 0, Q[k - 1].c);
             A.set(1, 0, Q[k - 1].s);
             A.set(0, 1, -Q[k - 1].s);
             A.set(1, 1, Q[k - 1].c);
 
-            Matrix R01 = R.extract(0, 2, 0, 2);
+            FastMatrix R01 = R.extract(0, 2, 0, 2);
             R01.copy(GeneralMatrix.AB(A, R01));
             D.copy(R12);
         }
@@ -556,7 +556,7 @@ public class FastEigenValuesSolver implements RootsSolver {
 
     }
 
-    private void eigenValues(Matrix M, Complex[] ev, int pos) {
+    private void eigenValues(FastMatrix M, Complex[] ev, int pos) {
         double m00 = M.get(0, 0), m01 = M.get(0, 1), m10 = M.get(1, 0), m11 = M.get(1, 1);
         double trace = m00 + m11;
         double detm = m00 * m11 - m10 * m01;

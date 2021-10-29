@@ -26,7 +26,7 @@ import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.univariate.OrdinaryFilter;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixNorms;
 import jdplus.ssf.SsfException;
 
@@ -167,7 +167,7 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.Initializer {
         return true;
     }
 
-    private boolean isZero(final Matrix P) {
+    private boolean isZero(final FastMatrix P) {
         return P.isZero(1e-6 * norm);
     }
 

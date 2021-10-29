@@ -12,7 +12,7 @@ import jdplus.linearmodel.LinearModel;
 import jdplus.stats.RobustCovarianceComputer;
 import demetra.data.DoubleSeq;
 import jdplus.linearmodel.Ols;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -55,17 +55,17 @@ public class CanovaHansen2 {
     }
 
     public double compute() {
-        Matrix x = sx();
+        FastMatrix x = sx();
         LinearModel lm = buildModel(x);
         LeastSquaresResults olsResults= Ols.compute(lm);
         DoubleSeq e = lm.calcResiduals(olsResults.getCoefficients());
         double rvar = RobustCovarianceComputer.covariance(e, winFunction, truncationLag);
-        Matrix xe = x.deepClone();
+        FastMatrix xe = x.deepClone();
         int n=lm.getObservationsCount();
         
         // multiply the columns of x by e
         xe.applyByColumns(c -> c.apply(e, (a, b) -> (a * b)/n));
-        Matrix cxe = xe.deepClone();
+        FastMatrix cxe = xe.deepClone();
         cxe.applyByColumns(c -> c.cumul());
         if (cxe.getColumnsCount() == 1)
             return cxe.column(0).ssq()/rvar;
@@ -74,13 +74,13 @@ public class CanovaHansen2 {
         }
     }
 
-    private Matrix sx() {
+    private FastMatrix sx() {
         int len = s.length();
         TrigonometricSeries vars = TrigonometricSeries.specific(period);
         return vars.matrix(len, 0);
     }
 
-    private LinearModel buildModel(Matrix sx) {
+    private LinearModel buildModel(FastMatrix sx) {
 
         LinearModel.Builder builder = LinearModel.builder();
         builder.y(s);

@@ -19,7 +19,7 @@ package jdplus.math.matrices.decomposition;
 import demetra.data.DoubleSeq;
 import demetra.math.Constants;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixException;
 
 /**
@@ -31,12 +31,12 @@ public class Householder{
     private double[] qr, rdiag;
     private int n, m;
     
-    public Householder(final Matrix A){
+    public Householder(final FastMatrix A){
         init(A);
         householder(true, Constants.getEpsilon());
     }
 
-    public Householder(final Matrix A, final boolean fast, final double eps){
+    public Householder(final FastMatrix A, final boolean fast, final double eps){
         init(A);
         householder(fast, eps);
     }
@@ -92,7 +92,7 @@ public class Householder{
         }
     }
 
-    private void init(Matrix M) {
+    private void init(FastMatrix M) {
         m = M.getRowsCount();
         n = M.getColumnsCount();
         qr = M.toArray();

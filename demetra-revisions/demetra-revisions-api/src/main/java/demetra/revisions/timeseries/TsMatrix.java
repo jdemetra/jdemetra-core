@@ -16,13 +16,13 @@
  */
 package demetra.revisions.timeseries;
 
-import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDataTable;
 import demetra.timeseries.TsDataTable.ValueStatus;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.util.Arrays;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -34,7 +34,7 @@ public class TsMatrix {
     @lombok.NonNull
     private TsPeriod start;
     @lombok.NonNull
-    private MatrixType matrix;
+    private Matrix matrix;
     
     private String[] fields;
 
@@ -65,6 +65,6 @@ public class TsMatrix {
                 }
             }
         }
-        return new TsMatrix(start, MatrixType.of(x, domain.getLength(), s.length), null);
+        return new TsMatrix(start, Matrix.of(x, domain.getLength(), s.length), null);
     }
 }

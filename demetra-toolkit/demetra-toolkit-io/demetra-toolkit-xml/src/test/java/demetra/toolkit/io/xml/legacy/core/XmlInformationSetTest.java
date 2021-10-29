@@ -18,7 +18,6 @@ package demetra.toolkit.io.xml.legacy.core;
 
 import demetra.data.Data;
 import demetra.information.InformationSet;
-import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsData;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,6 +31,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import org.assertj.core.util.Files;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -48,7 +48,7 @@ public class XmlInformationSetTest {
         for (int i = 0; i < data.length; ++i) {
             data[i] = i;
         }
-        MatrixType M = MatrixType.of(data, 5, 4);
+        Matrix M = Matrix.of(data, 5, 4);
         TsData ts = Data.TS_PROD;
         info.add("m", M);
         info.add("ts", ts);
@@ -57,7 +57,7 @@ public class XmlInformationSetTest {
         xmlinfo.copy(info);
         // back to information set
         InformationSet ninfo = xmlinfo.create();
-        MatrixType nM = ninfo.get("m", MatrixType.class);
+        Matrix nM = ninfo.get("m", Matrix.class);
         TsData nts = ninfo.get("ts", TsData.class);
         System.out.println(M.equals(nM));
         System.out.println(ts.equals(nts));
@@ -75,7 +75,7 @@ public class XmlInformationSetTest {
         for (int i = 0; i < data.length; ++i) {
             data[i] = i;
         }
-        MatrixType M = MatrixType.of(data, 5, 4);
+        Matrix M = Matrix.of(data, 5, 4);
         TsData ts = Data.TS_PROD;
         info.add("m", M);
         info.add("ts", ts);
@@ -103,7 +103,7 @@ public class XmlInformationSetTest {
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             XmlInformationSet rslt = (XmlInformationSet) unmarshaller.unmarshal(reader);
             InformationSet info = rslt.create();
-            MatrixType M = info.get("m", MatrixType.class);
+            Matrix M = info.get("m", Matrix.class);
             TsData ts = info.get("ts", TsData.class);
             System.out.println(M);
             System.out.println(ts);

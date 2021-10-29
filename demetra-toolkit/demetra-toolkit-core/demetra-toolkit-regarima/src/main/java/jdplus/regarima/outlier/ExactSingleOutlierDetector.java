@@ -31,7 +31,7 @@ import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import jdplus.leastsquares.QRSolution;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
 
 /**
@@ -44,7 +44,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
 
     private final ArmaFilter filter;
     private final ResidualsComputer resComputer;
-    private Matrix U, Xl;
+    private FastMatrix U, Xl;
     private int[] pivot;
     private double[] yl, b, z;
     private int n;
@@ -99,13 +99,13 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
             filter.apply(model.getY(), Yl);
 
             // Xl
-            Matrix regs = model.getX();
+            FastMatrix regs = model.getX();
             if (regs.isEmpty()) {
                 mad = getStandardDeviationComputer().compute(filter(model.getY()));
                 return true;
             }
 
-            Xl = Matrix.make(n, regs.getColumnsCount());
+            Xl = FastMatrix.make(n, regs.getColumnsCount());
             DataBlockIterator rcols = regs.columnsIterator(), drcols = Xl.columnsIterator();
             while (rcols.hasNext()) {
                 filter.apply(rcols.next(), drcols.next());

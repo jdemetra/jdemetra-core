@@ -29,7 +29,7 @@ import jdplus.random.XorshiftRNG;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.dstats.Distribution;
 import demetra.dstats.RandomNumberGenerator;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -194,19 +194,19 @@ public final class ArimaSeriesGenerator {
                 e[i] = distribution.random(rng);
             }
         } else {
-            Matrix ac = Matrix.square(p + q);
+            FastMatrix ac = FastMatrix.square(p + q);
             AutoCovarianceFunction acf = starima.getAutoCovarianceFunction();
             acf.prepare(p);
             // fill the p part
-            Matrix pm = ac.extract(0, p, 0, p);
+            FastMatrix pm = ac.extract(0, p, 0, p);
             pm.diagonal().set(acf.get(0));
             for (int i = 1; i < p; ++i) {
                 pm.subDiagonal(-i).set(acf.get(i));
             }
             if (q > 0) {
-                Matrix qm = ac.extract(p, q, p, q);
+                FastMatrix qm = ac.extract(p, q, p, q);
                 qm.diagonal().set(starima.getInnovationVariance());
-                Matrix qp = ac.extract(p, q, 0, p);
+                FastMatrix qp = ac.extract(p, q, 0, p);
                 RationalBackFilter psi = starima.getPsiWeights();
                 int nw = Math.min(q, p);
                 psi.prepare(q);

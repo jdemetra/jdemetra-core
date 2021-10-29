@@ -14,17 +14,17 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Release)
 public class MatrixWindow {
 
-    private final Matrix cur;
+    private final FastMatrix cur;
     
-    public static MatrixWindow of(Matrix m){
+    public static MatrixWindow of(FastMatrix m){
         return new MatrixWindow(m.getStorage(), m.getColumnIncrement(), m.getStartPosition(), m.getRowsCount(), m.getColumnsCount());
     }
 
     MatrixWindow(double[] x, int lda, int start, int nrows, int ncols) {
-        cur = new Matrix(x, lda, start, nrows, ncols);
+        cur = new FastMatrix(x, lda, start, nrows, ncols);
     }
 
-    public Matrix get() {
+    public FastMatrix get() {
         return cur;
     }
 
@@ -34,7 +34,7 @@ public class MatrixWindow {
      * @param dc
      * @return
      */
-    public Matrix move(final int dr, final int dc) {
+    public FastMatrix move(final int dr, final int dc) {
         cur.start+=dr + dc * cur.getColumnIncrement();
         return cur;
     }
@@ -50,37 +50,37 @@ public class MatrixWindow {
      *
      * @return
      */
-    public Matrix bshrink() {
+    public FastMatrix bshrink() {
         cur.start += cur.getColumnIncrement() + 1;
         cur.nrows--;
         cur.ncols--;
         return cur;
     }
 
-    public Matrix bvshrink() {
+    public FastMatrix bvshrink() {
         cur.start ++;
         cur.nrows--;
         return cur;
     }
 
-    public Matrix bhshrink() {
+    public FastMatrix bhshrink() {
         cur.start +=cur.getColumnIncrement();
         cur.ncols--;
         return cur;
     }
 
-    public Matrix eshrink() {
+    public FastMatrix eshrink() {
         cur.nrows--;
         cur.ncols--;
         return cur;
     }
     
-    public Matrix evshrink() {
+    public FastMatrix evshrink() {
         cur.nrows--;
         return cur;
     }
 
-    public Matrix ehshrink() {
+    public FastMatrix ehshrink() {
         cur.ncols--;
         return cur;
     }
@@ -93,7 +93,7 @@ public class MatrixWindow {
      * @param nc The number of columns in the submatrix
      * @return
      */
-    public Matrix next(int nr, int nc) {
+    public FastMatrix next(int nr, int nc) {
         cur.start += cur.nrows+cur.ncols*cur.getColumnIncrement();
         cur.nrows=nr;
         cur.ncols=nc;
@@ -106,7 +106,7 @@ public class MatrixWindow {
      *
      * @return
      */
-    public Matrix next() {
+    public FastMatrix next() {
         cur.start += cur.nrows+cur.ncols*cur.getColumnIncrement();
         return cur;
     }
@@ -118,7 +118,7 @@ public class MatrixWindow {
      * @param nc The number of columns in the submatrix
      * @return
      */
-    public Matrix hnext(int nc) {
+    public FastMatrix hnext(int nc) {
         cur.start += cur.ncols*cur.getColumnIncrement();
         cur.ncols=nc;
         return cur;
@@ -129,7 +129,7 @@ public class MatrixWindow {
      *
      * @return
      */
-    public Matrix hnext() {
+    public FastMatrix hnext() {
         cur.start += cur.ncols*cur.getColumnIncrement();
         return cur;
     }
@@ -141,7 +141,7 @@ public class MatrixWindow {
      * @param nr The number of rows in the submatrix
      * @return
      */
-    public Matrix vnext(int nr) {
+    public FastMatrix vnext(int nr) {
         cur.start += cur.nrows;
         cur.nrows=nr;
         return cur;
@@ -153,7 +153,7 @@ public class MatrixWindow {
      *
      * @return
      */
-    public Matrix vnext() {
+    public FastMatrix vnext() {
         cur.start += cur.nrows;
         return cur;
     }
@@ -166,7 +166,7 @@ public class MatrixWindow {
      * @param nc The number of columns in the submatrix
      * @return
      */
-    public Matrix previous(int nr, int nc) {
+    public FastMatrix previous(int nr, int nc) {
         cur.start -= nr+nc*cur.getColumnIncrement();
         cur.nrows=nr;
         cur.ncols=nc;
@@ -178,7 +178,7 @@ public class MatrixWindow {
      *
      * @return
      */
-    public Matrix previous() {
+    public FastMatrix previous() {
         cur.start -= cur.nrows+cur.ncols*cur.getColumnIncrement();
         return cur;
     }
@@ -189,7 +189,7 @@ public class MatrixWindow {
      *
      * @param nc The number of columns in the submatrix
      */
-    public Matrix hprevious(int nc) {
+    public FastMatrix hprevious(int nc) {
         cur.start -= nc*cur.getColumnIncrement();
         cur.ncols=nc;
         return cur;
@@ -199,7 +199,7 @@ public class MatrixWindow {
      * Takes the bottom-left of the current submatrix as the new ending position
      * @return 
      */
-    public Matrix hprevious() {
+    public FastMatrix hprevious() {
         cur.start -= cur.nrows;
         return cur;
     }
@@ -211,7 +211,7 @@ public class MatrixWindow {
      * @param nr The number of rows in the submatrix
      * @return 
      */
-    public Matrix vprevious(int nr) {
+    public FastMatrix vprevious(int nr) {
         cur.start -= nr;
         cur.nrows=nr;
         return cur;
@@ -221,7 +221,7 @@ public class MatrixWindow {
      * Takes the top-right of the current submatrix as the new ending position
      * @return 
      */
-    public Matrix vprevious() {
+    public FastMatrix vprevious() {
         cur.start -= cur.nrows;
         return cur;
     }

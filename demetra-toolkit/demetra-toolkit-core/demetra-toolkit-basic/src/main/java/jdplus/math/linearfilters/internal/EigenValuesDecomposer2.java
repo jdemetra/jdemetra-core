@@ -14,7 +14,7 @@ import jdplus.math.ComplexMath;
 import jdplus.math.ComplexUtility;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.decomposition.EigenSystem;
 import jdplus.math.matrices.decomposition.IEigenSystem;
 import jdplus.math.polynomials.LeastSquaresDivision;
@@ -136,7 +136,7 @@ public class EigenValuesDecomposer2 {
                 return new Complex[]{Complex.cart(-c[0] / c[1])};
 
             default:
-                Matrix M = Matrix.square(n);
+                FastMatrix M = FastMatrix.square(n);
                 DataBlock col = M.column(n - 1);
                 double sn = c[n];
                 col.set(i -> -c[i] / sn);

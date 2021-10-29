@@ -20,7 +20,7 @@ import jdplus.data.DataBlock;
 import nbbrd.design.Development;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 
 /**
@@ -42,11 +42,11 @@ public class ResidualsCumulator {
     public ResidualsCumulator() {
     }
 
-    public void add(final DataBlock e, final Matrix var) {
+    public void add(final DataBlock e, final FastMatrix var) {
         if (e.length() == 1) {
             add(e.get(0), var.get(0, 0));
         } else {
-            Matrix l = var.deepClone();
+            FastMatrix l = var.deepClone();
             SymmetricMatrix.lcholesky(l);
             DataBlock el = DataBlock.of(e);
             // L^-1*e=el <-> e=L*el

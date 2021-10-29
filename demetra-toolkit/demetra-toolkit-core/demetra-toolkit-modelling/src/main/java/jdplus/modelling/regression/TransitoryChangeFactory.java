@@ -12,7 +12,7 @@ import jdplus.math.linearfilters.RationalBackFilter;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesInterval;
 
 /**
@@ -77,14 +77,14 @@ class TCFactory implements RegressionVariableFactory<TransitoryChange> {
     private TCFactory(){}
 
     @Override
-    public boolean fill(TransitoryChange var, TsPeriod start, Matrix m) {
+    public boolean fill(TransitoryChange var, TsPeriod start, FastMatrix m) {
         TsPeriod p = start.withDate(var.getPosition());
         fill(var, start.until(p), m.column(0));
         return true;
     }
 
     @Override
-    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(TransitoryChange var, D domain, Matrix m) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(TransitoryChange var, D domain, FastMatrix m) {
         fill(var, domain.indexOf(var.getPosition()), m.column(0));
         return true;
     }

@@ -21,7 +21,7 @@ package jdplus.ssf.univariate;
 import jdplus.data.DataBlock;
 import jdplus.ssf.IStateResults;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -31,7 +31,7 @@ public interface ISmoothingResults extends IStateResults {
 
     DataBlock a(int pos);
 
-    Matrix P(int pos);
+    FastMatrix P(int pos);
 
     void rescaleVariances(double factor);
 
@@ -44,14 +44,14 @@ public interface ISmoothingResults extends IStateResults {
     default void saveSmoothation(int pos, double u, double uvar) {
     }
 
-    default void saveR(int pos, DataBlock r, Matrix rvar) {
+    default void saveR(int pos, DataBlock r, FastMatrix rvar) {
     }
     
     default DoubleSeq R(int pos) {
         throw new java.lang.UnsupportedOperationException();
     }
 
-    default Matrix RVariance(int pos) {
+    default FastMatrix RVariance(int pos) {
         throw new java.lang.UnsupportedOperationException();
     }
 

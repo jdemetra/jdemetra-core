@@ -24,7 +24,7 @@ import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
 import jdplus.math.functions.FunctionMinimizer;
 import jdplus.math.functions.bfgs.Bfgs;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -37,7 +37,7 @@ public class DiscreteModelKernel {
 
         // first of all, we normalize the columns of the model
         SafeNormalizer normalizer = new SafeNormalizer();
-        Matrix Xnorm = model.X.deepClone();
+        FastMatrix Xnorm = model.X.deepClone();
         double[] xnorm = new double[Xnorm.getColumnsCount()];
         DataBlockIterator columns = Xnorm.columnsIterator();
         int pos = 0;
@@ -78,7 +78,7 @@ public class DiscreteModelKernel {
                 
     }
 
-    private DoubleSeq initialize(int[] y, Matrix X) {
+    private DoubleSeq initialize(int[] y, FastMatrix X) {
         double[] dy = new double[y.length];
         for (int i = 0; i < y.length; ++i) {
             dy[i] = y[i];

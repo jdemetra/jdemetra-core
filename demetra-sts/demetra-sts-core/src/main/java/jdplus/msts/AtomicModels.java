@@ -22,13 +22,13 @@ import jdplus.msts.internal.SarimaItem;
 import jdplus.msts.internal.SeasonalComponentItem;
 import jdplus.msts.internal.TdRegressionItem;
 import demetra.timeseries.TsDomain;
-import demetra.math.matrices.MatrixType;
 import jdplus.msts.internal.CumulatorItem;
 import jdplus.msts.internal.PeriodicItem;
 import jdplus.msts.internal.VarLocalLevelItem;
 import jdplus.msts.internal.VarLocalLinearTrendItem;
 import jdplus.msts.internal.VarSeasonalComponentItem;
 import jdplus.msts.internal.VarNoiseItem;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -77,15 +77,15 @@ public class AtomicModels {
         return new VarNoiseItem(name, std, scale, fixed);
     }
 
-    public StateItem regression(String name, MatrixType x) {
+    public StateItem regression(String name, Matrix x) {
         return new RegressionItem(name, x, null, true);
     }
 
-    public StateItem timeVaryingRegression(String name, MatrixType x, double var, boolean fixed) {
+    public StateItem timeVaryingRegression(String name, Matrix x, double var, boolean fixed) {
         return new RegressionItem(name, x, new double[]{var}, fixed);
     }
 
-    public StateItem timeVaryingRegression(String name, MatrixType x, final double[] vars, final boolean fixed) {
+    public StateItem timeVaryingRegression(String name, Matrix x, final double[] vars, final boolean fixed) {
         return new RegressionItem(name, x, vars, fixed);
     }
 
@@ -101,15 +101,15 @@ public class AtomicModels {
         return new SaeItem(name, ar, fixedar, lag, zeroinit);
     }
 
-    public StateItem waveSpecificSurveyError(String name, int nwaves, MatrixType ar, boolean fixedar, int lag) {
+    public StateItem waveSpecificSurveyError(String name, int nwaves, Matrix ar, boolean fixedar, int lag) {
         return new MsaeItem(name, nwaves, ar, fixedar, lag);
     }
 
-    public StateItem waveSpecificSurveyError(String name, double[] var, boolean fixedVar, MatrixType ar, boolean fixedar, int lag) {
+    public StateItem waveSpecificSurveyError(String name, double[] var, boolean fixedVar, Matrix ar, boolean fixedar, int lag) {
         return new MsaeItem2(name, var, fixedVar, ar, fixedar, lag);
     }
 
-    public StateItem waveSpecificSurveyError(String name, double[] var, boolean fixedVar, double[] ar, boolean fixedar, MatrixType k, int lag) {
+    public StateItem waveSpecificSurveyError(String name, double[] var, boolean fixedVar, double[] ar, boolean fixedar, Matrix k, int lag) {
         return new MsaeItem3(name, var, fixedVar, ar, fixedar, k, lag);
     }
 

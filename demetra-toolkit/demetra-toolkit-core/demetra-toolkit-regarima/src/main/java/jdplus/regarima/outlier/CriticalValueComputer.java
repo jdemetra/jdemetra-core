@@ -19,7 +19,7 @@ package jdplus.regarima.outlier;
 import jdplus.data.DataBlock;
 import jdplus.dstats.Normal;
 import demetra.stats.ProbabilityType;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import java.util.function.IntToDoubleFunction;
 import jdplus.linearsystem.LinearSystemSolver;
 
@@ -73,7 +73,7 @@ public class CriticalValueComputer {
             double n = len;
             double[] y = new double[3];
             int[] x = new int[]{2, 100, 200};
-            Matrix X = Matrix.square(3);
+            FastMatrix X = FastMatrix.square(3);
 
             for (int i = 0; i < 3; ++i) {
                 X.set(i, 0, 1);

@@ -23,7 +23,7 @@ import jdplus.math.functions.bfgs.Bfgs;
 import jdplus.math.linearfilters.FiniteFilter;
 import jdplus.math.linearfilters.IFiniteFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.math.matrices.decomposition.Gauss;
 import jdplus.math.matrices.decomposition.Householder;
@@ -110,7 +110,7 @@ public class FSTFilter {
     private final SmoothnessCriterion S = new SmoothnessCriterion();
     private final TimelinessCriterion T = new TimelinessCriterion();
     private final int nlags, nleads, p;
-    private final Matrix C, SM;
+    private final FastMatrix C, SM;
     private final DoubleSeq a;
 
     private FSTFilter(Builder builder) {
@@ -120,7 +120,7 @@ public class FSTFilter {
         this.p = builder.pdegree + 1;
         T.antiphase(builder.antiphase)
                 .bounds(builder.w0, builder.w1);
-        C = Matrix.make(p, n);
+        C = FastMatrix.make(p, n);
         C.row(0).set(1);
         for (int q = 1; q < p; ++q) {
             final int t = q;
@@ -134,18 +134,18 @@ public class FSTFilter {
 
     private Results makeQuadratic(double wf, double ws, double wt, boolean all) {
         int n = nlags + nleads + 1;
-        Matrix J = Matrix.square(n + p);
+        FastMatrix J = FastMatrix.square(n + p);
         J.extract(n, p, 0, n).copy(C);
         J.extract(0, n, n, p).copyTranspose(C);
 
-        Matrix X = J.extract(0, n, 0, n);
+        FastMatrix X = J.extract(0, n, 0, n);
         if (wf != 0) {
             X.diagonal().add(wf);
         }
         if (ws != 0) {
             X.addAY(ws, SM);
         }
-        Matrix TM = null;
+        FastMatrix TM = null;
         if ((wt != 0 || all) && nlags != nleads) {
             TM = T.buildMatrix(nlags, nleads);
             X.addAY(wt, TM);
@@ -235,7 +235,7 @@ public class FSTFilter {
             return DoubleSeq.of(f.weightsToArray()).ssq();
         }
 
-        void add(double weight, Matrix X) {
+        void add(double weight, FastMatrix X) {
             X.diagonal().add(weight);
         }
     }
@@ -244,7 +244,7 @@ public class FSTFilter {
 
         public static double smoothness(IFiniteFilter f) {
             DataBlock w = DataBlock.of(f.weightsToArray());
-            Matrix M = buildMatrix(3, f.getUpperBound(), -f.getLowerBound());
+            FastMatrix M = buildMatrix(3, f.getUpperBound(), -f.getLowerBound());
             return QuadraticForm.ofSymmetric(M).apply(w);
         }
 
@@ -255,12 +255,12 @@ public class FSTFilter {
         public SmoothnessCriterion() {
         }
 
-        public static Matrix buildMatrix(int deg, int nleads, int nlags) {
+        public static FastMatrix buildMatrix(int deg, int nleads, int nlags) {
             int n = nlags + nleads + 1;
             if (2 * deg >= n) {
                 throw new IllegalArgumentException();
             }
-            Matrix S = Matrix.square(n);
+            FastMatrix S = FastMatrix.square(n);
             double[] W = weights(deg);
             S.diagonal().set(W[0]);
             for (int i = 1; i < W.length; ++i) {
@@ -290,7 +290,7 @@ public class FSTFilter {
 
         public static double timeliness(IFiniteFilter f, double bandpass) {
             TimelinessCriterion c = new TimelinessCriterion().antiphase(true).bounds(0, bandpass);
-            Matrix M = c.buildMatrix(-f.getLowerBound(), f.getUpperBound());
+            FastMatrix M = c.buildMatrix(-f.getLowerBound(), f.getUpperBound());
             DataBlock w = DataBlock.of(f.weightsToArray());
             return QuadraticForm.ofSymmetric(M).apply(w);
         }
@@ -312,10 +312,10 @@ public class FSTFilter {
             return this;
         }
 
-        public Matrix buildMatrix(int nlags, int nleads) {
+        public FastMatrix buildMatrix(int nlags, int nleads) {
             int n = 2 * Math.max(nlags, nleads) + 1;
             int m = nlags + nleads + 1;
-            Matrix T = Matrix.square(m);
+            FastMatrix T = FastMatrix.square(m);
             double[] sin1 = new double[n];
             double[] sin0 = new double[n];
             for (int i = 0; i < n; ++i) {
@@ -358,7 +358,7 @@ public class FSTFilter {
          * @param nlags
          * @param nleads
          * @param G Quadratic form
-         * @param C Matrix of the constraints
+         * @param C FastMatrix of the constraints
          * @param a constraints (same dim as number of rows of C)
          */
         FSTFunction(final FSTFilter core, final double ws, final double wt) {

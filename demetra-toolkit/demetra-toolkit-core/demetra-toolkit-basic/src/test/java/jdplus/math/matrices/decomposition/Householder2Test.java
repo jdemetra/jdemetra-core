@@ -12,7 +12,7 @@ import java.util.Random;
 import jdplus.data.DataBlock;
 import jdplus.leastsquares.QRSolution;
 import jdplus.leastsquares.QRSolver;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -28,7 +28,7 @@ public class Householder2Test {
     @Test
     public void testRandom() {
         int M = 10, N = 3;
-        Matrix A = Matrix.make(M, N);
+        FastMatrix A = FastMatrix.make(M, N);
         Random rnd = new Random(0);
         A.set((i, j) -> rnd.nextDouble());
 
@@ -45,7 +45,7 @@ public class Householder2Test {
     @Test
     public void testFilip() {
         double[] y = DataSets.Filip.y;
-        Matrix M = Matrix.make(y.length, 11);
+        FastMatrix M = FastMatrix.make(y.length, 11);
         DataBlock x = DataBlock.of(DataSets.Filip.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -75,7 +75,7 @@ public class Householder2Test {
     @Test
     public void testWampler4() {
         double[] y = DataSets.Wampler4.y;
-        Matrix M = Matrix.make(y.length, 6);
+        FastMatrix M = FastMatrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler4.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -100,7 +100,7 @@ public class Householder2Test {
     @Test
     public void testWampler5() {
         double[] y = DataSets.Wampler5.y;
-        Matrix M = Matrix.make(y.length, 6);
+        FastMatrix M = FastMatrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler5.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -124,7 +124,7 @@ public class Householder2Test {
 
     public static void main(String[] args) {
         int M = 300, N = 20, K = 100000;
-        Matrix A = Matrix.make(M, N);
+        FastMatrix A = FastMatrix.make(M, N);
         Random rnd = new Random(0);
         A.set((i, j) -> rnd.nextDouble());
 

@@ -5,6 +5,8 @@
  */
 package demetra.arima.r;
 
+import demetra.data.Data;
+import jdplus.sarima.SarimaModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -22,5 +24,11 @@ public class SarimaModelsTest {
         double[] rnd=SarimaModels.random(200, 12, new double[]{-.2, -.5}, 1, new double[]{-.5}, null, 1, new double[]{-.8}, 10);
         assertTrue(rnd.length == 200);
     }
-    
+ 
+       @Test
+    public void testArima() {
+        SarimaModel arima = SarimaModels.estimate(Data.PROD, new int[]{0,1,1}, 12, new int[]{0,1,1}, null);
+        assertTrue(arima != null);
+    }
+
 }

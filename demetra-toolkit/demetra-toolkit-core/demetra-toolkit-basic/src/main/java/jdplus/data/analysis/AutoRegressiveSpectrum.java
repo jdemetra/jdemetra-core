@@ -23,7 +23,7 @@ import demetra.data.DoubleSeq;
 import nbbrd.design.Development;
 import jdplus.leastsquares.QRSolution;
 import jdplus.leastsquares.QRSolver;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixException;
 
 
@@ -114,7 +114,7 @@ public class AutoRegressiveSpectrum {
             if (nc < nar) {
                 return;
             }
-            Matrix M = Matrix.make(nc, nar);
+            FastMatrix M = FastMatrix.make(nc, nar);
             DataWindow rc = DataWindow.windowOf(all, nar, n, 1);
             DataBlockIterator cols = M.columnsIterator();
             while (cols.hasNext()) {

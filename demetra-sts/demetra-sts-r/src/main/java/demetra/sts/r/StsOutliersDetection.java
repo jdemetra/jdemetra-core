@@ -11,7 +11,6 @@ import demetra.data.Iterables;
 import demetra.data.Parameter;
 import demetra.information.InformationMapping;
 import demetra.likelihood.DiffuseLikelihoodStatistics;
-import demetra.math.matrices.MatrixType;
 import demetra.modelling.OutlierDescriptor;
 import demetra.outliers.io.protobuf.OutliersProtos;
 import demetra.sts.BsmEstimationSpec;
@@ -26,7 +25,7 @@ import java.util.Map;
 import jdplus.data.DataBlock;
 import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.math.matrices.LowerTriangularMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.akf.AugmentedSmoother;
 import jdplus.ssf.implementations.RegSsf;
@@ -40,6 +39,7 @@ import jdplus.sts.internal.BsmMapping;
 import jdplus.sts.internal.BsmKernel;
 import demetra.information.Explorable;
 import jdplus.ssf.akf.AkfToolkit;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -86,16 +86,17 @@ public class StsOutliersDetection {
         BsmData finalBsm;
 
         DoubleSeq y;
-        MatrixType x;
+        Matrix x;
         OutlierDescriptor[] outliers;
 
         double[] coefficients;
-        MatrixType coefficientsCovariance;
-        MatrixType regressors;
-        MatrixType components;
+        Matrix coefficientsCovariance;
+        Matrix regressors;
+        Matrix components;
         DoubleSeq linearized;
         DoubleSeq residuals;
-        MatrixType initialTau, finalTau;
+        Matrix initialTau;
+        Matrix finalTau;
 
         DiffuseLikelihoodStatistics initialLikelihood, finalLikelihood;
 
@@ -154,7 +155,7 @@ public class StsOutliersDetection {
             MAPPING.delegate(LL1, DiffuseLikelihoodStatistics.class, r -> r.getFinalLikelihood());
             MAPPING.set(B, double[].class, source -> source.getCoefficients());
             MAPPING.set(T, double[].class, source -> source.tstats());
-            MAPPING.set(BVAR, MatrixType.class, source -> source.getCoefficientsCovariance());
+            MAPPING.set(BVAR, Matrix.class, source -> source.getCoefficientsCovariance());
             MAPPING.set(BNAMES, String[].class, source -> {
                 int nx = source.getNx();
                 if (nx == 0) {
@@ -181,15 +182,15 @@ public class StsOutliersDetection {
                 }
                 return names;
             });
-            MAPPING.set(CMPS, MatrixType.class, source -> source.getComponents());
-            MAPPING.set(TAU0, MatrixType.class, source -> source.getInitialTau());
-            MAPPING.set(TAU1, MatrixType.class, source -> source.getFinalTau());
-            MAPPING.set(REGRESSORS, MatrixType.class, source -> source.getRegressors());
+            MAPPING.set(CMPS, Matrix.class, source -> source.getComponents());
+            MAPPING.set(TAU0, Matrix.class, source -> source.getInitialTau());
+            MAPPING.set(TAU1, Matrix.class, source -> source.getFinalTau());
+            MAPPING.set(REGRESSORS, Matrix.class, source -> source.getRegressors());
             MAPPING.set(LIN, double[].class, source -> source.getLinearized().toArray());
         }
     }
 
-    public Results process(TsData ts, int level, int slope, int noise, String seasmodel, MatrixType x,
+    public Results process(TsData ts, int level, int slope, int noise, String seasmodel, Matrix x,
             boolean bao, boolean bls, boolean bso, double cv, double tcv, String forwardEstimation, String backwardEstimation) {
         TsData y = ts.cleanExtremities();
         if (x != null && ts.length() != y.length()) {
@@ -200,7 +201,7 @@ public class StsOutliersDetection {
                 bao, bls, bso, cv, tcv, forwardEstimation, backwardEstimation);
     }
 
-    public Results process(double[] s, int period, int level, int slope, int noise, String seasmodel, MatrixType x,
+    public Results process(double[] s, int period, int level, int slope, int noise, String seasmodel, Matrix x,
             boolean bao, boolean bls, boolean bso, double cv, double tcv, String forwardEstimation, String backwardEstimation) {
         DoubleSeq y = DoubleSeq.of(s);
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
@@ -221,7 +222,7 @@ public class StsOutliersDetection {
                 .ls(bls)
                 .so(bso)
                 .build();
-        if (!od.process(y, Matrix.of(x), period)) {
+        if (!od.process(y, FastMatrix.of(x), period)) {
             return null;
         }
 
@@ -246,16 +247,16 @@ public class StsOutliersDetection {
         DiffuseConcentratedLikelihood ll0 = od.getInitialLikelihood();
         BsmData model0 = od.getInitialModel();
         SsfBsm ssf0 = SsfBsm.of(model0);
-        Ssf xssf = x == null ? ssf0 : RegSsf.ssf(ssf0, Matrix.of(x));
+        Ssf xssf = x == null ? ssf0 : RegSsf.ssf(ssf0, FastMatrix.of(x));
         DefaultSmoothingResults sd0 = DefaultSmoothingResults.full();
         int n = data.length();
         sd0.prepare(xssf.getStateDim(), 0, data.length());
         smoother.process(xssf, data, sd0);
 
         double sig2=AkfToolkit.var(n, smoother.getFilteringResults());
-        Matrix tau0 = tau(n, ssf0.getStateDim(), model0, sd0, sig2);
+        FastMatrix tau0 = tau(n, ssf0.getStateDim(), model0, sd0, sig2);
 
-        Matrix W = od.getRegressors();
+        FastMatrix W = od.getRegressors();
         DiffuseConcentratedLikelihood ll = od.getLikelihood();
         BsmData model = od.getModel();
         SsfBsm ssf = SsfBsm.of(model);
@@ -263,13 +264,13 @@ public class StsOutliersDetection {
         DefaultSmoothingResults sd = DefaultSmoothingResults.full();
         sd.prepare(wssf.getStateDim(), 0, data.length());
         smoother.process(wssf, data, sd);
-        Matrix cmps = components(n, model, sd);
+        FastMatrix cmps = components(n, model, sd);
         DataBlock lin = cmps.column(0).deepClone();
         lin.add(cmps.column(1));
         lin.add(cmps.column(3));
 
         sig2=AkfToolkit.var(n, smoother.getFilteringResults());
-        Matrix tau1 = tau(n, ssf.getStateDim(), model, sd, sig2);
+        FastMatrix tau1 = tau(n, ssf.getStateDim(), model, sd, sig2);
 
         int np = spec.getFreeParametersCount();
 
@@ -294,9 +295,9 @@ public class StsOutliersDetection {
                 .build();
     }
 
-    private Matrix components(int n, BsmData model, DefaultSmoothingResults sd) {
+    private FastMatrix components(int n, BsmData model, DefaultSmoothingResults sd) {
 
-        Matrix cmps = Matrix.make(n, 4);
+        FastMatrix cmps = FastMatrix.make(n, 4);
         int cmp = SsfBsm.searchPosition(model, Component.Noise);
         if (cmp >= 0) {
             cmps.column(0).copy(sd.getComponent(cmp));
@@ -316,8 +317,8 @@ public class StsOutliersDetection {
         return cmps;
     }
 
-    private Matrix tau(int n, int dim, BsmData model, DefaultSmoothingResults sd, double sig2) {
-        Matrix tau = Matrix.make(n, 6);
+    private FastMatrix tau(int n, int dim, BsmData model, DefaultSmoothingResults sd, double sig2) {
+        FastMatrix tau = FastMatrix.make(n, 6);
         int cmpn = SsfBsm.searchPosition(model, Component.Noise);
         int cmpl = SsfBsm.searchPosition(model, Component.Level);
         int cmps = SsfBsm.searchPosition(model, Component.Slope);
@@ -326,7 +327,7 @@ public class StsOutliersDetection {
         for (int i = 0; i < n; ++i) {
             try {
                 DataBlock R = DataBlock.of(sd.R(i));
-                Matrix Rvar = sd.RVariance(i);
+                FastMatrix Rvar = sd.RVariance(i);
 
                 if (cmpn >= 0) {
                     tau.set(i, 0, R.get(cmpn) * R.get(cmpn) / Rvar.get(cmpn, cmpn) / sig2);
@@ -340,14 +341,14 @@ public class StsOutliersDetection {
                 }
                 if (cmpseas > 0) {
                     tau.set(i, 3, R.get(cmpseas) * R.get(cmpseas) / Rvar.get(cmpseas, cmpseas) / sig2);
-                    Matrix S = Rvar.extract(cmpseas, p, cmpseas, p).deepClone();
+                    FastMatrix S = Rvar.extract(cmpseas, p, cmpseas, p).deepClone();
                     DataBlock ur = R.extract(cmpseas, p).deepClone();
                     SymmetricMatrix.lcholesky(S, 1e-9);
                     LowerTriangularMatrix.solveLx(S, ur, 1e-9);
                     tau.set(i, 4, ur.ssq() / sig2);
                 }
                 try {
-                    Matrix S = Rvar.extract(0, dim, 0, dim).deepClone();
+                    FastMatrix S = Rvar.extract(0, dim, 0, dim).deepClone();
                     DataBlock ur = R.extract(0, dim).deepClone();
                     SymmetricMatrix.lcholesky(S, 1e-9);
                     LowerTriangularMatrix.solveLx(S, ur, 1e-9);
@@ -370,11 +371,11 @@ public class StsOutliersDetection {
         }
     }
 
-    public double[] seasonalBreaks(TsData y, int level, int slope, int noise, String seasmodel, MatrixType x) {
+    public double[] seasonalBreaks(TsData y, int level, int slope, int noise, String seasmodel, Matrix x) {
         return seasonalBreaks(y.getValues().toArray(), y.getAnnualFrequency(), level, slope, noise, seasmodel, x);
     }
 
-    public double[] seasonalBreaks(double[] y, int period, int level, int slope, int noise, String seasmodel, MatrixType x) {
+    public double[] seasonalBreaks(double[] y, int period, int level, int slope, int noise, String seasmodel, Matrix x) {
         SeasonalModel sm = SeasonalModel.valueOf(seasmodel);
         BsmSpec mspec = BsmSpec.builder()
                 .seasonal(sm)
@@ -385,7 +386,7 @@ public class StsOutliersDetection {
                 .diffuseRegression(true)
                 .build();
         BsmKernel monitor = new BsmKernel(espec);
-        Matrix X = Matrix.of(x);
+        FastMatrix X = FastMatrix.of(x);
         if (!monitor.process(DoubleSeq.of(y), X, period, mspec)) {
             return null;
         }
@@ -422,8 +423,8 @@ public class StsOutliersDetection {
         for (int i = 0; i < n; ++i) {
             try {
                 DataBlock R = DataBlock.of(sd.R(i));
-                Matrix Rvar = sd.RVariance(i);
-                Matrix S = Rvar.extract(spos, period - 1, spos, period - 1).deepClone();
+                FastMatrix Rvar = sd.RVariance(i);
+                FastMatrix S = Rvar.extract(spos, period - 1, spos, period - 1).deepClone();
                 DataBlock ur = R.extract(spos, period - 1).deepClone();
                 SymmetricMatrix.lcholesky(S, 1e-9);
                 LowerTriangularMatrix.solveLx(S, ur, 1e-9);

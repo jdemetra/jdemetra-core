@@ -18,7 +18,6 @@ package jdplus.tramo.internal;
 
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
-import nbbrd.design.VisibleForTesting;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import demetra.arima.SarmaOrders;
@@ -26,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import demetra.data.DoubleSeq;
-import internal.jdplus.arima.FastKalmanFilter;
+import jdplus.arima.estimation.FastKalmanFilter;
 import jdplus.sarima.estimation.HannanRissanen;
 
 /**

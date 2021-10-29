@@ -6,7 +6,7 @@
 package jdplus.math.matrices.lapack;
 
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -29,7 +29,7 @@ public class TRSV {
      * @param U
      * @param x
      */
-    public void Usolve(Matrix U, double[] px, int startx, int incx) {
+    public void Usolve(FastMatrix U, double[] px, int startx, int incx) {
         int n = U.getColumnsCount(), lda = U.getColumnIncrement(), start = U.getStartPosition();
         double[] pu = U.getStorage();
         if (incx == 1) {
@@ -70,7 +70,7 @@ public class TRSV {
      * @param startx
      * @param incx
      */
-    public void Lsolve(Matrix L, double[] px, int startx, int incx) {
+    public void Lsolve(FastMatrix L, double[] px, int startx, int incx) {
         int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
         double[] pl = L.getStorage();
         if (incx == 1) {
@@ -100,7 +100,7 @@ public class TRSV {
         }
     }
 
-    public void Utsolve(Matrix U, double[] px, int startx, int incx) {
+    public void Utsolve(FastMatrix U, double[] px, int startx, int incx) {
         int n = U.getColumnsCount(), lda = U.getColumnIncrement(), start = U.getStartPosition();
         double[] pu = U.getStorage();
         if (incx == 1) {
@@ -137,7 +137,7 @@ public class TRSV {
      * @param startx
      * @param incx
      */
-    public void Ltsolve(Matrix L, double[] px, int startx, int incx) {
+    public void Ltsolve(FastMatrix L, double[] px, int startx, int incx) {
         int n = L.getColumnsCount(), lda = L.getColumnIncrement(), start = L.getStartPosition();
         double[] pl = L.getStorage();
         if (incx == 1) {

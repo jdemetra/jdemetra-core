@@ -21,7 +21,7 @@ import demetra.data.DoubleSeqCursor;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
 import nbbrd.design.Development;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 
 /**
  * Describes the linear model: y = a + b * X
@@ -52,7 +52,7 @@ public class DeprecatedLinearModel {
     /**
      * Regression variables (without the mean)
      */
-    private MatrixType X;
+    private Matrix X;
 
     /**
      * All the parameters of the model (including the mean)
@@ -69,7 +69,7 @@ public class DeprecatedLinearModel {
      *
      * @return
      */
-    public MatrixType variables() {
+    public Matrix variables() {
         if (!meanCorrection) {
             return X;
         }
@@ -79,7 +79,7 @@ public class DeprecatedLinearModel {
             for (int i = 0; i < n; ++i) {
                 m[i] = 1;
             }
-            return MatrixType.of(m, n, 1);
+            return Matrix.of(m, n, 1);
         }
         int m = X.getColumnsCount();
         double[] v = new double[n * (m + 1)];
@@ -87,7 +87,7 @@ public class DeprecatedLinearModel {
             v[i] = 1;
         }
         X.copyTo(v, m);
-        return MatrixType.of(v, n, m + 1);
+        return Matrix.of(v, n, m + 1);
     }
 
     public double[] residuals() {

@@ -6,7 +6,7 @@
 package jdplus.math.matrices.lapack;
 
 import demetra.math.Constants;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixNorms;
 import jdplus.math.matrices.TypeOfMatrix;
 
@@ -43,12 +43,12 @@ import jdplus.math.matrices.TypeOfMatrix;
 public class GESLY {
     
     private int[] pivot;
-    private Matrix QR;
+    private FastMatrix QR;
     private double rankCondition;
     private int rank;
-    private Matrix B;
+    private FastMatrix B;
     
-    public void apply(Matrix A, Matrix B, int[] pivot){
+    public void apply(FastMatrix A, FastMatrix B, int[] pivot){
         clear();
         int m=A.getRowsCount(), n=A.getColumnsCount(), k=B.getColumnsCount();
         if (m == 0 || n == 0 || k == 0)
@@ -145,7 +145,7 @@ public class GESLY {
 //*>   o The call to the subroutine xGEQPF has been substituted by the
 //*>     the call to the subroutine xGEQP3. This subroutine is a Blas-3
 //*>     version of the QR factorization with column pivoting.
-//*>   o Matrix B (the right hand side) is updated with Blas-3.
+//*>   o FastMatrix B (the right hand side) is updated with Blas-3.
 //*>   o The permutation of matrix B (the right hand side) is faster and
 //*>     more simple.
 //*> \endverbatim
@@ -404,7 +404,7 @@ public class GESLY {
 //         IASCL = 2
 //      ELSE IF( ANRM.EQ.ZERO ) THEN
 //*
-//*        Matrix all zero. Return zero solution.
+//*        FastMatrix all zero. Return zero solution.
 //*
 //         CALL DLASET( 'F', MAX( M, N ), NRHS, ZERO, ZERO, B, LDB )
 //         RANK = 0

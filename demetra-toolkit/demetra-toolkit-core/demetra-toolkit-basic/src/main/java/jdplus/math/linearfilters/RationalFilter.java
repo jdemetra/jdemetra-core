@@ -26,7 +26,7 @@ import jdplus.math.matrices.MatrixException;
 import jdplus.math.polynomials.Polynomial;
 import java.util.function.IntToDoubleFunction;
 import jdplus.linearsystem.LinearSystemSolver;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * Rational filters are the ratio of two filters. They are defined in
@@ -187,7 +187,7 @@ public final class RationalFilter implements IRationalFilter {
 
         double[] db = bd.weightsToArray(), df = fd.weightsToArray();
 
-        Matrix m = Matrix.square(ne);
+        FastMatrix m = FastMatrix.square(ne);
         // initialisation of the matrix
         // left/up block [k+1]
         for (int i = 0; i <= ndf; ++i) {

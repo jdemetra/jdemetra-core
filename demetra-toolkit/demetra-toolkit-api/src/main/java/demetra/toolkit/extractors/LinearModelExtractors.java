@@ -10,12 +10,10 @@ import demetra.information.DynamicMapping;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.math.matrices.MatrixType;
 import demetra.modelling.ModellingDictionary;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
@@ -35,6 +33,7 @@ import demetra.timeseries.regression.modelling.Residuals;
 import java.util.Arrays;
 import java.util.function.Predicate;
 import nbbrd.service.ServiceProvider;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -124,12 +123,12 @@ public class LinearModelExtractors {
             });
  
             set(BasicInformationExtractor.concatenate(REGRESSION, COEFF), double[].class, source -> source.getEstimation().getCoefficients().toArray());
-            set(BasicInformationExtractor.concatenate(REGRESSION, COVAR), MatrixType.class, source -> source.getEstimation().getCoefficientsCovariance());
-            set(BasicInformationExtractor.concatenate(REGRESSION, COVAR_ML), MatrixType.class, source
+            set(BasicInformationExtractor.concatenate(REGRESSION, COVAR), Matrix.class, source -> source.getEstimation().getCoefficientsCovariance());
+            set(BasicInformationExtractor.concatenate(REGRESSION, COVAR_ML), Matrix.class, source
                     -> mul(source.getEstimation().getCoefficientsCovariance(), mlcorrection(source.getEstimation().getStatistics())));
             set(BasicInformationExtractor.concatenate(MAX, P), double[].class, source -> source.getEstimation().getParameters().getValues().toArray());
-            set(BasicInformationExtractor.concatenate(MAX, PCOVAR), MatrixType.class, source -> source.getEstimation().getParameters().getCovariance());
-            set(BasicInformationExtractor.concatenate(MAX, PCOVAR_ML), MatrixType.class, source
+            set(BasicInformationExtractor.concatenate(MAX, PCOVAR), Matrix.class, source -> source.getEstimation().getParameters().getCovariance());
+            set(BasicInformationExtractor.concatenate(MAX, PCOVAR_ML), Matrix.class, source
                     -> mul(source.getEstimation().getParameters().getCovariance(), mlcorrection(source.getEstimation().getStatistics())));
             set(BasicInformationExtractor.concatenate(MAX, SCORE), double[].class, source -> source.getEstimation().getParameters().getScores().toArray());
             delegate(LIKELIHOOD, LikelihoodStatistics.class, source -> source.getEstimation().getStatistics());
@@ -141,12 +140,12 @@ public class LinearModelExtractors {
             return (n - ll.getEstimatedParametersCount()) / n;
         }
 
-        private MatrixType mul(MatrixType m, double c) {
+        private Matrix mul(Matrix m, double c) {
             double[] cm = m.toArray();
             for (int i = 0; i < cm.length; ++i) {
                 cm[i] *= c;
             }
-            return MatrixType.of(cm, m.getRowsCount(), m.getColumnsCount());
+            return Matrix.of(cm, m.getRowsCount(), m.getColumnsCount());
         }
 
         private int type(ITsVariable var) {

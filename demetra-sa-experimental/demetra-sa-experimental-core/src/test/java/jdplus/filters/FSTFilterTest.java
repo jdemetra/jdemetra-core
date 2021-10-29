@@ -10,7 +10,7 @@ import java.util.Arrays;
 import jdplus.filters.FSTFilter.SmoothnessCriterion;
 import jdplus.math.linearfilters.FiniteFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.UnitRoots;
@@ -69,13 +69,13 @@ public class FSTFilterTest {
 //    @Test
 //    public void testMatrix() {
 //        Polynomial D = UnitRoots.D(1, 3);
-//        Matrix M=Matrix.square(13);
+//        FastMatrix M=FastMatrix.square(13);
 //        for (int i=0; i<4; ++i){
 //            M.subDiagonal(-i).set(D.get(i));
 //        }
-//        Matrix S1=SymmetricMatrix.XtX(M);
+//        FastMatrix S1=SymmetricMatrix.XtX(M);
 //        System.out.println(S1);
-//        Matrix S2=SymmetricMatrix.XtX(M.extract(3, 10, 0, 13));
+//        FastMatrix S2=SymmetricMatrix.XtX(M.extract(3, 10, 0, 13));
 //        System.out.println(S2);
 //    }
 }

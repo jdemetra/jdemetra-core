@@ -6,7 +6,7 @@
 package jdplus.leastsquares;
 
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
 import jdplus.math.matrices.decomposition.QRDecomposition;
@@ -43,7 +43,7 @@ public class QRSolution {
         return rank;
     }
 
-    public Matrix rawR() {
+    public FastMatrix rawR() {
         return qr.rawR();
     }
 
@@ -61,22 +61,22 @@ public class QRSolution {
         return qr.pivot();
     }
 
-    public Matrix unscaledCovariance() {
+    public FastMatrix unscaledCovariance() {
         int[] pivot = qr.pivot();
-        Matrix rawR = qr.rawR().extract(0, rank, 0, rank);
-        Matrix v = SymmetricMatrix.UUt(UpperTriangularMatrix
+        FastMatrix rawR = qr.rawR().extract(0, rank, 0, rank);
+        FastMatrix v = SymmetricMatrix.UUt(UpperTriangularMatrix
                 .inverse(rawR));
         int n = qr.n();
         if (pivot == null) {
             if (rank == n) {
                 return v;
             } else {
-                Matrix V = Matrix.square(n);
+                FastMatrix V = FastMatrix.square(n);
                 V.extract(0, rank, 0, rank).copy(v);
                 return V;
             }
         } else {
-            Matrix V = Matrix.square(n);
+            FastMatrix V = FastMatrix.square(n);
             for (int i = 0; i < rank; ++i) {
                 double sii = v.get(i, i);
                 V.set(pivot[i], pivot[i], sii);
@@ -96,15 +96,15 @@ public class QRSolution {
      *
      * @return
      */
-    public Matrix RtR() {
+    public FastMatrix RtR() {
         int[] pivot = qr.pivot();
-        Matrix rawR = qr.rawR();
-        Matrix v = SymmetricMatrix.UtU(rawR);
+        FastMatrix rawR = qr.rawR();
+        FastMatrix v = SymmetricMatrix.UtU(rawR);
         if (pivot == null) {
             return v;
         } else {
             int n = pivot.length;
-            Matrix V = Matrix.square(n);
+            FastMatrix V = FastMatrix.square(n);
             for (int i = 0; i < rank; ++i) {
                 double sii = v.get(i, i);
                 V.set(pivot[i], pivot[i], sii);

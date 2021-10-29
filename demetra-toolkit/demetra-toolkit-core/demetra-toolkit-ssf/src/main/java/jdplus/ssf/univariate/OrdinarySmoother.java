@@ -19,7 +19,7 @@
 package jdplus.ssf.univariate;
 
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
@@ -80,7 +80,7 @@ public class OrdinarySmoother {
 
     private double err, errVariance, u, uVariance;
     private DataBlock M, R;
-    private Matrix N;
+    private FastMatrix N;
     private boolean missing;
     private int stop;
 
@@ -147,7 +147,7 @@ public class OrdinarySmoother {
         return R;
     }
 
-    public Matrix getFinalN() {
+    public FastMatrix getFinalN() {
         return N;
     }
 
@@ -167,7 +167,7 @@ public class OrdinarySmoother {
         M = DataBlock.make(dim);
 
         if (calcvar) {
-            N = Matrix.square(dim);
+            N = FastMatrix.square(dim);
         }
     }
 
@@ -187,7 +187,7 @@ public class OrdinarySmoother {
         srslts.saveSmoothation(pos, u, uVariance);
         srslts.saveR(pos, R, N);
         DataBlock fa = frslts.a(pos);
-        Matrix fP = frslts.P(pos);
+        FastMatrix fP = frslts.P(pos);
         if (fP == null) {
             return false;
         }
@@ -197,9 +197,9 @@ public class OrdinarySmoother {
         a.addProduct(R, fP.columnsIterator());
         if (calcvar) {
             // P = P-PNP
-            Matrix P = state.P();
+            FastMatrix P = state.P();
             P.copy(fP);
-            Matrix V = SymmetricMatrix.XtSX(N, P);
+            FastMatrix V = SymmetricMatrix.XtSX(N, P);
             P.sub(V);
         }
         return true;

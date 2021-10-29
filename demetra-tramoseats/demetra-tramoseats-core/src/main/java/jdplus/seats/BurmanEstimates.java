@@ -31,7 +31,7 @@ import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.data.DoublesMath;
 import jdplus.arima.ssf.ExactArimaForecasts;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixWindow;
 import jdplus.math.matrices.decomposition.Gauss;
 import jdplus.math.matrices.decomposition.LUDecomposition;
@@ -497,13 +497,13 @@ public class BurmanEstimates {
         int qstar = ma.length - 1;
         int pstar = ar.length - 1;
 
-        Matrix M = Matrix.square(pstar + qstar);
+        FastMatrix M = FastMatrix.square(pstar + qstar);
         MatrixWindow top = M.top(0);
-        Matrix M1 = top.vnext(pstar);
+        FastMatrix M1 = top.vnext(pstar);
         for (int j = 0; j <= qstar; ++j) {
             M1.subDiagonal(j).set(ma[j]);
         }
-        Matrix M2 = top.vnext(qstar);
+        FastMatrix M2 = top.vnext(qstar);
         for (int j = 0; j <= pstar; ++j) {
             M2.subDiagonal(j).set(ar[pstar - j]);
         }

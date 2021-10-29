@@ -13,7 +13,7 @@ import demetra.data.DoubleSeq;
 import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
 import jdplus.arima.ssf.SsfArima;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.msts.CompositeModel;
 import jdplus.msts.CompositeModelEstimation;
 import jdplus.msts.StateItem;
@@ -136,7 +136,7 @@ public class AlgorithmsTest {
     @Test
     public void testBsm() {
         int len = BUG.length;
-        Matrix M = Matrix.make(len, 1);
+        FastMatrix M = FastMatrix.make(len, 1);
         M.column(0).copyFrom(BUG, 0);
 //        M.column(0).apply(q->Math.log(q));
 
@@ -171,7 +171,7 @@ public class AlgorithmsTest {
     //@Ignore
     public void testSutse() {
         int len = Data.ABS63.length;
-        Matrix M = Matrix.make(len, 2);
+        FastMatrix M = FastMatrix.make(len, 2);
         M.column(0).copyFrom(Data.ABS63, 0);
         M.column(1).copyFrom(Data.ABS68, 0);
 
@@ -237,7 +237,7 @@ model.add(td);
 //        System.out.println(DataBlock.of(model.fullDefaultParameters()));
 
         int len = Data.ABS_RETAIL.length;
-        Matrix M = Matrix.make(len, 1);
+        FastMatrix M = FastMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         M.column(0).apply(q -> Math.log(q));
         CompositeModelEstimation rslt = model.estimate(M, true, true, SsfInitialization.Diffuse, Optimizer.BFGS, 1e-12, null);
@@ -259,7 +259,7 @@ model.add(td);
         model.add(eq);
 
         int len = Data.ABS_RETAIL.length;
-        Matrix M = Matrix.make(len, 1);
+        FastMatrix M = FastMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
 
@@ -284,7 +284,7 @@ model.add(td);
 //        System.out.println(DataBlock.of(model.fullDefaultParameters()));
 
         int len = Data.ABS_RETAIL.length;
-        Matrix M = Matrix.make(len, 1);
+        FastMatrix M = FastMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-12, null);
 
@@ -305,7 +305,7 @@ model.add(td);
         model.add(eq);
 
         int len = Data.ABS_RETAIL.length;
-        Matrix M = Matrix.make(len, 1);
+        FastMatrix M = FastMatrix.make(len, 1);
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-12, null);
 

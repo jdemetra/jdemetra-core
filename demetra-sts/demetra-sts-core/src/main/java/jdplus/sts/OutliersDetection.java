@@ -17,7 +17,7 @@ import jdplus.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.math.functions.IFunctionDerivatives;
 import jdplus.math.matrices.LowerTriangularMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixFactory;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.akf.SmoothationsComputer;
@@ -139,7 +139,7 @@ public class OutliersDetection {
         this.fullEstimationThreshold = ft;
     }
 
-    public boolean process(DoubleSeq y, Matrix X, int period) {
+    public boolean process(DoubleSeq y, FastMatrix X, int period) {
         clear();
         int i = 0;
         this.period = period;
@@ -243,7 +243,7 @@ public class OutliersDetection {
         return Math.sqrt(defaultCriticalValue(n));
     }
 
-    private boolean iterate(DoubleSeq y, Matrix W, double curcv) {
+    private boolean iterate(DoubleSeq y, FastMatrix W, double curcv) {
         full = false;
         SsfBsm ssf = SsfBsm.of(model);
         Ssf wssf = W == null ? ssf : RegSsf.ssf(ssf, W);
@@ -261,7 +261,7 @@ public class OutliersDetection {
         for (int i = 0; i < n; ++i) {
             try {
                 DataBlock R = computer.R(i);
-                Matrix Rvar = computer.Rvar(i);
+                FastMatrix Rvar = computer.Rvar(i);
                 double sao = 0, sls = 0, sso = 0, sall = 0;
                 IntList sel = new IntList();
                 if (ao && ncmp >= 0 && !aoPositions.contains(i)) {
@@ -286,7 +286,7 @@ public class OutliersDetection {
                     sel.add(scmp);
                 }
 
-                Matrix S = MatrixFactory.select(Rvar, sel, sel);
+                FastMatrix S = MatrixFactory.select(Rvar, sel, sel);
                 DataBlock ur = DataBlock.of(R.select(sel));
                 SymmetricMatrix.lcholesky(S, 1e-9);
                 LowerTriangularMatrix.solveLx(S, ur, 1e-9);
@@ -324,7 +324,7 @@ public class OutliersDetection {
         return true;
     }
 
-    private boolean fullEstimation(DoubleSeq y, Matrix W, int period, double eps) {
+    private boolean fullEstimation(DoubleSeq y, FastMatrix W, int period, double eps) {
         BsmEstimationSpec espec = BsmEstimationSpec.builder()
                 .diffuseRegression(true)
                 .precision(eps)
@@ -338,19 +338,19 @@ public class OutliersDetection {
         return model != null;
     }
 
-    private void pointEstimation(DoubleSeq y, Matrix W) {
+    private void pointEstimation(DoubleSeq y, FastMatrix W) {
         SsfFunction<BsmData, SsfBsm2> fn = currentFunction(y, W);
         SsfFunctionPoint<BsmData, SsfBsm2> pt = fn.evaluate(curp);
         likelihood = pt.getLikelihood();
         model = pt.getCore();
     }
 
-    private void scoreEstimation(DoubleSeq y, Matrix W) {
+    private void scoreEstimation(DoubleSeq y, FastMatrix W) {
         SsfFunction<BsmData, SsfBsm2> fn = currentFunction(y, W);
         SsfFunctionPoint<BsmData, SsfBsm2> pt = fn.evaluate(curp);
         try {
             IFunctionDerivatives D = pt.derivatives();
-            Matrix H = D.hessian();
+            FastMatrix H = D.hessian();
             DataBlock G = DataBlock.of(D.gradient());
             LinearSystemSolver.fastSolver().solve(H, G);
             DoubleSeq np = DoublesMath.subtract(curp, G);
@@ -364,7 +364,7 @@ public class OutliersDetection {
         model = pt.getCore();
     }
 
-    private boolean estimate(DoubleSeq y, Matrix W, Estimation method) {
+    private boolean estimate(DoubleSeq y, FastMatrix W, Estimation method) {
         if (full) {
             return fullEstimation(y, W, model.getPeriod(), eps2);
         }
@@ -389,13 +389,13 @@ public class OutliersDetection {
         return RobustStandardDeviationComputer.mad().compute(errors);
     }
 
-    private Matrix x(int m, Matrix X) {
+    private FastMatrix x(int m, FastMatrix X) {
         int nx = X == null ? 0 : X.getColumnsCount();
         int nw = nx + aoPositions.size() + lsPositions.size() + soPositions.size();
         if (nw == 0) {
             return null;
         }
-        Matrix W = Matrix.make(m, nw);
+        FastMatrix W = FastMatrix.make(m, nw);
         int p = 0;
         if (nx > 0) {
             W.extract(0, m, 0, nx).copy(X);
@@ -415,7 +415,7 @@ public class OutliersDetection {
         return W;
     }
 
-    SsfFunction<BsmData, SsfBsm2> currentFunction(DoubleSeq y, Matrix W) {
+    SsfFunction<BsmData, SsfBsm2> currentFunction(DoubleSeq y, FastMatrix W) {
         BsmMapping mapper = new BsmMapping(curSpec == null ? spec : curSpec, model.getPeriod(), null);
         int[] diffuse = null;
         if (W != null) {
@@ -441,7 +441,7 @@ public class OutliersDetection {
     private BsmSpec curSpec;
     private DiffuseConcentratedLikelihood initialLikelihood, likelihood;
     private DoubleSeq curp;
-    private Matrix regressors;
+    private FastMatrix regressors;
     private double sig;
     private boolean full;
 
@@ -497,7 +497,7 @@ public class OutliersDetection {
     /**
      * @return the regressors
      */
-    public Matrix getRegressors() {
+    public FastMatrix getRegressors() {
         return regressors;
     }
 

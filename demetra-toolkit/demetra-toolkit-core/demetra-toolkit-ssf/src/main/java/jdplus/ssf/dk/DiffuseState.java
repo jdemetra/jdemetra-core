@@ -17,7 +17,7 @@
 package jdplus.ssf.dk;
 
 import nbbrd.design.Development;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.State;
 import jdplus.ssf.ISsfInitialization;
@@ -46,7 +46,7 @@ public class DiffuseState extends State {
     /**
      * Pi is the covariance matrix of the diffuse part
      */
-    private final Matrix Pi;
+    private final FastMatrix Pi;
 
     /**
      *
@@ -55,13 +55,13 @@ public class DiffuseState extends State {
      */
     public DiffuseState(final int dim) {
         super(dim);
-        Pi = Matrix.square(dim);
+        Pi = FastMatrix.square(dim);
     }
 
     /**
      * @return the Pi
      */
-    public Matrix Pi() {
+    public FastMatrix Pi() {
         return Pi;
     }
 

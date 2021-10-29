@@ -18,7 +18,7 @@ package jdplus.math.matrices.decomposition;
 
 import nbbrd.design.Development;
 import demetra.math.Constants;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixWindow;
 import jdplus.math.matrices.DataPointer;
 
@@ -34,17 +34,17 @@ public class HouseholderWithPivoting {
     private int nfixed;
     private int[] pivot;
 
-    public QRDecomposition decompose(Matrix A, int nfixed) {
+    public QRDecomposition decompose(FastMatrix A, int nfixed) {
         init(A, nfixed);
         householder();
-        return new QRDecomposition(Matrix.builder(qr).nrows(m).ncolumns(n).build(),
+        return new QRDecomposition(FastMatrix.builder(qr).nrows(m).ncolumns(n).build(),
                 beta, pivot);
     }
 
     private void householder() {
         int k = Math.min(m, nfixed);
         Reflector hous = new Reflector(qr);
-        Matrix M = Matrix.builder(qr).nrows(m).ncolumns(n).build();
+        FastMatrix M = FastMatrix.builder(qr).nrows(m).ncolumns(n).build();
         MatrixWindow wnd = M.all();
         int j = 0;
         for (int i = 0; i < k; ++i, j += m + 1) {
@@ -127,7 +127,7 @@ public class HouseholderWithPivoting {
         }
     }
 
-    private void init(Matrix M, int nfixed) {
+    private void init(FastMatrix M, int nfixed) {
         this.m = M.getRowsCount();
         this.n = M.getColumnsCount();
         this.nfixed = nfixed;

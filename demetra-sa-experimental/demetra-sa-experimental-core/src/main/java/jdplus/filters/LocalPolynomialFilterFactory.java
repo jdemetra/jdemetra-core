@@ -17,7 +17,7 @@
 package jdplus.filters;
 
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import jdplus.data.DataBlockIterator;
@@ -139,7 +139,7 @@ public class LocalPolynomialFilterFactory {
     public FiniteFilter directAsymmetricFilter(final int h, final int q, final int d, final IntToDoubleFunction k) {
         // w = KpXp (Xp'Kp Xp)^-1 e1
         // (Xp'Kp Xp)^-1 e1 = u <-> (Xp'Kp Xp) u = e1
-        Matrix xkx = Matrix.square(d + 1);
+        FastMatrix xkx = FastMatrix.square(d + 1);
         for (int i = 0; i <= d; ++i) {
             xkx.set(i, i, S_hqd(h, q, 2 * i, k));
             for (int j = 0; j < i; ++j) {
@@ -222,7 +222,7 @@ public class LocalPolynomialFilterFactory {
 //    SymmetricFilter ofDefault2(int h, int d, IntToDoubleFunction k) {
 //        // w = KX (X'K X)^-1 e1
 //        // (X'K X)^-1 e1 = u <-> (X'K X) u = e1
-//        Matrix xkx = Matrix.square(d + 1);
+//        FastMatrix xkx = FastMatrix.square(d + 1);
 //        for (int i = 0; i <= d; ++i) {
 //            xkx.set(i, i, S_hd(h, 2 * i, k));
 //            for (int j = 0; j < i; ++j) {
@@ -272,7 +272,7 @@ public class LocalPolynomialFilterFactory {
             }
 
         }
-        Matrix Z = createZ(h, d);
+        FastMatrix Z = createZ(h, d);
         DataBlockIterator rows = Z.rowsIterator();
         int pos = -h;
         while (rows.hasNext()) {
@@ -390,7 +390,7 @@ public class LocalPolynomialFilterFactory {
      * @param u included (positive)
      * @return
      */
-    synchronized Matrix z(int l, int u, int d0, int d1) {
+    synchronized FastMatrix z(int l, int u, int d0, int d1) {
         int nh = Math.max(Math.abs(l), Math.abs(u));
         if (Z == null || Z.getRowsCount() / 2 < nh || Z.getColumnsCount() < d1 + 1) {
             Z = createZ(nh, d1);
@@ -398,8 +398,8 @@ public class LocalPolynomialFilterFactory {
         return Z.extract(l + nh, u - l + 1, d0, d1 - d0 + 1);
     }
 
-    private Matrix createZ(int h, int d) {
-        Matrix M = Matrix.make(2 * h + 1, d + 1);
+    private FastMatrix createZ(int h, int d) {
+        FastMatrix M = FastMatrix.make(2 * h + 1, d + 1);
         M.column(0).set(1);
         if (d >= 1) {
             DataBlock c1 = M.column(1);
@@ -411,5 +411,5 @@ public class LocalPolynomialFilterFactory {
         return M;
     }
 
-    private Matrix Z;
+    private FastMatrix Z;
 }

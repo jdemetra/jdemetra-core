@@ -28,7 +28,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import jdplus.data.DataBlockIterator;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.revisions.parametric.Processor;
 
 /**
@@ -89,7 +89,7 @@ public class Vintages {
         if (r1 <= r0) {
             return null;
         }
-        Matrix data = Matrix.make(r1 - r0, v1 - v0);
+        FastMatrix data = FastMatrix.make(r1 - r0, v1 - v0);
         // fill the matrix
         DataBlockIterator cols = data.columnsIterator();
         final int rstart = r0;

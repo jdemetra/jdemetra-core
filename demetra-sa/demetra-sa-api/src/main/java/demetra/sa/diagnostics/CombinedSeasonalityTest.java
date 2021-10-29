@@ -46,6 +46,6 @@ public class CombinedSeasonalityTest {
    
 	IdentifiableSeasonality seasonality;
         
-	StatisticalTest kruskalWallis;
 	OneWayAnova stableSeasonality, evolutiveSeasonality;
+	StatisticalTest kruskalWallis;
 }

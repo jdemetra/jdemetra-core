@@ -25,12 +25,12 @@ import demetra.data.Doubles;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Release)
-class LightSubMatrix implements MatrixType {
+class LightSubMatrix implements Matrix {
 
-    private final MatrixType core;
+    private final Matrix core;
     private final int r0, nr, c0, nc;
 
-    LightSubMatrix(final MatrixType core, int r0, int nr, int c0, int nc) {
+    LightSubMatrix(final Matrix core, int r0, int nr, int c0, int nc) {
         this.core = core;
         this.r0 = r0;
         this.nr = nr;
@@ -103,6 +103,6 @@ class LightSubMatrix implements MatrixType {
 
     @Override
     public String toString(){
-        return MatrixType.format(this);
+        return Matrix.format(this);
     }
 }

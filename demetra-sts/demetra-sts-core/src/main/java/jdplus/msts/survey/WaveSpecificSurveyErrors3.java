@@ -11,8 +11,8 @@ import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.StateComponent;
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
+import demetra.math.matrices.Matrix;
 
 /**
  * Model described in the paper of Duncan Elliot
@@ -31,7 +31,7 @@ public class WaveSpecificSurveyErrors3 {
      * @param lag Lag between two observations in a given panel
      * @return
      */
-    public StateComponent of(double[] v, double[] ar, MatrixType k, int lag) {
+    public StateComponent of(double[] v, double[] ar, Matrix k, int lag) {
         Data info = new Data(v, ar, k, lag);
         return new StateComponent(new Initialization(info), new Dynamics(info));
     }
@@ -41,10 +41,10 @@ public class WaveSpecificSurveyErrors3 {
 
         double[] v, vc;
         double[] ar;
-        MatrixType k;
+        Matrix k;
         int lag;
 
-        Data(double[] v, double[] ar, MatrixType k, int lag) {
+        Data(double[] v, double[] ar, Matrix k, int lag) {
             this.v = v;
             this.ar = ar;
             this.lag = lag;
@@ -123,13 +123,13 @@ public class WaveSpecificSurveyErrors3 {
         }
 
         @Override
-        public void V(int pos, Matrix qm) {
+        public void V(int pos, FastMatrix qm) {
             DataBlock d = qm.diagonal().range(0, info.nwaves());
             d.copyFrom(info.vc(pos), 0);
         }
 
         @Override
-        public void S(int pos, Matrix cm) {
+        public void S(int pos, FastMatrix cm) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
@@ -144,7 +144,7 @@ public class WaveSpecificSurveyErrors3 {
         }
 
         @Override
-        public void T(int pos, Matrix tr) {
+        public void T(int pos, FastMatrix tr) {
             int nw = info.nwaves();
             int k = nw * (info.lag - 1);
             DataBlock d = tr.subDiagonal(k - 1);
@@ -178,7 +178,7 @@ public class WaveSpecificSurveyErrors3 {
         }
 
         @Override
-        public void addV(int pos, Matrix p) {
+        public void addV(int pos, FastMatrix p) {
             DataBlock d = p.diagonal().range(0, info.nwaves());
             d.add(DataBlock.of(info.vc(pos)));
         }
@@ -238,7 +238,7 @@ public class WaveSpecificSurveyErrors3 {
         }
 
         @Override
-        public void diffuseConstraints(Matrix b) {
+        public void diffuseConstraints(FastMatrix b) {
         }
 
         @Override
@@ -246,11 +246,11 @@ public class WaveSpecificSurveyErrors3 {
         }
 
         @Override
-        public void Pi0(Matrix pi0) {
+        public void Pi0(FastMatrix pi0) {
         }
 
         @Override
-        public void Pf0(Matrix pf0) {
+        public void Pf0(FastMatrix pf0) {
             Dynamics dyn = new Dynamics(info);
             dyn.addV(0, pf0);
             for (int i = 1; i < info.nwaves(); ++i) {

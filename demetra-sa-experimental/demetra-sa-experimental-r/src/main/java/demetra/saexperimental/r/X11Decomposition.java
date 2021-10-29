@@ -7,7 +7,6 @@ package demetra.saexperimental.r;
 
 import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
-import demetra.math.matrices.MatrixType;
 import jdplus.math.linearfilters.HendersonFilters;
 import jdplus.math.linearfilters.IFiniteFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
@@ -36,6 +35,7 @@ import jdplus.rkhs.RKHSFilterFactory;
 import jdplus.rkhs.RKHSFilterSpec;
 import jdplus.x11plus.X11SeasonalFiltersFactory;
 import demetra.information.Explorable;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -326,7 +326,7 @@ public class X11Decomposition {
 
     }
     public Results trendX11(double[] data, double period, boolean mul,
-    		DoubleSeq ctrendf, MatrixType ltrendf, String seas0, String seas1, double lsig, double usig) {
+    		DoubleSeq ctrendf, Matrix ltrendf, String seas0, String seas1, double lsig, double usig) {
         int iperiod = (int) period;
         Number P;
         if (Math.abs(period - iperiod) < 1e-9) {

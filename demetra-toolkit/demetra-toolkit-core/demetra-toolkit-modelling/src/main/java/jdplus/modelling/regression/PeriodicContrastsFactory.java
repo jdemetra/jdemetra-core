@@ -20,7 +20,7 @@ import demetra.timeseries.regression.PeriodicContrasts;
 import jdplus.data.DataBlock;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesInterval;
 
 /**
@@ -33,9 +33,9 @@ import demetra.timeseries.TimeSeriesInterval;
  */
 public class PeriodicContrastsFactory implements RegressionVariableFactory<PeriodicContrasts> {
 
-    public static Matrix matrix(PeriodicContrasts var, int length, int start) {
+    public static FastMatrix matrix(PeriodicContrasts var, int length, int start) {
         int period = var.getPeriod();
-        Matrix M = Matrix.make(length, period - 1);
+        FastMatrix M = FastMatrix.make(length, period - 1);
         int lstart = period - start - 1;
         if (lstart < 0) {
             lstart += period;
@@ -59,7 +59,7 @@ public class PeriodicContrastsFactory implements RegressionVariableFactory<Perio
     private PeriodicContrastsFactory(){}
 
     @Override
-    public boolean fill(PeriodicContrasts var, TsPeriod start, Matrix buffer) {
+    public boolean fill(PeriodicContrasts var, TsPeriod start, FastMatrix buffer) {
         int period = var.getPeriod();
         TsPeriod refPeriod = start.withDate(var.getReference());
         long del = start.getId() - refPeriod.getId();
@@ -83,7 +83,7 @@ public class PeriodicContrastsFactory implements RegressionVariableFactory<Perio
     }
 
     @Override
-    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(PeriodicContrasts var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(PeriodicContrasts var, D domain, FastMatrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

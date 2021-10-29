@@ -17,7 +17,7 @@
 package jdplus.tramo;
 
 import nbbrd.design.Development;
-import jdplus.stats.AutoCovariances;
+import demetra.stats.AutoCovariances;
 import jdplus.stats.samples.Sample;
 import jdplus.stats.tests.LjungBox;
 import jdplus.stats.tests.Skewness;

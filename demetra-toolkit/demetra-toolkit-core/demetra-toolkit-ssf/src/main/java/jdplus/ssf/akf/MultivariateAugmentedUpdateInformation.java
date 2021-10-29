@@ -18,7 +18,7 @@ package jdplus.ssf.akf;
 
 import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.LowerTriangularMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.State;
 import jdplus.ssf.multivariate.IMultivariateSsf;
 import jdplus.ssf.multivariate.MultivariateUpdateInformation;
@@ -36,7 +36,7 @@ public class MultivariateAugmentedUpdateInformation extends MultivariateUpdateIn
      * E is the "prediction error" on the diffuse constraints (=(0-Z(t)A(t)) E ~
      * ndiffuse x nvars
      */
-    private final Matrix E;
+    private final FastMatrix E;
 
     /**
      *
@@ -46,10 +46,10 @@ public class MultivariateAugmentedUpdateInformation extends MultivariateUpdateIn
      */
     public MultivariateAugmentedUpdateInformation(final int dim, final int nvars, final int ndiffuse) {
         super(dim, nvars);
-        E = Matrix.make(ndiffuse, nvars);
+        E = FastMatrix.make(ndiffuse, nvars);
     }
 
-    public Matrix E() {
+    public FastMatrix E() {
         return E;
     }
 

@@ -18,7 +18,7 @@ import java.util.Random;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.LowerTriangularMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixFactory;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.modelling.regression.GenericTradingDaysFactory;
@@ -88,9 +88,9 @@ public class OutliersDetectionTest {
         A[55] *= .7;
         DoubleSeq Y = DoubleSeq.of(A);
 
-        Matrix days = Matrix.make(A.length, 7);
+        FastMatrix days = FastMatrix.make(A.length, 7);
         GenericTradingDaysFactory.fillTdMatrix(TsPeriod.monthly(1967, 1), days);
-        Matrix td = GenericTradingDaysFactory.generateContrasts(DayClustering.TD3, days);
+        FastMatrix td = GenericTradingDaysFactory.generateContrasts(DayClustering.TD3, days);
         od.process(Y.log(), td, 12);
         long t1 = System.currentTimeMillis();
         int[] ao = od.getAoPositions();
@@ -124,9 +124,9 @@ public class OutliersDetectionTest {
         A[14] *= 1.3;
         A[55] *= .7;
         DoubleSeq Y = DoubleSeq.of(A);
-        Matrix days = Matrix.make(A.length, 7);
+        FastMatrix days = FastMatrix.make(A.length, 7);
         GenericTradingDaysFactory.fillTdMatrix(TsPeriod.monthly(1967, 1), days);
-        Matrix td = GenericTradingDaysFactory.generateContrasts(DayClustering.TD3, days);
+        FastMatrix td = GenericTradingDaysFactory.generateContrasts(DayClustering.TD3, days);
 
         int[] length = new int[]{60, 120, 180, 240, 300, 336};
         for (int l = 0; l < length.length; ++l) {
@@ -170,7 +170,7 @@ public class OutliersDetectionTest {
                         .build();
                 int period = 4;
 
-                Matrix M = Matrix.make(N, K);
+                FastMatrix M = FastMatrix.make(N, K);
                 double[] SAO = new double[K];
                 double[] SLS = new double[K];
                 double[] SSO = new double[K];
@@ -191,12 +191,12 @@ public class OutliersDetectionTest {
                     double saomax = 0, slsmax = 0, ssomax = 0, smax = 0;
                     for (int i = 4; i < N - 4; ++i) {
                         DataBlock R = DataBlock.of(sd.R(i));
-                        Matrix Rvar = sd.RVariance(i);
+                        FastMatrix Rvar = sd.RVariance(i);
                         double sao = R.get(0) * R.get(0) / Rvar.get(0, 0) / sig2;
                         double sls = R.get(1) * R.get(1) / Rvar.get(1, 1) / sig2;
                         double sso = R.get(3) * R.get(3) / Rvar.get(3, 3) / sig2;
                         int[] sel = new int[]{0, 1, 3};
-                        Matrix S = MatrixFactory.select(Rvar, sel, sel);
+                        FastMatrix S = MatrixFactory.select(Rvar, sel, sel);
                         DataBlock ur = DataBlock.select(R, sel);
                         double sall = 0;
                         try {
@@ -245,7 +245,7 @@ public class OutliersDetectionTest {
         }
     }
 
-    public static BsmData[] randomBsm(BsmSpec spec, int period, Matrix simul) {
+    public static BsmData[] randomBsm(BsmSpec spec, int period, FastMatrix simul) {
         double[] p = new double[spec.getFreeParametersCount()];
         Random rnd = new Random();
         BsmMapping mapping = new BsmMapping(spec, period, null);
@@ -268,7 +268,7 @@ public class OutliersDetectionTest {
 
     private static final RandomNumberGenerator RNG = JdkRNG.newRandom();
 
-    private static boolean forwardstep(BsmData model, DoubleSeq y, Matrix W) {
+    private static boolean forwardstep(BsmData model, DoubleSeq y, FastMatrix W) {
         SsfBsm ssf = SsfBsm.of(model);
         Ssf wssf = W == null ? ssf : RegSsf.ssf(ssf, W);
         SsfData data = new SsfData(y);
@@ -280,7 +280,7 @@ public class OutliersDetectionTest {
         for (int i = 0; i < n; ++i) {
             try {
                 DataBlock R = computer.R(i);
-                Matrix Rvar = computer.Rvar(i);
+                FastMatrix Rvar = computer.Rvar(i);
                 double sao = 0, sls = 0, sall = 0;
                 sao = R.get(0) * R.get(0) / Rvar.get(0, 0) / sig2;
                 if (i > 0) {
@@ -289,7 +289,7 @@ public class OutliersDetectionTest {
                 }
                 double sso = R.get(3) * R.get(3) / Rvar.get(3, 3) / sig2;
                 int[] sel = new int[]{0, 1, 3};
-                Matrix S = MatrixFactory.select(Rvar, sel, sel);
+                FastMatrix S = MatrixFactory.select(Rvar, sel, sel);
                 DataBlock ur = DataBlock.select(R, sel);
                 try {
                     SymmetricMatrix.lcholesky(S, 1e-9);

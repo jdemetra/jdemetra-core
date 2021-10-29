@@ -11,8 +11,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.highfreq.FractionalAirlineDecomposition;
 import demetra.highfreq.FractionalAirlineEstimation;
-import demetra.math.matrices.MatrixType;
 import jdplus.ssf.extractors.SsfUcarimaEstimation;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -47,6 +47,6 @@ public class FractionalAirlineProcessorTest {
     public void testWeeklySsf() {
         FractionalAirlineDecomposition rslt = FractionalAirlineProcessor.decompose(WeeklyData.US_CLAIMS2, new double[]{365.25 / 7}, -1, true, 7,7);
         SsfUcarimaEstimation details = FractionalAirlineProcessor.ssfDetails(rslt);
-        assertTrue(null !=details.getData("smoothing.states", MatrixType.class));
+        assertTrue(null !=details.getData("smoothing.states", Matrix.class));
      }
 }

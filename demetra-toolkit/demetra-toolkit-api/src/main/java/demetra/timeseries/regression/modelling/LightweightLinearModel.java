@@ -20,12 +20,12 @@ import demetra.data.DoubleSeq;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
-import demetra.math.matrices.MatrixType;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.Variable;
 import java.util.List;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -76,7 +76,7 @@ public class LightweightLinearModel{
         @lombok.NonNull
         private DoubleSeq y;
         @lombok.NonNull
-        private MatrixType X;
+        private Matrix X;
 
         /**
          * Regression estimation. The order correspond to the order of the
@@ -86,7 +86,7 @@ public class LightweightLinearModel{
         @lombok.NonNull
         private DoubleSeq coefficients;
         @lombok.NonNull
-        private MatrixType coefficientsCovariance;
+        private Matrix coefficientsCovariance;
 
         @lombok.NonNull
         private MissingValueEstimation[] missing;
@@ -106,9 +106,9 @@ public class LightweightLinearModel{
         public static Builder builder(){
             Builder builder=new Builder();
             builder.y=DoubleSeq.empty();
-            builder.X=MatrixType.empty();
+            builder.X=Matrix.empty();
             builder.coefficients=DoubleSeq.empty();
-            builder.coefficientsCovariance=MatrixType.empty();
+            builder.coefficientsCovariance=Matrix.empty();
             builder.missing=NOMISSING;
             builder.parameters=ParametersEstimation.empty();
             return builder;

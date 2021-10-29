@@ -11,7 +11,7 @@ import demetra.data.AggregationType;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -31,7 +31,7 @@ public class GRPTest {
         DataBlock x = DataBlock.of(Data.IND_PCR);
         GRP grp = new GRP(GrpSpec.DEFAULT, 4, 0);
         double[] rslt = grp.process(x, y);
-        Matrix K4 = Matrix.make(4, 3);
+        FastMatrix K4 = FastMatrix.make(4, 3);
         GRP.K(K4, true);
         double[] mg = GRP.mg(rslt, x.getStorage(), K4);
         //       System.out.println(DoubleSeq.of(rslt));
@@ -50,12 +50,12 @@ public class GRPTest {
 
     @Test
     public void testK() {
-        Matrix K4 = Matrix.make(4, 3);
+        FastMatrix K4 = FastMatrix.make(4, 3);
         GRP.K(K4, true);
-        Matrix XtX = SymmetricMatrix.XtX(K4);
+        FastMatrix XtX = SymmetricMatrix.XtX(K4);
         boolean identity = XtX.isDiagonal(1e-9) && XtX.diagonal().allMatch(x -> Math.abs(x - 1) < 1e-9);
         assertTrue(identity);
-        Matrix K12 = Matrix.make(12, 11);
+        FastMatrix K12 = FastMatrix.make(12, 11);
         GRP.K(K12, true);
         XtX = SymmetricMatrix.XtX(K4);
         identity = XtX.isDiagonal(1e-9) && XtX.diagonal().allMatch(x -> Math.abs(x - 1) < 1e-9);
@@ -81,7 +81,7 @@ public class GRPTest {
         for (int i = 0; i < g.length; ++i) {
             g[i] = GRP.g(i, start, x.getStorage());
         }
-        Matrix K4 = Matrix.make(4, 3);
+        FastMatrix K4 = FastMatrix.make(4, 3);
         GRP.K(K4, true);
         double[] mg = GRP.mg(start, x.getStorage(), K4);
         double[] zx = GRP.Ztx(x.getStorage(), K4, true);
@@ -103,7 +103,7 @@ public class GRPTest {
         MatrixDenton denton = new MatrixDenton(spec, 4, 0);
         double[] start = denton.process(x, y);
 
-        Matrix K = Matrix.make(4, 3);
+        FastMatrix K = FastMatrix.make(4, 3);
         GRP.K(K, true);
         double[] z = GRP.Ztx(start, K, true);
 

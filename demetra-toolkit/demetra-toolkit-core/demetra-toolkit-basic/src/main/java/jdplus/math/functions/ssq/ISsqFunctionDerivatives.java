@@ -20,7 +20,7 @@ package jdplus.math.functions.ssq;
 import nbbrd.design.Development;
 import jdplus.math.functions.IFunctionDerivatives;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * 
@@ -42,6 +42,6 @@ public interface ISsqFunctionDerivatives extends IFunctionDerivatives {
      * the matrix J is n x m and J(i, j) = dE(i)/dp(j)
      * @param matrix
      */
-    void jacobian(Matrix matrix);
+    void jacobian(FastMatrix matrix);
     
 }

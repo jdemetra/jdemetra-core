@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package internal.jdplus.arima;
+package jdplus.arima.estimation;
 
 import jdplus.arima.ArimaException;
 import jdplus.arima.IArimaModel;
@@ -23,7 +23,7 @@ import jdplus.data.DataBlockIterator;
 import nbbrd.design.Development;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.DeterminantalTerm;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import demetra.util.SubArrayOfInt;
 import jdplus.leastsquares.QRSolver;
 import demetra.data.DoubleSeq;
@@ -352,7 +352,7 @@ public class FastKalmanFilter {
      * @return
      */
     public ConcentratedLikelihoodWithMissing process(final DoubleSeq y, final SubArrayOfInt ao,
-            final Matrix x) {
+            final FastMatrix x) {
         fast = false;
         DeterminantalTerm det = new DeterminantalTerm();
         double[] c = c0.clone();
@@ -365,7 +365,7 @@ public class FastKalmanFilter {
         int n = y.length();
         double[] yl = new double[n];
         // double[] xa = new double[nx * dim];
-        Matrix xl = Matrix.make(n, nx);
+        FastMatrix xl = FastMatrix.make(n, nx);
         double[][] A = new double[nx][];
         double[] px = xl.getStorage();
 
@@ -442,7 +442,7 @@ public class FastKalmanFilter {
 
         QRSolution qr = QRSolver.fastLeastSquares(DataBlock.of(yl), xl);
         double ssqerr = qr.getSsqErr();
-        Matrix bvar = qr.unscaledCovariance();
+        FastMatrix bvar = qr.unscaledCovariance();
 
         double ldet = det.getLogDeterminant();
         if (ao != null && !ao.isEmpty()) {

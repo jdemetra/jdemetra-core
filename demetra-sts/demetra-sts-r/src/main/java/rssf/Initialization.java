@@ -5,9 +5,9 @@
  */
 package rssf;
 
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.ISsfInitialization;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -16,7 +16,7 @@ import demetra.math.matrices.MatrixType;
 @lombok.experimental.UtilityClass
 public class Initialization {
     
-    public ISsfInitialization of(double[] a, MatrixType P) {
+    public ISsfInitialization of(double[] a, Matrix P) {
         if (P == null) {
             throw new IllegalArgumentException();
         }
@@ -24,11 +24,11 @@ public class Initialization {
         return jdplus.ssf.Initialization.builder()
                 .dim(P.getRowsCount())
                 .a0(a)
-                .Pf(Matrix.of(P))
+                .Pf(FastMatrix.of(P))
                 .build();
     }
     
-    public ISsfInitialization ofDiffuse(double[] a, Matrix P, Matrix B, Matrix Pi) {
+    public ISsfInitialization ofDiffuse(double[] a, FastMatrix P, FastMatrix B, FastMatrix Pi) {
         if (B == null && Pi == null) {
             return of(a, P);
         }
@@ -39,9 +39,9 @@ public class Initialization {
                 .dim(P.getRowsCount())
                 .diffuseDim(B.getColumnsCount())
                 .a0(a)
-                .Pf(Matrix.of(P))
-                .B(B==null ? null : Matrix.of(B))
-                .Pi(Pi==null ? null : Matrix.of(Pi))
+                .Pf(FastMatrix.of(P))
+                .B(B==null ? null : FastMatrix.of(B))
+                .Pi(Pi==null ? null : FastMatrix.of(Pi))
                 .build();
     }
 }

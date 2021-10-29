@@ -6,14 +6,14 @@
 package rssf;
 
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.implementations.Loading;
 import jdplus.ssf.implementations.TimeInvariantLoading;
 import jdplus.ssf.implementations.TimeInvariantMeasurements;
 import jdplus.ssf.multivariate.ISsfMeasurements;
 import jdplus.ssf.univariate.ISsfMeasurement;
 import jdplus.ssf.univariate.Measurement;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -30,8 +30,8 @@ public class Measurements {
         return new Measurement(new TimeInvariantLoading(DataBlock.of(Z)), var);
     }
 
-    public ISsfMeasurements of(MatrixType Z, MatrixType H) {
-        return new TimeInvariantMeasurements(Matrix.of(Z), Matrix.of(H), null);
+    public ISsfMeasurements of(Matrix Z, Matrix H) {
+        return new TimeInvariantMeasurements(FastMatrix.of(Z), FastMatrix.of(H), null);
     }
 
 }

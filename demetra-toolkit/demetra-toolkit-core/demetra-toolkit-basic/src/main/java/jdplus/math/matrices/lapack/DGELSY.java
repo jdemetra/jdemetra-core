@@ -5,7 +5,7 @@
  */
 package jdplus.math.matrices.lapack;
 
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * DGELSY computes the minimum-norm solution to a real linear least
@@ -19,7 +19,7 @@ import jdplus.math.matrices.Matrix;
 public class DGELSY {
     
     
-    public void apply(Matrix A, Matrix B, int[] pivot, double rcond){
+    public void apply(FastMatrix A, FastMatrix B, int[] pivot, double rcond){
         
     }
     
@@ -94,7 +94,7 @@ public class DGELSY {
 //*>   o The call to the subroutine xGEQPF has been substituted by the
 //*>     the call to the subroutine xGEQP3. This subroutine is a Blas-3
 //*>     version of the QR factorization with column pivoting.
-//*>   o Matrix B (the right hand side) is updated with Blas-3.
+//*>   o FastMatrix B (the right hand side) is updated with Blas-3.
 //*>   o The permutation of matrix B (the right hand side) is faster and
 //*>     more simple.
 //*> \endverbatim
@@ -353,7 +353,7 @@ public class DGELSY {
 //         IASCL = 2
 //      ELSE IF( ANRM.EQ.ZERO ) THEN
 //*
-//*        Matrix all zero. Return zero solution.
+//*        FastMatrix all zero. Return zero solution.
 //*
 //         CALL DLASET( 'F', MAX( M, N ), NRHS, ZERO, ZERO, B, LDB )
 //         RANK = 0

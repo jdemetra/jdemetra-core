@@ -19,7 +19,7 @@ package jdplus.regarima.outlier;
 import jdplus.stats.RobustStandardDeviationComputer;
 import jdplus.arima.IArimaModel;
 import demetra.data.DoubleList;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.regarima.RegArimaModel;
 import jdplus.modelling.regression.IOutlierFactory;
 import demetra.util.TableOfBoolean;
@@ -37,8 +37,8 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
     private double[] weights;
     protected int lbound;
     protected int ubound;
-    protected Matrix T;
-    protected Matrix coef;
+    protected FastMatrix T;
+    protected FastMatrix coef;
     private RegArimaModel<T> regarima;
 
     private TableOfBoolean allowedTable;
@@ -290,8 +290,8 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
     public void prepare(int n) {
         lbound = 0;
         ubound = n;
-        T = Matrix.make(n, factories.length);
-        coef = Matrix.make(n, factories.length);
+        T = FastMatrix.make(n, factories.length);
+        coef = FastMatrix.make(n, factories.length);
         allowedTable = new TableOfBoolean(n, factories.length);
         for (int i = 0; i < factories.length; ++i) {
             IOutlierFactory fac = factories[i];
@@ -382,14 +382,14 @@ public abstract class SingleOutlierDetector<T extends IArimaModel> {
     /**
      * @return the T
      */
-    public Matrix getT() {
+    public FastMatrix getT() {
         return T;
     }
 
     /**
      * @return the coef
      */
-    public Matrix allCoefficients() {
+    public FastMatrix allCoefficients() {
         return coef;
     }
 

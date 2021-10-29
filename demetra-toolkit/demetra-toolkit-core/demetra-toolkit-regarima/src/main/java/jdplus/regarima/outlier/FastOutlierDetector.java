@@ -19,7 +19,7 @@ package jdplus.regarima.outlier;
 import jdplus.stats.RobustStandardDeviationComputer;
 import jdplus.arima.IArimaModel;
 import jdplus.arima.StationaryTransformation;
-import internal.jdplus.arima.FastKalmanFilter;
+import jdplus.arima.estimation.FastKalmanFilter;
 import jdplus.data.DataBlock;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.linearfilters.BackFilter;

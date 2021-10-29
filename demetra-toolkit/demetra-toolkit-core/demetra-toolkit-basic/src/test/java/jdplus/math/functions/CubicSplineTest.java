@@ -19,7 +19,7 @@ package jdplus.math.functions;
 import java.util.Random;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

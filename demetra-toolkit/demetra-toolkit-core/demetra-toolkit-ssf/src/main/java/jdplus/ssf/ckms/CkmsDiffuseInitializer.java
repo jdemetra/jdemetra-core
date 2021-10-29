@@ -29,7 +29,7 @@ import jdplus.ssf.UpdateInformation;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.ISsfLoading;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * Automatic initialization of diffuse time invariant models. The algorithm
@@ -79,7 +79,7 @@ public class CkmsDiffuseInitializer implements CkmsFilter.IFastFilterInitializer
         ISsfDynamics dynamics = ssf.dynamics();
         ISsfLoading loading = ssf.loading();
         ISsfError error = ssf.measurementError();
-        Matrix P = state.P();
+        FastMatrix P = state.P();
         DataBlock k = upd.M();
         double f = loading.ZVZ(0, P);
         if (error != null) {
@@ -93,7 +93,7 @@ public class CkmsDiffuseInitializer implements CkmsFilter.IFastFilterInitializer
         dynamics.TX(0, l);
 
         // L0: computes next iteration. TVT'-KK'*var + Q -V = - L(var)^-1 L'
-        Matrix TVT = P.deepClone();
+        FastMatrix TVT = P.deepClone();
         dynamics.TVT(0, TVT);
         dynamics.addV(0, TVT);
         TVT.sub(P);

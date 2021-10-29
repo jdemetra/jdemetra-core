@@ -19,7 +19,7 @@ package jdplus.math.functions.minpack;
 import jdplus.data.DataBlock;
 import nbbrd.design.Development;
 import jdplus.math.functions.FunctionException;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.matrices.SymmetricMatrix;
 
@@ -114,8 +114,8 @@ public abstract class AbstractEstimator implements IEstimator {
     }
 
     @Override
-    public Matrix covariance(IEstimationProblem problem) {
-        Matrix cur = curvature(problem);
+    public FastMatrix covariance(IEstimationProblem problem) {
+        FastMatrix cur = curvature(problem);
         try {
             return SymmetricMatrix.inverse(cur);
         } catch (MatrixException ex) {
@@ -130,7 +130,7 @@ public abstract class AbstractEstimator implements IEstimator {
      * @return covariance matrix
      */
     @Override
-    public Matrix curvature(IEstimationProblem problem) {
+    public FastMatrix curvature(IEstimationProblem problem) {
 
         // set up the jacobian
         updateJacobian(problem);
@@ -138,8 +138,8 @@ public abstract class AbstractEstimator implements IEstimator {
         // compute transpose(J).J, avoiding building big intermediate matrices
         /*
          * int rows = problem.Measurements.Length; int cols =
-         * problem.AllParameters.Length; int Max = cols * rows; Matrix jTj = new
-         * Matrix(cols, cols); for (int i = 0; i < cols; ++i) { for (int j = i;
+         * problem.AllParameters.Length; int Max = cols * rows; FastMatrix jTj = new
+         * FastMatrix(cols, cols); for (int i = 0; i < cols; ++i) { for (int j = i;
          * j < cols; ++j) { double sum = 0; for (int k = 0; k < Max; k += cols)
          * { sum += m_jacobian[k + i] * m_jacobian[k + j]; } jTj[i, j] = sum;
          * jTj[j, i] = sum; }
@@ -147,7 +147,7 @@ public abstract class AbstractEstimator implements IEstimator {
         int rows = problem.getMeasurementsCount();
         int cols = problem.getParametersCount();
         int Max = cols * rows;
-        Matrix jTj = Matrix.square(cols);
+        FastMatrix jTj = FastMatrix.square(cols);
         for (int i = 0; i < cols; ++i) {
             for (int j = i; j < cols; ++j) {
                 double sum = 0;
@@ -225,7 +225,7 @@ public abstract class AbstractEstimator implements IEstimator {
          * problem.AllParameters.Length; if (m <= p) { throw new
          * FunctionException("no degrees of freedom"); } double[] errors = new
          * double[problem.AllParameters.Length]; double c =
-         * Math.Sqrt(ChiSquare(problem) / (m - p)); Matrix covar =
+         * Math.Sqrt(ChiSquare(problem) / (m - p)); FastMatrix covar =
          * Covariance(problem); RC diag = covar.Diagonal(); for (int i = 0; i <
          * errors.Length; ++i) { errors[i] = Math.Sqrt(diag[i]) * c; } return
          * errors;
@@ -237,7 +237,7 @@ public abstract class AbstractEstimator implements IEstimator {
         }
         double[] errors = new double[p];
         double c = Math.sqrt(chiSquare(problem) / (m - p));
-        Matrix covar = covariance(problem);
+        FastMatrix covar = covariance(problem);
         DataBlock diag = covar.diagonal();
         for (int i = 0; i < errors.length; ++i) {
             errors[i] = Math.sqrt(diag.get(i)) * c;

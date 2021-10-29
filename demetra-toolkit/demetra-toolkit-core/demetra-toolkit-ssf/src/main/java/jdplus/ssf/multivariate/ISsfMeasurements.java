@@ -20,7 +20,7 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.ISsfRoot;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -47,7 +47,7 @@ public interface ISsfMeasurements extends ISsfRoot {
 
 //</editor-fold>
 
-    default void ZM(int pos, Matrix L, Matrix ZL){
+    default void ZM(int pos, FastMatrix L, FastMatrix ZL){
         DataBlockIterator rows = ZL.rowsIterator();
         int r=0;
         while (rows.hasNext())

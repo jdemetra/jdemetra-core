@@ -16,7 +16,6 @@
  */
 package demetra.bridge;
 
-import demetra.math.matrices.MatrixType;
 import demetra.timeseries.*;
 import demetra.tsprovider.*;
 import demetra.tsprovider.util.ObsFormat;
@@ -483,7 +482,7 @@ public class TsConverter {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Matrix">
-    public @NonNull Matrix fromMatrix(@NonNull MatrixType o) {
+    public @NonNull Matrix fromMatrix(demetra.math.matrices.Matrix o) {
         Matrix result = new Matrix(o.getRowsCount(), o.getColumnsCount());
         for (int row = 0; row < o.getRowsCount(); row++) {
             for (int column = 0; column < o.getColumnsCount(); column++) {
@@ -493,8 +492,8 @@ public class TsConverter {
         return result;
     }
 
-    public @NonNull MatrixType toMatrix(@NonNull Matrix o) {
-        MatrixType.Mutable result = MatrixType.Mutable.make(o.getRowsCount(), o.getColumnsCount());
+    public demetra.math.matrices.Matrix toMatrix(@NonNull Matrix o) {
+        demetra.math.matrices.Matrix.Mutable result = demetra.math.matrices.Matrix.Mutable.make(o.getRowsCount(), o.getColumnsCount());
         for (int row = 0; row < o.getRowsCount(); row++) {
             for (int column = 0; column < o.getColumnsCount(); column++) {
                 result.set(row, column, o.get(row, column));

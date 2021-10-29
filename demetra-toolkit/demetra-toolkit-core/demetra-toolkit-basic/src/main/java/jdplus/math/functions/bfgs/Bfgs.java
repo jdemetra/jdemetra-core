@@ -12,7 +12,7 @@ import jdplus.math.matrices.MatrixException;
 import jdplus.math.functions.FunctionException;
 import jdplus.math.functions.IFunction;
 import jdplus.math.functions.IFunctionPoint;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
 import jdplus.math.functions.FunctionMinimizer;
@@ -126,7 +126,7 @@ public class Bfgs implements FunctionMinimizer {
     private IFunctionPoint fcur;
     private double Fmin;
     private double[] btry;
-    private Matrix H;
+    private FastMatrix H;
     private DoubleSeq g;
 
     public Bfgs(BfgsBuilder builder) {
@@ -143,7 +143,7 @@ public class Bfgs implements FunctionMinimizer {
     private void vmmin(DoubleSeq b, IFunction fn) {
         boolean accpoint, enough;
         double[] t, X, c;
-        Matrix B;
+        FastMatrix B;
         int count, funcount, gradcount;
         double f, gradproj;
         int i, j, ilast;
@@ -166,7 +166,7 @@ public class Bfgs implements FunctionMinimizer {
             throw new FunctionException("REPORT must be > 0 (method = \"BFGS\")");
         }
         t = new double[n];
-        B = Matrix.square(n);
+        B = FastMatrix.square(n);
 
         if (!Double.isFinite(f)) {
             throw new FunctionException("initial value in 'vmmin' is not finite");
@@ -321,7 +321,7 @@ public class Bfgs implements FunctionMinimizer {
     }
 
     @Override
-    public Matrix curvatureAtMinimum() {
+    public FastMatrix curvatureAtMinimum() {
         return H;
     }
 

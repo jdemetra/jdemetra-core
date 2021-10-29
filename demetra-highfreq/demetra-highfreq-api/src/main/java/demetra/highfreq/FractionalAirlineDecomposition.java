@@ -7,7 +7,7 @@ package demetra.highfreq;
 
 import demetra.data.DoubleSeq;
 import demetra.likelihood.LikelihoodStatistics;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 import demetra.information.Explorable;
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class FractionalAirlineDecomposition implements Explorable {
     FractionalAirline model;
 
     private DoubleSeq parameters, score;
-    private MatrixType parametersCovariance;
+    private Matrix parametersCovariance;
     
     LikelihoodStatistics likelihood;
     @lombok.Singular

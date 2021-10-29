@@ -17,7 +17,7 @@
 package jdplus.math.matrices.decomposition;
 
 import nbbrd.design.Development;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixWindow;
 
 /**
@@ -39,14 +39,14 @@ public class Householder2 {
     private double[] qr, beta;
     private int m, n; // m=nrows, n=ncols
 
-    public QRDecomposition decompose(final Matrix A) {
+    public QRDecomposition decompose(final FastMatrix A) {
         init(A);
         householder();
-        return new QRDecomposition(Matrix.builder(qr).nrows(m).ncolumns(n).build(),
+        return new QRDecomposition(FastMatrix.builder(qr).nrows(m).ncolumns(n).build(),
                 beta, null);
     }
 
-    private void init(final Matrix A) {
+    private void init(final FastMatrix A) {
         qr = A.toArray();
         m = A.getRowsCount();
         n = A.getColumnsCount();
@@ -56,7 +56,7 @@ public class Householder2 {
     private void householder() {
         int k = Math.min(m, n);
         Reflector hous = new Reflector(qr);
-        Matrix M = Matrix.builder(qr).nrows(m).ncolumns(n).build();
+        FastMatrix M = FastMatrix.builder(qr).nrows(m).ncolumns(n).build();
         MatrixWindow wnd = M.all();
         for (int i = 0, j = 0; i < k; ++i, j += m + 1) {
             hous.set(j, m - i);

@@ -27,7 +27,7 @@ import jdplus.data.LogSign;
 import jdplus.leastsquares.QRSolution;
 import jdplus.leastsquares.QRSolver;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import jdplus.math.matrices.decomposition.QRDecomposition;
 import jdplus.regarima.RegArimaModel;
@@ -108,7 +108,7 @@ public final class ConcentratedLikelihoodComputer {
     public <M extends IArimaModel> ConcentratedLikelihoodWithMissing compute(RegArmaModel<M> dmodel) {
         DoubleSeq dy = dmodel.getY();
         int n = dy.length();
-        Matrix x = dmodel.getX();
+        FastMatrix x = dmodel.getX();
         int nx = x.getColumnsCount();
         ArmaFilter curFilter = filter == null ? new KalmanFilter(nx > 0) : filter;
         int nl = curFilter.prepare(dmodel.getArma(), n);
@@ -120,16 +120,16 @@ public final class ConcentratedLikelihoodComputer {
 
     }
 
-    private <M extends IArimaModel> ConcentratedLikelihoodWithMissing process(ArmaFilter curFilter, DoubleSeq dy, Matrix x, int nl, int nm) {
+    private <M extends IArimaModel> ConcentratedLikelihoodWithMissing process(ArmaFilter curFilter, DoubleSeq dy, FastMatrix x, int nl, int nm) {
 
         DataBlock y = DataBlock.of(dy);
         int n = y.length();
         DataBlock yl = DataBlock.make(nl);
         curFilter.apply(y, yl);
         int nx = x.getColumnsCount();
-        Matrix xl;
+        FastMatrix xl;
         if (nx > 0) {
-            xl = Matrix.make(nl, nx);
+            xl = FastMatrix.make(nl, nx);
             for (int i = 0; i < nx; ++i) {
                 curFilter.apply(x.column(i), xl.column(i));
             }
@@ -170,7 +170,7 @@ public final class ConcentratedLikelihoodComputer {
                     e = ls.getE();
                 }
 
-                Matrix bvar = ls.unscaledCovariance();
+                FastMatrix bvar = ls.unscaledCovariance();
                 DoubleSeq b = ls.getB();
                 cll = ConcentratedLikelihoodWithMissing.builder()
                         .ndata(n)

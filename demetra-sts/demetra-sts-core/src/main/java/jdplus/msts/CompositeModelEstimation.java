@@ -24,7 +24,7 @@ import demetra.ssf.SsfInitialization;
 import java.util.Arrays;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.DataBlockStorage;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.ssf.ISsfLoading;
 
@@ -34,7 +34,7 @@ import jdplus.ssf.ISsfLoading;
  */
 public class CompositeModelEstimation {
 
-    public static CompositeModelEstimation estimationOf(CompositeModel model, Matrix data,
+    public static CompositeModelEstimation estimationOf(CompositeModel model, FastMatrix data,
             boolean marginal, boolean concentrated, SsfInitialization initialization, Optimizer optimizer, double eps, double[] parameters) {
         CompositeModelEstimation rslt = new CompositeModelEstimation();
         rslt.data = data;
@@ -57,7 +57,7 @@ public class CompositeModelEstimation {
         return rslt;
     }
 
-    public static CompositeModelEstimation computationOf(CompositeModel model, Matrix data, DoubleSeq fullParameters, boolean marginal, boolean concentrated) {
+    public static CompositeModelEstimation computationOf(CompositeModel model, FastMatrix data, DoubleSeq fullParameters, boolean marginal, boolean concentrated) {
         CompositeModelEstimation rslt = new CompositeModelEstimation();
         rslt.data = data;
         rslt.fullParameters = fullParameters.toArray();
@@ -80,7 +80,7 @@ public class CompositeModelEstimation {
     private Likelihood likelihood;
     private MultivariateCompositeSsf ssf;
     private int[] cmpPos;
-    private Matrix data;
+    private FastMatrix data;
     private double[] fullParameters, parameters;
     private String[] parametersName, cmpName;
     private StateStorage smoothedStates, filteredStates, filteringStates;
@@ -223,11 +223,11 @@ public class CompositeModelEstimation {
         if (obs >= data.getColumnsCount()) {
             return null;
         }
-        Matrix L = loading(obs, cmps);
+        FastMatrix L = loading(obs, cmps);
         return signal(L);
     }
 
-    public DoubleSeq signal(Matrix L) {
+    public DoubleSeq signal(FastMatrix L) {
         double[] x = new double[data.getRowsCount()];
         L.rowsIterator();
         DataBlockIterator rows = L.rowsIterator();
@@ -240,8 +240,8 @@ public class CompositeModelEstimation {
         return DoubleSeq.of(x);
     }
 
-    public Matrix loading(int obs, int[] cmps) {
-        Matrix L = Matrix.make(data.getRowsCount(), ssf.getStateDim());
+    public FastMatrix loading(int obs, int[] cmps) {
+        FastMatrix L = FastMatrix.make(data.getRowsCount(), ssf.getStateDim());
         ISsfLoading l = ssf.loading(obs);
         DataBlockIterator rows = L.rowsIterator();
         int pos = 0;
@@ -266,11 +266,11 @@ public class CompositeModelEstimation {
         if (obs >= data.getColumnsCount()) {
             return null;
         }
-        Matrix L = loading(obs, cmps);
+        FastMatrix L = loading(obs, cmps);
         return stdevSignal(L);
     }
 
-    public DoubleSeq stdevSignal(Matrix L) {
+    public DoubleSeq stdevSignal(FastMatrix L) {
         double[] x = new double[data.getRowsCount()];
         L.rowsIterator();
         DataBlockIterator rows = L.rowsIterator();
@@ -314,7 +314,7 @@ public class CompositeModelEstimation {
     /**
      * @return the data
      */
-    public Matrix getData() {
+    public FastMatrix getData() {
         return data;
     }
 

@@ -13,7 +13,7 @@ import java.util.Random;
 import jdplus.data.DataBlock;
 import jdplus.leastsquares.QRSolution;
 import jdplus.leastsquares.QRSolver;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -29,7 +29,7 @@ public class HouseholderWithPivotingTest {
     @Test
     public void testRandom() {
         int M = 10, N = 3;
-        Matrix A = Matrix.make(M, N);
+        FastMatrix A = FastMatrix.make(M, N);
         Random rnd = new Random(0);
         A.set((i, j) -> rnd.nextDouble());
 
@@ -45,7 +45,7 @@ public class HouseholderWithPivotingTest {
     @Test
     public void testSingular() {
         int M = 100, N = 10;
-        Matrix A = Matrix.make(M, N);
+        FastMatrix A = FastMatrix.make(M, N);
         Random rnd = new Random(0);
         A.set((i, j) -> rnd.nextDouble());
 
@@ -67,7 +67,7 @@ public class HouseholderWithPivotingTest {
 
     public static void testFilip() {
         double[] y = DataSets.Filip.y;
-        Matrix M = Matrix.make(y.length, 11);
+        FastMatrix M = FastMatrix.make(y.length, 11);
         DataBlock x = DataBlock.of(DataSets.Filip.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -96,7 +96,7 @@ public class HouseholderWithPivotingTest {
 
     public static void testWampler3() {
         double[] y = DataSets.Wampler3.y;
-        Matrix M = Matrix.make(y.length, 6);
+        FastMatrix M = FastMatrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler3.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -120,7 +120,7 @@ public class HouseholderWithPivotingTest {
 
     public static void testWampler4() {
         double[] y = DataSets.Wampler4.y;
-        Matrix M = Matrix.make(y.length, 6);
+        FastMatrix M = FastMatrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler4.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -144,7 +144,7 @@ public class HouseholderWithPivotingTest {
 
     public static void testWampler5() {
         double[] y = DataSets.Wampler5.y;
-        Matrix M = Matrix.make(y.length, 6);
+        FastMatrix M = FastMatrix.make(y.length, 6);
         DataBlock x = DataBlock.of(DataSets.Wampler5.x);
         M.column(0).set(1);
         M.column(1).copy(x);
@@ -176,7 +176,7 @@ public class HouseholderWithPivotingTest {
 
     public static void stressTest() {
         int M = 300, N = 20, K = 100000;
-        Matrix A = Matrix.make(M, N);
+        FastMatrix A = FastMatrix.make(M, N);
         Random rnd = new Random(0);
         A.set((i, j) -> rnd.nextDouble());
 

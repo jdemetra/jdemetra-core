@@ -22,7 +22,6 @@ import demetra.data.Iterables;
 import demetra.likelihood.DiffuseLikelihoodStatistics;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.ParametersEstimation;
-import demetra.math.matrices.MatrixType;
 import demetra.modelling.io.protobuf.ModellingProtos;
 import demetra.stats.OneWayAnova;
 import demetra.stats.StatisticalTest;
@@ -37,6 +36,7 @@ import java.util.List;
 import jdplus.arima.IArimaModel;
 import jdplus.stats.tests.NiidTests;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -280,7 +280,7 @@ public class ToolkitProtosUtility {
                 .build();
     }
 
-    public ToolkitProtos.Matrix convert(MatrixType m) {
+    public ToolkitProtos.Matrix convert(Matrix m) {
         if (m == null || m.isEmpty()) {
             return ToolkitProtos.Matrix.getDefaultInstance();
         }

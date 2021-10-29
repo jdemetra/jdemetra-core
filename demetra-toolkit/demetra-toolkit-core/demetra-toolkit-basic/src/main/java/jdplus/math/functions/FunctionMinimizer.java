@@ -18,7 +18,7 @@
 package jdplus.math.functions;
 
 import nbbrd.design.Development;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import demetra.data.DoubleSeq;
 
 
@@ -48,7 +48,7 @@ public interface FunctionMinimizer {
      * 
      * @return
      */
-    Matrix curvatureAtMinimum();
+    FastMatrix curvatureAtMinimum();
     
     DoubleSeq gradientAtMinimum();
 

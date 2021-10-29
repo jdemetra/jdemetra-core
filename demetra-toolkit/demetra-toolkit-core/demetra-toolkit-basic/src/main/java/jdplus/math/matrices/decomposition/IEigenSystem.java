@@ -18,7 +18,7 @@
 package jdplus.math.matrices.decomposition;
 
 import demetra.math.Complex;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 
 /**
@@ -72,7 +72,7 @@ public interface IEigenSystem {
      *
      * @return
      */
-    Matrix getEigenVectors();
+    FastMatrix getEigenVectors();
 
     /**
      * The method returns the first n eigenvectors as an IMatrix. Each eigenvector takes a column of the
@@ -81,7 +81,7 @@ public interface IEigenSystem {
      * @param n
      * @return
      */
-    Matrix getEigenVectors(int n);
+    FastMatrix getEigenVectors(int n);
     /// <summary>
     /// The property sets/gets the treshold for small values
     /// </summary>

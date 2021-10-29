@@ -14,7 +14,7 @@ import java.util.function.DoubleUnaryOperator;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @Development(status = Development.Status.Release)
-class LightMutableMatrix implements MatrixType.Mutable{
+class LightMutableMatrix implements Matrix.Mutable{
 
     private final double[] storage;
     private final int nrows, ncolumns;
@@ -112,7 +112,7 @@ class LightMutableMatrix implements MatrixType.Mutable{
 
     @Override
     public String toString(){
-        return MatrixType.format(this);
+        return Matrix.format(this);
     }
     
 }

@@ -18,7 +18,7 @@ package jdplus.ssf.dk;
 
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.GeneralMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.univariate.ISmoothingResults;
@@ -113,9 +113,9 @@ public class DiffuseSmoother extends BaseDiffuseSmoother {
             tmp0 = DataBlock.make(dim);
             tmp1 = DataBlock.make(dim);
             Z = DataBlock.make(dim);
-            N0 = Matrix.square(dim);
-            N1 = Matrix.square(dim);
-            N2 = Matrix.square(dim);
+            N0 = FastMatrix.square(dim);
+            N1 = FastMatrix.square(dim);
+            N2 = FastMatrix.square(dim);
         }
     }
 
@@ -162,12 +162,12 @@ public class DiffuseSmoother extends BaseDiffuseSmoother {
 
     @Override
     protected void updateP(int pos) {
-        Matrix P = state.P();
-        Matrix PN0P = SymmetricMatrix.XtSX(N0, P);
-        Matrix Pi = state.Pi();
-        Matrix PN2P = SymmetricMatrix.XtSX(N2, Pi);
-        Matrix PN1 = GeneralMatrix.AB(P, N1);
-        Matrix PN1Pi = GeneralMatrix.AB(PN1, Pi);
+        FastMatrix P = state.P();
+        FastMatrix PN0P = SymmetricMatrix.XtSX(N0, P);
+        FastMatrix Pi = state.Pi();
+        FastMatrix PN2P = SymmetricMatrix.XtSX(N2, Pi);
+        FastMatrix PN1 = GeneralMatrix.AB(P, N1);
+        FastMatrix PN1Pi = GeneralMatrix.AB(PN1, Pi);
         P.sub(PN0P);
         P.sub(PN2P);
         P.sub(PN1Pi);

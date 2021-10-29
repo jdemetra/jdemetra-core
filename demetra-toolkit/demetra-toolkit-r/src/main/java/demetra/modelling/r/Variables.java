@@ -5,7 +5,6 @@
  */
 package demetra.modelling.r;
 
-import demetra.math.matrices.MatrixType;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.Calendar;
@@ -31,11 +30,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.GenericTradingDaysFactory;
 import jdplus.modelling.regression.HolidaysCorrectionFactory;
 import jdplus.modelling.regression.Regression;
 import jdplus.modelling.regression.TrigonometricVariablesFactory;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -44,72 +44,72 @@ import jdplus.modelling.regression.TrigonometricVariablesFactory;
 @lombok.experimental.UtilityClass
 public class Variables {
 
-    public MatrixType td(TsDomain domain, int[] groups, boolean contrasts) {
+    public Matrix td(TsDomain domain, int[] groups, boolean contrasts) {
         DayClustering dc = DayClustering.of(groups);
         if (contrasts) {
             GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-            Matrix m = Matrix.make(domain.getLength(), dc.getGroupsCount() - 1);
+            FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount() - 1);
             GenericTradingDaysFactory.FACTORY.fill(gtd, domain.getStartPeriod(), m);
             return m.unmodifiable();
         } else {
             GenericTradingDays gtd = GenericTradingDays.raw(dc);
-            Matrix m = Matrix.make(domain.getLength(), dc.getGroupsCount());
+            FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount());
             GenericTradingDaysFactory.FACTORY.fill(gtd, domain.getStartPeriod(), m);
             return m.unmodifiable();
         }
     }
 
-    public MatrixType htd(Calendar calendar, TsDomain domain, int[] groups, boolean contrasts) {
+    public Matrix htd(Calendar calendar, TsDomain domain, int[] groups, boolean contrasts) {
         DayClustering dc = DayClustering.of(groups);
         if (contrasts) {
             HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(calendar, true);
             GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
             HolidaysCorrectedTradingDays htd = new HolidaysCorrectedTradingDays(gtd, corrector);
-            Matrix m = Matrix.make(domain.getLength(), dc.getGroupsCount() - 1);
+            FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount() - 1);
             HolidaysCorrectionFactory.FACTORY.fill(htd, domain.getStartPeriod(), m);
             return m.unmodifiable();
         } else {
             HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(calendar, false);
             GenericTradingDays gtd = GenericTradingDays.raw(dc);
             HolidaysCorrectedTradingDays htd = new HolidaysCorrectedTradingDays(gtd, corrector);
-            Matrix m = Matrix.make(domain.getLength(), dc.getGroupsCount());
+            FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount());
             HolidaysCorrectionFactory.FACTORY.fill(htd, domain.getStartPeriod(), m);
             return m.unmodifiable();
         }
     }
-    public MatrixType htd(Calendar calendar, TsDomain domain, int[] groups, boolean contrasts, boolean meanCorrection) {
+    public Matrix htd(Calendar calendar, TsDomain domain, int[] groups, boolean contrasts, boolean meanCorrection) {
         DayClustering dc = DayClustering.of(groups);
         if (contrasts) {
             HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(calendar, meanCorrection);
             GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
             HolidaysCorrectedTradingDays htd = new HolidaysCorrectedTradingDays(gtd, corrector);
-            Matrix m = Matrix.make(domain.getLength(), dc.getGroupsCount() - 1);
+            FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount() - 1);
             HolidaysCorrectionFactory.FACTORY.fill(htd, domain.getStartPeriod(), m);
             return m.unmodifiable();
         } else {
             HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(calendar, meanCorrection);
             GenericTradingDays gtd = GenericTradingDays.raw(dc);
             HolidaysCorrectedTradingDays htd = new HolidaysCorrectedTradingDays(gtd, corrector);
-            Matrix m = Matrix.make(domain.getLength(), dc.getGroupsCount());
+            FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount());
             HolidaysCorrectionFactory.FACTORY.fill(htd, domain.getStartPeriod(), m);
             return m.unmodifiable();
         }
     }
 
-    public MatrixType htd(ModellingContext ctxt, String name, TsDomain domain, int[] groups, boolean contrasts, boolean meanCorrection) {
+    public Matrix htd(ModellingContext ctxt, String name, TsDomain domain, int[] groups, boolean contrasts, boolean meanCorrection) {
         DayClustering dc = DayClustering.of(groups);
         if (contrasts) {
             HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(name, ctxt.getCalendars(), meanCorrection);
             GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
             HolidaysCorrectedTradingDays htd = new HolidaysCorrectedTradingDays(gtd, corrector);
-            Matrix m = Matrix.make(domain.getLength(), dc.getGroupsCount() - 1);
+            FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount() - 1);
             HolidaysCorrectionFactory.FACTORY.fill(htd, domain.getStartPeriod(), m);
             return m.unmodifiable();
         } else {
             HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(name, ctxt.getCalendars(), meanCorrection);
             GenericTradingDays gtd = GenericTradingDays.raw(dc);
             HolidaysCorrectedTradingDays htd = new HolidaysCorrectedTradingDays(gtd, corrector);
-            Matrix m = Matrix.make(domain.getLength(), dc.getGroupsCount());
+            FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount());
             HolidaysCorrectionFactory.FACTORY.fill(htd, domain.getStartPeriod(), m);
             return m.unmodifiable();
         }
@@ -220,22 +220,22 @@ public class Variables {
         return ramp(domain, domain.get(start).start(), domain.get(end).start());
     }
 
-    public Matrix stockTradingDays(TsDomain domain, int w) {
+    public FastMatrix stockTradingDays(TsDomain domain, int w) {
         StockTradingDays std = new StockTradingDays(w);
         return Regression.matrix(domain, std);
     }
 
-    public Matrix periodicDummies(TsDomain domain) {
+    public FastMatrix periodicDummies(TsDomain domain) {
         PeriodicDummies var = new PeriodicDummies(domain.getAnnualFrequency());
         return Regression.matrix(domain, var);
     }
 
-    public Matrix periodicContrasts(TsDomain domain) {
+    public FastMatrix periodicContrasts(TsDomain domain) {
         PeriodicContrasts var = new PeriodicContrasts(domain.getAnnualFrequency());
         return Regression.matrix(domain, var);
     }
 
-    public Matrix trigonometricVariables(TsDomain domain, int[] seasonal) {
+    public FastMatrix trigonometricVariables(TsDomain domain, int[] seasonal) {
         TrigonometricVariables var;
         if (seasonal == null) {
             var = TrigonometricVariables.regular(domain.getAnnualFrequency());
@@ -245,7 +245,7 @@ public class Variables {
         return Regression.matrix(domain, var);
     }
     
-    public Matrix trigonometricVariables(TsDomain domain, int[] seasonal, String reference) {
+    public FastMatrix trigonometricVariables(TsDomain domain, int[] seasonal, String reference) {
         LocalDate ref = LocalDate.parse(reference, DateTimeFormatter.ISO_DATE);
         TrigonometricVariables var;
         if (seasonal == null) {
@@ -256,7 +256,7 @@ public class Variables {
         return Regression.matrix(domain, var);
     }
 
-    public Matrix trigonometricVariables(double[] freq, int length, int start) {
+    public FastMatrix trigonometricVariables(double[] freq, int length, int start) {
         TrigonometricVariables var = new TrigonometricVariables(freq, TsPeriod.DEFAULT_EPOCH);
         return TrigonometricVariablesFactory.matrix(var, length, start);
     }

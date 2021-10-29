@@ -17,19 +17,19 @@
 
 package demetra.toolkit.io.xml.information;
 
-import demetra.math.matrices.MatrixType;
 import demetra.toolkit.io.xml.legacy.IXmlConverter;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlType;
+import demetra.math.matrices.Matrix;
 
 /**
  *
  * @author Jean Palate
  */
 @XmlType(name = XmlMatrix.NAME)
-public class XmlMatrix implements IXmlConverter<MatrixType> {
+public class XmlMatrix implements IXmlConverter<Matrix> {
 
     static final String NAME = "matrixType";
     
@@ -44,12 +44,12 @@ public class XmlMatrix implements IXmlConverter<MatrixType> {
     public double[] data;
 
     @Override
-    public MatrixType create() {
-        return MatrixType.of(data, nrows, ncolumns);
+    public Matrix create() {
+        return Matrix.of(data, nrows, ncolumns);
     }
 
     @Override
-    public void copy(MatrixType t) {
+    public void copy(Matrix t) {
         nrows=t.getRowsCount();
         ncolumns=t.getColumnsCount();
         data=t.toArray();

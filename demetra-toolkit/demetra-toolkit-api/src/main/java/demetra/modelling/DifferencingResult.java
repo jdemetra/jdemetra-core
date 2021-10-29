@@ -1,30 +1,32 @@
 /*
-* Copyright 2013 National Bank of Belgium
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
-* by the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
+ * Copyright 2020 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
-package jdplus.modelling;
+package demetra.modelling;
 
-import jdplus.stats.AutoCovariances;
-import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
+import demetra.stats.AutoCovariances;
+import java.util.function.IntToDoubleFunction;
 
 /**
  *
- * @author Jean Palate
+ * @author palatej
  */
-public class DifferencingResults {
+@lombok.Getter
+@lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+public class DifferencingResult {
 
     private static boolean checkStationarity(DoubleSeq data, int period) {
         IntToDoubleFunction cov = AutoCovariances.autoCovarianceFunction(data, 0);
@@ -60,34 +62,27 @@ public class DifferencingResults {
      * differencing order is automatically identified)
      * @return
      */
-    public static DifferencingResults of(DoubleSeq input, int period, int delta, boolean mean) {
+    public static DifferencingResult of(DoubleSeq input, int period, int delta, boolean mean) {
         if (delta < 0) {
             DoubleSeq del = input.delta(1, 1);
             del = del.removeMean();
             if (!checkStationarity(del, period)) {
                 del = del.delta(1, 1);
-                return new DifferencingResults(input, del, false);
+                return new DifferencingResult(input, del, false);
             } else {
-                return new DifferencingResults(input, del, true);
+                return new DifferencingResult(input, del, true);
             }
         } else {
             DoubleSeq del = input.delta(1, delta);
             if (mean) {
                 del = del.removeMean();
             }
-            return new DifferencingResults(input, del, mean);
+            return new DifferencingResult(input, del, mean);
         }
     }
-
     private final DoubleSeq original;
     private final DoubleSeq differenced;
-    private final boolean mean;
-
-    private DifferencingResults(DoubleSeq orig, DoubleSeq diff, boolean mean) {
-        original = orig;
-        differenced = diff;
-        this.mean = mean;
-    }
+    private final boolean meanCorrection;
 
     public int getDifferencingOrder() {
         return original.length() - differenced.length();
@@ -97,24 +92,4 @@ public class DifferencingResults {
         return original.drop(getDifferencingOrder(), 0);
     }
 
-    /**
-     * @return the original
-     */
-    public DoubleSeq getOriginal() {
-        return original;
-    }
-
-    /**
-     * @return the differenced
-     */
-    public DoubleSeq getDifferenced() {
-        return differenced;
-    }
-
-    /**
-     * @return the mean
-     */
-    public boolean isMean() {
-        return mean;
-    }
 }

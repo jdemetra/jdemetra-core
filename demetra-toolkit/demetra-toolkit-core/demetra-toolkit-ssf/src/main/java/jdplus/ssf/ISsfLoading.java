@@ -17,7 +17,7 @@
 package jdplus.ssf;
 
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -52,7 +52,7 @@ public interface ISsfLoading extends ISsfRoot {
      * @param m
      * @param zm 
      */
-    default void ZM(int pos, Matrix m, DataBlock zm) {
+    default void ZM(int pos, FastMatrix m, DataBlock zm) {
         zm.set(m.columnsIterator(), x->ZX(pos, x));
     }
 
@@ -62,17 +62,17 @@ public interface ISsfLoading extends ISsfRoot {
      * @param m
      * @param zm 
      */
-    default void MZt(int pos, Matrix m, DataBlock zm) {
+    default void MZt(int pos, FastMatrix m, DataBlock zm) {
         zm.set(m.rowsIterator(), x->ZX(pos, x));
     }
     /**
      * Computes Z(pos) * V * Z'(pos)
      *
      * @param pos
-     * @param V Matrix (statedim x statedim)
+     * @param V FastMatrix (statedim x statedim)
      * @return
      */
-    double ZVZ(int pos, Matrix V);
+    double ZVZ(int pos, FastMatrix V);
 
 //</editor-fold>    
 //<editor-fold defaultstate="collapsed" desc="backward operations">
@@ -82,7 +82,7 @@ public interface ISsfLoading extends ISsfRoot {
      * @param V
      * @param d
      */
-    void VpZdZ(int pos, Matrix V, double d);
+    void VpZdZ(int pos, FastMatrix V, double d);
 
     /**
      * Computes x = x + Z * D

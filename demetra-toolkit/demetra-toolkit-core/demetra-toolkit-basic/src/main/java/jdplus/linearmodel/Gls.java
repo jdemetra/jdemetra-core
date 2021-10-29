@@ -23,7 +23,7 @@ import jdplus.data.LogSign;
 import jdplus.leastsquares.QRSolution;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.leastsquares.QRSolver;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -34,20 +34,20 @@ public class Gls {
     public Gls() {
     }
 
-    public LeastSquaresResults compute(LinearModel model, Matrix cov) {
+    public LeastSquaresResults compute(LinearModel model, FastMatrix cov) {
 
-        Matrix L = cov.deepClone();
+        FastMatrix L = cov.deepClone();
         try {
             SymmetricMatrix.lcholesky(L);
         // yl = L^-1*y <-> L*yl = y
         DataBlock yl = DataBlock.of(model.getY());
         LowerTriangularMatrix.solveLx(L, yl);
 
-        Matrix xl = model.variables();
+        FastMatrix xl = model.variables();
         LowerTriangularMatrix.solveLX(L, xl);
 
         QRSolution solution = QRSolver.robustLeastSquares(yl, xl);
-         Matrix bvar = solution.unscaledCovariance();
+         FastMatrix bvar = solution.unscaledCovariance();
         return LeastSquaresResults.builder(yl, xl)
                 .mean(model.isMeanCorrection())
                 .estimation(solution.getB(), bvar)

@@ -35,7 +35,7 @@ import nbbrd.design.Development;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder")
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class SarimaModel implements ISarimaModel {
-
+    
     /**
      * Period of the seasonal model
      */

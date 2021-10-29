@@ -19,7 +19,7 @@ package jdplus.ssf.likelihood;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
 import jdplus.likelihood.Likelihood;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -46,7 +46,7 @@ public class ProfileLikelihood implements Likelihood {
     ldet;
     private int n;
     private DataBlock b;
-    private Matrix varB;
+    private FastMatrix varB;
 
     /**
      *
@@ -140,7 +140,7 @@ public class ProfileLikelihood implements Likelihood {
      * @param n The number of observations
      * @return
      */
-    public boolean set(final double ssqerr, final double ldet, final DataBlock b, final Matrix varB,
+    public boolean set(final double ssqerr, final double ldet, final DataBlock b, final FastMatrix varB,
             final int n) {
         this.ssqerr = ssqerr;
         this.ldet = ldet;
@@ -169,7 +169,7 @@ public class ProfileLikelihood implements Likelihood {
         return b;
     }
 
-    public Matrix getVarianceOfDiffuseEffects() {
+    public FastMatrix getVarianceOfDiffuseEffects() {
         return varB;
     }
 

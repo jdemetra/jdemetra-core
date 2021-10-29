@@ -39,9 +39,9 @@ public class SymmetricMatrix {
             fallback = Cholesky.class)
     public static interface CholeskyProcessor {
 
-        void lcholesky(Matrix L, double zero);
+        void lcholesky(FastMatrix L, double zero);
 
-        void ucholesky(Matrix U, double zero);
+        void ucholesky(FastMatrix U, double zero);
 
         /**
          * Lower cholesky. The upper part of L is not referenced (neither used
@@ -49,11 +49,11 @@ public class SymmetricMatrix {
          *
          * @param L in/out matrix
          */
-        default void lcholesky(Matrix L) {
+        default void lcholesky(FastMatrix L) {
             lcholesky(L, 0);
         }
 
-        default void ucholesky(Matrix U) {
+        default void ucholesky(FastMatrix U) {
             ucholesky(U, 0);
         }
     }
@@ -64,7 +64,7 @@ public class SymmetricMatrix {
      * @param S The square matrix. Symmetric on exit
      * @param rng The random number generator
      */
-    public void randomize(Matrix S, RandomNumberGenerator rng) {
+    public void randomize(FastMatrix S, RandomNumberGenerator rng) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -92,7 +92,7 @@ public class SymmetricMatrix {
      * @param zero
      * @exception MatrixException
      */
-    public void lcholesky(Matrix L, double zero) {
+    public void lcholesky(FastMatrix L, double zero) {
         CHOLESKY.get().lcholesky(L, zero);
     }
 
@@ -104,19 +104,19 @@ public class SymmetricMatrix {
      * @param L
      * @exception MatrixException
      */
-    public void lcholesky(final Matrix L) {
+    public void lcholesky(final FastMatrix L) {
         CHOLESKY.get().lcholesky(L, 0);
     }
 
-    public void ucholesky(Matrix M, double zero) {
+    public void ucholesky(FastMatrix M, double zero) {
         CHOLESKY.get().ucholesky(M, zero);
     }
 
-    public void ucholesky(final Matrix M) {
+    public void ucholesky(final FastMatrix M) {
         CHOLESKY.get().ucholesky(M, 0);
     }
 
-    public void LLt(Matrix L, Matrix M) {
+    public void LLt(FastMatrix L, FastMatrix M) {
         int nr = L.getRowsCount(), nc = L.getColumnsCount(), lcinc = L.getColumnIncrement();
         int mcinc = M.getColumnIncrement();
         double[] pl = L.getStorage(), pm = M.getStorage();
@@ -135,7 +135,7 @@ public class SymmetricMatrix {
         }
     }
 
-    public void UUt(Matrix U, Matrix M) {
+    public void UUt(FastMatrix U, FastMatrix M) {
         int nr = U.getRowsCount(), nc = U.getColumnsCount(), lcinc = U.getColumnIncrement();
         int mcinc = M.getColumnIncrement();
         double[] pl = U.getStorage(), pm = M.getStorage();
@@ -155,7 +155,7 @@ public class SymmetricMatrix {
         }
     }
 
-    public void LtL(Matrix L, Matrix M) {
+    public void LtL(FastMatrix L, FastMatrix M) {
         int n = L.getRowsCount();
         double[] pl = L.getStorage(), pm = M.getStorage();
         for (int r = 0, mpos = 0, x0 = 0, x1 = n; r < n; ++r, x0 += n, x1 += n) {
@@ -171,7 +171,7 @@ public class SymmetricMatrix {
         fromLower(M);
     }
 
-    public void UtU(Matrix U, Matrix M) {
+    public void UtU(FastMatrix U, FastMatrix M) {
         int n = U.getRowsCount();
         double[] pu = U.getStorage(), pm = M.getStorage();
         for (int r = 0, mpos = 0, x0 = 0; r < n; ++r, x0 += n) {
@@ -188,15 +188,15 @@ public class SymmetricMatrix {
 
     }
 
-    public Matrix inverse(Matrix S) {
+    public FastMatrix inverse(FastMatrix S) {
         try {
-            Matrix lower = S.deepClone();
+            FastMatrix lower = S.deepClone();
             lcholesky(lower);
             lower = LowerTriangularMatrix.inverse(lower);
             return LtL(lower);
         } catch (MatrixException e) {
             LUDecomposition lu = CroutDoolittle.decompose(S);
-            Matrix I = Matrix.identity(S.getRowsCount());
+            FastMatrix I = FastMatrix.identity(S.getRowsCount());
             lu.solve(I);
             return I;
         }
@@ -207,15 +207,15 @@ public class SymmetricMatrix {
      * @param S A symmetric matrix. On exit, it contains the cholesky factor
      * @param y On entry y; on exit x
      */
-    public void solve(final Matrix S, DataBlock y){
+    public void solve(final FastMatrix S, DataBlock y){
         lcholesky(S);
         LowerTriangularMatrix.solveLx(S, y);
         LowerTriangularMatrix.solvexL(S, y);
     }
 
-    public Matrix XXt(final Matrix X) {
+    public FastMatrix XXt(final FastMatrix X) {
         int nr = X.getRowsCount();
-        Matrix S = Matrix.square(nr);
+        FastMatrix S = FastMatrix.square(nr);
         double[] sx = S.getStorage();
         double[] px = X.getStorage();
         int xmax = px.length;
@@ -238,9 +238,9 @@ public class SymmetricMatrix {
         return S;
     }
 
-    public Matrix XtX(final Matrix X) {
+    public FastMatrix XtX(final FastMatrix X) {
         int nr = X.getRowsCount(), nc = X.getColumnsCount();
-        Matrix M = Matrix.square(nc);
+        FastMatrix M = FastMatrix.square(nc);
         double[] px = X.getStorage(), pm = M.getStorage();
         int xstart = X.getStartPosition(), xinc = X.getColumnIncrement();
         int xmax = xstart + xinc * nc;
@@ -258,26 +258,26 @@ public class SymmetricMatrix {
         return M;
     }
 
-    public Matrix UUt(final Matrix U) {
-        Matrix M = Matrix.square(U.getColumnsCount());
+    public FastMatrix UUt(final FastMatrix U) {
+        FastMatrix M = FastMatrix.square(U.getColumnsCount());
         UUt(U, M);
         return M;
     }
 
-    public Matrix LLt(final Matrix L) {
-        Matrix M = Matrix.square(L.getRowsCount());
+    public FastMatrix LLt(final FastMatrix L) {
+        FastMatrix M = FastMatrix.square(L.getRowsCount());
         LLt(L, M);
         return M;
     }
 
-    public Matrix UtU(final Matrix U) {
-        Matrix M = Matrix.square(U.getColumnsCount());
+    public FastMatrix UtU(final FastMatrix U) {
+        FastMatrix M = FastMatrix.square(U.getColumnsCount());
         UtU(U, M);
         return M;
     }
 
-    public Matrix LtL(final Matrix L) {
-        Matrix M = Matrix.square(L.getColumnsCount());
+    public FastMatrix LtL(final FastMatrix L) {
+        FastMatrix M = FastMatrix.square(L.getColumnsCount());
         LtL(L, M);
         return M;
     }
@@ -289,14 +289,14 @@ public class SymmetricMatrix {
      * @param S
      * @return
      */
-    public Matrix XSXt(final Matrix S, final Matrix X) {
-        Matrix XSX = Matrix.square(X.getRowsCount());
+    public FastMatrix XSXt(final FastMatrix S, final FastMatrix X) {
+        FastMatrix XSX = FastMatrix.square(X.getRowsCount());
         XSXt(S, X, XSX);
         return XSX;
     }
 
-    public void XSXt(final Matrix S, final Matrix X, final Matrix M) {
-        Matrix XS = GeneralMatrix.AB(X, S);
+    public void XSXt(final FastMatrix S, final FastMatrix X, final FastMatrix M) {
+        FastMatrix XS = GeneralMatrix.AB(X, S);
         DataBlockIterator xsrows = XS.rowsIterator(), xtcols = X.rowsIterator(), mcols = M.columnsIterator();
         int c = 0;
         while (xtcols.hasNext()) {
@@ -319,15 +319,15 @@ public class SymmetricMatrix {
      * @param S
      * @return
      */
-    public Matrix XtSX(final Matrix S, final Matrix X) {
+    public FastMatrix XtSX(final FastMatrix S, final FastMatrix X) {
         int n = X.getColumnsCount();
-        Matrix M = Matrix.square(n);
+        FastMatrix M = FastMatrix.square(n);
         XtSX(S, X, M);
         return M;
     }
 
-    public void XtSX(Matrix S, Matrix X, Matrix M) {
-        Matrix SX = GeneralMatrix.AB(S, X);
+    public void XtSX(FastMatrix S, FastMatrix X, FastMatrix M) {
+        FastMatrix SX = GeneralMatrix.AB(S, X);
         DataBlockIterator sxcols = SX.columnsIterator(), xtrows = X.columnsIterator(), mcols = M.columnsIterator();
         int c = 0;
         while (sxcols.hasNext()) {
@@ -343,7 +343,7 @@ public class SymmetricMatrix {
         fromLower(M);
     }
 
-    public void reenforceSymmetry(Matrix S) {
+    public void reenforceSymmetry(FastMatrix S) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -363,15 +363,15 @@ public class SymmetricMatrix {
         }
     }
 
-    public LogSign logDeterminant(Matrix S) {
-        Matrix s = S.deepClone();
+    public LogSign logDeterminant(FastMatrix S) {
+        FastMatrix s = S.deepClone();
         lcholesky(s);
         DataBlock diagonal = s.diagonal();
         LogSign ls = LogSign.of(diagonal);
         return new LogSign(ls.getValue() * 2, true);
     }
 
-    public double determinant(Matrix L) {
+    public double determinant(FastMatrix L) {
         LogSign ls = logDeterminant(L);
         if (ls == null) {
             return 0;
@@ -379,7 +379,7 @@ public class SymmetricMatrix {
         return Math.exp(ls.getValue());
     }
 
-    public void fromLower(Matrix S) {
+    public void fromLower(FastMatrix S) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -397,7 +397,7 @@ public class SymmetricMatrix {
         }
     }
 
-    public void fromUpper(Matrix S) {
+    public void fromUpper(FastMatrix S) {
         if (!S.isSquare()) {
             throw new MatrixException(MatrixException.SQUARE);
         }
@@ -415,7 +415,7 @@ public class SymmetricMatrix {
         }
     }
 
-    private void lcholesky_1(Matrix M, double zero) {
+    private void lcholesky_1(FastMatrix M, double zero) {
         double[] data = M.getStorage();
         int n = M.getRowsCount(), cinc = M.getColumnIncrement(), dinc = 1 + cinc;
         int start = M.getStartPosition(), end = start + n * dinc;
@@ -466,7 +466,7 @@ public class SymmetricMatrix {
         LowerTriangularMatrix.toLower(M);
     }
 
-    public void xxt(DataBlock x, Matrix M) {
+    public void xxt(DataBlock x, FastMatrix M) {
         int nr = x.length(), xinc = x.getIncrement();
         int mcinc = M.getColumnIncrement();
         double[] px = x.getStorage(), pm = M.getStorage();
@@ -493,7 +493,7 @@ public class SymmetricMatrix {
         }
     }
 
-    public void XXt(final Matrix X, final Matrix M) {
+    public void XXt(final FastMatrix X, final FastMatrix M) {
         int nr = X.getRowsCount(), nc = X.getColumnsCount(), xcinc = X.getColumnIncrement();
         int mcinc = M.getColumnIncrement();
         double[] px = X.getStorage(), pm = M.getStorage();
@@ -526,13 +526,13 @@ public class SymmetricMatrix {
         }
     }
 
-    public Matrix xxt(final DataBlock x) {
-        Matrix M = Matrix.square(x.length());
+    public FastMatrix xxt(final DataBlock x) {
+        FastMatrix M = FastMatrix.square(x.length());
         xxt(x, M);
         return M;
     }
 
-    public void XtX(final Matrix X, final Matrix M) {
+    public void XtX(final FastMatrix X, final FastMatrix M) {
         SYRK.lapply(false, 1, X, 0, M);
         fromLower(M);
     }
@@ -544,7 +544,7 @@ public class SymmetricMatrix {
 //     * @param X
 //     * @param pvt 
 //     */
-//    public void PSPt(final Matrix X, final int[] pvt){
+//    public void PSPt(final FastMatrix X, final int[] pvt){
 //        // not optimized !
 //        
 //    }

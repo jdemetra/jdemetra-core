@@ -16,6 +16,7 @@
  */
 package jdplus.stats;
 
+import demetra.stats.AutoCovariances;
 import demetra.data.DoubleSeq;
 import java.util.Random;
 import java.util.function.IntToDoubleFunction;

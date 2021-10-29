@@ -22,7 +22,7 @@ import jdplus.data.DataBlockIterator;
 import jdplus.data.DataBlockStorage;
 import jdplus.math.matrices.GeneralMatrix;
 import jdplus.math.matrices.LowerTriangularMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixStorage;
 import jdplus.math.matrices.MatrixTransformation;
 import jdplus.math.matrices.SymmetricMatrix;
@@ -49,8 +49,8 @@ public class SmoothationsComputer {
     private double err, errVariance;
     private double u, uc, ucVariance;
     private DataBlock M, K, E, U, R, Rc;
-    private Matrix N, Nc, Rd, S;
-//    private Matrix V;
+    private FastMatrix N, Nc, Rd, S;
+//    private FastMatrix V;
     private DataBlock delta;
     private boolean missing, hasinfo;
 
@@ -89,23 +89,23 @@ public class SmoothationsComputer {
         K = DataBlock.make(dim);
         E = DataBlock.make(nd);
         U = DataBlock.make(nd);
-        Rd = Matrix.make(dim, nd);
+        Rd = FastMatrix.make(dim, nd);
 
-        N = Matrix.square(dim);
-        Nc = Matrix.square(dim);
-//            V = Matrix.make(dim, nd);
+        N = FastMatrix.square(dim);
+        Nc = FastMatrix.square(dim);
+//            V = FastMatrix.make(dim, nd);
 
         // computes the smoothed diffuse effects and their covariance...
         QAugmentation q = frslts.getAugmentation();
-//        Matrix B = q.B(); // B*a^-1'
+//        FastMatrix B = q.B(); // B*a^-1'
         // Psi = = a'^-1* a^-1
         S = q.a().deepClone(); // 
         // delta=-a'^-1 * b
         delta = q.b().deepClone();
         LowerTriangularMatrix.solvexL(S, delta);
         delta.chs();
-        Matrix is = LowerTriangularMatrix.inverse(S);
-        Matrix C = SymmetricMatrix.LtL(is);
+        FastMatrix is = LowerTriangularMatrix.inverse(S);
+        FastMatrix C = SymmetricMatrix.LtL(is);
     }
 
     private void loadInfo(int pos) {
@@ -171,7 +171,7 @@ public class SmoothationsComputer {
         SymmetricMatrix.reenforceSymmetry(N);
         N.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
 
-        Matrix W = Rd.deepClone();
+        FastMatrix W = Rd.deepClone();
         LowerTriangularMatrix.solveXLt(S, W);
         Nc.copy(N);
         GeneralMatrix.aAB_p_bC(-1, W, W, 1, Nc, MatrixTransformation.None, MatrixTransformation.Transpose);
@@ -220,9 +220,9 @@ public class SmoothationsComputer {
             U.addAY(1 / errVariance, E);
             uc = u + U.dot(delta);
 //            if (calcvar) {
-//                Matrix A = frslts.B(pos + 1);
+//                FastMatrix A = frslts.B(pos + 1);
 //                // N*A
-//                Matrix NA = GeneralMatrix.AB(N, A);
+//                FastMatrix NA = GeneralMatrix.AB(N, A);
 //                NA.add(Rd);
 //                DataBlock C = DataBlock.make(U.length());
 //                C.product(K, NA.columnsIterator());
@@ -261,7 +261,7 @@ public class SmoothationsComputer {
         return allR.block(pos);
     }
 
-    public Matrix Rvar(int pos){
+    public FastMatrix Rvar(int pos){
         return allRvar.matrix(pos);
     }
  

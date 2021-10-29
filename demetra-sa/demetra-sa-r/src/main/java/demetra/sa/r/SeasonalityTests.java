@@ -16,6 +16,7 @@
  */
 package demetra.sa.r;
 
+import demetra.arima.SarimaOrders;
 import demetra.stats.StatisticalTest;
 import jdplus.stats.tests.LjungBox;
 import jdplus.sa.tests.CanovaHansen;
@@ -99,7 +100,7 @@ public class SeasonalityTests {
 
     public StatisticalTest fTest(double[] s, int freq, String model, int ny) {
         DoubleSeq y = DoubleSeq.of(s).cleanExtremities();
-        FTest.Model M = FTest.Model.valueOf(model);
+        SarimaOrders.Prespecified M = SarimaOrders.Prespecified.valueOf(model);
         try {
             return new FTest(y, freq)
                     .model(M)

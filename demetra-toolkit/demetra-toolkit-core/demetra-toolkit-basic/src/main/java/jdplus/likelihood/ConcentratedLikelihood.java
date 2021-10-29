@@ -21,7 +21,7 @@ import nbbrd.design.Development;
 import demetra.eco.EcoException;
 import demetra.data.DoubleSeq;
 import nbbrd.design.BuilderPattern;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * This interface represents the concentrated likelihood of a linear regression
@@ -46,7 +46,7 @@ public interface ConcentratedLikelihood extends Likelihood {
         private double ssqerr, ldet;
         private double[] res;
         private double[] b = B_EMPTY;
-        private Matrix bvar;
+        private FastMatrix bvar;
         private boolean scalingFactor = true;
 
         private Builder() {
@@ -102,7 +102,7 @@ public interface ConcentratedLikelihood extends Likelihood {
             return this;
         }
 
-        public Builder unscaledCovariance(Matrix var) {
+        public Builder unscaledCovariance(FastMatrix var) {
             bvar = var;
             return this;
         }
@@ -133,15 +133,15 @@ public interface ConcentratedLikelihood extends Likelihood {
      *
      * @return
      */
-    Matrix unscaledCovariance();
+    FastMatrix unscaledCovariance();
 
-    default Matrix covariance(int nhp, boolean unbiased) {
+    default FastMatrix covariance(int nhp, boolean unbiased) {
 
         if (nx() == 0) {
-            return Matrix.EMPTY;
+            return FastMatrix.EMPTY;
         }
 
-        Matrix v = unscaledCovariance().deepClone();
+        FastMatrix v = unscaledCovariance().deepClone();
         int ndf = unbiased ? dim() - nx() - nhp : dim();
         double sig2 = ssq() / ndf;
         v.mul(sig2);

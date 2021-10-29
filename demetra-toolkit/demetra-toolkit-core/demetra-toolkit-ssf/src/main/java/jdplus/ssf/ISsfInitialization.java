@@ -18,7 +18,7 @@ package jdplus.ssf;
 
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -75,7 +75,7 @@ public interface ISsfInitialization {
      *
      * @param b
      */
-    void diffuseConstraints(Matrix b);
+    void diffuseConstraints(FastMatrix b);
 
     /**
      * Initial state
@@ -89,20 +89,20 @@ public interface ISsfInitialization {
      *
      * @param pf0
      */
-    void Pf0(Matrix pf0);
+    void Pf0(FastMatrix pf0);
 
     /**
      * Modelling of the non stationary part of the initial state P(-1, inf)
      *
      * @param pi0
      */
-    default void Pi0(Matrix pi0) {
+    default void Pi0(FastMatrix pi0) {
         int nd = this.getDiffuseDim();
         if (nd == 0) {
             return;
         }
         int n = pi0.getColumnsCount();
-        Matrix B = Matrix.make(n, nd);
+        FastMatrix B = FastMatrix.make(n, nd);
         this.diffuseConstraints(B);
         SymmetricMatrix.XXt(B, pi0);
     }

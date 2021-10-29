@@ -39,12 +39,11 @@ import java.util.function.Consumer;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
-import demetra.math.matrices.MatrixType;
 import demetra.ssf.SsfInitialization;
 import java.io.InputStream;
 import jdplus.data.DataBlockStorage;
 import jdplus.math.linearfilters.RationalFilter;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.msts.AtomicModels;
 import jdplus.msts.CompositeModel;
 import jdplus.msts.CompositeModelEstimation;
@@ -59,6 +58,7 @@ import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.ucarima.WienerKolmogorovEstimators;
 import jdplus.ucarima.ssf.SsfUcarima;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -72,7 +72,7 @@ public class MultiPeriodicAirlineMappingTest {
 //    @Test
     public static void testDaily1() throws IOException {
         InputStream stream = MultiPeriodicAirlineMapping.class.getResourceAsStream("/edf.txt");
-        MatrixType edf = MatrixSerializer.read(stream);
+        Matrix edf = MatrixSerializer.read(stream);
         DoubleSeq y = edf.column(0).log();
         final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(new double[]{7}, false, 2);
         GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
@@ -110,7 +110,7 @@ public class MultiPeriodicAirlineMappingTest {
 //    @Test
     public static void testDaily2() throws IOException {
         InputStream stream = MultiPeriodicAirlineMapping.class.getResourceAsStream("/edf.txt");
-        MatrixType edf = MatrixSerializer.read(stream);
+        Matrix edf = MatrixSerializer.read(stream);
         DoubleSeq y = edf.column(0).log();
         final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(new double[]{7, 365}, false, -1);
         GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
@@ -137,7 +137,7 @@ public class MultiPeriodicAirlineMappingTest {
     //@Test
     public static void testDaily3() throws IOException {
         InputStream stream = MultiPeriodicAirlineMapping.class.getResourceAsStream("/edf.txt");
-        MatrixType edf = MatrixSerializer.read(stream);
+        Matrix edf = MatrixSerializer.read(stream);
         final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(new double[]{7, 365}, true, 2);
         GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
                 .precision(1e-5)
@@ -162,7 +162,7 @@ public class MultiPeriodicAirlineMappingTest {
 //    @Test
     public static void testDailySts() throws IOException {
         InputStream stream = MultiPeriodicAirlineMapping.class.getResourceAsStream("/edf.txt");
-        MatrixType edf = MatrixSerializer.read(stream);
+        Matrix edf = MatrixSerializer.read(stream);
         CompositeModel model = new CompositeModel();
         StateItem l = AtomicModels.localLinearTrend("l", .01, 0.01, false, false);
         StateItem sd = AtomicModels.seasonalComponent("sd", "HarrisonStevens", 7, .01, false);
@@ -178,7 +178,7 @@ public class MultiPeriodicAirlineMappingTest {
         model.add(sy);
         model.add(n);
         model.add(eq);
-        Matrix M = Matrix.of(edf);
+        FastMatrix M = FastMatrix.of(edf);
         M.apply(Math::log);
         CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Diffuse, Optimizer.LevenbergMarquardt, 1e-6, null);
         MultivariateCompositeSsf ssf = rslt.getSsf();
@@ -195,7 +195,7 @@ public class MultiPeriodicAirlineMappingTest {
     @Ignore
     public void testOutliers() throws IOException {
         InputStream stream = MultiPeriodicAirlineMapping.class.getResourceAsStream("/births.txt");
-        MatrixType edf = MatrixSerializer.read(stream);
+        Matrix edf = MatrixSerializer.read(stream);
         final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(new double[]{7, 365.25}, true, -1);
         GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
                 .precision(1e-5)

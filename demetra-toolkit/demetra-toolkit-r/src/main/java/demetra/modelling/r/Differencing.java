@@ -6,10 +6,10 @@
 package demetra.modelling.r;
 
 import demetra.data.DoubleSeq;
+import demetra.modelling.DifferencingResult;
 import demetra.modelling.StationaryTransformation;
 import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import jdplus.data.DataBlock;
-import jdplus.modelling.DifferencingResults;
 import jdplus.modelling.FastDifferencingModule;
 import jdplus.modelling.RangeMeanTest;
 
@@ -33,9 +33,9 @@ public class Differencing {
     }
     
     public StationaryTransformation doStationary(double[] data, int period) {
-        DifferencingResults dr = DifferencingResults.of(DoubleSeq.of(data), period, -1, true);
+        DifferencingResult dr = DifferencingResult.of(DoubleSeq.of(data), period, -1, true);
         return StationaryTransformation.builder()
-                .meanCorrection(dr.isMean())
+                .meanCorrection(dr.isMeanCorrection())
                 .difference(new StationaryTransformation.Differencing(1, dr.getDifferencingOrder()))
                 .stationarySeries(dr.getDifferenced())
                 .build();

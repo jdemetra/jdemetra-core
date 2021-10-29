@@ -17,7 +17,7 @@
 package jdplus.ssf.dk;
 
 import jdplus.ssf.StateInfo;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *

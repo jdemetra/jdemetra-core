@@ -8,7 +8,7 @@ package jdplus.math.matrices.decomposition;
 import jdplus.math.matrices.decomposition.EigenRoutines;
 import jdplus.math.matrices.decomposition.UpperHessenberg;
 import java.util.Random;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixUtility;
 import jdplus.random.JdkRNG;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class UpperHessenbergTest {
 
     @Test
     public void testRandom() {
-        Matrix A = Matrix.square(100);
+        FastMatrix A = FastMatrix.square(100);
         JdkRNG rng = JdkRNG.newRandom(0);
         MatrixUtility.randomize(A, rng);
         long t0 = System.currentTimeMillis();
@@ -38,7 +38,7 @@ public class UpperHessenbergTest {
 //        System.out.println(uh.getH());
 
         t0 = System.currentTimeMillis();
-        Matrix B;
+        FastMatrix B;
         for (int j = 0; j < 100; ++j) {
             B = A.deepClone();
             EigenRoutines.hessenberg(B.getStorage(), B.getColumnsCount());

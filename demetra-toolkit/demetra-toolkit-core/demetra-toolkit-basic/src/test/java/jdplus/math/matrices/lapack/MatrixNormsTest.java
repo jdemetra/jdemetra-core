@@ -7,7 +7,7 @@ package jdplus.math.matrices.lapack;
 
 import jdplus.math.matrices.MatrixNorms;
 import java.util.Random;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -22,11 +22,11 @@ public class MatrixNormsTest {
 
     @Test
     public void testNorms() {
-        Matrix M = Matrix.make(10, 5);
-        Matrix N = Matrix.make(10, 10);
+        FastMatrix M = FastMatrix.make(10, 5);
+        FastMatrix N = FastMatrix.make(10, 10);
         Random rnd = new Random();
         M.set((i, j) -> rnd.nextDouble());
-        Matrix Q = N.extract(3, 5, 0, 10);
+        FastMatrix Q = N.extract(3, 5, 0, 10);
         Q.copyTranspose(M);
 
         assertEquals(MatrixNorms.frobeniusNorm(M), MatrixNorms.frobeniusNorm(Q), 1e-9);
@@ -36,11 +36,11 @@ public class MatrixNormsTest {
     }
 
     public static void main(String[] arg) {
-        Matrix M = Matrix.make(200, 100);
-        Matrix N = Matrix.make(200, 200);
+        FastMatrix M = FastMatrix.make(200, 100);
+        FastMatrix N = FastMatrix.make(200, 200);
         Random rnd = new Random();
         M.set((i, j) -> rnd.nextDouble());
-        Matrix Q = N.extract(30, 100, 0, 200);
+        FastMatrix Q = N.extract(30, 100, 0, 200);
         Q.copyTranspose(M);
         int K = 100000;
         long t0 = System.currentTimeMillis();

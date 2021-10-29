@@ -18,7 +18,7 @@ package jdplus.ssf;
 
 import jdplus.data.DataBlock;
 import nbbrd.design.Development;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * Represents a gaussian vector, with its mean and covariance matrix. The way
@@ -49,7 +49,7 @@ public class State {
      * P is the covariance copyOf the state vector. Its interpretation depends
      * on the considered step
      */
-    private final Matrix P;
+    private final FastMatrix P;
 
     /**
      *
@@ -58,10 +58,10 @@ public class State {
      */
     public State(final int dim) {
         a = DataBlock.make(dim);
-        P = Matrix.square(dim);
+        P = FastMatrix.square(dim);
     }
 
-    public State(final DataBlock a, final Matrix P) {
+    public State(final DataBlock a, final FastMatrix P) {
         this.a = a;
         this.P = P;
     }
@@ -97,7 +97,7 @@ public class State {
     /**
      * @return the P
      */
-    public final Matrix P() {
+    public final FastMatrix P() {
         return P;
     }
 

@@ -7,7 +7,7 @@ package jdplus.math.matrices.lapack;
 
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixUtility;
 import jdplus.random.JdkRNG;
 import org.junit.Test;
@@ -34,10 +34,10 @@ public class LapackUtilityTest {
 
     public static void main(String[] args) {
         int K = 1000000, M = 200, N = 50;
-        Matrix A = Matrix.make(M, N);
+        FastMatrix A = FastMatrix.make(M, N);
         JdkRNG rng = JdkRNG.newRandom(0);
         MatrixUtility.randomize(A, rng);
-        Matrix B = A.deepClone();
+        FastMatrix B = A.deepClone();
         DataBlock x = DataBlock.make(A.getRowsCount()), y = DataBlock.make(A.getColumnsCount());
         x.set(rng::nextDouble);
         y.set(rng::nextDouble);

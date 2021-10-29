@@ -38,7 +38,7 @@ import java.util.Collection;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.data.normalizer.DataNormalizer;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -57,8 +57,8 @@ class DisaggregationModelBuilder {
 
     // local information used in the building operation
     double[] hO, hY, hEY;
-    Matrix hX;
-    Matrix hEX;
+    FastMatrix hX;
+    FastMatrix hEX;
     TsDomain lEDom, hDom, hEDom;
     int frequencyRatio;
     double yfactor = 1;

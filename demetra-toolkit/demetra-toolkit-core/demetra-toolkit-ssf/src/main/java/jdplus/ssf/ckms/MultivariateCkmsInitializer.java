@@ -29,7 +29,7 @@ import jdplus.ssf.array.LState;
 import jdplus.ssf.multivariate.IMultivariateSsf;
 import jdplus.ssf.multivariate.IMultivariateSsfData;
 import jdplus.ssf.multivariate.MultivariateUpdateInformation;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -44,7 +44,7 @@ public class MultivariateCkmsInitializer implements MultivariateCkmsArrayFilter.
 //        ISsfLoading loading = ssf.loading();
 //        ISsfError error = ssf.measurementError();
 //        ISsfInitialization initialization = ssf.initialization();
-//        Matrix P0 = Matrix.square(initialization.getStateDim());
+//        FastMatrix P0 = FastMatrix.square(initialization.getStateDim());
 //        initialization.Pf0(P0);
 //        DataBlock m = upd.M();
 //        loading.ZM(0, P0, m);

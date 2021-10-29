@@ -11,8 +11,8 @@ import jdplus.ssf.StateComponent;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import demetra.math.matrices.MatrixType;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -25,11 +25,11 @@ public class WaveSpecificSurveyErrors3Test {
 
     @Test
     public void testLag3() {
-        MatrixType M=MatrixType.of(new double[]{1,1,1,1,1}, 1, 5);
+        Matrix M=Matrix.of(new double[]{1,1,1,1,1}, 1, 5);
         StateComponent cmp = WaveSpecificSurveyErrors3.of(new double[]{1,2,3,4,5}, new double[]{.2,.3,.4,.5}, M, 3);
         int dim=cmp.initialization().getStateDim();
         ISsfDynamics dyn = cmp.dynamics();
-        Matrix T=Matrix.square(dim);
+        FastMatrix T=FastMatrix.square(dim);
         dyn.T(0, T);
         DataBlock x = DataBlock.make(dim);
         Random rnd = new Random(0);
@@ -48,11 +48,11 @@ public class WaveSpecificSurveyErrors3Test {
     
     @Test
     public void testLag1() {
-        MatrixType M=MatrixType.of(new double[]{1,1,1,1,1}, 1, 5);
+        Matrix M=Matrix.of(new double[]{1,1,1,1,1}, 1, 5);
         StateComponent cmp = WaveSpecificSurveyErrors3.of(new double[]{1,2,3,4,5}, new double[]{.2,.3,.4,.5}, M, 1);
         int dim=cmp.initialization().getStateDim();
         ISsfDynamics dyn = cmp.dynamics();
-        Matrix T=Matrix.square(dim);
+        FastMatrix T=FastMatrix.square(dim);
         dyn.T(0, T);
         DataBlock x = DataBlock.make(dim);
         Random rnd = new Random(0);

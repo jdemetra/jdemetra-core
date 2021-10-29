@@ -7,18 +7,18 @@ package jdplus.msts.internal;
 
 import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
-import demetra.math.matrices.MatrixType;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
 import jdplus.ssf.implementations.Coefficients;
 import jdplus.ssf.implementations.Loading;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -26,12 +26,12 @@ import jdplus.ssf.implementations.Loading;
  */
 public class RegressionItem extends StateItem {
 
-    public final Matrix x;
+    public final FastMatrix x;
     public final VarianceInterpreter[] v;
 
-    public RegressionItem(String name, MatrixType x, final double[] vars, final boolean fixed) {
+    public RegressionItem(String name, Matrix x, final double[] vars, final boolean fixed) {
         super(name);
-        this.x = Matrix.of(x);
+        this.x = FastMatrix.of(x);
         if (vars == null) {
             v = null;
         } else {

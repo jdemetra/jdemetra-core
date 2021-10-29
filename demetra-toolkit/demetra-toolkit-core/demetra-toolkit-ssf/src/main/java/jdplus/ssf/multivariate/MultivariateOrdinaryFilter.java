@@ -21,7 +21,7 @@ import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.State;
 import jdplus.ssf.StateInfo;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -105,8 +105,8 @@ public class MultivariateOrdinaryFilter {
         // P = P - (M)* F^-1 *(M)' --> Symmetric
         // PZ'(LL')^-1 ZP' =PZ'L'^-1*L^-1*ZP'
         // A = a + (M)* F^-1 * v
-        Matrix P = state.P();
-        Matrix K = updinfo.getK();
+        FastMatrix P = state.P();
+        FastMatrix K = updinfo.getK();
         DataBlock U = updinfo.getTransformedPredictionErrors();
         for (int i = 0; i < n; ++i) {
             P.addXaXt(-1, K.column(i));//, state_.K.column(i));

@@ -46,12 +46,12 @@ import jdplus.ssf.multivariate.IMultivariateSsfData;
 import jdplus.ssf.multivariate.M2uAdapter;
 import jdplus.ssf.univariate.IFilteringResults;
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
 import jdplus.leastsquares.QRSolution;
 import jdplus.leastsquares.QRSolver;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.decomposition.Householder2;
 import jdplus.math.matrices.decomposition.QRDecomposition;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -323,7 +323,7 @@ public class DkToolkit {
             filter.process(ssf, data, pe);
             DiffuseLikelihood likelihood = pe.likelihood(scalingfactor);
             int collapsing = pe.getEndDiffusePosition();
-            Matrix M = Matrix.make(collapsing, ssf.getDiffuseDim());
+            FastMatrix M = FastMatrix.make(collapsing, ssf.getDiffuseDim());
             ssf.diffuseEffects(M);
             int j = 0;
             for (int i = 0; i < collapsing; ++i) {
@@ -370,7 +370,7 @@ public class DkToolkit {
             filter.process(ssf, data, pe);
             DiffuseLikelihood likelihood = pe.likelihood(scalingfactor);
             int collapsing = pe.getEndDiffusePosition();
-            Matrix M = Matrix.make(collapsing, ssf.getDiffuseDim());
+            FastMatrix M = FastMatrix.make(collapsing, ssf.getDiffuseDim());
             ssf.diffuseEffects(M);
             int j = 0;
             for (int i = 0; i < collapsing; ++i) {
@@ -415,7 +415,7 @@ public class DkToolkit {
             DiffuseLikelihood ll = pe.likelihood(scaling);
             DoubleSeq yl = pe.errors(true, true);
             int nl = yl.length();
-            Matrix xl = xl(model, filter, nl);
+            FastMatrix xl = xl(model, filter, nl);
             if (xl == null) {
                 return DiffuseConcentratedLikelihood.builder(ll.dim(), ll.getD())
                         .ssqErr(ll.ssq())
@@ -452,7 +452,7 @@ public class DkToolkit {
                     dcorr += lregdet;
                     d += ndc;
                 }
-                Matrix bvar = ls.unscaledCovariance();
+                FastMatrix bvar = ls.unscaledCovariance();
                 return DiffuseConcentratedLikelihood.builder(nobs, d)
                         .ssqErr(ssqerr)
                         .logDeterminant(ldet)
@@ -504,12 +504,12 @@ public class DkToolkit {
             }
         }
 
-        private Matrix xl(SsfRegressionModel model, DkFilter lp, int nl) {
-            MatrixType x = model.getX();
+        private FastMatrix xl(SsfRegressionModel model, DkFilter lp, int nl) {
+            Matrix x = model.getX();
             if (x == null) {
                 return null;
             }
-            Matrix xl = Matrix.make(nl, x.getColumnsCount());
+            FastMatrix xl = FastMatrix.make(nl, x.getColumnsCount());
             DataBlockIterator lcols = xl.columnsIterator();
             int i=0;
             while (lcols.hasNext()) {

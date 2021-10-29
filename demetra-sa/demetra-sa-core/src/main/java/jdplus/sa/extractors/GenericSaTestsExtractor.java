@@ -16,7 +16,7 @@ import jdplus.sa.diagnostics.GenericSaTests;
 import jdplus.sa.diagnostics.ResidualSeasonalityTests;
 import jdplus.sa.diagnostics.ResidualTradingDaysTests;
 import jdplus.sa.tests.SpectralPeaks;
-import jdplus.stats.AutoCovariances;
+import demetra.stats.AutoCovariances;
 import nbbrd.service.ServiceProvider;
 
 /**

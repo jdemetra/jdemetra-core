@@ -21,7 +21,7 @@ import jdplus.data.normalizer.AbsMeanNormalizer;
 import jdplus.data.DataBlock;
 import nbbrd.design.Development;
 import jdplus.math.linearfilters.BackFilter;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import nbbrd.design.BuilderPattern;
 import jdplus.leastsquares.QRSolver;
 import jdplus.ar.AutoRegressiveEstimation;
@@ -125,7 +125,7 @@ public class HannanRissanen {
         this.biascorrection=builder.biascorrection;
     }
     
-    private double[] ls(Matrix mat, double[] y, boolean bbic) {
+    private double[] ls(FastMatrix mat, double[] y, boolean bbic) {
         QRSolution rslt = QRSolver.fastLeastSquares(DataBlock.of(y), mat);
         DoubleSeq pi = rslt.getB();
         int n = y.length, m = pi.count(x -> x != 0);
@@ -147,7 +147,7 @@ public class HannanRissanen {
         double[] a1 = new double[n];
         double[] a2 = new double[n];
         double[] res = new double[n];
-        Matrix mat = Matrix.make(n, np + nq);
+        FastMatrix mat = FastMatrix.make(n, np + nq);
         double[] mdata = mat.getStorage();
         for (int i = 0; i < n; ++i) {
             int picur = 0;
@@ -335,7 +335,7 @@ public class HannanRissanen {
         int np = m_spec.getP() + m_spec.getBp() * (1 + m_spec.getP());
         int nq = m_spec.getQ() + m_spec.getBq() * (1 + m_spec.getQ());
 
-        Matrix mat =  Matrix.make(nc, np + nq);
+        FastMatrix mat =  FastMatrix.make(nc, np + nq);
         double[] dmat = mat.getStorage();
         double[] data = new double[nc];
         System.arraycopy(m_data, m, data, 0, nc);

@@ -7,7 +7,6 @@ package jdplus.msts.internal;
 
 import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
 import jdplus.msts.ArInterpreter;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
@@ -18,6 +17,7 @@ import java.util.List;
 import jdplus.msts.ParameterInterpreter;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.implementations.Loading;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -26,11 +26,11 @@ import jdplus.ssf.implementations.Loading;
 public class MsaeItem3 extends StateItem {
 
     private final VarianceInterpreter[] v;
-    private final MatrixType k;
+    private final Matrix k;
     private final int lag;
     private final ArInterpreter[] par;
 
-    public MsaeItem3(String name, double[] v, boolean fixedVar, double[] ar, boolean fixedar, MatrixType k, int lag) {
+    public MsaeItem3(String name, double[] v, boolean fixedVar, double[] ar, boolean fixedar, Matrix k, int lag) {
         super(name);
         int nwaves = v.length;
         this.lag = lag;

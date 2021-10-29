@@ -19,7 +19,7 @@ package jdplus.ssf.implementations;
 import jdplus.data.DataBlock;
 import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.univariate.ISsfMeasurement;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * Shifted measurement: Zshift(t) = Z(pos + shift) 

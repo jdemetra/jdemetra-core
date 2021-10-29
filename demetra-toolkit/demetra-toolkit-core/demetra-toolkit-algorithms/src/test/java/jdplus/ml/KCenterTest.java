@@ -6,11 +6,11 @@
 package jdplus.ml;
 
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
 import demetra.util.IntList;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -34,7 +34,7 @@ public class KCenterTest {
         for (int i = 100*m; i < 100*m+m; ++i) {
             data[i] = 3.3;
         }
-        MatrixType M = MatrixType.of(data, m, n);
+        Matrix M = Matrix.of(data, m, n);
         DistanceMeasure<DoubleSeq> d = (l, r) -> l.distance(r);
         
         long t0=System.currentTimeMillis();

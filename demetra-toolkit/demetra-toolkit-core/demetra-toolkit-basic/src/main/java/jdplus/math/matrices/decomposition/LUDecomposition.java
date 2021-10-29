@@ -22,7 +22,7 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.LogSign;
 import jdplus.math.matrices.LowerTriangularMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
 
 /**
@@ -42,18 +42,18 @@ public class LUDecomposition {
     @FunctionalInterface
     public static interface Decomposer {
 
-        LUDecomposition decompose(Matrix A, double eps);
+        LUDecomposition decompose(FastMatrix A, double eps);
     }
 
-    private final Matrix lu;
+    private final FastMatrix lu;
     private final int[] pivot;
 
-    public LUDecomposition(Matrix lu, int[] pivot) {
+    public LUDecomposition(FastMatrix lu, int[] pivot) {
         this.lu = lu;
         this.pivot = pivot;
     }
 
-    public LUDecomposition(Matrix lu) {
+    public LUDecomposition(FastMatrix lu) {
         this.lu = lu;
         this.pivot = null;
     }
@@ -66,7 +66,7 @@ public class LUDecomposition {
         return lu.diagonal();
     }
 
-    public Matrix lu() {
+    public FastMatrix lu() {
         return lu;
     }
     
@@ -136,7 +136,7 @@ public class LUDecomposition {
         UpperTriangularMatrix.solveUx(lu, b);
     }
 
-    public void solve(Matrix B) {
+    public void solve(FastMatrix B) {
         if (pivot != null) {
             swap(B);
         }
@@ -151,7 +151,7 @@ public class LUDecomposition {
         }
     }
 
-    private void swap(Matrix B) {
+    private void swap(FastMatrix B) {
         double[] tmp = new double[lu.getRowsCount()];
         DataBlockIterator cols = B.columnsIterator();
         while (cols.hasNext()) {

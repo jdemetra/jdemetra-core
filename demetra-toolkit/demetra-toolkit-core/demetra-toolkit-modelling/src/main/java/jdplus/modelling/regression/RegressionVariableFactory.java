@@ -8,7 +8,7 @@ package jdplus.modelling.regression;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesInterval;
 
 /**
@@ -17,7 +17,7 @@ import demetra.timeseries.TimeSeriesInterval;
  * @param <X>
  */
 public interface RegressionVariableFactory <X extends ITsVariable> {
-    boolean fill(X var, TsPeriod start, Matrix buffer);
+    boolean fill(X var, TsPeriod start, FastMatrix buffer);
     
-    <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>> boolean fill(X var, D domain, Matrix buffer);
+    <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>> boolean fill(X var, D domain, FastMatrix buffer);
 }

@@ -28,7 +28,6 @@ import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 import org.checkerframework.checker.index.qual.NonNegative;
 import demetra.data.DoubleSeq;
-import demetra.data.Doubles;
 
 /**
  *

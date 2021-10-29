@@ -19,7 +19,7 @@ package jdplus.ssf;
 import jdplus.data.DataBlock;
 import jdplus.data.DataWindow;
 import jdplus.math.matrices.MatrixWindow;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -66,7 +66,7 @@ public class CompositeInitialization implements ISsfInitialization {
     }
 
     @Override
-    public void diffuseConstraints(Matrix b) {
+    public void diffuseConstraints(FastMatrix b) {
         // statedim * diffusedim
         MatrixWindow cur = b.topLeft(0, 0);
         for (int i = 0; i < initializers.length; ++i) {
@@ -88,7 +88,7 @@ public class CompositeInitialization implements ISsfInitialization {
     }
 
     @Override
-    public void Pf0(Matrix p) {
+    public void Pf0(FastMatrix p) {
         MatrixWindow cur = p.topLeft(0, 0);
         for (int i = 0; i < initializers.length; ++i) {
             initializers[i].Pf0(cur.next(dim[i], dim[i]));
@@ -96,7 +96,7 @@ public class CompositeInitialization implements ISsfInitialization {
     }
 
     @Override
-    public void Pi0(Matrix p) {
+    public void Pi0(FastMatrix p) {
         MatrixWindow cur = p.topLeft(0, 0);
         for (int i = 0; i < initializers.length; ++i) {
             initializers[i].Pi0(cur.next(dim[i], dim[i]));

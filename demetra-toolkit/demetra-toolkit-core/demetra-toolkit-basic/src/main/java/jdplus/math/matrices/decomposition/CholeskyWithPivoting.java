@@ -18,7 +18,7 @@ package jdplus.math.matrices.decomposition;
 
 import demetra.math.Constants;
 import jdplus.math.matrices.LowerTriangularMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixException;
 
 /**
@@ -29,7 +29,7 @@ import jdplus.math.matrices.MatrixException;
  */
 public class CholeskyWithPivoting {
 
-    private Matrix M;
+    private FastMatrix M;
     private int[] piv;
     private int rank, pvt;
     private double ajj, tol;
@@ -43,7 +43,7 @@ public class CholeskyWithPivoting {
      * @return True when a full decomposition has bee achieved, false if the
      * matrix is rank-deficient
      */
-    public boolean decompose(Matrix S, double tol) {
+    public boolean decompose(FastMatrix S, double tol) {
         initialize(S, tol);
         int n = M.getColumnsCount();
         double[] pm = M.getStorage();
@@ -137,7 +137,7 @@ public class CholeskyWithPivoting {
     }
 
 
-    private boolean initialize(Matrix S, double eps) {
+    private boolean initialize(FastMatrix S, double eps) {
         int n = S.getColumnsCount();
         if (S.getRowsCount() != n) {
             throw new MatrixException(MatrixException.SQUARE);
@@ -175,7 +175,7 @@ public class CholeskyWithPivoting {
         return rank;
     }
     
-    public Matrix getL(){
+    public FastMatrix getL(){
         LowerTriangularMatrix.toLower(M);
         return M;
     }

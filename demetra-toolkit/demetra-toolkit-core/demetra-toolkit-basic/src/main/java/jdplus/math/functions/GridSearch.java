@@ -18,7 +18,7 @@ package jdplus.math.functions;
 
 import jdplus.data.DataBlock;
 import nbbrd.design.Development;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import demetra.data.DoubleSeq;
 
 /**
@@ -113,8 +113,8 @@ public class GridSearch implements FunctionMinimizer {
     }
 
     @Override
-    public Matrix curvatureAtMinimum() {
-        Matrix h = Matrix.square(1);
+    public FastMatrix curvatureAtMinimum() {
+        FastMatrix h = FastMatrix.square(1);
         new NumericalDerivatives(m_ftry, false).hessian(h);
         return h;
     }

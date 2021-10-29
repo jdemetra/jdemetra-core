@@ -17,7 +17,7 @@
 package jdplus.ssf.univariate;
 
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 
 /**
@@ -38,13 +38,13 @@ public interface IDisturbanceSmoothingResults {
         return null;
     }
 
-    default Matrix uVar(int pos) {
+    default FastMatrix uVar(int pos) {
         return null;
     }
     
     void prepare(ISsf ssf, int start, int end);
     
-    void saveSmoothedTransitionDisturbances(int pos, DataBlock u, Matrix uVar);
+    void saveSmoothedTransitionDisturbances(int pos, DataBlock u, FastMatrix uVar);
     
     void saveSmoothedMeasurementDisturbance(int pos, double e, double evar);
     

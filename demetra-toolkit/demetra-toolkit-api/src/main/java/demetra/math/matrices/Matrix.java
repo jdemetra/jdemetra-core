@@ -28,9 +28,9 @@ import java.util.function.DoubleUnaryOperator;
  * @author Philippe Charles
  */
 @Development(status = Development.Status.Preliminary)
-public interface MatrixType extends BaseTable {
+public interface Matrix extends BaseTable {
 
-    interface Mutable extends MatrixType {
+    interface Mutable extends Matrix {
 
         @Override
         DoubleSeq.Mutable row(@NonNull int irow);
@@ -45,7 +45,7 @@ public interface MatrixType extends BaseTable {
         DoubleSeq.Mutable column(@NonNull int icolumn);
 
         @Override
-        default MatrixType.Mutable extract(@NonNegative final int rstart, @NonNegative final int nr,
+        default Matrix.Mutable extract(@NonNegative final int rstart, @NonNegative final int nr,
                 @NonNegative final int cstart, @NonNegative final int nc) {
             return new LightMutableSubMatrix(this, rstart, nr, cstart, nc);
         }
@@ -62,22 +62,22 @@ public interface MatrixType extends BaseTable {
 
         void apply(int row, int col, DoubleUnaryOperator fn);
 
-        default MatrixType unmodifiable() {
-            return MatrixType.of(toArray(), getRowsCount(), getColumnsCount());
+        default Matrix unmodifiable() {
+            return Matrix.of(toArray(), getRowsCount(), getColumnsCount());
         }
 
-        static MatrixType.Mutable ofInternal(@NonNull double[] data, @NonNegative int nrows, @NonNegative int ncolumns) {
+        static Matrix.Mutable ofInternal(@NonNull double[] data, @NonNegative int nrows, @NonNegative int ncolumns) {
             if (data.length < nrows * ncolumns) {
                 throw new IllegalArgumentException();
             }
             return new LightMutableMatrix(data, nrows, ncolumns);
         }
 
-        static MatrixType.Mutable make(@NonNegative int nrows, @NonNegative int ncolumns) {
+        static Matrix.Mutable make(@NonNegative int nrows, @NonNegative int ncolumns) {
             return new LightMutableMatrix(new double[nrows * ncolumns], nrows, ncolumns);
         }
 
-        static MatrixType.Mutable copyOf(@NonNull MatrixType matrix) {
+        static Matrix.Mutable copyOf(@NonNull Matrix matrix) {
             return new LightMutableMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
         }
 
@@ -95,7 +95,7 @@ public interface MatrixType extends BaseTable {
         double apply(int nrow, int ncolumn);
     }
 
-    static MatrixType empty(){
+    static Matrix empty(){
         return LightMatrix.empty();
     }
 
@@ -108,14 +108,14 @@ public interface MatrixType extends BaseTable {
      * @param ncolumns Number of columns
      * @return 
      */
-    static MatrixType of(@NonNull double[] data, @NonNegative int nrows, @NonNegative int ncolumns) {
+    static Matrix of(@NonNull double[] data, @NonNegative int nrows, @NonNegative int ncolumns) {
         if (data.length < nrows * ncolumns) {
             throw new IllegalArgumentException();
         }
         return new LightMatrix(data, nrows, ncolumns);
     }
 
-    static MatrixType copyOf(@NonNull MatrixType matrix) {
+    static Matrix copyOf(@NonNull Matrix matrix) {
         return new LightMatrix(matrix.toArray(), matrix.getRowsCount(), matrix.getColumnsCount());
     }
 
@@ -146,7 +146,7 @@ public interface MatrixType extends BaseTable {
      */
     DoubleSeq column(@NonNull int icolumn);
 
-    default MatrixType extract(@NonNegative final int rstart, @NonNegative final int nr,
+    default Matrix extract(@NonNegative final int rstart, @NonNegative final int nr,
             @NonNegative final int cstart, @NonNegative final int nc) {
         return new LightSubMatrix(this, rstart, nr, cstart, nc);
     }
@@ -182,7 +182,7 @@ public interface MatrixType extends BaseTable {
         return all;
     }
 
-    public static String toString(MatrixType matrix, String fmt) {
+    public static String toString(Matrix matrix, String fmt) {
         StringBuilder builder = new StringBuilder();
         if (!matrix.isEmpty()) {
             DoubleSeq row = matrix.row(0);
@@ -196,7 +196,7 @@ public interface MatrixType extends BaseTable {
         return builder.toString();
     }
 
-    public static String format(MatrixType m, String fmt) {
+    public static String format(Matrix m, String fmt) {
         StringBuilder builder = new StringBuilder();
         int nrows = m.getRowsCount();
         if (nrows > 0) {
@@ -209,7 +209,7 @@ public interface MatrixType extends BaseTable {
         return builder.toString();
     }
 
-    public static String format(MatrixType m) {
+    public static String format(Matrix m) {
         StringBuilder builder = new StringBuilder();
         int nrows = m.getRowsCount();
         if (nrows > 0) {

@@ -18,7 +18,7 @@ import jdplus.math.functions.bfgs.Bfgs;
 import jdplus.math.linearfilters.FiniteFilter;
 import jdplus.math.linearfilters.IFiniteFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.decomposition.Gauss;
 import jdplus.math.matrices.decomposition.LUDecomposition;
 
@@ -93,7 +93,7 @@ public class DFAFilter {
     private final TimelinessCriterion T = new TimelinessCriterion();
     private final ResidualCriterion R = new ResidualCriterion();
     private final int nlags, nleads, p;
-    private final Matrix C;
+    private final FastMatrix C;
     private final DoubleSeq a;
 	//private SymmetricFilter target;
 
@@ -115,7 +115,7 @@ public class DFAFilter {
         R.symmetricFilter(builder.target)
         	.spectralDensity(builder.spectralDensity)
         	.bounds(builder.w1, Math.PI);
-        C = Matrix.make(p, n);
+        C = FastMatrix.make(p, n);
         C.row(0).set(1);
         for (int q = 1; q < p; ++q) {
             final int t = q;
@@ -346,7 +346,7 @@ public class DFAFilter {
          * @param nlags
          * @param nleads
          * @param G Quadratic form
-         * @param C Matrix of the constraints
+         * @param C FastMatrix of the constraints
          * @param a constraints (same dim as number of rows of C)
          */
         DFAFunction(final DFAFilter core,

@@ -18,16 +18,16 @@ package rssf;
 
 import demetra.information.InformationMapping;
 import demetra.math.functions.Optimizer;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.msts.CompositeModel;
 import jdplus.msts.CompositeModelEstimation;
 import jdplus.ssf.StateStorage;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import demetra.math.matrices.MatrixType;
 import demetra.ssf.SsfInitialization;
 import jdplus.ssf.multivariate.MultivariateSsf;
 import demetra.information.Explorable;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -62,43 +62,43 @@ public class CompositeModels {
             MAPPING.set("parameters", double[].class, source -> source.getFullParameters());
             MAPPING.set("parametersnames", String[].class, source -> source.getParametersName());
             MAPPING.set("fn.parameters", double[].class, source -> source.getParameters());
-            MAPPING.setArray("ssf.T", 0, Integer.MAX_VALUE, MatrixType.class, (source, t) -> {
+            MAPPING.setArray("ssf.T", 0, Integer.MAX_VALUE, Matrix.class, (source, t) -> {
                 int dim = source.getSsf().getStateDim();
-                Matrix T = Matrix.square(dim);
+                FastMatrix T = FastMatrix.square(dim);
                 source.getSsf().dynamics().T(t, T);
                 return T;
             });
-            MAPPING.setArray("ssf.V", 0, Integer.MAX_VALUE, MatrixType.class, (source, t) -> {
+            MAPPING.setArray("ssf.V", 0, Integer.MAX_VALUE, Matrix.class, (source, t) -> {
                 int dim = source.getSsf().getStateDim();
-                Matrix V = Matrix.square(dim);
+                FastMatrix V = FastMatrix.square(dim);
                 source.getSsf().dynamics().V(t, V);
                 return V;
             });
-            MAPPING.setArray("ssf.Z", 0, Integer.MAX_VALUE, MatrixType.class, (source, t) -> {
+            MAPPING.setArray("ssf.Z", 0, Integer.MAX_VALUE, Matrix.class, (source, t) -> {
                 int dim = source.getSsf().getStateDim();
                 int m = source.getSsf().measurementsCount();
-                Matrix M = Matrix.make(m, dim);
+                FastMatrix M = FastMatrix.make(m, dim);
                 for (int i = 0; i < m; ++i) {
                     source.getSsf().loading(i).Z(t, M.row(i));
                 }
                 return M;
             });
-            MAPPING.setArray("ssf.T", 0, Integer.MAX_VALUE, MatrixType.class, (source, t) -> {
+            MAPPING.setArray("ssf.T", 0, Integer.MAX_VALUE, Matrix.class, (source, t) -> {
                 int dim = source.getSsf().getStateDim();
-                Matrix T = Matrix.square(dim);
+                FastMatrix T = FastMatrix.square(dim);
                 source.getSsf().dynamics().T(t, T);
                 return T;
             });
-            MAPPING.set("ssf.P0", MatrixType.class, source -> {
+            MAPPING.set("ssf.P0", Matrix.class, source -> {
                 int dim = source.getSsf().getStateDim();
-                Matrix V = Matrix.square(dim);
+                FastMatrix V = FastMatrix.square(dim);
                 source.getSsf().initialization().Pf0(V);
                 return V;
             });
-            MAPPING.set("ssf.B0", MatrixType.class, source -> {
+            MAPPING.set("ssf.B0", Matrix.class, source -> {
                 int dim = source.getSsf().getStateDim();
                 int nd = source.getSsf().initialization().getDiffuseDim();
-                Matrix V = Matrix.make(dim, nd);
+                FastMatrix V = FastMatrix.make(dim, nd);
                 source.getSsf().initialization().diffuseConstraints(V);
                 return V;
             });
@@ -122,27 +122,27 @@ public class CompositeModels {
                 StateStorage smoothedStates = source.getSmoothedStates();
                 return smoothedStates.a(p).toArray();
             });
-            MAPPING.setArray("ssf.smoothing.vstate", 0, MatrixType.class, (source, p) -> {
+            MAPPING.setArray("ssf.smoothing.vstate", 0, Matrix.class, (source, p) -> {
                 StateStorage smoothedStates = source.getSmoothedStates();
                 return smoothedStates.P(p).unmodifiable();
             });
-            MAPPING.set("ssf.smoothing.states", MatrixType.class, source -> {
+            MAPPING.set("ssf.smoothing.states", Matrix.class, source -> {
                 int n = source.getData().getRowsCount(), m = source.getSsf().getStateDim();
                 double[] z = new double[n * m];
                 StateStorage smoothedStates = source.getSmoothedStates();
                 for (int i = 0, j = 0; i < m; ++i, j += n) {
                     smoothedStates.getComponent(i).copyTo(z, j);
                 }
-                return MatrixType.of(z, n, m);
+                return Matrix.of(z, n, m);
             });
-            MAPPING.set("ssf.smoothing.vstates", MatrixType.class, source -> {
+            MAPPING.set("ssf.smoothing.vstates", Matrix.class, source -> {
                 int n = source.getData().getRowsCount(), m = source.getSsf().getStateDim();
                 double[] z = new double[n * m];
                 StateStorage smoothedStates = source.getSmoothedStates();
                 for (int i = 0, j = 0; i < m; ++i, j += n) {
                     smoothedStates.getComponentVariance(i).copyTo(z, j);
                 }
-                return MatrixType.of(z, n, m);
+                return Matrix.of(z, n, m);
             });
             MAPPING.setArray("ssf.filtering.array", 0, double[].class, (source, p) -> {
                 StateStorage fStates = source.getFilteringStates();
@@ -164,25 +164,25 @@ public class CompositeModels {
                 StateStorage fStates = source.getFilteringStates();
                 return fStates.a(p).toArray();
             });
-            MAPPING.set("ssf.filtering.states", MatrixType.class, source -> {
+            MAPPING.set("ssf.filtering.states", Matrix.class, source -> {
                 int n = source.getData().getRowsCount(), m = source.getSsf().getStateDim();
                 double[] z = new double[n * m];
                 StateStorage fStates = source.getFilteringStates();
                 for (int i = 0, j = 0; i < m; ++i, j += n) {
                     fStates.getComponent(i).copyTo(z, j);
                 }
-                return MatrixType.of(z, n, m);
+                return Matrix.of(z, n, m);
             });
-            MAPPING.set("ssf.filtering.vstates", MatrixType.class, source -> {
+            MAPPING.set("ssf.filtering.vstates", Matrix.class, source -> {
                 int n = source.getData().getRowsCount(), m = source.getSsf().getStateDim();
                 double[] z = new double[n * m];
                 StateStorage fStates = source.getFilteringStates();
                 for (int i = 0, j = 0; i < m; ++i, j += n) {
                     fStates.getComponentVariance(i).copyTo(z, j);
                 }
-                return MatrixType.of(z, n, m);
+                return Matrix.of(z, n, m);
             });
-            MAPPING.setArray("ssf.filtering.vstate", 0, MatrixType.class, (source, p) -> {
+            MAPPING.setArray("ssf.filtering.vstate", 0, Matrix.class, (source, p) -> {
                 StateStorage fStates = source.getFilteringStates();
                 return fStates.P(p).unmodifiable();
             });
@@ -207,27 +207,27 @@ public class CompositeModels {
                 StateStorage fStates = source.getFilteredStates();
                 return fStates.a(p).toArray();
             });
-            MAPPING.setArray("ssf.filtered.vstate", 0, MatrixType.class, (source, p) -> {
+            MAPPING.setArray("ssf.filtered.vstate", 0, Matrix.class, (source, p) -> {
                 StateStorage fStates = source.getFilteredStates();
                 return fStates.P(p).unmodifiable();
             });
-            MAPPING.set("ssf.filtered.states", MatrixType.class, source -> {
+            MAPPING.set("ssf.filtered.states", Matrix.class, source -> {
                 int n = source.getData().getRowsCount(), m = source.getSsf().getStateDim();
                 double[] z = new double[n * m];
                 StateStorage fStates = source.getFilteredStates();
                 for (int i = 0, j = 0; i < m; ++i, j += n) {
                     fStates.getComponent(i).copyTo(z, j);
                 }
-                return MatrixType.of(z, n, m);
+                return Matrix.of(z, n, m);
             });
-            MAPPING.set("ssf.filtered.vstates", MatrixType.class, source -> {
+            MAPPING.set("ssf.filtered.vstates", Matrix.class, source -> {
                 int n = source.getData().getRowsCount(), m = source.getSsf().getStateDim();
                 double[] z = new double[n * m];
                 StateStorage fStates = source.getFilteredStates();
                 for (int i = 0, j = 0; i < m; ++i, j += n) {
                     fStates.getComponentVariance(i).copyTo(z, j);
                 }
-                return MatrixType.of(z, n, m);
+                return Matrix.of(z, n, m);
             });
 
         }
@@ -261,15 +261,15 @@ public class CompositeModels {
             return estimation.stdevSignal(obs, cmps).toArray();
         }
 
-        public double[] signal(Matrix m) {
-            return estimation.signal(Matrix.of(m)).toArray();
+        public double[] signal(FastMatrix m) {
+            return estimation.signal(FastMatrix.of(m)).toArray();
         }
 
-        public double[] stdevSignal(Matrix m) {
-            return estimation.stdevSignal(Matrix.of(m)).toArray();
+        public double[] stdevSignal(FastMatrix m) {
+            return estimation.stdevSignal(FastMatrix.of(m)).toArray();
         }
 
-        public Matrix loading(int obs) {
+        public FastMatrix loading(int obs) {
             return estimation.loading(obs, null);
         }
 
@@ -290,12 +290,12 @@ public class CompositeModels {
         }
     }
 
-    public Results estimate(CompositeModel model, MatrixType data, boolean marginal, boolean rescaling, String initialization,
+    public Results estimate(CompositeModel model, Matrix data, boolean marginal, boolean rescaling, String initialization,
             String opt, double eps, double[] parameters) {
-        return new Results(model.estimate(Matrix.of(data), marginal, rescaling, SsfInitialization.valueOf(initialization), Optimizer.valueOf(opt), eps, parameters));
+        return new Results(model.estimate(FastMatrix.of(data), marginal, rescaling, SsfInitialization.valueOf(initialization), Optimizer.valueOf(opt), eps, parameters));
     }
 
-    public Results compute(CompositeModel model, MatrixType data, double[] parameters, boolean marginal, boolean concentrated) {
-        return new Results(model.compute(Matrix.of(data), parameters, marginal, concentrated));
+    public Results compute(CompositeModel model, Matrix data, double[] parameters, boolean marginal, boolean concentrated) {
+        return new Results(model.compute(FastMatrix.of(data), parameters, marginal, concentrated));
     }
 }

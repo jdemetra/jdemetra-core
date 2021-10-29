@@ -28,10 +28,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import demetra.math.matrices.MatrixType;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -41,37 +41,37 @@ public class MatrixSerializer {
     
     public static final double ND = -99999;
 
-    public static MatrixType read(File file, String separators) throws FileNotFoundException, IOException {
+    public static Matrix read(File file, String separators) throws FileNotFoundException, IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             return read(reader, Locale.ROOT, separators);
         }
     }
 
-    public static MatrixType read(File file) throws FileNotFoundException, IOException {
+    public static Matrix read(File file) throws FileNotFoundException, IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             return read(reader, Locale.ROOT, "\\s+|,");
         }
     }
 
-    public static MatrixType read(InputStream stream, String separators) throws FileNotFoundException, IOException {
+    public static Matrix read(InputStream stream, String separators) throws FileNotFoundException, IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
             return read(reader, Locale.ROOT, separators);
         }
     }
 
-    public static MatrixType read(InputStream stream) throws FileNotFoundException, IOException {
+    public static Matrix read(InputStream stream) throws FileNotFoundException, IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
             return read(reader, Locale.ROOT, "\\s+|,");
         }
     }
 
-    public static void write(MatrixType m, File file) throws FileNotFoundException, IOException {
+    public static void write(Matrix m, File file) throws FileNotFoundException, IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write(m.toString());
         }
     }
 
-    public static MatrixType read(BufferedReader reader, Locale locale, String separators) throws FileNotFoundException, IOException {
+    public static Matrix read(BufferedReader reader, Locale locale, String separators) throws FileNotFoundException, IOException {
 
         List<double[]> data = new ArrayList<>();
         String curline;
@@ -99,7 +99,7 @@ public class MatrixSerializer {
                 all[i + j * nrows] = cur[j];
             }
         }
-        return MatrixType.of(all, nrows, ncols);
+        return Matrix.of(all, nrows, ncols);
 
     }
 

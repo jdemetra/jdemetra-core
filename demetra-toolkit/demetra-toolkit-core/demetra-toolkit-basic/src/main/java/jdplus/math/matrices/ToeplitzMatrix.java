@@ -36,8 +36,8 @@ public final class ToeplitzMatrix {
     /**
      * Durbin algorithm to solve the Yule-Walker equations: <br>
      * Ty=-r, where T[i, j] = r[abs(i-j)](Toeplitz matrix). <br>
-     * Reference G.H.Golub and C.F.Van Loan. Matrix Computations, third edition,
-     * pages 194-195. ISBN 0-8018-5414-8.
+ Reference G.H.Golub and C.F.Van Loan. FastMatrix Computations, third edition,
+ pages 194-195. ISBN 0-8018-5414-8.
      *
      * @param r
      * @return
@@ -127,8 +127,8 @@ public final class ToeplitzMatrix {
         this.r = r.clone();
     }
 
-    public Matrix asMatrix() {
-        Matrix T = new Matrix(r.length, r.length);
+    public FastMatrix asMatrix() {
+        FastMatrix T = new FastMatrix(r.length, r.length);
         DataBlock diag = T.diagonal();
         diag.set(r[0]);
         DataWindow ldiag = diag.window();
@@ -145,9 +145,9 @@ public final class ToeplitzMatrix {
      *
      * @return
      */
-    public Matrix inverse() {
+    public FastMatrix inverse() {
         int n = r.length, nc = n - 1;
-        Matrix m = new Matrix(n, n);
+        FastMatrix m = new FastMatrix(n, n);
         // double[] rc = new double[nc];
         // Array.Copy(m_r, rc, nc);
         double[] y = solveDurbinSystem(r);

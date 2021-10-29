@@ -32,7 +32,7 @@ import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.OrdinaryFilter;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * Mixed algorithm based on the diffuse initializer copyOf Durbin-Koopman and on
@@ -46,10 +46,10 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
 
     public interface Transformation {
 
-        void transform(DataBlock row, Matrix A);
+        void transform(DataBlock row, FastMatrix A);
     }
 
-    private Transformation fn = (DataBlock row, Matrix A) -> ElementaryTransformations.fastRowGivens(row, A);
+    private Transformation fn = (DataBlock row, FastMatrix A) -> ElementaryTransformations.fastRowGivens(row, A);
     private final IDiffuseSquareRootFilteringResults results;
     private AugmentedState astate;
     private DiffuseUpdateInformation pe;
@@ -184,7 +184,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
         if (f != 0) {
             double e = pe.get();
             DataBlock C = pe.M();
-            Matrix P = astate.P();
+            FastMatrix P = astate.P();
             P.addXaXt(-1 / f, C);
             // state
             // a0 = a0 + f1*Mi*v0.
@@ -262,7 +262,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
         DataBlock C = pe.M();
         loading.ZM(t, astate.P(), C);
         if (pe.isDiffuse()) {
-            Matrix B = constraints();
+            FastMatrix B = constraints();
             fn.transform(z, B);
             pe.Mi().setAY(z.get(0), B.column(0));
             pe.Mi().apply(x->Math.abs(x)<1e-12 ? 0 : x);
@@ -284,12 +284,12 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
     private void preArray() {
         DataBlock zconstraints = zconstraints();
         zconstraints.set(0);
-        Matrix A = constraints();
+        FastMatrix A = constraints();
         loading.ZM(t, A, zconstraints);
         //dynamics.TM(pos, A);
     }
 
-    private Matrix constraints() {
+    private FastMatrix constraints() {
         return astate.B();
     }
 

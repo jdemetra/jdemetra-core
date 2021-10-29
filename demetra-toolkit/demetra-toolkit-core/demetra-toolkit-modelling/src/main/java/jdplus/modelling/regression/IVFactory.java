@@ -9,7 +9,7 @@ import demetra.data.Range;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesInterval;
 import java.time.LocalDateTime;
 import jdplus.math.polynomials.Polynomial;
@@ -27,7 +27,7 @@ class IVFactory implements RegressionVariableFactory<InterventionVariable> {
     }
 
     @Override
-    public boolean fill(InterventionVariable var, TsPeriod start, Matrix buffer) {
+    public boolean fill(InterventionVariable var, TsPeriod start, FastMatrix buffer) {
         int dcount = buffer.getRowsCount();
         Range<LocalDateTime>[] seqs = var.getSequences();
         if (seqs.length == 0) {
@@ -105,7 +105,7 @@ class IVFactory implements RegressionVariableFactory<InterventionVariable> {
     }
 
     @Override
-    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>> boolean fill(InterventionVariable var, D domain, Matrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>> boolean fill(InterventionVariable var, D domain, FastMatrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

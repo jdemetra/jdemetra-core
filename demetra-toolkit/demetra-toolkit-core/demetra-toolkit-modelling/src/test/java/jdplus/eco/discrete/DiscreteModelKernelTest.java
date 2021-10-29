@@ -18,15 +18,15 @@ package jdplus.eco.discrete;
 
 import demetra.data.Data;
 import demetra.data.MatrixSerializer;
-import demetra.math.matrices.MatrixType;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Random;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -44,7 +44,7 @@ public class DiscreteModelKernelTest {
             y[i] = i < n / 2 ? 0 : 1;
         }
 
-        Matrix M = Matrix.make(n, 10);
+        FastMatrix M = FastMatrix.make(n, 10);
         Random rnd = new Random(0);
         M.set((i, j) -> rnd.nextDouble());
         M.add(-.5);
@@ -57,9 +57,9 @@ public class DiscreteModelKernelTest {
  //   @Test
     public void logit() throws URISyntaxException, IOException {
         URI uri = Data.class.getResource("/smarket.txt").toURI();
-        MatrixType smarket = MatrixSerializer.read(new File(uri));
+        Matrix smarket = MatrixSerializer.read(new File(uri));
         assertTrue(smarket != null);
-        Matrix M = Matrix.make(smarket.getRowsCount(), 7);
+        FastMatrix M = FastMatrix.make(smarket.getRowsCount(), 7);
         for (int i = 0; i < 6; ++i) {
             M.column(i + 1).copy(smarket.column(i + 1));
         }

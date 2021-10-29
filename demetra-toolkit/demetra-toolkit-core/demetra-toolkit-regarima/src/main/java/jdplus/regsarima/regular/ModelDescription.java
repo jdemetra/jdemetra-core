@@ -40,7 +40,7 @@ import jdplus.data.interpolation.DataInterpolator;
 import jdplus.data.transformation.LogJacobian;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
@@ -203,7 +203,7 @@ public final class ModelDescription {
                 final TsDomain domain = tmp.getDomain();
                 variables.forEach(v -> {
                     if (!v.isFree()) {
-                        Matrix m = Regression.matrix(domain, v.getCore());
+                        FastMatrix m = Regression.matrix(domain, v.getCore());
                         DataBlockIterator columns = m.columnsIterator();
                         int cur = 0;
                         while (columns.hasNext()) {
@@ -278,7 +278,7 @@ public final class ModelDescription {
         List<Variable> excluded = new ArrayList<>();
         for (Variable v : variables) {
             if (!v.isPreadjustment()) {
-                Matrix x = Regression.matrix(domain, v.getCore());
+                FastMatrix x = Regression.matrix(domain, v.getCore());
                 if (x == null) {
                     excluded.add(v);
                 } else {

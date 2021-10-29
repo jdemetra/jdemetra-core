@@ -12,7 +12,7 @@ import jdplus.data.DataBlock;
 import jdplus.data.analysis.DiscreteKernel;
 import jdplus.filters.LocalPolynomialFilterFactory;
 import jdplus.math.linearfilters.SymmetricFilter;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.stats.Kernel;
@@ -31,7 +31,7 @@ public class HighOrderKernelsTest {
 
     @Test
     public void testBiWeight() {
-        Matrix H = HighOrderKernels.hankel(jdplus.stats.Kernels.BIWEIGHT, 0, 4);
+        FastMatrix H = HighOrderKernels.hankel(jdplus.stats.Kernels.BIWEIGHT, 0, 4);
         assertEquals(SymmetricMatrix.determinant(H), 2.243734e-05, 1e-12);
     }
 
@@ -61,7 +61,7 @@ public class HighOrderKernelsTest {
 
     @Test
     public void testTriWeight() {
-        Matrix H = HighOrderKernels.hankel(jdplus.stats.Kernels.TRIWEIGHT, 0, 4);
+        FastMatrix H = HighOrderKernels.hankel(jdplus.stats.Kernels.TRIWEIGHT, 0, 4);
         assertEquals(SymmetricMatrix.determinant(H), 6.765031e-06, 1e-12);
     }
 
@@ -208,7 +208,7 @@ public class HighOrderKernelsTest {
 
     public static void testUnequallySpaced() {
         DoubleUnaryOperator kernel = HighOrderKernels.kernel(Kernels.TRIWEIGHT, 4);
-        Matrix M = randomize(x -> 10 * Math.sin(x), 1000, 0, Math.PI * 16);
+        FastMatrix M = randomize(x -> 10 * Math.sin(x), 1000, 0, Math.PI * 16);
         double step = Math.PI * 16 / 1000;
         for (int j = 0; j < 900; ++j) {
             double a = j * step, b = a + step * 100;
@@ -237,8 +237,8 @@ public class HighOrderKernelsTest {
         }
     }
 
-    public static Matrix randomize(DoubleUnaryOperator fn, int n, double a, double b) {
-        Matrix M = Matrix.make(n, 2);
+    public static FastMatrix randomize(DoubleUnaryOperator fn, int n, double a, double b) {
+        FastMatrix M = FastMatrix.make(n, 2);
         Random rnd = new Random(0);
         double[] array = rnd.doubles(n, a, b).toArray();
         Arrays.sort(array);

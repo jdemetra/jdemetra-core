@@ -19,7 +19,6 @@ package demetra.toolkit.io.xml.legacy.core;
 import demetra.data.Parameter;
 import demetra.information.Information;
 import demetra.information.InformationSet;
-import demetra.math.matrices.MatrixType;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TimeSelector;
@@ -39,6 +38,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -129,7 +129,7 @@ public class XmlInformation {
         toXmlMap.put(StatisticalTest.class, statsMapper);
 
         fromXmlMap.put(XmlMatrix.class, XmlMatrix.getAdapter());
-        toXmlMap.put(MatrixType.class, XmlMatrix.getAdapter());
+        toXmlMap.put(Matrix.class, XmlMatrix.getAdapter());
 
     }
 

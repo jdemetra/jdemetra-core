@@ -20,7 +20,6 @@ import demetra.likelihood.DiffuseLikelihoodStatistics;
 import demetra.data.DoubleSeq;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
-import demetra.math.matrices.MatrixType;
 import demetra.processing.ProcessingLog;
 import demetra.sa.SeriesDecomposition;
 import demetra.stats.StatisticalTest;
@@ -29,6 +28,7 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.Variable;
 import java.util.List;
 import java.util.Map;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -87,7 +87,7 @@ public class LightBasicStructuralModel<M> implements BasicStructuralModel {
 //        @lombok.NonNull
         private DoubleSeq y;
 //        @lombok.NonNull
-        private MatrixType X;
+        private Matrix X;
 
         /**
          * Regression estimation. The order correspond to the order of the
@@ -97,7 +97,7 @@ public class LightBasicStructuralModel<M> implements BasicStructuralModel {
 //        @lombok.NonNull
         private DoubleSeq coefficients;
 //        @lombok.NonNull
-        private MatrixType coefficientsCovariance;
+        private Matrix coefficientsCovariance;
 
 //        @lombok.NonNull
         private MissingValueEstimation[] missing;

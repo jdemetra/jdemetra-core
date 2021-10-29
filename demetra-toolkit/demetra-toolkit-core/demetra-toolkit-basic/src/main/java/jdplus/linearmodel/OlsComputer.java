@@ -8,11 +8,11 @@ package jdplus.linearmodel;
 import demetra.data.DoubleSeq;
 import demetra.eco.EcoException;
 import demetra.math.Constants;
-import demetra.math.matrices.MatrixType;
 import jdplus.leastsquares.QRSolution;
 import jdplus.leastsquares.QRSolver;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixException;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -28,9 +28,9 @@ public class OlsComputer implements jdplus.linearmodel.Ols.Processor {
                 return null;
             }
             if (model.getVariablesCount() > 0) {
-                Matrix x = model.variables();
+                FastMatrix x = model.variables();
                 QRSolution solution = QRSolver.robustLeastSquares(y, x);
-                Matrix bvar = solution.unscaledCovariance();
+                FastMatrix bvar = solution.unscaledCovariance();
                 return LeastSquaresResults.builder(y, x)
                         .mean(model.isMeanCorrection())
                         .estimation(solution.getB(), bvar)

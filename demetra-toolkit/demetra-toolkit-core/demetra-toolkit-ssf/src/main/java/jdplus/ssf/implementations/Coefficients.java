@@ -6,7 +6,7 @@
 package jdplus.ssf.implementations;
 
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.SsfException;
 import jdplus.ssf.StateComponent;
 
@@ -38,7 +38,7 @@ public class Coefficients {
      * defined by the size of the (square) matrix
      * @return 
      */
-    public StateComponent timeVaryingCoefficients(Matrix vars) {
+    public StateComponent timeVaryingCoefficients(FastMatrix vars) {
         int nx = vars.getColumnsCount();
         return new StateComponent(new ConstantInitialization(nx), TimeVaryingDynamics.of(vars));
     }

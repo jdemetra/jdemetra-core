@@ -20,7 +20,7 @@ package jdplus.math.functions.minpack;
 import nbbrd.design.Development;
 import jdplus.math.functions.ssq.ISsqFunction;
 import jdplus.math.functions.ssq.ISsqFunctionPoint;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import demetra.data.DoubleSeq;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
@@ -92,7 +92,7 @@ public class MinPackMinimizer implements SsqFunctionMinimizer {
      * @return
      */
     @Override
-    public Matrix curvatureAtMinimum() {
+    public FastMatrix curvatureAtMinimum() {
         try{
 	return m_estimator.curvature(m_problem);
         }

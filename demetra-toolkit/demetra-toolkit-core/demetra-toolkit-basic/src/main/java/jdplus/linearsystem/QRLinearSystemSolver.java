@@ -23,7 +23,7 @@ import jdplus.math.matrices.MatrixException;
 import demetra.design.AlgorithmImplementation;
 import nbbrd.design.Development;
 import jdplus.data.normalizer.SafeNormalizer;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
 import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import jdplus.math.matrices.decomposition.QRDecomposition;
@@ -83,9 +83,9 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
     }
 
     @Override
-    public void solve(Matrix A, DataBlock b) {
+    public void solve(FastMatrix A, DataBlock b) {
         // we normalize b
-        Matrix An;
+        FastMatrix An;
         if (normalize) {
             An = A.deepClone();
             DataBlockIterator rows = An.rowsIterator();
@@ -118,9 +118,9 @@ public class QRLinearSystemSolver implements LinearSystemSolver {
     }
 
     @Override
-    public void solve(Matrix A, Matrix B) {
+    public void solve(FastMatrix A, FastMatrix B) {
         // we normalize b
-        Matrix An;
+        FastMatrix An;
         double[] factor = null;
         if (normalize) {
             An = A.deepClone();

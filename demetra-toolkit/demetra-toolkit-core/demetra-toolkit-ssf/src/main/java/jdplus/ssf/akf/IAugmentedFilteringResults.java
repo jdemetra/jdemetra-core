@@ -19,7 +19,7 @@ package jdplus.ssf.akf;
 import jdplus.data.DataBlock;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.univariate.IFilteringResults;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -48,7 +48,7 @@ public interface IAugmentedFilteringResults extends IFilteringResults {
      */
     void save(int t, AugmentedState state, StateInfo info);
 
-    default Matrix B(int pos) {
+    default FastMatrix B(int pos) {
         return null;
     }
 

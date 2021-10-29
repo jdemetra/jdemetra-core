@@ -19,16 +19,13 @@ package jdplus.modelling.regular.tests;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
-import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
-import jdplus.linearmodel.JointTest;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
-import jdplus.math.matrices.Matrix;
-import jdplus.math.matrices.MatrixWindow;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
 
 /**
@@ -56,14 +53,14 @@ public class TradingDaysTest {
         try {
             GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD7);
             GenericTradingDaysVariable td = new GenericTradingDaysVariable(gtd);
-            Matrix m = Regression.matrix(y.getDomain(), td);
+            FastMatrix m = Regression.matrix(y.getDomain(), td);
             DoubleSeq dy = y.getValues();
-            Matrix dm = m;
+            FastMatrix dm = m;
             if (lags != null) {
                 for (int j = 0; j < lags.length; ++j) {
                     int lag = lags[j];
                     if (lag > 0) {
-                        Matrix mj = dm;
+                        FastMatrix mj = dm;
                         int nr = mj.getRowsCount(), nc = mj.getColumnsCount();
                         dm = mj.extract(lag, nr - lag, 0, nc).deepClone();
                         dm.sub(mj.extract(0, nr - lag, 0, nc));

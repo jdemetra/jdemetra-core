@@ -18,7 +18,7 @@ package jdplus.ssf;
 
 import jdplus.data.DataBlock;
 import java.util.function.Consumer;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -28,7 +28,7 @@ public class DefaultInitialization implements ISsfInitialization {
     
     private final int dim, ndiffuse;
     private Consumer<DataBlock> a0;
-    private Consumer<Matrix> Pf, Pi, B;
+    private Consumer<FastMatrix> Pf, Pi, B;
     
     public DefaultInitialization(int dim, int ndiffuse) {
         this.dim = dim;
@@ -40,12 +40,12 @@ public class DefaultInitialization implements ISsfInitialization {
         return this;
     }
     
-    public DefaultInitialization Pf(Consumer<Matrix> Pf) {
+    public DefaultInitialization Pf(Consumer<FastMatrix> Pf) {
         this.Pf = Pf;
         return this;
     }
     
-    public DefaultInitialization Pi(Consumer<Matrix> Pi) {
+    public DefaultInitialization Pi(Consumer<FastMatrix> Pi) {
         if (ndiffuse == 0) {
             throw new SsfException(SsfException.INITIALIZATION);
         }
@@ -53,7 +53,7 @@ public class DefaultInitialization implements ISsfInitialization {
         return this;
     }
     
-    public DefaultInitialization B(Consumer<Matrix> B) {
+    public DefaultInitialization B(Consumer<FastMatrix> B) {
         if (ndiffuse == 0) {
             throw new SsfException(SsfException.INITIALIZATION);
         }
@@ -77,7 +77,7 @@ public class DefaultInitialization implements ISsfInitialization {
     }
     
     @Override
-    public void diffuseConstraints(Matrix b) {
+    public void diffuseConstraints(FastMatrix b) {
         if (B != null) {
             B.accept(b);
         }
@@ -91,14 +91,14 @@ public class DefaultInitialization implements ISsfInitialization {
     }
     
     @Override
-    public void Pf0(Matrix pf) {
+    public void Pf0(FastMatrix pf) {
         if (Pf != null) {
             Pf.accept(pf);
         }
     }
     
     @Override
-    public void Pi0(Matrix pi) {
+    public void Pi0(FastMatrix pi) {
         if (Pi != null) {
             Pi.accept(pi);
         } else {
@@ -120,7 +120,7 @@ public class DefaultInitialization implements ISsfInitialization {
         if (Pf == null) {
             builder.append("Pf0:").append(System.lineSeparator()).append("0");
         } else {
-            Matrix M = Matrix.square(dim);
+            FastMatrix M = FastMatrix.square(dim);
             Pf.accept(M);
             builder.append(M.toString(ISsfState.FMT));
         }
@@ -128,7 +128,7 @@ public class DefaultInitialization implements ISsfInitialization {
         if (B == null) {
             builder.append("B:").append(System.lineSeparator()).append("0");
         } else {
-            Matrix M = Matrix.make(dim, ndiffuse);
+            FastMatrix M = FastMatrix.make(dim, ndiffuse);
             B.accept(M);
             builder.append(M.toString(ISsfState.FMT));
         }

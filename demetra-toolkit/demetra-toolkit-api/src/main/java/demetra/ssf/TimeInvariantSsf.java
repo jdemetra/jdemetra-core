@@ -17,7 +17,7 @@
 package demetra.ssf;
 
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -29,13 +29,14 @@ public class TimeInvariantSsf {
 
     // Initialization
     DoubleSeq a0;
-    MatrixType p0, pi0, B;
-
+    Matrix p0;
+    Matrix pi0, B;
     // Dynamics
-    MatrixType T, V, S;
-    
+    Matrix T;
+    Matrix V, S;
+
     // Measurement
     DoubleSeq Z;
     double errVariance;
-        
+
 }

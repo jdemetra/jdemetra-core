@@ -24,7 +24,7 @@ import demetra.design.AlgorithmImplementation;
 import nbbrd.design.Development;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.polynomials.Polynomial;
 import nbbrd.service.ServiceProvider;
@@ -40,7 +40,7 @@ import demetra.data.DoubleSeq;
 @ServiceProvider(ArmaFilter.class)
 public class AnsleyFilter implements ArmaFilter {
 
-    private Matrix L;
+    private FastMatrix L;
     private double[] ar, ma;
     private double var;
     private int n;
@@ -126,7 +126,7 @@ public class AnsleyFilter implements ArmaFilter {
 
         Polynomial sma = SymmetricFilter.convolutionOf(arima.getMa(), var).coefficientsAsPolynomial();
 
-        L = Matrix.make(r, n);
+        L = FastMatrix.make(r, n);
         // complete the matrix
         // if (i >= j) m(i, j) = lband[i-j, j]; if i-j >= r, m(i, j) =0
         // if (i < j) m(i, j) = lband(j-i, i)
@@ -142,7 +142,7 @@ public class AnsleyFilter implements ArmaFilter {
             }
         }
 
-        Matrix M = L.extract(0, q + 1, p, n-p);
+        FastMatrix M = L.extract(0, q + 1, p, n-p);
         DataBlockIterator rows = M.rowsIterator();
 
         int pos=0;
@@ -244,9 +244,9 @@ public class AnsleyFilter implements ArmaFilter {
         }
     }
 
-    public Matrix getCholeskyFactor() {
+    public FastMatrix getCholeskyFactor() {
         if (L == null) {
-            Matrix l = Matrix.make(1, n);
+            FastMatrix l = FastMatrix.make(1, n);
             l.set(Math.sqrt(var));
             return l;
         } else {

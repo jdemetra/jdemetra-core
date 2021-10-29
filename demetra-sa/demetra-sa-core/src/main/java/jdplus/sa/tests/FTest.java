@@ -16,6 +16,7 @@
  */
 package jdplus.sa.tests;
 
+import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
 import nbbrd.design.BuilderPattern;
@@ -24,7 +25,7 @@ import jdplus.linearmodel.JointTest;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.PeriodicContrastsFactory;
 
 /**
@@ -34,11 +35,7 @@ import jdplus.modelling.regression.PeriodicContrastsFactory;
 @BuilderPattern(StatisticalTest.class)
 public class FTest {
 
-    public static enum Model {
-        WN, AR, D1
-    }
-
-    private Model model = Model.WN;
+    private SarimaOrders.Prespecified model = SarimaOrders.Prespecified.WN;
     private final DoubleSeq s;
     private final int period;
     private int ncycles;
@@ -48,7 +45,7 @@ public class FTest {
         this.period = period;
     }
 
-    public FTest model(Model model) {
+    public FTest model(SarimaOrders.Prespecified model) {
         this.model = model;
         return this;
     }
@@ -67,8 +64,10 @@ public class FTest {
                 return processAr();
             case D1:
                 return processDiff();
-            default:
-                return process();
+            case WN:
+               return process();
+             default:
+         throw new UnsupportedOperationException("Not supported yet."); 
         }
     }
 
@@ -76,7 +75,7 @@ public class FTest {
         DoubleSeq y = ncycles == 0 ? s : s.drop(Math.max(0, s.length() - ncycles * period), 0);
         try {
             PeriodicContrasts dummies = new PeriodicContrasts(period);
-            Matrix matrix = PeriodicContrastsFactory.matrix(dummies, y.length(), 0);
+            FastMatrix matrix = PeriodicContrastsFactory.matrix(dummies, y.length(), 0);
             double ybar = y.average();
             LinearModel reg = LinearModel.builder()
                     .y(y.fn(q -> q - ybar))
@@ -97,7 +96,7 @@ public class FTest {
         DoubleSeq y = ncycles == 0 ? s : s.drop(Math.max(0, s.length() - ncycles * period - 1), 0);
         try {
             PeriodicContrasts dummies = new PeriodicContrasts(period);
-            Matrix matrix = PeriodicContrastsFactory.matrix(dummies, y.length()-1, 0);
+            FastMatrix matrix = PeriodicContrastsFactory.matrix(dummies, y.length()-1, 0);
             LinearModel reg = LinearModel.builder()
                     .y(y.drop(1, 0))
                     .meanCorrection(true)
@@ -120,7 +119,7 @@ public class FTest {
         DoubleSeq dy = y.delta(1);
         try {
             PeriodicContrasts dummies = new PeriodicContrasts(period);
-            Matrix matrix = PeriodicContrastsFactory.matrix(dummies, dy.length(), 0);
+            FastMatrix matrix = PeriodicContrastsFactory.matrix(dummies, dy.length(), 0);
             double dybar = dy.average();
             LinearModel reg = LinearModel.builder()
                     .y(dy.fn(q -> q - dybar))

@@ -17,16 +17,16 @@
 package jdplus.stats.tests;
 
 import demetra.math.Complex;
-import demetra.math.matrices.MatrixType;
 import demetra.stats.StatException;
 import demetra.util.IntList;
 import jdplus.math.matrices.GeneralMatrix;
 import jdplus.math.matrices.LowerTriangularMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixFactory;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.matrices.decomposition.EigenSystem;
 import jdplus.math.matrices.decomposition.IEigenSystem;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -85,13 +85,13 @@ public class JohansenCointegration {
         this.season = builder.season;
     }
 
-    private Matrix X, Z, Z0, Z2, Z1, D, Ds, T;
+    private FastMatrix X, Z, Z0, Z2, Z1, D, Ds, T;
     private IntList rows;
 
     private double[] vp;
-    private Matrix V;
+    private FastMatrix V;
 
-    public void process(Matrix x, Matrix dummies) {
+    public void process(FastMatrix x, FastMatrix dummies) {
         clear();
         int p = x.getColumnsCount(), n = x.getRowsCount(), s = season > 0 ? season - 1 : 0;
         if (n * p < p + s * p + k * p * p + p * (p + 1) / 2) {
@@ -110,41 +110,41 @@ public class JohansenCointegration {
 
         // actual computation
         int nz = Z0.getRowsCount();
-        Matrix M22 = SymmetricMatrix.XtX(Z2); // Z2'Z2
-        Matrix M20 = GeneralMatrix.AtB(Z2, Z0); // Z2'Z0
-        Matrix M21 = GeneralMatrix.AtB(Z2, Z1); // Z2'Z1
+        FastMatrix M22 = SymmetricMatrix.XtX(Z2); // Z2'Z2
+        FastMatrix M20 = GeneralMatrix.AtB(Z2, Z0); // Z2'Z0
+        FastMatrix M21 = GeneralMatrix.AtB(Z2, Z1); // Z2'Z1
         // (Z2'Z2)^(-1)
-        Matrix M22inv = SymmetricMatrix.inverse(M22);
+        FastMatrix M22inv = SymmetricMatrix.inverse(M22);
 
         // Z0 on Z2: R0=Z0-Z2*(Z2'Z2)^(-1)*Z2'Z0
-        Matrix R0 = Z0.minus(GeneralMatrix.AB(Z2, GeneralMatrix.AB(M22inv, M20)));
+        FastMatrix R0 = Z0.minus(GeneralMatrix.AB(Z2, GeneralMatrix.AB(M22inv, M20)));
         // Z1 on Z2: R1=Z1-Z2(Z2'Z2)^(-1)*Z2'Z1
-        Matrix R1 = Z1.minus(GeneralMatrix.AB(Z2, GeneralMatrix.AB(M22inv, M21)));
+        FastMatrix R1 = Z1.minus(GeneralMatrix.AB(Z2, GeneralMatrix.AB(M22inv, M21)));
 
         // R0 = ab R1 + e
-        Matrix S00 = SymmetricMatrix.XtX(R0);
-        Matrix S11 = SymmetricMatrix.XtX(R1);
-        Matrix S01 = GeneralMatrix.AtB(R0, R1);
+        FastMatrix S00 = SymmetricMatrix.XtX(R0);
+        FastMatrix S11 = SymmetricMatrix.XtX(R1);
+        FastMatrix S01 = GeneralMatrix.AtB(R0, R1);
         S00.div(nz);
         S11.div(nz);
         S01.div(nz);
-        Matrix L0 = S00; // S00 not cloned! be careful
+        FastMatrix L0 = S00; // S00 not cloned! be careful
         SymmetricMatrix.lcholesky(L0);
-        Matrix K1 = S01;// S01 not clone! be careful
+        FastMatrix K1 = S01;// S01 not clone! be careful
         LowerTriangularMatrix.solveLX(L0, K1);
-        Matrix L1 = S11; // S11 not cloned! be careful
+        FastMatrix L1 = S11; // S11 not cloned! be careful
         SymmetricMatrix.lcholesky(L1);
         LowerTriangularMatrix.solveXLt(L1, K1);
 
         // K = L1^(-1)*S10(S00)^(-1)S01*L1^(-1) = L1^(-1)*S10*(L0L0')^(-1)*S01*L1'^(-1)* =  L1^(-1)*S10*L0'^(-1)*L0(^-1)*S01*L1'^(-1) 
-        Matrix K = SymmetricMatrix.XtX(K1);
+        FastMatrix K = SymmetricMatrix.XtX(K1);
         IEigenSystem eig = EigenSystem.create(K, true);
         eig.setComputingEigenVectors(true);
         eig.compute();
         Complex[] eigenValues = eig.getEigenValues();
-        Matrix E = eig.getEigenVectors(); // normalized vectors by column
+        FastMatrix E = eig.getEigenVectors(); // normalized vectors by column
         LowerTriangularMatrix.solveLX(L1, E); // 
-        V = Matrix.make(E.getRowsCount(), E.getColumnsCount());
+        V = FastMatrix.make(E.getRowsCount(), E.getColumnsCount());
         vp = new double[eigenValues.length];
 
         for (int i = 0; i < vp.length; ++i) {
@@ -203,7 +203,7 @@ public class JohansenCointegration {
     private void buildDet(int n) {
         // Create seasonal dummies if need be
         if (season > 1) {
-            Ds = Matrix.make(n, season - 1);
+            Ds = FastMatrix.make(n, season - 1);
             Ds.set(1.0 / season);
             for (int i = 0; i < Ds.getColumnsCount(); ++i) {
                 Ds.column(i).extract(i, -1, season).add(1);
@@ -212,10 +212,10 @@ public class JohansenCointegration {
         }
         if (ecdet == ECDet.trend) {
             if (rows == null) {
-                T = Matrix.make(n, 1);
+                T = FastMatrix.make(n, 1);
                 T.set((r, c) -> r + 1);
             } else {
-                T = Matrix.make(rows.size(), 1);
+                T = FastMatrix.make(rows.size(), 1);
                 T.set((r, c) -> rows.get(r) + 1);
             }
         }
@@ -227,10 +227,10 @@ public class JohansenCointegration {
         Z = MatrixFactory.embed(MatrixFactory.delta(X, 1, 1), k);
         int nz = Z.getRowsCount(); // n-k
         Z0 = Z.extract(0, nz, 0, p);
-        MatrixType one = one(nz);
-        Matrix D1 = D == null ? null : D.extract(k, nz, 0, D.getColumnsCount());
-        Matrix Ds1 = Ds == null ? null : Ds.extract(k, nz, 0, Ds.getColumnsCount());
-        Matrix T1 = T == null ? null : T.extract(k, nz, 0, 1);
+        Matrix one = one(nz);
+        FastMatrix D1 = D == null ? null : D.extract(k, nz, 0, D.getColumnsCount());
+        FastMatrix Ds1 = Ds == null ? null : Ds.extract(k, nz, 0, Ds.getColumnsCount());
+        FastMatrix T1 = T == null ? null : T.extract(k, nz, 0, 1);
         switch (ecdet) {
             case cnt:
                 if (spec == Spec.longrun) {
@@ -268,8 +268,8 @@ public class JohansenCointegration {
         }
     }
 
-    private MatrixType one(int n) {
-        Matrix one = Matrix.make(n, 1);
+    private Matrix one(int n) {
+        FastMatrix one = FastMatrix.make(n, 1);
         one.set(1);
         return one;
     }

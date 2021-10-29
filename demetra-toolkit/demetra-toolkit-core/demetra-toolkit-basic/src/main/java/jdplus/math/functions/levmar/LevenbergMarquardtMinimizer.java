@@ -26,7 +26,7 @@ import jdplus.math.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
 import jdplus.leastsquares.QRSolution;
 import jdplus.leastsquares.QRSolver;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 
 /**
@@ -109,7 +109,7 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
      * Approximate hessian of the function at the current point
      * V = 2*[de/dxi*de/dxj]
      */
-    private Matrix H;
+    private FastMatrix H;
     /**
      * Gradient of the function at the current point
      * G = 2*[de/dxi*e]
@@ -136,7 +136,7 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
     }
 
     @Override
-    public Matrix curvatureAtMinimum() {
+    public FastMatrix curvatureAtMinimum() {
         if (H == null) {
             ISsqFunctionDerivatives derivatives = currentPoint.ssqDerivatives();
             H = derivatives.hessian();
@@ -193,8 +193,8 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
         }
 
         int n = currentE.length(), m = function.getDomain().getDim();
-        Matrix JC = Matrix.make(n + m, m);
-        Matrix J = JC.extract(0, n, 0, m);
+        FastMatrix JC = FastMatrix.make(n + m, m);
+        FastMatrix J = JC.extract(0, n, 0, m);
         // e, extended with 0
         double[] e = new double[n + m];
         currentE.copyTo(e, 0);
@@ -216,7 +216,7 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
 
         int kiter = 0;
         while (kiter++ < 100) {
-            Matrix V;
+            FastMatrix V;
             if (mu > 0) {
                 double smu = Math.sqrt(mu);
                 JC.subDiagonal(-n).set(smu);
@@ -336,7 +336,7 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
         }
 
         int n = currentE.length(), m = function.getDomain().getDim();
-        Matrix J = Matrix.make(n, m);
+        FastMatrix J = FastMatrix.make(n, m);
         DataBlock Jte = DataBlock.make(m);
         try {
             currentPoint.ssqDerivatives().jacobian(J);
@@ -361,7 +361,7 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
         int kiter = 0;
         while (kiter++ < 100) {
             DataBlock dp = null;
-            Matrix K = H.deepClone();
+            FastMatrix K = H.deepClone();
             if (mu > 0) {
                 K.diagonal().add(mu);
             }

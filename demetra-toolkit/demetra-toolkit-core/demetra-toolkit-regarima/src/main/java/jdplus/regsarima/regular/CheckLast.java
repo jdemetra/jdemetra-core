@@ -15,7 +15,7 @@ import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.Variable;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import java.util.Arrays;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaForecasts;
 
@@ -26,6 +26,7 @@ import jdplus.regarima.RegArimaForecasts;
 public class CheckLast {
 
     private final RegSarimaProcessor kernel;
+    private RegSarimaModel model;
     private final int nback;
     private TsData y, fy, oforecasts;
     private double[] f, ef;
@@ -59,7 +60,7 @@ public class CheckLast {
             if (gmodel == null || !(gmodel instanceof RegSarimaModel)) {
                 return false;
             }
-            RegSarimaModel model = (RegSarimaModel) gmodel;
+            model = (RegSarimaModel) gmodel;
 
             RegArimaForecasts.Result fcasts;
             DoubleSeq b = model.getEstimation().getCoefficients();
@@ -72,7 +73,7 @@ public class CheckLast {
             } else {
                 Variable[] variables = model.getDescription().getVariables();
                 TsDomain xdom = edom.extend(0, nback);
-                Matrix matrix = Regression.matrix(xdom, Arrays.stream(variables).map(v -> v.getCore()).toArray(n -> new ITsVariable[n]));
+                FastMatrix matrix = Regression.matrix(xdom, Arrays.stream(variables).map(v -> v.getCore()).toArray(n -> new ITsVariable[n]));
                 fcasts = RegArimaForecasts.calcForecast(model.arima(),
                         model.getEstimation().originalY(), matrix,
                         b, model.getEstimation().getCoefficientsCovariance(), sig2);
@@ -89,6 +90,10 @@ public class CheckLast {
         } catch (Exception err) {
             return false;
         }
+    }
+    
+    public RegSarimaModel getModel(){
+        return model;
     }
 
     /**
@@ -226,6 +231,7 @@ public class CheckLast {
     }
 
     private void clear() {
+        model=null;
         f = null;
         ef = null;
         fy = null;

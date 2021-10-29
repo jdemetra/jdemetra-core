@@ -19,7 +19,6 @@ package jdplus.sts.internal;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Parameter;
-import demetra.math.matrices.MatrixType;
 import demetra.sts.BsmDecomposition;
 import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
@@ -36,7 +35,7 @@ import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.functions.minpack.MinPackMinimizer;
 import jdplus.math.functions.riso.LbfgsMinimizer;
 import jdplus.math.functions.ssq.ProxyMinimizer;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;
@@ -46,6 +45,7 @@ import jdplus.sts.BsmData;
 import jdplus.sts.SsfBsm;
 import jdplus.sts.SsfBsm2;
 import nbbrd.design.Development;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -59,7 +59,7 @@ public class BsmKernel {
     private DoubleSeq z;
     private double[] y;
     private int period;
-    private MatrixType X;
+    private Matrix X;
     private double factor = 1;
 
     // mapper definition
@@ -414,13 +414,13 @@ public class BsmKernel {
      * @param model
      * @return
      */
-    public boolean process(DoubleSeq y, MatrixType x, int period, BsmSpec model) {
+    public boolean process(DoubleSeq y, Matrix x, int period, BsmSpec model) {
         clear();
         this.z = y;
         this.y = y.toArray();
         AbsMeanNormalizer normalizer = new AbsMeanNormalizer();
         factor = normalizer.normalize(DataBlock.of(this.y));
-        this.X = Matrix.of(x);
+        this.X = FastMatrix.of(x);
         this.period = period;
         modelSpec = model;
         boolean rslt = estimate();

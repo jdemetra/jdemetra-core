@@ -25,7 +25,7 @@ import jdplus.data.DataBlockStorage;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.ApiUtility;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.IOutlierFactory;
@@ -57,7 +57,7 @@ public class FractionalAirlineKernel {
         double[] y = spec.getY();
         RegArimaModel.Builder builder = RegArimaModel.<ArimaModel>builder()
                 .y(DoubleSeq.of(y))
-                .addX(Matrix.of(spec.getX()))
+                .addX(FastMatrix.of(spec.getX()))
                 .arima(mapping.getDefault())
                 .meanCorrection(spec.isMeanCorrection());
         OutlierDescriptor[] o = null;

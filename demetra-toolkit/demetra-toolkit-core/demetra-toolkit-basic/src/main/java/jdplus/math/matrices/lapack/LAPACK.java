@@ -5,7 +5,7 @@
  */
 package jdplus.math.matrices.lapack;
 
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -39,7 +39,7 @@ public class LAPACK {
           0 <= low <= high <= n
      * @param tau Should be initialized to 0
      */
-    public void dgehrd(Matrix A, int low, int high, double[] tau) {
+    public void dgehrd(FastMatrix A, int low, int high, double[] tau) {
         
         // number of columns being treated
         int nh=high-low;

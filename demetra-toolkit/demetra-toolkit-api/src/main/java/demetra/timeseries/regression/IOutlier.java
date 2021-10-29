@@ -21,6 +21,7 @@ import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -47,7 +48,7 @@ public interface IOutlier extends ITsVariable {
         } else {
             TsPeriod p = ((TsDomain) context).get(0);
             p=p.withDate(pos);
-            builder.append(p.display());
+            builder.append(p.start().toLocalDate().format(DateTimeFormatter.ISO_DATE));
         }
         builder.append(')');
         return builder.toString();
@@ -56,7 +57,7 @@ public interface IOutlier extends ITsVariable {
     public static <D extends TimeSeriesDomain<?>> String defaultName(String code, TsPeriod pos) {
         StringBuilder builder = new StringBuilder();
         builder.append(code).append(" (");
-             builder.append(pos.display());
+             builder.append(pos.start().toLocalDate().format(DateTimeFormatter.ISO_DATE));
         builder.append(')');
         return builder.toString();
     }

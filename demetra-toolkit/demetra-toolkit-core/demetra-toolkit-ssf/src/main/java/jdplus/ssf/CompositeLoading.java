@@ -21,7 +21,7 @@ import jdplus.data.DataWindow;
 import jdplus.math.matrices.MatrixWindow;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -73,14 +73,14 @@ public class CompositeLoading implements ISsfLoading {
     }
 
     @Override
-    public double ZVZ(int pos, Matrix v) {
+    public double ZVZ(int pos, FastMatrix v) {
         MatrixWindow D = v.topLeft(0, 0);
         double x = 0;
         for (int i = 0; i < loadings.length; ++i) {
             int ni = dim[i];
             tmp.set(0);
             DataWindow wnd = tmp.left();
-            Matrix nD = D.next(ni, ni);
+            FastMatrix nD = D.next(ni, ni);
             x += loadings[i].ZVZ(pos, nD);
             MatrixWindow C = MatrixWindow.of(nD);
             for (int j = i + 1; j < loadings.length; ++j) {
@@ -94,7 +94,7 @@ public class CompositeLoading implements ISsfLoading {
     }
 
     @Override
-    public void VpZdZ(int pos, Matrix V, double d) {
+    public void VpZdZ(int pos, FastMatrix V, double d) {
         if (d == 0) {
             return;
         }

@@ -22,7 +22,7 @@ import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -44,7 +44,7 @@ public class RegSsfTest {
         TsData s = Data.TS_PROD;
         SsfData y = new SsfData(s.getValues());
         GenericTradingDays td = GenericTradingDays.contrasts(DayClustering.TD7);
-        Matrix X = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(td));
+        FastMatrix X = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(td));
         ISsf rssf1 = Ssf.of(RegSsf.of(cmp1, X), RegSsf.defaultLoading(cmp1.dim(), SsfArima.defaultLoading(), X));
         CompositeSsf rssf2 = CompositeSsf.builder()
                 .add(cmp1, Loading.fromPosition(0))
@@ -65,7 +65,7 @@ public class RegSsfTest {
         TsData s = Data.TS_PROD;
         SsfData y = new SsfData(s.getValues());
         GenericTradingDays td = GenericTradingDays.contrasts(DayClustering.TD7);
-        Matrix X = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(td));
+        FastMatrix X = Regression.matrix(s.getDomain(), new GenericTradingDaysVariable(td));
         ISsf rssf1 = Ssf.of(RegSsf.of(cmp1, X), RegSsf.defaultLoading(cmp1.dim(), SsfArima.defaultLoading(), X));
         CompositeSsf rssf2 = CompositeSsf.builder()
                 .add(cmp1, Loading.fromPosition(0))

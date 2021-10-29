@@ -24,7 +24,7 @@ import jdplus.math.matrices.QuadraticForm;
 import demetra.data.DoubleSeqCursor;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.ISsfMeasurement;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -33,11 +33,11 @@ import jdplus.math.matrices.Matrix;
 public class ExternalEffects implements ISsfLoading {
 
     private final ISsfLoading loading;
-    private final Matrix data;
+    private final FastMatrix data;
     private final int nm, nx;
     private final DataBlock tmp;
 
-    ExternalEffects(final int dim, final ISsfLoading loading, final Matrix data) {
+    ExternalEffects(final int dim, final ISsfLoading loading, final FastMatrix data) {
         this.data = data;
         this.loading = loading;
         nm = dim;
@@ -65,7 +65,7 @@ public class ExternalEffects implements ISsfLoading {
     }
 
     @Override
-    public double ZVZ(int pos, Matrix V) {
+    public double ZVZ(int pos, FastMatrix V) {
         MatrixWindow v = V.topLeft(0, 0);
         double v00 = loading.ZVZ(pos, v.next(nm, nm));
         tmp.set(0);
@@ -76,16 +76,16 @@ public class ExternalEffects implements ISsfLoading {
     }
 
     @Override
-    public void VpZdZ(int pos, Matrix V, double d) {
+    public void VpZdZ(int pos, FastMatrix V, double d) {
         if (d == 0) {
             return;
         }
         MatrixWindow v = V.topLeft(0, 0);
-        Matrix dv = v.next(nm, nm);
+        FastMatrix dv = v.next(nm, nm);
         loading.VpZdZ(pos, dv, d);
         MatrixWindow vtmp = MatrixWindow.of(dv);
-        Matrix hv = vtmp.hnext(nx);
-        Matrix vv = v.vnext(nx);
+        FastMatrix hv = vtmp.hnext(nx);
+        FastMatrix vv = v.vnext(nx);
         DataBlockIterator rows = vv.rowsIterator();
         DataBlock xrow = data.row(pos);
         DoubleSeqCursor cell = xrow.cursor();

@@ -26,7 +26,7 @@ import lombok.AccessLevel;
  */
 @lombok.Value
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class TsMoniker {
+public class TsMoniker implements Comparable<TsMoniker> {
 
     public static final TsMoniker NULL = TsMoniker.of("", "");
 
@@ -57,5 +57,15 @@ public class TsMoniker {
     @Override
     public String toString() {
         return isProvided() ? (source + "<@>" + id) : id;
+    }
+
+    @Override
+    public int compareTo(TsMoniker o) {
+        int cmp = source.compareTo(o.source);
+        if (cmp != 0) {
+            return cmp;
+        } else {
+            return id.compareTo(o.id);
+        }
     }
 }

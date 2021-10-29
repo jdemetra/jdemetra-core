@@ -22,7 +22,7 @@ import nbbrd.design.Development;
 import nbbrd.design.Immutable;
 import demetra.eco.EcoException;
 import demetra.math.Constants;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -36,12 +36,12 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
     private final int nobs, nd;
     private final double[] res;
     private final double[] b;
-    private final Matrix bvar;
+    private final FastMatrix bvar;
     private final boolean legacy;
     private final boolean scalingFactor;
 
     InternalDiffuseConcentratedLikelihood(final int n, final int nd, final double ssqerr, final double ldet, final double lddet,
-            final double[] b, final Matrix bvar, final double[] res, final boolean legacy, final boolean scalingFactor) {
+            final double[] b, final FastMatrix bvar, final double[] res, final boolean legacy, final boolean scalingFactor) {
         this.nobs = n;
         this.nd = nd;
         this.ssqerr = ssqerr;
@@ -143,7 +143,7 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
     }
 
     @Override
-    public Matrix unscaledCovariance() {
+    public FastMatrix unscaledCovariance() {
         return bvar;
     }
 
@@ -172,7 +172,7 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
             }
         }
         double[] nb = b;
-        Matrix nbvar = bvar;
+        FastMatrix nbvar = bvar;
         if (b != null) {
             int nx = b.length;
             if (xfactor != null) {
@@ -188,7 +188,7 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
                     }
                     nbv[i * (nx + 1)] *= ifactor * ifactor;
                 }
-                nbvar = Matrix.builder(nbv).ncolumns(nx).nrows(nx).build();
+                nbvar = FastMatrix.builder(nbv).ncolumns(nx).nrows(nx).build();
             } else if (yfactor != 1) {
                 nb = new double[nx];
                 for (int i = 0; i < nx; ++i) {

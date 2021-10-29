@@ -20,7 +20,7 @@ import demetra.data.Data;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
 import java.time.LocalDate;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -57,7 +57,7 @@ public class ToolkitProtosUtilityTest {
     
     @Test
     public void testMatrix(){
-        Matrix M=Matrix.make(10, 20);
+        FastMatrix M=FastMatrix.make(10, 20);
         M.set((r, c)->r+c);
         ToolkitProtos.Matrix m = ToolkitProtosUtility.convert(M);
         int n = m.getValuesCount();

@@ -50,7 +50,7 @@ import demetra.tempdisagg.univariate.TemporalDisaggregation;
 import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec;
 import demetra.timeseries.regression.Variable;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 import jdplus.ssf.implementations.Noise;
 
@@ -422,7 +422,7 @@ public class TemporalDisaggregationProcessor implements TemporalDisaggregation.P
     private TsData hresiduals(DisaggregationModel model, DoubleSeq coeff) {
         double[] y = new double[model.getHEDom().length()];
         double[] hy = model.getHEY();
-        Matrix hx = model.getHEX();
+        FastMatrix hx = model.getHEX();
         for (int i = 0; i < hy.length; ++i) {
             if (Double.isFinite(hy[i])) {
                 y[i] = hy[i] - hx.row(i).dot(coeff);

@@ -6,10 +6,10 @@
 package jdplus.ml;
 
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -44,7 +44,7 @@ public class ExtendedIsolationForestTest {
         for (int i = 0; i < m; ++i) {
             data[i] = 3.3;
         }
-        MatrixType M = MatrixType.of(data, m, n);
+        Matrix M = Matrix.of(data, m, n);
         long t0 = System.currentTimeMillis();
         ExtendedIsolationForest.iForest forest = ExtendedIsolationForest.iForest.builder()
                 .X(M)
@@ -72,7 +72,7 @@ public class ExtendedIsolationForestTest {
             data[rnd.nextInt(data.length)] += 20;
         }
 
-        MatrixType M = MatrixType.of(data, m, n);
+        Matrix M = Matrix.of(data, m, n);
         long t0 = System.currentTimeMillis();
         ExtendedIsolationForest.iForest forest = ExtendedIsolationForest.iForest.builder()
                 .X(M)

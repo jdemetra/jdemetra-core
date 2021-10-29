@@ -6,7 +6,7 @@
 package demetra.tramoseats.r;
 
 import demetra.data.Data;
-import demetra.math.matrices.MatrixType;
+import demetra.math.matrices.Matrix;
 import demetra.tramo.TramoSpec;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -22,14 +22,14 @@ public class TerrorTest {
 
     @Test
     public void testTerror0() {
-        MatrixType terror = Terror.process(Data.TS_PROD, TramoSpec.TR0, null, 12);
+        Matrix terror = Terror.process(Data.TS_PROD, TramoSpec.TR0, null, 12);
         assertTrue(terror != null);
  //       System.out.println(terror);
     }
 
     @Test
     public void testTerror() {
-        MatrixType terror = Terror.process(Data.TS_PROD, TramoSpec.TRfull, null, 12);
+        Matrix terror = Terror.process(Data.TS_PROD, TramoSpec.TRfull, null, 12);
         assertTrue(terror != null);
  //       System.out.println(terror);
     }

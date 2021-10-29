@@ -17,12 +17,11 @@
 package jdplus.regarima;
 
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
 import jdplus.arima.IArimaModel;
 import jdplus.arima.ssf.SsfArima;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.ssf.ResultsRange;
 import jdplus.ssf.dk.DkFilter;
@@ -32,6 +31,7 @@ import jdplus.ssf.univariate.OrdinaryFilter;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.math.matrices.Matrix;
 
 /**
  * f = X'b + L(y-X'b) = Ly + (X - LX)'b
@@ -60,7 +60,7 @@ public class RegArimaForecasts {
      * @param sig2
      * @return
      */
-    public <M extends IArimaModel> Result calcForecast(final @NonNull IArimaModel arima, final @NonNull DoubleSeq y, final @NonNull MatrixType X, final @NonNull DoubleSeq b, final @NonNull MatrixType varB, final double sig2) {
+    public <M extends IArimaModel> Result calcForecast(final @NonNull IArimaModel arima, final @NonNull DoubleSeq y, final @NonNull Matrix X, final @NonNull DoubleSeq b, final @NonNull Matrix varB, final double sig2) {
         return calcForecast(arima, y, X.getRowsCount() - y.length(), X, b, varB, sig2);
     }
 
@@ -77,7 +77,7 @@ public class RegArimaForecasts {
         return calcForecast(arima, y, nf, null, null, null, sig2);
     }
 
-    private <M extends IArimaModel> Result calcForecast(final IArimaModel arima, final DoubleSeq y, final int nf, final MatrixType X, final DoubleSeq b, final MatrixType varb, final double sig2) {
+    private <M extends IArimaModel> Result calcForecast(final IArimaModel arima, final DoubleSeq y, final int nf, final Matrix X, final DoubleSeq b, final Matrix varb, final double sig2) {
 
         int n = y.length(), nall = n + nf;
         double[] yall = new double[nall];
@@ -109,14 +109,14 @@ public class RegArimaForecasts {
         }
         if (nx > 0) {
             // compute DX = X-LX 
-            Matrix xall = Matrix.of(X);
+            FastMatrix xall = FastMatrix.of(X);
              filter.filter(xall);
-             Matrix dx = xall.extract(n, nf, 0, nx);
+             FastMatrix dx = xall.extract(n, nf, 0, nx);
 //          dx.sub(xall.extract(n, nf, 0, nx));
             // F += DX * b, varF += DX*varB*DX'
             DataBlockIterator xrows = dx.rowsIterator();
             int j = 0;
-            Matrix V = Matrix.of(varb);
+            FastMatrix V = FastMatrix.of(varb);
             while (xrows.hasNext()) {
                 DataBlock xrow = xrows.next();
                 f[j] += xrow.dot(b);

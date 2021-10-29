@@ -22,7 +22,7 @@ import internal.jdplus.maths.functions.gsl.derivation.GslDerivation;
 import java.util.function.DoubleFunction;
 import jdplus.data.DataBlock;
 import jdplus.math.functions.IFunction;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -34,7 +34,7 @@ public class RobustSsqNumericalDerivatives implements ISsqFunctionDerivatives {
 
     private DoubleSeq[] m_de;
     private double[] m_grad;
-    private Matrix m_h;
+    private FastMatrix m_h;
     private final ISsqFunction fn;
     private DoubleSeq m_pt;
     private DoubleSeq m_ecur;
@@ -123,7 +123,7 @@ public class RobustSsqNumericalDerivatives implements ISsqFunctionDerivatives {
             calcgrad();
         }
         int n = m_grad.length;
-        m_h = Matrix.square(n);
+        m_h = FastMatrix.square(n);
         // compute first the diagonal
         for (int i = 0; i < n; ++i) {
             DoubleSeq de = m_de[i];
@@ -193,7 +193,7 @@ public class RobustSsqNumericalDerivatives implements ISsqFunctionDerivatives {
      * @return
      */
     @Override
-    public void jacobian(Matrix m) {
+    public void jacobian(FastMatrix m) {
         if (m_de == null) {
             calcgrad();
         }
@@ -210,7 +210,7 @@ public class RobustSsqNumericalDerivatives implements ISsqFunctionDerivatives {
      * @param h
      */
     @Override
-    public void hessian(Matrix h) {
+    public void hessian(FastMatrix h) {
         if (m_h == null) {
             calch();
         }

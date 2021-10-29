@@ -5,23 +5,23 @@
  */
 package jdplus.math.matrices.decomposition;
 
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixException;
 import demetra.data.DoubleSeq;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  * A = U*S*V'
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public interface ISingularValueDecomposition {
-    void decompose(Matrix A)throws MatrixException;
+    void decompose(FastMatrix A)throws MatrixException;
     
-    Matrix U();
+    FastMatrix U();
     
     DoubleSeq S();
     
-    Matrix V();
+    FastMatrix V();
     
     boolean isFullRank();
     

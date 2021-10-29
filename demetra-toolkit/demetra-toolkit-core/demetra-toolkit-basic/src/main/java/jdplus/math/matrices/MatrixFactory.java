@@ -6,13 +6,13 @@
 package jdplus.math.matrices;
 
 import demetra.data.DoubleSeq;
-import demetra.math.matrices.MatrixType;
 import demetra.util.IntList;
 import jdplus.data.DataBlockIterator;
 import java.util.Arrays;
 import java.util.function.DoublePredicate;
 import jdplus.data.DataBlock;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.math.matrices.Matrix;
 
 /**
  *
@@ -21,15 +21,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 @lombok.experimental.UtilityClass
 public class MatrixFactory {
     
-    public Matrix rowMatrix(DoubleSeq data){
-        return new Matrix(data.toArray(), 1, data.length());
+    public FastMatrix rowMatrix(DoubleSeq data){
+        return new FastMatrix(data.toArray(), 1, data.length());
     }
 
-    public Matrix columnMatrix(DoubleSeq data){
-        return new Matrix(data.toArray(), data.length(), 1);
+    public FastMatrix columnMatrix(DoubleSeq data){
+        return new FastMatrix(data.toArray(), data.length(), 1);
     }
 
-    public Matrix rowBind(@NonNull MatrixType... M) {
+    public FastMatrix rowBind(@NonNull Matrix... M) {
         int nr = 0;
         int nc = 0;
         for (int i = 0; i < M.length; ++i) {
@@ -42,7 +42,7 @@ public class MatrixFactory {
                 }
             }
         }
-        Matrix all = new Matrix(nr, nc);
+        FastMatrix all = new FastMatrix(nr, nc);
         DataBlockIterator rows = all.rowsIterator();
         for (int i = 0; i < M.length; ++i) {
             if (M[i] != null) {
@@ -55,7 +55,7 @@ public class MatrixFactory {
         return all;
     }
     
-    public Matrix columnBind(@NonNull MatrixType... M) {
+    public FastMatrix columnBind(@NonNull Matrix... M) {
         int nr = 0;
         int nc = 0;
         for (int i = 0; i < M.length; ++i) {
@@ -68,7 +68,7 @@ public class MatrixFactory {
                 }
             }
         }
-        Matrix all = new Matrix(nr, nc);
+        FastMatrix all = new FastMatrix(nr, nc);
         DataBlockIterator cols = all.columnsIterator();
         for (int i = 0; i < M.length; ++i) {
             if (M[i] != null) {
@@ -81,7 +81,7 @@ public class MatrixFactory {
         return all;
     }
 
-    public static Matrix select(Matrix m, IntList selectedRows, IntList selectedColumns) {
+    public static FastMatrix select(FastMatrix m, IntList selectedRows, IntList selectedColumns) {
         if (m == null) {
             return null;
         }
@@ -92,7 +92,7 @@ public class MatrixFactory {
             return selectRows(m, selectedRows);
         }
 
-        Matrix s = Matrix.make(selectedRows.size(), selectedColumns.size());
+        FastMatrix s = FastMatrix.make(selectedRows.size(), selectedColumns.size());
         double[] ps = s.getStorage(), pm = m.getStorage();
 
         int scur = 0;
@@ -107,14 +107,14 @@ public class MatrixFactory {
         return s;
     }
 
-    public static Matrix selectRows(Matrix m, @NonNull IntList selectedRows) {
+    public static FastMatrix selectRows(FastMatrix m, @NonNull IntList selectedRows) {
         if (m == null) {
             return null;
         }
         if (selectedRows == null) {
             return m;
         }
-        Matrix s = Matrix.make(selectedRows.size(), m.ncols);
+        FastMatrix s = FastMatrix.make(selectedRows.size(), m.ncols);
         double[] ps = s.getStorage(), pm = m.getStorage();
 
         int scur = 0;
@@ -130,14 +130,14 @@ public class MatrixFactory {
 
     }
 
-    public static Matrix selectColumns(Matrix m, @NonNull IntList selectedColumns) {
+    public static FastMatrix selectColumns(FastMatrix m, @NonNull IntList selectedColumns) {
         if (m == null) {
             return null;
         }
         if (selectedColumns == null) {
             return m;
         }
-        Matrix s = Matrix.make(m.nrows, selectedColumns.size());
+        FastMatrix s = FastMatrix.make(m.nrows, selectedColumns.size());
         double[] ps = s.getStorage();
 
         int scur = 0;
@@ -149,14 +149,14 @@ public class MatrixFactory {
         return s;
     }
 
-    public static Matrix selectRows(Matrix m, @NonNull int[] selectedRows) {
+    public static FastMatrix selectRows(FastMatrix m, @NonNull int[] selectedRows) {
         if (m == null) {
             return null;
         }
         if (selectedRows == null) {
             return m;
         }
-        Matrix s = Matrix.make(selectedRows.length, m.ncols);
+        FastMatrix s = FastMatrix.make(selectedRows.length, m.ncols);
         double[] ps = s.getStorage(), pm = m.getStorage();
 
         int scur = 0;
@@ -172,14 +172,14 @@ public class MatrixFactory {
 
     }
 
-    public static Matrix selectColumns(Matrix m, @NonNull int[] selectedColumns) {
+    public static FastMatrix selectColumns(FastMatrix m, @NonNull int[] selectedColumns) {
         if (m == null) {
             return null;
         }
         if (selectedColumns == null) {
             return m;
         }
-        Matrix s = Matrix.make(m.nrows, selectedColumns.length);
+        FastMatrix s = FastMatrix.make(m.nrows, selectedColumns.length);
         double[] ps = s.getStorage();
 
         int scur = 0;
@@ -191,13 +191,13 @@ public class MatrixFactory {
         return s;
     }
 
-    public static Matrix embed(DoubleSeq x, int dim) {
+    public static FastMatrix embed(DoubleSeq x, int dim) {
         int n = x.length();
         if (dim > n) {
             throw new IllegalArgumentException();
         }
         int m = n - dim + 1;
-        Matrix E = Matrix.make(m, dim);
+        FastMatrix E = FastMatrix.make(m, dim);
         double[] pe = E.getStorage();
         for (int i = dim - 1, j = 0; i >= 0; --i, j += m) {
             x.range(i, i + m).copyTo(pe, j);
@@ -205,13 +205,13 @@ public class MatrixFactory {
         return E;
     }
 
-    public static Matrix embed(Matrix X, int dim) {
+    public static FastMatrix embed(FastMatrix X, int dim) {
         int n = X.nrows, q = X.getColumnsCount();
         if (dim > n) {
             throw new IllegalArgumentException();
         }
         int m = n - dim + 1;
-        Matrix E = Matrix.make(m, q * dim);
+        FastMatrix E = FastMatrix.make(m, q * dim);
         double[] pe = E.getStorage();
         for (int i = dim - 1, j = 0; i >= 0; --i) {
             for (int k = 0; k < q; ++k, j += m) {
@@ -229,7 +229,7 @@ public class MatrixFactory {
      * @param pow The Power of the differencing
      * @return A smaller matrix is returned
      */
-    public static Matrix delta(Matrix X, int lag, int pow) {
+    public static FastMatrix delta(FastMatrix X, int lag, int pow) {
         if (X.isEmpty()) {
             return X;
         }
@@ -241,9 +241,9 @@ public class MatrixFactory {
         }
         int n = X.nrows, m = X.ncols;
         if (n < lag) {
-            return Matrix.make(0, m);
+            return FastMatrix.make(0, m);
         }
-        Matrix D = Matrix.make(n - lag, m);
+        FastMatrix D = FastMatrix.make(n - lag, m);
         double[] pd=D.getStorage(), px=X.getStorage();
         for (int i=0, j=0, k=X.start; i<m; ++i, k+=X.getColumnIncrement()){
             int rmax=k+D.nrows;
@@ -254,7 +254,7 @@ public class MatrixFactory {
         return D;
     }
 
-    public Matrix select(Matrix M, final int[] selectedRows, final int[] selectedColumns) {
+    public FastMatrix select(FastMatrix M, final int[] selectedRows, final int[] selectedColumns) {
         // TODO optimization
         if (selectedRows == null) {
             return selectColumns(M, selectedColumns);
@@ -262,7 +262,7 @@ public class MatrixFactory {
         if (selectedColumns == null) {
             return selectRows(M, selectedRows);
         }
-        Matrix m = new Matrix(selectedRows.length, selectedColumns.length);
+        FastMatrix m = new FastMatrix(selectedRows.length, selectedColumns.length);
         for (int c = 0; c < selectedRows.length; ++c) {
             for (int r = 0; r < selectedRows.length; ++r) {
                 m.set(r, c, M.get(selectedRows[r], selectedColumns[c]));
@@ -279,7 +279,7 @@ public class MatrixFactory {
      * @param excludedColumns
      * @return A new matrix, based on another storage, is returned.
      */
-    public Matrix  exclude(Matrix M, final int[] excludedRows, final int[] excludedColumns) {
+    public FastMatrix  exclude(FastMatrix M, final int[] excludedRows, final int[] excludedColumns) {
         int[] srx = excludedRows.clone();
         Arrays.sort(srx);
         int[] scx = excludedColumns.clone();
@@ -305,7 +305,7 @@ public class MatrixFactory {
             return M.deepClone();
         }
 
-        Matrix m = new Matrix(nrows - nrx, ncols - ncx);
+        FastMatrix m = new FastMatrix(nrows - nrx, ncols - ncx);
         for (int c = 0, nc = 0; c < ncols; ++c) {
             if (cx[c]) {
                 for (int r = 0, nr = 0; r < nrows; ++r) {
@@ -331,11 +331,11 @@ public class MatrixFactory {
      * @param colPos
      * @return A new matrix, based on another storage, is returned.
      */
-    public Matrix expand(Matrix M, final int nr, final int[] rowPos, final int nc, final int[] colPos) {
+    public FastMatrix expand(FastMatrix M, final int nr, final int[] rowPos, final int nc, final int[] colPos) {
         if (rowPos.length != nr || colPos.length != nc) {
             throw new MatrixException(MatrixException.DIM);
         }
-        Matrix m = new Matrix(nr, nc);
+        FastMatrix m = new FastMatrix(nr, nc);
         int nrows=M.getRowsCount(), ncols=M.getColumnsCount();
         for (int c = 0; c < ncols; ++c) {
             for (int r = 0; r < nrows; ++r) {
@@ -354,7 +354,7 @@ public class MatrixFactory {
      * @return The cleaned matrix is returned or this if the original matrix is
      * clean
      */
-    public Matrix cleanRows(Matrix M, final @NonNull DoublePredicate pred, final @NonNull IntList selection) {
+    public FastMatrix cleanRows(FastMatrix M, final @NonNull DoublePredicate pred, final @NonNull IntList selection) {
         selection.clear();
         DataBlockIterator rows = M.rowsIterator();
         int pos = 0;

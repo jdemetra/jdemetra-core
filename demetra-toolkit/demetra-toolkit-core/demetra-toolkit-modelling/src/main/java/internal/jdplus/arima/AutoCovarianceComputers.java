@@ -21,7 +21,7 @@ import jdplus.arima.AutoCovarianceFunction;
 import jdplus.data.DataBlock;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.RationalFunction;
 import jdplus.linearsystem.LinearSystemSolver;
@@ -45,7 +45,7 @@ public class AutoCovarianceComputers {
             RationalFunction rfe = RationalFunction.of(ma, ar);
             double[] cr = rfe.coefficients(q+1);
 
-            Matrix M = Matrix.square(r0);
+            FastMatrix M = FastMatrix.square(r0);
             DataBlock x = DataBlock.of(c, 0, r0);
             for (int i = 0; i <= q; ++i) {
                 double s = 0;

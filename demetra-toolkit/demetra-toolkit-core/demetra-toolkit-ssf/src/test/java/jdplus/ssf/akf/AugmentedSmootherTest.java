@@ -10,7 +10,7 @@ import demetra.data.Data;
 import jdplus.arima.ssf.SsfArima;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.LowerTriangularMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.sarima.SarimaModel;
 import jdplus.ssf.dk.DkToolkit;
@@ -41,7 +41,7 @@ public class AugmentedSmootherTest {
         Ssf ssf = Ssf.of(SsfArima.of(arima), SsfArima.defaultLoading());
         SsfData data = new SsfData(Data.NILE);
         int n = data.length();
-        Matrix X = Matrix.make(n, 2);
+        FastMatrix X = FastMatrix.make(n, 2);
         X.set(36, 0, 1);
         X.set(0, 1, 1);
         Ssf xssf = RegSsf.ssf(ssf, X);
@@ -57,7 +57,7 @@ public class AugmentedSmootherTest {
             System.out.print(sd.smoothation(i) / sd.smoothationVariance(i));
             System.out.print('\t');
             if (i != 36 && i != 0) {
-                Matrix W = Matrix.make(n, 3);
+                FastMatrix W = FastMatrix.make(n, 3);
                 W.set(36, 0, 1);
                 W.set(0, 1, 1);
                 W.set(i, 2, 1);
@@ -70,7 +70,7 @@ public class AugmentedSmootherTest {
             System.out.print(sd.smoothation(i) * sd.smoothation(i) / sd.smoothationVariance(i) / sig2);
             System.out.print('\t');
             DataBlock R = DataBlock.of(sd.R(i));
-            Matrix Rvar = sd.RVariance(i).deepClone();
+            FastMatrix Rvar = sd.RVariance(i).deepClone();
             System.out.print(R.get(0) / Rvar.get(0, 0));
             System.out.print('\t');
             try {

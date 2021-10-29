@@ -21,7 +21,7 @@ import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -86,11 +86,11 @@ public class CompositeModel {
     }
 
 
-    public CompositeModelEstimation estimate(Matrix data, boolean marginal, boolean rescaling, SsfInitialization initialization, Optimizer optimizer, double eps, double[] parameters) {
+    public CompositeModelEstimation estimate(FastMatrix data, boolean marginal, boolean rescaling, SsfInitialization initialization, Optimizer optimizer, double eps, double[] parameters) {
         return CompositeModelEstimation.estimationOf(this.duplicate(), data, marginal, rescaling, initialization, optimizer, eps, parameters);
     }
 
-    public CompositeModelEstimation compute(Matrix data, double[] parameters, boolean marginal, boolean concentrated) {
+    public CompositeModelEstimation compute(FastMatrix data, double[] parameters, boolean marginal, boolean concentrated) {
         
         return CompositeModelEstimation.computationOf(this.duplicate(), data, DoubleSeq.of(parameters), marginal, concentrated);
     }

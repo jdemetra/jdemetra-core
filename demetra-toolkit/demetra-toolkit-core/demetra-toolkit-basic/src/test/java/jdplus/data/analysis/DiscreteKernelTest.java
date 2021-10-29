@@ -22,7 +22,7 @@ import static jdplus.data.analysis.DiscreteKernel.triangular;
 import static jdplus.data.analysis.DiscreteKernel.tricube;
 import static jdplus.data.analysis.DiscreteKernel.triweight;
 import static jdplus.data.analysis.DiscreteKernel.uniform;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import java.util.function.IntToDoubleFunction;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -159,7 +159,7 @@ public class DiscreteKernelTest {
         k[5] = triweight(K);
         k[6] = tricube(K);
         k[7] = henderson(K);
-        Matrix D = Matrix.square(k.length);
+        FastMatrix D = FastMatrix.square(k.length);
 
         for (int i = 0; i < k.length; ++i) {
             for (int j = 0; j < k.length; ++j) {

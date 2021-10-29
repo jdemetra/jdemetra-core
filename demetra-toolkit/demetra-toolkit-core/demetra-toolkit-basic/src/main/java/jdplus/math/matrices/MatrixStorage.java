@@ -36,7 +36,7 @@ public class MatrixStorage {
     private int m_nc;
 
     /**
-     * Matrix storage for square matrices
+     * FastMatrix storage for square matrices
      *
      * @param dim dimension copyOf the matrices
      * @param capacity Initial capacity copyOf the storage
@@ -91,8 +91,8 @@ public class MatrixStorage {
      * @param pos
      * @return
      */
-    public Matrix matrix(final int pos) {
-        return new Matrix(m_data, m_nr, m_size * pos, m_nr, m_nc);
+    public FastMatrix matrix(final int pos) {
+        return new FastMatrix(m_data, m_nr, m_size * pos, m_nr, m_nc);
     }
     
     public DataBlock item(final int row, final int col){
@@ -121,7 +121,7 @@ public class MatrixStorage {
      * @param pos
      * @param m
      */
-    public void save(final int pos, final Matrix m) {
+    public void save(final int pos, final FastMatrix m) {
         m.copyTo(m_data, pos * m_size);
         if (pos >= m_nused) {
             m_nused = pos + 1;

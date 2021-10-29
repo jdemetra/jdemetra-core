@@ -8,7 +8,7 @@ package jdplus.math.matrices.lapack;
 import jdplus.math.matrices.DataPointer;
 import ec.tstoolkit.random.JdkRNG;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixTransformation;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -24,8 +24,8 @@ public class GEMVTest {
 
     @Test
     public void test() {
-        Matrix A = Matrix.make(10, 20);
-        Matrix B = A.extract(2, 6, 3, 15);
+        FastMatrix A = FastMatrix.make(10, 20);
+        FastMatrix B = A.extract(2, 6, 3, 15);
         JdkRNG rng = JdkRNG.newRandom(0);
         A.set((i, j) -> rng.nextDouble());
         DataBlock xa = DataBlock.make(A.getColumnsCount()),
@@ -46,8 +46,8 @@ public class GEMVTest {
 
     @Test
     public void testTranspose() {
-        Matrix A = Matrix.make(10, 20);
-        Matrix B = A.extract(2, 6, 3, 15);
+        FastMatrix A = FastMatrix.make(10, 20);
+        FastMatrix B = A.extract(2, 6, 3, 15);
         JdkRNG rng = JdkRNG.newRandom(0);
         A.set((i, j) -> rng.nextDouble());
         DataBlock xa = DataBlock.make(A.getRowsCount()),

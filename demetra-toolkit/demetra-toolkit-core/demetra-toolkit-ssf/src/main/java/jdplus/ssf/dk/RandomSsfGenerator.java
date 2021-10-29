@@ -19,7 +19,7 @@ package jdplus.ssf.dk;
 import jdplus.data.DataBlock;
 import jdplus.dstats.Normal;
 import jdplus.math.matrices.LowerTriangularMatrix;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.univariate.ISsf;
@@ -47,7 +47,7 @@ public class RandomSsfGenerator {
         return N.random(rng);
     }
 
-    private Matrix LA;
+    private FastMatrix LA;
     private final ISsf ssf;
     private final ISsfDynamics dynamics;
     private final ISsfLoading loading;
@@ -102,7 +102,7 @@ public class RandomSsfGenerator {
 
     private void initSsf() {
         int dim = ssf.getStateDim();
-        LA = Matrix.square(dim);
+        LA = FastMatrix.square(dim);
         ssf.initialization().Pf0(LA);
         SymmetricMatrix.lcholesky(LA, 1e-9);
 

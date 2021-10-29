@@ -20,16 +20,16 @@ import static org.junit.Assert.*;
  *
  * @author palatej
  */
-public class MatrixTest {
+public class FastMatrixTest {
 
-    public MatrixTest() {
+    public FastMatrixTest() {
     }
 
     @Test
     public void testDeterminant() {
         Random rnd = new Random(0);
         for (int N = 2; N < 20; ++N) {
-            Matrix M = Matrix.square(N);
+            FastMatrix M = FastMatrix.square(N);
             M.set((i, j) -> rnd.nextDouble());
             LUDecomposition lu = Gauss.decompose(M);
             LogSign ls = lu.logDeterminant();
@@ -48,10 +48,10 @@ public class MatrixTest {
     @Test
     public void testDeterminant2() {
         Random rnd = new Random(0);
-        Matrix M = Matrix.square(2);
+        FastMatrix M = FastMatrix.square(2);
         M.set((i, j) -> rnd.nextDouble());
-        assertEquals(Matrix.determinant(M), M.get(0, 0) * M.get(1, 1) - M.get(0, 1) * M.get(1, 0), 1e-9);
-        M = Matrix.square(3);
+        assertEquals(FastMatrix.determinant(M), M.get(0, 0) * M.get(1, 1) - M.get(0, 1) * M.get(1, 0), 1e-9);
+        M = FastMatrix.square(3);
         M.set((i, j) -> rnd.nextDouble());
         double det = 0;
         det += M.get(0, 0) * M.get(1, 1) * M.get(2, 2);
@@ -60,16 +60,16 @@ public class MatrixTest {
         det -= M.get(0, 2) * M.get(1, 1) * M.get(2, 0);
         det -= M.get(0, 1) * M.get(1, 0) * M.get(2, 2);
         det -= M.get(0, 0) * M.get(1, 2) * M.get(2, 1);
-        assertEquals(Matrix.determinant(M), det, 1e-9);
+        assertEquals(FastMatrix.determinant(M), det, 1e-9);
     }
 
     @Test
     public void testSelection() {
-        Matrix M = Matrix.make(10, 5);
+        FastMatrix M = FastMatrix.make(10, 5);
         M.set((i, j) -> i + j);
 
         IntList srows = new IntList(), scols = new IntList();
-        Matrix S = MatrixFactory.select(M, srows, scols);
+        FastMatrix S = MatrixFactory.select(M, srows, scols);
         assertTrue(S.isEmpty());
 
         srows.add(2);
@@ -95,20 +95,20 @@ public class MatrixTest {
     @Test
     public void testEmbed() {
         DoubleSeq q = DoubleSeq.onMapping(20, i -> i + 1);
-        Matrix M = MatrixFactory.embed(q, 5);
+        FastMatrix M = MatrixFactory.embed(q, 5);
 //        System.out.println(M);
         assertEquals(M.get(14, 1), 18, 0);
 
-        Matrix N = MatrixFactory.embed(M, 2);
+        FastMatrix N = MatrixFactory.embed(M, 2);
 //        System.out.println(N);
     }
 
     @Test
     public void testDelta() {
-        Matrix M = Matrix.make(20, 5);
+        FastMatrix M = FastMatrix.make(20, 5);
         M.set((r, c) -> r + c);
 
-        Matrix D = MatrixFactory.delta(M, 1, 1);
+        FastMatrix D = MatrixFactory.delta(M, 1, 1);
         assertTrue(D.test(z -> z == 1));
         D = MatrixFactory.delta(M, 3, 1);
         assertTrue(D.test(z -> z == 3));

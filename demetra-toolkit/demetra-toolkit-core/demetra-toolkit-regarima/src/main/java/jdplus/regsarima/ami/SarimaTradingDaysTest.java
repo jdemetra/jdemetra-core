@@ -26,7 +26,7 @@ import jdplus.linearmodel.JointTest;
 import jdplus.linearmodel.LeastSquaresResults;
 import jdplus.linearmodel.LinearModel;
 import jdplus.linearmodel.Ols;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
@@ -44,7 +44,7 @@ public class SarimaTradingDaysTest {
         try {
             GenericTradingDays gtd = GenericTradingDays.contrasts(DayClustering.TD7);
             GenericTradingDaysVariable td = new GenericTradingDaysVariable(gtd);
-            Matrix m = Regression.matrix(y.getDomain(), td);
+            FastMatrix m = Regression.matrix(y.getDomain(), td);
             RegArimaModel<SarimaModel> regarima=RegArimaModel.<SarimaModel>builder()
                     .y(y.getValues())
                     .addX(m)

@@ -12,7 +12,7 @@ import jdplus.data.DataBlockIterator;
 import demetra.eco.EcoException;
 import jdplus.linearmodel.LinearModel;
 import jdplus.math.linearfilters.BackFilter;
-import jdplus.math.matrices.Matrix;
+import jdplus.math.matrices.FastMatrix;
 import java.util.List;
 import demetra.data.DoubleSeq;
 
@@ -56,7 +56,7 @@ public class RegArmaModel<M extends IArimaModel> {
         List<DoubleSeq> x = regarima.getX();
         int[] missing = regarima.missing();
         int nx = regarima.getMissingValuesCount() + regarima.getVariablesCount();
-        Matrix dx = Matrix.make(ndy, nx);
+        FastMatrix dx = FastMatrix.make(ndy, nx);
         double[] dy;
         // dy
         if (d > 0) {
@@ -126,7 +126,7 @@ public class RegArmaModel<M extends IArimaModel> {
      * - the constant
      * - the other regression variables
      */
-    Matrix x;
+    FastMatrix x;
     
     /**
      * Gets the regression model.
@@ -140,7 +140,7 @@ public class RegArmaModel<M extends IArimaModel> {
      */
     public LinearModel asLinearModel(){
         // the mean is in X. Don't repeat it in the linear model
-        return new LinearModel(y.toArray(), false, Matrix.of(x));
+        return new LinearModel(y.toArray(), false, FastMatrix.of(x));
     }
     
 }

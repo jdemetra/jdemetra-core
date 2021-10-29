@@ -28,13 +28,13 @@ import demetra.data.DoubleSeq;
  */
 public class QuadraticForm {
 
-    private final Matrix S;
+    private final FastMatrix S;
 
-    private QuadraticForm(Matrix s) {
+    private QuadraticForm(FastMatrix s) {
         S = s;
     }
 
-    public static QuadraticForm of(Matrix s) {
+    public static QuadraticForm of(FastMatrix s) {
         if (!s.isSymmetric(0)) {
             return null;
         } else {
@@ -43,7 +43,7 @@ public class QuadraticForm {
     }
 
     @Unsafe
-    public static QuadraticForm ofSymmetric(Matrix s) {
+    public static QuadraticForm ofSymmetric(FastMatrix s) {
         return new QuadraticForm(s);
     }
 
@@ -57,7 +57,7 @@ public class QuadraticForm {
         return s;
     }
 
-    public static double apply(final Matrix M, final DataBlock x) {
+    public static double apply(final FastMatrix M, final DataBlock x) {
         double[] pm = M.getStorage();
         double[] px = x.getStorage();
 
