@@ -91,6 +91,10 @@ public class CheckLast {
             return false;
         }
     }
+    
+    public RegSarimaModel getModel(){
+        return model;
+    }
 
     /**
      * Gets the values of the (transformed) series. More especially, if the

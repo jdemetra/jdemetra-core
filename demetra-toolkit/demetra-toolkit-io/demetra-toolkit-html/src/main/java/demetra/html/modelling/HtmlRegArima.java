@@ -212,8 +212,9 @@ public class HtmlRegArima extends AbstractHtmlElement {
         Parameter[] p = arima.getPhi();
         int nobs = ll.getEffectiveObservationsCount(), nparams = ll.getEstimatedParametersCount();
         T t = new T(nobs - nparams);
-        DoubleSeqCursor vars = model.getEstimation().getCoefficientsCovariance().diagonal().cursor();
-        double vcorr = (nobs - nparams) / (nobs - nparams + nhp);
+        DoubleSeqCursor vars = model.getEstimation().getParameters().getCovariance().diagonal().cursor();
+        double ndf=nobs - nparams;
+        double vcorr = ndf / (ndf+ nhp);
         List<String> headers = new ArrayList<>();
         for (int j = 0; j < P; ++j) {
             stream.open(HtmlTag.TABLEROW);

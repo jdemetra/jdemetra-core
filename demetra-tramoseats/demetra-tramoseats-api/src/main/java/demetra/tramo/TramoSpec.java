@@ -331,4 +331,49 @@ public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecificatio
         }
     }
     //</editor-fold>
+        public String display() {
+        if (this == TR0) {
+            return "TR0";
+        }
+        if (this == TR1) {
+            return "TR1";
+        }
+        if (this == TR2) {
+            return "TR2";
+        }
+        if (this == TR3) {
+            return "TR3";
+        }
+        if (this == TR4) {
+            return "TR4";
+        }
+        if (this == TR5) {
+            return "TR5";
+        }
+        if (equals(TR0)) {
+            return "TR0";
+        }
+        if (equals(TR1)) {
+            return "TR1";
+        }
+        if (equals(TR2)) {
+            return "TR2";
+        }
+        if (equals(TR3)) {
+            return "TR3";
+        }
+        if (equals(TR4)) {
+            return "TR4";
+        }
+        if (equals(TR5)) {
+            return "TR5";
+        }
+        if (equals(TRfull)) {
+            return "TRfull";
+        }
+        return SMETHOD;
+    }
+
+        private static final String SMETHOD = "TR";
+
 }
