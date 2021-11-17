@@ -18,6 +18,7 @@
         <module>demetra-x13-core</module>
         <module>demetra-x13-r</module>
         <module>demetra-x13-io</module>
+        <module>demetra-x13-workspace</module>
     </modules>
 
     <properties>

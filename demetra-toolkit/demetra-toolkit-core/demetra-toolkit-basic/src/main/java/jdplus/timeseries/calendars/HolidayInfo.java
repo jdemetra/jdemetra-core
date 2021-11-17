@@ -19,6 +19,7 @@ package jdplus.timeseries.calendars;
 import nbbrd.design.Development;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
+import demetra.timeseries.calendars.FixedWeekDay;
 import demetra.timeseries.calendars.Holiday;
 import demetra.timeseries.calendars.PrespecifiedHoliday;
 import java.time.DayOfWeek;
@@ -141,11 +142,17 @@ public interface HolidayInfo {
         return new EasterDayInfo(year, fday.getOffset(), fday.isJulian());
     }
 
+    static FixedWeekDayInfo of(FixedWeekDay fday, int year) {
+        return new FixedWeekDayInfo(year, fday);
+    }
+
     static HolidayInfo of(Holiday holiday, int year) {
         if (holiday instanceof FixedDay) {
             return new FixedDayInfo(year, (FixedDay) holiday);
         } else if (holiday instanceof EasterRelatedDay) {
             return of((EasterRelatedDay) holiday, year);
+         } else if (holiday instanceof FixedWeekDay) {
+            return of((FixedWeekDay) holiday, year);
         } else if (holiday instanceof PrespecifiedHoliday) {
             PrespecifiedHoliday ph = (PrespecifiedHoliday) holiday;
             return of(ph.rawHoliday(), year);
@@ -159,6 +166,9 @@ public interface HolidayInfo {
         } else if (holiday instanceof EasterRelatedDay) {
             EasterRelatedDay eday = (EasterRelatedDay) holiday;
             return new EasterDayInfo.EasterDayList(eday.getOffset(), eday.isJulian(), fstart, fend);
+        } else if (holiday instanceof FixedWeekDay) {
+            FixedWeekDay fwd = (FixedWeekDay) holiday;
+            return new FixedWeekDayInfo.FixedWeekDayIterable(fwd, fstart, fend);
         } else if (holiday instanceof PrespecifiedHoliday) {
             PrespecifiedHoliday ph = (PrespecifiedHoliday) holiday;
             return iterable(ph.rawHoliday(), fstart, fend);

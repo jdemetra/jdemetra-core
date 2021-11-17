@@ -43,7 +43,7 @@ public class X13SpecMapping {
         public X13Spec read(InformationSet info) {
             return X13SpecMapping.read(info);
         }
-    };
+   };
 
     public static final InformationSetSerializer<X13Spec> SERIALIZER_LEGACY = new InformationSetSerializer<X13Spec>() {
         @Override

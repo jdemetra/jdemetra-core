@@ -18,7 +18,6 @@ package demetra.sa.r;
 
 import demetra.arima.SarimaOrders;
 import demetra.stats.StatisticalTest;
-import jdplus.stats.tests.LjungBox;
 import jdplus.sa.tests.CanovaHansen;
 import jdplus.sa.tests.CanovaHansen2;
 import jdplus.sa.tests.PeriodicLjungBox;

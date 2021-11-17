@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.Map;
 import jdplus.math.matrices.FastMatrix;
 import demetra.math.matrices.Matrix;
+import demetra.timeseries.calendars.FixedWeekDay;
 
 /**
  *
@@ -202,6 +203,20 @@ public class HolidaysUtility {
         return rslt;
     }
 
+    public double[][] longTermMean(FixedWeekDay fday, int freq) {
+        int c = 12 / freq;
+        int p = (fday.getMonth() - 1) / c;
+        double[] m = new double[7];
+
+        for (int i = 0; i < 7; ++i) {
+            m[i] = fday.getWeight() / 7;
+        }
+
+        double[][] rslt = new double[freq][];
+        rslt[p] = m;
+        return rslt;
+    }
+
     private final int[] MDAYS = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     /**
@@ -252,6 +267,8 @@ public class HolidaysUtility {
     public static double[][] longTermMean(Holiday holiday, int freq) {
         if (holiday instanceof FixedDay) {
             return HolidaysUtility.longTermMean((FixedDay) holiday, freq);
+        } else if (holiday instanceof FixedWeekDay) {
+            return HolidaysUtility.longTermMean((FixedWeekDay) holiday, freq);
         } else if (holiday instanceof EasterRelatedDay) {
             return HolidaysUtility.longTermMean((EasterRelatedDay) holiday, freq);
         } else if (holiday instanceof PrespecifiedHoliday) {

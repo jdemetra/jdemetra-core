@@ -25,7 +25,6 @@ import demetra.timeseries.Ts;
 import demetra.timeseries.TsDocument;
 import java.util.List;
 import java.util.Map;
-import demetra.information.Explorable;
 
 /**
  *

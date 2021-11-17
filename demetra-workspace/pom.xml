@@ -19,9 +19,6 @@
         <jimfs.version>1.2</jimfs.version>
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
         <jd3-toolkit.version>1.0.0-SNAPSHOT</jd3-toolkit.version>
-        <jd3-sa.version>1.0.0-SNAPSHOT</jd3-sa.version>
-        <jd3-tramoseats.version>1.0.0-SNAPSHOT</jd3-tramoseats.version>
-        <jd3-x13.version>1.0.0-SNAPSHOT</jd3-x13.version>
         <slf4j.version>1.7.32</slf4j.version>
     </properties>
    
@@ -47,31 +44,6 @@
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-toolkit-xml</artifactId>
             <version>${jd3-toolkit.version}</version>            
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tramoseats-api</artifactId>
-            <version>${jd3-tramoseats.version}</version>            
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tramoseats-information</artifactId>
-            <version>${jd3-tramoseats.version}</version>            
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-x13-api</artifactId>
-            <version>${jd3-x13.version}</version>            
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-x13-information</artifactId>
-            <version>${jd3-x13.version}</version>            
-        </dependency>
-        <dependency>
-            <groupId>com.github.nbbrd.java-io-util</groupId>
-            <artifactId>java-io-xml-bind</artifactId>
-            <version>${java-io-util.version}</version>
         </dependency>
 
         <!-- test only -->

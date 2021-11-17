@@ -576,7 +576,13 @@ public final class FastMatrix implements Matrix.Mutable {
             }
         }
     }
-
+    
+    public FastMatrix transpose(){
+        FastMatrix T=FastMatrix.make(ncols, nrows);
+        T.copyTranspose(this);
+        return T;
+    }
+    
     /**
      * Return the sum of all the cells of the matrix
      *

@@ -22,8 +22,10 @@ import demetra.timeseries.calendars.CalendarDefinition;
 import demetra.timeseries.calendars.DayEvent;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
+import demetra.timeseries.calendars.FixedWeekDay;
 import demetra.timeseries.calendars.Holiday;
 import demetra.timeseries.calendars.PrespecifiedHoliday;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -59,6 +61,20 @@ public class CalendarProtosUtility {
 
     public FixedDay convert(ToolkitProtos.FixedDay ed) {
         return new FixedDay(ed.getMonth(), ed.getDay(), ed.getWeight(), convert(ed.getValidity()));
+    }
+
+    public ToolkitProtos.FixedWeekDay convert(@NonNull FixedWeekDay fd) {
+        return ToolkitProtos.FixedWeekDay.newBuilder()
+                .setMonth(fd.getMonth())
+                .setWeekday(fd.getDayOfWeek().getValue())
+                .setPosition(fd.getPlace())                
+                .setWeight(fd.getWeight())
+                .setValidity(convert(fd.getValidityPeriod()))
+                .build();
+    }
+
+    public FixedWeekDay convert(ToolkitProtos.FixedWeekDay ed) {
+        return new FixedWeekDay(ed.getMonth(), ed.getPosition(), DayOfWeek.of(ed.getWeekday()) , ed.getWeight(), convert(ed.getValidity()));
     }
 
     public ToolkitProtos.EasterRelatedDay convert(@NonNull EasterRelatedDay ed) {
@@ -216,6 +232,8 @@ public class CalendarProtosUtility {
         for (int i = 0; i < holidays.length; ++i) {
             if (holidays[i] instanceof FixedDay) {
                 builder.addFixedDays(convert((FixedDay) holidays[i]));
+            } else if (holidays[i] instanceof FixedWeekDay) {
+                builder.addFixedWeekDays(convert((FixedWeekDay) holidays[i]));
             } else if (holidays[i] instanceof EasterRelatedDay) {
                 builder.addEasterRelatedDays(convert((EasterRelatedDay) holidays[i]));
             } else if (holidays[i] instanceof PrespecifiedHoliday) {
@@ -227,15 +245,18 @@ public class CalendarProtosUtility {
 
     public Calendar convert(ToolkitProtos.Calendar calendar) {
         List<Holiday> hol = new ArrayList<>();
-        for (ToolkitProtos.FixedDay fd : calendar.getFixedDaysList()) {
+        calendar.getFixedDaysList().forEach(fd -> {
             hol.add(convert(fd));
-        }
-        for (ToolkitProtos.EasterRelatedDay ed : calendar.getEasterRelatedDaysList()) {
+        });
+        calendar.getFixedWeekDaysList().forEach(fd -> {
+            hol.add(convert(fd));
+        });
+        calendar.getEasterRelatedDaysList().forEach(ed -> {
             hol.add(convert(ed));
-        }
-        for (ToolkitProtos.PrespecifiedHoliday pd : calendar.getPrespecifiedHolidaysList()) {
+        });
+        calendar.getPrespecifiedHolidaysList().forEach(pd -> {
             hol.add(convert(pd));
-        }
+        });
         return new Calendar(hol.toArray(new Holiday[hol.size()]));
     }
 

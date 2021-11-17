@@ -32,8 +32,8 @@ import nbbrd.service.ServiceProvider;
  */
 @lombok.experimental.UtilityClass
 public class TramoSeatsSpecMapping {
-    
-    public static final InformationSetSerializer<TramoSeatsSpec> SERIALIZER_V3=new InformationSetSerializer<TramoSeatsSpec>() {
+
+    public static final InformationSetSerializer<TramoSeatsSpec> SERIALIZER_V3 = new InformationSetSerializer<TramoSeatsSpec>() {
         @Override
         public InformationSet write(TramoSeatsSpec object, boolean verbose) {
             return TramoSeatsSpecMapping.write(object, verbose);
@@ -43,10 +43,9 @@ public class TramoSeatsSpecMapping {
         public TramoSeatsSpec read(InformationSet info) {
             return TramoSeatsSpecMapping.read(info);
         }
-
     };
 
-    public static final InformationSetSerializer<TramoSeatsSpec> SERIALIZER_LEGACY=new InformationSetSerializer<TramoSeatsSpec>() {
+    public static final InformationSetSerializer<TramoSeatsSpec> SERIALIZER_LEGACY = new InformationSetSerializer<TramoSeatsSpec>() {
         @Override
         public InformationSet write(TramoSeatsSpec object, boolean verbose) {
             return TramoSeatsSpecMapping.writeLegacy(object, verbose);
@@ -56,7 +55,6 @@ public class TramoSeatsSpecMapping {
         public TramoSeatsSpec read(InformationSet info) {
             return TramoSeatsSpecMapping.readLegacy(info);
         }
-
     };
 
     public static final String TRAMO = "tramo", SEATS = "seats", BENCH = "benchmarking", RSA = "method";
@@ -96,23 +94,23 @@ public class TramoSeatsSpecMapping {
         }
         return specInfo;
     }
-    
+
     public TramoSeatsSpec read(InformationSet info) {
         if (info == null) {
             return null;
         }
-        AlgorithmDescriptor desc=info.get(ProcSpecification.ALGORITHM, AlgorithmDescriptor.class);
-        if (desc == null)
+        AlgorithmDescriptor desc = info.get(ProcSpecification.ALGORITHM, AlgorithmDescriptor.class);
+        if (desc == null) {
             return null;
-        if (desc.equals(TramoSeatsSpec.DESCRIPTOR_LEGACY))
+        }
+        if (desc.equals(TramoSeatsSpec.DESCRIPTOR_LEGACY)) {
             return readLegacy(info);
-        else if (desc.equals(TramoSeatsSpec.DESCRIPTOR_V3))
+        } else if (desc.equals(TramoSeatsSpec.DESCRIPTOR_V3)) {
             return readV3(info);
-        else
+        } else {
             return null;
+        }
     }
-
-    
 
     public TramoSeatsSpec readV3(InformationSet info) {
         if (info == null) {
@@ -135,9 +133,9 @@ public class TramoSeatsSpecMapping {
                 .benchmarking(SaBenchmarkingSpecMapping.read(info.getSubSet(BENCH)))
                 .build();
     }
-    
+
     @ServiceProvider(SaSpecificationMapping.class)
-    public static class Serializer implements SaSpecificationMapping{
+    public static class Serializer implements SaSpecificationMapping {
 
         @Override
         public SaSpecification read(InformationSet info) {
@@ -146,12 +144,13 @@ public class TramoSeatsSpecMapping {
 
         @Override
         public InformationSet write(SaSpecification spec, boolean verbose) {
-            if (spec instanceof TramoSeatsSpec)
+            if (spec instanceof TramoSeatsSpec) {
                 return TramoSeatsSpecMapping.write((TramoSeatsSpec) spec, verbose);
-            else
+            } else {
                 return null;
+            }
         }
-        
+
     }
 
 }

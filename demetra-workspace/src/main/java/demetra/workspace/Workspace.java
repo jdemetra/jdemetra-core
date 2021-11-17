@@ -29,6 +29,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public interface Workspace extends Closeable {
 
+    public final WorkspaceFamily UTIL_CAL = demetra.workspace.WorkspaceFamily.parse("Utilities@Calendars");
+    public final WorkspaceFamily UTIL_VAR = demetra.workspace.WorkspaceFamily.parse("Utilities@Variables");
     /**
      * Gets the workspace name.
      *

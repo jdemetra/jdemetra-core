@@ -69,6 +69,11 @@ public class Ts {
         return builder().data(data).build();
     }
 
+    @StaticFactoryMethod
+    public static @NonNull Ts of(@NonNull String name, @NonNull TsData data) {
+        return builder().name(name).data(data).build();
+    }
+
     public @NonNull Ts load(@NonNull TsInformationType info, @NonNull TsFactory factory) {
         Objects.requireNonNull(info);
         Objects.requireNonNull(factory);

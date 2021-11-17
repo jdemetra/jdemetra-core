@@ -1,13 +1,13 @@
 /*
- * Copyright 2017 National Bank of Belgium
- * 
+ * Copyright 2020 National Bank of Belgium
+ *
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * https://joinup.ec.europa.eu/software/page/eupl
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,8 @@
  */
 package jdplus.timeseries.calendars;
 
-import demetra.timeseries.calendars.FixedDay;
+import demetra.timeseries.calendars.FixedWeekDay;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Stream;
@@ -26,16 +27,16 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Jean Palate
+ * @author palatej
  */
-public class FixedDayTest {
-
-    public FixedDayTest() {
+public class FixedWeekDayInfoTest {
+    
+    public FixedWeekDayInfoTest() {
     }
 
-    @Test
+     @Test
     public void test1() {
-        FixedDay fd = new FixedDay(7, 21);
+        FixedWeekDay fd = new FixedWeekDay(7, 4, DayOfWeek.MONDAY);
         Iterable<HolidayInfo> iterable = HolidayInfo.iterable(fd, LocalDate.of(2018, 1, 1), LocalDate.of(2018, 1, 1).plus(3, ChronoUnit.YEARS));
         Stream<HolidayInfo> stream = StreamSupport.stream(iterable.spliterator(), false);
         assertTrue(stream.count() == 3);
@@ -45,7 +46,7 @@ public class FixedDayTest {
 
     @Test
     public void test2() {
-        FixedDay fd = new FixedDay(7, 21);
+        FixedWeekDay fd = new FixedWeekDay(7, 4, DayOfWeek.MONDAY);
         Iterable<HolidayInfo> iterable = HolidayInfo.iterable(fd, LocalDate.of(2017, 7, 21), LocalDate.of(2018, 1, 1).plus(3, ChronoUnit.YEARS));
         Stream<HolidayInfo> stream = StreamSupport.stream(iterable.spliterator(), false);
         assertTrue(stream.count() == 4);
@@ -55,8 +56,8 @@ public class FixedDayTest {
 
     @Test
     public void test3() {
-        FixedDay fd = new FixedDay(7, 21);
-        Iterable<HolidayInfo> iterable = HolidayInfo.iterable(fd, LocalDate.of(2017, 7, 21), LocalDate.of(2017, 7, 22));
+        FixedWeekDay fd = new FixedWeekDay(7, 4, DayOfWeek.MONDAY);
+        Iterable<HolidayInfo> iterable = HolidayInfo.iterable(fd, LocalDate.of(2017, 7, 21), LocalDate.of(2017, 7, 28));
         Stream<HolidayInfo> stream = StreamSupport.stream(iterable.spliterator(), false);
         assertTrue(stream.count() == 1);
         stream = StreamSupport.stream(iterable.spliterator(), false);
@@ -65,11 +66,12 @@ public class FixedDayTest {
 
    @Test
     public void testEmpty() {
-        FixedDay fd = new FixedDay(7, 21);
-        Iterable<HolidayInfo> iterable = HolidayInfo.iterable(fd, LocalDate.of(2017, 7, 23), LocalDate.of(2018, 6, 22));
+        FixedWeekDay fd = new FixedWeekDay(7, 4, DayOfWeek.MONDAY);
+        Iterable<HolidayInfo> iterable = HolidayInfo.iterable(fd, LocalDate.of(2017, 7, 29), LocalDate.of(2018, 7, 21));
         Stream<HolidayInfo> stream = StreamSupport.stream(iterable.spliterator(), false);
         assertTrue(stream.count() == 0);
         stream = StreamSupport.stream(iterable.spliterator(), false);
         assertTrue(!stream.findFirst().isPresent());
     }
+    
 }
