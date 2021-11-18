@@ -50,6 +50,10 @@ public class TsMoniker implements Comparable<TsMoniker> {
         return !source.isEmpty();
     }
 
+    public boolean isUserDefined() {
+        return source.isEmpty();
+    }
+
     public boolean isNull() {
         return source.isEmpty() && id.isEmpty();
     }
