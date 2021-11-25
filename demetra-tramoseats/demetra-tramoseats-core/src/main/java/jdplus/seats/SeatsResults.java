@@ -19,7 +19,7 @@ package jdplus.seats;
 import demetra.sa.SeriesDecomposition;
 import jdplus.sarima.SarimaModel;
 import jdplus.ucarima.UcarimaModel;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 
 /**
  *
@@ -27,7 +27,7 @@ import demetra.information.Explorable;
  */
 @lombok.Value
 @lombok.Builder
-public class SeatsResults implements Explorable {
+public class SeatsResults implements GenericExplorable {
 
     private SarimaModel originalModel;
     private SarimaModel finalModel;

@@ -21,7 +21,7 @@ import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
 import demetra.modelling.implementations.SarimaSpec;
@@ -65,7 +65,7 @@ import demetra.math.matrices.Matrix;
  */
 @lombok.Value
 @lombok.Builder
-public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorable {
+public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericExplorable {
 
     private static final MissingValueEstimation[] NOMISSING = new MissingValueEstimation[0];
 

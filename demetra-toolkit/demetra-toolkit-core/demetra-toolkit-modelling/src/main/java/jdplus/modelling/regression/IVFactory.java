@@ -12,6 +12,7 @@ import demetra.timeseries.TsPeriod;
 import jdplus.math.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesInterval;
 import java.time.LocalDateTime;
+import java.util.List;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.RationalFunction;
 
@@ -29,20 +30,20 @@ class IVFactory implements RegressionVariableFactory<InterventionVariable> {
     @Override
     public boolean fill(InterventionVariable var, TsPeriod start, FastMatrix buffer) {
         int dcount = buffer.getRowsCount();
-        Range<LocalDateTime>[] seqs = var.getSequences();
-        if (seqs.length == 0) {
+        List<Range<LocalDateTime>> seqs = var.getSequences();
+        if (seqs.isEmpty()) {
             return true;
         }
         // first, generates the 0/1
-        LocalDateTime t0 = seqs[0].start(), t1 = seqs[0].end();
+        LocalDateTime t0 = LocalDateTime.MIN, t1 = LocalDateTime.MAX;
         // search the Start / End of the sequences
 
-        for (int i = 1; i < seqs.length; ++i) {
-            if (t0.isAfter(seqs[i].start())) {
-                t0 = seqs[i].start();
+        for (Range<LocalDateTime> seq :seqs) {
+            if (t0.isAfter(seq.start())) {
+                t0 = seq.start();
             }
-            if (t1.isBefore(seqs[i].end())) {
-                t1 = seqs[i].end();
+            if (t1.isBefore(seq.end())) {
+                t1 = seq.end();
             }
         }
 
@@ -54,9 +55,9 @@ class IVFactory implements RegressionVariableFactory<InterventionVariable> {
         }
 
         double[] tmp = new double[n];
-        for (int i = 0; i < seqs.length; ++i) {
-            TsPeriod curstart = start.withDate(seqs[i].start()),
-                    curend = start.withDate(seqs[i].end());
+        for (Range<LocalDateTime> seq :seqs) {
+            TsPeriod curstart = start.withDate(seq.start()),
+                    curend = start.withDate(seq.end());
 
             int istart = pstart.until(curstart);
             int iend = 1 + pstart.until(curend);

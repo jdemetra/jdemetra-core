@@ -31,6 +31,7 @@ import demetra.timeseries.regression.Variable;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import jdplus.arima.IArimaModel;
 
 /**
@@ -156,10 +157,9 @@ public class ModellingProtosUtility {
                 .setCoefficient(ToolkitProtosUtility.convert(var.getCoefficient(0)))
                 .putAllMetadata(var.getAttributes());
 
-        Range<LocalDateTime>[] sequences = v.getSequences();
-        for (int i = 0; i < sequences.length; ++i) {
-            Range<LocalDateTime> seq = sequences[i];
-            builder.addSequences(ModellingProtos.InterventionVariable.Sequence.newBuilder()
+        List<Range<LocalDateTime>> seqs = v.getSequences();
+        for (Range<LocalDateTime> seq :seqs) {
+             builder.addSequences(ModellingProtos.InterventionVariable.Sequence.newBuilder()
                     .setStart(ToolkitProtosUtility.convert(seq.start().toLocalDate()))
                     .setEnd(ToolkitProtosUtility.convert(seq.end().toLocalDate()))
                     .build());
@@ -176,7 +176,7 @@ public class ModellingProtosUtility {
             ModellingProtos.InterventionVariable.Sequence seq = v.getSequences(i);
             LocalDate start = ToolkitProtosUtility.convert(seq.getStart());
             LocalDate end = ToolkitProtosUtility.convert(seq.getEnd());
-            builder.add(start.atStartOfDay(), end.atStartOfDay());
+            builder.sequence(Range.of(start.atStartOfDay(), end.atStartOfDay()));
         }
         Parameter c = ToolkitProtosUtility.convert(v.getCoefficient());
         return Variable.<InterventionVariable>builder()

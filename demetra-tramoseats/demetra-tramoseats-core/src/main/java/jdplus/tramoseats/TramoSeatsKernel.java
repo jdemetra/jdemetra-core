@@ -78,6 +78,7 @@ public class TramoSeatsKernel {
                 .decomposition(srslts)
                 .finals(finals)
                 .diagnostics(diagnostics)
+                .log(log)
                 .build();
     }
 

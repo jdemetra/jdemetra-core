@@ -156,6 +156,25 @@ public final class ObsFormat {
         }
     }
 
+    private static final String SEP = " ~ ";
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        if (locale != null) {
+            builder.append(locale);
+        }
+        builder.append(SEP);
+        if (dateTimePattern != null) {
+            builder.append(dateTimePattern);
+        }
+        builder.append(SEP);
+        if (numberPattern != null) {
+            builder.append(numberPattern);
+        }
+        return builder.toString();
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Internal implementation">
     @VisibleForTesting
     DateTimeFormatter newDateTimeFormatter() throws IllegalArgumentException {

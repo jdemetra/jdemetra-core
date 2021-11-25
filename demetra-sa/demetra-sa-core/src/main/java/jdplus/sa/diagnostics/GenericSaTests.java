@@ -16,7 +16,7 @@
  */
 package jdplus.sa.diagnostics;
 
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 import demetra.timeseries.TsData;
 import jdplus.regarima.diagnostics.RegArimaDiagnostics;
 import jdplus.regarima.tests.OneStepAheadForecastingTest;
@@ -27,7 +27,7 @@ import jdplus.regsarima.regular.RegSarimaModel;
  * @author palatej
  */
 @lombok.Getter
-public class GenericSaTests implements Explorable {
+public class GenericSaTests implements GenericExplorable {
     
     private final RegSarimaModel regarima;
     private final boolean mul;

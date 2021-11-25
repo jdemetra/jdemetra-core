@@ -19,6 +19,7 @@ package demetra.processing;
 import java.util.Collections;
 import nbbrd.design.Development;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * A processor factory is an object that is able to generate a
@@ -49,7 +50,7 @@ public interface ProcessorFactory<S extends ProcSpecification, I, R> {
      * @param specification The specifications (=input) of the processor
      * @return The results (=output) of the processing. May be null.
      */
-    Processor<I, R> generateProcessor(S specification);
+    Function<I, R> generateProcessor(S specification);
 
     /**
      * Returns the output dictionary.

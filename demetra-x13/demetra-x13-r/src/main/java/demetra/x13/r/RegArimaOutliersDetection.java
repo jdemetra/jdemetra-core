@@ -50,7 +50,7 @@ import jdplus.sarima.SarimaModel;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.stats.RobustStandardDeviationComputer;
 import jdplus.x13.regarima.X13Utility;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 import demetra.math.matrices.Matrix;
 
 /**
@@ -62,7 +62,7 @@ public class RegArimaOutliersDetection {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements Explorable {
+    public static class Results implements GenericExplorable {
 
         public byte[] buffer() {
             int nx = x == null ? 0 : x.getColumnsCount();

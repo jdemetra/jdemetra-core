@@ -16,13 +16,15 @@
  */
 package demetra.modelling.io.information;
 
+import demetra.information.Explorable;
 import demetra.information.Information;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
 import demetra.processing.ProcSpecification;
-import demetra.processing.TsDataProcessorFactory;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsDocument;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,22 +37,8 @@ public class TsDocumentMapping {
 
     public static final String INPUT = "input", SPEC = "specification", RESULTS = "results", METADATA = "metadata";
     public static final String SERIES = "series";
-    
-    public <S extends ProcSpecification, R> InformationSetSerializer<TsDocument<S,R>> serializer(InformationSetSerializer<S> ispec, TsDataProcessorFactory<S, R> processor){
-        return new InformationSetSerializer<TsDocument<S,R>>() {
-            @Override
-            public InformationSet write(TsDocument<S, R> object, boolean verbose) {
-                return TsDocumentMapping.write(object, ispec, false, false);
-            }
 
-            @Override
-            public TsDocument<S, R> read(InformationSet info) {
-                return TsDocumentMapping.<S, R>read(info, ispec).withProcessor(processor);
-            }
-        };
-    }
-
-    public <S extends ProcSpecification, R> InformationSet write(TsDocument<S, R> doc, InformationSetSerializer<S> ispec, boolean verbose, boolean legacy) {
+    public <S extends ProcSpecification, R extends Explorable> InformationSet write(TsDocument<S, R> doc, InformationSetSerializer<S> ispec, boolean verbose, boolean legacy) {
 
         InformationSet info = new InformationSet();
 
@@ -63,7 +51,7 @@ public class TsDocumentMapping {
         if (legacy) {
             info.set(ProcSpecification.ALGORITHM, spec.getAlgorithmDescriptor());
         }
-        Map<String, String> meta = doc.getMeta();
+        Map<String, String> meta = doc.getMetadata();
         if (!meta.isEmpty()) {
             InformationSet minfo = info.subSet(METADATA);
             meta.entrySet().forEach(entry -> {
@@ -73,23 +61,27 @@ public class TsDocumentMapping {
         return info;
     }
 
-    public <S extends ProcSpecification, R> TsDocument<S, R> read(InformationSet info, InformationSetSerializer<S> ispec) {
-        TsDocument.Builder<S, R> builder = TsDocument.<S, R>builder();
+    public <S extends ProcSpecification, R extends Explorable> void read(InformationSet info, InformationSetSerializer<S> ispec, TsDocument<S, R> doc) {
+        InformationSet spec = info.getSubSet(SPEC);
+        S sp = ispec.read(spec);
         InformationSet input = info.getSubSet(INPUT);
         if (input != null) {
-            builder.input(input.get(SERIES, Ts.class));
+            Ts s = input.get(SERIES, Ts.class);
+            doc.set(sp, s);
+        } else {
+            doc.set(sp);
         }
-        InformationSet spec = info.getSubSet(SPEC);
-        builder.specification(ispec.read(spec));
         InformationSet minfo = info.subSet(METADATA);
         if (minfo != null) {
+            Map<String, String> map = new HashMap<>();
             List<Information<String>> all = minfo.select(String.class);
             all.forEach(entry -> {
-                builder.meta(entry.getName(), entry.getValue());
+                map.put(entry.getName(), entry.getValue());
             });
+            if (!map.isEmpty()) {
+                doc.setMetadata(map);
+            }
         }
-
-        return builder.build();
 
     }
 

@@ -21,6 +21,7 @@ import demetra.information.InformationSet;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.Variable;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,10 +62,11 @@ public class InterventionVariableMapping {
         if (verbose || var.getDeltaSeasonal() != 0) {
             info.add(DELTAS, var.getDeltaSeasonal());
         }
-        Range<LocalDateTime>[] sequences = var.getSequences();
-        String[] seqs = new String[sequences.length];
-        for (int i = 0; i < sequences.length; ++i) {
-            seqs[i] = VariableMapping.rangeToShortString(sequences[i]);
+        List<Range<LocalDateTime>> sequences = var.getSequences();
+        String[] seqs = new String[sequences.size()];
+        int i=0;
+        for (Range<LocalDateTime> seq:sequences) {
+            seqs[i++] = VariableMapping.rangeToShortString(seq);
         }
         info.add(SEQS, seqs);
         return info;
@@ -85,7 +87,7 @@ public class InterventionVariableMapping {
             for (int i = 0; i < seqs.length; ++i) {
                 Range<LocalDateTime> cur = VariableMapping.rangeFromShortString(seqs[i]);
                 if (cur != null) {
-                    builder.add(cur.start(), cur.end());
+                    builder.sequence(cur);
                 }
             }
         }

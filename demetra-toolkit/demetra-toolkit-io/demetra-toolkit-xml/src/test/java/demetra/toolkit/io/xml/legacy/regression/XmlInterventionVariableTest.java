@@ -5,6 +5,7 @@
  */
 package demetra.toolkit.io.xml.legacy.regression;
 
+import demetra.data.Range;
 import demetra.timeseries.regression.InterventionVariable;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -45,7 +46,7 @@ public class XmlInterventionVariableTest {
         InterventionVariable ivar = 
                 InterventionVariable.builder()
                 .deltaSeasonal(.9)
-                .add(LocalDate.of(1999, Month.APRIL,4).atStartOfDay(), LocalDate.of(2005, Month.JUNE, 4).atStartOfDay())
+                .sequence(Range.of(LocalDate.of(1999, Month.APRIL,4).atStartOfDay(), LocalDate.of(2005, Month.JUNE, 4).atStartOfDay()))
                 .build();
         XmlInterventionVariable xvar = XmlInterventionVariable.getAdapter().marshal(ivar);
 

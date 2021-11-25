@@ -47,7 +47,7 @@ import jdplus.regsarima.ami.FastOutliersDetector;
 import jdplus.sarima.SarimaModel;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.tramo.internal.TramoUtility;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 
 /**
  *
@@ -58,7 +58,7 @@ public class TramoOutliersDetection {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements Explorable {
+    public static class Results implements GenericExplorable {
 
         public byte[] buffer() {
             SarimaOrders orders = initialArima.orders();

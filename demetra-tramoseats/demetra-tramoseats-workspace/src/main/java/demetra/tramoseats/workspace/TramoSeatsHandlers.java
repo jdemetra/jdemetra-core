@@ -16,16 +16,12 @@
  */
 package demetra.tramoseats.workspace;
 
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.information.InformationSet;
+import demetra.information.InformationSetSerializer;
 import demetra.modelling.io.information.TsDocumentMapping;
 import demetra.processing.ProcSpecification;
-import demetra.processing.TsDataProcessor;
-import demetra.processing.TsDataProcessorFactory;
-import demetra.timeseries.regression.ModellingContext;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
-import demetra.tramo.Tramo;
-import demetra.tramo.TramoSpec;
-import demetra.tramoseats.TramoSeats;
+import demetra.tramo.TramoDocument;
+import demetra.tramoseats.TramoSeatsDocument;
 import demetra.tramoseats.TramoSeatsResults;
 import demetra.tramoseats.TramoSeatsSpec;
 import demetra.tramoseats.io.information.TramoSeatsSpecMapping;
@@ -34,7 +30,6 @@ import demetra.workspace.WorkspaceFamily;
 import static demetra.workspace.WorkspaceFamily.informationSet;
 import static demetra.workspace.WorkspaceFamily.parse;
 import demetra.workspace.file.spi.FamilyHandler;
-import java.util.Collections;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -55,19 +50,21 @@ public class TramoSeatsHandlers {
 
         @lombok.experimental.Delegate
         private final FamilyHandler delegate = informationSet(MOD_DOC_TRAMO,
-                TsDocumentMapping.serializer(TramoSpecMapping.SERIALIZER_V3,
-                        new TsDataProcessorFactory<TramoSpec, GeneralLinearModel<SarimaSpec>>() {
-                    @Override
-                    public boolean canHandle(ProcSpecification spec) {
-                        return spec instanceof TramoSeatsSpec;
-                    }
+                new InformationSetSerializer<TramoDocument>() {
+            @Override
+            public InformationSet write(TramoDocument object, boolean verbose) {
+                return TsDocumentMapping.write(object, TramoSpecMapping.SERIALIZER_V3, verbose, true);
+            }
 
-                    @Override
-                    public TsDataProcessor<GeneralLinearModel<SarimaSpec>> generateProcessor(TramoSpec specification) {
+            @Override
+            public TramoDocument read(InformationSet info) {
 
-                        return series -> Tramo.process(series, specification, ModellingContext.getActiveContext(), Collections.emptyList());
-                    }
-                }), "TramoDoc");
+                TramoDocument doc = new TramoDocument();
+                TsDocumentMapping.read(info, TramoSpecMapping.SERIALIZER_V3, doc);
+                return doc;
+            }
+        }, "TramoDoc");
+
     }
 
     @ServiceProvider(FamilyHandler.class)
@@ -75,19 +72,21 @@ public class TramoSeatsHandlers {
 
         @lombok.experimental.Delegate
         private final FamilyHandler delegate = informationSet(SA_DOC_TRAMOSEATS,
-                TsDocumentMapping.serializer(TramoSeatsSpecMapping.SERIALIZER_V3,
-                        new TsDataProcessorFactory<TramoSeatsSpec, TramoSeatsResults>() {
-                    @Override
-                    public boolean canHandle(ProcSpecification spec) {
-                        return spec instanceof TramoSeatsSpec;
-                    }
+                new InformationSetSerializer<TramoSeatsDocument>() {
+            @Override
+            public InformationSet write(TramoSeatsDocument object, boolean verbose) {
+                return TsDocumentMapping.write(object, TramoSeatsSpecMapping.SERIALIZER_V3, verbose, true);
+            }
 
-                    @Override
-                    public TsDataProcessor<TramoSeatsResults> generateProcessor(TramoSeatsSpec specification) {
+            @Override
+            public TramoSeatsDocument read(InformationSet info) {
 
-                        return series -> TramoSeats.process(series, specification, ModellingContext.getActiveContext(), Collections.emptyList());
-                    }
-                }), "TramoSeatsDoc");
+                TramoSeatsDocument doc = new TramoSeatsDocument();
+                TsDocumentMapping.read(info, TramoSeatsSpecMapping.SERIALIZER_V3, doc);
+                return doc;
+            }
+        },
+                "TramoSeatsDoc");
     }
 
     @ServiceProvider(FamilyHandler.class)

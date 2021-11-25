@@ -76,4 +76,14 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
     public static class Builder implements Validatable.Builder<RegressionSpec> {
 
     }
+    
+    public boolean hasFixedCoefficients(){
+        if (! isUsed())
+            return false;
+        return (mean != null && mean.isFixed()) || calendar.hasFixedCoefficients()
+                || outliers.stream().anyMatch(var->! var.isFree())
+                || ramps.stream().anyMatch(var->! var.isFree())
+                || interventionVariables.stream().anyMatch(var->! var.isFree())
+                || userDefinedVariables.stream().anyMatch(var->! var.isFree());
+    }
 }

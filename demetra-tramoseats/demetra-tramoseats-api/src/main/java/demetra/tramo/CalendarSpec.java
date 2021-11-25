@@ -16,6 +16,7 @@
  */
 package demetra.tramo;
 
+import demetra.data.Parameter;
 import nbbrd.design.Development;
 import nbbrd.design.LombokWorkaround;
 import demetra.util.Validatable;
@@ -26,40 +27,44 @@ import demetra.util.Validatable;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true, buildMethodName = "buildWithoutValidation")
 public final class CalendarSpec implements Validatable<CalendarSpec> {
-
+    
     public final static CalendarSpec DEFAULT = CalendarSpec.builder().build();
-
+    
     public static final String TD = "td", EASTER = "easter";
-
+    
     @lombok.NonNull
     private TradingDaysSpec tradingDays;
-
+    
     @lombok.NonNull
     private EasterSpec easter;
-
+    
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
                 .tradingDays(TradingDaysSpec.none())
                 .easter(EasterSpec.DEFAULT_UNUSED);
     }
-
+    
     public boolean isUsed() {
         return easter.isUsed() || tradingDays.isUsed();
     }
-
+    
     public boolean isDefault() {
         return this.equals(DEFAULT);
     }
-
+    
     @Override
     public CalendarSpec validate() throws IllegalArgumentException {
         easter.validate();
         return this;
     }
-
+    
+    boolean hasFixedCoefficients() {
+        return easter.hasFixedCoefficient() || tradingDays.hasFixedCoefficients();
+    }
+    
     public static class Builder implements Validatable.Builder<CalendarSpec> {
     }
 }

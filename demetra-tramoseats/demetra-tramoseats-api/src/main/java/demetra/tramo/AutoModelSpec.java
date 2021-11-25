@@ -26,7 +26,7 @@ import demetra.util.Validatable;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true, builderClassName="Builder",  buildMethodName = "buildWithoutValidation")
 public final class AutoModelSpec implements Validatable<AutoModelSpec> {
 
     public static final AutoModelSpec DEFAULT_DISABLED = AutoModelSpec.builder().build();
@@ -51,7 +51,8 @@ public final class AutoModelSpec implements Validatable<AutoModelSpec> {
                 .acceptDefault(DEF_FAL)
                 .amiCompare(DEF_AMICOMPARE);
     }
-
+    
+    
     @Override
     public AutoModelSpec validate() throws IllegalArgumentException {
         if (pcr < .8 || pcr > 1) {

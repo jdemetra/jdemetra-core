@@ -20,6 +20,7 @@ package demetra.util;
 
 import java.util.Map;
 import nbbrd.design.Development;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 
 /**
@@ -30,7 +31,8 @@ import nbbrd.design.Development;
 public interface Documented {
     /**
      * Returns the documentation in the form of meta data
-     * @return The meta data. Can be null.
+     * @return The meta data. .
      */
-    Map<String, String> getMetaData();
+    @NonNull
+    Map<String, String> getMetadata();
 }

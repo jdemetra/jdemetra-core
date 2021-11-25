@@ -17,69 +17,157 @@
 package demetra.timeseries;
 
 import demetra.processing.ProcSpecification;
-import demetra.processing.Processor;
-import demetra.processing.TsDataProcessorFactory;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.information.Explorable;
+import demetra.processing.ProcDocument;
+import demetra.processing.ProcessingStatus;
+import java.util.UUID;
 
 /**
  *
  * @author PALATEJ
- * @param <I>
+ * @param <S>
  * @param <R>
  */
-@lombok.Value
-@lombok.Builder(builderClassName = "Builder", toBuilder = true)
-public class TsDocument<I extends ProcSpecification, R> {
+public abstract class TsDocument<S extends ProcSpecification, R extends Explorable> implements ProcDocument<S, Ts, R> {
 
-    public static final String ERROR = "@error";
+    private final UUID uuid;
 
-    @lombok.NonNull
-    @lombok.Singular("meta")
-    private Map<String, String> meta;
+    private Map<String, String> metadata = Collections.emptyMap();
 
     @lombok.NonNull
-    private I specification;
+    private S specification;
 
     private Ts input;
 
     private R result;
 
-    private Processor.Status status;
+    private volatile ProcessingStatus status = ProcessingStatus.Unprocessed;
 
-    private TsDataProcessorFactory<I, R> processor;
-
-    public TsDocument<I, R> withProcessor(@NonNull TsDataProcessorFactory<I, R> nprocessor) {
-        if (nprocessor.equals(processor)) {
-            return this;
-        }
-        return new TsDocument(meta, specification, input, null, Processor.Status.Unprocessed, nprocessor);
+    public TsDocument(S spec) {
+        this.specification = spec;
+        uuid = UUID.randomUUID();
     }
 
-    public TsDocument<I, R> process(TsFactory tsFactory) {
-        if (status != Processor.Status.Unprocessed) {
-            return this;
+    @Override
+    public Ts getInput() {
+        return input;
+    }
+
+    @Override
+    public S getSpecification() {
+        return specification;
+    }
+
+    @Override
+    public void set(S newSpec, Ts newInput) {
+        synchronized (this) {
+            specification = newSpec;
+            input = newInput;
+         }
+    }
+
+    @Override
+    public void set(S newSpec) {
+        synchronized (this) {
+            specification = newSpec;
         }
+    }
+
+    @Override
+    public void set(Ts newInput) {
+        synchronized (this) {
+            input = newInput;
+        }
+    }
+
+    @Override
+    public void setMetadata(Map<String, String> newMetadata) {
+        metadata = Collections.unmodifiableMap(newMetadata);
+    }
+
+    @Override
+    public void updateMetadata(Map<String, String> update) {
+        Map<String, String> md = new HashMap<>(metadata);
+        md.putAll(update);
+        metadata = Collections.unmodifiableMap(md);
+    }
+
+    @Override
+    public ProcessingStatus process() {
+        ProcessingStatus cur = status;
+        if (cur == ProcessingStatus.Unprocessed) {
+            synchronized (this) {
+                if (status == ProcessingStatus.Unprocessed) {
+                    rawProcess();
+                }
+                cur = status;
+            }
+        }
+        return cur;
+    }
+
+    private boolean check() {
         if (input == null) {
-            throw new IllegalArgumentException("No series");
+            return false;
         }
-        if (processor == null) {
-            throw new IllegalArgumentException("No processor");
-        }
-        Ts s = input;
         if (input.getData().isEmpty()) {
-            s = tsFactory.makeTs(input.getMoniker(), TsInformationType.BaseInformation);
+            Ts s = TsFactory.getDefault().makeTs(input.getMoniker(), TsInformationType.Data);
+            if (s.getData().isEmpty()) {
+                throw new IllegalArgumentException("No data");
+            } else {
+                input = s;
+            }
         }
-        try {
-            R rslt = processor.generateProcessor(specification).process(s.getData());
-            return new TsDocument(meta, specification, s, rslt, Processor.Status.Valid, processor);
-        } catch (Exception err) {
-            HashMap<String, String> m = new HashMap<>(meta);
-            m.put(ERROR, err.getMessage());
-            return new TsDocument(Collections.unmodifiableMap(m), specification, s, null, Processor.Status.Invalid, processor);
+        return true;
+    }
+
+    private void rawProcess() {
+        if (check()) {
+            try {
+                result = internalProcess(specification, input.getData());
+                status = result == null ? ProcessingStatus.Invalid : ProcessingStatus.Valid;
+            } catch (Exception err) {
+                Map<String, String> md = new HashMap<>(metadata);
+                md.put(ERROR, err.getLocalizedMessage());
+                result = null;
+                status = ProcessingStatus.Invalid;
+            }
+        } else {
+            result = null;
+            status = ProcessingStatus.Unprocessed;
         }
+    }
+
+    protected abstract R internalProcess(S spec, TsData data);
+
+    @Override
+    public UUID getKey() {
+        return uuid;
+    }
+
+    @Override
+    public Map<String, String> getMetadata() {
+        return metadata;
+    }
+
+    @Override
+    public R getResult() {
+        ProcessingStatus cur = status;
+        if (cur == ProcessingStatus.Unprocessed) {
+            synchronized (this) {
+                if (status == ProcessingStatus.Unprocessed) {
+                    rawProcess();
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public ProcessingStatus getStatus() {
+        return status;
     }
 }

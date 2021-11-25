@@ -10,7 +10,7 @@ import demetra.data.DoubleSeqCursor;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.Matrix;
 import demetra.modelling.OutlierDescriptor;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 
 /**
  * Low-level results. Should be refined
@@ -19,7 +19,7 @@ import demetra.information.Explorable;
  */
 @lombok.Value
 @lombok.Builder
-public class FractionalAirlineEstimation implements Explorable{
+public class FractionalAirlineEstimation implements GenericExplorable {
 
     double[] y;
     Matrix x;

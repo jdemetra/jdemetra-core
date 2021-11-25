@@ -39,7 +39,7 @@ import demetra.sts.SeasonalModel;
 import jdplus.math.matrices.FastMatrix;
 import static jdplus.timeseries.simplets.TsDataToolkit.add;
 import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 import demetra.likelihood.DiffuseLikelihoodStatistics;
 
 /**
@@ -51,7 +51,7 @@ public class StsEstimation {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements Explorable {
+    public static class Results implements GenericExplorable {
 
         TsData y, t, s, i;
         BsmData bsm;

@@ -17,6 +17,7 @@
 package demetra.tramoseats;
 
 import demetra.arima.SarimaModel;
+import demetra.information.GenericExplorable;
 import demetra.processing.ProcessingLog;
 import demetra.sa.SeriesDecomposition;
 import demetra.seats.SeatsResults;
@@ -30,7 +31,7 @@ import java.util.Map;
  */
 @lombok.Value
 @lombok.Builder
-public class TramoSeatsResults {
+public class TramoSeatsResults implements GenericExplorable {
 
     private GeneralLinearModel<SarimaModel> preprocessing;
     private SeatsResults decomposition;

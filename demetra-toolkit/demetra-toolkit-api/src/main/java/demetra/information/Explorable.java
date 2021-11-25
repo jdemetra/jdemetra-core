@@ -16,9 +16,8 @@
  */
 package demetra.information;
 
-import nbbrd.design.Development;
 import demetra.util.WildCards;
-import java.util.Collections;
+import nbbrd.design.Development;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -39,10 +38,7 @@ public interface Explorable {
      * @param id Information item
      * @return
      */
-    default boolean contains(String id) {
-        Class<? extends Explorable> cl = this.getClass();
-        return InformationExtractors.contains(cl, id);
-    }
+    boolean contains(String id);
 
     /**
      * Gets the dictionary of all the possible results
@@ -50,12 +46,7 @@ public interface Explorable {
      * @param compact
      * @return
      */
-    default Map<String, Class> getDictionary() {
-        Class<? extends Explorable> cl = this.getClass();
-        LinkedHashMap<String, Class> dic = new LinkedHashMap();
-        InformationExtractors.fillDictionary(cl, null, dic, true);
-        return dic;
-    }
+    Map<String, Class> getDictionary();
 
     /**
      * Gets information related to the specified id
@@ -67,9 +58,7 @@ public interface Explorable {
      * @param tclass Class of the information
      * @return null if this information is not available
      */
-    default <T> T getData(String id, Class<T> tclass) {
-        return InformationExtractors.getData(this.getClass(), this, id, tclass);
-    }
+    <T> T getData(String id, Class<T> tclass);
 
     default Object getData(String id) {
         return getData(id, Object.class);
@@ -84,12 +73,7 @@ public interface Explorable {
      * @param tclass Type of information
      * @return
      */
-    default <T> Map<String, T> searchAll(String pattern, Class<T> tclass) {
-        Map<String, T> rslt = new LinkedHashMap<>();
-        Class<? extends Explorable> cl = this.getClass();
-        InformationExtractors.searchAll(cl, this, new WildCards(pattern), tclass, rslt);
-        return rslt;
-    }
+    <T> Map<String, T> searchAll(String pattern, Class<T> tclass);
 
     public static final char SEP = '.';
 
@@ -185,6 +169,12 @@ public interface Explorable {
                 return extractor.getData(source, id, tclass);
             }
 
+            @Override
+            public <T> Map<String, T> searchAll(String pattern, Class<T> tclass) {
+                Map<String, T> rslt = new LinkedHashMap<>();
+                extractor.searchAll(source, new WildCards(pattern), tclass, rslt);
+                return rslt;
+            }
         };
     }
 

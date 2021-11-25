@@ -193,4 +193,8 @@ public class TradingDaysSpec {
                 RegressionTestType.None, stockTradingDays, AutoMethod.Unused, probabilityForFTest, tdc, lpc);
     }
     
+    public boolean hasFixedCoefficients(){
+        return (lpCoefficient != null && lpCoefficient.isFixed())
+                || Parameter.hasFixedParameters(tdCoefficients);
+    }
 }

@@ -82,6 +82,8 @@ public enum RegularFrequency {
      * @return Enum representation of the frequency
      */
     public static RegularFrequency valueOf(int value) {
+        if (value <= 0)
+            return Undefined;
         if (12 % value == 0) {
             for (int i = 0; i < ENUMS.length; ++i) {
                 if (value == ENUMS[i].value) {

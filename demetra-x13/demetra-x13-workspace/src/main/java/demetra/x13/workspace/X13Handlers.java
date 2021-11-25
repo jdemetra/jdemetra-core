@@ -16,25 +16,17 @@
  */
 package demetra.x13.workspace;
 
+import demetra.information.InformationSet;
+import demetra.information.InformationSetSerializer;
 import demetra.workspace.file.spi.FamilyHandler;
-import demetra.modelling.implementations.SarimaSpec;
 import demetra.modelling.io.information.TsDocumentMapping;
-import demetra.processing.ProcSpecification;
-import demetra.processing.TsDataProcessor;
-import demetra.processing.TsDataProcessorFactory;
-import demetra.regarima.RegArima;
-import demetra.regarima.RegArimaSpec;
-import demetra.timeseries.regression.ModellingContext;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
+import demetra.regarima.RegArimaDocument;
 import demetra.workspace.WorkspaceFamily;
 import static demetra.workspace.WorkspaceFamily.informationSet;
 import static demetra.workspace.WorkspaceFamily.parse;
-import demetra.x13.X13;
-import demetra.x13.X13Results;
-import demetra.x13.X13Spec;
+import demetra.x13.X13Document;
 import demetra.x13.io.information.RegArimaSpecMapping;
 import demetra.x13.io.information.X13SpecMapping;
-import java.util.Collections;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -50,25 +42,26 @@ public class X13Handlers {
     public final WorkspaceFamily MOD_DOC_REGARIMA = parse("Modelling@documents@regarima");
     public final WorkspaceFamily MOD_SPEC_REGARIMA = parse("Modelling@specifications@regarima");
 
-
     @ServiceProvider(FamilyHandler.class)
     public static final class SaDocX13 implements FamilyHandler {
 
         @lombok.experimental.Delegate
         private final FamilyHandler delegate = informationSet(SA_DOC_X13,
-                TsDocumentMapping.serializer(X13SpecMapping.SERIALIZER_V3,
-                        new TsDataProcessorFactory<X13Spec, X13Results>() {
-                    @Override
-                    public boolean canHandle(ProcSpecification spec) {
-                        return spec instanceof X13Spec; //To change body of generated methods, choose Tools | Templates.
-                    }
+                new InformationSetSerializer<X13Document>() {
+            @Override
+            public InformationSet write(X13Document object, boolean verbose) {
+                return TsDocumentMapping.write(object, X13SpecMapping.SERIALIZER_V3, verbose, true);
+            }
 
-                    @Override
-                    public TsDataProcessor<X13Results> generateProcessor(X13Spec specification) {
+            @Override
+            public X13Document read(InformationSet info) {
 
-                        return series -> X13.process(series, specification, ModellingContext.getActiveContext(), Collections.emptyList());
-                    }
-                }), "X13Doc");
+                X13Document doc = new X13Document();
+                TsDocumentMapping.read(info, X13SpecMapping.SERIALIZER_V3, doc);
+                return doc;
+            }
+        }, "X13Doc");
+
     }
 
     @ServiceProvider(FamilyHandler.class)
@@ -83,27 +76,30 @@ public class X13Handlers {
 
         @lombok.experimental.Delegate
         private final FamilyHandler delegate = informationSet(MOD_DOC_REGARIMA,
-                TsDocumentMapping.serializer(RegArimaSpecMapping.SERIALIZER_V3,
-                        new TsDataProcessorFactory<RegArimaSpec, GeneralLinearModel<SarimaSpec> >() {
-                    @Override
-                    public boolean canHandle(ProcSpecification spec) {
-                        return spec instanceof RegArimaSpec;
-                    }
+                new InformationSetSerializer<RegArimaDocument>() {
+            @Override
+            public InformationSet write(RegArimaDocument object, boolean verbose) {
+                return TsDocumentMapping.write(object, RegArimaSpecMapping.SERIALIZER_V3, verbose, true);
+            }
 
-                    @Override
-                    public TsDataProcessor<GeneralLinearModel<SarimaSpec>> generateProcessor(RegArimaSpec specification) {
+            @Override
+            public RegArimaDocument read(InformationSet info) {
 
-                        return series -> RegArima.process(series, specification, ModellingContext.getActiveContext(), Collections.emptyList());
-                    }
-                }), "RegArimaDoc");
+                RegArimaDocument doc = new RegArimaDocument();
+                TsDocumentMapping.read(info, RegArimaSpecMapping.SERIALIZER_V3, doc);
+                return doc;
+            }
+        }, "RegArimaDoc");
+
     }
- 
+
     @ServiceProvider(FamilyHandler.class)
+
     public static final class ModSpecRegarima implements FamilyHandler {
 
         @lombok.experimental.Delegate
         private final FamilyHandler delegate = informationSet(MOD_SPEC_REGARIMA, RegArimaSpecMapping.SERIALIZER_V3, "RegArimaSpec");
     }
 
- 
- }
+}
+

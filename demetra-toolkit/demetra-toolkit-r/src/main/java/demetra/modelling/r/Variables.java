@@ -5,6 +5,7 @@
  */
 package demetra.modelling.r;
 
+import demetra.data.Range;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.Calendar;
@@ -269,7 +270,7 @@ public class Variables {
         for (int i = 0; i < starts.length; ++i) {
             LocalDate start = LocalDate.parse(starts[i], DateTimeFormatter.ISO_DATE);
             LocalDate end = LocalDate.parse(ends[i], DateTimeFormatter.ISO_DATE);
-            builder.add(start.atStartOfDay(), end.atStartOfDay());
+            builder.sequence(Range.of(start.atStartOfDay(), end.atStartOfDay()));
         }
         InterventionVariable var = builder.build();
         return Regression.matrix(domain, var).getStorage();
@@ -283,7 +284,7 @@ public class Variables {
         for (int i = 0; i < starts.length; ++i) {
             LocalDateTime start = domain.get(starts[i]).start();
             LocalDateTime end = domain.get(ends[i]).start();
-            builder.add(start, end);
+            builder.sequence(Range.of(start, end));
         }
         InterventionVariable var = builder.build();
         return Regression.matrix(domain, var).getStorage();

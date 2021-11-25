@@ -23,6 +23,8 @@ import demetra.timeseries.TsPeriod;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -45,7 +47,7 @@ public class CalendarUtility {
         for (int i = 0; i < n; ++i) {
             start[i] = domain.get(i).start().toLocalDate();
         }
-        start[n]=domain.getEndPeriod().start().toLocalDate();
+        start[n] = domain.getEndPeriod().start().toLocalDate();
         for (int i = 0; i < n; ++i) {
             // int dw0 = (start[i] - 4) % 7;
             int ni = (int) start[i].until(start[i + 1], ChronoUnit.DAYS);
@@ -157,8 +159,9 @@ public class CalendarUtility {
      * @return
      */
     public int getNumberOfDaysByMonth(int month) {
-        return MONTHDAYS[month-1];
+        return MONTHDAYS[month - 1];
     }
+
     /**
      * Gets the number of days by month (1-based indexed).
      *
@@ -170,7 +173,7 @@ public class CalendarUtility {
         if ((month == 2) && isLeap(year)) {
             return 29;
         }
-        return MONTHDAYS[month-1];
+        return MONTHDAYS[month - 1];
     }
 
     /**
@@ -178,12 +181,29 @@ public class CalendarUtility {
      */
     private final int[] MONTHDAYS = {31, 28, 31, 30, 31, 30, 31, 31, 30,
         31, 30, 31};
-   /**
+    /**
      * Cumulative number of days (if no leap year). CumulatedMonthDays[2] =
      * number of days from 1/1 to 28/2.
      */
     private final int[] CUMULATEDMONTHDAYS = {0, 31, 59, 90, 120, 151,
         181, 212, 243, 273, 304, 334, 365};
-    
 
+    public LocalDate toLocalDate(Date date) {
+        if (date == null)
+            return null;
+        java.util.Calendar cal = CALENDAR_THREAD_LOCAL.get();
+        cal.setTime(date);
+        return LocalDate.of(cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH),
+                cal.get(java.util.Calendar.DAY_OF_MONTH));
+    }
+
+    public Date toDate(LocalDate date) {
+        if (date == null)
+            return null;
+        java.util.Calendar cal = CALENDAR_THREAD_LOCAL.get();
+        cal.set(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
+        return cal.getTime();
+    }
+
+    private static final ThreadLocal<GregorianCalendar> CALENDAR_THREAD_LOCAL = ThreadLocal.withInitial(GregorianCalendar::new);
 }
