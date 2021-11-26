@@ -193,7 +193,7 @@ public class CalendarUtility {
             return null;
         java.util.Calendar cal = CALENDAR_THREAD_LOCAL.get();
         cal.setTime(date);
-        return LocalDate.of(cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH),
+        return LocalDate.of(cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH)+1,
                 cal.get(java.util.Calendar.DAY_OF_MONTH));
     }
 
@@ -201,7 +201,7 @@ public class CalendarUtility {
         if (date == null)
             return null;
         java.util.Calendar cal = CALENDAR_THREAD_LOCAL.get();
-        cal.set(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
+        cal.set(date.getYear(), date.getMonthValue()-1, date.getDayOfMonth());
         return cal.getTime();
     }
 

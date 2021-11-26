@@ -331,7 +331,9 @@ public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecificatio
         }
     }
     //</editor-fold>
-        public String display() {
+
+    @Override
+    public String display() {
         if (this == TR0) {
             return "TR0";
         }
@@ -349,6 +351,9 @@ public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecificatio
         }
         if (this == TR5) {
             return "TR5";
+        }
+        if (this == TRfull) {
+            return "TRfull";
         }
         if (equals(TR0)) {
             return "TR0";
@@ -374,6 +379,6 @@ public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecificatio
         return SMETHOD;
     }
 
-        private static final String SMETHOD = "TR";
+    private static final String SMETHOD = "TR";
 
 }

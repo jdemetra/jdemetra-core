@@ -50,6 +50,11 @@ public abstract class TsDocument<S extends ProcSpecification, R extends Explorab
         this.specification = spec;
         uuid = UUID.randomUUID();
     }
+    
+    private void clear(){
+        result=null;
+        status=ProcessingStatus.Unprocessed;
+    }
 
     @Override
     public Ts getInput() {
@@ -66,6 +71,7 @@ public abstract class TsDocument<S extends ProcSpecification, R extends Explorab
         synchronized (this) {
             specification = newSpec;
             input = newInput;
+            clear();
          }
     }
 
@@ -73,6 +79,7 @@ public abstract class TsDocument<S extends ProcSpecification, R extends Explorab
     public void set(S newSpec) {
         synchronized (this) {
             specification = newSpec;
+            clear();
         }
     }
 
@@ -80,6 +87,7 @@ public abstract class TsDocument<S extends ProcSpecification, R extends Explorab
     public void set(Ts newInput) {
         synchronized (this) {
             input = newInput;
+            clear();
         }
     }
 

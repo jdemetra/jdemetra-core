@@ -279,7 +279,95 @@ public class TimeSelector {
         }
     }
 
-    public boolean isAll() {
+   public String toDateString() {
+       StringBuilder builder=new StringBuilder();
+        switch (type) {
+            case Between:
+                if (!d0.equals(LocalDateTime.MIN))
+                    builder.append(d0.toLocalDate());
+                builder.append(" - ");
+                if (!d1.equals(LocalDateTime.MAX))
+                    builder.append(d1.toLocalDate());
+                return builder.toString();
+            case Excluding: {
+                if (n0 == 0 && n1 == 0) {
+                    return "";
+                }
+                builder.append("All but ");
+                if (n0 != 0) {
+                    builder.append("first ");
+                    if (n0 > 1) {
+                        builder.append(n0).append(" periods");
+                    } else if (n0 > 0) {
+                        builder.append("period");
+                    } else if (n0 < -1) {
+                        builder.append(-n0).append(" years");
+                    } else if (n0 < 0) {
+                        builder.append("year");
+                    }
+                    if (n1 != 0) {
+                        builder.append(" and ");
+                    }
+                }
+                if (n1 != 0) {
+                    builder.append("last ");
+                    if (n1 > 1) {
+                        builder.append(n1).append(" periods");
+                    } else if (n1 > 0) {
+                        builder.append("period");
+                    } else if (n1 < -1) {
+                        builder.append(-n1).append(" years");
+                    } else if (n1 < 0) {
+                        builder.append("year");
+                    }
+                }
+                return builder.toString();
+            }
+            case First: {
+                if (n0 > 0) {
+                    builder.append("first ");
+                    if (n0 > 1) {
+                        builder.append(n0).append(" periods");
+                    } else {
+                        builder.append("period");
+                    }
+                    if (n1 > 0) {
+                        builder.append(" and ");
+                    }
+                }
+                return builder.toString();
+            }
+            case Last: {
+                 if (n1 > 0) {
+                    builder.append("last ");
+                    if (n1 > 1) {
+                        builder.append(n1).append(" periods");
+                    } else {
+                        builder.append("period");
+                    }
+                }
+                return builder.toString();
+            }
+            case From:
+                builder.append("From ");
+                if (!d0.equals(LocalDateTime.MIN))
+                    builder.append(d0.toLocalDate());
+                return builder.toString();
+            case To:
+                builder.append("Until ");
+                if (!d1.equals(LocalDateTime.MAX))
+                    builder.append(d1.toLocalDate());
+                 return builder.toString();
+           case All:
+                return "All";
+            case None:
+                return "None";
+            default:
+                return "";
+        }
+    }
+
+   public boolean isAll() {
         return type == SelectionType.All;
     }
 

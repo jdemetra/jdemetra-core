@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package demetra.processing;
 
 import nbbrd.design.Development;
@@ -24,9 +23,13 @@ import nbbrd.design.Development;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Exploratory)
-public interface ProcSpecification{
+public interface ProcSpecification {
 
     public static final String ALGORITHM = "algorithm";
 
     AlgorithmDescriptor getAlgorithmDescriptor();
+
+    default String display() {
+        return toString();
+    }
 }
