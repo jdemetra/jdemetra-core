@@ -69,8 +69,8 @@ public class RegSarimaModelExtractors {
             set(BasicInformationExtractor.concatenate(ESPAN, END), TsPeriod.class, source -> source.getDetails().getEstimationDomain().getLastPeriod());
             set(BasicInformationExtractor.concatenate(ESPAN, N), Integer.class, source -> source.getDetails().getEstimationDomain().getLength());
 
-//        set(ModellingDictionary.Y + SeriesInfo.F_SUFFIX, TsData.class, source -> source.forecast(source.getForecastCount(), false));
-//        MAPPING.set(ModellingDictionary.Y + SeriesInfo.EF_SUFFIX, source -> source.getForecastError());
+        set(ModellingDictionary.Y + SeriesInfo.F_SUFFIX, TsData.class, source -> source.forecasts(NFCAST).getForecasts());
+        set(ModellingDictionary.Y + SeriesInfo.EF_SUFFIX, TsData.class, source -> source.forecasts(NFCAST).getForecastsStdev());
             set(ModellingDictionary.YC, TsData.class, source -> source.interpolatedSeries(false));
 //        MAPPING.set(ModellingDictionary.YC + SeriesInfo.F_SUFFIX, source -> source.forecast(source.getForecastCount(), false));
 //        MAPPING.set(ModellingDictionary.YC + SeriesInfo.EF_SUFFIX, source -> source.getForecastError());

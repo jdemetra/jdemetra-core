@@ -22,6 +22,7 @@ import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
 import demetra.information.GenericExplorable;
+import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
 import demetra.modelling.implementations.SarimaSpec;
@@ -58,6 +59,11 @@ import jdplus.sarima.SarimaModel;
 import jdplus.stats.tests.NiidTests;
 import jdplus.timeseries.simplets.Transformations;
 import demetra.math.matrices.Matrix;
+import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import jdplus.dstats.LogNormal;
+import jdplus.regarima.RegArimaForecasts;
 
 /**
  *
@@ -221,6 +227,8 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
                         .build())
                 .build();
     }
+    
+    private final ConcurrentMap<String, Object> cache = new ConcurrentHashMap<String, Object>();
 
     @lombok.Singular
     private Map<String, Object> additionalResults;
@@ -233,9 +241,9 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
         int position;
 
         double coef, stderr, pvalue;
-        
-        public double getTStat(){
-            return coef/stderr;
+
+        public double getTStat() {
+            return coef / stderr;
         }
     }
 
@@ -451,8 +459,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
             return interp;
         }
         TsData det = deterministicEffect(interp.getDomain(), v -> !(v.getCore() instanceof TrendConstant));
-        
-        
+
         return TsData.subtract(interp, det);
     }
 
@@ -645,13 +652,64 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
         return TsDomain.of(description.getSeries().getDomain().getEndPeriod(), nfcast);
     }
 
+    public Forecasts forecasts(int nf) {
+        if (nf < 0) {
+            nf = (-nf) * getAnnualFrequency();
+        }
+        String key="forecasts"+nf;
+        Forecasts fcasts=(Forecasts) cache.get(key);
+        if (fcasts == null){
+            fcasts=internalForecasts(nf);
+            cache.put(key, fcasts);
+        }
+        return fcasts;
+    }
+     
+    private Forecasts internalForecasts(int nf){
+        RegArimaForecasts.Result fcasts;
+        DoubleSeq b = getEstimation().getCoefficients();
+        LikelihoodStatistics ll = getEstimation().getStatistics();
+        double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount() + 1);
+        TsDomain edom = getDetails().getEstimationDomain();
+        if (b.isEmpty()) {
+            fcasts = RegArimaForecasts.calcForecast(arima(),
+                    getEstimation().originalY(), nf, sig2);
+        } else {
+            Variable[] variables = getDescription().getVariables();
+            TsDomain xdom = edom.extend(0, nf);
+            FastMatrix matrix = Regression.matrix(xdom, Arrays.stream(variables).map(v -> v.getCore()).toArray(n -> new ITsVariable[n]));
+            fcasts = RegArimaForecasts.calcForecast(arima(),
+                    getEstimation().originalY(), matrix,
+                    b, getEstimation().getCoefficientsCovariance(), sig2);
+        }
+        TsPeriod fstart = edom.getEndPeriod();
+        double[] f = fcasts.getForecasts();
+        double[] ef = fcasts.getForecastsStdev();
+
+        TsData tf = TsData.ofInternal(fstart, f);
+        TsData fy = backTransform(tf, true);
+        TsData efy;
+        if (getDescription().isLogTransformation()) {
+            double[] e = new double[nf];
+            for (int i = 0; i < nf; ++i) {
+                e[i] = LogNormal.stdev(f[i], ef[i]);
+            }
+            efy = TsData.ofInternal(fstart, e);
+        } else {
+            efy = TsData.ofInternal(fstart, ef);
+        }
+        return new Forecasts(TsData.ofInternal(fstart, f), TsData.ofInternal(fstart, ef), fy, efy);
+    }
+
     /**
-     * The backcast domain is relative to the series domain, not to the
+     * The backcast domain is relative to the series domain, not to
+     * the
      * estimation domain
      *
      * @param nbcast
      * @return
      */
+
     public TsDomain backcastDomain(int nbcast) {
         if (nbcast < 0) {
             nbcast = (-nbcast) * getAnnualFrequency();
@@ -704,4 +762,12 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
         }
         return null;
     }
+
+    @lombok.Value
+    public static class Forecasts {
+
+        TsData rawForecasts, rawForecastsStdev;
+        TsData forecasts, forecastsStdev;
+    }
+
 }

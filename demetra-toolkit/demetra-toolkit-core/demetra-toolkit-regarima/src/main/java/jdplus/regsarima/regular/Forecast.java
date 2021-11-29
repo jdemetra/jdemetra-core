@@ -6,20 +6,10 @@
 package jdplus.regsarima.regular;
 
 import demetra.data.DoubleSeq;
-import demetra.likelihood.LikelihoodStatistics;
 import demetra.modelling.implementations.RegSarimaProcessor;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.timeseries.TsData;
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsPeriod;
-import demetra.timeseries.regression.ITsVariable;
-import demetra.timeseries.regression.Variable;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
-import java.util.Arrays;
-import jdplus.dstats.LogNormal;
-import jdplus.math.matrices.FastMatrix;
-import jdplus.modelling.regression.Regression;
-import jdplus.regarima.RegArimaForecasts;
 
 /**
  *
@@ -29,8 +19,7 @@ public class Forecast {
 
     private final RegSarimaProcessor kernel;
     private final int nf;
-    private TsData fy, efy;
-    private double[] f, ef;
+    private RegSarimaModel.Forecasts fcasts;
 
     /**
      * Creates a new module for detecting outliers in the last observations
@@ -62,39 +51,7 @@ public class Forecast {
                 return false;
             }
             RegSarimaModel model = (RegSarimaModel) gmodel;
-            RegArimaForecasts.Result fcasts;
-            DoubleSeq b = model.getEstimation().getCoefficients();
-            LikelihoodStatistics ll = model.getEstimation().getStatistics();
-            double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount() + 1);
-            TsDomain edom = model.getDetails().getEstimationDomain();
-            if (b.isEmpty()) {
-                fcasts = RegArimaForecasts.calcForecast(model.arima(),
-                        model.getEstimation().originalY(), nf, sig2);
-            } else {
-                Variable[] variables = model.getDescription().getVariables();
-                TsDomain xdom = edom.extend(0, nf);
-                FastMatrix matrix = Regression.matrix(xdom, Arrays.stream(variables).map(v -> v.getCore()).toArray(n -> new ITsVariable[n]));
-                fcasts = RegArimaForecasts.calcForecast(model.arima(),
-                        model.getEstimation().originalY(), matrix,
-                        b, model.getEstimation().getCoefficientsCovariance(), sig2);
-            }
-            TsPeriod fstart = edom.getEndPeriod();
-            f = fcasts.getForecasts();
-            ef = fcasts.getForecastsStdev();
-
-            TsData tf = TsData.ofInternal(fstart, f);
-            fy = model.backTransform(tf, true);
-
-            if (model.getDescription().isLogTransformation()) {
-                double[] e = new double[nf];
-                for (int i = 0; i < nf; ++i) {
-                    e[i] = LogNormal.stdev(f[i], ef[i]);
-                }
-                efy = TsData.ofInternal(fstart, e);
-            } else {
-                efy = TsData.ofInternal(fstart, ef);
-            }
-
+            fcasts = model.forecasts(nf);
             return true;
         } catch (Exception err) {
             return false;
@@ -102,19 +59,19 @@ public class Forecast {
     }
 
     public DoubleSeq getRawForecasts() {
-        return DoubleSeq.of(f);
+        return fcasts.getRawForecasts().getValues();
     }
 
     public DoubleSeq getRawForecastsStdev() {
-        return DoubleSeq.of(ef);
+        return fcasts.getRawForecastsStdev().getValues();
     }
 
     public DoubleSeq getForecasts() {
-        return fy.getValues();
+        return fcasts.getForecasts().getValues();
     }
 
     public DoubleSeq getForecastsStdev() {
-        return efy.getValues();
+        return fcasts.getForecastsStdev().getValues();
     }
 
     public boolean testSeries(final TsData y) {
@@ -138,10 +95,8 @@ public class Forecast {
     }
 
     private void clear() {
-        f = null;
-        ef = null;
-        fy = null;
-    }
+        fcasts=null;
+     }
 
     public final static int MAX_REPEAT_COUNT = 80, MAX_MISSING_COUNT = 33;
 }
