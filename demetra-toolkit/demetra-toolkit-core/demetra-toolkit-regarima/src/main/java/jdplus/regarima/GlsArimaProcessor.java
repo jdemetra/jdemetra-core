@@ -16,7 +16,7 @@
  */
 package jdplus.regarima;
 
-import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
+import jdplus.regarima.estimation.ConcentratedLikelihoodComputer;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.arima.IArimaModel;
 import nbbrd.design.BuilderPattern;
@@ -25,8 +25,8 @@ import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 import demetra.data.DoubleSeq;
-import jdplus.regarima.internal.RegArmaEstimation;
-import jdplus.regarima.internal.RegArmaProcessor;
+import jdplus.regarima.estimation.RegArmaEstimation;
+import jdplus.regarima.estimation.RegArmaProcessor;
 import jdplus.sarima.estimation.SarimaMapping;
 
 /**

@@ -62,8 +62,18 @@ import demetra.math.matrices.Matrix;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import jdplus.arima.estimation.IArimaMapping;
 import jdplus.dstats.LogNormal;
+import jdplus.likelihood.DefaultLikelihoodEvaluation;
+import jdplus.math.functions.IFunction;
+import jdplus.math.functions.IFunctionPoint;
+import jdplus.math.functions.IParametersDomain;
 import jdplus.regarima.RegArimaForecasts;
+import jdplus.regarima.RegArmaModel;
+import jdplus.regarima.estimation.RegArmaFunction;
+import jdplus.regarima.estimation.ConcentratedLikelihoodComputer;
+import jdplus.sarima.estimation.SarimaFixedMapping;
+import jdplus.sarima.estimation.SarimaMapping;
 
 /**
  *
@@ -227,7 +237,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
                         .build())
                 .build();
     }
-    
+
     private final ConcurrentMap<String, Object> cache = new ConcurrentHashMap<String, Object>();
 
     @lombok.Singular
@@ -656,16 +666,16 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
         if (nf < 0) {
             nf = (-nf) * getAnnualFrequency();
         }
-        String key="forecasts"+nf;
-        Forecasts fcasts=(Forecasts) cache.get(key);
-        if (fcasts == null){
-            fcasts=internalForecasts(nf);
+        String key = "forecasts" + nf;
+        Forecasts fcasts = (Forecasts) cache.get(key);
+        if (fcasts == null) {
+            fcasts = internalForecasts(nf);
             cache.put(key, fcasts);
         }
         return fcasts;
     }
-     
-    private Forecasts internalForecasts(int nf){
+
+    private Forecasts internalForecasts(int nf) {
         RegArimaForecasts.Result fcasts;
         DoubleSeq b = getEstimation().getCoefficients();
         LikelihoodStatistics ll = getEstimation().getStatistics();
@@ -709,7 +719,6 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
      * @param nbcast
      * @return
      */
-
     public TsDomain backcastDomain(int nbcast) {
         if (nbcast < 0) {
             nbcast = (-nbcast) * getAnnualFrequency();
@@ -761,6 +770,45 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
             }
         }
         return null;
+    }
+
+    public IFunction likelihoodFunction() {
+        RegArmaModel<SarimaModel> regarima = regarima().differencedModel();
+        IArimaMapping<SarimaModel> mapping = mapping();
+        return RegArmaFunction.<SarimaModel>builder(regarima.getY())
+                .likelihoodEvaluation(DefaultLikelihoodEvaluation.ml())
+                .variables(regarima.getX())
+                .mapping(mapping().stationaryMapping())
+                .missingCount(regarima.getMissingCount())
+                .build();
+    }
+
+    public IArimaMapping<SarimaModel> mapping() {
+        SarimaSpec arima = description.getStochasticComponent();
+        if (arima.hasFixedParameters()) {
+            int n = arima.getP() + arima.getBp() + arima.getQ() + arima.getBq();
+            double[] p = new double[n];
+            boolean[] b = new boolean[n];
+            int j = 0;
+            Parameter[] P = arima.getPhi();
+            for (int i = 0; i < P.length; ++i, ++j) {
+                p[j] = P[i].getValue();
+                b[j] = P[i].isFixed();
+            }
+            P = arima.getTheta();
+            for (int i = 0; i < P.length; ++i, ++j) {
+                p[j] = P[i].getValue();
+                b[j] = P[i].isFixed();
+            }
+            P = arima.getBtheta();
+            for (int i = 0; i < P.length; ++i, ++j) {
+                p[j] = P[i].getValue();
+                b[j] = P[i].isFixed();
+            }
+            return new SarimaFixedMapping(specification(), DoubleSeq.of(p), b);
+        } else {
+            return SarimaMapping.of(specification());
+        }
     }
 
     @lombok.Value

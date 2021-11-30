@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package jdplus.regarima.internal;
+package jdplus.regarima.estimation;
 
 import jdplus.arima.IArimaModel;
 import nbbrd.design.BuilderPattern;
@@ -35,7 +35,7 @@ import jdplus.math.matrices.FastMatrix;
  * @param <S>
  */
 @Development(status = Development.Status.Alpha)
-class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
+public class ArmaFunction<S extends IArimaModel> implements ISsqFunction, IFunction {
 
     @BuilderPattern(ArmaFunction.class)
     public static class Builder<S extends IArimaModel> {

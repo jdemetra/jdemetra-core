@@ -33,7 +33,7 @@ import jdplus.math.linearfilters.BackFilter;
 import static jdplus.math.linearfilters.BackFilter.D1;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaToolkit;
-import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
+import jdplus.regarima.estimation.ConcentratedLikelihoodComputer;
 import jdplus.regsarima.regular.SeasonalityDetector;
 import jdplus.tramo.TramoSeasonalityDetector;
 

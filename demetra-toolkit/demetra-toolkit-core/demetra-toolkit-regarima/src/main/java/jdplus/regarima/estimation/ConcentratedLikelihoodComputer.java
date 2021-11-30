@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.regarima.internal;
+package jdplus.regarima.estimation;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
