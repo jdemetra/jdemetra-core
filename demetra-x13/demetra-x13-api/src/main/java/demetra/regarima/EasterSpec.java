@@ -39,11 +39,14 @@ public final class EasterSpec implements Validatable<EasterSpec> {
     }
 
 //    private ChangeOfRegimeSpec changeOfRegime;
-    private boolean automatic;
     private int duration;
     private RegressionTestSpec test;
     private Type type;
     private Parameter coefficient;
+    
+    public boolean isAutomatic(){
+        return type != Type.Unused && test == RegressionTestSpec.Add;
+    }
 
     @LombokWorkaround
     public static Builder builder() {
@@ -75,6 +78,10 @@ public final class EasterSpec implements Validatable<EasterSpec> {
 
     public static EasterSpec none() {
         return DEFAULT_UNUSED;
+    }
+    
+    public boolean hasFixedCoefficient(){
+        return coefficient != null && coefficient.isFixed();
     }
 
     public static class Builder implements Validatable.Builder<EasterSpec> {

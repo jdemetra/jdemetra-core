@@ -5,9 +5,9 @@
  */
 package jdplus.x13.regarima;
 
-import demetra.modelling.implementations.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.modelling.TransformationType;
+import demetra.modelling.implementations.SarimaSpec;
 import demetra.regarima.AutoModelSpec;
 import demetra.regarima.EasterSpec;
 import demetra.regarima.OutlierSpec;
@@ -18,11 +18,8 @@ import demetra.regarima.TradingDaysSpec;
 import demetra.regarima.TransformSpec;
 import demetra.sa.EstimationPolicyType;
 import demetra.timeseries.TsDomain;
-import demetra.timeseries.calendars.TradingDaysType;
-import demetra.timeseries.regression.Variable;
-import java.util.Arrays;
-import java.util.Optional;
 import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.calendars.TradingDaysType;
 import demetra.timeseries.regression.EasterVariable;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITsVariable;
@@ -30,9 +27,12 @@ import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.TsContextVariable;
+import demetra.timeseries.regression.Variable;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import jdplus.regarima.ami.ModellingUtility;
 
 /**
@@ -220,8 +220,8 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
             Variable ev = fe.get();
             EasterVariable evar = (EasterVariable) ev.getCore();
             espec = espec.toBuilder()
+                    .type(EasterSpec.Type.Easter)
                     .test(RegressionTestSpec.None)
-                    .automatic(false)
                     .duration(evar.getDuration())
                     .coefficient(ev.getCoefficient(0))
                     .build();
