@@ -91,7 +91,7 @@ class OutlierSpecMapping {
 
     OutlierSpec read(InformationSet info) {
         if (info == null) {
-            return OutlierSpec.DEFAULT_UNUSED;
+            return OutlierSpec.DEFAULT_DISABLED;
         }
 
         OutlierSpec.Builder builder = OutlierSpec.builder();

@@ -153,4 +153,8 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
         return this;
     }
 
+    public boolean hasFixedCoefficients(){
+        return (lpCoefficient != null && lpCoefficient.isFixed())
+                || Parameter.hasFixedParameters(tdCoefficients);
+    }
 }
