@@ -81,9 +81,9 @@ public class HtmlRegArima extends AbstractHtmlElement {
     private <T extends ITsVariable> int countVariables(Class<T> tclass, boolean fixed) {
         Variable[] variables = model.getDescription().getVariables();
         if (fixed) {
-            return Arrays.stream(variables).filter(var -> tclass.isInstance(var)).mapToInt(var -> var.fixedCoefficientsCount()).sum();
+            return Arrays.stream(variables).filter(var -> tclass.isInstance(var.getCore())).mapToInt(var -> var.fixedCoefficientsCount()).sum();
         } else {
-            return Arrays.stream(variables).filter(var -> tclass.isInstance(var)).mapToInt(var -> var.freeCoefficientsCount()).sum();
+            return Arrays.stream(variables).filter(var -> tclass.isInstance(var.getCore())).mapToInt(var -> var.freeCoefficientsCount()).sum();
         }
     }
 
@@ -120,7 +120,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
             stream.write("Series has been corrected for leap year").newLine();
         }
         int ntd = countVariables(ITradingDaysVariable.class, false);
-        int nftd = countVariables(ITradingDaysVariable.class, false);
+        int nftd = countVariables(ITradingDaysVariable.class, true);
         if (ntd == 0 && nftd == 0) {
             stream.write("No trading days effects").newLine();
         } else {
@@ -442,7 +442,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
     }
 
     private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, String header, TsDomain context, Predicate<Variable> predicate) throws IOException {
-        Set<ITsVariable> selection = Arrays.stream(model.getDescription().getVariables()).filter(var -> !var.isPreadjustment() && var.getCore() instanceof IUserVariable)
+        Set<ITsVariable> selection = Arrays.stream(model.getDescription().getVariables()).filter(var->predicate.test(var))
                 .map(var -> var.getCore())
                 .collect(Collectors.toSet());
         if (!selection.isEmpty() && header != null) {
@@ -452,7 +452,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
     }
 
     private <V extends ITsVariable> void writeFullRegressionItems(HtmlStream stream, TsDomain context, Predicate<Variable> predicate) throws IOException {
-        Set<ITsVariable> selection = Arrays.stream(model.getDescription().getVariables()).filter(var -> !var.isPreadjustment() && var.getCore() instanceof IUserVariable)
+        Set<ITsVariable> selection = Arrays.stream(model.getDescription().getVariables()).filter(var -> predicate.test(var))
                 .map(var -> var.getCore())
                 .collect(Collectors.toSet());
         if (!selection.isEmpty()) {
@@ -603,7 +603,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
         }
         stream.newLine();
         stream.write(HtmlTag.HEADER3, "Scores at the solution");
-        stream.write(DoubleSeq.format(score, dg6));
+        stream.write(DoubleSeq.format(score, df6));
     }
 
 }

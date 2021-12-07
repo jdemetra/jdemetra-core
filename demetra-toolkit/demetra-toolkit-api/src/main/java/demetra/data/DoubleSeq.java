@@ -849,7 +849,7 @@ public interface DoubleSeq extends BaseSeq {
             DoubleSeqCursor cursor = rd.cursor();
             builder.append(fmt.format(cursor.getAndNext()));
             for (int i = 1; i < n; ++i) {
-                builder.append('\t').append(cursor.getAndNext());
+                builder.append('\t').append(fmt.format(cursor.getAndNext()));
             }
         }
         return builder.toString();
