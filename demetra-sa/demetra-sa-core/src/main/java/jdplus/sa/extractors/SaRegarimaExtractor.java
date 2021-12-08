@@ -18,14 +18,12 @@ package jdplus.sa.extractors;
 
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
-import demetra.modelling.ModellingDictionary;
 import demetra.modelling.SeriesInfo;
 import demetra.sa.ComponentType;
 import demetra.sa.SaDictionary;
 import demetra.sa.SaVariable;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
-import demetra.timeseries.regression.IOutlier;
 import jdplus.regarima.ami.ModellingUtility;
 import static jdplus.regarima.extractors.RegSarimaModelExtractors.NBCAST;
 import static jdplus.regarima.extractors.RegSarimaModelExtractors.NFCAST;

@@ -344,6 +344,9 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
      * @return
      */
     public TsData regressionEffect(TsDomain domain, Predicate<Variable> test) {
+        if (domain == null) {
+            domain = description.getSeries().getDomain();
+        }
         Variable[] variables = description.getVariables();
         DataBlock all = DataBlock.make(domain.getLength());
         if (variables.length > 0) {
@@ -414,6 +417,9 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
      * @return
      */
     public TsData deterministicEffect(TsDomain domain, Predicate<Variable> test) {
+        if (domain == null) {
+            domain = description.getSeries().getDomain();
+        }
         DataBlock all = DataBlock.make(domain.getLength());
         Variable[] variables = description.getVariables();
         if (variables.length > 0) {

@@ -26,7 +26,9 @@ public class TramoSeatsDiagnosticsExtractor extends InformationMapping<TramoSeat
  
  public TramoSeatsDiagnosticsExtractor(){
         delegate("diagnostics", GenericSaTests.class, source -> source.getGenericDiagnostics());
+        
         delegate(SaDictionary.VARIANCE, StationaryVarianceDecomposition.class, source -> source.getVarianceDecomposition());
+        
         delegate("seats", SeatsTests.class, source -> source.getSpecificDiagnostics());
     }
 

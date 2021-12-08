@@ -22,6 +22,7 @@ import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -187,6 +188,54 @@ public class CalendarUtility {
      */
     private final int[] CUMULATEDMONTHDAYS = {0, 31, 59, 90, 120, 151,
         181, 212, 243, 273, 304, 334, 365};
+    
+    private static final String[] SMALLMONTH = {"jan", "feb", "mar", "apr", "may", "jun",
+        "jul", "aug", "sep", "oct", "nov", "dec"};
+
+    public String formatPeriod(int freq, int pos) {
+        if (freq == 12) {
+            return Month.of(pos+1).toString();
+        } else if (freq <=1) {
+            return "";
+        } else {
+            StringBuilder builder = new StringBuilder();
+            switch (freq) {
+                case 4:
+                    builder.append('Q');
+                    break;
+                case 2:
+                    builder.append('H');
+                    break;
+                default:
+                    builder.append('P');
+                    break;
+
+            }
+            builder.append(pos + 1);
+            return builder.toString();
+        }
+    }
+
+   /**
+     * Gets a short description (independent of the year) of the period
+     * corresponding to a frequency and a 0-based position. 
+     * For example: "jan" for the first monthly period of the year. 
+     * "Q1" for the first quarter...
+     * 
+     * @param freq
+     *            The given frequency
+     * @param pos
+     *            The 0-based position of the period
+     * @return The short description
+     * @see #formatPeriod(TSFrequency, int).
+     */
+    public static String formatShortPeriod(int freq, int pos) {
+        if (freq == 12) {
+            return SMALLMONTH[pos];
+        } else {
+            return formatPeriod(freq, pos);
+        }
+    }
 
     public LocalDate toLocalDate(Date date) {
         if (date == null)
