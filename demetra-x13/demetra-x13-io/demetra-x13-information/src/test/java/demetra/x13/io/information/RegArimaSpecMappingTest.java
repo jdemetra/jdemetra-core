@@ -19,6 +19,10 @@ package demetra.x13.io.information;
 import demetra.data.Data;
 import demetra.information.InformationSet;
 import demetra.regarima.RegArimaSpec;
+import demetra.regarima.RegressionTestSpec;
+import demetra.regarima.TradingDaysSpec;
+import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.calendars.TradingDaysType;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.x13.regarima.RegArimaFactory;
 import jdplus.x13.regarima.RegArimaKernel;
@@ -89,4 +93,16 @@ public class RegArimaSpecMappingTest {
         testLegacy(pspec);        
    }
 
+    @Test
+    public void testHoliday() {
+        RegArimaSpec spec =RegArimaSpec.RG5;
+        TradingDaysSpec td = TradingDaysSpec.holidays("test", TradingDaysType.TradingDays, LengthOfPeriodType.None, RegressionTestSpec.Remove, true);
+        spec=spec.toBuilder()
+                .regression(spec.getRegression().toBuilder()
+                .tradingDays(td)
+                .build())
+                .build();
+        test(spec);        
+        testLegacy(spec);        
+   }
 }

@@ -20,11 +20,24 @@ import demetra.data.AggregationType;
 import demetra.data.Data;
 import demetra.data.Doubles;
 import demetra.regarima.RegArimaSpec;
+import demetra.regarima.RegressionSpec;
+import demetra.regarima.RegressionTestSpec;
+import demetra.regarima.TradingDaysSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
+import demetra.timeseries.calendars.Calendar;
+import demetra.timeseries.calendars.EasterRelatedDay;
+import demetra.timeseries.calendars.FixedDay;
+import demetra.timeseries.calendars.Holiday;
+import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.calendars.TradingDaysType;
+import demetra.timeseries.regression.ModellingContext;
 import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
+import ec.tstoolkit.timeseries.Month;
+import java.util.ArrayList;
+import java.util.List;
 import jdplus.regsarima.regular.RegSarimaModel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -37,6 +50,8 @@ import org.junit.Test;
 public class RegArimaKernelTest {
 
     private static final double[] data, datamissing;
+    public static final Calendar france, belgium;
+    public static final ec.tstoolkit.timeseries.calendars.NationalCalendar ofrance, obelgium;
 
     static {
         data = Data.PROD.clone();
@@ -45,6 +60,59 @@ public class RegArimaKernelTest {
         datamissing[100] = Double.NaN;
         datamissing[101] = Double.NaN;
         datamissing[102] = Double.NaN;
+        List<Holiday> holidays = new ArrayList<>();
+        holidays.add(new FixedDay(7, 14));
+        holidays.add(new FixedDay(5, 8));
+        holidays.add(FixedDay.ALLSAINTSDAY);
+        holidays.add(FixedDay.ARMISTICE);
+        holidays.add(FixedDay.ASSUMPTION);
+        holidays.add(FixedDay.CHRISTMAS);
+        holidays.add(FixedDay.MAYDAY);
+        holidays.add(FixedDay.NEWYEAR);
+        holidays.add(EasterRelatedDay.ASCENSION);
+        holidays.add(EasterRelatedDay.EASTERMONDAY);
+        holidays.add(EasterRelatedDay.WHITMONDAY);
+
+        france = new Calendar(holidays.toArray(new Holiday[holidays.size()]));
+
+        ofrance = new ec.tstoolkit.timeseries.calendars.NationalCalendar();
+        ofrance.add(new ec.tstoolkit.timeseries.calendars.FixedDay(13, Month.July));
+        ofrance.add(new ec.tstoolkit.timeseries.calendars.FixedDay(7, Month.May));
+        ofrance.add(new ec.tstoolkit.timeseries.calendars.FixedDay(10, Month.November));
+        ofrance.add(ec.tstoolkit.timeseries.calendars.FixedDay.AllSaintsDay);
+        ofrance.add(ec.tstoolkit.timeseries.calendars.FixedDay.Assumption);
+        ofrance.add(ec.tstoolkit.timeseries.calendars.FixedDay.Christmas);
+        ofrance.add(ec.tstoolkit.timeseries.calendars.FixedDay.MayDay);
+        ofrance.add(ec.tstoolkit.timeseries.calendars.FixedDay.NewYear);
+        ofrance.add(ec.tstoolkit.timeseries.calendars.EasterRelatedDay.Ascension);
+        ofrance.add(ec.tstoolkit.timeseries.calendars.EasterRelatedDay.EasterMonday);
+        ofrance.add(ec.tstoolkit.timeseries.calendars.EasterRelatedDay.PentecostMonday);
+
+        holidays = new ArrayList<>();
+        holidays.add(new FixedDay(7, 21));
+        holidays.add(new FixedDay(1, 11));
+        holidays.add(FixedDay.ALLSAINTSDAY);
+        holidays.add(FixedDay.ASSUMPTION);
+        holidays.add(FixedDay.CHRISTMAS);
+        holidays.add(FixedDay.MAYDAY);
+        holidays.add(FixedDay.NEWYEAR);
+        holidays.add(EasterRelatedDay.ASCENSION);
+        holidays.add(EasterRelatedDay.EASTERMONDAY);
+        holidays.add(EasterRelatedDay.WHITMONDAY);
+
+        belgium = new Calendar(holidays.toArray(new Holiday[holidays.size()]));
+
+        obelgium = new ec.tstoolkit.timeseries.calendars.NationalCalendar();
+        obelgium.add(new ec.tstoolkit.timeseries.calendars.FixedDay(20, Month.July));
+        obelgium.add(new ec.tstoolkit.timeseries.calendars.FixedDay(10, Month.January));
+        obelgium.add(ec.tstoolkit.timeseries.calendars.FixedDay.AllSaintsDay);
+        obelgium.add(ec.tstoolkit.timeseries.calendars.FixedDay.Assumption);
+        obelgium.add(ec.tstoolkit.timeseries.calendars.FixedDay.Christmas);
+        obelgium.add(ec.tstoolkit.timeseries.calendars.FixedDay.MayDay);
+        obelgium.add(ec.tstoolkit.timeseries.calendars.FixedDay.NewYear);
+        obelgium.add(ec.tstoolkit.timeseries.calendars.EasterRelatedDay.Ascension);
+        obelgium.add(ec.tstoolkit.timeseries.calendars.EasterRelatedDay.EasterMonday);
+        obelgium.add(ec.tstoolkit.timeseries.calendars.EasterRelatedDay.PentecostMonday);
     }
 
     public RegArimaKernelTest() {
@@ -278,6 +346,52 @@ public class RegArimaKernelTest {
             assertTrue(rslt != null);
             System.out.println(rslt.getEstimation().getParameters().getValues());
         }
+    }
+
+    @Test
+    public void testInseeFullc() {
+        TsData[] all = Data.insee();
+        RegArimaSpec spec = RegArimaSpec.RG5;
+        ModellingContext context = new ModellingContext();
+        context.getCalendars().set("france", france);
+
+        RegressionSpec regSpec = spec.getRegression();
+        TradingDaysSpec tdSpec = TradingDaysSpec.holidays("france", TradingDaysType.TradingDays, LengthOfPeriodType.None, RegressionTestSpec.Remove, true);
+        spec = spec.toBuilder()
+                .regression(regSpec.toBuilder()
+                        .tradingDays(tdSpec)
+                        .build())
+                .build();
+
+        RegArimaKernel processor = RegArimaKernel.of(spec, context);
+
+        ec.tstoolkit.algorithm.ProcessingContext ocontext = new ec.tstoolkit.algorithm.ProcessingContext();
+        ocontext.getGregorianCalendars().set("france", new ec.tstoolkit.timeseries.calendars.NationalCalendarProvider(ofrance));
+        ec.tstoolkit.modelling.arima.x13.RegArimaSpecification ospec = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.clone();
+        ospec.getRegression().getTradingDays().setHolidays("france");
+        IPreprocessor oprocessor = ospec.build(ocontext);
+        int n = 0;
+        for (int i = 0; i < all.length; ++i) {
+            RegSarimaModel rslt = processor.process(all[i], null);
+            TsPeriod start = all[i].getStart();
+            ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
+            ec.tstoolkit.modelling.arima.PreprocessingModel orslt = oprocessor.process(s, null);
+            double del = rslt.getEstimation().getStatistics().getAdjustedLogLikelihood()
+                    - orslt.estimation.getStatistics().adjustedLogLikelihood;
+            if (Math.abs(del) < 1e-3) {
+                ++n;
+            }
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+        }
+        System.out.println("RG5c");
+        System.out.println(n);
+
+// The old implementation was bugged. 
+//        assertTrue(n > .6 * all.length);
     }
 
     public static void stressTestProd() {
