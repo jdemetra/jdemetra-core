@@ -16,18 +16,18 @@
  */
 package jdplus.x13.regarima;
 
-import nbbrd.design.BuilderPattern;
-import nbbrd.design.Development;
 import demetra.modelling.TransformationType;
 import demetra.processing.ProcessingLog;
-import jdplus.regsarima.regular.ProcessingResult;
+import demetra.timeseries.calendars.LengthOfPeriodType;
+import jdplus.regarima.IRegArimaComputer;
+import jdplus.regarima.RegArimaEstimation;
 import jdplus.regsarima.regular.ILogLevelModule;
 import jdplus.regsarima.regular.ModelDescription;
+import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
-import demetra.timeseries.calendars.LengthOfPeriodType;
-import jdplus.regarima.RegArimaEstimation;
 import jdplus.sarima.SarimaModel;
-import jdplus.regarima.IRegArimaComputer;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 
 /**
  * Identification of log/level transformation
@@ -189,6 +189,8 @@ public class LogLevelModule implements ILogLevelModule {
     private void clear() {
         log = null;
         level = null;
+        aiccLevel=0;
+        aiccLog=0;
     }
 
     /**

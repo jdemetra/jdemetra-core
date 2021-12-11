@@ -37,6 +37,7 @@ import demetra.timeseries.calendars.TradingDaysType;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.EasterVariable;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
+import demetra.timeseries.regression.HolidaysCorrectedTradingDays;
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.IOutlier;
@@ -62,6 +63,7 @@ import java.util.List;
 import java.util.Map;
 import jdplus.data.interpolation.AverageInterpolator;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
+import jdplus.modelling.regression.HolidaysCorrectionFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.PeriodicOutlierFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
@@ -119,7 +121,7 @@ class X13ModelBuilder implements IModelBuilder {
             return;
         }
         initializeMean(model, regSpec.getMean());
-        initializeCalendar(model, regSpec);
+        initializeCalendar(model, regSpec, context);
         if (regSpec.getOutliersCount() > 0) {
             initializeOutliers(model, regSpec.getOutliers());
         }
@@ -164,19 +166,19 @@ class X13ModelBuilder implements IModelBuilder {
         }
     }
 
-    private void initializeCalendar(ModelDescription model, RegressionSpec calendar) {
-        initializeTradingDays(model, calendar.getTradingDays());
+    private void initializeCalendar(ModelDescription model, RegressionSpec calendar, ModellingContext context) {
+        initializeTradingDays(model, calendar.getTradingDays(), context);
         initializeEaster(model, calendar.getEaster());
     }
 
-    private void initializeTradingDays(ModelDescription model, TradingDaysSpec td) {
+    private void initializeTradingDays(ModelDescription model, TradingDaysSpec td, ModellingContext context) {
         if (!td.isUsed() || td.getRegressionTestType() == RegressionTestSpec.Add) {
             return;
         }
         if (td.isStockTradingDays()) {
             initializeStockTradingDays(model, td);
         } else if (td.getHolidays() != null) {
-            initializeHolidays(model, td);
+            initializeHolidays(model, td, context);
         } else if (td.getUserVariables() != null) {
             initializeUserTradingDays(model, td);
         } else {
@@ -287,8 +289,8 @@ class X13ModelBuilder implements IModelBuilder {
         }
     }
 
-    private void initializeHolidays(ModelDescription model, TradingDaysSpec td) {
-        ITradingDaysVariable vtd = holidays(td);
+    private void initializeHolidays(ModelDescription model, TradingDaysSpec td, ModellingContext context) {
+        ITradingDaysVariable vtd = holidays(td, context);
         ILengthOfPeriodVariable vlp = leapYear(td);
         if (td.getRegressionTestType() == RegressionTestSpec.None) {
             if (vtd != null) {
@@ -367,8 +369,8 @@ class X13ModelBuilder implements IModelBuilder {
         }
         if (tdspec.isStockTradingDays()) {
             return new StockTradingDays(tdspec.getStockTradingDays());
-//        } else if (tdspec.getHolidays() != null) {
-//            initializeHolidays(model, td, preadjustment);
+        } else if (tdspec.getHolidays() != null) {
+            return holidays(tdspec, context);
         } else if (tdspec.getUserVariables() != null) {
             return userTradingDays(tdspec, context);
         } else {
@@ -383,8 +385,8 @@ class X13ModelBuilder implements IModelBuilder {
         }
         if (tdspec.isStockTradingDays()) {
             return null;
-//        } else if (tdspec.getHolidays() != null) {
-//            initializeHolidays(model, td, preadjustment);
+        } else if (tdspec.getHolidays() != null) {
+            return holidays(tdspec, context);
         } else if (tdspec.getUserVariables() != null) {
             return null;
         } else {
@@ -403,14 +405,15 @@ class X13ModelBuilder implements IModelBuilder {
         return new GenericTradingDaysVariable(gtd);
     }
 
-    public static ITradingDaysVariable holidays(TradingDaysSpec td) {
+    public static ITradingDaysVariable holidays(TradingDaysSpec td, ModellingContext context) {
         if (td.getTradingDaysType() == TradingDaysType.None) {
             return null;
         }
         TradingDaysType tdType = td.getTradingDaysType();
         DayClustering dc = tdType == (TradingDaysType.TradingDays) ? DayClustering.TD7 : DayClustering.TD2;
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        return new GenericTradingDaysVariable(gtd);
+        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(td.getHolidays(), context.getCalendars(), true);
+        return new HolidaysCorrectedTradingDays(gtd, corrector);
     }
 
     public static ITradingDaysVariable userTradingDays(TradingDaysSpec td, ModellingContext context) {

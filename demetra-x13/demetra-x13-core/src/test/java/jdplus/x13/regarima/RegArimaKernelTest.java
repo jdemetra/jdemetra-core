@@ -18,7 +18,6 @@ package jdplus.x13.regarima;
 
 import demetra.data.AggregationType;
 import demetra.data.Data;
-import demetra.data.Doubles;
 import demetra.regarima.RegArimaSpec;
 import demetra.regarima.RegressionSpec;
 import demetra.regarima.RegressionTestSpec;
@@ -356,22 +355,23 @@ public class RegArimaKernelTest {
         context.getCalendars().set("france", france);
 
         RegressionSpec regSpec = spec.getRegression();
-        TradingDaysSpec tdSpec = TradingDaysSpec.holidays("france", TradingDaysType.TradingDays, LengthOfPeriodType.None, RegressionTestSpec.Remove, true);
+        TradingDaysSpec tdSpec = TradingDaysSpec.holidays("france", TradingDaysType.TradingDays, LengthOfPeriodType.LeapYear, RegressionTestSpec.Remove, true);
         spec = spec.toBuilder()
                 .regression(regSpec.toBuilder()
                         .tradingDays(tdSpec)
                         .build())
                 .build();
 
-        RegArimaKernel processor = RegArimaKernel.of(spec, context);
-
+ 
         ec.tstoolkit.algorithm.ProcessingContext ocontext = new ec.tstoolkit.algorithm.ProcessingContext();
         ocontext.getGregorianCalendars().set("france", new ec.tstoolkit.timeseries.calendars.NationalCalendarProvider(ofrance));
         ec.tstoolkit.modelling.arima.x13.RegArimaSpecification ospec = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.clone();
         ospec.getRegression().getTradingDays().setHolidays("france");
-        IPreprocessor oprocessor = ospec.build(ocontext);
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
+         IPreprocessor oprocessor = ospec.build(ocontext);
+        RegArimaKernel processor = RegArimaKernel.of(spec, context);
+      ospec.getRegression().getTradingDays().setHolidays("france");
             RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);
