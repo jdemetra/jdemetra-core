@@ -46,7 +46,7 @@ public class GenericTradingDaysVariable implements ITradingDaysVariable, ISystem
 
     @Override
     public <D extends TimeSeriesDomain<?>> String description(D context) {
-        return "td";
+        return "Trading days";
     }
 
     @Override

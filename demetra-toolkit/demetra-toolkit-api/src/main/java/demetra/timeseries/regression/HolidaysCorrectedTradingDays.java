@@ -62,7 +62,7 @@ public class HolidaysCorrectedTradingDays implements ITradingDaysVariable, ISyst
     
     @Override
     public <D extends TimeSeriesDomain<?>> String description(D context){
-        return "td";
+        return "Trading days";
     }
     
     @Override

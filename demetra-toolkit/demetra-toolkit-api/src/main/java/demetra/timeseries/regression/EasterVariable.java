@@ -81,7 +81,7 @@ public class EasterVariable implements IEasterVariable, ISystemVariable{
     @Override
     public <D extends TimeSeriesDomain<?>> String description(D context){
         StringBuilder builder=new StringBuilder();
-        builder.append("easter").append(" [").append(duration).append(']');
+        builder.append("Easter").append(" [").append(duration).append(']');
         return builder.toString();
     }
 }

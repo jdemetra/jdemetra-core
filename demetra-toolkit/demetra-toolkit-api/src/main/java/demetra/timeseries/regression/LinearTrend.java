@@ -37,7 +37,7 @@ public class LinearTrend implements ISystemVariable {
 
      @Override
     public <D extends TimeSeriesDomain<?>> String description(D context){
-        return "trend";
+        return "Trend";
     }
    
 }

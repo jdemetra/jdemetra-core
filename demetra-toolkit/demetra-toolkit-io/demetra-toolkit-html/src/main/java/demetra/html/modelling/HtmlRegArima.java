@@ -524,7 +524,8 @@ public class HtmlRegArima extends AbstractHtmlElement {
         if (size > 1 && regs.size() == var.dim() && var instanceof ITradingDaysVariable) {
             GeneralLinearModel.Estimation estimation = model.getEstimation();
             int startpos = regs.get(0).getPosition();
-            double b = -estimation.getCoefficients().extract(startpos, size).sum();
+            DoubleSeq coef = estimation.getCoefficients().extract(startpos, size);
+            double b = -coef.sum();
             FastMatrix bvar = FastMatrix.of(estimation.getCoefficientsCovariance().extract(startpos, size, startpos, size));
             double v = bvar.sum();
             double tval = b / Math.sqrt(v);
@@ -542,8 +543,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
 
             try {
                 SymmetricMatrix.lcholesky(bvar);
-                DataBlock r = DataBlock.make(size);
-                r.set(1);
+                DataBlock r = DataBlock.of(coef);
                 LowerTriangularMatrix.solveLx(bvar, r);
                 double f = r.ssq() / size;
                 F fdist = new F(size, estimation.getStatistics().getEffectiveObservationsCount() - estimation.getStatistics().getEstimatedParametersCount());
