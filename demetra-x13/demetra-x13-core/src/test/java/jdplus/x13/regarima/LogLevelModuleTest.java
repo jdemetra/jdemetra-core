@@ -30,12 +30,11 @@ import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.RegStatus;
 import ec.tstoolkit.modelling.arima.PreadjustmentType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
-import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import static jdplus.x13.regarima.Converter.convert;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -54,7 +53,7 @@ public class LogLevelModuleTest {
             LogLevelModule ll = LogLevelModule.builder()
                     .preadjust(LengthOfPeriodType.None)
                     .estimationPrecision(1e-5)
-                    .aiccLogCorrection(2)
+                    .aiccLogCorrection(-2)
                     .build();
             ModelDescription model = new ModelDescription(insee[i], null);
             model.setAirline(true);
@@ -71,9 +70,9 @@ public class LogLevelModuleTest {
             context.hasseas = true;
             oll.process(context);
             boolean olog = oll.isChoosingLog();
-            assertTrue(log == olog);
             assertEquals(ll.getAICcLevel(), oll.getLevel().getStatistics().AICC, 1e-1);
             assertEquals(ll.getAICcLog(), oll.getLog().getStatistics().AICC, 1e-1);
+            assertTrue(log == olog);
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
@@ -87,7 +86,7 @@ public class LogLevelModuleTest {
             LogLevelModule ll = LogLevelModule.builder()
                     .preadjust(LengthOfPeriodType.LeapYear)
                     .estimationPrecision(1e-5)
-                    .aiccLogCorrection(2)
+                    .aiccLogCorrection(-2)
                     .build();
             ModelDescription model = new ModelDescription(insee[i], null);
             model.setAirline(true);

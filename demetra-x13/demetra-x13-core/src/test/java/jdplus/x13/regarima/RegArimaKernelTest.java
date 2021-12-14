@@ -284,7 +284,7 @@ public class RegArimaKernelTest {
             }
 //            System.out.print(i);
 //            System.out.print('\t');
-//            System.out.print(rslt.getStatistics().getAdjustedLogLikelihood());
+//            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
 //            System.out.print('\t');
 //            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
@@ -309,11 +309,11 @@ public class RegArimaKernelTest {
             if (Math.abs(del) < 1e-3) {
                 ++n;
             }
-//            System.out.print(i);
-//            System.out.print('\t');
-//            System.out.print(rslt.getStatistics().getAdjustedLogLikelihood());
-//            System.out.print('\t');
-//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+            System.out.print(i);
+            System.out.print('\t');
+            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+            System.out.print('\t');
+            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
         System.out.println("RG5");
         System.out.println(n);

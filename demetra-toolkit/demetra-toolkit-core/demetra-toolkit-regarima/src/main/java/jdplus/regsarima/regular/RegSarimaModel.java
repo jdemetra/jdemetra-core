@@ -25,6 +25,7 @@ import demetra.information.GenericExplorable;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
+import demetra.math.matrices.Matrix;
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.processing.ProcessingLog;
 import demetra.stats.ProbabilityType;
@@ -40,40 +41,36 @@ import demetra.timeseries.regression.modelling.LightweightLinearModel;
 import demetra.timeseries.regression.modelling.RegressionItem;
 import demetra.timeseries.regression.modelling.Residuals;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import jdplus.arima.estimation.IArimaMapping;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
+import jdplus.dstats.LogNormal;
 import jdplus.dstats.T;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.likelihood.DefaultLikelihoodEvaluation;
 import jdplus.likelihood.LogLikelihoodFunction;
+import jdplus.math.functions.IFunction;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.RegArimaForecasts;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regarima.ami.ModellingUtility;
-import jdplus.sarima.SarimaModel;
-import jdplus.stats.tests.NiidTests;
-import jdplus.timeseries.simplets.Transformations;
-import demetra.math.matrices.Matrix;
-import java.util.Arrays;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import jdplus.arima.estimation.IArimaMapping;
-import jdplus.dstats.LogNormal;
-import jdplus.likelihood.DefaultLikelihoodEvaluation;
-import jdplus.math.functions.IFunction;
-import jdplus.math.functions.IFunctionPoint;
-import jdplus.math.functions.IParametersDomain;
-import jdplus.regarima.RegArimaForecasts;
 import jdplus.regarima.RegArmaModel;
+import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regarima.estimation.RegArmaFunction;
-import jdplus.regarima.estimation.ConcentratedLikelihoodComputer;
+import jdplus.sarima.SarimaModel;
 import jdplus.sarima.estimation.SarimaFixedMapping;
 import jdplus.sarima.estimation.SarimaMapping;
+import jdplus.stats.tests.NiidTests;
+import jdplus.timeseries.simplets.Transformations;
 
 /**
  *
@@ -634,7 +631,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
             domain = description.getSeries().getDomain();
         }
         TsData s = deterministicEffect(domain, v -> !(v.getCore() instanceof TrendConstant));
-        return backTransform(s, true);
+        return backTransform(s, false);
     }
 
     public TsData getDeterministicEffect(TsDomain domain, Predicate<Variable> test) {
@@ -642,7 +639,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
             domain = description.getSeries().getDomain();
         }
         TsData s = deterministicEffect(domain, v -> test.test(v));
-        return backTransform(s, true);
+        return backTransform(s, false);
     }
 
     public TsData getPreadjustmentEffect(TsDomain domain, Predicate<Variable> test) {
