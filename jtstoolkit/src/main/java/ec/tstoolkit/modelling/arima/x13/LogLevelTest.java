@@ -77,7 +77,7 @@ public class LogLevelTest implements IPreprocessingModule {
         } else if (level_ == null) {
             return true;
         } else {
-            return comparator_.compare(level_, log_) == 0;
+            return comparator_.compare(log_, level_) != 0;
         }
     }
 
